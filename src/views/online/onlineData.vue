@@ -1,0 +1,449 @@
+<template xmlns="http://www.w3.org/1999/html">
+  <div class="app-container">
+    <el-row class="panel-group" :gutter="10">
+      <el-col :span="4" class="card-panel-col">
+        <div :class="gid===1001?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryPlaying(1001, true)">
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              在玩：<span :class="getDcClass(playingDiff.today)"> {{ getDcResult(playingDiff.today) }} </span>
+            </div>
+            <div>
+              前3天：<span :class="getDcClass(playingDiff.day3)">{{ getDcResult(playingDiff.day3) }}</span>
+            </div>
+            <div>
+              上周：<span :class="getDcClass(playingDiff.week)">{{ getDcResult(playingDiff.week) }}</span>
+            </div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="4" class="card-panel-col">
+        <div :class="gid===1002?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryRecharge(1002, true)">
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              充值：<span :class="getDcClass(rechargeDiff.day1)"> {{ getDcResult(rechargeDiff.day1) }}(昨日) </span>
+            </div>
+            <div>
+              前3天：<span :class="getDcClass(rechargeDiff.day2)">{{ getDcResult(rechargeDiff.day2) }}</span>
+            </div>
+            <div>
+              上周：<span :class="getDcClass(rechargeDiff.day7)">{{ getDcResult(rechargeDiff.day7) }}</span>
+            </div>
+            <div class="online-remark">
+              <el-tooltip class="item" effect="dark" content="今日充值金额和昨日充值金额环比，计算公式：（今日充值总额-昨日充值总额）/ 昨日充值总额 * 100%" placement="top-start">
+                <i class="el-icon-info" />
+              </el-tooltip>
+            </div>
+          </div>
+        </div>
+      </el-col>
+      <el-col :span="4" class="card-panel-col">
+        <div :class="gid===1003?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryWithdraw(1003, true)">
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              提充比：<span :class="getRatioClass(withdrawDiff.ratio)"> {{ withdrawDiff.ratio }}% </span>
+            </div>
+            <div>
+              昨日：<span :class="getDcClass(withdrawDiff.day1)">{{ getDcResult(withdrawDiff.day1) }}</span>
+            </div>
+            <div>
+              前3天：<span :class="getDcClass(withdrawDiff.day2)">{{ getDcResult(withdrawDiff.day2) }}</span>
+            </div>
+            <div>
+              上周：<span :class="getDcClass(withdrawDiff.day7)">{{ getDcResult(withdrawDiff.day7) }}</span>
+            </div>
+            <div class="online-remark">
+              <el-tooltip class="item" effect="dark" content="今日提现金额和昨日提现金额环比，计算公式：（今日提现总额-昨日提现总额）/ 昨日提现总额 * 100%" placement="top-start">
+                <i class="el-icon-info" />
+              </el-tooltip>
+            </div>
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row>
+      <line-chart :chart-data="chartData" height="600px" />
+    </el-row>
+  </div>
+</template>
+<script>
+import request from '@/utils/request'
+import LineChart from '../playerManage/components/LineChart'
+import { $libDate, $libShow, MoneyShow } from '@/utils/common'
+import store from '@/store'
+
+function NewPlaying() {
+  return {
+    xData: [],
+    yData: [
+      { Name: '今日', Data: [] },
+      { Name: '昨日', Data: [] },
+      { Name: '前3天', Data: [] },
+      { Name: '上周', Data: [] }
+    ],
+    yShow: true
+  }
+}
+
+function NewRecharge() {
+  return {
+    xData: [],
+    yData: [
+      { Name: '今日', Data: [] },
+      { Name: '昨日', Data: [] },
+      { Name: '前3天', Data: [] },
+      { Name: '上周', Data: [] }
+    ],
+    yShow: false
+  }
+}
+
+function NewWithdraw() {
+  return {
+    xData: [],
+    yData: [
+      { Name: '今日', Data: [] },
+      { Name: '昨日', Data: [] },
+      { Name: '前3天', Data: [] },
+      { Name: '上周', Data: [] }
+    ],
+    yShow: false
+  }
+}
+
+export default {
+  name: 'OnlineData',
+  // eslint-disable-next-line vue/no-unused-components
+  components: { LineChart },
+  data() {
+    return {
+      item: {
+        date: new Date()
+      },
+      logData: [],
+      libShow: $libShow,
+      libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
+      chartData: NewPlaying(),
+      gid: 1001,
+      summary: {},
+      summary1: {},
+      summary2: {},
+      userVisible: false,
+      users: [],
+      env: 'test',
+      playingDiff: {
+        today: 0, // 今日和昨日对比
+        day3: 0, // 今日和前3天对比
+        week: 0 // 今日和上周对比
+      },
+      rechargeDiff: {
+        day1: 0,
+        day2: 0,
+        day7: 0
+      },
+      withdrawDiff: {
+        day1: 0,
+        day2: 0,
+        day7: 0,
+        ratio: 0 // 充提比
+      }
+    }
+  },
+  computed: {
+    getSummary() {
+      return [9, 1, 8, 2, 3, 4, 5, 6, 7]
+    }
+  },
+  created() {
+    this.env = store.getters.env || this.env
+    // this.getInfo(this.gid)
+    this.queryPlaying(1001, true)
+    this.queryRecharge(1002, false)
+    this.queryWithdraw(1003, false)
+  },
+  methods: {
+    // 显示相关
+    formatTime(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
+    getDcClass(num) {
+      if (num == 0) {
+        return 'card-panel-Normal'
+      } else if (num > 0) {
+        return 'card-panel-OK'
+      } else {
+        return 'card-panel-Danger'
+      }
+    },
+    getDcResult(num) {
+      if (num == 0) {
+        return num + '%'
+      } else if (num > 0) {
+        return num + '% ↑'
+      } else {
+        return num + '% ↓'
+      }
+    },
+    getRatioClass(num) {
+      return num < 50 ? 'card-panel-OK' : 'card-panel-Danger'
+    },
+    getSystemGot(ob) {
+      if (ob) {
+        return this.formatNumber((ob.Lose + ob.Tax - ob.Won) / 1000)
+      }
+    },
+    formatNumber(n) {
+      return n.toLocaleString()
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (row.IsPay) {
+        return 'success-row'
+      }
+    },
+    getCurDate(step) {
+      const ts = (new Date()).getTime()
+      const dt = new Date(ts - 9000000)
+      const hour = dt.getHours()
+      let minute = dt.getMinutes()
+      if (step === 5 && minute % 5 > 0) {
+        minute = parseInt(minute / 10) * 10 + (minute % 10 > 5 ? 5 : 0)
+      }
+      const ret = (hour >= 10 ? hour + '' : '0' + hour) + ':' + (minute >= 10 ? minute + '' : '0' + minute)
+
+      return {
+        hour: hour,
+        minute: minute,
+        result: ret
+      }
+    },
+    calcRatio(num1, num2) {
+      // console.log('num1 ', num1)
+      // console.log('num2 ', num2)
+      const ret = num1 - num2
+      num2 = num2 === 0 ? 1 : num2
+      return (ret / num2 * 100).toFixed(2)
+    },
+    // 查询在玩数据
+    queryPlaying(gid, isRefresh) {
+      if (isRefresh) {
+        this.gid = gid
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/other/realtime/playing'
+        }
+      }).then(response => {
+        console.log('playing response ', response)
+        const chartData = NewPlaying()
+        if (response.RetCode === 0) {
+          chartData['xData'] = response.Data.Cols
+          chartData['yData'][0]['Data'] = response.Data.Today
+          chartData['yData'][1]['Data'] = response.Data.Yesterday
+          chartData['yData'][2]['Data'] = response.Data.Day3
+          chartData['yData'][3]['Data'] = response.Data.Week
+
+          // 对比
+          const dt = $this.getCurDate(0)
+          let index = 0
+          for (const i in response.Data.Cols) {
+            if (dt.result === response.Data.Cols[i]) {
+              index = i
+              break
+            }
+          }
+          console.log('date ', dt)
+          console.log('index ', index)
+          $this.playingDiff.today = $this.calcRatio(response.Data.Today[index], response.Data.Yesterday[index])
+          $this.playingDiff.day3 = $this.calcRatio(response.Data.Today[index], response.Data.Day3[index])
+          $this.playingDiff.week = $this.calcRatio(response.Data.Today[index], response.Data.Week[index])
+        }
+        if (isRefresh) {
+          $this.chartData = chartData
+        }
+      })
+    },
+    // 查询充值
+    queryRecharge(gid, isRefresh) {
+      if (isRefresh) {
+        this.gid = gid
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/other/realtime/recharge'
+        }
+      }).then(response => {
+        console.log('recharge response ', response)
+        const chartData = NewRecharge()
+        if (response.RetCode === 0) {
+          chartData['xData'] = response.Data.Cols
+          chartData['yData'][0]['Data'] = response.Data.Amount.Today
+          chartData['yData'][1]['Data'] = response.Data.Amount.Day1
+          chartData['yData'][2]['Data'] = response.Data.Amount.Day2
+          chartData['yData'][3]['Data'] = response.Data.Amount.Day7
+
+          // 对比
+          const dt = $this.getCurDate(5)
+          let index = 0
+          for (const i in response.Data.Cols) {
+            if (dt.result === response.Data.Cols[i]) {
+              index = i
+              break
+            }
+          }
+          console.log('date ', dt)
+          console.log('index ', index)
+          $this.rechargeDiff.day1 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day1[index])
+          $this.rechargeDiff.day2 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day2[index])
+          $this.rechargeDiff.day7 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day7[index])
+        }
+        if (isRefresh) {
+          $this.chartData = chartData
+        }
+      })
+    },
+    // 查询提现
+    queryWithdraw(gid, isRefresh) {
+      if (isRefresh) {
+        this.gid = gid
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/other/realtime/withdraw'
+        }
+      }).then(response => {
+        console.log('withdraw response ', response)
+        const chartData = NewWithdraw()
+        if (response.RetCode === 0) {
+          chartData['xData'] = response.Data.Cols
+          chartData['yData'][0]['Data'] = response.Data.Amount.Today
+          chartData['yData'][1]['Data'] = response.Data.Amount.Day1
+          chartData['yData'][2]['Data'] = response.Data.Amount.Day2
+          chartData['yData'][3]['Data'] = response.Data.Amount.Day7
+
+          // 对比
+          const dt = $this.getCurDate(5)
+          let index = 0
+          for (const i in response.Data.Cols) {
+            if (dt.result === response.Data.Cols[i]) {
+              index = i
+              break
+            }
+          }
+          $this.withdrawDiff.day1 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day1[index])
+          $this.withdrawDiff.day2 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day2[index])
+          $this.withdrawDiff.day7 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day7[index])
+
+          // 计算提充差
+          // TodayTotalRecharge  TodayTotalWithdraw
+          let ratio = 0
+          if (response.Data.TodayTotalRecharge > 0) {
+            ratio = (response.Data.TodayTotalWithdraw / response.Data.TodayTotalRecharge * 100).toFixed(2)
+          }
+          $this.withdrawDiff.ratio = ratio
+        }
+        if (isRefresh) {
+          $this.chartData = chartData
+        }
+      })
+    }
+  }
+}
+</script>
+<style>
+.el-table .warning-row {
+background: oldlace;
+}
+
+.el-table .fail-row {
+background: #999999;
+}
+
+.el-table .success-row {
+background: #f0f9eb;
+}
+</style>
+<style lang="scss" scoped>
+.panel-group {
+  margin-top: 10px;
+
+.card-panel-col {
+  margin-bottom: 10px;
+  &:hover {
+    .card-panel{
+      background: #90EE90;
+    }
+  }
+}
+
+.card-panel_selected {
+  background: #90EE90;
+}
+
+.card-panel_selected_not {
+  background: #fff;
+}
+
+.card-panel {
+  height: 108px;
+  cursor: pointer;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+  color: #666;
+  box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+  border-color: rgba(0, 0, 0, .05);
+
+.card-panel-description {
+  float: left;
+  padding-left: 5px;
+  font-weight: bold;
+  margin: 26px;
+  margin-left: 0px;
+
+.card-panel-text {
+  line-height: 18px;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.card-panel-normal{
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.card-panel-OK{
+  color: #409167;
+}
+
+.card-panel-Danger{
+  color: #ff4949;
+}
+
+.card-panel-num {
+  font-size: 20px;
+}
+}
+}
+}
+
+.online-remark {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.online-remark i {
+  font-size: 18px;
+}
+
+</style>

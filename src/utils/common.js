@@ -1,0 +1,894 @@
+import Cookies from 'js-cookie'
+import { Message } from 'element-ui'
+
+const common = {}
+
+// 填充模板
+common.fillTpl = function() {
+  var getTplName = function(str) {
+    var len = str.length
+    return str.substring(2, len - 2)
+  }
+  this.ReplaceTemplate = function(tpl, obj) {
+    var vals = tpl.match(/##[^#]*##/g)
+    for (var x in vals) {
+      tpl = tpl.replace(vals[x], obj[getTplName(vals[x])])
+    }
+    return tpl
+  }
+}
+
+/** ************url相关* **********************/
+// 获取url参数
+function LibURL() {
+  this.GetUrlParam = function(name) {
+    var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)') // 构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg) // 匹配目标参数
+    if (r !== null) return unescape(r[2])
+    return null
+  }
+  this.GetUrlParamInt = function(name) {
+    var ob = this.GetUrlParam(name)
+    return ob ? parseInt(ob) : ob
+  }
+  this.GetUrlParamFloat = function(name) {
+    var ob = this.GetUrlParam(name)
+    return ob ? parseFloat(ob) : ob
+  }
+  // 传入一个对象，将对象转化成 a=1&b=2 如此格式
+  this.GenUrlParams = function(ob) {
+    var param = ''
+    var bFirst = true
+    for (var name in ob) {
+      if (bFirst) {
+        param += name + '=' + ob[name]
+        bFirst = false
+      } else {
+        param += '&' + name + '=' + ob[name]
+      }
+    }
+    return param
+  }
+}
+
+function PublicData() {
+  this.LangTypes = ['en', 'hi']
+  this.LangNames = ['英文', '印地语']
+}
+
+export const $data = new PublicData()
+
+// 多语言控件
+export function NewLangObj() {
+  const obj = {}
+  for (let i = 0; i < $data.LangTypes.length; i++) {
+    const name = $data.LangTypes[i]
+    obj[name] = ''
+  }
+  return obj
+}
+
+function Lang() {
+  this.GetLangEN = function(value) {
+    return this.GetLangOBJ(value).en
+  }
+  this.GetLangOBJ = function(value) {
+    const res = NewLangObj()
+    try {
+      const item = JSON.parse(value)
+      Object.assign(res, item)
+    } catch (e) {
+      console.log('Parse Lang err,' + e)
+    }
+    return res
+  }
+}
+
+export const $libLang = new Lang()
+
+export function LibShow() {
+  this.ColorMap = {
+    1: '♦',
+    2: '♣',
+    3: '♥',
+    4: '♠'
+  }
+  this.GameNames = { 1: 'Rummy', 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
+    16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
+    59: '芝加哥', 60: '糖果派', 61: 'fireKick', 80: 'PLINKO' }
+
+  this.NumMap = {
+    1: 'A',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+    6: '6',
+    7: '7',
+    8: '8',
+    9: '9',
+    10: '10',
+    11: 'J',
+    12: 'Q',
+    13: 'K',
+    14: '小王',
+    15: '大王'
+  }
+
+  this.AllCards = [
+    0x5e, 0x5f, // 小王、大王
+    0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b, 0x4c, 0x4d, // 黑桃
+    0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3a, 0x3b, 0x3c, 0x3d, // 红桃
+    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, // 梅花
+    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d // 方块
+  ]
+  this.CardShow = function(card) {
+    if (card == 94) {
+      return '<span style="color:black">小王</span>'
+    } else if (card == 95) {
+      return '<span style="color:red">大王</span>'
+    } else {
+      const color = card >> 4
+      const num = card & 0x0F
+      return '<span style="color:' + ((color === 1 || color === 3) ? 'red' : 'black') + '">' + this.ColorMap[color] + this.NumMap[num] + '</span>'
+    }
+  }
+  let staticPath = ''
+  this.GetFullPath = function(url) {
+    if (staticPath === '') {
+      staticPath = Cookies.get('staticPath')
+    }
+    return staticPath + url
+  }
+  // 日期控件选择日期默认选项
+  this.DefaultDatePickerOptions = function() {
+    return {
+      shortcuts: [{
+        text: '今天',
+        onClick(picker) {
+          var start = new Date()
+          var end = new Date()
+          start.setTime($libDate.GetDayBegin(start))
+          end.setTime($libDate.GetDayEnd(end))
+          picker.$emit('pick', [start, end])
+        }
+      }, {
+        text: '昨天',
+        onClick(picker) {
+          var end = new Date()
+          var start = new Date()
+          start.setTime($libDate.GetDayBegin(start.getTime()) - 3600 * 1000 * 24)
+          end.setTime($libDate.GetDayEnd(end.getTime()) - 3600 * 1000 * 24)
+          picker.$emit('pick', [start, end])
+        }
+      }, {
+        text: '最近7天',
+        onClick(picker) {
+          const end = new Date()
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+          picker.$emit('pick', [start, end])
+        }
+      }, {
+        text: '最近一个月',
+        onClick(picker) {
+          const end = new Date()
+          const start = new Date()
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+          picker.$emit('pick', [start, end])
+        }
+      }]
+    }
+  }
+
+  // 表格头默认属性
+  this.DefaultTableHeadClass = function() {
+    return 'text-align: center;background:#f5fafe;'
+  }
+
+  // 表格字体默认属性
+  this.DefaultTableCell = function() {
+    return 'padding:5px;font-family: "Microsoft Yahei"; font-size: 12px;'
+  }
+  // 表格字体属性
+  this.TableCell = function(padding) {
+    return {
+      'padding': padding ? padding + 'px' : '0px',
+      'font-family': 'Microsoft Yahei',
+      'font-size': '12px'
+    }
+  }
+}
+
+export const $libDate = new LibDate()
+export const $libUrl = new LibURL()
+export const $libShow = new LibShow()
+
+Date.prototype.Format = function(fmt) { // author: meizz
+  var o = {
+    'M+': this.getMonth() + 1, // 月份
+    'd+': this.getDate(), // 日
+    'H+': this.getHours(), // 小时
+    'm+': this.getMinutes(), // 分
+    's+': this.getSeconds(), // 秒
+    'q+': Math.floor((this.getMonth() + 3) / 3), // 季度
+    'S': this.getMilliseconds() // 毫秒
+  }
+  if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
+  for (var k in o) {
+    if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
+  }
+  return fmt
+}
+
+export function LibDate() {
+  /* 根据毫秒数返回当前时间的格式化表示
+   * iType:1 返回格式 1990-01-02
+   * iType:2 返回格式 1990-02-03 15:03:30
+   * iType:3 返回格式 02-03 (月-日)
+   */
+  this.FormateMilisecondStr = function(ms, iType) {
+    const zone = Cookies('zone')
+    return this.FormateMilisecondStrByZone(ms, iType, zone)
+  }
+
+  this.FormateMilisecondStrByZone = function(ms, iType, zone) {
+    const dt = new Date()
+    if (zone === 'in') {
+      ms = this.TimeShowToIndia(ms)
+    } else if (zone === 'br') {
+      ms = this.TimeShowToBR(ms)
+    }
+    dt.setTime(ms)
+    switch (iType) {
+      case 1:
+        return dt.Format('yyyy-MM-dd')
+      case 2:
+        return dt.Format('yyyy-MM-dd HH:mm:ss')
+      case 3:
+        return dt.Format('MM-dd')
+      case 4:
+        return dt.Format('HH:mm:ss')
+      case 5:
+        return dt.Format('HH:mm')
+      case 6:
+        return dt.Format('MM-dd HH:mm')
+      case 7:
+        return dt.Format('MM-dd HH:mm:ss')
+    }
+  },
+  this.SelectTimeToIndiaByZone = function(t) { // 根据选择的时区决定是否要将选定的时间要转化成印度时间(毫秒）
+    const zone = Cookies('zone')
+    if (zone === 'in') {
+      return this.SelectTimeToIndia(t)
+    } else if (zone === 'br') {
+      return this.SelectTimeToBR(t)
+    } else {
+      return t
+    }
+  },
+  this.SelectTimeToIndia = function(t) { // 选定的时间要转化成印度时间(毫秒）
+    return t + 9000000
+  },
+  this.TimeShowToIndia = function(t) { // 用于展示的时间要转化成印度时间(毫秒）
+    return t - 9000000
+  },
+  this.SelectTimeToBR = function(t) { // 选定的时间要转化成印度时间(毫秒）
+    return t + 39600000
+  },
+  this.TimeShowToBR = function(t) { // 用于展示的时间要转化成印度时间(毫秒）
+    return t - 39600000
+  },
+  this.FormateSecondStr = function(second, iType) {
+    return this.FormateMilisecondStr(second * 1000, iType)
+  }
+  // 获取一天的开始的毫秒数
+  // 输入参数为某个时间戳（毫秒)
+  this.GetDayBegin = function(t) {
+    return Date.parse(new Date(this.FormateMilisecondStr(t, 1) + ' 00:00:00'))
+  }
+
+  // 获取一天的结束的毫秒数
+  // 输入参数为某个时间戳（毫秒)
+  this.GetDayEnd = function(t) {
+    var begin = this.GetDayBegin(t)
+    return new Date().setTime((begin / 1000 + 24 * 60 * 60 - 1) * 1000)
+  }
+
+  // 测试要求用户输入的 08：30 这样的时间字符串格式是否正确
+  this.TestHourFormat = function(str) {
+    var pattern = /^([01]?\d|2[0-3]):[0-5]?\d$/
+    return pattern.test(str)
+  }
+}
+
+export function Pagination(_totalCount, _pageNum) {
+  this.totalCount = _totalCount
+  this.pageNum = _pageNum
+  this.pageNo = 1
+  var $this = this
+
+  this.GetCurrentPage = function() {
+    return $this.pageNo
+  }
+  this.SetPageNo = function(pageNo) {
+    $this.pageNo = pageNo
+  }
+  this.SetTotalCount = function(count) {
+    $this.totalCount = count
+  }
+  this.SetPageNum = function(pageNum) {
+    $this.pageNum = pageNum
+  }
+  this.GetPageNum = function() {
+    return $this.pageNum
+  }
+  this.GetPageMax = function() {
+    return Math.floor(($this.totalCount + $this.pageNum - 1) / $this.pageNum)
+  }
+  this.GetTotalCount = function() {
+    return $this.totalCount
+  }
+  this.GetPageIndex = function(pageNo) {
+    if ($this.totalCount === 0) {
+      return { Begin: 0, End: 0 }
+    } else {
+      var maxPageNo = this.GetPageMax()
+      if (maxPageNo < pageNo) {
+        pageNo = maxPageNo
+      } else if (pageNo < 1) {
+        pageNo = 1
+      }
+      return {
+        Begin: (pageNo - 1) * $this.pageNum,
+        End: $this.pageNum * pageNo > $this.totalCount ? $this.totalCount : $this.pageNum * pageNo
+      }
+    }
+  }
+}
+
+// sortOrder 1 ASC 2 DESC
+export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder) {
+  this.TotalData = _totalData
+  this.ShowData = this.TotalData.length > 0 ? this.TotalData.slice(0) : [] // 数组深拷贝
+  this.FilterMap = filterMap
+  this.FilterValueMap = {}
+  var $this = this
+  this.Page = new Pagination(this.TotalData.length, pageNum)
+  this.SortName = sortName
+  this.SortOrder = sortOrder || -1
+
+  this.GetShowValue = function(typeName, key) {
+    return $this.FilterMap[typeName][key]
+  }
+
+  // 处理搜索相关逻辑
+
+  // value为搜索的内容
+  // params为搜索哪些字段
+  this.Search = function(value, params) {
+    $this.ShowData = $this.TotalData.filter(
+      function(data) {
+        for (var o in params) {
+          if (data[params[o]].toString().includes(value.toString())) {
+            return true
+          }
+        }
+        return false
+      }
+    )
+    $this.Page.SetTotalCount($this.ShowData.length)
+  }
+
+  // 处理筛选相关的逻辑
+  this.ClearFilterMap = function() {
+    for (var o in $this.FilterMap) {
+      $this.FilterValueMap[o] = 0
+      if ($this.FilterMap[o] === 'all') {
+        $this.FilterMap[o] = getDefaultFilterValues(o)
+      }
+    }
+    $this.FilterData()
+  }
+
+  // 处理没有映射关系，直接使用值作筛选的情况
+  var getDefaultFilterValues = function(key) {
+    var s = new Set()
+    for (var i = 0; i < $this.TotalData.length; i++) {
+      s.add($this.TotalData[i][key])
+    }
+    var res = {}
+    for (var x of s) {
+      res[x] = x
+    }
+    return res
+  }
+
+  this.FilterData = function() {
+    $this.ShowData = $this.TotalData.filter(
+      function(data) {
+        for (const f in $this.FilterValueMap) {
+          if ($this.FilterValueMap[f] != 0 && $this.FilterValueMap[f] != data[f]) {
+            return false
+          }
+        }
+        return true
+      }
+    )
+    $this.Page.SetTotalCount($this.ShowData.length)
+    $this._sortByProp()
+  }
+
+  this.GetPage = function() {
+    return $this.Page
+  }
+  // 排序函数
+  this.compare = function(a, b) {
+    var val1 = a[$this.SortName]
+    var val2 = b[$this.SortName]
+    if (val1 < val2) {
+      return -1 * $this.SortOrder
+    } else if (val1 > val2) {
+      return 1 * $this.SortOrder
+    } else {
+      return 0
+    }
+  }
+  // 传入排序字段及排序方向
+  this.SortByProp = function(prop, order) {
+    $this.SortName = prop
+    if (prop != null) {
+      $this.SortOrder = order === 'ascending' ? 1 : -1
+    }
+    this._sortByProp()
+  }
+  this._sortByProp = function() {
+    if ($this.SortName == null) {
+      $this.ShowData = $this.ShowData.slice(0)
+    } else {
+      $this.ShowData = $this.ShowData.sort(this.compare)
+    }
+  }
+  // 返回当前页的内容
+  this.GetCurrentPageData = function() {
+    var res = []
+    if ($this.ShowData == null || $this.ShowData.length === 0) {
+      return res
+    } else {
+      var pageIndex = $this.Page.GetPageIndex($this.Page.GetCurrentPage())
+      for (var i = pageIndex.Begin; i < pageIndex.End; i++) {
+        res.push($this.ShowData[i])
+      }
+      return res
+    }
+  }
+  // 更新数组中字段内容
+  this.UpdateData = function(ob) {
+    for (var i = 0; i < $this.TotalData.length; i++) {
+      var data = $this.TotalData[i]
+      if (data.ID === ob.ID) {
+        Object.assign($this.TotalData[i], ob)
+        break
+      }
+    }
+    $this.ShowData = $this.TotalData.slice(0)
+    this._sortByProp()
+    this.FilterData()
+  }
+
+  this.GetDataByID = function(ID) {
+    for (let i = 0; i < $this.TotalData.length; i++) {
+      const data = $this.TotalData[i]
+      if (data.ID === ID) {
+        return data
+      }
+    }
+    return null
+  }
+
+  this.DelData = function(id) {
+    for (var i = 0; i < $this.TotalData.length; i++) {
+      if ($this.TotalData[i].ID === id) {
+        $this.TotalData.splice(i, 1)
+        break
+      }
+    }
+    $this.ShowData = $this.TotalData.slice(0)
+    $this.Page.SetTotalCount($this.TotalData.length)
+    this._sortByProp()
+    this.FilterData()
+  }
+
+  // 添加数组中的字段内容
+  this.AddData = function(ob) {
+    $this.TotalData.push(ob)
+    $this.ShowData = $this.TotalData.slice(0)
+    $this.Page.SetTotalCount($this.TotalData.length)
+    this._sortByProp()
+    this.FilterData()
+  }
+  this.ClearFilterMap()
+  this._sortByProp()
+}
+
+var Type = (function() {
+  var type = {}
+  var typeArr = ['String', 'Object', 'Number', 'Array', 'Undefined', 'Function', 'Null', 'Symbol']
+  for (var i = 0; i < typeArr.length; i++) {
+    (function(name) {
+      type['Is' + name] = function(obj) {
+        return Object.prototype.toString.call(obj) == '[object ' + name + ']'
+      }
+    })(typeArr[i])
+  }
+  return type
+})()
+
+function TypeHelper() {
+  this.IsString = function(obj) {
+    return Type.IsString(obj)
+  }
+  this.IsObject = function(obj) {
+    return Type.IsObject(obj)
+  }
+  this.IsNumber = function(obj) {
+    return Type.IsNumber(obj)
+  }
+  this.IsArray = function(obj) {
+    return Type.IsArray(obj)
+  }
+  this.IsUndefined = function(obj) {
+    return Type.IsUndefined(obj)
+  }
+  this.IsFunction = function(obj) {
+    return Type.IsFunction(obj)
+  }
+  this.IsNull = function(obj) {
+    return Type.IsNull(obj)
+  }
+  this.IsSymbol = function(obj) {
+    return Type.IsSymbol(obj)
+  }
+
+  var intPattern = /^(\d+)$/
+  var floatPattern = /^\d*.\d*$/
+
+  this.IsInt = function(ob) {
+    return intPattern.test(ob)
+  }
+
+  this.IsFloat = function(ob) {
+    return floatPattern.test(ob)
+  }
+
+  this.DeepCopy = function(obj) {
+    return JSON.parse(JSON.stringify(obj))
+  }
+}
+
+export const $libType = new TypeHelper()
+
+/** **************************Vue Validate *************************/
+
+/* config{
+          nullMsg：string 在内容不能为空时的错误提示
+          type:
+              n:整数
+              f:浮点数
+              s:任何字符
+              reg: 需要提供属性 pattern(正则对象)  例：:rules="dataRule(true,{type:'reg',pattern:/^\d+(;\d)*$/})"
+              fun: 需要提供属性 fun(函数对象)
+
+          range:  min-max(或只填写 min) 最小值,最大值 （在type为数字时，表示数值；在type为字符串时，表示长度）
+        }
+     例：
+       {
+           type:'s',
+           range:'10-100',
+           nullMsg:"请上传图片",
+        }
+        */
+export function DataRule(required, config) {
+  var rules = []
+  var nullMsg = '该输入项为必填项!'
+  if (config && config.nullMsg) {
+    nullMsg = config.nullMsg
+  }
+  if (required) {
+    rules.push({ required: true, message: nullMsg, trigger: 'blur' },
+      { required: true, message: nullMsg, trigger: 'change' }
+    )
+  }
+  if (!config) return rules
+
+  var min = null
+  var max = null
+  if (config.range) {
+    var reg2 = /^(\d+\.*\d*)-(\d+\.*\d*)$/
+    if (reg2.test(config.range)) {
+      var ss = config.range.split('-')
+      min = parseFloat(ss[0])
+      max = parseFloat(ss[1])
+    } else {
+      min = parseFloat(config.range)
+    }
+  }
+
+  var sType, sMsg
+
+  if (config.type) {
+    switch (config.type) {
+      case 's':
+        sType = 'string'
+        sMsg = '请填写内容'
+        if (min == null && max == null) {
+          rules.push({ type: sType, message: sMsg, trigger: 'blur' })
+        } else if (max == null) {
+          rules.push({ type: sType, message: sMsg + '，字符串长度至少为' + min, min: min, trigger: 'blur' })
+        } else {
+          rules.push({
+            type: sType,
+            message: sMsg + '，字符串长度在' + min + '-' + max + '之间',
+            min: min,
+            max: max,
+            trigger: 'blur'
+          })
+        }
+        break
+      case 'n':
+        sType = 'integer'
+        if (min == null && max == null) {
+          rules.push({ type: sType, message: '请填写整数', trigger: 'blur' })
+        } else if (max == null) {
+          rules.push({ type: sType, message: '请填写≥' + min + '的整数', min: min, trigger: 'blur' })
+        } else {
+          rules.push({
+            type: sType,
+            message: '请填写≥' + min + '且<' + max + '的整数',
+            min: min,
+            max: max,
+            trigger: 'blur'
+          })
+        }
+        break
+      case 'f':
+        var isValidNumber = (rule, value, callback, source, options) => {
+          if (value != null && value !== '') {
+            var f = parseFloat(value)
+            if (isNaN(f)) {
+              callback(new Error('请输入数字'))
+            } else {
+              // parseFloat对于输入尾部有非数字类型会忽略，所以再次检查
+              var reg = /^-?\d*.\d*$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入数字'))
+              }
+              var min = rule.min
+              var max = rule.max
+              if (min != null || max != null) {
+                if (min != null && max != null) {
+                  if (f < min || f > max) {
+                    callback(new Error('请填写≥' + min + '且<' + max + '的数字'))
+                  }
+                } else if (min != null && f < min) {
+                  callback(new Error('请填写≥' + min + '的数字'))
+                }
+              }
+              callback()
+            }
+          } else {
+            callback()
+          }
+        }
+        rules.push({ validator: isValidNumber, min: min, max: max, trigger: 'blur' })
+        break
+      case 'reg':
+        if (config.pattern) {
+          rules.push({ pattern: config.pattern, message: '格式不正确', trigger: 'blur' })
+        }
+        break
+      case 'fun':
+        if (config.fun) {
+          rules.push({ validator: config.fun, trigger: 'blur' })
+        }
+        break
+    }
+  }
+  // console.log("rules", rules)
+  return rules
+}
+
+export function ValidateVueItem(item) {
+  let ok = false
+  item.validate((valid) => {
+    ok = valid
+  })
+  if (!ok) {
+    Message.error('填写内容存在错误或缺漏！')
+    return false
+  }
+  return true
+}
+
+// 处理金币与实际存储之间的逻辑（加大1000倍后存储）
+// attrNames 为金币相关的数值的字段名
+export function MoneyShow(attrNames) {
+  this.attrNames = attrNames
+  const _tranObjectForShow = function(item) {
+    var _item = {}
+    Object.assign(_item, item)
+    for (let i = 0; i < attrNames.length; i++) {
+      if (item[attrNames[i]]) {
+        // 判断值是对象还是数组
+        _item[attrNames[i]] /= 1000
+      }
+    }
+    return _item
+  }
+  this.TransForShow = function(obj) {
+    if ($libType.IsArray(obj)) {
+      var items = obj.splice(0)
+      for (const o in items) {
+        items[o] = _tranObjectForShow(items[o])
+      }
+      return items
+    } else if ($libType.IsObject(obj)) {
+      return _tranObjectForShow(obj)
+    } else {
+      return obj / 1000
+    }
+  }
+  const _tranObjectForStore = function(item) {
+    var _item = {}
+    Object.assign(_item, item)
+    for (let i = 0; i < attrNames.length; i++) {
+      if (item[attrNames[i]]) {
+        _item[attrNames[i]] *= 1000
+      }
+    }
+    return _item
+  }
+  this.TransForStore = function(obj) {
+    if ($libType.IsArray(obj)) {
+      var items = obj.splice(0)
+      for (const o in items) {
+        items[o] = _tranObjectForStore(items[o])
+      }
+      return items
+    } else if ($libType.IsObject(obj)) {
+      return _tranObjectForStore(obj)
+    } else {
+      return obj * 1000
+    }
+  }
+}
+
+export default common
+
+export function LibJsonDiff() {
+  const jsonDiff = require('diff')
+  // 处理换行和空格
+  const _replaceContent = function(content) {
+    let text = content
+    if (content.indexOf('\n') >= 0) {
+      // 换行替换为<br/>
+      // 空格替换为&ensp;
+      const reg1 = new RegExp('\n', 'g')
+      text = text.replace(reg1, '<br/>')
+    }
+    return text
+  }
+
+  // 获取对比后的结果及拼接展示效果
+  this.DiffHistory = function(oldContent, newContent) {
+    // diff之后的结果
+    var diffResult = jsonDiff.diffJson(oldContent, newContent)
+    const addedList = []
+    const removedList = []
+    // 遍历对比结果，摘出相应的数据
+    // 首先判断的量级为一行
+    diffResult.forEach((diffObj, index) => {
+      const content = diffObj.value
+      let replaceContent = _replaceContent(content)
+      // 该项的下一项
+      const next = diffResult[index + 1]
+      const nextReplceContent = next && _replaceContent(next.value)
+      if (diffObj.removed) {
+        // 需要展示在历史结果位置的数据
+        let dealedContent = ''
+        if (diffObj.removeContent) {
+          dealedContent = diffObj.removeContent
+        } else {
+          // 判断下一个项
+          if (next && next.added) {
+            // 说明两个项之前是对应的关系
+            // 判断在不同的这行中，具体到字段的不同位置
+            const testDiffList = jsonDiff.diffWordsWithSpace(
+              replaceContent,
+              nextReplceContent
+            )
+            const { addContent, removeContent } = diffText(testDiffList)
+            next.addContent = addContent
+            dealedContent = removeContent
+          } else {
+            // 如果想用空白，对没有内容的地方占位 start
+            addedList.push('<span  style="visibility:hidden;">' + replaceContent + '</span>')
+            // 如果想用空白，对没有内容的地方占位 end
+            dealedContent =
+              '<span style="color:red"">' +
+              replaceContent.replace(/\s/gm, '&ensp;') +
+              '</span>'
+          }
+          removedList.push(dealedContent)
+        }
+      } else if (diffObj.added) {
+        // 需要展示在当前结果位置的数据
+        let dealedContent = ''
+        if (diffObj.addContent) {
+          dealedContent = diffObj.addContent
+        } else {
+          // 判断下一个项
+          if (next && next.removed) {
+            // 说明两个项之前是对应的关系
+            // 判断在不同的这行中，具体到字段的不同位置
+            const testDiffList = jsonDiff.diffWordsWithSpace(
+              replaceContent,
+              nextReplceContent
+            )
+            const { addContent, removeContent } = diffText(testDiffList)
+            next.removeContent = removeContent
+            dealedContent = addContent
+          } else {
+            // 如果想用空白，对没有内容的地方占位 start
+            removedList.push('<span  style="visibility:hidden;">' + replaceContent + '</span>')
+            // 如果想用空白，对没有内容的地方占位 end
+            dealedContent =
+              '<span  style="color:red">' +
+              replaceContent.replace(/\s/gm, '&ensp;') +
+              '</span>'
+          }
+        }
+        addedList.push(dealedContent)
+      } else {
+        // 没有改动的部分
+        replaceContent = replaceContent.replace(/\s/gm, '&ensp;')
+        addedList.push(
+          '<p>' + replaceContent + '</p>'
+        )
+        removedList.push(
+          '<p>' + replaceContent + '</p>'
+        )
+      }
+    })
+    return [removedList.join(''), addedList.join('')]
+  }
+  // 对比行内容差异并且拼接结果
+  const diffText = function(result) {
+    // 当前的数据
+    const addList = []
+    // 历史数据
+    const removeList = []
+    result.forEach((item) => {
+      const value = item.value.replace(/\s/gm, '&ensp;')
+      if (item.added) {
+        addList.push(
+          '<span style="color:red">' + value + '</span>'
+        )
+      } else if (item.removed) {
+        removeList.push(
+          '<span  style="color:red">' + value + '</span>'
+        )
+      } else {
+        removeList.push('<span>' + value + '</span>')
+        addList.push('<span>' + value + '</span>')
+      }
+    })
+    return {
+      addContent: addList.join(''),
+      removeContent: removeList.join('')
+    }
+  }
+}
+
+export const $LibJsonDiff = new LibJsonDiff()
+
