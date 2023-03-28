@@ -172,6 +172,12 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'Tongits',
+        component: () => import('@/views/config/tableConfig/tongitsTable'),
+        name: 'Tongits',
+        meta: { title: 'Tongits ◐', noCache: true }
+      },
+      {
         path: 'customize',
         component: () => import('@/views/config/baseConfig/customize'),
         name: 'customize',
