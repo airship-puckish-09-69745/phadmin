@@ -1,278 +1,1614 @@
-<template>
-  <div id="app" class="page-container" style="padding: 10px">
-    <el-row style="padding-top: 5px">
-      <el-button type="success" @click="showAddGroup">添加分组</el-button>
-    <el-button type="info" @click="getGroupList">刷新</el-button>
-</el-row>
-<div style="padding-top: 10px">
-  <el-table :data="tableData" border style="width: 100%">
-  <el-table-column fixed prop="gid" label="分组ID" width="100" />
-  <el-table-column prop="name" label="分组名" width="200" />
-  <el-table-column prop="app_list" label="使用中的应用" />
-  <el-table-column label="组信息">
-    <template slot-scope="scope">
-      <el-table :data="formatWspList(scope.row.wsp_list)" border>
-      <el-table-column label="WSP服务器">
-        <template slot-scope="scope">{{scope.row.name}}({{scope.row.wsp}})</template>
-      </el-table-column>
-      <el-table-column prop="port" label="端口" />
-    </el-table>
-  </template>
-</el-table-column>
-<el-table-column label="操作" width="180">
-  <template slot-scope="scope">
-    <el-button type="success" size="mini" @click="changeGroup(scope.row)">修改</el-button>
-  <el-button type="danger" size="mini" @click="deleteGroup(scope.row.gid,scope.row.name)">删除</el-button>
-</template>
-</el-table-column>
-</el-table>
-<el-col :offset="16" :span="8">
-  <div class="block">
-  <el-pagination :current-page="form.page" :page-size="form.limit" layout="total, prev, pager, next, jumper" :total="form.total" @current-change="handleCurrentChange" />
-  </div>
-</el-col>
-</div>
-<el-dialog :title="getEditTitle()" :visible.sync="groupDialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
-  <el-form :model="groupForm" label-width="150px">
-  <el-row>
-  <el-col :span="15">
-  <el-form-item label="分组名称：">
-  <el-input v-model="groupForm.name" placeholder="请输入" />
-  </el-form-item>
-</el-col>
-</el-row>
-<fieldset>
-  <legend>WebSocket代理服务信息</legend>
-  <el-row>
-    <el-col :span="24">
-    <el-cascader-panel v-model="groupForm.wsp_list" :options="instOptions" :props="{ multiple: true }" />
-  </el-col>
-</el-row>
-</fieldset>
-<fieldset>
-  <legend>选择情况</legend>
-  <el-row>
-    <el-col :span="24">
-    <el-table :data="groupForm.wsp_list" border style="width: 100%">
-    <el-table-column fixed prop="0" label="WebSocket代理服务器" />
-    <el-table-column fixed prop="1" label="WebSocket代理服务端口" />
-  </el-table>
-</el-col>
-</el-row>
-</fieldset>
-<el-form-item>
-  <el-row>
-    <el-col :span="12" :offset="10">
-    <el-button type="primary" size="medium" @click="saveGroup">保存</el-button>
-</el-col>
-</el-row>
-</el-form-item>
-</el-form>
-</el-dialog>
-</div>
-</template>
-<script>
-  import { $libShow } from '@/utils/common'
-  import store from '@/store'
-  import request from '@/utils/request'
-  import Compare from '@/components/Compare'
-  import { Message, Loading } from 'element-ui'
-  import Publish from '@/components/Publish'
+import Vue from 'vue'
+import Router from 'vue-router'
 
-  export default {
-  components: { Compare, Publish },
-  data() {
-  return {
-  form: {
-  page: 0,
-  limit: 10,
-  total: 0
-},
-  allWspList: [],
-  tableData: [],
-  libShow: $libShow,
-  groupDialogVisible: false,
-  groupForm: {
-  gid: 0,
-  name: '',
-  wsp_list: []
-},
-  instOptions: []
-}
-},
-  created() {
-  this.env = store.getters.env || this.env
-  this.getInstList()
-},
-  methods: {
-  getGroupList() {
-  const loading = Loading.service({ fullscreen: true })
-  request({
-  url: '/wspcfg/group/list',
-  method: 'get',
-  data: this.form
-}).then(response => {
-  console.log('获取信息=====>', response)
-  loading.close()
-  this.tableData = []
-  if (response.RetCode !== 0) {
-  Message.error('获取信息错误：' + response.Data)
-} else {
-  this.tableData = response.Data.Data
-  this.form.total = response.Data.Total
-}
+Vue.use(Router)
+
+/* Layout */
+import Layout from '@/layout'
+
+/* Router Modules */
+// import componentsRouter from './modules/components'
+// import chartsRouter from './modules/charts'
+// import tableRouter from './modules/table'
+// import nestedRouter from './modules/nested'
+
+/**
+ * Note: sub-menu only appear when route children.length >= 1
+ * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
+ *
+ * hidden: true                   if set true, item will not show in the sidebar(default is false)
+ * alwaysShow: true               if set true, will always show the root menu
+ *                                if not set alwaysShow, when item has more than one children route,
+ *                                it will becomes nested mode, otherwise not show the root menu
+ * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
+ * name:'router-name'             the name is used by <keep-alive> (must set!!!)
+ * meta : {
+    roles: ['admin','editor']    control the page roles (you can set multiple roles)
+    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
+    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
+    noCache: true                if set true, the page will no be cached(default is false)
+    affix: true                  if set true, the tag will affix in the tags-view
+    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
+    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
+  }
+ */
+
+/**
+ * constantRoutes
+ * a base page that does not have permission requirements
+ * all roles can be accessed
+ */
+export const constantRoutes = [
+  {
+    path: '/redirect',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: '/redirect/:path(.*)',
+        component: () => import('@/views/redirect/index')
+      }
+    ]
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/auth-redirect',
+    component: () => import('@/views/login/auth-redirect'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/error-page/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: () => import('@/views/error-page/401'),
+    hidden: true
+  },
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [
+      {
+        path: 'dashboard',
+        component: () => import('@/views/playerManage/systemMoneyChart'),
+        name: 'dashboard',
+        meta: { title: '系统健康监测 ◐', icon: 'risk' }
+      }
+    ]
+  },
+  {
+    path: '/profile',
+    component: Layout,
+    redirect: '/profile/index',
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/profile/index'),
+        name: 'Profile',
+        meta: { title: 'Profile', icon: 'user', noCache: true }
+      }
+    ]
+  }
+]
+
+/**
+ * asyncRoutes
+ * the routes that need to be dynamically loaded based on user roles
+ */
+export const asyncRoutes = [
+  /** when your routing map is too long, you can split it into small modules **/
+  {
+    path: '/online',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'SWITCH_PAY_METHOD' },
+    children: [
+      {
+        path: 'data',
+        component: () => import('@/views/online/onlineData'),
+        name: 'data',
+        meta: { title: '在线数据 ◐' }
+      },
+      {
+        path: 'pay_channel_success_rate',
+        component: () => import('@/views/online/payChannelSuccessRate'),
+        name: 'pay_channel_success_rate',
+        meta: { title: '支付渠道成功率' }
+      },
+      {
+        path: 'slots_daily',
+        component: () => import('@/views/online/slotsDaily'),
+        name: 'slots_daily',
+        meta: { title: '老虎机每日健康数据' }
+      },
+      {
+        path: 'rocketRandom',
+        component: () => import('@/views/playerManage/rocketRandom'),
+        name: 'rocketRandom',
+        meta: { title: 'Crash - 概率监控 ◐' }
+      },
+      {
+        path: 'play_log_top100',
+        component: () => import('@/views/playerManage/PlaylogTop100'),
+        name: 'play_log_top100',
+        meta: { title: '牌局排行榜 ◐' }
+      },
+      {
+        path: 'sweeperTableUserData',
+        component: () => import('@/views/playerManage/sweeperTableUserData'),
+        name: 'sweeperTableUserData',
+        meta: { title: '扫雷 - 桌子数据 ◐' }
+      }
+    ]
+  },
+  {
+    path: '/tableConfig',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'abTable',
+        component: () => import('@/views/config/tableConfig/abTable'),
+        name: 'abTable',
+        meta: { title: 'AB - Andar Bahar ◐' }
+      },
+      {
+        path: 'akTable',
+        component: () => import('@/views/config/tableConfig/akTable'),
+        name: 'akTable',
+        meta: { title: 'AK47', project: ['id'] }
+      },
+      {
+        path: 'aiType_ak',
+        component: () => import('@/views/config/tableConfig/aiType'),
+        name: 'aiType_ak',
+        meta: { title: 'AK47 AI配置', perm: 'AITYPE', gid: 8, project: ['id'] }
+      },
+      {
+        path: 'bcrTable',
+        component: () => import('@/views/config/tableConfig/bcrTable'),
+        name: 'bcrTable',
+        meta: { title: 'Baccarat - 百家乐 ◐' }
+      },
+      {
+        path: 'buracoTable',
+        component: () => import('@/views/config/tableConfig/buracoTable'),
+        name: 'buracoTable',
+        meta: { title: 'Buraco ◐', noCache: true, project: ['br'] }
+      },
+      {
+        path: 'CarRoulette',
+        component: () => import('@/views/config/tableConfig/CarRouletteTable'),
+        name: 'CarRoulette',
+        meta: { title: 'Car - 车标转盘 ◐' }
+      },
+      {
+        path: 'gameCrash',
+        component: () => import('@/views/config/tableConfig/gameCrash'),
+        name: 'gameCrash',
+        meta: { title: 'Crash - 小火箭 ◐' }
+      },
+      {
+        path: 'dvtTable',
+        component: () => import('@/views/config/tableConfig/dvtTable'),
+        name: 'dvtTable',
+        meta: { title: 'Dragon - 龙虎 ◐' }
+      },
+      {
+        path: 'JhandiMunda',
+        component: () => import('@/views/config/tableConfig/JhandiMundaTable'),
+        name: 'JhandiMunda',
+        meta: { title: 'JM - JhandiMunda ◐' }
+      },
+      {
+        path: 'UpDown',
+        component: () => import('@/views/config/tableConfig/UpDownTable'),
+        name: 'UpDown',
+        meta: { title: '7Up7Down ◐' }
+      },
+      {
+        path: 'RedVsBlack',
+        component: () => import('@/views/config/tableConfig/RedVsBlack'),
+        name: 'RedVsBlack',
+        meta: { title: 'RvB - 红黑 ◐' }
+      },
+      {
+        path: 'slotsCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Slots - 老虎机配置', noCache: true },
+        children: [
+          {
+            path: 'australia_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/australia_slots_cfg'),
+            name: 'australia_slots_cfg',
+            meta: { title: 'Australia - 澳洲' }
+          },
+          {
+            path: 'beauty_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
+            name: 'beauty_slots_cfg',
+            meta: { title: 'Beauty - 睡美人' }
+          },
+          {
+            path: 'ganesha_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/ganesha_slots_cfg'),
+            name: 'ganesha_slots_cfg',
+            meta: { title: 'Ganesha - 印度象鼻神' }
+          },
+          {
+            path: 'gold_miner_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/gold_miner_slots_cfg'),
+            name: 'gold_miner_slots_cfg',
+            meta: { title: 'GoldMiner - 黄金矿工' }
+          },
+          {
+            path: 'gold_train_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/gold_train_slots_cfg'),
+            name: 'gold_train_slots_cfg',
+            meta: { title: 'GoldTrain - 黄金列车' }
+          },
+          {
+            path: 'joker_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/joker_slots_cfg'),
+            name: 'joker_slots_cfg',
+            meta: { title: 'Joker - 小丑' }
+          },
+          {
+            path: 'phoenix_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
+            name: 'phoenix_slots_cfg',
+            meta: { title: 'Phoenix - 凤凰' }
+          },
+          {
+            path: 'chicago_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/chicago_slots_cfg'),
+            name: 'chicago_slots_cfg',
+            meta: { title: 'Chicago - 芝加哥' }
+          },
+          {
+            path: 'aladdin_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/aladdin_slots_cfg'),
+            name: 'aladdin_slots_cfg',
+            meta: { title: '阿拉丁' }
+          },
+          {
+            path: 'candy_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candy_slots_cfg'),
+            name: 'candy_slots_cfg',
+            meta: { title: '糖果派对' }
+          },
+          {
+            path: 'firekick_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/firekick_slots_cfg'),
+            name: 'firekick_slots_cfg',
+            meta: { title: 'FireKick' }
+          },
+          {
+            path: 'jurassic_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/jurassic_slots_cfg'),
+            name: 'jurassic_slots_cfg',
+            meta: { title: '侏罗纪' }
+          },
+          {
+            path: 'indiana_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/indiana_slots_cfg'),
+            name: 'indiana_slots_cfg',
+            meta: { title: '夺宝奇兵', project: ['id'] }
+          },
+          {
+            path: 'pvz_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/pvz_slots_cfg'),
+            name: 'pvz_slots_cfg',
+            meta: { title: '植物大战僵尸', project: ['id'] }
+          },
+          {
+            path: 'slots_winner_record',
+            component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
+            name: 'slots_winner_record',
+            meta: { title: '大奖记录' }
+          }
+
+        ]
+      },
+      {
+        path: 'SoccerRoulette',
+        component: () => import('@/views/config/tableConfig/SoccerRouletterTable'),
+        name: 'SoccerRoulette',
+        meta: { title: 'Soccer - 球队转盘 ◐' }
+      },
+      {
+        path: 'sweeper',
+        component: () => import('@/views/config/tableConfig/sweeperCfg'),
+        name: 'sweeperCfg',
+        meta: { title: 'Sweeper - 扫雷 ◐' }
+      },
+      {
+        path: 'texasTable',
+        component: () => import('@/views/config/tableConfig/texasTable'),
+        name: 'texasTable',
+        meta: { title: 'Texas - 德州扑克', project: ['br'] }
+      },
+      {
+        path: 'aiType_texas',
+        component: () => import('@/views/config/tableConfig/ai_texas'),
+        name: 'aiType_texas',
+        meta: { title: 'Texas AI - 德州AI', perm: 'AITYPE', project: ['br'] }
+      },
+      {
+        path: 'trucoTable',
+        component: () => import('@/views/config/tableConfig/trucoTable'),
+        name: 'trucoTable',
+        meta: { title: 'Truco ◐', noCache: true, project: ['br'] }
+      },
+      {
+        path: 'zjhConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'TeenPatti配置', noCache: true },
+        children: [
+          {
+            path: 'zjhTable',
+            component: () => import('@/views/config/tableConfig/zjhTable'),
+            name: 'zjhTable',
+            meta: { title: 'TeenPatti' }
+          },
+          {
+            path: 'zjhProTable',
+            component: () => import('@/views/config/tableConfig/zjhProTable'),
+            name: 'zjhProTable',
+            meta: { title: '真人场次配置' }
+          },
+          {
+            path: 'teenPattiRealSwitch',
+            component: () => import('@/views/config/tableConfig/tpRealSwitch'),
+            name: 'teenPattiRealSwitch',
+            meta: { title: '真人场次开关' }
+          },
+          {
+            path: 'aiType_tp',
+            component: () => import('@/views/config/tableConfig/aiType'),
+            name: 'aiType_tp',
+            meta: { title: 'AI配置', perm: 'AITYPE', gid: 9 }
+          },
+          {
+            path: 'aiType_tp_pro',
+            component: () => import('@/views/config/tableConfig/aiType'),
+            name: 'aiType_tp_pro',
+            meta: { title: '真人场AI配置', perm: 'AITYPE', gid: 14 }
+          },
+          {
+            path: 'zjh_luring',
+            component: () => import('@/views/config/tableConfig/zjh_luring'),
+            name: 'zjh_luring',
+            meta: { title: '钓鱼牌局配置', perm: 'AITYPE' }
+          },
+          {
+            path: 'zjh_2rd_luring',
+            component: () => import('@/views/config/tableConfig/zjh_2rd_luring'),
+            name: 'zjh_2rd_luring',
+            meta: { title: '例行钓鱼牌局配置', perm: 'AITYPE' }
+          },
+          {
+            path: 'zjh_transfer_cfg',
+            component: () => import('@/views/config/tableConfig/zjh_transfer_cfg'),
+            name: 'zjh_transfer_cfg',
+            meta: { title: 'Winnings转换比例配置', perm: 'AITYPE' }
+          }
+        ]
+      },
+      {
+        path: 'gameZJH100',
+        component: () => import('@/views/config/tableConfig/gameZJH100'),
+        name: 'gameZJH100',
+        meta: { title: 'TP100 - 百人场 ◐' }
+      },
+
+      {
+        path: 'rummyTable',
+        component: () => import('@/views/config/tableConfig/rummyTable'),
+        name: 'rummyTable',
+        meta: { title: 'Rummy - 拉米', project: ['id'] }
+      },
+      {
+        path: 'texasTable',
+        component: () => import('@/views/config/tableConfig/texasTable'),
+        name: 'texasTable',
+        meta: { title: 'Texas - 德州', project: ['id'] }
+      },
+      {
+        path: 'aiType_texas',
+        component: () => import('@/views/config/tableConfig/ai_texas'),
+        name: 'aiType_texas',
+        meta: { title: 'Texas AI', perm: 'AITYPE', project: ['id'] }
+      },
+      {
+        path: 'wingoTable',
+        component: () => import('@/views/config/tableConfig/wingoTable'),
+        name: 'wingoTable',
+        meta: { title: 'Wingo lottery ◐' }
+      },
+
+      {
+        path: 'ZooRoulette',
+        component: () => import('@/views/config/tableConfig/ZooRouletteTable'),
+        name: 'ZooRoulette',
+        meta: { title: 'ZooRoulette ◐' }
+      },
+      {
+        path: 'level_hide',
+        component: () => import('@/views/config/tableConfig/level_hide'),
+        name: 'level_hide',
+        meta: { title: '场次隐藏配置' }
+      },
+      {
+        path: 'prize_pool',
+        component: () => import('@/views/online/prizePool'),
+        name: 'prize_pool',
+        meta: { title: '小游戏奖池配置' }
+      }
+    ]
+  },
+  {
+    path: '/winConfig',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '输赢调控', icon: 'dashboard', noCache: true, perm: 'CORE_CFG' },
+    children: [
+      {
+        path: 'mainWinControl',
+        component: () => import('@/views/config/winConfig/mainWinControl'),
+        name: 'mainWinControl',
+        meta: { title: '总体控制 ◐', noCache: true }
+      },
+      {
+        path: 'luckyValue_teenPatti',
+        component: () => import('@/views/config/winConfig/luckyValue'),
+        name: 'luckyValue_teenPatti',
+        meta: { title: '幸运值(TeenPatti) ◐', noCache: true }
+      },
+      {
+        path: 'luckyValue_rummy',
+        component: () => import('@/views/config/winConfig/luckyValue'),
+        name: 'luckyValue_rummy',
+        meta: { title: '幸运值(Rummy) ◐', noCache: true, project: ['id'] }
+      },
+      {
+        path: 'luckyValue_buraco',
+        component: () => import('@/views/config/winConfig/luckyValue'),
+        name: 'luckyValue_buraco',
+        meta: { title: '幸运值(Buraco) ◐', noCache: true, project: ['br'] }
+      },
+      {
+        path: 'luckyValue_ak',
+        component: () => import('@/views/config/winConfig/luckyValue'),
+        name: 'luckyValue_ak',
+        meta: { title: '幸运值(AK47) ◐', noCache: true }
+      },
+      {
+        path: 'luckyValue_texas',
+        component: () => import('@/views/config/winConfig/luckyValue'),
+        name: 'luckyValue_texas',
+        meta: { title: '幸运值(Texas) ◐', noCache: true }
+      },
+      {
+        path: 'baseValueAfterPay',
+        component: () => import('@/views/config/winConfig/baseValueAfterPay'),
+        name: 'baseValueAfterPay',
+        meta: { title: '充值加基础值 ◐', noCache: true }
+      },
+      {
+        path: 'freeControl',
+        component: () => import('@/views/config/winConfig/freeControl'),
+        name: 'freeControl',
+        meta: { title: '免费用户控制 ◐', noCache: true, subKey: 'free_control' }
+      },
+      {
+        path: 'freeControlByApp',
+        component: () => import('@/views/config/winConfig/freeControl'),
+        name: 'freeControlByApp',
+        meta: { title: '[差异化]免费用户控制 ◐', noCache: true, subKey: 'free_ctrl_by_app' }
+      },
+      {
+        path: 'zjhCardTypeRate',
+        component: () => import('@/views/config/winConfig/zjhCardTypeRate'),
+        name: 'zjhCardTypeRate',
+        meta: { title: 'TeenPatti牌型概率 ◐', noCache: true }
+      },
+      {
+        path: 'playWinLimit',
+        component: () => import('@/views/config/winConfig/playWinLimit'),
+        name: 'playWinLimit',
+        meta: { title: '单局赢上限 ◐', noCache: true }
+      },
+      {
+        path: 'robotConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '机器人控制', noCache: true },
+        children: [
+          {
+            path: 'robotConfig',
+            component: () => import('@/views/config/winConfig/robotConfig'),
+            name: 'robotConfig',
+            meta: { title: '默认 ◐', noCache: true, subKey: 'win_limit' }
+          },
+          {
+            path: 'robotConfig_1',
+            component: () => import('@/views/config/winConfig/robotConfig'),
+            name: 'robotConfig',
+            meta: { title: '分组1 ◐', noCache: true, subKey: 'win_limit_1' }
+          }
+        ] },
+      {
+        path: 'produceRates',
+        component: () => import('@/views/config/winConfig/produceRates'),
+        name: 'produceRates',
+        meta: { title: '基准值消耗比例 ◐', noCache: true }
+      },
+      {
+        path: 'baseValueReduceRates',
+        component: () => import('@/views/config/winConfig/baseValueReduceRates'),
+        name: 'baseValueReduceRates',
+        meta: { title: '差异化-基准值消耗比例 ◐', noCache: true }
+      },
+      {
+        path: 'gambleSchemaCfg',
+        component: () => import('@/views/config/winConfig/gambleSchemaCfg'),
+        name: 'gambleSchemaCfg',
+        meta: { title: '小游戏调控杂项配置 ◐', noCache: true }
+      },
+      {
+        path: 'paySchemaCfg',
+        component: () => import('@/views/config/winConfig/paySchema'),
+        name: 'gambleSchemaCfg',
+        meta: { title: '付费用户调控配置 ◐', noCache: true }
+      },
+      {
+        path: 'VUPCfg',
+        component: () => import('@/views/config/winConfig/VUPCfg'),
+        name: 'VUPCfg',
+        meta: { title: '小黑屋数值配置 ◐', noCache: true }
+      },
+      {
+        path: 'zjhProSchemaCfg',
+        component: () => import('@/views/config/winConfig/zjhProSchemaCfg'),
+        name: 'zjhProSchemaCfg',
+        meta: { title: 'TP真人场调控配置 ◐', noCache: true, project: ['id'] }
+      }
+    ]
+  },
+  {
+    path: '/orderManage',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '付费相关', icon: 'money2', perm: 'ORDER_MANAGE' },
+    children: [
+      {
+        path: 'withdraw',
+        component: () => import('@/views/pay/withdraw'),
+        name: 'withdraw',
+        meta: { title: '提现审核', perm: 'WITHDRAW' }
+      },
+      {
+        path: 'inviteWithdraw',
+        component: () => import('@/views/pay/inviteWithdraw'),
+        name: 'inviteWithdraw',
+        meta: { title: '邀请提现', perm: 'WITHDRAW' }
+      },
+      {
+        path: 'order',
+        component: () => import('@/views/pay/order'),
+        name: 'order',
+        meta: { title: '充值订单', perm: 'ORDER_MANAGE' }
+      },
+      {
+        path: 'payBaseLog',
+        component: () => import('@/views/pay/payBaseLog'),
+        name: 'payBaseLog',
+        meta: { title: '付费基础值日志 ◐', perm: 'PAY_STATS' }
+      },
+      {
+        path: 'payUserRank',
+        component: () => import('@/views/pay/payUserRank'),
+        name: 'payUserRank',
+        meta: { title: '付费用户排行 ◐', perm: 'PAY_STATS' }
+      },
+      {
+        path: 'payStat',
+        component: () => import('@/views/pay/payStat'),
+        name: 'payStat',
+        meta: { title: '收入统计 ◐', perm: 'PAY_STATS' }
+      },
+      {
+        path: 'payStatNow',
+        component: () => import('@/views/pay/payStatNow'),
+        name: 'payStatNow',
+        meta: { title: '收入余额（实时）◐', perm: 'PAY_STATS', noCache: true }
+      },
+      {
+        path: 'withdrawBanUsers',
+        component: () => import('@/views/playerManage/withdrawBanUsers'),
+        name: 'withdrawBanUsers',
+        meta: { title: '提现黑名单◐', perm: 'WITHDRAW', noCache: true }
+      },
+      {
+        path: 'inviteWithdrawBlacklist',
+        component: () => import('@/views/pay/invite_withdraw_blacklist'),
+        name: 'inviteWithdrawBlacklist',
+        meta: { title: '邀请提现黑名单◐', perm: 'WITHDRAW', noCache: true }
+      },
+      {
+        path: 'payChanBan',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '支付平台黑名单', icon: 'list', noCache: true },
+        children: [
+          {
+            path: 'payBanUsers',
+            component: () => import('@/views/pay/ban/payBanUsers'),
+            name: 'payBanUsers',
+            meta: { title: '黑名单用户 ◐', noCache: true, perm: 'CUTOMER' }
+          },
+          {
+            path: 'blacklistRegion',
+            component: () => import('@/views/pay/ban/blacklist_region'),
+            name: 'payBanUsers',
+            meta: { title: '黑名单地区 ◐', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          },
+          {
+            path: 'payChanBanToggleSwitch',
+            component: () => import('@/views/pay/ban/pay_chan_ban_toggle_switch'),
+            name: 'payChanBanToggleSwitch',
+            meta: { title: '切换渠道开关', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          },
+          {
+            path: 'payWhitelistUser',
+            component: () => import('@/views/pay/ban/pay_whitelist'),
+            name: 'payWhitelistUser',
+            meta: { title: '白名单用户', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          }
+        ]
+      },
+      {
+        path: 'payConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '配置', icon: 'list', noCache: true },
+        children: [
+          {
+            path: 'payToggleAndroid',
+            component: () => import('@/views/pay/pay_toggle'),
+            name: 'payToggleAndroid',
+            meta: { title: '支付切换(Android)', noCache: true, perm: 'SWITCH_PAY_METHOD', platform: 'android' }
+          },
+          {
+            path: 'payToggleAndroidBan',
+            component: () => import('@/views/pay/pay_toggle_ban'),
+            name: 'payToggleAndroidBan',
+            meta: { title: '支付切换(Android-Ban)', noCache: true, perm: 'SWITCH_PAY_METHOD', platform: 'android' }
+          },
+          {
+            path: 'payCfgAndroid',
+            component: () => import('@/views/pay/pay_cfg'),
+            name: 'payCfgAndroid',
+            meta: { title: '支付渠道(Android)', noCache: true, perm: 'SWITCH_PAY_METHOD', platform: 'android' }
+          },
+          {
+            path: 'payToggleGalaxy',
+            component: () => import('@/views/pay/pay_toggle'),
+            name: 'payToggleGalaxy',
+            meta: { title: '支付切换(Galaxy)', noCache: true, perm: 'SWITCH_PAY_METHOD', platform: 'galaxy' }
+          },
+          {
+            path: 'payToggleGalaxyBan',
+            component: () => import('@/views/pay/pay_toggle_ban'),
+            name: 'payToggleGalaxyBan',
+            meta: { title: '支付切换(Galaxy-Ban)', noCache: true, perm: 'SWITCH_PAY_METHOD', platform: 'galaxy' }
+          },
+          {
+            path: 'payCfgGalaxy',
+            component: () => import('@/views/pay/pay_cfg'),
+            name: 'payCfgGalaxy',
+            meta: { title: '支付渠道(Galaxy)', noCache: true, perm: 'SWITCH_PAY_METHOD', platform: 'galaxy' }
+          },
+          {
+            path: 'galaxyIpBlacklist',
+            component: () => import('@/views/pay/galaxy_ip_blacklist'),
+            name: 'galaxyIpBlacklist',
+            meta: { title: 'ip支付黑名单(Galaxy)', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          },
+          {
+            path: 'payAlarm',
+            component: () => import('@/views/pay/payAlarm'),
+            name: 'payAlarm',
+            meta: { title: '支付告警配置', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          },
+          {
+            path: 'withdrawCfg',
+            component: () => import('@/views/config/baseConfig/withdraw'),
+            name: 'withdrawCfg',
+            meta: { title: '提现配置', noCache: true, perm: 'WITHDRAW' }
+          },
+          {
+            path: 'withdrawLimitGroup',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '提现额度配置', icon: 'list', noCache: true },
+            children: [
+              {
+                path: 'withdrawLimitCfg',
+                component: () => import('@/views/pay/withdraw_limit'),
+                name: 'withdrawLimitCfg',
+                meta: { title: '默认', noCache: true, perm: 'WITHDRAW' }
+              },
+              {
+                path: 'withdrawLimitAppCfg',
+                component: () => import('@/views/pay/withdraw_limit_app'),
+                name: 'withdrawLimitAppCfg',
+                meta: { title: '分组1', noCache: true, perm: 'WITHDRAW' }
+              }
+            ]
+          },
+          {
+            path: 'withdrawObserveCfg',
+            component: () => import('@/views/pay/withdraw_observe'),
+            name: 'withdrawObserveCfg',
+            meta: { title: '提现观察配置', noCache: true, perm: 'WITHDRAW' }
+          },
+          {
+            path: 'sms',
+            component: () => import('@/views/pay/sms'),
+            name: 'sms',
+            meta: { title: '短信配置', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          },
+          {
+            path: 'binanceConfig',
+            component: () => import('@/views/pay/binance'),
+            name: 'sms',
+            meta: { title: '币安支付配置', noCache: true, perm: 'SWITCH_PAY_METHOD' }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/player',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '玩家管理', icon: 'user' },
+    children: [
+      {
+        path: 'userManage',
+        component: () => import('@/views/playerManage/userManage'),
+        name: 'userManage',
+        meta: { title: '玩家信息 ◐' }
+      },
+      {
+        path: 'moneylog',
+        component: () => import('@/views/playerManage/moneylog'),
+        name: 'moneylog',
+        meta: { title: '金币流水 ◐' }
+      },
+      {
+        path: 'moneyPayAndWithdrawlog',
+        component: () => import('@/views/playerManage/moneyPayAndWithdrawlog'),
+        name: 'moneyPayAndWithdrawlog',
+        meta: { title: '充值提现流水 ◐' }
+      },
+      {
+        path: 'inviteCommissionLog',
+        component: () => import('@/views/playerManage/inviteCommissionLog'),
+        name: 'inviteCommissionLog',
+        meta: { title: '邀请佣金流水 ◐' }
+      },
+      {
+        path: 'vupLog',
+        component: () => import('@/views/playerManage/vupLog'),
+        name: 'vupLog',
+        meta: { title: '小黑屋日志 ◐' }
+      },
+      {
+        path: 'inviteInfo',
+        component: () => import('@/views/playerManage/inviteInfo'),
+        name: 'inviteInfo',
+        meta: { title: '邀请信息 ◐' }
+      },
+      {
+        path: 'queryCode',
+        component: () => import('@/views/playerManage/queryCode'),
+        name: 'queryCode',
+        meta: { title: '查询验证码' }
+      },
+      {
+        path: 'mail',
+        component: () => import('@/views/playerManage/mail'),
+        name: 'mail',
+        meta: { title: '邮件通知 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'mailTemplate',
+        component: () => import('@/views/playerManage/mailTemplate'),
+        name: 'mailTemplate',
+        meta: { title: '邮件模板 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'ban',
+        component: () => import('@/views/playerManage/ban'),
+        name: 'ban',
+        meta: { title: '批量封号 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'banUsers',
+        component: () => import('@/views/playerManage/banUsers'),
+        name: 'banUsers',
+        meta: { title: '封号用户列表 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'vupMonitor',
+        component: () => import('@/views/playerManage/vupMonitor'),
+        name: 'ban',
+        meta: { title: '小黑屋活跃健康 ◐', noCache: true, perm: 'CUTOMER' }
+      }
+    ]
+  },
+  {
+    path: '/playlog',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '牌局日志 ◐', icon: 'log' },
+    children: [
+      {
+        path: 'playlog_ab',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ab',
+        meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
+      },
+      {
+        path: 'playlog_ak',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ak',
+        meta: { title: 'AK47 ◐', gid: 8, project: ['id'] }
+      },
+      {
+        path: 'playlog_bcr',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_bcr',
+        meta: { title: 'Baccarat - 百家乐◐', gid: 16 }
+      },
+      {
+        path: 'playlog_car',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_car',
+        meta: { title: 'Car - 车标转盘 ◐', gid: 5 }
+      },
+      {
+        path: 'playlog_crash',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_crash',
+        meta: { title: 'Crash - 小火箭◐', gid: 10 }
+      },
+      {
+        path: 'playlog_dt',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_dt',
+        meta: { title: 'Dragon - 龙虎 ◐', gid: 3 }
+      },
+      {
+        path: 'playlog_jm',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_jm',
+        meta: { title: 'JM - JhandiMunda ◐', gid: 4 }
+      },
+      {
+        path: 'playlog_RVB',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_RVB',
+        meta: { title: 'RvB - 红黑 ◐', gid: 7 }
+      },
+      {
+        path: 'playlog_rummy',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_rummy',
+        meta: { title: 'Rummy - 拉米 ◐', gid: 1, project: ['id'] }
+      },
+      {
+        path: 'playlog_soccer',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_soccer',
+        meta: { title: 'soccer - 球队标转轮 ◐', gid: 18 }
+      },
+      {
+        path: 'playlog_sweeper',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_sweeper',
+        meta: { title: 'Sweeper - 扫雷◐', gid: 20 }
+      },
+      {
+        path: 'playlog_7Up7Down',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_7Up7Down',
+        meta: { title: '7Up7Down - 7上下 ◐', gid: 6 }
+      },
+      {
+        path: 'playlog_teenpatti',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_teenpatti',
+        meta: { title: 'TeenPatti ◐', gid: 9 }
+      },
+      {
+        path: 'playlog_teenpatti_pro',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_teenpatti_pro',
+        meta: { title: 'TP真人场 ◐', gid: 14 }
+      },
+      {
+        path: 'playlog_TP100',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_TP100',
+        meta: { title: 'TP100 ◐', gid: 13 }
+      },
+      {
+        path: 'zjh100Jackpot',
+        component: () => import('@/views/playerManage/zjh100_jackpot'),
+        name: 'zjh100Jackpot',
+        meta: { title: 'TP100 - jackpot流水 ◐' }
+      },
+      {
+        path: 'playlog_texas',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_bcr',
+        meta: { title: 'Texas - 德州扑克◐', gid: 15 }
+      },
+      {
+        path: 'playlog_wingo',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_wingo',
+        meta: { title: 'Wingo Lottery ◐', gid: 17 }
+      },
+      {
+        path: 'playlog_zoo',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_zoo',
+        meta: { title: 'Zoo - 动物转轮 ◐', gid: 19 }
+      },
+
+      {
+        path: 'wrongPlaylog',
+        component: () => import('@/views/playerManage/wrongPlaylog'),
+        name: 'wrongPlaylog',
+        meta: { title: '特殊牌局详情 ◐' }
+      },
+      {
+        path: 'lottery_log',
+        component: () => import('@/views/playerManage/lotterylog'),
+        name: 'lottery_log',
+        meta: { title: '小游戏奖池流水 ◐' }
+      },
+      {
+        path: 'slotsLog',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Slots - 老虎机日志', noCache: true },
+        children: [
+          {
+            path: 'beauty_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'beauty_slots_log',
+            meta: { title: 'beauty - 睡美人', gid: 52}
+          },
+          {
+            path: 'joker_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'joker_slots_log',
+            meta: { title: 'joker - 小丑', gid:53 }
+          },
+          {
+            path: 'gold_train_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gold_train_slots_log',
+            meta: { title: 'goldTrain - 黄金列车', gid:54 }
+          },
+          {
+            path: 'phoenix_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'phoenix_slots_log',
+            meta: { title: 'phoenix - 凤凰', gid:51 }
+          },
+          {
+            path: 'australia_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'australia_slots_log',
+            meta: { title: 'Australia - 澳洲', gid:55 }
+          },
+          {
+            path: 'ganesha_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'ganesha_slots_log',
+            meta: { title: 'Ganesha - 印度象鼻神', gid:56 }
+          },
+          {
+            path: 'gold_miner_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gold_miner_slots_log',
+            meta: { title: 'goldMiner - 黄金矿工', gid:57 }
+          },
+          {
+            path: 'aladdin_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gold_miner_slots_log',
+            meta: { title: 'aladdin - 阿拉丁', gid:58 }
+          },
+          {
+            path: 'chicago_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'chicago_slots_log',
+            meta: { title: 'chicago - 芝加哥', gid:59 }
+          },
+          {
+            path: 'candy_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candy_slots_log',
+            meta: { title: 'candy - 糖果派对', gid:60 }
+          },
+          {
+            path: 'firekick_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'firekick_slots_log',
+            meta: { title: 'FireKick', gid:61 }
+          },
+          {
+            path: 'jurassic_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'jurassic_slots_log',
+            meta: { title: 'jurassic - 侏罗纪', gid:62 }
+          },
+          {
+            path: 'pvz_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pvz_slots_log',
+            meta: { title: 'PlantsVsZombies - 植物大战僵尸', gid:64 }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/config',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '配置管理', icon: 'config', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'baseConfig',
+        component: () => import('@/views/config/baseConfig/baseConfig'),
+        redirect: 'noRedirect',
+        meta: { title: '基础配置', icon: 'example', noCache: true },
+        children: [
+          {
+            path: 'item',
+            component: () => import('@/views/config/baseConfig/item'),
+            name: 'item',
+            meta: { title: 'Item配置', noCache: true }
+          },
+          {
+            path: 'goods',
+            component: () => import('@/views/config/baseConfig/goods'),
+            name: 'goods',
+            meta: { title: '商品配置', noCache: true }
+          },
+          {
+            path: 'aihelp',
+            component: () => import('@/views/config/baseConfig/aiHelp'),
+            name: 'goods',
+            meta: { title: 'AI_Helper', noCache: true }
+          },
+          {
+            path: 'emojPrice',
+            component: () => import('@/views/config/baseConfig/emojPrice'),
+            name: 'emojPrice',
+            meta: { title: '道具价格 ◐', noCache: true }
+          },
+          {
+            path: 'onlineCnt',
+            component: () => import('@/views/config/baseConfig/online_cnt'),
+            name: 'onlineCnt',
+            meta: { title: '在线人数配置', noCache: true }
+          },
+          {
+            path: 'smsWhite',
+            component: () => import('@/views/config/baseConfig/sms_white'),
+            name: 'smsWhite',
+            meta: { title: '白名单发短信配置', noCache: true }
+          },
+          {
+            path: 'activity',
+            redirect: '/activity/list',
+            name: 'Activity',
+            component: () => import('@/views/config/baseConfig/activity/router_view'), // Parent router-view
+            meta: { title: '活动配置', noCache: true, perm: 'ACTIVITY' },
+            children: [
+              {
+                path: 'list',
+                component: () => import('@/views/config/baseConfig/activity/index'),
+                name: 'ActivityList',
+                meta: { title: '活动配置', noCache: true }
+              },
+              {
+                path: 'create',
+                component: () => import('@/views/config/baseConfig/activity/create'),
+                name: 'ActivityCreate',
+                hidden: true,
+                meta: { title: '创建活动', noCache: true }
+              },
+              {
+                path: 'edit/:id(\\d+)',
+                component: () => import('@/views/config/baseConfig/activity/edit'),
+                name: 'ActivityEdit',
+                hidden: true,
+                meta: { title: '编辑活动', noCache: true }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        path: 'giveMoneyConfig',
+        component: () => import('@/views/config/giveMoneyConfig/giveMoneyConfig'),
+        redirect: 'noRedirect',
+        meta: { title: '发放配置', icon: 'money', noCache: true },
+        children: [
+          {
+            path: 'sign',
+            component: () => import('@/views/config/giveMoneyConfig/sign'),
+            name: 'SingReward',
+            meta: { title: '签到奖励 ◐', noCache: true }
+          },
+          {
+            path: 'registerReward',
+            component: () => import('@/views/config/giveMoneyConfig/registerReward'),
+            name: 'registerReward',
+            meta: { title: '注册奖励 ◐', noCache: true }
+          },
+          {
+            path: 'shareReward',
+            component: () => import('@/views/config/giveMoneyConfig/shareReward'),
+            name: 'shareReward',
+            meta: { title: '分享邀请配置 ◐', noCache: true }
+          },
+          {
+            path: 'gullak',
+            component: () => import('@/views/config/giveMoneyConfig/gullak'),
+            name: 'gullak',
+            meta: { title: '存钱罐 ◐', noCache: true }
+          },
+          {
+            path: 'AmazingBonus',
+            component: () => import('@/views/config/giveMoneyConfig/AmazingBonus'),
+            name: 'AmazingBonus',
+            meta: { title: 'AmazingBonus ◐', noCache: true }
+          },
+          {
+            path: 'Bankrupt',
+            component: () => import('@/views/config/giveMoneyConfig/bankrupt'),
+            name: 'Bankrupt',
+            meta: { title: '破产补助 ◐', noCache: true }
+          },
+          {
+            path: 'PLINKO',
+            component: () => import('@/views/config/giveMoneyConfig/plinko'),
+            name: 'PLINKO',
+            meta: { title: 'PLINKO ◐', noCache: true, project: ['id'] }
+          }
+        ]
+      },
+      {
+        path: 'invite',
+        component: () => import('@/views/config/invite/menu'),
+        redirect: 'noRedirect',
+        meta: { title: '邀请配置', icon: 'example', noCache: true },
+        children: [
+          {
+            path: 'config',
+            component: () => import('@/views/config/invite/invite'),
+            name: 'config',
+            meta: { title: '邀请配置', noCache: true }
+          },
+          {
+            path: 'level',
+            component: () => import('@/views/config/invite/invite_level'),
+            name: 'level',
+            meta: { title: '等级配置', noCache: true }
+          },
+          {
+            path: 'share',
+            component: () => import('@/views/config/invite/invite_share'),
+            name: 'share',
+            meta: { title: '分享任务', noCache: true }
+          },
+          {
+            path: 'rank',
+            component: () => import('@/views/config/invite/invite_rank'),
+            name: 'rank',
+            meta: { title: '排行榜奖励', noCache: true }
+          },
+          {
+            path: 'inviteWithdrawAudit',
+            component: () => import('@/views/config/invite/invite_withdraw'),
+            name: 'inviteWithdrawAudit',
+            meta: { title: '提现自动审核', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'customize',
+        component: () => import('@/views/config/baseConfig/customize'),
+        name: 'customize',
+        meta: { title: '自定义配置 ◐', noCache: true }
+      },
+      {
+        path: 'commonData',
+        component: () => import('@/views/config/baseConfig/common_data'),
+        name: 'commonData',
+        meta: { title: '公共数据配置 ◐', noCache: true }
+      },
+      {
+        path: 'review',
+        component: () => import('@/views/config/review'),
+        name: 'review',
+        meta: { title: '审核发布', noCache: true, perm: 'REVIEW_CHECK' }
+      },
+      {
+        path: 'frontProxy',
+        component: () => import('@/views/config/frontConfig/menu'),
+        redirect: 'noRedirect',
+        meta: { title: 'AP代理配置', icon: 'example', noCache: true },
+        children: [
+          {
+            path: 'apcfg',
+            component: () => import('@/views/config/frontConfig/front_ap_config'),
+            name: 'apcfg',
+            meta: { title: 'AP配置', noCache: true }
+          },
+          {
+            path: 'apgroup',
+            component: () => import('@/views/config/frontConfig/front_ap_group'),
+            name: 'apgroup',
+            meta: { title: 'AP分组配置', noCache: true }
+          },
+          {
+            path: 'frontCfg',
+            component: () => import('@/views/config/frontConfig/front_config'),
+            name: 'frontCfg',
+            meta: { title: '代理配置', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'wspProxy',
+        component: () => import('@/views/config/wspConfig/menu'),
+        redirect: 'noRedirect',
+        meta: { title: 'WebSocket代理管理', icon: 'example', noCache: true },
+        children: [
+          {
+            path: 'wsp_instance',
+            component: () => import('@/views/config/wspConfig/wsp_instance'),
+            name: 'wsp_instance',
+            meta: { title: '1-代理实例管理', noCache: true }
+          },
+          {
+            path: 'wsp_group',
+            component: () => import('@/views/config/wspConfig/wsp_group'),
+            name: 'wsp_group',
+            meta: { title: '2-代理分组管理', noCache: true }
+          },
+          {
+            path: 'wsp_config',
+            component: () => import('@/views/config/wspConfig/wsp_config'),
+            name: 'wsp_config',
+            meta: { title: '3-代理服务分派', noCache: true }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    path: '/safe',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '安全管理', icon: 'safe' },
+    children: [
+      {
+        path: 'checklist',
+        component: () => import('@/views/playerManage/safe/checklist'),
+        name: 'checklist',
+        meta: { title: '安全检测日志 ◐' }
+      },
+      {
+        path: 'safeInfo',
+        component: () => import('@/views/playerManage/safeInfo'),
+        name: 'safeInfo',
+        meta: { title: '账号关联查询 ◐' }
+      },
+      {
+        path: 'blackInfo',
+        component: () => import('@/views/playerManage/blackInfo'),
+        name: 'blackInfo',
+        meta: { title: '是否黑名单 ◐' }
+      },
+      {
+        path: 'blacklist',
+        component: () => import('@/views/playerManage/blacklist'),
+        name: 'blacklist',
+        meta: { title: '黑名单列表 ◐' }
+      }
+    ]
+  },
+  {
+    path: '/devTools',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '研发工具', icon: 'tool', perm: 'DEV_TOOL' },
+    children: [
+      {
+        path: 'langDir',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '多语言管理', icon: 'language' },
+        children: [
+          {
+            path: 'langResAndroid',
+            component: () => import('@/views/devTools/langRes'),
+            name: 'langResAndroid',
+            meta: { title: '多语言配置(Galaxy)', perm: 'LANG_RES', platform: 'android' }
+          },
+          {
+            path: 'langResGalaxy',
+            component: () => import('@/views/devTools/langRes'),
+            name: 'langResGalaxy',
+            meta: { title: '多语言配置(Android)', perm: 'LANG_RES', platform: 'galaxy' }
+          },
+          {
+            path: 'langResFortune',
+            component: () => import('@/views/devTools/langRes'),
+            name: 'langResFortune',
+            meta: { title: '多语言配置(Fortune)', perm: 'LANG_RES', platform: 'fortune' }
+          },
+          {
+            path: 'langModules',
+            component: () => import('@/views/devTools/langModules'),
+            name: 'langModules',
+            meta: { title: '多语言模块配置', perm: 'LANG_RES' }
+          },
+          {
+            path: 'langZips_android',
+            component: () => import('@/views/devTools/langZips'),
+            name: 'langZips_android',
+            hidden: true,
+            meta: { title: '多语言下载', platform: 'android' }
+          },
+          {
+            path: 'langZips_galaxy',
+            component: () => import('@/views/devTools/langZips'),
+            name: 'langZips_galaxy',
+            hidden: true,
+            meta: { title: '多语言下载', platform: 'galaxy' }
+          },
+          {
+            path: 'langZips_fortune',
+            component: () => import('@/views/devTools/langZips'),
+            name: 'langZips_fortune',
+            hidden: true,
+            meta: { title: '多语言下载', platform: 'fortune' }
+          }
+        ]
+      },
+      {
+        path: 'google',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '提审管理', icon: 'review', perm: 'GOOGLE' },
+        children: [
+          {
+            path: 'googleInfo',
+            component: () => import('@/views/devTools/googleInfo'),
+            name: 'googleInfo',
+            meta: { title: '开发者账号管理', noCache: true }
+          },
+          {
+            path: 'appInfo',
+            component: () => import('@/views/devTools/appInfo'),
+            name: 'appInfo',
+            meta: { title: '提审包管理', noCache: true }
+          },
+          {
+            path: 'mailChecker',
+            component: () => import('@/views/devTools/mailChecker'),
+            name: 'mailChecker',
+            meta: { title: '账号状态检测', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'genCode',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '代码生成', icon: 'code' },
+        children: [
+          {
+            path: 'codeGenAdmin',
+            component: () => import('@/views/devTools/codeGen'),
+            name: 'CodeGenAdmin',
+            meta: { title: '生成代码（Admin)' }
+          },
+          {
+            path: 'codeGenRPCSQL',
+            component: () => import('@/views/devTools/codeGen'),
+            name: 'codeGenRPCSQL',
+            meta: { title: '生成代码（RPC_SQL)' }
+          }
+        ]
+      },
+      {
+        path: 'subGameList',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: {title: '子游戏列表配置', icon: 'code'},
+        children: [
+          {
+            path: 'subgame_android',
+            component: () => import('@/views/config/tableConfig/subgame'),
+            name: 'subgame_android',
+            meta: { title: 'Android ◐', noCache: true, platform: 'android' }
+          },
+          {
+            path: 'subgame_galaxy',
+            component: () => import('@/views/config/tableConfig/subgame'),
+            name: 'subgame_galaxy',
+            meta: { title: 'Galaxy ◐', noCache: true, platform: 'galaxy' }
+          },
+          {
+            path: 'subgame_fortune',
+            component: () => import('@/views/config/tableConfig/subgame'),
+            name: 'subgame_fortune',
+            meta: { title: 'Fortune ◐', noCache: true, platform: 'fortune' }
+          },
+          {
+            path: 'subgame_android_ccs',
+            component: () => import('@/views/config/tableConfig/subgame'),
+            name: 'subgame_android_ccs',
+            meta: { title: 'Android Cocos  ◐', noCache: true, platform: 'android_ccs' }
+          }
+        ]
+      },
+      {
+        path: 'jsonViewer',
+        component: () => import('@/views/devTools/jsonViewer'),
+        name: 'jsonViewer',
+        meta: { title: 'JSON查看器' }
+      },
+      {
+        path: 'adjustHelper',
+        component: () => import('@/views/devTools/adjustHelper'),
+        name: 'adjustHelper',
+        meta: { title: 'Adjust事件代码' }
+      },
+      {
+        path: 'adjustUrl',
+        component: () => import('@/views/devTools/adjustUrl'),
+        name: 'adjustUrl',
+        meta: { title: 'Adjust事件链接' }
+      },
+      {
+        path: 'slotsCompute',
+        component: () => import('@/views/devTools/SlotsCompute'),
+        name: 'slotsCompute',
+        meta: { title: '老虎机概率计算' }
+      },
+      {
+        path: 'viewPlaylog',
+        component: () => import('@/views/devTools/viewPlaylog'),
+        name: 'viewPlaylog',
+        meta: { title: '牌局日志查看' }
+      },
+      {
+        path: 'testToolsGroup',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: {title: '测试工具集', icon: 'tab'},
+        children: [
+          {
+            path: 'fakeOrderSucc',
+            component: () => import('@/views/devTools/fakeOrderSucc'),
+            name: 'fakeOrderSucc',
+            meta: { title: '测试订单成功' }
+          },
+          {
+            path: 'testTools',
+            component: () => import('@/views/devTools/test_tools'),
+            name: 'testTools',
+            meta: { title: '测试小工具' }
+          },
+          {
+            path: 'testSign',
+            component: () => import('@/views/devTools/testSign'),
+            name: 'testSign',
+            meta: { title: '签到小工具' }
+          },
+          {
+            path: 'testMonthCard',
+            component: () => import('@/views/devTools/testMonthCard'),
+            name: 'testMonthCard',
+            meta: { title: '月卡小工具' }
+          },
+        ]
+      },
+      {
+        path: 'logDeal',
+        component: () => import('@/views/devTools/logDeal'),
+        name: 'logDeal',
+        meta: { title: '错误日志处理' }
+      }
+    ]
+  },
+  {
+    path: '/adminUser',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '系统管理', icon: 'adminUser', perm: 'ADMINUSER_MANAGEMENT' },
+    children: [
+      {
+        path: 'adminUser',
+        component: () => import('@/views/adminUser/adminUser'),
+        name: 'adminUser',
+        meta: { title: '管理员列表' }
+      },
+      {
+        path: 'role',
+        component: () => import('@/views/adminUser/role'),
+        name: 'role',
+        meta: { title: '角色管理' }
+      },
+      {
+        path: 'reviewerConfig',
+        component: () => import('@/views/adminUser/reviewerConfig'),
+        name: 'reviewerConfig',
+        meta: { title: '审核权限管理' }
+      },
+      {
+        path: 'operateLog',
+        component: () => import('@/views/adminUser/operateLog'),
+        name: 'operateLog',
+        meta: { title: '操作日志' }
+      }
+    ]
+  },
+
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
+]
+
+const createRouter = () => new Router({
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRoutes
 })
-},
-  handleCurrentChange(page) {
-  this.form.page = page
-  this.getGroupList()
-},
-  getInstList() {
-  request({
-  url: '/wspcfg/instance/list',
-  method: 'get',
-  data: {}
-}).then(response => {
-  console.log('返回=====>', response)
-  if (response.RetCode === 0) {
-  if (response.Data != null) {
-  this.instOptions = []
-  this.allWspList = response.Data
-  for (let i = 0; i < this.allWspList.length; i++) {
-  const row = this.allWspList[i]
-  if (row.ports.length === 0) {
-  continue
+
+const router = createRouter()
+
+// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
 }
-  const one = {
-  value: row.ip,
-  label: row.name,
-  children: []
-}
-  for (let j = 0; j < row.ports.length; j++) {
-  one.children.push({
-  value: row.ports[j].port,
-  label: 'WebSocket[:' + row.ports[j].port + '] ---> Access[:' + row.ports[j].access + ']'
-})
-}
-  this.instOptions.push(one)
-}
-  this.getGroupList()
-}
-}
-})
-},
-  getInstNameByIp(ip) {
-  for (const key in this.allWspList) {
-  if (this.allWspList[key].ip === ip) {
-  return this.allWspList[key].name
-}
-}
-  return '未知WSP'
-},
-  showAddGroup() {
-  this.getInstList()
-  this.groupDialogVisible = true
-  this.groupForm = {
-  gid: 0,
-  name: '',
-  wsp_list: []
-}
-},
-  changeGroup(row) {
-  this.groupDialogVisible = true
-  const wspList = JSON.parse(decodeURI(row.wsp_list))
-  const lists = []
-  for (let i = 0; i < wspList.length; i++) {
-  lists.push([wspList[i].wsp, wspList[i].port])
-}
-  this.groupForm = {
-  gid: row.gid,
-  name: row.name,
-  wsp_list: lists
-}
-},
-  getEditTitle() {
-  return this.groupForm.gid === 0 ? '添加' : '修改'
-},
-  saveGroup() {
-  const tips = this.groupForm.gid !== 0 ? '是否修改分组' : '是否添加分组'
-  const uri = this.groupForm.gid === 0 ? '/wspcfg/group/create' : '/wspcfg/group/update'
-  let wspTxt = ''
-  console.log('uri===>', uri, this.groupForm)
-  if (this.groupForm.name === '') {
-  Message.error('分组名称为空')
-  return
-}
-  const wspArr = []
-  for (let i = 0; i < this.groupForm.wsp_list.length; i++) {
-  wspArr.push({
-  wsp: this.groupForm.wsp_list[i][0],
-  port: this.groupForm.wsp_list[i][1],
-  name: this.getInstNameByIp(this.groupForm.wsp_list[i][0])
-})
-}
-  wspTxt = JSON.stringify(wspArr)
-  if (wspTxt === '') {
-  Message.error('未选择WSP')
-  return
-}
-  wspTxt = encodeURI(wspTxt)
-  this.$confirm(tips, '提示', {
-  confirmButtonText: '确定',
-  cancelButtonText: '取消',
-  type: 'warning'
-}).then(() => {
-  request({
-  url: uri,
-  method: 'post',
-  data: {
-  gid: this.groupForm.gid,
-  name: this.groupForm.name,
-  wsp_list: wspTxt
-}
-}).then(response => {
-  console.log('创建=====>', response)
-  if (response.RetCode === 0) {
-  Message.success(this.groupForm.gid !== 0 ? '修改成功' : '添加成功')
-  this.getGroupList()
-} else {
-  Message.error(response.Data)
-}
-})
-  this.groupDialogVisible = false
-}).catch(() => {
-  console.log('取消')
-})
-},
-  deleteGroup(gid, name) {
-  console.log('delete row', gid, name)
-  this.$confirm('是否删除分组 ' + name + ' ?', '提示', {
-  confirmButtonText: '确定',
-  cancelButtonText: '取消',
-  type: 'warning'
-}).then(() => {
-  request({
-  url: '/wspcfg/group/delete',
-  method: 'post',
-  data: {
-  gid: gid
-}
-}).then(response => {
-  console.log('删除=====>', response)
-  if (response.RetCode === 0) {
-  Message.success('删除成功')
-  this.getGroupList()
-} else {
-  Message.error(response.Data)
-}
-})
-}).catch(() => {
-  console.log('取消')
-})
-},
-  formatWspList(wspList) {
-  return JSON.parse(decodeURI(wspList))
-}
-}
-}
-</script>
+
+export default router
