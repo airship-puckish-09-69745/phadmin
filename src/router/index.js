@@ -1,452 +1,278 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+<template>
+  <div id="app" class="page-container" style="padding: 10px">
+    <el-row style="padding-top: 5px">
+      <el-button type="success" @click="showAddGroup">添加分组</el-button>
+    <el-button type="info" @click="getGroupList">刷新</el-button>
+</el-row>
+<div style="padding-top: 10px">
+  <el-table :data="tableData" border style="width: 100%">
+  <el-table-column fixed prop="gid" label="分组ID" width="100" />
+  <el-table-column prop="name" label="分组名" width="200" />
+  <el-table-column prop="app_list" label="使用中的应用" />
+  <el-table-column label="组信息">
+    <template slot-scope="scope">
+      <el-table :data="formatWspList(scope.row.wsp_list)" border>
+      <el-table-column label="WSP服务器">
+        <template slot-scope="scope">{{scope.row.name}}({{scope.row.wsp}})</template>
+      </el-table-column>
+      <el-table-column prop="port" label="端口" />
+    </el-table>
+  </template>
+</el-table-column>
+<el-table-column label="操作" width="180">
+  <template slot-scope="scope">
+    <el-button type="success" size="mini" @click="changeGroup(scope.row)">修改</el-button>
+  <el-button type="danger" size="mini" @click="deleteGroup(scope.row.gid,scope.row.name)">删除</el-button>
+</template>
+</el-table-column>
+</el-table>
+<el-col :offset="16" :span="8">
+  <div class="block">
+  <el-pagination :current-page="form.page" :page-size="form.limit" layout="total, prev, pager, next, jumper" :total="form.total" @current-change="handleCurrentChange" />
+  </div>
+</el-col>
+</div>
+<el-dialog :title="getEditTitle()" :visible.sync="groupDialogVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-form :model="groupForm" label-width="150px">
+  <el-row>
+  <el-col :span="15">
+  <el-form-item label="分组名称：">
+  <el-input v-model="groupForm.name" placeholder="请输入" />
+  </el-form-item>
+</el-col>
+</el-row>
+<fieldset>
+  <legend>WebSocket代理服务信息</legend>
+  <el-row>
+    <el-col :span="24">
+    <el-cascader-panel v-model="groupForm.wsp_list" :options="instOptions" :props="{ multiple: true }" />
+  </el-col>
+</el-row>
+</fieldset>
+<fieldset>
+  <legend>选择情况</legend>
+  <el-row>
+    <el-col :span="24">
+    <el-table :data="groupForm.wsp_list" border style="width: 100%">
+    <el-table-column fixed prop="0" label="WebSocket代理服务器" />
+    <el-table-column fixed prop="1" label="WebSocket代理服务端口" />
+  </el-table>
+</el-col>
+</el-row>
+</fieldset>
+<el-form-item>
+  <el-row>
+    <el-col :span="12" :offset="10">
+    <el-button type="primary" size="medium" @click="saveGroup">保存</el-button>
+</el-col>
+</el-row>
+</el-form-item>
+</el-form>
+</el-dialog>
+</div>
+</template>
+<script>
+  import { $libShow } from '@/utils/common'
+  import store from '@/store'
+  import request from '@/utils/request'
+  import Compare from '@/components/Compare'
+  import { Message, Loading } from 'element-ui'
+  import Publish from '@/components/Publish'
 
-Vue.use(Router)
-
-/* Layout */
-import Layout from '@/layout'
-
-/* Router Modules */
-// import componentsRouter from './modules/components'
-// import chartsRouter from './modules/charts'
-// import tableRouter from './modules/table'
-// import nestedRouter from './modules/nested'
-
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    noCache: true                if set true, the page will no be cached(default is false)
-    affix: true                  if set true, the tag will affix in the tags-view
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
-export const constantRoutes = [
-  {
-    path: '/redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/views/redirect/index')
-      }
-    ]
-  },
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
-  {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
-  },
-  {
-    path: '/404',
-    component: () => import('@/views/error-page/404'),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: () => import('@/views/error-page/401'),
-    hidden: true
-  },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChart'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk' }
-      }
-    ]
-  },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
-      }
-    ]
-  }
-]
-
-/**
- * asyncRoutes
- * the routes that need to be dynamically loaded based on user roles
- */
-export const asyncRoutes = [
-  /** when your routing map is too long, you can split it into small modules **/
-  {
-    path: '/online',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'SWITCH_PAY_METHOD' },
-    children: [
-      {
-        path: 'data',
-        component: () => import('@/views/online/onlineData'),
-        name: 'data',
-        meta: { title: '在线数据 ◐' }
-      },
-      {
-        path: 'pay_channel_success_rate',
-        component: () => import('@/views/online/payChannelSuccessRate'),
-        name: 'pay_channel_success_rate',
-        meta: { title: '支付渠道成功率' }
-      }
-    ]
-  },
-  {
-    path: '/player',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '玩家管理', icon: 'user' },
-    children: [
-      {
-        path: 'userManage',
-        component: () => import('@/views/playerManage/userManage'),
-        name: 'userManage',
-        meta: { title: '玩家信息 ◐' }
-      },
-      {
-        path: 'moneylog',
-        component: () => import('@/views/playerManage/moneylog'),
-        name: 'moneylog',
-        meta: { title: '金币流水 ◐' }
-      }
-    ]
-  },
-  {
-    path: '/config',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '配置管理', icon: 'config', perm: 'CFG_MANAGEMENT' },
-    children: [
-      {
-        path: 'baseConfig',
-        component: () => import('@/views/config/baseConfig/baseConfig'),
-        redirect: 'noRedirect',
-        meta: { title: '基础配置', icon: 'example', noCache: true },
-        children: [
-          {
-            path: 'item',
-            component: () => import('@/views/config/baseConfig/item'),
-            name: 'item',
-            meta: { title: 'Item配置', noCache: true }
-          },
-          {
-            path: 'goods',
-            component: () => import('@/views/config/baseConfig/goods'),
-            name: 'goods',
-            meta: { title: '商品配置', noCache: true }
-          }
-        ]
-      },
-      {
-        path: 'Tongits',
-        component: () => import('@/views/config/tableConfig/tongitsTable'),
-        name: 'Tongits',
-        meta: { title: 'Tongits ◐', noCache: true }
-      },
-      {
-        path: 'customize',
-        component: () => import('@/views/config/baseConfig/customize'),
-        name: 'customize',
-        meta: { title: '自定义配置 ◐', noCache: true }
-      },
-      {
-        path: 'review',
-        component: () => import('@/views/config/review'),
-        name: 'review',
-        meta: { title: '审核发布', noCache: true, perm: 'REVIEW_CHECK' }
-      }
-    ]
-  },
-  {
-    path: '/devTools',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '研发工具', icon: 'tool', perm: 'DEV_TOOL' },
-    children: [
-      {
-        path: 'langDir',
-        component: () => import('@/views/devTools/devTools'),
-        redirect: 'noRedirect',
-        meta: { title: '多语言管理', icon: 'language' },
-        children: [
-          {
-            path: 'langResAndroid',
-            component: () => import('@/views/devTools/langRes'),
-            name: 'langResAndroid',
-            meta: { title: '多语言配置(Galaxy)', perm: 'LANG_RES', platform: 'android' }
-          },
-          {
-            path: 'langResGalaxy',
-            component: () => import('@/views/devTools/langRes'),
-            name: 'langResGalaxy',
-            meta: { title: '多语言配置(Android)', perm: 'LANG_RES', platform: 'galaxy' }
-          },
-          {
-            path: 'langResFortune',
-            component: () => import('@/views/devTools/langRes'),
-            name: 'langResFortune',
-            meta: { title: '多语言配置(Fortune)', perm: 'LANG_RES', platform: 'fortune' }
-          },
-          {
-            path: 'langModules',
-            component: () => import('@/views/devTools/langModules'),
-            name: 'langModules',
-            meta: { title: '多语言模块配置', perm: 'LANG_RES' }
-          },
-          {
-            path: 'langZips_android',
-            component: () => import('@/views/devTools/langZips'),
-            name: 'langZips_android',
-            hidden: true,
-            meta: { title: '多语言下载', platform: 'android' }
-          },
-          {
-            path: 'langZips_galaxy',
-            component: () => import('@/views/devTools/langZips'),
-            name: 'langZips_galaxy',
-            hidden: true,
-            meta: { title: '多语言下载', platform: 'galaxy' }
-          },
-          {
-            path: 'langZips_fortune',
-            component: () => import('@/views/devTools/langZips'),
-            name: 'langZips_fortune',
-            hidden: true,
-            meta: { title: '多语言下载', platform: 'fortune' }
-          }
-        ]
-      },
-      {
-        path: 'google',
-        component: () => import('@/views/devTools/devTools'),
-        redirect: 'noRedirect',
-        meta: { title: '提审管理', icon: 'review', perm: 'GOOGLE' },
-        children: [
-          {
-            path: 'googleInfo',
-            component: () => import('@/views/devTools/googleInfo'),
-            name: 'googleInfo',
-            meta: { title: '开发者账号管理', noCache: true }
-          },
-          {
-            path: 'appInfo',
-            component: () => import('@/views/devTools/appInfo'),
-            name: 'appInfo',
-            meta: { title: '提审包管理', noCache: true }
-          },
-          {
-            path: 'mailChecker',
-            component: () => import('@/views/devTools/mailChecker'),
-            name: 'mailChecker',
-            meta: { title: '账号状态检测', noCache: true }
-          }
-        ]
-      },
-      {
-        path: 'genCode',
-        component: () => import('@/views/devTools/devTools'),
-        redirect: 'noRedirect',
-        meta: { title: '代码生成', icon: 'code' },
-        children: [
-          {
-            path: 'codeGenAdmin',
-            component: () => import('@/views/devTools/codeGen'),
-            name: 'CodeGenAdmin',
-            meta: { title: '生成代码（Admin)' }
-          },
-          {
-            path: 'codeGenRPCSQL',
-            component: () => import('@/views/devTools/codeGen'),
-            name: 'codeGenRPCSQL',
-            meta: { title: '生成代码（RPC_SQL)' }
-          }
-        ]
-      },
-      {
-        path: 'subGameList',
-        component: () => import('@/views/devTools/devTools'),
-        redirect: 'noRedirect',
-        meta: {title: '子游戏列表配置', icon: 'code'},
-        children: [
-          {
-            path: 'subgame_android',
-            component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_android',
-            meta: { title: 'Android ◐', noCache: true, platform: 'android' }
-          },
-          {
-            path: 'subgame_galaxy',
-            component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_galaxy',
-            meta: { title: 'Galaxy ◐', noCache: true, platform: 'galaxy' }
-          },
-          {
-            path: 'subgame_fortune',
-            component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_fortune',
-            meta: { title: 'Fortune ◐', noCache: true, platform: 'fortune' }
-          },
-          {
-            path: 'subgame_android_ccs',
-            component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_android_ccs',
-            meta: { title: 'Android Cocos  ◐', noCache: true, platform: 'android_ccs' }
-          }
-        ]
-      },
-      {
-        path: 'jsonViewer',
-        component: () => import('@/views/devTools/jsonViewer'),
-        name: 'jsonViewer',
-        meta: { title: 'JSON查看器' }
-      },
-      {
-        path: 'adjustHelper',
-        component: () => import('@/views/devTools/adjustHelper'),
-        name: 'adjustHelper',
-        meta: { title: 'Adjust事件代码' }
-      },
-      {
-        path: 'adjustUrl',
-        component: () => import('@/views/devTools/adjustUrl'),
-        name: 'adjustUrl',
-        meta: { title: 'Adjust事件链接' }
-      },
-      {
-        path: 'slotsCompute',
-        component: () => import('@/views/devTools/SlotsCompute'),
-        name: 'slotsCompute',
-        meta: { title: '老虎机概率计算' }
-      },
-      {
-        path: 'viewPlaylog',
-        component: () => import('@/views/devTools/viewPlaylog'),
-        name: 'viewPlaylog',
-        meta: { title: '牌局日志查看' }
-      },
-      {
-        path: 'testToolsGroup',
-        component: () => import('@/views/devTools/devTools'),
-        redirect: 'noRedirect',
-        meta: {title: '测试工具集', icon: 'tab'},
-        children: [
-          {
-            path: 'fakeOrderSucc',
-            component: () => import('@/views/devTools/fakeOrderSucc'),
-            name: 'fakeOrderSucc',
-            meta: { title: '测试订单成功' }
-          },
-          {
-            path: 'testTools',
-            component: () => import('@/views/devTools/test_tools'),
-            name: 'testTools',
-            meta: { title: '测试小工具' }
-          },
-          {
-            path: 'testSign',
-            component: () => import('@/views/devTools/testSign'),
-            name: 'testSign',
-            meta: { title: '签到小工具' }
-          },
-          {
-            path: 'testMonthCard',
-            component: () => import('@/views/devTools/testMonthCard'),
-            name: 'testMonthCard',
-            meta: { title: '月卡小工具' }
-          },
-        ]
-      },
-      {
-        path: 'logDeal',
-        component: () => import('@/views/devTools/logDeal'),
-        name: 'logDeal',
-        meta: { title: '错误日志处理' }
-      }
-    ]
-  },
-  {
-    path: '/adminUser',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '系统管理', icon: 'adminUser', perm: 'ADMINUSER_MANAGEMENT' },
-    children: [
-      {
-        path: 'adminUser',
-        component: () => import('@/views/adminUser/adminUser'),
-        name: 'adminUser',
-        meta: { title: '管理员列表' }
-      },
-      {
-        path: 'role',
-        component: () => import('@/views/adminUser/role'),
-        name: 'role',
-        meta: { title: '角色管理' }
-      },
-      {
-        path: 'reviewerConfig',
-        component: () => import('@/views/adminUser/reviewerConfig'),
-        name: 'reviewerConfig',
-        meta: { title: '审核权限管理' }
-      },
-      {
-        path: 'operateLog',
-        component: () => import('@/views/adminUser/operateLog'),
-        name: 'operateLog',
-        meta: { title: '操作日志' }
-      }
-    ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
-]
-
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
-
-const router = createRouter()
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  export default {
+  components: { Compare, Publish },
+  data() {
+  return {
+  form: {
+  page: 0,
+  limit: 10,
+  total: 0
+},
+  allWspList: [],
+  tableData: [],
+  libShow: $libShow,
+  groupDialogVisible: false,
+  groupForm: {
+  gid: 0,
+  name: '',
+  wsp_list: []
+},
+  instOptions: []
 }
-
-export default router
+},
+  created() {
+  this.env = store.getters.env || this.env
+  this.getInstList()
+},
+  methods: {
+  getGroupList() {
+  const loading = Loading.service({ fullscreen: true })
+  request({
+  url: '/wspcfg/group/list',
+  method: 'get',
+  data: this.form
+}).then(response => {
+  console.log('获取信息=====>', response)
+  loading.close()
+  this.tableData = []
+  if (response.RetCode !== 0) {
+  Message.error('获取信息错误：' + response.Data)
+} else {
+  this.tableData = response.Data.Data
+  this.form.total = response.Data.Total
+}
+})
+},
+  handleCurrentChange(page) {
+  this.form.page = page
+  this.getGroupList()
+},
+  getInstList() {
+  request({
+  url: '/wspcfg/instance/list',
+  method: 'get',
+  data: {}
+}).then(response => {
+  console.log('返回=====>', response)
+  if (response.RetCode === 0) {
+  if (response.Data != null) {
+  this.instOptions = []
+  this.allWspList = response.Data
+  for (let i = 0; i < this.allWspList.length; i++) {
+  const row = this.allWspList[i]
+  if (row.ports.length === 0) {
+  continue
+}
+  const one = {
+  value: row.ip,
+  label: row.name,
+  children: []
+}
+  for (let j = 0; j < row.ports.length; j++) {
+  one.children.push({
+  value: row.ports[j].port,
+  label: 'WebSocket[:' + row.ports[j].port + '] ---> Access[:' + row.ports[j].access + ']'
+})
+}
+  this.instOptions.push(one)
+}
+  this.getGroupList()
+}
+}
+})
+},
+  getInstNameByIp(ip) {
+  for (const key in this.allWspList) {
+  if (this.allWspList[key].ip === ip) {
+  return this.allWspList[key].name
+}
+}
+  return '未知WSP'
+},
+  showAddGroup() {
+  this.getInstList()
+  this.groupDialogVisible = true
+  this.groupForm = {
+  gid: 0,
+  name: '',
+  wsp_list: []
+}
+},
+  changeGroup(row) {
+  this.groupDialogVisible = true
+  const wspList = JSON.parse(decodeURI(row.wsp_list))
+  const lists = []
+  for (let i = 0; i < wspList.length; i++) {
+  lists.push([wspList[i].wsp, wspList[i].port])
+}
+  this.groupForm = {
+  gid: row.gid,
+  name: row.name,
+  wsp_list: lists
+}
+},
+  getEditTitle() {
+  return this.groupForm.gid === 0 ? '添加' : '修改'
+},
+  saveGroup() {
+  const tips = this.groupForm.gid !== 0 ? '是否修改分组' : '是否添加分组'
+  const uri = this.groupForm.gid === 0 ? '/wspcfg/group/create' : '/wspcfg/group/update'
+  let wspTxt = ''
+  console.log('uri===>', uri, this.groupForm)
+  if (this.groupForm.name === '') {
+  Message.error('分组名称为空')
+  return
+}
+  const wspArr = []
+  for (let i = 0; i < this.groupForm.wsp_list.length; i++) {
+  wspArr.push({
+  wsp: this.groupForm.wsp_list[i][0],
+  port: this.groupForm.wsp_list[i][1],
+  name: this.getInstNameByIp(this.groupForm.wsp_list[i][0])
+})
+}
+  wspTxt = JSON.stringify(wspArr)
+  if (wspTxt === '') {
+  Message.error('未选择WSP')
+  return
+}
+  wspTxt = encodeURI(wspTxt)
+  this.$confirm(tips, '提示', {
+  confirmButtonText: '确定',
+  cancelButtonText: '取消',
+  type: 'warning'
+}).then(() => {
+  request({
+  url: uri,
+  method: 'post',
+  data: {
+  gid: this.groupForm.gid,
+  name: this.groupForm.name,
+  wsp_list: wspTxt
+}
+}).then(response => {
+  console.log('创建=====>', response)
+  if (response.RetCode === 0) {
+  Message.success(this.groupForm.gid !== 0 ? '修改成功' : '添加成功')
+  this.getGroupList()
+} else {
+  Message.error(response.Data)
+}
+})
+  this.groupDialogVisible = false
+}).catch(() => {
+  console.log('取消')
+})
+},
+  deleteGroup(gid, name) {
+  console.log('delete row', gid, name)
+  this.$confirm('是否删除分组 ' + name + ' ?', '提示', {
+  confirmButtonText: '确定',
+  cancelButtonText: '取消',
+  type: 'warning'
+}).then(() => {
+  request({
+  url: '/wspcfg/group/delete',
+  method: 'post',
+  data: {
+  gid: gid
+}
+}).then(response => {
+  console.log('删除=====>', response)
+  if (response.RetCode === 0) {
+  Message.success('删除成功')
+  this.getGroupList()
+} else {
+  Message.error(response.Data)
+}
+})
+}).catch(() => {
+  console.log('取消')
+})
+},
+  formatWspList(wspList) {
+  return JSON.parse(decodeURI(wspList))
+}
+}
+}
+</script>

@@ -29,7 +29,9 @@
         <el-form-item v-if="rate.Total > 0">
           {{ rate.Succ }}/{{ rate.Total }}={{ (rate.Succ*100/rate.Total).toFixed(2) }}%
         </el-form-item>
-
+        <el-form-item v-if="rate.Reg > 0">
+          （注册检测/AB通过：{{ rate.Reg }}/{{ rate.Succ }}={{ (rate.Reg*100/rate.Succ).toFixed(2) }}%）
+        </el-form-item>
         <el-row>
           <el-form-item label="过滤类别:">
             <el-select v-model.number="item.iType" size="mini" placeholder="请选择">
@@ -251,7 +253,8 @@ export default {
       },
       rate: {
         Succ: 0,
-        Total: 0
+        Total: 0,
+        Reg:0
       },
 
       noteInfos: { // 用于缓存已经查找过的注释信息

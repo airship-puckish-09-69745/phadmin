@@ -44,6 +44,7 @@
 
           <el-descriptions-item label="系列：">{{ item.AppID > 100000?'Galaxy':'Android' }}</el-descriptions-item>
           <el-descriptions-item label="AppID：">{{ item.AppID }}</el-descriptions-item>
+          <el-descriptions-item label="来源Appid：">{{ showSourceAppid(item.SourceAppid) }}</el-descriptions-item>
           <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime"/></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime"/></el-descriptions-item>
 
@@ -940,6 +941,7 @@ export default {
         InviteWithdraw: 0, // 分享模块-可提余额
         InviteWithdrawProcess: 0, // 分享模块-提现中
         AppId: 0,
+        SourceAppid: 0, //来源appid
         PaySchema: {
 
         }
@@ -1079,6 +1081,15 @@ export default {
     this.getInfo()
   },
   methods: {
+    showSourceAppid(appid) {
+      if (appid < 0) { // 出现错误或者空
+        return '-'
+      } else if (appid === 0) {
+        return '-'
+      } else {
+        return appid
+      }
+    },
     checkSource(source) {
       return [1, 2, 3, 4, 5, 10, 11, 12, 13].indexOf(parseInt(source)) !== -1
     },

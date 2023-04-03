@@ -118,7 +118,7 @@
           min-width="150"
         >
           <template slot-scope="scope">
-            <img :src="getFullPath(scope.row.Icon)" height="100px">
+            <img :src="getFullPath(scope.row.Icon)" height="80px">
           </template>
         </el-table-column>
         <el-table-column
@@ -127,7 +127,15 @@
           width="70"
         >
           <template slot-scope="scope">
-            <span v-text="scope.row.IsWhite==1?'是':''" />
+            <span v-text="scope.row.IsWhite==1?'是':'否'" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="免费可玩"
+          width="90"
+        >
+          <template slot-scope="scope">
+            <span v-text="scope.row.IsPlaying==1?'是':'否'" />
           </template>
         </el-table-column>
         <el-table-column

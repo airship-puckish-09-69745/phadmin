@@ -27,7 +27,7 @@
               流水：{{ summary[100]?formatNumber(Math.floor(summary[100].Bet/1000)):0 }}
             </div>
             <div>
-              在玩：{{ summary[100]?summary[100].OnlineCount:0 }}
+              在玩：{{ summary[100]?summary[100].OnlineCount:0 }}({{ summary[100]?summary[100].RecentFive:0 }})
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
               流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
             </div>
             <div>
-              在玩：{{ summary[o]?summary[o].OnlineCount:0 }}
+              在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@
                 流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
               </div>
               <div>
-                在玩：{{ summary[o]?summary[o].OnlineCount:0 }}
+                在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
               </div>
               <div>
                 奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
@@ -82,7 +82,7 @@
                 总下注：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
               </div>
               <div>
-                返奖：{{ summary[o]?formatNumber(summary[o].Won/1000):0 }}
+                在玩：({{ summary[o]?summary[o].RecentFive:0 }})
               </div>
               <div>
                 RTP：{{ getRtp(summary[o]) }} %
