@@ -394,7 +394,7 @@ export default {
       modules: [],
       tableData: [],
       project: 'android',
-      langs: { 'en': '英语', 'hi': '印地语', 'pt': '葡语', 'es': '西班牙' },
+      langs: { 'en': '英语', 'ph': '菲律宾'},
       checkLang: 'EN',
       fileList: [],
       fileName: '',
@@ -432,8 +432,7 @@ export default {
         options: [
           // 历史包袱
           { label: 'android', value: 'galaxy' },
-          { label: 'galaxy', value: 'android' },
-          { label: 'fortune', value: 'fortune' }
+          { label: 'ios', value: 'ios' }
         ]
       }
     }

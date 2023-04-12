@@ -1369,19 +1369,13 @@ export const asyncRoutes = [
             path: 'langResAndroid',
             component: () => import('@/views/devTools/langRes'),
             name: 'langResAndroid',
-            meta: { title: '多语言配置(Galaxy)', perm: 'LANG_RES', platform: 'android' }
+            meta: { title: '多语言配置(Android)', perm: 'LANG_RES', platform: 'android' }
           },
           {
-            path: 'langResGalaxy',
+            path: 'langResIOS',
             component: () => import('@/views/devTools/langRes'),
-            name: 'langResGalaxy',
-            meta: { title: '多语言配置(Android)', perm: 'LANG_RES', platform: 'galaxy' }
-          },
-          {
-            path: 'langResFortune',
-            component: () => import('@/views/devTools/langRes'),
-            name: 'langResFortune',
-            meta: { title: '多语言配置(Fortune)', perm: 'LANG_RES', platform: 'fortune' }
+            name: 'langResIOS',
+            meta: { title: '多语言配置(IOS)', perm: 'LANG_RES', platform: 'ios' }
           },
           {
             path: 'langModules',
@@ -1397,18 +1391,11 @@ export const asyncRoutes = [
             meta: { title: '多语言下载', platform: 'android' }
           },
           {
-            path: 'langZips_galaxy',
+            path: 'langZips_ios',
             component: () => import('@/views/devTools/langZips'),
-            name: 'langZips_galaxy',
+            name: 'langZips_ios',
             hidden: true,
-            meta: { title: '多语言下载', platform: 'galaxy' }
-          },
-          {
-            path: 'langZips_fortune',
-            component: () => import('@/views/devTools/langZips'),
-            name: 'langZips_fortune',
-            hidden: true,
-            meta: { title: '多语言下载', platform: 'fortune' }
+            meta: { title: '多语言下载', platform: 'ios' }
           }
         ]
       },
@@ -1471,22 +1458,10 @@ export const asyncRoutes = [
             meta: { title: 'Android ◐', noCache: true, platform: 'android' }
           },
           {
-            path: 'subgame_galaxy',
+            path: 'subgame_ios',
             component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_galaxy',
-            meta: { title: 'Galaxy ◐', noCache: true, platform: 'galaxy' }
-          },
-          {
-            path: 'subgame_fortune',
-            component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_fortune',
-            meta: { title: 'Fortune ◐', noCache: true, platform: 'fortune' }
-          },
-          {
-            path: 'subgame_android_ccs',
-            component: () => import('@/views/config/tableConfig/subgame'),
-            name: 'subgame_android_ccs',
-            meta: { title: 'Android Cocos  ◐', noCache: true, platform: 'android_ccs' }
+            name: 'subgame_ios',
+            meta: { title: 'IOS ◐', noCache: true, platform: 'ios' }
           }
         ]
       },
