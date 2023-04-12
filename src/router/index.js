@@ -155,36 +155,7 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
-      {
-        path: 'abTable',
-        component: () => import('@/views/config/tableConfig/abTable'),
-        name: 'abTable',
-        meta: { title: 'AB - Andar Bahar ◐' }
-      },
-      {
-        path: 'akTable',
-        component: () => import('@/views/config/tableConfig/akTable'),
-        name: 'akTable',
-        meta: { title: 'AK47', project: ['id'] }
-      },
-      {
-        path: 'aiType_ak',
-        component: () => import('@/views/config/tableConfig/aiType'),
-        name: 'aiType_ak',
-        meta: { title: 'AK47 AI配置', perm: 'AITYPE', gid: 8, project: ['id'] }
-      },
-      {
-        path: 'bcrTable',
-        component: () => import('@/views/config/tableConfig/bcrTable'),
-        name: 'bcrTable',
-        meta: { title: 'Baccarat - 百家乐 ◐' }
-      },
-      {
-        path: 'buracoTable',
-        component: () => import('@/views/config/tableConfig/buracoTable'),
-        name: 'buracoTable',
-        meta: { title: 'Buraco ◐', noCache: true, project: ['br'] }
-      },
+
       {
         path: 'CarRoulette',
         component: () => import('@/views/config/tableConfig/CarRouletteTable'),
@@ -197,120 +168,33 @@ export const asyncRoutes = [
         name: 'gameCrash',
         meta: { title: 'Crash - 小火箭 ◐' }
       },
-      {
-        path: 'dvtTable',
-        component: () => import('@/views/config/tableConfig/dvtTable'),
-        name: 'dvtTable',
-        meta: { title: 'Dragon - 龙虎 ◐' }
-      },
-      {
-        path: 'JhandiMunda',
-        component: () => import('@/views/config/tableConfig/JhandiMundaTable'),
-        name: 'JhandiMunda',
-        meta: { title: 'JM - JhandiMunda ◐' }
-      },
-      {
-        path: 'UpDown',
-        component: () => import('@/views/config/tableConfig/UpDownTable'),
-        name: 'UpDown',
-        meta: { title: '7Up7Down ◐' }
-      },
-      {
-        path: 'RedVsBlack',
-        component: () => import('@/views/config/tableConfig/RedVsBlack'),
-        name: 'RedVsBlack',
-        meta: { title: 'RvB - 红黑 ◐' }
-      },
+
+
       {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
         meta: { title: 'Slots - 老虎机配置', noCache: true },
         children: [
-          {
-            path: 'australia_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/australia_slots_cfg'),
-            name: 'australia_slots_cfg',
-            meta: { title: 'Australia - 澳洲' }
-          },
+
           {
             path: 'beauty_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
             name: 'beauty_slots_cfg',
             meta: { title: 'Beauty - 睡美人' }
           },
-          {
-            path: 'ganesha_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/ganesha_slots_cfg'),
-            name: 'ganesha_slots_cfg',
-            meta: { title: 'Ganesha - 印度象鼻神' }
-          },
-          {
-            path: 'gold_miner_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/gold_miner_slots_cfg'),
-            name: 'gold_miner_slots_cfg',
-            meta: { title: 'GoldMiner - 黄金矿工' }
-          },
-          {
-            path: 'gold_train_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/gold_train_slots_cfg'),
-            name: 'gold_train_slots_cfg',
-            meta: { title: 'GoldTrain - 黄金列车' }
-          },
-          {
-            path: 'joker_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/joker_slots_cfg'),
-            name: 'joker_slots_cfg',
-            meta: { title: 'Joker - 小丑' }
-          },
+
+
+
           {
             path: 'phoenix_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
             name: 'phoenix_slots_cfg',
             meta: { title: 'Phoenix - 凤凰' }
           },
-          {
-            path: 'chicago_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/chicago_slots_cfg'),
-            name: 'chicago_slots_cfg',
-            meta: { title: 'Chicago - 芝加哥' }
-          },
-          {
-            path: 'aladdin_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/aladdin_slots_cfg'),
-            name: 'aladdin_slots_cfg',
-            meta: { title: '阿拉丁' }
-          },
-          {
-            path: 'candy_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candy_slots_cfg'),
-            name: 'candy_slots_cfg',
-            meta: { title: '糖果派对' }
-          },
-          {
-            path: 'firekick_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/firekick_slots_cfg'),
-            name: 'firekick_slots_cfg',
-            meta: { title: 'FireKick' }
-          },
-          {
-            path: 'jurassic_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/jurassic_slots_cfg'),
-            name: 'jurassic_slots_cfg',
-            meta: { title: '侏罗纪' }
-          },
-          {
-            path: 'indiana_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/indiana_slots_cfg'),
-            name: 'indiana_slots_cfg',
-            meta: { title: '夺宝奇兵', project: ['id'] }
-          },
-          {
-            path: 'pvz_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/pvz_slots_cfg'),
-            name: 'pvz_slots_cfg',
-            meta: { title: '植物大战僵尸', project: ['id'] }
-          },
+
+
+
           {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
@@ -320,130 +204,16 @@ export const asyncRoutes = [
 
         ]
       },
-      {
-        path: 'SoccerRoulette',
-        component: () => import('@/views/config/tableConfig/SoccerRouletterTable'),
-        name: 'SoccerRoulette',
-        meta: { title: 'Soccer - 球队转盘 ◐' }
-      },
+
       {
         path: 'sweeper',
         component: () => import('@/views/config/tableConfig/sweeperCfg'),
         name: 'sweeperCfg',
         meta: { title: 'Sweeper - 扫雷 ◐' }
       },
-      {
-        path: 'texasTable',
-        component: () => import('@/views/config/tableConfig/texasTable'),
-        name: 'texasTable',
-        meta: { title: 'Texas - 德州扑克', project: ['br'] }
-      },
-      {
-        path: 'aiType_texas',
-        component: () => import('@/views/config/tableConfig/ai_texas'),
-        name: 'aiType_texas',
-        meta: { title: 'Texas AI - 德州AI', perm: 'AITYPE', project: ['br'] }
-      },
-      {
-        path: 'trucoTable',
-        component: () => import('@/views/config/tableConfig/trucoTable'),
-        name: 'trucoTable',
-        meta: { title: 'Truco ◐', noCache: true, project: ['br'] }
-      },
-      {
-        path: 'zjhConfig',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'TeenPatti配置', noCache: true },
-        children: [
-          {
-            path: 'zjhTable',
-            component: () => import('@/views/config/tableConfig/zjhTable'),
-            name: 'zjhTable',
-            meta: { title: 'TeenPatti' }
-          },
-          {
-            path: 'zjhProTable',
-            component: () => import('@/views/config/tableConfig/zjhProTable'),
-            name: 'zjhProTable',
-            meta: { title: '真人场次配置' }
-          },
-          {
-            path: 'teenPattiRealSwitch',
-            component: () => import('@/views/config/tableConfig/tpRealSwitch'),
-            name: 'teenPattiRealSwitch',
-            meta: { title: '真人场次开关' }
-          },
-          {
-            path: 'aiType_tp',
-            component: () => import('@/views/config/tableConfig/aiType'),
-            name: 'aiType_tp',
-            meta: { title: 'AI配置', perm: 'AITYPE', gid: 9 }
-          },
-          {
-            path: 'aiType_tp_pro',
-            component: () => import('@/views/config/tableConfig/aiType'),
-            name: 'aiType_tp_pro',
-            meta: { title: '真人场AI配置', perm: 'AITYPE', gid: 14 }
-          },
-          {
-            path: 'zjh_luring',
-            component: () => import('@/views/config/tableConfig/zjh_luring'),
-            name: 'zjh_luring',
-            meta: { title: '钓鱼牌局配置', perm: 'AITYPE' }
-          },
-          {
-            path: 'zjh_2rd_luring',
-            component: () => import('@/views/config/tableConfig/zjh_2rd_luring'),
-            name: 'zjh_2rd_luring',
-            meta: { title: '例行钓鱼牌局配置', perm: 'AITYPE' }
-          },
-          {
-            path: 'zjh_transfer_cfg',
-            component: () => import('@/views/config/tableConfig/zjh_transfer_cfg'),
-            name: 'zjh_transfer_cfg',
-            meta: { title: 'Winnings转换比例配置', perm: 'AITYPE' }
-          }
-        ]
-      },
-      {
-        path: 'gameZJH100',
-        component: () => import('@/views/config/tableConfig/gameZJH100'),
-        name: 'gameZJH100',
-        meta: { title: 'TP100 - 百人场 ◐' }
-      },
 
-      {
-        path: 'rummyTable',
-        component: () => import('@/views/config/tableConfig/rummyTable'),
-        name: 'rummyTable',
-        meta: { title: 'Rummy - 拉米', project: ['id'] }
-      },
-      {
-        path: 'texasTable',
-        component: () => import('@/views/config/tableConfig/texasTable'),
-        name: 'texasTable',
-        meta: { title: 'Texas - 德州', project: ['id'] }
-      },
-      {
-        path: 'aiType_texas',
-        component: () => import('@/views/config/tableConfig/ai_texas'),
-        name: 'aiType_texas',
-        meta: { title: 'Texas AI', perm: 'AITYPE', project: ['id'] }
-      },
-      {
-        path: 'wingoTable',
-        component: () => import('@/views/config/tableConfig/wingoTable'),
-        name: 'wingoTable',
-        meta: { title: 'Wingo lottery ◐' }
-      },
 
-      {
-        path: 'ZooRoulette',
-        component: () => import('@/views/config/tableConfig/ZooRouletteTable'),
-        name: 'ZooRoulette',
-        meta: { title: 'ZooRoulette ◐' }
-      },
+
       {
         path: 'level_hide',
         component: () => import('@/views/config/tableConfig/level_hide'),
@@ -518,12 +288,7 @@ export const asyncRoutes = [
         name: 'freeControlByApp',
         meta: { title: '[差异化]免费用户控制 ◐', noCache: true, subKey: 'free_ctrl_by_app' }
       },
-      {
-        path: 'zjhCardTypeRate',
-        component: () => import('@/views/config/winConfig/zjhCardTypeRate'),
-        name: 'zjhCardTypeRate',
-        meta: { title: 'TeenPatti牌型概率 ◐', noCache: true }
-      },
+
       {
         path: 'playWinLimit',
         component: () => import('@/views/config/winConfig/playWinLimit'),
@@ -579,12 +344,7 @@ export const asyncRoutes = [
         name: 'VUPCfg',
         meta: { title: '小黑屋数值配置 ◐', noCache: true }
       },
-      {
-        path: 'zjhProSchemaCfg',
-        component: () => import('@/views/config/winConfig/zjhProSchemaCfg'),
-        name: 'zjhProSchemaCfg',
-        meta: { title: 'TP真人场调控配置 ◐', noCache: true, project: ['id'] }
-      }
+     
     ]
   },
   {
@@ -868,24 +628,6 @@ export const asyncRoutes = [
     meta: { title: '牌局日志 ◐', icon: 'log' },
     children: [
       {
-        path: 'playlog_ab',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_ab',
-        meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
-      },
-      {
-        path: 'playlog_ak',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_ak',
-        meta: { title: 'AK47 ◐', gid: 8, project: ['id'] }
-      },
-      {
-        path: 'playlog_bcr',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_bcr',
-        meta: { title: 'Baccarat - 百家乐◐', gid: 16 }
-      },
-      {
         path: 'playlog_car',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_car',
@@ -898,101 +640,10 @@ export const asyncRoutes = [
         meta: { title: 'Crash - 小火箭◐', gid: 10 }
       },
       {
-        path: 'playlog_dt',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_dt',
-        meta: { title: 'Dragon - 龙虎 ◐', gid: 3 }
-      },
-      {
-        path: 'playlog_jm',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_jm',
-        meta: { title: 'JM - JhandiMunda ◐', gid: 4 }
-      },
-      {
-        path: 'playlog_RVB',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_RVB',
-        meta: { title: 'RvB - 红黑 ◐', gid: 7 }
-      },
-      {
-        path: 'playlog_rummy',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_rummy',
-        meta: { title: 'Rummy - 拉米 ◐', gid: 1, project: ['id'] }
-      },
-      {
-        path: 'playlog_soccer',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_soccer',
-        meta: { title: 'soccer - 球队标转轮 ◐', gid: 18 }
-      },
-      {
         path: 'playlog_sweeper',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_sweeper',
         meta: { title: 'Sweeper - 扫雷◐', gid: 20 }
-      },
-      {
-        path: 'playlog_7Up7Down',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_7Up7Down',
-        meta: { title: '7Up7Down - 7上下 ◐', gid: 6 }
-      },
-      {
-        path: 'playlog_teenpatti',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_teenpatti',
-        meta: { title: 'TeenPatti ◐', gid: 9 }
-      },
-      {
-        path: 'playlog_teenpatti_pro',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_teenpatti_pro',
-        meta: { title: 'TP真人场 ◐', gid: 14 }
-      },
-      {
-        path: 'playlog_TP100',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_TP100',
-        meta: { title: 'TP100 ◐', gid: 13 }
-      },
-      {
-        path: 'zjh100Jackpot',
-        component: () => import('@/views/playerManage/zjh100_jackpot'),
-        name: 'zjh100Jackpot',
-        meta: { title: 'TP100 - jackpot流水 ◐' }
-      },
-      {
-        path: 'playlog_texas',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_bcr',
-        meta: { title: 'Texas - 德州扑克◐', gid: 15 }
-      },
-      {
-        path: 'playlog_wingo',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_wingo',
-        meta: { title: 'Wingo Lottery ◐', gid: 17 }
-      },
-      {
-        path: 'playlog_zoo',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_zoo',
-        meta: { title: 'Zoo - 动物转轮 ◐', gid: 19 }
-      },
-
-      {
-        path: 'wrongPlaylog',
-        component: () => import('@/views/playerManage/wrongPlaylog'),
-        name: 'wrongPlaylog',
-        meta: { title: '特殊牌局详情 ◐' }
-      },
-      {
-        path: 'lottery_log',
-        component: () => import('@/views/playerManage/lotterylog'),
-        name: 'lottery_log',
-        meta: { title: '小游戏奖池流水 ◐' }
       },
       {
         path: 'slotsLog',
@@ -1007,76 +658,10 @@ export const asyncRoutes = [
             meta: { title: 'beauty - 睡美人', gid: 52}
           },
           {
-            path: 'joker_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'joker_slots_log',
-            meta: { title: 'joker - 小丑', gid:53 }
-          },
-          {
-            path: 'gold_train_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gold_train_slots_log',
-            meta: { title: 'goldTrain - 黄金列车', gid:54 }
-          },
-          {
             path: 'phoenix_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid:51 }
-          },
-          {
-            path: 'australia_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'australia_slots_log',
-            meta: { title: 'Australia - 澳洲', gid:55 }
-          },
-          {
-            path: 'ganesha_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'ganesha_slots_log',
-            meta: { title: 'Ganesha - 印度象鼻神', gid:56 }
-          },
-          {
-            path: 'gold_miner_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gold_miner_slots_log',
-            meta: { title: 'goldMiner - 黄金矿工', gid:57 }
-          },
-          {
-            path: 'aladdin_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gold_miner_slots_log',
-            meta: { title: 'aladdin - 阿拉丁', gid:58 }
-          },
-          {
-            path: 'chicago_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'chicago_slots_log',
-            meta: { title: 'chicago - 芝加哥', gid:59 }
-          },
-          {
-            path: 'candy_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'candy_slots_log',
-            meta: { title: 'candy - 糖果派对', gid:60 }
-          },
-          {
-            path: 'firekick_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'firekick_slots_log',
-            meta: { title: 'FireKick', gid:61 }
-          },
-          {
-            path: 'jurassic_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'jurassic_slots_log',
-            meta: { title: 'jurassic - 侏罗纪', gid:62 }
-          },
-          {
-            path: 'pvz_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'pvz_slots_log',
-            meta: { title: 'PlantsVsZombies - 植物大战僵尸', gid:64 }
           }
         ]
       }
