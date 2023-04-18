@@ -131,16 +131,16 @@
               <pre style="width:500px;word-wrap: break-word">英：{{ scope.row.Lang['en'] }}</pre>
               <pre
                 style="width:500px;word-wrap: break-word"
-              >印地：{{ scope.row.Lang['hi'] }}</pre>
+              >菲律宾：{{ scope.row.Lang['tl'] }}</pre>
             </div>
             <div v-else>
               英：<img
                 height="60px"
                 :src="libShow.GetFullPath(scope.row.Lang['en'])"
               ><br>
-              印地：<img
+              菲律宾：<img
                 height="60px"
-                :src="libShow.GetFullPath(scope.row.Lang['hi'])"
+                :src="libShow.GetFullPath(scope.row.Lang['tl'])"
               ><br>
             </div>
           </template>
@@ -250,21 +250,9 @@
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 5}"
                 />
-                印地:
+                菲律宾:
                 <el-input
-                  v-model="edit.textContent.hi"
-                  type="textarea"
-                  :autosize="{ minRows: 2, maxRows: 5}"
-                />
-                葡语:
-                <el-input
-                  v-model="edit.textContent.pt"
-                  type="textarea"
-                  :autosize="{ minRows: 2, maxRows: 5}"
-                />
-                西班牙:
-                <el-input
-                  v-model="edit.textContent.es"
+                  v-model="edit.textContent.tl"
                   type="textarea"
                   :autosize="{ minRows: 2, maxRows: 5}"
                 />
@@ -290,7 +278,7 @@
                 </el-col>
               </template>
               <template>
-                <el-col :span="6">印地:</el-col>
+                <el-col :span="6">菲律宾:</el-col>
                 <el-col :span="18">
                   <el-upload
                     class="avatar-uploader"
@@ -298,47 +286,11 @@
                     :action="actionURL"
                     :show-file-list="false"
                     :with-credentials="true"
-                    :data="getUploadParam('hi')"
+                    :data="getUploadParam('tl')"
                     :on-success="Succ"
                     :before-upload="beforeAvatarUpload"
                   >
-                    <img v-if="edit.pic['hi']" :src="libShow.GetFullPath(edit.pic['hi'])">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
-                  </el-upload>
-                </el-col>
-              </template>
-              <template>
-                <el-col :span="6">葡语:</el-col>
-                <el-col :span="18">
-                  <el-upload
-                    class="avatar-uploader"
-                    drag
-                    :action="actionURL"
-                    :show-file-list="false"
-                    :with-credentials="true"
-                    :data="getUploadParam('pt')"
-                    :on-success="Succ"
-                    :before-upload="beforeAvatarUpload"
-                  >
-                    <img v-if="edit.pic['pt']" :src="libShow.GetFullPath(edit.pic['pt'])">
-                    <i v-else class="el-icon-plus avatar-uploader-icon" />
-                  </el-upload>
-                </el-col>
-              </template>
-              <template>
-                <el-col :span="6">西班牙:</el-col>
-                <el-col :span="18">
-                  <el-upload
-                    class="avatar-uploader"
-                    drag
-                    :action="actionURL"
-                    :show-file-list="false"
-                    :with-credentials="true"
-                    :data="getUploadParam('es')"
-                    :on-success="Succ"
-                    :before-upload="beforeAvatarUpload"
-                  >
-                    <img v-if="edit.pic['es']" :src="libShow.GetFullPath(edit.pic['es'])">
+                    <img v-if="edit.pic['tl']" :src="libShow.GetFullPath(edit.pic['tl'])">
                     <i v-else class="el-icon-plus avatar-uploader-icon" />
                   </el-upload>
                 </el-col>
@@ -394,7 +346,7 @@ export default {
       modules: [],
       tableData: [],
       project: 'android',
-      langs: { 'en': '英语', 'ph': '菲律宾'},
+      langs: { 'en': '英语', 'tl': '菲律宾'},
       checkLang: 'EN',
       fileList: [],
       fileName: '',
