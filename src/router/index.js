@@ -211,7 +211,12 @@ export const asyncRoutes = [
         name: 'sweeperCfg',
         meta: { title: 'Sweeper - 扫雷 ◐' }
       },
-
+      {
+        path: 'color_game',
+        component: () => import('@/views/config/tableConfig/colorGame'),
+        name: 'gameColorCfg',
+        meta: { title: 'color game ◐' }
+      },
 
 
       {
