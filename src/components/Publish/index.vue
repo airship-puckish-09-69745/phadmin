@@ -348,8 +348,8 @@ export default {
       this.compareRets = []
     },
     getAttrName(attr) {
-      console.log(attr)
-      console.log(this.attrNames)
+      // console.log(attr)
+      // console.log(this.attrNames)
 
       if (this.attrNames && this.attrNames[attr]) {
         return this.attrNames[attr]

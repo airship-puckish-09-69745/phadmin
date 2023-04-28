@@ -623,6 +623,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/vupMonitor'),
         name: 'ban',
         meta: { title: '小黑屋活跃健康 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'jackpotLog',
+        component: () => import('@/views/playerManage/jackpotLog'),
+        name: 'ban',
+        meta: { title: 'jackpot 流水 ◐', noCache: true, perm: 'CUTOMER' }
       }
     ]
   },
@@ -649,6 +655,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_sweeper',
         meta: { title: 'Sweeper - 扫雷◐', gid: 20 }
+      },
+      {
+        path: 'playlog_colorgame',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_colorgame',
+        meta: { title: 'ColorGame - ◐', gid: 25 }
       },
       {
         path: 'slotsLog',

@@ -79,7 +79,7 @@ export default {
     }
   },
   mounted() {
-    console.log(1)
+    // console.log(1)
   },
   methods: {
     getAttrName(attr) {
@@ -239,7 +239,7 @@ export default {
       } else {
         ret = diffFormatter.formattedDiff(oldVal, newVal)
       }
-      console.log(ret)
+      // console.log(ret)
 
       this.AddResult(key, ret[0], ret[1])
     },

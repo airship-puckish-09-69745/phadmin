@@ -118,6 +118,22 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="赢钱榜展示数量：" prop="WinMoneyShowNum">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.WinMoneyShowNum" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                  <el-form-item label="jackpot奖池抽取百分比：" prop="JackpotRate">
+                    <el-col :span="20">
+                      <el-input v-model.number="item.JackpotRate" size="mini" :required="true" />
+                    </el-col>%
+                  </el-form-item>
+                </el-col>
+            </el-row>
             <fieldset>
               <legend>机器人配置</legend>
               <el-row>
@@ -241,28 +257,29 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    prop="Low"
+                    prop="Odds"
                     label="命中骰子赔率"
                   >
+                    
                     <el-table-column
                         label="1颗"
                     >
                         <template slot-scope="scope">
-                            <el-input style="width:80px;" v-model="scope.row.Odds[0].Odd" size="mini"/>
+                            <el-input style="width:80px;" v-model.number="scope.row.Odds[0].Odd" size="mini"/>
                         </template>
                     </el-table-column>
                     <el-table-column
                         label="2颗"
                     >
                         <template slot-scope="scope">
-                            <el-input style="width:80px;" v-model="scope.row.Odds[1].Odd" size="mini"/>
+                            <el-input style="width:80px;" v-model.number="scope.row.Odds[1].Odd" size="mini"/>
                         </template>
                     </el-table-column>
                     <el-table-column
                         label="3颗"
                     >
                         <template slot-scope="scope">
-                            <el-input style="width:80px;" v-model="scope.row.Odds[2].Odd" size="mini"/>
+                            <el-input style="width:80px;" v-model.number="scope.row.Odds[2].Odd" size="mini"/>
                         </template>
                     </el-table-column>
                   </el-table-column>
@@ -282,24 +299,18 @@
                 <legend>jackpot配置</legend>
                 <el-row :gutter="10" style="margin-top: 30px">
                     <el-col :span="11" :offset="1">
-                        <el-form-item label="下注额超过：">
-                        <el-col :span="20">
-                            <el-input v-model.number="item.Jackpot.BetMoreThan" size="mini" :required="true" />
-                        </el-col>
+                        <el-form-item label="本局下注额度(≥)：">
+                          <el-col :span="20">
+                              <el-input v-model.number="item.Jackpot.BetMoreThan" size="mini" :required="true" />
+                          </el-col>
                         </el-form-item>
                     </el-col>
                     <el-col :span="11">
-                        <el-form-item label="命中触发结果">
+                        <el-form-item label="命中触发结果：">
                         <el-col :span="20">
-
-                            <el-select :alt="hitObj" v-for="(hitObj,index) in item.Jackpot.HitColor" style="width: 60px;" :key="index" v-model="item.Jackpot.HitColor[index]" disabled >
-                                <el-option
-                                    v-for="colorItem in ColorItems"
-                                    :key="colorItem.Id"
-                                    :label="colorItem.Name"
-                                    :value="colorItem.Id">
-                                </el-option>
-                            </el-select>
+                            <span v-for="(hitObj,index) in item.Jackpot.HitColor" :key="index">
+                                {{ getBaoziName(hitObj) }}
+                            </span>
                         </el-col>
                         </el-form-item>
                     </el-col>
@@ -307,7 +318,7 @@
                 <el-row>
                     <el-table
                         ref="filterTable"
-                        :data="item.Jackpot.RandAwards"
+                        :data="JackpotRandAwards"
                         border
                         :header-cell-style="libShow.DefaultTableHeadClass"
                         :row-style="{height:'10px'}"
@@ -315,7 +326,7 @@
                         style="width: 100%"
                     >
                         <el-table-column type="index" />
-                        <el-table-column label="奖励发放类型">
+                        <el-table-column label="奖励发放类型" prop="AwardType">
                             <template slot-scope="scope">
                                 <el-select v-model="scope.row.AwardType">
                                     <el-option v-for="typeItem in AwardTypes"
@@ -326,10 +337,16 @@
                                 </el-select>
                             </template>
                         </el-table-column>
-                        <el-table-column label="发放数量">
+                        <el-table-column label="发放数量" prop="Value">
                             <template slot-scope="scope">
                                 <el-input style="width: 240px;" v-model.number="scope.row.Value" size="mini" :required="true"/>
                                 <front v-if="scope.row.AwardType==1">&nbsp;%</front>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="触发概率(百分比)" prop="Rate">
+                            <template slot-scope="scope">
+                                <el-input style="width: 240px;" v-model.number="scope.row.Rate" size="mini" :required="true"/>
+                                <front>&nbsp;%</front>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -368,13 +385,14 @@
           MaxPlayers: 400,
           SeatsNumber: 4,
           BetMoneyList: [1, 2],
-          BetOptions: [{Name: 'ab', Odds: [{"Number":1, "Odd":2},{"Number":2, "Odd":3},{"Number":3, "Odd":4}], MaxMoneyBet: 2000, Rate: 0}],
+          BetOptions: [{Name: 'ab', Odds: [{"Number":1, "Odd":2},{"Number":2, "Odd":3},{"Number":3, "Odd":4}], MaxMoneyBet: 2000}],
           MinMoneyCarry: 1000,
           LogListCount: 100,
           TaxRate: 0,
           ActionSeconds: 15,
           MaxWatchTimes: 0,
           WinMoneyTransferRate: 20,
+          WinMoneyShowNum: 0,
           MinRobotNumber: 0, // 机器人最小人数
           MaxRobotNumber: 0, // 机器人最大人数
           MinRobotPlayTimes: 0, // 机器人最小玩牌局数
@@ -393,12 +411,24 @@
           VUPRecountRate: 0, // 小黑屋系统输改赢概率（万分之一）
           RecountRate: 0,
           BetAmount: [], // 下注金额列表配置
+          JackpotRate: 0,
           Jackpot: {
             BetMoreThan: 0,
-            HitColor: [],
-            RandAwards: [],
+            HitColor: [
+                [1,1,1],
+                [2,2,2],
+                [3,3,3],
+                [4,4,4],
+                [5,5,5],
+                [6,6,6]
+            ],
+            RandAwards: [
+                {"AwardType": 1, "Value": 10, "Rate": 10}
+            ],
+            JackpotRate: 0,
           }
         },
+        JackpotRandAwards: [],
         ColorItems: [
             {"Id": 1, "Name": "黄", "Key": "yellow"},
             {"Id": 2, "Name": "白", "Key": "white"},
@@ -448,6 +478,9 @@
           'Data.VUPRoomMaxUsers': '小黑屋最大真人数',
           'Data.VUPRecountRate': '小黑屋系统输改赢万分比',
           'Data.BetAmount': '下注金额配置',
+          'Data.Jackpot': 'Jackpot配置',
+          'Data.WinMoneyShowNum': '赢钱榜展示数量',
+          'Data.JackpotRate': '赢钱榜展示数量',
           types: {
             Data: 'jsonString' // 整个数据项的类型
           }
@@ -469,12 +502,35 @@
         this.item.MinRobotMoney /= 1000
         this.item.MaxRobotMoney /= 1000
         this.item.Jackpot.BetMoreThan /= 1000
-        for (const o in this.item.BetMoneyList) {
-          this.item.BetMoneyList[o] /= 1000
+        for (const i in this.item.BetMoneyList) {
+          this.item.BetMoneyList[i] /= 1000
         }
-        for (const o in this.item.BetOptions) {
-          this.item.BetOptions[o].MaxMoneyBet /= 1000
+        for (const j in this.item.BetOptions) {
+          this.item.BetOptions[j].MaxMoneyBet /= 1000
         }
+        for (const k in this.item.Jackpot.RandAwards) {
+            if (this.item.Jackpot.RandAwards[k].AwardType == 2) {
+                this.item.Jackpot.RandAwards[k].Value /= 1000
+            }
+        }
+      },
+      getBaoziName(colorId) {
+        let showArr = [];
+        for(let i=0;i<3;i++) {
+            var name = this.getColorName(colorId);
+            showArr.push(name)
+        }
+        return "【"+showArr.join("-")+"】"
+      },
+      getColorName(id) {
+        let name = "";
+        for(let i=0;i<this.ColorItems.length;i++) {
+            if (this.ColorItems[i].Id == id) {
+                name = this.ColorItems[i].Name
+                break;
+            }
+        }
+        return name;
       },
       getPostData() {
         const ret = {}
@@ -493,6 +549,15 @@
           obj.MaxMoneyBet *= 1000
           ret.BetOptions.push(obj)
         }
+        ret.Jackpot.RandAwards=[];
+        for (const o in this.JackpotRandAwards) {
+            const raObj = {}
+            Object.assign(raObj, this.JackpotRandAwards[o])
+            if (raObj.AwardType == 2) {
+                raObj.Value *= 1000
+            }
+            ret.Jackpot.RandAwards.push(raObj)
+        }
         return ret
       },
       getData() {
@@ -504,7 +569,6 @@
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            // console.log('sign reward', response)
             this.form = response.Data || {}
             if (response.Data && response.Data.Data !== '') {
               const item = JSON.parse(response.Data.Data)
@@ -512,12 +576,22 @@
               this.transMoneyForShow()
               this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
               // 设置修改之前数据
+              this.JackpotRandAwards = this.item.Jackpot.RandAwards
               this.$refs.compare.SetOldVal(response.Data)
             }
           }
         })
       },
       setData() {
+        // console.log(this.item)
+        // console.log(this.item.Jackpot.RandAwards.length)
+        // for (let i=0;i<this.item.Jackpot.RandAwards.length;i++) {
+        //     console.log(this.item.Jackpot.RandAwards[i])
+        // }
+        if (this.item.Jackpot.RandAwards.length == 0) {
+            this.item.Jackpot.RandAwards = this.item.JackpotRandAwards;
+        }
+        // console.log(this.item)
         if (!ValidateVueItem(this.$refs['item'])) return false
         const items = this.betMoneyList.split(',')
         this.item.BetMoneyList = []
@@ -525,7 +599,9 @@
           this.item.BetMoneyList.push(parseInt(items[o]))
         }
         for (const o in this.item.BetOptions) {
-          this.item.BetOptions[o].Odds = parseFloat(this.item.BetOptions[o].Odds)
+            for (const oi in o.Odds) {
+                this.item.BetOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
+            }
         }
   
         if (this.item.MaxRobotNumber < this.item.MinRobotNumber) {
@@ -552,6 +628,7 @@
         }
   
         this.form.Data = JSON.stringify(this.getPostData())
+        console.log(this.form.Data)
         const $this = this
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.form)
@@ -560,7 +637,6 @@
             Message.error('没有任何修改，不需要提交')
             return
           }
-  
           request({
             url: 'customizeconfig/update',
             method: 'post',
