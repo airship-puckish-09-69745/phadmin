@@ -613,6 +613,95 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog
+      title="牌局详情"
+      :visible.sync="colorGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">骰子结果：</span><div style="color:red;">{{ colorGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="colorGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="命中"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.Hit ? "是" : "否" }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.Ret"
+              border
+              :show-header="scope.row.ID==1?true:false"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Money"
+                label="资产"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Money / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won>0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -686,6 +775,10 @@ export default {
       baccaratDealerCards: [],
       baccaratPlayerCards: [],
       baccaratOptions: [],
+
+      colorGameVisible: false,
+      colorGameResult: "",
+      colorGameOptions: [],
 
       sweeperVisible: false,
       sweeperDetails: [],
@@ -965,6 +1058,8 @@ export default {
             $this.showSweeperGame(obj)
           } else if (gid == 1) {
             $this.showRummyGame(obj)
+          } else if (gid == 25) {
+            $this.showColorGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1033,6 +1128,44 @@ export default {
         this.baccaratOptions.push(tMap[i])
       }
       this.baccaratVisible = true
+    },
+    showColorGame(obj) {
+      const names = ['Yellow', 'White', 'Purple', 'Blue', 'Green', 'Red']
+      const tMap = {}
+      for (let i = 0; i < obj.options.length; i++) {
+        const ob = obj.options[i]
+        if (this.$route.meta.gid == 13) {
+          const name = this.showCard(ob.cards) + '</br>【' + this.showCard(obj.dealerCards) + '】'
+          names.push(name)
+          tMap[ob.optionId] = { ID: ob.optionId, Name: name, Hit: ob.hit, Ret: [] }
+        } else {
+          tMap[ob.id] = { ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: [] }
+        }
+      }
+      for (let i = 0; i < obj.players.length; i++) {
+        const player = obj.players[i]
+        for (let j = 0; j < player.optionsResult.length; j++) {
+          const result = player.optionsResult[j]
+          if (this.$route.meta.gid == 13) {
+            result.id = result.optionId
+          }
+          tMap[result.id].Ret.push({
+            Uid: player.uid,
+            Bet: result.moneyBet,
+            Won: result.moneyWon,
+            Money: player.moneyResult
+          })
+        }
+      }
+      for (let i = 1; i <= names.length; i++) {
+        this.colorGameOptions.push(tMap[i])
+      }
+      let resultTmp = [];
+      for (let i=0;i<=obj.result.length;i++) {
+        resultTmp.push(names[obj.result[i]-1])
+      }
+      this.colorGameResult = resultTmp.join("，")
+      this.colorGameVisible = true
     },
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {
@@ -1159,6 +1292,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       this.baccaratPlayerCards = []
       this.baccaratOptions = []
       this.baccaratVisible = false
+      //清空colorGame数据
+      this.colorGameOptions = []
+      this.colorGameVisible = false
+      this.colorGameResult = ""
     },
     showChart() {
       this.initChartData()
