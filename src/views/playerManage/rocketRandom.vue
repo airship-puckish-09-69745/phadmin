@@ -242,7 +242,7 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/vupmonitor/rocketret',
+          Path: '/game/rocketret',
           DayStr: $libDate.SelectTimeToIndia(this.searchForm.dayStr) / 1000
         }
       }).then(response => {
@@ -295,7 +295,7 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/vupmonitor/rocketbet',
+          Path: '/game/rocketbet',
           Uid: this.controlForm.uid,
           Bet: this.controlForm.bet,
           Score: this.controlForm.score * 1000

@@ -1,6 +1,8 @@
 <template>
     <div class="app-container">
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <el-button type="danger" round @click="showSetResult">指定结果</el-button>
+      <el-button type="warning" round @click="cleanResult">清除指定结果</el-button>
       <el-row :gutter="10" style="margin-top: 30px">
         <el-form ref="item" :model="item" label-width="200px">
           <el-col :span="12" :offset="3">
@@ -362,9 +364,46 @@
           </el-col>
         </el-form>
       </el-row>
+
+      <el-dialog
+        title="指定结果"
+        :modal="false"
+        :visible.sync="showSetResultPage"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-form :model="resultForm" label-width="120px"  size="small">
+          <el-form-item label="结果：">
+            <el-select v-model="resultForm.one" style="width:120px;">
+                <el-option v-for="typeItem in ColorItems"
+                    :key="typeItem.Type"
+                    :label="typeItem.Name"
+                    :value="typeItem.Id">
+                </el-option>
+            </el-select>
+            <el-select v-model="resultForm.two" style="width:120px;">
+                <el-option v-for="typeItem in ColorItems"
+                    :key="typeItem.Type"
+                    :label="typeItem.Name"
+                    :value="typeItem.Id">
+                </el-option>
+            </el-select>
+            <el-select v-model="resultForm.three" style="width:120px;">
+                <el-option v-for="typeItem in ColorItems"
+                    :key="typeItem.Type"
+                    :label="typeItem.Name"
+                    :value="typeItem.Id">
+                </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+              <el-button type="primary" size="mini" @click="setResult">设定</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+
       <!--对比组件-->
       <compare ref="compare" :attr-names="AttrNames"/>
-  
     </div>
   </template>
   
@@ -430,6 +469,7 @@
         },
         JackpotRandAwards: [],
         ColorItems: [
+            {"Id": 0, "Name": "未知", "Key": "unknow"},
             {"Id": 1, "Name": "黄", "Key": "yellow"},
             {"Id": 2, "Name": "白", "Key": "white"},
             {"Id": 3, "Name": "紫", "Key": "purple"},
@@ -484,7 +524,13 @@
           types: {
             Data: 'jsonString' // 整个数据项的类型
           }
-        }
+        },
+        showSetResultPage: false,
+        resultForm: {
+          one: 0,
+          two: 0,
+          three: 0,
+        },
       }
     },
     created() {
@@ -676,6 +722,78 @@
           }
         })
       },
+      showSetResult() {
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/game/color/game/result',
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            // console.log('sign reward', response)
+            this.form = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              if (response.RetCode === 0) {
+                this.resultForm.one = response.Data[0];
+                this.resultForm.two = response.Data[1];
+                this.resultForm.three = response.Data[2];
+              } else {
+                this.$message.error(response.Data)
+              }
+            }
+          }
+        })
+        this.showSetResultPage = true;
+      },
+      setResult() {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Path: '/game/color/game/result',
+            One: this.resultForm.one,
+            Two: this.resultForm.two,
+            Three: this.resultForm.three,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            // console.log('sign reward', response)
+            this.form = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              if (response.RetCode === 0) {
+                this.$message.success(response.Data)
+              } else {
+                this.$message.error(response.Data)
+              }
+            }
+          }
+        })
+      },
+      cleanResult() {
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/game/clean/color/game/result',
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            // console.log('sign reward', response)
+            this.form = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              if (response.RetCode === 0) {
+                this.$message.success(response.Data)
+              } else {
+                this.$message.error(response.Data)
+              }
+            }
+          }
+        })
+      }
     }
   }
   </script>
