@@ -168,7 +168,12 @@ export const asyncRoutes = [
         name: 'gameCrash',
         meta: { title: 'Crash - 小火箭 ◐' }
       },
-
+      {
+        path: 'tongitsTable',
+        component: () => import('@/views/config/tableConfig/tongitsTable'),
+        name: 'tongitsTable',
+        meta: { title: 'Tongits ◐' }
+      },
 
       {
         path: 'slotsCfg',
