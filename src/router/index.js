@@ -174,6 +174,18 @@ export const asyncRoutes = [
         name: 'tongitsTable',
         meta: { title: 'Tongits ◐' }
       },
+      {
+        path: 'lucky9Table',
+        component: () => import('@/views/config/tableConfig/lucky9Table'),
+        name: 'lucky9Table',
+        meta: { title: 'Lucky9 ◐' }
+      },
+      {
+        path: 'pusoyTable',
+        component: () => import('@/views/config/tableConfig/pusoyTable'),
+        name: 'pusoyTable',
+        meta: { title: 'Pusoy ◐' }
+      },
 
       {
         path: 'slotsCfg',
@@ -354,7 +366,7 @@ export const asyncRoutes = [
         name: 'VUPCfg',
         meta: { title: '小黑屋数值配置 ◐', noCache: true }
       },
-     
+
     ]
   },
   {
