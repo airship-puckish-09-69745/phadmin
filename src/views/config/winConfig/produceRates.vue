@@ -50,6 +50,9 @@ export default {
         "18": 0,
         "19": 0,
         "20": 0,
+        "21": 0,
+        "22": 0,
+        "23": 0
       },
       games: {
         "1": "Rummy",
@@ -70,6 +73,9 @@ export default {
         "18": "球队标转盘",
         "19": "动物转盘",
         "20": "扫雷小游戏",
+        "21": "Pusoy",
+        "22": "TongitsGo",
+        "23": "Lucky9"
       },
       form: {},
       libShow: $libShow,
