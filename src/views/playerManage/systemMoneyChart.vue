@@ -261,11 +261,12 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    if (this.isIN())  {
-      this.sortOrder = this.defaultOrder
-    } else {
-      this.sortOrder = this.BROrder
-    }
+    this.sortOrder = this.defaultOrder
+    // if (this.isIN())  {
+    //   this.sortOrder = this.defaultOrder
+    // } else {
+    //   this.sortOrder = this.BROrder
+    // }
     this.getInfo(this.gid)
     console.log(1)
   },
