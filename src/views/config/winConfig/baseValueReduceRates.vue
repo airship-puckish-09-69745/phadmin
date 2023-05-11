@@ -70,6 +70,7 @@ export default {
         "21": [],
         "22": [],
         "23": [],
+        "25": []
       },
       games: {
         "1": "Rummy",
@@ -93,6 +94,7 @@ export default {
         "21": "Pusoy",
         "22": "TongitsGo",
         "23": "Lucky9",
+        "25": "Color"
       },
       form: {},
       libShow: $libShow,

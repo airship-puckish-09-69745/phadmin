@@ -52,7 +52,8 @@ export default {
         "20": 0,
         "21": 0,
         "22": 0,
-        "23": 0
+        "23": 0,
+        "25": 0
       },
       games: {
         "1": "Rummy",
@@ -75,7 +76,8 @@ export default {
         "20": "扫雷小游戏",
         "21": "Pusoy",
         "22": "TongitsGo",
-        "23": "Lucky9"
+        "23": "Lucky9",
+        "25": "Color"
       },
       form: {},
       libShow: $libShow,
