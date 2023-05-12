@@ -921,8 +921,9 @@ export default {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
           const options = []
-          for (let i = 0; i < _data.BetOptions.length; i++) {
-            options.push(parseInt(_data.BetOptions[i]) / 1000)
+          const tmp = _data.BetOptions.split(',')
+          for (let i = 0; i < tmp.length; i++) {
+            options.push(parseInt(tmp[i]) / 1000)
           }
           _data.BetOptionsStr = options.join(',')
           Object.assign(this.edit.item, _data)
@@ -974,7 +975,7 @@ export default {
       for (let i = 0; i < arr.length; i++) {
         arr[i] = parseInt(arr[i]) * 1000
       }
-      postData.BetOptionsStr = arr.join(',')
+      postData.BetOptions = arr.join(',')
       return postData
     },
     checkData() {
