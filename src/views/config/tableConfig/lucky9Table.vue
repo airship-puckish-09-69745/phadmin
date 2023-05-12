@@ -844,6 +844,14 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
+          for (let k in response.Data) {
+            const options = []
+            const tmp = response.Data[k].BetOptions.split(',')
+            for (let i = 0; i < tmp.length; i++) {
+              options.push(parseInt(tmp[i]) / 1000)
+            }
+            response.Data[k].BetOptionsStr = options.join(',')
+          }
           const objs = response.Data || []
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
@@ -920,12 +928,6 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
-          const options = []
-          const tmp = _data.BetOptions.split(',')
-          for (let i = 0; i < tmp.length; i++) {
-            options.push(parseInt(tmp[i]) / 1000)
-          }
-          _data.BetOptionsStr = options.join(',')
           Object.assign(this.edit.item, _data)
           try {
             this.edit.robotSetting = this.libMoneyRobot.TransForShow(JSON.parse(_data.RobotSetting))
