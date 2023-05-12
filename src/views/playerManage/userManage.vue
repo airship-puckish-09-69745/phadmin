@@ -111,7 +111,7 @@
             </el-col>
           </el-descriptions-item>
 
-          <el-descriptions-item label="是否绑定手机号："><el-tag :type="item.IsBindPhone ? 'success' : 'danger'">{{ formatBool(item.IsBindPhone) }}</el-tag></el-descriptions-item>
+          <el-descriptions-item label="是否绑定手机号："><el-tag :type="item.IsBindPhone ? 'success' : 'danger'">{{ formatBool(item.IsBindPhone) }}</el-tag>{{ item.Phone }}</el-descriptions-item>
           <el-descriptions-item label="账号类型：">{{ formatAccountType(item.AccountType) }}</el-descriptions-item>
 
           <el-descriptions-item label="登录账号：">{{ item.Account }}</el-descriptions-item>
@@ -188,6 +188,12 @@
           </el-descriptions-item>
           <el-descriptions-item label="输标签：">
             {{ item.PaySchema.LoseTagCnt }}
+          </el-descriptions-item>
+          <el-descriptions-item label="是否设置登录密码：">
+            <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="是否设置支付密码：">
+            <el-tag :type="item.IsSetPayPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetPayPwd) }}</el-tag>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -944,7 +950,10 @@ export default {
         SourceAppid: 0, //来源appid
         PaySchema: {
 
-        }
+        },
+        Phone: '',
+        IsSetLoginPwd: false,
+        IsSetPayPwd: false,
       },
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
