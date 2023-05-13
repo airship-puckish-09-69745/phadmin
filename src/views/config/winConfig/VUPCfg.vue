@@ -33,7 +33,7 @@
           </el-table-column>
         </el-table>
 
-        <el-form-item prop="cfg.vvup_money_line" label="专享小黑屋资产线(&gt;=)" style="margin-top: 20px;width: 30%;">
+        <el-form-item prop="cfg.vvup_money_line" label="触发专享小黑屋单次充值额(&gt;=)" style="margin-top: 20px;width: 30%;">
           <el-input v-model.number="cfg.vvup_money_line" placeholder="专享小黑屋资产线" />
         </el-form-item>
 
