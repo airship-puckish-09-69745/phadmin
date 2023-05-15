@@ -85,15 +85,6 @@
             {{ formatNumber(scope.row.MaxPlayerCount) }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="BetOptionsStr"
-          label="下注金额列表"
-          width="150"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.BetOptionsStr }}
-          </template>
-        </el-table-column>
 
         <el-table-column
           prop="LastModify"
@@ -340,18 +331,6 @@
           <el-col :span="11">
             <game-level v-model="edit.item.Level" />
           </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="下注金额列表(逗号间隔)："
-              prop="item.BetOptionsStr"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model="edit.item.BetOptionsStr" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
           <el-col :span="11">
             <el-form-item
               label="Lucky9赔率："
@@ -692,8 +671,6 @@ function newItem() {
     PurchaseSecondMax: '',
     WatchTimesMax: '',
     Level: 1,
-    BetOptions: [],
-    BetOptionsStr: '',
     Lucky9Rate: 0,
     IsPractice: 0,
     RobotSetting: '',
@@ -747,8 +724,6 @@ export default {
         PurchaseSecondMax: '购买等待时长',
         WatchTimesMax: '最大围观局数',
         Level: '等级',
-        BetOptions: '下注金额列表',
-        BetOptionsStr: '下注金额列表',
         Lucky9Rate: 'Lucky9赔率',
         IsPractice: '是否练习场',
         PlayingMul: '在玩放大倍数',
@@ -844,14 +819,6 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          for (let k in response.Data) {
-            const options = []
-            const tmp = response.Data[k].BetOptions.split(',')
-            for (let i = 0; i < tmp.length; i++) {
-              options.push(parseInt(tmp[i]) / 1000)
-            }
-            response.Data[k].BetOptionsStr = options.join(',')
-          }
           const objs = response.Data || []
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
@@ -973,11 +940,6 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
-      const arr = postData.BetOptionsStr.split(',')
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = parseInt(arr[i]) * 1000
-      }
-      postData.BetOptions = arr.join(',')
       return postData
     },
     checkData() {
