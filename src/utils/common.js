@@ -138,7 +138,16 @@ export function LibShow() {
     if (staticPath === '') {
       staticPath = Cookies.get('staticPath')
     }
-    return staticPath + url
+     //兼容一下第三方图片
+     let needCdnDomain = true;
+     if (url.indexOf("http://") == 0 || url.indexOf("https://") == 0) {
+       needCdnDomain = false;
+     }
+     if (needCdnDomain) {
+       return staticPath + url
+     } else {
+       return url
+     }
   }
   // 日期控件选择日期默认选项
   this.DefaultDatePickerOptions = function() {

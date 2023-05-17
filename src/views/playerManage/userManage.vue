@@ -1034,7 +1034,16 @@ export default {
       if (this.env === 'test') {
         return $libShow.GetFullPath(this.item.Icon)
       } else {
-        return 'http://aws.texas-cdn.joydance.hk' + this.item.Icon
+        //兼容一下第三方图片
+        let needCdnDomain = true;
+        if (this.item.Icon.indexOf("http://") == 0 || this.item.Icon.indexOf("https://") == 0) {
+          needCdnDomain = false;
+        }
+        if (needCdnDomain) {
+          return 'http://aws.texas-cdn.joydance.hk' + this.item.Icon
+        } else {
+          return this.item.Icon
+        }
       }
     },
     mainRate() {
