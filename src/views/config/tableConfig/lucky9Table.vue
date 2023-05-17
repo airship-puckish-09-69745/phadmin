@@ -708,7 +708,9 @@ function newItem() {
     RecommendBankruptGid: 0,
     SinglePay: 0,
     TotalPay: 0,
-    HideLevel: 0
+    HideLevel: 0,
+    HitPotBetTimes: 0,
+    HitPotTaxRates: 0
   }
 }
 
@@ -761,6 +763,8 @@ export default {
         SinglePay: '单次充值大于',
         TotalPay: '总充值大于',
         HideLevel: '进入该场次后隐藏场次',
+        HitPotBetTimes: 'HitPot下注倍数',
+        HitPotTaxRates: 'HitPot奖励抽水比例(%)',
         AlterRobotCardsRate: '真实玩家弃牌后修改机器人手牌概率',
         'RobotSetting.RobotCarryMoneyStart': '机器人最小携带',
         'RobotSetting.RobotCarryMoneyEnd': '机器人最大携带',
