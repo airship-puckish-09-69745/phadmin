@@ -300,7 +300,10 @@ const filterMap = {
     31: '老虎机Wild返奖',
     32: '老虎机Scatter返奖',
     37: '购买添加Bonus',
-    38: '输钱添加Bonus'
+    38: '输钱添加Bonus',
+    39: '游戏中Jackpot',
+    40: 'Lucky9往HitPot投注',
+    41: 'Lucky9获得HitPot奖励'
   }
 }
 
