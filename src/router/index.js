@@ -656,6 +656,12 @@ export const asyncRoutes = [
     meta: { title: '牌局日志 ◐', icon: 'log' },
     children: [
       {
+        path: 'playlog_lucky9',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_lucky9',
+        meta: { title: 'Lucky9 ◐', gid: 23 }
+      },
+      {
         path: 'playlog_car',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_car',
