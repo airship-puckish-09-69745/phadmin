@@ -40,6 +40,10 @@
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <slots-winner-cfg v-if="load" v-model="item" @saveData="saveData"></slots-winner-cfg>
           </el-tab-pane>
+          <el-tab-pane label="小黑屋配置">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
+            <slots-vup v-if="load" v-model="item" :HideBonusMode="true" @saveData="saveData"></slots-vup>
+          </el-tab-pane>
 		  <!--
           <el-tab-pane label="Jackpot奖池" name="pools">
             <slots-jackpot-pools :slotId="51"></slots-jackpot-pools>
@@ -75,11 +79,12 @@ import slotsWildPattern from './components/wild_pattern'
 import slotsScatterPattern from './components/scatter_pattern'
 import slotsJackpotPools from './components/jackpot_pools'
 import slotsWinnerCfg from './components/winner_cfg'
+import slotsVup from './components/slots_vup'
 //import slotsJackpotPhoenix from './components/jackpot_phoenix'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsJackpot, slotsWildPattern, slotsScatterPattern, slotsJackpotPools,slotsWinnerCfg },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsJackpot, slotsWildPattern, slotsScatterPattern, slotsJackpotPools, slotsWinnerCfg, slotsVup },
   data() {
     return {
       item: {},
