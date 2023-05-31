@@ -201,16 +201,12 @@ export const asyncRoutes = [
             meta: { title: 'Beauty - 睡美人' }
           },
 
-
-
           {
             path: 'phoenix_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
             name: 'phoenix_slots_cfg',
             meta: { title: 'Phoenix - 凤凰' }
           },
-
-
 
           {
             path: 'slots_winner_record',
@@ -234,7 +230,6 @@ export const asyncRoutes = [
         name: 'gameColorCfg',
         meta: { title: 'color game ◐' }
       },
-
 
       {
         path: 'level_hide',
@@ -365,7 +360,7 @@ export const asyncRoutes = [
         component: () => import('@/views/config/winConfig/VUPCfg'),
         name: 'VUPCfg',
         meta: { title: '小黑屋数值配置 ◐', noCache: true }
-      },
+      }
 
     ]
   },
@@ -654,6 +649,7 @@ export const asyncRoutes = [
     component: Layout,
     redirect: 'noRedirect',
     meta: { title: '牌局日志 ◐', icon: 'log' },
+    // eslint-disable-next-line no-sparse-arrays
     children: [
       {
         path: 'playlog_lucky9',
@@ -695,13 +691,13 @@ export const asyncRoutes = [
             path: 'beauty_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'beauty_slots_log',
-            meta: { title: 'beauty - 睡美人', gid: 52}
+            meta: { title: 'beauty - 睡美人', gid: 52 }
           },
           {
             path: 'phoenix_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
-            meta: { title: 'phoenix - 凤凰', gid:51 }
+            meta: { title: 'phoenix - 凤凰', gid: 51 }
           }
         ]
       }
@@ -827,6 +823,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/giveMoneyConfig/bankrupt'),
             name: 'Bankrupt',
             meta: { title: '破产补助 ◐', noCache: true }
+          },
+          {
+            path: 'bindPhoneReward',
+            component: () => import('@/views/config/giveMoneyConfig/bindPhoneReward'),
+            name: 'bindPhoneReward',
+            meta: { title: '绑定手机奖励 ◐', noCache: true }
           },
           {
             path: 'PLINKO',
@@ -1074,7 +1076,7 @@ export const asyncRoutes = [
         path: 'subGameList',
         component: () => import('@/views/devTools/devTools'),
         redirect: 'noRedirect',
-        meta: {title: '子游戏列表配置', icon: 'code'},
+        meta: { title: '子游戏列表配置', icon: 'code' },
         children: [
           {
             path: 'subgame_android',
@@ -1124,7 +1126,7 @@ export const asyncRoutes = [
         path: 'testToolsGroup',
         component: () => import('@/views/devTools/devTools'),
         redirect: 'noRedirect',
-        meta: {title: '测试工具集', icon: 'tab'},
+        meta: { title: '测试工具集', icon: 'tab' },
         children: [
           {
             path: 'fakeOrderSucc',
@@ -1149,7 +1151,7 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testMonthCard'),
             name: 'testMonthCard',
             meta: { title: '月卡小工具' }
-          },
+          }
         ]
       },
       {
