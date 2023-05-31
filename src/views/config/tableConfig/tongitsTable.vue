@@ -329,27 +329,28 @@
         </el-row>
 
         <!-- 机器人相关配置 start -->
+        <!--
         <fieldset>
-          <legend>机器人配置</legend>
+          <legend>机器人配置通用配置</legend>
           <el-row>
             <el-col :span="11">
               <el-form-item
                 label="携带金额最小值："
                 label-width="200px"
-                prop="robotSetting.RobotCarryMoneyStart"
+                prop="robotConfig.Common.RobotCarryMoneyStart"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotCarryMoneyStart" placeholder="携带金额最小值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotCarryMoneyStart" placeholder="携带金额最小值" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="携带金额最大值："
                 label-width="200px"
-                prop="robotSetting.RobotCarryMoneyEnd"
+                prop="robotConfig.Common.RobotCarryMoneyEnd"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotCarryMoneyEnd" placeholder="携带金额最大值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotCarryMoneyEnd" placeholder="携带金额最大值" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -358,20 +359,20 @@
               <el-form-item
                 label="最大玩牌次数下限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxPlayTimesStart"
+                prop="robotConfig.Common.RobotMaxPlayTimesStart"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxPlayTimesStart" placeholder="最大玩牌次数下限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxPlayTimesStart" placeholder="最大玩牌次数下限值" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="最大玩牌次数上限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxPlayTimesEnd"
+                prop="robotConfig.Common.RobotMaxPlayTimesEnd"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxPlayTimesEnd" placeholder="最大玩牌次数上限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxPlayTimesEnd" placeholder="最大玩牌次数上限值" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -380,20 +381,20 @@
               <el-form-item
                 label="最大赢牌次数下限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxWinTimesStart"
+                prop="robotConfig.Common.RobotMaxWinTimesStart"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxWinTimesStart" placeholder="最大赢牌次数下限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinTimesStart" placeholder="最大赢牌次数下限值" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="最大赢牌次数上限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxWinTimesEnd"
+                prop="robotConfig.Common.RobotMaxWinTimesEnd"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxWinTimesEnd" placeholder="最大赢牌次数上限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinTimesEnd" placeholder="最大赢牌次数上限值" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -402,20 +403,20 @@
               <el-form-item
                 label="最大输牌次数下限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxLoseTimesStart"
+                prop="robotConfig.Common.RobotMaxLoseTimesStart"
                 :rules="dataRule(true,{type:'n',range:'1'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxLoseTimesStart" placeholder="最大输牌次数下限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseTimesStart" placeholder="最大输牌次数下限值" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="最大输牌次数上限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxLoseTimesEnd"
+                prop="robotConfig.Common.RobotMaxLoseTimesEnd"
                 :rules="dataRule(true,{type:'n',range:'1'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxLoseTimesEnd" placeholder="最大输牌次数上限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseTimesEnd" placeholder="最大输牌次数上限值" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -424,20 +425,20 @@
               <el-form-item
                 label="最大赢得金额下限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxWinMoneyStart"
+                prop="robotConfig.Common.RobotMaxWinMoneyStart"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxWinMoneyStart" placeholder="最大赢得金额下限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinMoneyStart" placeholder="最大赢得金额下限值" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="最大赢得金额上限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxWinMoneyEnd"
+                prop="robotConfig.Common.RobotMaxWinMoneyEnd"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxWinMoneyEnd" placeholder="最大赢得金额上限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinMoneyEnd" placeholder="最大赢得金额上限值" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -446,24 +447,28 @@
               <el-form-item
                 label="最大输掉金额下限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxLoseMoneyStart"
+                prop="robotConfig.Common.RobotMaxLoseMoneyStart"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxLoseMoneyStart" placeholder="最大输掉金额下限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseMoneyStart" placeholder="最大输掉金额下限值" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item
                 label="最大输掉金额上限值："
                 label-width="200px"
-                prop="robotSetting.RobotMaxLoseMoneyEnd"
+                prop="robotConfig.Common.RobotMaxLoseMoneyEnd"
                 :rules="dataRule(true,{type:'n',range:'0'})"
               >
-                <el-input v-model.number="edit.robotSetting.RobotMaxLoseMoneyEnd" placeholder="最大输掉金额上限值" />
+                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseMoneyEnd" placeholder="最大输掉金额上限值" />
               </el-form-item>
             </el-col>
           </el-row>
         </fieldset>
+        -->
+        <tongits-robot-common v-model="edit"></tongits-robot-common>
+        <tongits-robot-control v-model="edit"></tongits-robot-control>
+        <tongits-robot-build-card v-model="edit"></tongits-robot-build-card>
         <!-- 机器人相关配置 end -->
         <el-form-item>
           <el-row>
@@ -486,23 +491,54 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
+import tongitsRobotCommon from './tongits/robotCommon'
+import tongitsRobotControl from './tongits/robotControl'
+import tongitsRobotBuildCard from './tongits/robotBuildCard'
 
 const filterMap = {}
 
-function NewRobotSetting() {
+function NewRobotConfig() {
   return {
-    RobotCarryMoneyStart: 0,
-    RobotCarryMoneyEnd: 0,
-    RobotMaxPlayTimesStart: 0,
-    RobotMaxPlayTimesEnd: 0,
-    RobotMaxWinTimesStart: 0,
-    RobotMaxWinTimesEnd: 0,
-    RobotMaxLoseTimesStart: 0,
-    RobotMaxLoseTimesEnd: 0,
-    RobotMaxWinMoneyStart: 0,
-    RobotMaxWinMoneyEnd: 0,
-    RobotMaxLoseMoneyStart: 0,
-    RobotMaxLoseMoneyEnd: 0
+    Common:{
+      RobotCarryMoneyStart:0,
+      RobotCarryMoneyEnd:0,
+      RobotMaxPlayTimesStart:0,
+      RobotMaxPlayTimesEnd:0,
+      RobotMaxWinTimesStart:0,
+      RobotMaxWinTimesEnd:0,
+      RobotMaxLoseTimesStart:0,
+      RobotMaxLoseTimesEnd:0,
+      RobotMaxWinMoneyStart:0,
+      RobotMaxWinMoneyEnd:0,
+      RobotMaxLoseMoneyStart:0,
+      RobotMaxLoseMoneyEnd:0,
+      Create1RobotPercents:0,
+      Create2RobotPercents:0,
+      Create3RobotPercents:0,
+      AppendRobotPercents:0
+    },
+    Control:{
+      RobotOpenFlag:0,
+      Create1RobotPercents:0,
+      Create2RobotPercents:0,
+      Create3RobotPercents:0,
+      MaxRobotUserNum:0,
+      RobotLoginIntervalMin:0,
+      RobotLoginIntervalMax:0,
+    },
+    RobotCardBuildConfig:{
+      IsDoBuildCard:false,
+      BuildFourRatio:0,
+      BuildFlushGte5Ratio:0,
+      BuildFlush4Ratio:0,
+      BuildFlush3Ratio:0,
+      BuildThreeRatio:0,
+      BuildFourMaxNum:0,
+      BuildFlushGte5MaxNum:0,
+      BuildFlush4MaxNum:0,
+      BuildFlush3MaxNum:0,
+      BuildThree3MaxNum:0,
+    }
   }
 }
 
@@ -519,6 +555,7 @@ function newItem() {
     IsPractice: 0,
     Level: 1,
     RobotSetting: '',
+    RobotConfig: '',
     PlayingMul: 0,
     PlayingRandMin: 0,
     PlayingRandMax: 0,
@@ -529,7 +566,7 @@ function newItem() {
 }
 
 export default {
-  components: { Compare, Publish },
+  components: { Compare, Publish,tongitsRobotCommon,tongitsRobotControl,tongitsRobotBuildCard },
   data() {
     return {
       tableData: [],
@@ -544,7 +581,7 @@ export default {
         visible: false,
         item: newItem(),
         isEdit: false,
-        robotSetting: NewRobotSetting()
+        robotConfig: NewRobotConfig()
       },
 
       AttrNames: {
@@ -561,21 +598,22 @@ export default {
         LuckyLevelLimitMax: '限制幸运级别最大值',
         LuckyLevelLimitMoney: '限制幸福级别的最低资产',
         Level: '等级',
-        'RobotSetting.RobotCarryMoneyStart': '机器人最小携带',
-        'RobotSetting.RobotCarryMoneyEnd': '机器人最大携带',
-        'RobotSetting.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
-        'RobotSetting.RobotMaxPlayTimesEnd': '机器人玩牌次数上限',
-        'RobotSetting.RobotMaxWinTimesStart': '机器人最大赢次数下限',
-        'RobotSetting.RobotMaxWinTimesEnd': '机器人最大赢次数上限',
-        'RobotSetting.RobotMaxLoseTimesStart': '机器人最大输次数上限',
-        'RobotSetting.RobotMaxLoseTimesEnd': '机器人最大输次数下限',
-        'RobotSetting.RobotMaxWinMoneyStart': '机器人最大赢金额上限',
-        'RobotSetting.RobotMaxWinMoneyEnd': '机器人最大赢金额下限',
-        'RobotSetting.RobotMaxLoseMoneyStart': '机器人最大输金额上限',
-        'RobotSetting.RobotMaxLoseMoneyEnd': '机器人最大输金额下限',
-        types: {
-          RobotSetting: 'jsonString'
-        }
+        RobotConfig:'机器人配置'
+        // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
+        // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
+        // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
+        // 'RobotConfig.Common.RobotMaxPlayTimesEnd': '机器人玩牌次数上限',
+        // 'RobotConfig.Common.RobotMaxWinTimesStart': '机器人最大赢次数下限',
+        // 'RobotConfig.Common.RobotMaxWinTimesEnd': '机器人最大赢次数上限',
+        // 'RobotConfig.Common.RobotMaxLoseTimesStart': '机器人最大输次数上限',
+        // 'RobotConfig.Common.RobotMaxLoseTimesEnd': '机器人最大输次数下限',
+        // 'RobotConfig.Common.RobotMaxWinMoneyStart': '机器人最大赢金额上限',
+        // 'RobotConfig.Common.RobotMaxWinMoneyEnd': '机器人最大赢金额下限',
+        // 'RobotConfig.Common.RobotMaxLoseMoneyStart': '机器人最大输金额上限',
+        // 'RobotConfig.Common.RobotMaxLoseMoneyEnd': '机器人最大输金额下限',
+        // types: {
+        //   RobotConfig: 'jsonString'
+        // }
       }
     }
   },
@@ -704,10 +742,11 @@ export default {
         if (_data) {
           Object.assign(this.edit.item, _data)
           try {
-            this.edit.robotSetting = this.libMoneyRobot.TransForShow(JSON.parse(_data.RobotSetting))
+            this.edit.robotConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.RobotConfig))
           } catch (e) {
-            this.edit.robotSetting = NewRobotSetting()
+            this.edit.robotConfig = NewRobotConfig()
           }
+          console.log("robotConfig:",this.edit)
           if (bEdit) {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(_data)
@@ -751,20 +790,27 @@ export default {
     },
     checkData() {
       if (this.edit.item.CarryLower > this.edit.item.CarryUpper ||
-        this.edit.robotSetting.RobotCarryMoneyStart > this.edit.robotSetting.RobotCarryMoneyEnd ||
-        this.edit.robotSetting.RobotMaxLoseMoneyStart > this.edit.robotSetting.RobotMaxLoseMoneyEnd ||
-        this.edit.robotSetting.RobotMaxLoseTimesStart > this.edit.robotSetting.RobotMaxLoseTimesEnd ||
-        this.edit.robotSetting.RobotMaxPlayTimesStart > this.edit.robotSetting.RobotMaxPlayTimesEnd ||
-        this.edit.robotSetting.RobotMaxWinMoneyStart > this.edit.robotSetting.RobotMaxWinMoneyEnd ||
-        this.edit.robotSetting.RobotMaxWinTimesStart > this.edit.robotSetting.RobotMaxWinTimesEnd) {
+        this.edit.robotConfig.Common.RobotCarryMoneyStart > this.edit.robotConfig.Common.RobotCarryMoneyEnd ||
+        this.edit.robotConfig.Common.RobotMaxLoseMoneyStart > this.edit.robotConfig.Common.RobotMaxLoseMoneyEnd ||
+        this.edit.robotConfig.Common.RobotMaxLoseTimesStart > this.edit.robotConfig.Common.RobotMaxLoseTimesEnd ||
+        this.edit.robotConfig.Common.RobotMaxPlayTimesStart > this.edit.robotConfig.Common.RobotMaxPlayTimesEnd ||
+        this.edit.robotConfig.Common.RobotMaxWinMoneyStart > this.edit.robotConfig.Common.RobotMaxWinMoneyEnd ||
+        this.edit.robotConfig.Common.RobotMaxWinTimesStart > this.edit.robotConfig.Common.RobotMaxWinTimesEnd) {
         Message.warning('下限不能大于上限，请检查数值正确性！')
         return false
       }
       return true
     },
     save() {
+      this.edit.robotConfig.Control.RobotOpenFlag = parseInt(this.edit.robotConfig.Control.RobotOpenFlag)
       if (!this.checkData()) return
-      this.edit.item.RobotSetting = JSON.stringify(this.libMoneyRobot.TransForStore(this.edit.robotSetting))
+      console.log("this.edit.item--->",this.edit.item)
+      console.log("this.edit.robotConfig--->",this.edit.robotConfig)
+      if(!this.edit.item.hasOwnProperty("RobotConfig")){
+        this.edit.item.RobotConfig = ""
+      }
+      this.edit.item.RobotConfig = JSON.stringify(this.libMoneyRobot.TransForStore(this.edit.robotConfig))
+      console.log("this.edit.item--->",this.edit.item)
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
@@ -774,6 +820,7 @@ export default {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
+            console.log("do get post data")
             $this.editSave($this.getPostData())
           }
         })
