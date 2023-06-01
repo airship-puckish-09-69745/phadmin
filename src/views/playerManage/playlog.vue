@@ -720,7 +720,7 @@ import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
 
 const filterMap = {
-  IsPractice: { 1: '是', 0: '否',  6:'钓鱼付费', 7:'钓鱼未付', 8:'钓鱼2付费',9:'钓鱼2未付费',10:'钓鱼3付费',11:'钓鱼3未付费'  },
+  IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
   TableMoney: 'all'
 }
 
@@ -777,7 +777,7 @@ export default {
       baccaratOptions: [],
 
       colorGameVisible: false,
-      colorGameResult: "",
+      colorGameResult: '',
       colorGameOptions: [],
 
       sweeperVisible: false,
@@ -952,7 +952,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           let objs = response.Data || []
-          if (objs.length === 0 || objs == 'no Data') {
+          if (objs.length === 0 || objs === 'no Data') {
             Message.success('查询结果为空')
             loading.close()
             return
@@ -1160,11 +1160,11 @@ export default {
       for (let i = 1; i <= names.length; i++) {
         this.colorGameOptions.push(tMap[i])
       }
-      let resultTmp = [];
-      for (let i=0;i<=obj.result.length;i++) {
-        resultTmp.push(names[obj.result[i]-1])
+      const resultTmp = []
+      for (let i = 0; i <= obj.result.length; i++) {
+        resultTmp.push(names[obj.result[i] - 1])
       }
-      this.colorGameResult = resultTmp.join("，")
+      this.colorGameResult = resultTmp.join('，')
       this.colorGameVisible = true
     },
     showRummyGame(obj) {
@@ -1292,10 +1292,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       this.baccaratPlayerCards = []
       this.baccaratOptions = []
       this.baccaratVisible = false
-      //清空colorGame数据
+      // 清空colorGame数据
       this.colorGameOptions = []
       this.colorGameVisible = false
-      this.colorGameResult = ""
+      this.colorGameResult = ''
     },
     showChart() {
       this.initChartData()

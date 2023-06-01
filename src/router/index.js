@@ -676,6 +676,12 @@ export const asyncRoutes = [
         meta: { title: 'Sweeper - 扫雷◐', gid: 20 }
       },
       {
+        path: 'playlog_tongits',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_tongits',
+        meta: { title: 'Tongits - ◐', gid: 22 }
+      },
+      {
         path: 'playlog_colorgame',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_colorgame',
