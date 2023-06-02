@@ -6,28 +6,28 @@
         <el-form ref="form" :model="form" label-width="80px">
           <el-row>
             <el-form-item label="输钱返利比例：" label-width="150px">
-              <el-col :span="2">
+              <el-col :span="4">
                 <el-input v-model.number="item.loseRebateRatio" />
               </el-col>%
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="输钱返利上限：" label-width="150px">
-              <el-col :span="2">
+              <el-col :span="4">
                 <el-input v-model.number="item.loseRebateLimit" />
               </el-col>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="首充返利上限：" label-width="150px">
-              <el-col :span="2">
+              <el-col :span="4">
                 <el-input v-model.number="item.rebateUpperLimit" />
               </el-col>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item label="领取条件bet上限：" label-width="150px">
-              <el-col :span="2">
+              <el-col :span="4">
                 <el-input v-model.number="item.betLimit" />
               </el-col>
             </el-form-item>
