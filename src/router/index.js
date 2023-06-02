@@ -841,6 +841,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/giveMoneyConfig/plinko'),
             name: 'PLINKO',
             meta: { title: 'PLINKO ◐', noCache: true, project: ['id'] }
+          },
+          {
+            path: 'newbieGift',
+            component: () => import('@/views/config/giveMoneyConfig/newbieGift'),
+            name: 'newbieGift',
+            meta: { title: '新手礼物 ◐', noCache: true }
           }
         ]
       },
