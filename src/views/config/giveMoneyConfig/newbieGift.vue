@@ -135,7 +135,6 @@ export default {
   },
   created() {
     this.getData()
-    console.log(1)
   },
   methods: {
     getFullKey() {
@@ -151,22 +150,21 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          // console.log('sign reward', response)
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             $this.item = JSON.parse(response.Data.Data)
 
-            this.item.rebateUpperLimit /= 1000
-            this.item.betLimit /= 1000
-            this.item.loseRebateLimit /= 1000
+            $this.item.rebateUpperLimit /= 1000
+            $this.item.betLimit /= 1000
+            $this.item.loseRebateLimit /= 1000
             for (const o in $this.item.rechargeItemsCfg) {
-              $this.item.Items[o].lowerLimit /= 1000
-              $this.item.Items[o].upperLimit /= 1000
-              $this.item.Items[o].showMoney /= 1000
+              $this.item.rechargeItemsCfg[o].lowerLimit /= 1000
+              $this.item.rechargeItemsCfg[o].upperLimit /= 1000
+              $this.item.rechargeItemsCfg[o].showMoney /= 1000
             }
             $this.isValid = ($this.item.IsValid === 1)
             // 设置修改之前数据
-            $this.$refs.compare.SetOldVal(response.Data)
+            $this.$refs.compare.SetOldVal(response.Data.Data)
           }
         }
       })
@@ -190,10 +188,7 @@ export default {
     },
     setData() {
       const postData = this.getPostData()
-      console.log(postData)
       this.form.Data = JSON.stringify(postData)
-      console.log(this.form.Data)
-      console.log(this.form)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
@@ -202,7 +197,6 @@ export default {
           Message.error('没有任何修改，不需要提交')
           return
         }
-        console.log($this.form)
         request({
           url: 'customizeconfig/update',
           method: 'post',
