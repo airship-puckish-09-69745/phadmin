@@ -47,6 +47,11 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="JokerNum"
+          label="癞子数"
+          width="70"
+        />
+        <el-table-column
           prop="Level"
           label="Level"
           sortable="custom"
@@ -164,10 +169,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
+            <!--
             <el-form-item label="练习场：" :required="true">
               <el-radio-group v-model.number="edit.item.IsPractice">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            -->
+            <el-form-item label="癞子数：" :required="true">
+              <el-radio-group v-model.number="edit.item.JokerNum">
+                <el-radio :label="0">0</el-radio>
+                <el-radio :label="4">4</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -327,149 +340,10 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <!-- 机器人相关配置 start -->
-        <!--
-        <fieldset>
-          <legend>机器人配置通用配置</legend>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item
-                label="携带金额最小值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotCarryMoneyStart"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotCarryMoneyStart" placeholder="携带金额最小值" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="携带金额最大值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotCarryMoneyEnd"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotCarryMoneyEnd" placeholder="携带金额最大值" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item
-                label="最大玩牌次数下限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxPlayTimesStart"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxPlayTimesStart" placeholder="最大玩牌次数下限值" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="最大玩牌次数上限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxPlayTimesEnd"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxPlayTimesEnd" placeholder="最大玩牌次数上限值" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item
-                label="最大赢牌次数下限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxWinTimesStart"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinTimesStart" placeholder="最大赢牌次数下限值" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="最大赢牌次数上限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxWinTimesEnd"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinTimesEnd" placeholder="最大赢牌次数上限值" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item
-                label="最大输牌次数下限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxLoseTimesStart"
-                :rules="dataRule(true,{type:'n',range:'1'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseTimesStart" placeholder="最大输牌次数下限值" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="最大输牌次数上限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxLoseTimesEnd"
-                :rules="dataRule(true,{type:'n',range:'1'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseTimesEnd" placeholder="最大输牌次数上限值" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item
-                label="最大赢得金额下限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxWinMoneyStart"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinMoneyStart" placeholder="最大赢得金额下限值" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="最大赢得金额上限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxWinMoneyEnd"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxWinMoneyEnd" placeholder="最大赢得金额上限值" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item
-                label="最大输掉金额下限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxLoseMoneyStart"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseMoneyStart" placeholder="最大输掉金额下限值" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item
-                label="最大输掉金额上限值："
-                label-width="200px"
-                prop="robotConfig.Common.RobotMaxLoseMoneyEnd"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.robotConfig.Common.RobotMaxLoseMoneyEnd" placeholder="最大输掉金额上限值" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </fieldset>
-        -->
         <tongits-robot-common v-model="edit"></tongits-robot-common>
         <tongits-robot-control v-model="edit"></tongits-robot-control>
         <tongits-robot-build-card v-model="edit"></tongits-robot-build-card>
-        <!-- 机器人相关配置 end -->
+
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -547,6 +421,7 @@ function newItem() {
     CarryLower: '',
     CarryUpper: '',
     TableMoney: '',
+    JokerNum:0,
     MaxPlayerCount: 3,
     ObjectCount: '',
     FlowRate: '',
@@ -588,7 +463,8 @@ export default {
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
         TableMoney: '桌子大小',
-        MaxPlayerCount: 5,
+        JokerNum:'癞子数',
+        MaxPlayerCount: 3,
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
