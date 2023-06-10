@@ -450,7 +450,7 @@ export default {
       libShow: $libShow,
       env: 'test',
       libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'LuckyLevelLimitMoney']),
-      libMoneyRobot: new MoneyShow([' RobotCarryMoneyStart', 'RobotCarryMoneyEnd', 'RobotMaxWinMoneyStart', 'RobotMaxWinMoneyEnd', 'RobotMaxLoseMoneyStart', 'RobotMaxLoseMoneyEnd']),
+      libMoneyRobot: new MoneyShow(['RobotCarryMoneyStart', 'RobotCarryMoneyEnd', 'RobotMaxWinMoneyStart', 'RobotMaxWinMoneyEnd', 'RobotMaxLoseMoneyStart', 'RobotMaxLoseMoneyEnd','']),
 
       edit: {
         visible: false,
@@ -474,7 +474,9 @@ export default {
         LuckyLevelLimitMax: '限制幸运级别最大值',
         LuckyLevelLimitMoney: '限制幸福级别的最低资产',
         Level: '等级',
-        RobotConfig:'机器人配置'
+        Common:'机器人通用配置',
+        Control:'机器人控制配置',
+        RobotCardBuildConfig:'机器人好牌配置',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
@@ -487,9 +489,11 @@ export default {
         // 'RobotConfig.Common.RobotMaxWinMoneyEnd': '机器人最大赢金额下限',
         // 'RobotConfig.Common.RobotMaxLoseMoneyStart': '机器人最大输金额上限',
         // 'RobotConfig.Common.RobotMaxLoseMoneyEnd': '机器人最大输金额下限',
-        // types: {
-        //   RobotConfig: 'jsonString'
-        // }
+        types: {
+          Common: 'jsonString',
+          // Control: 'jsonString',
+          // RobotCardBuildConfig: 'jsonString',
+        }
       }
     }
   },
@@ -583,6 +587,15 @@ export default {
     handleDelete(ob) {
       this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
     },
+    getCompareVal(obj){
+      let one = JSON.parse(JSON.stringify(obj))
+      let row = JSON.parse(obj.RobotConfig)
+      one.Common = JSON.stringify(row.Common)
+      one.Control = JSON.stringify(row.Control)
+      one.RobotCardBuildConfig = JSON.stringify(row.RobotCardBuildConfig)
+      one.RobotConfig = ''
+      return one
+    },
     changeStatus(id, status, msg) {
       const $this = this
       this.$confirm(msg, '提示', {
@@ -618,14 +631,16 @@ export default {
         if (_data) {
           Object.assign(this.edit.item, _data)
           try {
-            this.edit.robotConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.RobotConfig))
+            let one = JSON.parse(_data.RobotConfig)
+            one.Common = this.libMoneyRobot.TransForShow(one.Common)
+            this.edit.robotConfig = one
           } catch (e) {
             this.edit.robotConfig = NewRobotConfig()
           }
           console.log("robotConfig:",this.edit)
           if (bEdit) {
             // 设置修改之前数据
-            this.$refs.compare.SetOldVal(_data)
+            this.$refs.compare.SetOldVal(this.getCompareVal(_data))
           }
         }
       }
@@ -685,11 +700,12 @@ export default {
       if(!this.edit.item.hasOwnProperty("RobotConfig")){
         this.edit.item.RobotConfig = ""
       }
-      this.edit.item.RobotConfig = JSON.stringify(this.libMoneyRobot.TransForStore(this.edit.robotConfig))
+      this.edit.robotConfig.Common = this.libMoneyRobot.TransForStore(this.edit.robotConfig.Common)
+      this.edit.item.RobotConfig = JSON.stringify(this.edit.robotConfig)
       console.log("this.edit.item--->",this.edit.item)
       if (this.edit.isEdit) {
         // 设置修改后数据
-        this.$refs.compare.SetNewVal(this.edit.item)
+        this.$refs.compare.SetNewVal(this.getCompareVal(this.edit.item))
         const $this = this
         this.$refs.compare.Compare(function(isEdit) {
           if (!isEdit) {
