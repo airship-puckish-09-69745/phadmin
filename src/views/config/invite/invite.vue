@@ -101,13 +101,17 @@
               <el-input v-model.number="item.ReferralAudit.EffectHour" placeholder="" />
             </el-form-item>
 
-            <el-form-item label="玩牌局数" prop="ReferralAudit.Games" :rules="dataRule(true,{type:'n'})">
+            <el-form-item label="有效下注流水倍数" prop="ReferralAudit.BetMultiple" :rules="dataRule(true,{type:'n'})">
+              <el-input v-model.number="item.AffiliateAudit.BetMultiple" placeholder="" />
+            </el-form-item>
+
+<!--            <el-form-item label="玩牌局数" prop="ReferralAudit.Games" :rules="dataRule(true,{type:'n'})">
               <el-input v-model.number="item.ReferralAudit.Games" placeholder="" />
             </el-form-item>
 
             <el-form-item label="老虎机牌局数" prop="ReferralAudit.SlotsGames" :rules="dataRule(true,{type:'n'})">
               <el-input v-model.number="item.ReferralAudit.SlotsGames" placeholder="" />
-            </el-form-item>
+            </el-form-item>-->
           </fieldset>
 
           <fieldset style="margin:30px auto;">
@@ -117,13 +121,17 @@
               <el-input v-model.number="item.AffiliateAudit.EffectHour" placeholder="" />
             </el-form-item>
 
-            <el-form-item label="玩牌局数" prop="AffiliateAudit.Games" :rules="dataRule(true,{type:'n'})">
+            <el-form-item label="有效下注流水倍数" prop="AffiliateAudit.BetMultiple" :rules="dataRule(true,{type:'n'})">
+              <el-input v-model.number="item.AffiliateAudit.BetMultiple" placeholder="" />
+            </el-form-item>
+
+<!--            <el-form-item label="玩牌局数" prop="AffiliateAudit.Games" :rules="dataRule(true,{type:'n'})">
               <el-input v-model.number="item.AffiliateAudit.Games" placeholder="" />
             </el-form-item>
 
             <el-form-item label="老虎机牌局数" prop="AffiliateAudit.SlotsGames" :rules="dataRule(true,{type:'n'})">
               <el-input v-model.number="item.AffiliateAudit.SlotsGames" placeholder="" />
-            </el-form-item>
+            </el-form-item>-->
           </fieldset>
 
           <fieldset style="margin:30px auto;">
@@ -189,9 +197,10 @@ export default {
           SlotsGames: 10,
           Day: 3
         },
-        ReferralAudit: { EffectHour: 12, Games: 10, SlotsGames: 10 },
-        AffiliateAudit: { EffectHour: 12, Games: 10, SlotsGames: 10 },
-        GullakAudit: { Games: 10, Day: 3, SlotsGames: 10, }
+        ReferralAudit: { EffectHour: 12, BetMultiple: 1 },
+        AffiliateAudit: { EffectHour: 12, BetMultiple: 1 },
+        // AffiliateAudit: { EffectHour: 12, Games: 10, SlotsGames: 10 },
+        GullakAudit: { Games: 10, Day: 3, SlotsGames: 10 }
       },
       form: {
       },

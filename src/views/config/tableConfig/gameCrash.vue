@@ -93,6 +93,22 @@
                 </el-col>
               </el-form-item>
             </el-col>
+            <el-col :span="11">
+              <el-form-item label="单局大R下注金额：" :required="true">
+                <el-col :span="20">
+                  <el-input v-model.number="item.BigBetMoney" size="mini" :required="true" />
+                </el-col>
+              </el-form-item>
+            </el-col>
+          </el-row>
+                    <el-row>
+            <el-col :span="11">
+              <el-form-item label="抽水额度(%)：" :required="true">
+                <el-col :span="20">
+                  <el-input v-model.number="item.FeeRate" size="mini" :required="true" />
+                </el-col>
+              </el-form-item>
+            </el-col>
           </el-row>
 
           <fieldset style="margin:20px auto;">
@@ -298,6 +314,8 @@ export default {
         BetMoneyMax: 2000,
         MinMoneyCarry: 1000,
         LogListCount: 100,
+        BigBetMoney: 0,
+        FeeRate: 0,
         TaxRate: 0,
         ActionSeconds: 15,
         MaxWatchTimes: 0,
@@ -374,6 +392,7 @@ export default {
       this.item.BetMoneyMax /= 1000;
       this.item.MinRobotMoney /= 1000;
       this.item.MaxRobotMoney /= 1000;
+      this.item.BigBetMoney /= 1000;
       for (const o in this.item.BetMoneyList) {
         this.item.BetMoneyList[o] /= 1000;
       }
@@ -402,6 +421,7 @@ export default {
       ret.BetMoneyMax *= 1000;
       ret.MinRobotMoney *= 1000;
       ret.MaxRobotMoney *= 1000;
+      ret.BigBetMoney *= 1000;
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000;
       }
