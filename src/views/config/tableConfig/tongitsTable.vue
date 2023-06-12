@@ -158,13 +158,12 @@
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
               <el-select v-model="edit.item.TableMoney" placeholder="请选择">
-                <el-option label="0.1" :value="0.1" />
-                <el-option label="0.3" :value="0.3" />
-                <el-option label="1" :value="1" />
-                <el-option label="3" :value="3" />
-                <el-option label="10" :value="10" />
+                <el-option label="2" :value="2" />
+                <el-option label="5" :value="5" />
                 <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
+                <el-option label="100" :value="100" />
+                <el-option label="500" :value="500" />
               </el-select>
             </el-form-item>
           </el-col>
