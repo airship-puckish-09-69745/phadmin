@@ -895,6 +895,12 @@ export const asyncRoutes = [
         meta: { title: '自定义配置 ◐', noCache: true }
       },
       {
+        path: 'broadcast',
+        component: () => import('@/views/config/baseConfig/broadcast'),
+        name: 'broadcast',
+        meta: { title: '广播配置 ◐', noCache: true }
+      },
+      {
         path: 'commonData',
         component: () => import('@/views/config/baseConfig/common_data'),
         name: 'commonData',
