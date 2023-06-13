@@ -56,7 +56,7 @@
                 width="150"
               >
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.rate" label-width="0" label="" :is-require="false" aria-readonly="true"/>
+                  <el-input v-model.number="scope.row.rate" label-width="0" label="" :is-require="false" />
                 </template>
               </el-table-column>
             </el-table>
@@ -96,7 +96,7 @@
                     width="150"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.rate" label-width="0" label="" :is-require="false" aria-readonly="true"/>
+                      <el-input v-model.number="scope.row.rate" label-width="0" label="" :is-require="false"/>
                     </template>
                   </el-table-column>
                 </el-table>
