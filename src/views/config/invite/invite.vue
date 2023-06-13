@@ -102,7 +102,7 @@
             </el-form-item>
 
             <el-form-item label="有效下注流水倍数" prop="ReferralAudit.BetMultiple" :rules="dataRule(true,{type:'n'})">
-              <el-input v-model.number="item.AffiliateAudit.BetMultiple" placeholder="" />
+              <el-input v-model.number="item.ReferralAudit.BetMultiple" placeholder="" />
             </el-form-item>
 
 <!--            <el-form-item label="玩牌局数" prop="ReferralAudit.Games" :rules="dataRule(true,{type:'n'})">
