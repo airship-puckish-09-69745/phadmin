@@ -314,6 +314,18 @@
                 <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
               </el-col>
             </el-form-item>
+            <el-form-item label="new 标识：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsNew">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item label="hot 标识：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsHot">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="游戏名称多语言" name="second">
             <el-form-item label="图片内容：" :required="true">
@@ -383,7 +395,9 @@ function newItem() {
     Platform: '',
     WhiteAppIDs: '',
     Type: 0,
-    IsPlaying: 0
+    IsPlaying: 0,
+    IsHot: 0,
+    IsNew: 0
   }
 }
 
@@ -411,9 +425,9 @@ export default {
       gameComm: {
         visible: false,
         subKey: 'gameToComm2',
-        form:{},
-        item:{},
-        newGameName:"",
+        form: {},
+        item: {},
+        newGameName: ''
       },
 
       typeOption: [
@@ -437,6 +451,8 @@ export default {
         Platform: '平台',
         Type: '分类',
         IsPlaying: '免费玩家是否可玩',
+        IsNew: '是否新游戏',
+        IsHot: '是否热门'
       }
     }
   },
@@ -471,12 +487,12 @@ export default {
     getGameCommKey() {
       return 'CustomizeCfg_' + this.gameComm.subKey
     },
-    addNewGame(){
+    addNewGame() {
       this.$set(this.gameComm.item, this.gameComm.newGameName, ['poker', '新游戏'])
       Message.success('添加成功！')
       this.gameComm.newGameName = ''
     },
-    saveGameComm(){
+    saveGameComm() {
       this.gameComm.form.Data = JSON.stringify(this.gameComm.item)
       const $this = this
       // 设置修改后数据
