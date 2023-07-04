@@ -433,7 +433,8 @@ export default {
       typeOption: [
         { label: 'Cassino', value: 1 },
         { label: 'Slots', value: 2 },
-        { label: 'Habilidade', value: 3 }
+        { label: 'Habilidade', value: 3 },
+        { label: 'Mini game', value: 4 }
       ],
 
       AttrNames: {
