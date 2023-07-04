@@ -645,20 +645,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/thirdparty',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '代理商管理', icon: 'user' },
-    children: [
-      {
-        path: 'thirdparty',
-        component: () => import('@/views/thirdparty/thirdparty'),
-        name: 'thirdpartyManage',
-        meta: { title: '代理商信息 ◐' }
-      }
-    ]
-  },
-  {
     path: '/playlog',
     component: Layout,
     redirect: 'noRedirect',
