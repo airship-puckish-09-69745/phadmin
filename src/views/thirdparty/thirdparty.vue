@@ -95,7 +95,7 @@
       <el-form ref="edit.item" label-width="150px" size="small">
         <el-form-item label="账号：" :required="true">
           <el-col :span="12">
-            <el-input v-model="edit.item.account" :disabled="true"/>
+            <el-input v-model="edit.item.account"/>
           </el-col>
         </el-form-item>
         <el-form-item label="描述：" :required="true">
@@ -290,15 +290,18 @@ export default {
       Object.assign(this.edit.item, row)
     },
     createSave(postData) {
+      postData.Env = this.env
+      postData.Path = '/thirdparties/thirdparty/add'
       request({
-        url: '/thirdparties/thirdparty/create',
+        url: '/dataProxy/info',
         method: 'post',
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.AddData(response.Data)
-          this.refreshShow()
-          Message.success('保存成功！')
+          this.clientDB.UpdateData(this.edit.item)
+          // this.refreshShow()
+          this.getList()
+          Message.success('添加成功！')
         }
       })
     },
