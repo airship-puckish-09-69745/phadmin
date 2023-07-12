@@ -584,7 +584,9 @@
         ret.MinMoneyCarry *= 1000
         ret.MinRobotMoney *= 1000
         ret.MaxRobotMoney *= 1000
-        ret.Jackpot.BetMoreThan *= 1000
+        const jackpotInfo = {}
+        Object.assign(jackpotInfo, this.item.Jackpot)
+        jackpotInfo.BetMoreThan *= 1000
         for (const o in ret.BetMoneyList) {
           ret.BetMoneyList[o] *= 1000
         }
@@ -595,15 +597,16 @@
           obj.MaxMoneyBet *= 1000
           ret.BetOptions.push(obj)
         }
-        ret.Jackpot.RandAwards=[];
+        jackpotInfo.RandAwards=[];
         for (const o in this.JackpotRandAwards) {
             const raObj = {}
             Object.assign(raObj, this.JackpotRandAwards[o])
             if (raObj.AwardType == 2) {
                 raObj.Value *= 1000
             }
-            ret.Jackpot.RandAwards.push(raObj)
+            jackpotInfo.RandAwards.push(raObj)
         }
+        ret.Jackpot = jackpotInfo
         return ret
       },
       getData() {
@@ -674,7 +677,6 @@
         }
   
         this.form.Data = JSON.stringify(this.getPostData())
-        console.log(this.form.Data)
         const $this = this
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.form)
