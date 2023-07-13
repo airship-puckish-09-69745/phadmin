@@ -24,6 +24,7 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
+        @row-click="clickData"
         @sort-change="sortChange"
       >
         <el-table-column
@@ -49,7 +50,7 @@
         />
         <el-table-column
           prop="ver"
-          label="接入版本"
+          label="客户端版本"
           width="200"
         />
         <el-table-column
@@ -90,32 +91,32 @@
       :visible.sync="edit.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="30%"
+      width="50%"
     >
-      <el-form ref="edit.item" label-width="150px" size="small">
+      <el-form ref="edit.item" label-width="200px" size="small">
         <el-form-item label="账号：" :required="true">
-          <el-col :span="12">
-            <el-input v-model="edit.item.account"/>
+          <el-col :span="15">
+            <el-input v-model="edit.item.account" :disabled="isDisabled"/>
           </el-col>
         </el-form-item>
         <el-form-item label="描述：" :required="true">
-          <el-col :span="12">
+          <el-col :span="15">
             <el-input v-model="edit.item.intro" />
           </el-col>
         </el-form-item>
-        <el-form-item label="IP白名单：" :required="true">
-          <el-col :span="12">
+        <el-form-item label="IP白名单(多个之间用英文逗号分隔)：" :required="true">
+          <el-col :span="15">
             <el-input v-model="edit.item.ip" />
           </el-col>
         </el-form-item>
-        <el-form-item label="接入版本：" :required="true">
-          <el-col :span="12">
+        <el-form-item label="客户端版本：" :required="true">
+          <el-col :span="15">
             <el-input v-model="edit.item.ver" />
           </el-col>
         </el-form-item>
         <el-form-item>
           <el-row>
-            <el-col :span="12" :offset="10">
+            <el-col :span="15" :offset="10">
               <el-button type="primary" size="medium" @click="save">保存</el-button>
             </el-col>
           </el-row>
@@ -155,7 +156,7 @@ import request from '@/utils/request'
 import { Message } from 'element-ui'
 
 function newItem() {
-  return { account: '', intro: '', ip: '', ver: '' }
+  return { account: '', intro: '', ip: [''], ver: '' }
 }
 
 export default {
@@ -169,6 +170,7 @@ export default {
       totalCount: 0,
       currentPage: 0,
       pageNum: 20,
+      isDisabled: false,
       edit: {
         visible: false,
         item: newItem(),
@@ -178,6 +180,7 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
+    this.isDisabled = false
     this.getList()
   },
   methods: {
@@ -191,6 +194,7 @@ export default {
     thirdpartyEdit(row) {
       this.initFormData(true, row)
       this.edit.visible = true
+      this.isDisabled = true
     },
 
     // 分页处理
@@ -214,8 +218,9 @@ export default {
     clickData(row, column, event) {
       console.log(row)
       if (column.columnKey !== 'op') {
-        this.initFormData(true, row.ID)
+        this.initFormData(true, row)
         this.edit.visible = true
+        this.isDisabled = true
       }
     },
     handleCreate() {
