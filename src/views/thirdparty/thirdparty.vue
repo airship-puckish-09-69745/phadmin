@@ -36,27 +36,47 @@
         <el-table-column
           prop="account"
           label="账号"
-          width="300"
+          width="150"
         />
         <el-table-column
           prop="intro"
           label="描述"
-          width="400"
+          width="200"
         />
         <el-table-column
           prop="secret"
           label="密钥"
-          width="300"
+          width="280"
         />
         <el-table-column
           prop="ver"
           label="客户端版本"
+          width="100"
+        />
+        <el-table-column
+          prop="game_uri"
+          label="客户端地址"
           width="200"
+        />
+        <el-table-column
+          prop="screen"
+          label="横竖屏"
+          width="100"
+        />
+        <el-table-column
+          prop="test_uri"
+          label="客户端测试地址"
+          width="150"
+        />
+        <el-table-column
+          prop="test_uids"
+          label="客户端测试用户uids"
+          width="150"
         />
         <el-table-column
           label="操作"
           column-key="op"
-          width="300"
+          width="150"
         >
           <template slot-scope="scope">
             <el-button
@@ -93,25 +113,47 @@
       :close-on-press-escape="false"
       width="50%"
     >
-      <el-form ref="edit.item" label-width="200px" size="small">
-        <el-form-item label="账号：" :required="true">
+      <el-form ref="edit.item" label-width="200px" :model="edit.item" :rules="rules" size="small">
+        <el-form-item label="账号：" :required="true" prop="account">
           <el-col :span="15">
             <el-input v-model="edit.item.account" :disabled="isDisabled"/>
           </el-col>
         </el-form-item>
-        <el-form-item label="描述：" :required="true">
+        <el-form-item label="描述：" :required="true" prot="intro">
           <el-col :span="15">
             <el-input v-model="edit.item.intro" />
           </el-col>
         </el-form-item>
-        <el-form-item label="IP白名单(多个之间用英文逗号分隔)：" :required="true">
+        <el-form-item label="IP白名单(多个之间用英文逗号分隔)：" :required="true" prop="ip">
           <el-col :span="15">
             <el-input v-model="edit.item.ip" />
           </el-col>
         </el-form-item>
-        <el-form-item label="客户端版本：" :required="true">
+        <el-form-item label="客户端版本：" :required="true" prop="ver">
           <el-col :span="15">
             <el-input v-model="edit.item.ver" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="客户端uri：" :required="true" prop="game_uri">
+          <el-col :span="15">
+            <el-input v-model="edit.item.game_uri" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="客户端测试uri：" prop="test_uri">
+          <el-col :span="15">
+            <el-input v-model="edit.item.test_uri" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="测试用户白名单（uid，多个用英文逗号分隔）：" prop="test_uids">
+          <el-col :span="15">
+            <el-input v-model="edit.item.test_uids" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="横竖屏：" :required="true" prop="screen">
+          <el-col :span="15">
+            <el-select v-model="edit.item.screen" placeholder="请选择" required="true">
+              <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -156,11 +198,10 @@ import request from '@/utils/request'
 import { Message } from 'element-ui'
 
 function newItem() {
-  return { account: '', intro: '', ip: [''], ver: '' }
+  return { account: '', intro: '', ip: '', ver: '', game_uri: '', screen: '', test_uri: '', test_uids: '' }
 }
 
 export default {
-
   data() {
     return {
       tableData: [],
@@ -175,9 +216,21 @@ export default {
         visible: false,
         item: newItem(),
         isEdit: false
+      },
+      screens: [
+        { value: 'horizontal', label: '横屏' },
+        { value: 'vertical', label: '竖屏' }
+      ],
+      rules: {
+        account: [{ required: true, trigger: 'blur' }],
+        intro: [{ required: true, trigger: 'blur' }],
+        ver: [{ required: true, trigger: 'blur' }],
+        game_uri: [{ required: true, trigger: 'blur' }],
+        screen: [{ required: true, trigger: ['blur', 'change', 'submit'] }]
       }
     }
   },
+  isFalse: false,
   created() {
     this.env = store.getters.env || this.env
     this.isDisabled = false
@@ -330,10 +383,23 @@ export default {
       return this.edit.item
     },
     checkData() {
+      this.$refs['edit.item'].validate(valid => {})
+      if (this.getPostData().account === '') {
+        return false
+      }
+      if (this.getPostData().intro === '') {
+        return false
+      }
+      if (this.getPostData().game_uri === '') {
+        return false
+      }
+      if (this.getPostData().screen === '') {
+        return false
+      }
       return true
     },
     save() {
-      if (!this.checkData()) return
+      if (!this.checkData()) return false
       if (this.edit.isEdit) {
         this.editSave(this.getPostData())
       } else {
