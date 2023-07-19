@@ -181,6 +181,12 @@ export const asyncRoutes = [
         meta: { title: 'Lucky9 ◐' }
       },
       {
+        path: 'lucky9RobotSetting',
+        component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
+        name: 'lucky9RobotSetting',
+        meta: { title: 'Lucky9 AI◐' }
+      },
+      {
         path: 'pusoyTable',
         component: () => import('@/views/config/tableConfig/pusoyTable'),
         name: 'pusoyTable',
