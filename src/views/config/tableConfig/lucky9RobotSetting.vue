@@ -106,7 +106,6 @@
           </el-table-column>
         </el-table></el-tab-pane>
         <el-tab-pane label="下注配置">
-          <el-col :span="6">
             <fieldset>
               <legend>随机下注次数</legend>
               <el-table
@@ -140,8 +139,6 @@
                 </el-table-column>
               </el-table>
             </fieldset>
-          </el-col>
-          <el-col :span="6">
             <fieldset>
               <legend>随机下注额度</legend>
               <el-table
@@ -167,8 +164,6 @@
                 </el-table-column>
               </el-table>
             </fieldset>
-          </el-col>
-          <el-col :span="6">
             <fieldset>
               <legend>随机下注额度</legend>
               <el-table
@@ -191,7 +186,6 @@
                 </el-table-column>
               </el-table>
             </fieldset>
-          </el-col>
           <el-row>
             <el-form :inline="true">
               <el-form-item label="庄家保护线">
@@ -232,7 +226,6 @@
           </el-table-column>
         </el-table></el-tab-pane>
         <el-tab-pane label="奖池保护">
-          <el-col :span="8">
             <fieldset>
               <legend>奖池完全线配置</legend>
             <el-table
@@ -258,8 +251,6 @@
               </el-table-column>
             </el-table>
           </fieldset>
-          </el-col>
-          <el-col :span="8">
             <fieldset>
               <legend>机器人不输</legend>
             <el-table
@@ -293,7 +284,6 @@
               </el-table-column>
             </el-table>
             </fieldset>
-          </el-col>
         </el-tab-pane>
       </el-tabs>
 
