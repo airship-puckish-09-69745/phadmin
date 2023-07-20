@@ -1,5 +1,8 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
+    <el-row>
+      <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -7,7 +10,7 @@
           type="primary"
           icon="el-icon-plus"
           @click="handleCreate()"
-        >添加第三方商
+        >添加配置项
         </el-button>
       </el-col>
       <el-col :span="2">
@@ -28,78 +31,140 @@
         @sort-change="sortChange"
       >
         <el-table-column
-          prop="id"
+          prop="ID"
           label="ID"
           sortable="custom"
-          width="100"
+          width="90"
         />
         <el-table-column
-          prop="account"
+          prop="Account"
           label="账号"
-          width="150"
-        />
+          width="120"
+        >
+        </el-table-column>
         <el-table-column
-          prop="intro"
+          prop="Intro"
           label="描述"
+          sortable="custom"
           width="200"
         />
         <el-table-column
-          prop="secret"
+          prop="Secret"
           label="密钥"
-          width="280"
-        />
+          sortable="custom"
+          width="260"
+        >
+        </el-table-column>
         <el-table-column
-          prop="ver"
+          prop="Ver"
           label="客户端版本"
           width="100"
-        />
+        >
+        </el-table-column>
         <el-table-column
-          prop="game_uri"
+          prop="GameUri"
           label="客户端地址"
           width="200"
         />
         <el-table-column
-          prop="screen"
+          prop="Screen"
           label="横竖屏"
-          width="100"
-        />
+          width="90"
+        >
+        </el-table-column>
         <el-table-column
-          prop="test_uri"
+          prop="TestUri"
           label="客户端测试地址"
-          width="150"
-        />
+          width="100"
+        >
+        </el-table-column>
         <el-table-column
-          prop="test_uids"
+          prop="TestUids"
           label="客户端测试用户uids"
-          width="150"
-        />
+          width="100"
+        >
+        </el-table-column>
+
         <el-table-column
-          label="操作"
-          column-key="op"
+          prop="LastModify"
+          label="最近修改"
           width="150"
         >
           <template slot-scope="scope">
+            {{ formatTime(scope.row.LastModify) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ModifyUser"
+          label="最后修改人"
+          width="100"
+        />
+        <el-table-column
+          prop="Status"
+          label="状态"
+          width="70"
+        >
+          <template slot-scope="scope">
+            {{ statNames[scope.row.Status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          column-key="op"
+          width="250"
+        >
+          <template slot-scope="scope">
             <el-button
+              type="primary"
               size="mini"
-              icon="el-icon-edit"
-              @click="thirdpartyEdit(scope.row)"
+              @click="handleCopy(scope.row)"
+            >复制
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==6"
+              size="mini"
+              type="success"
+              @click="handlePreOn(scope.row)"
+            >预上
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==7"
+              size="mini"
+              type="success"
+              @click="handleOn(scope.row)"
+            >上架
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==2"
+              size="mini"
+              type="warning"
+              @click="handlePreOff(scope.row)"
+            >预下
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==6"
+              size="mini"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
             />
             <el-button
+              v-if="scope.row.Status==8"
               size="mini"
-              :icon="scope.row.status == 1 ? 'el-icon-check' : 'el-icon-close'"
-              @click="thirdpartyForbid(scope.row.id, scope.row.account, scope.row.status == 1 ? 1 : 0)"
-            />
+              type="danger"
+              @click="handleOffline(scope.row)"
+            >下架
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
       <el-col :offset="16" :span="8">
         <div class="block">
           <el-pagination
-            :current-page="currentPage"
+            :current-page="clientDB.GetPage().GetCurrentPage()"
             :page-sizes="[10, 20, 30, 40]"
-            :page-size="pageNum"
+            :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount"
+            :total="clientDB.GetPage().GetTotalCount()"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
@@ -111,47 +176,46 @@
       :visible.sync="edit.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="50%"
     >
-      <el-form ref="edit.item" label-width="200px" :model="edit.item" :rules="rules" size="small">
-        <el-form-item label="账号：" :required="true" prop="account">
+      <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
+        <el-form-item label="账号：" :required="true" prop="Account">
           <el-col :span="15">
-            <el-input v-model="edit.item.account" :disabled="isDisabled"/>
+            <el-input v-model="edit.item.Account" :disabled="isDisabled"/>
           </el-col>
         </el-form-item>
-        <el-form-item label="描述：" :required="true" prot="intro">
+        <el-form-item label="描述：" :required="true" prot="Intro">
           <el-col :span="15">
-            <el-input v-model="edit.item.intro" />
+            <el-input v-model="edit.item.Intro" />
           </el-col>
         </el-form-item>
-        <el-form-item label="IP白名单(多个之间用英文逗号分隔)：" :required="true" prop="ip">
+        <el-form-item label="IP白名单(多个之间用英文逗号分隔)：" prop="Ip">
           <el-col :span="15">
-            <el-input v-model="edit.item.ip" />
+            <el-input v-model="edit.item.Ip" />
           </el-col>
         </el-form-item>
-        <el-form-item label="客户端版本：" :required="true" prop="ver">
+        <el-form-item label="客户端版本：" :required="true" prop="Ver">
           <el-col :span="15">
-            <el-input v-model="edit.item.ver" />
+            <el-input v-model="edit.item.Ver" />
           </el-col>
         </el-form-item>
-        <el-form-item label="客户端uri：" :required="true" prop="game_uri">
+        <el-form-item label="客户端uri：" :required="true" prop="GameUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.game_uri" />
+            <el-input v-model="edit.item.GameUri" />
           </el-col>
         </el-form-item>
-        <el-form-item label="客户端测试uri：" prop="test_uri">
+        <el-form-item label="客户端测试uri：" prop="TestUri">
           <el-col :span="15">
-            <el-input v-model="edit.item.test_uri" />
+            <el-input v-model="edit.item.TestUri" />
           </el-col>
         </el-form-item>
-        <el-form-item label="测试用户白名单（uid，多个用英文逗号分隔）：" prop="test_uids">
+        <el-form-item label="测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
           <el-col :span="15">
-            <el-input v-model="edit.item.test_uids" />
+            <el-input v-model="edit.item.TestUids" />
           </el-col>
         </el-form-item>
-        <el-form-item label="横竖屏：" :required="true" prop="screen">
+        <el-form-item label="横竖屏：" :required="true" prop="Screen">
           <el-col :span="15">
-            <el-select v-model="edit.item.screen" placeholder="请选择" required="true">
+            <el-select v-model="edit.item.Screen" placeholder="请选择" required="true">
               <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value"></el-option>
             </el-select>
           </el-col>
@@ -165,58 +229,42 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!--对比组件-->
+    <compare ref="compare" :attr-names="AttrNames" />
   </div>
 </template>
-<style>
-.table .text-c th, .table .text-c td {
-  text-align: center;
-}
-.table-bg thead th {
-  background-color: #f5fafe;
-}
-.table-bordered th, .table-bordered td {
-  border: 1px solid #ddd;
-}
-.table-border th, .table-border td {
-  border-bottom: 1px solid #ddd;
-}
-.table th, .table td {
-  padding: 8px;
-  line-height: 20px;
-  word-break: break-all;
-  border-collapse: collapse;
-}
 
-.table th {
-  font-weight: bold;
-}
-</style>
 <script>
-import { $libDate, $libShow, ClientTableData } from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
 import store from '@/store'
 import request from '@/utils/request'
+import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
+import Publish from '@/components/Publish'
+
+const filterMap = {}
 
 function newItem() {
-  return { account: '', intro: '', ip: '', ver: '', game_uri: '', screen: '', test_uri: '', test_uids: '' }
+  return { Account: '', Intro: '', Ip: '', Ver: '', GameUri: '', Screen: '', TestUri: '', TestUids: '' }
 }
 
 export default {
+  components: { Compare, Publish },
   data() {
     return {
       tableData: [],
-      clientDB: new ClientTableData([], 1),
+      statNames: { 0: '正常', 1: '关闭', 7: '预上架', 8: '预下架' },
+      clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
-      totalCount: 0,
-      currentPage: 0,
-      pageNum: 20,
-      isDisabled: false,
+      env: 'test',
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'BetMoneyMax', 'TotalRecharge', 'MaxPayAmount']),
       edit: {
         visible: false,
         item: newItem(),
         isEdit: false
       },
+      isDisabled: false,
       screens: [
         { value: 'horizontal', label: '横屏' },
         { value: 'vertical', label: '竖屏' }
@@ -227,10 +275,21 @@ export default {
         ver: [{ required: true, trigger: 'blur' }],
         game_uri: [{ required: true, trigger: 'blur' }],
         screen: [{ required: true, trigger: ['blur', 'change', 'submit'] }]
+      },
+
+      AttrNames: {
+        Account: '账号',
+        Intro: '描述',
+        Secret: '密钥',
+        Ip: 'IP白名单',
+        Ver: '客户端版本',
+        GameUri: '客户端uri',
+        Screen: '横竖屏',
+        TestUri: '客户端测试uri',
+        TestUids: '测试用户uid白名单'
       }
     }
   },
-  isFalse: false,
   created() {
     this.env = store.getters.env || this.env
     this.isDisabled = false
@@ -243,23 +302,24 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-
-    thirdpartyEdit(row) {
-      this.initFormData(true, row)
-      this.edit.visible = true
-      this.isDisabled = true
+    clearFilter() {
+      this.clientDB.ClearFilterMap()
+      this.refreshShow()
     },
-
+    handleFilter() {
+      this.clientDB.FilterData()
+      this.refreshShow()
+    },
     // 分页处理
     refreshShow() {
-      this.getList()
+      this.tableData = this.clientDB.GetCurrentPageData()
     },
     handleSizeChange(val) {
-      this.pageNum = val
+      this.clientDB.GetPage().SetPageNum(val)
       this.refreshShow()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
+      this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
 
@@ -269,139 +329,180 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      console.log(row)
       if (column.columnKey !== 'op') {
-        this.initFormData(true, row)
+        this.initFormData(true, row.ID)
         this.edit.visible = true
-        this.isDisabled = true
       }
     },
+
     handleCreate() {
-      this.edit.isEdit = false
       this.edit.item = newItem()
+      this.edit.isEdit = false
+      this.edit.visible = true
+    },
+    handleCopy(ob) {
+      this.initFormData(false, ob.ID)
       this.edit.visible = true
     },
     getList() {
-      const $this = this
       request({
-        url: '/dataProxy/info',
+        url: '/thirdparties/all',
         method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/thirdparties/list',
-          status: -1,
-          page: this.currentPage,
-          limit: this.pageNum
-        }
+        data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          const objs = response.Data.rows || []
-          console.log(objs)
-          $this.ret = response.Data
-          $this.tableData = objs
-          if (objs.length === 0) {
-            Message.success('查询结果为空')
-            return
-          }
-          $this.totalCount = response.Data.total
-          $this.tableData = objs
+          const objs = response.Data || []
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.handleCurrentChange(1)
         }
       })
     },
-    thirdpartyForbid(id, account, status) {
-      var msg = '确定要 禁用 此第三方商吗？'
-      if (status === 1) {
-        msg = '确定要 启用 此第三方商吗？'
+    configCheck() {
+      if (this.getPostData().account === '') {
+        this.$alert('账户不能为空')
+        return false
       }
+      if (this.getPostData().intro === '') {
+        this.$alert('描述不能为空')
+        return false
+      }
+      if (this.getPostData().game_uri === '') {
+        this.$alert('客户端uri 不能为空')
+        return false
+      }
+      if (this.getPostData().screen === '') {
+        this.$alert('必须选择横竖屏')
+        return false
+      }
+      return true
+    },
+    handlePreOn(ob) {
+      this.changeStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
+    },
+    handleOn(ob) {
+      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+    },
+    handlePreOff(ob) {
+      this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleOffline(ob) {
+      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleDelete(ob) {
+      this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
+    },
+    changeStatus(id, status, msg) {
+      const $this = this
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         request({
-          url: '/dataProxy/info',
+          url: '/thirdparties/update/status',
           method: 'post',
           data: {
-            Env: this.env,
-            Path: '/thirdparties/thirdparty/forbid',
-            id: id,
-            account: account,
+            ID: id,
             status: status
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success(response.Data)
-            this.getList()
+            Message.success('修改记录状态成功！')
+            $this.clientDB.UpdateData({ ID: id, Status: status })
           }
         })
       }).catch(() => {
         console.log('取消')
       })
     },
-
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
-      return this.edit.isEdit ? '修改第三方商' : '新增第三方商'
+      this.isDisabled = this.edit.isEdit
+      return this.edit.isEdit ? '修改配置' : '新增配置'
     },
-    initFormData(bEdit, row) {
+    initFormData(bEdit, ID) {
       this.edit.isEdit = bEdit
-      Object.assign(this.edit.item, row)
+      if (ID) {
+        const _data = this.clientDB.GetDataByID(ID)
+        if (_data) {
+          Object.assign(this.edit.item, _data)
+          if (bEdit) {
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(_data)
+          }
+        }
+      }
+    },
+    dataRule(required, config) {
+      return DataRule(required, config)
     },
     createSave(postData) {
-      postData.Env = this.env
-      postData.Path = '/thirdparties/thirdparty/add'
       request({
-        url: '/dataProxy/info',
+        url: '/thirdparties/create',
         method: 'post',
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          // this.refreshShow()
-          this.getList()
-          Message.success('添加成功！')
-        }
-      })
-    },
-    editSave(postData) {
-      postData.Env = this.env
-      postData.Path = '/thirdparties/thirdparty/update'
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: postData
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          // this.refreshShow()
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.refreshShow()
           this.getList()
           Message.success('保存成功！')
         }
       })
     },
+    editSave(postData) {
+      request({
+        url: 'thirdparties/update',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.clientDB.UpdateData(this.edit.item)
+          this.refreshShow()
+          Message.success('保存成功！')
+        }
+      })
+    },
     getPostData() {
-      return this.edit.item
+      const postData = this.libMoney.TransForStore(this.edit.item)
+      return postData
     },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
-      if (this.getPostData().account === '') {
+      if (this.getPostData().Account === '') {
+        this.$alert('账户不能为空')
         return false
       }
-      if (this.getPostData().intro === '') {
+      if (this.getPostData().Intro === '') {
+        this.$alert('描述不能为空')
         return false
       }
-      if (this.getPostData().game_uri === '') {
+      if (this.getPostData().GameUri === '') {
+        this.$alert('客户端uri 不能为空')
         return false
       }
-      if (this.getPostData().screen === '') {
+      if (this.getPostData().Screen === '') {
+        this.$alert('必须横竖屏选择')
         return false
       }
       return true
     },
     save() {
-      if (!this.checkData()) return false
+      if (!this.checkData()) return
+
       if (this.edit.isEdit) {
-        this.editSave(this.getPostData())
+        // 设置修改后数据
+        this.$refs.compare.SetNewVal(this.edit.item)
+        const $this = this
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          } else {
+            $this.editSave($this.getPostData())
+          }
+        })
       } else {
         this.createSave(this.getPostData())
       }
