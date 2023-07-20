@@ -175,6 +175,12 @@ export const asyncRoutes = [
         meta: { title: 'Tongits ◐' }
       },
       {
+        path: 'tongitsTableAI',
+        component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
+        name: 'tongitsTableAI',
+        meta: { title: 'TongitsAI ◐' }
+      },
+      {
         path: 'lucky9Table',
         component: () => import('@/views/config/tableConfig/lucky9Table'),
         name: 'lucky9Table',

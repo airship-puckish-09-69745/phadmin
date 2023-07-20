@@ -75,6 +75,15 @@
             <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMax" placeholder="单位秒" />
           </el-form-item>
         </el-col>
+        <el-col :span="11">
+          <el-form-item
+            label="机器人底池(X1000)："
+            label-width="200px"
+            :rules="dataRule(true,{type:'n',range:'0'})"
+          >
+            <el-input v-model.number="tongitsConfig.robotConfig.Control.机器人底池" placeholder="底池" />
+          </el-form-item>
+        </el-col>
       </el-row>
     </fieldset>
 </template>
