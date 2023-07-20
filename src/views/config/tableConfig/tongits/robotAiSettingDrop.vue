@@ -12,12 +12,12 @@
           <el-form-item
               label="没有人放牌同时自己点数少于其他人，放牌概率"
             >
-              <el-input v-model.number="AiConfig.Challenge.NobodyDropOwnerLessOther" placeholder="" />
+              <el-input v-model.number="AiConfig.Drop.NobodyDropOwnerLessOther" placeholder="" />
           </el-form-item>
           <el-form-item
               label="没有人放牌同时自己点数大于其他人，放牌概率"
             >
-              <el-input v-model.number="AiConfig.Challenge.NobodyDropOwnerGreatOther" placeholder="" />
+              <el-input v-model.number="AiConfig.Drop.NobodyDropOwnerGreatOther" placeholder="" />
           </el-form-item>
         </el-col>
       </el-row>
