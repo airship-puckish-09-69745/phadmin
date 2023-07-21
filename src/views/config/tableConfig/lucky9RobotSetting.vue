@@ -459,7 +459,7 @@ export default {
       this.item.BetTimesCfg.push(newBetTimesCfg(0, 0, 0))
     },
     delBetTimesCfg(idx) {
-      this.$confirm(msg, '要删除该项吗？', {
+      this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -471,7 +471,7 @@ export default {
       this.item.HitPotProtectCfg.push(newHitPotProtectCfg(0, 0, 0))
     },
     delHitPotProtectCfg(idx) {
-      this.$confirm(msg, '要删除该项吗？', {
+      this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -483,7 +483,7 @@ export default {
       this.item.SafePoolMoneyCfg.push(SafePoolMoneyCfg(0, 0))
     },
     delSafePoolMoneyCfg() {
-      this.$confirm(msg, '要删除该项吗？', {
+      this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -495,7 +495,7 @@ export default {
       this.item.SafePoolProtectCfg.push(newSafePoolProtectCfg(0, 0, 0))
     },
     delSafePoolProtectCfg(idx) {
-      this.$confirm(msg, '要删除该项吗？', {
+      this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
