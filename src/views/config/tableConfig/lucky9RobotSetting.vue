@@ -14,16 +14,16 @@
               style="width: 100%"
             >
               <el-table-column
-                label="开桌数量"
+                label="机器人数"
                 prop="Number"
                 width="100"
               />
               <el-table-column
                 label="概率(%)"
-                width="100"
+                width="200"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Probability" size="mini" />
+                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
                 </template>
               </el-table-column>
             </el-table>
@@ -49,12 +49,13 @@
                 <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
               </el-form-item>
               <el-form-item label="延长玩牌最少携带(底注的倍数)">
-                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini" />
+                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini"><template slot="append">倍</template></el-input>
               </el-form-item>
             </el-form>
           </el-col>
         </el-tab-pane>
-        <el-tab-pane label="牌局结束补机器人配置"><el-table
+        <el-tab-pane label="牌局结束补机器人配置">
+          <el-table
           :data="item.AppendCfg"
           border
           style="width: 100%"
@@ -69,7 +70,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.Probability" size="mini" />
+              <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
@@ -89,11 +90,11 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="最小进入延迟(秒)"
+            label="最小进入延迟"
             width="200"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.EnterDelayMin" size="mini" />
+              <el-input v-model.number="scope.row.EnterDelayMin" size="mini"><template slot="append">秒</template>
             </template>
           </el-table-column>
           <el-table-column
@@ -101,7 +102,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.EnterDelayMax" size="mini" />
+              <el-input v-model.number="scope.row.EnterDelayMax" size="mini"><template slot="append">秒</template></el-input>
             </template>
           </el-table-column>
         </el-table></el-tab-pane>
@@ -134,7 +135,7 @@
                   width="200"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Probability" size="mini" />
+                    <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
                   </template>
                 </el-table-column>
               </el-table>
@@ -159,7 +160,7 @@
                   width="100"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Probability" size="mini" />
+                    <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">‰</template></el-input>
                   </template>
                 </el-table-column>
               </el-table>
@@ -181,7 +182,7 @@
                   width="200"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Probability" size="mini" />
+                    <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
                   </template>
                 </el-table-column>
               </el-table>
@@ -198,8 +199,8 @@
               <el-form-item label="庄家保护最大点数">
                 <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
               </el-form-item>
-              <el-form-item label="庄家保护概率（%）">
-                <el-input v-model.number="item.DealerWarnProbability" size="mini" />
+              <el-form-item label="庄家赢牌概率（%）">
+                <el-input v-model.number="item.DealerWarnProbability" size="mini"><template slot="append">%</template></el-input>
               </el-form-item>
             </el-form>
         </el-tab-pane>
@@ -210,11 +211,11 @@
           style="width: 100%"
         >
           <el-table-column
-            label="Pot机器人占比区间"
-            width="300"
+            label="Pot机器人HitPot占比"
+            width="200"
           >
             <template slot-scope="scope">
-              {{ scope.row.PotRobotRatioMin/10 }}% - {{ scope.row.PotRobotRatioMax/10 }}%
+              <el-input v-model.number="scope.row.PotRobotRatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">%</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
@@ -222,14 +223,22 @@
             width="200"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.Probability" size="mini" />
+              <el-input v-model.number="scope.row.PotRobotRatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">%</template></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="赢的概率(%)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
             </template>
           </el-table-column>
         </el-table>
 
-          <el-form :inline="true" label-width="500px">
+          <el-form :inline="true" label-width="350px">
             <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
-              <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini" />%
+              <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-form>
 
@@ -268,19 +277,19 @@
               style="width: 100%"
             >
               <el-table-column
-                label="缓冲池余量比例(%) &gt;="
+                label="缓冲池余量比例(%)"
                 width="300"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RatioMin" size="mini" />
+                  <el-input v-model.number="scope.row.RatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">%</template></el-input>
                 </template>
               </el-table-column>
               <el-table-column
-                label="缓冲池余量比例(%) &lt;="
+                label="缓冲池余量比例(%)"
                 width="300"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RatioMax" size="mini" />
+                  <el-input v-model.number="scope.row.RatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">%</template></el-input>
                 </template>
               </el-table-column>
               <el-table-column
@@ -288,7 +297,7 @@
                 width="300"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RobotWinProbability" size="mini" />
+                  <el-input v-model.number="scope.row.RobotWinProbability" size="mini"><template slot="append">%</template></el-input>
                 </template>
               </el-table-column>
             </el-table>
