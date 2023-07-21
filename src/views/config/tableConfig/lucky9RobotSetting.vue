@@ -148,8 +148,8 @@
                 style="width: 100%"
               >
                 <el-table-column
-                  label="操作类型"
-                  width="100"
+                  label="下注金额选项"
+                  width="150"
                 >
                   <template slot-scope="scope">
                     {{ getBetOptionCfgName(scope.row.BetOption) }}
@@ -157,7 +157,7 @@
                 </el-table-column>
                 <el-table-column
                   label="概率(千分)"
-                  width="100"
+                  width="300"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">‰</template></el-input>
@@ -189,7 +189,7 @@
             </fieldset>
             <hr />
             <h5>机器人庄家保护配置</h5>
-            <el-form label-width="500px">
+            <el-form label-width="500px" style="width:800px;">
               <el-form-item label="庄家保护线(未看牌玩家下注金额/所有玩家下注金额*100)">
                 <el-input v-model.number="item.DealerWarnLine" size="mini" />
               </el-form-item>
@@ -212,15 +212,15 @@
         >
           <el-table-column
             label="Pot机器人HitPot占比"
-            width="200"
+            width="250"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.PotRobotRatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">%</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
-            label="赢的概率(%)"
-            width="200"
+            label="Pot机器人HitPot占比"
+            width="250"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.PotRobotRatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">%</template></el-input>
@@ -236,6 +236,8 @@
           </el-table-column>
         </el-table>
 
+          <hr />
+          
           <el-form :inline="true" label-width="350px">
             <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
               <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini"><template slot="append">%</template></el-input>
