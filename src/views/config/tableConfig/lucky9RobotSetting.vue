@@ -106,10 +106,11 @@
               <el-input v-model.number="scope.row.EnterDelayMax" size="mini"><template slot="append">秒</template></el-input>
             </template>
           </el-table-column>
-        </el-table></el-tab-pane>
-        <el-tab-pane label="下注配置">
+        </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="机器人下注与要牌配置">
             <fieldset>
-              <legend>随机下注次数</legend>
+              <legend>下注次数配置 <el-button type="text" @click="addBetTimesCfg">添加新项</el-button></legend>
               <el-table
                 :data="item.BetTimesCfg"
                 border
@@ -139,10 +140,16 @@
                     <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
                   </template>
                 </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-input type="danger" size="mini" @click="delBetTimesCfg(scope.$index)" />
+                  </template>
+                </el-table-column>
               </el-table>
             </fieldset>
+          <hr />
             <fieldset>
-              <legend>随机下注额度</legend>
+              <legend>下注金额配置</legend>
               <el-table
                 :data="item.BetOptionCfg"
                 border
@@ -166,6 +173,7 @@
                 </el-table-column>
               </el-table>
             </fieldset>
+          <hr />
             <fieldset>
               <legend>要牌概率配置</legend>
               <el-table
@@ -188,24 +196,25 @@
                 </el-table-column>
               </el-table>
             </fieldset>
-            <hr />
-            <h5>机器人庄家保护配置</h5>
-            <el-form label-width="500px" style="width:800px;">
-              <el-form-item label="庄家保护线(未看牌玩家下注金额/所有玩家下注金额*100)">
-                <el-input v-model.number="item.DealerWarnLine" size="mini" />
-              </el-form-item>
-              <el-form-item label="庄家保护最小点数">
-                <el-input v-model.number="item.DealerWarnPointsMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="庄家保护最大点数">
-                <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
-              </el-form-item>
-              <el-form-item label="庄家赢牌概率（%）">
-                <el-input v-model.number="item.DealerWarnProbability" size="mini"><template slot="append">%</template></el-input>
-              </el-form-item>
-            </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="机器人庄家保护配置">
+          <el-form label-width="500px" style="width:800px;">
+            <el-form-item label="庄家保护线(未看牌玩家下注金额/所有玩家下注金额*100)">
+              <el-input v-model.number="item.DealerWarnLine" size="mini" />
+            </el-form-item>
+            <el-form-item label="庄家保护最小点数">
+              <el-input v-model.number="item.DealerWarnPointsMin" size="mini" />
+            </el-form-item>
+            <el-form-item label="庄家保护最大点数">
+              <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
+            </el-form-item>
+            <el-form-item label="庄家赢牌概率（%）">
+              <el-input v-model.number="item.DealerWarnProbability" size="mini"><template slot="append">%</template></el-input>
+            </el-form-item>
+          </el-form>
         </el-tab-pane>
         <el-tab-pane label="Pot机器人保护">
+          <button type="primary" @click="addHitPotProtectCfg">添加一项</button>
           <el-table
           :data="item.HitPotProtectCfg"
           border
@@ -235,6 +244,14 @@
               <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
             </template>
           </el-table-column>
+          <el-table-column
+            label="删除"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <el-input type="danger" size="mini" @click="delHitPotProtectCfg(scope.$index)">删除</el-input>
+            </template>
+          </el-table-column>
         </el-table>
 
           <hr />
@@ -248,7 +265,7 @@
         </el-tab-pane>
         <el-tab-pane label="机器人缓冲池配置">
             <fieldset>
-              <legend>机器人缓冲池初始大小</legend>
+              <legend>机器人缓冲池初始大小 <button type="text" @click="addSafePoolMoneyCfg">添加一项</button></legend>
             <el-table
               :data="item.SafePoolMoneyCfg"
               border
@@ -270,10 +287,19 @@
                   <el-input v-model.number="scope.row.SafePool" size="mini" />
                 </template>
               </el-table-column>
+              <el-table-column
+                label="操作"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <el-input size="mini" type="danger" @click="delSafePoolMoneyCfg(scope.$index)">删除</el-input>
+                </template>
+              </el-table-column>
             </el-table>
           </fieldset>
+          <hr />
             <fieldset>
-              <legend>缓冲池安全配置</legend>
+              <legend>缓冲池安全配置 <el-button type="text" @click="addSafePoolProtectCfg">添加一项</el-button></legend>
             <el-table
               :data="item.SafePoolProtectCfg"
               border
@@ -301,6 +327,14 @@
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.RobotWinProbability" size="mini"><template slot="append">%</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <el-input size="mini" type="danger" @click="delSafePoolProtectCfg(scope.$index)">删除</el-input>
                 </template>
               </el-table-column>
             </el-table>
@@ -421,6 +455,54 @@ export default {
     console.log(1)
   },
   methods: {
+    addBetTimesCfg() {
+      this.item.BetTimesCfg.push(newBetTimesCfg(0, 0, 0))
+    },
+    delBetTimesCfg(idx) {
+      this.$confirm(msg, '要删除该项吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.item.BetTimesCfg, idx)
+      })
+    },
+    addHitPotProtectCfg() {
+      this.item.HitPotProtectCfg.push(newHitPotProtectCfg(0, 0, 0))
+    },
+    delHitPotProtectCfg(idx) {
+      this.$confirm(msg, '要删除该项吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.item.HitPotProtectCfg, idx)
+      })
+    },
+    addSafePoolMoneyCfg() {
+      this.item.SafePoolMoneyCfg.push(SafePoolMoneyCfg(0, 0))
+    },
+    delSafePoolMoneyCfg() {
+      this.$confirm(msg, '要删除该项吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.item.SafePoolMoneyCfg, idx)
+      })
+    },
+    addSafePoolProtectCfg() {
+      this.item.SafePoolProtectCfg.push(newSafePoolProtectCfg(0, 0, 0))
+    },
+    delSafePoolProtectCfg(idx) {
+      this.$confirm(msg, '要删除该项吗？', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.item.SafePoolProtectCfg, idx)
+      })
+    },
     getBetOptionCfgName(option) {
       const names = ['', 'Repeat', '1 Bet', '5 Bet', 'Max']
       return names[option]
