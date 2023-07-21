@@ -6,7 +6,7 @@
     <el-row>
 
       <el-tabs type="border-card">
-        <el-tab-pane label="进桌规则">
+        <el-tab-pane label="预进桌数量配置&玩牌基础配置">
           <el-col :span="8">
             <el-table
               :data="item.PresetCfg"
@@ -30,75 +30,75 @@
           </el-col>
           <el-col :span="16">
             <el-form ref="item" label-width="150px" :inline="true">
-              <el-form-item label="最少局数">
-                <el-input v-model.number="item.PlayTimesMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="最多局数">
-                <el-input v-model.number="item.PlayTimesMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="最少加钱">
-                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="最少补充局数">
-                <el-input v-model.number="item.IncrPlayTimesMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="最多补充局数">
-                <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
-              </el-form-item>
               <el-form-item label="最少携带">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini" />
               </el-form-item>
               <el-form-item label="最多携带">
                 <el-input v-model.number="item.CarryingMultiMax" size="mini" />
               </el-form-item>
+              <el-form-item label="最少玩牌局数">
+                <el-input v-model.number="item.PlayTimesMin" size="mini" />
+              </el-form-item>
+              <el-form-item label="最多玩牌局数">
+                <el-input v-model.number="item.PlayTimesMax" size="mini" />
+              </el-form-item>
+              <el-form-item label="延长玩牌携带要求(底注的倍数)">
+                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini" />
+              </el-form-item>
+              <el-form-item label="延长玩牌最少局数">
+                <el-input v-model.number="item.IncrPlayTimesMin" size="mini" />
+              </el-form-item>
+              <el-form-item label="延长玩牌最多局数">
+                <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
+              </el-form-item>
             </el-form>
           </el-col>
         </el-tab-pane>
-        <el-tab-pane label="补充规则"><el-table
+        <el-tab-pane label="牌局结束补机器人配置"><el-table
           :data="item.AppendCfg"
           border
           style="width: 100%"
         >
           <el-table-column
-            label="当前人数"
+            label="当前桌总人数"
             prop="UserNumber"
-            width="100"
+            width="300"
           />
           <el-table-column
-            label="概率(%)"
-            width="100"
+            label="补机器人概率(%)"
+            width="300"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.Probability" size="mini" />
             </template>
           </el-table-column>
           <el-table-column
-            label="最少补充"
-            width="100"
+            label="最少补充机器人数量"
+            width="300"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.AppendRobotMin" size="mini" />
             </template>
           </el-table-column>
           <el-table-column
-            label="最多补充"
-            width="100"
+            label="最多补充机器人数量"
+            width="300"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.AppendRobotMax" size="mini" />
             </template>
           </el-table-column>
           <el-table-column
-            label="进场最少时间"
-            width="100"
+            label="最小进入延迟(秒)"
+            width="300"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.EnterDelayMin" size="mini" />
             </template>
           </el-table-column>
           <el-table-column
-            label="进场最多时间"
-            width="100"
+            label="最大进入延迟(秒)"
+            width="300"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.EnterDelayMax" size="mini" />
@@ -114,16 +114,16 @@
                 style="width: 100%"
               >
                 <el-table-column
-                  label="随机最小"
-                  width="100"
+                  label="最小次数"
+                  width="200"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.BetTimesMin" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="随机最大"
-                  width="100"
+                  label="最大次数"
+                  width="200"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.BetTimesMax" size="mini" />
@@ -131,7 +131,7 @@
                 </el-table-column>
                 <el-table-column
                   label="概率(%)"
-                  width="100"
+                  width="200"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Probability" size="mini" />
@@ -165,20 +165,20 @@
               </el-table>
             </fieldset>
             <fieldset>
-              <legend>随机下注额度</legend>
+              <legend>要牌概率配置</legend>
               <el-table
                 :data="item.TakeCardCfg"
                 border
                 style="width: 100%"
               >
                 <el-table-column
-                  label="点数"
+                  label="手牌点数"
                   prop="Points"
-                  width="100"
+                  width="200"
                 />
                 <el-table-column
-                  label="概率(%)"
-                  width="100"
+                  label="要牌概率(%)"
+                  width="200"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Probability" size="mini" />
@@ -188,7 +188,7 @@
             </fieldset>
           <el-row>
             <el-form :inline="true">
-              <el-form-item label="庄家保护线">
+              <el-form-item label="庄家保护线(不看牌玩家下注金额/所有玩家下注金额*100)">
                 <el-input v-model.number="item.DealerWarnLine" size="mini" />
               </el-form-item>
               <el-form-item label="庄家保护最小点数">
@@ -203,31 +203,37 @@
             </el-form>
           </el-row>
         </el-tab-pane>
-        <el-tab-pane label="Pot保护"><el-table
+        <el-tab-pane label="Pot机器人保护"><el-table
           :data="item.HitPotProtectCfg"
           border
           style="width: 100%"
         >
           <el-table-column
-            label="投入占比区间"
-            width="150"
+            label="Pot机器人占比区间"
+            width="300"
           >
             <template slot-scope="scope">
               {{ scope.row.PotRobotRatioMin/10 }}% - {{ scope.row.PotRobotRatioMax/10 }}%
             </template>
           </el-table-column>
           <el-table-column
-            label="概率(%)"
-            width="100"
+            label="赢的概率(%)"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.Probability" size="mini" />
             </template>
           </el-table-column>
-        </el-table></el-tab-pane>
-        <el-tab-pane label="奖池保护">
+        </el-table>
+
+          <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
+            <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini" />%
+          </el-form-item>
+
+        </el-tab-pane>
+        <el-tab-pane label="机器人缓冲池配置">
             <fieldset>
-              <legend>奖池完全线配置</legend>
+              <legend>机器人缓冲池初始大小</legend>
             <el-table
               :data="item.SafePoolMoneyCfg"
               border
@@ -235,15 +241,15 @@
             >
               <el-table-column
                 label="底注"
-                width="150"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.TableMoney" size="mini" />
                 </template>
               </el-table-column>
               <el-table-column
-                label="奖池安全线"
-                width="100"
+                label="缓冲池初始值"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.SafePool" size="mini" />
@@ -252,34 +258,34 @@
             </el-table>
           </fieldset>
             <fieldset>
-              <legend>机器人不输</legend>
+              <legend>缓冲池安全配置</legend>
             <el-table
               :data="item.SafePoolProtectCfg"
               border
               style="width: 100%"
             >
               <el-table-column
-                label="实际/配置（下限）"
-                width="150"
+                label="缓冲池余量比例(%) &gt;="
+                width="300"
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.RatioMin" size="mini" />
                 </template>
               </el-table-column>
               <el-table-column
-                label="实际/配置（上限）"
-                width="100"
+                label="缓冲池余量比例(%) &lt;="
+                width="300"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RatioMin" size="mini" />
+                  <el-input v-model.number="scope.row.RatioMax" size="mini" />
                 </template>
               </el-table-column>
               <el-table-column
-                label="不输概率（%）"
-                width="100"
+                label="机器人赢牌概率（%）"
+                width="300"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RatioMin" size="mini" />
+                  <el-input v-model.number="scope.row.RobotWinProbability" size="mini" />
                 </template>
               </el-table-column>
             </el-table>
