@@ -2,9 +2,10 @@
   <el-col class="app-container">
     <el-row>
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      <br />
     </el-row>
-    <el-row>
 
+    <el-row>
       <el-tabs type="border-card">
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
           <el-col :span="10">
@@ -307,6 +308,7 @@
         </el-tab-pane>
       </el-tabs>
 
+      <br />
       <el-button type="primary" @click="setData">保存</el-button>
     </el-row>
 
