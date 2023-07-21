@@ -94,7 +94,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.EnterDelayMin" size="mini"><template slot="append">秒</template>
+              <el-input v-model.number="scope.row.EnterDelayMin" size="mini"><template slot="append">秒</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
