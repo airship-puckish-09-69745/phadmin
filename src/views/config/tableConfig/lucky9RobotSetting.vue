@@ -142,7 +142,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="100">
                   <template slot-scope="scope">
-                    <el-input type="danger" size="mini" @click="delBetTimesCfg(scope.$index)" />
+                    <el-input type="danger" size="mini" @click="delBetTimesCfg(scope.$index)">删除</el-input>
                   </template>
                 </el-table-column>
               </el-table>
@@ -214,7 +214,7 @@
           </el-form>
         </el-tab-pane>
         <el-tab-pane label="Pot机器人保护">
-          <button type="primary" @click="addHitPotProtectCfg">添加一项</button>
+          <el-button type="primary" @click="addHitPotProtectCfg">添加一项</el-button><br />
           <el-table
           :data="item.HitPotProtectCfg"
           border
@@ -245,11 +245,11 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="删除"
+            label="操作"
             width="100"
           >
             <template slot-scope="scope">
-              <el-input type="danger" size="mini" @click="delHitPotProtectCfg(scope.$index)">删除</el-input>
+              <el-button type="danger" size="mini" @click="delHitPotProtectCfg(scope.$index)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -265,7 +265,7 @@
         </el-tab-pane>
         <el-tab-pane label="机器人缓冲池配置">
             <fieldset>
-              <legend>机器人缓冲池初始大小 <button type="text" @click="addSafePoolMoneyCfg">添加一项</button></legend>
+              <legend>机器人缓冲池初始大小 <el-button type="text" @click="addSafePoolMoneyCfg">添加一项</el-button></legend>
             <el-table
               :data="item.SafePoolMoneyCfg"
               border
@@ -292,7 +292,7 @@
                 width="100"
               >
                 <template slot-scope="scope">
-                  <el-input size="mini" type="danger" @click="delSafePoolMoneyCfg(scope.$index)">删除</el-input>
+                  <el-button size="mini" type="danger" @click="delSafePoolMoneyCfg(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -334,7 +334,7 @@
                 width="100"
               >
                 <template slot-scope="scope">
-                  <el-input size="mini" type="danger" @click="delSafePoolProtectCfg(scope.$index)">删除</el-input>
+                  <el-button size="mini" type="danger" @click="delSafePoolProtectCfg(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
