@@ -250,7 +250,7 @@
             width="250"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.PotRobotRatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">%</template></el-input>
+              <el-input v-model.number="scope.row.PotRobotRatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">‰</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
@@ -258,11 +258,11 @@
             width="250"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.PotRobotRatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">%</template></el-input>
+              <el-input v-model.number="scope.row.PotRobotRatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">‰</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
-            label="赢的概率(%)"
+            label="赢的概率"
             width="200"
           >
             <template slot-scope="scope">
