@@ -10,7 +10,7 @@
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
           <el-row>
           <el-col :span="11">
-            <h5>预进桌机器人数量配置</h5>
+            <h3>预进桌机器人数量配置</h3>
             <el-table
               :data="item.PresetCfg"
               border
@@ -32,7 +32,7 @@
             </el-table>
           </el-col>
           <el-col :span="11" :offset="1">
-            <h5>机器人携带金币配置 <el-button type="text" @click="addCarryingCfg"></el-button></h5>
+            <h3>机器人携带金币配置 <el-button type="text" @click="addCarryingCfg"></el-button></h3>
             <el-table :data="item.CarryingCfg" border style="width: 100%">
               <el-table-column label="最小携带底注位数" prop="AntesMultipleMin" width="200">
                 <template slot-scope="scope">
@@ -59,7 +59,7 @@
           </el-row>
           <el-row>
           <el-col :span="11">
-            <h5>其它配置</h5>
+            <h3>其它配置</h3>
             <el-form ref="item" label-width="220px">
               <el-form-item label="最少携带(底注的倍数)">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini"><template slot="append">倍</template></el-input>
