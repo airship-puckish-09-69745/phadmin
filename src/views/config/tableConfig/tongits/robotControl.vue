@@ -81,7 +81,7 @@
             label-width="200px"
             :rules="dataRule(true,{type:'n',range:'0'})"
           >
-            <el-input v-model.number="tongitsConfig.robotConfig.Control.机器人底池" placeholder="底池" />
+            <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotPoolMoney" placeholder="底池" />
           </el-form-item>
         </el-col>
       </el-row>
