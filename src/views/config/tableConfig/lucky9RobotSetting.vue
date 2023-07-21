@@ -8,6 +8,7 @@
       <br />
       <el-tabs type="border-card">
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
+          <el-row>
           <el-col :span="11">
             <h5>预进桌机器人数量配置</h5>
             <el-table
@@ -55,7 +56,10 @@
               </el-table-column>
             </el-table>
           </el-col>
+          </el-row>
+          <el-row>
           <el-col :span="11">
+            <h5>其它配置</h5>
             <el-form ref="item" label-width="220px">
               <el-form-item label="最少携带(底注的倍数)">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini"><template slot="append">倍</template></el-input>
@@ -80,6 +84,7 @@
               </el-form-item>
             </el-form>
           </el-col>
+          </el-row>
         </el-tab-pane>
         <el-tab-pane label="牌局结束补机器人配置">
           <el-table
