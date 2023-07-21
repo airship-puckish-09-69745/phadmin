@@ -8,7 +8,8 @@
       <br />
       <el-tabs type="border-card">
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
-          <el-col :span="10">
+          <el-col :span="11">
+            <h5>预进桌机器人数量配置</h5>
             <el-table
               :data="item.PresetCfg"
               border
@@ -29,7 +30,32 @@
               </el-table-column>
             </el-table>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="11" :offset="1">
+            <h5>机器人携带金币配置 <button type="text" @click="addCarryingCfg"></button></h5>
+            <el-table :data="item.CarryingCfg" border style="width: 100%">
+              <el-table-column label="最小携带底注位数" prop="AntesMultipleMin" width="200">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.AntesMultipleMin" size="mini"><template slot="append">倍</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="最大携带底注位数" prop="AntesMultipleMax" width="200">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.AntesMultipleMax" size="mini"><template slot="append">倍</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="概率(%)" width="200">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button type="primary" size="mini" @click="delCarryingCfg(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
+          <el-col :span="11">
             <el-form ref="item" label-width="220px">
               <el-form-item label="最少携带(底注的倍数)">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini"><template slot="append">倍</template></el-input>
@@ -369,6 +395,14 @@ function newSafePoolProtectCfg(x, y,z) {
   }
 }
 
+function newCarryingCfg(x, y, z) {
+  return {
+    AntesMultipleMin: x,
+    AntesMultipleMax: y,
+    Probability: z
+  }
+}
+
 function SafePoolMoneyCfg(x, y) {
   return {
     TableMoney :x,
@@ -446,7 +480,8 @@ export default {
         'HitPotProtectCfg': [newHitPotProtectCfg(0, 125, 5), newHitPotProtectCfg(126, 250, 7), newHitPotProtectCfg(251, 375, 9),
           newHitPotProtectCfg(376, 500, 11), newHitPotProtectCfg(501, 625, 13), newHitPotProtectCfg(626, 750, 15), newHitPotProtectCfg(751, 875, 17), newHitPotProtectCfg(876, 100, 19)],
         'SafePoolMoneyCfg': [SafePoolMoneyCfg(1,1000),SafePoolMoneyCfg(5,1000),SafePoolMoneyCfg(20,20000),SafePoolMoneyCfg(50,50000),SafePoolMoneyCfg(100,5000)],
-        'SafePoolProtectCfg': [newSafePoolProtectCfg(0,50,10),newSafePoolProtectCfg(51,100,20)]
+        'SafePoolProtectCfg': [newSafePoolProtectCfg(0,50,10),newSafePoolProtectCfg(51,100,20)],
+        'CarryingCfg': [newCarryingCfg(0, 0, 0), newCarryingCfg(0, 0, 0)]
       }
     }
   },
@@ -465,6 +500,18 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$delete(this.item.BetTimesCfg, idx)
+      })
+    },
+    addCarryingCfg() {
+      this.item.CarryingCfg.push(newCarryingCfg(0, 0, 0))
+    },
+    delCarryingCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.item.CarryingCfg, idx)
       })
     },
     addHitPotProtectCfg() {
