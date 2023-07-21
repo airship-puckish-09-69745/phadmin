@@ -61,12 +61,6 @@
           <el-col :span="8">
             <h5>其它配置</h5>
             <el-form ref="item" label-width="220px">
-              <el-form-item label="最少携带(底注的倍数)">
-                <el-input v-model.number="item.CarryingMultiMin" size="mini"><template slot="append">倍</template></el-input>
-              </el-form-item>
-              <el-form-item label="最多携带(底注的倍数)">
-                <el-input v-model.number="item.CarryingMultiMax" size="mini"><template slot="append">倍</template></el-input>
-              </el-form-item>
               <el-form-item label="最少玩牌局数">
                 <el-input v-model.number="item.PlayTimesMin" size="mini" />
               </el-form-item>
