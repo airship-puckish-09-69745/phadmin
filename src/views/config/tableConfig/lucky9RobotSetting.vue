@@ -7,7 +7,7 @@
 
       <el-tabs type="border-card">
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
-          <el-col :span="6">
+          <el-col :span="10">
             <el-table
               :data="item.PresetCfg"
               border
@@ -28,8 +28,8 @@
               </el-table-column>
             </el-table>
           </el-col>
-          <el-col :span="18">
-            <el-form ref="item" label-width="220px" :inline="true">
+          <el-col :span="10">
+            <el-form ref="item" label-width="220px">
               <el-form-item label="最少携带(底注的倍数)">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini"><template slot="append">倍</template></el-input>
               </el-form-item>
