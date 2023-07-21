@@ -4,6 +4,7 @@
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </el-row>
     <el-row style="padding-top: 5px">
+      <h3 style="text-align:center;">机器人AI配置</h3>
       <el-col :span="24">
         <div style="padding-top: 10px">
           <el-table
@@ -39,6 +40,77 @@
                 </el-table-column>
             </el-table>
         </div>
+      </el-col>
+    </el-row>
+    <el-row style="padding-top: 5px">
+      <h3 style="text-align:center;">机器人分配</h3>
+      <el-col :span="24">
+        <div style="padding-top: 10px">
+          <el-table
+            :data="actionList"
+            stripe
+            border
+            style="width: 100%"
+          >
+              <el-table-column
+                label="底注"
+              >
+                <template slot-scope="scope">
+                  {{scope.row.TableMoney/1000}}
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="当前输赢"
+              >
+                <template slot-scope="scope">
+                  {{scope.row.Pool/1000}}
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="分配"
+                width="650"
+              >
+                <template slot-scope="scope">
+                  <el-table :data="scope.row.List" border>
+                    <el-table-column label="输赢最小" >
+                      <template scope="subScope">
+                        <el-input v-model.number="subScope.row.StartPool" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="输赢最大" >
+                      <template scope="subScope">
+                        <el-input v-model.number="subScope.row.EndPool" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="机器人级别">
+                      <template scope="subScope">
+                        <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                          <el-option
+                            v-for="item in robotlvl"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                          </el-option>
+                        </el-select>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作" :render-header="(h,obj)=>addTableHeaderButton(h,obj,scope.row.TableMoney)">
+                      <template scope="subScope">
+                        <el-button
+                          size="mini"
+                          type="danger"
+                          @click="delRow(scope.$index,subScope.$index,subScope.row)"
+                            >删除</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </template>
+              </el-table-column>
+            </el-table>
+        </div>
+      </el-col>
+      <el-col :offset="16" :span="8">
+          <el-button type="primary" @click="setData">保存分配信息</el-button>
       </el-col>
     </el-row>
     <el-dialog
@@ -87,6 +159,7 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
+import MoneyInput from '@/components/MoneyInput'
 import robotAiSettingFight from './tongits/robotAiSettingFight'
 import robotAiSettingChallenge from './tongits/robotAiSettingChallenge'
 import robotAiSettingDrop from './tongits/robotAiSettingDrop'
@@ -94,7 +167,7 @@ import robotAiSettingOutCard from './tongits/robotAiSettingOutCard'
 import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
 
 export default {
-  components: { Compare, Publish,robotAiSettingFight,robotAiSettingChallenge,robotAiSettingDrop,robotAiSettingOutCard,robotAiSettingBuildCard},
+  components: { Compare, Publish,robotAiSettingFight,robotAiSettingChallenge,robotAiSettingDrop,robotAiSettingOutCard,robotAiSettingBuildCard,MoneyInput},
   data() {
     return {
       subKey:"tongits_ai",
@@ -104,7 +177,32 @@ export default {
       tableData:[],
       editVisible:false,
       edit:{},
-      item:{}
+      item:{},
+      actionList:[
+
+      ],
+      robotlvl:[
+        {
+          value: 1,
+          label: '机器人A'
+        },
+        {
+          value: 2,
+          label: '机器人B'
+        },
+        {
+          value: 3,
+          label: '机器人C'
+        },
+        {
+          value: 4,
+          label: '机器人D'
+        },
+        {
+          value: 5,
+          label: '机器人E'
+        }
+      ]
     }
   },
   created() {
@@ -112,6 +210,19 @@ export default {
     console.log(1)
   },
   methods: {
+    getOneAction(tableMoney){
+      return {
+          TableMoney:tableMoney,
+          Pool:0,
+          List:[
+            {
+              StartPool:0,
+              EndPool:0,
+              AiConfigLevel:1
+            }
+          ]
+      }
+    },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
@@ -131,9 +242,73 @@ export default {
             console.log('cfg==>', cfg)
             this.item = cfg
             this.tableData = this.item.Config;
+            this.actionList = this.item.Action;
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
+            this.moneyProc(false)
             this.load = true
+            //获取底注
+            this.getTableMoneyList()
+          }
+        }
+      })
+    },
+    getTableMoneyList(){
+      request({
+        url: '/tongitstable/all',
+        method: 'get',
+        data: {
+        }
+      }).then(response => {
+        let tableList = "";
+        let index = 0
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log("table list:",objs)
+          for (let i=0;i<objs.length;i++){
+            let tableMoney = objs[i].TableMoney
+            let isFind = false
+            for (let j=0;j<this.item.Action.length;j++){
+              if(this.item.Action[j].TableMoney == tableMoney){
+                isFind = true
+                break
+              }
+            }
+            if(!isFind){
+              this.item.Action.push(this.getOneAction(tableMoney))
+            }
+            if(index===0){
+              tableList += ""+tableMoney
+            }else{
+              tableList += ","+tableMoney
+            }
+            index++
+          }
+        }
+        if(tableList !=""){
+          this.getRobotProfit(tableList)
+        }
+      })
+    },
+    getRobotProfit(tableList){
+      const $this = this
+        request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/tongitsrobotpool/list',
+          table_money: tableList
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log("/tongitsrobotpool/list===>",objs)
+          for (let i=0;i<$this.actionList.length;i++){
+            console.log("aaa==>",$this.actionList[i])
+            if(objs.hasOwnProperty($this.actionList[i].TableMoney)){
+              $this.actionList[i].Pool = objs[$this.actionList[i].TableMoney]
+            }
           }
         }
       })
@@ -143,9 +318,24 @@ export default {
       console.log("row==>",row)
       this.edit = row
     },
+    moneyProc(isMul){
+      for (let i=0;i<this.actionList.length;i++){
+        for (let j=0;j<this.actionList[i].List.length;j++){
+          if(isMul){
+            this.actionList[i].List[j].StartPool *= 1000
+            this.actionList[i].List[j].EndPool *= 1000
+          }else{
+            this.actionList[i].List[j].StartPool /= 1000
+            this.actionList[i].List[j].EndPool /= 1000
+          }
+        }
+      }
+    },
     setData() {
-
+      this.moneyProc(true)
       this.form.Data = JSON.stringify(this.item)
+      console.log("this.form.Data:",this.form.Data)
+      this.moneyProc(false)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
@@ -167,19 +357,34 @@ export default {
         })
       })
     },
-    saveData() {
-      this.form.Data = JSON.stringify(this.item)
-
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.form
-      }).then(response => {
-        if (response.RetCode === 0) {
-          console.log('saveData response', response)
-          this.$message.success('保存成功')
+    delRow(parent,mine,row){
+      console.log("parent:"+parent+"mine:"+mine,row)
+      this.actionList[parent].List.splice(mine,1)
+    },
+    addTableHeaderButton(h,data,tableMoney){
+      console.log("h:",h)
+      console.log("data:",data)
+      console.log("tableMoney:",tableMoney)
+      return (
+          <div>
+            <span>操作</span>
+            <el-button type="primary" size="mini" style="padding:5px;margin-left:5px;" onClick={()=>this.doAdd(tableMoney)}>添加范围</el-button>
+          </div>
+        )
+    },
+    doAdd(tableMoney){
+      console.log("tableMoney===>",tableMoney);
+      for(let i=0;i<this.actionList.length;i++){
+        if(this.actionList[i].TableMoney === tableMoney){
+          this.actionList[i].List.push(
+            {
+              StartPool:0,
+              EndPool:0,
+              AiConfigLevel:1
+            }
+          )
         }
-      })
+      }
     }
     
   }
