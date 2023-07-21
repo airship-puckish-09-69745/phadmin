@@ -29,7 +29,7 @@
             </el-table>
           </el-col>
           <el-col :span="18">
-            <el-form ref="item" label-width="200px" :inline="true">
+            <el-form ref="item" label-width="220px" :inline="true">
               <el-form-item label="最少携带">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini" />
               </el-form-item>
@@ -186,23 +186,22 @@
                 </el-table-column>
               </el-table>
             </fieldset>
-              <el-form>
-                <fieldset>
-                  <legend>要牌概率配置</legend>
-                  <el-form-item label="庄家保护线(不看牌玩家下注金额/所有玩家下注金额*100)">
-                    <el-input v-model.number="item.DealerWarnLine" size="mini" />
-                  </el-form-item>
-                  <el-form-item label="庄家保护最小点数">
-                    <el-input v-model.number="item.DealerWarnPointsMin" size="mini" />
-                  </el-form-item>
-                  <el-form-item label="庄家保护最大点数">
-                    <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
-                  </el-form-item>
-                  <el-form-item label="庄家保护概率（%）">
-                    <el-input v-model.number="item.DealerWarnProbability" size="mini" />
-                  </el-form-item>
-                </fieldset>
-              </el-form>
+            <hr />
+            <h5>机器人庄家保护配置</h5>
+            <el-form label-width="500px">
+              <el-form-item label="庄家保护线(未看牌玩家下注金额/所有玩家下注金额*100)">
+                <el-input v-model.number="item.DealerWarnLine" size="mini" />
+              </el-form-item>
+              <el-form-item label="庄家保护最小点数">
+                <el-input v-model.number="item.DealerWarnPointsMin" size="mini" />
+              </el-form-item>
+              <el-form-item label="庄家保护最大点数">
+                <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
+              </el-form-item>
+              <el-form-item label="庄家保护概率（%）">
+                <el-input v-model.number="item.DealerWarnProbability" size="mini" />
+              </el-form-item>
+            </el-form>
         </el-tab-pane>
         <el-tab-pane label="Pot机器人保护">
           <el-table
@@ -228,7 +227,7 @@
           </el-table-column>
         </el-table>
 
-          <el-form>
+          <el-form :inline="true" label-width="500px">
             <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
               <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini" />%
             </el-form-item>
