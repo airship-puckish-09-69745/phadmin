@@ -482,7 +482,7 @@ export default {
     addSafePoolMoneyCfg() {
       this.item.SafePoolMoneyCfg.push(SafePoolMoneyCfg(0, 0))
     },
-    delSafePoolMoneyCfg() {
+    delSafePoolMoneyCfg(idx) {
       this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
