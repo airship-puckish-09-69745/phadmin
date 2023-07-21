@@ -30,11 +30,11 @@
           </el-col>
           <el-col :span="18">
             <el-form ref="item" label-width="220px" :inline="true">
-              <el-form-item label="最少携带">
-                <el-input v-model.number="item.CarryingMultiMin" size="mini" />
+              <el-form-item label="最少携带(底注的倍数)">
+                <el-input v-model.number="item.CarryingMultiMin" size="mini"><template slot="append">倍</template></el-input>
               </el-form-item>
-              <el-form-item label="最多携带">
-                <el-input v-model.number="item.CarryingMultiMax" size="mini" />
+              <el-form-item label="最多携带(底注的倍数)">
+                <el-input v-model.number="item.CarryingMultiMax" size="mini"><template slot="append">倍</template></el-input>
               </el-form-item>
               <el-form-item label="最少玩牌局数">
                 <el-input v-model.number="item.PlayTimesMin" size="mini" />
