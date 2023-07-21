@@ -237,7 +237,7 @@
         </el-table>
 
           <hr />
-          
+
           <el-form :inline="true" label-width="350px">
             <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
               <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini"><template slot="append">%</template></el-input>
