@@ -32,7 +32,8 @@
             </el-table>
           </el-col>
           <el-col :span="11" :offset="1">
-            <h3>机器人携带金币配置 <el-button type="text" @click="addCarryingCfg"></el-button></h3>
+            <h3>机器人携带金币配置</h3>
+            <el-button type="text" @click="addCarryingCfg"></el-button><br />
             <el-table :data="item.CarryingCfg" border style="width: 100%">
               <el-table-column label="最小携带底注位数" prop="AntesMultipleMin" width="200">
                 <template slot-scope="scope">
