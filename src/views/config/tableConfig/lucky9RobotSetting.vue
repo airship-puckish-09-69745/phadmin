@@ -7,7 +7,7 @@
 
       <el-tabs type="border-card">
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
-          <el-col :span="8">
+          <el-col :span="6">
             <el-table
               :data="item.PresetCfg"
               border
@@ -28,7 +28,7 @@
               </el-table-column>
             </el-table>
           </el-col>
-          <el-col :span="16">
+          <el-col :span="28">
             <el-form ref="item" label-width="150px" :inline="true">
               <el-form-item label="最少携带">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini" />
@@ -42,14 +42,14 @@
               <el-form-item label="最多玩牌局数">
                 <el-input v-model.number="item.PlayTimesMax" size="mini" />
               </el-form-item>
-              <el-form-item label="延长玩牌携带要求(底注的倍数)">
-                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini" />
-              </el-form-item>
               <el-form-item label="延长玩牌最少局数">
                 <el-input v-model.number="item.IncrPlayTimesMin" size="mini" />
               </el-form-item>
               <el-form-item label="延长玩牌最多局数">
                 <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
+              </el-form-item>
+              <el-form-item label="延长玩牌最少携带(底注的倍数)">
+                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini" />
               </el-form-item>
             </el-form>
           </el-col>
@@ -62,11 +62,11 @@
           <el-table-column
             label="当前桌总人数"
             prop="UserNumber"
-            width="300"
+            width="200"
           />
           <el-table-column
             label="补机器人概率(%)"
-            width="300"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.Probability" size="mini" />
@@ -74,7 +74,7 @@
           </el-table-column>
           <el-table-column
             label="最少补充机器人数量"
-            width="300"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.AppendRobotMin" size="mini" />
@@ -82,7 +82,7 @@
           </el-table-column>
           <el-table-column
             label="最多补充机器人数量"
-            width="300"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.AppendRobotMax" size="mini" />
@@ -90,7 +90,7 @@
           </el-table-column>
           <el-table-column
             label="最小进入延迟(秒)"
-            width="300"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.EnterDelayMin" size="mini" />
@@ -98,7 +98,7 @@
           </el-table-column>
           <el-table-column
             label="最大进入延迟(秒)"
-            width="300"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.EnterDelayMax" size="mini" />
@@ -186,24 +186,26 @@
                 </el-table-column>
               </el-table>
             </fieldset>
-          <el-row>
-            <el-form :inline="true">
-              <el-form-item label="庄家保护线(不看牌玩家下注金额/所有玩家下注金额*100)">
-                <el-input v-model.number="item.DealerWarnLine" size="mini" />
-              </el-form-item>
-              <el-form-item label="庄家保护最小点数">
-                <el-input v-model.number="item.DealerWarnPointsMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="庄家保护最大点数">
-                <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
-              </el-form-item>
-              <el-form-item label="庄家保护概率（%）">
-                <el-input v-model.number="item.DealerWarnProbability" size="mini" />
-              </el-form-item>
-            </el-form>
-          </el-row>
+              <el-form>
+                <fieldset>
+                  <legend>要牌概率配置</legend>
+                  <el-form-item label="庄家保护线(不看牌玩家下注金额/所有玩家下注金额*100)">
+                    <el-input v-model.number="item.DealerWarnLine" size="mini" />
+                  </el-form-item>
+                  <el-form-item label="庄家保护最小点数">
+                    <el-input v-model.number="item.DealerWarnPointsMin" size="mini" />
+                  </el-form-item>
+                  <el-form-item label="庄家保护最大点数">
+                    <el-input v-model.number="item.DealerWarnPointsMax" size="mini" />
+                  </el-form-item>
+                  <el-form-item label="庄家保护概率（%）">
+                    <el-input v-model.number="item.DealerWarnProbability" size="mini" />
+                  </el-form-item>
+                </fieldset>
+              </el-form>
         </el-tab-pane>
-        <el-tab-pane label="Pot机器人保护"><el-table
+        <el-tab-pane label="Pot机器人保护">
+          <el-table
           :data="item.HitPotProtectCfg"
           border
           style="width: 100%"
@@ -226,9 +228,11 @@
           </el-table-column>
         </el-table>
 
-          <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
-            <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini" />%
-          </el-form-item>
+          <el-form>
+            <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
+              <el-input v-model.number="item.PotRobotDealerLoseRatioMax" size="mini" />%
+            </el-form-item>
+          </el-form>
 
         </el-tab-pane>
         <el-tab-pane label="机器人缓冲池配置">
