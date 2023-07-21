@@ -29,7 +29,7 @@
             </el-table>
           </el-col>
           <el-col :span="28">
-            <el-form ref="item" label-width="200px" :inline="true">
+            <el-form ref="item" label-width="150px" :inline="true">
               <el-form-item label="最少携带">
                 <el-input v-model.number="item.CarryingMultiMin" size="mini" />
               </el-form-item>
