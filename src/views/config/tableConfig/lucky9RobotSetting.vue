@@ -573,6 +573,9 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const data = JSON.parse(response.Data.Data)
+            for(let i=0; i<data.SafePoolMoneyCfg.length; i++) {
+              data.SafePoolMoneyCfg[i].TableMoney /= 1000
+            }
             $this.item = this.DeepCopy(data)
 
             // 设置修改之前数据
@@ -582,6 +585,10 @@ export default {
       })
     },
     encodeData() {
+      let cpy = this.item;
+      for(let i=0; i<cpy.SafePoolMoneyCfg.length; i++) {
+        cpy.SafePoolMoneyCfg[i].TableMoney *= 1000
+      }
       return JSON.stringify(this.item)
     },
     setData() {
