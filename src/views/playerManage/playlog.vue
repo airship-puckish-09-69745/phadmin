@@ -553,7 +553,7 @@
       <el-table :data="lucky9Detail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column prop="cards" label="手牌" width="200"><template slot-scope="scope">{{showCard(scope.row.cards)}}</template></el-table-column>
+        <el-table-column prop="cards" label="手牌" width="200"><template slot-scope="scope"><div v-html="showCard(scope.row.cards)" /></template></el-table-column>
         <el-table-column prop="cardScore" label="点数" width="100" />
         <el-table-column prop="isDealer" label="庄家" width="100"><template slot-scope="scope">{{scope.row.isDealer ? "是" : "-"}}</template></el-table-column>
         <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{scope.row.moneyBet/1000}}</template></el-table-column>
