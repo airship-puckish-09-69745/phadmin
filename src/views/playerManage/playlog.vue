@@ -567,7 +567,7 @@
       <br />
       <el-descriptions title="扩展信息">
         <el-descriptions-item label="桌子ID">{{lucky9Detail.tid}}</el-descriptions-item>
-        <el-descriptions-item label="HitPot奖池">{{lucky9Detail.hitPotPool}}</el-descriptions-item>
+        <el-descriptions-item label="HitPot奖池">{{lucky9Detail.hitPotPool/1000}}</el-descriptions-item>
         <el-descriptions-item label="POT机器人">{{lucky9Detail.potRobot}}</el-descriptions-item>
         <el-descriptions-item label="POT机器人保护">{{lucky9Detail.potRobotProtected ? '是' : '-'}}</el-descriptions-item>
         <el-descriptions-item label="机器人缓冲池保护">{{lucky9Detail.robotPoolProtected ? '是' : '-'}}</el-descriptions-item>
