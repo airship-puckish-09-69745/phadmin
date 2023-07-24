@@ -564,6 +564,7 @@
         <el-table-column prop="hitPotTaxed" label="Pot抽水" width="100"><template slot-scope="scope">{{scope.row.hitPotTaxed/1000}}</template></el-table-column>
         <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{scope.row.moneyTotal/1000}}</template></el-table-column>
       </el-table>
+      <br />
       <el-descriptions title="扩展信息">
         <el-descriptions-item label="桌子ID">{{lucky9Detail.tid}}</el-descriptions-item>
         <el-descriptions-item label="HitPot奖池">{{lucky9Detail.hitPotPool}}</el-descriptions-item>
