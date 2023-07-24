@@ -811,6 +811,9 @@ export default {
 
       sweeperRateVisible: false,
 
+      lucky9Detail: {},
+      lucky9DetailVisible: false,
+
       rummyDetailVisible: false,
       rummyDetails: [],
       rummyOverReason: {
