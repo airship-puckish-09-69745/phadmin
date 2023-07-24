@@ -73,8 +73,8 @@
               <el-form-item label="延长玩牌最多局数">
                 <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
               </el-form-item>
-              <el-form-item label="延长玩牌最少携带(底注的倍数)">
-                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini"><template slot="append">倍</template></el-input>
+              <el-form-item label="延长玩牌最少HitPot点数">
+                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini"><template slot="append">点</template></el-input>
               </el-form-item>
             </el-form>
           </el-col>
