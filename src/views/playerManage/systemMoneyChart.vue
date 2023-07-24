@@ -247,13 +247,14 @@ export default {
       gid: 100,
       summary: {},
       gameNames: { 1: 'Rummy', 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
-        16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁', 59: '芝加哥', 80: 'PLINKO', 100: '汇总' },
+        16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 22: 'Tongits', 23: 'Lucky9', 25: 'Color game', 51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁', 59: '芝加哥', 80: 'PLINKO', 100: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [9, 1, 14, 8, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19, 10, 20, 51, 52, 53, 54, 55, 56, 57, 58, 59],
-      BROrder: [51, 52, 53, 54, 55,56,57,58,59, 10, 20, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19], // 巴西的游戏
-      sortOrder:[],
+      // defaultOrder: [9, 1, 14, 8, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19, 10, 20, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+      defaultOrder: [10, 22, 23, 25, 51, 52],
+      BROrder: [51, 52, 53, 54, 55, 56, 57, 58, 59, 10, 20, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19], // 巴西的游戏
+      sortOrder: [],
       env: 'test'
     }
   },
@@ -272,16 +273,16 @@ export default {
   },
   methods: {
     changeOrder(iType) {
-      if(iType == 1){
+      if (iType == 1) {
         this.sortOrder = this.defaultOrder
-      }else {
+      } else {
         let objs = []
         for (let i = 0; i < this.sortOrder.length; i++) {
           const gid = this.sortOrder[i]
           if (!this.isSlots(gid)) {
             const ob = this.summary[gid]
             const got = ob.Lose + ob.Tax - ob.Won
-            objs.push({Gid: gid, Got: got ? got : 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0})
+            objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
           } else {
             objs.push({
               Gid: gid,
@@ -291,11 +292,11 @@ export default {
           }
         }
         if (iType === 2) {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Got - a.Got
           })
         } else {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Sum - a.Sum
           })
         }
