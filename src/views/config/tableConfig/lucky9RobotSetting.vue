@@ -585,10 +585,14 @@ export default {
       })
     },
     encodeData() {
-      let cpy = {};
+      const cpy = {};
       Object.assign(cpy, this.item);
-      for(let i=0; i<cpy.SafePoolMoneyCfg.length; i++) {
-        cpy.SafePoolMoneyCfg[i].TableMoney *= 1000
+      cpy.SafePoolMoneyCfg = []
+      for (const o in this.item.SafePoolMoneyCfg) {
+          const obj = {}
+          Object.assign(obj, this.item.SafePoolMoneyCfg[o])
+          obj.TableMoney *= 1000
+          cpy.SafePoolMoneyCfg.push(obj)
       }
       return JSON.stringify(cpy)
     },
