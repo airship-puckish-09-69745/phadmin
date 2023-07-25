@@ -589,7 +589,7 @@ export default {
       for(let i=0; i<cpy.SafePoolMoneyCfg.length; i++) {
         cpy.SafePoolMoneyCfg[i].TableMoney *= 1000
       }
-      return JSON.stringify(this.item)
+      return JSON.stringify(cpy)
     },
     setData() {
       this.form.Data = this.encodeData()
