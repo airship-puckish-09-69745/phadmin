@@ -667,6 +667,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/thirdparty'),
         name: 'thirdpartyManage',
         meta: { title: '第三方信息 ◐' }
+      },
+      {
+        path: 'transfer',
+        component: () => import('@/views/thirdparty/transfer'),
+        name: 'transfer_log',
+        meta: { title: '转账流水 ◐' }
       }
     ]
   },
