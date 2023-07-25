@@ -585,7 +585,8 @@ export default {
       })
     },
     encodeData() {
-      let cpy = this.item;
+      let cpy = {};
+      Object.assign(cpy, this.item);
       for(let i=0; i<cpy.SafePoolMoneyCfg.length; i++) {
         cpy.SafePoolMoneyCfg[i].TableMoney *= 1000
       }
