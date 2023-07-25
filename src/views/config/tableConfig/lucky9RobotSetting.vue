@@ -266,7 +266,7 @@
             width="200"
           >
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
+              <el-input v-model.number="scope.row.PotRobotWinProbability" size="mini"><template slot="append">%</template></el-input>
             </template>
           </el-table-column>
           <el-table-column
