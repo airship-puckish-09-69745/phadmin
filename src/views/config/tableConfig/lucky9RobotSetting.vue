@@ -550,7 +550,7 @@ export default {
       })
     },
     getBetOptionCfgName(option) {
-      const names = ['', '1 Bet', '5 Bet', 'Max', 'Repeat']
+      const names = ['', 'x1', 'x5', 'Max', 'Repeat']
       return names[option]
     },
     dataRule(required, config) {
