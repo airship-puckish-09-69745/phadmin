@@ -198,7 +198,12 @@ export const asyncRoutes = [
         name: 'pusoyTable',
         meta: { title: 'Pusoy ◐' }
       },
-
+      {
+          path: 'bcrTable',
+          component: () => import('@/views/config/tableConfig/bcrTable'),
+          name: 'bcrTable',
+          meta: { title: 'Baccarat - 百家乐 ◐' }
+      },
       {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
