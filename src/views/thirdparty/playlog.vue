@@ -2,9 +2,6 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
-        <el-form-item label="UID：" :required="true" label-width="80px">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
-        </el-form-item>
         <el-form-item label="App：" v-model="item.app" :required="true" label-width="80px">
           <el-input-number type="number" placeholder="请输入App" value="1000000" :width="150"/>
         </el-form-item>
