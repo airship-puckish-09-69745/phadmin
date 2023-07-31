@@ -199,10 +199,10 @@ export const asyncRoutes = [
         meta: { title: 'Pusoy ◐' }
       },
       {
-          path: 'bcrTable',
-          component: () => import('@/views/config/tableConfig/bcrTable'),
-          name: 'bcrTable',
-          meta: { title: 'Baccarat - 百家乐 ◐' }
+        path: 'bcrTable',
+        component: () => import('@/views/config/tableConfig/bcrTable'),
+        name: 'bcrTable',
+        meta: { title: 'Baccarat - 百家乐 ◐' }
       },
       {
         path: 'slotsCfg',
@@ -678,6 +678,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/transfer'),
         name: 'transfer_log',
         meta: { title: '转账流水 ◐' }
+      },
+      {
+        path: 'playlog_list',
+        component: () => import('@/views/thirdparty/playlog'),
+        name: 'thirdparty_playlog',
+        meta: { title: '牌局流水 ◐' }
       }
     ]
   },
