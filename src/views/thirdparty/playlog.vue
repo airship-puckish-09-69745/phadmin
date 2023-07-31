@@ -94,7 +94,7 @@
         </el-table-column>
         <el-table-column
           prop="payoff_amount"
-          label="结算金额（减去服务费）"
+          label="输赢金额（减去服务费）"
           width="150"
         >
           <template slot-scope="scope">
