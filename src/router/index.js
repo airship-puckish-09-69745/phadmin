@@ -205,6 +205,12 @@ export const asyncRoutes = [
         meta: { title: 'Baccarat - 百家乐 ◐' }
       },
       {
+        path: 'abTable',
+        component: () => import('@/views/config/tableConfig/abTable'),
+        name: 'abTable',
+        meta: { title: 'AB - Andar Bahar ◐' }
+      },
+      {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -729,6 +735,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_colorgame',
         meta: { title: 'ColorGame - ◐', gid: 25 }
+      },
+      {
+        path: 'playlog_ab',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ab',
+        meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
       },
       {
         path: 'slotsLog',
