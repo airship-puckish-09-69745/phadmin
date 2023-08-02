@@ -38,13 +38,8 @@
         style="width: 100%;margin-top:10px;"
       >
         <el-table-column
-          prop="unique_no"
-          label="UniqueNO"
-          width="120"
-        />
-        <el-table-column
-          prop="account"
-          label="用户唯一标识"
+          prop="uid"
+          label="Uid"
           width="120"
         />
         <el-table-column
@@ -54,15 +49,6 @@
         >
           <template slot-scope="scope">
             {{scope.row.game_id}}（{{ games[scope.row.game_id] }}）
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="game_type"
-          label="游戏类型"
-          width="80"
-        >
-          <template slot-scope="scope">
-            {{ gameTypes[scope.row.game_type] }}
           </template>
         </el-table-column>
         <el-table-column
@@ -107,7 +93,16 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.service_fee/1000) }}
+            {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="money_now"
+          label="结算后当前余额"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.money_now/1000) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -116,7 +111,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.jackpot_amount/1000) }}
+            {{ jackportShow(scope.row.jackpot_amount/1000) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -137,6 +132,25 @@
             <DateTimeShow :show-type="2" :timestamp="scope.row.end_time" />
           </template>
         </el-table-column>
+        <el-table-column
+          prop="game_type"
+          label="游戏类型"
+          width="80"
+        >
+          <template slot-scope="scope">
+            {{ gameTypes[scope.row.game_type] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="unique_no"
+          label="UniqueNO"
+          width="120"
+        />
+        <el-table-column
+          prop="account"
+          label="用户唯一标识"
+          width="120"
+        />
       </el-table>
     </el-row>
     <el-row type="flex" justify="end">
@@ -221,6 +235,12 @@ export default {
     },
     formatNumber(n) {
       return n.toLocaleString()
+    },
+    jackportShow(n) {
+      if (n >= 0) {
+        return this.formatNumber(n)
+      }
+      return '无'
     },
     getInfo() {
       const $this = this
