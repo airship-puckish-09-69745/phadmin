@@ -197,7 +197,7 @@ export default {
       currentPage: 1,
       pageNum: 20,
       types: { 1: '转出', 2: '转入' },
-      allStatus: { 1: '赢', 2: '平', 3: '输' },
+      allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
       games: { 1: 'Color', 2: 'Rocket', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix' },
       showDetail: false,
