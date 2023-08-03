@@ -291,6 +291,7 @@
         <el-tab-pane label="机器人缓冲池配置">
             <fieldset>
               <legend>机器人缓冲池初始大小 <el-button type="text" @click="addSafePoolMoneyCfg">添加一项</el-button></legend>
+              <el-col span="12">
             <el-table
               :data="item.SafePoolMoneyCfg"
               border
@@ -321,6 +322,40 @@
                 </template>
               </el-table-column>
             </el-table>
+            </el-col>
+            <!-- 奖池 -->
+            <el-col span="12">
+            <el-table
+              :data="robotProfit"
+              border
+              style="width: 90%"
+            >
+              <el-table-column
+                label="底注"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  {{scope.row.TableMoney/1000}}
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="缓冲池值"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  {{scope.row.Pool/1000}}
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <el-button size="mini" type="primary" @click="showRobotProfitDialog(scope.row.TableMoney,scope.row.Pool)">修改</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-col>
           </fieldset>
           <hr />
             <fieldset>
@@ -373,8 +408,28 @@
 
     <!--对比组件-->
     <compare ref="compare" />
-
+  <div>
+    <el-dialog
+    title="修改缓冲池"
+    :visible.sync="dialogVisible"
+    width="30%">
+    <el-form width="70%" label-position="top">
+      <el-form-item label="奖池值">
+        <el-input v-model.number="robotProfitItem.Pool" placeholder="请输入"></el-input>
+      </el-form-item>
+        
+        <el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="changeRobotProfit">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+  </div>
   </el-col>
+  
 </template>
 
 <script>
@@ -481,7 +536,14 @@ export default {
         'SafePoolMoneyCfg': [SafePoolMoneyCfg(1,1000),SafePoolMoneyCfg(5,1000),SafePoolMoneyCfg(20,20000),SafePoolMoneyCfg(50,50000),SafePoolMoneyCfg(100,5000)],
         'SafePoolProtectCfg': [newSafePoolProtectCfg(0,50,10),newSafePoolProtectCfg(51,100,20)],
         'CarryingCfg': [newCarryingCfg(0, 0, 0), newCarryingCfg(0, 0, 0)]
-      }
+      },
+      robotProfit:[],
+      dialogVisible:false,
+      robotProfitItem:{
+        TableMoney:0,
+        Pool:0
+      },
+      tableMoneyList:"",
     }
   },
   created() {
@@ -574,12 +636,18 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const data = JSON.parse(response.Data.Data)
             for(let i=0; i<data.SafePoolMoneyCfg.length; i++) {
+              if(i==0){
+                $this.tableMoneyList += data.SafePoolMoneyCfg[i].TableMoney 
+              }else{
+                $this.tableMoneyList += ","+data.SafePoolMoneyCfg[i].TableMoney
+              }
               data.SafePoolMoneyCfg[i].TableMoney /= 1000
             }
             $this.item = this.DeepCopy(data)
 
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(data)
+            $this.getRobotProfit()
           }
         }
       })
@@ -614,6 +682,64 @@ export default {
           if (response.RetCode === 0) {
             console.log('save', response)
             Message.success('保存成功')
+          }
+        })
+      })
+    },
+    getRobotProfit(){
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/lucky9robotpool/list',
+          table_money: $this.tableMoneyList
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log("/lucky9robotpool/list===>",objs)
+          for(const key in objs){
+            $this.robotProfit.push({
+              TableMoney:key,
+              Pool:objs[key],
+            })
+          }
+        }
+      })
+    },
+    showRobotProfitDialog(tableMoney,pool){
+      this.robotProfitItem.TableMoney = tableMoney
+      this.robotProfitItem.Pool = pool/1000
+      this.dialogVisible = true
+    },
+    changeRobotProfit(){
+      const $this = this
+      this.$confirm('确认修改此值', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Path: '/lucky9robotpool/update/pool',
+            table_money: this.robotProfitItem.TableMoney,
+            pool:this.robotProfitItem.Pool*1000,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            let newPool = response.Data || 0
+            console.log("/lucky9robotpool/updatepool===>",newPool)
+            for(let i=0;i<$this.robotProfit.length;i++){
+              if($this.robotProfit[i].TableMoney == $this.robotProfitItem.TableMoney){
+                  $this.robotProfit[i].Pool = newPool;
+              }
+            }
+            $this.dialogVisible = false
           }
         })
       })
