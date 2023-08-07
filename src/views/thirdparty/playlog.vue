@@ -252,8 +252,8 @@ export default {
           Path: '/thirdparties/playlog/list',
           Uid: this.item.Uid,
           App: this.appId,
-          StartTime: $libDate.SelectTimeToIndia(this.item.start) / 1000,
-          EndTime: $libDate.SelectTimeToIndia(this.item.end) / 1000,
+          StartTime: this.item.start / 1000,
+          EndTime: this.item.end / 1000,
           Page: this.currentPage,
           Limit: this.pageNum,
           type: this.item.type
