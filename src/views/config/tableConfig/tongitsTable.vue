@@ -160,10 +160,11 @@
               <el-select v-model="edit.item.TableMoney" placeholder="请选择">
                 <el-option label="1" :value="1" />
                 <el-option label="5" :value="5" />
+                <el-option label="10" :value="10" />
                 <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
                 <el-option label="100" :value="100" />
-                <el-option label="500" :value="500" />
+                <!-- <el-option label="500" :value="500" /> -->
               </el-select>
             </el-form-item>
           </el-col>
