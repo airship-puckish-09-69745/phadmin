@@ -232,6 +232,13 @@ export const asyncRoutes = [
           },
 
           {
+            path: 'windrop_cfg',
+            component: () => import('@/views/config/tableConfig/windrop_cfg'),
+            name: 'windrop_cfg',
+            meta: { title: 'Windrop ◐' }
+          },
+
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
