@@ -158,29 +158,29 @@
                     </el-table>
                   </el-row>
                 </fieldset>
+                <fieldset>
+                  <legend>Spin 转盘选项配置</legend>
+                  <el-row>
+                    <el-table :data="item.Spins" border style="width: 100%">
+                      <el-table-column prop="Id" label="通道ID" width="100">
+                        <template slot-scope="scope">
+                          <el-input v-model.number="scope.row.Id" placeholder="" disabled />
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
+                        <template slot-scope="scope">
+                          <el-input v-model.number="scope.row.Odds" placeholder="" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
+                        <template slot-scope="scope">
+                          <el-input v-model.number="scope.row.HitRates" placeholder="" />
+                        </template>
+                      </el-table-column>
+                    </el-table>
+                  </el-row>
+                </fieldset>
               </el-form>
-            </fieldset>
-            <fieldset>
-              <legend>Spin 转盘选项配置</legend>
-              <el-row>
-                <el-table :data="item.Spins" border style="width: 100%">
-                  <el-table-column prop="Id" label="通道ID" width="100">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Id" placeholder="" disabled />
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Odds" placeholder="" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.HitRates" placeholder="" />
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </el-row>
             </fieldset>
           </el-col>
         </el-row>
