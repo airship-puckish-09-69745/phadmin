@@ -47,11 +47,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="JokerNum"
-          label="癞子数"
-          width="70"
-        />
-        <el-table-column
           prop="Level"
           label="Level"
           sortable="custom"
@@ -177,12 +172,14 @@
               </el-radio-group>
             </el-form-item>
             -->
+            <!--
             <el-form-item label="癞子数：" :required="true">
               <el-radio-group v-model.number="edit.item.JokerNum">
                 <el-radio :label="0">0</el-radio>
                 <el-radio :label="4">4</el-radio>
               </el-radio-group>
             </el-form-item>
+            -->
           </el-col>
         </el-row>
         <el-row>
@@ -447,6 +444,7 @@ export default {
   components: { Compare, Publish,tongitsRobotCommon,tongitsRobotControl,tongitsRobotBuildCard },
   data() {
     return {
+      playMode: 1, //标准玩法
       tableData: [],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -559,6 +557,7 @@ export default {
         url: '/tongitstable/all',
         method: 'get',
         data: {
+          PlayMode:this.playMode,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -652,6 +651,7 @@ export default {
       return DataRule(required, config)
     },
     createSave(postData) {
+      postData.PlayMode = this.playMode
       request({
         url: '/tongitstable/create',
         method: 'post',

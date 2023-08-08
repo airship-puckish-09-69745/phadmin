@@ -258,6 +258,7 @@ export default {
         url: '/tongitstable/all',
         method: 'get',
         data: {
+          PlayMode:1,
         }
       }).then(response => {
         let tableList = "";
@@ -298,7 +299,8 @@ export default {
         data: {
           Env: this.env,
           Path: '/tongitsrobotpool/list',
-          table_money: tableList
+          table_money: tableList,
+          game_id:22,
         }
       }).then(response => {
         if (response.RetCode === 0) {
