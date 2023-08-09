@@ -63,7 +63,7 @@
                 label="当前输赢"
               >
                 <template slot-scope="scope">
-                  {{scope.row.Pool/1000}}
+                  <a href="javascript:void(0)" @click="showRobotPoolForm(scope.row.TableMoney, scope.row.Pool)" style="cursor: pointer; color:rgb(59, 59, 232);">{{scope.row.Pool}}</a>
                 </template>
               </el-table-column>
               <el-table-column
@@ -148,6 +148,29 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+      title="修改机器人输赢奖池"
+      :visible.sync="editRobotSync"
+    >
+      <el-form ref="edit" :model="robotForm" width="70%" label-position="top">
+        <el-form-item label="当前池子：">
+          {{ robotForm.currentVal }}
+        </el-form-item>
+        <el-form-item label="变化值：">
+          <el-input v-model.number="robotForm.changeVal" />
+        </el-form-item>
+        <el-form-item label="操作后的值：">
+          {{ showRobotEndVal() }}
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="setRobotPool">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -202,7 +225,13 @@ export default {
           value: 5,
           label: '机器人E'
         }
-      ]
+      ],
+      robotForm: {
+        tableMoney: 0,
+        currentVal: 0,
+        changeVal: 0,
+      },
+      editRobotSync: false,
     }
   },
   created() {
@@ -387,8 +416,41 @@ export default {
           )
         }
       }
+    },
+    showRobotPoolForm(tableMoney, poolMoney) {
+      this.robotForm.currentVal = poolMoney
+      this.robotForm.tableMoney = tableMoney
+      this.editRobotSync = true
+    },
+    showRobotEndVal() {
+      return this.robotForm.currentVal + this.robotForm.changeVal
+    },
+    setRobotPool() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: this.env,
+          Path: '/tongitsrobotpool/update',
+          TableMoney: $this.robotForm.tableMoney,
+          Gid:22,
+          ChangeVal: $this.robotForm.changeVal,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i=0;i<$this.actionList.length;i++){
+            if ($this.actionList[i].TableMoney == $this.robotForm.tableMoney) {
+              $this.actionList[i].Pool = $this.robotForm.currentVal+$this.robotForm.changeVal
+            }
+          }
+          Message.success('修改成功')
+          this.editRobotSync = false
+        }else {
+          Message.error(response.Data)
+        }
+      })
     }
-    
   }
 }
 </script>
