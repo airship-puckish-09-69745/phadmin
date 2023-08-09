@@ -169,6 +169,12 @@ export const asyncRoutes = [
         meta: { title: 'Crash - 小火箭 ◐' }
       },
       {
+        path: 'dvtTable',
+        component: () => import('@/views/config/tableConfig/dvtTable'),
+        name: 'dvtTable',
+        meta: { title: 'Dragon - 龙虎 ◐' }
+      },
+      {
         path: 'tongitsTable',
         component: () => import('@/views/config/tableConfig/tongitsTable'),
         name: 'tongitsTable',
