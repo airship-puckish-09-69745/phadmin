@@ -169,10 +169,22 @@ export const asyncRoutes = [
         meta: { title: 'Crash - 小火箭 ◐' }
       },
       {
+        path: 'dvtTable',
+        component: () => import('@/views/config/tableConfig/dvtTable'),
+        name: 'dvtTable',
+        meta: { title: 'Dragon - 龙虎 ◐' }
+      },
+      {
         path: 'tongitsTable',
         component: () => import('@/views/config/tableConfig/tongitsTable'),
         name: 'tongitsTable',
         meta: { title: 'Tongits ◐' }
+      },
+      {
+        path: 'tongitsTableAI',
+        component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
+        name: 'tongitsTableAI',
+        meta: { title: 'TongitsAI ◐' }
       },
       {
         path: 'lucky9Table',
@@ -192,7 +204,18 @@ export const asyncRoutes = [
         name: 'pusoyTable',
         meta: { title: 'Pusoy ◐' }
       },
-
+      {
+        path: 'bcrTable',
+        component: () => import('@/views/config/tableConfig/bcrTable'),
+        name: 'bcrTable',
+        meta: { title: 'Baccarat - 百家乐 ◐' }
+      },
+      {
+        path: 'abTable',
+        component: () => import('@/views/config/tableConfig/abTable'),
+        name: 'abTable',
+        meta: { title: 'AB - Andar Bahar ◐' }
+      },
       {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
@@ -212,6 +235,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
             name: 'phoenix_slots_cfg',
             meta: { title: 'Phoenix - 凤凰' }
+          },
+
+          {
+            path: 'windrop_cfg',
+            component: () => import('@/views/config/tableConfig/windrop_cfg'),
+            name: 'windrop_cfg',
+            meta: { title: 'Windrop ◐' }
           },
 
           {
@@ -673,6 +703,18 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/thirdparty'),
         name: 'thirdpartyManage',
         meta: { title: '第三方信息 ◐' }
+      },
+      {
+        path: 'transfer',
+        component: () => import('@/views/thirdparty/transfer'),
+        name: 'transfer_log',
+        meta: { title: '转账流水 ◐' }
+      },
+      {
+        path: 'playlog_list',
+        component: () => import('@/views/thirdparty/playlog'),
+        name: 'thirdparty_playlog',
+        meta: { title: '牌局流水 ◐' }
       }
     ]
   },
@@ -709,15 +751,21 @@ export const asyncRoutes = [
       },
       {
         path: 'playlog_tongits',
-        component: () => import('@/views/playerManage/playlog'),
+        component: () => import('@/views/playerManage/tongitsPlaylog'),
         name: 'playlog_tongits',
-        meta: { title: 'Tongits - ◐', gid: 22 }
+        meta: { title: 'Tongits - 标准 ◐', gid: 22 }
       },
       {
         path: 'playlog_colorgame',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_colorgame',
         meta: { title: 'ColorGame - ◐', gid: 25 }
+      },
+      {
+        path: 'playlog_ab',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ab',
+        meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
       },
       {
         path: 'slotsLog',

@@ -270,16 +270,16 @@ export default {
   },
   methods: {
     changeOrder(iType) {
-      if(iType == 1){
+      if (iType == 1) {
         this.sortOrder = this.defaultOrder
-      }else {
+      } else {
         let objs = []
         for (let i = 0; i < this.sortOrder.length; i++) {
           const gid = this.sortOrder[i]
           if (!this.isSlots(gid)) {
             const ob = this.summary[gid]
             const got = ob.Lose + ob.Tax - ob.Won
-            objs.push({Gid: gid, Got: got ? got : 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0})
+            objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
           } else {
             objs.push({
               Gid: gid,
@@ -289,11 +289,11 @@ export default {
           }
         }
         if (iType === 2) {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Got - a.Got
           })
         } else {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Sum - a.Sum
           })
         }

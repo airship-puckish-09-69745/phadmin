@@ -47,11 +47,6 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="JokerNum"
-          label="癞子数"
-          width="70"
-        />
-        <el-table-column
           prop="Level"
           label="Level"
           sortable="custom"
@@ -158,12 +153,13 @@
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
               <el-select v-model="edit.item.TableMoney" placeholder="请选择">
-                <el-option label="2" :value="2" />
+                <el-option label="1" :value="1" />
                 <el-option label="5" :value="5" />
+                <el-option label="10" :value="10" />
                 <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
                 <el-option label="100" :value="100" />
-                <el-option label="500" :value="500" />
+                <!-- <el-option label="500" :value="500" /> -->
               </el-select>
             </el-form-item>
           </el-col>
@@ -176,12 +172,14 @@
               </el-radio-group>
             </el-form-item>
             -->
+            <!--
             <el-form-item label="癞子数：" :required="true">
               <el-radio-group v-model.number="edit.item.JokerNum">
                 <el-radio :label="0">0</el-radio>
                 <el-radio :label="4">4</el-radio>
               </el-radio-group>
             </el-form-item>
+            -->
           </el-col>
         </el-row>
         <el-row>
@@ -344,7 +342,7 @@
         </el-row>
         <tongits-robot-common v-model="edit"></tongits-robot-common>
         <tongits-robot-control v-model="edit"></tongits-robot-control>
-        <tongits-robot-build-card v-model="edit"></tongits-robot-build-card>
+        <!-- <tongits-robot-build-card v-model="edit"></tongits-robot-build-card> -->
 
         <el-form-item>
           <el-row>
@@ -446,6 +444,7 @@ export default {
   components: { Compare, Publish,tongitsRobotCommon,tongitsRobotControl,tongitsRobotBuildCard },
   data() {
     return {
+      playMode: 1, //标准玩法
       tableData: [],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -558,6 +557,7 @@ export default {
         url: '/tongitstable/all',
         method: 'get',
         data: {
+          PlayMode:this.playMode,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -651,6 +651,7 @@ export default {
       return DataRule(required, config)
     },
     createSave(postData) {
+      postData.PlayMode = this.playMode
       request({
         url: '/tongitstable/create',
         method: 'post',
