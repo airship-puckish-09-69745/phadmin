@@ -219,6 +219,18 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
             meta: { title: '大奖记录' }
+          },
+          {
+            path: 'slots_act_configs',
+            component: () => import('@/views/config/tableConfig/slots/slotsActConfig'),
+            name: 'slots_act_configs',
+            meta: { title: '剧本游戏配置' }
+          },
+          {
+            path: 'slots_act_common',
+            component: () => import('@/views/config/tableConfig/slots/slotsActCommon'),
+            name: 'slots_act_common',
+            meta: { title: '剧本通用配置' }
           }
 
         ]
@@ -724,6 +736,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
+          },
+          {
+            path: 'slots_act_configs',
+            component: () => import('@/views/config/tableConfig/slots/slotsActConfig'),
+            name: 'slots_act_configs',
+            meta: { title: '剧本游戏配置' }
+          },
+          {
+            path: 'slots_act_common',
+            component: () => import('@/views/config/tableConfig/slots/slotsActCommon'),
+            name: 'slots_act_common',
+            meta: { title: '剧本通用配置' }
           }
         ]
       }
@@ -1155,10 +1179,10 @@ export const asyncRoutes = [
         meta: { title: '老虎机概率计算' }
       },
       {
-        path: 'viewPlaylog',
-        component: () => import('@/views/devTools/viewPlaylog'),
-        name: 'viewPlaylog',
-        meta: { title: '牌局日志查看' }
+        path: 'slotsActTest',
+        component: () => import('@/views/devTools/slotsActTest'),
+        name: 'slotsActTest',
+        meta: { title: '老虎机剧本推算' }
       },
       {
         path: 'testToolsGroup',

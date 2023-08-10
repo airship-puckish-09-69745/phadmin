@@ -246,13 +246,11 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 100,
       summary: {},
-      gameNames: { 1: 'Rummy', 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
-        16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁', 59: '芝加哥', 80: 'PLINKO', 100: '汇总' },
+      gameNames: { 10: 'Crash', 51: '凤凰', 52: '睡美人', 22:'Tongits', 23:'Lucky 9', 25:'Color', 100: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [9, 1, 14, 8, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19, 10, 20, 51, 52, 53, 54, 55, 56, 57, 58, 59],
-      BROrder: [51, 52, 53, 54, 55,56,57,58,59, 10, 20, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19], // 巴西的游戏
+      defaultOrder: [22,23,25,10, 51, 52],
       sortOrder:[],
       env: 'test'
     }
