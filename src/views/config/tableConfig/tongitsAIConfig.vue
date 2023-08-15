@@ -204,6 +204,7 @@ export default {
       actionList:[
 
       ],
+      poolMoneyList:{},
       robotlvl:[
         {
           value: 1,
@@ -335,14 +336,21 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           console.log("/tongitsrobotpool/list===>",objs)
-          for (let i=0;i<$this.actionList.length;i++){
-            console.log("aaa==>",$this.actionList[i])
-            if(objs.hasOwnProperty($this.actionList[i].TableMoney)){
-              $this.actionList[i].Pool = objs[$this.actionList[i].TableMoney]
-            }
-          }
+          $this.poolMoneyList = objs
+          // for (let i=0;i<$this.actionList.length;i++){
+          //   console.log("aaa==>",$this.actionList[i])
+          //   if(objs.hasOwnProperty($this.actionList[i].TableMoney)){
+          //     $this.actionList[i].Pool = objs[$this.actionList[i].TableMoney]
+          //   }
+          // }
         }
       })
+    },
+    getRobotProfitByTableMoney(tableMoney){
+      if(this.poolMoneyList.hasOwnProperty(tableMoney)){
+          return this.poolMoneyList[tableMoney]
+      }
+      return 0
     },
     handleUpdate(row){
       this.editVisible = true
