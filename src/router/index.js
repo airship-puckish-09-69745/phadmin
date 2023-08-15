@@ -217,18 +217,10 @@ export const asyncRoutes = [
         meta: { title: 'AB - Andar Bahar ◐' }
       },
       {
-        path: 'TexasConfig',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: {title: '德州配置', noCache: true},
-        children: [
-          {
-            path: 'texasTable',
-            component: () => import('@/views/config/tableConfig/texasTable'),
-            name: 'texasTable',
-            meta: { title: '场次配置'}
-          }
-        ]
+        path: 'texasTable',
+        component: () => import('@/views/config/tableConfig/texasTable'),
+        name: 'texasTable',
+        meta: { title: 'Texas - 德州'}
       },
       {
         path: 'slotsCfg',
