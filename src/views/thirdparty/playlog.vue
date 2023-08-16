@@ -106,6 +106,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="pot_bet"
+          label="投到 jackpot 的金额"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ jackportShow(scope.row.pot_bet/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="jackpot_amount"
           label="获得 jackpot 的金额"
           width="150"
@@ -213,7 +222,7 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 1: 'Color', 2: 'Rocket', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix' },
+      games: { 1: 'Color', 2: 'Rocket', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'AndarBahar', 8: 'Baccarat', 9: 'Sweeper' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
