@@ -212,7 +212,7 @@
 					tongitsMoney:val.players[j].tongitsMoney,
 					moneyChange:val.players[j].moneyChange,
 					moneyFee:val.players[j].moneyFee,
-					payPot:val.players[j].payPot,
+					payPot:0-val.players[j].payPot,
 	      		})
   			}
 	      	this.actions.push({
