@@ -57,6 +57,7 @@
 				    <span>秘密牌：{{one.secretMeldMoney}}</span><br>
 				    <span>tongits：{{one.tongitsMoney}}</span><br>
 				    <span>服务费：{{one.moneyFee}}</span><br>
+				    <span>Pot：{{one.payPot}}</span><br>
 				    <span>输赢：{{one.moneyChange}}</span>
 				</div>
 			</div>
@@ -211,6 +212,7 @@
 					tongitsMoney:val.players[j].tongitsMoney,
 					moneyChange:val.players[j].moneyChange,
 					moneyFee:val.players[j].moneyFee,
+					payPot:val.players[j].payPot,
 	      		})
   			}
 	      	this.actions.push({
