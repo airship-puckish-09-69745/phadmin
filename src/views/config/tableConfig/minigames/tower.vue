@@ -8,7 +8,7 @@
     	<el-form label-position="left" ref="form">
     		<el-row>
     			<el-col :span="7">
-		    		<el-form-item label="最低下注：">
+		    		<el-form-item label="最低下注(放大1000倍)：">
 		 				<el-input  v-model.number="item.MinBet"></el-input>
 		 			</el-form-item>
 		 		</el-col>
