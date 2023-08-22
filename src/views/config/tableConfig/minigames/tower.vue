@@ -1,0 +1,227 @@
+<template>
+  <div class="app-container">
+  	<el-row>
+    	<publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
+    </el-row>
+    <!--公共配置-->
+    <el-row style="margin-top: 30px">
+    	<el-form label-position="left" ref="form">
+    		<el-row>
+    			<el-col :span="7">
+		    		<el-form-item label="最低下注：">
+		 				<el-input  v-model.number="item.MinBet"></el-input>
+		 			</el-form-item>
+		 		</el-col>
+		 		<el-col :span="7" :offset="1">
+		 			<el-form-item label="服务费：">
+		 				<el-input v-model.number="item.ServiceFee"><template slot="append">%</template></el-input>
+		 			</el-form-item>
+		 		</el-col>	
+ 				<el-col :span="7" :offset="1">
+ 					<el-form-item label="单局最大时间：">
+		 				<el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
+		 			</el-form-item>
+ 				</el-col>
+ 			</el-row>
+ 			<el-row>
+ 				<el-col :span="7">
+ 					<el-form-item label="Jackpot贡献率：">
+		 				<el-input v-model.number="item.JackpotFee"><template slot="append">%</template></el-input>
+		 			</el-form-item>
+ 				</el-col>
+ 				<el-col :span="7" :offset="1">
+ 					<el-form-item label="中Jackpot倍率：">
+		 				<el-input v-model.number="item.JackpotOdds"></el-input>
+		 			</el-form-item>
+ 				</el-col>
+ 			</el-row>
+    	</el-form>
+    </el-row>
+    <el-row style="margin-top: 30px">
+    	<el-tabs type="border-card">
+		  <el-tab-pane :label="getLabelName(v.Level)" v-for="(v,idx) in item.LevelConfig" :key="idx">
+		  	<el-form label-position="left">
+		     	<h3>级别：{{levelCfg[v.Level]}}</h3>
+		     	<el-row>
+		     		<el-col :span="11">
+		     			<el-form-item label="行数：">
+		     				<el-input size="small" v-model.number="v.Row"><template slot="append">行</template></el-input>
+		     			</el-form-item>
+		     		</el-col>
+		     		<el-col :span="11">
+		     			<el-form-item label="列数：">
+		     				<el-input size="small" v-model.number="v.Col"><template slot="append">列</template></el-input>
+		     			</el-form-item>
+		     		</el-col>
+		     	</el-row>
+		     	<el-row>
+		     		<el-col :span="11">
+		     			<el-form-item label="每行星星数：">
+		     				<el-input v-model.number="v.StarNum"><template slot="append">个星星</template></el-input>
+		     			</el-form-item>
+		     		</el-col>
+		     		<el-col :span="11">
+		     			<el-form-item label="每行炸弹数：">
+		     				<el-input v-model.number="v.BombNum"><template slot="append">个炸弹</template></el-input>
+		     			</el-form-item>
+		     		</el-col>
+		     	</el-row>
+		      	<el-table
+			    :data="v.Line"
+			    border
+			    style="width: 100%">
+				    <el-table-column
+				      label="行"
+				      width="180">
+				      <template slot-scope="scope">
+				      第{{scope.row.RowIndex+1}}行
+			  		 </template>
+				    </el-table-column>
+				    <el-table-column
+				      label="倍率(说明：2.06倍数值为206)"
+				      width="380">
+					    <template slot-scope="scope">
+			                <el-input v-model.number="scope.row.RowOdds"><template slot="append">倍率*100</template></el-input>
+			          	</template>
+		            </el-table-column>
+			  	</el-table>
+			</el-form>
+		  </el-tab-pane>
+		</el-tabs>
+     
+    </el-row>
+    <el-row>
+      <el-col :offset="16">
+        <el-button type="primary" size="mini" @click="setData()">保存</el-button>
+      </el-col>
+    </el-row>
+    <!--对比组件-->
+    <compare ref="compare" />
+
+  </div>
+</template>
+
+<script>
+import { Message } from 'element-ui'
+import Compare from '@/components/Compare'
+import Publish from '@/components/Publish'
+import request from '@/utils/request'
+//import slotsJackpotPhoenix from './components/jackpot_phoenix'
+
+export default {
+  // eslint-disable-next-line vue/no-unused-components
+  components: { Compare, Publish },
+  data() {
+    return {
+      item: {
+  	  },
+      load:false,
+      form: {
+      },
+      levelCfg:{
+      	1:"Easy",
+      	2:"Medium",
+      	3:"Hard",
+      	4:"Expert",
+      	5:"Master",
+      	6:"Nightmare"
+      },
+      txt: '',
+      subKey: 'tower_cfg'
+    }
+  },
+
+  created() {
+    this.getData()
+    console.log(1)
+  },
+  methods: {
+  	getLabelName(k){
+  		return this.levelCfg[k]
+  	},
+    getFullKey() {
+      return 'CustomizeCfg_' + this.subKey
+    },
+    getData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('tower cfg', response)
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+          	let cfg = JSON.parse(response.Data.Data)
+          	for(let i=0;i<cfg.LevelConfig.length;i++){
+          		let one = cfg.LevelConfig[i].Line
+          		let row = cfg.LevelConfig[i].Row
+          		for(let j=0;j<row;j++){
+          			let isGet = false
+          			for(let k=0;k<one.length;k++){
+          				if(one[k].RowIndex == j){
+          					isGet = true
+          					break
+          				}
+          			}
+          			if(!isGet){
+          				one.push({RowIndex:j,RowOdds:0})
+          			}
+          		}
+          		one.sort(function(a,b){return a.RowIndex-b.RowIndex})
+          	}
+            this.item = cfg
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(response.Data.Data)
+            // this.load = true
+          }
+        }
+      })
+    },
+    setData() {
+    	//检验
+    	for(let i=0;i<this.item.LevelConfig.length;i++){
+    		let one = this.item.LevelConfig[i];
+    		let lvl = one.Level;
+    		if(one.Col != one.StarNum+one.BombNum){
+    			Message.error("级别："+this.levelCfg[lvl]+"下 星星["+one.StarNum+"]+炸弹["+one.BombNum+"]数不等于列["+one.Col+"]")
+    			return
+    		}
+    	}
+      this.form.Data = JSON.stringify(this.item)
+      const $this = this
+      // 设置修改后数据
+      this.$refs.compare.SetNewVal(this.form.Data)
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: $this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('base cfg response', response)
+            Message.success('保存成功')
+          }
+        })
+      })
+    }
+  }
+}
+</script>
+<style>
+.symbol-img {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+.symbol-img:hover, .symbol-img.active {
+  border: 3px solid red;
+}
+</style>

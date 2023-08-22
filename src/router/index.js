@@ -296,6 +296,21 @@ export const asyncRoutes = [
         component: () => import('@/views/online/prizePool'),
         name: 'prize_pool',
         meta: { title: '小游戏奖池配置' }
+      },
+      {
+        path: 'miniGamesCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '小游戏配置', noCache: true },
+        children: [
+          {
+            path: 'tower_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/tower'),
+            name: 'tower_cfg',
+            meta: { title: 'Tower - ' }
+          }
+
+        ]
       }
     ]
   },
