@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="App：" v-model="item.app" :required="true" label-width="80px">
-          <el-input-number type="number" placeholder="请输入App" value="1000000" :width="150"/>
+          <el-input type="number" placeholder="请输入App" value="1000000" :width="150"/>
         </el-form-item>
         <el-form-item label="开始日期：">
           <el-date-picker
@@ -25,6 +25,21 @@
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
         </el-form-item>
       </el-form>
+    </el-row>
+    <el-row>
+      <el-col :offset="6" :span="12">
+        <el-descriptions
+          class="margin-top"
+          :column="3"
+          size="medium"
+          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+          border
+        >
+          <el-descriptions-item label="总投注笔数：">{{ formatNumber(item.total_bet_num) }}</el-descriptions-item>
+          <el-descriptions-item label="总的有效投注额度："> {{ item.total_valid_bet_amount }}</el-descriptions-item>
+          <el-descriptions-item label="总的输赢：">{{ item.total_win_loss_amount }}</el-descriptions-item>
+        </el-descriptions>
+      </el-col>
     </el-row>
     <el-row>
       <el-table
@@ -67,6 +82,15 @@
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.bet_amount/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="valid_bet_amount"
+          label="有效下注额"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.valid_bet_amount/1000) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -203,7 +227,10 @@ export default {
         start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()),
         app: -1,
-        type: 0
+        type: 0,
+        total_bet_num: 0,
+        total_valid_bet_amount: 0,
+        total_win_loss_amount: 0
       },
       totalData: {
         round: 0,
@@ -265,6 +292,7 @@ export default {
           EndTime: this.item.end / 1000,
           Page: this.currentPage,
           Limit: this.pageNum,
+          Sumary: '1',
           type: this.item.type
         }
       }).then(response => {
@@ -278,6 +306,9 @@ export default {
           }
           this.totalCount = response.Data.total
           $this.tableData = objs
+          $this.item.total_bet_num = response.Data.sumary.total_bet_num || 0
+          $this.item.total_valid_bet_amount = response.Data.sumary.total_valid_bet_amount || 0
+          $this.item.total_win_loss_amount = response.Data.sumary.total_win_loss_amount || 0
         }
       })
     }
