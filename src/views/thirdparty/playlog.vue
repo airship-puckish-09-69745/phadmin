@@ -234,7 +234,7 @@ export default {
         Uid: 0,
         start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()),
-        app: -1,
+        app: '',
         type: 0,
         total_bet_num: 0,
         total_valid_bet_amount: 0,
