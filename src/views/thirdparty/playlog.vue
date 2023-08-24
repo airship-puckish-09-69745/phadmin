@@ -3,7 +3,14 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="App：" v-model="item.app" :required="true" label-width="80px">
-          <el-input type="number" placeholder="请输入App" value="1000000" :width="150"/>
+          <el-select v-model="item.app" placeholder="请选择">
+            <el-option
+              v-for="row in appInfo"
+              :key="row.key"
+              :label="row.label"
+              :value="row.key">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="开始日期：">
           <el-date-picker
@@ -220,7 +227,8 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
-      appId: 1000000,
+      // appId: 1000000,
+      appInfo:[],
       env: 'dev',
       item: {
         Uid: 0,
@@ -259,6 +267,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    this.getAppInfo()
   },
   methods: {
     handleSizeChange(val) {
@@ -278,6 +287,23 @@ export default {
       }
       return '无'
     },
+    getAppInfo(){
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for(let i=0;i<response.Data.length;i++){
+            this.appInfo.push({
+              key:response.Data[i].ID,
+              label:response.Data[i].Account,
+            })
+          }
+        }
+      })
+    },
     getInfo() {
       const $this = this
       request({
@@ -287,7 +313,7 @@ export default {
           Env: this.env,
           Path: '/thirdparties/playlog/list',
           Uid: this.item.Uid,
-          App: this.appId,
+          App: this.item.app,
           StartTime: this.item.start / 1000,
           EndTime: this.item.end / 1000,
           Page: this.currentPage,
