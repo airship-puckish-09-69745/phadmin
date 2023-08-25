@@ -2,14 +2,14 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
-        <el-form-item label="App：" v-model="item.app" :required="true" label-width="80px">
+        <el-form-item v-model="item.app" label="App：" :required="true" label-width="80px">
           <el-select v-model="item.app" placeholder="请选择">
             <el-option
               v-for="row in appInfo"
               :key="row.key"
               :label="row.label"
-              :value="row.key">
-            </el-option>
+              :value="row.key"
+            />
           </el-select>
         </el-form-item>
         <el-form-item label="开始日期：">
@@ -27,6 +27,12 @@
             type="datetime"
             placeholder="选择日期"
           />
+        </el-form-item>
+        <el-form-item v-model="item.idDesc" label="id 排序：" :required="true" label-width="80px">
+          <el-select v-model="item.idDesc" placeholder="请选择">
+            <el-option label="正序" value="0"/>
+            <el-option label="逆序" value="1"/>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
@@ -62,21 +68,21 @@
         <el-table-column
           prop="uid"
           label="Uid"
-          width="120"
+          width="90"
         />
         <el-table-column
           prop="game_id"
           label="给平台方的游戏id"
-          width="120"
+          width="110"
         >
           <template slot-scope="scope">
-            {{scope.row.game_id}}（{{ games[scope.row.game_id] }}）
+            {{ scope.row.game_id }}（{{ games[scope.row.game_id] }}）
           </template>
         </el-table-column>
         <el-table-column
           prop="Status"
           label="输赢平"
-          width="80"
+          width="70"
         >
           <template slot-scope="scope">
             {{ allStatus[scope.row.status] }}
@@ -85,7 +91,7 @@
         <el-table-column
           prop="bet_amount"
           label="下注额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.bet_amount/1000) }}
@@ -94,7 +100,7 @@
         <el-table-column
           prop="valid_bet_amount"
           label="有效下注额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.valid_bet_amount/1000) }}
@@ -103,7 +109,7 @@
         <el-table-column
           prop="before_amount"
           label="投注前用户余额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.before_amount/1000) }}
@@ -112,7 +118,7 @@
         <el-table-column
           prop="payoff_amount"
           label="输赢金额（减去服务费）"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.payoff_amount/1000) }}
@@ -121,7 +127,7 @@
         <el-table-column
           prop="service_fee"
           label="服务费"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
@@ -130,7 +136,7 @@
         <el-table-column
           prop="money_now"
           label="结算后当前余额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.money_now/1000) }}
@@ -139,7 +145,7 @@
         <el-table-column
           prop="pot_bet"
           label="投到 jackpot 的金额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.pot_bet/1000) }}
@@ -148,7 +154,7 @@
         <el-table-column
           prop="jackpot_amount"
           label="获得 jackpot 的金额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.jackpot_amount/1000) }}
@@ -157,7 +163,7 @@
         <el-table-column
           prop="start_time"
           label="投注（开始）时间"
-          width="200"
+          width="150"
         >
           <template slot-scope="scope">
             <DateTimeShow :show-type="2" :timestamp="scope.row.start_time" />
@@ -166,7 +172,7 @@
         <el-table-column
           prop="end_time"
           label="结束（结算）时间"
-          width="200"
+          width="150"
         >
           <template slot-scope="scope">
             <DateTimeShow :show-type="2" :timestamp="scope.row.end_time" />
@@ -184,6 +190,11 @@
         <el-table-column
           prop="unique_no"
           label="UniqueNO"
+          width="120"
+        />
+        <el-table-column
+          prop="game_log"
+          label="gameLog"
           width="120"
         />
         <el-table-column
@@ -211,6 +222,12 @@
   </div>
 </template>
 
+<style>
+.tooltip-button {
+  margin-right: 10px;
+}
+</style>
+
 <script>
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
@@ -228,7 +245,7 @@ export default {
   data() {
     return {
       // appId: 1000000,
-      appInfo:[],
+      appInfo: [],
       env: 'dev',
       item: {
         Uid: 0,
@@ -238,7 +255,8 @@ export default {
         type: 0,
         total_bet_num: 0,
         total_valid_bet_amount: 0,
-        total_win_loss_amount: 0
+        total_win_loss_amount: 0,
+        idDesc: '1'
       },
       totalData: {
         round: 0,
@@ -287,18 +305,18 @@ export default {
       }
       return '无'
     },
-    getAppInfo(){
+    getAppInfo() {
       request({
         url: '/thirdparties/all',
         method: 'get',
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          const objs = response.Data || []
-          for(let i=0;i<response.Data.length;i++){
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
             this.appInfo.push({
-              key:response.Data[i].ID,
-              label:response.Data[i].Account,
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
             })
           }
         }
@@ -316,6 +334,7 @@ export default {
           App: this.item.app,
           StartTime: this.item.start / 1000,
           EndTime: this.item.end / 1000,
+          idDesc: this.item.idDesc,
           Page: this.currentPage,
           Limit: this.pageNum,
           Sumary: '1',

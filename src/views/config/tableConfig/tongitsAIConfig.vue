@@ -63,7 +63,7 @@
                 label="当前输赢"
               >
                 <template slot-scope="scope">
-                  <a href="javascript:void(0)" @click="showRobotPoolForm(scope.row.TableMoney, scope.row.Pool)" style="cursor: pointer; color:rgb(59, 59, 232);">{{scope.row.Pool}}</a>
+                  <a href="javascript:void(0)" @click="showRobotPoolForm(scope.row.TableMoney)" style="cursor: pointer; color:rgb(59, 59, 232);">{{getRobotProfitByTableMoney(scope.row.TableMoney,true)}}</a>
                 </template>
               </el-table-column>
               <el-table-column
@@ -346,9 +346,9 @@ export default {
         }
       })
     },
-    getRobotProfitByTableMoney(tableMoney){
+    getRobotProfitByTableMoney(tableMoney,isDlv){
       if(this.poolMoneyList.hasOwnProperty(tableMoney)){
-          return this.poolMoneyList[tableMoney]
+          return isDlv ? this.poolMoneyList[tableMoney] / 1000 : this.poolMoneyList[tableMoney]
       }
       return 0
     },
@@ -425,8 +425,8 @@ export default {
         }
       }
     },
-    showRobotPoolForm(tableMoney, poolMoney) {
-      this.robotForm.currentVal = poolMoney
+    showRobotPoolForm(tableMoney) {
+      this.robotForm.currentVal = this.getRobotProfitByTableMoney(tableMoney,false)
       this.robotForm.tableMoney = tableMoney
       this.editRobotSync = true
     },
@@ -454,6 +454,7 @@ export default {
           }
           Message.success('修改成功')
           this.editRobotSync = false
+          window.location.reload()
         }else {
           Message.error(response.Data)
         }
