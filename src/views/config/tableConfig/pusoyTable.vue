@@ -678,7 +678,7 @@ export default {
       libShow: $libShow,
       env: 'test',
       libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'TotalRecharge', 'MaxPayAmount']),
-      libMoneyRobot: new MoneyShow([' RobotCarryMoneyStart', 'RobotCarryMoneyEnd', 'RobotMaxWinMoneyStart', 'RobotMaxWinMoneyEnd', 'RobotMaxLoseMoneyStart', 'RobotMaxLoseMoneyEnd']),
+      libMoneyRobot: new MoneyShow(['RobotCarryMoneyStart', 'RobotCarryMoneyEnd', 'RobotMaxWinMoneyStart', 'RobotMaxWinMoneyEnd', 'RobotMaxLoseMoneyStart', 'RobotMaxLoseMoneyEnd']),
 
       edit: {
         visible: false,
