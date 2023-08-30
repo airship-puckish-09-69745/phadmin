@@ -117,7 +117,7 @@
         </el-table-column>
         <el-table-column
           prop="payoff_amount"
-          label="输赢金额（减去服务费）"
+          label="输赢金额（资产变化值）"
           width="120"
         >
           <template slot-scope="scope">
@@ -131,6 +131,15 @@
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ggr"
+          label="ggr"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.ggr > 0 ? scope.row.ggr/1000 : 0) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -289,6 +298,7 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
+      this.currentPage = 1
       this.pageNum = val
       this.getInfo()
     },
