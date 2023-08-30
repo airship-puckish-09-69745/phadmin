@@ -139,7 +139,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.ggr > 0 ? scope.row.ggr/1000 : 0) }}
+            {{ formatNumber(scope.row.ggr / 1000) }}
           </template>
         </el-table-column>
         <el-table-column
