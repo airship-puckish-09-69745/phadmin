@@ -300,22 +300,20 @@
             <fieldset style="margin-top:10px">
                 <legend>jackpot配置</legend>
                 <el-row :gutter="10" style="margin-top: 30px">
-                    <el-col :span="11" :offset="1">
+                    <el-col :span="24" :offset="1">
                         <el-form-item label="本局下注额度(≥)：">
-                          <el-col :span="20">
                               <el-input v-model.number="item.Jackpot.BetMoreThan" size="mini" :required="true" />
-                          </el-col>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="11">
+                </el-row>
+                <el-row :gutter="10">
+                  <el-col :span="24">
                         <el-form-item label="命中触发结果：">
-                        <el-col :span="20">
-                            <span v-for="(hitObj,index) in item.Jackpot.HitColor" :key="index">
+                            <span style="display:inline-block;" v-for="(hitObj,index) in item.Jackpot.HitColor" :key="index">
                                 {{ getBaoziName(hitObj) }}
                             </span>
-                        </el-col>
                         </el-form-item>
-                    </el-col>
+                  </el-col>
                 </el-row>
                 <el-row>
                     <el-table
