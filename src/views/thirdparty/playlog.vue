@@ -2,8 +2,15 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
-        <el-form-item label="App：" v-model="item.app" :required="true" label-width="80px">
-          <el-input-number type="number" placeholder="请输入App" value="1000000" :width="150"/>
+        <el-form-item v-model="item.app" label="App：" :required="true" label-width="80px">
+          <el-select v-model="item.app" placeholder="请选择">
+            <el-option
+              v-for="row in appInfo"
+              :key="row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="开始日期：">
           <el-date-picker
@@ -21,10 +28,31 @@
             placeholder="选择日期"
           />
         </el-form-item>
+        <el-form-item v-model="item.idDesc" label="id 排序：" :required="true" label-width="80px">
+          <el-select v-model="item.idDesc" placeholder="请选择">
+            <el-option label="正序" value="0"/>
+            <el-option label="逆序" value="1"/>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
         </el-form-item>
       </el-form>
+    </el-row>
+    <el-row>
+      <el-col :offset="6" :span="12">
+        <el-descriptions
+          class="margin-top"
+          :column="3"
+          size="medium"
+          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+          border
+        >
+          <el-descriptions-item label="总投注笔数：">{{ formatNumber(item.total_bet_num) }}</el-descriptions-item>
+          <el-descriptions-item label="总的有效投注额度："> {{ item.total_valid_bet_amount }}</el-descriptions-item>
+          <el-descriptions-item label="总的输赢：">{{ item.total_win_loss_amount }}</el-descriptions-item>
+        </el-descriptions>
+      </el-col>
     </el-row>
     <el-row>
       <el-table
@@ -40,21 +68,21 @@
         <el-table-column
           prop="uid"
           label="Uid"
-          width="120"
+          width="90"
         />
         <el-table-column
           prop="game_id"
           label="给平台方的游戏id"
-          width="120"
+          width="110"
         >
           <template slot-scope="scope">
-            {{scope.row.game_id}}（{{ games[scope.row.game_id] }}）
+            {{ scope.row.game_id }}（{{ games[scope.row.game_id] }}）
           </template>
         </el-table-column>
         <el-table-column
           prop="Status"
           label="输赢平"
-          width="80"
+          width="70"
         >
           <template slot-scope="scope">
             {{ allStatus[scope.row.status] }}
@@ -63,16 +91,25 @@
         <el-table-column
           prop="bet_amount"
           label="下注额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.bet_amount/1000) }}
           </template>
         </el-table-column>
         <el-table-column
+          prop="valid_bet_amount"
+          label="有效下注额"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="before_amount"
           label="投注前用户余额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.before_amount/1000) }}
@@ -80,8 +117,8 @@
         </el-table-column>
         <el-table-column
           prop="payoff_amount"
-          label="输赢金额（减去服务费）"
-          width="150"
+          label="输赢金额（资产变化值）"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.payoff_amount/1000) }}
@@ -90,25 +127,43 @@
         <el-table-column
           prop="service_fee"
           label="服务费"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
           </template>
         </el-table-column>
         <el-table-column
+          prop="ggr"
+          label="ggr"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.ggr / 1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="money_now"
           label="结算后当前余额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.money_now/1000) }}
           </template>
         </el-table-column>
         <el-table-column
+          prop="pot_bet"
+          label="投到 jackpot 的金额"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ jackportShow(scope.row.pot_bet/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="jackpot_amount"
           label="获得 jackpot 的金额"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.jackpot_amount/1000) }}
@@ -117,7 +172,7 @@
         <el-table-column
           prop="start_time"
           label="投注（开始）时间"
-          width="200"
+          width="150"
         >
           <template slot-scope="scope">
             <DateTimeShow :show-type="2" :timestamp="scope.row.start_time" />
@@ -126,7 +181,7 @@
         <el-table-column
           prop="end_time"
           label="结束（结算）时间"
-          width="200"
+          width="150"
         >
           <template slot-scope="scope">
             <DateTimeShow :show-type="2" :timestamp="scope.row.end_time" />
@@ -144,6 +199,11 @@
         <el-table-column
           prop="unique_no"
           label="UniqueNO"
+          width="120"
+        />
+        <el-table-column
+          prop="game_log"
+          label="gameLog"
           width="120"
         />
         <el-table-column
@@ -171,6 +231,12 @@
   </div>
 </template>
 
+<style>
+.tooltip-button {
+  margin-right: 10px;
+}
+</style>
+
 <script>
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
@@ -187,14 +253,19 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
-      appId: 1000000,
+      // appId: 1000000,
+      appInfo: [],
       env: 'dev',
       item: {
         Uid: 0,
         start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()),
-        app: -1,
-        type: 0
+        app: '',
+        type: 0,
+        total_bet_num: 0,
+        total_valid_bet_amount: 0,
+        total_win_loss_amount: 0,
+        idDesc: '1'
       },
       totalData: {
         round: 0,
@@ -213,7 +284,7 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 1: 'Color', 2: 'Rocket', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix' },
+      games: { 1: 'Color', 2: 'Rocket', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas', 8: 'AndarBahar', 9: 'Baccarat', 10: 'Sweeper' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -223,9 +294,11 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    this.getAppInfo()
   },
   methods: {
     handleSizeChange(val) {
+      this.currentPage = 1
       this.pageNum = val
       this.getInfo()
     },
@@ -242,6 +315,23 @@ export default {
       }
       return '无'
     },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
     getInfo() {
       const $this = this
       request({
@@ -251,11 +341,13 @@ export default {
           Env: this.env,
           Path: '/thirdparties/playlog/list',
           Uid: this.item.Uid,
-          App: this.appId,
+          App: this.item.app,
           StartTime: this.item.start / 1000,
           EndTime: this.item.end / 1000,
+          idDesc: this.item.idDesc,
           Page: this.currentPage,
           Limit: this.pageNum,
+          Sumary: '1',
           type: this.item.type
         }
       }).then(response => {
@@ -269,6 +361,9 @@ export default {
           }
           this.totalCount = response.Data.total
           $this.tableData = objs
+          $this.item.total_bet_num = response.Data.sumary.total_bet_num || 0
+          $this.item.total_valid_bet_amount = response.Data.sumary.total_valid_bet_amount || 0
+          $this.item.total_win_loss_amount = response.Data.sumary.total_win_loss_amount || 0
         }
       })
     }

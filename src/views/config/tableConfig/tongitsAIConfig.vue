@@ -63,7 +63,7 @@
                 label="当前输赢"
               >
                 <template slot-scope="scope">
-                  <a href="javascript:void(0)" @click="showRobotPoolForm(scope.row.TableMoney, scope.row.Pool)" style="cursor: pointer; color:rgb(59, 59, 232);">{{scope.row.Pool}}</a>
+                  <a href="javascript:void(0)" @click="showRobotPoolForm(scope.row.TableMoney)" style="cursor: pointer; color:rgb(59, 59, 232);">{{getRobotProfitByTableMoney(scope.row.TableMoney,true)}}</a>
                 </template>
               </el-table-column>
               <el-table-column
@@ -204,6 +204,7 @@ export default {
       actionList:[
 
       ],
+      poolMoneyList:{},
       robotlvl:[
         {
           value: 1,
@@ -335,14 +336,21 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           console.log("/tongitsrobotpool/list===>",objs)
-          for (let i=0;i<$this.actionList.length;i++){
-            console.log("aaa==>",$this.actionList[i])
-            if(objs.hasOwnProperty($this.actionList[i].TableMoney)){
-              $this.actionList[i].Pool = objs[$this.actionList[i].TableMoney]
-            }
-          }
+          $this.poolMoneyList = objs
+          // for (let i=0;i<$this.actionList.length;i++){
+          //   console.log("aaa==>",$this.actionList[i])
+          //   if(objs.hasOwnProperty($this.actionList[i].TableMoney)){
+          //     $this.actionList[i].Pool = objs[$this.actionList[i].TableMoney]
+          //   }
+          // }
         }
       })
+    },
+    getRobotProfitByTableMoney(tableMoney,isDlv){
+      if(this.poolMoneyList.hasOwnProperty(tableMoney)){
+          return isDlv ? this.poolMoneyList[tableMoney] / 1000 : this.poolMoneyList[tableMoney]
+      }
+      return 0
     },
     handleUpdate(row){
       this.editVisible = true
@@ -417,8 +425,8 @@ export default {
         }
       }
     },
-    showRobotPoolForm(tableMoney, poolMoney) {
-      this.robotForm.currentVal = poolMoney
+    showRobotPoolForm(tableMoney) {
+      this.robotForm.currentVal = this.getRobotProfitByTableMoney(tableMoney,false)
       this.robotForm.tableMoney = tableMoney
       this.editRobotSync = true
     },
@@ -446,6 +454,7 @@ export default {
           }
           Message.success('修改成功')
           this.editRobotSync = false
+          window.location.reload()
         }else {
           Message.error(response.Data)
         }

@@ -6,7 +6,14 @@
           <UidInput @setUid="function(iUid){item.Uid=iUid}" />
         </el-form-item>
         <el-form-item label="App：" :required="true" label-width="80px">
-          <el-input placeholder="请输入App" :value="appId"/>
+          <el-select v-model="item.app" placeholder="请选择">
+            <el-option
+              v-for="row in appInfo"
+              :key="row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="类型：">
           <el-select v-model="item.type" size="mini">
@@ -55,20 +62,17 @@
           prop="transaction_id"
           label="第三方流水号"
           width="300"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="uid"
           label="UID"
           width="100"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="app"
           label="第三方ID"
           width="100"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="type"
           label="转移类型"
@@ -141,13 +145,14 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
-      appId: 0,
+      // appId: 0,
+      appInfo: [],
       env: 'dev',
       item: {
         Uid: 0,
         start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()),
-        app: -1,
+        app: '',
         type: 0
       },
       totalData: {
@@ -174,6 +179,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    this.getAppInfo()
   },
   methods: {
     handleSizeChange(val) {
@@ -187,6 +193,23 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
     getInfo() {
       const $this = this
       request({
@@ -196,7 +219,7 @@ export default {
           Env: this.env,
           Path: '/thirdparties/transfer/list',
           Uid: this.item.Uid,
-          App: this.appId,
+          App: this.item.app,
           StartTime: $libDate.SelectTimeToIndia(this.item.start) / 1000,
           EndTime: $libDate.SelectTimeToIndia(this.item.end) / 1000,
           Page: this.currentPage,
