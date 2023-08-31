@@ -119,7 +119,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="gid === 51">
+        <template v-if="[51,52,54,57,59].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"

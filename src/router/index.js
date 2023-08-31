@@ -155,25 +155,6 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
-
-      {
-        path: 'CarRoulette',
-        component: () => import('@/views/config/tableConfig/CarRouletteTable'),
-        name: 'CarRoulette',
-        meta: { title: 'Car - 车标转盘 ◐' }
-      },
-      {
-        path: 'gameCrash',
-        component: () => import('@/views/config/tableConfig/gameCrash'),
-        name: 'gameCrash',
-        meta: { title: 'Crash - 小火箭 ◐' }
-      },
-      {
-        path: 'dvtTable',
-        component: () => import('@/views/config/tableConfig/dvtTable'),
-        name: 'dvtTable',
-        meta: { title: 'Dragon - 龙虎 ◐' }
-      },
       {
         path: 'tongitsTable',
         component: () => import('@/views/config/tableConfig/tongitsTable'),
@@ -205,17 +186,67 @@ export const asyncRoutes = [
         meta: { title: 'Pusoy ◐' }
       },
       {
-        path: 'bcrTable',
-        component: () => import('@/views/config/tableConfig/bcrTable'),
-        name: 'bcrTable',
-        meta: { title: 'Baccarat - 百家乐 ◐' }
+        path: 'SmallGameCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '下注类游戏', noCache: true },
+        children: [
+          {
+            path: 'abTable',
+            component: () => import('@/views/config/tableConfig/abTable'),
+            name: 'abTable',
+            meta: { title: 'AB - Andar Bahar ◐' }
+          },
+          {
+            path: 'CarRoulette',
+            component: () => import('@/views/config/tableConfig/CarRouletteTable'),
+            name: 'CarRoulette',
+            meta: { title: 'Car - 车标转盘 ◐' }
+          },
+          {
+            path: 'color_game',
+            component: () => import('@/views/config/tableConfig/colorGame'),
+            name: 'gameColorCfg',
+            meta: { title: 'color game ◐' }
+          },
+          {
+            path: 'gameCrash',
+            component: () => import('@/views/config/tableConfig/gameCrash'),
+            name: 'gameCrash',
+            meta: { title: 'Crash - 小火箭 ◐' }
+          },
+          {
+            path: 'dvtTable',
+            component: () => import('@/views/config/tableConfig/dvtTable'),
+            name: 'dvtTable',
+            meta: { title: 'Dragon - 龙虎 ◐' }
+          },
+          {
+            path: 'bcrTable',
+            component: () => import('@/views/config/tableConfig/bcrTable'),
+            name: 'bcrTable',
+            meta: { title: 'Baccarat - 百家乐 ◐' }
+          },
+          {
+            path: 'sweeper',
+            component: () => import('@/views/config/tableConfig/sweeperCfg'),
+            name: 'sweeperCfg',
+            meta: { title: 'Sweeper - 扫雷 ◐' }
+          },
+          {
+            path: 'windrop_cfg',
+            component: () => import('@/views/config/tableConfig/windrop_cfg'),
+            name: 'windrop_cfg',
+            meta: { title: 'Windrop ◐' }
+          },
+
+
+        ]
       },
-      {
-        path: 'abTable',
-        component: () => import('@/views/config/tableConfig/abTable'),
-        name: 'abTable',
-        meta: { title: 'AB - Andar Bahar ◐' }
-      },
+
+
+
+
       {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
@@ -237,12 +268,6 @@ export const asyncRoutes = [
             meta: { title: 'Phoenix - 凤凰' }
           },
 
-          {
-            path: 'windrop_cfg',
-            component: () => import('@/views/config/tableConfig/windrop_cfg'),
-            name: 'windrop_cfg',
-            meta: { title: 'Windrop ◐' }
-          },
 
           {
             path: 'slots_winner_record',
@@ -266,18 +291,7 @@ export const asyncRoutes = [
         ]
       },
 
-      {
-        path: 'sweeper',
-        component: () => import('@/views/config/tableConfig/sweeperCfg'),
-        name: 'sweeperCfg',
-        meta: { title: 'Sweeper - 扫雷 ◐' }
-      },
-      {
-        path: 'color_game',
-        component: () => import('@/views/config/tableConfig/colorGame'),
-        name: 'gameColorCfg',
-        meta: { title: 'color game ◐' }
-      },
+
 
       {
         path: 'level_hide',
@@ -784,19 +798,8 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
-          },
-          {
-            path: 'slots_act_configs',
-            component: () => import('@/views/config/tableConfig/slots/slotsActConfig'),
-            name: 'slots_act_configs',
-            meta: { title: '剧本游戏配置' }
-          },
-          {
-            path: 'slots_act_common',
-            component: () => import('@/views/config/tableConfig/slots/slotsActCommon'),
-            name: 'slots_act_common',
-            meta: { title: '剧本通用配置' }
           }
+
         ]
       }
     ]
