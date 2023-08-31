@@ -3,9 +3,9 @@
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
       <el-button type="danger" round @click="showSetResult">指定结果</el-button>
       <el-button type="warning" round @click="cleanResult">清除指定结果</el-button>
-      <el-row :gutter="10" style="margin-top: 30px">
+      <el-row :gutter="5" style="margin-top: 30px">
         <el-form ref="item" :model="item" label-width="200px">
-          <el-col :span="12" :offset="3">
+          <el-col :span="16" :offset="2">
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="最大人数：" prop="MaxPlayers" :rules="dataRule(true,{type:'n',range:'1-1000'})">
@@ -64,22 +64,22 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="抽水百分比：" prop="TaxRate" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-form-item label="服务费：" prop="TaxRate" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
-                    <el-input v-model.number="item.TaxRate" size="mini" :required="true"/>
+                    <el-input v-model.number="item.TaxRate" size="mini" :required="true"><template slot="append">%</template></el-input>
                   </el-col>
-                  %
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
-                <el-col :span="11" :offset="1">
+                <el-col :span="24" :offset="1">
                     <el-form-item label="下注金额列表：" :required="true">
-                    <el-col :span="20">
                         <el-input v-model="betMoneyList" size="mini" :required="true" />
-                    </el-col>
                     </el-form-item>
                 </el-col>
+            </el-row>
+            <!--
+            <el-row>
               <el-col :span="11">
                 <el-form-item label="调控最少真人数：" prop="MinPlayersEnableSchema" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
@@ -88,9 +88,10 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            -->
             <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="抽水额度：" prop="FeeRate" :rules="dataRule(true,{type:'n',range:'0-100'})">
+                <el-form-item label="奖池抽水比例：" prop="FeeRate" :rules="dataRule(true,{type:'n',range:'0-100'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.FeeRate" size="mini" :required="true" />
                   </el-col>%
@@ -137,6 +138,43 @@
                 </el-col>
             </el-row>
             <fieldset>
+              <legend>奖池触发重摇</legend>
+              <el-row>
+                <el-col :span="11" :offset="1">
+                  <el-form-item label="奖池低于某值此时系统输：" >
+                      <el-input v-model.number="item.LowLotteryPoolReChoice" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="重摇概率：">
+                    <el-input v-model.number="item.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item >
+                  <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                </el-descriptions-item>
+              </el-descriptions>
+              <el-row>
+                <el-col :span="11" :offset="1">
+                  <el-form-item label="奖池大于某值此时系统赢：" >
+                      <el-input v-model.number="item.HighLotteryPoolReChoice" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="重摇概率：">
+                    <el-input v-model.number="item.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item >
+                  <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                </el-descriptions-item>
+              </el-descriptions>
+            </fieldset>
+            <fieldset style="margin-top:10px">
               <legend>机器人配置</legend>
               <el-row>
                 <el-col :span="11" :offset="1">
@@ -518,7 +556,11 @@
           'Data.BetAmount': '下注金额配置',
           'Data.Jackpot': 'Jackpot配置',
           'Data.WinMoneyShowNum': '赢钱榜展示数量',
-          'Data.JackpotRate': '赢钱榜展示数量',
+          'Data.JackpotRate': 'jackpot抽水',
+          'Data.LowLotteryPoolReChoice':'奖池低于某值此时系统输',
+          'Data.HighLotteryPoolReChoice':'奖池大于某值此时系统赢',
+          'Data.LowLotteryPoolReChoiceRate':'奖池低于某值此时系统输，重新摇概率',
+          'Data.HighLotteryPoolReChoiceRate':'奖池大于某值此时系统赢，重新摇概率',
           types: {
             Data: 'jsonString' // 整个数据项的类型
           }
@@ -545,6 +587,14 @@
         this.item.MinMoneyCarry /= 1000
         this.item.MinRobotMoney /= 1000
         this.item.MaxRobotMoney /= 1000
+        if(!this.item.hasOwnProperty("LowLotteryPoolReChoice")){
+          this.item.LowLotteryPoolReChoice = 0
+        }
+        if(!this.item.hasOwnProperty("HighLotteryPoolReChoice")){
+          this.item.HighLotteryPoolReChoice = 0
+        }
+        this.item.LowLotteryPoolReChoice /= 1000
+        this.item.HighLotteryPoolReChoice /= 1000
         this.item.Jackpot.BetMoreThan /= 1000
         for (const i in this.item.BetMoneyList) {
           this.item.BetMoneyList[i] /= 1000
@@ -582,6 +632,8 @@
         ret.MinMoneyCarry *= 1000
         ret.MinRobotMoney *= 1000
         ret.MaxRobotMoney *= 1000
+        ret.LowLotteryPoolReChoice *= 1000
+        ret.HighLotteryPoolReChoice *= 1000
         const jackpotInfo = {}
         Object.assign(jackpotInfo, this.item.Jackpot)
         jackpotInfo.BetMoreThan *= 1000
