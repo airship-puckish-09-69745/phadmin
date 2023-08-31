@@ -107,7 +107,7 @@
           <el-input v-model.number="cfgData.FreeControl.TriggerMoney" size="mini" />
         </el-descriptions-item>
         <el-descriptions-item label="身上金币<X脱离控制">
-          <el-input v-model.number="cfgData.FreeControl.OutMoney" size="mini"/>
+          <el-input v-model.number="cfgData.FreeControl.OutMoney" size="mini" />
         </el-descriptions-item>
         <el-descriptions-item label="采用剧本">
           <el-select v-model.number="cfgData.FreeControl.ActSheetIdx" size="mini" placeholder="请选择">
@@ -148,7 +148,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.PayRatio" size="mini"/>
+            <el-input v-model.number="scope.row.PayRatio" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -157,7 +157,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.DangerHelp" size="mini"/>
+            <el-input v-model.number="scope.row.DangerHelp" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -166,7 +166,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.HelpCount" size="mini"/>
+            <el-input v-model.number="scope.row.HelpCount" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -175,7 +175,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.HelpCD" size="mini"/>
+            <el-input v-model.number="scope.row.HelpCD" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -184,7 +184,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.HelpRate" size="mini"/>
+            <el-input v-model.number="scope.row.HelpRate" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -193,7 +193,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.PoolRate" size="mini"/>
+            <el-input v-model.number="scope.row.PoolRate" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -202,7 +202,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.HelpLimit" size="mini"/>
+            <el-input v-model.number="scope.row.HelpLimit" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -211,7 +211,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.DangerControl" size="mini"/>
+            <el-input v-model.number="scope.row.DangerControl" size="mini" />
           </template>
         </el-table-column>
         <el-table-column
@@ -220,13 +220,13 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.SkipWinOddsRate" size="mini"/>
+            <el-input v-model.number="scope.row.SkipWinOddsRate" size="mini" />
           </template>
         </el-table-column>
       </el-table>
     </el-col>
     <el-col :offset="16" :span="8">
-        <el-button type="primary" @click="setData">保存</el-button>
+      <el-button type="primary" @click="setData">保存</el-button>
     </el-col>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
@@ -263,7 +263,7 @@ export default {
           Times: 0,
           Min: 50,
           Max: 100,
-          CD: 0,
+          CD: 0
         },
         FreeControl: {
           TriggerMoney: 200,
@@ -320,13 +320,12 @@ export default {
           this.cfgData = o
 
           // 设置修改之前数据
-         this.$refs.compare.SetOldVal(this.form)
+          this.$refs.compare.SetOldVal(this.form)
         }
       })
     },
     setData() {
       const postData = $libType.DeepCopy(this.cfgData)
-
 
       console.log('postData', postData)
 

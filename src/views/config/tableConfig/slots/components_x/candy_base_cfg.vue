@@ -5,31 +5,31 @@
         <el-form ref="frm1" :model="slotsData" label-width="120px">
           <el-form-item label="老虎机类型">
             <el-select v-model.number="slotsData.SlotsType" disabled>
-              <el-option label="糖果派对" :value="60"></el-option>
+              <el-option label="糖果派对" :value="60" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="行">
-            <el-input v-model.number="slotsData.Rows" disabled></el-input>
+            <el-input v-model.number="slotsData.Rows" disabled />
           </el-form-item>
 
           <el-form-item label="列">
-            <el-input v-model.number="slotsData.Cols" disabled></el-input>
+            <el-input v-model.number="slotsData.Cols" disabled />
           </el-form-item>
 
           <el-form-item label="赔付连线最少长度">
-            <el-input v-model.number="slotsData.WinLineMinLen" disabled></el-input>
+            <el-input v-model.number="slotsData.WinLineMinLen" disabled />
           </el-form-item>
 
           <el-form-item label="最低版本">
-            <el-input v-model.number="slotsData.MinVersion"></el-input>
+            <el-input v-model.number="slotsData.MinVersion" />
           </el-form-item>
 
           <el-form-item label="下注列表">
-            <el-input v-model="slotsData.Bets"></el-input>
+            <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)"></ratio-input>
+          <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)" />
 
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
@@ -64,16 +64,16 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      lock: false
+    }
+  },
   updated() {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
       console.log('origin data', this.getDiffData())
-    }
-  },
-  data() {
-    return {
-      lock: false
     }
   },
   methods: {

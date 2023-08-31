@@ -119,7 +119,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[51,52,54,57,59].indexOf(gid) >= 0">
+        <template v-if="[51,52,53,54,57,58,59,66,67].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -128,7 +128,7 @@
             <el-table-column prop="ActLogObj.TargetOdds" label="目标倍率" />
             <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率" />
             <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70" />
-            <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100"/>
+            <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100" />
             <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" />
             <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit" />
             <el-table-column prop="ActLogObj.Winning" :formatter="toRupee" label="Winning" />
@@ -242,7 +242,7 @@ export default {
         round: 0,
         betMoney: 0,
         winMoney: 0,
-        totalFee:0
+        totalFee: 0
       },
       tableData: [],
       libShow: $libShow,
@@ -457,7 +457,7 @@ export default {
           $this.totalCount = response.Data.Count
           $this.tableData = objs
           $this.statData.round = response.Data.Round
-        /*  $this.statData.normalMoney = response.Data.NormalMoney
+          /*  $this.statData.normalMoney = response.Data.NormalMoney
           $this.totalData.wildMoney = response.Data.WildMoney
           $this.totalData.scatterMoney = response.Data.ScatterMoney
           $this.totalData.jackpotMoney = response.Data.JackpotMoney*/

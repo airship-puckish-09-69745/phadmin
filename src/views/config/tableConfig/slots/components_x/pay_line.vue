@@ -5,7 +5,7 @@
         <el-card class="box-card" style="margin-bottom: 20px">
           <div slot="header" class="clearfix">
             <span>第 {{ idx + 1 }} 线</span>
-            <el-button type="text" @click="colDel(idx)" style="float: right; padding: 3px 0; color: red" :disabled="editDisabled">删除</el-button>
+            <el-button type="text" style="float: right; padding: 3px 0; color: red" :disabled="editDisabled" @click="colDel(idx)">删除</el-button>
           </div>
           <div>
             <el-table
@@ -14,8 +14,8 @@
               :cell-style="{padding: '0px'}"
               style="width: 401px"
               :show-header="false"
-              @cell-click="colClick"
               border
+              @cell-click="colClick"
             >
               <template v-for="k of cols">
                 <el-table-column
@@ -24,7 +24,7 @@
                   width="80"
                 >
                   <template slot-scope="scope">
-                    <el-button type="primary" icon="el-icon-check" circle v-if="hasHit(scope.row, k)" :disabled="editDisabled"></el-button>
+                    <el-button v-if="hasHit(scope.row, k)" type="primary" icon="el-icon-check" circle :disabled="editDisabled" />
                   </template>
                 </el-table-column>
               </template>
@@ -35,10 +35,10 @@
     </el-row>
 
     <el-row style="margin-top: 30px">
-     <el-col>
-       <el-button type="primary" @click="addRow" :disabled="editDisabled">添加</el-button>
-       <el-button type="success" @click="submitFrm" :disabled="editDisabled">保存</el-button>
-     </el-col>
+      <el-col>
+        <el-button type="primary" :disabled="editDisabled" @click="addRow">添加</el-button>
+        <el-button type="success" :disabled="editDisabled" @click="submitFrm">保存</el-button>
+      </el-col>
     </el-row>
 
     <!--对比组件-->
@@ -65,6 +65,13 @@ export default {
     },
     rows: Number,
     cols: Number
+  },
+  data() {
+    return {
+      editDisabled: true,
+      tableData: [],
+      lock: false
+    }
   },
   watch: {
     'slotsData': {
@@ -93,13 +100,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      editDisabled: true,
-      tableData: [],
-      lock: false
     }
   },
   methods: {

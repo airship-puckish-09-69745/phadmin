@@ -5,32 +5,32 @@
         <el-card class="box-card" style="margin-bottom: 20px">
           <div slot="header" class="clearfix">
             <span>{{ item.Name }}</span>
-            <el-button type="text" @click="del(idx)" style="float: right; padding: 3px 0; color: red">删除</el-button>
+            <el-button type="text" style="float: right; padding: 3px 0; color: red" @click="del(idx)">删除</el-button>
           </div>
           <div class="card-body" style="margin-top: 20px">
             <el-col :span="22">
-            <el-form :ref="getId(idx)" label-width="80px">
-              <el-form-item label="类型">
-                <el-select v-model.number="item.Type" size="small" placeholder="placeholder">
-                  <el-option label="普通" :value="0"></el-option>
-                  <el-option label="万能符号" :value="1"></el-option>
-                  <el-option label="SCATTER" :value="2"></el-option>
-                  <el-option label="Wild模式" :value="3"></el-option>
-                </el-select>
-              </el-form-item>
+              <el-form :ref="getId(idx)" label-width="80px">
+                <el-form-item label="类型">
+                  <el-select v-model.number="item.Type" size="small" placeholder="placeholder">
+                    <el-option label="普通" :value="0" />
+                    <el-option label="万能符号" :value="1" />
+                    <el-option label="SCATTER" :value="2" />
+                    <el-option label="Wild模式" :value="3" />
+                  </el-select>
+                </el-form-item>
 
-              <el-form-item label="值">
-                <el-input v-model.number="item.Value" size="small"></el-input>
-              </el-form-item>
+                <el-form-item label="值">
+                  <el-input v-model.number="item.Value" size="small" />
+                </el-form-item>
 
-              <el-form-item label="名称">
-                <el-input v-model="item.Name" size="small"></el-input>
-              </el-form-item>
+                <el-form-item label="名称">
+                  <el-input v-model="item.Name" size="small" />
+                </el-form-item>
 
-              <el-form-item label="资源路径">
-                <el-input v-model="item.Path" size="small"></el-input>
-              </el-form-item>
-            </el-form>
+                <el-form-item label="资源路径">
+                  <el-input v-model="item.Path" size="small" />
+                </el-form-item>
+              </el-form>
             </el-col>
           </div>
         </el-card>
@@ -67,15 +67,15 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      lock: false
+    }
+  },
   updated() {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      lock: false
     }
   },
   methods: {

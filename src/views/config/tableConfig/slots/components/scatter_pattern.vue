@@ -5,13 +5,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启scatter">
             <el-switch
-              style="display: block"
               v-model="cfg.ScatterConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -28,13 +28,13 @@
 
           <el-form-item label="是否禁用scatter图标">
             <el-switch
-              style="display: block"
               v-model="cfg.ScatterConfig.IsDisableScatter"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="禁止"
-              inactive-text="启用">
-            </el-switch>
+              inactive-text="启用"
+            />
             <div class="el-form-item--small">
               <small>是否禁用scatter图标，目前只支持禁止</small>
             </div>
@@ -70,34 +70,38 @@
             show-summary
             :row-style="{height: '80px'}"
             :cell-style="{padding: '0px'}"
+            style="width: 100%"
             @cell-click="colClick"
-            style="width: 100%">
+          >
             <template v-for="col in cols">
               <el-table-column
                 :prop="getKey(col)"
                 :label="getLabel(col)"
                 align="center"
-                width="80">
+                width="80"
+              >
                 <template slot-scope="scope">
-                  <el-button type="primary" icon="el-icon-check" circle v-if="hasHit(scope.row.Cols, col - 1)"></el-button>
+                  <el-button v-if="hasHit(scope.row.Cols, col - 1)" type="primary" icon="el-icon-check" circle />
                 </template>
               </el-table-column>
             </template>
             <el-table-column
               prop="Ratio"
               label="概率"
-              width="180">
+              width="180"
+            >
               <template scope="scope">
-                <ratio-input v-model="scope.row.Ratio" :is-sample="true"></ratio-input>
+                <ratio-input v-model="scope.row.Ratio" :is-sample="true" />
               </template>
             </el-table-column>
             <el-table-column
               prop="Op"
               label="操作"
-              width="180">
+              width="180"
+            >
               <template scope="scope">
-                <el-button type="primary" @click="addRow" v-if="scope.$index === 0">添加</el-button>
-                <el-button type="danger" @click="delRow(scope.$index)" v-else>删除</el-button>
+                <el-button v-if="scope.$index === 0" type="primary" @click="addRow">添加</el-button>
+                <el-button v-else type="danger" @click="delRow(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -183,7 +187,7 @@ export default {
         }
       },
       cols: [],
-      symbolMap: {},
+      symbolMap: {}
     }
   },
   watch: {
@@ -200,7 +204,7 @@ export default {
         // console.log('reels icon cols watch', val)
         this.initData()
       }
-    },
+    }
   },
   created() {
     this.$nextTick(() => {

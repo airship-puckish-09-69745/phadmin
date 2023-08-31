@@ -19,8 +19,7 @@
                 label="图标"
                 width="100"
                 header-align="center"
-              >
-              </el-table-column>
+              />
               <template v-for="col in cols">
                 <el-table-column
                   :prop="getKey(col)"
@@ -74,28 +73,6 @@ export default {
       }
     }
   },
-  watch: {
-    'SymbolList': {
-      deep: true,
-      handler: function(val) {
-        // console.log('reels icon symbol list watch', val)
-        this.initData()
-      }
-    },
-	  'slotsData.ReelsRateConfig':{
-		  //deep: true,
-	    handler: function(val) {
-        // console.log('reels icon symbol list watch', val)
-        this.initData()
-		  }
-	  }
-  },
-  updated() {
-    if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData())
-      this.lock = true
-    }
-  },
   data() {
     return {
       tableData: [
@@ -111,6 +88,28 @@ export default {
       cols: [1, 2, 3, 4, 5],
       symbolMap: {},
       lock: false
+    }
+  },
+  watch: {
+    'SymbolList': {
+      deep: true,
+      handler: function(val) {
+        // console.log('reels icon symbol list watch', val)
+        this.initData()
+      }
+    },
+	  'slotsData.ReelsRateConfig': {
+		  // deep: true,
+	    handler: function(val) {
+        // console.log('reels icon symbol list watch', val)
+        this.initData()
+		  }
+	  }
+  },
+  updated() {
+    if (this.lock === false) {
+      this.$refs.compare.SetOldVal(this.getDiffData())
+      this.lock = true
     }
   },
   created() {
@@ -160,7 +159,7 @@ export default {
         items: []
       }
       for (const i in this.symbolMap) {
-        //注意：钻石出现的概率在Scatter配置中控制
+        // 注意：钻石出现的概率在Scatter配置中控制
         if (this.symbolMap[i] == '钻石') {
           continue
         }

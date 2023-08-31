@@ -5,13 +5,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启Bonus">
             <el-switch
-              style="display: block"
               v-model="cfg.BonusConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -21,8 +21,8 @@
           <el-form-item label="最低出现多少轴才中Bonus">
             <el-input v-model.number="cfg.BonusConfig.MinReels" />
           </el-form-item>
-          <ratio-input v-model="cfg.BonusConfig.GangGameRatio" label="黑帮游戏概率(%)"></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.PoliceGameRatio" label="警察游戏概率(%)"></ratio-input>
+          <ratio-input v-model="cfg.BonusConfig.GangGameRatio" label="黑帮游戏概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.PoliceGameRatio" label="警察游戏概率(%)" />
         </el-form>
       </el-col>
     </el-row>
@@ -30,9 +30,9 @@
       <el-col :span="12" :offset="3">
         <h3 style="text-align:center">---------- 黑帮游戏 ----------</h3>
         <el-form ref="frm1" :model="cfg" label-width="200px">
-          <ratio-input v-model="cfg.BonusConfig.GangConfig.HandcuffsRatio" label="手铐概率(%)"></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.GangConfig.PokerRatio" label="扑克概率(%)"></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.GangConfig.AwardRatio" label="奖励概率(%)"></ratio-input>
+          <ratio-input v-model="cfg.BonusConfig.GangConfig.HandcuffsRatio" label="手铐概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.GangConfig.PokerRatio" label="扑克概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.GangConfig.AwardRatio" label="奖励概率(%)" />
           <el-form-item label="奖励最小值（乘10）">
             <el-input v-model.number="cfg.BonusConfig.GangConfig.OddsMin" />
           </el-form-item>
@@ -47,10 +47,10 @@
       <el-col :span="12" :offset="3">
         <h3 style="text-align:center">---------- 警察游戏 ----------</h3>
         <el-form ref="frm1" :model="cfg" label-width="200px">
-          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangZeroRatio" label="命中0个黑帮概率(%)"></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangOneRatio" label="命中1个黑帮概率(%)"></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangTwoRatio" label="命中2个黑帮概率(%)"></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangThreeRatio" label="命中3个黑帮概率(%)"></ratio-input>
+          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangZeroRatio" label="命中0个黑帮概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangOneRatio" label="命中1个黑帮概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangTwoRatio" label="命中2个黑帮概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.PoliceConfig.GangThreeRatio" label="命中3个黑帮概率(%)" />
           <el-form-item label="基础倍率">
             <el-input v-model.number="cfg.BonusConfig.PoliceConfig.BaseOdds" />
           </el-form-item>
@@ -98,19 +98,19 @@ export default {
           'MinReels': 1,
           'GangGameRatio': 0,
           'PoliceGameRatio': 0,
-          'GangConfig':{
-            'HandcuffsRatio':0,
-            'PokerRatio':0,
-            'AwardRatio':0,
-            'OddsMin':0,
-            'OddsMax':0
+          'GangConfig': {
+            'HandcuffsRatio': 0,
+            'PokerRatio': 0,
+            'AwardRatio': 0,
+            'OddsMin': 0,
+            'OddsMax': 0
           },
-          'PoliceConfig':{
-            'GangZeroRatio':0,
-            'GangOneRatio':0,
-            'GangTwoRatio':0,
-            'GangThreeRatio':0,
-            'BaseOdds':0
+          'PoliceConfig': {
+            'GangZeroRatio': 0,
+            'GangOneRatio': 0,
+            'GangTwoRatio': 0,
+            'GangThreeRatio': 0,
+            'BaseOdds': 0
           }
         }
       }
@@ -148,7 +148,7 @@ export default {
       for (const i in param.data) {
         ratio += param.data[i]['Ratio']
       }
-      return ['总计', (ratio / 100).toFixed(2),'-']
+      return ['总计', (ratio / 100).toFixed(2), '-']
     },
     initData() {
       // this.initSymbolMap()
@@ -159,20 +159,20 @@ export default {
       }
     },
     setData() {
-      let cfg = this.cfg;
-      if (cfg.BonusConfig.GangGameRatio+cfg.BonusConfig.PoliceGameRatio!=10000) {
+      const cfg = this.cfg
+      if (cfg.BonusConfig.GangGameRatio + cfg.BonusConfig.PoliceGameRatio != 10000) {
         this.$message.error('进入那种游戏概率合计必须等于100%')
         return false
       }
-      if (cfg.BonusConfig.GangConfig.HandcuffsRatio+cfg.BonusConfig.GangConfig.PokerRatio+cfg.BonusConfig.GangConfig.AwardRatio!=10000) {
+      if (cfg.BonusConfig.GangConfig.HandcuffsRatio + cfg.BonusConfig.GangConfig.PokerRatio + cfg.BonusConfig.GangConfig.AwardRatio != 10000) {
         this.$message.error('黑帮游戏概率合计必须等于100%')
         return false
       }
-      if (cfg.BonusConfig.PoliceConfig.GangZeroRatio+cfg.BonusConfig.PoliceConfig.GangOneRatio+cfg.BonusConfig.PoliceConfig.GangTwoRatio+cfg.BonusConfig.PoliceConfig.GangThreeRatio!=10000) {
+      if (cfg.BonusConfig.PoliceConfig.GangZeroRatio + cfg.BonusConfig.PoliceConfig.GangOneRatio + cfg.BonusConfig.PoliceConfig.GangTwoRatio + cfg.BonusConfig.PoliceConfig.GangThreeRatio != 10000) {
         this.$message.error('警察游戏概率合计必须等于100%')
         return false
       }
-      console.log("cfg:  ",this.cfg)
+      console.log('cfg:  ', this.cfg)
       this.slotsData = this.cfg
       // this.$message.success('保存到当前页面成功')
 

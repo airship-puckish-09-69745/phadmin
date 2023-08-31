@@ -5,13 +5,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启scatter">
             <el-switch
-              style="display: block"
               v-model="cfg.ScatterConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -45,7 +45,6 @@
         </el-form>
       </el-col>
     </el-row>
-    
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
@@ -91,7 +90,7 @@ export default {
           'Scatter4Ratio': 0,
           'Scatter5Ratio': 0
         },
-        'BonusConfig':{}
+        'BonusConfig': {}
       }
     }
   },
@@ -105,7 +104,6 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
@@ -124,12 +122,12 @@ export default {
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
-        let raw = this.slotsData
-        if(raw.hasOwnProperty("ScatterConfig")){
+        const raw = this.slotsData
+        if (raw.hasOwnProperty('ScatterConfig')) {
           this.cfg = raw
-        }else{
-          if(raw.hasOwnProperty("BonusConfig")){
-            this.cfg.BonusConfig = raw.BonusConfig;
+        } else {
+          if (raw.hasOwnProperty('BonusConfig')) {
+            this.cfg.BonusConfig = raw.BonusConfig
           }
         }
         this.$refs.compare.SetOldVal(this.getDiffData())

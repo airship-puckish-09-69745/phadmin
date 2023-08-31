@@ -4,10 +4,10 @@
       <el-col :span="6">
         <el-form>
           <el-form-item label="每秒最小增加值">
-            <el-input v-model="cfg.JackpotExtendConfig.PerHourAddMoneyMin"></el-input>
+            <el-input v-model="cfg.JackpotExtendConfig.PerHourAddMoneyMin" />
           </el-form-item>
           <el-form-item label="每秒最大增加值">
-            <el-input v-model="cfg.JackpotExtendConfig.PerHourAddMoneyMax"></el-input>
+            <el-input v-model="cfg.JackpotExtendConfig.PerHourAddMoneyMax" />
           </el-form-item>
         </el-form>
         <el-col style="margin-left:150px;">
@@ -23,8 +23,8 @@
               <el-option
                 v-for="item in slotsData.BetList"
                 :label="item"
-                :value="item">
-              </el-option>
+                :value="item"
+              />
             </el-select>
             <el-button @click="hit">机器人命中</el-button>
           </el-form-item>
@@ -37,9 +37,9 @@
   </div>
 </template>
 <script>
-import request from "@/utils/request";
+import request from '@/utils/request'
 import Compare from '@/components/Compare'
-import store from "@/store";
+import store from '@/store'
 
 export default {
   name: 'SlotsJackpotPhoenix',
@@ -56,29 +56,29 @@ export default {
       }
     }
   },
+  data: function() {
+    return {
+      disabled: false,
+      form: {
+        min: 0,
+        max: 0
+      },
+      hitBet: 0,
+      jackpotRecord: [],
+      cfg: {
+        JackpotExtendConfig: {
+          PerHourAddMoneyMin: 0,
+          PerHourAddMoneyMax: 0
+        }
+      }
+    }
+  },
   watch: {
     'slotsData.ExtendConfig': {
       deep: true,
       handler: function(val) {
         // console.log('wild pattern symbol list watch', val)
         this.initData()
-      }
-    },
-  },
-  data: function() {
-    return {
-      disabled: false,
-      form:{
-        min:0,
-        max:0,
-      },
-      hitBet:0,
-      jackpotRecord: [],
-      cfg:{
-        JackpotExtendConfig:{
-          PerHourAddMoneyMin:0,
-          PerHourAddMoneyMax:0
-        }
       }
     }
   },
@@ -100,7 +100,7 @@ export default {
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
-      console.log("slots data999999",this.slotsData);
+      console.log('slots data999999', this.slotsData)
       // this.betLists = this.slotsData.BetList;
     },
     submitFrm() {
@@ -121,8 +121,8 @@ export default {
       })
     },
     hit: function() {
-      if(this.hitBet == 0){
-        this.$message.error("筹码级别为0")
+      if (this.hitBet == 0) {
+        this.$message.error('筹码级别为0')
         return
       }
       request({
@@ -131,13 +131,13 @@ export default {
         data: {
           Path: '/slotsStat/robot/hit',
           Env: store.getters.env,
-          Bet: this.hitBet*1000,
-          SlotsType:51,
+          Bet: this.hitBet * 1000,
+          SlotsType: 51
         }
       }).then(response => {
-        console.log("robot hit response:",response)
+        console.log('robot hit response:', response)
         if (response.RetCode === 0) {
-          this.$message.success("命中成功")
+          this.$message.success('命中成功')
         } else {
           this.$message.error(response.Data)
         }

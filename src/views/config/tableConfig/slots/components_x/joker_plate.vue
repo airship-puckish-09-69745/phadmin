@@ -5,7 +5,7 @@
       <el-card class="box-card" style="margin:40px auto;">
 
         <div slot="header" class="clearfix">
-          <h3 style="text-align:center">---------- [ 轮盘赔率控制 - 第{{oneCfg.Level}}层 ] ----------</h3>
+          <h3 style="text-align:center">---------- [ 轮盘赔率控制 - 第{{ oneCfg.Level }}层 ] ----------</h3>
         </div>
 
         <el-table :data="oneCfg.Config" show-summary :summary-method="getSummaries" border>
@@ -19,7 +19,7 @@
           </el-table-column>
           <el-table-column label="倍率">
             <template scope="scope">
-              <el-input v-model.number.number="scope.row.Odds" :disabled="isDisableOdds(scope.row)"></el-input>
+              <el-input v-model.number.number="scope.row.Odds" :disabled="isDisableOdds(scope.row)" />
             </template>
           </el-table-column>
           <el-table-column label="概率">
@@ -30,9 +30,8 @@
         </el-table>
       </el-card>
 
-   
-  </template>
-   <el-row>
+    </template>
+    <el-row>
       <el-col style="text-align:center;">
         <el-button type="primary" @click="submitFrm">保存</el-button>
       </el-col>
@@ -66,27 +65,27 @@ export default {
   data() {
     return {
       cfg: {
-      },
+      }
     }
   },
   created() {
   },
   methods: {
-    isDisableOdds(row){
-        if(row.IsGoNextPlate){
-          row.Odds = 0;
-        }
-        return row.IsGoNextPlate?true:false;
+    isDisableOdds(row) {
+      if (row.IsGoNextPlate) {
+        row.Odds = 0
+      }
+      return !!row.IsGoNextPlate
     },
-    selectType(row,event){
+    selectType(row, event) {
     },
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      //if (!this.setData()) {
+      // if (!this.setData()) {
       //  return
-      //}
+      // }
 
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -106,25 +105,25 @@ export default {
 
       return true
     },
-    getSummaries(param){
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0 ) {
-            sums[index] = '总计';
-            return;
-          }else if (index === 1){
-            sums[index] = 'N/A';
-            return;
-          }
-          let total = 0;
-          for (let key in data){
-            total += data[key].Ratio;
-          }
-          sums[index] = total+' %';
-        });
+    getSummaries(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '总计'
+          return
+        } else if (index === 1) {
+          sums[index] = 'N/A'
+          return
+        }
+        let total = 0
+        for (const key in data) {
+          total += data[key].Ratio
+        }
+        sums[index] = total + ' %'
+      })
 
-        return sums;
+      return sums
     }
   }
 }

@@ -5,13 +5,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启Bonus">
             <el-switch
-              style="display: block"
               v-model="cfg.BonusConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -21,7 +21,7 @@
           <el-form-item label="最低出现多少轴才中Bonus">
             <el-input v-model.number="cfg.BonusConfig.MinReels" />
           </el-form-item>
-          <ratio-input v-model="cfg.BonusConfig.DoubleOddsRatio" label="翻倍概率(%)" tips="红绿灯是否出现"></ratio-input>
+          <ratio-input v-model="cfg.BonusConfig.DoubleOddsRatio" label="翻倍概率(%)" tips="红绿灯是否出现" />
         </el-form>
       </el-col>
     </el-row>
@@ -35,10 +35,12 @@
             show-summary
             :row-style="{height: '80px'}"
             :cell-style="{padding: '0px'}"
-            style="width: 100%">
+            style="width: 100%"
+          >
             <el-table-column
               prop="Symbol"
-              label="符号">
+              label="符号"
+            >
               <template scope="scope">
                 <span v-if="scope.row.Symbol==5">老火车</span>
                 <span v-else-if="scope.row.Symbol==6">绿皮车</span>
@@ -49,17 +51,19 @@
             <el-table-column
               prop="Ratio"
               label="概率%"
-              width="180">
+              width="180"
+            >
               <template scope="scope">
-                <ratio-input v-model="scope.row.Ratio" :is-sample="true"></ratio-input>
+                <ratio-input v-model="scope.row.Ratio" :is-sample="true" />
               </template>
             </el-table-column>
             <el-table-column
               prop="Odds"
               label="赔率"
-              width="180">
+              width="180"
+            >
               <template scope="scope">
-                <el-input v-model.number="scope.row.Odds"></el-input>
+                <el-input v-model.number="scope.row.Odds" />
               </template>
             </el-table-column>
           </el-table>
@@ -101,34 +105,34 @@ export default {
   data() {
     return {
       cfg: {
-        'ScatterConfig':{},
+        'ScatterConfig': {},
         'BonusConfig': {
           'Enable': true,
           'PerReelsMinNumber': 1,
           'MinReels': 1,
-          'Symbol':[
+          'Symbol': [
             {
-              'Symbol':5,
-              'Ratio':10,
-              'Odds':1,
+              'Symbol': 5,
+              'Ratio': 10,
+              'Odds': 1
             },
             {
-              'Symbol':6,
-              'Ratio':10,
-              'Odds':1,
+              'Symbol': 6,
+              'Ratio': 10,
+              'Odds': 1
             },
             {
-              'Symbol':7,
-              'Ratio':0,
-              'Odds':1,
+              'Symbol': 7,
+              'Ratio': 0,
+              'Odds': 1
             },
             {
-              'Symbol':8,
-              'Ratio':10,
-              'Odds':1,
+              'Symbol': 8,
+              'Ratio': 10,
+              'Odds': 1
             }
           ],
-          'DoubleOddsRatio':1
+          'DoubleOddsRatio': 1
         }
       }
     }
@@ -165,17 +169,17 @@ export default {
       for (const i in param.data) {
         ratio += param.data[i]['Ratio']
       }
-      return ['总计', (ratio / 100).toFixed(2),'-']
+      return ['总计', (ratio / 100).toFixed(2), '-']
     },
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
-        let raw = this.slotsData
-        if(raw.hasOwnProperty("BonusConfig")){
+        const raw = this.slotsData
+        if (raw.hasOwnProperty('BonusConfig')) {
           this.cfg = raw
-        }else{
-          if(raw.hasOwnProperty("ScatterConfig")){
-            this.cfg.ScatterConfig = raw.ScatterConfig;
+        } else {
+          if (raw.hasOwnProperty('ScatterConfig')) {
+            this.cfg.ScatterConfig = raw.ScatterConfig
           }
         }
         this.$refs.compare.SetOldVal(this.getDiffData())
@@ -192,7 +196,7 @@ export default {
         this.$message.error('概率合计必须等于100%')
         return false
       }
-      console.log("cfg:  ",this.cfg)
+      console.log('cfg:  ', this.cfg)
       this.slotsData = this.cfg
       // this.$message.success('保存到当前页面成功')
 

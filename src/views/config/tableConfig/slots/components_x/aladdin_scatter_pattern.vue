@@ -19,18 +19,18 @@
 
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <hr />
+        <hr>
         <h3>Scatter免费游戏配置</h3>
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启scatter">
             <el-switch
-              style="display: block"
               v-model="cfg.ScatterConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -69,10 +69,10 @@
             <el-col :span="8"><el-input v-model.number="cfg.ScatterConfig.Scatter5FreeTimes" /></el-col>
           </el-form-item>
 
-        <h3>Scatter钻石概率配置</h3>
+          <h3>Scatter钻石概率配置</h3>
           <el-table :data="cfg.ScatterConfig.DiamondConfig" border style="width:400px;">
             <el-table-column prop="Count" label="钻石数量">
-              <template slot-scope="scope">{{scope.row.Count}}个</template>
+              <template slot-scope="scope">{{ scope.row.Count }}个</template>
             </el-table-column>
             <el-table-column prop="Ratio" label="概率">
               <template slot-scope="scope">
@@ -136,21 +136,21 @@ export default {
           'Scatter4FreeTimes': 10,
           'Scatter5FreeTimes': 10,
           'DiamondConfig': [
-            {'Count': 1, 'Ratio': 0},
-            {'Count': 2, 'Ratio': 0},
-            {'Count': 3, 'Ratio': 0},
-            {'Count': 4, 'Ratio': 0},
-            {'Count': 5, 'Ratio': 0},
-            {'Count': 6, 'Ratio': 0},
-            {'Count': 7, 'Ratio': 0},
-            {'Count': 8, 'Ratio': 0},
-            {'Count': 9, 'Ratio': 0},
-            {'Count': 10, 'Ratio': 0},
-            {'Count': 11, 'Ratio': 0},
-            {'Count': 12, 'Ratio': 0},
-            {'Count': 13, 'Ratio': 0},
-            {'Count': 14, 'Ratio': 0},
-            {'Count': 15, 'Ratio': 0}
+            { 'Count': 1, 'Ratio': 0 },
+            { 'Count': 2, 'Ratio': 0 },
+            { 'Count': 3, 'Ratio': 0 },
+            { 'Count': 4, 'Ratio': 0 },
+            { 'Count': 5, 'Ratio': 0 },
+            { 'Count': 6, 'Ratio': 0 },
+            { 'Count': 7, 'Ratio': 0 },
+            { 'Count': 8, 'Ratio': 0 },
+            { 'Count': 9, 'Ratio': 0 },
+            { 'Count': 10, 'Ratio': 0 },
+            { 'Count': 11, 'Ratio': 0 },
+            { 'Count': 12, 'Ratio': 0 },
+            { 'Count': 13, 'Ratio': 0 },
+            { 'Count': 14, 'Ratio': 0 },
+            { 'Count': 15, 'Ratio': 0 }
           ]
         }
       }
@@ -166,7 +166,6 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
@@ -185,12 +184,12 @@ export default {
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
-        let raw = this.slotsData
-        if(raw.hasOwnProperty("ScatterConfig")){
+        const raw = this.slotsData
+        if (raw.hasOwnProperty('ScatterConfig')) {
           this.cfg = raw
-        }else{
-          if(raw.hasOwnProperty("BonusConfig")){
-            this.cfg.BonusConfig = raw.BonusConfig;
+        } else {
+          if (raw.hasOwnProperty('BonusConfig')) {
+            this.cfg.BonusConfig = raw.BonusConfig
           }
         }
         this.$refs.compare.SetOldVal(this.getDiffData())

@@ -2,34 +2,36 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="18" :offset="3">
-          <el-form ref="frm1" :inline="true" label-width="80px">
-            <el-table
-              :data="tableData"
-              style="width: 100%">
+        <el-form ref="frm1" :inline="true" label-width="80px">
+          <el-table
+            :data="tableData"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="name"
+              label=""
+              width="100"
+            />
+            <template v-for="col in cols">
               <el-table-column
-                prop="name"
-                label=""
-                width="100">
+                :prop="getKey(col)"
+                :label="getLabel(col)"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row['rate' + col]" />
+                </template>
               </el-table-column>
-              <template v-for="col in cols">
-                <el-table-column
-                  :prop="getKey(col)"
-                  :label="getLabel(col)"
-                  width="100">
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row['rate' + col]"></el-input>
-                  </template>
-                </el-table-column>
-              </template>
-            </el-table>
-          </el-form>
+            </template>
+          </el-table>
+        </el-form>
       </el-col>
     </el-row>
 
     <el-row style="margin: 30px 0">
-     <el-col :offset="3">
-       <el-button type="success" @click="submitFrm">保存</el-button>
-     </el-col>
+      <el-col :offset="3">
+        <el-button type="success" @click="submitFrm">保存</el-button>
+      </el-col>
     </el-row>
 
     <!--对比组件-->
@@ -61,6 +63,15 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      cols: [2, 3, 4, 5],
+      tableData: [
+      ],
+      symbolMap: {},
+      lock: false
+    }
+  },
   watch: {
     'SymbolList': {
       deep: true,
@@ -73,15 +84,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      cols: [2, 3, 4, 5],
-      tableData: [
-      ],
-      symbolMap: {},
-      lock: false
     }
   },
 
@@ -142,7 +144,7 @@ export default {
         if (!name) {
           continue
         }
-        //注意：钻石出现的倍数在Scatter配置中控制
+        // 注意：钻石出现的倍数在Scatter配置中控制
         if (name == '钻石') {
           continue
         }

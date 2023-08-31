@@ -6,13 +6,13 @@
           <h3 style="text-align:center;">Scatter 配置</h3>
           <el-form-item label="是否开启scatter">
             <el-switch
-              style="display: block"
               v-model="cfg.ScatterConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -28,12 +28,11 @@
           </el-form-item>
 
           <h3 style="text-align:center;">Wild 概率配置</h3>
-          <ratio-input v-model="cfg.WildConfig.WildCol1HitRatio" label="Wild轴1(%)" ></ratio-input>
-          <ratio-input v-model="cfg.WildConfig.WildCol2HitRatio" label="Wild轴2(%)" ></ratio-input>
-          <ratio-input v-model="cfg.WildConfig.WildCol3HitRatio" label="Wild轴3(%)" ></ratio-input>
-          <ratio-input v-model="cfg.WildConfig.WildCol4HitRatio" label="Wild轴4(%)" ></ratio-input>
-          <ratio-input v-model="cfg.WildConfig.WildCol5HitRatio" label="Wild轴5(%)" ></ratio-input>
-
+          <ratio-input v-model="cfg.WildConfig.WildCol1HitRatio" label="Wild轴1(%)" />
+          <ratio-input v-model="cfg.WildConfig.WildCol2HitRatio" label="Wild轴2(%)" />
+          <ratio-input v-model="cfg.WildConfig.WildCol3HitRatio" label="Wild轴3(%)" />
+          <ratio-input v-model="cfg.WildConfig.WildCol4HitRatio" label="Wild轴4(%)" />
+          <ratio-input v-model="cfg.WildConfig.WildCol5HitRatio" label="Wild轴5(%)" />
 
         </el-form>
       </el-col>
@@ -76,15 +75,6 @@ export default {
       }
     }
   },
-  watch:{
-    'SymbolList': {
-      deep: true,
-      handler: function(val) {
-        console.log('reels icon symbol list watch', val)
-        this.initData()
-      }
-    }
-  },
   data() {
     return {
       cfg: {
@@ -93,19 +83,28 @@ export default {
           'PerReelsMinNumber': 1,
           'MinReels': 1,
           'FreeGameTimes': 1,
-          'ShuffleConfig':[]
+          'ShuffleConfig': []
         },
-        'WildConfig':{
-          'WildCol1HitRatio':0,
-          'WildCol2HitRatio':0,
-          'WildCol3HitRatio':0,
-          'WildCol4HitRatio':0,
-          'WildCol5HitRatio':0
+        'WildConfig': {
+          'WildCol1HitRatio': 0,
+          'WildCol2HitRatio': 0,
+          'WildCol3HitRatio': 0,
+          'WildCol4HitRatio': 0,
+          'WildCol5HitRatio': 0
         }
       },
       cols: [1, 2, 3, 4, 5],
       symbolMap: {},
-      tableData:[]
+      tableData: []
+    }
+  },
+  watch: {
+    'SymbolList': {
+      deep: true,
+      handler: function(val) {
+        console.log('reels icon symbol list watch', val)
+        this.initData()
+      }
     }
   },
   created() {
@@ -118,7 +117,7 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      if(this.setData() != true ){
+      if (this.setData() != true) {
         return
       }
       const $this = this
@@ -137,11 +136,11 @@ export default {
       if (this.slotsData) {
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.cfg = this.slotsData
-        
+
         this.lock = true
       }
     },
-    
+
     setData() {
       return true
       // this.$message.success('当前页面保存成功')

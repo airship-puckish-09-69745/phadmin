@@ -49,21 +49,21 @@
 
               <el-table :data="cfg.BonusConfig.Symbols" border style="width:800px;">
                 <el-table-column prop="Symbol" label="图标">
-                  <template slot-scope="scope">{{getSymbolName(scope.row.Symbol)}}</template>
+                  <template slot-scope="scope">{{ getSymbolName(scope.row.Symbol) }}</template>
                 </el-table-column>
                 <el-table-column prop="Count" label="概率(单位是所有图标概率值的和分之一)">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Count"></el-input>
+                    <el-input v-model.number="scope.row.Count" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="MoneyRate" label="奖励倍数">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.MoneyRate"></el-input>
+                    <el-input v-model.number="scope.row.MoneyRate" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="ReducePowerPoints" label="消耗能量点数">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ReducePowerPoints"></el-input>
+                    <el-input v-model.number="scope.row.ReducePowerPoints" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -81,7 +81,7 @@
           <div style="margin-top:20px;">
             <el-form ref="frm1" :model="cfg" label-width="200px">
               <el-form-item label="是否开启scatter">
-                <el-switch v-model="cfg.ScatterConfig.Enable" active-color="#13ce66" inactive-color="#ff4949" active-text="开启" inactive-text="关闭"></el-switch>
+                <el-switch v-model="cfg.ScatterConfig.Enable" active-color="#13ce66" inactive-color="#ff4949" active-text="开启" inactive-text="关闭" />
               </el-form-item>
               <el-form-item label="最低每轴出现的次数">
                 <el-input v-model.number="cfg.ScatterConfig.PerReelsMinNumber" />
@@ -154,14 +154,6 @@ export default {
       }
     }
   },
-  watch: {
-    'SymbolList': {
-      deep: true,
-      handler: function(val) {
-        this.initData()
-      }
-    }
-  },
   data() {
     return {
       symbolMap: {},
@@ -192,6 +184,14 @@ export default {
           'Scatter4FreeTimes': 0,
           'Scatter5FreeTimes': 0
         }
+      }
+    }
+  },
+  watch: {
+    'SymbolList': {
+      deep: true,
+      handler: function(val) {
+        this.initData()
       }
     }
   },
@@ -234,7 +234,7 @@ export default {
     initData() {
       this.initSymbolMap()
       if (this.slotsData) {
-        let raw = this.slotsData
+        const raw = this.slotsData
         this.cfg = raw
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true

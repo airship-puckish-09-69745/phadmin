@@ -5,13 +5,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启Bonus">
             <el-switch
-              style="display: block"
               v-model="cfg.BonusConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -27,10 +27,10 @@
           <el-form-item label="猜中基础倍数">
             <el-input v-model.number="cfg.BonusConfig.BonusHitBaseOdds" />
           </el-form-item>
-          <ratio-input v-model="cfg.BonusConfig.Hit0Percent" label="猜中0个概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.Hit1Percent" label="猜中1个概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.Hit2Percent" label="猜中2个概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.Hit3Percent" label="猜中3个概率(%)" ></ratio-input>
+          <ratio-input v-model="cfg.BonusConfig.Hit0Percent" label="猜中0个概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.Hit1Percent" label="猜中1个概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.Hit2Percent" label="猜中2个概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.Hit3Percent" label="猜中3个概率(%)" />
         </el-form>
       </el-col>
     </el-row>
@@ -69,7 +69,7 @@ export default {
   data() {
     return {
       cfg: {
-        'ScatterConfig':{},
+        'ScatterConfig': {},
         'BonusConfig': {
           'Enable': true,
           'PerReelsMinNumber': 1,
@@ -114,7 +114,7 @@ export default {
       if (this.slotsData) {
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
-        if(!this.cfg.hasOwnProperty("BonusConfig")){
+        if (!this.cfg.hasOwnProperty('BonusConfig')) {
           this.cfg.BonusConfig = {
             'Enable': true,
             'PerReelsMinNumber': 1,
@@ -132,16 +132,15 @@ export default {
     },
     setData() {
       let ratio = this.cfg.BonusConfig.Hit0Percent
-       ratio += this.cfg.BonusConfig.Hit1Percent
-       ratio += this.cfg.BonusConfig.Hit2Percent
-       ratio += this.cfg.BonusConfig.Hit3Percent
-      
+      ratio += this.cfg.BonusConfig.Hit1Percent
+      ratio += this.cfg.BonusConfig.Hit2Percent
+      ratio += this.cfg.BonusConfig.Hit3Percent
 
       if (ratio !== 10000) {
         this.$message.error('概率合计必须等于100%')
         return false
       }
-      console.log("cfg:  ",this.cfg)
+      console.log('cfg:  ', this.cfg)
       this.slotsData = this.cfg
       // this.$message.success('保存到当前页面成功')
 

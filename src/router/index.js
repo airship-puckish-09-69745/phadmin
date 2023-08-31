@@ -268,13 +268,53 @@ export const asyncRoutes = [
           },
 
           {
+            path: 'gold_miner_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/gold_miner_slots_cfg'),
+            name: 'gold_miner_slots_cfg',
+            meta: { title: 'GoldMiner - 黄金矿工' }
+          },
+          {
+            path: 'gold_train_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/gold_train_slots_cfg'),
+            name: 'gold_train_slots_cfg',
+            meta: { title: 'GoldTrain - 黄金列车' }
+          },
+          {
+            path: 'joker_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/joker_slots_cfg'),
+            name: 'joker_slots_cfg',
+            meta: { title: 'Joker - 小丑' }
+          },
+          {
             path: 'phoenix_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
             name: 'phoenix_slots_cfg',
             meta: { title: 'Phoenix - 凤凰' }
           },
-
-
+          {
+            path: 'chicago_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/chicago_slots_cfg'),
+            name: 'chicago_slots_cfg',
+            meta: { title: 'Chicago - 芝加哥' }
+          },
+          {
+            path: 'aladdin_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/aladdin_slots_cfg'),
+            name: 'aladdin_slots_cfg',
+            meta: { title: '阿拉丁' }
+          },
+          {
+            path: 'ireland_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/ireland_slots_cfg'),
+            name: 'ireland_slots_cfg',
+            meta: { title: '爱尔兰精灵' }
+          },
+          {
+            path: 'rabbit_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/rabbit_slots_cfg'),
+            name: 'rabbit_slots_cfg',
+            meta: { title: '金钱兔' }
+          },
           {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
@@ -310,6 +350,12 @@ export const asyncRoutes = [
         component: () => import('@/views/online/prizePool'),
         name: 'prize_pool',
         meta: { title: '小游戏奖池配置' }
+      },
+      {
+        path: 'slots_rooms',
+        component: () => import('@/views/config/tableConfig/slots_rooms'),
+        name: 'slots_rooms',
+        meta: { title: '老虎机房间列表' }
       },
       {
         path: 'miniGamesCfg',
@@ -815,11 +861,53 @@ export const asyncRoutes = [
             meta: { title: 'beauty - 睡美人', gid: 52 }
           },
           {
+            path: 'joker_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'joker_slots_log',
+            meta: { title: 'joker - 小丑', gid: 53 }
+          },
+          {
+            path: 'gold_train_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gold_train_slots_log',
+            meta: { title: 'goldTrain - 黄金列车', gid: 54 }
+          },
+          {
             path: 'phoenix_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
-          }
+          },
+          {
+            path: 'gold_miner_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gold_miner_slots_log',
+            meta: { title: 'goldMiner - 黄金矿工', gid: 57 }
+          },
+          {
+            path: 'aladdin_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gold_miner_slots_log',
+            meta: { title: 'aladdin - 阿拉丁', gid: 58 }
+          },
+          {
+            path: 'chicago_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'chicago_slots_log',
+            meta: { title: 'chicago - 芝加哥', gid: 59 }
+          },
+          {
+            path: 'ireland_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'ireland_slots_log',
+            meta: { title: 'Ireland - 爱尔兰精灵', gid: 66 }
+          },
+          {
+            path: 'rabbit_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'rabbit_slots_log',
+            meta: { title: 'Rabbit - 金钱兔', gid: 67 }
+          },
 
         ]
       }

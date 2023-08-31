@@ -10,40 +10,40 @@
           </div>
           <div class="card-body" style="margin-top: 20px">
             <el-col :span="22">
-            <el-form :ref="getId(idx)" label-width="150px">
-              <el-form-item label="Jackpot Key">
-                <el-select v-model="item.JackpotKey" size="small">
-                  <el-option label="jackpot_1" value="jackpot_1" />
-                  <el-option label="jackpot_2" value="jackpot_2" />
-                  <el-option label="jackpot_3" value="jackpot_3" />
-                  <el-option label="jackpot_4" value="jackpot_4" />
-                  <el-option label="jackpot_5" value="jackpot_5" />
-                  <el-option label="jackpot_6" value="jackpot_6" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="Jackpot名称">
-                <el-select v-model="item.JackpotName" size="small">
-                  <el-option label="Mini" value="Mini" />
-                  <el-option label="Minor" value="Minor" />
-                  <el-option label="Major" value="Major" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="奖池初始赔率">
-                <el-input v-model.number="item.EffectiveOdds" label="奖池初始赔率"><template slot="append">倍</template></el-input>
-              </el-form-item>
-              <el-form-item label="自动开奖最小赔率">
-                <el-input v-model.number="item.MinOdds" label="自动开奖最小赔率"><template slot="append">倍</template></el-input>
-              </el-form-item>
-              <el-form-item label="自动开奖最大赔率">
-                <el-input v-model.number="item.MaxOdds" label="自动开奖最大赔率"><template slot="append">倍</template></el-input>
-              </el-form-item>
-              <el-form-item label="中奖概率">
-                <el-input v-model.number="item.HitRate" label="中奖概率"><template slot="append">‱</template></el-input>
-              </el-form-item>
-              <el-form-item label="下注金额入池率">
-                <el-input v-model.number="item.TransferRate" label="下注金额入池率"><template slot="append">‱</template></el-input>
-              </el-form-item>
-            </el-form>
+              <el-form :ref="getId(idx)" label-width="150px">
+                <el-form-item label="Jackpot Key">
+                  <el-select v-model="item.JackpotKey" size="small">
+                    <el-option label="jackpot_1" value="jackpot_1" />
+                    <el-option label="jackpot_2" value="jackpot_2" />
+                    <el-option label="jackpot_3" value="jackpot_3" />
+                    <el-option label="jackpot_4" value="jackpot_4" />
+                    <el-option label="jackpot_5" value="jackpot_5" />
+                    <el-option label="jackpot_6" value="jackpot_6" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="Jackpot名称">
+                  <el-select v-model="item.JackpotName" size="small">
+                    <el-option label="Mini" value="Mini" />
+                    <el-option label="Minor" value="Minor" />
+                    <el-option label="Major" value="Major" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="奖池初始赔率">
+                  <el-input v-model.number="item.EffectiveOdds" label="奖池初始赔率"><template slot="append">倍</template></el-input>
+                </el-form-item>
+                <el-form-item label="自动开奖最小赔率">
+                  <el-input v-model.number="item.MinOdds" label="自动开奖最小赔率"><template slot="append">倍</template></el-input>
+                </el-form-item>
+                <el-form-item label="自动开奖最大赔率">
+                  <el-input v-model.number="item.MaxOdds" label="自动开奖最大赔率"><template slot="append">倍</template></el-input>
+                </el-form-item>
+                <el-form-item label="中奖概率">
+                  <el-input v-model.number="item.HitRate" label="中奖概率"><template slot="append">‱</template></el-input>
+                </el-form-item>
+                <el-form-item label="下注金额入池率">
+                  <el-input v-model.number="item.TransferRate" label="下注金额入池率"><template slot="append">‱</template></el-input>
+                </el-form-item>
+              </el-form>
             </el-col>
           </div>
         </el-card>
@@ -105,8 +105,8 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      //数据检测
-      for (let i in this.slotsData.JackpotConfig) {
+      // 数据检测
+      for (const i in this.slotsData.JackpotConfig) {
         if (this.slotsData.JackpotConfig[i].MinOdds < 0 || this.slotsData.JackpotConfig[i].MinOdds > 1000) {
           this.$message.error(this.slotsData.JackpotConfig[i].JackpotKey + '的最小赔率应该在0~1000之间!')
           return
@@ -145,16 +145,16 @@ export default {
     },
     initRow() {
       return {
-         'JackpotKey': 'Jackpot1',
-         'JackpotName': 'Mini',
-         'MinOdds': 0,
-         'MaxOdds': 0,
-         'MinSeconds': 0,
-         'MaxSeconds': 0,
-         'HitRate': 0,
-         'TransferRate': 0,
-         'EffectiveOdds': 0
-       }
+        'JackpotKey': 'Jackpot1',
+        'JackpotName': 'Mini',
+        'MinOdds': 0,
+        'MaxOdds': 0,
+        'MinSeconds': 0,
+        'MaxSeconds': 0,
+        'HitRate': 0,
+        'TransferRate': 0,
+        'EffectiveOdds': 0
+      }
     },
     addRow() {
       this.slotsData.JackpotConfig.push(this.initRow())

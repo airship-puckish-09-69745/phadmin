@@ -3,11 +3,11 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="奖励最低值">
-            <el-input v-model="item.minAward" />
-          </el-form-item>
-          <el-form-item label="奖励最高值">
-            <el-input v-model="item.maxAward" placeholder="(-1无上限)"/>
-          </el-form-item>
+          <el-input v-model="item.minAward" />
+        </el-form-item>
+        <el-form-item label="奖励最高值">
+          <el-input v-model="item.maxAward" placeholder="(-1无上限)" />
+        </el-form-item>
         <el-form-item label="游戏">
           <el-select v-model="item.slots">
             <el-option
@@ -28,37 +28,39 @@
       <el-col :span="24">
         <el-table
           :data="tableData"
-          style="width: 100%">
+          style="width: 100%"
+        >
           <el-table-column
             prop="Id"
-            label="ID">
-          </el-table-column>
+            label="ID"
+          />
           <el-table-column
-            label="是否机器人">
+            label="是否机器人"
+          >
             <template slot-scope="scope">
-                {{ scope.row.IsRobot==1?"是":"否" }}
+              {{ scope.row.IsRobot==1?"是":"否" }}
             </template>
           </el-table-column>
           <el-table-column
             prop="Uid"
-            label="Uid">
-          </el-table-column>
+            label="Uid"
+          />
           <el-table-column
             prop="Nick"
-            label="昵称">
-          </el-table-column>
+            label="昵称"
+          />
           <el-table-column
             prop="Bet"
-            label="下注级别">
-          </el-table-column>
+            label="下注级别"
+          />
           <el-table-column
             prop="Award"
-            label="金额">
-          </el-table-column>
+            label="金额"
+          />
           <el-table-column
             prop="Uptime"
-            label="时间">
-          </el-table-column>
+            label="时间"
+          />
         </el-table>
       </el-col>
     </el-row>
@@ -90,14 +92,14 @@ export default {
   components: { MoneyInput },
   data() {
     return {
-      tableData:[],
-      item:{
-        slots:0,
-        minAward:'',
-        maxAward:'',
-        totalCount:0,
-        currPage:1,
-        limit:20,
+      tableData: [],
+      item: {
+        slots: 0,
+        minAward: '',
+        maxAward: '',
+        totalCount: 0,
+        currPage: 1,
+        limit: 20
       },
       slots: [
         {
@@ -116,7 +118,7 @@ export default {
           value: 54,
           label: '黄金列车'
         }
-      ],
+      ]
     }
   },
   methods: {
@@ -128,14 +130,14 @@ export default {
       this.item.currPage = val
       this.getInfo()
     },
-    transDate(u){
-        return $libDate.FormateSecondStr(u,2)
+    transDate(u) {
+      return $libDate.FormateSecondStr(u, 2)
     },
-    transMoneyForShow(){
+    transMoneyForShow() {
       for (const o in this.tableData) {
         this.tableData[o].Bet /= 1000
         this.tableData[o].Award /= 1000
-        this.tableData[o].Uptime = this.transDate(this.tableData[o].Uptime);
+        this.tableData[o].Uptime = this.transDate(this.tableData[o].Uptime)
       }
     },
     getInfo() {
@@ -151,8 +153,8 @@ export default {
           Env: this.env,
           Path: '/slotsStat/winner/record',
           slots: this.item.slots,
-          min: this.item.minAward*1000,
-          max: this.item.maxAward==-1?-1:this.item.maxAward*1000,
+          min: this.item.minAward * 1000,
+          max: this.item.maxAward == -1 ? -1 : this.item.maxAward * 1000,
           page: this.item.currPage,
           limit: this.item.limit
         }
@@ -166,7 +168,7 @@ export default {
           $this.tableData = objs.Lists
           $this.item.totalCount = objs.TotalCount
           $this.transMoneyForShow()
-          console.log("tableData:",$this.tableData);
+          console.log('tableData:', $this.tableData)
         }
       })
     }

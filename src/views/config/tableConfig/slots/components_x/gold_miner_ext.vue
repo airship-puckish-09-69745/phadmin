@@ -16,14 +16,13 @@
             <el-col :span="8"><el-input v-model.number="cfg.MinerExtConfig.FreeSpinTimes" /></el-col>
           </el-form-item>
 
-          <ratio-input v-model="cfg.MinerExtConfig.BlackGoldRatio" label="黑金概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.MinerExtConfig.DoubleRatio" label="X2概率(%)" tips="倍率超过50时不再出现"></ratio-input>
-          <ratio-input v-model="cfg.MinerExtConfig.EmptyRatio" label="空概率(%)" ></ratio-input>
+          <ratio-input v-model="cfg.MinerExtConfig.BlackGoldRatio" label="黑金概率(%)" />
+          <ratio-input v-model="cfg.MinerExtConfig.DoubleRatio" label="X2概率(%)" tips="倍率超过50时不再出现" />
+          <ratio-input v-model="cfg.MinerExtConfig.EmptyRatio" label="空概率(%)" />
 
         </el-form>
       </el-col>
     </el-row>
-    
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
@@ -61,13 +60,13 @@ export default {
       cfg: {
         'ScatterConfig': {
         },
-        'MinerExtConfig':{
-            'OddsMin':1,
-            'OddsMax':20,
-            'FreeSpinTimes':3,
-            'BlackGoldRatio':0,
-            'DoubleRatio':0,
-            'EmptyRatio':0
+        'MinerExtConfig': {
+          'OddsMin': 1,
+          'OddsMax': 20,
+          'FreeSpinTimes': 3,
+          'BlackGoldRatio': 0,
+          'DoubleRatio': 0,
+          'EmptyRatio': 0
         }
       }
     }
@@ -82,7 +81,7 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      if(this.cfg.MinerExtConfig.BlackGoldRatio+this.cfg.MinerExtConfig.DoubleRatio+this.cfg.MinerExtConfig.EmptyRatio != 10000){
+      if (this.cfg.MinerExtConfig.BlackGoldRatio + this.cfg.MinerExtConfig.DoubleRatio + this.cfg.MinerExtConfig.EmptyRatio != 10000) {
         this.$message.error('概率相加不等于100')
         return
       }
@@ -103,14 +102,14 @@ export default {
       if (this.slotsData) {
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.cfg = this.slotsData
-        if(!this.slotsData.hasOwnProperty("MinerExtConfig")){
+        if (!this.slotsData.hasOwnProperty('MinerExtConfig')) {
           this.cfg.MinerExtConfig = {
-              'OddsMin':1,
-              'OddsMax':20,
-              'FreeSpinTimes':3,
-              'BlackGoldRatio':0,
-              'DoubleRatio':0,
-              'EmptyRatio':0
+            'OddsMin': 1,
+            'OddsMax': 20,
+            'FreeSpinTimes': 3,
+            'BlackGoldRatio': 0,
+            'DoubleRatio': 0,
+            'EmptyRatio': 0
           }
         }
         this.lock = true

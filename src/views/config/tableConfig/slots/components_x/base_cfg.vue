@@ -2,43 +2,47 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm1" :model="slotsData" label-width="120px">
+        <el-form ref="frm1" :model="slotsData" label-width="150px">
           <el-form-item label="老虎机类型">
             <el-select v-model.number="slotsData.SlotsType" disabled>
-              <el-option label="凤凰老虎机" :value="51"></el-option>
-              <el-option label="睡美人老虎机" :value="52"></el-option>
-              <el-option label="小丑老虎机" :value="53"></el-option>
-              <el-option label="黄金列车老虎机" :value="54"></el-option>
-              <el-option label="澳洲老虎机" :value="55"></el-option>
-              <el-option label="象鼻神老虎机" :value="56"></el-option>
-              <el-option label="黄金矿工老虎机" :value="57"></el-option>
-              <el-option label="阿拉丁老虎机" :value="58"></el-option>
-              <el-option label="芝加哥黑手党老虎机" :value="59"></el-option>
-              <el-option label="粮果派对老虎机" :value="60"></el-option>
-              <el-option label="FireKick老虎机" :value="61"></el-option>
-              <el-option label="侏罗纪老虎机" :value="62"></el-option>
-              <el-option label="夺宝奇兵老虎机" :value="63"></el-option>
-              <el-option label="植物大战僵尸老虎机" :value="64"></el-option>
+              <el-option label="凤凰老虎机" :value="51" />
+              <el-option label="睡美人老虎机" :value="52" />
+              <el-option label="小丑老虎机" :value="53" />
+              <el-option label="黄金列车老虎机" :value="54" />
+              <el-option label="澳洲老虎机" :value="55" />
+              <el-option label="象鼻神老虎机" :value="56" />
+              <el-option label="黄金矿工老虎机" :value="57" />
+              <el-option label="阿拉丁老虎机" :value="58" />
+              <el-option label="芝加哥黑手党老虎机" :value="59" />
+              <el-option label="粮果派对老虎机" :value="60" />
+              <el-option label="FireKick老虎机" :value="61" />
+              <el-option label="侏罗纪老虎机" :value="62" />
+              <el-option label="夺宝奇兵老虎机" :value="63" />
+              <el-option label="植物大战僵尸老虎机" :value="64" />
             </el-select>
           </el-form-item>
 
           <el-form-item label="行">
-            <el-input v-model.number="slotsData.Rows" disabled></el-input>
+            <el-input v-model.number="slotsData.Rows" disabled />
           </el-form-item>
 
           <el-form-item label="列">
-            <el-input v-model.number="slotsData.Clos" disabled></el-input>
+            <el-input v-model.number="slotsData.Clos" disabled />
           </el-form-item>
 
           <el-form-item label="最低版本">
-            <el-input v-model.number="slotsData.MinVersion"></el-input>
+            <el-input v-model.number="slotsData.MinVersion" />
           </el-form-item>
 
           <el-form-item label="下注列表">
-            <el-input v-model="slotsData.Bets"></el-input>
+            <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)"></ratio-input>
+          <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)" />
+
+          <el-form-item label="输最大倍率的概率%">
+            <el-input v-model.number="slotsData.LoseMaxOddsRate" />
+          </el-form-item>
 
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
@@ -73,16 +77,16 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      lock: false
+    }
+  },
   updated() {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
       console.log('origin data', this.getDiffData())
-    }
-  },
-  data() {
-    return {
-      lock: false
     }
   },
   methods: {
@@ -93,6 +97,7 @@ export default {
         'Clos': this.slotsData.Clos,
         'MinVersion': this.slotsData.MinVersion,
         'Bets': this.slotsData.Bets,
+        'LoseMaxOddsRate': this.slotsData.LoseMaxOddsRate,
         'MoneyConfig': {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
         }

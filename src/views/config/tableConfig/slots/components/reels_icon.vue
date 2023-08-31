@@ -19,8 +19,7 @@
                 label="图标"
                 width="100"
                 header-align="center"
-              >
-              </el-table-column>
+              />
               <template v-for="col in cols">
                 <el-table-column
                   :prop="getKey(col)"
@@ -68,6 +67,24 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      tableData: [
+        {
+          adaptTo: {
+            name: '所有人',
+            maxPlayTimes: -1
+          },
+          items: [
+            { symbol: 1, name: '数字9', reels1: 0, reels2: 0, reels3: 0, reels4: 0, reels5: 0 }
+          ]
+        }
+      ],
+      cols: [1, 2, 3, 4, 5],
+      symbolMap: {},
+      lock: false
+    }
+  },
   watch: {
     'slotsData.Rows': {
       deep: true,
@@ -95,24 +112,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      tableData: [
-        {
-          adaptTo: {
-            name: '所有人',
-            maxPlayTimes: -1
-          },
-          items: [
-            { symbol: 1, name: '数字9', reels1: 0, reels2: 0, reels3: 0, reels4: 0, reels5: 0 }
-          ]
-        }
-      ],
-      cols: [1, 2, 3, 4, 5],
-      symbolMap: {},
-      lock: false
     }
   },
   created() {

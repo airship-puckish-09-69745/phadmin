@@ -10,37 +10,37 @@
           </div>
           <div class="card-body" style="margin-top: 20px">
             <el-col :span="22">
-            <el-form :ref="getId(idx)" label-width="150px">
-              <el-form-item label="Jackpot Key">
-                <el-select v-model="item.JackpotKey" size="small">
-                  <el-option label="Jackpot1" value="Jackpot1" />
-                  <el-option label="Jackpot2" value="Jackpot2" />
-                  <el-option label="Jackpot3" value="Jackpot3" />
-                  <el-option label="Jackpot4" value="Jackpot4" />
-                  <el-option label="Jackpot5" value="Jackpot5" />
-                  <el-option label="Jackpot6" value="Jackpot6" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="Jackpot名称">
-                <el-select v-model="item.JackpotName" size="small">
-                  <el-option label="Mini" value="Mini" />
-                  <el-option label="Minor" value="Minor" />
-                  <el-option label="Major" value="Major" />
-                </el-select>
-              </el-form-item>
-              <el-form-item label="最小赔率">
-                <el-input v-model.number="item.MinOdds" label="最小赔率"><template slot="append">倍</template></el-input>
-              </el-form-item>
-              <el-form-item label="最大赔率">
-                <el-input v-model.number="item.MaxOdds" label="最大赔率"><template slot="append">倍</template></el-input>
-              </el-form-item>
-              <el-form-item label="中奖概率">
-                <el-input v-model.number="item.HitRate" label="中奖概率"><template slot="append">‱</template></el-input>
-              </el-form-item>
-              <el-form-item label="下注金额入池率">
-                <el-input v-model.number="item.TransferRate" label="下注金额入池率"><template slot="append">‱</template></el-input>
-              </el-form-item>
-            </el-form>
+              <el-form :ref="getId(idx)" label-width="150px">
+                <el-form-item label="Jackpot Key">
+                  <el-select v-model="item.JackpotKey" size="small">
+                    <el-option label="Jackpot1" value="Jackpot1" />
+                    <el-option label="Jackpot2" value="Jackpot2" />
+                    <el-option label="Jackpot3" value="Jackpot3" />
+                    <el-option label="Jackpot4" value="Jackpot4" />
+                    <el-option label="Jackpot5" value="Jackpot5" />
+                    <el-option label="Jackpot6" value="Jackpot6" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="Jackpot名称">
+                  <el-select v-model="item.JackpotName" size="small">
+                    <el-option label="Mini" value="Mini" />
+                    <el-option label="Minor" value="Minor" />
+                    <el-option label="Major" value="Major" />
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="最小赔率">
+                  <el-input v-model.number="item.MinOdds" label="最小赔率"><template slot="append">倍</template></el-input>
+                </el-form-item>
+                <el-form-item label="最大赔率">
+                  <el-input v-model.number="item.MaxOdds" label="最大赔率"><template slot="append">倍</template></el-input>
+                </el-form-item>
+                <el-form-item label="中奖概率">
+                  <el-input v-model.number="item.HitRate" label="中奖概率"><template slot="append">‱</template></el-input>
+                </el-form-item>
+                <el-form-item label="下注金额入池率">
+                  <el-input v-model.number="item.TransferRate" label="下注金额入池率"><template slot="append">‱</template></el-input>
+                </el-form-item>
+              </el-form>
             </el-col>
           </div>
         </el-card>
@@ -122,13 +122,13 @@ export default {
     },
     initRow() {
       return {
-         'JackpotKey': 'Jackpot1',
-         'JackpotName': 'Mini',
-         'MinOdds': 0,
-         'MaxOdds': 0,
-         'HitRate': 0,
-         'TransferRate': 0
-       }
+        'JackpotKey': 'Jackpot1',
+        'JackpotName': 'Mini',
+        'MinOdds': 0,
+        'MaxOdds': 0,
+        'HitRate': 0,
+        'TransferRate': 0
+      }
     },
     addRow() {
       this.slotsData.JackpotConfig.push(this.initRow())

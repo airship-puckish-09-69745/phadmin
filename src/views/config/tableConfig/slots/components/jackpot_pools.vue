@@ -5,7 +5,7 @@
         <el-form label-width="150px">
           <template v-for="(item, key) in jackpotPools">
             <el-form-item :label="key">
-              <el-input :value="item" :label="key" :readonly="true" :disabled="disabled"></el-input>
+              <el-input :value="item" :label="key" :readonly="true" :disabled="disabled" />
             </el-form-item>
           </template>
         </el-form>
@@ -19,13 +19,16 @@
   </div>
 </template>
 <script>
-import request from "@/utils/request";
+import request from '@/utils/request'
 
 export default {
   name: 'SlotsJackpotPools',
   model: {
     prop: 'slotId',
     event: 'cc'
+  },
+  props: {
+    slotId: Number
   },
   data: function() {
     return {
@@ -39,9 +42,6 @@ export default {
         'Jackpot6': 0
       }
     }
-  },
-  props: {
-    slotId: Number
   },
   created() {
     this.reload()
@@ -58,7 +58,7 @@ export default {
       }).then(response => {
         this.disabled = false
         if (response.RetCode === 0) {
-          for (let k in response.Data) {
+          for (const k in response.Data) {
             this.jackpotPools[k] = response.Data[k] / 1000
           }
         } else {

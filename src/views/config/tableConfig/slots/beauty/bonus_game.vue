@@ -5,7 +5,7 @@
       <el-card class="box-card" style="margin:40px auto;">
 
         <div slot="header" class="clearfix">
-          <h3 style="text-align:center">---------- [ {{oneCfg.BonusCount}}列Bonus图标的设置 ] ----------</h3>
+          <h3 style="text-align:center">---------- [ {{ oneCfg.BonusCount }}列Bonus图标的设置 ] ----------</h3>
         </div>
 
         <el-table :data="oneCfg.Rows">
@@ -21,7 +21,7 @@
                 <el-table-column label="图标" prop="SymbolVal">
                   <template scope="symbolCfg">
                     <el-select v-model="symbolCfg.row.SymbolVal" placeholder="请选择">
-                      <el-option v-for="item in cfg.icons" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                      <el-option v-for="item in cfg.icons" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
                   </template>
                 </el-table-column>
@@ -111,8 +111,8 @@ export default {
     return {
       cfg: {
         'icons': [
-          {'label': '乌鸦(#2)', 'value': 2},
-          {'label': '公主(#7)', 'value': 7}
+          { 'label': '乌鸦(#2)', 'value': 2 },
+          { 'label': '公主(#7)', 'value': 7 }
         ],
         'BonusConfig': [
         /*
@@ -193,31 +193,31 @@ export default {
           }
         */
         ]
-      },
+      }
     }
   },
   created() {
   },
   methods: {
     addRowCfg(bonusCfgIdx, rowCfgIdx) {
-      let row = {
+      const row = {
         'RowId': 1,
-        'SymbolConfig': [{'SymbolVal': 1, 'SymbolCount': 4}, {'SymbolVal': 2, 'SymbolCount': 1}], //假设图标1是睡美人，图标2是乌鸦
-        'OddsConfig': [{'Odds': 3, 'Rate': 40}, {'Odds': 5, 'Rate': 40}]
+        'SymbolConfig': [{ 'SymbolVal': 1, 'SymbolCount': 4 }, { 'SymbolVal': 2, 'SymbolCount': 1 }], // 假设图标1是睡美人，图标2是乌鸦
+        'OddsConfig': [{ 'Odds': 3, 'Rate': 40 }, { 'Odds': 5, 'Rate': 40 }]
       }
-      this.slotsData.BonusConfig[bonusCfgIdx].Rows.splice(rowCfgIdx+1, 0, row)
+      this.slotsData.BonusConfig[bonusCfgIdx].Rows.splice(rowCfgIdx + 1, 0, row)
     },
     delRowCfg(bonusCfgIdx, rowCfgIdx) {
       this.$delete(this.slotsData.BonusConfig[bonusCfgIdx].Rows, rowCfgIdx)
     },
     addSymbolCfg(bonusCfgIdx, rowCfgIdx, symbolCfgIdx) {
-      this.slotsData.BonusConfig[bonusCfgIdx].Rows[rowCfgIdx].SymbolConfig.splice(symbolCfgIdx+1, 0, {'SymbolVal': 1, 'SymbolCount': 0})
+      this.slotsData.BonusConfig[bonusCfgIdx].Rows[rowCfgIdx].SymbolConfig.splice(symbolCfgIdx + 1, 0, { 'SymbolVal': 1, 'SymbolCount': 0 })
     },
     delSymbolCfg(bonusCfgIdx, rowCfgIdx, symbolCfgIdx) {
       this.$delete(this.slotsData.BonusConfig[bonusCfgIdx].Rows[rowCfgIdx].SymbolConfig, symbolCfgIdx)
     },
     addOddsCfg(bonusCfgIdx, rowCfgIdx, oddsCfgIdx) {
-      this.slotsData.BonusConfig[bonusCfgIdx].Rows[rowCfgIdx].OddsConfig.splice(oddsCfgIdx+1, 0, {'Odds': 0, 'Rate': 0})
+      this.slotsData.BonusConfig[bonusCfgIdx].Rows[rowCfgIdx].OddsConfig.splice(oddsCfgIdx + 1, 0, { 'Odds': 0, 'Rate': 0 })
     },
     delOddsCfg(bonusCfgIdx, rowCfgIdx, oddsCfgIdx) {
       this.$delete(this.slotsData.BonusConfig[bonusCfgIdx].Rows[rowCfgIdx].OddsConfig, oddsCfgIdx)
@@ -226,9 +226,9 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      //if (!this.setData()) {
+      // if (!this.setData()) {
       //  return
-      //}
+      // }
 
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())

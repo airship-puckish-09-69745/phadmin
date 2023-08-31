@@ -6,13 +6,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启scatter">
             <el-switch
-              style="display: block"
               v-model="cfg.ScatterConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -32,10 +32,10 @@
           <el-form-item label="5轴次数">
             <el-input v-model.number="cfg.ScatterConfig.Scatter5FreeGameTimes" />
           </el-form-item>
-          <ratio-input v-model="cfg.ScatterConfig.JoinScatterRatio" label="进入小游戏的概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.ScatterConfig.Scatter3Ratio" label="3轴scatter的概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.ScatterConfig.Scatter4Ratio" label="4轴scatter的概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.ScatterConfig.Scatter5Ratio" label="5轴scatter的概率(%)" ></ratio-input>
+          <ratio-input v-model="cfg.ScatterConfig.JoinScatterRatio" label="进入小游戏的概率(%)" />
+          <ratio-input v-model="cfg.ScatterConfig.Scatter3Ratio" label="3轴scatter的概率(%)" />
+          <ratio-input v-model="cfg.ScatterConfig.Scatter4Ratio" label="4轴scatter的概率(%)" />
+          <ratio-input v-model="cfg.ScatterConfig.Scatter5Ratio" label="5轴scatter的概率(%)" />
         </el-form>
       </el-col>
     </el-row>
@@ -46,13 +46,13 @@
         <el-form ref="frm1" :model="cfg" label-width="200px">
           <el-form-item label="是否开启Bonus">
             <el-switch
-              style="display: block"
               v-model="cfg.BonusConfig.Enable"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="最低每轴出现的次数">
@@ -63,16 +63,15 @@
             <el-input v-model.number="cfg.BonusConfig.MinReels" />
           </el-form-item>
 
-          <ratio-input v-model="cfg.BonusConfig.HolyStoneRatio" label="命中圣石概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.HolyCupRatio" label="命中圣杯概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.CupboardRatio" label="命中法柜概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.CrystalSkeletonRatio" label="命中水晶骷髅概率(%)" ></ratio-input>
-          <ratio-input v-model="cfg.BonusConfig.BoxRatio" label="命中宝箱概率(%)" ></ratio-input>
+          <ratio-input v-model="cfg.BonusConfig.HolyStoneRatio" label="命中圣石概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.HolyCupRatio" label="命中圣杯概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.CupboardRatio" label="命中法柜概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.CrystalSkeletonRatio" label="命中水晶骷髅概率(%)" />
+          <ratio-input v-model="cfg.BonusConfig.BoxRatio" label="命中宝箱概率(%)" />
 
         </el-form>
       </el-col>
     </el-row>
-    
 
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
@@ -125,7 +124,7 @@ export default {
           'Scatter4Ratio': 0,
           'Scatter5Ratio': 0
         },
-        'BonusConfig':{}
+        'BonusConfig': {}
       }
     }
   },
@@ -139,7 +138,7 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      if(!this.setData()){
+      if (!this.setData()) {
         return
       }
       const $this = this
@@ -160,44 +159,44 @@ export default {
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
-        let raw = this.slotsData
-        if(raw.hasOwnProperty("ScatterConfig")){
+        const raw = this.slotsData
+        if (raw.hasOwnProperty('ScatterConfig')) {
           this.cfg = raw
-        }else{
-          if(raw.hasOwnProperty("BonusConfig")){
-            this.cfg.BonusConfig = raw.BonusConfig;
+        } else {
+          if (raw.hasOwnProperty('BonusConfig')) {
+            this.cfg.BonusConfig = raw.BonusConfig
           }
         }
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
     },
-    setData(){
-      if(this.cfg.ScatterConfig.Scatter5Ratio+this.cfg.ScatterConfig.Scatter3Ratio+this.cfg.ScatterConfig.Scatter4Ratio!=10000){
+    setData() {
+      if (this.cfg.ScatterConfig.Scatter5Ratio + this.cfg.ScatterConfig.Scatter3Ratio + this.cfg.ScatterConfig.Scatter4Ratio != 10000) {
         this.$message.error('Scatter概率不等于100%')
         return false
       }
-      if(this.cfg.BonusConfig.HolyStoneRatio+this.cfg.BonusConfig.HolyCupRatio+this.cfg.BonusConfig.CupboardRatio+this.cfg.BonusConfig.CrystalSkeletonRatio+this.cfg.BonusConfig.BoxRatio!=10000){
+      if (this.cfg.BonusConfig.HolyStoneRatio + this.cfg.BonusConfig.HolyCupRatio + this.cfg.BonusConfig.CupboardRatio + this.cfg.BonusConfig.CrystalSkeletonRatio + this.cfg.BonusConfig.BoxRatio != 10000) {
         this.$message.error('Bonus命中概率之和不等于100%')
         return false
       }
-      if(this.cfg.BonusConfig.HolyStoneRatio <=0){
+      if (this.cfg.BonusConfig.HolyStoneRatio <= 0) {
         this.$message.error('bonus各配置不允许出现概率为0的情况')
         return false
       }
-      if (this.cfg.BonusConfig.HolyCupRatio <= 0){
+      if (this.cfg.BonusConfig.HolyCupRatio <= 0) {
         this.$message.error('bonus各配置不允许出现概率为0的情况')
         return false
       }
-      if (this.cfg.BonusConfig.CupboardRatio <= 0){
+      if (this.cfg.BonusConfig.CupboardRatio <= 0) {
         this.$message.error('bonus各配置不允许出现概率为0的情况')
         return false
       }
-      if (this.cfg.BonusConfig.CrystalSkeletonRatio <= 0){
+      if (this.cfg.BonusConfig.CrystalSkeletonRatio <= 0) {
         this.$message.error('bonus各配置不允许出现概率为0的情况')
         return false
       }
-      if (this.cfg.BonusConfig.BoxRatio <= 0){
+      if (this.cfg.BonusConfig.BoxRatio <= 0) {
         this.$message.error('bonus各配置不允许出现概率为0的情况')
         return false
       }

@@ -1,8 +1,6 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
-    <el-row>
-      <publish primary-key="ID" :key-id="configKey" :check="configCheck" :env-empty="true" />
-    </el-row>
+
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -80,6 +78,10 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
+      <el-row>
+        <publish primary-key="ID" :key-id="configKey2" :check="configCheck" :env-empty="true" />
+      </el-row>
+
       <el-form ref="edit" :model="edit" label-width="100px" :inline="true" size="small">
         <el-form-item label="游戏Gid：">
           <el-input v-model="edit.item.Gid" size="mini" />
@@ -112,14 +114,14 @@
               <el-tab-pane v-for="(o,idx) in edit.showActs" :key="'tabAct' + idx" :label="'' + (idx)*10">
                 <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
                   <thead>
-                  <th v-for="(_,k1) in o[0]">
-                    <template v-if="k1==0">
-                      步数 / 剧本
-                    </template>
-                    <template v-else>
-                      <span @click="showChart(idx, k1)">{{ k1 }}</span>
-                    </template>
-                  </th>
+                    <th v-for="(_,k1) in o[0]">
+                      <template v-if="k1==0">
+                        步数 / 剧本
+                      </template>
+                      <template v-else>
+                        <span @click="showChart(idx, k1)">{{ k1 }}</span>
+                      </template>
+                    </th>
                   </thead>
                   <tr v-for="row in o">
                     <td v-for="col in row">
@@ -181,7 +183,7 @@ import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import TestMonthCard from '@/views/devTools/testMonthCard'
-import LineChart from "@/views/playerManage/components/LineChart";
+import LineChart from '@/views/playerManage/components/LineChart'
 
 const filterMap = {}
 
@@ -196,7 +198,7 @@ function newChartData() {
 }
 
 export default {
-  components: { TestMonthCard, Compare, Publish,LineChart },
+  components: { TestMonthCard, Compare, Publish, LineChart },
   data() {
     return {
       tableData: [],
@@ -235,6 +237,9 @@ export default {
   computed: {
     actionURL() {
       return process.env.VUE_APP_BASE_API + '/other/upload'
+    },
+    configKey2() {
+      return this.configKey + '_' + this.edit.item.ID
     }
   },
   created() {
@@ -264,7 +269,7 @@ export default {
       console.log(1)
       const chartData = newChartData()
       var total = 0
-      for (let i=0;i<objs.length;i++) {
+      for (let i = 0; i < objs.length; i++) {
         const ob = objs[i]
         chartData.xData.push(i)
         chartData.yData[0].Data.push(ob)
@@ -350,15 +355,6 @@ export default {
       })
     },
     configCheck() {
-      let rate = 0
-      for (const i in this.clientDB.TotalData) {
-        const ob = this.clientDB.TotalData[i]
-        rate += ob.Rate
-      }
-      if (rate > 100) {
-        this.$alert('所有AI配置的分配占比不能超过100%，当前为：' + rate)
-        return false
-      }
       return true
     },
     //* * ********************** 修改/添加弹框相关 *****************
@@ -379,7 +375,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             this.edit.item = response.Data
-            if(this.edit.item.Configs != "") {
+            if (this.edit.item.Configs != '') {
               this.edit.Configs = JSON.parse(this.edit.item.Configs)
             }
             const items = response.Data.Actions

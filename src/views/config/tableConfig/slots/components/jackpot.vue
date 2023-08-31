@@ -5,17 +5,17 @@
         <el-form ref="form" label-width="120px">
           <el-form-item>
             <el-switch
-              style="display: block"
               v-model="slotsData.Jackpot.IsEnableJackpot"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
         </el-form>
       </el-col>
-	<!--
+      <!--
       <el-col v-for="(item,idx) in slotsData.Jackpot.Items" :span="6">
         <el-card class="box-card" style="margin-bottom: 20px">
           <div slot="header" class="clearfix">
@@ -84,6 +84,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      lock: false
+    }
+  },
   watch: {
     'slotsData.Jackpot': {
       deep: true,
@@ -98,11 +103,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      lock: false
     }
   },
   created() {

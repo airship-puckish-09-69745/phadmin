@@ -3,7 +3,7 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm1" :model="cfg" label-width="180px">
-          
+
           <el-form-item label="小奖档位最低值">
             <money-input v-model="cfg.WinnerRecordCfg.LowStandMinAward" />
           </el-form-item>
@@ -86,12 +86,12 @@ export default {
     initData() {
       if (this.slotsData) {
         this.cfg = this.slotsData
-        console.log("do init 111111",this.cfg);
-        if(!this.cfg.hasOwnProperty("WinnerRecordCfg")){
+        console.log('do init 111111', this.cfg)
+        if (!this.cfg.hasOwnProperty('WinnerRecordCfg')) {
           this.cfg.WinnerRecordCfg = {
             'LowStandMinAward': 0,
             'HighStandMinAward': 0
-          };
+          }
         }
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true

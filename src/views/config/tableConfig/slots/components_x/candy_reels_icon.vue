@@ -6,27 +6,27 @@
         <el-card class="box-card" style="padding: 20px">
           <div slot="header" class="clearfix"><span><strong>方案A数值</strong></span></div>
           <el-table :data="tableData.PlanA" style="width: 100%">
-            <el-table-column prop="Name" label="图标"></el-table-column>
+            <el-table-column prop="Name" label="图标" />
             <el-table-column prop="Values[0]" label="轴1">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[1]" label="轴2">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[2]" label="轴3">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[3]" label="轴4">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[4]" label="轴5">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[5]" label="轴6">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[6]" label="轴7">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder="" /></template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -38,27 +38,27 @@
         <el-card class="box-card" style="padding: 20px">
           <div slot="header" class="clearfix"><span><strong>方案B数值</strong></span></div>
           <el-table :data="tableData.PlanB" style="width: 100%">
-            <el-table-column prop="Name" label="图标"></el-table-column>
+            <el-table-column prop="Name" label="图标" />
             <el-table-column prop="Values[0]" label="轴1">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[1]" label="轴2">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[2]" label="轴3">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[3]" label="轴4">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[4]" label="轴5">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[5]" label="轴6">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[6]" label="轴7">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder="" /></template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -70,27 +70,27 @@
         <el-card class="box-card" style="padding: 20px">
           <div slot="header" class="clearfix"><span><strong>方案C数值</strong></span></div>
           <el-table :data="tableData.PlanC" style="width: 100%">
-            <el-table-column prop="Name" label="图标"></el-table-column>
+            <el-table-column prop="Name" label="图标" />
             <el-table-column prop="Values[0]" label="轴1">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[1]" label="轴2">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[2]" label="轴3">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[3]" label="轴4">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[4]" label="轴5">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[5]" label="轴6">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[6]" label="轴7">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder="" /></template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -102,27 +102,27 @@
         <el-card class="box-card" style="padding: 20px">
           <div slot="header" class="clearfix"><span><strong>方案D数值</strong></span></div>
           <el-table :data="tableData.PlanD" style="width: 100%">
-            <el-table-column prop="Name" label="图标"></el-table-column>
+            <el-table-column prop="Name" label="图标" />
             <el-table-column prop="Values[0]" label="轴1">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[1]" label="轴2">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[2]" label="轴3">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[3]" label="轴4">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[4]" label="轴5">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[5]" label="轴6">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[6]" label="轴7">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder="" /></template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -134,27 +134,27 @@
         <el-card class="box-card" style="padding: 20px">
           <div slot="header" class="clearfix"><span><strong>方案E数值</strong></span></div>
           <el-table :data="tableData.PlanE" style="width: 100%">
-            <el-table-column prop="Name" label="图标"></el-table-column>
+            <el-table-column prop="Name" label="图标" />
             <el-table-column prop="Values[0]" label="轴1">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[0]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[1]" label="轴2">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[1]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[2]" label="轴3">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[2]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[3]" label="轴4">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[3]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[4]" label="轴5">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[4]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[5]" label="轴6">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[5]" placeholder="" /></template>
             </el-table-column>
             <el-table-column prop="Values[6]" label="轴7">
-              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder=""></el-input></template>
+              <template slot-scope="scope"><el-input v-model.number="scope.row.Values[6]" placeholder="" /></template>
             </el-table-column>
           </el-table>
         </el-card>
@@ -166,7 +166,7 @@
         <el-card class="box-card" style="padding: 20px">
           <div slot="header" class="clearfix">
             <span><strong>方案概率控制</strong> <mark>概率单位是ABCDE概率总和分之一</mark></span>
-            <el-button type="text" @click="addControl" style="float:right;">添加</el-button>
+            <el-button type="text" style="float:right;" @click="addControl">添加</el-button>
           </div>
           <el-table :data="slotsData.ReelsRateConfig.Control" style="width: 100%">
             <el-table-column prop="MinPlayTimes" label="最低玩牌次数" width="150">
@@ -174,48 +174,48 @@
             </el-table-column>
             <el-table-column prop="OriginMatrix" label="方案配置">
               <template slot-scope="scope">
-              <table>
-                <tr>
-                  <td>方案类型</td>
-                  <td>方案A概率</td>
-                  <td>方案B概率</td>
-                  <td>方案C概率</td>
-                  <td>方案D概率</td>
-                  <td>方案E概率</td>
-                </tr>
-                <tr>
-                  <td>初始阵列</td>
-                  <td><el-input v-model.number="scope.row.OriginMatrix.PlanARates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.OriginMatrix.PlanBRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.OriginMatrix.PlanCRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.OriginMatrix.PlanDRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.OriginMatrix.PlanERates" placeholder=""></el-input></td>
-                </tr>
-                <tr>
-                  <td>1次掉落</td>
-                  <td><el-input v-model.number="scope.row.Drop1Matrix.PlanARates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop1Matrix.PlanBRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop1Matrix.PlanCRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop1Matrix.PlanDRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop1Matrix.PlanERates" placeholder=""></el-input></td>
-                </tr>
-                <tr>
-                  <td>2次掉落</td>
-                  <td><el-input v-model.number="scope.row.Drop2Matrix.PlanARates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop2Matrix.PlanBRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop2Matrix.PlanCRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop2Matrix.PlanDRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.Drop2Matrix.PlanERates" placeholder=""></el-input></td>
-                </tr>
-                <tr>
-                  <td>3+次掉落(默认)</td>
-                  <td><el-input v-model.number="scope.row.DefaultMatrix.PlanARates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.DefaultMatrix.PlanBRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.DefaultMatrix.PlanCRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.DefaultMatrix.PlanDRates" placeholder=""></el-input></td>
-                  <td><el-input v-model.number="scope.row.DefaultMatrix.PlanERates" placeholder=""></el-input></td>
-                </tr>
-              </table>
+                <table>
+                  <tr>
+                    <td>方案类型</td>
+                    <td>方案A概率</td>
+                    <td>方案B概率</td>
+                    <td>方案C概率</td>
+                    <td>方案D概率</td>
+                    <td>方案E概率</td>
+                  </tr>
+                  <tr>
+                    <td>初始阵列</td>
+                    <td><el-input v-model.number="scope.row.OriginMatrix.PlanARates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.OriginMatrix.PlanBRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.OriginMatrix.PlanCRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.OriginMatrix.PlanDRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.OriginMatrix.PlanERates" placeholder="" /></td>
+                  </tr>
+                  <tr>
+                    <td>1次掉落</td>
+                    <td><el-input v-model.number="scope.row.Drop1Matrix.PlanARates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop1Matrix.PlanBRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop1Matrix.PlanCRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop1Matrix.PlanDRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop1Matrix.PlanERates" placeholder="" /></td>
+                  </tr>
+                  <tr>
+                    <td>2次掉落</td>
+                    <td><el-input v-model.number="scope.row.Drop2Matrix.PlanARates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop2Matrix.PlanBRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop2Matrix.PlanCRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop2Matrix.PlanDRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.Drop2Matrix.PlanERates" placeholder="" /></td>
+                  </tr>
+                  <tr>
+                    <td>3+次掉落(默认)</td>
+                    <td><el-input v-model.number="scope.row.DefaultMatrix.PlanARates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.DefaultMatrix.PlanBRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.DefaultMatrix.PlanCRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.DefaultMatrix.PlanDRates" placeholder="" /></td>
+                    <td><el-input v-model.number="scope.row.DefaultMatrix.PlanERates" placeholder="" /></td>
+                  </tr>
+                </table>
               </template>
             </el-table-column>
             <el-table-column prop="MinPlayTimes" label="操作" width="100">
@@ -256,6 +256,20 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      tableData: {
+        PlanA: [],
+        PlanB: [],
+        PlanC: [],
+        PlanD: [],
+        PlanE: []
+      },
+      cols: [1, 2, 3, 4, 5, 6, 7],
+      symbolMap: {},
+      lock: false
+    }
+  },
   watch: {
     'slotsData.SymbolList': {
       deep: true,
@@ -273,20 +287,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      tableData: {
-        PlanA: [],
-        PlanB: [],
-        PlanC: [],
-        PlanD: [],
-        PlanE: []
-      },
-      cols: [1, 2, 3, 4, 5, 6, 7],
-      symbolMap: {},
-      lock: false
     }
   },
   created() {

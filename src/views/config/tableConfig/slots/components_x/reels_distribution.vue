@@ -9,8 +9,8 @@
                 v-for="item in slotsData.ReelsRateConfigDistribution"
                 :key="item.Config.Id"
                 :label="item.Config.Name"
-                :value="item.Config.Id">
-              </el-option>
+                :value="item.Config.Id"
+              />
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -36,8 +36,7 @@
                 label="图标"
                 width="100"
                 header-align="center"
-              >
-              </el-table-column>
+              />
               <template v-for="col in cols">
                 <el-table-column
                   :prop="getKey(col)"
@@ -92,6 +91,18 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      items: [
+      ],
+      configId: 0,
+      cols: [1, 2, 3, 4, 5],
+      symbolMap: {},
+      lock: false,
+      dialogVisible: false,
+      dialogName: ''
+    }
+  },
   watch: {
     'SymbolList': {
       deep: true,
@@ -100,8 +111,8 @@ export default {
         this.initData()
       }
     },
-	  'slotsData.ReelsRateConfigDistribution':{
-		  //deep: true,
+	  'slotsData.ReelsRateConfigDistribution': {
+		  // deep: true,
 	    handler: function(val) {
         // console.log('reels icon symbol list watch', val)
         this.initData()
@@ -112,18 +123,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      items: [
-      ],
-      configId:0,
-      cols: [1, 2, 3, 4, 5],
-      symbolMap: {},
-      lock: false,
-      dialogVisible:false,
-      dialogName:''
     }
   },
   created() {
@@ -165,7 +164,7 @@ export default {
       }
     },
     getItem() {
-      let items = []
+      const items = []
       for (const i in this.symbolMap) {
         const row = {
           name: this.symbolMap[i],
@@ -193,7 +192,7 @@ export default {
       this.initSymbolMap()
 
       this.item = []
-      if(this.configId===0){
+      if (this.configId === 0) {
         for (const i in this.slotsData.ReelsRateConfigDistribution) {
           this.configId = this.slotsData.ReelsRateConfigDistribution[i].Config.Id
           break
@@ -203,7 +202,7 @@ export default {
       // console.log('reels icon init data ', this.tableData)
     },
     setData() {
-      if(this.items.length === 0){
+      if (this.items.length === 0) {
         return
       }
       const changeItems = []
@@ -222,51 +221,51 @@ export default {
         })
       }
       for (const i in this.slotsData.ReelsRateConfigDistribution) {
-        if(this.slotsData.ReelsRateConfigDistribution[i].Config.Id == this.configId){
-            this.slotsData.ReelsRateConfigDistribution[i].Items = changeItems
+        if (this.slotsData.ReelsRateConfigDistribution[i].Config.Id == this.configId) {
+          this.slotsData.ReelsRateConfigDistribution[i].Items = changeItems
         }
       }
       // this.$message.success('当前页面保存成功')
     },
-    onCreate(){
+    onCreate() {
       // this.dialogVisible = true
       // this.dialogName = ''
       this.$prompt('配置名称', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputValue:''
-        }).then(({ value }) => {
-          console.log('wtf ',value)
-          let one = this.createReelsRateConfigDistribution(value)
-          this.slotsData.ReelsRateConfigDistribution.push(one)
-          console.log("new config :", this.slotsData)
-          this.$message.success('添加成功')
-          this.configId = one.Config.Id
-          this.onChangeId()
-        }).catch(() => {
-              
-        });
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: ''
+      }).then(({ value }) => {
+        console.log('wtf ', value)
+        const one = this.createReelsRateConfigDistribution(value)
+        this.slotsData.ReelsRateConfigDistribution.push(one)
+        console.log('new config :', this.slotsData)
+        this.$message.success('添加成功')
+        this.configId = one.Config.Id
+        this.onChangeId()
+      }).catch(() => {
+
+      })
     },
-    createReelsRateConfigDistribution(name){
+    createReelsRateConfigDistribution(name) {
       let id = 1
       let maxId = 0
       for (const i in this.slotsData.ReelsRateConfigDistribution) {
-        if(this.slotsData.ReelsRateConfigDistribution[i].Config.Id > maxId ){
+        if (this.slotsData.ReelsRateConfigDistribution[i].Config.Id > maxId) {
           maxId = this.slotsData.ReelsRateConfigDistribution[i].Config.Id
         }
       }
       id = maxId + 1
-      let newItem = {
-        Config:{
-          Id:id,
-          Name:name
+      const newItem = {
+        Config: {
+          Id: id,
+          Name: name
         },
-        Items:[]
+        Items: []
       }
       for (let c = 0; c < this.slotsData.Clos; c++) {
-        let one = {
-          Reels:c,
-          Symbol:[]
+        const one = {
+          Reels: c,
+          Symbol: []
         }
         for (const i in this.SymbolList) {
           if (this.SymbolList[i]['Type'] === 3) {
@@ -274,61 +273,61 @@ export default {
           }
           const value = this.SymbolList[i]['Value']
           one.Symbol.push({
-            Number:100,
-            Symbol:value
+            Number: 100,
+            Symbol: value
           })
         }
         newItem.Items.push(one)
       }
       return newItem
     },
-    onEdit(){
+    onEdit() {
       let dialogName = ''
       for (const i in this.slotsData.ReelsRateConfigDistribution) {
-        if(this.slotsData.ReelsRateConfigDistribution[i].Config.Id == this.configId){
-            dialogName = this.slotsData.ReelsRateConfigDistribution[i].Config.Name
+        if (this.slotsData.ReelsRateConfigDistribution[i].Config.Id == this.configId) {
+          dialogName = this.slotsData.ReelsRateConfigDistribution[i].Config.Name
         }
       }
       this.$prompt('配置名称', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          inputValue:dialogName
-        }).then(({ value }) => {
-          this.$message({
-            type: 'success',
-            message: '修改成功'
-          });
-          if(value === dialogName){
-            return
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: dialogName
+      }).then(({ value }) => {
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        })
+        if (value === dialogName) {
+          return
+        }
+        for (const i in this.slotsData.ReelsRateConfigDistribution) {
+          if (this.slotsData.ReelsRateConfigDistribution[i].Config.Id == this.configId) {
+            this.slotsData.ReelsRateConfigDistribution[i].Config.Name = value
+            break
           }
-          for (const i in this.slotsData.ReelsRateConfigDistribution) {
-            if(this.slotsData.ReelsRateConfigDistribution[i].Config.Id == this.configId){
-                this.slotsData.ReelsRateConfigDistribution[i].Config.Name = value
-                break
-            }
-          }
-        }).catch(() => {      
-        });
+        }
+      }).catch(() => {
+      })
     },
-    onDelete(){
+    onDelete() {
       this.$confirm('是否删除配置, 是否继续?', '', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        if(this.slotsData.ReelsRateConfigDistribution.length<=1){
+        if (this.slotsData.ReelsRateConfigDistribution.length <= 1) {
           this.$message({
             type: 'info',
             message: '必须保留一个配置!'
-          });
+          })
           return
         }
-        let obj = []
+        const obj = []
         let configId = 0
         for (const i in this.slotsData.ReelsRateConfigDistribution) {
-          if(this.slotsData.ReelsRateConfigDistribution[i].Config.Id != this.configId){
-              configId = configId>0?configId:this.slotsData.ReelsRateConfigDistribution[i].Config.Id
-              obj.push(this.slotsData.ReelsRateConfigDistribution[i])
+          if (this.slotsData.ReelsRateConfigDistribution[i].Config.Id != this.configId) {
+            configId = configId > 0 ? configId : this.slotsData.ReelsRateConfigDistribution[i].Config.Id
+            obj.push(this.slotsData.ReelsRateConfigDistribution[i])
           }
         }
         this.slotsData.ReelsRateConfigDistribution = obj
@@ -336,17 +335,17 @@ export default {
         this.$message({
           type: 'success',
           message: '删除成功!'
-        });
+        })
         this.onChangeId()
-      }).catch(() => {       
+      }).catch(() => {
       })
     },
-    onChangeId(){
-      console.log("onChangeId.....")
+    onChangeId() {
+      console.log('onChangeId.....')
       this.item = []
       for (const i in this.slotsData.ReelsRateConfigDistribution) {
-        if(this.slotsData.ReelsRateConfigDistribution[i].Config.Id != this.configId){
-            continue
+        if (this.slotsData.ReelsRateConfigDistribution[i].Config.Id != this.configId) {
+          continue
         }
         const tmp = this.slotsData.ReelsRateConfigDistribution[i]
         const item = this.getItem()

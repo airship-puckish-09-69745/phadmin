@@ -5,7 +5,7 @@
         <el-card class="box-card" style="margin-bottom: 20px">
           <div slot="header" class="clearfix">
             <span>第 {{ idx + 1 }} 线</span>
-            <el-button type="text" @click="colDel(idx)" style="float: right; padding: 3px 0; color: red">删除</el-button>
+            <el-button type="text" style="float: right; padding: 3px 0; color: red" @click="colDel(idx)">删除</el-button>
           </div>
           <div>
             <el-table
@@ -14,8 +14,8 @@
               :cell-style="{padding: '0px'}"
               style="width: 401px"
               :show-header="false"
-              @cell-click="colClick"
               border
+              @cell-click="colClick"
             >
               <template v-for="k of slotsData.Clos">
                 <el-table-column
@@ -24,7 +24,7 @@
                   width="80"
                 >
                   <template slot-scope="scope">
-                    <el-button type="primary" icon="el-icon-check" circle v-if="hasHit(scope.row, k)"></el-button>
+                    <el-button v-if="hasHit(scope.row, k)" type="primary" icon="el-icon-check" circle />
                   </template>
                 </el-table-column>
               </template>
@@ -35,10 +35,10 @@
     </el-row>
 
     <el-row style="margin-top: 30px">
-     <el-col>
-       <el-button type="primary" @click="addRow">添加</el-button>
-       <el-button type="success" @click="submitFrm">保存</el-button>
-     </el-col>
+      <el-col>
+        <el-button type="primary" @click="addRow">添加</el-button>
+        <el-button type="success" @click="submitFrm">保存</el-button>
+      </el-col>
     </el-row>
 
     <!--对比组件-->
@@ -64,6 +64,12 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      tableData: [],
+      lock: false
+    }
+  },
   watch: {
     'slotsData.Rows': {
       deep: true,
@@ -87,12 +93,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      tableData: [],
-      lock: false
     }
   },
   methods: {

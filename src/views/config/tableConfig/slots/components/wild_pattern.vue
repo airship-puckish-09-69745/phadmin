@@ -17,7 +17,7 @@
             </div>
           </el-form-item>
 
-          <ratio-input v-model="cfg.WildConfig.SingleWildIntoFreeGame" label="进入免费游戏概率(%)" tips="单个wild进入免费游戏概率"></ratio-input>
+          <ratio-input v-model="cfg.WildConfig.SingleWildIntoFreeGame" label="进入免费游戏概率(%)" tips="单个wild进入免费游戏概率" />
 
           <el-form-item label="行">
             <el-input v-model.number="cfg.WildConfig.Row" />
@@ -33,8 +33,8 @@
                 v-for="(name, sid) in symbolMap"
                 :key="sid"
                 :label="name"
-                :value="parseInt(sid)">
-              </el-option>
+                :value="parseInt(sid)"
+              />
             </el-select>
             <div class="el-form-item--small">
               <small>目前只支持火</small>
@@ -57,38 +57,38 @@
           </div>
           <div class="card-body" style="margin-top: 20px;">
             <el-col :span="22">
-            <el-form :ref="getId(idx)" label-width="120px">
-              <el-form-item label="符号">
-                <el-select v-model.number="item.Symbol" size="small">
-                  <el-option v-for="(symbolName, sid) in symbolMap" :label="symbolName" :value="parseInt(sid)" />
-                </el-select>
-              </el-form-item>
+              <el-form :ref="getId(idx)" label-width="120px">
+                <el-form-item label="符号">
+                  <el-select v-model.number="item.Symbol" size="small">
+                    <el-option v-for="(symbolName, sid) in symbolMap" :label="symbolName" :value="parseInt(sid)" />
+                  </el-select>
+                </el-form-item>
 
-              <el-form-item label="最小下注">
-                <el-input v-model.number="item.MinBet" size="small" />
-              </el-form-item>
+                <el-form-item label="最小下注">
+                  <el-input v-model.number="item.MinBet" size="small" />
+                </el-form-item>
 
-              <el-form-item label="最大下注">
-                <el-input v-model.number="item.MaxBet" size="small" />
-              </el-form-item>
+                <el-form-item label="最大下注">
+                  <el-input v-model.number="item.MaxBet" size="small" />
+                </el-form-item>
 
-              <el-form-item label="倍率">
-                <el-input v-model.number="item.Rate" size="small" />
-              </el-form-item>
+                <el-form-item label="倍率">
+                  <el-input v-model.number="item.Rate" size="small" />
+                </el-form-item>
 
-              <ratio-input v-model="item.HitPercent" label="击中百分比(%)"></ratio-input>
+                <ratio-input v-model="item.HitPercent" label="击中百分比(%)" />
 
-              <el-form-item label="使用jackpot">
-                <el-select v-model="item.ProgressiveJackpotName" size="small">
-                  <el-option label="无" value=""></el-option>
-                  <el-option v-for="symbol in jackpotMap" :label="symbol.label" :value="symbol.value" />
-                </el-select>
-              </el-form-item>
+                <el-form-item label="使用jackpot">
+                  <el-select v-model="item.ProgressiveJackpotName" size="small">
+                    <el-option label="无" value="" />
+                    <el-option v-for="symbol in jackpotMap" :label="symbol.label" :value="symbol.value" />
+                  </el-select>
+                </el-form-item>
 
-              <el-form-item label="抽水比例">
-                <el-input v-model.number="item.ProgressivePercent" size="small"></el-input>
-              </el-form-item>
-            </el-form>
+                <el-form-item label="抽水比例">
+                  <el-input v-model.number="item.ProgressivePercent" size="small" />
+                </el-form-item>
+              </el-form>
             </el-col>
           </div>
         </el-card>

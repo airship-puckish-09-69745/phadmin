@@ -2,34 +2,36 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="18" :offset="3">
-          <el-form ref="frm1" :inline="true" label-width="80px">
-            <el-table
-              :data="tableData"
-              style="width: 100%">
+        <el-form ref="frm1" :inline="true" label-width="80px">
+          <el-table
+            :data="tableData"
+            style="width: 100%"
+          >
+            <el-table-column
+              prop="name"
+              label="图标\数量"
+              width="100"
+            />
+            <template v-for="col in cols">
               <el-table-column
-                prop="name"
-                label="图标\数量"
-                width="100">
+                :prop="getKey(col)"
+                :label="getLabel(col)"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row['rate' + col]" />
+                </template>
               </el-table-column>
-              <template v-for="col in cols">
-                <el-table-column
-                  :prop="getKey(col)"
-                  :label="getLabel(col)"
-                  width="100">
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row['rate' + col]"></el-input>
-                  </template>
-                </el-table-column>
-              </template>
-            </el-table>
-          </el-form>
+            </template>
+          </el-table>
+        </el-form>
       </el-col>
     </el-row>
 
     <el-row style="margin: 30px 0">
-     <el-col :offset="3">
-       <el-button type="success" @click="submitFrm">保存</el-button>
-     </el-col>
+      <el-col :offset="3">
+        <el-button type="success" @click="submitFrm">保存</el-button>
+      </el-col>
     </el-row>
 
     <!--对比组件-->
@@ -55,6 +57,15 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      cols: [3, 4, 5, 6, 7, 8],
+      tableData: [
+      ],
+      symbolMap: {},
+      lock: false
+    }
+  },
   watch: {
     'slotsData.SymbolList': {
       deep: true,
@@ -67,15 +78,6 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData())
       this.lock = true
-    }
-  },
-  data() {
-    return {
-      cols: [3, 4, 5, 6, 7, 8],
-      tableData: [
-      ],
-      symbolMap: {},
-      lock: false
     }
   },
 
@@ -105,7 +107,7 @@ export default {
       return 'rate' + col
     },
     getLabel(col) {
-      if (col == this.cols[this.cols.length-1]) {
+      if (col == this.cols[this.cols.length - 1]) {
         return col + '+'
       } else {
         return col + '个'
