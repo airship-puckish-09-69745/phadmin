@@ -414,11 +414,12 @@ export default {
       return 0
     },
     getTime(toDate) {
-      if (this.isIN()) {
-        return $libDate.SelectTimeToIndia(toDate) / 1000
-      } else {
-        return $libDate.SelectTimeToBR(toDate) / 1000
-      }
+      // if (this.isIN()) {
+      //   return $libDate.SelectTimeToIndia(toDate) / 1000
+      // } else {
+      //   return $libDate.SelectTimeToBR(toDate) / 1000
+      // }
+      return toDate / 1000
     },
     getInfo() {
       const $this = this
