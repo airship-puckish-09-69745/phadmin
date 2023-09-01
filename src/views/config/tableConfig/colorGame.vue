@@ -377,14 +377,14 @@
                         </el-table-column>
                         <el-table-column label="发放数量" prop="Value">
                             <template slot-scope="scope">
-                                <el-input style="width: 240px;" v-model.number="scope.row.Value" size="mini" :required="true"/>
-                                <front v-if="scope.row.AwardType==1">&nbsp;%</front>
+                                <el-input style="width: 240px;" v-model.number="scope.row.Value" size="mini" :required="true">
+                                  <template v-if="scope.row.AwardType==1" slot="append">%</template><
+                                </el-input>
                             </template>
                         </el-table-column>
                         <el-table-column label="触发概率(百分比)" prop="Rate">
                             <template slot-scope="scope">
-                                <el-input style="width: 240px;" v-model.number="scope.row.Rate" size="mini" :required="true"/>
-                                <front>&nbsp;%</front>
+                                <el-input style="width: 240px;" v-model.number="scope.row.Rate" size="mini" :required="true"><template slot="append">%</template></el-input>
                             </template>
                         </el-table-column>
                     </el-table>
