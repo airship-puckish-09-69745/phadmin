@@ -377,7 +377,7 @@
                         </el-table-column>
                         <el-table-column label="发放数量" prop="Value">
                             <template slot-scope="scope">
-                                <el-input style="width: 240px;" v-model.number="scope.row.Value" size="mini" :required="true">
+                                <el-input style="width: 200px;" v-model.number="scope.row.Value" size="mini" :required="true">
                                   <template v-if="scope.row.AwardType==1" slot="append">%</template><
                                 </el-input>
                             </template>
@@ -501,7 +501,11 @@
                 {"AwardType": 1, "Value": 10, "Rate": 10}
             ],
             JackpotRate: 0,
-          }
+          },
+          LowLotteryPoolReChoice:0,
+          LowLotteryPoolReChoiceRate:0,
+          HighLotteryPoolReChoice:0,
+          HighLotteryPoolReChoiceRate:0,
         },
         JackpotRandAwards: [],
         ColorItems: [
@@ -607,6 +611,7 @@
                 this.item.Jackpot.RandAwards[k].Value /= 1000
             }
         }
+        console.log("this.item:",this.item)
       },
       getBaoziName(colorId) {
         let showArr = [];
