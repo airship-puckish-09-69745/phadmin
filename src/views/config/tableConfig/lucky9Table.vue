@@ -560,7 +560,9 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     HitPotBetTimes: 0,
-    HitPotTaxRates: 0
+    HitPotTaxRates: 0,
+    PotBetTimes:0,
+    PotTaxRates:0
   }
 }
 
