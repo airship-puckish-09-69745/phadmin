@@ -376,6 +376,7 @@
               </el-input>
             </el-form-item>
           </el-col>
+          <!--
           <el-col :span="11">
             <el-form-item
               label="在玩人数倍数："
@@ -386,8 +387,9 @@
               <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
             </el-form-item>
           </el-col>
+          -->
         </el-row>
-
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item
@@ -427,7 +429,8 @@
             <select-goods v-model="edit.item.BankruptGoodsId" :type="99" title="破产推荐商品" />
           </el-col>
         </el-row>
-
+        -->
+        <!--
         <fieldset>
           <legend>满足充值条件推荐商品</legend>
           <el-row>
@@ -453,7 +456,8 @@
             </el-col>
           </el-row>
         </fieldset>
-
+        -->
+        <!--
         <fieldset>
           <legend>场次隐藏配置</legend>
           <el-row>
@@ -496,6 +500,7 @@
             </el-col>
           </el-row>
         </fieldset>
+        -->
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
