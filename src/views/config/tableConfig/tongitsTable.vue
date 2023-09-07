@@ -36,6 +36,7 @@
           sortable="custom"
           width="70"
         />
+        <!--
         <el-table-column
           prop="IsPractice"
           label="练习场"
@@ -46,6 +47,7 @@
             <span v-else style="color:#999999;">否</span>
           </template>
         </el-table-column>
+        -->
         <el-table-column
           prop="Level"
           label="Level"
@@ -267,7 +269,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item
@@ -292,7 +294,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        -->
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item
@@ -316,7 +319,8 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        -->
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item
@@ -340,6 +344,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        -->
         <tongits-robot-common v-model="edit"></tongits-robot-common>
         <tongits-robot-control v-model="edit"></tongits-robot-control>
         <!-- <tongits-robot-build-card v-model="edit"></tongits-robot-build-card> -->
