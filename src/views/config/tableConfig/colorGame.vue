@@ -105,6 +105,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <!--
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="小黑屋最大真人数(修改需要重启)：" prop="VUPRoomMaxUsers" :rules="dataRule(true,{type:'n',range:'1-10'})">
@@ -121,6 +122,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            -->
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="赢钱榜展示数量：" prop="WinMoneyShowNum">
