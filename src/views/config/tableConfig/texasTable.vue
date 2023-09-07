@@ -151,6 +151,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <!--
         <el-row>
           <el-col :span="11">
             <game-level v-model="edit.item.Level" />
@@ -164,12 +165,14 @@
             </el-form-item>
           </el-col>
         </el-row>
+        -->
         <el-row>
           <el-col :span="11">
             <el-form-item label="最大旁观局数：" :required="true" prop="item.WatchTimesMax" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model="edit.item.WatchTimesMax" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <!--
           <el-col :span="11">
             <el-form-item label="是否练习场：" :required="true">
               <el-radio-group v-model.number="edit.item.IsPractice">
@@ -178,7 +181,9 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          -->
         </el-row>
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item label="默认胜率：" :required="true" prop="item.DefaultWinRate" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -205,6 +210,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        -->
         <el-row>
           <el-col :span="11">
             <el-form-item label="玩家买入等待时长：" :required="true" prop="item.PurchaseSecondMax" :rules="dataRule(true,{type:'n',range:'1'})">
@@ -217,6 +223,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item label="幸运级别最大值(0不限制)：" :required="true" prop="item.LuckyLevelLimitMax" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -300,8 +307,9 @@
             </el-col>
           </el-row>
         </fieldset>
-
+        -->
         <!-- Jackpot配置 start -->
+        <!--
         <fieldset>
           <legend>Jackpot配置</legend>
           <el-row>
@@ -344,9 +352,11 @@
             </el-col>
           </el-row>
         </fieldset>
+        -->
         <!-- Jackpot配置 end -->
 
         <!-- 陪玩机器人配置 start -->
+        <!--
         <fieldset>
           <legend>中低场陪玩机器人配置</legend>
           <el-row>
@@ -405,9 +415,11 @@
             </el-col>
           </el-row>
         </fieldset>
+        -->
         <!-- 机器人相关配置 end -->
 
         <!-- 高级场开场机器人配置 start -->
+        <!--
         <fieldset>
           <legend>高级场开场机器人配置</legend>
           <el-row>
@@ -430,6 +442,7 @@
             </el-col>
           </el-row>
         </fieldset>
+        -->
         <!-- 高级场开场机器人配置 end -->
 
         <el-form-item>
