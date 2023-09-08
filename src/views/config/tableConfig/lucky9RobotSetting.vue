@@ -642,6 +642,7 @@ export default {
                 $this.tableMoneyList += ","+data.SafePoolMoneyCfg[i].TableMoney
               }
               data.SafePoolMoneyCfg[i].TableMoney /= 1000
+              data.SafePoolMoneyCfg[i].SafePool /= 1000
             }
             $this.item = this.DeepCopy(data)
 
@@ -660,6 +661,7 @@ export default {
           const obj = {}
           Object.assign(obj, this.item.SafePoolMoneyCfg[o])
           obj.TableMoney *= 1000
+          obj.SafePool *= 1000
           cpy.SafePoolMoneyCfg.push(obj)
       }
       return JSON.stringify(cpy)
