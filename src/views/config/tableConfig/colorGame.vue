@@ -135,7 +135,7 @@
                   <el-form-item label="jackpot奖池抽取百分比：" prop="JackpotRate">
                     <el-col :span="20">
                       <el-input v-model.number="item.JackpotRate" size="mini" :required="true" />
-                    </el-col>%
+                    </el-col>‰
                   </el-form-item>
                 </el-col>
             </el-row>
