@@ -91,7 +91,7 @@
             -->
             <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="奖池抽水比例：" prop="FeeRate" :rules="dataRule(true,{type:'n',range:'0-100'})">
+                <el-form-item label="奖池抽水比例（该部分包括系统抽水+Jackpot抽取）：" prop="FeeRate" :rules="dataRule(true,{type:'n',range:'0-100'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.FeeRate" size="mini" :required="true" />
                   </el-col>%
