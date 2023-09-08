@@ -635,6 +635,7 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const data = JSON.parse(response.Data.Data)
+            const old = JSON.parse( JSON.stringify(data) )
             for(let i=0; i<data.SafePoolMoneyCfg.length; i++) {
               if(i==0){
                 $this.tableMoneyList += data.SafePoolMoneyCfg[i].TableMoney 
@@ -647,7 +648,7 @@ export default {
             $this.item = this.DeepCopy(data)
 
             // 设置修改之前数据
-            $this.$refs.compare.SetOldVal(data)
+            $this.$refs.compare.SetOldVal(old)
             $this.getRobotProfit()
           }
         }
