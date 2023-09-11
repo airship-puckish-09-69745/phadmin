@@ -312,6 +312,94 @@
           <el-form-item label="随机次数：">
             <el-input v-model.number="testRand.times" size="11" placeholder="请输入随机次数" />
           </el-form-item>
+          <el-form-item label="随机汇总：">
+            <table class="formTable" style="width: 60%">
+              <tr>
+                <td>列名</td>
+                <td>局数</td>
+                <td>出现概率</td>
+                <td>参考概率</td>
+                <td>偏差</td>
+              </tr>
+              <tr>
+                <td>总局数：</td>
+                <td>{{ showRet.totalNum }}</td>
+                <td>100%</td>
+                <td>100%</td>
+                <td />
+              </tr>
+              <tr>
+                <td>= 1.00</td>
+                <td>{{ retData.Rate100 }}</td>
+                <td>{{ showData.Rate100.toFixed(2) }}%</td>
+                <td>{{ showData.Rate100STD }}%</td>
+                <td v-html="getDiffShow(showData.Rate100, showData.Rate100STD)" />
+              </tr>
+              <tr>
+                <td>= 1.01</td>
+                <td>{{ retData.Rate101 }}</td>
+                <td>{{ showData.Rate101.toFixed(2) }}%</td>
+                <td>{{ showData.Rate101STD }}%</td>
+                <td v-html="getDiffShow(showData.Rate101, showData.Rate101STD)" />
+              </tr>
+              <tr>
+                <td>< 1.10</td>
+                <td>{{ retData.RateLess110 }}</td>
+                <td>{{ showData.RateLess110.toFixed(2) }}%</td>
+                <td>{{ showData.RateLess110STD }}%</td>
+                <td v-html="getDiffShow(showData.RateLess110, showData.RateLess110STD)" />
+              </tr>
+              <tr>
+                <td>= 1.10</td>
+                <td>{{ retData.Rate110 }}</td>
+                <td>{{ showData.Rate110.toFixed(2) }}%</td>
+                <td>{{ showData.Rate110STD }}%</td>
+                <td v-html="getDiffShow(showData.Rate110, showData.Rate110STD)" />
+              </tr>
+              <tr>
+                <td>< 1.20</td>
+                <td>{{ retData.RateLess120 }}</td>
+                <td>{{ showData.RateLess120.toFixed(2) }}%</td>
+                <td>{{ showData.RateLess120STD }}%</td>
+                <td v-html="getDiffShow(showData.RateLess120, showData.RateLess120STD)" />
+              </tr>
+              <tr>
+                <td>= 1.20</td>
+                <td>{{ retData.Rate120 }}</td>
+                <td>{{ showData.Rate120.toFixed(2) }}%</td>
+                <td>{{ showData.Rate120STD }}%</td>
+                <td v-html="getDiffShow(showData.Rate120, showData.Rate120STD)" />
+              </tr>
+              <tr>
+                <td>(1.2, 2]</td>
+                <td>{{ showRet.lessThanTwo }}</td>
+                <td>{{ showRet.lessThanTwoRate }}%</td>
+                <td>{{ showData.Less200STD }}%</td>
+                <td v-html="getDiffShow(showRet.lessThanTwoRate, showData.Less200STD)" />
+              </tr>
+              <tr>
+                <td>(2, 3]</td>
+                <td>{{ showRet.lessThanThree }}</td>
+                <td>{{ showRet.lessThanThreeRate }}%</td>
+                <td>{{ showData.Less300STD }}%</td>
+                <td v-html="getDiffShow(showRet.lessThanThreeRate, showData.Less300STD)" />
+              </tr>
+              <tr>
+                <td>(3, 8]</td>
+                <td>{{ showRet.moreThanThree }}</td>
+                <td>{{ showRet.moreThanThreeRate }}%</td>
+                <td>{{ showData.Less800STD }}%</td>
+                <td v-html="getDiffShow(showRet.moreThanThreeRate, showData.Less800STD)" />
+              </tr>
+              <tr>
+                <td>> 8</td>
+                <td>{{ showRet.moreThanEight }}</td>
+                <td>{{ showRet.moreThanEightRate }}%</td>
+                <td>{{ showData.MoreThan800STD }}%</td>
+                <td v-html="getDiffShow(showRet.moreThanEightRate, showData.MoreThan800STD)" />
+              </tr>
+            </table>
+          </el-form-item>
           <el-form-item label="随机结果：">
             <el-table
               :data="testRand.result"
@@ -325,7 +413,6 @@
               <template slot-scope="scope">
                 {{ scope.row.OptionId/100 }}
               </template>
-              
               </el-table-column>
               <el-table-column
                 prop="Times"
@@ -404,6 +491,40 @@ export default {
         times: 0,
         result: []
       },
+      showRet: {
+        totalNum: 0,
+        lessThanOnePointTwo: 0,
+        lessThanTwo: 0,
+        lessThanThree: 0,
+        moreThanThree: 0,
+        moreThanEight: 0,
+        showDay: '',
+        lessThanOnePointTwoRate: 0,
+        lessThanTwoRate: 0,
+        lessThanThreeRate: 0,
+        moreThanThreeRate: 0,
+        moreThanEightRate: 0,
+      },
+      showData: {
+        Rate100: 0,
+        Rate101: 0,
+        Rate110: 0,
+        Rate120: 0,
+        RateLess110: 0,
+        RateLess120: 0,
+        Rate100STD: 0,
+        Rate101STD: 0,
+        Rate110STD: 0,
+        Rate120STD: 0,
+        RateLess110STD: 0,
+        RateLess120STD: 0,
+        Less200STD: 0,
+        Less300STD: 0,
+        Less800STD: 0,
+        MoreThan800STD: 0
+      },
+      retData: {
+      },
       betMoneyList: '10,50,100,500,1000',
       form: {},
       subKey: 'gameCrash',
@@ -442,6 +563,13 @@ export default {
     console.log(1);
   },
   methods: {
+    getDiffShow(val, std) {
+      if (val >= std) {
+        return "<span style='color:green'>" + (val - std).toFixed(2) + '%</span>'
+      } else {
+        return "<span style='color:red'>" + (val - std).toFixed(2) + '%</span>'
+      }
+    },
     dataRule(required, config) {
       return DataRule(required, config);
     },
@@ -585,6 +713,39 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             if (response.RetCode === 0) {
               this.testRand.result = response.Data.RandRet
+              this.retData = response.Data.DiffData
+              this.showData.Rate100 = this.retData.Rate100 * 100 / this.testRand.times
+              this.showData.Rate101 = this.retData.Rate101 * 100 / this.testRand.times
+              this.showData.Rate110 = this.retData.Rate110 * 100 / this.testRand.times
+              this.showData.Rate120 = this.retData.Rate120 * 100 / this.testRand.times
+              this.showData.RateLess110 = this.retData.RateLess110 * 100 / this.testRand.times
+              this.showData.RateLess120 = this.retData.RateLess120 * 100 / this.testRand.times
+              this.retData.Total = this.testRand.times
+              this.showRet.totalNum = this.testRand.times
+              this.showRet.lessThanOnePointTwo = this.retData.LessThanOnePointTwo
+              this.showRet.lessThanTwo = this.retData.Total - this.retData.LessThanOnePointTwo - this.retData.LessThanThree - this.retData.MoreThanThree - this.retData.MoreThanEight
+              this.showRet.lessThanThree = this.retData.LessThanThree
+              this.showRet.moreThanThree = this.retData.MoreThanThree
+              this.showRet.moreThanEight = this.retData.MoreThanEight
+
+              if (this.retData.Total > 0) {
+                this.showRet.lessThanOnePointTwoRate = ((this.showRet.lessThanOnePointTwo * 100) / this.retData.Total).toFixed(2)
+                this.showRet.lessThanTwoRate = ((this.showRet.lessThanTwo * 100) / this.retData.Total).toFixed(2)
+                this.showRet.lessThanThreeRate = ((this.showRet.lessThanThree * 100) / this.retData.Total).toFixed(2)
+                this.showRet.moreThanThreeRate = ((this.showRet.moreThanThree * 100) / this.retData.Total).toFixed(2)
+                this.showRet.moreThanEightRate = ((this.showRet.moreThanEight * 100) / this.retData.Total).toFixed(2)
+              }
+              this.showData.Rate100STD = this.retData.ck_100_rate.toFixed(2)
+              this.showData.Rate101STD = this.retData.ck_101_rate.toFixed(2)
+              this.showData.Rate110STD = this.retData.ck_110_rate.toFixed(2)
+              this.showData.Rate120STD = this.retData.ck_120_rate.toFixed(2)
+              this.showData.RateLess110STD = this.retData.ck_less_110_rate.toFixed(2)
+              this.showData.RateLess120STD = this.retData.ck_less_120_rate.toFixed(2)
+              this.showData.Less200STD = this.retData.ck_less_200_rate.toFixed(2)
+              this.showData.Less300STD = this.retData.ck_less_300_rate.toFixed(2)
+              this.showData.Less800STD = this.retData.ck_less_800_rate.toFixed(2)
+              this.showData.MoreThan800STD = this.retData.ck_more_800_rate.toFixed(2)
+              console.log(this.showData)
             } else {
               this.$message.error(response.Data)
             }
