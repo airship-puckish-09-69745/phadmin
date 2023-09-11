@@ -319,9 +319,14 @@
             >
               <el-table-column
                 prop="OptionId"
-                label="下注区域"
+                label="赔率"
                 width="180"
-              />
+              >
+              <template slot-scope="scope">
+                {{ scope.row.OptionId/100 }}
+              </template>
+              
+              </el-table-column>
               <el-table-column
                 prop="Times"
                 label="出现次数"
