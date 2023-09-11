@@ -101,7 +101,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-                    <el-row>
+          <el-row>
             <el-col :span="11">
               <el-form-item label="抽水额度(%)：" :required="true">
                 <el-col :span="20">
@@ -109,7 +109,18 @@
                 </el-col>
               </el-form-item>
             </el-col>
+            <el-col :span="11">
+              <el-form-item label="启用调控：" :required="true">
+                <el-col :span="20">
+                  <el-radio-group v-model.number="item.EnableControl">
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
+                  </el-radio-group>
+                </el-col>
+              </el-form-item>
+            </el-col>
           </el-row>
+          
 
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
@@ -342,6 +353,7 @@ export default {
         PreBetRate: 0.97,
         HandleTakeShiftingTime: 0,
         HandleTakeShiftingRate: 0,
+        EnableControl: false,
       },
       betMoneyList: '10,50,100,500,1000',
       form: {},
