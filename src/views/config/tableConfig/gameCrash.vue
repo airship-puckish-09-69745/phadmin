@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
-
+    <el-button type="warning" round @click="showTestRand">测试随机概率</el-button>
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="14" :offset="3">
         <el-form ref="item" :model="item" label-width="200px">
@@ -300,6 +300,45 @@
         </el-form>
       </el-col>
     </el-row>
+    <el-dialog
+      title="测试随机概率"
+      :modal="false"
+      :visible.sync="testRand.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-form :model="testRand" label-width="120px" size="small">
+          <el-form-item label="随机次数：">
+            <el-input v-model.number="testRand.times" size="11" placeholder="请输入随机次数" />
+          </el-form-item>
+          <el-form-item label="随机结果：">
+            <el-table
+              :data="testRand.result"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="OptionId"
+                label="下注区域"
+                width="180"
+              />
+              <el-table-column
+                prop="Times"
+                label="出现次数"
+                width="180"
+              />
+              <el-table-column
+                prop="Rate"
+                label="概率占比(%)"
+              />
+            </el-table>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="goRand">执行</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
+    </el-dialog>
 
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
@@ -354,6 +393,11 @@ export default {
         HandleTakeShiftingTime: 0,
         HandleTakeShiftingRate: 0,
         EnableControl: false,
+      },
+      testRand: {
+        visible: false,
+        times: 0,
+        result: []
       },
       betMoneyList: '10,50,100,500,1000',
       form: {},
@@ -514,6 +558,33 @@ export default {
             Message.success('保存成功')
           }
         })
+      })
+    },
+    showTestRand() {
+      this.testRand.visible = true
+    },
+    goRand() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/game/test/random',
+          Gid: 10,
+          Times: this.testRand.times
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log('sign reward', response)
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            if (response.RetCode === 0) {
+              this.testRand.result = response.Data.RandRet
+            } else {
+              this.$message.error(response.Data)
+            }
+          }
+        }
       })
     }
   }
