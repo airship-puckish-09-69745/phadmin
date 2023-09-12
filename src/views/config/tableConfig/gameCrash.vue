@@ -310,7 +310,12 @@
       <el-row>
         <el-form :model="testRand" label-width="120px" size="small">
           <el-form-item label="随机次数：">
-            <el-input v-model.number="testRand.times" size="11" placeholder="请输入随机次数" />
+            <el-col :span="12">
+              <el-input v-model.number="testRand.times" size="11" placeholder="请输入随机次数" />
+            </el-col>
+            <el-col :span="12">
+              <el-button style="margin-left: 20px;" type="primary"  @click="goRand">执行</el-button>
+            </el-col>
           </el-form-item>
           <el-form-item label="随机汇总：">
             <table class="formTable" style="width: 60%">
@@ -424,9 +429,6 @@
                 label="概率占比(%)"
               />
             </el-table>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="mini" @click="goRand">执行</el-button>
           </el-form-item>
         </el-form>
       </el-row>
