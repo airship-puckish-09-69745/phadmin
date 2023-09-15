@@ -284,7 +284,7 @@ export default {
         },
         changePrizePool(isRobot) {
             let _this=this;
-            let changeNum = _this.prizeForm.changeNum
+            let changeNum = _this.prizeForm.ChangeNum
             let robotFlag = 0
             if (isRobot) {
                 robotFlag = 1
