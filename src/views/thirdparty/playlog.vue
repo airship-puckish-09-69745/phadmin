@@ -284,7 +284,7 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 1: 'Color', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas', 8: 'AndarBahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
+      games: { 1: 'Color', 2: 'CRASH', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas', 8: 'AndarBahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
