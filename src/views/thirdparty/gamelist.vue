@@ -339,7 +339,7 @@ export default {
       })
     },
     configCheck() {
-      this.$refs['edit.item'].validate(valid => {})
+      // this.$refs['edit.item'].validate(valid => {})
       if (this.getPostData().GameID <= 0) {
         this.$alert('请输入游戏id')
         return false
@@ -450,7 +450,7 @@ export default {
       return this.libMoney.TransForStore(this.edit.item)
     },
     checkData() {
-      this.$refs['edit.item'].validate(valid => {})
+      // this.$refs['edit.item'].validate(valid => {})
       if (this.getPostData().GameID <= 0) {
         this.$alert('请输入游戏id')
         return false
