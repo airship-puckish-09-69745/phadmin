@@ -340,22 +340,22 @@ export default {
     },
     configCheck() {
       // this.$refs['edit.item'].validate(valid => {})
-      if (this.getPostData().GameID <= 0) {
-        this.$alert('请输入游戏id')
-        return false
-      }
-      if (this.getPostData().Name === '') {
-        this.$alert('游戏名不能为空')
-        return false
-      }
-      if (this.getPostData().CategoryID <= 0) {
-        this.$alert('请选择游戏类别')
-        return false
-      }
-      if (this.getPostData().Scene === '') {
-        this.$alert('请输入进入游戏场景的key')
-        return false
-      }
+      // if (this.getPostData().GameID <= 0) {
+      //   this.$alert('请输入游戏id')
+      //   return false
+      // }
+      // if (this.getPostData().Name === '') {
+      //   this.$alert('游戏名不能为空')
+      //   return false
+      // }
+      // if (this.getPostData().CategoryID <= 0) {
+      //   this.$alert('请选择游戏类别')
+      //   return false
+      // }
+      // if (this.getPostData().Scene === '') {
+      //   this.$alert('请输入进入游戏场景的key')
+      //   return false
+      // }
       return true
     },
     handlePreOn(ob) {
@@ -450,7 +450,7 @@ export default {
       return this.libMoney.TransForStore(this.edit.item)
     },
     checkData() {
-      // this.$refs['edit.item'].validate(valid => {})
+      this.$refs['edit.item'].validate(valid => {})
       if (this.getPostData().GameID <= 0) {
         this.$alert('请输入游戏id')
         return false
