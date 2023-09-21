@@ -186,7 +186,7 @@
             <el-input v-model="edit.item.Account" :disabled="isDisabled"/>
           </el-col>
         </el-form-item>
-        <el-form-item label="描述：" :required="true" prot="Intro">
+        <el-form-item label="描述：" :required="true" prop="Intro">
           <el-col :span="15">
             <el-input v-model="edit.item.Intro" />
           </el-col>

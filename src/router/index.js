@@ -796,6 +796,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/playlog'),
         name: 'thirdparty_playlog',
         meta: { title: '牌局流水 ◐' }
+      },
+      {
+        path: 'thirdparty_game_list',
+        component: () => import('@/views/thirdparty/gamelist'),
+        name: 'thirdparty_game_list',
+        meta: { title: '第三方子游戏 ◐' }
       }
     ]
   },
