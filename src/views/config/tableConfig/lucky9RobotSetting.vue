@@ -5,158 +5,22 @@
     </el-row>
 
     <el-row>
-      <br />
+      <br>
       <el-tabs type="border-card">
         <el-tab-pane label="预进桌数量配置&玩牌基础配置">
           <el-row>
-          <el-col :span="8">
-            <h5>预进桌机器人数量配置</h5>
-            <el-table
-              :data="item.PresetCfg"
-              border
-              style="width: 100%"
-            >
-              <el-table-column
-                label="机器人数"
-                prop="Number"
-                width="100"
-              />
-              <el-table-column
-                label="概率(%)"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-          <el-col :span="14" :offset="1">
-            <h5>机器人携带金币配置 <el-button type="text" @click="addCarryingCfg">添加一项</el-button></h5>
-            <el-table :data="item.CarryingCfg" border style="width: 100%">
-              <el-table-column label="最小携带底注位数" prop="AntesMultipleMin" width="200">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.AntesMultipleMin" size="mini"><template slot="append">倍</template></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="最大携带底注位数" prop="AntesMultipleMax" width="200">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.AntesMultipleMax" size="mini"><template slot="append">倍</template></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="概率(%)" width="200">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作" width="100">
-                <template slot-scope="scope">
-                  <el-button type="danger" size="mini" @click="delCarryingCfg(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-          </el-row>
-          <el-row>
-          <el-col :span="8">
-            <h5>其它配置</h5>
-            <el-form ref="item" label-width="220px">
-              <el-form-item label="最少玩牌局数">
-                <el-input v-model.number="item.PlayTimesMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="最多玩牌局数">
-                <el-input v-model.number="item.PlayTimesMax" size="mini" />
-              </el-form-item>
-              <el-form-item label="延长玩牌最少局数">
-                <el-input v-model.number="item.IncrPlayTimesMin" size="mini" />
-              </el-form-item>
-              <el-form-item label="延长玩牌最多局数">
-                <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
-              </el-form-item>
-              <el-form-item label="延长玩牌最少HitPot点数">
-                <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini"><template slot="append">点</template></el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          </el-row>
-        </el-tab-pane>
-        <el-tab-pane label="牌局结束补机器人配置">
-          <el-table
-          :data="item.AppendCfg"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            label="当前桌总人数"
-            prop="UserNumber"
-            width="200"
-          />
-          <el-table-column
-            label="补机器人概率(%)"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最少补充机器人数量"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.AppendRobotMin" size="mini" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最多补充机器人数量"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.AppendRobotMax" size="mini" />
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最小进入延迟"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.EnterDelayMin" size="mini"><template slot="append">秒</template></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="最大进入延迟(秒)"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.EnterDelayMax" size="mini"><template slot="append">秒</template></el-input>
-            </template>
-          </el-table-column>
-        </el-table>
-        </el-tab-pane>
-        <el-tab-pane label="机器人下注与要牌配置">
-            <fieldset>
-              <legend>下注次数配置 <el-button type="text" @click="addBetTimesCfg">添加新项</el-button></legend>
+            <el-col :span="8">
+              <h5>预进桌机器人数量配置</h5>
               <el-table
-                :data="item.BetTimesCfg"
+                :data="item.PresetCfg"
                 border
                 style="width: 100%"
               >
                 <el-table-column
-                  label="最小次数"
-                  width="200"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.BetTimesMin" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="最大次数"
-                  width="200"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.BetTimesMax" size="mini" />
-                  </template>
-                </el-table-column>
+                  label="机器人数"
+                  prop="Number"
+                  width="100"
+                />
                 <el-table-column
                   label="概率(%)"
                   width="200"
@@ -165,62 +29,198 @@
                     <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="100">
-                  <template slot-scope="scope">
-                    <el-button type="danger" size="mini" @click="delBetTimesCfg(scope.$index)">删除</el-button>
-                  </template>
-                </el-table-column>
               </el-table>
-            </fieldset>
-          <hr />
-            <fieldset>
-              <legend>下注金额配置</legend>
-              <el-table
-                :data="item.BetOptionCfg"
-                border
-                style="width: 100%"
-              >
-                <el-table-column
-                  label="下注金额选项"
-                  width="150"
-                >
+            </el-col>
+            <el-col :span="14" :offset="1">
+              <h5>机器人携带金币配置 <el-button type="text" @click="addCarryingCfg">添加一项</el-button></h5>
+              <el-table :data="item.CarryingCfg" border style="width: 100%">
+                <el-table-column label="最小携带底注位数" prop="AntesMultipleMin" width="200">
                   <template slot-scope="scope">
-                    {{ getBetOptionCfgName(scope.row.BetOption) }}
+                    <el-input v-model.number="scope.row.AntesMultipleMin" size="mini"><template slot="append">倍</template></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column
-                  label="概率(千分)"
-                  width="300"
-                >
+                <el-table-column label="最大携带底注位数" prop="AntesMultipleMax" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">‰</template></el-input>
+                    <el-input v-model.number="scope.row.AntesMultipleMax" size="mini"><template slot="append">倍</template></el-input>
                   </template>
                 </el-table-column>
-              </el-table>
-            </fieldset>
-          <hr />
-            <fieldset>
-              <legend>要牌概率配置</legend>
-              <el-table
-                :data="item.TakeCardCfg"
-                border
-                style="width: 100%"
-              >
-                <el-table-column
-                  label="手牌点数"
-                  prop="Points"
-                  width="200"
-                />
-                <el-table-column
-                  label="要牌概率(%)"
-                  width="200"
-                >
+                <el-table-column label="概率(%)" width="200">
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
                   </template>
                 </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delCarryingCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
               </el-table>
-            </fieldset>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <h5>其它配置</h5>
+              <el-form ref="item" label-width="220px">
+                <el-form-item label="最少玩牌局数">
+                  <el-input v-model.number="item.PlayTimesMin" size="mini" />
+                </el-form-item>
+                <el-form-item label="最多玩牌局数">
+                  <el-input v-model.number="item.PlayTimesMax" size="mini" />
+                </el-form-item>
+                <el-form-item label="延长玩牌最少局数">
+                  <el-input v-model.number="item.IncrPlayTimesMin" size="mini" />
+                </el-form-item>
+                <el-form-item label="延长玩牌最多局数">
+                  <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
+                </el-form-item>
+                <el-form-item label="延长玩牌最少HitPot点数">
+                  <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini"><template slot="append">点</template></el-input>
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="牌局结束补机器人配置">
+          <el-table
+            :data="item.AppendCfg"
+            border
+            style="width: 100%"
+          >
+            <el-table-column
+              label="当前桌总人数"
+              prop="UserNumber"
+              width="200"
+            />
+            <el-table-column
+              label="补机器人概率(%)"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="最少补充机器人数量"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.AppendRobotMin" size="mini" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="最多补充机器人数量"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.AppendRobotMax" size="mini" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="最小进入延迟"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.EnterDelayMin" size="mini"><template slot="append">秒</template></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="最大进入延迟(秒)"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.EnterDelayMax" size="mini"><template slot="append">秒</template></el-input>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="机器人下注与要牌配置">
+          <fieldset>
+            <legend>下注次数配置 <el-button type="text" @click="addBetTimesCfg">添加新项</el-button></legend>
+            <el-table
+              :data="item.BetTimesCfg"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="最小次数"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.BetTimesMin" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="最大次数"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.BetTimesMax" size="mini" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button type="danger" size="mini" @click="delBetTimesCfg(scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </fieldset>
+          <hr>
+          <fieldset>
+            <legend>下注金额配置</legend>
+            <el-table
+              :data="item.BetOptionCfg"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="下注金额选项"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ getBetOptionCfgName(scope.row.BetOption) }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="概率(千分)"
+                width="300"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">‰</template></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </fieldset>
+          <hr>
+          <fieldset>
+            <legend>要牌概率配置</legend>
+            <el-table
+              :data="item.TakeCardCfg"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="手牌点数"
+                prop="Points"
+                width="200"
+              />
+              <el-table-column
+                label="要牌概率(%)"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Probability" size="mini"><template slot="append">%</template></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </fieldset>
         </el-tab-pane>
         <el-tab-pane label="机器人庄家保护配置">
           <el-form label-width="500px" style="width:800px;">
@@ -241,45 +241,45 @@
         <el-tab-pane label="Pot机器人保护">
           <el-row style="margin-bottom:20px;"><el-button type="primary" @click="addHitPotProtectCfg">添加一项</el-button></el-row>
           <el-table
-          :data="item.HitPotProtectCfg"
-          border
-          style="width: 100%"
-        >
-          <el-table-column
-            label="Pot机器人HitPot占比"
-            width="250"
+            :data="item.HitPotProtectCfg"
+            border
+            style="width: 100%"
           >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.PotRobotRatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">‰</template></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="Pot机器人HitPot占比"
-            width="250"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.PotRobotRatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">‰</template></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="赢的概率"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.PotRobotWinProbability" size="mini"><template slot="append">%</template></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            width="100"
-          >
-            <template slot-scope="scope">
-              <el-button type="danger" size="mini" @click="delHitPotProtectCfg(scope.$index)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              label="Pot机器人HitPot占比"
+              width="250"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.PotRobotRatioMin" size="mini"><template slot="prepend">&gt;=</template><template slot="append">‰</template></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="Pot机器人HitPot占比"
+              width="250"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.PotRobotRatioMax" size="mini"><template slot="prepend">&lt;</template><template slot="append">‰</template></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="赢的概率"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.PotRobotWinProbability" size="mini"><template slot="append">%</template></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              width="100"
+            >
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="delHitPotProtectCfg(scope.$index)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
-          <hr />
+          <hr>
 
           <el-form :inline="true" label-width="350px">
             <el-form-item label="Pot机器人作庄家时最大输的比例(输赢/携带*100)">
@@ -289,77 +289,79 @@
 
         </el-tab-pane>
         <el-tab-pane label="机器人缓冲池配置">
-            <fieldset>
-              <legend>机器人缓冲池初始大小 <el-button type="text" @click="addSafePoolMoneyCfg">添加一项</el-button></legend>
-              <el-col span="12">
-            <el-table
-              :data="item.SafePoolMoneyCfg"
-              border
-              style="width: 100%"
-            >
-              <el-table-column
-                label="底注"
-                width="200"
+          <fieldset>
+            <legend>机器人缓冲池初始大小
+<!--              <el-button type="text" @click="addSafePoolMoneyCfg">添加一项</el-button>-->
+            </legend>
+            <el-col :span="12">
+              <el-table
+                :data="item.SafePoolMoneyCfg"
+                border
+                style="width: 100%"
               >
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.TableMoney" size="mini" />
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="缓冲池初始值"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.SafePool" size="mini" />
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="操作"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <el-button size="mini" type="danger" @click="delSafePoolMoneyCfg(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
+                <el-table-column
+                  label="底注"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.TableMoney" size="mini" :disabled="true" />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="缓冲池初始值"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.SafePool" size="mini" />
+                  </template>
+                </el-table-column>
+<!--                <el-table-column
+                  label="操作"
+                  width="100"
+                >
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="danger" @click="delSafePoolMoneyCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>-->
+              </el-table>
             </el-col>
             <!-- 奖池 -->
-            <el-col span="12">
-            <el-table
-              :data="robotProfit"
-              border
-              style="width: 90%"
-            >
-              <el-table-column
-                label="底注"
-                width="200"
+            <el-col :span="12">
+              <el-table
+                :data="robotProfit"
+                border
+                style="width: 90%"
               >
-                <template slot-scope="scope">
-                  {{scope.row.TableMoney/1000}}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="缓冲池值"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  {{scope.row.Pool/1000}}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="操作"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <el-button size="mini" type="primary" @click="showRobotProfitDialog(scope.row.TableMoney,scope.row.Pool)">修改</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
+                <el-table-column
+                  label="底注"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.TableMoney/1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="缓冲池值"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.Pool/1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="操作"
+                  width="100"
+                >
+                  <template slot-scope="scope">
+                    <el-button size="mini" type="primary" @click="showRobotProfitDialog(scope.row.TableMoney,scope.row.Pool)">修改</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
           </fieldset>
-          <hr />
-            <fieldset>
-              <legend>缓冲池安全配置 <el-button type="text" @click="addSafePoolProtectCfg">添加一项</el-button></legend>
+          <hr>
+          <fieldset>
+            <legend>缓冲池安全配置 <el-button type="text" @click="addSafePoolProtectCfg">添加一项</el-button></legend>
             <el-table
               :data="item.SafePoolProtectCfg"
               border
@@ -398,38 +400,39 @@
                 </template>
               </el-table-column>
             </el-table>
-            </fieldset>
+          </fieldset>
         </el-tab-pane>
       </el-tabs>
 
-      <br />
+      <br>
       <el-button type="primary" @click="setData">保存</el-button>
     </el-row>
 
     <!--对比组件-->
     <compare ref="compare" />
-  <div>
-    <el-dialog
-    title="修改缓冲池"
-    :visible.sync="dialogVisible"
-    width="30%">
-    <el-form width="70%" label-position="top">
-      <el-form-item label="奖池值">
-        <el-input v-model.number="robotProfitItem.Pool" placeholder="请输入"></el-input>
-      </el-form-item>
-        
-        <el-form-item>
-          <el-row>
-            <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="changeRobotProfit">保存</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-  </div>
+    <div>
+      <el-dialog
+        title="修改缓冲池"
+        :visible.sync="dialogVisible"
+        width="30%"
+      >
+        <el-form width="70%" label-position="top">
+          <el-form-item label="奖池值">
+            <el-input v-model.number="robotProfitItem.Pool" placeholder="请输入" />
+          </el-form-item>
+
+          <el-form-item>
+            <el-row>
+              <el-col :span="12" :offset="10">
+                <el-button type="primary" size="medium" @click="changeRobotProfit">保存</el-button>
+              </el-col>
+            </el-row>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+    </div>
   </el-col>
-  
+
 </template>
 
 <script>
@@ -441,11 +444,11 @@ import { DataRule } from '@/utils/common'
 import MoneyInput from '@/components/MoneyInput'
 import SmallGameLevel from '@/components/SmallGameLevel'
 
-function newSafePoolProtectCfg(x, y,z) {
+function newSafePoolProtectCfg(x, y, z) {
   return {
-      RatioMin:x,
-      RatioMax  :y,
-      RobotWinProbability :z
+    RatioMin: x,
+    RatioMax: y,
+    RobotWinProbability: z
   }
 }
 
@@ -459,8 +462,8 @@ function newCarryingCfg(x, y, z) {
 
 function SafePoolMoneyCfg(x, y) {
   return {
-    TableMoney :x,
-    SafePool   :y,
+    TableMoney: x,
+    SafePool: y
   }
 }
 
@@ -533,21 +536,25 @@ export default {
         'DealerWarnProbability': 0,
         'HitPotProtectCfg': [newHitPotProtectCfg(0, 125, 5), newHitPotProtectCfg(126, 250, 7), newHitPotProtectCfg(251, 375, 9),
           newHitPotProtectCfg(376, 500, 11), newHitPotProtectCfg(501, 625, 13), newHitPotProtectCfg(626, 750, 15), newHitPotProtectCfg(751, 875, 17), newHitPotProtectCfg(876, 100, 19)],
-        'SafePoolMoneyCfg': [SafePoolMoneyCfg(1,1000),SafePoolMoneyCfg(5,1000),SafePoolMoneyCfg(20,20000),SafePoolMoneyCfg(50,50000),SafePoolMoneyCfg(100,5000)],
-        'SafePoolProtectCfg': [newSafePoolProtectCfg(0,50,10),newSafePoolProtectCfg(51,100,20)],
+        'SafePoolMoneyCfg': [SafePoolMoneyCfg(1, 1000), SafePoolMoneyCfg(5, 1000), SafePoolMoneyCfg(20, 20000), SafePoolMoneyCfg(50, 50000), SafePoolMoneyCfg(100, 5000)],
+        'SafePoolProtectCfg': [newSafePoolProtectCfg(0, 50, 10), newSafePoolProtectCfg(51, 100, 20)],
         'CarryingCfg': [newCarryingCfg(0, 0, 0), newCarryingCfg(0, 0, 0)]
       },
-      robotProfit:[],
-      dialogVisible:false,
-      robotProfitItem:{
-        TableMoney:0,
-        Pool:0
+      tableList: [],
+      tableMoneyArr: [],
+      isTableMoneysChanged: false,
+      robotProfit: [],
+      dialogVisible: false,
+      robotProfitItem: {
+        TableMoney: 0,
+        Pool: 0
       },
-      tableMoneyList:"",
+      tableMoneyList: ''
     }
   },
   created() {
-    this.getData()
+    this.getTableList()
+    // this.getData()
     console.log(1)
   },
   methods: {
@@ -621,6 +628,28 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+    getTableList() {
+      request({
+        url: '/lucky9table/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log('objs: ', objs)
+          for (let i = 0; i < response.Data.length; i++) {
+            if (this.tableMoneyArr.includes(response.Data[i].TableMoney)) {
+              continue
+            }
+            this.tableMoneyArr.push(response.Data[i].TableMoney)
+            this.tableList.push({
+              TableMoney: response.Data[i].TableMoney
+            })
+          }
+          this.getData()
+        }
+      })
+    },
     getData() {
       const $this = this
       request({
@@ -635,17 +664,42 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const data = JSON.parse(response.Data.Data)
-            const old = JSON.parse( JSON.stringify(data) )
-            for(let i=0; i<data.SafePoolMoneyCfg.length; i++) {
-              if(i==0){
-                $this.tableMoneyList += data.SafePoolMoneyCfg[i].TableMoney 
-              }else{
-                $this.tableMoneyList += ","+data.SafePoolMoneyCfg[i].TableMoney
+            const old = JSON.parse(JSON.stringify(data))
+            console.log('old: ', old)
+            const safePoolMoneysCfg = []
+            const oldTableMoneys = []
+            for (let j = 0; j < data.SafePoolMoneyCfg.length; j++) {
+              oldTableMoneys.push(data.SafePoolMoneyCfg[j].TableMoney)
+              if (!this.tableMoneyArr.includes(data.SafePoolMoneyCfg[j].TableMoney)) {
+                this.isTableMoneysChanged = true
               }
-              data.SafePoolMoneyCfg[i].TableMoney /= 1000
-              data.SafePoolMoneyCfg[i].SafePool /= 1000
             }
+            for (let i = 0; i < this.tableList.length; i++) {
+              if (!oldTableMoneys.includes(this.tableList[i].TableMoney)) {
+                this.isTableMoneysChanged = true
+              }
+              if (i === 0) {
+                $this.tableMoneyList += this.tableList[i].TableMoney
+              } else {
+                $this.tableMoneyList += ',' + this.tableList[i].TableMoney
+              }
+              const safePoolMoneyCfg = { TableMoney: this.tableList[i].TableMoney / 1000, SafePool: 0 }
+              for (let j = 0; j < data.SafePoolMoneyCfg.length; j++) {
+                if (data.SafePoolMoneyCfg[j].TableMoney === this.tableList[i].TableMoney) {
+                  safePoolMoneyCfg.SafePool = data.SafePoolMoneyCfg[j].SafePool / 1000
+                  break
+                }
+              }
+              safePoolMoneysCfg.push(safePoolMoneyCfg)
+            }
+            data.SafePoolMoneyCfg = safePoolMoneysCfg
+            console.log('data: ', data)
+            console.log('isTableMoneysChanged: ', this.isTableMoneysChanged)
             $this.item = this.DeepCopy(data)
+
+            if (this.isTableMoneysChanged) {
+              this.$alert('场次配置的底注有变更，请同步修改【机器人缓冲池配置】并发布')
+            }
 
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -655,15 +709,15 @@ export default {
       })
     },
     encodeData() {
-      const cpy = {};
-      Object.assign(cpy, this.item);
+      const cpy = {}
+      Object.assign(cpy, this.item)
       cpy.SafePoolMoneyCfg = []
       for (const o in this.item.SafePoolMoneyCfg) {
-          const obj = {}
-          Object.assign(obj, this.item.SafePoolMoneyCfg[o])
-          obj.TableMoney *= 1000
-          obj.SafePool *= 1000
-          cpy.SafePoolMoneyCfg.push(obj)
+        const obj = {}
+        Object.assign(obj, this.item.SafePoolMoneyCfg[o])
+        obj.TableMoney *= 1000
+        obj.SafePool *= 1000
+        cpy.SafePoolMoneyCfg.push(obj)
       }
       return JSON.stringify(cpy)
     },
@@ -689,7 +743,7 @@ export default {
         })
       })
     },
-    getRobotProfit(){
+    getRobotProfit() {
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -702,22 +756,22 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log("/lucky9robotpool/list===>",objs)
-          for(const key in objs){
+          console.log('/lucky9robotpool/list===>', objs)
+          for (const key in objs) {
             $this.robotProfit.push({
-              TableMoney:key,
-              Pool:objs[key],
+              TableMoney: key,
+              Pool: objs[key]
             })
           }
         }
       })
     },
-    showRobotProfitDialog(tableMoney,pool){
+    showRobotProfitDialog(tableMoney, pool) {
       this.robotProfitItem.TableMoney = tableMoney
-      this.robotProfitItem.Pool = pool/1000
+      this.robotProfitItem.Pool = pool / 1000
       this.dialogVisible = true
     },
-    changeRobotProfit(){
+    changeRobotProfit() {
       const $this = this
       this.$confirm('确认修改此值', '提示', {
         confirmButtonText: '确定',
@@ -731,15 +785,15 @@ export default {
             Env: this.env,
             Path: '/lucky9robotpool/update/pool',
             table_money: this.robotProfitItem.TableMoney,
-            pool:this.robotProfitItem.Pool*1000,
+            pool: this.robotProfitItem.Pool * 1000
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            let newPool = response.Data || 0
-            console.log("/lucky9robotpool/updatepool===>",newPool)
-            for(let i=0;i<$this.robotProfit.length;i++){
-              if($this.robotProfit[i].TableMoney == $this.robotProfitItem.TableMoney){
-                  $this.robotProfit[i].Pool = newPool;
+            const newPool = response.Data || 0
+            console.log('/lucky9robotpool/updatepool===>', newPool)
+            for (let i = 0; i < $this.robotProfit.length; i++) {
+              if ($this.robotProfit[i].TableMoney === $this.robotProfitItem.TableMoney) {
+                $this.robotProfit[i].Pool = newPool
               }
             }
             $this.dialogVisible = false

@@ -737,7 +737,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('修改记录状态成功！')
+            Message.success('修改记录状态成功！如果有底注值变化，请同步AI配置！')
             $this.clientDB.UpdateData({ ID: id, Status: status })
           }
         })
@@ -775,7 +775,7 @@ export default {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
-          Message.success('保存成功！')
+          Message.success('保存成功！如果有底注值变化，请同步AI配置！')
         }
       })
     },
