@@ -886,7 +886,6 @@ export default {
         }
       }
       this.form.Data = JSON.stringify(postData)
-      debugger
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
