@@ -291,7 +291,7 @@
         <el-tab-pane label="机器人缓冲池配置">
           <fieldset>
             <legend>机器人缓冲池初始大小
-<!--              <el-button type="text" @click="addSafePoolMoneyCfg">添加一项</el-button>-->
+              <!--              <el-button type="text" @click="addSafePoolMoneyCfg">添加一项</el-button>-->
             </legend>
             <el-col :span="12">
               <el-table
@@ -315,7 +315,7 @@
                     <el-input v-model.number="scope.row.SafePool" size="mini" />
                   </template>
                 </el-table-column>
-<!--                <el-table-column
+                <!--                <el-table-column
                   label="操作"
                   width="100"
                 >
@@ -632,7 +632,7 @@ export default {
       request({
         url: '/lucky9table/all',
         method: 'get',
-        data: {}
+        data: { tableMoneyDesc: '1' }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -698,7 +698,7 @@ export default {
             $this.item = this.DeepCopy(data)
 
             if (this.isTableMoneysChanged) {
-              this.$alert('场次配置的底注有变更，请同步修改【机器人缓冲池配置】并发布')
+              this.$alert('场次配置的底注有变更，请同步修改【机器人缓冲池配置】，保存并发布')
             }
 
             // 设置修改之前数据
