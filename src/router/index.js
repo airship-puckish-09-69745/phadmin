@@ -386,7 +386,7 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '输赢调控', icon: 'dashboard', noCache: true, perm: 'CORE_CFG' },
     children: [
-       {
+      {
         path: 'gambleSchemaCfg',
         component: () => import('@/views/config/winConfig/gambleSchemaCfg'),
         name: 'gambleSchemaCfg',

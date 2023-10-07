@@ -149,10 +149,10 @@ import { Loading, Message } from 'element-ui'
 export default {
   data() {
     return {
-      winRank:[],
-      loseRank:[],
-      countRank:[],
-      libShow:$libShow,
+      winRank: [],
+      loseRank: [],
+      countRank: [],
+      libShow: $libShow,
       gid: 22,
       ctime: new Date().getTime() - 86400000,
       gameSort: [22],
