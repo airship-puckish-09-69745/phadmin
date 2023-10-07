@@ -5,32 +5,35 @@
       <el-col :span="8" :offset="1">
         <el-alert
           title="在支付白名单内的用户，不会走黑名单的逻辑，走正常支付逻辑"
-          type="warning">
-        </el-alert>
-        <br/>
-        <br/>
+          type="warning"
+        />
+        <br>
+        <br>
         <el-form ref="form" :model="form" label-width="150px">
           <el-table
             :data="uids"
             border
-            style="width: 100%">
+            style="width: 100%"
+          >
             <el-table-column
-              label="uid">
+              label="uid"
+            >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.uid" placeholder="输入用户uid"></el-input>
+                <el-input v-model="scope.row.uid" placeholder="输入用户uid" />
               </template>
             </el-table-column>
             <el-table-column
               prop="op"
-              label="操作">
+              label="操作"
+            >
               <template slot-scope="scope">
                 <el-button type="danger" size="mini" @click="del(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
 
-          <br/>
-          <br/>
+          <br>
+          <br>
           <el-button type="primary" @click="add">添加用户</el-button>
           <el-button type="success" @click="setData">保存</el-button>
         </el-form>

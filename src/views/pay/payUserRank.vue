@@ -3,41 +3,41 @@
     <el-row>
       <el-form :model="item" label-width="100px" :inline="true" size="small">
 
-          <el-form-item label="排序：" :required="true">
-            <el-select v-model.number="item.Type" placeholder="请选择">
-              <el-option label="付费总额" :value="1" />
-              <el-option label="付费次数" :value="2" />
-              <el-option label="基础值" :value="3" />
-              <el-option label="贡献值" :value="4" />
-              <el-option label="总资产" :value="5" />
-              <el-option label="Winning" :value="6" />
-              <el-option label="Deposit" :value="7" />
-              <el-option label="基资差" :value="8" />
-            </el-select>
-          </el-form-item>
+        <el-form-item label="排序：" :required="true">
+          <el-select v-model.number="item.Type" placeholder="请选择">
+            <el-option label="付费总额" :value="1" />
+            <el-option label="付费次数" :value="2" />
+            <el-option label="基础值" :value="3" />
+            <el-option label="贡献值" :value="4" />
+            <el-option label="总资产" :value="5" />
+            <el-option label="Winning" :value="6" />
+            <el-option label="Deposit" :value="7" />
+            <el-option label="基资差" :value="8" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="AppID：" :required="true">
-            <el-input size="mini" v-model="item.AppID"/>
+          <el-input v-model="item.AppID" size="mini" />
         </el-form-item>
 
-          <el-form-item label="条数：" :required="true">
-            <el-select v-model.number="item.Limit" placeholder="请选择">
-              <el-option label="100" value="100" />
-              <el-option label="200" value="200" />
-              <el-option label="500" value="500" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="时间段：">
-            <el-date-picker
-              v-model="timeRange"
-              type="datetimerange"
-              :picker-options="pickerOptions"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              align="right"
-            />
-          </el-form-item>
-          <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
+        <el-form-item label="条数：" :required="true">
+          <el-select v-model.number="item.Limit" placeholder="请选择">
+            <el-option label="100" value="100" />
+            <el-option label="200" value="200" />
+            <el-option label="500" value="500" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="时间段：">
+          <el-date-picker
+            v-model="timeRange"
+            type="datetimerange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right"
+          />
+        </el-form-item>
+        <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
       </el-form>
     </el-row>
     <el-table
@@ -169,7 +169,7 @@
     >
       <el-form label-width="80px">
         <el-form-item label="Uid：">
-          {{edit.item.Uid}}
+          {{ edit.item.Uid }}
         </el-form-item>
         <el-form-item label="备注：">
           <el-input v-model="edit.item.Note" size="mini" />
@@ -208,12 +208,12 @@ export default {
 
       item: {
         Type: 1,
-        AppID:0,
+        AppID: 0,
         Limit: 100
       },
 
       edit: {
-        item:{},
+        item: {},
         noteDialogVisible: false
       },
 

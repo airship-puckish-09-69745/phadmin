@@ -32,52 +32,52 @@ export default {
   data() {
     return {
       cfg: {
-        "1": 0,
-        "2": 0,
-        "3": 0,
-        "4": 0,
-        "5": 0,
-        "6": 0,
-        "7": 0,
-        "8": 0,
-        "9": 0,
-        "10": 0,
-        "13": 0,
-        "14": 0,
-        "15": 0,
-        "16": 0,
-        "17": 0,
-        "18": 0,
-        "19": 0,
-        "20": 0,
-        "21": 0,
-        "22": 0,
-        "23": 0,
-        "25": 0
+        '1': 0,
+        '2': 0,
+        '3': 0,
+        '4': 0,
+        '5': 0,
+        '6': 0,
+        '7': 0,
+        '8': 0,
+        '9': 0,
+        '10': 0,
+        '13': 0,
+        '14': 0,
+        '15': 0,
+        '16': 0,
+        '17': 0,
+        '18': 0,
+        '19': 0,
+        '20': 0,
+        '21': 0,
+        '22': 0,
+        '23': 0,
+        '25': 0
       },
       games: {
-        "1": "Rummy",
-        "2": "AndarBahar",
-        "3": "龙虎斗",
-        "4": "JhandiMunda",
-        "5": "CarRoulette",
-        "6": "7up7down",
-        "7": "黑红梅方",
-        "8": "AK47",
-        "9": "TeenPatti",
-        "10": "Crash",
-        "13": "TeenPatti百人场",
-        "14": "TeenPatti真人场",
-        "15": "德州扑克",
-        "16": "baccarat",
-        "17": "wingo lottery",
-        "18": "球队标转盘",
-        "19": "动物转盘",
-        "20": "扫雷小游戏",
-        "21": "Pusoy",
-        "22": "TongitsGo",
-        "23": "Lucky9",
-        "25": "Color"
+        '1': 'Rummy',
+        '2': 'AndarBahar',
+        '3': '龙虎斗',
+        '4': 'JhandiMunda',
+        '5': 'CarRoulette',
+        '6': '7up7down',
+        '7': '黑红梅方',
+        '8': 'AK47',
+        '9': 'TeenPatti',
+        '10': 'Crash',
+        '13': 'TeenPatti百人场',
+        '14': 'TeenPatti真人场',
+        '15': '德州扑克',
+        '16': 'baccarat',
+        '17': 'wingo lottery',
+        '18': '球队标转盘',
+        '19': '动物转盘',
+        '20': '扫雷小游戏',
+        '21': 'Pusoy',
+        '22': 'TongitsGo',
+        '23': 'Lucky9',
+        '25': 'Color'
       },
       form: {},
       libShow: $libShow,
@@ -96,13 +96,13 @@ export default {
   },
   methods: {
     checkRate(cfg) {
-      for (let k in cfg) {
-        if(cfg[k]<1 || cfg[k]>500) {
-          Message.error('概率应该是0-500之间的数字');
-          return false;
+      for (const k in cfg) {
+        if (cfg[k] < 1 || cfg[k] > 500) {
+          Message.error('概率应该是0-500之间的数字')
+          return false
         }
       }
-      return true;
+      return true
     },
     getData() {
       const $this = this
@@ -143,10 +143,10 @@ export default {
           data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('保存成功');
+            Message.success('保存成功')
           }
         })
-      });
+      })
     }
   }
 }

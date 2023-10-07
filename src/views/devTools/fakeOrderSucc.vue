@@ -45,7 +45,7 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path:"/other/order/test",
+          Path: '/other/order/test',
           Uid: this.Uid,
           OrderID: this.OrderID
         }

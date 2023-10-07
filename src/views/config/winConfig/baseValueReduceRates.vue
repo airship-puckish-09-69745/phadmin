@@ -7,11 +7,11 @@
       <h3 align="center" style="margin:30px auto;">各子游戏基准值消耗数额与有效下注比例</h3>
       <el-form ref="cfg" :model="cfg">
         <template v-for="(items, gid) in cfg">
-          <p style="margin-top: 50px;clear:both;">[{{games[gid]}}] <el-button type="primary" icon="el-icon-plus" size="mini" style="float:right;" @click="addItem(gid)">添加</el-button></p>
+          <p style="margin-top: 50px;clear:both;">[{{ games[gid] }}] <el-button type="primary" icon="el-icon-plus" size="mini" style="float:right;" @click="addItem(gid)">添加</el-button></p>
           <el-table :data="items" border>
             <el-table-column prop="app" label="应用ID" width="200">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.app" placeholder="应用ID"></el-input>
+                <el-input v-model.number="scope.row.app" placeholder="应用ID" />
               </template>
             </el-table-column>
             <el-table-column prop="rate" label="基准值消耗数额与有效下注比例">
@@ -49,52 +49,52 @@ export default {
   data() {
     return {
       cfg: {
-        "1": [],
-        "2": [],
-        "3": [],
-        "4": [],
-        "5": [],
-        "6": [],
-        "7": [],
-        "8": [],
-        "9": [],
-        "10": [],
-        "13": [],
-        "14": [],
-        "15": [],
-        "16": [],
-        "17": [],
-        "18": [],
-        "19": [],
-        "20": [],
-        "21": [],
-        "22": [],
-        "23": [],
-        "25": []
+        '1': [],
+        '2': [],
+        '3': [],
+        '4': [],
+        '5': [],
+        '6': [],
+        '7': [],
+        '8': [],
+        '9': [],
+        '10': [],
+        '13': [],
+        '14': [],
+        '15': [],
+        '16': [],
+        '17': [],
+        '18': [],
+        '19': [],
+        '20': [],
+        '21': [],
+        '22': [],
+        '23': [],
+        '25': []
       },
       games: {
-        "1": "Rummy",
-        "2": "AndarBahar",
-        "3": "龙虎斗",
-        "4": "JhandiMunda",
-        "5": "CarRoulette",
-        "6": "7up7down",
-        "7": "黑红梅方",
-        "8": "AK47",
-        "9": "TeenPatti",
-        "10": "Crash",
-        "13": "TeenPatti百人场",
-        "14": "TeenPatti真人场",
-        "15": "德州扑克",
-        "16": "baccarat",
-        "17": "Wingo",
-        "18": "球队转轮",
-        "19": "动物转轮",
-        "20": "扫雷",
-        "21": "Pusoy",
-        "22": "TongitsGo",
-        "23": "Lucky9",
-        "25": "Color"
+        '1': 'Rummy',
+        '2': 'AndarBahar',
+        '3': '龙虎斗',
+        '4': 'JhandiMunda',
+        '5': 'CarRoulette',
+        '6': '7up7down',
+        '7': '黑红梅方',
+        '8': 'AK47',
+        '9': 'TeenPatti',
+        '10': 'Crash',
+        '13': 'TeenPatti百人场',
+        '14': 'TeenPatti真人场',
+        '15': '德州扑克',
+        '16': 'baccarat',
+        '17': 'Wingo',
+        '18': '球队转轮',
+        '19': '动物转轮',
+        '20': '扫雷',
+        '21': 'Pusoy',
+        '22': 'TongitsGo',
+        '23': 'Lucky9',
+        '25': 'Color'
       },
       form: {},
       libShow: $libShow,
@@ -112,26 +112,26 @@ export default {
     this.getData()
   },
   methods: {
-    'addItem': function (gid) {
-      this.cfg[gid].push({'app': 0, 'rate': 50});
+    'addItem': function(gid) {
+      this.cfg[gid].push({ 'app': 0, 'rate': 50 })
     },
-    'delItem': function (gid, idx) {
-      this.$delete(this.cfg[gid], idx);
+    'delItem': function(gid, idx) {
+      this.$delete(this.cfg[gid], idx)
     },
     'checkRate': function(cfg) {
-      for (let k in cfg) {
-        for (let i=0; i<cfg[k].length; i++) {
+      for (const k in cfg) {
+        for (let i = 0; i < cfg[k].length; i++) {
           if (cfg[k][i].app <= 0 || cfg[k][i].app >= 200000) {
-            Message.error('应用ID:' + cfg[k][i].app + '无效!');
-            return false;
+            Message.error('应用ID:' + cfg[k][i].app + '无效!')
+            return false
           }
           if (cfg[k][i].rate < 0 || cfg[k][i].rate > 500) {
-            Message.error('比例值应当在0-500之间!');
-            return false;
+            Message.error('比例值应当在0-500之间!')
+            return false
           }
         }
       }
-      return true;
+      return true
     },
     'getData': function() {
       const $this = this
@@ -160,7 +160,7 @@ export default {
       this.form.Data = JSON.stringify(postData)
       const $this = this
       // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.form);
+      this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -172,10 +172,10 @@ export default {
           data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('保存成功');
+            Message.success('保存成功')
           }
         })
-      });
+      })
     }
   }
 }

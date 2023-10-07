@@ -63,7 +63,7 @@ export default {
         method: 'get',
         data: {
           Type: 0,
-          platform: ""
+          platform: ''
         }
       }).then(response => {
         if (response.RetCode === 0) {

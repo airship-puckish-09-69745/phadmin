@@ -6,12 +6,12 @@
         <el-form ref="form" :model="form" label-width="150px">
           <el-form-item label="注册奖励：">
             <el-col :span="8">
-            <el-input v-model.number="item.Register" placeholder="placeholder" />
+              <el-input v-model.number="item.Register" placeholder="placeholder" />
             </el-col>
           </el-form-item>
           <el-form-item label="手机额外奖励：">
             <el-col :span="8">
-            <el-input v-model.number="item.Mobile" placeholder="placeholder" />
+              <el-input v-model.number="item.Mobile" placeholder="placeholder" />
             </el-col>
           </el-form-item>
           <el-col :offset="16" :span="8">

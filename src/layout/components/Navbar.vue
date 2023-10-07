@@ -6,12 +6,12 @@
 
     <div class="right-menu">
       <div style=" float: left; color:red; font-size: 18px; padding: 0 5px;">{{ getNavName() }}</div>
-<!--      <template>-->
-<!--        <error-log class="errLog-container right-menu-item hover-effect" />-->
-<!--        <el-tooltip content="时区切换" effect="dark" placement="bottom">-->
-<!--          <zone-select id="zone-select" class="right-menu-item hover-effect" />-->
-<!--        </el-tooltip>-->
-<!--      </template>-->
+      <!--      <template>-->
+      <!--        <error-log class="errLog-container right-menu-item hover-effect" />-->
+      <!--        <el-tooltip content="时区切换" effect="dark" placement="bottom">-->
+      <!--          <zone-select id="zone-select" class="right-menu-item hover-effect" />-->
+      <!--        </el-tooltip>-->
+      <!--      </template>-->
 
       <template>
         <error-log class="errLog-container right-menu-item hover-effect" />

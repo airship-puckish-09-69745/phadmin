@@ -1,8 +1,8 @@
 <template>
-  <el-input v-model="rate" @blur="onRate" v-if="isSample"/>
+  <el-input v-if="isSample" v-model="rate" @blur="onRate" />
   <el-form-item v-else :label="label" :required="isRequire" :label-width="labelWidth">
-    <el-input v-model="rate" @blur="onRate" size="small" />
-    <div class="el-form-item--small" v-if="tips">
+    <el-input v-model="rate" size="small" @blur="onRate" />
+    <div v-if="tips" class="el-form-item--small">
       <small>{{ tips }}</small>
     </div>
   </el-form-item>
@@ -42,6 +42,11 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      rate: 0
+    }
+  },
   watch: {
     ratio: function(newVal, oldVal) {
       // console.log('ratio new', newVal, ' old ', oldVal)
@@ -52,16 +57,11 @@ export default {
   created() {
     this.rate = this.ratio / 100
   },
-  data() {
-    return {
-      rate: 0
-    }
-  },
   methods: {
     onRate() {
       const val = parseFloat(this.rate)
 
-      if (val>=0) {
+      if (val >= 0) {
         this.ratio = parseInt(val * 100)
       }
 

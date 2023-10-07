@@ -346,7 +346,7 @@ export default {
       modules: [],
       tableData: [],
       project: 'android',
-      langs: { 'en': '英语', 'tl': '菲律宾'},
+      langs: { 'en': '英语', 'tl': '菲律宾' },
       checkLang: 'EN',
       fileList: [],
       fileName: '',
@@ -647,7 +647,7 @@ export default {
         for (let i = 0; i < objs.length; i++) {
           const lang = $libLang.GetLangOBJ(objs[i].Content)
           objs[i]['Lang'] = lang
-          if (objs[i].SyncProject && objs[i].SyncProject != "" && objs[i].SyncProject.length > 0) {
+          if (objs[i].SyncProject && objs[i].SyncProject != '' && objs[i].SyncProject.length > 0) {
             objs[i].SyncProjectArr = JSON.parse(objs[i].SyncProject)
           } else {
             objs[i].SyncProjectArr = []

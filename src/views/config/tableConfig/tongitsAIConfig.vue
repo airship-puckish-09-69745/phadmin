@@ -13,32 +13,32 @@
             border
             style="width: 100%"
           >
-              <el-table-column
-                prop="AiConfigId"
-                label="级别"
-                width="70"
-              />
-              <el-table-column
-                prop="AiConfigName"
-                label="级别"
-                width="250"
-              />
-              <el-table-column
-                label="操作"
-                column-key="op"
-                width="250"
-              >
-                <template slot-scope="scope">
-                  <el-button
-                    type="primary"
-                    size="mini"
-                    icon="el-icon-document-copy"
-                    @click="handleUpdate(scope.row)"
-                  >修改
-                  </el-button>
-                </template>
-                </el-table-column>
-            </el-table>
+            <el-table-column
+              prop="AiConfigId"
+              label="级别"
+              width="70"
+            />
+            <el-table-column
+              prop="AiConfigName"
+              label="级别"
+              width="250"
+            />
+            <el-table-column
+              label="操作"
+              column-key="op"
+              width="250"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  icon="el-icon-document-copy"
+                  @click="handleUpdate(scope.row)"
+                >修改
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </el-col>
     </el-row>
@@ -52,65 +52,65 @@
             border
             style="width: 100%"
           >
-              <el-table-column
-                label="底注"
-              >
-                <template slot-scope="scope">
-                  {{scope.row.TableMoney/1000}}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="当前输赢"
-              >
-                <template slot-scope="scope">
-                  <a href="javascript:void(0)" @click="showRobotPoolForm(scope.row.TableMoney)" style="cursor: pointer; color:rgb(59, 59, 232);">{{getRobotProfitByTableMoney(scope.row.TableMoney,true)}}</a>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="分配"
-                width="650"
-              >
-                <template slot-scope="scope">
-                  <el-table :data="scope.row.List" border>
-                    <el-table-column label="输赢最小" >
-                      <template scope="subScope">
-                        <el-input v-model.number="subScope.row.StartPool" />
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="输赢最大" >
-                      <template scope="subScope">
-                        <el-input v-model.number="subScope.row.EndPool" />
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="机器人级别">
-                      <template scope="subScope">
-                        <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
-                          <el-option
-                            v-for="item in robotlvl"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value">
-                          </el-option>
-                        </el-select>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="操作" :render-header="(h,obj)=>addTableHeaderButton(h,obj,scope.row.TableMoney)">
-                      <template scope="subScope">
-                        <el-button
-                          size="mini"
-                          type="danger"
-                          @click="delRow(scope.$index,subScope.$index,subScope.row)"
-                            >删除</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </template>
-              </el-table-column>
-            </el-table>
+            <el-table-column
+              label="底注"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.TableMoney/1000 }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="当前输赢"
+            >
+              <template slot-scope="scope">
+                <a href="javascript:void(0)" style="cursor: pointer; color:rgb(59, 59, 232);" @click="showRobotPoolForm(scope.row.TableMoney)">{{ getRobotProfitByTableMoney(scope.row.TableMoney,true) }}</a>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="分配"
+              width="650"
+            >
+              <template slot-scope="scope">
+                <el-table :data="scope.row.List" border>
+                  <el-table-column label="输赢最小">
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.StartPool" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="输赢最大">
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.EndPool" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="机器人级别">
+                    <template scope="subScope">
+                      <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                        <el-option
+                          v-for="item in robotlvl"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作" :render-header="(h,obj)=>addTableHeaderButton(h,obj,scope.row.TableMoney)">
+                    <template scope="subScope">
+                      <el-button
+                        size="mini"
+                        type="danger"
+                        @click="delRow(scope.$index,subScope.$index,subScope.row)"
+                      >删除</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
       </el-col>
       <el-col :offset="16" :span="8">
-          <el-button type="primary" @click="setData">保存分配信息</el-button>
+        <el-button type="primary" @click="setData">保存分配信息</el-button>
       </el-col>
     </el-row>
     <el-dialog
@@ -123,19 +123,19 @@
         <el-row>
           <el-tabs type="border-card">
             <el-tab-pane label="机器人挑战">
-              <robot-ai-setting-fight v-model="edit"></robot-ai-setting-fight>
+              <robot-ai-setting-fight v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="机器人面对挑战">
-              <robot-ai-setting-challenge v-model="edit"></robot-ai-setting-challenge>
+              <robot-ai-setting-challenge v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="放牌配置">
-              <robot-ai-setting-drop v-model="edit"></robot-ai-setting-drop>
+              <robot-ai-setting-drop v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="出牌配置">
-              <robot-ai-setting-out-card v-model="edit"></robot-ai-setting-out-card>
+              <robot-ai-setting-out-card v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="好牌配置">
-              <robot-ai-setting-build-card v-model="edit"></robot-ai-setting-build-card>
+              <robot-ai-setting-build-card v-model="edit" />
             </el-tab-pane>
           </el-tabs>
         </el-row>
@@ -190,22 +190,22 @@ import robotAiSettingOutCard from './tongits/robotAiSettingOutCard'
 import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
 
 export default {
-  components: { Compare, Publish,robotAiSettingFight,robotAiSettingChallenge,robotAiSettingDrop,robotAiSettingOutCard,robotAiSettingBuildCard,MoneyInput},
+  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput },
   data() {
     return {
-      subKey:"tongits_ai",
-      load:false,
+      subKey: 'tongits_ai',
+      load: false,
       form: {
       },
-      tableData:[],
-      editVisible:false,
-      edit:{},
-      item:{},
-      actionList:[
+      tableData: [],
+      editVisible: false,
+      edit: {},
+      item: {},
+      actionList: [
 
       ],
-      poolMoneyList:{},
-      robotlvl:[
+      poolMoneyList: {},
+      robotlvl: [
         {
           value: 1,
           label: '机器人A'
@@ -230,9 +230,9 @@ export default {
       robotForm: {
         tableMoney: 0,
         currentVal: 0,
-        changeVal: 0,
+        changeVal: 0
       },
-      editRobotSync: false,
+      editRobotSync: false
     }
   },
   created() {
@@ -240,17 +240,17 @@ export default {
     console.log(1)
   },
   methods: {
-    getOneAction(tableMoney){
+    getOneAction(tableMoney) {
       return {
-          TableMoney:tableMoney,
-          Pool:0,
-          List:[
-            {
-              StartPool:0,
-              EndPool:0,
-              AiConfigLevel:1
-            }
-          ]
+        TableMoney: tableMoney,
+        Pool: 0,
+        List: [
+          {
+            StartPool: 0,
+            EndPool: 0,
+            AiConfigLevel: 1
+          }
+        ]
       }
     },
     getFullKey() {
@@ -268,74 +268,74 @@ export default {
           console.log('response==>', response)
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-            let cfg = JSON.parse(response.Data.Data)
+            const cfg = JSON.parse(response.Data.Data)
             console.log('cfg==>', cfg)
             this.item = cfg
-            this.tableData = this.item.Config;
-            this.actionList = this.item.Action;
+            this.tableData = this.item.Config
+            this.actionList = this.item.Action
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.moneyProc(false)
             this.load = true
-            //获取底注
+            // 获取底注
             this.getTableMoneyList()
           }
         }
       })
     },
-    getTableMoneyList(){
+    getTableMoneyList() {
       request({
         url: '/tongitstable/all',
         method: 'get',
         data: {
-          PlayMode:1,
+          PlayMode: 1
         }
       }).then(response => {
-        let tableList = "";
+        let tableList = ''
         let index = 0
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log("table list:",objs)
-          for (let i=0;i<objs.length;i++){
-            let tableMoney = objs[i].TableMoney
+          console.log('table list:', objs)
+          for (let i = 0; i < objs.length; i++) {
+            const tableMoney = objs[i].TableMoney
             let isFind = false
-            for (let j=0;j<this.item.Action.length;j++){
-              if(this.item.Action[j].TableMoney == tableMoney){
+            for (let j = 0; j < this.item.Action.length; j++) {
+              if (this.item.Action[j].TableMoney == tableMoney) {
                 isFind = true
                 break
               }
             }
-            if(!isFind){
+            if (!isFind) {
               this.item.Action.push(this.getOneAction(tableMoney))
             }
-            if(index===0){
-              tableList += ""+tableMoney
-            }else{
-              tableList += ","+tableMoney
+            if (index === 0) {
+              tableList += '' + tableMoney
+            } else {
+              tableList += ',' + tableMoney
             }
             index++
           }
         }
-        if(tableList !=""){
+        if (tableList != '') {
           this.getRobotProfit(tableList)
         }
       })
     },
-    getRobotProfit(tableList){
+    getRobotProfit(tableList) {
       const $this = this
-        request({
+      request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Env: this.env,
           Path: '/tongitsrobotpool/list',
           table_money: tableList,
-          game_id:22,
+          game_id: 22
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log("/tongitsrobotpool/list===>",objs)
+          console.log('/tongitsrobotpool/list===>', objs)
           $this.poolMoneyList = objs
           // for (let i=0;i<$this.actionList.length;i++){
           //   console.log("aaa==>",$this.actionList[i])
@@ -346,24 +346,24 @@ export default {
         }
       })
     },
-    getRobotProfitByTableMoney(tableMoney,isDlv){
-      if(this.poolMoneyList.hasOwnProperty(tableMoney)){
-          return isDlv ? this.poolMoneyList[tableMoney] / 1000 : this.poolMoneyList[tableMoney]
+    getRobotProfitByTableMoney(tableMoney, isDlv) {
+      if (this.poolMoneyList.hasOwnProperty(tableMoney)) {
+        return isDlv ? this.poolMoneyList[tableMoney] / 1000 : this.poolMoneyList[tableMoney]
       }
       return 0
     },
-    handleUpdate(row){
+    handleUpdate(row) {
       this.editVisible = true
-      console.log("row==>",row)
+      console.log('row==>', row)
       this.edit = row
     },
-    moneyProc(isMul){
-      for (let i=0;i<this.actionList.length;i++){
-        for (let j=0;j<this.actionList[i].List.length;j++){
-          if(isMul){
+    moneyProc(isMul) {
+      for (let i = 0; i < this.actionList.length; i++) {
+        for (let j = 0; j < this.actionList[i].List.length; j++) {
+          if (isMul) {
             this.actionList[i].List[j].StartPool *= 1000
             this.actionList[i].List[j].EndPool *= 1000
-          }else{
+          } else {
             this.actionList[i].List[j].StartPool /= 1000
             this.actionList[i].List[j].EndPool /= 1000
           }
@@ -373,7 +373,7 @@ export default {
     setData() {
       this.moneyProc(true)
       this.form.Data = JSON.stringify(this.item)
-      console.log("this.form.Data:",this.form.Data)
+      console.log('this.form.Data:', this.form.Data)
       this.moneyProc(false)
       const $this = this
       // 设置修改后数据
@@ -396,37 +396,37 @@ export default {
         })
       })
     },
-    delRow(parent,mine,row){
-      console.log("parent:"+parent+"mine:"+mine,row)
-      this.actionList[parent].List.splice(mine,1)
+    delRow(parent, mine, row) {
+      console.log('parent:' + parent + 'mine:' + mine, row)
+      this.actionList[parent].List.splice(mine, 1)
     },
-    addTableHeaderButton(h,data,tableMoney){
-      console.log("h:",h)
-      console.log("data:",data)
-      console.log("tableMoney:",tableMoney)
+    addTableHeaderButton(h, data, tableMoney) {
+      console.log('h:', h)
+      console.log('data:', data)
+      console.log('tableMoney:', tableMoney)
       return (
-          <div>
-            <span>操作</span>
-            <el-button type="primary" size="mini" style="padding:5px;margin-left:5px;" onClick={()=>this.doAdd(tableMoney)}>添加范围</el-button>
-          </div>
-        )
+        <div>
+          <span>操作</span>
+          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doAdd(tableMoney)}>添加范围</el-button>
+        </div>
+      )
     },
-    doAdd(tableMoney){
-      console.log("tableMoney===>",tableMoney);
-      for(let i=0;i<this.actionList.length;i++){
-        if(this.actionList[i].TableMoney === tableMoney){
+    doAdd(tableMoney) {
+      console.log('tableMoney===>', tableMoney)
+      for (let i = 0; i < this.actionList.length; i++) {
+        if (this.actionList[i].TableMoney === tableMoney) {
           this.actionList[i].List.push(
             {
-              StartPool:0,
-              EndPool:0,
-              AiConfigLevel:1
+              StartPool: 0,
+              EndPool: 0,
+              AiConfigLevel: 1
             }
           )
         }
       }
     },
     showRobotPoolForm(tableMoney) {
-      this.robotForm.currentVal = this.getRobotProfitByTableMoney(tableMoney,false)
+      this.robotForm.currentVal = this.getRobotProfitByTableMoney(tableMoney, false)
       this.robotForm.tableMoney = tableMoney
       this.editRobotSync = true
     },
@@ -442,20 +442,20 @@ export default {
           Env: this.env,
           Path: '/tongitsrobotpool/update',
           TableMoney: $this.robotForm.tableMoney,
-          Gid:22,
-          ChangeVal: $this.robotForm.changeVal,
+          Gid: 22,
+          ChangeVal: $this.robotForm.changeVal
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          for (let i=0;i<$this.actionList.length;i++){
+          for (let i = 0; i < $this.actionList.length; i++) {
             if ($this.actionList[i].TableMoney == $this.robotForm.tableMoney) {
-              $this.actionList[i].Pool = $this.robotForm.currentVal+$this.robotForm.changeVal
+              $this.actionList[i].Pool = $this.robotForm.currentVal + $this.robotForm.changeVal
             }
           }
           Message.success('修改成功')
           this.editRobotSync = false
           window.location.reload()
-        }else {
+        } else {
           Message.error(response.Data)
         }
       })

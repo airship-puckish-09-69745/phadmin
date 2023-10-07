@@ -8,10 +8,10 @@
           </div>
           <el-form :model="form" label-width="100px" :inline="true">
             <el-form-item>
-              <el-button type="primary" @click="doDispatchGroup" style="padding:20px;">为应用分派WebSocket代理实例</el-button>
+              <el-button type="primary" style="padding:20px;" @click="doDispatchGroup">为应用分派WebSocket代理实例</el-button>
             </el-form-item>
             <el-form-item>
-              <el-button type="danger" @click="doDetachGroup" style="padding:20px;">为应用删除WebSocket代理实例</el-button>
+              <el-button type="danger" style="padding:20px;" @click="doDetachGroup">为应用删除WebSocket代理实例</el-button>
             </el-form-item>
           </el-form>
           <p>
@@ -361,13 +361,13 @@ export default {
           const d = JSON.parse(decodeURI(this.groupList[i].wsp_list))
           console.log('dddd=>', d, 'raw===>', decodeURI(this.groupList[i].wsp_list))
           this.selectedGroup = d
-          console.log('groupinfo==>',this.groupList[i])
-          if ( this.groupList[i].app_list !== "") {
-            let selectedApp = JSON.parse(this.groupList[i].app_list)
+          console.log('groupinfo==>', this.groupList[i])
+          if (this.groupList[i].app_list !== '') {
+            const selectedApp = JSON.parse(this.groupList[i].app_list)
             for (let j = 0; j < this.appList.length; j++) {
               for (let k = 0; k < selectedApp.length; k++) {
-                if(this.appList[j].id == selectedApp[k]){
-                  this.$refs.multipleTable.toggleRowSelection(this.appList[j],true)
+                if (this.appList[j].id == selectedApp[k]) {
+                  this.$refs.multipleTable.toggleRowSelection(this.appList[j], true)
                   break
                 }
               }

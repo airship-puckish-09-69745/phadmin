@@ -415,7 +415,7 @@
           <legend>场次隐藏配置</legend>
           <el-row>
             <el-col :span="9">
-              <money-input v-model="edit.item.SinglePay" label="单次充值大于等于" label-width="150px" :is-require="true"/>
+              <money-input v-model="edit.item.SinglePay" label="单次充值大于等于" label-width="150px" :is-require="true" />
             </el-col>
             <el-col :span="2">
               <el-tooltip class="item" effect="dark" content="配置成0也会生效" placement="right-start">
@@ -423,7 +423,7 @@
               </el-tooltip>
             </el-col>
             <el-col :span="9">
-              <money-input v-model="edit.item.TotalPay" label="总充值大于等于" label-width="150px" :is-require="true"/>
+              <money-input v-model="edit.item.TotalPay" label="总充值大于等于" label-width="150px" :is-require="true" />
             </el-col>
             <el-col :span="2">
               <el-tooltip class="item" effect="dark" content="配置成0也会生效" placement="right-start">

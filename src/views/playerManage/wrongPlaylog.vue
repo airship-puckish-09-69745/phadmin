@@ -84,7 +84,7 @@
         width="100"
       >
         <template slot-scope="scope">
-          {{ gameNames[scope.row.Gid]}}
+          {{ gameNames[scope.row.Gid] }}
         </template>
       </el-table-column>
       <el-table-column
@@ -160,7 +160,7 @@
           label="是否命中"
           width="100"
         >
-          <template slot-scope="scope" v-if="scope.row.Gid==8 || scope.row.Gid==9">
+          <template v-if="scope.row.Gid==8 || scope.row.Gid==9" slot-scope="scope">
             {{ isBingo(scope.row.RandVal,scope.row.WinRate) }}
           </template>
         </el-table-column>
@@ -173,7 +173,7 @@
           label="配牌标记"
           width="101"
         >
-          <template slot-scope="scope" v-if="scope.row.Gid==8 || scope.row.Gid==9">
+          <template v-if="scope.row.Gid==8 || scope.row.Gid==9" slot-scope="scope">
             {{ FIsPeiResult(scope.row.IsPeiResult) }}
           </template>
         </el-table-column>
@@ -183,7 +183,7 @@
           label="最终结果"
           width="120"
         >
-          <template slot-scope="scope" v-if="scope.row.Gid==8 || scope.row.Gid==9">
+          <template v-if="scope.row.Gid==8 || scope.row.Gid==9" slot-scope="scope">
             <span :style="{color:(scope.row.TheResult==3||scope.row.TheResult==5)?'red':''}">{{ FTheResult(scope.row.TheResult) }}</span>
           </template>
         </el-table-column>
@@ -318,7 +318,7 @@ export default {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       actions: [],
       actionNames: { 1: '弃牌', 2: '看牌', 8: '前注', 9: '跟注', 10: '加注', 14: '发起比牌', 15: '同意比牌', 16: '拒绝比牌', 17: '因为要充值临时停止牌局' },
-      typeNames: { 3: '游戏中付费', 4: '额度高', 6:'钓鱼付费', 7:'钓鱼未付', 8:'钓鱼2付费',9:'钓鱼2未付费',10:'钓鱼3付费',11:'钓鱼3未付费' },
+      typeNames: { 3: '游戏中付费', 4: '额度高', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
       gameNames: {
         8: 'AK47',
         9: 'TeenPatti',
@@ -330,7 +330,7 @@ export default {
         7: '红黑',
         10: 'Crash',
         11: 'TP100',
-        14:"TP真人场"
+        14: 'TP真人场'
       },
       ret: null,
       item: {
@@ -369,7 +369,7 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.columnKey !== 'op' && (row.Gid==8 || row.Gid==9 || row.Gid==14)) {
+      if (column.columnKey !== 'op' && (row.Gid == 8 || row.Gid == 9 || row.Gid == 14)) {
         this.actionVisible = true
         this.actions = row.Actions
         const cards = row.Cards
@@ -466,7 +466,7 @@ export default {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
-    doGetInfo(){
+    doGetInfo() {
       this.getInfo()
       this.getStat()
     },

@@ -20,7 +20,7 @@
         <el-form-item>
           <el-dropdown @command="handleAdd">
             <el-button type="success">
-              添加操作<i class="el-icon-arrow-down el-icon--right"></i>
+              添加操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="ap">AP</el-dropdown-item>
@@ -31,7 +31,7 @@
         <el-form-item>
           <el-dropdown @command="handleDel">
             <el-button type="warning">
-              删除操作<i class="el-icon-arrow-down el-icon--right"></i>
+              删除操作<i class="el-icon-arrow-down el-icon--right" />
             </el-button>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="ap">AP</el-dropdown-item>
@@ -45,21 +45,22 @@
       <el-table
         :data="tableData"
         border
-        style="width: 100%">
+        style="width: 100%"
+      >
         <el-table-column
           prop="App"
           label="App"
-          width="180">
-        </el-table-column>
+          width="180"
+        />
         <el-table-column
           prop="Ap"
           label="Ap"
-          width="180">
-        </el-table-column>
+          width="180"
+        />
         <el-table-column
           prop="Process"
-          label="Process">
-        </el-table-column>
+          label="Process"
+        />
       </el-table>
     </div>
     <el-dialog
@@ -105,19 +106,18 @@ import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 
-
 export default {
   components: { Compare, Publish },
   data() {
     return {
-      appInfo:[],
-      aps:[],
+      appInfo: [],
+      aps: [],
       tableData: [],
       libShow: $libShow,
-      form:{
-        app:''
+      form: {
+        app: ''
       },
-      addApVisible:false,
+      addApVisible: false,
       apAddItem: {
         Name: '',
         IP: ''
@@ -141,29 +141,29 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
-    this.getAppInfo();
+    this.getAppInfo()
   },
   methods: {
-    getInfo(){
-      console.log("form",this.form);
+    getInfo() {
+      console.log('form', this.form)
     },
     // 操作类函数
     handleAdd(command) {
-      if(command == "ap"){
-        this.addApVisible= true;
+      if (command == 'ap') {
+        this.addApVisible = true
         this.apAddItem = {
           Name: '',
           IP: ''
-        };
-      }else{
-        
+        }
+      } else {
+
       }
     },
     addAp() {
-      this.addApVisible= false;
+      this.addApVisible = false
     },
     handleDel(command) {
-        console.log("del command", command);
+      console.log('del command', command)
     },
     getAppInfo() {
       request({
@@ -174,19 +174,19 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           // { 1: '审核中', 2: '通过未推广', 3: '未通过下架', 4: '推广中', 5: '推广后下架' }
-          const sortInfo = ['', 4,1, 3, 5, 2] // 定义排序规则
+          const sortInfo = ['', 4, 1, 3, 5, 2] // 定义排序规则
           for (let i = 0; i < objs.length; i++) {
             this.appInfo.push(
               {
-                "name":objs[i].AppName+"-"+objs[i].AppID,
-                "id":objs[i].AppID
+                'name': objs[i].AppName + '-' + objs[i].AppID,
+                'id': objs[i].AppID
               }
-            );
+            )
             objs[i]['Platform'] = parseInt(objs[i].AppID) > 100000 ? 2 : 1
           }
           this.appInfo.sort(function(a, b) {
             return sortInfo[a.Status] - sortInfo[b.Status]
-          });
+          })
         }
       })
     }

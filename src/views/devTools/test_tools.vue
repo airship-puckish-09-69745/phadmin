@@ -1,11 +1,11 @@
 <template>
   <div class="app-container">
     <el-row>
-     <el-col :span="22" :offset="1">
-       <el-button type="primary" @click="showPayDialog">重置总充值金额</el-button>
-       <el-button type="primary" @click="showWithdrawDialog">重置总提现金额</el-button>
-       <el-button type="primary" @click="showInviteAmountDialog">添加邀请金额</el-button>
-     </el-col>
+      <el-col :span="22" :offset="1">
+        <el-button type="primary" @click="showPayDialog">重置总充值金额</el-button>
+        <el-button type="primary" @click="showWithdrawDialog">重置总提现金额</el-button>
+        <el-button type="primary" @click="showInviteAmountDialog">添加邀请金额</el-button>
+      </el-col>
     </el-row>
 
     <!-------------重置总充值金额start----------->
@@ -13,14 +13,15 @@
       title="重置总充值金额"
       :visible.sync="resetPay.show"
       width="30%"
-      :before-close="resetPayClose">
+      :before-close="resetPayClose"
+    >
       <span>
         <el-form ref="resetPayFrm" :model="resetPay" label-width="80px">
           <el-form-item label="uid">
-            <el-input v-model.number="resetPay.uid" placeholder="placeholder"></el-input>
+            <el-input v-model.number="resetPay.uid" placeholder="placeholder" />
           </el-form-item>
           <el-form-item label="重置金额">
-            <el-input v-model.number="resetPay.amount" placeholder="placeholder"></el-input>
+            <el-input v-model.number="resetPay.amount" placeholder="placeholder" />
           </el-form-item>
         </el-form>
       </span>
@@ -35,14 +36,15 @@
       title="重置总提现金额"
       :visible.sync="resetWithdraw.show"
       width="30%"
-      :before-close="resetWithdrawClose">
+      :before-close="resetWithdrawClose"
+    >
       <span>
         <el-form ref="resetWithdrawFrm" :model="resetWithdraw" label-width="80px">
           <el-form-item label="uid">
-            <el-input v-model.number="resetWithdraw.uid" placeholder="placeholder"></el-input>
+            <el-input v-model.number="resetWithdraw.uid" placeholder="placeholder" />
           </el-form-item>
           <el-form-item label="重置金额">
-            <el-input v-model.number="resetWithdraw.amount" placeholder="placeholder"></el-input>
+            <el-input v-model.number="resetWithdraw.amount" placeholder="placeholder" />
           </el-form-item>
         </el-form>
       </span>
@@ -57,14 +59,15 @@
       title="添加邀请金额"
       :visible.sync="inviteAmount.show"
       width="30%"
-      :before-close="resetInviteAmountClose">
+      :before-close="resetInviteAmountClose"
+    >
       <span>
         <el-form ref="resetWithdrawFrm" :model="inviteAmount" label-width="80px">
           <el-form-item label="uid">
-            <el-input v-model.number="inviteAmount.uid" placeholder="placeholder"></el-input>
+            <el-input v-model.number="inviteAmount.uid" placeholder="placeholder" />
           </el-form-item>
           <el-form-item label="重置金额">
-            <el-input v-model.number="inviteAmount.amount" placeholder="placeholder"></el-input>
+            <el-input v-model.number="inviteAmount.amount" placeholder="placeholder" />
           </el-form-item>
         </el-form>
       </span>

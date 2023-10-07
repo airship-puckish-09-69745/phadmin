@@ -555,24 +555,24 @@
         <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column prop="cards" label="手牌" width="200"><template slot-scope="scope"><div v-html="showCard(scope.row.cards)" /></template></el-table-column>
         <el-table-column prop="cardScore" label="点数" width="100" />
-        <el-table-column prop="isDealer" label="庄家" width="100"><template slot-scope="scope">{{scope.row.isDealer ? "是" : "-"}}</template></el-table-column>
-        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{scope.row.moneyBet/1000}}</template></el-table-column>
-        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{scope.row.moneyWon/1000}}</template></el-table-column>
-        <el-table-column prop="moneyTaxed" label="抽水" width="100"><template slot-scope="scope">{{scope.row.moneyTaxed/1000}}</template></el-table-column>
-        <el-table-column prop="hitPotBet" label="Pot入池" width="100"><template slot-scope="scope">{{scope.row.hitPotBet/1000}}</template></el-table-column>
-        <el-table-column prop="hitPotMoney" label="Pot赢取" width="100"><template slot-scope="scope">{{scope.row.hitPotMoney/1000}}</template></el-table-column>
-        <el-table-column prop="hitPotTaxed" label="Pot抽水" width="100"><template slot-scope="scope">{{scope.row.hitPotTaxed/1000}}</template></el-table-column>
-        <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{scope.row.moneyTotal/1000}}</template></el-table-column>
+        <el-table-column prop="isDealer" label="庄家" width="100"><template slot-scope="scope">{{ scope.row.isDealer ? "是" : "-" }}</template></el-table-column>
+        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTaxed" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyTaxed/1000 }}</template></el-table-column>
+        <el-table-column prop="hitPotBet" label="Pot入池" width="100"><template slot-scope="scope">{{ scope.row.hitPotBet/1000 }}</template></el-table-column>
+        <el-table-column prop="hitPotMoney" label="Pot赢取" width="100"><template slot-scope="scope">{{ scope.row.hitPotMoney/1000 }}</template></el-table-column>
+        <el-table-column prop="hitPotTaxed" label="Pot抽水" width="100"><template slot-scope="scope">{{ scope.row.hitPotTaxed/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
       </el-table>
-      <br />
+      <br>
       <el-descriptions title="扩展信息">
-        <el-descriptions-item label="桌子ID">{{lucky9Detail.tid}}</el-descriptions-item>
-        <el-descriptions-item label="Server日志ID">{{lucky9Detail.logId}}</el-descriptions-item>
-        <el-descriptions-item label="HitPot奖池">{{lucky9Detail.hitPotPool/1000}}</el-descriptions-item>
-        <el-descriptions-item label="POT机器人">{{lucky9Detail.potRobot}}</el-descriptions-item>
-        <el-descriptions-item label="POT机器人保护">{{lucky9Detail.potRobotProtected ? '是' : '-'}}</el-descriptions-item>
-        <el-descriptions-item label="机器人缓冲池保护">{{lucky9Detail.robotPoolProtected ? '是' : '-'}}</el-descriptions-item>
-        <el-descriptions-item label="机器人庄家保护">{{lucky9Detail.robotDealerProtected ? '是' : '-'}}</el-descriptions-item>
+        <el-descriptions-item label="桌子ID">{{ lucky9Detail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ lucky9Detail.logId }}</el-descriptions-item>
+        <el-descriptions-item label="HitPot奖池">{{ lucky9Detail.hitPotPool/1000 }}</el-descriptions-item>
+        <el-descriptions-item label="POT机器人">{{ lucky9Detail.potRobot }}</el-descriptions-item>
+        <el-descriptions-item label="POT机器人保护">{{ lucky9Detail.potRobotProtected ? '是' : '-' }}</el-descriptions-item>
+        <el-descriptions-item label="机器人缓冲池保护">{{ lucky9Detail.robotPoolProtected ? '是' : '-' }}</el-descriptions-item>
+        <el-descriptions-item label="机器人庄家保护">{{ lucky9Detail.robotDealerProtected ? '是' : '-' }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
     <el-dialog

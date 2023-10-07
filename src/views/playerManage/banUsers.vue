@@ -180,7 +180,8 @@
 
       <el-table-column
         fixed="right"
-        width="360px">
+        width="360px"
+      >
         <template slot-scope="scope">
           <el-button size="mini" type="success" class="tableButton" @click="disableUser(scope.row, 0)">解封</el-button>
           <el-button size="mini" type="primary" class="tableButton" @click="showRemark(scope.row)">封号理由</el-button>
@@ -216,7 +217,7 @@
           <el-input v-model="remark.txt" type="textarea" :rows="5" placeholder="请输入封号原因" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="medium" @click="updateRemark" style="float: right">保存</el-button>
+          <el-button type="primary" size="medium" style="float: right" @click="updateRemark">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -274,8 +275,8 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 align="right"
-                :picker-options="libShow.pickerOptions">
-              </el-date-picker>
+                :picker-options="libShow.pickerOptions"
+              />
             </template>
           </el-table-column>
           <el-table-column
@@ -288,8 +289,8 @@
                 type="datetime"
                 placeholder="选择日期时间"
                 align="right"
-                :picker-options="libShow.pickerOptions">
-              </el-date-picker>
+                :picker-options="libShow.pickerOptions"
+              />
             </template>
           </el-table-column>
           <el-table-column>
@@ -314,8 +315,7 @@
         <el-table-column
           prop="RelationUid"
           label="关联uid"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="Appid"
           label="应用"
@@ -347,8 +347,7 @@
         <el-table-column
           prop="Score"
           label="扣除信用分"
-        >
-        </el-table-column>
+        />
       </el-table>
     </el-drawer>
 

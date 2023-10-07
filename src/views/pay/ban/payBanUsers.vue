@@ -49,7 +49,7 @@
       >
         <template slot-scope="scope">
           {{ scope.row.Uid }}
-          <i class="el-icon-search" v-if="scope.row.Uid > 0" @click="goUserInfo(scope.row.Uid)" />
+          <i v-if="scope.row.Uid > 0" class="el-icon-search" @click="goUserInfo(scope.row.Uid)" />
         </template>
       </el-table-column>
 
@@ -124,7 +124,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-form  :model="addTo" size="small">
+      <el-form :model="addTo" size="small">
         <el-form-item label="支付渠道">
           <el-input v-model="addTo.pay" placeholder="" />
         </el-form-item>
@@ -144,7 +144,7 @@
           <el-input v-model="addTo.ip" placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="medium" @click="save" style="float: right">保存</el-button>
+          <el-button type="primary" size="medium" style="float: right" @click="save">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

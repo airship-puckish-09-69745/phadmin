@@ -84,60 +84,61 @@
     <el-dialog
       title="生成水池"
       :visible.sync="genWaterPoolVisible"
-      width="60%">
+      width="60%"
+    >
       <el-form ref="form" :model="GenWaterPool" label-width="200px">
         <el-alert
           title="如果不想要本次生成结果，不要点击保存直接刷新"
-          type="error">
-        </el-alert>
-        <br/>
+          type="error"
+        />
+        <br>
         <el-form-item label="干预值最低倍数">
-          <el-input v-model.number="ActConfig.GenWaterPool.MinMul" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.MinMul" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="最大个人携带输赢倍数">
-          <el-input v-model.number="ActConfig.GenWaterPool.ReturnMul" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.ReturnMul" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="房间预估人数">
-          <el-input v-model.number="ActConfig.GenWaterPool.RoomNumber" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.RoomNumber" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池最大2倍数">
-          <el-input v-model.number="ActConfig.GenWaterPool.WaterPool1Mul" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.WaterPool1Mul" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池最大3倍数">
-          <el-input v-model.number="ActConfig.GenWaterPool.WaterPool2Mul" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.WaterPool2Mul" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池最大4倍数">
-          <el-input v-model.number="ActConfig.GenWaterPool.WaterPool3Mul" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.WaterPool3Mul" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池系数1">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor1" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor1" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池系数2">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor2" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor2" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池系数3">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor3" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor3" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池系数4">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor4" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor4" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="水池系数5">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor5" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor5" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="负数水池系数1">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor6" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor6" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="负数水池系数2">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor7" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor7" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="负数水池系数3">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor8" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor8" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="负数水池系数4">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor9" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor9" placeholder="placeholder" />
         </el-form-item>
         <el-form-item label="负数水池系数5">
-          <el-input v-model.number="ActConfig.GenWaterPool.Factor10" placeholder="placeholder"></el-input>
+          <el-input v-model.number="ActConfig.GenWaterPool.Factor10" placeholder="placeholder" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="genWaterPoolRun">生成水池</el-button>

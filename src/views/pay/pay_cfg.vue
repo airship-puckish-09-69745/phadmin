@@ -375,7 +375,7 @@ function newItem() {
         value: 103 // 值
       },
       {
-        name: "VC",
+        name: 'VC',
         value: 200
       }
     ],
@@ -429,7 +429,7 @@ export default {
           value: 103 // 值
         },
         {
-          name: "VC",
+          name: 'VC',
           value: 200
         }],
 
@@ -623,7 +623,7 @@ export default {
         }
       })
     },
-    handleDel(row){
+    handleDel(row) {
       const $this = this
       this.$confirm('确定要删除此渠道： ' + row.payChannelName + ' ?', '提示', {
         confirmButtonText: '确定',
@@ -633,10 +633,10 @@ export default {
         request({
           url: 'payconfig/update/status',
           method: 'post',
-          data: {ID: row.ID, status: 3}
+          data: { ID: row.ID, status: 3 }
         }).then(response => {
           if (response.RetCode === 0) {
-            $this.clientDB.UpdateData({ID: row.ID, status: 3})
+            $this.clientDB.UpdateData({ ID: row.ID, status: 3 })
             $this.refreshShow()
             Message.success('删除成功！')
           }
@@ -653,10 +653,10 @@ export default {
         request({
           url: 'payconfig/update/status',
           method: 'post',
-          data: {ID: row.ID, status: 1}
+          data: { ID: row.ID, status: 1 }
         }).then(response => {
           if (response.RetCode === 0) {
-            $this.clientDB.UpdateData({ID: row.ID, status: 1})
+            $this.clientDB.UpdateData({ ID: row.ID, status: 1 })
             $this.refreshShow()
             Message.success('上线成功！')
           }

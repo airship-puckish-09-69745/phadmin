@@ -327,7 +327,7 @@ export default {
   },
   methods: {
     clickData(row, column, event) {
-      if(row.LogID==0){
+      if (row.LogID == 0) {
         return
       }
       if (column.columnKey !== 'op') {

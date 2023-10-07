@@ -153,7 +153,7 @@
         <el-row v-if="importVisible">
           <el-col :span="16">
             <el-form-item label="导入内容：">
-            <el-input v-model="importTxt" placeholder="请输入" rows="8" type="textarea" />
+              <el-input v-model="importTxt" placeholder="请输入" rows="8" type="textarea" />
             </el-form-item>
           </el-col>
           <el-button size="mini" type="primary" @click="importContent">确定</el-button>
@@ -165,7 +165,7 @@
             </el-form-item>
           </el-col>
           <el-col :offset="2" :span="4">
-          <el-button size="mini" @click="importVisible=true">导入</el-button>
+            <el-button size="mini" @click="importVisible=true">导入</el-button>
           </el-col>
         </el-row>
         <el-row>
@@ -411,11 +411,11 @@ export default {
   },
   methods: {
     importContent() {
-      const lines = this.importTxt.split("\n")
+      const lines = this.importTxt.split('\n')
       const tMap = {}
-      for(let i=0;i<lines.length;i++){
-        const ss = lines[i].split("=")
-        if(ss.length == 2){
+      for (let i = 0; i < lines.length; i++) {
+        const ss = lines[i].split('=')
+        if (ss.length == 2) {
           tMap[ss[0]] = ss[1]
         }
       }

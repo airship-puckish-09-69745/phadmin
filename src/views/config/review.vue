@@ -11,17 +11,17 @@
         @select="handleSelect"
       >
         <el-menu-item index="1">
-          <el-badge :value="counts[0]" class="item" v-if="counts[0]!==0">
+          <el-badge v-if="counts[0]!==0" :value="counts[0]" class="item">
             我的申请
           </el-badge>
           <span v-else>我的申请</span>
         </el-menu-item>
         <el-menu-item index="2">
-          <el-badge :value="counts[1]" class="item" v-if="counts[1]!==0">
+          <el-badge v-if="counts[1]!==0" :value="counts[1]" class="item">
             待我处理
           </el-badge>
           <span v-else>待我处理</span>
-         </el-menu-item>
+        </el-menu-item>
         <el-menu-item index="3">我已处理</el-menu-item>
       </el-menu>
     </el-row>
@@ -175,7 +175,7 @@
       </el-form>
     </el-dialog>
 
-    <publish ref="publish" :key-id="edit.item.ConfigKey" :diff-view="true"/>
+    <publish ref="publish" :key-id="edit.item.ConfigKey" :diff-view="true" />
   </div>
 </template>
 <style>
@@ -227,7 +227,7 @@ export default {
       libShow: $libShow,
       env: 'test',
       uname: '',
-      counts:[],
+      counts: [],
 
       edit: {
         visible: false,
@@ -239,7 +239,7 @@ export default {
           Comment: '',
           ConfigKey: '',
           Status: 0,
-          EnvEmpty:0,
+          EnvEmpty: 0,
           CurrentUserName: ''
         },
         active: 0,
@@ -392,7 +392,7 @@ export default {
         envEmpty: this.edit.item.EnvEmpty === 1
       }).then(response => {
         if (response.RetCode === 0) {
-          Message.success("操作成功！")
+          Message.success('操作成功！')
           this.edit.visible = false
           this.getList(this.activeIndex)
         }

@@ -16,84 +16,89 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="getData('search')" size="mini">搜索</el-button>
+            <el-button type="primary" size="mini" @click="getData('search')">搜索</el-button>
           </el-form-item>
         </el-form>
       </el-col>
 
-     <el-col :span="22" :offset="1">
-       <el-link type="success" style="margin-right: 20px">真人奖池：{{ jackpot.human }}</el-link><el-link type="primary">机器人奖池：{{ jackpot.robot }}</el-link>
-       <el-button type="success" size="small" @click="refresh" style="float: right">刷新</el-button>
-       <el-table
-         :data="tableData"
-         style="width: 100%">
-         <el-table-column
-           prop="id"
-           width="50"
-           label="id">
-         </el-table-column>
-         <el-table-column
-           prop="time"
-           widt="150"
-           label="中奖时间">
-           <template slot-scope="scope">
-             {{ scope.row.time | parseTime }}
-           </template>
-         </el-table-column>
-         <el-table-column
-           prop="cards"
-           label="中奖牌">
-           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.cards)"></div>
-           </template>
-         </el-table-column>
-         <el-table-column
-           prop="cardType"
-           label="中奖牌型">
-           <template slot-scope="scope">
-            {{ showPokerType(scope.row.cardType) }}
-           </template>
-         </el-table-column>
-         <el-table-column
-           prop="reward"
-           label="本轮奖金">
-         </el-table-column>
-         <el-table-column
-           prop="winnerNumber"
-           label="中奖人数">
-         </el-table-column>
-         <el-table-column
-           prop="topUser.uid"
-           label="头奖用户">
-           <template slot-scope="scope">
-             <el-link type="danger" :underline="false" v-if="scope.row.topUser.uid > 999999">{{ scope.row.topUser.uid }}(人)</el-link>
-             <el-link type="primary" :underline="false" v-else>{{ scope.row.topUser.uid }}(机)</el-link>
-           </template>
-         </el-table-column>
-         <el-table-column
-           prop="uids"
-           label="中奖用户列表">
-         </el-table-column>
-         <el-table-column
-           prop="jackpotNow"
-           label="本轮瓜分后奖池">
-         </el-table-column>
-       </el-table>
+      <el-col :span="22" :offset="1">
+        <el-link type="success" style="margin-right: 20px">真人奖池：{{ jackpot.human }}</el-link><el-link type="primary">机器人奖池：{{ jackpot.robot }}</el-link>
+        <el-button type="success" size="small" style="float: right" @click="refresh">刷新</el-button>
+        <el-table
+          :data="tableData"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="id"
+            width="50"
+            label="id"
+          />
+          <el-table-column
+            prop="time"
+            widt="150"
+            label="中奖时间"
+          >
+            <template slot-scope="scope">
+              {{ scope.row.time | parseTime }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="cards"
+            label="中奖牌"
+          >
+            <template slot-scope="scope">
+              <div v-html="showCard(scope.row.cards)" />
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="cardType"
+            label="中奖牌型"
+          >
+            <template slot-scope="scope">
+              {{ showPokerType(scope.row.cardType) }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="reward"
+            label="本轮奖金"
+          />
+          <el-table-column
+            prop="winnerNumber"
+            label="中奖人数"
+          />
+          <el-table-column
+            prop="topUser.uid"
+            label="头奖用户"
+          >
+            <template slot-scope="scope">
+              <el-link v-if="scope.row.topUser.uid > 999999" type="danger" :underline="false">{{ scope.row.topUser.uid }}(人)</el-link>
+              <el-link v-else type="primary" :underline="false">{{ scope.row.topUser.uid }}(机)</el-link>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="uids"
+            label="中奖用户列表"
+          />
+          <el-table-column
+            prop="jackpotNow"
+            label="本轮瓜分后奖池"
+          />
+        </el-table>
 
-       <div class="block" style="margin-top: 20px; float: right">
-         <el-button-group>
-           <el-button type="primary" size="medium" icon="el-icon-arrow-left" :disabled="pageDisable.up" @click="getData('up')">上一页</el-button>
-           <el-button type="primary" size="medium" :disabled="pageDisable.down" @click="getData('down')">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-         </el-button-group>
-       </div>
-     </el-col>
+        <div class="block" style="margin-top: 20px; float: right">
+          <el-button-group>
+            <el-button type="primary" size="medium" icon="el-icon-arrow-left" :disabled="pageDisable.up" @click="getData('up')">上一页</el-button>
+            <el-button type="primary" size="medium" :disabled="pageDisable.down" @click="getData('down')">下一页<i class="el-icon-arrow-right el-icon--right" /></el-button>
+          </el-button-group>
+        </div>
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 import request from '@/utils/request'
-import {$libDate, $libShow} from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 
 export default {
   data() {
@@ -166,7 +171,7 @@ export default {
         this.minId += this.limit
       }
 
-      let sts = 0, ets = 0
+      let sts = 0; let ets = 0
       if (this.timeArr && this.timeArr.length > 0) {
         sts = parseInt(this.timeArr[0] / 1000) + 9000
         ets = parseInt(this.timeArr[1] / 1000) + 9000

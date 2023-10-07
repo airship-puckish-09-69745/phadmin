@@ -228,7 +228,7 @@
   </div>
 </template>
 <script>
-import {$libDate, DataRule} from '@/utils/common'
+import { $libDate, DataRule } from '@/utils/common'
 import JumpSelect from '@/components/JumpSelect'
 import LangInput from '@/components/LangInput'
 import LangText from '@/components/LangText'

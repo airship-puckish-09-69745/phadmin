@@ -21,13 +21,13 @@ export default {
       ]
     }
   },
-  created() {
-    this.initZoneOption()
-  },
   computed: {
     zone() {
       return this.$store.getters.zone
     }
+  },
+  created() {
+    this.initZoneOption()
   },
   methods: {
     initZoneOption() {

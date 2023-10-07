@@ -180,6 +180,18 @@ export const asyncRoutes = [
         meta: { title: 'Lucky9 AI◐' }
       },
       {
+        path: 'lucky89Table',
+        component: () => import('@/views/config/tableConfig/lucky89Table'),
+        name: 'lucky89Table',
+        meta: { title: 'Lucky89 ◐' }
+      },
+      {
+        path: 'lucky89RobotSetting',
+        component: () => import('@/views/config/tableConfig/lucky89RobotSetting'),
+        name: 'lucky89RobotSetting',
+        meta: { title: 'Lucky89 AI◐' }
+      },
+      {
         path: 'pusoyTable',
         component: () => import('@/views/config/tableConfig/pusoyTable'),
         name: 'pusoyTable',
@@ -238,20 +250,16 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/windrop_cfg'),
             name: 'windrop_cfg',
             meta: { title: 'Windrop ◐' }
-          },
-
+          }
 
         ]
       },
-
-
-
 
       {
         path: 'texasTable',
         component: () => import('@/views/config/tableConfig/texasTable'),
         name: 'texasTable',
-        meta: { title: 'Texas - 德州'}
+        meta: { title: 'Texas - 德州' }
       },
       {
         path: 'slotsCfg',
@@ -336,8 +344,6 @@ export const asyncRoutes = [
 
         ]
       },
-
-
 
       {
         path: 'level_hide',
@@ -913,7 +919,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'rabbit_slots_log',
             meta: { title: 'Rabbit - 金钱兔', gid: 67 }
-          },
+          }
 
         ]
       }

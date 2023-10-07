@@ -351,8 +351,7 @@
         </div>
       </el-col>
     </el-row>
-    <tongits-game-log :GameLog="GameLog" :GameLogVisible="GameLogVisible" @closeDialog="closeDialog"></tongits-game-log>
-  
+    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" @closeDialog="closeDialog" />
 
     <el-dialog
       title="玩家列表"
@@ -389,9 +388,9 @@
           width="120"
         >
           <template slot-scope="scope">
-          <span :style="{color: scope.row.Uid === playerUid ? 'red':'green'}">
-            {{ scope.row.Uid }}
-          </span>
+            <span :style="{color: scope.row.Uid === playerUid ? 'red':'green'}">
+              {{ scope.row.Uid }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -415,9 +414,9 @@
           width="100"
         >
           <template slot-scope="scope">
-          <span :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
-            {{ formatNumber(scope.row.MoneyChanged) }}
-          </span>
+            <span :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
+              {{ formatNumber(scope.row.MoneyChanged) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -483,7 +482,7 @@
               width="120"
             >
               <template slot-scope="scope">
-              <span :style="{color:(scope.row.TheResult==3||scope.row.TheResult==5)?'red':''}">{{
+                <span :style="{color:(scope.row.TheResult==3||scope.row.TheResult==5)?'red':''}">{{
                   FTheResult(scope.row.TheResult)
                 }}</span>
               </template>
@@ -535,14 +534,14 @@
         </el-table-column>
 
         <template v-if="gid === 24">
-<!--          <el-table-column-->
-<!--            prop="SchemaData"-->
-<!--            label="威胁等级"-->
-<!--          >-->
-<!--            <template slot-scope="scope">-->
-<!--              {{ showDangerLevel(scope.row.SchemaData.DangerLevel) }}-->
-<!--            </template>-->
-<!--          </el-table-column>-->
+          <!--          <el-table-column-->
+          <!--            prop="SchemaData"-->
+          <!--            label="威胁等级"-->
+          <!--          >-->
+          <!--            <template slot-scope="scope">-->
+          <!--              {{ showDangerLevel(scope.row.SchemaData.DangerLevel) }}-->
+          <!--            </template>-->
+          <!--          </el-table-column>-->
 
           <el-table-column
             prop="DealCardMode"
@@ -609,7 +608,7 @@ function newChartData() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { DateTimeShow, Compare, Publish, UidInput, LineChart,TongitsGameLog },
+  components: { DateTimeShow, Compare, Publish, UidInput, LineChart, TongitsGameLog },
   data() {
     return {
       tableData: [],
@@ -626,8 +625,8 @@ export default {
         loseCount: 0,
         seconds: 0
       },
-      GameLog:{}, //游戏日志
-      GameLogVisible:false,
+      GameLog: {}, // 游戏日志
+      GameLogVisible: false,
       detailVisible: false,
       detailData: [],
 
@@ -1074,9 +1073,9 @@ export default {
         return '胜率'
       }
     },
-    closeDialog(){
+    closeDialog() {
       // console.log("close dialog")
-      this.GameLogVisible=false
+      this.GameLogVisible = false
     }
   }
 }

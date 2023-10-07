@@ -424,13 +424,13 @@ export default {
           const d = JSON.parse(decodeURI(this.groupInfo[i].aps))
           console.log('dddd=>', d, 'raw===>', decodeURI(this.groupInfo[i].aps))
           this.selectedGroupInfo = d
-          console.log('groupinfo==>',this.groupInfo[i])
-          if ( this.groupInfo[i].app_list !== "") {
-            let selectedApp = JSON.parse(this.groupInfo[i].app_list)
+          console.log('groupinfo==>', this.groupInfo[i])
+          if (this.groupInfo[i].app_list !== '') {
+            const selectedApp = JSON.parse(this.groupInfo[i].app_list)
             for (let j = 0; j < this.appInfo.length; j++) {
               for (let k = 0; k < selectedApp.length; k++) {
-                if(this.appInfo[j].id == selectedApp[k]){
-                  this.$refs.multipleTable.toggleRowSelection(this.appInfo[j],true)
+                if (this.appInfo[j].id == selectedApp[k]) {
+                  this.$refs.multipleTable.toggleRowSelection(this.appInfo[j], true)
                   break
                 }
               }

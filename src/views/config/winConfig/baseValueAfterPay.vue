@@ -8,37 +8,37 @@
         <fieldset>
           <legend>加赠相关</legend>
           <el-form-item label="首充加赠比例：" :required="true">
-            <el-input style="width: 150px" v-model.number="item.First" placeholder="placeholder"><template slot="append">%</template></el-input>
+            <el-input v-model.number="item.First" style="width: 150px" placeholder="placeholder"><template slot="append">%</template></el-input>
           </el-form-item>
           <el-form-item label="复充加赠比例：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.NotFirst" placeholder="placeholder"><template slot="append">%</template></el-input>
+            <el-input v-model.number="item.NotFirst" style="width: 150px" placeholder="placeholder"><template slot="append">%</template></el-input>
           </el-form-item>
           <el-form-item label="加赠上限：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.UpLine" placeholder="placeholder" />
+            <el-input v-model.number="item.UpLine" style="width: 150px" placeholder="placeholder" />
           </el-form-item>
         </fieldset>
         <fieldset>
           <legend>历史基础值演算</legend>
           <el-form-item label="充值费率：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.PayRate" placeholder="placeholder"><template slot="append">‰</template></el-input>
+            <el-input v-model.number="item.PayRate" style="width: 150px" placeholder="placeholder"><template slot="append">‰</template></el-input>
           </el-form-item>
           <el-form-item label="提款比例(‰）：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.WRate" placeholder="placeholder"><template slot="append">‰</template></el-input>
+            <el-input v-model.number="item.WRate" style="width: 150px" placeholder="placeholder"><template slot="append">‰</template></el-input>
           </el-form-item>
           <el-form-item label="提款费率(‰)：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.WFeeRate" placeholder="placeholder" ><template slot="append">‰</template></el-input>
+            <el-input v-model.number="item.WFeeRate" style="width: 150px" placeholder="placeholder"><template slot="append">‰</template></el-input>
           </el-form-item>
           <el-form-item label="提款固定费率：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.WFee" placeholder="placeholder" />
+            <el-input v-model.number="item.WFee" style="width: 150px" placeholder="placeholder" />
           </el-form-item>
           <el-form-item label="砍杀下限(‰)：" :required="true">
-              <el-input style="width: 150px" v-model.number="item.BaseRate" placeholder="placeholder" ><template slot="append">‰</template></el-input>
+            <el-input v-model.number="item.BaseRate" style="width: 150px" placeholder="placeholder"><template slot="append">‰</template></el-input>
           </el-form-item>
         </fieldset>
         <fieldset>
           <legend>领取Bonus加基础值</legend>
           <el-form-item label="比例(‰)：" :required="true">
-            <el-input style="width: 150px" v-model.number="item.BonusBaseRate" placeholder="placeholder"><template slot="append">‰</template></el-input>
+            <el-input v-model.number="item.BonusBaseRate" style="width: 150px" placeholder="placeholder"><template slot="append">‰</template></el-input>
           </el-form-item>
         </fieldset>
         <el-col :offset="16" :span="8">

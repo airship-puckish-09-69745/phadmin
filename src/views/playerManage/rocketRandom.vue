@@ -5,10 +5,10 @@
         <el-form-item label="日期：">
           <div class="block">
             <el-date-picker
-                v-model="searchForm.dayStr"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择十五天内的日期"
+              v-model="searchForm.dayStr"
+              value-format="timestamp"
+              type="date"
+              placeholder="选择十五天内的日期"
             />
           </div>
         </el-form-item>
@@ -168,7 +168,7 @@ export default {
         lessThanTwoRate: 0,
         lessThanThreeRate: 0,
         moreThanThreeRate: 0,
-        moreThanEightRate: 0,
+        moreThanEightRate: 0
       },
       showData: {
         Rate100: 0,

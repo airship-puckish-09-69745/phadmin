@@ -259,7 +259,7 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="VPN说明：" >
+            <el-form-item label="VPN说明：">
               <el-input v-model="edit.item.VPN" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -341,7 +341,6 @@
   background: #f0f9eb;
 }
 
-
 .table .text-c th, .table .text-c td {
   text-align: center;
 }
@@ -384,10 +383,10 @@ function newItem() {
     AppName: '',
     AppID: '',
     AppDes: '',
-    VPN:'',
-    UpIP:'',
-    ServerIP:'',
-    BackCode:'',
+    VPN: '',
+    UpIP: '',
+    ServerIP: '',
+    BackCode: '',
     Mail: '',
     Mobile: '',
     Description: '',
@@ -469,11 +468,11 @@ export default {
   },
   methods: {
     importContent() {
-      const lines = this.importTxt.split("\n")
+      const lines = this.importTxt.split('\n')
       const tMap = {}
-      for(let i=0;i<lines.length;i++){
-        const ss = lines[i].split("=")
-        if(ss.length == 2){
+      for (let i = 0; i < lines.length; i++) {
+        const ss = lines[i].split('=')
+        if (ss.length == 2) {
           tMap[ss[0]] = ss[1]
         }
       }
@@ -500,7 +499,6 @@ export default {
         case 3:
         case 4:
           return 'success-row'
-
       }
     },
     formatNumber(n) {

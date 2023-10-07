@@ -30,8 +30,8 @@
         </el-form-item>
         <el-form-item v-model="item.idDesc" label="id 排序：" :required="true" label-width="80px">
           <el-select v-model="item.idDesc" placeholder="请选择">
-            <el-option label="正序" value="0"/>
-            <el-option label="逆序" value="1"/>
+            <el-option label="正序" value="0" />
+            <el-option label="逆序" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item>

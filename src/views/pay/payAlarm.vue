@@ -16,7 +16,7 @@
           <el-row>
             <el-form-item label="检查时间段：">
               <el-col :span="12">
-                <el-input v-model.number="item.CheckTime" :required="true" ><template slot="append">分钟</template></el-input>
+                <el-input v-model.number="item.CheckTime" :required="true"><template slot="append">分钟</template></el-input>
               </el-col>
             </el-form-item>
           </el-row>

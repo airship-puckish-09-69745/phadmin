@@ -12,7 +12,7 @@
           <el-row>
             <el-form-item label="自动弹窗：">
               <el-select v-model="item.autoShow" placeholder="请选择">
-                <el-option v-for="item in autoShowOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+                <el-option v-for="item in autoShowOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
           </el-row>
@@ -72,9 +72,9 @@ export default {
         payAmountPerSpin: 100000
       },
       autoShowOptions: [
-        {value: 0, label: '关闭'},
-        {value: 1, label: '每日首次登录'},
-        {value: 2, label: '每次登录'}
+        { value: 0, label: '关闭' },
+        { value: 1, label: '每日首次登录' },
+        { value: 2, label: '每次登录' }
       ],
       form: {
       },
@@ -109,23 +109,23 @@ export default {
           // console.log('sign reward', response)
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-            $this.item = JSON.parse(response.Data.Data);
-            $this.item.rewardPoolMin /= 1000;
-            $this.item.rewardBetMin /= 1000;
-            $this.item.payAmountPerSpin /= 1000;
+            $this.item = JSON.parse(response.Data.Data)
+            $this.item.rewardPoolMin /= 1000
+            $this.item.rewardBetMin /= 1000
+            $this.item.payAmountPerSpin /= 1000
             // 设置修改之前数据
-            $this.$refs.compare.SetOldVal(response.Data);
+            $this.$refs.compare.SetOldVal(response.Data)
           }
         }
       })
     },
-    getPostData(){
+    getPostData() {
       const postData = {}
       Object.assign(postData, this.item)
-      postData.rewardPoolMin *= 1000;
-      postData.rewardBetMin *= 1000;
-      postData.payAmountPerSpin *= 1000;
-      return postData;
+      postData.rewardPoolMin *= 1000
+      postData.rewardBetMin *= 1000
+      postData.payAmountPerSpin *= 1000
+      return postData
     },
     setData() {
       const postData = this.getPostData()

@@ -196,7 +196,7 @@ import Publish from '@/components/Publish'
 
 const filterMap = {
   'Type': { 1: '验证码', 2: '充值', 3: '提现', 4: '其他' },
-  'ActionType': { 1: '直接回复', 2: '对应查询', 3: '查询后返回'}
+  'ActionType': { 1: '直接回复', 2: '对应查询', 3: '查询后返回' }
 }
 
 function newItem() {
@@ -204,8 +204,8 @@ function newItem() {
     ID: '',
     Type: 1,
     ActionType: 1,
-    Answer1: "",
-    Answer2: "",
+    Answer1: '',
+    Answer2: '',
     Keys: '',
     SubType: 0
   }
@@ -336,14 +336,14 @@ export default {
           } catch (e) {
             console.log(this.edit.item.Keys)
           }
-          this.keys=[]
+          this.keys = []
           for (let i = 0; i < items.length; i++) {
             this.keys.push(items[i].join(','))
           }
           if (bEdit) {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(_data)
-          }else{
+          } else {
             this.edit.item = newItem()
           }
         }

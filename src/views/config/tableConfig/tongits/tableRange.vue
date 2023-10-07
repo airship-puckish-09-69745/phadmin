@@ -1,11 +1,11 @@
-<template >
+<template>
   <el-table :data="rangeList" border>
-    <el-table-column label="点数最小" >
+    <el-table-column label="点数最小">
       <template scope="scope">
         <el-input v-model.number="scope.row.Start" />
       </template>
     </el-table-column>
-    <el-table-column label="点数最大" >
+    <el-table-column label="点数最大">
       <template scope="scope">
         <el-input v-model.number="scope.row.End" />
       </template>
@@ -20,11 +20,11 @@
         <el-button
           size="mini"
           type="primary"
-            >添加</el-button>
+        >添加</el-button>
         <el-button
           size="mini"
           type="danger"
-            >删除</el-button>
+        >删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -46,6 +46,11 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      rangeList: []
+    }
+  },
   watch: {
   	'rangeList': {
       deep: true,
@@ -55,15 +60,10 @@ export default {
     }
   },
   created() {
-    
-  },
-  data() {
-    return {
-      rangeList: []
-    }
+
   },
   methods: {
-    
+
   }
 }
 </script>

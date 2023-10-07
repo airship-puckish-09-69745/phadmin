@@ -102,7 +102,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-              <el-form-item label="强制前注：" :required="true">
+            <el-form-item label="强制前注：" :required="true">
               <el-radio-group v-model.number="edit.item.NeedAnte">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
@@ -490,7 +490,7 @@ function NewResidentRobotSetting() {
   return {
     RobotMoneyRatioMin: 0,
     RobotMoneyRatioMax: 0,
-    RobotTablePlayers: ""
+    RobotTablePlayers: ''
   }
 }
 

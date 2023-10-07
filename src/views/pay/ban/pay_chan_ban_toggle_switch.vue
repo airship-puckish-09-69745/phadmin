@@ -3,29 +3,29 @@
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="8" :offset="1">
-        <br/>
-        <br/>
+        <br>
+        <br>
         <el-form ref="form" :model="form" label-width="150px">
           <el-form-item label="安卓开关">
             <el-switch
-              style="display: block"
               v-model="item.android"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="Galaxy开关">
             <el-switch
-              style="display: block"
               v-model="item.galaxy"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item>

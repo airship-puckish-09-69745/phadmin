@@ -7,37 +7,42 @@
           <el-row>
             <el-table
               :data="items"
-              style="width: 100%">
+              style="width: 100%"
+            >
               <el-table-column
                 prop="TotalPay"
-                label="玩家累计充值金额">
+                label="玩家累计充值金额"
+              >
                 <template slot-scope="scope">
-                  <money-input v-model="scope.row.TotalPay" label-width="0" label="" :is-disable="true"></money-input>
+                  <money-input v-model="scope.row.TotalPay" label-width="0" label="" :is-disable="true" />
                 </template>
               </el-table-column>
               <el-table-column
                 prop="Ratio"
-                label="提充比>">
+                label="提充比>"
+              >
                 <template slot-scope="scope">
                   <el-form-item>
-                    <el-input v-model.number="scope.row.Ratio" placeholder="提充比"></el-input>
+                    <el-input v-model.number="scope.row.Ratio" placeholder="提充比" />
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column
                 prop="WithdrawTimes"
-                label="提款笔数<">
+                label="提款笔数<"
+              >
                 <template slot-scope="scope">
                   <el-form-item>
-                    <el-input v-model.number="scope.row.WithdrawTimes" placeholder="提款笔数"></el-input>
+                    <el-input v-model.number="scope.row.WithdrawTimes" placeholder="提款笔数" />
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column
                 prop="TodayWithdrawAmount"
-                label="当天申请提款金额总和>">
+                label="当天申请提款金额总和>"
+              >
                 <template slot-scope="scope">
-                  <money-input v-model="scope.row.TodayWithdrawAmount" label-width="0" label=""></money-input>
+                  <money-input v-model="scope.row.TodayWithdrawAmount" label-width="0" label="" />
                 </template>
               </el-table-column>
             </el-table>

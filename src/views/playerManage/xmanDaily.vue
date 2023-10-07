@@ -173,7 +173,7 @@ export default {
       let ret = ''
       if (data != '') {
         const items = JSON.parse(data)
-        if(items){
+        if (items) {
           for (let i = 0; i < items.length; i++) {
             ret += this.gameNames[items[i]] + '|'
           }

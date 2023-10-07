@@ -117,7 +117,7 @@ export default {
         }
       })
     },
-    getPostData(){
+    getPostData() {
       this.item.IsValid = (this.isValid ? 1 : 0)
       const postData = {}
       Object.assign(postData, this.item)

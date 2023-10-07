@@ -48,7 +48,7 @@
 </template>
 <script>
 import Diff from '@/utils/diff'
-import {$LibJsonDiff, $libType} from '@/utils/common'
+import { $LibJsonDiff, $libType } from '@/utils/common'
 
 const diff = new Diff.Diff()
 const diffFormatter = new Diff.DiffFormatter(diff)
@@ -256,7 +256,7 @@ export default {
       }
       let oldVal = this.oldVal
       let newVal = this.newVal
-      if(this.compareType === 'Object') {
+      if (this.compareType === 'Object') {
         oldVal = JSON.parse(this.oldVal)
         newVal = JSON.parse(this.newVal)
       }
@@ -278,8 +278,7 @@ export default {
       } else {
         return false
       }
-    },
-
+    }
 
   }
 }

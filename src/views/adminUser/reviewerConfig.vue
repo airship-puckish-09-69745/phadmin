@@ -371,7 +371,7 @@ export default {
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
-    initUsers(){
+    initUsers() {
       const $this = this
       request({
         url: '/adminuser/users',

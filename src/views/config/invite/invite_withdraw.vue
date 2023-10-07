@@ -8,17 +8,17 @@
 
           <el-form-item label="自动审核开关">
             <el-switch
-              style="display: block"
               v-model="item.Switch"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开启"
-              inactive-text="关闭">
-            </el-switch>
+              inactive-text="关闭"
+            />
           </el-form-item>
 
           <el-form-item label="被邀请用户总充提比%">
-            <el-input v-model.number="item.Rate" placeholder="placeholder"></el-input>
+            <el-input v-model.number="item.Rate" placeholder="placeholder" />
             <div style="color: #8c939d">
               公式：被邀请用户 总提现 / 总充值 = 比例
             </div>
@@ -28,11 +28,11 @@
           </el-form-item>
 
           <el-form-item label="首次提款被邀请用户充提比,放大100倍">
-            <el-input v-model.number="item.FirstRate" placeholder="placeholder"></el-input>
+            <el-input v-model.number="item.FirstRate" placeholder="placeholder" />
           </el-form-item>
 
           <el-form-item label="非首次提款被邀请用户充提比,放大100倍">
-            <el-input v-model.number="item.NormalRate" placeholder="placeholder"></el-input>
+            <el-input v-model.number="item.NormalRate" placeholder="placeholder" />
           </el-form-item>
 
           <el-form-item>
@@ -102,7 +102,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log("rate rsp", response)
+          console.log('rate rsp', response)
           if (response.Data) {
             $this.rate = this.DeepCopy(response.Data)
           }

@@ -35,7 +35,7 @@
                 label="AP"
               >
                 <template slot-scope="scope">
-                  {{scope.row.name}}({{scope.row.ap}})
+                  {{ scope.row.name }}({{ scope.row.ap }})
                 </template>
               </el-table-column>
               <el-table-column
@@ -241,10 +241,10 @@ export default {
         aps: []
       }
     },
-    changeGroup(row){
+    changeGroup(row) {
       this.groupDialogVisible = true
       const apInfo = JSON.parse(decodeURI(row.aps))
-      let lists = []
+      const lists = []
       for (let i = 0; i < apInfo.length; i++) {
         lists.push([apInfo[i].ap, apInfo[i].port])
       }
@@ -261,12 +261,12 @@ export default {
       const tips = this.groupForm.gid !== 0 ? '是否修改分组' : '是否添加分组'
       const uri = this.groupForm.gid === 0 ? '/frontcfg/create/ap/group' : '/frontcfg/update/ap/group'
       let aps = ''
-      console.log('uri===>', uri,this.groupForm)
-      if ( this.groupForm.name === "" ) {
-        Message.error("分组名称为空")
+      console.log('uri===>', uri, this.groupForm)
+      if (this.groupForm.name === '') {
+        Message.error('分组名称为空')
         return
       }
-      let apsArr = [];
+      const apsArr = []
       for (let i = 0; i < this.groupForm.aps.length; i++) {
         apsArr.push({
           ap: this.groupForm.aps[i][0],
@@ -275,8 +275,8 @@ export default {
         })
       }
       aps = JSON.stringify(apsArr)
-      if(aps === ""){
-        Message.error("未选择ap")
+      if (aps === '') {
+        Message.error('未选择ap')
         return
       }
       aps = encodeURI(aps)

@@ -45,8 +45,8 @@
           <el-descriptions-item label="系列：">{{ item.AppID > 100000?'Galaxy':'Android' }}</el-descriptions-item>
           <el-descriptions-item label="AppID：">{{ item.AppID }}</el-descriptions-item>
           <el-descriptions-item label="来源Appid：">{{ showSourceAppid(item.SourceAppid) }}</el-descriptions-item>
-          <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime"/></el-descriptions-item>
-          <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime"/></el-descriptions-item>
+          <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
+          <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
 
           <el-descriptions-item label="Bonus：">{{ item.BonusTotal }}</el-descriptions-item>
           <el-descriptions-item label="Bonus可提："> {{ item.BonusValid }}</el-descriptions-item>
@@ -57,7 +57,7 @@
             {{ formatNumber(item.PayValue) }}
             <el-button v-if="item.PayValue==0" type="primary" size="mini" @click="setUserPay">加0.001</el-button>
             <el-button v-if="item.PayValue==0.001" type="primary" size="mini" @click="setUserPay2">加100</el-button>
-            <el-button type="danger" size="mini" @click="clearFirstPayFlag" >清除首充状态</el-button>
+            <el-button type="danger" size="mini" @click="clearFirstPayFlag">清除首充状态</el-button>
           </el-descriptions-item>
           <el-descriptions-item label="单笔最大充值额度：">
             {{ item.MaxPayAmount | toRupee | numberFormat }}
@@ -900,7 +900,7 @@ import { $libDate, $libShow, $libType, MoneyShow } from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 import { toRupee, numberFormat } from '@/utils'
-import DateTimeShow from "@/components/DatetimeShow";
+import DateTimeShow from '@/components/DatetimeShow'
 
 function NewRelationSummary() {
   return {
@@ -914,7 +914,7 @@ function NewRelationSummary() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {DateTimeShow, Compare, Publish, UidInput },
+  components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
       item: {
@@ -947,13 +947,13 @@ export default {
         InviteWithdraw: 0, // 分享模块-可提余额
         InviteWithdrawProcess: 0, // 分享模块-提现中
         AppId: 0,
-        SourceAppid: 0, //来源appid
+        SourceAppid: 0, // 来源appid
         PaySchema: {
 
         },
         Phone: '',
         IsSetLoginPwd: false,
-        IsSetPayPwd: false,
+        IsSetPayPwd: false
       },
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
@@ -1034,10 +1034,10 @@ export default {
       if (this.env === 'test') {
         return $libShow.GetFullPath(this.item.Icon)
       } else {
-        //兼容一下第三方图片
-        let needCdnDomain = true;
-        if (this.item.Icon.indexOf("http://") == 0 || this.item.Icon.indexOf("https://") == 0) {
-          needCdnDomain = false;
+        // 兼容一下第三方图片
+        let needCdnDomain = true
+        if (this.item.Icon.indexOf('http://') == 0 || this.item.Icon.indexOf('https://') == 0) {
+          needCdnDomain = false
         }
         if (needCdnDomain) {
           return 'http://aws.texas-cdn.joydance.hk' + this.item.Icon

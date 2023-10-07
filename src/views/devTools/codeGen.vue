@@ -49,13 +49,13 @@ export default {
       iType: 1
     }
   },
-  created() {
-    this.iType = this.$route.name === 'codeGenRPCSQL' ? 2 : 1
-  },
   computed: {
     actionURL() {
       return process.env.VUE_APP_BASE_API + '/other/upload'
     }
+  },
+  created() {
+    this.iType = this.$route.name === 'codeGenRPCSQL' ? 2 : 1
   },
   methods: {
     copyText(id) {

@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="item" label-width="80px" size="small">
         <el-form-item label="日志内容：" :required="true" label-width="150px">
-          <el-input v-model="item.text" type="textarea" rows="10"/>
+          <el-input v-model="item.text" type="textarea" rows="10" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="getInfo">查看</el-button>
@@ -90,7 +90,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.cards)"/>
+            <div v-html="showCard(scope.row.cards)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -129,12 +129,12 @@
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
-import {$libDate, $libShow} from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 import store from '@/store'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, UidInput},
+  components: { Compare, Publish, UidInput },
   data() {
     return {
       tableData: [],
@@ -160,7 +160,7 @@ export default {
         16: '拒绝比牌',
         17: '因为要充值临时停止牌局'
       },
-      typeNames: {1: '输不符合', 2: '白名单用户', 3: '游戏中付费', 4: '额度高', 5: '倍数高'},
+      typeNames: { 1: '输不符合', 2: '白名单用户', 3: '游戏中付费', 4: '额度高', 5: '倍数高' },
       item: {
         Uid: 0,
         date: $libDate.GetDayBegin(new Date().getTime()),
@@ -181,7 +181,7 @@ export default {
     console.log(1)
   },
   methods: {
-    tableRowClassName({row, rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.uid > 1000000) {
         return 'success-row'
       } else {
@@ -200,7 +200,7 @@ export default {
       if (column.columnKey !== 'op') {
         this.actionVisible = true
         const cards = {}
-        for(let i=0;i<row.players.length;i++){
+        for (let i = 0; i < row.players.length; i++) {
           cards[row.players[i].uid] = row.players[i].cards
         }
         for (let i = 0; i < row.actions.length; i++) {
@@ -292,7 +292,7 @@ export default {
       this.refreshShow()
     },
     getInfo() {
-      if(this.item.text != "") {
+      if (this.item.text != '') {
         const objs = JSON.parse(this.item.text)
         for (let i = 0; i < objs.length; i++) {
           const item = objs[i]
@@ -303,7 +303,6 @@ export default {
               objs[i].MoneyChanged = p.moneyChange
               break
             }
-
           }
         }
         this.tableData = objs

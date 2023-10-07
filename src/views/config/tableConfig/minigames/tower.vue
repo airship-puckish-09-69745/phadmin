@@ -1,94 +1,97 @@
 <template>
   <div class="app-container">
-  	<el-row>
-    	<publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
+    <el-row>
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </el-row>
     <!--公共配置-->
     <el-row style="margin-top: 30px">
-    	<el-form label-position="left" ref="form">
-    		<el-row>
-    			<el-col :span="7">
-		    		<el-form-item label="最低下注(放大1000倍)：">
-		 				<el-input  v-model.number="item.MinBet"></el-input>
-		 			</el-form-item>
-		 		</el-col>
-		 		<el-col :span="7" :offset="1">
-		 			<el-form-item label="服务费：">
-		 				<el-input v-model.number="item.ServiceFee"><template slot="append">%</template></el-input>
-		 			</el-form-item>
-		 		</el-col>	
- 				<el-col :span="7" :offset="1">
- 					<el-form-item label="单局最大时间：">
-		 				<el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
-		 			</el-form-item>
- 				</el-col>
- 			</el-row>
- 			<el-row>
- 				<el-col :span="7">
- 					<el-form-item label="Jackpot贡献率：">
-		 				<el-input v-model.number="item.JackpotFee"><template slot="append">%</template></el-input>
-		 			</el-form-item>
- 				</el-col>
- 				<el-col :span="7" :offset="1">
- 					<el-form-item label="中Jackpot倍率：">
-		 				<el-input v-model.number="item.JackpotOdds"></el-input>
-		 			</el-form-item>
- 				</el-col>
- 			</el-row>
-    	</el-form>
+      <el-form ref="form" label-position="left">
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="最低下注(放大1000倍)：">
+              <el-input v-model.number="item.MinBet" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="服务费：">
+              <el-input v-model.number="item.ServiceFee"><template slot="append">%</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="单局最大时间：">
+              <el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="Jackpot贡献率：">
+              <el-input v-model.number="item.JackpotFee"><template slot="append">%</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="中Jackpot倍率：">
+              <el-input v-model.number="item.JackpotOdds" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
     </el-row>
     <el-row style="margin-top: 30px">
-    	<el-tabs type="border-card">
-		  <el-tab-pane :label="getLabelName(v.Level)" v-for="(v,idx) in item.LevelConfig" :key="idx">
-		  	<el-form label-position="left">
-		     	<h3>级别：{{levelCfg[v.Level]}}</h3>
-		     	<el-row>
-		     		<el-col :span="11">
-		     			<el-form-item label="行数：">
-		     				<el-input size="small" v-model.number="v.Row"><template slot="append">行</template></el-input>
-		     			</el-form-item>
-		     		</el-col>
-		     		<el-col :span="11">
-		     			<el-form-item label="列数：">
-		     				<el-input size="small" v-model.number="v.Col"><template slot="append">列</template></el-input>
-		     			</el-form-item>
-		     		</el-col>
-		     	</el-row>
-		     	<el-row>
-		     		<el-col :span="11">
-		     			<el-form-item label="每行星星数：">
-		     				<el-input v-model.number="v.StarNum"><template slot="append">个星星</template></el-input>
-		     			</el-form-item>
-		     		</el-col>
-		     		<el-col :span="11">
-		     			<el-form-item label="每行炸弹数：">
-		     				<el-input v-model.number="v.BombNum"><template slot="append">个炸弹</template></el-input>
-		     			</el-form-item>
-		     		</el-col>
-		     	</el-row>
-		      	<el-table
-			    :data="v.Line"
-			    border
-			    style="width: 100%">
-				    <el-table-column
-				      label="行"
-				      width="180">
-				      <template slot-scope="scope">
-				      第{{scope.row.RowIndex+1}}行
-			  		 </template>
-				    </el-table-column>
-				    <el-table-column
-				      label="倍率(说明：2.06倍数值为206)"
-				      width="380">
-					    <template slot-scope="scope">
-			                <el-input v-model.number="scope.row.RowOdds"><template slot="append">倍率*100</template></el-input>
-			          	</template>
-		            </el-table-column>
-			  	</el-table>
-			</el-form>
-		  </el-tab-pane>
-		</el-tabs>
-     
+      <el-tabs type="border-card">
+        <el-tab-pane v-for="(v,idx) in item.LevelConfig" :key="idx" :label="getLabelName(v.Level)">
+          <el-form label-position="left">
+            <h3>级别：{{ levelCfg[v.Level] }}</h3>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="行数：">
+                  <el-input v-model.number="v.Row" size="small"><template slot="append">行</template></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="列数：">
+                  <el-input v-model.number="v.Col" size="small"><template slot="append">列</template></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-form-item label="每行星星数：">
+                  <el-input v-model.number="v.StarNum"><template slot="append">个星星</template></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="每行炸弹数：">
+                  <el-input v-model.number="v.BombNum"><template slot="append">个炸弹</template></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-table
+              :data="v.Line"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="行"
+                width="180"
+              >
+                <template slot-scope="scope">
+                  第{{ scope.row.RowIndex+1 }}行
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="倍率(说明：2.06倍数值为206)"
+                width="380"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.RowOdds"><template slot="append">倍率*100</template></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </el-tab-pane>
+      </el-tabs>
+
     </el-row>
     <el-row>
       <el-col :offset="16">
@@ -106,7 +109,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-//import slotsJackpotPhoenix from './components/jackpot_phoenix'
+// import slotsJackpotPhoenix from './components/jackpot_phoenix'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -115,16 +118,16 @@ export default {
     return {
       item: {
   	  },
-      load:false,
+      load: false,
       form: {
       },
-      levelCfg:{
-      	1:"Easy",
-      	2:"Medium",
-      	3:"Hard",
-      	4:"Expert",
-      	5:"Master",
-      	6:"Nightmare"
+      levelCfg: {
+      	1: 'Easy',
+      	2: 'Medium',
+      	3: 'Hard',
+      	4: 'Expert',
+      	5: 'Master',
+      	6: 'Nightmare'
       },
       txt: '',
       subKey: 'tower_cfg'
@@ -136,7 +139,7 @@ export default {
     console.log(1)
   },
   methods: {
-  	getLabelName(k){
+  	getLabelName(k) {
   		return this.levelCfg[k]
   	},
     getFullKey() {
@@ -154,23 +157,23 @@ export default {
           console.log('tower cfg', response)
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-          	let cfg = JSON.parse(response.Data.Data)
-          	for(let i=0;i<cfg.LevelConfig.length;i++){
-          		let one = cfg.LevelConfig[i].Line
-          		let row = cfg.LevelConfig[i].Row
-          		for(let j=0;j<row;j++){
+          	const cfg = JSON.parse(response.Data.Data)
+          	for (let i = 0; i < cfg.LevelConfig.length; i++) {
+          		const one = cfg.LevelConfig[i].Line
+          		const row = cfg.LevelConfig[i].Row
+          		for (let j = 0; j < row; j++) {
           			let isGet = false
-          			for(let k=0;k<one.length;k++){
-          				if(one[k].RowIndex == j){
+          			for (let k = 0; k < one.length; k++) {
+          				if (one[k].RowIndex == j) {
           					isGet = true
           					break
           				}
           			}
-          			if(!isGet){
-          				one.push({RowIndex:j,RowOdds:0})
+          			if (!isGet) {
+          				one.push({ RowIndex: j, RowOdds: 0 })
           			}
           		}
-          		one.sort(function(a,b){return a.RowIndex-b.RowIndex})
+          		one.sort(function(a, b) { return a.RowIndex - b.RowIndex })
           	}
             this.item = cfg
             // 设置修改之前数据
@@ -181,12 +184,12 @@ export default {
       })
     },
     setData() {
-    	//检验
-    	for(let i=0;i<this.item.LevelConfig.length;i++){
-    		let one = this.item.LevelConfig[i];
-    		let lvl = one.Level;
-    		if(one.Col != one.StarNum+one.BombNum){
-    			Message.error("级别："+this.levelCfg[lvl]+"下 星星["+one.StarNum+"]+炸弹["+one.BombNum+"]数不等于列["+one.Col+"]")
+    	// 检验
+    	for (let i = 0; i < this.item.LevelConfig.length; i++) {
+    		const one = this.item.LevelConfig[i]
+    		const lvl = one.Level
+    		if (one.Col != one.StarNum + one.BombNum) {
+    			Message.error('级别：' + this.levelCfg[lvl] + '下 星星[' + one.StarNum + ']+炸弹[' + one.BombNum + ']数不等于列[' + one.Col + ']')
     			return
     		}
     	}
