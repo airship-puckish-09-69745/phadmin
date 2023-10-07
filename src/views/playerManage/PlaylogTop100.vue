@@ -153,7 +153,7 @@ export default {
       loseRank:[],
       countRank:[],
       libShow:$libShow,
-      gid: 10,
+      gid: 22,
       ctime: new Date().getTime() - 86400000,
       gameSort: [22],
       pickerOptions: {
