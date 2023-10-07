@@ -149,13 +149,13 @@ import { Loading, Message } from 'element-ui'
 export default {
   data() {
     return {
-      winRank: [],
-      loseRank: [],
-      countRank: [],
-      libShow: $libShow,
-      gid: 10,
+      winRank:[],
+      loseRank:[],
+      countRank:[],
+      libShow:$libShow,
+      gid: 22,
       ctime: new Date().getTime() - 86400000,
-      gameSort: [9, 1, 14, 8, 2, 3, 4, 5, 6, 7, 13, 16, 17, 18, 19, 10, 20, 51, 52, 53, 54, 55, 57, 58],
+      gameSort: [22],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > new Date().getTime()
