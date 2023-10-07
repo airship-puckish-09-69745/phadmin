@@ -685,38 +685,6 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/safe',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '安全管理', icon: 'safe' },
-    children: [
-      {
-        path: 'checklist',
-        component: () => import('@/views/playerManage/safe/checklist'),
-        name: 'checklist',
-        meta: { title: '安全检测日志 ◐' }
-      },
-      {
-        path: 'safeInfo',
-        component: () => import('@/views/playerManage/safeInfo'),
-        name: 'safeInfo',
-        meta: { title: '账号关联查询 ◐' }
-      },
-      {
-        path: 'blackInfo',
-        component: () => import('@/views/playerManage/blackInfo'),
-        name: 'blackInfo',
-        meta: { title: '是否黑名单 ◐' }
-      },
-      {
-        path: 'blacklist',
-        component: () => import('@/views/playerManage/blacklist'),
-        name: 'blacklist',
-        meta: { title: '黑名单列表 ◐' }
-      }
-    ]
-  },
-  {
     path: '/devTools',
     component: Layout,
     redirect: 'noRedirect',
