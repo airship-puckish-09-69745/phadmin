@@ -60,7 +60,8 @@
               <span>tongits：{{ one.tongitsMoney }}</span><br>
               <span>服务费：{{ one.moneyFee }}</span><br>
               <span>Pot：{{ one.payPot }}</span><br>
-              <span>输赢：{{ one.moneyChange }}</span>
+              <span>输赢：{{ one.moneyChange }}</span><br>
+              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>
             </div>
           </div>
         </template>
@@ -207,15 +208,16 @@ export default {
 	      			Uid: one.uid,
 	      			Nick: one.nick,
 	      			bonusCardMoney: val.players[j].bonusCardMoney,
-          burnedMoney: val.players[j].burnedMoney,
-          challengeMoney: val.players[j].challengeMoney,
-          normalMoney: val.players[j].normalMoney,
-          potMoney: val.players[j].potMoney,
-          secretMeldMoney: val.players[j].secretMeldMoney,
-          tongitsMoney: val.players[j].tongitsMoney,
-          moneyChange: val.players[j].moneyChange,
-          moneyFee: val.players[j].moneyFee,
-          payPot: 0 - val.players[j].payPot
+		          burnedMoney: val.players[j].burnedMoney,
+		          challengeMoney: val.players[j].challengeMoney,
+		          normalMoney: val.players[j].normalMoney,
+		          potMoney: val.players[j].potMoney,
+		          secretMeldMoney: val.players[j].secretMeldMoney,
+		          tongitsMoney: val.players[j].tongitsMoney,
+		          moneyChange: val.players[j].moneyChange,
+		          moneyFee: val.players[j].moneyFee,
+		          payPot: 0 - val.players[j].payPot,
+		          Character: val.players[j].Character
 	      		})
   			}
 	      	this.actions.push({
@@ -249,6 +251,24 @@ export default {
         return 0
       } else {
         return cards[0]
+      }
+    },
+    showRobotLevel(level) {
+      switch (level) {
+        case 0:
+          return '真人'
+        case 1:
+          return 'A'
+        case 2:
+          return 'B'
+      	case 3:
+          return 'C'
+      	case 4:
+          return 'D'
+      	case 5:
+          return 'E'
+        default:
+          return level
       }
     },
     closeView(done) {
