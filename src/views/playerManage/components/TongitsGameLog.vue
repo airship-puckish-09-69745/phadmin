@@ -217,7 +217,7 @@ export default {
 		          moneyChange: val.players[j].moneyChange,
 		          moneyFee: val.players[j].moneyFee,
 		          payPot: 0 - val.players[j].payPot,
-		          Character: val.players[j].Character
+		          Character: val.players[j].character
 	      		})
   			}
 	      	this.actions.push({
