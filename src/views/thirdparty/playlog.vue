@@ -202,6 +202,11 @@
           width="120"
         />
         <el-table-column
+          prop="site_id"
+          label="站点标识"
+          width="120"
+        />
+        <el-table-column
           prop="game_log"
           label="gameLog"
           width="120"
