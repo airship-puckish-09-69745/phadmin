@@ -172,6 +172,11 @@
               <el-input v-model="edit.item.WatchTimesMax" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="自动买入比例(%)：" :required="true" prop="item.AutoBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.AutoBuyRatio" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
           <!--
           <el-col :span="11">
             <el-form-item label="是否练习场：" :required="true">
@@ -527,7 +532,8 @@ function newItem() {
     RecommendBankruptGid: 0,
     SinglePay: 0,
     TotalPay: 0,
-    HideLevel: 0
+    HideLevel: 0,
+    AutoBuyRatio:0,
   }
 }
 
@@ -585,6 +591,7 @@ export default {
         SinglePay: '单次充值大于',
         TotalPay: '总充值大于',
         HideLevel: '进入该场次后隐藏场次',
+        AutoBuyRatio: '自动买入比例',
         'RandomRobotSetting.RobotNumMax': '陪玩机器人数量上限',
         'RandomRobotSetting.RobotTriggerMin': '陪玩机器人的触发人数下限',
         'RandomRobotSetting.RobotTriggerMax': '陪玩机器人的触发人数上限',
