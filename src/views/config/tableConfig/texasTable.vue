@@ -145,11 +145,11 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
-          <el-col :span="11">
+<!--          <el-col :span="11">
             <el-form-item label="抽水最少大盲倍数：" :required="true" prop="item.FlowLower" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model="edit.item.FlowLower" placeholder="请输入" />
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
         <!--
         <el-row>
@@ -505,7 +505,7 @@ function newItem() {
     IsVip: 0,
     ObjectCount: 200,
     FlowRate: 0,
-    FlowLower: 2,
+    FlowLower: 0, // 改成默认0。 https://www.tapd.cn/48971248/prong/stories/view/1148971248001003193
     ActionSeconds: 15,
     IsPro: 0,
     PurchaseSecondsMax: 180,
