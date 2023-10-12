@@ -515,6 +515,12 @@ export const asyncRoutes = [
         meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
       },
       {
+        path: 'playlog_texas',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_texas',
+        meta: { title: '德州扑克 - Texas ◐', gid: 15 }
+      },
+      {
         path: 'slotsLog',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
