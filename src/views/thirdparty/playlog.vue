@@ -49,8 +49,8 @@
           border
         >
           <el-descriptions-item label="总投注笔数：">{{ formatNumber(item.total_bet_num) }}</el-descriptions-item>
-          <el-descriptions-item label="总的有效投注额度："> {{ item.total_valid_bet_amount }}</el-descriptions-item>
-          <el-descriptions-item label="总的输赢：">{{ item.total_win_loss_amount }}</el-descriptions-item>
+          <el-descriptions-item label="总的有效投注额度："> {{ jackportShow(item.total_valid_bet_amount/1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总的输赢：">{{ jackportShow(item.total_win_loss_amount/1000) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
