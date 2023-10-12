@@ -228,6 +228,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="推荐买入倍数(大盲)：" :required="true" prop="item.RecommendBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RecommendBuyRatio" placeholder="进房间推荐买入多少倍大盲" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <!--
         <el-row>
           <el-col :span="11">
@@ -534,6 +541,7 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     AutoBuyRatio:0,
+    RecommendBuyRatio:0,
   }
 }
 
@@ -592,6 +600,7 @@ export default {
         TotalPay: '总充值大于',
         HideLevel: '进入该场次后隐藏场次',
         AutoBuyRatio: '自动买入比例',
+        RecommendBuyRatio: '推荐买入倍数(大盲)',
         'RandomRobotSetting.RobotNumMax': '陪玩机器人数量上限',
         'RandomRobotSetting.RobotTriggerMin': '陪玩机器人的触发人数下限',
         'RandomRobotSetting.RobotTriggerMax': '陪玩机器人的触发人数上限',
