@@ -61,6 +61,9 @@
             <el-col :span="8">
               <h5>其它配置</h5>
               <el-form ref="item" label-width="220px">
+                <el-form-item label="机器人开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-switch v-model="item.EnableRobot" :active-value="1" :inactive-value="0" />
+                </el-form-item>
                 <el-form-item label="最少玩牌局数">
                   <el-input v-model.number="item.PlayTimesMin" size="mini" />
                 </el-form-item>
@@ -527,6 +530,7 @@ export default {
         'IncrPlayTimesMax': 0,
         'CarryingMultiMin': 0,
         'CarryingMultiMax': 0,
+        'EnableRobot': 0,
         'BetTimesCfg': [newBetTimesCfg(1, 3, 40), newBetTimesCfg(4, 5, 30), newBetTimesCfg(6, 6, 30)],
         'BetOptionCfg': [newBetOptionCfg(1, 25), newBetOptionCfg(2, 700), newBetOptionCfg(3, 250), newBetOptionCfg(4, 25)],
         'TakeCardCfg': [newTakeCardCfg(0, 100), newTakeCardCfg(1, 100), newTakeCardCfg(2, 100), newTakeCardCfg(3, 100), newTakeCardCfg(4, 100), newTakeCardCfg(5, 80), newTakeCardCfg(6, 5), newTakeCardCfg(7, 0), newTakeCardCfg(8, 0), newTakeCardCfg(9, 0)],
