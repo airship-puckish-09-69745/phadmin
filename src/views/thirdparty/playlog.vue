@@ -72,7 +72,7 @@
         />
         <el-table-column
           prop="game_id"
-          label="给平台方的游戏id"
+          label="平台GID"
           width="110"
         >
           <template slot-scope="scope">
@@ -91,7 +91,7 @@
         <el-table-column
           prop="bet_amount"
           label="下注额"
-          width="120"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.bet_amount/1000) }}
@@ -99,8 +99,8 @@
         </el-table-column>
         <el-table-column
           prop="valid_bet_amount"
-          label="有效下注额"
-          width="120"
+          label="有效下注"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.valid_bet_amount/1000) }}
@@ -108,8 +108,8 @@
         </el-table-column>
         <el-table-column
           prop="before_amount"
-          label="投注前用户余额"
-          width="120"
+          label="注前余额"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.before_amount/1000) }}
@@ -127,7 +127,7 @@
         <el-table-column
           prop="service_fee"
           label="服务费"
-          width="120"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
@@ -135,8 +135,8 @@
         </el-table-column>
         <el-table-column
           prop="ggr"
-          label="ggr"
-          width="120"
+          label="GGR"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.ggr / 1000) }}
@@ -144,8 +144,8 @@
         </el-table-column>
         <el-table-column
           prop="money_now"
-          label="结算后当前余额"
-          width="120"
+          label="结算后余额"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.money_now/1000) }}
@@ -153,8 +153,8 @@
         </el-table-column>
         <el-table-column
           prop="pot_bet"
-          label="投到 jackpot 的金额"
-          width="120"
+          label="jackpot bet"
+          width="100"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.pot_bet/1000) }}
@@ -162,8 +162,8 @@
         </el-table-column>
         <el-table-column
           prop="jackpot_amount"
-          label="获得 jackpot 的金额"
-          width="120"
+          label="获得jackpot"
+          width="100"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.jackpot_amount/1000) }}
@@ -199,22 +199,23 @@
         <el-table-column
           prop="unique_no"
           label="UniqueNO"
-          width="120"
-        />
+          width="150"
+        >
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.game_log" placement="right">
+              <el-button>{{ scope.row.unique_no}}</el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="site_id"
           label="站点标识"
-          width="120"
-        />
-        <el-table-column
-          prop="game_log"
-          label="gameLog"
-          width="120"
+          width="80"
         />
         <el-table-column
           prop="account"
           label="用户唯一标识"
-          width="120"
+          width="150"
         />
       </el-table>
     </el-row>
