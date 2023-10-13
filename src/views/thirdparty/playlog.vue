@@ -206,7 +206,7 @@
                 用户标识:{{scope.row.account}}
                 </el-row>
               </template>
-              <el-button slot="reference" size="mini">scope.row.unique_no</el-button>
+              <el-button slot="reference" size="mini">{{scope.row.unique_no}}</el-button>
             </el-popover>
           </template>
         </el-table-column>
