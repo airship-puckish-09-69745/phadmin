@@ -73,25 +73,16 @@
         <el-table-column
           prop="game_id"
           label="平台GID"
-          width="110"
+          width="150"
         >
           <template slot-scope="scope">
             {{ scope.row.game_id }}（{{ games[scope.row.game_id] }}）
           </template>
         </el-table-column>
         <el-table-column
-          prop="Status"
-          label="输赢平"
-          width="70"
-        >
-          <template slot-scope="scope">
-            {{ allStatus[scope.row.status] }}
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="bet_amount"
           label="下注额"
-          width="100"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.bet_amount/1000) }}
@@ -100,7 +91,7 @@
         <el-table-column
           prop="valid_bet_amount"
           label="有效下注"
-          width="100"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.valid_bet_amount/1000) }}
@@ -109,7 +100,7 @@
         <el-table-column
           prop="before_amount"
           label="注前余额"
-          width="100"
+          width="120"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.before_amount/1000) }}
@@ -117,7 +108,7 @@
         </el-table-column>
         <el-table-column
           prop="payoff_amount"
-          label="输赢金额（资产变化值）"
+          label="资产变化"
           width="120"
         >
           <template slot-scope="scope">
@@ -127,7 +118,7 @@
         <el-table-column
           prop="service_fee"
           label="服务费"
-          width="100"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
@@ -136,7 +127,7 @@
         <el-table-column
           prop="ggr"
           label="GGR"
-          width="100"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.ggr / 1000) }}
@@ -203,7 +194,7 @@
         >
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="scope.row.game_log" placement="right">
-              <el-button>{{ scope.row.unique_no}}</el-button>
+              <el-button size="mini">{{ scope.row.unique_no}}</el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -215,7 +206,7 @@
         <el-table-column
           prop="account"
           label="用户唯一标识"
-          width="150"
+          min-width="150"
         />
       </el-table>
     </el-row>
