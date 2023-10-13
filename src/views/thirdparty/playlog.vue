@@ -199,15 +199,15 @@
               trigger="hover"
               >
               <template>
+                <el-row>
                 GameLog:{{scope.row.game_log}}
+                </el-row>
+                <el-row>
                 用户标识:{{scope.row.account}}
+                </el-row>
               </template>
               <el-button slot="reference" size="mini">scope.row.unique_no</el-button>
             </el-popover>
-
-            <el-tooltip class="item" effect="dark" :content="scope.row.game_log" placement="right">
-              <el-button size="mini">{{ scope.row.unique_no}}</el-button>
-            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column
