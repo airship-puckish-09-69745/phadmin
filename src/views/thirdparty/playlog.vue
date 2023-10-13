@@ -193,6 +193,18 @@
           width="150"
         >
           <template slot-scope="scope">
+            <el-popover
+              placement="top-start"
+              width="200"
+              trigger="hover"
+              >
+              <template>
+                GameLog:{{scope.row.game_log}}
+                用户标识:{{scope.row.account}}
+              </template>
+              <el-button slot="reference" size="mini">scope.row.unique_no</el-button>
+            </el-popover>
+
             <el-tooltip class="item" effect="dark" :content="scope.row.game_log" placement="right">
               <el-button size="mini">{{ scope.row.unique_no}}</el-button>
             </el-tooltip>
@@ -202,11 +214,6 @@
           prop="site_id"
           label="站点标识"
           width="80"
-        />
-        <el-table-column
-          prop="account"
-          label="用户唯一标识"
-          min-width="150"
         />
       </el-table>
     </el-row>
