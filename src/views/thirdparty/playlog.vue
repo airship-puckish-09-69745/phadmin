@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item v-model="item.app" label="App：" :required="true" label-width="80px">
-          <el-select v-model="item.app" placeholder="请选择">
+          <el-select v-model="item.app" placeholder="请选择" size="mini">
             <el-option
               v-for="row in appInfo"
               :key="row.key"
@@ -12,12 +12,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="游戏筛选：" :required="true" label-width="80px">
-          <el-select v-model="item.gameId" placeholder="游戏筛选">
-<!--            <el-option :key="0" label="所有" value="0" aria-selected="true" />-->
+        <el-form-item v-model="item.gameId" label="游戏筛选：" :required="true" label-width="80px">
+          <el-select v-model="item.gameId" placeholder="游戏筛选" size="mini">
             <el-option
               v-for="row in games2"
-              :key="row.id"
               :label="row.name"
               :value="row.id"
             />
@@ -29,6 +27,7 @@
             value-format="timestamp"
             type="datetime"
             placeholder="选择日期"
+            size="mini"
           />
         </el-form-item>
         <el-form-item label="结束日期：">
@@ -37,24 +36,25 @@
             value-format="timestamp"
             type="datetime"
             placeholder="选择日期"
+            size="mini"
           />
         </el-form-item>
         <el-form-item v-model="item.idDesc" label="id 排序：" :required="true" label-width="80px">
-          <el-select v-model="item.idDesc" placeholder="请选择">
+          <el-select v-model="item.idDesc" placeholder="请选择" size="mini">
             <el-option label="正序" value="0" />
             <el-option label="逆序" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
+          <el-button type="primary" size="mini" @click="click2getInfo">查询</el-button>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
-      <el-col :offset="6" :span="12">
+      <el-col :span="18">
         <el-descriptions
           class="margin-top"
-          :column="3"
+          :column="5"
           size="medium"
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
           border
@@ -280,6 +280,7 @@ export default {
         end: $libDate.GetDayEnd(new Date().getTime()),
         app: '',
         type: 0,
+        gameId: 0,
         total_bet_num: 0,
         total_valid_bet_amount: 0,
         total_win_loss_amount: 0,
@@ -356,6 +357,10 @@ export default {
         }
       })
     },
+    click2getInfo() {
+      this.currentPage = 1
+      this.getInfo()
+    },
     getInfo() {
       const $this = this
       request({
@@ -380,10 +385,6 @@ export default {
           const objs = response.Data.rows || []
           $this.ret = response.Data.rows
           $this.tableData = objs
-          if (objs.length === 0) {
-            Message.success('查询结果为空')
-            return
-          }
           this.totalCount = response.Data.total
           $this.tableData = objs
           $this.item.total_bet_num = response.Data.sumary.total_bet_num || 0
@@ -391,6 +392,10 @@ export default {
           $this.item.total_win_loss_amount = response.Data.sumary.total_win_loss_amount || 0
           $this.item.total_bet_amount = response.Data.sumary.total_bet_amount || 0
           $this.item.total_jackpot_amount = response.Data.sumary.total_jackpot_amount || 0
+          if (objs.length === 0) {
+            Message.success('查询结果为空')
+            return
+          }
         }
       })
     }
