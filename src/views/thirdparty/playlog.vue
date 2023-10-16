@@ -78,15 +78,15 @@
           <template slot-scope="scope">
             <el-popover
               placement="top-start"
-              width="400"
+              width="300"
               trigger="hover"
             >
               <template>
                 <el-row>
-                  GameLog:{{scope.row.game_log}}
+                  GameLog: {{scope.row.game_log}}
                 </el-row>
                 <el-row>
-                  UniqueNO:{{scope.row.unique_no}}
+                  UniqueNO: {{scope.row.unique_no}}
                 </el-row>
               </template>
               <span slot="reference" size="mini">{{scope.row.account}}</span>
