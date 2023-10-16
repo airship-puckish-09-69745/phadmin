@@ -71,6 +71,29 @@
           width="90"
         />
         <el-table-column
+          prop="account"
+          label="平台账号"
+          width="150"
+        >
+          <template slot-scope="scope">
+            <el-popover
+              placement="top-start"
+              width="400"
+              trigger="hover"
+            >
+              <template>
+                <el-row>
+                  GameLog:{{scope.row.game_log}}
+                </el-row>
+                <el-row>
+                  UniqueNO:{{scope.row.unique_no}}
+                </el-row>
+              </template>
+              <span slot="reference" size="mini">{{scope.row.account}}</span>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="game_id"
           label="平台GID"
           width="150"
@@ -187,29 +210,7 @@
             {{ gameTypes[scope.row.game_type] }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="unique_no"
-          label="UniqueNO"
-          width="150"
-        >
-          <template slot-scope="scope">
-            <el-popover
-              placement="top-start"
-              width="400"
-              trigger="hover"
-              >
-              <template>
-                <el-row>
-                GameLog:{{scope.row.game_log}}
-                </el-row>
-                <el-row>
-                用户标识:{{scope.row.account}}
-                </el-row>
-              </template>
-              <el-button slot="reference" size="mini">{{scope.row.unique_no}}</el-button>
-            </el-popover>
-          </template>
-        </el-table-column>
+
         <el-table-column
           prop="site_id"
           label="站点标识"
