@@ -12,6 +12,17 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="游戏筛选：" :required="true" label-width="80px">
+          <el-select v-model="item.gameId" placeholder="游戏筛选">
+<!--            <el-option :key="0" label="所有" value="0" aria-selected="true" />-->
+            <el-option
+              v-for="row in games2"
+              :key="row.id"
+              :label="row.name"
+              :value="row.id"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="开始日期：">
           <el-date-picker
             v-model="item.start"
@@ -51,6 +62,8 @@
           <el-descriptions-item label="总投注笔数：">{{ formatNumber(item.total_bet_num) }}</el-descriptions-item>
           <el-descriptions-item label="总的有效投注额度："> {{ formatNumber(item.total_valid_bet_amount / 1000) }}</el-descriptions-item>
           <el-descriptions-item label="总的输赢：">{{ formatNumber(item.total_win_loss_amount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总的下注额度："> {{ formatNumber(item.total_bet_amount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总的获得jackpot金额：">{{ formatNumber(item.total_jackpot_amount / 1000) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
@@ -270,6 +283,8 @@ export default {
         total_bet_num: 0,
         total_valid_bet_amount: 0,
         total_win_loss_amount: 0,
+        total_bet_amount: 0,
+        total_jackpot_amount: 0,
         idDesc: '1'
       },
       totalData: {
@@ -289,7 +304,10 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
+      games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
+      games2: [{ id: 0, name: 'All games' }, { id: 1, name: 'Color Game' }, { id: 2, name: 'Crash' }, { id: 3, name: 'Lucky9' }, { id: 4, name: 'Tongits' },
+        { id: 5, name: 'Sleeping Beauty' }, { id: 6, name: 'Phoenix' }, { id: 7, name: 'Texas Poker' }, { id: 8, name: 'Andar Bahar' },
+        { id: 9, name: 'Baccarat' }, { id: 10, name: 'MINES' }, { id: 11, name: 'Dragon VS Tiger' }, { id: 12, name: 'Car Roulette' }],
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -299,6 +317,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    this.item.gameId = 0
     this.getAppInfo()
   },
   methods: {
@@ -352,6 +371,7 @@ export default {
           idDesc: this.item.idDesc,
           Page: this.currentPage,
           Limit: this.pageNum,
+          gameId: this.item.gameId,
           Sumary: '1',
           type: this.item.type
         }
@@ -369,6 +389,8 @@ export default {
           $this.item.total_bet_num = response.Data.sumary.total_bet_num || 0
           $this.item.total_valid_bet_amount = response.Data.sumary.total_valid_bet_amount || 0
           $this.item.total_win_loss_amount = response.Data.sumary.total_win_loss_amount || 0
+          $this.item.total_bet_amount = response.Data.sumary.total_bet_amount || 0
+          $this.item.total_jackpot_amount = response.Data.sumary.total_jackpot_amount || 0
         }
       })
     }
