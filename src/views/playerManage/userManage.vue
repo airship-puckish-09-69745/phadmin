@@ -1373,12 +1373,12 @@ export default {
       this.queryDevice(this.item.DeviceCode, 3)
     },
     resetQueryDevice() {
-      this.getInviteUsers()
+      // this.getInviteUsers()
       this.RelationUsers = []
       this.SameIp = []
       this.SameDevice = []
       this.UserIpDevice = []
-      this.tabName = 'inviteUsers'
+      this.tabName = 'userIpDevice'
       this.RelationSummary = NewRelationSummary()
       this.SameRelationSummary = NewRelationSummary()
     },
