@@ -12,7 +12,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.gameId" label="游戏筛选：" :required="true" label-width="80px">
+        <el-form-item v-model="item.gameId" label="游戏：" :required="true" label-width="80px">
           <el-select v-model="item.gameId" placeholder="游戏筛选" size="mini">
             <el-option
               v-for="row in games2"
@@ -39,10 +39,18 @@
             size="mini"
           />
         </el-form-item>
-        <el-form-item v-model="item.idDesc" label="id 排序：" :required="true" label-width="80px">
-          <el-select v-model="item.idDesc" placeholder="请选择" size="mini">
-            <el-option label="正序" value="0" />
-            <el-option label="逆序" value="1" />
+        <el-form-item v-model="item.totalBet" label="下注额：" label-width="70px">
+          <el-col style="width: auto">
+            <el-tooltip class="item" effect="dark" content="主要用于 tongits" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-select v-model="item.totalBet" placeholder="下注额" size="mini">
+            <el-option
+              v-for="row in totalBets"
+              :label="row == 0 ? '所有' : formatNumber(row / 1000)"
+              :value="row"
+            />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -281,12 +289,12 @@ export default {
         app: '',
         type: 0,
         gameId: 0,
+        totalBet: 0, // 下注额筛选
         total_bet_num: 0,
         total_valid_bet_amount: 0,
         total_win_loss_amount: 0,
         total_bet_amount: 0,
-        total_jackpot_amount: 0,
-        idDesc: '1'
+        total_jackpot_amount: 0
       },
       totalData: {
         round: 0,
@@ -306,9 +314,22 @@ export default {
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
       games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
-      games2: [{ id: 0, name: 'All games' }, { id: 1, name: 'Color Game' }, { id: 2, name: 'Crash' }, { id: 3, name: 'Lucky9' }, { id: 4, name: 'Tongits' },
-        { id: 5, name: 'Sleeping Beauty' }, { id: 6, name: 'Phoenix' }, { id: 7, name: 'Texas Poker' }, { id: 8, name: 'Andar Bahar' },
-        { id: 9, name: 'Baccarat' }, { id: 10, name: 'MINES' }, { id: 11, name: 'Dragon VS Tiger' }, { id: 12, name: 'Car Roulette' }],
+      games2: [
+        { id: 0, name: 'All games' },
+        { id: 1, name: 'Color Game' },
+        { id: 2, name: 'Crash' },
+        { id: 3, name: 'Lucky9' },
+        { id: 4, name: 'Tongits' },
+        { id: 5, name: 'Sleeping Beauty' },
+        { id: 6, name: 'Phoenix' },
+        { id: 7, name: 'Texas Poker' },
+        { id: 8, name: 'Andar Bahar' },
+        { id: 9, name: 'Baccarat' },
+        { id: 10, name: 'MINES' },
+        { id: 11, name: 'Dragon VS Tiger' },
+        { id: 12, name: 'Car Roulette' }
+      ],
+      totalBets: [0, 15000, 100000, 400000, 1000000, 5000000, 4000000],
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -373,10 +394,11 @@ export default {
           App: this.item.app,
           StartTime: this.item.start / 1000,
           EndTime: this.item.end / 1000,
-          idDesc: this.item.idDesc,
+          idDesc: "1",
           Page: this.currentPage,
           Limit: this.pageNum,
           gameId: this.item.gameId,
+          totalBet: this.item.totalBet,
           Sumary: '1',
           type: this.item.type
         }
