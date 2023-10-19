@@ -177,12 +177,12 @@
           <el-descriptions-item label="调控轮数：">
             {{ item.PaySchemaRound }}
           </el-descriptions-item>
-          <el-descriptions-item label="本轮总充值：">
+<!--          <el-descriptions-item label="本轮总充值：">
             {{ item.PaySchema.RechargeAmount | toRupee }}
           </el-descriptions-item>
           <el-descriptions-item label="本轮总提现：">
             {{ item.PaySchema.WithdrawAmount | toRupee }}
-          </el-descriptions-item>
+          </el-descriptions-item>-->
           <el-descriptions-item label="赢标签：">
             {{ item.PaySchema.WinTagCnt }}
           </el-descriptions-item>
