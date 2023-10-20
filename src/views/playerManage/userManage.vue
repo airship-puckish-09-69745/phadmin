@@ -198,7 +198,7 @@
         </el-descriptions>
 
         <!--新邀请分享-->
-        <el-descriptions
+<!--        <el-descriptions
           class="margin-top"
           :column="4"
           size="medium"
@@ -225,7 +225,7 @@
             </el-descriptions>
 
           </el-descriptions-item>
-        </el-descriptions>
+        </el-descriptions>-->
       </el-col>
     </el-row>
 
