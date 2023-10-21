@@ -305,7 +305,7 @@ export default {
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 22 || o === 23) {
         return false
       } else {
         return true
