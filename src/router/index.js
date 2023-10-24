@@ -192,6 +192,12 @@ export const asyncRoutes = [
         meta: { title: 'Pusoy ◐' }
       },
       {
+        path: 'pusoyRobotSetting',
+        component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
+        name: 'pusoyRobotSetting',
+        meta: { title: 'Pusoy AI◐' }
+      },
+      {
         path: 'SmallGameCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
