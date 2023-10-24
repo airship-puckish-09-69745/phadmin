@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="Lucky89TableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="BodingTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -498,7 +498,7 @@ export default {
     },
     getList() {
       request({
-        url: '/lucky89table/all',
+        url: '/bodingtable/all',
         method: 'get',
         data: {}
       }).then(response => {
@@ -522,7 +522,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'lucky89RobotSetting'
+          SubKey: 'bodingRobotSetting'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -532,18 +532,18 @@ export default {
             for (let j = 0; j < data.SafePoolMoneyCfg.length; j++) {
               this.aiTableMoneys.push(data.SafePoolMoneyCfg[j].TableMoney)
               if (!this.tableMoneys.includes(data.SafePoolMoneyCfg[j].TableMoney)) {
-                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky89RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/bodingRobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
                 return
                 // this.isTableMoneysChanged = true
               }
             }
             if (this.tableMoneys.length !== this.aiTableMoneys.length) {
-              this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky89RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+              this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/bodingRobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
               return
             }
             for (let i = 0; i < this.tableMoneys.length; i++) {
               if (!this.aiTableMoneys.includes(this.tableMoneys[i])) {
-                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky89RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/bodingRobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
                 return
               }
             }
@@ -587,7 +587,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/lucky89table/update/status',
+          url: '/bodingtable/update/status',
           method: 'post',
           data: {
             ID: id,
@@ -625,7 +625,7 @@ export default {
     },
     createSave(postData) {
       request({
-        url: '/lucky89table/create',
+        url: '/bodingtable/create',
         method: 'post',
         data: postData
       }).then(response => {
@@ -639,7 +639,7 @@ export default {
     },
     editSave(postData) {
       request({
-        url: 'lucky89table/update',
+        url: 'bodingtable/update',
         method: 'post',
         data: postData
       }).then(response => {

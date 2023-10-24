@@ -180,16 +180,16 @@ export const asyncRoutes = [
         meta: { title: 'Lucky9 AI◐' }
       },
       {
-        path: 'lucky89Table',
-        component: () => import('@/views/config/tableConfig/lucky89Table'),
-        name: 'lucky89Table',
-        meta: { title: 'Lucky89(boding) ◐' }
+        path: 'bodingTable',
+        component: () => import('@/views/config/tableConfig/bodingTable'),
+        name: 'bodingTable',
+        meta: { title: 'Lucky89「Boding」 ◐' }
       },
       {
-        path: 'lucky89RobotSetting',
-        component: () => import('@/views/config/tableConfig/lucky89RobotSetting'),
-        name: 'lucky89RobotSetting',
-        meta: { title: 'Lucky89(boding) AI◐' }
+        path: 'bodingRobotSetting',
+        component: () => import('@/views/config/tableConfig/bodingRobotSetting'),
+        name: 'bodingRobotSetting',
+        meta: { title: 'Lucky89「Boding」 AI◐' }
       },
       {
         path: 'pusoyTable',

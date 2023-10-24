@@ -443,7 +443,7 @@ export default {
   components: { Compare, Publish, MoneyInput, SmallGameLevel },
   data() {
     return {
-      subKey: 'lucky89RobotSetting',
+      subKey: 'bodingRobotSetting',
 
       item: {
         'PresetCfg': [newPresetCfg(1), newPresetCfg(2), newPresetCfg(3), newPresetCfg(4), newPresetCfg(5), newPresetCfg(6), newPresetCfg(7)],
@@ -544,7 +544,7 @@ export default {
     },
     getTableList() {
       request({
-        url: '/lucky89table/all',
+        url: '/bodingtable/all',
         method: 'get',
         data: { tableMoneyDesc: '1' }
       }).then(response => {
@@ -664,13 +664,13 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/lucky89robotpool/list',
+          Path: '/bodingrobotpool/list',
           table_money: $this.tableMoneyList
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log('/lucky89robotpool/list===>', objs)
+          console.log('/bodingrobotpool/list===>', objs)
           for (const key in objs) {
             $this.robotProfit.push({
               TableMoney: key,
@@ -697,14 +697,14 @@ export default {
           method: 'post',
           data: {
             Env: this.env,
-            Path: '/lucky89robotpool/update/pool',
+            Path: '/bodingrobotpool/update/pool',
             table_money: this.robotProfitItem.TableMoney,
             pool: this.robotProfitItem.Pool * 1000
           }
         }).then(response => {
           if (response.RetCode === 0) {
             const newPool = response.Data || 0
-            console.log('/lucky89robotpool/updatepool===>', newPool)
+            console.log('/bodingrobotpool/updatepool===>', newPool)
             for (let i = 0; i < $this.robotProfit.length; i++) {
               if ($this.robotProfit[i].TableMoney === $this.robotProfitItem.TableMoney) {
                 $this.robotProfit[i].Pool = newPool
