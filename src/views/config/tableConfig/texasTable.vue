@@ -233,7 +233,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <!--
+        
         <el-row>
           <el-col :span="11">
             <el-form-item label="推荐买入倍数(大盲)：" :required="true" prop="item.RecommendBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -241,7 +241,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        -->
+        
         <!--
         <el-row>
           <el-col :span="11">
