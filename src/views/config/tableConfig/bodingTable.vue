@@ -481,7 +481,7 @@ export default {
           const objs = response.Data || []
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
-          this.getData()
+          // this.getData()
         }
       })
     },
