@@ -601,6 +601,7 @@ export default {
       })
     },
     configCheck() {
+      return true
       let goodsCheck = false
       for (const i in this.clientDB.TotalData) {
         // 除了练习场，其它场次必须配置推荐商品
