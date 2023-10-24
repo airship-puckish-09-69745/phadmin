@@ -54,9 +54,6 @@
                 <el-form-item label="延长玩牌最多局数">
                   <el-input v-model.number="item.IncrPlayTimesMax" size="mini" />
                 </el-form-item>
-                <el-form-item label="延长玩牌最少HitPot点数">
-                  <el-input v-model.number="item.IncrPlayMoneyMultiMin" size="mini"><template slot="append">点</template></el-input>
-                </el-form-item>
               </el-form>
             </el-col>
           </el-row>
@@ -99,7 +96,6 @@ export default {
       item: {
         'PlayTimesMin': 0,
         'PlayTimesMax': 0,
-        'IncrPlayMoneyMultiMin': 0,
         'IncrPlayTimesMin': 0,
         'IncrPlayTimesMax': 0,
         'EnableRobot': 0,
