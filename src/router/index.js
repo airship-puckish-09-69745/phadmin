@@ -177,14 +177,22 @@ export const asyncRoutes = [
         path: 'bodingTable',
         component: () => import('@/views/config/tableConfig/bodingTable'),
         name: 'bodingTable',
-        meta: { title: 'Lucky89「Boding」 ◐' }
+        meta: { title: 'Lucky89 - Boding' }
       },
+      {
+        path: 'bodingCfg',
+        component: () => import('@/views/config/tableConfig/bodingCfg'),
+        name: 'bodingCfg',
+        meta: { title: 'Lucky89 - Boding配置' }
+      },
+      /*
       {
         path: 'bodingRobotSetting',
         component: () => import('@/views/config/tableConfig/bodingRobotSetting'),
         name: 'bodingRobotSetting',
         meta: { title: 'Lucky89「Boding」 AI◐' }
       },
+      */
       {
         path: 'pusoyTable',
         component: () => import('@/views/config/tableConfig/pusoyTable'),
@@ -513,6 +521,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_texas',
         meta: { title: '德州扑克 - Texas ◐', gid: 15 }
+      },
+      {
+        path: 'playlog_boding',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_boding',
+        meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
       {
         path: 'slotsLog',

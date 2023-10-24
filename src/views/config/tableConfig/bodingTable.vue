@@ -294,38 +294,6 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="玩家最大单次下注金额(未看牌)："
-              :required="true"
-              prop="item.BetMoneyMax"
-              :rules="dataRule(true,{type:'f',range:'1'})"
-            >
-              <el-input v-model="edit.item.BetMoneyMax" placeholder="玩家最大下注数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="玩家买入等待时长："
-              :required="true"
-              prop="item.PurchaseSecondMax"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PurchaseSecondMax" placeholder="玩家买入等待时长" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="最大围观局数："
-              prop="item.WatchTimesMax"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model.number="edit.item.WatchTimesMax" />
-            </el-form-item>
-          </el-col>
         </el-row>
 
         <el-row>

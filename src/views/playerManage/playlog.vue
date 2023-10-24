@@ -549,6 +549,7 @@
         </li>
       </ul>
     </el-dialog>
+
     <el-dialog title="Lucky9牌局详情" :visible.sync="lucky9DetailVisible" width="1200px">
       <el-table :data="lucky9Detail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
@@ -575,6 +576,28 @@
         <el-descriptions-item label="机器人庄家保护">{{ lucky9Detail.robotDealerProtected ? '是' : '-' }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
+
+    <el-dialog title="Lucky89牌局详情" :visible.sync="bodingDetailVisible" width="1200px">
+      <el-table :data="bodingDetail.players" border>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
+        <el-table-column prop="cards" label="手牌" width="200"><template slot-scope="scope"><div v-html="showCard(scope.row.cards)" /></template></el-table-column>
+        <el-table-column prop="cardScore" label="点数" width="100" />
+        <el-table-column prop="cardType" label="牌型" width="100" />
+        <el-table-column prop="cardTypeOdds" label="牌型赔率" width="100" />
+        <el-table-column prop="isDealer" label="庄家" width="100"><template slot-scope="scope">{{ scope.row.isDealer ? "是" : "-" }}</template></el-table-column>
+        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTaxed" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyTaxed/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ bodingDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ bodingDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog
       title="牌局详情"
       :visible.sync="rummyDetailVisible"
@@ -815,6 +838,9 @@ export default {
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
+
+      bodingDetail: {},
+      bodingDetailVisible: false,
 
       rummyDetailVisible: false,
       rummyDetails: [],
@@ -1091,6 +1117,8 @@ export default {
             $this.showColorGame(obj)
           } else if (gid == 23) {
             $this.showLucky9Game(obj)
+          } else if (gid == 30) {
+            $this.showBodingGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1239,6 +1267,10 @@ export default {
     showLucky9Game(obj) {
       this.lucky9Detail = obj
       this.lucky9DetailVisible = true
+    },
+    showBodingGame(obj) {
+      this.bodingDetail = obj
+      this.bodingDetailVisible = true
     },
     showSmallGame(obj) {
       let names = []
