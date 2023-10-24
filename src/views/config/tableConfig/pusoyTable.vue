@@ -463,7 +463,7 @@ function newItem() {
     CarryLower: '',
     CarryUpper: '',
     TableMoney: '',
-    MaxPlayerCount: 5,
+    MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
     BetSeconds: '',
