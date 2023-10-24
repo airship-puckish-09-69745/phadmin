@@ -125,14 +125,14 @@
             <legend>机器人配置</legend>
             <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="机器人最小人数：" prop="MinRobotNumber" :rules="dataRule(true,{type:'n',range:'1'})">
+                <el-form-item label="机器人最小人数：" prop="MinRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.MinRobotNumber" size="mini" :required="true" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="机器人最大人数：" prop="MaxRobotNumber" :rules="dataRule(true,{type:'n',range:'1'})">
+                <el-form-item label="机器人最大人数：" prop="MaxRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.MaxRobotNumber" size="mini" :required="true" />
                   </el-col>

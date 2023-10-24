@@ -161,6 +161,7 @@
                 <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
                 <el-option label="100" :value="100" />
+                <el-option label="200" :value="200" />
                 <el-option label="11(专用)" :value="11" />
                 <!-- <el-option label="500" :value="500" /> -->
               </el-select>

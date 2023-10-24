@@ -16,49 +16,6 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="4" class="card-panel-col">
-        <div :class="gid===1002?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryRecharge(1002, true)">
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              充值：<span :class="getDcClass(rechargeDiff.day1)"> {{ getDcResult(rechargeDiff.day1) }}(昨日) </span>
-            </div>
-            <div>
-              前3天：<span :class="getDcClass(rechargeDiff.day2)">{{ getDcResult(rechargeDiff.day2) }}</span>
-            </div>
-            <div>
-              上周：<span :class="getDcClass(rechargeDiff.day7)">{{ getDcResult(rechargeDiff.day7) }}</span>
-            </div>
-            <div class="online-remark">
-              <el-tooltip class="item" effect="dark" content="今日充值金额和昨日充值金额环比，计算公式：（今日充值总额-昨日充值总额）/ 昨日充值总额 * 100%" placement="top-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </div>
-          </div>
-        </div>
-      </el-col>
-      <el-col :span="4" class="card-panel-col">
-        <div :class="gid===1003?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryWithdraw(1003, true)">
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              提充比：<span :class="getRatioClass(withdrawDiff.ratio)"> {{ withdrawDiff.ratio }}% </span>
-            </div>
-            <div>
-              昨日：<span :class="getDcClass(withdrawDiff.day1)">{{ getDcResult(withdrawDiff.day1) }}</span>
-            </div>
-            <div>
-              前3天：<span :class="getDcClass(withdrawDiff.day2)">{{ getDcResult(withdrawDiff.day2) }}</span>
-            </div>
-            <div>
-              上周：<span :class="getDcClass(withdrawDiff.day7)">{{ getDcResult(withdrawDiff.day7) }}</span>
-            </div>
-            <div class="online-remark">
-              <el-tooltip class="item" effect="dark" content="今日提现金额和昨日提现金额环比，计算公式：（今日提现总额-昨日提现总额）/ 昨日提现总额 * 100%" placement="top-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </div>
-          </div>
-        </div>
-      </el-col>
     </el-row>
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
@@ -81,32 +38,6 @@ function NewPlaying() {
       { Name: '上周', Data: [] }
     ],
     yShow: true
-  }
-}
-
-function NewRecharge() {
-  return {
-    xData: [],
-    yData: [
-      { Name: '今日', Data: [] },
-      { Name: '昨日', Data: [] },
-      { Name: '前3天', Data: [] },
-      { Name: '上周', Data: [] }
-    ],
-    yShow: false
-  }
-}
-
-function NewWithdraw() {
-  return {
-    xData: [],
-    yData: [
-      { Name: '今日', Data: [] },
-      { Name: '昨日', Data: [] },
-      { Name: '前3天', Data: [] },
-      { Name: '上周', Data: [] }
-    ],
-    yShow: false
   }
 }
 
@@ -134,17 +65,6 @@ export default {
         today: 0, // 今日和昨日对比
         day3: 0, // 今日和前3天对比
         week: 0 // 今日和上周对比
-      },
-      rechargeDiff: {
-        day1: 0,
-        day2: 0,
-        day7: 0
-      },
-      withdrawDiff: {
-        day1: 0,
-        day2: 0,
-        day7: 0,
-        ratio: 0 // 充提比
       }
     }
   },
@@ -157,8 +77,6 @@ export default {
     this.env = store.getters.env || this.env
     // this.getInfo(this.gid)
     this.queryPlaying(1001, true)
-    this.queryRecharge(1002, false)
-    this.queryWithdraw(1003, false)
   },
   methods: {
     // 显示相关
@@ -259,98 +177,6 @@ export default {
           $this.playingDiff.today = $this.calcRatio(response.Data.Today[index], response.Data.Yesterday[index])
           $this.playingDiff.day3 = $this.calcRatio(response.Data.Today[index], response.Data.Day3[index])
           $this.playingDiff.week = $this.calcRatio(response.Data.Today[index], response.Data.Week[index])
-        }
-        if (isRefresh) {
-          $this.chartData = chartData
-        }
-      })
-    },
-    // 查询充值
-    queryRecharge(gid, isRefresh) {
-      if (isRefresh) {
-        this.gid = gid
-      }
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/other/realtime/recharge'
-        }
-      }).then(response => {
-        console.log('recharge response ', response)
-        const chartData = NewRecharge()
-        if (response.RetCode === 0) {
-          chartData['xData'] = response.Data.Cols
-          chartData['yData'][0]['Data'] = response.Data.Amount.Today
-          chartData['yData'][1]['Data'] = response.Data.Amount.Day1
-          chartData['yData'][2]['Data'] = response.Data.Amount.Day2
-          chartData['yData'][3]['Data'] = response.Data.Amount.Day7
-
-          // 对比
-          const dt = $this.getCurDate(5)
-          let index = 0
-          for (const i in response.Data.Cols) {
-            if (dt.result === response.Data.Cols[i]) {
-              index = i
-              break
-            }
-          }
-          console.log('date ', dt)
-          console.log('index ', index)
-          $this.rechargeDiff.day1 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day1[index])
-          $this.rechargeDiff.day2 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day2[index])
-          $this.rechargeDiff.day7 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day7[index])
-        }
-        if (isRefresh) {
-          $this.chartData = chartData
-        }
-      })
-    },
-    // 查询提现
-    queryWithdraw(gid, isRefresh) {
-      if (isRefresh) {
-        this.gid = gid
-      }
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/other/realtime/withdraw'
-        }
-      }).then(response => {
-        console.log('withdraw response ', response)
-        const chartData = NewWithdraw()
-        if (response.RetCode === 0) {
-          chartData['xData'] = response.Data.Cols
-          chartData['yData'][0]['Data'] = response.Data.Amount.Today
-          chartData['yData'][1]['Data'] = response.Data.Amount.Day1
-          chartData['yData'][2]['Data'] = response.Data.Amount.Day2
-          chartData['yData'][3]['Data'] = response.Data.Amount.Day7
-
-          // 对比
-          const dt = $this.getCurDate(5)
-          let index = 0
-          for (const i in response.Data.Cols) {
-            if (dt.result === response.Data.Cols[i]) {
-              index = i
-              break
-            }
-          }
-          $this.withdrawDiff.day1 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day1[index])
-          $this.withdrawDiff.day2 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day2[index])
-          $this.withdrawDiff.day7 = $this.calcRatio(response.Data.Amount.Today[index], response.Data.Amount.Day7[index])
-
-          // 计算提充差
-          // TodayTotalRecharge  TodayTotalWithdraw
-          let ratio = 0
-          if (response.Data.TodayTotalRecharge > 0) {
-            ratio = (response.Data.TodayTotalWithdraw / response.Data.TodayTotalRecharge * 100).toFixed(2)
-          }
-          $this.withdrawDiff.ratio = ratio
         }
         if (isRefresh) {
           $this.chartData = chartData

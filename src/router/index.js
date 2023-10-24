@@ -118,12 +118,6 @@ export const asyncRoutes = [
         meta: { title: '在线数据 ◐' }
       },
       {
-        path: 'pay_channel_success_rate',
-        component: () => import('@/views/online/payChannelSuccessRate'),
-        name: 'pay_channel_success_rate',
-        meta: { title: '支付渠道成功率' }
-      },
-      {
         path: 'slots_daily',
         component: () => import('@/views/online/slotsDaily'),
         name: 'slots_daily',

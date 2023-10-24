@@ -196,6 +196,7 @@
                 <el-option label="100" :value="100" />
                 <el-option label="200" :value="200" />
                 <el-option label="400" :value="400" />
+                <el-option label="11(审核专用)" :value="11" />
               </el-select>
             </el-form-item>
           </el-col>
