@@ -12,7 +12,6 @@
           @click="handleCreate()"
         >添加配置项
         </el-button>
-        <span style="color: red">注：修改场次底注需要同时修改AI缓冲池配置</span>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
