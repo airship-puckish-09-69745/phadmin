@@ -136,6 +136,32 @@
         </el-form>
       </el-row>
     </el-dialog>
+    <div style="width:600px">
+      <fieldset>
+        <legend>当前大额奖池</legend>
+        <p>当前余额：{{ bigBetPool }}</p>
+        <p><el-button size="mini" type="primary" @click="refrashPool">刷新</el-button><el-button size="mini" @click="operatePool">加减</el-button></p>
+      </fieldset>
+    </div>
+    <el-dialog
+      title="调整大注奖池"
+      modal="false"
+      :visible.sync="operateForm.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form :model="operateForm" label-width="120px" size="small">
+        <el-form-item label="当前奖池：">
+          {{ bigBetPool }}
+        </el-form-item>
+        <el-form-item label="变化值：">
+          <el-input v-model.number="operateForm.change" size="11" placeholder="请输入金额" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" size="mini" @click="operate">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 
 </template>
@@ -187,6 +213,11 @@ export default {
         Less300STD: 0,
         Less800STD: 0,
         MoreThan800STD: 0
+      },
+      bigBetPool: 0,
+      operateForm: {
+        visible: false,
+        change: 0
       },
       retData: {
 
@@ -283,6 +314,7 @@ export default {
           this.showData.MoreThan800STD = data.ck_more_800_rate.toFixed(2)
 
           this.showRet.showDay = $libDate.FormateMilisecondStr($libDate.SelectTimeToIndia(this.searchForm.dayStr), 1)
+          this.bigBetPool = data.big_pool / 1000
         }
       })
     },
@@ -306,6 +338,48 @@ export default {
             message: '操作成功！',
             type: 'success'
           })
+        } else {
+          this.$message.error('操作失败')
+        }
+      })
+    },
+    refrashPool() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/vupmonitor/rocketret',
+          DayStr: $libDate.SelectTimeToIndia(this.searchForm.dayStr) / 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const data = response.Data || []
+          this.bigBetPool = data.big_pool / 1000
+        }
+      })
+    },
+    operatePool() {
+      this.operateForm.visible = true
+    },
+    operate() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/vupmonitor/rocket/big/pool',
+          Pool: this.operateForm.change * 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.bigBetPool = response.Data / 1000
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          })
+          this.operateForm.visible = false
         } else {
           this.$message.error('操作失败')
         }
