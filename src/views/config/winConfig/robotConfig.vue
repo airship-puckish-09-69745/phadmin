@@ -5,10 +5,10 @@
     </el-row>
     <el-col :span="18" :offset="4">
       <el-form ref="item" :model="item" label-width="300px" :inline="true">
-        <fieldset style="margin:30px auto;" v-if="item.AppsTxt">
+        <fieldset v-if="item.AppsTxt" style="margin:30px auto;">
           <legend>适用应用ID列表</legend>
           <el-form-item label="多个ID用英文逗号(,)间隔">
-             <el-input v-model="item.AppsTxt" type="textarea" rows="5" />
+            <el-input v-model="item.AppsTxt" type="textarea" rows="5" />
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;">

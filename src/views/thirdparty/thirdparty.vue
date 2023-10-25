@@ -40,8 +40,7 @@
           prop="Account"
           label="账号"
           width="120"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="Intro"
           label="描述"
@@ -53,14 +52,12 @@
           label="密钥"
           sortable="custom"
           width="260"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="Ver"
           label="客户端版本"
           width="100"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="GameUri"
           label="客户端地址"
@@ -79,14 +76,12 @@
           prop="TestUri"
           label="客户端测试地址"
           width="100"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="TestUids"
           label="客户端测试用户uids"
           width="100"
-        >
-        </el-table-column>
+        />
 
         <el-table-column
           prop="LastModify"
@@ -183,10 +178,10 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label="账号：" :required="true" prop="Account">
           <el-col :span="15">
-            <el-input v-model="edit.item.Account" :disabled="isDisabled"/>
+            <el-input v-model="edit.item.Account" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
-        <el-form-item label="描述：" :required="true" prot="Intro">
+        <el-form-item label="描述：" :required="true" prop="Intro">
           <el-col :span="15">
             <el-input v-model="edit.item.Intro" />
           </el-col>
@@ -219,7 +214,7 @@
         <el-form-item label="横竖屏：" :required="true" prop="Screen">
           <el-col :span="15">
             <el-select v-model="edit.item.Screen" placeholder="请选择" required="true">
-              <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value"></el-option>
+              <el-option v-for="item in screens" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
           </el-col>
         </el-form-item>

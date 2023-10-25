@@ -130,7 +130,7 @@
         label="是否发放当前余额"
       >
         <template slot-scope="scope">
-          {{ showIssue(scope.row)}}
+          {{ showIssue(scope.row) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -231,7 +231,7 @@ export default {
       return ''
     },
     showIssue(row) {
-      if ([1,2,10,11,12,13].indexOf(parseInt(row.Source)) !== -1) {
+      if ([1, 2, 10, 11, 12, 13].indexOf(parseInt(row.Source)) !== -1) {
         return row.IsIssue === 1 ? '已发放' : '进行中'
       } else {
         return '已发放'

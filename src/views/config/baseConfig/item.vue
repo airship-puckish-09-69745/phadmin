@@ -91,7 +91,7 @@
           width="100"
         >
           <template v-slot:header>
-            <el-select v-model="clientDB.FilterValueMap['Status']" size="mini" @change="handleFilter" >
+            <el-select v-model="clientDB.FilterValueMap['Status']" size="mini" @change="handleFilter">
               <el-option label="状态" :value="0" />
               <el-option v-for="(o,key) in clientDB.FilterMap['Status']" :key="key" :label="o" :value="key" />
             </el-select>

@@ -42,7 +42,7 @@ export default {
         message: '切换成功，正在重新刷新页面...',
         type: 'success'
       })
-      //强制刷一下页面，让切环境生效
+      // 强制刷一下页面，让切环境生效
       setInterval(function() {
         window.location.reload()
       }, 500)

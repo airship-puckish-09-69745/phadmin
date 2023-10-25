@@ -20,7 +20,7 @@
           </el-col>
           <el-button size="mini" @click="testUidMethod()">测试</el-button>
           {{ testRet }}
-          <el-button type="success" @click="refresh" size="mini" style="float: right">刷新</el-button>
+          <el-button type="success" size="mini" style="float: right" @click="refresh">刷新</el-button>
         </el-row>
         <fieldset v-for="info,k1 in item" v-if="k1=='Pay'">
           <legend>{{ k1 == "Pay" ? '支付配置' : '提现配置' }}</legend>
@@ -274,7 +274,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import store from '@/store'
 import { $libDate, $libShow, DataRule } from '@/utils/common'
-import {toRupee} from "@/utils";
+import { toRupee } from '@/utils'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -486,7 +486,7 @@ export default {
         const chan = this.channels[i]
         if (chan.ID == ID) {
           if (chan.MinAmount > 0 && chan.MaxAmount > 0) {
-            return  '[' + toRupee(chan.MinAmount) + ',' + toRupee(chan.MaxAmount) + ']'
+            return '[' + toRupee(chan.MinAmount) + ',' + toRupee(chan.MaxAmount) + ']'
           } else if (chan.MaxAmount > 0 && chan.MinAmount == 0) {
             return '[0,' + toRupee(chan.MaxAmount) + ']'
           } else if (chan.MinAmount > 0 && chan.MaxAmount == 0) {
@@ -530,7 +530,7 @@ export default {
       return 'CustomizeCfg_' + this.getSubKey()
     },
     getSubKey() {
-      return this.subKey + this.platform + "_ban"
+      return this.subKey + this.platform + '_ban'
     },
     RuleChanged(ob, k1) {
       if (ob.Percent < 0 || ob.Percent > 100) {

@@ -93,8 +93,8 @@ export function LibShow() {
     3: '♥',
     4: '♠'
   }
-  this.GameNames = { 1: 'Rummy', 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
-    16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 25: 'Color Game', 51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
+  this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
+    16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 22: 'Tongits', 25: 'Color Game', 51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
     59: '芝加哥', 60: '糖果派', 61: 'fireKick', 80: 'PLINKO' }
 
   this.NumMap = {
@@ -138,16 +138,16 @@ export function LibShow() {
     if (staticPath === '') {
       staticPath = Cookies.get('staticPath')
     }
-     //兼容一下第三方图片
-     let needCdnDomain = true;
-     if (url.indexOf("http://") == 0 || url.indexOf("https://") == 0) {
-       needCdnDomain = false;
-     }
-     if (needCdnDomain) {
-       return staticPath + url
-     } else {
-       return url
-     }
+    // 兼容一下第三方图片
+    let needCdnDomain = true
+    if (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) {
+      needCdnDomain = false
+    }
+    if (needCdnDomain) {
+      return staticPath + url
+    } else {
+      return url
+    }
   }
   // 日期控件选择日期默认选项
   this.DefaultDatePickerOptions = function() {

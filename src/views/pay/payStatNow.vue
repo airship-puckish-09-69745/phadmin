@@ -2,11 +2,11 @@
   <div class="app-container">
     <el-row>
       <el-col :offset="6">
-      <el-button type="success" size="mini" icon="el-icon-refresh" @click="getInfo()">刷新</el-button>
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getInfo()">刷新</el-button>
       </el-col>
     </el-row>
     <el-tabs type="border-card">
-      <el-tab-pane label="Galaxy" >
+      <el-tab-pane label="Galaxy">
         <el-table
           :data="galaxy"
           stripe
@@ -23,7 +23,7 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="Android" >
+      <el-tab-pane label="Android">
         <el-table
           :data="android"
           stripe

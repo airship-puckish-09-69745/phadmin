@@ -10,7 +10,7 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
-  //withCredentials: true, 
+  // withCredentials: true,
 })
 
 // request interceptor
@@ -18,7 +18,7 @@ service.interceptors.request.use(
   config => {
     let isHandle = false
 
-    //console.log("axios config", config)
+    // console.log("axios config", config)
     // 如果请求的数据不为空，且是对象就特殊处理
     // 后端接收请求数据 GET 是以 application / x-www-form-urlencoded
     // POST 是以 application / form-data

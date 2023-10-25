@@ -3,16 +3,16 @@
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="8" :offset="1">
-        <br/>
+        <br>
         <el-alert
           title="配置的ip将无法下单支付"
-          type="error">
-        </el-alert>
-        <br/>
+          type="error"
+        />
+        <br>
         <el-form ref="form" :model="form" label-width="150px">
           <template v-for="(ip,i) in ips">
-            <el-form-item >
-              <el-input placeholder="请输入内容" v-model="ips[i]">
+            <el-form-item>
+              <el-input v-model="ips[i]" placeholder="请输入内容">
                 <template slot="append">
                   <el-button @click="delRow(i)">删除</el-button>
                 </template>

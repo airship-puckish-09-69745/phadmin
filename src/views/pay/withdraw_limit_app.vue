@@ -7,46 +7,51 @@
           <el-alert
             title="配置说明"
             type="success"
-            description="最小充值总额度大于0，最大充值总额度等于0，就是最大配置项">
-          </el-alert>
+            description="最小充值总额度大于0，最大充值总额度等于0，就是最大配置项"
+          />
         </template>
-        <br/>
+        <br>
         <el-form ref="form" :model="items" label-width="0">
           <el-form-item label="应用id" label-width="80px">
-            <el-input v-model="items.AppStr" type="textarea" :rows="5" placeholder="填0的话，所有的应用都会用这个配置"></el-input>
+            <el-input v-model="items.AppStr" type="textarea" :rows="5" placeholder="填0的话，所有的应用都会用这个配置" />
           </el-form-item>
 
           <el-button type="primary" size="mini" @click="addOption">添加配置项</el-button>
           <el-row>
             <el-table
               :data="items.Items"
-              style="width: 100%">
+              style="width: 100%"
+            >
               <el-table-column
                 prop="Min"
-                label="最小充值总额度">
+                label="最小充值总额度"
+              >
                 <template slot-scope="scope">
-                  <money-input v-model="scope.row.Min" label-width="0" label=""></money-input>
+                  <money-input v-model="scope.row.Min" label-width="0" label="" />
                 </template>
               </el-table-column>
               <el-table-column
                 prop="Max"
-                label="最大充值总额度">
+                label="最大充值总额度"
+              >
                 <template slot-scope="scope">
-                  <money-input v-model="scope.row.Max" label-width="0" label=""></money-input>
+                  <money-input v-model="scope.row.Max" label-width="0" label="" />
                 </template>
               </el-table-column>
               <el-table-column
                 prop="Mul"
-                label="可提现额度为充值总额的倍数%(放大100倍)">
+                label="可提现额度为充值总额的倍数%(放大100倍)"
+              >
                 <template slot-scope="scope">
                   <el-form-item>
-                    <el-input v-model.number="scope.row.Mul" placeholder="倍数，放大100倍"></el-input>
+                    <el-input v-model.number="scope.row.Mul" placeholder="倍数，放大100倍" />
                   </el-form-item>
                 </template>
               </el-table-column>
               <el-table-column
                 prop="Max"
-                label="删除">
+                label="删除"
+              >
                 <template slot-scope="scope">
                   <el-button type="danger" size="mini" @click="delOption(scope.$index)">删除</el-button>
                 </template>

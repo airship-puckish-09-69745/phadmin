@@ -552,14 +552,14 @@ export default {
         if (response.Data.Publish) {
           proVal = JSON.parse(response.Data.Publish)
         }
-        if(!$this.compareType || $this.compareType=='') {
+        if (!$this.compareType || $this.compareType == '') {
           if ($libType.IsArray(preVal)) {
             $this.compareType = 'Array'
           } else if ($libType.IsObject(preVal)) {
             $this.compareType = 'Object'
           }
         }
-        console.log("compareType:" + $this.compareType)
+        console.log('compareType:' + $this.compareType)
 
         switch ($this.compareType) {
           case 'Object':

@@ -17,12 +17,12 @@
         style="width: 100%"
       >
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
-        <el-table-column prop="BPool" label="底池(前）" width="100" >
+        <el-table-column prop="BPool" label="底池(前）" width="100">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.BPool/1000) }}
           </template>
         </el-table-column>
-        <el-table-column prop="Pool" label="底池(后）" width="100" >
+        <el-table-column prop="Pool" label="底池(后）" width="100">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.Pool/1000) }}
           </template>
@@ -167,37 +167,37 @@
                 </template>
               </el-table-column>
               <el-table-column label="局数" width="100" prop="Count" />
-              <el-table-column label="输赢" width="100" >
+              <el-table-column label="输赢" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?formatNumber((log.users[scope.row.Uid].Winning + log.users[scope.row.Uid].Deposit - scope.row.Winning - scope.row.Deposit)/1000):0 }}
                 </template>
               </el-table-column>
-              <el-table-column label="抽水" width="100" >
+              <el-table-column label="抽水" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?formatNumber(log.users[scope.row.Uid].Fee/1000):0 }}
                 </template>
               </el-table-column>
-              <el-table-column label="终Winning" width="100" >
+              <el-table-column label="终Winning" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?formatNumber(log.users[scope.row.Uid].Winning/1000):0 }}
                 </template>
               </el-table-column>
-              <el-table-column label="终Deposit" width="100" >
+              <el-table-column label="终Deposit" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?formatNumber(log.users[scope.row.Uid].Deposit/1000):0 }}
                 </template>
               </el-table-column>
-              <el-table-column label="最高" width="100" >
+              <el-table-column label="最高" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?formatNumber(log.users[scope.row.Uid].MoneyMax/1000):0 }}
                 </template>
               </el-table-column>
-              <el-table-column label="最低" width="100" >
+              <el-table-column label="最低" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?formatNumber(log.users[scope.row.Uid].MoneyMin/1000):0 }}
                 </template>
               </el-table-column>
-              <el-table-column label="剧本切换" width="100" >
+              <el-table-column label="剧本切换" width="100">
                 <template slot-scope="scope">
                   {{ log.users[scope.row.Uid]?log.users[scope.row.Uid].ActCount - 1:0 }}
                 </template>
@@ -496,7 +496,7 @@ export default {
           users[item.Uid] = { Uid: item.Uid, Winning: item.Winning, Deposit: item.Deposit, MoneyMin: item.Winning + item.Deposit,
             MoneyMax: item.Winning + item.Deposit,
             Fee: item.Fee,
-            ActCount:0
+            ActCount: 0
           }
         } else {
           const user = users[item.Uid]
@@ -509,8 +509,8 @@ export default {
             user.MoneyMax = item.Winning + item.Deposit
           }
           user.Fee = item.Ext2
-          if(item.Str1.indexOf("剧本切换") != -1){
-            user.ActCount ++
+          if (item.Str1.indexOf('剧本切换') != -1) {
+            user.ActCount++
           }
         }
         pool = item.Ext1

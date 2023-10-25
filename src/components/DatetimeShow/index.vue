@@ -5,14 +5,14 @@
     trigger="hover"
   >
     <el-row>北京时间：<span style="color: blue">{{ time1 }}</span></el-row>
-<!--    <el-row>{{ zoneName }}：{{ time2 }}</el-row>-->
-    <span slot="reference">{{time1}}</span>
+    <!--    <el-row>{{ zoneName }}：{{ time2 }}</el-row>-->
+    <span slot="reference">{{ time1 }}</span>
   </el-popover>
 </template>
 
 <script>
 import { $libDate, $libType } from '@/utils/common'
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie'
 
 // 修改对比工具
 export default {
@@ -33,9 +33,6 @@ export default {
       zone: 'in'
     }
   },
-  created() {
-    this.initZone()
-  },
   computed: {
     showTime() {
       return $libDate.FormateMilisecondStr(this.timestamp * 1000, this.showType)
@@ -46,6 +43,9 @@ export default {
     time2() {
       return $libDate.FormateMilisecondStrByZone(this.timestamp * 1000, this.showType, this.zone)
     }
+  },
+  created() {
+    this.initZone()
   },
   mounted() {
   },

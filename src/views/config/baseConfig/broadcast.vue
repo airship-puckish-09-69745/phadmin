@@ -38,7 +38,7 @@
                 width="150"
               >
                 <template slot-scope="scope">
-                  <money-input v-model="scope.row.minAmount" label-width="0" label="" :is-require="false" aria-readonly="true" isDisable="true"/>
+                  <money-input v-model="scope.row.minAmount" label-width="0" label="" :is-require="false" aria-readonly="true" is-disable="true" />
                 </template>
               </el-table-column>
               <el-table-column
@@ -47,7 +47,7 @@
                 width="150"
               >
                 <template slot-scope="scope">
-                  <money-input v-model="scope.row.maxAmount" label-width="0" label="" :is-require="false" aria-readonly="true" isDisable="true"/>
+                  <money-input v-model="scope.row.maxAmount" label-width="0" label="" :is-require="false" aria-readonly="true" is-disable="true" />
                 </template>
               </el-table-column>
               <el-table-column
@@ -66,7 +66,7 @@
             <legend>假消息游戏赢钱范围概率：</legend>
             <template v-for="item of items.play.games">
               <fieldset style="margin:1px 5px auto;">
-                <legend>{{item.name}}：</legend>
+                <legend>{{ item.name }}：</legend>
                 <el-table
                   :data="item.simulateCfg"
                   style="width: 100%"
@@ -78,7 +78,7 @@
                     width="150"
                   >
                     <template slot-scope="scope">
-                      <money-input v-model="scope.row.minWinMoney" label-width="0" label="" :is-require="false" aria-readonly="true" isDisable="true"/>
+                      <money-input v-model="scope.row.minWinMoney" label-width="0" label="" :is-require="false" aria-readonly="true" is-disable="true" />
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -87,7 +87,7 @@
                     width="150"
                   >
                     <template slot-scope="scope">
-                      <money-input v-model="scope.row.maxWinMoney" label-width="0" label="" :is-require="false" aria-readonly="true" isDisable="true"/>
+                      <money-input v-model="scope.row.maxWinMoney" label-width="0" label="" :is-require="false" aria-readonly="true" is-disable="true" />
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -96,7 +96,7 @@
                     width="150"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.rate" label-width="0" label="" :is-require="false"/>
+                      <el-input v-model.number="scope.row.rate" label-width="0" label="" :is-require="false" />
                     </template>
                   </el-table-column>
                 </el-table>

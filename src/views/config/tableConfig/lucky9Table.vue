@@ -12,6 +12,7 @@
           @click="handleCreate()"
         >添加配置项
         </el-button>
+        <span style="color: red">注：修改场次底注需要同时修改AI缓冲池配置</span>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
@@ -195,6 +196,7 @@
                 <el-option label="100" :value="100" />
                 <el-option label="200" :value="200" />
                 <el-option label="400" :value="400" />
+                <el-option label="11(审核专用)" :value="11" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -544,7 +546,7 @@ function newItem() {
     Level: 1,
     Lucky9Rate: 0,
     IsPractice: 0,
-    //RobotSetting: '',
+    // RobotSetting: '',
     PlayingMul: 0,
     PlayingRandMin: 0,
     PlayingRandMax: 0,
@@ -561,8 +563,8 @@ function newItem() {
     HideLevel: 0,
     HitPotBetTimes: 0,
     HitPotTaxRates: 0,
-    PotBetTimes:0,
-    PotTaxRates:0
+    PotBetTimes: 0,
+    PotTaxRates: 0
   }
 }
 
@@ -571,6 +573,8 @@ export default {
   data() {
     return {
       tableData: [],
+      tableMoneys: [],
+      aiTableMoneys: [],
       statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -678,9 +682,51 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
+          // 对比下AI配置，看底注是否都有
+          for (const k in response.Data) {
+            this.tableMoneys.push(response.Data[k].TableMoney)
+          }
+          this.tableMoneys = Array.from(new Set(this.tableMoneys))
+          this.tableMoneys.sort((x, y) => x - y)
+          console.log('tableMoneys: ', this.tableMoneys)
           const objs = response.Data || []
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
+          this.getData()
+        }
+      })
+    },
+    getData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'lucky9RobotSetting'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            const data = JSON.parse(response.Data.Data)
+            for (let j = 0; j < data.SafePoolMoneyCfg.length; j++) {
+              this.aiTableMoneys.push(data.SafePoolMoneyCfg[j].TableMoney)
+              if (!this.tableMoneys.includes(data.SafePoolMoneyCfg[j].TableMoney)) {
+                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky9RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+                return
+                // this.isTableMoneysChanged = true
+              }
+            }
+            if (this.tableMoneys.length !== this.aiTableMoneys.length) {
+              this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky9RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+              return
+            }
+            for (let i = 0; i < this.tableMoneys.length; i++) {
+              if (!this.aiTableMoneys.includes(this.tableMoneys[i])) {
+                this.$alert('场次配置的底注有变更，请点此<a style="font-weight: bolder" href="#/tableConfig/lucky9RobotSetting" target="_blank">【机器人缓冲池配置】</a>同步修改并发布', { dangerouslyUseHTMLString: true })
+                return
+              }
+            }
+          }
         }
       })
     },
@@ -737,7 +783,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('修改记录状态成功！')
+            Message.success('修改记录状态成功！如果有底注值变化，请同步AI配置！')
             $this.clientDB.UpdateData({ ID: id, Status: status })
           }
         })
@@ -775,7 +821,7 @@ export default {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
-          Message.success('保存成功！')
+          Message.success('保存成功！如果有底注值变化，请同步AI配置！')
         }
       })
     },

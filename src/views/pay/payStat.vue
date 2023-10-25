@@ -102,7 +102,7 @@
         width="100"
       >
         <template slot-scope="scope">
-          {{ scope.row.PayRate/10}}
+          {{ scope.row.PayRate/10 }}
         </template>
       </el-table-column>
 
@@ -202,24 +202,24 @@
       :visible.sync="correctVisible"
       width="50%"
     >
-      <el-form label-width="100px" >
+      <el-form label-width="100px">
         <template v-if="type==1">
           <el-row>
-          <el-form-item label="修正数额：">
-            <el-input v-model="edit.Correct" />
-          </el-form-item>
+            <el-form-item label="修正数额：">
+              <el-input v-model="edit.Correct" />
+            </el-form-item>
           </el-row>
           <el-row>
-          <el-form-item label="修正说明：" :required="true">
-            <el-input v-model="edit.CorrectNote" type="textarea" rows="5" />
-          </el-form-item>
+            <el-form-item label="修正说明：" :required="true">
+              <el-input v-model="edit.CorrectNote" type="textarea" rows="5" />
+            </el-form-item>
           </el-row>
         </template>
         <template v-else>
           <el-row>
-          <el-form-item label="提出金额：" :required="true">
-            <el-input v-model="edit.OutMoney" />
-          </el-form-item>
+            <el-form-item label="提出金额：" :required="true">
+              <el-input v-model="edit.OutMoney" />
+            </el-form-item>
           </el-row>
         </template>
         <el-form-item>
@@ -289,7 +289,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          Message.success("重新计算当日剩余金额成功！")
+          Message.success('重新计算当日剩余金额成功！')
         }
       })
     },

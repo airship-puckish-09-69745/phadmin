@@ -8,10 +8,10 @@
           <fieldset>
             <legend>TeenPatti</legend>
             <el-form-item label="系统【赢】时启用" label-width="150px">
-              <el-switch v-model="item.TeenPattiWinFlag"></el-switch>
+              <el-switch v-model="item.TeenPattiWinFlag" />
             </el-form-item>
             <el-form-item label="系统【输】时启用" label-width="150px">
-              <el-switch v-model="item.TeenPattiLoseFlag"></el-switch>
+              <el-switch v-model="item.TeenPattiLoseFlag" />
             </el-form-item>
             <el-form-item label="抽水计算比例" label-width="120px">
               <el-input v-model.number="item.TeenPattiSchemaRate" placeholder="" style="width:80px;" />‰
@@ -22,10 +22,10 @@
           <fieldset>
             <legend>Rummy</legend>
             <el-form-item label="系统【赢】时启用" label-width="150px">
-              <el-switch v-model="item.RummyWinFlag"></el-switch>
+              <el-switch v-model="item.RummyWinFlag" />
             </el-form-item>
             <el-form-item label="系统【输】时启用" label-width="150px">
-              <el-switch v-model="item.RummyLoseFlag"></el-switch>
+              <el-switch v-model="item.RummyLoseFlag" />
             </el-form-item>
             <el-form-item label="抽水计算比例" label-width="120px">
               <el-input v-model.number="item.RummySchemaRate" placeholder="" style="width:80px;" />‰
@@ -36,10 +36,10 @@
           <fieldset>
             <legend>AK47</legend>
             <el-form-item label="系统【赢】时启用" label-width="150px">
-              <el-switch v-model="item.AKWinFlag"></el-switch>
+              <el-switch v-model="item.AKWinFlag" />
             </el-form-item>
             <el-form-item label="系统【输】时启用" label-width="150px">
-              <el-switch v-model="item.AKLoseFlag"></el-switch>
+              <el-switch v-model="item.AKLoseFlag" />
             </el-form-item>
             <el-form-item label="抽水计算比例" label-width="120px">
               <el-input v-model.number="item.AKSchemaRate" placeholder="" style="width:80px;" />‰
@@ -75,15 +75,15 @@
               :label="'升' + (idx+1) +'级：'"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-                <el-input style="width: 150px" v-model.number="item.Win[idx]" placeholder="placeholder" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="item.Win[idx]" style="width: 150px" placeholder="placeholder"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-form>
         </el-col>
         <el-col :span="12">
           <div style="padding: 10px;">当B<=A，(A-B)/A作为参数，大于配置，则降N级:</div>
-          <el-form ref="item2" :model="item" label-width="80px" >
+          <el-form ref="item2" :model="item" label-width="80px">
             <el-form-item v-for="(o,idx) in item.Lose" :key="'lose'+idx" :prop="'Lose[' + idx + ']'" :label="'降' + (idx+1) +'级：'" :rules="dataRule(true,{type:'n',range:'0'})">
-                <el-input style="width: 150px" v-model.number="item.Lose[idx]" placeholder="placeholder" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="item.Lose[idx]" style="width: 150px" placeholder="placeholder"><template slot="append">%</template></el-input>
             </el-form-item>
 
             <el-form-item>

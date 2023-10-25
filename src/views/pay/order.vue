@@ -183,7 +183,7 @@
         width="130px"
       >
         <template slot-scope="{row}">
-          <DateTimeShow :show-type="7" :timestamp="row.create_time"/>
+          <DateTimeShow :show-type="7" :timestamp="row.create_time" />
         </template>
       </el-table-column>
       <el-table-column
@@ -192,7 +192,7 @@
         width="130px"
       >
         <template slot-scope="{row}">
-          <DateTimeShow :show-type="7" :timestamp="row.deliver_time"/>
+          <DateTimeShow :show-type="7" :timestamp="row.deliver_time" />
         </template>
       </el-table-column>
       <el-table-column
@@ -233,7 +233,7 @@
     <div style="margin-top: 20px">
       <el-button type="success" @click="showBatchOrderDelivery">批量发货</el-button>
       <el-button type="primary" @click="queryBatchLogs">批量发货操作日志</el-button>
-      <el-button type="success" v-if="hasExportPer()" @click="exportMonthBtn">支付渠道按月导出</el-button>
+      <el-button v-if="hasExportPer()" type="success" @click="exportMonthBtn">支付渠道按月导出</el-button>
     </div>
 
     <el-dialog
@@ -246,15 +246,15 @@
           <el-alert
             title="导出指定月份的支付/提现成功的订单数和金额"
             type="success"
-            show-icon>
-          </el-alert>
+            show-icon
+          />
           <el-alert
             title="不能导出当前月份的数据"
             type="error"
-            show-icon>
-          </el-alert>
+            show-icon
+          />
         </div>
-        <br/>
+        <br>
         <div class="block">
           <el-date-picker
             v-model="exportMonth.month"
@@ -423,10 +423,10 @@ import request from '@/utils/request'
 import store from '@/store'
 import PayChannel from '@/components/PayChannel'
 import { parseTime } from '@/utils'
-import DateTimeShow from "@/components/DatetimeShow";
+import DateTimeShow from '@/components/DatetimeShow'
 
 export default {
-  components: {DateTimeShow, PayChannel },
+  components: { DateTimeShow, PayChannel },
   data() {
     return {
       form: {
@@ -448,9 +448,9 @@ export default {
           { 'label': '支付失败', 'value': 9 }
         ],
         yearOptions: [
-          { 'label': '最近三十天', 'value': 0},
-          { 'label': '2023年', 'value': 2023},
-          { 'label': '2022年', 'value': 2022},
+          { 'label': '最近三十天', 'value': 0 },
+          { 'label': '2023年', 'value': 2023 },
+          { 'label': '2022年', 'value': 2022 }
         ],
         bankCode: '',
         bankCodeOption: [
@@ -504,7 +504,7 @@ export default {
       disableDeliveryBtn: false, // 禁止提交发货按钮
       selectTableData: [], // 全选数据
 
-      paySceneMap: {}, //支付场景
+      paySceneMap: {}, // 支付场景
 
       // 批量发货日志
       batchLogs: {
@@ -573,7 +573,7 @@ export default {
       const arr = this.exportMonth.month.split('-')
       const year = arr[0]
       const month = arr[1]
-      const curMonth = (new Date).getMonth() + 1
+      const curMonth = (new Date()).getMonth() + 1
       if (curMonth === parseInt(month)) {
         this.$message.error('不能导出当前月份')
         return
@@ -946,15 +946,15 @@ export default {
         createSts = this.transTime(this.form.cTime[0])
         createEts = this.transTime(this.form.cTime[1])
       }
-      //不允许跨年查询
+      // 不允许跨年查询
       if (this.form.searchYear > 0) {
-        var startYear = new Date(createSts*1000).getFullYear()
-        var endYear = new Date(createEts*1000).getFullYear()
+        var startYear = new Date(createSts * 1000).getFullYear()
+        var endYear = new Date(createEts * 1000).getFullYear()
         if (startYear != endYear) {
-          $this.$message.error("暂不支持跨年查询！")
+          $this.$message.error('暂不支持跨年查询！')
           return false
         } else if (this.form.searchYear != startYear) {
-          $this.$message.error("查询时间段跟年份不匹配！")
+          $this.$message.error('查询时间段跟年份不匹配！')
           return false
         }
       }

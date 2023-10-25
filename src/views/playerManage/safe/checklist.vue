@@ -254,7 +254,7 @@ export default {
       rate: {
         Succ: 0,
         Total: 0,
-        Reg:0
+        Reg: 0
       },
 
       noteInfos: { // 用于缓存已经查找过的注释信息

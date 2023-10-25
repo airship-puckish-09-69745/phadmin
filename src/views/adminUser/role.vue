@@ -101,13 +101,13 @@
           <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
             <tr v-for="(o,idx) in edit.permissions" :key="idx">
               <td>
-                {{ o.Name}}
+                {{ o.Name }}
               </td>
               <td>
                 {{ o.Key }}
               </td>
               <td>
-                <el-checkbox v-model="o.View"  :disabled="!o.CanView">查看</el-checkbox>
+                <el-checkbox v-model="o.View" :disabled="!o.CanView">查看</el-checkbox>
                 <el-checkbox v-model="o.Update" :disabled="!o.CanUpdate">修改</el-checkbox>
                 <el-checkbox v-model="o.Create" :disabled="!o.CanCreate">添加</el-checkbox>
                 <el-checkbox v-model="o.Delete" :disabled="!o.CanDelete">删除</el-checkbox>
@@ -281,7 +281,7 @@ export default {
         url: '/adminuser/role/update',
         method: 'post',
         data: {
-          roleID:this.edit.item.ID,
+          roleID: this.edit.item.ID,
           name: this.edit.item.Name,
           description: this.edit.item.Description,
           ps: JSON.stringify(pers)

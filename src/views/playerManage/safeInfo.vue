@@ -10,11 +10,11 @@
           </el-select>
         </el-col>
         <el-col :span="10">
-          <el-form-item label="UID：" :required="true" v-if="item.iType==2">
+          <el-form-item v-if="item.iType==2" label="UID：" :required="true">
             <UidInput @setUid="function(iUid){item.Uid=iUid}" />
           </el-form-item>
-          <el-form-item label="" :required="true" v-else>
-            <el-input size="mini" v-model="item.Value"/>
+          <el-form-item v-else label="" :required="true">
+            <el-input v-model="item.Value" size="mini" />
           </el-form-item>
         </el-col>
         <el-col :offset="1" :span="2">
@@ -67,7 +67,7 @@
         sortable
         width="150"
       >
-        <template slot-scope="scope" v-if="scope.row.updateTime!==0">
+        <template v-if="scope.row.updateTime!==0" slot-scope="scope">
           {{ formatTime(scope.row.updateTime) }}
         </template>
       </el-table-column>
@@ -112,11 +112,10 @@ export default {
       libShow: $libShow,
 
       item: {
-        iType:2,
+        iType: 2,
         Uid: 0,
-        Value:''
-      },
-
+        Value: ''
+      }
 
     }
   },
@@ -175,13 +174,13 @@ export default {
           Type: this.item.iType,
           Uid: this.item.Uid,
           Device: this.item.Value,
-          IP: this.item.Value,
+          IP: this.item.Value
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          let objs = response.Data || []
-          if(objs.length === 0){
-            Message.success("查询结果为空")
+          const objs = response.Data || []
+          if (objs.length === 0) {
+            Message.success('查询结果为空')
             return
           }
           $this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)

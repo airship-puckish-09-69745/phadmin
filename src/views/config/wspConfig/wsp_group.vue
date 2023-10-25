@@ -13,7 +13,7 @@
           <template slot-scope="scope">
             <el-table :data="formatWspList(scope.row.wsp_list)" border>
               <el-table-column label="WSP服务器">
-                <template slot-scope="scope">{{scope.row.name}}({{scope.row.wsp}})</template>
+                <template slot-scope="scope">{{ scope.row.name }}({{ scope.row.wsp }})</template>
               </el-table-column>
               <el-table-column prop="port" label="端口" />
             </el-table>

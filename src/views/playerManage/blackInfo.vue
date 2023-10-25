@@ -37,7 +37,7 @@
         <template v-if="ret.operator!==''">
           <el-descriptions-item label="操作者：">{{ ret.operator }}</el-descriptions-item>
           <el-descriptions-item label="更新时间：">{{ formatTime(ret.updateTime) }}</el-descriptions-item>
-          <el-descriptions-item label="原因：" span="2">{{ getReason(ret.reason)}}</el-descriptions-item>
+          <el-descriptions-item label="原因：" span="2">{{ getReason(ret.reason) }}</el-descriptions-item>
           <el-descriptions-item label="说明：" span="2">{{ ret.note }}</el-descriptions-item>
         </template>
       </el-descriptions>

@@ -8,19 +8,19 @@
     <el-row>
       <el-form label-width="100px" size="small" :inline="true">
         <el-form-item>
-        <el-date-picker
-          v-model="timeRange"
-          size="mini"
-          type="datetimerange"
-          :picker-options="pickerOptions"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          align="right"
-        />
+          <el-date-picker
+            v-model="timeRange"
+            size="mini"
+            type="datetimerange"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right"
+          />
         </el-form-item>
         <el-form-item>
-        <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
+          <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
         </el-form-item>
       </el-form>
     </el-row>

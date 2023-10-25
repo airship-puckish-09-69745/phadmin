@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     getUrl(ob) {
-      const url = $libShow.GetFullPath('/langRes/' + this.project +'/zip/' + ob.Name)
+      const url = $libShow.GetFullPath('/langRes/' + this.project + '/zip/' + ob.Name)
       return '<a href= "' + url + '">' + url + '</a>'
     },
     // 显示类处理函数

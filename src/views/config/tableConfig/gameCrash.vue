@@ -120,20 +120,19 @@
               </el-form-item>
             </el-col>
           </el-row>
-          
 
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
             <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="机器人最小人数：" prop="MinRobotNumber" :rules="dataRule(true,{type:'n',range:'1'})">
+                <el-form-item label="机器人最小人数：" prop="MinRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.MinRobotNumber" size="mini" :required="true" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="机器人最大人数：" prop="MaxRobotNumber" :rules="dataRule(true,{type:'n',range:'1'})">
+                <el-form-item label="机器人最大人数：" prop="MaxRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.MaxRobotNumber" size="mini" :required="true" />
                   </el-col>
@@ -277,7 +276,7 @@
             <el-col :span="12">
               <el-table ref="filterTable" :data="item.OddsRates" stripe border fit :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell">
                 <el-table-column type="index" label="时间(秒)" width="100">
-                  <template slot-scope="scope">{{scope.$index+1}}</template>
+                  <template slot-scope="scope">{{ scope.$index+1 }}</template>
                 </el-table-column>
                 <el-table-column prop="Odds" label="赔率(最多2位小数)">
                   <template slot-scope="scope">
@@ -314,7 +313,7 @@
               <el-input v-model.number="testRand.times" size="11" placeholder="请输入随机次数" />
             </el-col>
             <el-col :span="12">
-              <el-button style="margin-left: 20px;" type="primary"  @click="goRand">执行</el-button>
+              <el-button style="margin-left: 20px;" type="primary" @click="goRand">执行</el-button>
             </el-col>
           </el-form-item>
           <el-form-item label="随机汇总：">
@@ -415,9 +414,9 @@
                 label="赔率"
                 width="180"
               >
-              <template slot-scope="scope">
-                {{ scope.row.OptionId/100 }}
-              </template>
+                <template slot-scope="scope">
+                  {{ scope.row.OptionId/100 }}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="Times"
@@ -464,20 +463,20 @@ export default {
         ActionSeconds: 15,
         MaxWatchTimes: 0,
         WinMoneyTransferRate: 20,
-        MinPlayersEnableSchema: 1, //最低调控玩家数
+        MinPlayersEnableSchema: 1, // 最低调控玩家数
         PoolSafeRate: 30,
         MaxRunSeconds: 15,
-        MinRobotNumber:0, //机器人最小人数
-        MaxRobotNumber:0, //机器人最大人数
-        MinRobotPlayTimes:0, //机器人最小玩牌局数
-        MaxRobotPlayTimes:0, //机器人最大玩牌局数
-        MinRobotMoney:0, //机器人金币下限
-        MaxRobotMoney:0, //机器人金币上限
-        MinRobotWinTimes:0, //机器人最大赢牌次数下限
-        MaxRobotWinTimes:0, //机器人最大赢牌次数上限
-        MinRobotLoseTimes:0, //机器人最大输牌次数下限
-        MaxRobotLoseTimes:0, //机器人最大输牌次数上限
-        OddsRates: [{Odds: 0, Rate: 0}],
+        MinRobotNumber: 0, // 机器人最小人数
+        MaxRobotNumber: 0, // 机器人最大人数
+        MinRobotPlayTimes: 0, // 机器人最小玩牌局数
+        MaxRobotPlayTimes: 0, // 机器人最大玩牌局数
+        MinRobotMoney: 0, // 机器人金币下限
+        MaxRobotMoney: 0, // 机器人金币上限
+        MinRobotWinTimes: 0, // 机器人最大赢牌次数下限
+        MaxRobotWinTimes: 0, // 机器人最大赢牌次数上限
+        MinRobotLoseTimes: 0, // 机器人最大输牌次数下限
+        MaxRobotLoseTimes: 0, // 机器人最大输牌次数上限
+        OddsRates: [{ Odds: 0, Rate: 0 }],
         MinBet: 1.01,
         MaxBet: 100,
         IncrBet: 0.01,
@@ -486,7 +485,7 @@ export default {
         PreBetRate: 0.97,
         HandleTakeShiftingTime: 0,
         HandleTakeShiftingRate: 0,
-        EnableControl: false,
+        EnableControl: false
       },
       testRand: {
         visible: false,
@@ -505,7 +504,7 @@ export default {
         lessThanTwoRate: 0,
         lessThanThreeRate: 0,
         moreThanThreeRate: 0,
-        moreThanEightRate: 0,
+        moreThanEightRate: 0
       },
       showData: {
         Rate100: 0,
@@ -544,16 +543,16 @@ export default {
         'Data.PoolSafeRate': '底池安全比例',
         'Data.OddsRates': '赔率概率配置',
         'Data.MaxRunSeconds': '最大飞行时长',
-        'Data.MinRobotNumber':'机器人最小人数',
-        'Data.MaxRobotNumber':'机器人最大人数',
-        'Data.MinRobotPlayTimes':'机器人最小玩牌局数',
-        'Data.MaxRobotPlayTimes':'机器人最大玩牌局数',
-        'Data.MinRobotMoney':'机器人金币下限',
-        'Data.MaxRobotMoney':'机器人金币上限',
-        'Data.MinRobotWinTimes':'机器人最大赢牌次数下限',
-        'Data.MaxRobotWinTimes':'机器人最大赢牌次数上限',
-        'Data.MinRobotLoseTimes':'机器人最大输牌次数下限',
-        'Data.MaxRobotLoseTimes':'机器人最大输牌次数上限',
+        'Data.MinRobotNumber': '机器人最小人数',
+        'Data.MaxRobotNumber': '机器人最大人数',
+        'Data.MinRobotPlayTimes': '机器人最小玩牌局数',
+        'Data.MaxRobotPlayTimes': '机器人最大玩牌局数',
+        'Data.MinRobotMoney': '机器人金币下限',
+        'Data.MaxRobotMoney': '机器人金币上限',
+        'Data.MinRobotWinTimes': '机器人最大赢牌次数下限',
+        'Data.MaxRobotWinTimes': '机器人最大赢牌次数上限',
+        'Data.MinRobotLoseTimes': '机器人最大输牌次数下限',
+        'Data.MaxRobotLoseTimes': '机器人最大输牌次数上限',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -561,8 +560,8 @@ export default {
     }
   },
   created() {
-    this.getData();
-    console.log(1);
+    this.getData()
+    console.log(1)
   },
   methods: {
     getDiffShow(val, std) {
@@ -573,58 +572,58 @@ export default {
       }
     },
     dataRule(required, config) {
-      return DataRule(required, config);
+      return DataRule(required, config)
     },
     getFullKey() {
-      return 'CustomizeCfg_' + this.subKey;
+      return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-      this.item.MinMoneyCarry /= 1000;
-      this.item.BetMoneyMax /= 1000;
-      this.item.MinRobotMoney /= 1000;
-      this.item.MaxRobotMoney /= 1000;
-      this.item.BigBetMoney /= 1000;
+      this.item.MinMoneyCarry /= 1000
+      this.item.BetMoneyMax /= 1000
+      this.item.MinRobotMoney /= 1000
+      this.item.MaxRobotMoney /= 1000
+      this.item.BigBetMoney /= 1000
       for (const o in this.item.BetMoneyList) {
-        this.item.BetMoneyList[o] /= 1000;
+        this.item.BetMoneyList[o] /= 1000
       }
       for (const o in this.item.OddsRates) {
-        this.item.OddsRates[o].Odds /= 100;
+        this.item.OddsRates[o].Odds /= 100
       }
-      this.item.MinBet /= 100;
-      this.item.MaxBet /= 100;
-      this.item.IncrBet /= 100;
-      this.item.PreBetRate /= 100;
-      this.item.BetRate /= 100;
+      this.item.MinBet /= 100
+      this.item.MaxBet /= 100
+      this.item.IncrBet /= 100
+      this.item.PreBetRate /= 100
+      this.item.BetRate /= 100
     },
     getPostData() {
-      const ret = {};
-      for (let k in this.item) {
-        if(k == 'OddsRates') {
-          ret[k] = [];
-          for (let i=0; i<this.item.OddsRates.length; i++) {
-            ret[k].push({Odds: this.item.OddsRates[i].Odds, Rate: this.item.OddsRates[i].Rate});
+      const ret = {}
+      for (const k in this.item) {
+        if (k == 'OddsRates') {
+          ret[k] = []
+          for (let i = 0; i < this.item.OddsRates.length; i++) {
+            ret[k].push({ Odds: this.item.OddsRates[i].Odds, Rate: this.item.OddsRates[i].Rate })
           }
         } else {
-          ret[k] = this.item[k];
+          ret[k] = this.item[k]
         }
       }
-      ret.MinMoneyCarry *= 1000;
-      ret.BetMoneyMax *= 1000;
-      ret.MinRobotMoney *= 1000;
-      ret.MaxRobotMoney *= 1000;
-      ret.BigBetMoney *= 1000;
+      ret.MinMoneyCarry *= 1000
+      ret.BetMoneyMax *= 1000
+      ret.MinRobotMoney *= 1000
+      ret.MaxRobotMoney *= 1000
+      ret.BigBetMoney *= 1000
       for (const o in ret.BetMoneyList) {
-        ret.BetMoneyList[o] *= 1000;
+        ret.BetMoneyList[o] *= 1000
       }
       for (const o in ret.OddsRates) {
-        ret.OddsRates[o].Odds = Math.round(ret.OddsRates[o].Odds * 100);
+        ret.OddsRates[o].Odds = Math.round(ret.OddsRates[o].Odds * 100)
       }
-      ret.MinBet *= 100;
-      ret.MaxBet *= 100;
-      ret.IncrBet *= 100;
-      ret.PreBetRate *= 100;
-      ret.BetRate *= 100;
-      return ret;
+      ret.MinBet *= 100
+      ret.MaxBet *= 100
+      ret.IncrBet *= 100
+      ret.PreBetRate *= 100
+      ret.BetRate *= 100
+      return ret
     },
     getData() {
       request({
@@ -657,20 +656,20 @@ export default {
       }
 
       if (this.item.MaxRobotNumber < this.item.MinRobotNumber) {
-        Message.error('“机器人最大人数”不能小于“机器人最小人数”');
-        return;
+        Message.error('“机器人最大人数”不能小于“机器人最小人数”')
+        return
       } else if (this.item.MaxRobotMoney < this.item.MinRobotMoney) {
-        Message.error('“机器人携带金币上限”不能小于“机器人携带金币下限”');
-        return;
+        Message.error('“机器人携带金币上限”不能小于“机器人携带金币下限”')
+        return
       } else if (this.item.MaxRobotPlayTimes < this.item.MinRobotPlayTimes) {
-        Message.error('“机器人最大玩牌局数上限”不能小于“机器人最大玩牌局数下限”');
-        return;
+        Message.error('“机器人最大玩牌局数上限”不能小于“机器人最大玩牌局数下限”')
+        return
       } else if (this.item.MaxRobotWinTimes < this.item.MinRobotWinTimes) {
-        Message.error('“机器人最大赢牌次数上限”不能小于“机器人最大赢牌次数下限”');
-        return;
+        Message.error('“机器人最大赢牌次数上限”不能小于“机器人最大赢牌次数下限”')
+        return
       } else if (this.item.MaxRobotLoseTimes < this.item.MinRobotLoseTimes) {
-        Message.error('“机器人最大输牌次数上限”不能小于“机器人最大输牌次数下限”');
-        return;
+        Message.error('“机器人最大输牌次数上限”不能小于“机器人最大输牌次数下限”')
+        return
       }
 
       this.form.Data = JSON.stringify(this.getPostData())

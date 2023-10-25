@@ -15,9 +15,9 @@
         <draggable v-model="dItems" animation="500" force-fallback="true" handle=".move" @start="onStart" @end="onEnd">
           <tr v-for="item in dItems" :key="item.ID">
             <template v-if="item.ID=='ID'">
-            <td style="width:50px">排序</td>
-            <td style="width:50px" >ID</td>
-            <td style="width:250px">名称</td>
+              <td style="width:50px">排序</td>
+              <td style="width:50px">ID</td>
+              <td style="width:250px">名称</td>
             </template>
             <template v-else>
               <td style="width:50px">{{ item.Sort }}</td>

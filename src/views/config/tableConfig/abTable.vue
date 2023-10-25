@@ -142,7 +142,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          
+
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
             <el-row>

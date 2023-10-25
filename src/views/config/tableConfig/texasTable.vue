@@ -78,14 +78,15 @@
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
               <el-select v-model="edit.item.SmallBlind" placeholder="请选择" :disabled="edit.isEdit">
                 <el-option label="0.1" :value="0.1" />
-                <el-option label="0.3" :value="0.3" />
-                <el-option label="0.5" :value="0.5" />
                 <el-option label="1" :value="1" />
-                <el-option label="3" :value="3" />
+                <el-option label="2.5" :value="2.5" />
+                <el-option label="5" :value="5" />
                 <el-option label="10" :value="10" />
-                <el-option label="20" :value="20" />
+                <el-option label="25" :value="25" />
                 <el-option label="50" :value="50" />
-                <el-option label="200" :value="200" />
+                <el-option label="100" :value="100" />
+                <el-option label="250" :value="250" />
+                <el-option label="500" :value="500" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -95,6 +96,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item label="服务费：" :required="true">
@@ -102,7 +104,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-              <el-form-item label="强制前注：" :required="true">
+            <el-form-item label="强制前注：" :required="true">
               <el-radio-group v-model.number="edit.item.NeedAnte">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
@@ -110,6 +112,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        -->
         <el-row>
           <el-col :span="11">
             <el-form-item label="最小携带：" :required="true" prop="item.CarryLower" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -145,11 +148,11 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
-          <el-col :span="11">
+<!--          <el-col :span="11">
             <el-form-item label="抽水最少大盲倍数：" :required="true" prop="item.FlowLower" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model="edit.item.FlowLower" placeholder="请输入" />
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
         <!--
         <el-row>
@@ -170,6 +173,11 @@
           <el-col :span="11">
             <el-form-item label="最大旁观局数：" :required="true" prop="item.WatchTimesMax" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model="edit.item.WatchTimesMax" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="自动买入比例(%)：" :required="true" prop="item.AutoBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.AutoBuyRatio" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <!--
@@ -212,17 +220,28 @@
         </el-row>
         -->
         <el-row>
+          <!--
           <el-col :span="11">
             <el-form-item label="玩家买入等待时长：" :required="true" prop="item.PurchaseSecondMax" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.PurchaseSecondMax" placeholder="玩家买入等待时长" />
             </el-form-item>
           </el-col>
+          -->
           <el-col :span="11">
             <el-form-item label="最大围观局数：" prop="item.WatchTimesMax" :rules="dataRule(true,{type:'n',range:'2'})">
               <el-input v-model.number="edit.item.WatchTimesMax" />
             </el-form-item>
           </el-col>
         </el-row>
+        
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="推荐买入倍数(大盲)：" :required="true" prop="item.RecommendBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RecommendBuyRatio" placeholder="进房间推荐买入多少倍大盲" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
         <!--
         <el-row>
           <el-col :span="11">
@@ -490,7 +509,7 @@ function NewResidentRobotSetting() {
   return {
     RobotMoneyRatioMin: 0,
     RobotMoneyRatioMax: 0,
-    RobotTablePlayers: ""
+    RobotTablePlayers: ''
   }
 }
 
@@ -505,7 +524,7 @@ function newItem() {
     IsVip: 0,
     ObjectCount: 200,
     FlowRate: 0,
-    FlowLower: 2,
+    FlowLower: 0, // 改成默认0。 https://www.tapd.cn/48971248/prong/stories/view/1148971248001003193
     ActionSeconds: 15,
     IsPro: 0,
     PurchaseSecondsMax: 180,
@@ -527,7 +546,9 @@ function newItem() {
     RecommendBankruptGid: 0,
     SinglePay: 0,
     TotalPay: 0,
-    HideLevel: 0
+    HideLevel: 0,
+    AutoBuyRatio:0,
+    RecommendBuyRatio:0,
   }
 }
 
@@ -585,6 +606,8 @@ export default {
         SinglePay: '单次充值大于',
         TotalPay: '总充值大于',
         HideLevel: '进入该场次后隐藏场次',
+        AutoBuyRatio: '自动买入比例',
+        RecommendBuyRatio: '推荐买入倍数(大盲)',
         'RandomRobotSetting.RobotNumMax': '陪玩机器人数量上限',
         'RandomRobotSetting.RobotTriggerMin': '陪玩机器人的触发人数下限',
         'RandomRobotSetting.RobotTriggerMax': '陪玩机器人的触发人数上限',

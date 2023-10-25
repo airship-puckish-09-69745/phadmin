@@ -5,7 +5,7 @@
     </el-row>
     <el-row>
       <el-col :offset="12">
-        <el-button size="mini" @click="openGameComm" :round="true" type="success">配置公共包对应关系</el-button>
+        <el-button size="mini" :round="true" type="success" @click="openGameComm">配置公共包对应关系</el-button>
       </el-col>
     </el-row>
 
@@ -17,30 +17,30 @@
         :close-on-press-escape="false"
       >
         <el-row>
-        <publish primary-key="Volume" :env-empty="false" :key-id="getGameCommKey()" compare-type="Object"/>
+          <publish primary-key="Volume" :env-empty="false" :key-id="getGameCommKey()" compare-type="Object" />
         </el-row>
-        <el-form ref="edit" :model="edit" label-width="150px" :inline="true" size="small" >
+        <el-form ref="edit" :model="edit" label-width="150px" :inline="true" size="small">
           <el-row>
             <el-form-item label="新增游戏">
-              <el-col :span="16">            <el-input size="mini" v-model="gameComm.newGameName"/></el-col>
+              <el-col :span="16">            <el-input v-model="gameComm.newGameName" size="mini" /></el-col>
               <el-col :span="8"><el-button size="mini" @click="addNewGame">添加</el-button></el-col>
             </el-form-item>
           </el-row>
           <el-row v-for="v,k in gameComm.item">
             <el-form-item :label="k+'：'">
-                <el-select size="mini" v-model="gameComm.item[k][0]">
-                  <el-option value="poker"/>
-                  <el-option value="slots"/>
-                </el-select>
+              <el-select v-model="gameComm.item[k][0]" size="mini">
+                <el-option value="poker" />
+                <el-option value="slots" />
+              </el-select>
             </el-form-item>
             <el-form-item>
-              <el-input size="mini" v-model="gameComm.item[k][1]"/>
+              <el-input v-model="gameComm.item[k][1]" size="mini" />
             </el-form-item>
           </el-row>
           <el-row>
-              <el-col :offset="16">
-                <el-button size="mini" type="primary" @click="saveGameComm">保存</el-button>
-              </el-col>
+            <el-col :offset="16">
+              <el-button size="mini" type="primary" @click="saveGameComm">保存</el-button>
+            </el-col>
           </el-row>
 
         </el-form>
@@ -243,8 +243,8 @@
                     v-for="item in typeOption"
                     :key="item.value"
                     :label="item.label"
-                    :value="item.value">
-                  </el-option>
+                    :value="item.value"
+                  />
                 </el-select>
               </el-col>
             </el-form-item>

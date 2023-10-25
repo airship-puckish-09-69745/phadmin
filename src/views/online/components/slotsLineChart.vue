@@ -8,7 +8,7 @@ import resize from '@/components/Charts/mixins/resize'
 require('echarts/theme/macarons') // echarts theme
 
 export default {
-	name: 'SlotsLineChart',
+  name: 'SlotsLineChart',
   mixins: [resize],
   props: {
     className: {
@@ -68,11 +68,11 @@ export default {
       const chartData = this.chartData
       const yNames = chartData.yNames
       const series = chartData.xSeries
-      const selected = {};
-      for(let i=0;i<yNames.length;i++){
-      	selected[yNames[i]] = false;
-      	if(i === 0){
-      		selected[yNames[i]] = true;
+      const selected = {}
+      for (let i = 0; i < yNames.length; i++) {
+      	selected[yNames[i]] = false
+      	if (i === 0) {
+      		selected[yNames[i]] = true
       	}
       }
       this.chart.setOption({
@@ -106,7 +106,7 @@ export default {
         },
         legend: {
           data: yNames,
-          selected:selected//默认选中第一个
+          selected: selected// 默认选中第一个
         },
         series: series
       })

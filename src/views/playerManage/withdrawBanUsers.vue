@@ -32,7 +32,7 @@
       >
         <template slot-scope="scope">
           {{ scope.row.Uid }}
-          <i class="el-icon-search" v-if="scope.row.Uid > 0" @click="goUserInfo(scope.row.Uid)" />
+          <i v-if="scope.row.Uid > 0" class="el-icon-search" @click="goUserInfo(scope.row.Uid)" />
         </template>
       </el-table-column>
 
@@ -97,7 +97,7 @@
         label="差值"
       >
         <template slot-scope="scope">
-          {{ (scope.row.TotalRecharge - scope.row.Money - scope.row.Withdrawing - scope.row.TotalWithdraw)  | toRupee }}
+          {{ (scope.row.TotalRecharge - scope.row.Money - scope.row.Withdrawing - scope.row.TotalWithdraw) | toRupee }}
         </template>
       </el-table-column>
 
@@ -156,7 +156,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-form  :model="addTo" size="small">
+      <el-form :model="addTo" size="small">
         <el-form-item label="uid">
           <el-input v-model="addTo.uid" :disabled="addTo.edit" placeholder="" />
         </el-form-item>
@@ -164,7 +164,7 @@
           <el-input v-model="addTo.remark" type="textarea" :rows="3" placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="medium" @click="save" style="float: right">保存</el-button>
+          <el-button type="primary" size="medium" style="float: right" @click="save">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -176,7 +176,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-form  :model="batchAdd" size="small">
+      <el-form :model="batchAdd" size="small">
         <el-form-item label="uid">
           <el-input v-model="batchAdd.uid" type="textarea" :rows="3" placeholder="" />
         </el-form-item>
@@ -184,7 +184,7 @@
           <el-input v-model="batchAdd.remark" type="textarea" :rows="3" placeholder="" />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="medium" @click="batchSave" style="float: right">保存</el-button>
+          <el-button type="primary" size="medium" style="float: right" @click="batchSave">保存</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -227,8 +227,8 @@ export default {
       batchAdd: {
         show: false,
         uid: '',
-        remark: '',
-      },
+        remark: ''
+      }
     }
   },
   computed: {},
@@ -401,7 +401,7 @@ export default {
           this.$message.error('添加失败')
         }
       })
-    },
+    }
   }
 }
 </script>

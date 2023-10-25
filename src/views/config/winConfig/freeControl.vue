@@ -5,7 +5,7 @@
     </el-row>
     <el-col :span="12" :offset="4">
       <el-form ref="cfgData" :model="cfgData" label-width="200px">
-        <fieldset style="margin:30px auto;" v-if="cfgData.AppsTxt">
+        <fieldset v-if="cfgData.AppsTxt" style="margin:30px auto;">
           <legend>适用应用ID列表</legend>
           <el-form-item label="多个ID用英文逗号(,)间隔">
             <el-col :span="20">

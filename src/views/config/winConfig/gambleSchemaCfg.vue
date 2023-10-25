@@ -16,7 +16,7 @@
           <el-input v-model.number="cfg.SchemaTaxedSafeRate" placeholder="placeholder" style="width:150px;"><template slot="append">%</template></el-input>
         </el-form-item>
         <el-form-item label="小游戏特殊用户触发标记值" :required="true" prop="XManTriggerValue">
-          <el-input v-model.number="cfg.XManTriggerValue" placeholder="placeholder" style="width:150px;"></el-input>
+          <el-input v-model.number="cfg.XManTriggerValue" placeholder="placeholder" style="width:150px;" />
         </el-form-item>
         <el-form-item label="小游戏特殊用户调控概率" :required="true" prop="XManPresetCardsRate">
           <el-input v-model.number="cfg.XManPresetCardsRate" placeholder="placeholder" style="width:150px;"><template slot="append">%</template></el-input>
@@ -44,11 +44,11 @@ export default {
   data() {
     return {
       cfg: {
-        "SchemaNormalRateMin": 0,
-        "SchemaNormalRateMax": 0,
-        "SchemaTaxedSafeRate": 0,
-        "XManTriggerValue": 0,
-        "XManPresetCardsRate": 0
+        'SchemaNormalRateMin': 0,
+        'SchemaNormalRateMax': 0,
+        'SchemaTaxedSafeRate': 0,
+        'XManTriggerValue': 0,
+        'XManPresetCardsRate': 0
       },
       form: {},
       libShow: $libShow,
@@ -70,27 +70,27 @@ export default {
   },
   methods: {
     checkData(cfg) {
-      if(cfg.SchemaNormalRateMin <= 0 || cfg.SchemaNormalRateMin > 500) {
-        Message.error('“系统输赢和参考总抽水比例正常范围最小值”应该是1-500之间的数字!');
-        return false;
+      if (cfg.SchemaNormalRateMin <= 0 || cfg.SchemaNormalRateMin > 500) {
+        Message.error('“系统输赢和参考总抽水比例正常范围最小值”应该是1-500之间的数字!')
+        return false
       }
-      if(cfg.SchemaNormalRateMax < cfg.SchemaNormalRateMin || cfg.SchemaNormalRateMax > 2000) {
-        Message.error('“系统输赢和参考总抽水比例正常范围最大值”应该是1-2000之间的数字且不小于最小值!');
-        return false;
+      if (cfg.SchemaNormalRateMax < cfg.SchemaNormalRateMin || cfg.SchemaNormalRateMax > 2000) {
+        Message.error('“系统输赢和参考总抽水比例正常范围最大值”应该是1-2000之间的数字且不小于最小值!')
+        return false
       }
-      if(cfg.SchemaTaxedSafeRate < 1 || cfg.SchemaTaxedSafeRate > 100) {
-        Message.error('“系统输赢和总下注的比例安全值”应该是1-100之间的数字!');
-        return false;
+      if (cfg.SchemaTaxedSafeRate < 1 || cfg.SchemaTaxedSafeRate > 100) {
+        Message.error('“系统输赢和总下注的比例安全值”应该是1-100之间的数字!')
+        return false
       }
-      if(cfg.XManTriggerValue < 10 || cfg.XManTriggerValue > 1000000) {
-        Message.error('“小游戏特殊用户触发标记值”应该是10-1000000之间的数字!');
-        return false;
+      if (cfg.XManTriggerValue < 10 || cfg.XManTriggerValue > 1000000) {
+        Message.error('“小游戏特殊用户触发标记值”应该是10-1000000之间的数字!')
+        return false
       }
-      if(cfg.XManPresetCardsRate < 1 || cfg.XManPresetCardsRate > 100) {
-        Message.error('“小游戏特殊用户调控概率”应该是1-100之间的数字!');
-        return false;
+      if (cfg.XManPresetCardsRate < 1 || cfg.XManPresetCardsRate > 100) {
+        Message.error('“小游戏特殊用户调控概率”应该是1-100之间的数字!')
+        return false
       }
-      return true;
+      return true
     },
     getData() {
       const $this = this
@@ -105,7 +105,7 @@ export default {
           // console.log('sign reward', response)
           $this.form = response.Data || { Data: '{}' }
           $this.cfg = JSON.parse($this.form.Data)
-          $this.cfg.XManTriggerValue /= 1000;
+          $this.cfg.XManTriggerValue /= 1000
           // 设置修改之前数据
           $this.$refs.compare.SetOldVal($this.form)
         }
@@ -117,7 +117,7 @@ export default {
       }
       const postData = {}
       Object.assign(postData, this.cfg)
-      postData.XManTriggerValue *= 1000;
+      postData.XManTriggerValue *= 1000
       this.form.Data = JSON.stringify(postData)
       const $this = this
       // 设置修改后数据
@@ -133,10 +133,10 @@ export default {
           data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('保存成功');
+            Message.success('保存成功')
           }
         })
-      });
+      })
     }
   }
 }

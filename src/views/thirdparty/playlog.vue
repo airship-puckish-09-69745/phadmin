@@ -3,12 +3,21 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item v-model="item.app" label="App：" :required="true" label-width="80px">
-          <el-select v-model="item.app" placeholder="请选择">
+          <el-select v-model="item.app" placeholder="请选择" size="mini">
             <el-option
               v-for="row in appInfo"
               :key="row.key"
               :label="row.label"
               :value="row.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-model="item.gameId" label="游戏：" :required="true" label-width="80px">
+          <el-select v-model="item.gameId" placeholder="游戏筛选" size="mini">
+            <el-option
+              v-for="row in games2"
+              :label="row.name"
+              :value="row.id"
             />
           </el-select>
         </el-form-item>
@@ -18,6 +27,7 @@
             value-format="timestamp"
             type="datetime"
             placeholder="选择日期"
+            size="mini"
           />
         </el-form-item>
         <el-form-item label="结束日期：">
@@ -26,31 +36,42 @@
             value-format="timestamp"
             type="datetime"
             placeholder="选择日期"
+            size="mini"
           />
         </el-form-item>
-        <el-form-item v-model="item.idDesc" label="id 排序：" :required="true" label-width="80px">
-          <el-select v-model="item.idDesc" placeholder="请选择">
-            <el-option label="正序" value="0"/>
-            <el-option label="逆序" value="1"/>
+        <el-form-item v-model="item.totalBet" label="下注额：" label-width="70px">
+          <el-col style="width: auto">
+            <el-tooltip class="item" effect="dark" content="主要用于 tongits" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-select v-model="item.totalBet" placeholder="下注额" size="mini">
+            <el-option
+              v-for="row in totalBets"
+              :label="row == 0 ? '所有' : formatNumber(row / 1000)"
+              :value="row"
+            />
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
+          <el-button type="primary" size="mini" @click="click2getInfo">查询</el-button>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
-      <el-col :offset="6" :span="12">
+      <el-col :span="18">
         <el-descriptions
           class="margin-top"
-          :column="3"
+          :column="5"
           size="medium"
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
           border
         >
           <el-descriptions-item label="总投注笔数：">{{ formatNumber(item.total_bet_num) }}</el-descriptions-item>
-          <el-descriptions-item label="总的有效投注额度："> {{ item.total_valid_bet_amount }}</el-descriptions-item>
-          <el-descriptions-item label="总的输赢：">{{ item.total_win_loss_amount }}</el-descriptions-item>
+          <el-descriptions-item label="总下注额度："> {{ formatNumber(item.total_bet_amount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总jackpot金额：">{{ formatNumber(item.total_jackpot_amount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总有效投注："> {{ formatNumber(item.total_valid_bet_amount / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="GGR：">{{ formatNumber(-item.total_win_loss_amount / 1000) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
@@ -71,27 +92,41 @@
           width="90"
         />
         <el-table-column
+          prop="account"
+          label="平台账号"
+          width="150"
+        >
+          <template slot-scope="scope">
+            <el-popover
+              placement="top-start"
+              width="300"
+              trigger="hover"
+            >
+              <template>
+                <el-row>
+                  GameLog: {{scope.row.game_log}}
+                </el-row>
+                <el-row>
+                  UniqueNO: {{scope.row.unique_no}}
+                </el-row>
+              </template>
+              <span slot="reference" size="mini">{{scope.row.account}}</span>
+            </el-popover>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="game_id"
-          label="给平台方的游戏id"
-          width="110"
+          label="平台GID"
+          width="150"
         >
           <template slot-scope="scope">
             {{ scope.row.game_id }}（{{ games[scope.row.game_id] }}）
           </template>
         </el-table-column>
         <el-table-column
-          prop="Status"
-          label="输赢平"
-          width="70"
-        >
-          <template slot-scope="scope">
-            {{ allStatus[scope.row.status] }}
-          </template>
-        </el-table-column>
-        <el-table-column
           prop="bet_amount"
           label="下注额"
-          width="120"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.bet_amount/1000) }}
@@ -99,8 +134,8 @@
         </el-table-column>
         <el-table-column
           prop="valid_bet_amount"
-          label="有效下注额"
-          width="120"
+          label="有效下注"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.valid_bet_amount/1000) }}
@@ -108,7 +143,7 @@
         </el-table-column>
         <el-table-column
           prop="before_amount"
-          label="投注前用户余额"
+          label="注前余额"
           width="120"
         >
           <template slot-scope="scope">
@@ -117,7 +152,7 @@
         </el-table-column>
         <el-table-column
           prop="payoff_amount"
-          label="输赢金额（资产变化值）"
+          label="资产变化"
           width="120"
         >
           <template slot-scope="scope">
@@ -127,7 +162,7 @@
         <el-table-column
           prop="service_fee"
           label="服务费"
-          width="120"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.service_fee > 0 ? scope.row.service_fee/1000 : 0) }}
@@ -135,8 +170,8 @@
         </el-table-column>
         <el-table-column
           prop="ggr"
-          label="ggr"
-          width="120"
+          label="GGR"
+          width="80"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.ggr / 1000) }}
@@ -144,8 +179,8 @@
         </el-table-column>
         <el-table-column
           prop="money_now"
-          label="结算后当前余额"
-          width="120"
+          label="结算后余额"
+          width="100"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.money_now/1000) }}
@@ -153,8 +188,8 @@
         </el-table-column>
         <el-table-column
           prop="pot_bet"
-          label="投到 jackpot 的金额"
-          width="120"
+          label="jackpot bet"
+          width="100"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.pot_bet/1000) }}
@@ -162,8 +197,8 @@
         </el-table-column>
         <el-table-column
           prop="jackpot_amount"
-          label="获得 jackpot 的金额"
-          width="120"
+          label="获得jackpot"
+          width="100"
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.jackpot_amount/1000) }}
@@ -196,20 +231,11 @@
             {{ gameTypes[scope.row.game_type] }}
           </template>
         </el-table-column>
+
         <el-table-column
-          prop="unique_no"
-          label="UniqueNO"
-          width="120"
-        />
-        <el-table-column
-          prop="game_log"
-          label="gameLog"
-          width="120"
-        />
-        <el-table-column
-          prop="account"
-          label="用户唯一标识"
-          width="120"
+          prop="site_id"
+          label="站点标识"
+          width="80"
         />
       </el-table>
     </el-row>
@@ -262,10 +288,13 @@ export default {
         end: $libDate.GetDayEnd(new Date().getTime()),
         app: '',
         type: 0,
+        gameId: 0,
+        totalBet: 0, // 下注额筛选
         total_bet_num: 0,
         total_valid_bet_amount: 0,
         total_win_loss_amount: 0,
-        idDesc: '1'
+        total_bet_amount: 0,
+        total_jackpot_amount: 0
       },
       totalData: {
         round: 0,
@@ -284,7 +313,23 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 1: 'Color', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
+      games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette' },
+      games2: [
+        { id: 0, name: 'All games' },
+        { id: 1, name: 'Color Game' },
+        { id: 2, name: 'Crash' },
+        { id: 3, name: 'Lucky9' },
+        { id: 4, name: 'Tongits' },
+        { id: 5, name: 'Sleeping Beauty' },
+        { id: 6, name: 'Phoenix' },
+        { id: 7, name: 'Texas Poker' },
+        { id: 8, name: 'Andar Bahar' },
+        { id: 9, name: 'Baccarat' },
+        { id: 10, name: 'MINES' },
+        { id: 11, name: 'Dragon VS Tiger' },
+        { id: 12, name: 'Car Roulette' }
+      ],
+      totalBets: [0, 15000, 100000, 400000, 1000000, 5000000, 4000000],
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -294,6 +339,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    this.item.gameId = 0
     this.getAppInfo()
   },
   methods: {
@@ -332,6 +378,10 @@ export default {
         }
       })
     },
+    click2getInfo() {
+      this.currentPage = 1
+      this.getInfo()
+    },
     getInfo() {
       const $this = this
       request({
@@ -344,9 +394,11 @@ export default {
           App: this.item.app,
           StartTime: this.item.start / 1000,
           EndTime: this.item.end / 1000,
-          idDesc: this.item.idDesc,
+          idDesc: "1",
           Page: this.currentPage,
           Limit: this.pageNum,
+          gameId: this.item.gameId,
+          totalBet: this.item.totalBet,
           Sumary: '1',
           type: this.item.type
         }
@@ -355,15 +407,17 @@ export default {
           const objs = response.Data.rows || []
           $this.ret = response.Data.rows
           $this.tableData = objs
-          if (objs.length === 0) {
-            Message.success('查询结果为空')
-            return
-          }
           this.totalCount = response.Data.total
           $this.tableData = objs
           $this.item.total_bet_num = response.Data.sumary.total_bet_num || 0
           $this.item.total_valid_bet_amount = response.Data.sumary.total_valid_bet_amount || 0
           $this.item.total_win_loss_amount = response.Data.sumary.total_win_loss_amount || 0
+          $this.item.total_bet_amount = response.Data.sumary.total_bet_amount || 0
+          $this.item.total_jackpot_amount = response.Data.sumary.total_jackpot_amount || 0
+          if (objs.length === 0) {
+            Message.success('查询结果为空')
+            return
+          }
         }
       })
     }

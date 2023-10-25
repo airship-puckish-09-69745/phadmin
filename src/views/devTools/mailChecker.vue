@@ -78,7 +78,7 @@
           label="封禁时间"
           width="200"
         >
-          <template slot-scope="scope" v-if="scope.row.Status==2">
+          <template v-if="scope.row.Status==2" slot-scope="scope">
             {{ formatTime(scope.row.MailTime) }}
           </template>
         </el-table-column>

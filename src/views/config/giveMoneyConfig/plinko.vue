@@ -33,60 +33,60 @@
     </el-row>
     <el-row style="margin-top: 30px">
       <el-col :span="16" :offset="3">
-        <h3>通道配置(赔率支持3位小数) <el-button @click="addChannel(-1)" size="mini">添加新通道</el-button></h3>
+        <h3>通道配置(赔率支持3位小数) <el-button size="mini" @click="addChannel(-1)">添加新通道</el-button></h3>
         <el-row>
           <el-table :data="cfg.Channels" border style="width: 100%" :header-cell-style="tableHeadStyle" :cell-style="tableCellStyle">
             <el-table-column prop="ID" label="通道ID" width="100">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.ID" placeholder=""></el-input>
+                <el-input v-model.number="scope.row.ID" placeholder="" />
               </template>
             </el-table-column>
             <el-table-column label="红色">
               <el-table-column prop="Red" label="赔率" style="background-color: #ffbbbb;">
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.Red.Odds" placeholder=""></el-input>
+                  <el-input v-model="scope.row.Red.Odds" placeholder="" />
                 </template>
               </el-table-column>
               <el-table-column prop="Red" label="概率">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Red.HitRates" placeholder=""></el-input>
+                  <el-input v-model.number="scope.row.Red.HitRates" placeholder="" />
                 </template>
               </el-table-column>
             </el-table-column>
             <el-table-column label="绿色">
               <el-table-column prop="Red" label="赔率">
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.Green.Odds" placeholder=""></el-input>
+                  <el-input v-model="scope.row.Green.Odds" placeholder="" />
                 </template>
               </el-table-column>
               <el-table-column prop="Red" label="概率">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Green.HitRates" placeholder=""></el-input>
+                  <el-input v-model.number="scope.row.Green.HitRates" placeholder="" />
                 </template>
               </el-table-column>
             </el-table-column>
             <el-table-column label="蓝色">
               <el-table-column prop="Red" label="赔率">
                 <template slot-scope="scope">
-                  <el-input v-model="scope.row.Blue.Odds" placeholder=""></el-input>
+                  <el-input v-model="scope.row.Blue.Odds" placeholder="" />
                 </template>
               </el-table-column>
               <el-table-column prop="Red" label="概率">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Blue.HitRates" placeholder=""></el-input>
+                  <el-input v-model.number="scope.row.Blue.HitRates" placeholder="" />
                 </template>
               </el-table-column>
             </el-table-column>
             <el-table-column prop="ID" label="操作" width="160">
               <template slot-scope="scope">
-                <el-button @click="addChannel(scope.$index)" size="mini">追加</el-button>
-                <el-button type="danger" @click="delChannel(scope.$index)" size="mini">删除</el-button>
+                <el-button size="mini" @click="addChannel(scope.$index)">追加</el-button>
+                <el-button type="danger" size="mini" @click="delChannel(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
         </el-row>
         <el-row>
-          <el-button type="primary" @click="setData" style="margin-top:30px;">保存</el-button>
+          <el-button type="primary" style="margin-top:30px;" @click="setData">保存</el-button>
         </el-row>
       </el-col>
     </el-row>
@@ -155,7 +155,7 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     addChannel(idx) {
-      this.cfg.Channels.splice(idx+1, 0, {
+      this.cfg.Channels.splice(idx + 1, 0, {
         ID: 0,
         Red: {
           Color: 1,
@@ -241,9 +241,9 @@ export default {
           // console.log('sign reward', response)
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-            $this.cfg = JSON.parse(response.Data.Data);
+            $this.cfg = JSON.parse(response.Data.Data)
             // 设置修改之前数据
-            $this.$refs.compare.SetOldVal(response.Data);
+            $this.$refs.compare.SetOldVal(response.Data)
           }
         }
       })

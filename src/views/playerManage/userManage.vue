@@ -45,19 +45,19 @@
           <el-descriptions-item label="系列：">{{ item.AppID > 100000?'Galaxy':'Android' }}</el-descriptions-item>
           <el-descriptions-item label="AppID：">{{ item.AppID }}</el-descriptions-item>
           <el-descriptions-item label="来源Appid：">{{ showSourceAppid(item.SourceAppid) }}</el-descriptions-item>
-          <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime"/></el-descriptions-item>
-          <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime"/></el-descriptions-item>
+          <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
+          <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
 
-          <el-descriptions-item label="Bonus：">{{ item.BonusTotal }}</el-descriptions-item>
+<!--          <el-descriptions-item label="Bonus：">{{ item.BonusTotal }}</el-descriptions-item>
           <el-descriptions-item label="Bonus可提："> {{ item.BonusValid }}</el-descriptions-item>
           <el-descriptions-item label="存钱罐累积：">{{ item.Gullak }}</el-descriptions-item>
-          <el-descriptions-item label="存钱罐Lv：">{{ item.GullakLevel }}</el-descriptions-item>
+          <el-descriptions-item label="存钱罐Lv：">{{ item.GullakLevel }}</el-descriptions-item>-->
 
-          <el-descriptions-item label="充值额：">
+<!--          <el-descriptions-item label="充值额：">
             {{ formatNumber(item.PayValue) }}
             <el-button v-if="item.PayValue==0" type="primary" size="mini" @click="setUserPay">加0.001</el-button>
             <el-button v-if="item.PayValue==0.001" type="primary" size="mini" @click="setUserPay2">加100</el-button>
-            <el-button type="danger" size="mini" @click="clearFirstPayFlag" >清除首充状态</el-button>
+            <el-button type="danger" size="mini" @click="clearFirstPayFlag">清除首充状态</el-button>
           </el-descriptions-item>
           <el-descriptions-item label="单笔最大充值额度：">
             {{ item.MaxPayAmount | toRupee | numberFormat }}
@@ -77,7 +77,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="提现中：">
             {{ item.Withdrawing/1000 }}
-          </el-descriptions-item>
+          </el-descriptions-item>-->
 
           <!--          <el-descriptions-item label="邀请人数：">-->
           <!--            {{ item.InviteCount }}-->
@@ -125,10 +125,10 @@
             </template>
 
           </el-descriptions-item>
-          <el-descriptions-item label="持卡人：">{{ item.CardHolderName }}</el-descriptions-item>
+<!--          <el-descriptions-item label="持卡人：">{{ item.CardHolderName }}</el-descriptions-item>
           <el-descriptions-item label="提现方式：">{{ formatBankCode(item.ProxyBankCode) }}</el-descriptions-item>
           <el-descriptions-item label="账号IFSC：">{{ item.BankName }}</el-descriptions-item>
-          <el-descriptions-item label="提现账号：">{{ item.AccountNo }}</el-descriptions-item>
+          <el-descriptions-item label="提现账号：">{{ item.AccountNo }}</el-descriptions-item>-->
 
           <el-descriptions-item label="头像："><el-popover
             v-if="item.Icon.length > 5"
@@ -177,12 +177,12 @@
           <el-descriptions-item label="调控轮数：">
             {{ item.PaySchemaRound }}
           </el-descriptions-item>
-          <el-descriptions-item label="本轮总充值：">
+<!--          <el-descriptions-item label="本轮总充值：">
             {{ item.PaySchema.RechargeAmount | toRupee }}
           </el-descriptions-item>
           <el-descriptions-item label="本轮总提现：">
             {{ item.PaySchema.WithdrawAmount | toRupee }}
-          </el-descriptions-item>
+          </el-descriptions-item>-->
           <el-descriptions-item label="赢标签：">
             {{ item.PaySchema.WinTagCnt }}
           </el-descriptions-item>
@@ -192,13 +192,13 @@
           <el-descriptions-item label="是否设置登录密码：">
             <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="是否设置支付密码：">
+<!--          <el-descriptions-item label="是否设置支付密码：">
             <el-tag :type="item.IsSetPayPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetPayPwd) }}</el-tag>
-          </el-descriptions-item>
+          </el-descriptions-item>-->
         </el-descriptions>
 
         <!--新邀请分享-->
-        <el-descriptions
+<!--        <el-descriptions
           class="margin-top"
           :column="4"
           size="medium"
@@ -225,7 +225,7 @@
             </el-descriptions>
 
           </el-descriptions-item>
-        </el-descriptions>
+        </el-descriptions>-->
       </el-col>
     </el-row>
 
@@ -260,7 +260,7 @@
     <el-row style="margin-top: 20px">
       <el-col :offset="1" :span="22">
         <el-tabs v-model="tabName" type="border-card" @tab-click="tabClick">
-          <el-tab-pane label="邀请用户" name="inviteUsers">
+<!--          <el-tab-pane label="邀请用户" name="inviteUsers">
             <el-form ref="form" :model="item" :inline="true">
               <el-form-item label="绑定时间">
                 <el-date-picker
@@ -408,8 +408,8 @@
                 </template>
               </el-table-column>
             </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="同账号关联账号" name="sameRelationUser">
+          </el-tab-pane>-->
+<!--          <el-tab-pane label="同账号关联账号" name="sameRelationUser">
             <el-descriptions title="" border :column="3">
               <el-descriptions-item label="数量">{{ SameRelationSummary.Count }}</el-descriptions-item>
               <el-descriptions-item label="总充值">{{ formatNumber(SameRelationSummary.Recharge) }}</el-descriptions-item>
@@ -475,8 +475,8 @@
                 </template>
               </el-table-column>
             </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="关联账号" name="relationUser">
+          </el-tab-pane>-->
+<!--          <el-tab-pane label="关联账号" name="relationUser">
             <el-descriptions title="" border :column="3">
               <el-descriptions-item label="数量">{{ RelationSummary.Count }}</el-descriptions-item>
               <el-descriptions-item label="总充值">{{ formatNumber(RelationSummary.Recharge) }}</el-descriptions-item>
@@ -542,7 +542,7 @@
                 </template>
               </el-table-column>
             </el-table>
-          </el-tab-pane>
+          </el-tab-pane>-->
           <el-tab-pane label="用户IP设备" name="userIpDevice">
             <el-table
               :data="UserIpDevice"
@@ -900,7 +900,7 @@ import { $libDate, $libShow, $libType, MoneyShow } from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 import { toRupee, numberFormat } from '@/utils'
-import DateTimeShow from "@/components/DatetimeShow";
+import DateTimeShow from '@/components/DatetimeShow'
 
 function NewRelationSummary() {
   return {
@@ -914,7 +914,7 @@ function NewRelationSummary() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {DateTimeShow, Compare, Publish, UidInput },
+  components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
       item: {
@@ -947,13 +947,13 @@ export default {
         InviteWithdraw: 0, // 分享模块-可提余额
         InviteWithdrawProcess: 0, // 分享模块-提现中
         AppId: 0,
-        SourceAppid: 0, //来源appid
+        SourceAppid: 0, // 来源appid
         PaySchema: {
 
         },
         Phone: '',
         IsSetLoginPwd: false,
-        IsSetPayPwd: false,
+        IsSetPayPwd: false
       },
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
@@ -1034,10 +1034,10 @@ export default {
       if (this.env === 'test') {
         return $libShow.GetFullPath(this.item.Icon)
       } else {
-        //兼容一下第三方图片
-        let needCdnDomain = true;
-        if (this.item.Icon.indexOf("http://") == 0 || this.item.Icon.indexOf("https://") == 0) {
-          needCdnDomain = false;
+        // 兼容一下第三方图片
+        let needCdnDomain = true
+        if (this.item.Icon.indexOf('http://') == 0 || this.item.Icon.indexOf('https://') == 0) {
+          needCdnDomain = false
         }
         if (needCdnDomain) {
           return 'http://aws.texas-cdn.joydance.hk' + this.item.Icon
@@ -1373,12 +1373,12 @@ export default {
       this.queryDevice(this.item.DeviceCode, 3)
     },
     resetQueryDevice() {
-      this.getInviteUsers()
+      // this.getInviteUsers()
       this.RelationUsers = []
       this.SameIp = []
       this.SameDevice = []
       this.UserIpDevice = []
-      this.tabName = 'inviteUsers'
+      this.tabName = 'userIpDevice'
       this.RelationSummary = NewRelationSummary()
       this.SameRelationSummary = NewRelationSummary()
     },
@@ -1505,6 +1505,10 @@ export default {
           return '邮箱'
         case 4:
           return '手机号'
+        case 5:
+          return 'Google'
+        case 6:
+          return '第三方平台'
         default:
           return '未知'
       }

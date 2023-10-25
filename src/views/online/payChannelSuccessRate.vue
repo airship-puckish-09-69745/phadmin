@@ -5,11 +5,11 @@
         <el-form ref="form" :model="form" :inline="true">
           <el-form-item label="时间段">
             <el-select v-model.number="form.duration" size="mini" placeholder="placeholder">
-              <el-option :value="0" label="所有"></el-option>
-              <el-option :value="5" label="5分钟"></el-option>
-              <el-option :value="30" label="30分钟"></el-option>
-              <el-option :value="60" label="1小时"></el-option>
-              <el-option :value="1440" label="1天"></el-option>
+              <el-option :value="0" label="所有" />
+              <el-option :value="5" label="5分钟" />
+              <el-option :value="30" label="30分钟" />
+              <el-option :value="60" label="1小时" />
+              <el-option :value="1440" label="1天" />
             </el-select>
           </el-form-item>
 
@@ -69,13 +69,11 @@
           <el-table-column
             prop="Pay"
             label="成功支付订单数"
-          >
-          </el-table-column>
+          />
           <el-table-column
             prop="Buy"
             label="总订单数"
-          >
-          </el-table-column>
+          />
           <el-table-column
             prop="Buy"
             label="支付成功率"
@@ -113,7 +111,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import store from '@/store'
-import {$libDate, $libShow, DataRule, ValidateVueItem} from '@/utils/common'
+import { $libDate, $libShow, DataRule, ValidateVueItem } from '@/utils/common'
 import PayChannelMul from '@/components/PayChannelMul'
 
 export default {
@@ -125,7 +123,7 @@ export default {
         duration: 5,
         times: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
         payChannel: [0],
-        channelMap: {},
+        channelMap: {}
       },
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
@@ -175,7 +173,7 @@ export default {
         payChan = this.form.payChannel.join(',')
       }
 
-      console.log("pay channel", payChan)
+      console.log('pay channel', payChan)
 
       request({
         url: '/dataProxy/info',

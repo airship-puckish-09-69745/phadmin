@@ -9,20 +9,19 @@
             <el-alert
               title="应用列表第一个应用填0，所有的应用使用新逻辑"
               type="success"
-              description="eg：0,1,100001,100013 或者 0">
-            </el-alert>
+              description="eg：0,1,100001,100013 或者 0"
+            />
           </template>
-          <br/>
-          <br/>
+          <br>
+          <br>
 
           <el-form-item label="TP、AK、Rummy场次隐藏逻辑应用列表" label-width="300px">
-            <el-input v-model="item.AppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用填0"/>
+            <el-input v-model="item.AppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用填0" />
           </el-form-item>
 
           <el-form-item label="小游戏根据金额匹配下注金额的应用列表" label-width="300px">
-            <el-input v-model="item.SmallGameAppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用填0"/>
+            <el-input v-model="item.SmallGameAppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用填0" />
           </el-form-item>
-
 
           <el-col :span="24">
             <el-button type="primary" size="mini" @click="addBet">添加配置项</el-button>
@@ -38,7 +37,7 @@
               width="180"
             >
               <template slot-scope="scope">
-                <money-input v-model="scope.row.SinglePay" label="" label-width="0"></money-input>
+                <money-input v-model="scope.row.SinglePay" label="" label-width="0" />
               </template>
             </el-table-column>
 
@@ -48,7 +47,7 @@
               width="180"
             >
               <template slot-scope="scope">
-                <money-input v-model="scope.row.TotalPay" label="" label-width="0"></money-input>
+                <money-input v-model="scope.row.TotalPay" label="" label-width="0" />
               </template>
             </el-table-column>
 
@@ -58,7 +57,7 @@
             >
               <template slot-scope="scope">
                 <el-form-item label-width="0">
-                  <el-input v-model="scope.row.MoneyStr" placeholder="英文逗号隔开"></el-input>
+                  <el-input v-model="scope.row.MoneyStr" placeholder="英文逗号隔开" />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -100,32 +99,32 @@ import GameLevel from '@/components/GameLevel'
 
 function newItem() {
   return {
-    "Apps": [
+    'Apps': [
       1,
       2,
       3,
       4,
       5
     ],
-    "AppsStr": "1,2,3,4,5",
-    "SmallGameApps": [
+    'AppsStr': '1,2,3,4,5',
+    'SmallGameApps': [
       1,
       2,
       3,
       4,
       5
     ],
-    "SmallGameAppsStr": "1,2,3,4,5",
-    "SmallGameBetMoneyList": [
+    'SmallGameAppsStr': '1,2,3,4,5',
+    'SmallGameBetMoneyList': [
       {
-        "SinglePay": 100000,
-        "TotalPay": 200000,
-        "BetMoney": [
+        'SinglePay': 100000,
+        'TotalPay': 200000,
+        'BetMoney': [
           100000,
           200000,
           300000
         ],
-        "MoneyStr": "100000,200000,300000"
+        'MoneyStr': '100000,200000,300000'
       }
     ]
   }
@@ -133,10 +132,10 @@ function newItem() {
 
 function newBet() {
   return {
-    "SinglePay": 0,
-    "TotalPay": 0,
-    "BetMoney": [],
-    "MoneyStr": ""
+    'SinglePay': 0,
+    'TotalPay': 0,
+    'BetMoney': [],
+    'MoneyStr': ''
   }
 }
 
