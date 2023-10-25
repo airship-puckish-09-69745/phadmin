@@ -350,7 +350,7 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/vupmonitor/rocketret',
+          Path: '/game/rocketret',
           DayStr: $libDate.SelectTimeToIndia(this.searchForm.dayStr) / 1000
         }
       }).then(response => {
@@ -369,7 +369,7 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/vupmonitor/rocket/big/pool',
+          Path: '/game/rocket/big/pool',
           Pool: this.operateForm.change * 1000
         }
       }).then(response => {
