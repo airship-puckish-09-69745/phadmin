@@ -535,6 +535,12 @@ export const asyncRoutes = [
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
       {
+        path: 'playlog_lotterylog',
+        component: () => import('@/views/playerManage/lotterylog'),
+        name: 'playlog_lotterylog',
+        meta: { title: '小游戏奖池日志 ◐' }
+      },
+      {
         path: 'slotsLog',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',

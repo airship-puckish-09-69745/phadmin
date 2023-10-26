@@ -293,6 +293,14 @@ export default {
           label: '动物转盘'
         },
         {
+          value: 10,
+          label: '小火箭'
+        },
+        {
+          value: 25,
+          label: 'ColorGame'
+        },
+        {
           value: 51,
           label: '凤凰'
         }
