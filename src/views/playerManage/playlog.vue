@@ -145,6 +145,24 @@
           </span>
         </template>
       </el-table-column>
+      <template>
+        <template v-if="gid===10">
+          <el-table-column
+            prop="WinRate"
+            label="自动下车值"
+            width="100"
+          />
+          <el-table-column
+            prop="RandVal"
+            :label="getRandValName()"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ isBingo(scope.row.RandVal, scope.row.WinRate) }}
+            </template>
+          </el-table-column>
+        </template>
+      </template>
       <el-table-column
         prop="ServiceFee"
         :label="getServiceFeeName()"
@@ -164,23 +182,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column
-        prop="WinRate"
-        :label="getWinRateName()"
-        width="100"
-      />
-      <template>
-        <template v-if="gid===10">
-          <el-table-column
-            prop="RandVal"
-            :label="getRandValName()"
-            width="100"
-          >
-            <template slot-scope="scope">
-              {{ isBingo(scope.row.RandVal, scope.row.WinRate) }}
-            </template>
-          </el-table-column>
-        </template>
+      <template v-if="gid!==10">
+        <el-table-column
+          prop="WinRate"
+          :label="getWinRateName()"
+          width="100"
+        />
       </template>
       <template>
         <template v-if="gid==1 || gid==8 || gid==9">
@@ -265,7 +272,7 @@
             </template>
           </el-table-column>
         </template>
-        <template v-else>
+        <template v-else-if="gid !== 10">
           <el-table-column
             prop="IsPractice"
             label="小黑屋"
