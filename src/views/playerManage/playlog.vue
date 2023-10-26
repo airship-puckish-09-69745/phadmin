@@ -170,10 +170,23 @@
         width="100"
       />
       <template>
+        <template v-if="gid===10">
+          <el-table-column
+            prop="RandVal"
+            :label="getRandValName()"
+            width="100"
+          >
+            <template slot-scope="scope">
+              {{ isBingo(scope.row.RandVal, scope.row.WinRate) }}
+            </template>
+          </el-table-column>
+        </template>
+      </template>
+      <template>
         <template v-if="gid==1 || gid==8 || gid==9">
           <el-table-column
             prop="RandVal"
-            label="是否命中"
+            :label="getRandValName()"
             width="100"
           >
             <template slot-scope="scope">
@@ -750,7 +763,6 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -884,10 +896,14 @@ export default {
       return ret
     },
     isBingo(valA, valB) {
-      if (valA < valB) {
-        return '是'
+      if (this.gid === 10) {
+        return valA
       } else {
-        return '否'
+        if (valA < valB) {
+          return '是'
+        } else {
+          return '否'
+        }
       }
     },
     peiValStr(randVal, winRate, peiVal) {
@@ -1030,7 +1046,7 @@ export default {
               objs[o].WinRate = tmpWinRate.toString() + '%'
             }
             if (item.Gid === 10) {
-              objs[o].ServiceFee = (item.ServiceFee * 10).toFixed(2)
+              objs[o].RandVal = (item.RandVal / 100).toFixed(2)
               objs[o].WinRate = (item.WinRate / 100).toFixed(2)
             } else if (item.Gid == 20) {
               objs[o].WinRate /= 100
@@ -1384,10 +1400,17 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     getServiceFeeName() {
       if (this.gid == 20) {
         return '下注炸弹数'
-      } else if (this.gid == 10) {
-        return '结果'
+      // } else if (this.gid == 10) {
+      //   return '结果'
       } else {
         return '台费'
+      }
+    },
+    getRandValName() {
+      if (this.gid === 10) {
+        return '结果'
+      } else {
+        return '是否命中'
       }
     },
     getWinRateName() {
