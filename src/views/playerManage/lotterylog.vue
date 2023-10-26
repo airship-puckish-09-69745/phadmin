@@ -313,7 +313,7 @@ export default {
       libShow: $libShow,
       isReset: false,
       item: {
-        gameid: 2,
+        gameid: 10,
         event: 0,
         date: $libDate.GetDayBegin(new Date().getTime()),
         maxid: 0,
