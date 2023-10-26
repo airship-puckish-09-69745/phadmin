@@ -148,11 +148,6 @@
       <template>
         <template v-if="gid===10">
           <el-table-column
-            prop="WinRate"
-            label="自动下车值"
-            width="100"
-          />
-          <el-table-column
             prop="RandVal"
             :label="getRandValName()"
             width="100"
@@ -161,17 +156,24 @@
               {{ isBingo(scope.row.RandVal, scope.row.WinRate) }}
             </template>
           </el-table-column>
+          <el-table-column
+            prop="WinRate"
+            label="自动下车值"
+            width="100"
+          />
         </template>
       </template>
-      <el-table-column
-        prop="ServiceFee"
-        :label="getServiceFeeName()"
-        width="100"
-      >
-        <template slot-scope="scope">
-          {{ formatNumber(scope.row.ServiceFee) }}
-        </template>
-      </el-table-column>
+      <template v-if="gid!==10">
+        <el-table-column
+          prop="ServiceFee"
+          :label="getServiceFeeName()"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.ServiceFee) }}
+          </template>
+        </el-table-column>
+      </template>
       <el-table-column
         prop="MoneyNow"
         label="余额"
