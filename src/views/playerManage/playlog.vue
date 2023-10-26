@@ -1106,6 +1106,9 @@ export default {
       this.sweeperRateVisible = true
     },
     clickData(row, column, event) {
+      if (row.Gid === 10) {
+        return
+      }
       if (column.label !== 'Uid') {
         this.getDetail(row.LogID, row.FinishTime)
       }
