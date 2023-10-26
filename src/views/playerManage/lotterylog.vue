@@ -252,6 +252,7 @@ export default {
         }
       ],
       games: [
+        /*
         {
           value: 2,
           label: 'Andar Bahar'
@@ -292,6 +293,7 @@ export default {
           value: 19,
           label: '动物转盘'
         },
+        */
         {
           value: 10,
           label: '小火箭'
