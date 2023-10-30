@@ -306,7 +306,7 @@
               prop="item.MinPlayMoney"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
+              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
