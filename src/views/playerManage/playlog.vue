@@ -83,6 +83,7 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
+          <el-descriptions-item label="赢局数：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
@@ -819,7 +820,8 @@ export default {
         win: 0,
         lose: 0,
         winCount: 0,
-        loseCount: 0
+        loseCount: 0,
+        fee:0,
       },
 
       detailVisible: false,
@@ -1039,7 +1041,7 @@ export default {
           }
           objs = $this.libMoney.TransForShow(objs)
           $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)
-          $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = 0
+          $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.fee = 0
           for (const o in objs) {
             const item = objs[o]
             if (item.MoneyChanged > 0) {
@@ -1049,6 +1051,7 @@ export default {
               $this.item.lose += item.MoneyChanged
               $this.item.loseCount++
             }
+            $this.item.fee += item.ServiceFee
             if (item.Gid === 14 && item.WinRate > 0) {
               // 真人场，需要特殊处理胜率展示
               const tmpWinRate = item.WinRate / 100
