@@ -120,21 +120,43 @@
         label="Uid"
         width="150"
       />
-      <el-table-column
-        prop="TableMoney"
-        label="前注"
-        width="100"
-      >
-        <template v-slot:header>
-          <el-select v-model="clientDB.FilterValueMap['TableMoney']" size="mini" @change="handleFilter">
-            <el-option label="前注" :value="0" />
-            <el-option v-for="(o,key) in clientDB.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
-          </el-select>
-        </template>
-        <template slot-scope="scope">
-          {{ formatNumber(scope.row.TableMoney) }}
-        </template>
-      </el-table-column>
+      <template v-if="gid===25">
+        <el-table-column
+          prop="TotalValidBet"
+          label="下注"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.TotalValidBet) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="PotChange"
+          label="获得Pot"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.PotChange) }}
+          </template>
+        </el-table-column>
+      </template>
+      <template v-if="gid!==25">
+        <el-table-column
+          prop="TableMoney"
+          label="前注"
+          width="100"
+        >
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['TableMoney']" size="mini" @change="handleFilter">
+              <el-option label="前注" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.TableMoney) }}
+          </template>
+        </el-table-column>
+      </template>
       <el-table-column
         prop="MoneyChanged"
         label="输赢"
@@ -789,7 +811,7 @@ export default {
       chartData: newChartData(),
       dataArr: [],
 
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney'])
+      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange'])
     }
   },
   computed: {},
