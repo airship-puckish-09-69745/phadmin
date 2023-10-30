@@ -71,7 +71,7 @@
       </el-table>
     </el-row>
     <el-row>
-      <el-col :offset="4" :span="20">
+      <el-col :offset="2" :span="20">
         <el-descriptions
           class="margin-top"
           :column="4"
