@@ -71,7 +71,7 @@
       </el-table>
     </el-row>
     <el-row>
-      <el-col :offset="6" :span="12">
+      <el-col :offset="4" :span="20">
         <el-descriptions
           class="margin-top"
           :column="4"
@@ -82,7 +82,7 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
-          <el-descriptions-item v-if="item.seconds>0" label="平均局长：">{{ (item.seconds/(item.loseCount + item.winCount)).toFixed(2) }}</el-descriptions-item>
+          <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
@@ -177,97 +177,6 @@
         :label="getWinRateName()"
         width="70"
       />
-      <template>
-        <template v-if="gid==1 || gid==8 || gid==9">
-          <el-table-column
-            prop="RandVal"
-            label="是否命中"
-            width="100"
-          >
-            <template slot-scope="scope">
-              {{ isBingo(scope.row.RandVal, scope.row.WinRate) }}
-            </template>
-          </el-table-column>
-
-          <!--      IsPeiResult    int32 `json:"PeiVal"`         //最终命中的值 0无 1命中赢配牌 2命中输配牌-->
-          <!--      LevelChanged   int32 `json:"LevelChanged"`   //幸运等级调控变化值-->
-          <!--      TheResult      int32 `json:"TheResult"`      //最终结果：1中立 2赢符和预期 3赢不符合预期 4输符和预期 5输不符合预期-->
-          <el-table-column
-            prop="IsPeiResult"
-            label="配牌标记"
-            width="101"
-          >
-            <template slot-scope="scope">
-              {{ FIsPeiResult(scope.row.IsPeiResult) }}
-            </template>
-          </el-table-column>
-
-          <!--      <el-table-column-->
-          <!--        prop="PeiVal"-->
-          <!--        label="配牌标记"-->
-          <!--        width="100"-->
-          <!--      >-->
-          <!--        <template slot-scope="scope">-->
-          <!--          {{ peiValStr(scope.row.RandVal,scope.row.WinRate,scope.row.PeiVal) }}-->
-          <!--        </template>-->
-          <!--      </el-table-column>-->
-
-          <!--      <el-table-column-->
-          <!--        prop="Result"-->
-          <!--        label="最终结果"-->
-          <!--        width="100"-->
-          <!--      >-->
-          <!--        <template slot-scope="scope">-->
-          <!--          {{ CalResult(scope.row.RandVal, scope.row.WinRate, scope.row.MoneyChanged, scope.row.PeiVal) }}-->
-          <!--        </template>-->
-          <!--      </el-table-column>-->
-
-          <el-table-column
-            prop="TheResult"
-            label="最终结果"
-            width="120"
-          >
-            <template slot-scope="scope">
-              <span :style="{color:(scope.row.TheResult==3||scope.row.TheResult==5)?'red':''}">{{
-                FTheResult(scope.row.TheResult)
-              }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="LuckyVal"
-            label="幸运值"
-            width="100"
-          />
-          <el-table-column
-            prop="IsPractice"
-            label="练习场"
-            width="100"
-          >
-            <template v-slot:header>
-              <el-select v-model="clientDB.FilterValueMap['IsPractice']" size="mini" @change="handleFilter">
-                <el-option label="练习场" :value="0" />
-                <el-option v-for="(o,key) in clientDB.FilterMap['IsPractice']" :key="key" :label="o" :value="key" />
-              </el-select>
-            </template>
-            <template slot-scope="scope">
-              {{ clientDB.GetShowValue('IsPractice', scope.row.IsPractice) }}
-            </template>
-          </el-table-column>
-
-          <el-table-column prop="AlteredRobotCards" label="改机器人牌" width="100">
-            <template slot-scope="scope">
-              <span>{{ IsAlteredRobotsCards(scope.row.AlteredRobotCards) }}</span>
-            </template>
-          </el-table-column>
-        </template>
-        <template v-else>
-          <el-table-column
-            prop="IsPractice"
-            label="小黑屋"
-            width="100"
-          />
-        </template>
-      </template>
 
       <el-table-column
         prop="IsRobot"
@@ -622,6 +531,7 @@ export default {
         win: 0,
         lose: 0,
         winCount: 0,
+        fee:0,
         loseCount: 0,
         seconds: 0
       },
@@ -853,7 +763,7 @@ export default {
           }
           objs = $this.libMoney.TransForShow(objs)
           $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)
-          $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.seconds = 0
+          $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.seconds = $this.item.fee = 0
           for (const o in objs) {
             const item = objs[o]
             if (item.MoneyChanged > 0) {
@@ -863,6 +773,7 @@ export default {
               $this.item.lose += item.MoneyChanged
               $this.item.loseCount++
             }
+            $this.item.fee += item.ServiceFee
             $this.item.seconds += item.IsRobot // 存放了每局时长
             if (item.Gid === 14 && item.WinRate > 0) {
               // 真人场，需要特殊处理胜率展示
