@@ -366,6 +366,19 @@
         </el-row>
 
         <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="最小玩牌金额："
+              :required="true"
+              prop="item.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
           <!--
           <el-col :span="11">
             <el-form-item
@@ -564,7 +577,8 @@ function newItem() {
     HitPotBetTimes: 0,
     HitPotTaxRates: 0,
     PotBetTimes: 0,
-    PotTaxRates: 0
+    PotTaxRates: 0,
+    MinPlayMoney: 0
   }
 }
 
@@ -580,7 +594,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'BetMoneyMax', 'TotalRecharge', 'MaxPayAmount']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'BetMoneyMax', 'TotalRecharge', 'MaxPayAmount','MinPlayMoney']),
       edit: {
         visible: false,
         item: newItem(),
@@ -616,6 +630,7 @@ export default {
         SinglePay: '单次充值大于',
         TotalPay: '总充值大于',
         HideLevel: '进入该场次后隐藏场次',
+        MinPlayMoney: '最小玩牌金额',
         HitPotBetTimes: 'HitPot下注倍数',
         HitPotTaxRates: 'HitPot奖励抽水比例(%)',
         AlterRobotCardsRate: '真实玩家弃牌后修改机器人手牌概率'

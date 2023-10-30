@@ -360,6 +360,16 @@
           <el-col :span="11">
             <select-goods v-model="edit.item.BankruptGoodsId" :type="99" title="破产推荐商品" />
           </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="最小玩牌金额："
+              :required="true"
+              prop="item.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <fieldset>
@@ -484,7 +494,8 @@ function newItem() {
     RecommendBankruptGid: 0,
     SinglePay: 0,
     TotalPay: 0,
-    HideLevel: 0
+    HideLevel: 0,
+    MinPlayMoney: 0
   }
 }
 
@@ -498,7 +509,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'TotalRecharge', 'MaxPayAmount']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'TotalRecharge', 'MaxPayAmount','MinPlayMoney']),
 
       edit: {
         visible: false,
@@ -530,6 +541,7 @@ export default {
         RecommendBankruptGid: '满足充值条件破产推荐商品',
         SinglePay: '单次充值大于',
         TotalPay: '总充值大于',
+        MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次'
       }
     }

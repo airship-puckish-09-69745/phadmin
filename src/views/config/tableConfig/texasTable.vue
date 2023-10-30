@@ -233,15 +233,25 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row>
           <el-col :span="11">
             <el-form-item label="推荐买入倍数(大盲)：" :required="true" prop="item.RecommendBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.RecommendBuyRatio" placeholder="进房间推荐买入多少倍大盲" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="最小玩牌金额："
+              :required="true"
+              prop="item.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
-        
+
         <!--
         <el-row>
           <el-col :span="11">
@@ -549,6 +559,7 @@ function newItem() {
     HideLevel: 0,
     AutoBuyRatio:0,
     RecommendBuyRatio:0,
+    MinPlayMoney: 0
   }
 }
 
@@ -562,7 +573,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'ServiceFee', 'LuckyLevelLimitMoney', 'totalRecharge', 'maxPayAmount', 'SinglePay', 'TotalPay']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'ServiceFee', 'LuckyLevelLimitMoney', 'totalRecharge', 'maxPayAmount', 'SinglePay', 'TotalPay','MinPlayMoney']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {
@@ -608,6 +619,7 @@ export default {
         HideLevel: '进入该场次后隐藏场次',
         AutoBuyRatio: '自动买入比例',
         RecommendBuyRatio: '推荐买入倍数(大盲)',
+        MinPlayMoney: '最小玩牌金额',
         'RandomRobotSetting.RobotNumMax': '陪玩机器人数量上限',
         'RandomRobotSetting.RobotTriggerMin': '陪玩机器人的触发人数下限',
         'RandomRobotSetting.RobotTriggerMax': '陪玩机器人的触发人数上限',

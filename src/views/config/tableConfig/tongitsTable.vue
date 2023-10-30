@@ -296,6 +296,16 @@
               <el-input v-model.number="edit.item.WatchTimesMax" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="最小玩牌金额："
+              :required="true"
+              prop="item.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
         <!--
         <el-row>
@@ -470,7 +480,8 @@ function newItem() {
     PlayingRandMax: 0,
     DefaultWinRate: 50,
     LuckyLevelLimitMax: 0,
-    LuckyLevelLimitMoney: 0
+    LuckyLevelLimitMoney: 0,
+    MinPlayMoney: 0
   }
 }
 
@@ -484,7 +495,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'HideCarry', 'TableMoney', 'LuckyLevelLimitMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'HideCarry', 'TableMoney', 'LuckyLevelLimitMoney','MinPlayMoney']),
       libMoneyRobot: new MoneyShow(['RobotCarryMoneyStart', 'RobotCarryMoneyEnd', 'RobotMaxWinMoneyStart', 'RobotMaxWinMoneyEnd', 'RobotMaxLoseMoneyStart', 'RobotMaxLoseMoneyEnd', '']),
 
       edit: {
@@ -512,6 +523,7 @@ export default {
         Level: '等级',
         Common: '机器人通用配置',
         Control: '机器人控制配置',
+        MinPlayMoney: '最小玩牌金额',
         RobotCardBuildConfig: '机器人好牌配置',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
