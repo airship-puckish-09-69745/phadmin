@@ -120,6 +120,17 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="开100倍局数间隔限制：" :required="true">
+                <el-col :span="20">
+                  <el-input v-model.number="item.MaxOddsRound" size="mini" :required="true" /> 填0为不限制
+                </el-col>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+            </el-col>
+          </el-row>
 
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
@@ -485,7 +496,8 @@ export default {
         PreBetRate: 0.97,
         HandleTakeShiftingTime: 0,
         HandleTakeShiftingRate: 0,
-        EnableControl: false
+        EnableControl: false,
+        MaxOddsRound: 0,
       },
       testRand: {
         visible: false,
@@ -553,6 +565,7 @@ export default {
         'Data.MaxRobotWinTimes': '机器人最大赢牌次数上限',
         'Data.MinRobotLoseTimes': '机器人最大输牌次数下限',
         'Data.MaxRobotLoseTimes': '机器人最大输牌次数上限',
+        'Data.MaxOddsRound': '开100倍局数间隔限制',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
