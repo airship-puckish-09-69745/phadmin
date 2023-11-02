@@ -328,10 +328,11 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.columnKey !== 'op') {
-        this.initFormData(true, row.ID)
-        this.edit.visible = true
+      if (column.label === '账号' || column.label === '密钥' || column.columnKey === 'op') {
+        return
       }
+      this.initFormData(true, row.ID)
+      this.edit.visible = true
     },
 
     handleCreate() {
