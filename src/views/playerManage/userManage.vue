@@ -35,7 +35,7 @@
             </el-col>
             <el-col :span="8">
               <el-row v-if="money!=0"><span>{{ formatNumber(money) }}</span></el-row>
-              <el-input v-model.number="money" size="mini" />
+              <el-input v-model="money" size="mini" />
             </el-col>
             <el-col :span="6" :offset="1">
               <el-button type="primary" size="mini" @click="saveMoney">提交</el-button>
