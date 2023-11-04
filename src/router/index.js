@@ -150,16 +150,36 @@ export const asyncRoutes = [
     meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
       {
-        path: 'tongitsTable',
-        component: () => import('@/views/config/tableConfig/tongitsTable'),
-        name: 'tongitsTable',
-        meta: { title: 'Tongits ◐' }
-      },
-      {
-        path: 'tongitsTableAI',
-        component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
-        name: 'tongitsTableAI',
-        meta: { title: 'TongitsAI ◐' }
+        path: 'TongitsCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Tongits配置', noCache: true },
+        children: [
+          {
+            path: 'tongitsTable',
+            component: () => import('@/views/config/tableConfig/tongitsTable'),
+            name: 'tongitsTable',
+            meta: { title: 'Tongits ◐' }
+          },
+          {
+            path: 'tongitsClassicTable',
+            component: () => import('@/views/config/tableConfig/tongitsTableClassic'),
+            name: 'tongitsTableClassic',
+            meta: { title: 'Tongits-经典 ◐' }
+          },
+          {
+            path: 'tongitsTableAI',
+            component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
+            name: 'tongitsTableAI',
+            meta: { title: 'TongitsAI ◐' }
+          },
+          {
+            path: 'tongitsTableAIClassic',
+            component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
+            name: 'tongitsClassicTableAI',
+            meta: { title: 'Tongits经典-AI ◐' }
+          }
+        ]
       },
       {
         path: 'lucky9Table',
