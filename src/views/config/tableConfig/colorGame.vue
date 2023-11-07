@@ -462,7 +462,7 @@
                 </el-table-column>
                 <el-table-column label="发放数量" prop="Value">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Value" style="width: 100px;" size="mini" :required="true">
+                    <el-input v-model.number="scope.row.Value" style="width: 200px;" size="mini" :required="true">
                       <template v-if="scope.row.AwardType==1" slot="append">%</template>
                       <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                     </el-input>
@@ -900,11 +900,11 @@ export default {
       for (const j in this.item.BetOptions) {
         this.item.BetOptions[j].MaxMoneyBet /= 1000
       }
-      for (const k in this.item.Jackpot.RandAwards) {
-        if (this.item.Jackpot.RandAwards[k].AwardType == 2) {
-          this.item.Jackpot.RandAwards[k].Value /= 1000
-        }
-      }
+      // for (const k in this.item.Jackpot.RandAwards) {
+      //   if (this.item.Jackpot.RandAwards[k].AwardType == 2) {
+      //     this.item.Jackpot.RandAwards[k].Value /= 1000
+      //   }
+      // }
       console.log('this.item:', this.item)
     },
     getBaoziName(colorId) {
@@ -951,9 +951,9 @@ export default {
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
         Object.assign(raObj, this.JackpotRandAwards[o])
-        if (raObj.AwardType == 2) {
-          raObj.Value *= 1000
-        }
+        // if (raObj.AwardType == 2) {
+        //   raObj.Value *= 1000
+        // }
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.Jackpot = jackpotInfo
