@@ -457,7 +457,13 @@ export const asyncRoutes = [
         path: 'jackpotLog',
         component: () => import('@/views/playerManage/jackpotLog'),
         name: 'ban',
-        meta: { title: 'jackpot 流水 ◐', noCache: true, perm: 'CUTOMER' }
+        meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'jackpotAward',
+        component: () => import('@/views/playerManage/jackpotAward'),
+        name: 'ban',
+        meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
       }
     ]
   },
