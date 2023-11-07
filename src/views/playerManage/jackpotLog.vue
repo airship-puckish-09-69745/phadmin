@@ -20,6 +20,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="奖池类型：">
+          <el-select v-model="searchForm.poolType" placeholder="请选择">
+            <el-option
+              v-for="item in poolConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="操作类型：">
           <el-select v-model="searchForm.actType" placeholder="请选择">
             <el-option
@@ -29,19 +39,6 @@
               :value="item.value"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="查询类型：">
-          <el-select v-model="searchForm.searchType" placeholder="请选择">
-            <el-option
-              v-for="item in sTypeConfig"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="玩家id：">
-          <el-input v-model="searchForm.uid" size="mini" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="search">查询流水</el-button>
@@ -75,11 +72,19 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="Type"
+        prop="PoolType"
+        label="奖池类型"
+      >
+        <template slot-scope="{row}">
+          {{ getPoolTypeName(row.PoolType) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="ActType"
         label="操作类型"
       >
         <template slot-scope="{row}">
-          {{ getTypeName(row.Type) }}
+          {{ getTypeName(row.ActType) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -91,23 +96,11 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="PoolMoney"
+        prop="EndNum"
         label="操作后奖池数量"
       >
         <template slot-scope="{row}">
-          {{ toRupee(row.PoolMoney) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="Uid"
-        label="玩家id"
-      />
-      <el-table-column
-        prop="IsRobot"
-        label="是否机器人"
-      >
-        <template slot-scope="{row}">
-          {{ row.IsRobot == 1?"是":"否" }}
+          {{ toRupee(row.EndNum) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -141,10 +134,8 @@
     >
       <el-descriptions title="">
         <el-descriptions-item label="用户奖池">{{ toRupee(prizeInfo.UserPool) }}</el-descriptions-item>
-        <el-descriptions-item label="用户返奖">{{ toRupee(prizeInfo.UserAward) }}</el-descriptions-item>
-        <el-descriptions-item label="机器人奖池">{{ toRupee(prizeInfo.RobotPool) }}</el-descriptions-item>
-        <el-descriptions-item label="机器人返奖励">{{ toRupee(prizeInfo.RobotAward) }}</el-descriptions-item>
-        <el-descriptions-item label="手动添加数量">{{ toRupee(prizeInfo.AdminAdd) }}</el-descriptions-item>
+        <el-descriptions-item label="展示奖池">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
+        <el-descriptions-item label="最后更新时间">{{ formatTime(prizeInfo.UpdateTime) }}</el-descriptions-item>
       </el-descriptions>
       <el-form :model="prizeForm">
         <el-form-item label="手动修改玩家奖池数量：">
@@ -155,7 +146,7 @@
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePrizePool(false)">保存</el-button>
           </el-col>
         </el-form-item>
-        <el-form-item label="手动修改机器人奖池数量：">
+        <el-form-item label="手动修改展示奖池数量：">
           <el-col :span="8">
             <el-input v-model="prizeForm.ChangeRobotNum" size="mini" />
           </el-col>
@@ -179,27 +170,24 @@ export default {
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
-        actType: 0,
-        uid: 0,
-        searchType: 0
+        poolType: 0,
+        actType: 0
       },
       gameConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 25, 'label': 'color game' }
       ],
+      poolConfig: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1, 'label': '玩家奖池' },
+        { 'value': 2, 'label': '展示奖池' },
+      ],
       typeConfig: [
         { 'value': 0, 'label': '全部' },
-        { 'value': 1, 'label': '玩家抽水' },
-        { 'value': 2, 'label': '机器人抽水' },
-        { 'value': 3, 'label': '玩家返奖' },
-        { 'value': 4, 'label': '机器人返奖' },
-        { 'value': 5, 'label': '手动加玩家奖池' },
-        { 'value': 6, 'label': '手动加机器人奖池' }
-      ],
-      sTypeConfig: [
-        { 'value': 0, 'label': '全部' },
-        { 'value': 1, 'label': '流入' },
-        { 'value': 2, 'label': '流出' },
+        { 'value': 1, 'label': '牌局增加' },
+        { 'value': 2, 'label': 'jackpot返奖' },
+        { 'value': 3, 'label': '后台调整用户奖池' },
+        { 'value': 4, 'label': '后台调整展示奖池' }
       ],
       tableData: [],
       totalCount: 0,
@@ -209,11 +197,8 @@ export default {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       prizeVisible: false,
       prizeInfo: {
-        AdminAdd: 0,
-        RobotPool: 0,
         UserPool: 0,
-        RobotAward: 0,
-        UserAward: 0,
+        ShowPool: 0,
         UpdateTime: 0
       },
       prizeForm: {
@@ -241,6 +226,7 @@ export default {
           Env: _this.env,
           Path: '/jackpot/log',
           Uid: _this.searchForm.uid,
+          PoolType: _this.searchForm.poolType,
           ActType: _this.searchForm.actType,
           Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
           GameId: _this.searchForm.gameId,
@@ -354,6 +340,16 @@ export default {
       for (let i = 0; i < this.typeConfig.length; i++) {
         if (actType == this.typeConfig[i].value) {
           name = this.typeConfig[i].label
+          break
+        }
+      }
+      return name
+    },
+    getPoolTypeName(poolType) {
+      var name = ''
+      for (let i = 0; i < this.poolConfig.length; i++) {
+        if (poolType == this.poolConfig[i].value) {
+          name = this.poolConfig[i].label
           break
         }
       }
