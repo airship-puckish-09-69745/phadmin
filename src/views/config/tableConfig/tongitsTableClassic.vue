@@ -740,6 +740,10 @@ export default {
         Message.warning('下限不能大于上限，请检查数值正确性！')
         return false
       }
+      if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
+        Message.warning('最小玩牌金额必须【小于等于】最小携带，请检查数值正确性！')
+        return false
+      }
       return true
     },
     save() {

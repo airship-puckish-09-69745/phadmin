@@ -394,7 +394,7 @@ export default {
           App: this.item.app,
           StartTime: this.item.start / 1000,
           EndTime: this.item.end / 1000,
-          idDesc: "1",
+          idDesc: '1',
           Page: this.currentPage,
           Limit: this.pageNum,
           gameId: this.item.gameId,
