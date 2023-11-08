@@ -94,6 +94,14 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="BetInfo"
+        label="近百局下注情况"
+      >
+        <template slot-scope="{row}">
+          {{ formatBetInfo(row.BetInfo) }}
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="AwardNum"
         label="奖励金额"
       >
@@ -336,6 +344,17 @@ export default {
       } else {
         return "否"
       }
+    },
+    formatBetInfo(betInfo) {
+      var showInfo = ""
+      if (betInfo == "") {
+        return showInfo
+      }
+      var betObj = JSON.parse(betInfo)
+      if (betObj.BetRound > 0 && betObj.BetMoney > 0) {
+        showInfo = "下注局数："+betObj.BetRound+";下注总额:"+betObj.BetMoney/1000+";排序得分:"+betObj.Score/1000
+      }
+      return showInfo
     }
   }
 }
