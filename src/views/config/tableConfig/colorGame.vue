@@ -214,7 +214,7 @@
                 </template>
               </el-table-column>
             </el-table>
-            <el-row>
+            <!-- <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="机器人最小人数：" prop="MinRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
@@ -229,7 +229,7 @@
                   </el-col>
                 </el-form-item>
               </el-col>
-            </el-row>
+            </el-row> -->
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="机器人携带金币下限：" prop="MinRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -460,6 +460,11 @@
                     </el-select>
                   </template>
                 </el-table-column>
+                <el-table-column label="开出的奖池值" prop="PoolVal">
+                  <template slot-scope="scope">
+                    >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true"></el-input>
+                  </template>
+                </el-table-column>
                 <el-table-column label="发放数量" prop="Value">
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Value" style="width: 200px;" size="mini" :required="true">
@@ -468,12 +473,12 @@
                     </el-input>
                   </template>
                 </el-table-column>
-                <el-table-column label="每日限制开出个数(0为不限)" prop="Value">
+                <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.DayLimit" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                   </template>
                 </el-table-column>
-                <el-table-column label="开奖数量概率" prop="Rate">
+                <el-table-column label="开奖数量概率" prop="RateArr">
                   <template slot-scope="scope">
                     <el-button type="primary" icon="el-icon-edit" circle size="mini"  @click="showPoolNumDialog(scope.row)"></el-button>
                     {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -649,10 +654,10 @@
           {{ robotDialogForm.data.Index }}
         </el-form-item>
         <el-form-item label="开始时段：">
-          <el-input v-model.number="robotDialogForm.data.StartHour" style="width: 100px;" size="mini" :required="true"></el-input>
+          <el-input v-model.number="robotDialogForm.data.StartHour" disable style="width: 100px;" size="mini" :required="true"></el-input>
         </el-form-item>
         <el-form-item label="结束时段：">
-          <el-input v-model.number="robotDialogForm.data.EndHour" style="width: 100px;" size="mini" :required="true"></el-input>
+          <el-input v-model.number="robotDialogForm.data.EndHour" disable style="width: 100px;" size="mini" :required="true"></el-input>
         </el-form-item>
         <el-form-item label="机器人最小人数：">
           <el-input v-model.number="robotDialogForm.data.MinRobotNum" style="width: 100px;" size="mini" :required="true"></el-input>
@@ -769,7 +774,7 @@ export default {
             [6, 6, 6]
           ],
           RandAwards: [
-            { 'AwardType': 1, 'Value': 10, 'RateArr': [] }
+            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit':0, 'RateArr': [] }
           ],
           JackpotRate: 0,
         },
@@ -900,11 +905,9 @@ export default {
       for (const j in this.item.BetOptions) {
         this.item.BetOptions[j].MaxMoneyBet /= 1000
       }
-      // for (const k in this.item.Jackpot.RandAwards) {
-      //   if (this.item.Jackpot.RandAwards[k].AwardType == 2) {
-      //     this.item.Jackpot.RandAwards[k].Value /= 1000
-      //   }
-      // }
+      for (const k in this.item.Jackpot.RandAwards) {
+        this.item.Jackpot.RandAwards[k].PoolVal /= 1000
+      }
       console.log('this.item:', this.item)
     },
     getBaoziName(colorId) {
@@ -952,7 +955,7 @@ export default {
         const raObj = {}
         Object.assign(raObj, this.JackpotRandAwards[o])
         // if (raObj.AwardType == 2) {
-        //   raObj.Value *= 1000
+        raObj.PoolVal *= 1000
         // }
         jackpotInfo.RandAwards.push(raObj)
       }
