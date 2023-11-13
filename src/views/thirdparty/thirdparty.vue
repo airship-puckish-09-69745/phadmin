@@ -328,7 +328,7 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.label === '账号' || column.label === '密钥' || column.columnKey === 'op') {
+      if (column.label === 'ID' || column.label === '账号' || column.label === '密钥' || column.columnKey === 'op') {
         return
       }
       this.initFormData(true, row.ID)

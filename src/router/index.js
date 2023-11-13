@@ -496,6 +496,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/gamelist'),
         name: 'thirdparty_game_list',
         meta: { title: '第三方子游戏 ◐' }
+      },
+      {
+        path: 'enterurl',
+        component: () => import('@/views/thirdparty/enterurl'),
+        name: 'enterurl',
+        meta: { title: '生成游戏链接 ◐' }
       }
     ]
   },
@@ -535,6 +541,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/tongitsPlaylog'),
         name: 'playlog_tongits',
         meta: { title: 'Tongits - 标准 ◐', gid: 22 }
+      },
+      {
+        path: 'playlog_classic_tongits',
+        component: () => import('@/views/playerManage/tongitsPlaylog'),
+        name: 'playlog_classic_tongits',
+        meta: { title: 'Tongits - 经典 ◐', gid: 31 }
       },
       {
         path: 'playlog_colorgame',
