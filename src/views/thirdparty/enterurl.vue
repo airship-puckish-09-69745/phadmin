@@ -29,15 +29,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.screen" label="横竖屏：" :required="true" label-width="80px">
-          <el-select v-model="item.screen" placeholder="请选择" size="mini">
-            <el-option
-              v-for="row in screens"
-              :label="row.name"
-              :value="row.val"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item v-model="item.directScene" label="进入场景：" :required="true" label-width="80px">
           <el-select v-model="item.directScene" placeholder="请选择" size="mini">
             <el-option
@@ -126,18 +117,18 @@ export default {
         {
           id: 1000002,
           agentId: 'dayusenlin',
-          desc: '内部用'
+          desc: '[1000002]内部用'
         },
         {
           id: 1000003,
           agentId: 'testaccount',
-          desc: '【GamePlus平台】 提审、测试账号。'
-        },
-        {
-          id: 1000005,
-          agentId: 'BingoPlusTongits',
-          desc: '【GamePlus平台】正式账号 。'
+          desc: '[1000003]【GamePlus平台】 提审、测试账号。'
         }
+        // ,{
+        //   id: 1000005,
+        //   agentId: 'BingoPlusTongits',
+        //   desc: '【GamePlus平台】正式账号 。'
+        // }
       ],
       accounts: [
         {
@@ -244,7 +235,7 @@ export default {
         account: '1234567890',
         nick: '',
         screen: 'horizontal',
-        directScene: 'tongits',
+        directScene: '',
         clientTerminalType: '2',
         api: 'http://192.168.6.16:9304/login',
         debug: '0'
