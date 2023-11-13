@@ -475,12 +475,12 @@
                 </el-table-column>
                 <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.DayLimit" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                    <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                   </template>
                 </el-table-column>
                 <el-table-column label="开奖数量概率" prop="RateArr">
                   <template slot-scope="scope">
-                    <el-button type="primary" icon="el-icon-edit" circle size="mini"  @click="showPoolNumDialog(scope.row)"></el-button>
+                    <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini"  @click="showPoolNumDialog(scope.row)"></el-button>
                     {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
                   </template>
                 </el-table-column>
@@ -822,7 +822,7 @@ export default {
         id: 0,
         title: "",
         visible: false,
-        data: {}
+        data: []
       },
       betMoneyList: '1,10',
       form: {},
@@ -1239,10 +1239,19 @@ export default {
     },
     showIncrJackpotForm(data) {
       this.incrJackpotForm.id = data.Id
-      this.incrJackpotForm.data = data.TimeArr
-      for (var i=0;i<this.incrJackpotForm.data.length;i++) {
-        this.incrJackpotForm.data[i].PerHourIncr /= 1000
+      this.incrJackpotForm.data = []
+      for (let i=0;i<data.TimeArr.length;i++) {
+        console.log(data.TimeArr[i])
+        this.incrJackpotForm.data.push({
+          EndHour: data.TimeArr[i].EndHour,
+          Index: data.TimeArr[i].Index,
+          StartHour: data.TimeArr[i].StartHour,
+          PerHourIncr: data.TimeArr[i].PerHourIncr / 1000
+        })
       }
+      // for (const l in this.incrJackpotForm.data) {
+      //   this.incrJackpotForm.data[l].PerHourIncr /= 1000
+      // }
       this.incrJackpotForm.title = "编辑"+this.getJackpotPoolTitle(data)
       this.incrJackpotForm.visible = true
     },
@@ -1257,6 +1266,13 @@ export default {
         }
       }
       this.incrJackpotForm.visible = false
+    },
+    checkShowDayLimit(awardType) {
+      if (awardType == 2) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 }
