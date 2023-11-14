@@ -136,8 +136,8 @@
             width="400"
             trigger="click"
           >
-            <img :src="getImgUrl">
-            <img slot="reference" :src="getImgUrl" height="300">
+            <img :src="getImgUrl" style="width:100px;height:100px;">
+            <img slot="reference" :src="getImgUrl" style="width:100px;height:100px;">
           </el-popover>
           </el-descriptions-item>
           <el-descriptions-item label="昵称：">{{ item.Nick }}
