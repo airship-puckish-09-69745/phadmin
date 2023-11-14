@@ -246,11 +246,11 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 100,
       summary: {},
-      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 22: 'Tongits', 23: 'Lucky 9', 25: 'Color', 100: '汇总' },
+      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 31: 'Tongits-经典', 100: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 23, 25, 10, 51, 52],
+      defaultOrder: [15, 22, 31, 23, 25, 10, 51, 52],
       sortOrder: [],
       env: 'test'
     }
@@ -305,7 +305,7 @@ export default {
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 22 || o === 23) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 22 || o === 23 || o === 31) {
         return false
       } else {
         return true
