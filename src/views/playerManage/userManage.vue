@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row>
+    <el-row v-show="queryFlag === 1" class="uid-query">
       <el-form :model="item" label-width="150px" size="small">
         <el-col :span="6" :offset="2">
           <el-form-item label="UID：" :required="true">
@@ -9,6 +9,34 @@
         </el-col>
         <el-col :span="4">
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="success" size="mini" @click="showAccountQuery">用App和Account查询</el-button>
+        </el-col>
+      </el-form>
+    </el-row>
+    <el-row v-show="queryFlag === 2" class="account-query">
+      <el-form :model="item" label-width="150px" size="small">
+        <el-col :span="6" :offset="2">
+          <el-form-item v-model="accountForm.AppId" label="App：" :required="true" label-width="80px">
+            <el-select v-model="accountForm.AppId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="row in appInfo"
+                :key="row.key"
+                :label="row.label"
+                :value="row.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6" :offset="2">
+          <el-form-item label="Account：" :required="true">
+            <el-input v-model="accountForm.Account"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-button type="primary" size="mini" @click="getInfoByAccount">查询</el-button>
+          <el-button type="success" size="mini" @click="showUidQuery">用uid查询</el-button>
         </el-col>
       </el-form>
     </el-row>
@@ -21,6 +49,7 @@
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
           border
         >
+          <el-descriptions-item label="uid：">{{ item.Uid }}</el-descriptions-item>
           <el-descriptions-item label="金币总数：">{{ formatNumber(item.LimitedMoney + item.FreeMoney) }}</el-descriptions-item>
           <el-descriptions-item label="Winning："> {{ formatNumber(item.FreeMoney) }}</el-descriptions-item>
           <el-descriptions-item label="Deposited：" :span="hasEditPerm?1:2">{{ formatNumber(item.LimitedMoney) }}</el-descriptions-item>
@@ -47,47 +76,6 @@
           <el-descriptions-item label="来源Appid：">{{ showSourceAppid(item.SourceAppid) }}</el-descriptions-item>
           <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
-
-<!--          <el-descriptions-item label="Bonus：">{{ item.BonusTotal }}</el-descriptions-item>
-          <el-descriptions-item label="Bonus可提："> {{ item.BonusValid }}</el-descriptions-item>
-          <el-descriptions-item label="存钱罐累积：">{{ item.Gullak }}</el-descriptions-item>
-          <el-descriptions-item label="存钱罐Lv：">{{ item.GullakLevel }}</el-descriptions-item>-->
-
-<!--          <el-descriptions-item label="充值额：">
-            {{ formatNumber(item.PayValue) }}
-            <el-button v-if="item.PayValue==0" type="primary" size="mini" @click="setUserPay">加0.001</el-button>
-            <el-button v-if="item.PayValue==0.001" type="primary" size="mini" @click="setUserPay2">加100</el-button>
-            <el-button type="danger" size="mini" @click="clearFirstPayFlag">清除首充状态</el-button>
-          </el-descriptions-item>
-          <el-descriptions-item label="单笔最大充值额度：">
-            {{ item.MaxPayAmount | toRupee | numberFormat }}
-          </el-descriptions-item>
-          <el-descriptions-item label="充值次数：">
-            {{ item.PayCount }}
-          </el-descriptions-item>
-          <el-descriptions-item label="信用分：">
-            <span v-if="item.CreditScore<0" style="color:red">{{ item.CreditScore }}</span>
-            <span v-else>{{ item.CreditScore }}</span>
-          </el-descriptions-item>
-          <el-descriptions-item label="提现额：">
-            {{ item.Withdraw/1000 }} / {{ item.CanWithdrawAmount / 1000 }}
-          </el-descriptions-item>
-          <el-descriptions-item label="提现次数：">
-            {{ item.WithdrawCount }}
-          </el-descriptions-item>
-          <el-descriptions-item label="提现中：">
-            {{ item.Withdrawing/1000 }}
-          </el-descriptions-item>-->
-
-          <!--          <el-descriptions-item label="邀请人数：">-->
-          <!--            {{ item.InviteCount }}-->
-          <!--          </el-descriptions-item>-->
-          <!--          <el-descriptions-item label="邀请总奖励：">-->
-          <!--            {{ item.InviteTotalPrize/1000 }}-->
-          <!--          </el-descriptions-item>-->
-          <!--          <el-descriptions-item label="已领取邀请奖励：">-->
-          <!--            {{ (item.InviteTotalPrize - item.InvitePrize)/1000 }}-->
-          <!--          </el-descriptions-item>-->
           <el-descriptions-item label="小黑屋标志">
             <el-tag v-if="item.SchemaXMan > 0" type="danger">是({{ item.SchemaXMan }})</el-tag>
             <el-tag v-else>否</el-tag>
@@ -125,10 +113,6 @@
             </template>
 
           </el-descriptions-item>
-<!--          <el-descriptions-item label="持卡人：">{{ item.CardHolderName }}</el-descriptions-item>
-          <el-descriptions-item label="提现方式：">{{ formatBankCode(item.ProxyBankCode) }}</el-descriptions-item>
-          <el-descriptions-item label="账号IFSC：">{{ item.BankName }}</el-descriptions-item>
-          <el-descriptions-item label="提现账号：">{{ item.AccountNo }}</el-descriptions-item>-->
 
           <el-descriptions-item label="头像："><el-popover
             v-if="item.Icon.length > 5"
@@ -177,12 +161,6 @@
           <el-descriptions-item label="调控轮数：">
             {{ item.PaySchemaRound }}
           </el-descriptions-item>
-<!--          <el-descriptions-item label="本轮总充值：">
-            {{ item.PaySchema.RechargeAmount | toRupee }}
-          </el-descriptions-item>
-          <el-descriptions-item label="本轮总提现：">
-            {{ item.PaySchema.WithdrawAmount | toRupee }}
-          </el-descriptions-item>-->
           <el-descriptions-item label="赢标签：">
             {{ item.PaySchema.WinTagCnt }}
           </el-descriptions-item>
@@ -192,40 +170,8 @@
           <el-descriptions-item label="是否设置登录密码：">
             <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
           </el-descriptions-item>
-<!--          <el-descriptions-item label="是否设置支付密码：">
-            <el-tag :type="item.IsSetPayPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetPayPwd) }}</el-tag>
-          </el-descriptions-item>-->
         </el-descriptions>
 
-        <!--新邀请分享-->
-<!--        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-          border
-        >
-          <el-descriptions-item label="邀请等级：">{{ showInviteLevel(item.InviteLevel) }}</el-descriptions-item>
-          <el-descriptions-item label="邀请人数：">{{ item.InviteCount }}</el-descriptions-item>
-          <el-descriptions-item label="邀请码：">{{ item.InviteCode }}</el-descriptions-item>
-          <el-descriptions-item label="邀请当前余额：">{{ item.InviteBalance | toRupee }}</el-descriptions-item>
-          <el-descriptions-item label="邀请当前可提余额：">{{ item.InviteWithdraw | toRupee }}</el-descriptions-item>
-          <el-descriptions-item label="邀请提现中：">{{ item.InviteWithdrawProcess | toRupee }}</el-descriptions-item>
-          <el-descriptions-item label="已提现金额：">{{ item.InviteWithdrawSuccess | toRupee }}</el-descriptions-item>
-          <el-descriptions-item label="累计获得收益：">
-            <el-descriptions
-              class="margin-top"
-              :column="1"
-              size="mini"
-              :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-              border
-            >
-              <el-descriptions-item v-for="(val, source) in item.InviteCommissionMap" v-if="checkSource(source)" :label="showSource(source)">{{ val | toRupee }}</el-descriptions-item>
-              <el-descriptions-item label="总收益">{{ item.InviteTotalCommission | toRupee }}</el-descriptions-item>
-            </el-descriptions>
-
-          </el-descriptions-item>
-        </el-descriptions>-->
       </el-col>
     </el-row>
 
@@ -260,289 +206,6 @@
     <el-row style="margin-top: 20px">
       <el-col :offset="1" :span="22">
         <el-tabs v-model="tabName" type="border-card" @tab-click="tabClick">
-<!--          <el-tab-pane label="邀请用户" name="inviteUsers">
-            <el-form ref="form" :model="item" :inline="true">
-              <el-form-item label="绑定时间">
-                <el-date-picker
-                  v-model="inviteSelectTime"
-                  size="mini"
-                  type="datetimerange"
-                  :picker-options="pickerOptions"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  align="right"
-                />
-              </el-form-item>
-
-              <el-form-item>
-                <el-button type="primary" size="mini" @click="getInviteUsers">搜索</el-button>
-              </el-form-item>
-            </el-form>
-
-            <el-descriptions title="" border :column="3">
-              <el-descriptions-item label="邀请总人数">{{ InviteUsers.InviteCount }}</el-descriptions-item>
-              <el-descriptions-item label="被邀请人总充值">{{ InviteUsers.TotalRecharge | toRupee }}</el-descriptions-item>
-              <el-descriptions-item label="被邀请人总提款">{{ (InviteUsers.InviteWithdraw + InviteUsers.HallWithdraw) | toRupee }}</el-descriptions-item>
-              <el-descriptions-item label="被邀请用户余额">{{ InviteUsers.CarryMoney | toRupee }}</el-descriptions-item>
-              <el-descriptions-item label="被邀请用户充提余额差">{{ InviteUsers.MoneyDiff | toRupee }}</el-descriptions-item>
-              <el-descriptions-item label="被邀请用户充提余额比">{{ InviteUsers.MoneyRate }}</el-descriptions-item>
-            </el-descriptions>
-            <el-table
-              :data="InviteUsers.User"
-              style="width: 100%"
-            >
-              <el-table-column
-                prop="Uid"
-                label="uid"
-                width="100"
-              />
-              <el-table-column
-                prop="Level"
-                label="邀请等级"
-              />
-              <el-table-column
-                prop="InviteCount"
-                label="邀请人数"
-              />
-              <el-table-column
-                prop="InviteCommission"
-                label="邀请佣金"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.InviteCommission | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="AffiliateCommission"
-                label="推广员佣金"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.AffiliateCommission | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TotalRecharge"
-                label="总充值"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.TotalRecharge | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="HallWithdraw"
-                label="大厅提现"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.HallWithdraw | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="InviteWithdraw"
-                label="邀请提现"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.InviteWithdraw | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="CarryMoney"
-                label="账户余额"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.CarryMoney | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="MoneyDiff"
-                label="充提余额差"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.MoneyDiff | toRupee }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="MoneyRate"
-                label="充提余额比"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.MoneyRate }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="Games"
-                label="玩牌局数"
-                width="150px"
-              >
-                <template slot-scope="scope">
-                  <el-descriptions title="" border size="mini" :column="1">
-                    <el-descriptions-item v-for="(cnt, gid) in scope.row.Games" :label="showGameName(gid)">{{ cnt }}</el-descriptions-item>
-                  </el-descriptions>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="RegisterTime"
-                label="注册时间"
-                width="150px"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.RegisterTime | parseTime }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="BindTime"
-                label="绑定时间"
-                width="150px"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.BindTime | parseTime }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="LoginTime"
-                label="最近登录"
-                width="150px"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.LoginTime | parseTime }}
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>-->
-<!--          <el-tab-pane label="同账号关联账号" name="sameRelationUser">
-            <el-descriptions title="" border :column="3">
-              <el-descriptions-item label="数量">{{ SameRelationSummary.Count }}</el-descriptions-item>
-              <el-descriptions-item label="总充值">{{ formatNumber(SameRelationSummary.Recharge) }}</el-descriptions-item>
-              <el-descriptions-item label="总提现">{{ formatNumber(SameRelationSummary.Withdraw) }}</el-descriptions-item>
-              <el-descriptions-item label="充提差">{{ formatNumber(SameRelationSummary.Diff) }}</el-descriptions-item>
-              <el-descriptions-item label="提充比">{{ formatNumber(SameRelationSummary.Ratio) }} %</el-descriptions-item>
-            </el-descriptions>
-            <el-table
-              :data="SameRelationUsers"
-              style="width: 100%"
-            >
-              <el-table-column
-                prop="RelationUid"
-                label="关联uid"
-                width="100px"
-              />
-              <el-table-column
-                prop="AppId"
-                label="AppId"
-                width="100px"
-              />
-              <el-table-column
-                prop="AccountNo"
-                label="收款账号"
-                width="150px"
-              />
-              <el-table-column
-                prop="RegisterTime"
-                label="注册时间"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.RegisterTime | parseTime }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TotalRecharge"
-                label="总充值"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.TotalRecharge | toRupee | numberFormat }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TotalWithdraw"
-                label="总提现"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.TotalWithdraw | toRupee | numberFormat }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="充提差"
-              >
-                <template slot-scope="scope">
-                  {{ (scope.row.TotalRecharge - scope.row.TotalWithdraw) | toRupee | numberFormat }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="提充比"
-              >
-                <template slot-scope="scope">
-                  {{ showRechargeWithdrawRatio(scope.row) }}%
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>-->
-<!--          <el-tab-pane label="关联账号" name="relationUser">
-            <el-descriptions title="" border :column="3">
-              <el-descriptions-item label="数量">{{ RelationSummary.Count }}</el-descriptions-item>
-              <el-descriptions-item label="总充值">{{ formatNumber(RelationSummary.Recharge) }}</el-descriptions-item>
-              <el-descriptions-item label="总提现">{{ formatNumber(RelationSummary.Withdraw) }}</el-descriptions-item>
-              <el-descriptions-item label="充提差">{{ formatNumber(RelationSummary.Diff) }}</el-descriptions-item>
-              <el-descriptions-item label="提充比">{{ formatNumber(RelationSummary.Ratio) }} %</el-descriptions-item>
-            </el-descriptions>
-            <el-table
-              :data="RelationUsers"
-              style="width: 100%"
-            >
-              <el-table-column
-                prop="RelationUid"
-                label="关联uid"
-                width="100px"
-              />
-              <el-table-column
-                prop="AppId"
-                label="AppId"
-                width="100px"
-              />
-              <el-table-column
-                prop="AccountNo"
-                label="收款账号"
-                width="150px"
-              />
-              <el-table-column
-                prop="RegisterTime"
-                label="注册时间"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.RegisterTime | parseTime }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TotalRecharge"
-                label="总充值"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.TotalRecharge | toRupee | numberFormat }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TotalWithdraw"
-                label="总提现"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.TotalWithdraw | toRupee | numberFormat }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="充提差"
-              >
-                <template slot-scope="scope">
-                  {{ (scope.row.TotalRecharge - scope.row.TotalWithdraw) | toRupee | numberFormat }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="提充比"
-              >
-                <template slot-scope="scope">
-                  {{ showRechargeWithdrawRatio(scope.row) }}%
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-tab-pane>-->
           <el-tab-pane label="用户IP设备" name="userIpDevice">
             <el-table
               :data="UserIpDevice"
@@ -917,6 +580,8 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
+      queryFlag: 1, // 1 uid查询，2 account 查询
+      appInfo: [],
       item: {
         Uid: 0,
         LimitedMoney: '',
@@ -959,6 +624,10 @@ export default {
       moneyType: 1,
       money: 0,
       env: 'test',
+      accountForm: {
+        Account: '',
+        AppId: 0
+      },
 
       edit: {
         visible: false
@@ -1080,6 +749,7 @@ export default {
     const pers = store.getters.pers
     this.hasEditPerm = (pers['USER_MANAGEMENT'] & 2) > 0
     this.hasCustomerPerm = (pers['CUTOMER'] & 2) > 0
+    this.getAppInfo()
   },
   mounted() {
     this.env = store.getters.env || this.env
@@ -1923,6 +1593,64 @@ export default {
           $this.$EventBus.$emit('uid-change', $this.item.Uid)
         }
       })
+    },
+    getInfoByAccount() {
+      console.log('account:', this.accountForm.Account)
+      console.log('app: ', this.accountForm.AppId)
+      if (this.accountForm.Account === '') {
+        Message.error('请输入正确的Account')
+        return
+      }
+      if (this.accountForm.AppId <= 0) {
+        console.log(this.item.AppId)
+        Message.error('请选择App')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/user/account/info',
+          Account: this.accountForm.Account,
+          AppId: this.accountForm.AppId
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.resetQueryDevice()
+          $this.item = $this.libShowMoney.TransForShow(response.Data || $this.item)
+          $this.item.UserAccount = response.Data.Account || ''
+          $this.item.AppId = response.Data.AppID || 0
+          $this.$EventBus.$emit('uid-change', response.Data.Uid)
+          $this.item.Uid = response.Data.Uid || 0
+          $this.showSchemaResult($this.item.PaySchema.Result)
+          $this.getTags()
+        }
+      })
+    },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+    showAccountQuery() {
+      this.queryFlag = 2
+    },
+    showUidQuery() {
+      this.queryFlag = 1
     }
   }
 }
