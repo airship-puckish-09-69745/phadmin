@@ -139,6 +139,18 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <fieldset style="margin-top:10px">
+            <legend>下注金额列表v2配置</legend>
+            <el-alert
+              type="success"
+              description="竖版多套下注金额列表，金额之间使用 , 符号连接"
+            />
+            <el-row v-for="(value, index) in item.BetMoneyListV2" :key="index">
+              <el-form-item :label="'配置' + (index+1)" :required="true">
+                <el-input v-model="item.BetMoneyListV2[index]" size="mini" :required="true" />
+              </el-form-item>
+            </el-row>
+          </fieldset>
           <fieldset>
             <legend>奖池触发重摇</legend>
             <el-row>
@@ -731,6 +743,7 @@ export default {
         MaxPlayers: 400,
         SeatsNumber: 4,
         BetMoneyList: [1, 2],
+        BetMoneyListV2: ['1', '2', '3', '4', '5', '6'],
         BetOptions: [{ Name: 'ab', Odds: [{ 'Number': 1, 'Odd': 2 }, { 'Number': 2, 'Odd': 3 }, { 'Number': 3, 'Odd': 4 }], MaxMoneyBet: 2000 }],
         MinMoneyCarry: 1000,
         LogListCount: 100,
@@ -863,6 +876,7 @@ export default {
         'Data.HighLotteryPoolReChoice': '奖池大于某值此时系统赢',
         'Data.LowLotteryPoolReChoiceRate': '奖池低于某值此时系统输，重新摇概率',
         'Data.HighLotteryPoolReChoiceRate': '奖池大于某值此时系统赢，重新摇概率',
+        'Data.BetMoneyListV2': '下注金额列表v2',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
