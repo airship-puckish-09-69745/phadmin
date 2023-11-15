@@ -382,7 +382,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'BetMoneyMax', 'TotalRecharge', 'MaxPayAmount','MinPlayMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'BetMoneyMax', 'TotalRecharge', 'MaxPayAmount', 'MinPlayMoney']),
       edit: {
         visible: false,
         item: newItem(),

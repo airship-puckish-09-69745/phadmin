@@ -531,7 +531,7 @@ export default {
         win: 0,
         lose: 0,
         winCount: 0,
-        fee:0,
+        fee: 0,
         loseCount: 0,
         seconds: 0
       },

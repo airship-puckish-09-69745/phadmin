@@ -148,7 +148,7 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
-<!--          <el-col :span="11">
+          <!--          <el-col :span="11">
             <el-form-item label="抽水最少大盲倍数：" :required="true" prop="item.FlowLower" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model="edit.item.FlowLower" placeholder="请输入" />
             </el-form-item>
@@ -557,8 +557,8 @@ function newItem() {
     SinglePay: 0,
     TotalPay: 0,
     HideLevel: 0,
-    AutoBuyRatio:0,
-    RecommendBuyRatio:0,
+    AutoBuyRatio: 0,
+    RecommendBuyRatio: 0,
     MinPlayMoney: 0
   }
 }
@@ -573,7 +573,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'ServiceFee', 'LuckyLevelLimitMoney', 'totalRecharge', 'maxPayAmount', 'SinglePay', 'TotalPay','MinPlayMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'ServiceFee', 'LuckyLevelLimitMoney', 'totalRecharge', 'maxPayAmount', 'SinglePay', 'TotalPay', 'MinPlayMoney']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {

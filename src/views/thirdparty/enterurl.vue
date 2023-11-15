@@ -89,7 +89,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <el-button class="ewm-copy-content" type="text" size="mini" @click="copyClick(scope.row)" :data-clipboard-text="scope.row.EnterUrl">复制链接</el-button>
+            <el-button class="ewm-copy-content" type="text" size="mini" :data-clipboard-text="scope.row.EnterUrl" @click="copyClick(scope.row)">复制链接</el-button>
           </template>
         </el-table-column>
       </el-table>

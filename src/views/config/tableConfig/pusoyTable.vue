@@ -480,7 +480,7 @@ function newItem() {
     WatchTimesMax: '',
     Level: 1,
     IsPractice: 0,
-    //RobotSetting: '',
+    // RobotSetting: '',
     PlayingMul: 0,
     PlayingRandMin: 0,
     PlayingRandMax: 0,
@@ -509,7 +509,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'TotalRecharge', 'MaxPayAmount','MinPlayMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'TotalRecharge', 'MaxPayAmount', 'MinPlayMoney']),
 
       edit: {
         visible: false,

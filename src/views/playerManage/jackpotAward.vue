@@ -221,7 +221,7 @@ export default {
           Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
-          Limit: _this.pageNum,
+          Limit: _this.pageNum
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -253,7 +253,7 @@ export default {
           Env: _this.env,
           Path: '/jackpot/day/limit',
           GameId: _this.searchForm.gameId,
-          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
+          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -340,19 +340,19 @@ export default {
     },
     showBoolFlag(boolFlag) {
       if (boolFlag == 1) {
-        return "是"
+        return '是'
       } else {
-        return "否"
+        return '否'
       }
     },
     formatBetInfo(betInfo) {
-      var showInfo = ""
-      if (betInfo == "") {
+      var showInfo = ''
+      if (betInfo == '') {
         return showInfo
       }
       var betObj = JSON.parse(betInfo)
       if (betObj.BetRound > 0 && betObj.BetMoney > 0) {
-        showInfo = "下注局数："+betObj.BetRound+";下注总额:"+betObj.BetMoney/1000+";排序得分:"+betObj.Score/1000
+        showInfo = '下注局数：' + betObj.BetRound + ';下注总额:' + betObj.BetMoney / 1000 + ';排序得分:' + betObj.Score / 1000
       }
       return showInfo
     }

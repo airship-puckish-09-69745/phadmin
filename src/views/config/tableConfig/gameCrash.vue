@@ -128,8 +128,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
-            </el-col>
+            <el-col :span="11" />
           </el-row>
 
           <fieldset style="margin:20px auto;">
@@ -497,7 +496,7 @@ export default {
         HandleTakeShiftingTime: 0,
         HandleTakeShiftingRate: 0,
         EnableControl: false,
-        MaxOddsRound: 0,
+        MaxOddsRound: 0
       },
       testRand: {
         visible: false,

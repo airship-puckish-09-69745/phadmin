@@ -31,7 +31,7 @@
         </el-col>
         <el-col :span="6" :offset="2">
           <el-form-item label="Account：" :required="true">
-            <el-input v-model="accountForm.Account"></el-input>
+            <el-input v-model="accountForm.Account" />
           </el-form-item>
         </el-col>
         <el-col :span="4">

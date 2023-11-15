@@ -104,13 +104,13 @@
             >
               <template>
                 <el-row>
-                  GameLog: {{scope.row.game_log}}
+                  GameLog: {{ scope.row.game_log }}
                 </el-row>
                 <el-row>
-                  UniqueNO: {{scope.row.unique_no}}
+                  UniqueNO: {{ scope.row.unique_no }}
                 </el-row>
               </template>
-              <span slot="reference" size="mini">{{scope.row.account}}</span>
+              <span slot="reference" size="mini">{{ scope.row.account }}</span>
             </el-popover>
           </template>
         </el-table-column>

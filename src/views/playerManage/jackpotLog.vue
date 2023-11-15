@@ -180,7 +180,7 @@ export default {
       poolConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 1, 'label': '玩家奖池' },
-        { 'value': 2, 'label': '展示奖池' },
+        { 'value': 2, 'label': '展示奖池' }
       ],
       typeConfig: [
         { 'value': 0, 'label': '全部' },
@@ -232,7 +232,7 @@ export default {
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
           Limit: _this.pageNum,
-          SearchType: _this.searchForm.searchType,
+          SearchType: _this.searchForm.searchType
         }
       }).then(response => {
         if (response.RetCode === 0) {

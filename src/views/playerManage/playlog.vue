@@ -752,7 +752,7 @@ export default {
         lose: 0,
         winCount: 0,
         loseCount: 0,
-        fee:0,
+        fee: 0
       },
 
       detailVisible: false,
