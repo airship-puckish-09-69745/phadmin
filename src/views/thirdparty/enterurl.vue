@@ -2,16 +2,7 @@
   <div class="app-container">
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
-        <el-form-item v-model="item.api" label="请求环境：" :required="true" label-width="80px">
-          <el-select v-model="item.api" placeholder="请选择" size="mini">
-            <el-option
-              v-for="row in apis"
-              :label="row.name"
-              :value="row.url"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-model="item.agent_id" label="平台：" :required="true" label-width="80px">
+        <el-form-item v-model="item.agent_id" label="平台：" :required="true" label-width="100px">
           <el-select v-model="item.agent_id" placeholder="请选择" size="mini">
             <el-option
               v-for="row in agents"
@@ -20,7 +11,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.account" label="账号：" :required="true" label-width="80px">
+        <el-form-item v-model="item.account" label="账号：" :required="true" label-width="100px">
           <el-select v-model="item.account" placeholder="请选择" size="mini">
             <el-option
               v-for="row in accounts"
@@ -29,7 +20,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.directScene" label="进入场景：" :required="true" label-width="80px">
+        <el-form-item v-model="item.directScene" label="进入场景：" :required="true" label-width="100px">
           <el-select v-model="item.directScene" placeholder="请选择" size="mini">
             <el-option
               v-for="row in directScenes"
@@ -38,13 +29,28 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.clientTerminalType" label="客户端类型：" :required="true" label-width="80px">
+        <el-form-item v-model="item.site_id" label="渠道：" :required="true" label-width="100px">
+          <el-select v-model="item.site_id" placeholder="请选择渠道" size="mini">
+            <el-option
+              v-for="c in channels"
+              :label="c"
+              :value="c"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-model="item.clientTerminalType" label="客户端类型：" :required="true" label-width="110px">
           <el-select v-model="item.clientTerminalType" placeholder="请选择" size="mini">
             <el-option
               v-for="row in clientTerminalTypes"
               :label="row.name"
               :value="row.val"
             />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-model="item.need_test_uri" label="使用预发布链接：" :required="true" label-width="140px">
+          <el-select v-model="item.need_test_uri" placeholder="请选择" size="mini">
+            <el-option label="否" value="0" />
+            <el-option label="是" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -104,7 +110,7 @@ import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import Clipboard from 'clipboard'
 import { $libDate, $libShow } from '@/utils/common'
-import { Message } from 'element-ui'
+// import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 
 export default {
@@ -112,17 +118,16 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput, Clipboard },
   data() {
     return {
-      apis: [{ name: '开发', url: 'http://192.168.6.16:9304/login' }, { name: '正式', url: 'https://ph-api.tiptop.bet/login' }],
       agents: [
         {
           id: 1000002,
           agentId: 'dayusenlin',
-          desc: '[1000002]内部用'
+          desc: '内部用[1000002]'
         },
         {
           id: 1000003,
           agentId: 'testaccount',
-          desc: '[1000003]【GamePlus平台】 提审、测试账号。'
+          desc: 'BP 提审、测试账号[1000003]'
         }
         // ,{
         //   id: 1000005,
@@ -182,6 +187,7 @@ export default {
           val: 'vertical'
         }
       ],
+      channels: ['Dev', 'BP', 'GP'],
       directScenes: [
         {
           name: '大厅',
@@ -237,8 +243,9 @@ export default {
         screen: 'horizontal',
         directScene: '',
         clientTerminalType: '2',
-        api: 'http://192.168.6.16:9304/login',
-        debug: '0'
+        site_id: '',
+        debug: '0',
+        need_test_uri: '0'
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -261,16 +268,19 @@ export default {
         }
       }
       request({
-        url: '/thirdparties/loginurl',
+        url: '/dataProxy/info',
         method: 'post',
         data: {
-          api: this.item.api,
+          Env: this.env,
+          Path: '/thirdparties/enterurl',
           agent_id: this.item.agent_id,
           secret: this.item.secret,
           account: this.item.account,
           nick: this.item.nick,
           debug: this.item.debug,
-          screen: this.item.screen,
+          // screen: this.item.screen,
+          site_id: this.item.site_id,
+          need_test_uri: this.item.need_test_uri,
           direct_scene: this.item.directScene,
           clientTerminalType: this.item.clientTerminalType
         }
