@@ -47,10 +47,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.need_test_uri" label="使用预发布链接：" :required="true" label-width="140px">
+        <el-form-item v-model="item.need_test_uri" label="指定链接类型：" :required="true" label-width="140px">
           <el-select v-model="item.need_test_uri" placeholder="请选择" size="mini">
-            <el-option label="否" value="0" />
-            <el-option label="是" value="1" />
+            <el-option label="平台配置链接" value="0" />
+            <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -243,7 +243,7 @@ export default {
         screen: 'horizontal',
         directScene: '',
         clientTerminalType: '2',
-        site_id: '',
+        site_id: 'Dev',
         debug: '0',
         need_test_uri: '0'
       },
@@ -266,6 +266,10 @@ export default {
         if (this.accounts[k].val === this.item.account) {
           this.item.nick = this.accounts[k].nick
         }
+      }
+      if (this.item.agent_id === 'testaccount' && this.item.site_id === 'GP') {
+        this.$alert('提审环境暂时不能使用')
+        return false
       }
       request({
         url: '/dataProxy/info',
