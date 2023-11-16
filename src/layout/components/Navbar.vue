@@ -67,6 +67,10 @@ export default {
   },
   methods: {
     getNavName() {
+      console.log("process.env.VUE_APP_PROJECT_NAME",process.env)
+      if(process.env.VUE_APP_PROJECT_NAME != ""){
+        return process.env.VUE_APP_PROJECT_NAME
+      }
       return '菲律宾棋牌'
     },
     toggleSideBar() {
