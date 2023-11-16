@@ -241,7 +241,6 @@
       >
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="clickData2(scope.row)">牌局</el-button>
-          <el-button type="primary" size="mini" @click="getPlayer(scope.row.Uid, scope.row.LogID)">玩家</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -791,59 +790,6 @@ export default {
           }
           $this.handleCurrentChange(1)
           $this.dataArr = objs
-          loading.close()
-        } else {
-          Message.error(response.Data)
-        }
-      })
-    },
-    getPlayer(uid, logId) {
-      const $this = this
-      this.playerVisible = true
-      this.playerUid = uid
-      const loading = this.$loading({
-        lock: true,
-        text: '数据拉取中，请稍候...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/log/playlog',
-          Uid: 0,
-          LogId: logId,
-          IsVup: this.isVup ? 1 : 0,
-          Time: $libDate.SelectTimeToIndia(this.item.date) / 1000,
-          Gid: this.gid
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          let objs = response.Data || []
-          if (objs.length === 0 || objs == 'no Data') {
-            Message.success('查询结果为空')
-            loading.close()
-            return
-          }
-          objs = $this.libMoney.TransForShow(objs)
-          for (const o in objs) {
-            const item = objs[o]
-            if (item.Gid === 14 && item.WinRate > 0) {
-              // 真人场，需要特殊处理胜率展示
-              const tmpWinRate = item.WinRate / 100
-              objs[o].WinRate = tmpWinRate.toString() + '%'
-            }
-            if (item.Gid === 10) {
-              objs[o].ServiceFee = (item.ServiceFee * 10).toFixed(2)
-              objs[o].WinRate = (item.WinRate / 100).toFixed(2)
-            } else if (item.Gid == 20) {
-              objs[o].WinRate /= 100
-              objs[o].ServiceFee *= 1000
-            }
-          }
-          $this.playerTable = objs
           loading.close()
         } else {
           Message.error(response.Data)
