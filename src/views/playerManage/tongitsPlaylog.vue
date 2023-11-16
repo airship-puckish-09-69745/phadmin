@@ -236,7 +236,7 @@
       <el-table-column
         prop="Op"
         label="详情"
-        width="180px"
+        width="90px"
         fixed="right"
       >
         <template slot-scope="scope">
