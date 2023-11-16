@@ -260,7 +260,7 @@
         </div>
       </el-col>
     </el-row>
-    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" @closeDialog="closeDialog" />
+    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" @closeDialog="closeDialog" />
 
     <el-dialog
       title="玩家列表"
@@ -536,6 +536,7 @@ export default {
         seconds: 0
       },
       GameLog: {}, // 游戏日志
+      Gid: 0,
       GameLogVisible: false,
       detailVisible: false,
       detailData: [],
@@ -880,8 +881,9 @@ export default {
       })
     },
     showTongitsGameLog(obj) {
-      this.GameLog = obj
+      this.GameLog = obj.Row
       this.GameLogVisible = true
+      this.Gid = obj.Gid
       // try {
       //   const cards = JSON.parse(obj.cardData)
       //   let total = 0
