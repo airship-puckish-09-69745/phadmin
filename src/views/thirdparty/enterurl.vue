@@ -216,6 +216,10 @@ export default {
         {
           name: 'Color',
           val: 'colorgame'
+        },
+        {
+          name: 'Pusoy',
+          val: 'pusoy'
         }
       ],
       clientTerminalTypes: [
