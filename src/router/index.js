@@ -573,6 +573,12 @@ export const asyncRoutes = [
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
       {
+        path: 'playlog_pusoy',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_pusoy',
+        meta: { title: 'Pusoy - ◐', gid: 21 }
+      },
+      {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
         name: 'playlog_lotterylog',

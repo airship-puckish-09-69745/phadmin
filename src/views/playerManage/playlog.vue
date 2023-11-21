@@ -207,7 +207,7 @@
         </template>
       </el-table-column>
 
-      <template v-if="gid!==10">
+      <template v-if="gid!==10&&gid!==21">
         <el-table-column
           prop="WinRate"
           :label="getWinRateName()"
@@ -531,6 +531,24 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="Pusoy牌局详情" :visible.sync="pusoyDetailVisible" width="1200px">
+      <el-table :data="pusoyDetail.players" border>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
+        <el-table-column prop="cards" label="手牌" width="300"><template slot-scope="scope"><div v-html="showCard(scope.row.cards)" /></template></el-table-column>
+        <el-table-column prop="cardScore" label="点数" width="100" />
+        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyFee" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyFee/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ pusoyDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ pusoyDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Lucky89牌局详情" :visible.sync="bodingDetailVisible" width="1200px">
       <el-table :data="bodingDetail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
@@ -795,6 +813,9 @@ export default {
 
       bodingDetail: {},
       bodingDetailVisible: false,
+
+      pusoyDetail: {},
+      pusoyDetailVisible: false,
 
       rummyDetailVisible: false,
       rummyDetails: [],
@@ -1081,6 +1102,8 @@ export default {
             $this.showLucky9Game(obj)
           } else if (gid == 30) {
             $this.showBodingGame(obj)
+          } else if (gid === 21) {
+            $this.showPusoyGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1233,6 +1256,11 @@ export default {
     showBodingGame(obj) {
       this.bodingDetail = obj
       this.bodingDetailVisible = true
+    },
+    showPusoyGame(obj) {
+      console.log(obj)
+      this.pusoyDetail = obj
+      this.pusoyDetailVisible = true
     },
     showSmallGame(obj) {
       let names = []
