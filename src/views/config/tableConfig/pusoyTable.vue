@@ -72,6 +72,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="HideCarry"
+          label="隐藏目标值"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.HideCarry) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="ObjectCount"
           label="桌子数"
           width="100"
@@ -228,6 +237,23 @@
             >
               <el-input v-model.number="edit.item.CarryUpper" placeholder="请输入" />
             </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="9">
+            <el-form-item
+              label="隐藏目标值："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.HideCarry" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="如果有值，且玩家携带达到此值，则隐藏盖场次" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
         </el-row>
 
@@ -472,6 +498,7 @@ function newItem() {
   return {
     CarryLower: '',
     CarryUpper: '',
+    HideCarry: '',
     TableMoney: '',
     MaxPlayerCount: 4,
     ObjectCount: '',
@@ -509,7 +536,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'TableMoney', 'TotalRecharge', 'MaxPayAmount', 'MinPlayMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'HideCarry', 'TableMoney', 'TotalRecharge', 'MaxPayAmount', 'MinPlayMoney']),
 
       edit: {
         visible: false,
@@ -520,6 +547,7 @@ export default {
       AttrNames: {
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
+        HideCarry: '隐藏目标值',
         TableMoney: '底注',
         MaxPlayerCount: 4,
         ObjectCount: '桌子数',
