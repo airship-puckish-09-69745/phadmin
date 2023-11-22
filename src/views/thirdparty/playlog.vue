@@ -169,6 +169,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="taxes"
+          label="抽水贡献值"
+          width="80"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.taxes > 0 ? scope.row.taxes/1000 : 0) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="ggr"
           label="GGR"
           width="80"
