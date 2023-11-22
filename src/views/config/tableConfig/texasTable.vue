@@ -87,6 +87,9 @@
                 <el-option label="100" :value="100" />
                 <el-option label="250" :value="250" />
                 <el-option label="500" :value="500" />
+                <el-option label="1000" :value="1000" />
+                <el-option label="2500" :value="2500" />
+                <el-option label="5000" :value="5000" />
               </el-select>
             </el-form-item>
           </el-col>
