@@ -228,14 +228,14 @@
             </el-table>
             <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="机器人人数安全值（%）：" prop="RobotUserNumSafeVal">
+                <el-form-item label="机器人人数安全值（%）：" prop="RobotUserNumSafeVal" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.RobotUserNumSafeVal" size="mini" :required="true" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="真人人数安全值（%）：" prop="RealUserNumSafeVal">
+                <el-form-item label="真人人数安全值（%）：" prop="RealUserNumSafeVal" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.RealUserNumSafeVal" size="mini" :required="true" />
                   </el-col>
