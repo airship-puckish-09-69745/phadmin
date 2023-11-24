@@ -15,11 +15,11 @@
       </el-form>
     </el-row>
     <el-row>
-      <el-table :data="userData" style="width: 100%" :default-sort="{prop: 'userNum', order: 'descending'}">
+      <el-table :data="userData" style="width: 100%">
         <el-table-column prop="tableId" label="桌子id" />
         <el-table-column prop="userNum" label="玩家人数" />
-        <el-table-column prop="robotNum" sortable label="机器人数" />
-        <el-table-column prop="targetNum" sortable label="调控预期人数" />
+        <el-table-column prop="robotNum" label="机器人数" />
+        <el-table-column prop="targetNum" label="时间段随机调控预期人数" />
       </el-table>
     </el-row>
   </div>
