@@ -140,7 +140,13 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/sweeperTableUserData'),
         name: 'sweeperTableUserData',
         meta: { title: '扫雷 - 桌子数据 ◐' }
-      }
+      },
+      {
+        path: 'colorTableUserData',
+        component: () => import('@/views/playerManage/colorTableUserData'),
+        name: 'colorTableUserData',
+        meta: { title: 'color - 桌子数据 ◐' }
+      },
     ]
   },
   {
