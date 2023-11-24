@@ -10,7 +10,7 @@
             <el-col :span="11" :offset="1">
               <el-form-item label="最大人数：" prop="MaxPlayers" :rules="dataRule(true,{type:'n',range:'1-1000'})">
                 <el-col :span="20">
-                  <el-input v-model.number="item.MaxPlayers" size="mini" :required="true" />
+                  {{ item.MaxPlayers }}
                 </el-col>
               </el-form-item>
             </el-col>
