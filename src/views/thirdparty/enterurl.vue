@@ -53,6 +53,9 @@
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
+        <el-form-item v-model="item.cashier" label="充值链接：" :required="true" label-width="140px">
+          <el-input v-model="item.cashier"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>
         </el-form-item>
@@ -249,7 +252,8 @@ export default {
         clientTerminalType: '2',
         site_id: 'Dev',
         debug: '0',
-        need_test_uri: '0'
+        need_test_uri: '0',
+        cashier: 'http://baidu.com'
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -290,7 +294,8 @@ export default {
           site_id: this.item.site_id,
           need_test_uri: this.item.need_test_uri,
           direct_scene: this.item.directScene,
-          clientTerminalType: this.item.clientTerminalType
+          clientTerminalType: this.item.clientTerminalType,
+          cashier: this.item.cashier
         }
       }).then(response => {
         console.log(response)
