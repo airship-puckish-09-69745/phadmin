@@ -10,7 +10,7 @@
             <el-col :span="11" :offset="1">
               <el-form-item label="最大人数：" prop="MaxPlayers" :rules="dataRule(true,{type:'n',range:'1-1000'})">
                 <el-col :span="20">
-                  <el-input v-model.number="item.MaxPlayers" size="mini" :required="true" />
+                  {{ item.MaxPlayers }}
                 </el-col>
               </el-form-item>
             </el-col>
@@ -228,14 +228,14 @@
             </el-table>
             <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="机器人人数安全值（%）：" prop="RobotUserNumSafeVal">
+                <el-form-item label="机器人人数安全值（%）：" prop="RobotUserNumSafeVal" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.RobotUserNumSafeVal" size="mini" :required="true" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="真人人数安全值（%）：" prop="RealUserNumSafeVal">
+                <el-form-item label="真人人数安全值（%）：" prop="RealUserNumSafeVal" :rules="dataRule(true,{type:'n',range:'0'})">
                   <el-col :span="20">
                     <el-input v-model.number="item.RealUserNumSafeVal" size="mini" :required="true" />
                   </el-col>
@@ -841,6 +841,8 @@ export default {
         MaxRobotBetTimes: 0, // 机器人最大下注次数
         MinPlayersEnableSchema: 10, // 最低调控玩家数
         FeeRate: 0,
+        RobotUserNumSafeVal: 0,
+        RealUserNumSafeVal: 0,
         VUPRoomMaxUsers: 1, // 小黑屋最大真人数
         VUPRecountRate: 0, // 小黑屋系统输改赢概率（万分之一）
         RecountRate: 0,
