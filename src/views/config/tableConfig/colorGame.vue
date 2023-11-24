@@ -769,6 +769,8 @@ export default {
         MaxRobotBetTimes: 0, // 机器人最大下注次数
         MinPlayersEnableSchema: 10, // 最低调控玩家数
         FeeRate: 0,
+        RobotUserNumSafeVal: 0,
+        RealUserNumSafeVal: 0,
         VUPRoomMaxUsers: 1, // 小黑屋最大真人数
         VUPRecountRate: 0, // 小黑屋系统输改赢概率（万分之一）
         RecountRate: 0,
