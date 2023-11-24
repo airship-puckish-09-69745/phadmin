@@ -559,6 +559,78 @@
             </el-table>
           </fieldset>
 
+          <fieldset style="margin-top:10px">
+            <legend>机器人聊天配置</legend>
+            <el-alert
+              type="success"
+              description="机器人在发送间隔时间范围内按一定概率触发，总人数不超过最多发送人数"
+            />
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="发送间隔时间范围(秒)：">
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotSendIntervalMin" size="mini"/>
+                  </el-col>
+                  <el-col :span="2">
+                  到
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotSendIntervalMax" size="mini"/>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="发送概率(%)：" prop="ChatRobotSendRate" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotSendRate" size="mini"/>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="最多发送人数：" prop="ChatRobotSendMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotSendMaxNum" size="mini"/>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-alert
+              type="success"
+              description="机器人在回复间隔时间范围内按一定概率触发，总人数不超过最多回复人数"
+            />
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="回复间隔时间范围(秒)：">
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotReplyIntervalMin" size="mini"/>
+                  </el-col>
+                  <el-col :span="2">
+                  到
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotReplyIntervalMax" size="mini"/>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="回复概率(%)：" prop="ChatRobotReplyRate" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotReplyRate" size="mini"/>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item label="最多回复人数：" prop="ChatRobotReplyMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotReplyMaxNum" size="mini"/>
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+          </fieldset>
+
         </el-col>
 
         <el-col style="margin-top:16px;" :offset="8" :span="8">
@@ -876,6 +948,14 @@ export default {
         'Data.LowLotteryPoolReChoiceRate': '奖池低于某值此时系统输，重新摇概率',
         'Data.HighLotteryPoolReChoiceRate': '奖池大于某值此时系统赢，重新摇概率',
         'Data.BetMoneyListV2': '下注金额列表v2',
+        'Data.ChatRobotSendIntervalMin': '聊天机器人发送时间间隔小',
+        'Data.ChatRobotSendIntervalMax': '聊天机器人发送时间间隔大',
+        'Data.ChatRobotSendRate': '聊天机器人发送概率',
+        'Data.ChatRobotSendMaxNum': '聊天机器人最多发送人数',
+        'Data.ChatRobotReplyIntervalMin': '聊天机器人回复时间间隔小',
+        'Data.ChatRobotReplyIntervalMax': '聊天机器人回复时间间隔大',
+        'Data.ChatRobotReplyRate': '聊天机器人回复概率',
+        'Data.ChatRobotReplyMaxNum': '聊天机器人最多回复人数',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
