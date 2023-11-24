@@ -50,7 +50,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          if (response.Data.details != null) {
+          if (response.Data.tableData != null) {
             $this.userData = response.Data.tableData
           } else {
             $this.userData = []
