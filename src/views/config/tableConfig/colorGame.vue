@@ -210,12 +210,12 @@
                   [{{ scope.row.StartHour }},{{ scope.row.EndHour }}]
                 </template>
               </el-table-column>
-              <el-table-column label="机器人人数下限" prop="MinRobotNum">
+              <el-table-column label="机器人+真人人数下限" prop="MinRobotNum">
                 <template slot-scope="scope">
                   {{ scope.row.MinRobotNum }}
                 </template>
               </el-table-column>
-              <el-table-column label="机器人人数上限限" prop="MaxRobotNum">
+              <el-table-column label="机器人+真人人数上限限" prop="MaxRobotNum">
                 <template slot-scope="scope">
                   {{ scope.row.MaxRobotNum }}
                 </template>
@@ -226,22 +226,22 @@
                 </template>
               </el-table-column>
             </el-table>
-            <!-- <el-row>
+            <el-row>
               <el-col :span="11" :offset="1">
-                <el-form-item label="机器人最小人数：" prop="MinRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-form-item label="机器人人数安全值（%）：" prop="RobotUserNumSafeVal">
                   <el-col :span="20">
-                    <el-input v-model.number="item.MinRobotNumber" size="mini" :required="true" />
+                    <el-input v-model.number="item.RobotUserNumSafeVal" size="mini" :required="true" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="11">
-                <el-form-item label="机器人最大人数：" prop="MaxRobotNumber" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-form-item label="真人人数安全值（%）：" prop="RealUserNumSafeVal">
                   <el-col :span="20">
-                    <el-input v-model.number="item.MaxRobotNumber" size="mini" :required="true" />
+                    <el-input v-model.number="item.RealUserNumSafeVal" size="mini" :required="true" />
                   </el-col>
                 </el-form-item>
               </el-col>
-            </el-row> -->
+            </el-row>
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="机器人携带金币下限：" prop="MinRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
