@@ -159,7 +159,7 @@ export const asyncRoutes = [
         path: 'TongitsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Tongits配置', noCache: true },
+        meta: { title: 'Tongits', noCache: true },
         children: [
           {
             path: 'tongitsTable',
@@ -191,7 +191,7 @@ export const asyncRoutes = [
         path: 'Lucky9Cfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Lucky配置', noCache: true },
+        meta: { title: 'Lucky9', noCache: true },
         children: [
           {
             path: 'lucky9Table',
@@ -211,7 +211,7 @@ export const asyncRoutes = [
         path: 'PusoyCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Pusoy配置', noCache: true },
+        meta: { title: 'Pusoy', noCache: true },
         children: [
           {
             path: 'pusoyTable',
@@ -226,6 +226,12 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy AI◐' }
           },
         ]
+      },
+      {
+        path: 'texasTable',
+        component: () => import('@/views/config/tableConfig/texasTable'),
+        name: 'texasTable',
+        meta: { title: 'Texas - 德州' }
       },
       {
         path: 'bodingTable',
@@ -307,12 +313,7 @@ export const asyncRoutes = [
         ]
       },
 
-      {
-        path: 'texasTable',
-        component: () => import('@/views/config/tableConfig/texasTable'),
-        name: 'texasTable',
-        meta: { title: 'Texas - 德州' }
-      },
+
       {
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
