@@ -63,7 +63,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="11" :offset="1">
+            <el-col :span="11" >
               <el-form-item label="赢钱榜展示数量：" prop="WinMoneyShowNum">
                 <el-col :span="20">
                   <el-input v-model.number="item.WinMoneyShowNum" size="mini" :required="true" />
@@ -565,7 +565,7 @@
               description="机器人在发送间隔时间范围内按一定概率触发，总人数不超过最多发送人数"
             />
             <el-row>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="发送间隔时间范围(秒)：">
                   <el-col :span="10">
                     <el-input v-model.number="item.ChatRobotSendIntervalMin" size="mini"/>
@@ -578,14 +578,14 @@
                   </el-col>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="发送概率(%)：" prop="ChatRobotSendRate" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
                     <el-input v-model.number="item.ChatRobotSendRate" size="mini"/>
                   </el-col>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="最多发送人数：" prop="ChatRobotSendMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
                     <el-input v-model.number="item.ChatRobotSendMaxNum" size="mini"/>
@@ -599,7 +599,7 @@
               description="机器人在回复间隔时间范围内按一定概率触发，总人数不超过最多回复人数"
             />
             <el-row>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="回复间隔时间范围(秒)：">
                   <el-col :span="10">
                     <el-input v-model.number="item.ChatRobotReplyIntervalMin" size="mini"/>
@@ -612,14 +612,14 @@
                   </el-col>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="回复概率(%)：" prop="ChatRobotReplyRate" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
                     <el-input v-model.number="item.ChatRobotReplyRate" size="mini"/>
                   </el-col>
                 </el-form-item>
               </el-col>
-              <el-col :span="6">
+              <el-col :span="8">
                 <el-form-item label="最多回复人数：" prop="ChatRobotReplyMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
                     <el-input v-model.number="item.ChatRobotReplyMaxNum" size="mini"/>
