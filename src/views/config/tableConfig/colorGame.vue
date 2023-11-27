@@ -38,7 +38,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <!--el-row>
             <el-col :span="11" :offset="1">
               <el-form-item label="赢钱转化可提百分比：" prop="WinMoneyTransferRate" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
@@ -54,7 +54,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row -->
           <el-row>
             <el-col :span="11" :offset="1">
               <el-form-item label="操作时长：" prop="ActionSeconds" :rules="dataRule(true,{type:'n',range:'1'})">
@@ -63,13 +63,13 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
+            <!--el-col :span="11">
               <el-form-item label="服务费：" prop="TaxRate" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
                   <el-input v-model.number="item.TaxRate" size="mini" :required="true"><template slot="append">%</template></el-input>
                 </el-col>
               </el-form-item>
-            </el-col>
+            </el-col-->
           </el-row>
           <el-row>
             <el-col :span="24" :offset="1">
@@ -91,19 +91,26 @@
             -->
           <el-row>
             <el-col :span="11" :offset="1">
-              <el-form-item label="奖池抽水比例（该部分包括系统抽水+Jackpot抽取）：" prop="FeeRate" :rules="dataRule(true,{type:'n',range:'0-100'})">
+              <el-form-item label="奖池抽水+Jackpot抽取：" prop="FeeRate" :rules="dataRule(true,{type:'n',range:'0-100'})">
                 <el-col :span="20">
                   <el-input v-model.number="item.FeeRate" size="mini" :required="true" />
                 </el-col>%
               </el-form-item>
             </el-col>
             <el-col :span="11">
+              <el-form-item label="jackpot奖池抽取百分比：" prop="JackpotRate">
+                <el-col :span="20">
+                  <el-input v-model.number="item.JackpotRate" size="mini" :required="true" />
+                </el-col>‰
+              </el-form-item>
+            </el-col>
+            <!--el-col :span="11">
               <el-form-item label="系统输重新计算1次概率：" prop="RecountRate" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
                   <el-input v-model.number="item.RecountRate" size="mini" :required="true" />
                 </el-col>‱
               </el-form-item>
-            </el-col>
+            </el-col-->
           </el-row>
           <!--
             <el-row>
@@ -131,13 +138,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
-              <el-form-item label="jackpot奖池抽取百分比：" prop="JackpotRate">
-                <el-col :span="20">
-                  <el-input v-model.number="item.JackpotRate" size="mini" :required="true" />
-                </el-col>‰
-              </el-form-item>
-            </el-col>
+
           </el-row>
           <fieldset style="margin-top:10px">
             <legend>下注金额列表v2配置</legend>
