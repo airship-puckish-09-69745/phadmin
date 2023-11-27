@@ -174,7 +174,7 @@
           width="80"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.taxes > 0 ? scope.row.taxes/1000 : 0) }}
+            {{ formatNumber(scope.row.taxes/1000) }}
           </template>
         </el-table-column>
         <el-table-column
