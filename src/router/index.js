@@ -188,16 +188,44 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'lucky9Table',
-        component: () => import('@/views/config/tableConfig/lucky9Table'),
-        name: 'lucky9Table',
-        meta: { title: 'Lucky9 ◐' }
+        path: 'Lucky9Cfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Lucky配置', noCache: true },
+        children: [
+          {
+            path: 'lucky9Table',
+            component: () => import('@/views/config/tableConfig/lucky9Table'),
+            name: 'lucky9Table',
+            meta: { title: 'Lucky9 ◐' }
+          },
+          {
+            path: 'lucky9RobotSetting',
+            component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
+            name: 'lucky9RobotSetting',
+            meta: { title: 'Lucky9 AI◐' }
+          }
+        ]
       },
       {
-        path: 'lucky9RobotSetting',
-        component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
-        name: 'lucky9RobotSetting',
-        meta: { title: 'Lucky9 AI◐' }
+        path: 'PusoyCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Pusoy配置', noCache: true },
+        children: [
+          {
+            path: 'pusoyTable',
+            component: () => import('@/views/config/tableConfig/pusoyTable'),
+            name: 'pusoyTable',
+            meta: { title: 'Pusoy ◐' }
+          },
+          {
+            path: 'pusoyRobotSetting',
+            component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
+            name: 'pusoyRobotSetting',
+            meta: { title: 'Pusoy AI◐' }
+          },
+        ]
       },
       {
         path: 'bodingTable',
@@ -219,18 +247,7 @@ export const asyncRoutes = [
         meta: { title: 'Lucky89「Boding」 AI◐' }
       },
       */
-      {
-        path: 'pusoyTable',
-        component: () => import('@/views/config/tableConfig/pusoyTable'),
-        name: 'pusoyTable',
-        meta: { title: 'Pusoy ◐' }
-      },
-      {
-        path: 'pusoyRobotSetting',
-        component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
-        name: 'pusoyRobotSetting',
-        meta: { title: 'Pusoy AI◐' }
-      },
+
       {
         path: 'SmallGameCfg',
         component: () => import('@/views/empty'),
