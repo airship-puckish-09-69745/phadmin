@@ -531,16 +531,46 @@
       </el-descriptions>
     </el-dialog>
 
-    <el-dialog title="Pusoy牌局详情" :visible.sync="pusoyDetailVisible" width="1200px">
-      <el-table :data="pusoyDetail.players" border>
+    <el-dialog title="Pusoy牌局详情" :visible.sync="pusoyDetailVisible" width="1400px">
+      <el-table
+        :data="pusoyDetail.players"
+        :span-method="pusoySpanMethods"
+        border>
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column prop="cards" label="手牌" width="300"><template slot-scope="scope"><div v-html="showCard(scope.row.cards)" /></template></el-table-column>
+        <el-table-column label="手牌" width="450" align="center">
+          <el-table-column prop="cards" label="后手牌" width="150">
+            <template #default="scope">
+              <template v-if="scope.row.cardType > 1">
+                <div v-html="showCard(scope.row.cards)" /><span>({{ pusoyCardTypes[scope.row.cardType] || '' }})</span>
+              </template>
+              <template v-else>
+                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="cards" label="中手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupMiddle.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template></el-table-column>
+          <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
+        </el-table-column>
+        <el-table-column prop="cardType" label="牌型" width="100"><template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }}</template></el-table-column>
         <el-table-column prop="cardScore" label="点数" width="100" />
         <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
         <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
         <el-table-column prop="moneyFee" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyFee/1000 }}</template></el-table-column>
         <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+      </el-table>
+      <br>
+      <el-table
+        title="打枪："
+        :visible.sync="pusoyShootOneShow"
+        :data="pusoyDetail.shootOne"
+        width="100%"
+        border>
+        <el-table-column label="Pusoy List：">
+          <el-table-column prop="SourcePlayer.uid" label="打枪"><template slot-scope="scope">{{ scope.row.SourcePlayer.uid }}</template></el-table-column>
+          <el-table-column prop="TargetPlayer.uid" label="Pusoy"><template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template></el-table-column>
+          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
+        </el-table-column>
       </el-table>
       <br>
       <el-descriptions title="扩展信息">
@@ -816,6 +846,30 @@ export default {
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
+      pusoyCardTypes: {
+        0: '爆牌',
+        1: '普通牌型',
+        101: '三同花',
+        102: '三顺子',
+        103: '六对半',
+        106: '清一色',
+        112: '一条龙',
+        113: '清龙'
+      },
+      pusoyGroupCardTypes: {
+        0: 'Nil',
+        1: '高牌',
+        2: '对子',
+        3: '两对',
+        4: '三条',
+        5: '顺子',
+        6: '同花',
+        7: '葫芦',
+        8: '四条',
+        9: '同花顺',
+        10: '皇家同花顺'
+      },
+      pusoyShootOneShow: false,
 
       rummyDetailVisible: false,
       rummyDetails: [],
@@ -841,6 +895,44 @@ export default {
     this.gid = this.$route.meta.gid
   },
   methods: {
+    pusoyShowShootAll(row) {
+      if (row.uid === this.pusoyDetail.shootAllUid) {
+        return '(全垒打)'
+      }
+      return ''
+    },
+    pusoyShowCardTypeName(type) {
+      if (type > 1) {
+        return '特殊牌型'
+      } else {
+        return this.pusoyCardTypes[type] || '-'
+      }
+    },
+    pusoySpanMethods({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 3) {
+        console.log('row: ', row)
+        console.log('columnIndex: ', columnIndex)
+      }
+      let _row = 0
+      let _col = 0
+      // 前三列
+      if (columnIndex === 2 && row.cardType > 1) {
+        _row = 1 // 偶数行 两行
+        _col = 3
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
+      if ((columnIndex === 3 || columnIndex === 4) && row.cardType > 1) {
+        _row = 1 // 偶数行 两行
+        _col = 0
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
+    },
     tableRowClassName({ row, rowIndex }) {
       if (row.Uid === this.item.Uid || row.uid === this.item.Uid) {
         return 'success-row'
@@ -1259,6 +1351,30 @@ export default {
     },
     showPusoyGame(obj) {
       console.log(obj)
+      this.pusoyShootOneShow = false
+      for (const k in obj.players) {
+        for (const i in obj.groupTop) {
+          if (obj.groupTop[i].uid === obj.players[k].uid) {
+            obj.players[k].groupTop = obj.groupTop[i]
+            break
+          }
+        }
+        for (const i in obj.groupMiddle) {
+          if (obj.groupMiddle[i].uid === obj.players[k].uid) {
+            obj.players[k].groupMiddle = obj.groupMiddle[i]
+            break
+          }
+        }
+        for (const i in obj.groupBottom) {
+          if (obj.groupBottom[i].uid === obj.players[k].uid) {
+            obj.players[k].groupBottom = obj.groupBottom[i]
+            break
+          }
+        }
+      }
+      if (obj.shootOne) {
+        this.pusoyShootOneShow = true
+      }
       this.pusoyDetail = obj
       this.pusoyDetailVisible = true
     },
