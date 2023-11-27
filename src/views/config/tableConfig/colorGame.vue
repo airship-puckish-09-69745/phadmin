@@ -63,6 +63,13 @@
                 </el-col>
               </el-form-item>
             </el-col>
+            <el-col :span="11" :offset="1">
+              <el-form-item label="赢钱榜展示数量：" prop="WinMoneyShowNum">
+                <el-col :span="20">
+                  <el-input v-model.number="item.WinMoneyShowNum" size="mini" :required="true" />
+                </el-col>
+              </el-form-item>
+            </el-col>
             <!--el-col :span="11">
               <el-form-item label="服务费：" prop="TaxRate" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
@@ -130,16 +137,7 @@
               </el-col>
             </el-row>
             -->
-          <el-row>
-            <el-col :span="11" :offset="1">
-              <el-form-item label="赢钱榜展示数量：" prop="WinMoneyShowNum">
-                <el-col :span="20">
-                  <el-input v-model.number="item.WinMoneyShowNum" size="mini" :required="true" />
-                </el-col>
-              </el-form-item>
-            </el-col>
 
-          </el-row>
           <fieldset style="margin-top:10px">
             <legend>下注金额列表v2配置</legend>
             <el-alert
