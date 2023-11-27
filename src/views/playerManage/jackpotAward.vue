@@ -30,6 +30,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="用户类型：">
+          <el-select v-model="searchForm.isRobot" placeholder="请选择">
+            <el-option
+              v-for="item in userTypeConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="用户ID：">
           <el-input v-model="searchForm.uid" placeholder="请输入查询id" />
         </el-form-item>
@@ -166,11 +176,17 @@ export default {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
         awardType: 0,
-        uid: 0
+        uid: 0,
+        isRobot: -1
       },
       gameConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 25, 'label': 'color game' }
+      ],
+      userTypeConfig: [
+        { 'value': -1, 'label': '全部' },
+        { 'value': 0, 'label': '真人' },
+        { 'value': 1, 'label': '机器人' },
       ],
       awardTypeConfig: [
         { 'value': 0, 'label': '全部' },
@@ -221,7 +237,8 @@ export default {
           Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
-          Limit: _this.pageNum
+          Limit: _this.pageNum,
+          IsRobot: _this.searchForm.isRobot,
         }
       }).then(response => {
         if (response.RetCode === 0) {
