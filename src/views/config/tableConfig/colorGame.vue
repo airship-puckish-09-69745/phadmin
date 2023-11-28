@@ -144,10 +144,18 @@
               type="success"
               description="竖版多套下注金额列表，金额之间使用 , 符号连接"
             />
+            <el-row style="margin-top:10px">
+              <el-button type="primary" size="mini" @click="addBetMoneyListRow">添加</el-button>
+            </el-row>
             <el-row v-for="(value, index) in item.BetMoneyListV2" :key="index">
+              <el-col :span="22">
               <el-form-item :label="'配置' + (index+1)" :required="true">
                 <el-input v-model="item.BetMoneyListV2[index]" size="mini" :required="true" />
               </el-form-item>
+              </el-col>
+              <el-col :span="2">
+                <el-button type="danger" size="mini" @click="removeBetMoneyListRow(index)">删除</el-button>
+              </el-col>
             </el-row>
           </fieldset>
           <fieldset>
@@ -1367,6 +1375,12 @@ export default {
       } else {
         return false
       }
+    },
+    addBetMoneyListRow() {
+      this.item.BetMoneyListV2.push("")
+    },
+    removeBetMoneyListRow(index) {
+      this.item.BetMoneyListV2.splice(index, 1)
     }
   }
 }
