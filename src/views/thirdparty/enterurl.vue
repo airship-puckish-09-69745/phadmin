@@ -54,7 +54,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-model="item.cashier" label="充值链接：" :required="true" label-width="140px">
-          <el-input v-model="item.cashier"></el-input>
+          <el-input v-model="item.cashier" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>

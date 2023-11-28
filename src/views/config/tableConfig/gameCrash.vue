@@ -9,7 +9,7 @@
             <el-col :span="11">
               <el-form-item label="最大人数：" prop="MaxPlayers" :rules="dataRule(true,{type:'n',range:'1-1000'})">
                 <el-col :span="20">
-                  {{item.MaxPlayers}}
+                  {{ item.MaxPlayers }}
                 </el-col>
               </el-form-item>
             </el-col>

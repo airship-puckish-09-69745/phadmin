@@ -535,7 +535,8 @@
       <el-table
         :data="pusoyDetail.players"
         :span-method="pusoySpanMethods"
-        border>
+        border
+      >
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column label="手牌" width="450" align="center">
@@ -565,7 +566,8 @@
         :visible.sync="pusoyShootOneShow"
         :data="pusoyDetail.shootOne"
         width="100%"
-        border>
+        border
+      >
         <el-table-column label="Pusoy List：">
           <el-table-column prop="SourcePlayer.uid" label="打枪"><template slot-scope="scope">{{ scope.row.SourcePlayer.uid }}</template></el-table-column>
           <el-table-column prop="TargetPlayer.uid" label="Pusoy"><template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template></el-table-column>
