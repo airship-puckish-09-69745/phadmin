@@ -9,7 +9,7 @@
             <el-col :span="11">
               <el-form-item label="最大人数：" prop="MaxPlayers" :rules="dataRule(true,{type:'n',range:'1-1000'})">
                 <el-col :span="20">
-                  <el-input v-model.number="item.MaxPlayers" size="mini" :required="true" />
+                  {{item.MaxPlayers}}
                 </el-col>
               </el-form-item>
             </el-col>
@@ -29,13 +29,13 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="11">
+            <!--el-col :span="11">
               <el-form-item label="抽水百分比：" prop="TaxRate" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
                   <el-input v-model.number="item.TaxRate" size="mini" :required="true" />
                 </el-col>%
               </el-form-item>
-            </el-col>
+            </el-col-->
           </el-row>
           <el-row>
             <el-col :span="11">
@@ -53,7 +53,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-          <el-row>
+          <!--el-row>
             <el-col :span="11">
               <el-form-item label="赢钱转化可提百分比：" prop="WinMoneyTransferRate" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
@@ -68,7 +68,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-          </el-row>
+          </el-row-->
           <el-row>
             <el-col :span="11">
               <el-form-item label="最大下注金额：" prop="BetMoneyMax" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -78,21 +78,22 @@
               </el-form-item>
             </el-col>
             <el-col :span="11">
-              <el-form-item label="底池安全剩余比例：" prop="PoolSafeRate" :rules="dataRule(true,{type:'n',range:'0'})">
-                <el-col :span="20">
-                  <el-input v-model.number="item.PoolSafeRate" size="mini" :required="true" />
-                </el-col>%
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
               <el-form-item label="下注金额列表：" :required="true">
                 <el-col :span="20">
                   <el-input v-model="betMoneyList" size="mini" :required="true" />
                 </el-col>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="大R池安全剩余比例：" prop="PoolSafeRate" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-col :span="20">
+                  <el-input v-model.number="item.PoolSafeRate" size="mini" :required="true" />
+                </el-col>%
+              </el-form-item>
+            </el-col>
+
             <el-col :span="11">
               <el-form-item label="单局大R下注金额：" :required="true">
                 <el-col :span="20">
