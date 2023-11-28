@@ -207,13 +207,20 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="练习场：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsPractice">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
+          <el-col :span="9">
+            <el-form-item
+              label="隐藏目标值："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.HideCarry" placeholder="请输入" />
             </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="如果有值，且玩家携带达到此值，则隐藏盖场次" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
         </el-row>
 
@@ -239,23 +246,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="9">
-            <el-form-item
-              label="隐藏目标值："
-              :required="true"
-              prop="item.HideCarry"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model="edit.item.HideCarry" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="如果有值，且玩家携带达到此值，则隐藏盖场次" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
-          </el-col>
-        </el-row>
 
         <el-row>
           <el-col :span="11">
@@ -265,10 +255,10 @@
               prop="item.MaxPlayerCount"
               :rules="dataRule(true,{type:'n',range:'2'})"
             >
-              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="操作时长" />
+              <el-input v-model.number="edit.item.MaxPlayerCount" disabled="true" placeholder="座位数" />
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="9">
             <el-form-item
               label="桌子数量："
               :required="true"
@@ -277,6 +267,11 @@
             >
               <el-input v-model.number="edit.item.ObjectCount" placeholder="桌子数量" />
             </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="修改需要重启服务器" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
         </el-row>
 
@@ -326,68 +321,6 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="默认胜率："
-              :required="true"
-              prop="item.DefaultWinRate"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.DefaultWinRate" placeholder="默认胜率" style="width:200px;">
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数倍数："
-              :required="true"
-              prop="item.PlayingMul"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数最小随机数："
-              :required="true"
-              prop="item.PlayingRandMin"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingRandMin" placeholder="在玩人数最小随机数" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数最大随机数："
-              :required="true"
-              prop="item.PlayingRandMax"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingRandMax" placeholder="在玩人数最大随机数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <select-goods v-model="edit.item.GoodsId" :type="99" title="金币不足推荐商品" />
-          </el-col>
-
-          <el-col :span="11">
-            <select-goods v-model="edit.item.FirstGoodsId" :type="2" title="金币不足推荐首充商品" />
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <select-goods v-model="edit.item.BankruptGoodsId" :type="99" title="破产推荐商品" />
-          </el-col>
-          <el-col :span="11">
-            <el-form-item
               label="最小玩牌金额："
               :required="true"
               prop="item.MinPlayMoney"
@@ -397,75 +330,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-
-        <fieldset>
-          <legend>满足充值条件推荐商品</legend>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="总充值大于等于：">
-                <el-input v-model.number="edit.item.TotalRecharge" placeholder="" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="单次充值金额大于等于：">
-                <el-input v-model.number="edit.item.MaxPayAmount" placeholder="" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="11">
-              <select-goods v-model="edit.item.RecommendGid" :type="99" title="金币不足推荐商品" />
-            </el-col>
-
-            <el-col :span="11">
-              <select-goods v-model="edit.item.RecommendBankruptGid" :type="99" title="破产推荐商品" />
-            </el-col>
-          </el-row>
-        </fieldset>
-
-        <fieldset>
-          <legend>场次隐藏配置</legend>
-          <el-row>
-            <el-col :span="9">
-              <money-input v-model="edit.item.SinglePay" label="单次充值大于等于" label-width="150px" :is-require="true" />
-            </el-col>
-            <el-col :span="2">
-              <el-tooltip class="item" effect="dark" content="配置成0也会生效" placement="right-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-col>
-            <el-col :span="9">
-              <money-input v-model="edit.item.TotalPay" label="总充值大于等于" label-width="150px" :is-require="true" />
-            </el-col>
-            <el-col :span="2">
-              <el-tooltip class="item" effect="dark" content="配置成0也会生效" placement="right-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="进入该场次后隐藏场次：" prop="item.Antes">
-                <el-select v-model="edit.item.HideLevel" placeholder="请选择">
-                  <el-option label="无" :value="0" />
-                  <el-option label="0.1" :value="100" />
-                  <el-option label="0.3" :value="300" />
-                  <el-option label="0.5" :value="500" />
-                  <el-option label="1" :value="1000" />
-                  <el-option label="3" :value="3000" />
-                  <el-option label="5" :value="5000" />
-                  <el-option label="10" :value="10000" />
-                  <el-option label="20" :value="20000" />
-                  <el-option label="50" :value="50000" />
-                  <el-option label="100" :value="100000" />
-                  <el-option label="200" :value="200000" />
-                  <el-option label="400" :value="400000" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </fieldset>
 
         <el-form-item>
           <el-row>
