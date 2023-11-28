@@ -77,7 +77,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.HideCarry) }}
+            {{ formatNumber(scope.row.HideCarry || 0) }}
           </template>
         </el-table-column>
         <el-table-column
