@@ -100,7 +100,8 @@
       </el-table-column>
       <el-table-column
         prop="BetMoney"
-        label="本局下注总金额"
+        label="下注总额"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ toRupee(row.BetMoney) }}
@@ -109,9 +110,19 @@
       <el-table-column
         prop="AwardNum"
         label="奖励金额"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ toRupee(row.AwardNum) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="SendTime"
+        label="中奖时间"
+        width="150"
+      >
+        <template slot-scope="{row}">
+          {{ formatTime(row.SendTime) }}
         </template>
       </el-table-column>
       <el-table-column
