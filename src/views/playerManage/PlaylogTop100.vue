@@ -206,7 +206,8 @@ export default {
         method: 'get',
         data: {
           Gid: this.gid,
-          CTime: Math.floor((this.ctime + 10800000) / 1000)
+          CTime: Math.floor((this.ctime + 10800000) / 1000),
+          TableMoney: 200000
         }
       }).then(response => {
         loading.close()
