@@ -133,14 +133,6 @@
           {{ formatBetInfo(row.BetInfo) }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="SendTime"
-        label="中奖时间"
-      >
-        <template slot-scope="{row}">
-          {{ formatTime(row.SendTime) }}
-        </template>
-      </el-table-column>
     </el-table>
     <el-row type="flex" justify="end">
       <el-col :span="12">
