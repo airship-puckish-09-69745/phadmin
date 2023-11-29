@@ -94,10 +94,9 @@
         label="是否真人"
         width="100"
       >
-        <template slot-scope="{row}">
-          <span style="color:green;" v-if="row.isRobot">
-          {{ showBoolFlag(row.IsRobot) }}</span>
-          <span v-esle>{{ showBoolFlag(row.IsRobot) }}</span>
+        <template slot-scope="{row}" style="color:green;">
+
+          {{ showBoolFlag(row.IsRobot) }}
         </template>
       </el-table-column>
       <el-table-column
