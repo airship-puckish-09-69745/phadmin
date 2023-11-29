@@ -69,6 +69,7 @@
       <el-table-column
         prop="GameId"
         label="玩法"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ getGameName(row.GameId) }}
