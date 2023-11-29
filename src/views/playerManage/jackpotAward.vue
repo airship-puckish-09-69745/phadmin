@@ -82,17 +82,20 @@
       <el-table-column
         prop="AwardType"
         label="奖池类型"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ getAwardTypeName(row.AwardType) }}
         </template>
       </el-table-column>
       <el-table-column
-        prop="BigFlag"
-        label="是否大奖"
+        prop="IsRobot"
+        label="是否机器人"
+        width="100"
       >
         <template slot-scope="{row}">
-          {{ showBoolFlag(row.BigFlag) }}
+          <span :style="'color:' + row.IsRobot?'':'green'">
+          {{ showBoolFlag(row.IsRobot) }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -104,14 +107,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="BetInfo"
-        label="近百局下注情况"
-      >
-        <template slot-scope="{row}">
-          {{ formatBetInfo(row.BetInfo) }}
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="AwardNum"
         label="奖励金额"
       >
@@ -120,11 +115,11 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="IsRobot"
-        label="是否机器人"
+        prop="BetInfo"
+        label="近百局下注情况"
       >
         <template slot-scope="{row}">
-          {{ showBoolFlag(row.IsRobot) }}
+          {{ formatBetInfo(row.BetInfo) }}
         </template>
       </el-table-column>
       <el-table-column
