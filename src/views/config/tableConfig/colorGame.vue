@@ -63,7 +63,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
-            <el-col :span="11" >
+            <el-col :span="11">
               <el-form-item label="赢钱榜展示数量：" prop="WinMoneyShowNum">
                 <el-col :span="20">
                   <el-input v-model.number="item.WinMoneyShowNum" size="mini" :required="true" />
@@ -144,10 +144,18 @@
               type="success"
               description="竖版多套下注金额列表，金额之间使用 , 符号连接"
             />
+            <el-row style="margin-top:10px">
+              <el-button type="primary" size="mini" @click="addBetMoneyListRow">添加</el-button>
+            </el-row>
             <el-row v-for="(value, index) in item.BetMoneyListV2" :key="index">
-              <el-form-item :label="'配置' + (index+1)" :required="true">
-                <el-input v-model="item.BetMoneyListV2[index]" size="mini" :required="true" />
-              </el-form-item>
+              <el-col :span="22">
+                <el-form-item :label="'配置' + (index+1)" :required="true">
+                  <el-input v-model="item.BetMoneyListV2[index]" size="mini" :required="true" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="2">
+                <el-button type="danger" size="mini" @click="removeBetMoneyListRow(index)">删除</el-button>
+              </el-col>
             </el-row>
           </fieldset>
           <fieldset>
@@ -568,27 +576,27 @@
               <el-col :span="8">
                 <el-form-item label="发送间隔时间范围(秒)：">
                   <el-col :span="10">
-                    <el-input v-model.number="item.ChatRobotSendIntervalMin" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotSendIntervalMin" size="mini" />
                   </el-col>
                   <el-col :span="2">
-                  到
+                    到
                   </el-col>
                   <el-col :span="10">
-                    <el-input v-model.number="item.ChatRobotSendIntervalMax" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotSendIntervalMax" size="mini" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="发送概率(%)：" prop="ChatRobotSendRate" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
-                    <el-input v-model.number="item.ChatRobotSendRate" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotSendRate" size="mini" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="最多发送人数：" prop="ChatRobotSendMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
-                    <el-input v-model.number="item.ChatRobotSendMaxNum" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotSendMaxNum" size="mini" />
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -602,27 +610,27 @@
               <el-col :span="8">
                 <el-form-item label="回复间隔时间范围(秒)：">
                   <el-col :span="10">
-                    <el-input v-model.number="item.ChatRobotReplyIntervalMin" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotReplyIntervalMin" size="mini" />
                   </el-col>
                   <el-col :span="2">
-                  到
+                    到
                   </el-col>
                   <el-col :span="10">
-                    <el-input v-model.number="item.ChatRobotReplyIntervalMax" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotReplyIntervalMax" size="mini" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="回复概率(%)：" prop="ChatRobotReplyRate" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
-                    <el-input v-model.number="item.ChatRobotReplyRate" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotReplyRate" size="mini" />
                   </el-col>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
                 <el-form-item label="最多回复人数：" prop="ChatRobotReplyMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
                   <el-col>
-                    <el-input v-model.number="item.ChatRobotReplyMaxNum" size="mini"/>
+                    <el-input v-model.number="item.ChatRobotReplyMaxNum" size="mini" />
                   </el-col>
                 </el-form-item>
               </el-col>
@@ -1367,6 +1375,12 @@ export default {
       } else {
         return false
       }
+    },
+    addBetMoneyListRow() {
+      this.item.BetMoneyListV2.push('')
+    },
+    removeBetMoneyListRow(index) {
+      this.item.BetMoneyListV2.splice(index, 1)
     }
   }
 }

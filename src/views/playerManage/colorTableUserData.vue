@@ -7,7 +7,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="search">查询</el-button>
-          
+
         </el-form-item>
         <el-form-item style="font-size:11px;color:#666666;">
           线上appId主要用1000005,查询多个appId,用英文逗号分隔即可。
@@ -35,7 +35,7 @@ export default {
       searchForm: {
         appId: ''
       },
-      userData: [],
+      userData: []
     }
   },
   created() {
@@ -66,7 +66,7 @@ export default {
     },
     formatNumber(n) {
       return n.toLocaleString()
-    },
+    }
   }
 }
 </script>

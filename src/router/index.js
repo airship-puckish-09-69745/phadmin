@@ -146,7 +146,7 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/colorTableUserData'),
         name: 'colorTableUserData',
         meta: { title: 'color - 桌子数据 ◐' }
-      },
+      }
     ]
   },
   {
@@ -224,7 +224,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
             name: 'pusoyRobotSetting',
             meta: { title: 'Pusoy AI◐' }
-          },
+          }
         ]
       },
       {
@@ -312,7 +312,6 @@ export const asyncRoutes = [
 
         ]
       },
-
 
       {
         path: 'slotsCfg',

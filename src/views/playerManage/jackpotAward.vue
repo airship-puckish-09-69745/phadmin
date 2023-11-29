@@ -181,7 +181,7 @@ export default {
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
         { 'value': 0, 'label': '真人' },
-        { 'value': 1, 'label': '机器人' },
+        { 'value': 1, 'label': '机器人' }
       ],
       awardTypeConfig: [
         { 'value': 0, 'label': '全部' },
@@ -233,7 +233,7 @@ export default {
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
           Limit: _this.pageNum,
-          IsRobot: _this.searchForm.isRobot,
+          IsRobot: _this.searchForm.isRobot
         }
       }).then(response => {
         if (response.RetCode === 0) {
