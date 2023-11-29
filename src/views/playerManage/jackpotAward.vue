@@ -91,15 +91,12 @@
       </el-table-column>
       <el-table-column
         prop="IsRobot"
-        label="是否机器人"
+        label="是否真人"
         width="100"
       >
         <template slot-scope="{row}">
-          <span style="color:green" v-if="!row.IsRobot">
-          {{ showBoolFlag(row.IsRobot) }}</span>
-          <span v-else>
-            {{ showBoolFlag(row.IsRobot) }}
-          </span>
+          <span :style="'color:' + !row.IsRobot?'':'\'green\''">
+          {{ showBoolFlag(!row.IsRobot) }}</span>
         </template>
       </el-table-column>
       <el-table-column
