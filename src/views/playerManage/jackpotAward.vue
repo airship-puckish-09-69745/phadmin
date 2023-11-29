@@ -94,9 +94,10 @@
         label="是否真人"
         width="100"
       >
-        <template slot-scope="{row}" style="color:green;">
-
-          {{ showBoolFlag(row.IsRobot) }}
+        <template slot-scope="{row}">
+          <div style="color:green;">
+          {{ showBoolFlag(!row.IsRobot) }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column
