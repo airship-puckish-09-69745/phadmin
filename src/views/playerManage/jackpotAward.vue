@@ -95,8 +95,11 @@
         width="100"
       >
         <template slot-scope="{row}">
-          <div style="color:green;">
+          <div style="color:green;" v-if="!row.IsRobot">
           {{ showBoolFlag(!row.IsRobot) }}
+          </div>
+          <div v-else>
+            {{ showBoolFlag(!row.IsRobot) }}
           </div>
         </template>
       </el-table-column>
