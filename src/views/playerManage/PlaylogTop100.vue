@@ -196,7 +196,7 @@ export default {
           Message.error(response.Data)
         }
       })
-      this.getSameTableData()
+     // this.getSameTableData()
     },
 
     getSameTableData() {
