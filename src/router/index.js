@@ -685,7 +685,6 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: '基础配置', icon: 'example', noCache: true },
         children: [
-
           {
             path: 'emojPrice',
             component: () => import('@/views/config/baseConfig/emojPrice'),
@@ -703,6 +702,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/baseConfig/sms_white'),
             name: 'smsWhite',
             meta: { title: '白名单发短信配置', noCache: true }
+          },
+          {
+            path: 'sensitiveWord',
+            component: () => import('@/views/config/baseConfig/sensitive_word'),
+            name: 'sensitiveWord',
+            meta: { title: '敏感词配置', noCache: true }
           }
         ]
       },
