@@ -98,9 +98,9 @@
         </el-row>
         <el-row :gutter="10">
           <el-col :span="7">
-            <el-form-item label="抽水额度(%)：" prop="feeRate">
-              <el-col :span="7">
-                <el-input v-model.number="item.feeRate" :required="true" />
+            <el-form-item label="jackpot初始奖池：" prop="jpInitMoney">
+              <el-col :span="10">
+                <el-input v-model.number="item.jpInitMoney" :required="true" />
               </el-col>
             </el-form-item>
           </el-col>
@@ -112,9 +112,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="7">
-            <el-form-item label="解锁jackpot最小下注额度：" prop="jackpotShowLimit">
+            <el-form-item label="解锁jackpot最小下注额度：" prop="jpShowLimit">
               <el-col :span="7">
-                <el-input v-model.number="item.jackpotShowLimit" :required="true" />
+                <el-input v-model.number="item.jpShowLimit" :required="true" />
+              </el-col>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="7">
+            <el-form-item label="抽水额度(%)：" prop="feeRate">
+              <el-col :span="7">
+                <el-input v-model.number="item.feeRate" :required="true" />
               </el-col>
             </el-form-item>
           </el-col>
@@ -266,7 +275,7 @@
                     <el-option
                       v-for="item in item.jpLevelOptions"
                       :key="item.value"
-                      :label="item.label"
+                      :label="item.jpLabel"
                       :value="item.value"
                     />
                   </el-select>
@@ -285,7 +294,7 @@
                     <el-option
                       v-for="item in item.jpLevelOptions"
                       :key="item.value"
-                      :label="item.label"
+                      :label="item.jpLabel"
                       :value="item.value"
                     />
                   </el-select>
@@ -304,7 +313,7 @@
                     <el-option
                       v-for="item in item.jpLevelOptions"
                       :key="item.value"
-                      :label="item.label"
+                      :label="item.jpLabel"
                       :value="item.value"
                     />
                   </el-select>
@@ -323,7 +332,7 @@
                     <el-option
                       v-for="item in item.jpLevelOptions"
                       :key="item.value"
-                      :label="item.label"
+                      :label="item.jpLabel"
                       :value="item.value"
                     />
                   </el-select>
@@ -370,7 +379,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item,index) in item.jackpotOptions" :key="index">
+            <tr v-for="(item,index) in item.JpBetMap" :key="index">
               <td>{{ index }}</td>
               <td v-for="i in 23" :key="i">
                 <el-input v-if="item[i]>=0" v-model.number="item[i]" />
@@ -449,8 +458,9 @@ export default {
         vupBombRate: 0,
         feeRate: 0,
         jackpotRate: 0,
-        jackpotShowLimit: 50,
-        jackpotOptions: {
+        jpInitMoney: 0,
+        jpShowLimit: 50,
+        JpBetMap: {
           '2': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20, '21': 20, '22': 20, '23': 20 },
           '3': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20, '21': 20, '22': 20 },
           '4': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20, '21': 20 },
@@ -478,19 +488,19 @@ export default {
         jpLevelOptions: [
           {
             value: 1,
-            label: 'MINI JP'
+            jpLabel: 'MINI JP'
           },
           {
             value: 2,
-            label: 'MINOR JP'
+            jpLabel: 'MINOR JP'
           },
           {
             value: 3,
-            label: 'MAJOR JP'
+            jpLabel: 'MAJOR JP'
           },
           {
             value: 4,
-            label: 'GRAND JP'
+            jpLabel: 'GRAND JP'
           }
         ]
       },
@@ -662,10 +672,10 @@ export default {
       this.item.btnOptions[4] = { btnIndex: 5, btnType: this.btnType5, btnVal: this.btnNum5 * 1000, btnShow: this.btnShow5 }
       this.item.btnOptions[5] = { btnIndex: 6, btnType: this.btnType6, btnVal: this.btnNum6 * 1000, btnShow: this.btnShow6 }
 
-      this.item.jpLevelOptions[0] = { jpLevel: 1, label: 'MINI JP', jpNum: this.jpNum1, jpProb: this.jpProb1 }
-      this.item.jpLevelOptions[1] = { jpLevel: 2, label: 'MINOR JP', jpNum: this.jpNum2, jpProb: this.jpProb2 }
-      this.item.jpLevelOptions[2] = { jpLevel: 3, label: 'MAJOR JP', jpNum: this.jpNum3, jpProb: this.jpProb3 }
-      this.item.jpLevelOptions[3] = { jpLevel: 4, label: 'GRAND JP', jpNum: this.jpNum4, jpProb: this.jpProb4 }
+      this.item.jpLevelOptions[0] = { jpLevel: 1, jpLabel: 'MINI JP', jpNum: this.jpNum1, jpProb: this.jpProb1 }
+      this.item.jpLevelOptions[1] = { jpLevel: 2, jpLabel: 'MINOR JP', jpNum: this.jpNum2, jpProb: this.jpProb2 }
+      this.item.jpLevelOptions[2] = { jpLevel: 3, jpLabel: 'MAJOR JP', jpNum: this.jpNum3, jpProb: this.jpProb3 }
+      this.item.jpLevelOptions[3] = { jpLevel: 4, jpLabel: 'GRAND JP', jpNum: this.jpNum4, jpProb: this.jpProb4 }
 
       Object.assign(ret, this.item)
       ret.minMoneyBet *= 1000
