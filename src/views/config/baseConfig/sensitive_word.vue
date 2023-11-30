@@ -7,9 +7,9 @@
           title="每行表示一段词，如果字符之间含空格和符号，检测时去掉空格和符号"
           type="success"
         />
-        <el-form ref="form" :model="form" label-width="80px"  style="margin-top: 10px">
+        <el-form ref="form" :model="form" label-width="80px" style="margin-top: 10px">
           <el-form-item label="内容">
-            <el-input type="textarea" :autosize="{ minRows: 20, maxRows: 40}" placeholder="请输入内容" v-model="tableData.content" />
+            <el-input v-model="tableData.content" type="textarea" :autosize="{ minRows: 20, maxRows: 40}" placeholder="请输入内容" />
           </el-form-item>
 
           <el-form-item>
@@ -95,20 +95,20 @@ export default {
       })
     },
     processText(text) {
-      const lines = text.split("\n");
+      const lines = text.split('\n')
 
-      const processedLines = [];
+      const processedLines = []
       for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const processedLine = this.cleanSentence(line); 
-        processedLines.push(processedLine);
+        const line = lines[i]
+        const processedLine = this.cleanSentence(line)
+        processedLines.push(processedLine)
       }
 
-      return processedLines.join("\n");
+      return processedLines.join('\n')
     },
     cleanSentence(sentence) {
       // 使用正则表达式匹配所有符号和空格，并替换为空字符串
-      return sentence.replace(/[^\w\s]|_/g, "").replace(/\s+/g, "");
+      return sentence.replace(/[^\w\s]|_/g, '').replace(/\s+/g, '')
     }
   }
 }
