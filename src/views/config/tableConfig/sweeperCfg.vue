@@ -233,26 +233,28 @@
             </tbody>
           </table>
         </el-row>
-
-        <table class="formTable">
-          <thead>
-            <tr>
-              <td rowspan="2" width="50">炸弹个数</td>
-              <td colspan="23">扫中金币倍数（放大百倍）</td>
-            </tr>
-            <tr>
-              <td v-for="cloumnNum in 23" :key="cloumnNum">{{ cloumnNum }}个</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item,index) in item.betOptions" :key="index">
-              <td>{{ index }}</td>
-              <td v-for="i in 23" :key="i">
-                <el-input v-if="item[i]" v-model.number="item[i]" size="mini" />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <el-scrollbar>
+          <table class="formTable">
+            <thead>
+              <tr>
+                <td rowspan="2" width="50">炸弹个数</td>
+                <td colspan="23">扫中金币倍数（放大百倍）</td>
+              </tr>
+              <tr>
+                <td v-for="cloumnNum in 23" :key="cloumnNum">{{ cloumnNum }}个</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item,index) in item.betOptions" :key="index">
+                <td>{{ index }}</td>
+                <td v-for="i in 23" :key="i">
+                  <span v-if="!betOptionEdit[index][i]" style="font-size: 12px" @click="setEditable(index,i)" >{{ item[i]?item[i]/100:'' }}</span>
+                  <el-input v-else v-model.number="item[i]" size="mini" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </el-scrollbar>
         <el-form-item>
           <el-button type="primary" @click="setData">保存</el-button>
         </el-form-item>
@@ -299,8 +301,9 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
+import { $libShow, $libType } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
+
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: { Compare, Publish, BetAmount },
@@ -323,6 +326,7 @@ export default {
         vupBombRate: 0,
         feeRate: 0
       },
+      betOptionEdit: [],
       subKey: 'gameSweeper',
       libShow: $libShow,
       AttrNames: {
@@ -394,6 +398,7 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     getData() {
+      const $this = this
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -407,6 +412,14 @@ export default {
             const item = JSON.parse(response.Data.Data)
             Object.assign(this.item, item)
             console.log(this.item)
+            $this.betOptionEdit = JSON.parse(JSON.stringify(item.betOptions))
+            for (const i in item.betOptions) {
+              const obs = item.betOptions[i]
+              for (const j in obs) {
+                $this.betOptionEdit[i][j] = false
+              }
+            }
+
             this.item.btnOptions.forEach(item => {
               if (item.btnIndex == 1) {
                 this.btnType1 = item.btnType
@@ -434,6 +447,7 @@ export default {
                 this.btnShow6 = item.btnShow
               }
             })
+
             this.transMoneyForShow()
             // this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
             // 设置修改之前数据
@@ -451,12 +465,42 @@ export default {
       const ret = {}
       // 处理一下按钮
       this.item.btnOptions = []
-      this.item.btnOptions[0] = { btnIndex: 1, btnType: this.btnType1, btnVal: this.btnNum1 * 1000, btnShow: this.btnShow1 }
-      this.item.btnOptions[1] = { btnIndex: 2, btnType: this.btnType2, btnVal: this.btnNum2 * 1000, btnShow: this.btnShow2 }
-      this.item.btnOptions[2] = { btnIndex: 3, btnType: this.btnType3, btnVal: this.btnNum3 * 1000, btnShow: this.btnShow3 }
-      this.item.btnOptions[3] = { btnIndex: 4, btnType: this.btnType4, btnVal: this.btnNum4 * 1000, btnShow: this.btnShow4 }
-      this.item.btnOptions[4] = { btnIndex: 5, btnType: this.btnType5, btnVal: this.btnNum5 * 1000, btnShow: this.btnShow5 }
-      this.item.btnOptions[5] = { btnIndex: 6, btnType: this.btnType6, btnVal: this.btnNum6 * 1000, btnShow: this.btnShow6 }
+      this.item.btnOptions[0] = {
+        btnIndex: 1,
+        btnType: this.btnType1,
+        btnVal: this.btnNum1 * 1000,
+        btnShow: this.btnShow1
+      }
+      this.item.btnOptions[1] = {
+        btnIndex: 2,
+        btnType: this.btnType2,
+        btnVal: this.btnNum2 * 1000,
+        btnShow: this.btnShow2
+      }
+      this.item.btnOptions[2] = {
+        btnIndex: 3,
+        btnType: this.btnType3,
+        btnVal: this.btnNum3 * 1000,
+        btnShow: this.btnShow3
+      }
+      this.item.btnOptions[3] = {
+        btnIndex: 4,
+        btnType: this.btnType4,
+        btnVal: this.btnNum4 * 1000,
+        btnShow: this.btnShow4
+      }
+      this.item.btnOptions[4] = {
+        btnIndex: 5,
+        btnType: this.btnType5,
+        btnVal: this.btnNum5 * 1000,
+        btnShow: this.btnShow5
+      }
+      this.item.btnOptions[5] = {
+        btnIndex: 6,
+        btnType: this.btnType6,
+        btnVal: this.btnNum6 * 1000,
+        btnShow: this.btnShow6
+      }
 
       Object.assign(ret, this.item)
       ret.minMoneyBet *= 1000
@@ -489,6 +533,14 @@ export default {
     },
     showUserArea() {
       this.showArea.visible = true
+    },
+    setEditable(i, j) {
+      for (const i in this.betOptionEdit) {
+        for (const j in this.betOptionEdit[i]) {
+          this.betOptionEdit[i][j] = false
+        }
+      }
+      this.betOptionEdit[i][j] = true
     },
     goSearch() {
       this.showArea.showUlReslt = false
@@ -533,27 +585,29 @@ export default {
 </script>
 
 <style scoped>
-    .formTable{
-        border-collapse: collapse;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    .formTable td{
-        border: 1px solid #eee;
-        height: 31px;
-        line-height: 31px;
-        padding: 2px;
-    }
-    ul#sweeperShow {
+.formTable {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.formTable td {
+  border: 1px solid #eee;
+  height: 31px;
+  line-height: 31px;
+  padding: 2px;
+}
+
+ul#sweeperShow {
   width: 801px;
   height: 801px;
-  padding:0px;
-  clear:both;
-  margin:0;
-  list-style:none;
-  border-top:#999 1px solid;
-  border-left:#999 1px solid;
+  padding: 0px;
+  clear: both;
+  margin: 0;
+  list-style: none;
+  border-top: #999 1px solid;
+  border-left: #999 1px solid;
 }
 
 ul#sweeperShow li {
@@ -565,8 +619,8 @@ ul#sweeperShow li {
   border: none;
   list-style: none;
   line-height: 150px;
-  border-right:#999 1px solid;
-  border-bottom:#999 1px solid;
+  border-right: #999 1px solid;
+  border-bottom: #999 1px solid;
 }
 
 ul#sweeperShow li .showStep {
@@ -578,7 +632,7 @@ ul#sweeperShow li .showStep {
   border-right: 1px #999 solid;
   text-align: center;
   float: left;
-  margin-top:130px;
-  margin-right:18px;
+  margin-top: 130px;
+  margin-right: 18px;
 }
 </style>

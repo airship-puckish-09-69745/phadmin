@@ -301,7 +301,7 @@ export const asyncRoutes = [
             path: 'sweeper',
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
-            meta: { title: 'Sweeper - 扫雷 ◐' }
+            meta: { title: 'Mines - 扫雷 ◐' }
           },
           {
             path: 'windrop_cfg',
@@ -558,7 +558,7 @@ export const asyncRoutes = [
         path: 'playlog_sweeper',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_sweeper',
-        meta: { title: 'Sweeper - 扫雷◐', gid: 20 }
+        meta: { title: 'Mines - 扫雷◐', gid: 20 }
       },
       {
         path: 'playlog_tongits',

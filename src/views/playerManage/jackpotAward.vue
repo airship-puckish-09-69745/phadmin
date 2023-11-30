@@ -69,6 +69,7 @@
       <el-table-column
         prop="GameId"
         label="玩法"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ getGameName(row.GameId) }}
@@ -82,25 +83,47 @@
       <el-table-column
         prop="AwardType"
         label="奖池类型"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ getAwardTypeName(row.AwardType) }}
         </template>
       </el-table-column>
       <el-table-column
-        prop="BigFlag"
-        label="是否大奖"
+        prop="IsRobot"
+        label="是否真人"
+        width="100"
       >
         <template slot-scope="{row}">
-          {{ showBoolFlag(row.BigFlag) }}
+          <div style="color:green;" v-if="!row.IsRobot">真人</div>
+          <div v-else>否</div>
         </template>
       </el-table-column>
       <el-table-column
         prop="BetMoney"
-        label="本局下注总金额"
+        label="下注总额"
+        width="100"
       >
         <template slot-scope="{row}">
           {{ toRupee(row.BetMoney) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="AwardNum"
+        label="奖励金额"
+        width="100"
+      >
+        <template slot-scope="{row}">
+          {{ toRupee(row.AwardNum) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="SendTime"
+        label="中奖时间"
+        width="150"
+      >
+        <template slot-scope="{row}">
+          {{ formatTime(row.SendTime) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -109,30 +132,6 @@
       >
         <template slot-scope="{row}">
           {{ formatBetInfo(row.BetInfo) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="AwardNum"
-        label="奖励金额"
-      >
-        <template slot-scope="{row}">
-          {{ toRupee(row.AwardNum) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="IsRobot"
-        label="是否机器人"
-      >
-        <template slot-scope="{row}">
-          {{ showBoolFlag(row.IsRobot) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="SendTime"
-        label="中奖时间"
-      >
-        <template slot-scope="{row}">
-          {{ formatTime(row.SendTime) }}
         </template>
       </el-table-column>
     </el-table>

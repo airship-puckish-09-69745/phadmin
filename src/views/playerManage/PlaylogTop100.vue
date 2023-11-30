@@ -196,6 +196,29 @@ export default {
           Message.error(response.Data)
         }
       })
+     // this.getSameTableData()
+    },
+
+    getSameTableData() {
+      const loading = Loading.service({ fullscreen: true })
+      request({
+        url: '/other/playlog/same/table/top100',
+        method: 'get',
+        data: {
+          Gid: this.gid,
+          CTime: Math.floor((this.ctime + 10800000) / 1000),
+          TableMoney: 200000
+        }
+      }).then(response => {
+        loading.close()
+        if (response.RetCode === 0) {
+          const items = response.Data || []
+
+          console.log(items)
+        } else {
+          Message.error(response.Data)
+        }
+      })
     }
   }
 }

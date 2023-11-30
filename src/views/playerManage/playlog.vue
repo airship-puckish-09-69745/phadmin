@@ -553,7 +553,9 @@
           <el-table-column prop="cards" label="中手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupMiddle.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template></el-table-column>
           <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
         </el-table-column>
-        <el-table-column prop="cardType" label="牌型" width="100"><template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }}</template></el-table-column>
+        <el-table-column prop="cardType" label="牌型" width="90">
+          <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }} {{ pusoyShowGroupExtra(scope.row) }}</template>
+        </el-table-column>
         <el-table-column prop="cardScore" label="点数" width="100" />
         <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
         <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
@@ -897,6 +899,12 @@ export default {
     this.gid = this.$route.meta.gid
   },
   methods: {
+    pusoyShowGroupExtra(row) {
+      if (row.groupBottom.extraScore > 0 || row.groupMiddle.extraScore > 0 || row.groupTop.extraScore > 0) {
+        return '(牌型加分)'
+      }
+      return ''
+    },
     pusoyShowShootAll(row) {
       if (row.uid === this.pusoyDetail.shootAllUid) {
         return '(全垒打)'
