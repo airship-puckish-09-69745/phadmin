@@ -104,6 +104,20 @@
               </el-col>
             </el-form-item>
           </el-col>
+          <el-col :span="7">
+            <el-form-item label="jackpot奖池抽取百分比(%)：" prop="jackpotRate">
+              <el-col :span="7">
+                <el-input v-model.number="item.jackpotRate" :required="true" />
+              </el-col>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="解锁jackpot最小下注额度：" prop="jackpotShowLimit">
+              <el-col :span="7">
+                <el-input v-model.number="item.jackpotShowLimit" :required="true" />
+              </el-col>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <table class="formTable" style="width:700px;margin-left: 50px;">
@@ -234,6 +248,97 @@
           </table>
         </el-row>
 
+        <el-row>
+          <table class="formTable" style="width:700px;margin-left: 50px;">
+            <thead>
+              <tr>
+                <td>奖池配置</td>
+                <td>jackpot级别</td>
+                <td>奖励占比（%）</td>
+                <td>中奖概率（%）</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>一</td>
+                <td>
+                  <el-select v-model="jpType1" placeholder="请选择" disabled>
+                    <el-option
+                      v-for="item in item.jpLevelOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </td>
+                <td>
+                  <el-input v-model.number="jpNum1" :required="true" />
+                </td>
+                <td>
+                  <el-input v-model="jpProb1" :required="true" />
+                </td>
+              </tr>
+              <tr>
+                <td>二</td>
+                <td>
+                  <el-select v-model="jpType2" placeholder="请选择" disabled>
+                    <el-option
+                      v-for="item in item.jpLevelOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </td>
+                <td>
+                  <el-input v-model.number="jpNum2" :required="true" />
+                </td>
+                <td>
+                  <el-input v-model="jpProb2" :required="true" />
+                </td>
+              </tr>
+              <tr>
+                <td>三</td>
+                <td>
+                  <el-select v-model="jpType3" placeholder="请选择" disabled>
+                    <el-option
+                      v-for="item in item.jpLevelOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </td>
+                <td>
+                  <el-input v-model.number="jpNum3" :required="true" />
+                </td>
+                <td>
+                  <el-input v-model="jpProb3" :required="true" />
+                </td>
+              </tr>
+              <tr>
+                <td>四</td>
+                <td>
+                  <el-select v-model="jpType4" placeholder="请选择" disabled>
+                    <el-option
+                      v-for="item in item.jpLevelOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </td>
+                <td>
+                  <el-input v-model.number="jpNum4" :required="true" />
+                </td>
+                <td>
+                  <el-input v-model="jpProb4" :required="true" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </el-row>
+
         <table class="formTable">
           <thead>
             <tr>
@@ -253,6 +358,27 @@
             </tr>
           </tbody>
         </table>
+
+        <table class="formTable">
+          <thead>
+            <tr>
+              <td rowspan="2" width="50">炸弹个数</td>
+              <td colspan="23">抽中金币出现jackpot概率百分比(%)</td>
+            </tr>
+            <tr>
+              <td v-for="cloumnNum in 23" :key="cloumnNum">{{ cloumnNum }}个</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item,index) in item.jackpotOptions" :key="index">
+              <td>{{ index }}</td>
+              <td v-for="i in 23" :key="i">
+                <el-input v-if="item[i]>=0" v-model.number="item[i]" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
         <el-form-item>
           <el-button type="primary" @click="setData">保存</el-button>
         </el-form-item>
@@ -321,7 +447,52 @@ export default {
         btnOptions: [],
         allowMaxBet: 100000,
         vupBombRate: 0,
-        feeRate: 0
+        feeRate: 0,
+        jackpotRate: 0,
+        jackpotShowLimit: 50,
+        jackpotOptions: {
+          '2': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 0, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20, '21': 20, '22': 20, '23': 20 },
+          '3': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20, '21': 20, '22': 20 },
+          '4': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20, '21': 20 },
+          '5': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 20, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20, '20': 20 },
+          '6': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 20, '11': 20, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20, '19': 20 },
+          '7': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 0, '9': 20, '10': 20, '11': 20, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20, '18': 20 },
+          '8': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 0, '8': 20, '9': 20, '10': 20, '11': 20, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20, '17': 20 },
+          '9': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 0, '7': 20, '8': 20, '9': 20, '10': 20, '11': 20, '12': 20, '13': 20, '14': 20, '15': 20, '16': 20 },
+          '10': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 0, '6': 20, '7': 20, '8': 20, '9': 20, '10': 20, '11': 20, '12': 20, '13': 20, '14': 20, '15': 20 },
+          '11': { '1': 0, '2': 0, '3': 0, '4': 0, '5': 20, '6': 20, '7': 20, '8': 20, '9': 20, '10': 20, '11': 20, '12': 20, '13': 20, '14': 20 },
+          '12': { '1': 0, '2': 0, '3': 0, '4': 20, '5': 20, '6': 20, '7': 20, '8': 20, '9': 20, '10': 20, '11': 20, '12': 20, '13': 20 },
+          '13': { '1': 0, '2': 0, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, '8': 20, '9': 20, '10': 20, '11': 20, '12': 20 },
+          '14': { '1': 0, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, '8': 20, '9': 20, '10': 20, '11': 20 },
+          '15': { '1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, '8': 20, '9': 20, '10': 20 },
+          '16': { '1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, '8': 20, '9': 20 },
+          '17': { '1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20, '8': 20 },
+          '18': { '1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20, '7': 20 },
+          '19': { '1': 20, '2': 20, '3': 20, '4': 20, '5': 20, '6': 20 },
+          '20': { '1': 20, '2': 20, '3': 20, '4': 20, '5': 20 },
+          '21': { '1': 20, '2': 20, '3': 20, '4': 20 },
+          '22': { '1': 20, '2': 20, '3': 20 },
+          '23': { '1': 20, '2': 20 },
+          '24': { '1': 20 }
+        },
+        jpLevelOptions: [
+          {
+            value: 1,
+            label: 'MINI JP'
+          },
+          {
+            value: 2,
+            label: 'MINOR JP'
+          },
+          {
+            value: 3,
+            label: 'MAJOR JP'
+          },
+          {
+            value: 4,
+            label: 'GRAND JP'
+          }
+        ]
       },
       subKey: 'gameSweeper',
       libShow: $libShow,
@@ -354,6 +525,23 @@ export default {
           label: '/'
         }
       ],
+
+      jpType1: 1,
+      jpNum1: 5,
+      jpProb1: 70,
+
+      jpType2: 2,
+      jpNum2: 10,
+      jpProb2: 15,
+
+      jpType3: 3,
+      jpNum3: 15,
+      jpProb3: 10,
+
+      jpType4: 4,
+      jpNum4: 20,
+      jpProb4: 5,
+
       btnType1: 1,
       btnNum1: 0,
       btnShow1: '',
@@ -434,6 +622,22 @@ export default {
                 this.btnShow6 = item.btnShow
               }
             })
+
+            this.item.jpLevelOptions.forEach(item => {
+              if (item.jpLevel == 1) {
+                this.jpNum1 = item.jpNum
+                this.jpProb1 = item.jpProb
+              } else if (item.jpLevel == 2) {
+                this.jpNum2 = item.jpNum
+                this.jpProb2 = item.jpProb
+              } else if (item.jpLevel == 3) {
+                this.jpNum3 = item.jpNum
+                this.jpProb3 = item.jpProb
+              } else if (item.jpLevel == 4) {
+                this.jpNum4 = item.jpNum
+                this.jpProb4 = item.jpProb
+              }
+            })
             this.transMoneyForShow()
             // this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
             // 设置修改之前数据
@@ -457,6 +661,11 @@ export default {
       this.item.btnOptions[3] = { btnIndex: 4, btnType: this.btnType4, btnVal: this.btnNum4 * 1000, btnShow: this.btnShow4 }
       this.item.btnOptions[4] = { btnIndex: 5, btnType: this.btnType5, btnVal: this.btnNum5 * 1000, btnShow: this.btnShow5 }
       this.item.btnOptions[5] = { btnIndex: 6, btnType: this.btnType6, btnVal: this.btnNum6 * 1000, btnShow: this.btnShow6 }
+
+      this.item.jpLevelOptions[0] = { jpLevel: 1, label: 'MINI JP', jpNum: this.jpNum1, jpProb: this.jpProb1 }
+      this.item.jpLevelOptions[1] = { jpLevel: 2, label: 'MINOR JP', jpNum: this.jpNum2, jpProb: this.jpProb2 }
+      this.item.jpLevelOptions[2] = { jpLevel: 3, label: 'MAJOR JP', jpNum: this.jpNum3, jpProb: this.jpProb3 }
+      this.item.jpLevelOptions[3] = { jpLevel: 4, label: 'GRAND JP', jpNum: this.jpNum4, jpProb: this.jpProb4 }
 
       Object.assign(ret, this.item)
       ret.minMoneyBet *= 1000

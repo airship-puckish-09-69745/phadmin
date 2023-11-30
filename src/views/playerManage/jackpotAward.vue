@@ -180,7 +180,8 @@ export default {
       },
       gameConfig: [
         { 'value': 0, 'label': '全部' },
-        { 'value': 25, 'label': 'color game' }
+        { 'value': 25, 'label': 'color game' },
+        { 'value': 20, 'label': 'Sweeper - 扫雷' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
