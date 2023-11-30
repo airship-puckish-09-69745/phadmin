@@ -702,12 +702,6 @@ export const asyncRoutes = [
             component: () => import('@/views/config/baseConfig/sms_white'),
             name: 'smsWhite',
             meta: { title: '白名单发短信配置', noCache: true }
-          },
-          {
-            path: 'sensitiveWord',
-            component: () => import('@/views/config/baseConfig/sensitive_word'),
-            name: 'sensitiveWord',
-            meta: { title: '敏感词配置', noCache: true }
           }
         ]
       },
