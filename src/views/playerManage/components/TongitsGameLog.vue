@@ -210,6 +210,7 @@ export default {
               }
               for (let k = 0; k < groups.length; k++) {
                 const one = groups[k]
+                one.isSecretGroup = this.isSecretGroup(one)
                 const jokerMap = {}
                 // 查找是否癞子代替
                 if (one.hasOwnProperty('joker') && one.joker.replace.length > 0) {
@@ -224,7 +225,6 @@ export default {
                     cards.push(one.cards[d])
                   }
                 }
-                one.isSecretGroup = this.isSecretGroup(one)
                 resGroups.push(one)
               }
               handcards = val.players[j].handCards
@@ -286,8 +286,8 @@ export default {
           return true
         } else if (group.cardType === 2 && group.joker && group.Joker.IsSecretGroup) { // 癞子5条以上
           return true
-        } else if (group.cardType === 3 && !group.joker && group.cards.length > 5) {
-          return
+        } else if (group.cardType === 3 && !group.joker && group.cards.length >= 5) {
+          return true
         } else if (group.cardType === 3 && group.joker && group.Joker.IsSecretGroup) {
           return true
         }
