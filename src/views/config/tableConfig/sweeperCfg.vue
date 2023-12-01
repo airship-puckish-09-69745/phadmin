@@ -256,7 +256,7 @@
           </table>
         </el-scrollbar>
 
-        <table class="formTable">
+        <table class="formTable"  style="margin-top:20px;">
           <thead>
             <tr>
               <td colspan="24">解锁jackpot条件</td>
@@ -711,7 +711,7 @@ export default {
             this.transMoneyForShow()
             // this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
             // 设置修改之前数据
-            // this.JackpotRandAwards = this.item.Jackpot.RandAwards
+            this.JackpotRandAwards = this.item.Jackpot.RandAwards
             this.$refs.compare.SetOldVal(response.Data)
           }
         }
@@ -721,6 +721,9 @@ export default {
       this.item.minMoneyBet /= 1000
       this.item.maxMoneyBet /= 1000
       this.item.minMoneyCarry /= 1000
+      for (const k in this.item.Jackpot.RandAwards) {
+        this.item.Jackpot.RandAwards[k].PoolVal /= 1000
+      }
     },
     getPostData() {
       const ret = {}
