@@ -256,6 +256,25 @@
           </table>
         </el-scrollbar>
 
+        <table class="formTable">
+          <thead>
+            <tr>
+              <td colspan="24">解锁jackpot条件</td>
+            </tr>
+            <tr>
+              <td width="50">炸弹个数</td>
+              <td v-for="cloumnNum in 23" :key="cloumnNum">{{ cloumnNum+1 }}个</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="50">翻中金币</td>
+              <td v-for="index in 23" :key="index">
+                <el-input  v-model.number="item.JackpotShowOption[index+1]" :required="true" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         <fieldset style="margin-top:20px;width: 90%">
           <legend>jackpot配置</legend>
@@ -539,7 +558,7 @@ export default {
           JackpotRate: 0,
           PoolIncrArr: [{ 'Id': 1, 'MinPool': 0, 'MaxPool': 200000000, 'TimeArr': [{ 'EndHour': 1, 'Index': 1, 'StartHour': 0, 'PerHourIncr': 40000000 }, { 'EndHour': 6, 'Index': 2, 'StartHour': 2, 'PerHourIncr': 20000000 }, { 'EndHour': 8, 'Index': 3, 'StartHour': 7, 'PerHourIncr': 40000000 }, { 'EndHour': 17, 'Index': 4, 'StartHour': 9, 'PerHourIncr': 50000000 }, { 'EndHour': 23, 'Index': 5, 'StartHour': 18, 'PerHourIncr': 60000000 }] }, { 'Id': 2, 'MinPool': 200000000, 'MaxPool': 250000000, 'TimeArr': [{ 'Index': 1, 'StartHour': 0, 'EndHour': 1, 'PerHourIncr': 15000000 }, { 'Index': 2, 'StartHour': 2, 'EndHour': 6, 'PerHourIncr': 10000000 }, { 'Index': 3, 'StartHour': 7, 'EndHour': 8, 'PerHourIncr': 20000000 }, { 'Index': 4, 'StartHour': 9, 'EndHour': 17, 'PerHourIncr': 25000000 }, { 'Index': 5, 'StartHour': 18, 'EndHour': 23, 'PerHourIncr': 30000000 }] }, { 'Id': 3, 'MinPool': 250000000, 'MaxPool': 300000000, 'TimeArr': [{ 'Index': 1, 'StartHour': 0, 'EndHour': 1, 'PerHourIncr': 7500000 }, { 'Index': 2, 'StartHour': 2, 'EndHour': 6, 'PerHourIncr': 5000000 }, { 'Index': 3, 'StartHour': 7, 'EndHour': 8, 'PerHourIncr': 10000000 }, { 'Index': 4, 'StartHour': 9, 'EndHour': 17, 'PerHourIncr': 12500000 }, { 'Index': 5, 'StartHour': 18, 'EndHour': 23, 'PerHourIncr': 15000000 }] }, { 'Id': 4, 'MinPool': 300000000, 'MaxPool': -1, 'TimeArr': [{ 'EndHour': 1, 'Index': 1, 'StartHour': 0, 'PerHourIncr': 3000000 }, { 'EndHour': 6, 'Index': 2, 'StartHour': 2, 'PerHourIncr': 2000000 }, { 'EndHour': 8, 'Index': 3, 'StartHour': 7, 'PerHourIncr': 4000000 }, { 'EndHour': 17, 'Index': 4, 'StartHour': 9, 'PerHourIncr': 5000000 }, { 'EndHour': 23, 'Index': 5, 'StartHour': 18, 'PerHourIncr': 6000000 }] }]
         },
-
+        JackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
       },
       JackpotRandAwards: [{ 'AwardType': 1, 'Value': 50, 'PoolVal': 200000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 80 }, { 'Id': 2, 'Num': 1, 'Rate': 20 }], 'JackpotType': 1, 'DayLimit': 1 }, { 'AwardType': 1, 'Value': 20, 'PoolVal': 100000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 0 }, { 'Id': 2, 'Num': 1, 'Rate': 0 }, { 'Id': 3, 'Num': 2, 'Rate': 100 }], 'JackpotType': 2, 'DayLimit': 3 }, { 'AwardType': 1, 'Value': 10, 'PoolVal': 8000, 'RateArr': [{ 'Id': 1, 'Num': 2, 'Rate': 40 }, { 'Id': 2, 'Num': 3, 'Rate': 30 }, { 'Id': 3, 'Num': 4, 'Rate': 30 }], 'JackpotType': 3, 'DayLimit': 40 }, { 'AwardType': 2, 'Value': 3, 'PoolVal': 0, 'RateArr': [], 'JackpotType': 4, 'DayLimit': 0 }],
       subKey: 'gameSweeper',
