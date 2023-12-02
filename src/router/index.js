@@ -180,6 +180,12 @@ export const asyncRoutes = [
             meta: { title: 'Tongits-经典 ◐' }
           },
           {
+            path: 'tongitsTogether',
+            component: () => import('@/views/config/tableConfig/tongits_blacklist'),
+            name: 'tongitsTogether',
+            meta: { title: '同桌黑名单 ◐' }
+          },
+          {
             path: 'tongitsTableAI',
             component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
             name: 'tongitsTableAI',
