@@ -152,7 +152,7 @@ export default {
         data: {
           Gid: this.gid,
           CTime: Math.floor((this.ctime + 10800000) / 1000),
-          TableMoney: this.tableMoney
+          TableMoney: this.tableMoney * 1000
         }
       }).then(response => {
         loading.close()
