@@ -691,7 +691,6 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: '基础配置', icon: 'example', noCache: true },
         children: [
-
           {
             path: 'emojPrice',
             component: () => import('@/views/config/baseConfig/emojPrice'),
