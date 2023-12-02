@@ -285,12 +285,12 @@
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item label="显示jackpot之前抽水：">
+              <el-form-item label="出现jackpot之前抽水：">
                 <el-input v-model.number="item.Jackpot.AddPoolPctPreJp" size="mini" :required="true" style="width:100px" />(‰)
               </el-form-item>
             </el-col>
             <el-col :span="7">
-              <el-form-item label="显示jackpot之后抽水：">
+              <el-form-item label="出现jackpot之后抽水：">
                 <el-input v-model.number="item.Jackpot.AddPoolPctAfterJp" size="mini" :required="true" style="width:100px" />(‰)
               </el-form-item>
             </el-col>
@@ -308,7 +308,7 @@
               <el-table-column type="index" />
               <el-table-column label="奖励类型" prop="JackpotType">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.JackpotType">
+                  <el-select v-model="scope.row.JackpotType" disabled>
                     <el-option
                       v-for="typeItem in JackpotTypes"
                       :key="typeItem.value"
@@ -320,7 +320,7 @@
               </el-table-column>
               <el-table-column label="奖励发放类型" prop="AwardType">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.AwardType">
+                  <el-select v-model="scope.row.AwardType" disabled>
                     <el-option
                       v-for="typeItem in AwardTypes"
                       :key="typeItem.Type"
@@ -328,25 +328,6 @@
                       :value="typeItem.Type"
                     />
                   </el-select>
-                </template>
-              </el-table-column>
-              <el-table-column label="玩家开奖池条件(%)"  width="300">
-                <template slot-scope="scope" v-if="scope.row.AwardType==1">
-                  虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" :disabled="checkShowDayLimit(scope.row.AwardType)" />
-                  < 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" :disabled="checkShowDayLimit(scope.row.AwardType)" />
-                </template>
-              </el-table-column>
-
-              <el-table-column label="中奖概率" prop="Value">
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
-                    <template slot="append">‰</template>
-                  </el-input>
-                </template>
-              </el-table-column>
-              <el-table-column label="机器人开奖池值" prop="PoolVal">
-                <template slot-scope="scope">
-                  >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                 </template>
               </el-table-column>
               <el-table-column label="发放数量" prop="Value">
@@ -357,11 +338,34 @@
                   </el-input>
                 </template>
               </el-table-column>
+              <el-table-column label="中奖概率" prop="Value">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
+                    <template slot="append">‰</template>
+                  </el-input>
+                </template>
+              </el-table-column>
               <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                 </template>
               </el-table-column>
+              <el-table-column label="玩家开奖池条件(%)"  width="300">
+                <template slot-scope="scope" v-if="scope.row.AwardType==1">
+                  虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                  < 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                </template>
+
+              </el-table-column>
+
+
+              <el-table-column label="机器人开奖池值" prop="PoolVal">
+                <template slot-scope="scope"  v-if="scope.row.AwardType==1">
+                  >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+                </template>
+              </el-table-column>
+
+
               <el-table-column label="机器人开奖数量概率" prop="RateArr">
                 <template slot-scope="scope">
                   <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
