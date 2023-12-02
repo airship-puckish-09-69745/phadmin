@@ -276,12 +276,22 @@
           </tbody>
         </table>
 
-        <fieldset style="margin-top:20px;width: 90%">
+        <fieldset style="margin-top:20px;">
           <legend>jackpot配置</legend>
           <el-row :gutter="10" style="margin-top:20px;">
-            <el-col :span="11">
+            <el-col :span="7">
               <el-form-item label="本局下注额度(≥)：">
                 <el-input v-model.number="item.Jackpot.BetMoreThan" size="mini" :required="true" style="width:100px" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="显示jackpot之前抽水：">
+                <el-input v-model.number="item.Jackpot.AddPoolPctPreJp" size="mini" :required="true" style="width:100px" />(‰)
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="显示jackpot之后抽水：">
+                <el-input v-model.number="item.Jackpot.AddPoolPctAfterJp" size="mini" :required="true" style="width:100px" />(‰)
               </el-form-item>
             </el-col>
           </el-row>
@@ -320,14 +330,28 @@
                   </el-select>
                 </template>
               </el-table-column>
-              <el-table-column label="开出的奖池值" prop="PoolVal">
+              <el-table-column label="玩家开奖池条件(%)"  width="300">
+                <template slot-scope="scope" v-if="scope.row.AwardType==1">
+                  虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" :disabled="checkShowDayLimit(scope.row.AwardType)" />
+                  < 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" :disabled="checkShowDayLimit(scope.row.AwardType)" />
+                </template>
+              </el-table-column>
+
+              <el-table-column label="中奖概率" prop="Value">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
+                    <template slot="append">‰</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="机器人开奖池值" prop="PoolVal">
                 <template slot-scope="scope">
                   >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                 </template>
               </el-table-column>
               <el-table-column label="发放数量" prop="Value">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Value" style="width: 200px;" size="mini" :required="true">
+                  <el-input v-model.number="scope.row.Value" style="width: 150px;" size="mini" :required="true">
                     <template v-if="scope.row.AwardType==1" slot="append">%</template>
                     <template v-if="scope.row.AwardType==2" slot="append">倍</template>
                   </el-input>
@@ -338,7 +362,7 @@
                   <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="开奖数量概率" prop="RateArr">
+              <el-table-column label="机器人开奖数量概率" prop="RateArr">
                 <template slot-scope="scope">
                   <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                   {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -551,9 +575,10 @@ export default {
         feeRate: 0,
         Jackpot: {
           BetMoreThan: 0,
-          ShowPoolLimitRate: 0,
+          AddPoolPctAfterJp: 0,
+          AddPoolPctPreJp: 0,
           RandAwards: [
-            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [] }
+            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [], 'VrPoolRate': 0, 'RealPoolRate': 0, 'jackpotRate': 0 }
           ],
           JackpotRate: 0,
           PoolIncrArr: [{ 'Id': 1, 'MinPool': 0, 'MaxPool': 200000000, 'TimeArr': [{ 'EndHour': 1, 'Index': 1, 'StartHour': 0, 'PerHourIncr': 40000000 }, { 'EndHour': 6, 'Index': 2, 'StartHour': 2, 'PerHourIncr': 20000000 }, { 'EndHour': 8, 'Index': 3, 'StartHour': 7, 'PerHourIncr': 40000000 }, { 'EndHour': 17, 'Index': 4, 'StartHour': 9, 'PerHourIncr': 50000000 }, { 'EndHour': 23, 'Index': 5, 'StartHour': 18, 'PerHourIncr': 60000000 }] }, { 'Id': 2, 'MinPool': 200000000, 'MaxPool': 250000000, 'TimeArr': [{ 'Index': 1, 'StartHour': 0, 'EndHour': 1, 'PerHourIncr': 15000000 }, { 'Index': 2, 'StartHour': 2, 'EndHour': 6, 'PerHourIncr': 10000000 }, { 'Index': 3, 'StartHour': 7, 'EndHour': 8, 'PerHourIncr': 20000000 }, { 'Index': 4, 'StartHour': 9, 'EndHour': 17, 'PerHourIncr': 25000000 }, { 'Index': 5, 'StartHour': 18, 'EndHour': 23, 'PerHourIncr': 30000000 }] }, { 'Id': 3, 'MinPool': 250000000, 'MaxPool': 300000000, 'TimeArr': [{ 'Index': 1, 'StartHour': 0, 'EndHour': 1, 'PerHourIncr': 7500000 }, { 'Index': 2, 'StartHour': 2, 'EndHour': 6, 'PerHourIncr': 5000000 }, { 'Index': 3, 'StartHour': 7, 'EndHour': 8, 'PerHourIncr': 10000000 }, { 'Index': 4, 'StartHour': 9, 'EndHour': 17, 'PerHourIncr': 12500000 }, { 'Index': 5, 'StartHour': 18, 'EndHour': 23, 'PerHourIncr': 15000000 }] }, { 'Id': 4, 'MinPool': 300000000, 'MaxPool': -1, 'TimeArr': [{ 'EndHour': 1, 'Index': 1, 'StartHour': 0, 'PerHourIncr': 3000000 }, { 'EndHour': 6, 'Index': 2, 'StartHour': 2, 'PerHourIncr': 2000000 }, { 'EndHour': 8, 'Index': 3, 'StartHour': 7, 'PerHourIncr': 4000000 }, { 'EndHour': 17, 'Index': 4, 'StartHour': 9, 'PerHourIncr': 5000000 }, { 'EndHour': 23, 'Index': 5, 'StartHour': 18, 'PerHourIncr': 6000000 }] }]
@@ -596,7 +621,7 @@ export default {
         { 'label': '一等奖', 'value': 1 },
         { 'label': '二等奖', 'value': 2 },
         { 'label': '三等奖', 'value': 3 },
-        { 'label': '阳光普照奖', 'value': 4 }
+        { 'label': '3Bet中奖', 'value': 4 }
       ],
       AwardTypes: [
         { 'Type': 1, 'Name': '奖池百分比' },
