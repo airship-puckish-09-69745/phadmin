@@ -136,6 +136,12 @@ export const asyncRoutes = [
         meta: { title: '牌局排行榜 ◐' }
       },
       {
+        path: 'play_log_together_top100',
+        component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
+        name: 'play_log_together_top100',
+        meta: { title: 'Tongits同桌排行榜 ◐' }
+      },
+      {
         path: 'sweeperTableUserData',
         component: () => import('@/views/playerManage/sweeperTableUserData'),
         name: 'sweeperTableUserData',
