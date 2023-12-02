@@ -3,7 +3,7 @@
     title="牌局过程"
     :visible.sync="ComponentsGameLogVisible"
     :before-close="closeView"
-    width="70%"
+    width="85%"
   >
     <el-table
       :data="actions"
@@ -32,12 +32,36 @@
         label="手牌"
       >
         <template slot-scope="scope">
-          <div v-for="card in scope.row.Cards" class="block">
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getCardUrl(card)"
-            />
-          </div>
+          <template v-if="scope.row.Groups">
+            <template v-for="group in scope.row.Groups">
+              <template v-if="group.isSecretGroup">
+                <div class="block" style="background-color: green; margin: 0 1px 0 1px;">
+                  <div v-for="card in group.cards" class="block">
+                    <el-image
+                      style="width: 37px; height: 50px"
+                      :src="getCardUrl(card)"
+                    />
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div v-for="card in group.cards" class="block">
+                  <el-image
+                    style="width: 37px; height: 50px"
+                    :src="getCardUrl(card)"
+                  />
+                </div>
+              </template>
+            </template>
+          </template>
+          <template v-else>
+            <div v-for="card in scope.row.Cards" class="block">
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getCardUrl(card)"
+              />
+            </div>
+          </template>
           <div v-if="scope.row.HandCards !== undefined && scope.row.HandCards != null && scope.row.HandCards.length > 0">
             <span>剩余手牌:</span>
             <div v-for="card in scope.row.HandCards" class="block">
@@ -159,7 +183,7 @@ export default {
       let stepIdx = 1
       for (let i = 0; i < stepArr.length; i++) {
         const detail = stepArr[i].split('-')
-        if (detail.length != 4) {
+        if (detail.length !== 4) {
           Message.error('数据错误，不为4部分组合，原始值为：' + stepArr[i])
           return
         }
@@ -170,20 +194,23 @@ export default {
         let handcards = []
         let idx = stepIdx
         let isPoint = false
-        if (actionName != '发牌' && actionName != '结算') {
+        if (actionName !== '发牌' && actionName !== '结算') {
           stepIdx++
         }
-        if (actionName == '结算') {
+        let resGroups = []
+        if (actionName === '结算') {
           idx = idx + 1
           for (let j = 0; j < val.players.length; j++) {
-            if (val.players[j].uid == uid) {
+            if (val.players[j].uid === uid) {
               cards = []
               let groups = []
+              resGroups = []
               if (val.players[j].hasOwnProperty('groups')) {
                 groups = val.players[j].groups
               }
               for (let k = 0; k < groups.length; k++) {
                 const one = groups[k]
+                one.isSecretGroup = this.isSecretGroup(one)
                 const jokerMap = {}
                 // 查找是否癞子代替
                 if (one.hasOwnProperty('joker') && one.joker.replace.length > 0) {
@@ -198,6 +225,7 @@ export default {
                     cards.push(one.cards[d])
                   }
                 }
+                resGroups.push(one)
               }
               handcards = val.players[j].handCards
             }
@@ -206,7 +234,7 @@ export default {
         } else if (actionName == '发牌') {
           idx = 0
         }
-        this.actions.push({
+        const item = {
           Index: idx,
           Uid: uid,
           Action: actionName,
@@ -215,7 +243,11 @@ export default {
           Contritube: contritube,
           IsPoint: isPoint,
           IsFinished: false
-        })
+        }
+        if (resGroups.length > 0) {
+          item.Groups = resGroups
+        }
+        this.actions.push(item)
       }
       const finishArray = []
       for (let j = 0; j < val.players.length; j++) {
@@ -247,6 +279,20 @@ export default {
         FinishArray: finishArray,
         IsFinished: true
       })
+    },
+    isSecretGroup(group) {
+      if (group.groupId === 0) {
+        if (group.cardType === 2 && !group.joker) { // 没有使用癞子
+          return true
+        } else if (group.cardType === 2 && group.joker && group.Joker.IsSecretGroup) { // 癞子5条以上
+          return true
+        } else if (group.cardType === 3 && !group.joker && group.cards.length >= 5) {
+          return true
+        } else if (group.cardType === 3 && group.joker && group.Joker.IsSecretGroup) {
+          return true
+        }
+      }
+      return false
     },
     getCardUrl(card) {
       return require('@/assets/poker/' + card + '.png')
@@ -288,7 +334,6 @@ export default {
       }
     },
     closeView(done) {
-      // console.log("close ....")
       this.$emit('closeDialog')
       done()
     }
