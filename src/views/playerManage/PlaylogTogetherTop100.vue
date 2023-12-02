@@ -128,7 +128,7 @@ export default {
       gameSort: [22, 31],
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > new Date().getTime()
+          return time.getTime() > new Date().getTime() - 86400000
         }
       }
     }
