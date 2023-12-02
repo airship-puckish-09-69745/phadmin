@@ -256,7 +256,7 @@
           </table>
         </el-scrollbar>
 
-        <table class="formTable"  style="margin-top:20px;">
+        <table class="formTable" style="margin-top:20px;">
           <thead>
             <tr>
               <td colspan="24">解锁jackpot条件</td>
@@ -270,7 +270,7 @@
             <tr>
               <td width="50">翻中金币</td>
               <td v-for="index in 23" :key="index">
-                <el-input  v-model.number="item.JackpotShowOption[index+1]" :required="true" />
+                <el-input v-model.number="item.JackpotShowOption[index+1]" :required="true" />
               </td>
             </tr>
           </tbody>
@@ -350,21 +350,19 @@
                   <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                 </template>
               </el-table-column>
-              <el-table-column label="玩家开奖池条件(%)"  width="300">
-                <template slot-scope="scope" v-if="scope.row.AwardType==1">
+              <el-table-column label="玩家开奖池条件(%)" width="300">
+                <template v-if="scope.row.AwardType==1" slot-scope="scope">
                   虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
                   < 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
                 </template>
 
               </el-table-column>
 
-
               <el-table-column label="机器人开奖池值" prop="PoolVal">
-                <template slot-scope="scope"  v-if="scope.row.AwardType==1">
+                <template v-if="scope.row.AwardType==1" slot-scope="scope">
                   >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                 </template>
               </el-table-column>
-
 
               <el-table-column label="机器人开奖数量概率" prop="RateArr">
                 <template slot-scope="scope">
