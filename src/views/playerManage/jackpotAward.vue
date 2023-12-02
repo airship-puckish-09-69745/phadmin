@@ -95,7 +95,7 @@
         width="100"
       >
         <template slot-scope="{row}">
-          <div style="color:green;" v-if="!row.IsRobot">真人</div>
+          <div v-if="!row.IsRobot" style="color:green;">真人</div>
           <div v-else>否</div>
         </template>
       </el-table-column>

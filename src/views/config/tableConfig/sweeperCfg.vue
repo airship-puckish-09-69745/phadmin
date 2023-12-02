@@ -248,7 +248,7 @@
               <tr v-for="(item,index) in item.betOptions" :key="index">
                 <td>{{ index }}</td>
                 <td v-for="i in 23" :key="i">
-                  <span v-if="!betOptionEdit[index][i]" style="font-size: 12px" @click="setEditable(index,i)" >{{ item[i]?item[i]/100:'' }}</span>
+                  <span v-if="!betOptionEdit[index][i]" style="font-size: 12px" @click="setEditable(index,i)">{{ item[i]?item[i]/100:'' }}</span>
                   <el-input v-else v-model.number="item[i]" size="mini" />
                 </td>
               </tr>
