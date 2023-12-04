@@ -2,9 +2,9 @@
   <div class="app-container">
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="12" :offset="3">
-        <el-button size="mini" @click="addRow">添加组合</el-button>
-        <el-button size="mini" @click="setData">保存</el-button>
+      <el-col :offset="3">
+        <el-button size="mini" type="success" @click="addRow">添加组合</el-button>
+        <el-button size="mini" type="primary" @click="setData">保存</el-button>
 
         <el-form ref="form" :model="form" label-width="150px">
           <el-table
@@ -105,7 +105,13 @@ export default {
       this.showData.push({ index: this.showData.length, items: [], showStr: '' })
     },
     delRow(i) {
-      this.showData.splice(i, 1)
+      this.$confirm('确定要删除黑名单记录：Index:' + (i+1) + "，内容：" + this.showData[i].showStr, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.showData.splice(i, 1)
+      })
     },
     getData() {
       const $this = this
