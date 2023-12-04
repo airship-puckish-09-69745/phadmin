@@ -257,6 +257,26 @@ export const asyncRoutes = [
         name: 'bodingCfg',
         meta: { title: 'Lucky89 - Boding配置' }
       },
+      {
+        path: 'texasNlhTable',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'TexasNlh - 无限德州', noCache: true },
+        children: [
+          {
+            path: 'texasNlhTable',
+            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            name: 'texasNlhTable',
+            meta: { title: 'TexasNlh 桌子' }
+          },
+          {
+            path: 'texasNlhCfg',
+            component: () => import('@/views/config/tableConfig/texasNlhCfg'),
+            name: 'texasNlhCfg',
+            meta: { title: 'TexasNlh 配置' }
+          }
+        ]
+      },
       /*
       {
         path: 'bodingRobotSetting',

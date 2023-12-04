@@ -14,12 +14,12 @@
         当前游戏：<span style="color: red;">{{ getGameName(gid) }}</span>
       </el-form-item>
       <el-select v-model="tableMoney" size="mini">
-        <el-option label="200" :value="200"/>
-        <el-option label="100" :value="100"/>
-        <el-option label="50" :value="50"/>
-        <el-option label="20" :value="20"/>
-        <el-option label="10" :value="10"/>
-        <el-option label="5" :value="5"/>
+        <el-option label="200" :value="200" />
+        <el-option label="100" :value="100" />
+        <el-option label="50" :value="50" />
+        <el-option label="20" :value="20" />
+        <el-option label="10" :value="10" />
+        <el-option label="5" :value="5" />
       </el-select>
       <el-form-item>
         <el-button type="primary" size="mini" @click="getList">查询</el-button>
@@ -69,8 +69,8 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span style="color:red" v-if="scope.row.Count * 100 /scope.row.PlayCount1 > 80">
-            {{ (scope.row.Count * 100 /scope.row.PlayCount1).toFixed(2) }}%
+            <span v-if="scope.row.Count * 100 /scope.row.PlayCount1 > 80" style="color:red">
+              {{ (scope.row.Count * 100 /scope.row.PlayCount1).toFixed(2) }}%
             </span>
             <span v-else>
               {{ (scope.row.Count * 100 /scope.row.PlayCount1).toFixed(2) }}%
@@ -96,15 +96,14 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span style="color:red" v-if="scope.row.Count * 100 /scope.row.PlayCount2 > 80">
-            {{ (scope.row.Count * 100 /scope.row.PlayCount2).toFixed(2) }}%
+            <span v-if="scope.row.Count * 100 /scope.row.PlayCount2 > 80" style="color:red">
+              {{ (scope.row.Count * 100 /scope.row.PlayCount2).toFixed(2) }}%
             </span>
             <span v-else>
               {{ (scope.row.Count * 100 /scope.row.PlayCount2).toFixed(2) }}%
             </span>
           </template>
         </el-table-column>
-
 
       </el-table>
     </el-row>
