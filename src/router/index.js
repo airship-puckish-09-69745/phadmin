@@ -339,7 +339,7 @@ export const asyncRoutes = [
             path: 'tower_cfg',
             component: () => import('@/views/config/tableConfig/minigames/tower'),
             name: 'tower_cfg',
-            meta: { title: 'Tower' }
+            meta: { title: 'Tower ◐' }
           }
           /* {
             path: 'windrop_cfg',
