@@ -334,6 +334,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
             meta: { title: 'Mines - 扫雷 ◐' }
+          },
+          {
+            path: 'tower_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/tower'),
+            name: 'tower_cfg',
+            meta: { title: 'Tower' }
           }
           /* {
             path: 'windrop_cfg',
@@ -446,21 +452,6 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/slots_rooms'),
         name: 'slots_rooms',
         meta: { title: '老虎机房间列表' }
-      },
-      {
-        path: 'miniGamesCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: '小游戏配置', noCache: true },
-        children: [
-          {
-            path: 'tower_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/tower'),
-            name: 'tower_cfg',
-            meta: { title: 'Tower - ' }
-          }
-
-        ]
       },
       {
         path: 'gameWaitQueue',
