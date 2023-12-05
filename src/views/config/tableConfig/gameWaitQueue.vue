@@ -48,7 +48,7 @@
 
                 <el-table-column
                   prop="WaitTime"
-                  label="等待时间"
+                  label="等待时间（秒）"
                 >
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
