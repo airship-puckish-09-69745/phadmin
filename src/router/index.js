@@ -461,6 +461,12 @@ export const asyncRoutes = [
           }
 
         ]
+      },
+      {
+        path: 'gameWaitQueue',
+        component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
+        name: 'gameWaitQueue',
+        meta: { title: '排队入桌配置 ◐' }
       }
     ]
   },
