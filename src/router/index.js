@@ -292,7 +292,7 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: '下注类游戏', noCache: true },
         children: [
-          {
+          /* {
             path: 'abTable',
             component: () => import('@/views/config/tableConfig/abTable'),
             name: 'abTable',
@@ -303,7 +303,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/CarRouletteTable'),
             name: 'CarRoulette',
             meta: { title: 'Car - 车标转盘 ◐' }
-          },
+          },*/
           {
             path: 'color_game',
             component: () => import('@/views/config/tableConfig/colorGame'),
@@ -317,7 +317,7 @@ export const asyncRoutes = [
             name: 'gameCrash',
             meta: { title: 'Crash - 小火箭 ◐' }
           },
-          {
+          /* {
             path: 'dvtTable',
             component: () => import('@/views/config/tableConfig/dvtTable'),
             name: 'dvtTable',
@@ -328,19 +328,19 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/bcrTable'),
             name: 'bcrTable',
             meta: { title: 'Baccarat - 百家乐 ◐' }
-          },
+          },*/
           {
             path: 'sweeper',
             component: () => import('@/views/config/tableConfig/sweeperCfg'),
             name: 'sweeperCfg',
             meta: { title: 'Mines - 扫雷 ◐' }
-          },
-          {
+          }
+          /* {
             path: 'windrop_cfg',
             component: () => import('@/views/config/tableConfig/windrop_cfg'),
             name: 'windrop_cfg',
             meta: { title: 'Windrop ◐' }
-          }
+          }*/
 
         ]
       },
@@ -359,7 +359,7 @@ export const asyncRoutes = [
             meta: { title: 'Beauty - 睡美人' }
           },
 
-          {
+          /* {
             path: 'gold_miner_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/gold_miner_slots_cfg'),
             name: 'gold_miner_slots_cfg',
@@ -376,14 +376,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/joker_slots_cfg'),
             name: 'joker_slots_cfg',
             meta: { title: 'Joker - 小丑' }
-          },
+          },*/
           {
             path: 'phoenix_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
             name: 'phoenix_slots_cfg',
             meta: { title: 'Phoenix - 凤凰' }
           },
-          {
+          /* {
             path: 'chicago_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/chicago_slots_cfg'),
             name: 'chicago_slots_cfg',
@@ -406,7 +406,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/rabbit_slots_cfg'),
             name: 'rabbit_slots_cfg',
             meta: { title: '金钱兔' }
-          },
+          },*/
           {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
@@ -574,17 +574,17 @@ export const asyncRoutes = [
     meta: { title: '牌局日志 ◐', icon: 'log' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
-      {
-        path: 'playlog_lucky9',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_lucky9',
-        meta: { title: 'Lucky9 ◐', gid: 23 }
-      },
-      {
+      /* {
         path: 'playlog_car',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_car',
         meta: { title: 'Car - 车标转盘 ◐', gid: 5 }
+      },*/
+      {
+        path: 'playlog_colorgame',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_colorgame',
+        meta: { title: 'ColorGame - ◐', gid: 25 }
       },
       {
         path: 'playlog_crash',
@@ -593,10 +593,28 @@ export const asyncRoutes = [
         meta: { title: 'Crash - 小火箭◐', gid: 10 }
       },
       {
+        path: 'playlog_lucky9',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_lucky9',
+        meta: { title: 'Lucky9 ◐', gid: 23 }
+      },
+      {
         path: 'playlog_sweeper',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_sweeper',
         meta: { title: 'Mines - 扫雷◐', gid: 20 }
+      },
+      {
+        path: 'playlog_pusoy',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_pusoy',
+        meta: { title: 'Pusoy - ◐', gid: 21 }
+      },
+      {
+        path: 'playlog_texas',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_texas',
+        meta: { title: 'Texas - 德州扑克◐', gid: 15 }
       },
       {
         path: 'playlog_tongits',
@@ -610,36 +628,21 @@ export const asyncRoutes = [
         name: 'playlog_classic_tongits',
         meta: { title: 'Tongits - 经典 ◐', gid: 31 }
       },
-      {
-        path: 'playlog_colorgame',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_colorgame',
-        meta: { title: 'ColorGame - ◐', gid: 25 }
-      },
-      {
+
+      /* {
         path: 'playlog_ab',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_ab',
         meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
-      },
-      {
-        path: 'playlog_texas',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_texas',
-        meta: { title: '德州扑克 - Texas ◐', gid: 15 }
-      },
+      },*/
+
       {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
-      {
-        path: 'playlog_pusoy',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_pusoy',
-        meta: { title: 'Pusoy - ◐', gid: 21 }
-      },
+
       {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
@@ -658,7 +661,7 @@ export const asyncRoutes = [
             name: 'beauty_slots_log',
             meta: { title: 'beauty - 睡美人', gid: 52 }
           },
-          {
+          /* {
             path: 'joker_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'joker_slots_log',
@@ -669,13 +672,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gold_train_slots_log',
             meta: { title: 'goldTrain - 黄金列车', gid: 54 }
-          },
+          },*/
           {
             path: 'phoenix_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
-          },
+          }/*,
           {
             path: 'gold_miner_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -705,7 +708,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'rabbit_slots_log',
             meta: { title: 'Rabbit - 金钱兔', gid: 67 }
-          }
+          }*/
 
         ]
       }
