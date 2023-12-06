@@ -88,6 +88,15 @@
           width="100"
         />
         <el-table-column
+          prop="Anticheating"
+          label="是否防作弊"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ showAnticheating(scope.row.Anticheating) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="LastModify"
           label="最近修改"
           width="150"
@@ -232,6 +241,20 @@
             <el-tooltip class="item" effect="dark" content="如果有值，且玩家携带达到此值，则隐藏盖场次" placement="left-start">
               <i class="el-icon-info" />
             </el-tooltip>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="是否防作弊："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.item.Anticheating"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -482,7 +505,8 @@ function newItem() {
     DefaultWinRate: 50,
     LuckyLevelLimitMax: 0,
     LuckyLevelLimitMoney: 0,
-    MinPlayMoney: 0
+    MinPlayMoney: 0,
+    Anticheating: 0
   }
 }
 
@@ -526,6 +550,7 @@ export default {
         Control: '机器人控制配置',
         MinPlayMoney: '最小玩牌金额',
         RobotCardBuildConfig: '机器人好牌配置',
+        Anticheating: '是否防作弊',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
@@ -552,6 +577,13 @@ export default {
     console.log(1)
   },
   methods: {
+    showAnticheating(n) {
+      if (n == 1) {
+        return '是'
+      } else {
+        return '否'
+      }
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
