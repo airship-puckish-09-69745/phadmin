@@ -875,7 +875,15 @@ export default {
         LowLotteryPoolReChoice: 0,
         LowLotteryPoolReChoiceRate: 0,
         HighLotteryPoolReChoice: 0,
-        HighLotteryPoolReChoiceRate: 0
+        HighLotteryPoolReChoiceRate: 0,
+        ChatRobotSendIntervalMin: 0,
+        ChatRobotSendIntervalMax: 0,
+        ChatRobotSendRate: 0,
+        ChatRobotSendMaxNum: 0,
+        ChatRobotReplyIntervalMin: 0,
+        ChatRobotReplyIntervalMax: 0,
+        ChatRobotReplyRate: 0,
+        ChatRobotReplyMaxNum: 0
       },
       JackpotRandAwards: [],
       ColorItems: [
