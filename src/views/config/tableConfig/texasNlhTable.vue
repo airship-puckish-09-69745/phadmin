@@ -638,7 +638,7 @@ export default {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
         return false
       }
-      if (this.edit.item.MinBuyIn> this.edit.item.MaxBuyIn) {
+      if (this.edit.item.MinBuyIn > this.edit.item.MaxBuyIn) {
         Message.error('【最低买入】必须小于等于【最大买入】，请检查数值正确性！')
         return false
       }

@@ -245,7 +245,7 @@ export const asyncRoutes = [
         name: 'texasTable',
         meta: { title: 'Texas - 德州' }
       },
-      /*{
+      /* {
         path: 'bodingTable',
         component: () => import('@/views/config/tableConfig/bodingTable'),
         name: 'bodingTable',
