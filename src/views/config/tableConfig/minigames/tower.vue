@@ -26,7 +26,12 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="Jackpot贡献率：">
-              <el-input v-model.number="item.JackpotFee"><template slot="append">%</template></el-input>
+              <el-input v-model.number="item.JackpotFee"><template slot="append">‰</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="中Jackpot后的Jackpot贡献率：">
+              <el-input v-model.number="item.HitJackpotFee"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
@@ -91,7 +96,7 @@
                   <el-input v-model.number="v.Row" size="small"><template slot="append">行</template></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col :span="11" :offset="1">
                 <el-form-item label="列数：">
                   <el-input v-model.number="v.Col" size="small"><template slot="append">列</template></el-input>
                 </el-form-item>
@@ -103,7 +108,7 @@
                   <el-input v-model.number="v.StarNum"><template slot="append">个星星</template></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col :span="11" :offset="1">
                 <el-form-item label="每行炸弹数：">
                   <el-input v-model.number="v.BombNum"><template slot="append">个炸弹</template></el-input>
                 </el-form-item>
