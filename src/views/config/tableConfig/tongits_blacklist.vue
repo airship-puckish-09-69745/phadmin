@@ -105,7 +105,7 @@ export default {
       this.showData.push({ index: this.showData.length, items: [], showStr: '' })
     },
     delRow(i) {
-      this.$confirm('确定要删除黑名单记录：Index:' + (i+1) + "，内容：" + this.showData[i].showStr, '提示', {
+      this.$confirm('确定要删除黑名单记录：Index:' + (i + 1) + '，内容：' + this.showData[i].showStr, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -138,7 +138,7 @@ export default {
       })
     },
     setData() {
-      const item = { List:[] }
+      const item = { List: [] }
       for (let i = 0; i < this.showData.length; i++) {
         item.List.push({ UidList: this.showData[i].items })
       }

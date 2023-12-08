@@ -74,8 +74,7 @@
                 >
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
-                      <el-switch v-model="scope.row.IsOpen" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
+                      <el-switch v-model="scope.row.IsOpen" active-color="#13ce66" inactive-color="#ff4949" />
                     </el-form-item>
                   </template>
                 </el-table-column>
@@ -159,7 +158,7 @@ export default {
         22: 'Tongits-Pot',
         23: 'Lucky9',
         // 25: 'Color Game',
-        31: 'Tongits-Classic',
+        31: 'Tongits-Classic'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
