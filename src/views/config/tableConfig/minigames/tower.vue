@@ -26,14 +26,62 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="Jackpot贡献率：">
-              <el-input v-model.number="item.JackpotFee"><template slot="append">%</template></el-input>
+              <el-input v-model.number="item.JackpotFee"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="中Jackpot倍率：">
-              <el-input v-model.number="item.JackpotOdds" />
+            <el-form-item label="中Jackpot后的Jackpot贡献率：">
+              <el-input v-model.number="item.HitJackpotFee"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="解锁Jackpot最小下注：">
+              <el-input v-model.number="item.JackpotBetMin" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <fieldset style="margin-top:10px">
+            <legend>Jackpot配置</legend>
+            <el-alert
+              type="success"
+              description="玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
+            />
+
+            <el-table
+              :data="item.JackpotCfg"
+              border
+              style="width: 100%"
+            >
+              <el-table-column
+                label="级别"
+                width="180"
+              >
+                <template slot-scope="scope">
+                  {{ JackpotTypeCfg[scope.row.Type] }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="奖励占比"
+                width="380"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.AwardRate">
+                    <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">%</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="概率"
+                width="380"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Rate"><template slot="append">%</template></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+
+          </fieldset>
         </el-row>
       </el-form>
     </el-row>
@@ -48,7 +96,7 @@
                   <el-input v-model.number="v.Row" size="small"><template slot="append">行</template></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col :span="11" :offset="1">
                 <el-form-item label="列数：">
                   <el-input v-model.number="v.Col" size="small"><template slot="append">列</template></el-input>
                 </el-form-item>
@@ -60,7 +108,7 @@
                   <el-input v-model.number="v.StarNum"><template slot="append">个星星</template></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col :span="11" :offset="1">
                 <el-form-item label="每行炸弹数：">
                   <el-input v-model.number="v.BombNum"><template slot="append">个炸弹</template></el-input>
                 </el-form-item>
@@ -87,6 +135,14 @@
                   <el-input v-model.number="scope.row.RowOdds"><template slot="append">倍率*100</template></el-input>
                 </template>
               </el-table-column>
+              <el-table-column
+                label="出现Jackpot的概率"
+                width="380"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.RowJackpot"><template slot="append">%</template></el-input>
+                </template>
+              </el-table-column>
             </el-table>
           </el-form>
         </el-tab-pane>
@@ -94,7 +150,7 @@
 
     </el-row>
     <el-row>
-      <el-col :offset="16">
+      <el-col style="margin-top:16px;" :offset="8" :span="8">
         <el-button type="primary" size="mini" @click="setData()">保存</el-button>
       </el-col>
     </el-row>
@@ -120,6 +176,12 @@ export default {
   	  },
       load: false,
       form: {
+      },
+      JackpotTypeCfg: {
+        1: 'GRAND JP',
+        2: 'MAJOR JP',
+        3: 'MINOR JP',
+        4: 'MINI JP'
       },
       levelCfg: {
       	1: 'Easy',

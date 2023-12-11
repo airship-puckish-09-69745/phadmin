@@ -74,8 +74,7 @@
                 >
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
-                      <el-switch v-model="scope.row.IsOpen" active-color="#13ce66" inactive-color="#ff4949">
-                      </el-switch>
+                      <el-switch v-model="scope.row.IsOpen" active-color="#13ce66" inactive-color="#ff4949" />
                     </el-form-item>
                   </template>
                 </el-table-column>
@@ -159,7 +158,7 @@ export default {
         22: 'Tongits-Pot',
         23: 'Lucky9',
         // 25: 'Color Game',
-        31: 'Tongits-Classic',
+        31: 'Tongits-Classic'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
@@ -186,7 +185,7 @@ export default {
       return (
         <div>
           <span>操作</span>
-          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doAdd(gid)}>添加游戏配置</el-button>
+          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doAdd(gid)}>添加底注配置</el-button>
         </div>
       )
     },
@@ -246,7 +245,6 @@ export default {
       }
     },
     showGameName(gid) {
-      console.log('gid >> ', gid)
       return this.games[gid] || gid
     },
     getFullKey(k) {
@@ -266,8 +264,7 @@ export default {
           $this.form = response.Data || {}
           $this.listData = []
           if (response.Data && response.Data.Data !== '') {
-            const cfg = JSON.parse(response.Data.Data)
-            $this.allCfg = cfg
+            $this.allCfg = JSON.parse(response.Data.Data)
             console.log('$this.allCfg >>> ', $this.allCfg)
             $this.$refs.compare.SetOldVal(response.Data)
           }
@@ -327,6 +324,11 @@ export default {
           }
           if (this.allCfg.All[i].Config[j].IsOpen && (this.allCfg.All[i].Config[j].PlayerNum == 0 && this.allCfg.All[i].Config[j].WaitTime == 0)) {
             Message.error('开启的时候，必须配置【发车人数】和【等待时间】')
+            return false
+          }
+          // tongits 判断发车人数有配置的时候，必须大于等于 3
+          if ((this.allCfg.All[i].GameId == 22 || this.allCfg.All[i].GameId == 31) && this.allCfg.All[i].Config[j].IsOpen && this.allCfg.All[i].Config[j].PlayerNum > 0 && this.allCfg.All[i].Config[j].PlayerNum < 3) {
+            Message.error('Tongits 的【发车人数】必须大于等于 3')
             return false
           }
         }

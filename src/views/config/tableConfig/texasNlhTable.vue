@@ -397,7 +397,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'TableFee', 'MinBuyIn', 'MaxBuyIn', 'PrefixChip', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'TableFee', 'MinBuyIn', 'MaxBuyIn', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {
@@ -498,6 +498,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          for (const o in objs) {
+            objs[o].PrefixChip /= 100 // 100倍
+          }
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
@@ -623,6 +626,7 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
+      postData.PrefixChip *= 100 // 放大100倍
       return postData
     },
     checkData() {
@@ -632,6 +636,10 @@ export default {
       }
       if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
+        return false
+      }
+      if (this.edit.item.MinBuyIn > this.edit.item.MaxBuyIn) {
+        Message.error('【最低买入】必须小于等于【最大买入】，请检查数值正确性！')
         return false
       }
       // TODO 完善
