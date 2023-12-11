@@ -7,7 +7,7 @@
         <el-button size="mini" type="primary" @click="setData">保存</el-button>
 
         <el-row>
-            <el-col :offset="12" span="2">
+            <el-col :offset="8" span="2">
               <el-button size="mini" @click="clearFilter">清除过滤</el-button>
             </el-col>
             <el-col :span="6">
@@ -49,7 +49,7 @@
             </el-table-column>
 
           </el-table>
-          <el-col :offset="16" :span="8">
+          <el-col :offset="8" :span="8">
             <div class="block">
               <el-pagination
                 :current-page="clientDB.GetPage().GetCurrentPage()"
