@@ -174,7 +174,7 @@
           width="80"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.taxes/1000) }}
+            {{ scope.row.taxes/(1^10) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -183,7 +183,7 @@
           width="80"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.taxe_ratios/1000) }}
+            {{ scope.row.taxe_ratios/10000 }}
           </template>
         </el-table-column>
         <el-table-column
