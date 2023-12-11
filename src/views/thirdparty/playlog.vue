@@ -178,6 +178,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="taxes"
+          label="抽水上限比例（德州）"
+          width="80"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.taxe_ratios/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="ggr"
           label="GGR"
           width="80"
