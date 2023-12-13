@@ -40,6 +40,15 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
+              <el-input v-model="item.BetMoney" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        
         <el-row>
           <fieldset style="margin-top:10px">
             <legend>Jackpot配置</legend>

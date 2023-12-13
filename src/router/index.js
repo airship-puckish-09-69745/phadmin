@@ -628,6 +628,12 @@ export const asyncRoutes = [
       },*/
 
       {
+        path: 'playlog_tower',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_tower',
+        meta: { title: 'Tower ◐', gid: 100 }
+      },
+      {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
