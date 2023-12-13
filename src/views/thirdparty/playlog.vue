@@ -171,10 +171,19 @@
         <el-table-column
           prop="taxes"
           label="抽水贡献值"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ (scope.row.taxes * Math.pow(10, -9)).toFixed(9) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="taxes"
+          label="抽水上限比例（德州）"
           width="80"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.taxes/1000) }}
+            {{ scope.row.taxe_ratios/10000 }}
           </template>
         </el-table-column>
         <el-table-column
@@ -353,6 +362,26 @@ export default {
     this.getAppInfo()
   },
   methods: {
+    movePointLeft(str, scale) {
+      var s, s1, s2, ch, ps, sign
+      ch = '.'
+      sign = ''
+      s = str || ''
+      if (scale <= 0) return s
+      ps = s.split('.')
+      s1 = ps[0] ? ps[0] : ''
+      s2 = ps[1] ? ps[1] : ''
+      if (s1.slice(0, 1) == '-') {
+        // 负数
+        s1 = s1.slice(1)
+        sign = '-'
+      }
+      if (s1.length <= scale) {
+        ch = '0.'
+        s1 = this.padLeft(s1, scale)
+      }
+      return sign + s1.slice(0, -scale) + ch + s1.slice(-scale) + s2
+    },
     handleSizeChange(val) {
       this.currentPage = 1
       this.pageNum = val

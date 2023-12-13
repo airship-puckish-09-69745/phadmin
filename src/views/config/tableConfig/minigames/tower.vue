@@ -35,7 +35,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="解锁Jackpot最小下注：">
+            <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
               <el-input v-model.number="item.JackpotBetMin" />
             </el-form-item>
           </el-col>
