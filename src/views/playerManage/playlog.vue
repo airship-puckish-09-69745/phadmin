@@ -504,6 +504,10 @@
       </ul>
     </el-dialog>
 
+    <el-dialog title="Tower详情" :visible.sync="towerVisible" width="650px" >
+      <div id="towerShow" v-html="towerData" />
+    </el-dialog>
+
     <el-dialog title="Lucky9牌局详情" :visible.sync="lucky9DetailVisible" width="1200px">
       <el-table :data="lucky9Detail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
@@ -841,6 +845,9 @@ export default {
       sweeperSTD: [8.00, 8.33, 8.70, 9.09, 9.52, 10.00, 10.53, 11.11, 11.76, 12.50, 13.33, 14.29, 15.38, 16.67, 18.18, 20.00, 22.22, 25.00, 28.57, 33.33, 40.00, 50.00, 66.67, 100],
 
       sweeperRateVisible: false,
+
+      towerVisible: false,
+      towerData: '',
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
@@ -1206,6 +1213,8 @@ export default {
             $this.showBodingGame(obj)
           } else if (gid === 21) {
             $this.showPusoyGame(obj)
+          } else if (gid === 100) {
+            $this.showTowerGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1351,6 +1360,10 @@ export default {
 
       this.sweeperVisible = true
     },
+    showTowerGame(obj) {
+      this.towerData = obj.Tower.Symbol
+      this.towerVisible = true
+    },
     showLucky9Game(obj) {
       this.lucky9Detail = obj
       this.lucky9DetailVisible = true
@@ -1428,6 +1441,8 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         case 19:
           names = ['Swallow', 'Peacock', 'Dove', 'Eagle', 'Rabbit', 'Panda', 'Monkey', 'Lion', 'Aves', 'Bestas', 'Shark', 'GoldShark', 'TakeAll', 'WinMore']
           break
+        case 100:
+          this.detailVisible = true
         default:
           return
       }
@@ -1575,4 +1590,19 @@ ul#sweeperShow li .showStep {
   margin-top:80px;
   margin-right:0px;
 }
+
+#towerShow table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#towerShow table td{
+  border: 1px solid #eee;
+  height: 31px;
+  line-height: 31px;
+  padding: 2px;
+}
+
 </style>
