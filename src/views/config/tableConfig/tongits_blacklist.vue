@@ -202,6 +202,7 @@ export default {
             for (let i = 0; i < $this.item.List.length; i++) {
               $this.showData.push({ index: i, items: $this.item.List[i].UidList, showStr: $this.item.List[i].UidList.join(',') })
             }
+            $this.form.BlackPayPotTimesKick = $this.item.BlackPayPotTimesKick
             $this.refreshData()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
