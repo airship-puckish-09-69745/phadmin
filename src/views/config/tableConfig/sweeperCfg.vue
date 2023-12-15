@@ -353,7 +353,7 @@
               <el-table-column label="玩家开奖池条件(%)" width="300">
                 <template v-if="scope.row.AwardType==1" slot-scope="scope">
                   虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-                  < 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                  &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
                 </template>
 
               </el-table-column>

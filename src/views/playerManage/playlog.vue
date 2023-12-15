@@ -504,7 +504,7 @@
       </ul>
     </el-dialog>
 
-    <el-dialog title="Tower详情" :visible.sync="towerVisible" width="650px" >
+    <el-dialog title="Tower详情" :visible.sync="towerVisible" width="650px">
       <div id="towerShow" v-html="towerData" />
     </el-dialog>
 

@@ -48,13 +48,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
+
         <el-row>
           <fieldset style="margin-top:10px">
             <legend>Jackpot配置</legend>
             <el-alert
               type="success"
-              description="玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
+              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
             />
 
             <el-table
@@ -156,13 +156,216 @@
           </el-form>
         </el-tab-pane>
       </el-tabs>
-
     </el-row>
+
+    <fieldset style="margin-top:20px;">
+      <legend>jackpot调控配置</legend>
+      <el-row>
+        <el-alert
+          type="success"
+          description="开启后，Jackpot的中奖概率以下表数值为准"
+        />
+        <el-form ref="item" :model="item" label-width="100px">
+          <el-form-item label="调控总开关">
+            <el-switch
+              v-model="item.JackpotRegulation.ToggleSwitch"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-text="开"
+              inactive-text="关"
+            />
+          </el-form-item>
+        </el-form>
+      </el-row>
+      <el-row>
+        <el-table
+          ref="filterTable"
+          :data="JackpotRandAwards"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column type="index" />
+          <el-table-column label="奖励类型" prop="JackpotType">
+            <template slot-scope="scope">
+              {{ JackpotTypeCfg[scope.row.JackpotType] }}
+            </template>
+          </el-table-column>
+          <el-table-column label="中奖概率" prop="JackpotRate">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
+                <template slot="append">‰</template>
+              </el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="玩家开奖池条件(%)" width="300">
+            <template v-if="scope.row.AwardType==1" slot-scope="scope">
+              虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+              &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+            </template>
+
+          </el-table-column>
+
+          <el-table-column label="机器人开奖池值" prop="PoolVal">
+            <template v-if="scope.row.AwardType==1" slot-scope="scope">
+              >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+
+          <el-table-column label="机器人开奖数量概率" prop="RateArr">
+            <template slot-scope="scope">
+              <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
+              {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-row>
+      <el-descriptions class="margin-top" border>
+        <el-descriptions-item>
+          <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-table
+        ref="filterTable"
+        :data="item.JackpotRegulation.PoolIncrArr"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column label="Id" prop="Id" />
+        <el-table-column label="奖池范围">
+          <template slot-scope="scope">
+            {{ getJackpotPoolTitle(scope.row) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="[0,2)点" prop="MinRobotNum">
+          <template slot-scope="scope">
+            {{ getJackpotIncrShow(scope.row, 0, 1) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="[2,7)点" prop="MinRobotNum">
+          <template slot-scope="scope">
+            {{ getJackpotIncrShow(scope.row, 2, 6) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="[7,9)点" prop="MinRobotNum">
+          <template slot-scope="scope">
+            {{ getJackpotIncrShow(scope.row, 7, 8) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="[9,18)点" prop="MinRobotNum">
+          <template slot-scope="scope">
+            {{ getJackpotIncrShow(scope.row, 9, 17) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="[18,24)点" prop="MinRobotNum">
+          <template slot-scope="scope">
+            {{ getJackpotIncrShow(scope.row, 18, 23) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm(scope.row)">编辑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </fieldset>
+
     <el-row>
       <el-col style="margin-top:16px;" :offset="8" :span="8">
         <el-button type="primary" size="mini" @click="setData()">保存</el-button>
       </el-col>
     </el-row>
+
+    <!-- 【dialog】jackpot开出奖励 -->
+    <el-dialog
+      :title="poolNumChange.title"
+      :modal="false"
+      :visible.sync="poolNumChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum()">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum">保存</el-button>
+      <el-table
+        ref="filterTable"
+        :data="poolNumChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column label="配置ID" prop="Id">
+          <template slot-scope="scope">
+            {{ scope.row.Id }}
+          </template>
+        </el-table-column>
+        <el-table-column label="开出数量" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="开出概率(%)" prop="Rate">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Rate" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum(scope.row.Id)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <!-- 【dialog】Jackpot奖池增长 -->
+    <el-dialog
+      :title="incrJackpotForm.title"
+      :modal="false"
+      :visible.sync="incrJackpotForm.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="robotForm" :model="incrJackpotForm.data">
+        <el-form-item>
+          <el-table
+            ref="filterTable"
+            :data="incrJackpotForm.data"
+            border
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'10px'}"
+            :cell-style="libShow.DefaultTableCell"
+            style="width: 100%"
+          >
+            <el-table-column type="index" />
+            <el-table-column label="时间段">
+              <template slot-scope="scope">
+                [{{ scope.row.StartHour }},{{ scope.row.EndHour+1 }})点
+              </template>
+            </el-table-column>
+            <el-table-column label="每小时增长">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.PerHourIncr" style="width: 100px;" size="mini" :required="true" />
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+        <el-form-item>
+          <el-button style="margin-bottom:10px;" type="primary" size="mini" @click="saveIncrJackpotDialog()">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" />
 
@@ -174,7 +377,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-// import slotsJackpotPhoenix from './components/jackpot_phoenix'
+import { $libShow, $libType } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -182,15 +385,25 @@ export default {
   data() {
     return {
       item: {
+        JackpotRegulation: {
+          BetMoreThan: 0,
+          AddPoolPctAfterJp: 0,
+          AddPoolPctPreJp: 0,
+          RandAwards: [
+            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [], 'VrPoolRate': 0, 'RealPoolRate': 0, 'JackpotRate': 0 }
+          ],
+          PoolIncrArr: []
+        },
+        jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
   	  },
       load: false,
       form: {
       },
       JackpotTypeCfg: {
-        1: 'GRAND JP',
-        2: 'MAJOR JP',
-        3: 'MINOR JP',
-        4: 'MINI JP'
+        1: '一等奖',
+        2: '二等奖',
+        3: '三等奖',
+        4: '3Bet中奖'
       },
       levelCfg: {
       	1: 'Easy',
@@ -201,6 +414,19 @@ export default {
       	6: 'Nightmare'
       },
       txt: '',
+      libShow: $libShow,
+      JackpotRandAwards: [],
+      incrJackpotForm: {
+        id: 0,
+        title: '',
+        visible: false,
+        data: []
+      },
+      poolNumChange: {
+        visible: false,
+        data: [],
+        jackpotType: 0
+      },
       subKey: 'tower_cfg'
     }
   },
@@ -247,12 +473,37 @@ export default {
           		one.sort(function(a, b) { return a.RowIndex - b.RowIndex })
           	}
             this.item = cfg
+
+            for (const k in this.item.JackpotRegulation.RandAwards) {
+              this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
+            }
+            this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
             // this.load = true
           }
         }
       })
+    },
+    getPostData() {
+      const ret = {}
+      Object.assign(ret, this.item)
+
+      const jackpotInfo = {}
+      Object.assign(jackpotInfo, this.item.JackpotRegulation)
+      jackpotInfo.RandAwards = []
+      for (const o in this.JackpotRandAwards) {
+        const raObj = {}
+        Object.assign(raObj, this.JackpotRandAwards[o])
+        // if (raObj.AwardType == 2) {
+        raObj.PoolVal *= 1000
+        // }
+        jackpotInfo.RandAwards.push(raObj)
+      }
+      ret.JackpotRegulation = jackpotInfo
+      // console.log(ret.JackpotRegulation)
+
+      return ret
     },
     setData() {
     	// 检验
@@ -264,9 +515,10 @@ export default {
     			return
     		}
     	}
-      this.form.Data = JSON.stringify(this.item)
+      this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
+      // console.log(this.form.Data)
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -285,6 +537,111 @@ export default {
           }
         })
       })
+    },
+    showOpenPoolRate(jpType, data) {
+      if (jpType == 4) {
+        return '不限制'
+      } else {
+        let showStr = ''
+        if (data.length > 0) {
+          for (var i = 0; i < data.length; i++) {
+            showStr += data[i].Num + '个(' + data[i].Rate + '%);'
+          }
+        }
+        return showStr
+      }
+    },
+    saveIncrJackpotDialog() {
+      for (var i = 0; i < this.item.JackpotRegulation.PoolIncrArr.length; i++) {
+        if (this.item.JackpotRegulation.PoolIncrArr[i].Id == this.incrJackpotForm.id) {
+          this.item.JackpotRegulation.PoolIncrArr[i].TimeArr = this.incrJackpotForm.data
+          for (var j = 0; j < this.item.JackpotRegulation.PoolIncrArr[i].TimeArr.length; j++) {
+            this.item.JackpotRegulation.PoolIncrArr[i].TimeArr[j].PerHourIncr *= 1000
+          }
+          break
+        }
+      }
+      this.incrJackpotForm.visible = false
+    },
+    addPoolNum() {
+      let maxId = 0
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id > maxId) {
+          maxId = this.poolNumChange.data[i].Id
+        }
+      }
+      maxId++
+      this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
+    },
+    removePoolNum(id) {
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id == id) {
+          this.poolNumChange.data.splice(i, 1)
+          break
+        }
+      }
+    },
+    savePoolNum() {
+      for (var i = 0; i < this.JackpotRandAwards.length; i++) {
+        if (this.poolNumChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
+          this.JackpotRandAwards[i].RateArr = this.poolNumChange.data
+          break
+        }
+      }
+      this.poolNumChange.visible = false
+    },
+    checkShowDayLimit(awardType) {
+      if (awardType == 2) {
+        return true
+      } else {
+        return false
+      }
+    },
+    showPoolNumDialog(data) {
+      if (data.JackpotType == 4) {
+        return
+      }
+      this.poolNumChange.title = this.JackpotTypeCfg[data.JackpotType] + '(开奖数量概率)'
+      this.poolNumChange.data = data.RateArr
+      this.poolNumChange.visible = true
+      this.poolNumChange.jackpotType = data.JackpotType
+    },
+    // 展示jackpot奖池增长标题
+    getJackpotPoolTitle(row) {
+      if (row.MaxPool == -1) {
+        return Math.floor(row.MinPool / 10000000) + '万以上每小时增长'
+      } else {
+        return Math.floor(row.MinPool / 10000000) + '~' + Math.floor(row.MaxPool / 10000000) + '万每小时增长'
+      }
+    },
+    // 展示jackpot每小时增长值
+    getJackpotIncrShow(row, startHour, endHour) {
+      let showNum = 0
+      for (let i = 0; i < row.TimeArr.length; i++) {
+        if (row.TimeArr[i].StartHour == startHour && row.TimeArr[i].EndHour == endHour) {
+          showNum = row.TimeArr[i].PerHourIncr / 1000
+          break
+        }
+      }
+      return showNum.toLocaleString()
+    },
+    showIncrJackpotForm(data) {
+      this.incrJackpotForm.id = data.Id
+      this.incrJackpotForm.data = []
+      for (let i = 0; i < data.TimeArr.length; i++) {
+        console.log(data.TimeArr[i])
+        this.incrJackpotForm.data.push({
+          EndHour: data.TimeArr[i].EndHour,
+          Index: data.TimeArr[i].Index,
+          StartHour: data.TimeArr[i].StartHour,
+          PerHourIncr: data.TimeArr[i].PerHourIncr / 1000
+        })
+      }
+      // for (const l in this.incrJackpotForm.data) {
+      //   this.incrJackpotForm.data[l].PerHourIncr /= 1000
+      // }
+      this.incrJackpotForm.title = '编辑' + this.getJackpotPoolTitle(data)
+      this.incrJackpotForm.visible = true
     }
   }
 }
