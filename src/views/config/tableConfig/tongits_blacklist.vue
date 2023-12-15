@@ -20,6 +20,15 @@
             </el-col>
         </el-row>
         <el-form ref="form" :model="form" label-width="150px">
+          <el-row :gutter="10" style="margin-top: 30px">
+            <el-col >
+              <el-form-item label="交Pot次数强制踢出：" prop="BlackPayPotTimesKick">
+                <el-col :span="12">
+                  <el-input v-model.number="form.BlackPayPotTimesKick" :required="true" />
+                </el-col>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <el-table
             ref="filterTable"
             :data="tableData"
@@ -205,7 +214,7 @@ export default {
       this.refreshShow()
     },
     setData() {
-      const item = { List:[] }
+      const item = { List:[],BlackPayPotTimesKick:this.form.BlackPayPotTimesKick }
       for (let i = 0; i < this.showData.length; i++) {
         item.List.push({ UidList: this.showData[i].items })
       }
