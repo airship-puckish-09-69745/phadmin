@@ -3,6 +3,15 @@
     <el-row>
       <publish primary-key="ID" key-id="Lucky9TableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
+    <el-row>
+      <el-col :span="22">
+        <p>注意事件：</p>
+        <p>1，底注不可直接修改，需要新添加新的场次配置，再去掉旧的场次配置；</p>
+        <p>2，新加的场次需要保持在预上状态，重启游戏服务后才能上架；要去掉的场次需要先改为预下状态，延迟半天之后再下架；</p>
+        <p>3，配置项【最大人数、桌子数量、HitPot下注倍数】修改后，需要重启游戏服务才能生效；</p>
+        <p>4，场次的底注有变化之后，需要同步调整AI配置。</p>
+      </el-col>
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -12,7 +21,6 @@
           @click="handleCreate()"
         >添加配置项
         </el-button>
-        <span style="color: red">注：修改场次底注需要同时修改AI缓冲池配置</span>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
@@ -347,7 +355,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="Pot下注倍数："
+              label="Pot下注倍数(0:关闭)："
               prop="item.PotBetTimes"
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
