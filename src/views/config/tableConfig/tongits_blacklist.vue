@@ -7,21 +7,21 @@
         <el-button size="mini" type="primary" @click="setData">保存</el-button>
 
         <el-row>
-            <el-col :offset="8" span="2">
-              <el-button size="mini" @click="clearFilter">清除过滤</el-button>
-            </el-col>
-            <el-col :span="6">
-              <el-input
-                v-model="search"
-                size="mini"
-                placeholder="输入关键字搜索"
-                @input="searchChange"
-              />
-            </el-col>
+          <el-col :offset="8" span="2">
+            <el-button size="mini" @click="clearFilter">清除过滤</el-button>
+          </el-col>
+          <el-col :span="6">
+            <el-input
+              v-model="search"
+              size="mini"
+              placeholder="输入关键字搜索"
+              @input="searchChange"
+            />
+          </el-col>
         </el-row>
         <el-form ref="form" :model="form" label-width="150px">
           <el-row :gutter="10" style="margin-top: 30px">
-            <el-col >
+            <el-col>
               <el-form-item label="交Pot次数强制踢出：" prop="BlackPayPotTimesKick">
                 <el-col :span="12">
                   <el-input v-model.number="form.BlackPayPotTimesKick" :required="true" />
@@ -169,14 +169,14 @@ export default {
       this.refreshData()
     },
     delRow(item) {
-      this.$confirm('确定要删除黑名单记录：Index:' + (item.index) + "，内容：" + item.showStr, '提示', {
+      this.$confirm('确定要删除黑名单记录：Index:' + (item.index) + '，内容：' + item.showStr, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         let delIdx = -1
-        for(let i=0;i<this.showData.length;i++){
-          if(this.showData[i].index == item.index){
+        for (let i = 0; i < this.showData.length; i++) {
+          if (this.showData[i].index == item.index) {
             delIdx = i
           }
         }
@@ -215,7 +215,7 @@ export default {
       this.refreshShow()
     },
     setData() {
-      const item = { List:[],BlackPayPotTimesKick:this.form.BlackPayPotTimesKick }
+      const item = { List: [], BlackPayPotTimesKick: this.form.BlackPayPotTimesKick }
       for (let i = 0; i < this.showData.length; i++) {
         item.List.push({ UidList: this.showData[i].items })
       }

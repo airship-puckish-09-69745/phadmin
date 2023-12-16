@@ -2,6 +2,7 @@
   <div class="app-container">
     <el-row>
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
+      <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>
     </el-row>
     <!--公共配置-->
     <el-row style="margin-top: 30px">
@@ -292,6 +293,28 @@
       </el-col>
     </el-row>
 
+    <el-dialog
+      title="查看玩家在玩图案"
+      :modal="false"
+      :visible.sync="showArea.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-form :model="showArea" label-width="120px" size="small">
+          <el-form-item label="玩家id：">
+            <el-input v-model.number="showArea.uid" size="11" placeholder="请输入在用户id" />
+          </el-form-item>
+          <el-form-item label="生成雷区：">
+            <div id="towerShow" v-html="towerData" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="goSearch">执行</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
+    </el-dialog>
+
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -405,6 +428,12 @@ export default {
       load: false,
       form: {
       },
+      showArea: {
+        visible: false,
+        uid: 0,
+        showUlReslt: false
+      },
+      towerData: '',
       JackpotTypeCfg: {
         1: '一等奖',
         2: '二等奖',
@@ -544,6 +573,9 @@ export default {
         })
       })
     },
+    showUserArea() {
+      this.showArea.visible = true
+    },
     showOpenPoolRate(jpType, data) {
       if (jpType == 4) {
         return '不限制'
@@ -648,6 +680,34 @@ export default {
       // }
       this.incrJackpotForm.title = '编辑' + this.getJackpotPoolTitle(data)
       this.incrJackpotForm.visible = true
+    },
+
+    goSearch() {
+      this.showArea.showUlReslt = false
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/game/show/tower',
+          Gid: 100,
+          Uid: this.showArea.uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log('sign reward', response)
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            this.$message.error(response.Data)
+
+            if (response.RetCode === 0) {
+              this.towerData = response.Data.details
+              this.showArea.showUlReslt = true
+            } else {
+            }
+          }
+        }
+      })
     }
   }
 }
@@ -661,4 +721,19 @@ export default {
 .symbol-img:hover, .symbol-img.active {
   border: 3px solid red;
 }
+
+#towerShow table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#towerShow table td{
+  border: 1px solid #eee;
+  height: 31px;
+  line-height: 31px;
+  padding: 2px;
+}
+
 </style>
