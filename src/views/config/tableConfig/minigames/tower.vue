@@ -219,6 +219,12 @@
             </template>
           </el-table-column>
 
+          <el-table-column label="机器人发奖上限(%)" prop="VrPoolRateMax">
+            <template v-if="scope.row.AwardType==1" slot-scope="scope">
+              <el-input v-model.number="scope.row.VrPoolRateMax" style="width: 120px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+
           <el-table-column label="机器人开奖数量概率" prop="RateArr">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
