@@ -357,7 +357,7 @@
             <el-form-item
               label="Pot下注倍数(0:关闭)："
               prop="item.PotBetTimes"
-              :rules="dataRule(true,{type:'n',range:'1'})"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="edit.item.PotBetTimes" />
             </el-form-item>
