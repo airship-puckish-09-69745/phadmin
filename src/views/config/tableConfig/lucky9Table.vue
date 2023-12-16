@@ -4,8 +4,8 @@
       <publish primary-key="ID" key-id="Lucky9TableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row>
-      <el-col :span="22">
-        <p>注意事件：</p>
+      <el-col :span="22" style="color:#BB0000;">
+        <p><strong>注意事项：</strong></p>
         <p>1，底注不可直接修改，需要新添加新的场次配置，再去掉旧的场次配置；</p>
         <p>2，新加的场次需要保持在预上状态，重启游戏服务后才能上架；要去掉的场次需要先改为预下状态，延迟半天之后再下架；</p>
         <p>3，配置项【最大人数、桌子数量、是否练习场、HitPot下注倍数】修改后，需要重启游戏服务才能生效；</p>
