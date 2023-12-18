@@ -163,8 +163,8 @@
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
-          type="success"
-          description="开启后，Jackpot的中奖概率以下表数值为准"
+          type="error"
+          description="开启后，Jackpot的中奖概率以下表数值为准。（尚未实现）"
         />
         <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
@@ -698,12 +698,11 @@ export default {
           // console.log('sign reward', response)
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-            this.$message.error(response.Data)
-
             if (response.RetCode === 0) {
               this.towerData = response.Data.details
               this.showArea.showUlReslt = true
             } else {
+              this.$message.error(response.Data)
             }
           }
         }
