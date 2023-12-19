@@ -749,6 +749,7 @@ export default {
       this.item.minMoneyBet /= 1000
       this.item.maxMoneyBet /= 1000
       this.item.minMoneyCarry /= 1000
+      this.item.Jackpot.BetMoreThan /= 1000
       for (const k in this.item.Jackpot.RandAwards) {
         this.item.Jackpot.RandAwards[k].PoolVal /= 1000
       }
@@ -802,6 +803,7 @@ export default {
       const jackpotInfo = {}
       Object.assign(jackpotInfo, this.item.Jackpot)
       jackpotInfo.RandAwards = []
+      jackpotInfo.BetMoreThan *= 1000
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
         Object.assign(raObj, this.JackpotRandAwards[o])
