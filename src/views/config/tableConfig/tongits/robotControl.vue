@@ -61,7 +61,7 @@
           label-width="200px"
           :rules="dataRule(true,{type:'n',range:'0'})"
         >
-          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMin" placeholder="单位秒" />
+          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMin" placeholder="单位ms" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -72,7 +72,7 @@
           label-width="200px"
           :rules="dataRule(true,{type:'n',range:'1'})"
         >
-          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMax" placeholder="单位秒" />
+          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMax" placeholder="单位ms" />
         </el-form-item>
       </el-col>
     </el-row>
