@@ -221,11 +221,11 @@ export default {
         },
         {
           value: 4,
-          label: '机器人D'
+          label: '机器人D(陪玩)'
         },
         {
           value: 5,
-          label: '机器人E'
+          label: '机器人E(需要赢)'
         }
       ],
       robotForm: {
