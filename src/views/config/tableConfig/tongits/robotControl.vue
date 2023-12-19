@@ -57,7 +57,7 @@
       </el-col>
       <el-col :span="11">
         <el-form-item
-          label="随机进入最小时间："
+          label="随机进入最小时间ms："
           label-width="200px"
           :rules="dataRule(true,{type:'n',range:'0'})"
         >
@@ -68,7 +68,7 @@
     <el-row>
       <el-col :span="11">
         <el-form-item
-          label="随机进入最大时间："
+          label="随机进入最大时间ms："
           label-width="200px"
           :rules="dataRule(true,{type:'n',range:'1'})"
         >
