@@ -91,7 +91,7 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="台费：" :required="true" prop="item.TableFee" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="台费(千分比)：" :required="true" prop="item.TableFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.TableFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -397,7 +397,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'TableFee', 'MinBuyIn', 'MaxBuyIn', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'SmallBlind', 'MinBuyIn', 'MaxBuyIn', 'DelayOpTimeCostMoney', 'ShowPublicCardCostMoney']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {
