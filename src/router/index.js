@@ -458,6 +458,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
         name: 'gameWaitQueue',
         meta: { title: '排队入桌配置 ◐' }
+      },
+      {
+        path: 'gameAuditConfig',
+        component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
+        name: 'gameAuditConfig',
+        meta: { title: 'GP审核配置 ◐' }
       }
     ]
   },
