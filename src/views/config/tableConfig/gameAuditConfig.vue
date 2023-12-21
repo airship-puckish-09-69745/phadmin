@@ -24,7 +24,7 @@
             >
               <template slot-scope="scope">
                 <el-form-item v-model="scope.row.AppId" :required="true" label-width="0">
-                  <el-select v-model="scope.row.AppId" placeholder="请选择" size="mini">
+                  <el-select v-model="scope.row.AppId" :disabled="true" placeholder="请选择" size="mini">
                     <el-option
                       v-for="row in appInfo"
                       :key="row.key"
@@ -43,7 +43,7 @@
             >
               <template slot-scope="scope">
                 <el-form-item v-model="scope.row.GameId" :required="true" label-width="0">
-                  <el-select v-model="scope.row.GameId" placeholder="请选择" size="mini">
+                  <el-select v-model="scope.row.GameId" :disabled="true" placeholder="请选择" size="mini">
                     <el-option
                       v-for="row in gameOptions"
                       :key="row.key"
@@ -62,7 +62,7 @@
             >
               <template slot-scope="scope">
                 <el-form-item v-model="scope.row.ChannelId" :required="true" label-width="0">
-                  <el-select v-model="scope.row.ChannelId" placeholder="请选择" size="mini">
+                  <el-select v-model="scope.row.ChannelId" :disabled="true" placeholder="请选择" size="mini">
                     <el-option label="BP" value="BP" />
                     <el-option label="GP" value="GP" />
                     <el-option label="AP" value="AP" />
@@ -107,6 +107,28 @@
 
     <!--对比组件-->
     <compare ref="compare" />
+
+    <el-dialog
+      title="选择游戏"
+      :visible.sync="selectGameVisible"
+      width="350px"
+    >
+      <el-form ref="selectedGid" v-model="selectedGid" label-width="150px">
+        <el-form-item label-width="0">
+          <el-select v-model="selectedGid" placeholder="请选择" size="mini">
+            <el-option
+              v-for="item in dialogGameOptions"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addGameItem">确定</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
 
   </div>
 </template>
@@ -158,12 +180,15 @@ export default {
         { key: 23, label: 'Lucky9' },
         { key: 31, label: 'Tongits-Classic' }
       ],
+      dialogGameOptions: [],
+      selectGameVisible: false,
       item: {
         GameId: '',
-        AppId: '',
-        ChannelId: '',
+        AppId: 1000005,
+        ChannelId: 'GP',
         FinishTime: 0
-      }
+      },
+      selectedGid: 0
     }
   },
   created() {
@@ -175,7 +200,38 @@ export default {
       return this.item
     },
     addOne() {
-      this.allCfg.push(this.newItem())
+      this.selectedGid = 0
+      const gameIds = [] // 已经有配置的 gid
+      for (const i in this.allCfg) {
+        gameIds.push(this.allCfg[i].GameId)
+      }
+      this.dialogGameOptions = []
+      console.log('gameIds ---> ', gameIds)
+      for (const i in this.games) {
+        if (!gameIds.includes(parseInt(i))) {
+          this.dialogGameOptions.push({
+            key: i,
+            label: this.games[i]
+          })
+        }
+      }
+      if (this.dialogGameOptions.length < 1) {
+        Message.error('现有游戏都已经有配置')
+        return false
+      }
+      this.selectGameVisible = true
+    },
+    addGameItem() {
+      if (this.selectedGid == 0) {
+        Message.error('请选择游戏！')
+        return false
+      }
+      const cfg = {}
+      copyObj(this.newItem(), cfg)
+      cfg.GameId = parseInt(this.selectedGid)
+      console.log('new cfg>>>>', cfg)
+      this.allCfg.push(cfg)
+      this.selectGameVisible = false
     },
     delRow(idx, row) {
       console.log('idx:' + idx + ' row:', row)
