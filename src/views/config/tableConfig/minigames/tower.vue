@@ -700,7 +700,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           // console.log('sign reward', response)
-          this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             if (response.RetCode === 0) {
               this.towerData = response.Data.details
