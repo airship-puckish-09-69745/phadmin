@@ -463,7 +463,7 @@ export const asyncRoutes = [
         path: 'gameAuditConfig',
         component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
         name: 'gameAuditConfig',
-        meta: { title: '游戏审核配置 ◐' }
+        meta: { title: 'GP审核配置 ◐' }
       }
     ]
   },
