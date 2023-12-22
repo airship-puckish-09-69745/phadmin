@@ -164,7 +164,7 @@
       <el-row>
         <el-alert
           type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。（尚未实现）"
+          description="开启后，Jackpot的中奖概率以下表数值为准。"
         />
         <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
