@@ -966,6 +966,125 @@ export const asyncRoutes = [
       }
     ]
   },
+  {
+    path: '/adminUser',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '德州专业版', icon: 'adminUser', perm: 'ADMINUSER_MANAGEMENT' },
+    children: [
+      {
+        path: 'texasTable',
+        component: () => import('@/views/config/tableConfig/texasTable'),
+        name: 'texasTable',
+        meta: { title: 'Texas - 德州' }
+      },
+      /* {
+        path: 'bodingTable',
+        component: () => import('@/views/config/tableConfig/bodingTable'),
+        name: 'bodingTable',
+        meta: { title: 'Lucky89 - Boding' }
+      },
+      {
+        path: 'bodingCfg',
+        component: () => import('@/views/config/tableConfig/bodingCfg'),
+        name: 'bodingCfg',
+        meta: { title: 'Lucky89 - Boding配置' }
+      },*/
+      {
+        path: 'texasNlhTable',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'TexasNlh - 无限德州', noCache: true },
+        children: [
+          {
+            path: 'texasNlhTable',
+            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            name: 'texasNlhTable',
+            meta: { title: 'TexasNlh 桌子' }
+          },
+          {
+            path: 'texasNlhCfg',
+            component: () => import('@/views/config/tableConfig/texasNlhCfg'),
+            name: 'texasNlhCfg',
+            meta: { title: 'TexasNlh 配置' }
+          }
+        ]
+      },
+      /*
+      {
+        path: 'bodingRobotSetting',
+        component: () => import('@/views/config/tableConfig/bodingRobotSetting'),
+        name: 'bodingRobotSetting',
+        meta: { title: 'Lucky89「Boding」 AI◐' }
+      },
+      */
+
+      {
+        path: 'SmallGameCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '下注类游戏', noCache: true },
+        children: [
+          /* {
+            path: 'abTable',
+            component: () => import('@/views/config/tableConfig/abTable'),
+            name: 'abTable',
+            meta: { title: 'AB - Andar Bahar ◐' }
+          },
+          {
+            path: 'CarRoulette',
+            component: () => import('@/views/config/tableConfig/CarRouletteTable'),
+            name: 'CarRoulette',
+            meta: { title: 'Car - 车标转盘 ◐' }
+          },*/
+          {
+            path: 'color_game',
+            component: () => import('@/views/config/tableConfig/colorGame'),
+            // component: () => import('@/views/config/tableConfig/colorGameMars'),
+            name: 'gameColorCfg',
+            meta: { title: 'color game ◐' }
+          },
+          {
+            path: 'gameCrash',
+            component: () => import('@/views/config/tableConfig/gameCrash'),
+            name: 'gameCrash',
+            meta: { title: 'Crash - 小火箭 ◐' }
+          },
+          /* {
+            path: 'dvtTable',
+            component: () => import('@/views/config/tableConfig/dvtTable'),
+            name: 'dvtTable',
+            meta: { title: 'Dragon - 龙虎 ◐' }
+          },
+          {
+            path: 'bcrTable',
+            component: () => import('@/views/config/tableConfig/bcrTable'),
+            name: 'bcrTable',
+            meta: { title: 'Baccarat - 百家乐 ◐' }
+          },*/
+          {
+            path: 'sweeper',
+            component: () => import('@/views/config/tableConfig/sweeperCfg'),
+            name: 'sweeperCfg',
+            meta: { title: 'Mines - 扫雷 ◐' }
+          },
+          {
+            path: 'tower_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/tower'),
+            name: 'tower_cfg',
+            meta: { title: 'Tower ◐' }
+          }
+          /* {
+            path: 'windrop_cfg',
+            component: () => import('@/views/config/tableConfig/windrop_cfg'),
+            name: 'windrop_cfg',
+            meta: { title: 'Windrop ◐' }
+          }*/
+
+        ]
+      },
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
