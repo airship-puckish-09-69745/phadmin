@@ -164,7 +164,7 @@
       <el-row>
         <el-alert
           type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。（尚未实现）"
+          description="开启后，Jackpot的中奖概率以下表数值为准。"
         />
         <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
@@ -192,6 +192,11 @@
           <el-table-column label="奖励类型" prop="JackpotType">
             <template slot-scope="scope">
               {{ JackpotTypeCfg[scope.row.JackpotType] }}
+            </template>
+          </el-table-column>
+          <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
+            <template v-if="scope.row.AwardType==1" slot-scope="scope">
+              {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%
             </template>
           </el-table-column>
           <el-table-column label="中奖概率" prop="JackpotRate">
@@ -305,7 +310,7 @@
           <el-form-item label="玩家id：">
             <el-input v-model.number="showArea.uid" size="11" placeholder="请输入在用户id" />
           </el-form-item>
-          <el-form-item label="生成雷区：">
+          <el-form-item label="生成图案：">
             <div id="towerShow" v-html="towerData" />
           </el-form-item>
           <el-form-item>
@@ -529,10 +534,9 @@ export default {
       jackpotInfo.RandAwards = []
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
+        this.JackpotRandAwards[o].AwardRate = this.item.JackpotCfg[o].AwardRate // 同步奖励占比
         Object.assign(raObj, this.JackpotRandAwards[o])
-        // if (raObj.AwardType == 2) {
         raObj.PoolVal *= 1000
-        // }
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.JackpotRegulation = jackpotInfo
@@ -696,7 +700,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           // console.log('sign reward', response)
-          this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             if (response.RetCode === 0) {
               this.towerData = response.Data.details

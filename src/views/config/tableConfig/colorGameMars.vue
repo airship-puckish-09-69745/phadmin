@@ -382,7 +382,7 @@
                 <el-table-column label="发放数量" prop="Value">
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Value" style="width: 200px;" size="mini" :required="true">
-                      <template v-if="scope.row.AwardType==1" slot="append">%</template><
+                      <template v-if="scope.row.AwardType==1" slot="append">%</template>
                     </el-input>
                   </template>
                 </el-table-column>

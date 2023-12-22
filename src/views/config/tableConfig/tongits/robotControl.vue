@@ -57,22 +57,22 @@
       </el-col>
       <el-col :span="11">
         <el-form-item
-          label="随机进入最小时间："
+          label="随机进入最小时间ms："
           label-width="200px"
           :rules="dataRule(true,{type:'n',range:'0'})"
         >
-          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMin" placeholder="单位秒" />
+          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMin" placeholder="单位ms" />
         </el-form-item>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="11">
         <el-form-item
-          label="随机进入最大时间："
+          label="随机进入最大时间ms："
           label-width="200px"
           :rules="dataRule(true,{type:'n',range:'1'})"
         >
-          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMax" placeholder="单位秒" />
+          <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMax" placeholder="单位ms" />
         </el-form-item>
       </el-col>
     </el-row>
