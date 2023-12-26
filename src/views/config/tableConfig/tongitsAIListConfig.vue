@@ -408,8 +408,10 @@ export default {
           this.handleCurrentChange(1)
           _this.statItem = { money: 0, initMoney: 0 }
           for (let i = 0; i < objs.length; i++) {
-            _this.statItem.money += objs[i].money
-            _this.statItem.initMoney += objs[i].initMoney
+            if(objs[i].status==1) {
+              _this.statItem.money += objs[i].money
+              _this.statItem.initMoney += objs[i].initMoney
+            }
           }
         }
         // loading.close()
