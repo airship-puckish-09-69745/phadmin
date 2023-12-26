@@ -342,15 +342,13 @@ export default {
     },
     handlePreOn(ob) {
       console.log(ob.uid)
-      ob.status = 1
-      this.changeStatus(ob.uid, ob, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
+      this.changeStatus(ob, 1, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
     },
     handlePreOff(ob) {
       console.log(ob.uid)
-      ob.status = 0
-      this.changeStatus(ob.uid, ob, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
+      this.changeStatus(ob, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
     },
-    changeStatus(id, ob, msg) {
+    changeStatus(ob, status, msg) {
       console.log(status)
       const $this = this
       this.$confirm(msg, '提示', {
@@ -363,13 +361,14 @@ export default {
           method: 'post',
           data: {
             Env: $this.env,
-            uid: id,
-            status: ob.status,
+            uid: ob.uid,
+            status: status,
             Path: '/tongitsrobotlist/update/status'
           }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
+            ob.status = status
             $this.clientDB.UpdateData2('uid', ob)
           }
         })
