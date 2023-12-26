@@ -18,6 +18,7 @@
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
+      <el-col span="16">
       <el-descriptions
         class="margin-top"
         :column="4"
@@ -30,6 +31,10 @@
         <el-descriptions-item label="输赢：">{{ formatNumber(statItem.money - statItem.initMoney) }}</el-descriptions-item>
         <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney)}}%</el-descriptions-item>
       </el-descriptions>
+      </el-col>
+      <el-col span="8">
+        <el-button size="mini" @click="refresh">刷新</el-button>
+      </el-col>
       <el-table
         ref="filterTable"
         :data="tableData"
@@ -295,6 +300,10 @@ export default {
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    refresh(){
+      this.getData()
+      this.getList()
     },
     getData() {
       const $this = this
