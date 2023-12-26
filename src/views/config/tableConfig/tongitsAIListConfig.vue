@@ -97,10 +97,10 @@
         >
           <template slot-scope="scope">
             <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
-              {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2) }}
             </span>
             <span v-else style="color:green">
-              {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2) }}
             </span>
           </template>
         </el-table-column>
