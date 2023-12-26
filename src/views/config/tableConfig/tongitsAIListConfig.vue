@@ -80,10 +80,10 @@
         >
           <template slot-scope="scope">
             <span style="color:red" v-if="scope.row.money > scope.row.initMoney">
-            {{ (scope.row.money - scope.row.initMoney)/1000 }}
+            {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
             </span>
             <span style="color:green" v-else>
-            {{ (scope.row.money - scope.row.initMoney)/1000 }}
+            {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
             </span>
           </template>
         </el-table-column>
@@ -93,10 +93,10 @@
         >
           <template slot-scope="scope">
             <span style="color:red" v-if="scope.row.money > scope.row.initMoney">
-            {{(scope.row.money - scope.row.initMoney)*100/scope.row.initMoney}}%
+            {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2)}}%
             </span>
             <span style="color:green" v-else>
-            {{(scope.row.money - scope.row.initMoney)*100/scope.row.initMoney}}%
+            {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2)}}%
             </span>
           </template>
         </el-table-column>
