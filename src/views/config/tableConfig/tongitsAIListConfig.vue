@@ -17,8 +17,18 @@
         </el-form>
       </el-col>
     </el-row>
+    <el-row style="padding-top: 5px">
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
+        添加机器人
+      </el-button>
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
+        导入机器人
+      </el-button>
+    </el-row>
     <div style="padding-top: 10px">
+
       <el-col span="16">
+
         <el-descriptions
           class="margin-top"
           :column="4"
@@ -215,28 +225,28 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label="用户id：" :required="true" prop="uid">
           <el-col :span="15">
-            <el-input v-model="edit.item.uid" :disabled="true" />
+            <el-input v-model="edit.item.uid" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
         <el-form-item label="账号标识：" :required="true" prop="account">
           <el-col :span="15">
-            <el-input v-model="edit.item.account" :disabled="true"/>
+            <el-input v-model="edit.item.account" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
 
         <el-form-item label="应用ID：" prop="app">
           <el-col :span="15">
-            <el-input v-model="edit.item.app" :disabled="true"/>
+            <el-input v-model="edit.item.app" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
         <el-form-item label="渠道：" prop="channel">
           <el-col :span="15">
-            <el-input v-model="edit.item.channel" :disabled="true" />
+            <el-input v-model="edit.item.channel" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
         <el-form-item label="当前资产：" :required="true" prop="money">
           <el-col :span="15">
-            <el-input v-model="edit.item.money" :disabled="true"  />
+            <el-input v-model="edit.item.money" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
 
@@ -250,8 +260,6 @@
             <el-input v-model="edit.item.icon" />
           </el-col>
         </el-form-item>
-
-
 
         <el-form-item label="初始资产：" :required="true" prop="initMoney">
           <el-col :span="15">
@@ -321,7 +329,7 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
-    refresh(){
+    refresh() {
       this.getData()
       this.getList()
     },
@@ -442,7 +450,7 @@ export default {
           this.handleCurrentChange(1)
           _this.statItem = { money: 0, initMoney: 0 }
           for (let i = 0; i < objs.length; i++) {
-            if(objs[i].status != 0) {
+            if (objs[i].status != 0) {
               _this.statItem.money += objs[i].money
               _this.statItem.initMoney += objs[i].initMoney
             }
@@ -563,17 +571,18 @@ export default {
       })
     },
     createSave(postData) {
+      postData.Env = this.env
+      postData.Path = '/tongitsrobotlist/add/user'
       request({
-        url: '/thirdpartygames/create',
+        url: '/dataProxy/info',
         method: 'post',
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
           this.getList()
-          Message.success('保存成功！')
+          Message.success('添加成功！')
         }
       })
     }
