@@ -196,6 +196,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
             name: 'tongitsClassicTableAI',
             meta: { title: 'Tongits经典-AI ◐' }
+          },
+          {
+            path: 'tongitsAIList',
+            component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
+            name: 'tongitsAIList',
+            meta: { title: 'TongitsAI-List ◐' }
           }
         ]
       },
