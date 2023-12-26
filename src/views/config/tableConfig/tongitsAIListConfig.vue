@@ -355,12 +355,12 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
-            for (let i = 0; i < $this.TotalData.length; i++) {
-              const item = $this.TotalData[i]
+            for (let i = 0; i < $this.tableData.length; i++) {
+              const item = $this.tableData[i]
               if (item.uid === id) {
-                $this.TotalData[i].status = status
+                $this.tableData[i].status = status
                 item.status = status
-                Object.assign($this.TotalData[i], item)
+                Object.assign($this.tableData[i], item)
                 break
               }
             }
