@@ -18,6 +18,18 @@
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
+      <el-descriptions
+        class="margin-top"
+        :column="4"
+        size="medium"
+        :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+        border
+      >
+        <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney.toFixed(2)) }}</el-descriptions-item>
+        <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money.toFixed(2))  }}</el-descriptions-item>
+        <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney).toFixed(2)) }}</el-descriptions-item>
+        <el-descriptions-item label="比例：">{{ formatNumber(((statItem.money - statItem.initMoney)*100/statItem.initMoney).toFixed(2))}}</el-descriptions-item>
+      </el-descriptions>
       <el-table
         ref="filterTable"
         :data="tableData"
@@ -269,6 +281,7 @@ export default {
       isDisabled: false,
       form: {
       },
+      statItem: { money: 0, initMoney: 0 },
       txt: '',
       subKey: 'tongits_ai_list_cfg'
     }
@@ -393,6 +406,11 @@ export default {
           this.totalData = objs
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
+          _this.statItem = { money: 0, initMoney: 0 }
+          for (let i = 0; i < objs.length; i++) {
+            _this.statItem.money += objs[i].money
+            _this.statItem.initMoney += objs[i].initMoney
+          }
         }
         // loading.close()
       })
@@ -468,16 +486,16 @@ export default {
       this.edit.item.initMoney *= 1000
       return this.edit.item
     },
-    checkData() {
+    /*    checkData() {
       this.$refs['edit.item'].validate(valid => {})
       if (this.getRobotData().uid <= 0) {
         this.$alert('用户id不能为空')
         return false
       }
       return true
-    },
+    },*/
     save() {
-      if (!this.checkData()) return
+      // if (!this.checkData()) return
       if (this.edit.isEdit) {
         this.editSave(this.getRobotData())
       } else {
