@@ -359,9 +359,12 @@ export default {
               const item = $this.TotalData[i]
               if (item.uid === id) {
                 $this.TotalData[i].status = status
+                item.status = status
+                Object.assign($this.TotalData[i], item)
                 break
               }
             }
+           // $this.clientDB.UpdateData({ uid: id, status: status })
           }
         })
       }).catch(() => {
