@@ -25,10 +25,10 @@
         :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
         border
       >
-        <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney.toFixed(2)) }}</el-descriptions-item>
-        <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money.toFixed(2))  }}</el-descriptions-item>
-        <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney).toFixed(2)) }}</el-descriptions-item>
-        <el-descriptions-item label="比例：">{{ formatNumber(((statItem.money - statItem.initMoney)*100/statItem.initMoney).toFixed(2))}}</el-descriptions-item>
+        <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
+        <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money)  }}</el-descriptions-item>
+        <el-descriptions-item label="输赢：">{{ formatNumber(statItem.money - statItem.initMoney) }}</el-descriptions-item>
+        <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney)}}%</el-descriptions-item>
       </el-descriptions>
       <el-table
         ref="filterTable"
