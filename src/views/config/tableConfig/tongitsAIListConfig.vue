@@ -19,18 +19,18 @@
     </el-row>
     <div style="padding-top: 10px">
       <el-col span="16">
-      <el-descriptions
-        class="margin-top"
-        :column="4"
-        size="medium"
-        :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-        border
-      >
-        <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
-        <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money)  }}</el-descriptions-item>
-        <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
-        <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney)}}%</el-descriptions-item>
-      </el-descriptions>
+        <el-descriptions
+          class="margin-top"
+          :column="4"
+          size="medium"
+          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+          border
+        >
+          <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
+          <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money) }}</el-descriptions-item>
+          <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
+          <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-descriptions-item>
+        </el-descriptions>
       </el-col>
       <el-col span="8">
         <el-button size="medium" @click="refresh">刷新</el-button>
@@ -127,14 +127,14 @@
           label="机器人等级"
           width="120"
         >
-        <template slot-scope="scope">
-          <span v-if="scope.row.initMoney >= scope.row.money" style="color:green">
-            需要赢
-          </span>
-          <span v-else style="color:red">
-             陪玩
-          </span>
-        </template>
+          <template slot-scope="scope">
+            <span v-if="scope.row.initMoney >= scope.row.money" style="color:green">
+              需要赢
+            </span>
+            <span v-else style="color:red">
+              陪玩
+            </span>
+          </template>
         </el-table-column>
 
         <el-table-column
@@ -218,6 +218,28 @@
             <el-input v-model="edit.item.uid" :disabled="true" />
           </el-col>
         </el-form-item>
+        <el-form-item label="账号标识：" :required="true" prop="account">
+          <el-col :span="15">
+            <el-input v-model="edit.item.account" :disabled="true"/>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="应用ID：" prop="app">
+          <el-col :span="15">
+            <el-input v-model="edit.item.app" :disabled="true"/>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="渠道：" prop="channel">
+          <el-col :span="15">
+            <el-input v-model="edit.item.channel" :disabled="true" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="当前资产：" :required="true" prop="money">
+          <el-col :span="15">
+            <el-input v-model="edit.item.money" :disabled="true"  />
+          </el-col>
+        </el-form-item>
+
         <el-form-item label="昵称：" :required="true" prop="nick">
           <el-col :span="15">
             <el-input v-model="edit.item.nick" />
@@ -228,26 +250,9 @@
             <el-input v-model="edit.item.icon" />
           </el-col>
         </el-form-item>
-        <el-form-item label="账号标识：" :required="true" prop="account">
-          <el-col :span="15">
-            <el-input v-model="edit.item.account" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="应用ID：" prop="app">
-          <el-col :span="15">
-            <el-input v-model="edit.item.app" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="渠道：" prop="channel">
-          <el-col :span="15">
-            <el-input v-model="edit.item.channel" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="当前资产：" :required="true" prop="money">
-          <el-col :span="15">
-            <el-input v-model="edit.item.money" />
-          </el-col>
-        </el-form-item>
+
+
+
         <el-form-item label="初始资产：" :required="true" prop="initMoney">
           <el-col :span="15">
             <el-input v-model="edit.item.initMoney" />
@@ -479,6 +484,9 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
+      if (row.status === 2) {
+        return null
+      }
       if (column.columnKey !== 'op') {
         this.initFormData(true, row.uid)
         this.edit.visible = true
