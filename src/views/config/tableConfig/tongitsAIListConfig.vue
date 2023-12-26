@@ -75,6 +75,32 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="输赢"
+          width="90"
+        >
+          <template slot-scope="scope">
+            <span style="color:red" v-if="scope.row.Money > scope.row.initMoney">
+            {{ (scope.row.Money - scope.row.initMoney)/1000 }}
+            </span>
+            <span style="color:green" v-else>
+            {{ (scope.row.Money - scope.row.initMoney)/1000 }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="输赢比"
+          width="90"
+        >
+          <template slot-scope="scope">
+            <span style="color:red" v-if="scope.row.Money > scope.row.initMoney">
+            {{(scope.row.Money - scope.row.initMoney)*100/scope.row.initMoney}}%
+            </span>
+            <span style="color:green" v-else>
+            {{(scope.row.Money - scope.row.initMoney)*100/scope.row.initMoney}}%
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="robotId"
           label="机器人id"
           width="90"
