@@ -392,7 +392,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           this.totalData = objs
-          this.clientDB = new ClientTableData(objs, 500, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
         }
         // loading.close()
