@@ -75,6 +75,32 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="输赢"
+          width="90"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
+            </span>
+            <span v-else style="color:green">
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="输赢比"
+          width="90"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+            </span>
+            <span v-else style="color:green">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="robotId"
           label="机器人id"
           width="90"
@@ -134,6 +160,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-col :offset="16" :span="8">
+        <div class="block">
+          <el-pagination
+            :current-page="clientDB.GetPage().GetCurrentPage()"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </el-col>
     </div>
     <el-dialog
       :title="getEditTitle()"
@@ -303,13 +342,13 @@ export default {
     },
     handlePreOn(ob) {
       console.log(ob.uid)
-      this.changeStatus(ob.uid, 1, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
+      this.changeStatus(ob, 1, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
     },
     handlePreOff(ob) {
       console.log(ob.uid)
-      this.changeStatus(ob.uid, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
+      this.changeStatus(ob, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
     },
-    changeStatus(id, status, msg) {
+    changeStatus(ob, status, msg) {
       console.log(status)
       const $this = this
       this.$confirm(msg, '提示', {
@@ -322,14 +361,15 @@ export default {
           method: 'post',
           data: {
             Env: $this.env,
-            uid: id,
+            uid: ob.uid,
             status: status,
             Path: '/tongitsrobotlist/update/status'
           }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
-            $this.clientDB.UpdateData({ uid: id, status: status })
+            ob.status = status
+            $this.clientDB.UpdateData2('uid', ob)
           }
         })
       }).catch(() => {
@@ -351,7 +391,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           this.totalData = objs
-          this.clientDB = new ClientTableData(objs, 500, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
         }
         // loading.close()
