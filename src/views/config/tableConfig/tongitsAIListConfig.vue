@@ -408,7 +408,7 @@ export default {
           this.handleCurrentChange(1)
           _this.statItem = { money: 0, initMoney: 0 }
           for (let i = 0; i < objs.length; i++) {
-            if(objs[i].status==1) {
+            if(objs[i].status != 0) {
               _this.statItem.money += objs[i].money
               _this.statItem.initMoney += objs[i].initMoney
             }
