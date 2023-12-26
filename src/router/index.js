@@ -490,14 +490,15 @@ export const asyncRoutes = [
         component: () => import('@/views/config/winConfig/paySchema'),
         name: 'gambleSchemaCfg',
         meta: { title: '付费用户调控配置 ◐', noCache: true }
-      },
+      }
+      /*,
       {
         path: 'VUPCfg',
         component: () => import('@/views/config/winConfig/VUPCfg'),
         name: 'VUPCfg',
         meta: { title: '小黑屋数值配置 ◐', noCache: true }
       }
-
+      */
     ]
   },
   {
