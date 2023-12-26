@@ -79,11 +79,11 @@
           width="90"
         >
           <template slot-scope="scope">
-            <span style="color:red" v-if="scope.row.money > scope.row.initMoney">
-            {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
+            <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
             </span>
-            <span style="color:green" v-else>
-            {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
+            <span v-else style="color:green">
+              {{ (scope.row.money - scope.row.initMoney).toFixed(2)/1000 }}
             </span>
           </template>
         </el-table-column>
@@ -92,11 +92,11 @@
           width="90"
         >
           <template slot-scope="scope">
-            <span style="color:red" v-if="scope.row.money > scope.row.initMoney">
-            {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2)}}%
+            <span v-if="scope.row.money > scope.row.initMoney" style="color:red">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
             </span>
-            <span style="color:green" v-else>
-            {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2)}}%
+            <span v-else style="color:green">
+              {{ ((scope.row.money - scope.row.initMoney)*100/scope.row.initMoney).toFixed(2) }}%
             </span>
           </template>
         </el-table-column>
@@ -160,6 +160,19 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-col :offset="16" :span="8">
+        <div class="block">
+          <el-pagination
+            :current-page="clientDB.GetPage().GetCurrentPage()"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </el-col>
     </div>
     <el-dialog
       :title="getEditTitle()"
@@ -329,13 +342,15 @@ export default {
     },
     handlePreOn(ob) {
       console.log(ob.uid)
-      this.changeStatus(ob.uid, 1, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
+      ob.status = 1
+      this.changeStatus(ob.uid, ob, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
     },
     handlePreOff(ob) {
       console.log(ob.uid)
-      this.changeStatus(ob.uid, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
+      ob.status = 0
+      this.changeStatus(ob.uid, ob, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
     },
-    changeStatus(id, status, msg) {
+    changeStatus(id, ob, msg) {
       console.log(status)
       const $this = this
       this.$confirm(msg, '提示', {
@@ -349,22 +364,13 @@ export default {
           data: {
             Env: $this.env,
             uid: id,
-            status: status,
+            status: ob.status,
             Path: '/tongitsrobotlist/update/status'
           }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
-            for (let i = 0; i < $this.tableData.length; i++) {
-              const item = $this.tableData[i]
-              if (item.uid === id) {
-                $this.tableData[i].status = status
-                item.status = status
-                Object.assign($this.tableData[i], item)
-                break
-              }
-            }
-           // $this.clientDB.UpdateData({ uid: id, status: status })
+            $this.clientDB.UpdateData2('uid', ob)
           }
         })
       }).catch(() => {

@@ -485,6 +485,20 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this.FilterData()
   }
 
+  // 更新数组中字段内容
+  this.UpdateData2 = function(keyName, ob) {
+    for (let i = 0; i < $this.TotalData.length; i++) {
+      const item = $this.TotalData[i]
+      if (item[keyName] === ob[keyName]) {
+        Object.assign($this.TotalData[i], ob)
+        break
+      }
+    }
+    $this.ShowData = $this.TotalData.slice(0)
+    this._sortByProp()
+    this.FilterData()
+  }
+
   this.GetDataByID = function(ID) {
     for (let i = 0; i < $this.TotalData.length; i++) {
       const data = $this.TotalData[i]
