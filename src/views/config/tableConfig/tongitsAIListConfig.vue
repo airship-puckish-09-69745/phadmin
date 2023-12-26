@@ -26,14 +26,14 @@
         :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
         border
       >
-        <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney/1000) }}</el-descriptions-item>
-        <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money/1000)  }}</el-descriptions-item>
-        <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)/1000) }}</el-descriptions-item>
+        <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
+        <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money)  }}</el-descriptions-item>
+        <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
         <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney)}}%</el-descriptions-item>
       </el-descriptions>
       </el-col>
       <el-col span="8">
-        <el-button size="mini" @click="refresh">刷新</el-button>
+        <el-button size="medium" @click="refresh">刷新</el-button>
       </el-col>
       <el-table
         ref="filterTable"
@@ -61,7 +61,7 @@
         <el-table-column
           prop="account"
           label="账号标识"
-          width="90"
+          width="100"
         />
         <el-table-column
           prop="app"
@@ -79,7 +79,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ scope.row.money/1000 }}
+            {{ scope.row.money }}
           </template>
         </el-table-column>
         <el-table-column
@@ -88,7 +88,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ scope.row.initMoney/1000 }}
+            {{ scope.row.initMoney }}
           </template>
         </el-table-column>
         <el-table-column
@@ -122,6 +122,21 @@
           label="机器人id"
           width="90"
         />
+        <el-table-column
+          prop="level"
+          label="机器人等级"
+          width="120"
+        >
+        <template slot-scope="scope">
+          <span v-if="scope.row.initMoney >= scope.row.money" style="color:green">
+            需要赢
+          </span>
+          <span v-else style="color:red">
+             陪玩
+          </span>
+        </template>
+        </el-table-column>
+
         <el-table-column
           prop="currentGame"
           label="当前所在的游戏"
@@ -413,6 +428,11 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           this.totalData = objs
+
+          for (let i = 0; i < objs.length; i++) {
+            objs[i].money /= 1000
+            objs[i].initMoney /= 1000
+          }
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
           _this.statItem = { money: 0, initMoney: 0 }
@@ -469,8 +489,6 @@ export default {
       if (ID) {
         const _data = this.getDataByUid(ID)
         if (_data) {
-          _data.money /= 1000
-          _data.initMoney /= 1000
           Object.assign(this.edit.item, _data)
         }
       }
@@ -528,6 +546,8 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
+          this.edit.item.money /= 1000
+          this.edit.item.initMoney /= 1000
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
