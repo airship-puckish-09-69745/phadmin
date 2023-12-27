@@ -21,14 +21,25 @@
       <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
         添加机器人
       </el-button>
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
-        导入机器人
-      </el-button>
+      <el-button type="success" size="mini"  icon="el-icon-refresh" @click="refresh">刷新</el-button>
+   <!--   <el-col :span="2" :offset="1">
+      <el-upload
+        class="upload-demo"
+        :action="actionURL"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :on-success="handleSuccess"
+        :with-credentials="true"
+        :before-remove="beforeRemove"
+        :limit="1"
+        :on-exceed="handleExceed"
+      >
+        <el-button size="small" type="primary">导入数据</el-button>
+      </el-upload>
+      </el-col> -->
     </el-row>
     <div style="padding-top: 10px">
-
       <el-col span="16">
-
         <el-descriptions
           class="margin-top"
           :column="4"
@@ -42,9 +53,7 @@
           <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-descriptions-item>
         </el-descriptions>
       </el-col>
-      <el-col span="8">
-        <el-button size="medium" @click="refresh">刷新</el-button>
-      </el-col>
+
       <el-table
         ref="filterTable"
         :data="tableData"
@@ -319,6 +328,12 @@ export default {
       subKey: 'tongits_ai_list_cfg'
     }
   },
+
+  computed: {
+    actionURL() {
+      return process.env.VUE_APP_BASE_API + '/other/upload'
+    }
+  },
   created() {
     this.getData()
     this.getList()
@@ -585,7 +600,60 @@ export default {
           Message.success('添加成功！')
         }
       })
-    }
+    },
+    // excel处理逻辑
+    importData() {
+      if (this.fileName === '') {
+        Message.info('您需要先上传excel文件')
+        return
+      }
+      const $this = this
+      request({
+        url: '/slotsActConfig/import/excel',
+        method: 'post',
+        data: {
+          Gid: this.edit.item.Gid,
+          FileName: this.edit.fileName
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const items = response.Data
+          $this.edit.item.Acts = items
+          const rets = []
+          for (let i = 0; i < items.length; i++) {
+            const rows = items[i]
+            const newRow = []
+            for (let j = 0; j < rows[0].length; j++) {
+              const newCols = [j + 1]
+              for (let r = 0; r < rows.length; r++) {
+                newCols.push(rows[r][j])
+              }
+              newRow.push(newCols)
+            }
+            rets.push(newRow)
+          }
+          $this.edit.showActs = rets
+          $this.edit.isNewImport = true
+          Message.success('导入数据成功！')
+        }
+      })
+    },
+    handleSuccess(rsp, file, fileList) {
+      this.edit.fileName = rsp.Data
+      this.importData()
+    },
+    handleRemove(file, fileList) {
+      console.log(file, fileList)
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
   }
 }
 </script>
