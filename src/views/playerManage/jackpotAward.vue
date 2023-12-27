@@ -235,7 +235,7 @@ export default {
           Path: '/jackpot/award/log',
           Uid: _this.searchForm.uid,
           AwardType: _this.searchForm.awardType,
-          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
+          Time: $libDate.SelectTimeToIndiaByZone(this.searchForm.date) / 1000,
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
           Limit: _this.pageNum,

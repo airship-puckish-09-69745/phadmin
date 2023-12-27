@@ -76,7 +76,9 @@
 
         <el-form-item>
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
-          <el-button type="success" size="mini" @click="exportExcel">导出</el-button>
+        </el-form-item>
+        <el-form-item>
+        <el-button  size="mini" @click="exportExcel">导出</el-button>
         </el-form-item>
 
         <span style="display:inline-block;margin: 6px 0 0 6px;color: red">支付成功率：{{ successTotal }} / {{ total }} = {{ showPaySuccessRatio() }}</span>

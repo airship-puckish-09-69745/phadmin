@@ -302,8 +302,8 @@ export default {
       env: 'dev',
       item: {
         Uid: 0,
-        start: $libDate.GetDayBegin(new Date().getTime()),
-        end: $libDate.GetDayEnd(new Date().getTime()),
+        start: Date.parse(new Date(this.dDate(0, 30))), // $libDate.GetDayBegin(new Date().getTime()),
+        end: Date.parse(new Date()), // $libDate.GetDayEnd(new Date().getTime()),
         app: '',
         type: 0,
         gameId: 0,
@@ -362,6 +362,24 @@ export default {
     this.getAppInfo()
   },
   methods: {
+    // 设置默认日期
+    dDate(daysAgo, minutesAgo) {
+      var now = new Date()
+      var date = new Date(now.getTime() - daysAgo * 24 * 3600 * 1000 - minutesAgo * 60 * 1000)
+      if (now.getDate() !== date.getDate()) {
+        var nowYear = now.getFullYear()
+        var nowMonth = now.getMonth() + 1 > 9 ? now.getMonth() + 1 : '0' + (now.getMonth() + 1)
+        var nowDay = now.getDate() > 9 ? now.getDate() : '0' + now.getDate()
+        return nowYear + '-' + nowMonth + '-' + nowDay + ' 00:00:00'
+      }
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1 > 9 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)
+      var day = date.getDate() > 9 ? date.getDate() : '0' + date.getDate()
+      var hour = date.getHours() > 9 ? date.getHours() : '0' + date.getHours()
+      var minutes = date.getMinutes() > 9 ? date.getMinutes() : '0' + date.getMinutes()
+      var result = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':00'
+      return result
+    },
     movePointLeft(str, scale) {
       var s, s1, s2, ch, ps, sign
       ch = '.'
@@ -423,6 +441,12 @@ export default {
     },
     getInfo() {
       const $this = this
+
+      if ((this.item.end - this.item.start) / 1000 >= 3600) { // 时间区间限制在1小时内
+        this.$message.error('为了不影响业务，此处查询时间范围不能超过一个小时')
+        return false
+      }
+
       request({
         url: '/dataProxy/info',
         method: 'get',

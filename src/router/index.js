@@ -196,6 +196,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
             name: 'tongitsClassicTableAI',
             meta: { title: 'Tongits经典-AI ◐' }
+          },
+          {
+            path: 'tongitsAIList',
+            component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
+            name: 'tongitsAIList',
+            meta: { title: 'TongitsAI-List ◐' }
           }
         ]
       },
@@ -478,7 +484,8 @@ export const asyncRoutes = [
         component: () => import('@/views/config/winConfig/gambleSchemaCfg'),
         name: 'gambleSchemaCfg',
         meta: { title: '小游戏调控杂项配置 ◐', noCache: true }
-      },
+      }
+      /*,
       {
         path: 'paySchemaCfg',
         component: () => import('@/views/config/winConfig/paySchema'),
@@ -491,7 +498,7 @@ export const asyncRoutes = [
         name: 'VUPCfg',
         meta: { title: '小黑屋数值配置 ◐', noCache: true }
       }
-
+      */
     ]
   },
   {
