@@ -980,10 +980,10 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/adminUser',
+    path: '/texasVersion',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '德州专业版', icon: 'adminUser', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '德州专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
       {
         path: 'texasNlhTable',
