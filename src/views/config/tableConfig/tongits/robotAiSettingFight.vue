@@ -37,9 +37,14 @@
           <el-input v-model.number="AiConfig.Fight.Special.PointGe51NotFight" placeholder="" />
         </el-form-item>
         <el-form-item
-          label="第二轮时其他玩家没有放牌就发起挑战概率"
+          label="其他玩家没有放牌就发起挑战概率（赢前提）"
         >
-          <el-input v-model.number="AiConfig.Fight.Special.Round2NotDrop" placeholder="" />
+          <el-input v-model.number="AiConfig.Fight.Special.OtherNotDropButCanWin" placeholder="" />
+        </el-form-item>
+      </el-col>
+      <el-col>
+        <el-form-item label="真人没放牌时发起挑战概率(赢前提)">
+          <tongits-table-range :range-list="AiConfig.Fight.Special.RealPlayerNotDrop" label-name="点数" />
         </el-form-item>
       </el-col>
     </el-row>
