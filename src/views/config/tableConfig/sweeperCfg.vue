@@ -286,7 +286,24 @@
         </table>
 
         <fieldset style="margin-top:20px;">
-          <legend>jackpot配置</legend>
+          <legend>jackpot调控配置</legend>
+          <el-row>
+            <el-alert
+              type="error"
+              description="开启后，Jackpot的中奖概率以下表数值为准。"
+            />
+            <el-form ref="item" :model="item" label-width="100px">
+              <el-form-item label="调控总开关">
+                <el-switch
+                  v-model="item.Jackpot.ToggleSwitch"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="开"
+                  inactive-text="关"
+                />
+              </el-form-item>
+            </el-form>
+          </el-row>
           <el-row :gutter="10" style="margin-top:20px;">
             <el-col :span="7">
               <el-form-item label="本局下注额度(≥)：">
