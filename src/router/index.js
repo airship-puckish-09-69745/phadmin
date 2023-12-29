@@ -537,7 +537,7 @@ export const asyncRoutes = [
     path: '/thirdparty',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '第三方管理', icon: 'user' },
+    meta: { title: '第三方管理', icon: 'user', perm: 'CFG_MANAGEMENT' },
     children: [
       {
         path: 'thirdparty',
@@ -575,7 +575,7 @@ export const asyncRoutes = [
     path: '/playlog',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '牌局日志 ◐', icon: 'log' },
+    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'CFG_MANAGEMENT' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
       /* {
