@@ -150,7 +150,8 @@ export default {
         0x200: '比牌燃烧',
         0x1000: '发牌',
         0x1001: '结算'
-      }
+      },
+      UidMap:{},
     }
   },
   watch: {
@@ -181,7 +182,7 @@ export default {
       console.log('val===>', val)
       const stepArr = val.actionLogs.split('|')
       let stepIdx = 1
-      let uidMap = {}
+      this.UidMap = {}
       let uidIndex = 0
       for (let i = 0; i < stepArr.length; i++) {
         const detail = stepArr[i].split('-')
@@ -236,7 +237,7 @@ export default {
         } else if (actionName == '发牌') {
           idx = 0
           if(uid <1000000){
-            uidMap[uid] = val.players[uidIndex].uid
+            this.UidMap[uid] = val.players[uidIndex].uid
           }
           uidIndex++
         }
@@ -302,8 +303,8 @@ export default {
     },
     getRealUid(uid){
        if(uid <1000000){
-          if(uidMap.hasOwnProperty(uid)){
-            return uidMap[uid]
+          if(this.UidMap.hasOwnProperty(uid)){
+            return this.UidMap[uid]
           }
         }
         return uid
