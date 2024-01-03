@@ -390,7 +390,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="机器人开奖数量概率" prop="RateArr">
+              <el-table-column label="机器人开奖数量概率（5min 一次）" prop="RateArr">
                 <template slot-scope="scope">
                   <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                   {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
