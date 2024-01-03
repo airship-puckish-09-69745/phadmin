@@ -277,7 +277,7 @@ export default {
       }
       this.actions.push({
         Index: 9999,
-        Uid: val.winUid,
+        Uid: this.getRealUid(val.winUid),
         Action: '赢家',
         Cards: [],
         HandCards: [],

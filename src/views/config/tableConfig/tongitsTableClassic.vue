@@ -408,7 +408,7 @@
         -->
         <tongits-robot-common v-model="edit" />
         <tongits-robot-control v-model="edit" />
-        <!-- <tongits-robot-build-card v-model="edit"></tongits-robot-build-card> -->
+        <tongits-robot-build-card v-model="edit"></tongits-robot-build-card>
 
         <el-form-item>
           <el-row>
