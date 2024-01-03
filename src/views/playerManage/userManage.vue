@@ -132,7 +132,7 @@
           <el-descriptions-item v-if="hasEditPerm" label="账号状态：">
             <el-tag v-if="item.Status == 1" type="danger">禁用</el-tag>
             <el-tag v-else type="success">正常</el-tag>
-            <el-button v-if="item.Status == 1" type="default" size="mini" style="margin-left: 10px;" @click="disableUser(0)">恢复</el-button>
+            <el-button v-if="item.Status == 1" type="success" size="mini" style="margin-left: 10px;" @click="disableUser(0)">解禁</el-button>
             <el-button v-else type="danger" size="mini" style="margin-left: 10px;" @click="disableUser(1)">禁用</el-button>
           </el-descriptions-item>
 
