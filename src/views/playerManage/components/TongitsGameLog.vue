@@ -181,6 +181,8 @@ export default {
       console.log('val===>', val)
       const stepArr = val.actionLogs.split('|')
       let stepIdx = 1
+      let uidMap = {}
+      let uidIndex = 0
       for (let i = 0; i < stepArr.length; i++) {
         const detail = stepArr[i].split('-')
         if (detail.length !== 4) {
@@ -233,10 +235,14 @@ export default {
           isPoint = true // contritube 代表结算时点数
         } else if (actionName == '发牌') {
           idx = 0
+          if(uid <1000000){
+            uidMap[uid] = val.players[uidIndex].uid
+          }
+          uidIndex++
         }
         const item = {
           Index: idx,
-          Uid: uid,
+          Uid: this.getRealUid(uid),
           Action: actionName,
           Cards: cards,
           HandCards: handcards,
@@ -293,6 +299,14 @@ export default {
         }
       }
       return false
+    },
+    getRealUid(uid){
+       if(uid <1000000){
+          if(uidMap.hasOwnProperty(uid)){
+            return uidMap[uid]
+          }
+        }
+        return uid
     },
     getCardUrl(card) {
       return require('@/assets/poker/' + card + '.png')
