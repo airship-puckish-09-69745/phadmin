@@ -75,20 +75,20 @@
           <div v-if="scope.row.IsFinished">
             <div v-for="one in scope.row.FinishArray" class="block-info">
               <span>用户：{{ one.Uid }} - {{ one.Nick }}</span><br>
-              <span>Normal：{{ one.normalMoney }}</span><br>
-              <span>奖励牌：{{ one.bonusCardMoney }}</span><br>
-              <span>灼烧：{{ one.burnedMoney }}</span><br>
-              <span>挑战：{{ one.challengeMoney }}</span><br>
+              <span>Normal：{{ one.normalMoney/1000 }}</span><br>
+              <span>奖励牌：{{ one.bonusCardMoney/1000 }}</span><br>
+              <span>灼烧：{{ one.burnedMoney/1000 }}</span><br>
+              <span>挑战：{{ one.challengeMoney/1000 }}</span><br>
               <template v-if="Gid !== 31">
-                <span>PotMoney：{{ one.potMoney }}</span><br>
+                <span>PotMoney：{{ one.potMoney/1000 }}</span><br>
               </template>
-              <span>秘密牌：{{ one.secretMeldMoney }}</span><br>
-              <span>tongits：{{ one.tongitsMoney }}</span><br>
-              <span>服务费：{{ one.moneyFee }}</span><br>
+              <span>秘密牌：{{ one.secretMeldMoney/1000 }}</span><br>
+              <span>tongits：{{ one.tongitsMoney/1000 }}</span><br>
+              <span>服务费：{{ one.moneyFee/1000 }}</span><br>
               <template v-if="Gid !== 31">
-                <span>Pot：{{ one.payPot }}</span><br>
+                <span>Pot：{{ one.payPot/1000 }}</span><br>
               </template>
-              <span>输赢：{{ one.moneyChange }}</span><br>
+              <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>
             </div>
           </div>
