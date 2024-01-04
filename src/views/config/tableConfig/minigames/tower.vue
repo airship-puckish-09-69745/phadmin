@@ -13,16 +13,14 @@
               <el-input v-model.number="item.MinBet" />
             </el-form-item>
           </el-col>
-          <!--
-          <el-col :span="7" :offset="1">
-            <el-form-item label="服务费：">
-              <el-input v-model.number="item.ServiceFee"><template slot="append">%</template></el-input>
-            </el-form-item>
-          </el-col>
-          -->
           <el-col :span="7" :offset="1">
             <el-form-item label="单局最大时间：">
               <el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7">
+            <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
+              <el-input v-model="item.BetMoney" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -40,14 +38,6 @@
           <el-col :span="7" :offset="1">
             <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
               <el-input v-model.number="item.JackpotBetMin" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="7">
-            <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
-              <el-input v-model="item.BetMoney" />
             </el-form-item>
           </el-col>
         </el-row>
