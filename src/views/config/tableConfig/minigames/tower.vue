@@ -18,7 +18,7 @@
               <el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="7" :offset="1">
             <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
               <el-input v-model="item.BetMoney" />
             </el-form-item>
