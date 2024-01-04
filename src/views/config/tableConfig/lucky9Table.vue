@@ -376,6 +376,29 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
+              label="按钮1的下注倍数："
+              :required="true"
+              prop="item.Button1Antes"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model="edit.item.Button1Antes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="按钮2的下注倍数："
+              :required="true"
+              prop="item.Button2Antes"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model="edit.item.Button2Antes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
               label="最小玩牌金额："
               :required="true"
               prop="item.MinPlayMoney"
@@ -586,7 +609,9 @@ function newItem() {
     HitPotTaxRates: 0,
     PotBetTimes: 0,
     PotTaxRates: 0,
-    MinPlayMoney: 0
+    MinPlayMoney: 0,
+    Button1Antes: 0,
+    Button2Antes: 0
   }
 }
 
@@ -641,7 +666,9 @@ export default {
         MinPlayMoney: '最小玩牌金额',
         HitPotBetTimes: 'HitPot下注倍数',
         HitPotTaxRates: 'HitPot奖励抽水比例(%)',
-        AlterRobotCardsRate: '真实玩家弃牌后修改机器人手牌概率'
+        AlterRobotCardsRate: '真实玩家弃牌后修改机器人手牌概率',
+        Button1Antes: '按钮1的底注倍数',
+        Button2Antes: '按钮2的底注倍数'
       }
     }
   },
