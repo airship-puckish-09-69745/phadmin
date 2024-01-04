@@ -196,6 +196,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
             name: 'tongitsClassicTableAI',
             meta: { title: 'Tongits经典-AI ◐' }
+          },
+          {
+            path: 'tongitsAIList',
+            component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
+            name: 'tongitsAIList',
+            meta: { title: 'TongitsAI-List ◐' }
           }
         ]
       },
@@ -478,7 +484,8 @@ export const asyncRoutes = [
         component: () => import('@/views/config/winConfig/gambleSchemaCfg'),
         name: 'gambleSchemaCfg',
         meta: { title: '小游戏调控杂项配置 ◐', noCache: true }
-      },
+      }
+      /*,
       {
         path: 'paySchemaCfg',
         component: () => import('@/views/config/winConfig/paySchema'),
@@ -491,7 +498,7 @@ export const asyncRoutes = [
         name: 'VUPCfg',
         meta: { title: '小黑屋数值配置 ◐', noCache: true }
       }
-
+      */
     ]
   },
   {
@@ -530,7 +537,7 @@ export const asyncRoutes = [
     path: '/thirdparty',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '第三方管理', icon: 'user' },
+    meta: { title: '第三方管理', icon: 'user', perm: 'CFG_MANAGEMENT' },
     children: [
       {
         path: 'thirdparty',
@@ -568,7 +575,7 @@ export const asyncRoutes = [
     path: '/playlog',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '牌局日志 ◐', icon: 'log' },
+    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'CFG_MANAGEMENT' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
       /* {
@@ -973,29 +980,11 @@ export const asyncRoutes = [
     ]
   },
   {
-    path: '/adminUser',
+    path: '/texasVersion',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '德州专业版', icon: 'adminUser', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '德州专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
-      {
-        path: 'texasTable',
-        component: () => import('@/views/config/tableConfig/texasTable'),
-        name: 'texasTable',
-        meta: { title: 'Texas - 德州' }
-      },
-      /* {
-        path: 'bodingTable',
-        component: () => import('@/views/config/tableConfig/bodingTable'),
-        name: 'bodingTable',
-        meta: { title: 'Lucky89 - Boding' }
-      },
-      {
-        path: 'bodingCfg',
-        component: () => import('@/views/config/tableConfig/bodingCfg'),
-        name: 'bodingCfg',
-        meta: { title: 'Lucky89 - Boding配置' }
-      },*/
       {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
@@ -1016,79 +1005,26 @@ export const asyncRoutes = [
           }
         ]
       },
-      /*
       {
-        path: 'bodingRobotSetting',
-        component: () => import('@/views/config/tableConfig/bodingRobotSetting'),
-        name: 'bodingRobotSetting',
-        meta: { title: 'Lucky89「Boding」 AI◐' }
-      },
-      */
-
-      {
-        path: 'SmallGameCfg',
+        path: '/updateCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '下注类游戏', noCache: true },
+        meta: { title: '更新配置', noCache: true },
         children: [
-          /* {
-            path: 'abTable',
-            component: () => import('@/views/config/tableConfig/abTable'),
-            name: 'abTable',
-            meta: { title: 'AB - Andar Bahar ◐' }
+          {
+            path: 'packageList',
+            component: () => import('@/views/config/tableConfig/packageModule'),
+            name: 'packageList',
+            meta: { title: '包管理' }
           },
           {
-            path: 'CarRoulette',
-            component: () => import('@/views/config/tableConfig/CarRouletteTable'),
-            name: 'CarRoulette',
-            meta: { title: 'Car - 车标转盘 ◐' }
-          },*/
-          {
-            path: 'color_game',
-            component: () => import('@/views/config/tableConfig/colorGame'),
-            // component: () => import('@/views/config/tableConfig/colorGameMars'),
-            name: 'gameColorCfg',
-            meta: { title: 'color game ◐' }
-          },
-          {
-            path: 'gameCrash',
-            component: () => import('@/views/config/tableConfig/gameCrash'),
-            name: 'gameCrash',
-            meta: { title: 'Crash - 小火箭 ◐' }
-          },
-          /* {
-            path: 'dvtTable',
-            component: () => import('@/views/config/tableConfig/dvtTable'),
-            name: 'dvtTable',
-            meta: { title: 'Dragon - 龙虎 ◐' }
-          },
-          {
-            path: 'bcrTable',
-            component: () => import('@/views/config/tableConfig/bcrTable'),
-            name: 'bcrTable',
-            meta: { title: 'Baccarat - 百家乐 ◐' }
-          },*/
-          {
-            path: 'sweeper',
-            component: () => import('@/views/config/tableConfig/sweeperCfg'),
-            name: 'sweeperCfg',
-            meta: { title: 'Mines - 扫雷 ◐' }
-          },
-          {
-            path: 'tower_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/tower'),
-            name: 'tower_cfg',
-            meta: { title: 'Tower ◐' }
+            path: 'versionList',
+            component: () => import('@/views/config/tableConfig/versionModule'),
+            name: 'versionList',
+            meta: { title: '版本管理' }
           }
-          /* {
-            path: 'windrop_cfg',
-            component: () => import('@/views/config/tableConfig/windrop_cfg'),
-            name: 'windrop_cfg',
-            meta: { title: 'Windrop ◐' }
-          }*/
-
         ]
-      },
+      }
     ]
   },
 

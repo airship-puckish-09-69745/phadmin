@@ -12,7 +12,7 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row>
+    <!--el-row>
       <el-col :span="11">
         <el-form-item
           label="构建4条概率："
@@ -112,7 +112,7 @@
           <el-input v-model.number="tongitsConfig.robotConfig.RobotCardBuildConfig.BuildThree3MaxNum" placeholder="0" />
         </el-form-item>
       </el-col>
-    </el-row>
+    </el-row-->
   </fieldset>
 </template>
 <script>

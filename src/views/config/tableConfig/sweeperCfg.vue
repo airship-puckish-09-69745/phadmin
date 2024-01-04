@@ -105,7 +105,16 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+
+        <el-row :gutter="10">
+          <el-col>
+            <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" prop="betMoneyList">
+              <el-col :span="7">
+                <el-input v-model="betMoneyList" :required="true" />
+              </el-col>
+            </el-form-item>
+          </el-col>
+        </el-row>
           <table class="formTable" style="width:700px;margin-left: 50px;">
             <thead>
               <tr>
@@ -277,7 +286,24 @@
         </table>
 
         <fieldset style="margin-top:20px;">
-          <legend>jackpot配置</legend>
+          <legend>jackpot调控配置</legend>
+          <el-row>
+            <el-alert
+              type="error"
+              description="开启后，Jackpot的中奖概率以下表数值为准。"
+            />
+            <el-form ref="item" :model="item" label-width="100px">
+              <el-form-item label="调控总开关">
+                <el-switch
+                  v-model="item.Jackpot.ToggleSwitch"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="开"
+                  inactive-text="关"
+                />
+              </el-form-item>
+            </el-form>
+          </el-row>
           <el-row :gutter="10" style="margin-top:20px;">
             <el-col :span="7">
               <el-form-item label="本局下注额度(≥)：">
@@ -364,7 +390,7 @@
                 </template>
               </el-table-column>
 
-              <el-table-column label="机器人开奖数量概率" prop="RateArr">
+              <el-table-column label="机器人开奖数量概率（5min 一次）" prop="RateArr">
                 <template slot-scope="scope">
                   <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                   {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -575,6 +601,8 @@ export default {
         allowMaxBet: 100000,
         vupBombRate: 0,
         feeRate: 0,
+
+        TableMoneyList: [],
         Jackpot: {
           BetMoreThan: 0,
           AddPoolPctAfterJp: 0,
@@ -589,6 +617,7 @@ export default {
       },
       //  JackpotRandAwards: [{ 'AwardType': 1, 'Value': 50, 'PoolVal': 200000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 80 }, { 'Id': 2, 'Num': 1, 'Rate': 20 }], 'JackpotType': 1, 'DayLimit': 1 }, { 'AwardType': 1, 'Value': 20, 'PoolVal': 100000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 0 }, { 'Id': 2, 'Num': 1, 'Rate': 0 }, { 'Id': 3, 'Num': 2, 'Rate': 100 }], 'JackpotType': 2, 'DayLimit': 3 }, { 'AwardType': 1, 'Value': 10, 'PoolVal': 8000, 'RateArr': [{ 'Id': 1, 'Num': 2, 'Rate': 40 }, { 'Id': 2, 'Num': 3, 'Rate': 30 }, { 'Id': 3, 'Num': 4, 'Rate': 30 }], 'JackpotType': 3, 'DayLimit': 40 }, { 'AwardType': 2, 'Value': 3, 'PoolVal': 0, 'RateArr': [], 'JackpotType': 4, 'DayLimit': 0 }],
       JackpotRandAwards: [],
+      betMoneyList: '200,100',
       subKey: 'gameSweeper',
       libShow: $libShow,
       AttrNames: {
@@ -737,7 +766,10 @@ export default {
             })
 
             this.transMoneyForShow()
-            // this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
+            for (const i in this.item.TableMoneyList) {
+              this.item.TableMoneyList[i] /= 1000
+            }
+            this.betMoneyList = this.item.TableMoneyList ? this.item.TableMoneyList.join(',') : this.betMoneyList
             // 设置修改之前数据
             this.JackpotRandAwards = this.item.Jackpot.RandAwards
             this.$refs.compare.SetOldVal(response.Data)
@@ -793,6 +825,11 @@ export default {
         btnType: this.btnType6,
         btnVal: this.btnNum6 * 1000,
         btnShow: this.btnShow6
+      }
+      const items = this.betMoneyList.split(',')
+      this.item.TableMoneyList = []
+      for (const o in items) {
+        this.item.TableMoneyList.push(parseInt(items[o]) * 1000)
       }
 
       Object.assign(ret, this.item)

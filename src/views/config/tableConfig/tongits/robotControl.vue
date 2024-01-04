@@ -15,7 +15,9 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="11">
+    </el-row>
+
+      <!--el-col :span="11">
         <el-form-item
           label="玩家首次进入1个机器人概率："
           label-width="200px"
@@ -44,7 +46,7 @@
           <el-input v-model.number="tongitsConfig.robotConfig.Control.Create3RobotPercents" placeholder="正常情况下为0" />
         </el-form-item>
       </el-col>
-    </el-row>
+    </el-row-->
     <el-row>
       <el-col :span="11">
         <el-form-item
@@ -75,6 +77,14 @@
           <el-input v-model.number="tongitsConfig.robotConfig.Control.RobotLoginIntervalMax" placeholder="单位ms" />
         </el-form-item>
       </el-col>
+    </el-row>
+    <el-row>
+      <div style="color:red" v-if="tongitsConfig.robotConfig.Control.RobotOpenFlag">
+        <el-row>1、打开对应场次机器人开关</el-row>
+        <el-row>2、打开构建好牌开关</el-row>
+        <el-row>3、配置对应场次机器人排队入桌逻辑</el-row>
+        <el-row>4、配置机器人AI逻辑</el-row>
+      </div>
     </el-row>
   </fieldset>
 </template>
