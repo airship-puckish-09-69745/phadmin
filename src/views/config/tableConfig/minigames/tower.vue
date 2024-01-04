@@ -164,7 +164,7 @@
       <el-row>
         <el-alert
           type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。"
+          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
         />
         <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
@@ -194,11 +194,15 @@
               {{ JackpotTypeCfg[scope.row.JackpotType] }}
             </template>
           </el-table-column>
+
+          <!--
           <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%
             </template>
           </el-table-column>
+          -->
+
           <el-table-column label="中奖概率" prop="JackpotRate">
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
