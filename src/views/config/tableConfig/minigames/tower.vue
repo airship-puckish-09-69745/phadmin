@@ -13,11 +13,13 @@
               <el-input v-model.number="item.MinBet" />
             </el-form-item>
           </el-col>
+          <!--
           <el-col :span="7" :offset="1">
             <el-form-item label="服务费：">
               <el-input v-model.number="item.ServiceFee"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-col>
+          -->
           <el-col :span="7" :offset="1">
             <el-form-item label="单局最大时间：">
               <el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
