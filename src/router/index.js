@@ -346,6 +346,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/tower'),
             name: 'tower_cfg',
             meta: { title: 'Tower ◐' }
+          },
+          {
+            path: 'sicbo_cfg',
+            component: () => import('@/views/config/tableConfig/sicboGame'),
+            name: 'sicbo_cfg',
+            meta: { title: 'Sicbo ◐' }
           }
           /* {
             path: 'windrop_cfg',
