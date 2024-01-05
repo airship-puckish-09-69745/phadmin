@@ -75,20 +75,20 @@
           <div v-if="scope.row.IsFinished">
             <div v-for="one in scope.row.FinishArray" class="block-info">
               <span>用户：{{ one.Uid }} - {{ one.Nick }}</span><br>
-              <span>Normal：{{ one.normalMoney }}</span><br>
-              <span>奖励牌：{{ one.bonusCardMoney }}</span><br>
-              <span>灼烧：{{ one.burnedMoney }}</span><br>
-              <span>挑战：{{ one.challengeMoney }}</span><br>
+              <span>Normal：{{ one.normalMoney/1000 }}</span><br>
+              <span>奖励牌：{{ one.bonusCardMoney/1000 }}</span><br>
+              <span>灼烧：{{ one.burnedMoney/1000 }}</span><br>
+              <span>挑战：{{ one.challengeMoney/1000 }}</span><br>
               <template v-if="Gid !== 31">
-                <span>PotMoney：{{ one.potMoney }}</span><br>
+                <span>PotMoney：{{ one.potMoney/1000 }}</span><br>
               </template>
-              <span>秘密牌：{{ one.secretMeldMoney }}</span><br>
-              <span>tongits：{{ one.tongitsMoney }}</span><br>
-              <span>服务费：{{ one.moneyFee }}</span><br>
+              <span>秘密牌：{{ one.secretMeldMoney/1000 }}</span><br>
+              <span>tongits：{{ one.tongitsMoney/1000 }}</span><br>
+              <span>服务费：{{ one.moneyFee/1000 }}</span><br>
               <template v-if="Gid !== 31">
-                <span>Pot：{{ one.payPot }}</span><br>
+                <span>Pot：{{ one.payPot/1000 }}</span><br>
               </template>
-              <span>输赢：{{ one.moneyChange }}</span><br>
+              <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>
             </div>
           </div>
@@ -150,7 +150,8 @@ export default {
         0x200: '比牌燃烧',
         0x1000: '发牌',
         0x1001: '结算'
-      }
+      },
+      UidMap:{},
     }
   },
   watch: {
@@ -181,6 +182,8 @@ export default {
       console.log('val===>', val)
       const stepArr = val.actionLogs.split('|')
       let stepIdx = 1
+      this.UidMap = {}
+      let uidIndex = 0
       for (let i = 0; i < stepArr.length; i++) {
         const detail = stepArr[i].split('-')
         if (detail.length !== 4) {
@@ -233,10 +236,14 @@ export default {
           isPoint = true // contritube 代表结算时点数
         } else if (actionName == '发牌') {
           idx = 0
+          if(uid <1000000){
+            this.UidMap[uid] = val.players[uidIndex].uid
+          }
+          uidIndex++
         }
         const item = {
           Index: idx,
-          Uid: uid,
+          Uid: this.getRealUid(uid),
           Action: actionName,
           Cards: cards,
           HandCards: handcards,
@@ -270,7 +277,7 @@ export default {
       }
       this.actions.push({
         Index: 9999,
-        Uid: val.winUid,
+        Uid: this.getRealUid(val.winUid),
         Action: '赢家',
         Cards: [],
         HandCards: [],
@@ -293,6 +300,14 @@ export default {
         }
       }
       return false
+    },
+    getRealUid(uid){
+       if(uid <1000000){
+          if(this.UidMap.hasOwnProperty(uid)){
+            return this.UidMap[uid]
+          }
+        }
+        return uid
     },
     getCardUrl(card) {
       return require('@/assets/poker/' + card + '.png')

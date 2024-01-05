@@ -14,13 +14,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="服务费：">
-              <el-input v-model.number="item.ServiceFee"><template slot="append">%</template></el-input>
+            <el-form-item label="单局最大时间：">
+              <el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="单局最大时间：">
-              <el-input v-model.number="item.ActionSeconds"><template slot="append">秒</template></el-input>
+            <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
+              <el-input v-model="item.BetMoney" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -38,14 +38,6 @@
           <el-col :span="7" :offset="1">
             <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
               <el-input v-model.number="item.JackpotBetMin" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="7">
-            <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
-              <el-input v-model="item.BetMoney" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -164,7 +156,7 @@
       <el-row>
         <el-alert
           type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。"
+          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
         />
         <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
@@ -194,11 +186,15 @@
               {{ JackpotTypeCfg[scope.row.JackpotType] }}
             </template>
           </el-table-column>
+
+          <!--
           <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%
             </template>
           </el-table-column>
+          -->
+
           <el-table-column label="中奖概率" prop="JackpotRate">
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
@@ -225,11 +221,13 @@
             </template>
           </el-table-column>
 
+          <!--
           <el-table-column label="机器人发奖上限(%)" prop="VrPoolRateMax">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               <el-input v-model.number="scope.row.VrPoolRateMax" style="width: 120px;" size="mini" :required="true" />
             </template>
           </el-table-column>
+          -->
 
           <el-table-column label="机器人开奖数量概率" prop="RateArr">
             <template slot-scope="scope">
