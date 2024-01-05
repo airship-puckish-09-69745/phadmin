@@ -223,8 +223,8 @@ export default {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
         const betMoneyList = []
-        const items = this.item.BetMoneyLevel[j].TableMoney.split(',')
-        for (const i in items) {
+        const items = this.item.BetMoneyLevel[j].TableMoney
+        for (const i in this.item.BetMoneyLevel[j].TableMoney) {
           betMoneyList.push(parseInt(items[i]) / 1000)
         }
         this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
@@ -246,7 +246,7 @@ export default {
         Object.assign(obj, this.item.BetMoneyLevel[o])
         obj.MaxMoneyBet *= 1000
         obj.MinMoneyBet *= 1000
-        obj.TableMoney = betMoneyList.join(',')
+        obj.TableMoney = betMoneyList
         ret.BetMoneyLevel.push(obj)
       }
       console.log(this.item.BetMoneyLevel)
