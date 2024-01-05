@@ -9,7 +9,7 @@
             <el-row>
               <el-table
                 ref="filterTable"
-                :data="item.BetMoneyListV3"
+                :data="item.BetMoneyLevel"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
                 :row-style="{height:'10px'}"
@@ -63,7 +63,7 @@
             <el-row>
               <el-table
                 ref="filterTable"
-                :data="item.BetOptions"
+                :data="item.BetAreaOptions"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
                 :row-style="{height:'10px'}"
@@ -134,8 +134,8 @@ export default {
   data() {
     return {
       item: {
-        BetMoneyListV3: [{ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 }],
-        BetOptions: [
+        BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 }],
+        BetAreaOptions: [
           { Name: 'SMALL_小点', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 0 },
           { Name: 'BIG_大点', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 1 },
           { Name: '骰子单点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 2 },
@@ -216,18 +216,18 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-      for (const j in this.item.BetOptions) {
-        this.item.BetOptions[j].MaxMoneyBet /= 1000
+      for (const j in this.item.BetAreaOptions) {
+        this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
-      for (const j in this.item.BetMoneyListV3) {
-        this.item.BetMoneyListV3[j].MaxMoneyBet /= 1000
-        this.item.BetMoneyListV3[j].MinMoneyBet /= 1000
+      for (const j in this.item.BetMoneyLevel) {
+        this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
+        this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
         const betMoneyList = []
-        const items = this.item.BetMoneyListV3[j].TableMoney.split(',')
+        const items = this.item.BetMoneyLevel[j].TableMoney.split(',')
         for (const i in items) {
           betMoneyList.push(parseInt(items[i]) / 1000)
         }
-        this.item.BetMoneyListV3[j].TableMoney = betMoneyList.join(',')
+        this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
       }
 
       console.log('this.item:', this.item)
@@ -235,30 +235,30 @@ export default {
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
-      ret.BetMoneyListV3 = []
-      for (const o in this.item.BetMoneyListV3) {
+      ret.BetMoneyLevel = []
+      for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
-        const items = this.item.BetMoneyListV3[o].TableMoney.split(',')
+        const items = this.item.BetMoneyLevel[o].TableMoney.split(',')
         for (const i in items) {
           betMoneyList.push(parseInt(items[i]) * 1000)
         }
         const obj = {}
-        Object.assign(obj, this.item.BetMoneyListV3[o])
+        Object.assign(obj, this.item.BetMoneyLevel[o])
         obj.MaxMoneyBet *= 1000
         obj.MinMoneyBet *= 1000
         obj.TableMoney = betMoneyList.join(',')
-        ret.BetMoneyListV3.push(obj)
+        ret.BetMoneyLevel.push(obj)
       }
-      console.log(this.item.BetMoneyListV3)
+      console.log(this.item.BetMoneyLevel)
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
       }
-      ret.BetOptions = []
-      for (const o in this.item.BetOptions) {
+      ret.BetAreaOptions = []
+      for (const o in this.item.BetAreaOptions) {
         const obj = {}
-        Object.assign(obj, this.item.BetOptions[o])
+        Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        ret.BetOptions.push(obj)
+        ret.BetAreaOptions.push(obj)
       }
       return ret
     },
@@ -284,9 +284,9 @@ export default {
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
-      for (const o in this.item.BetOptions) {
+      for (const o in this.item.BetAreaOptions) {
         for (const oi in o.Odds) {
-          this.item.BetOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
+          this.item.BetAreaOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
         }
       }
       this.form.Data = JSON.stringify(this.getPostData())
@@ -319,11 +319,11 @@ export default {
       this.item.BetMoneyList.splice(index, 1)
     },
     doAdd() {
-      this.item.BetMoneyListV3.push({ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 })
+      this.item.BetMoneyLevel.push({ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
     delRow(index) {
       console.log(index)
-      this.item.BetMoneyListV3.splice(index, 1)
+      this.item.BetMoneyLevel.splice(index, 1)
     }
   }
 }
