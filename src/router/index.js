@@ -263,7 +263,7 @@ export const asyncRoutes = [
         name: 'bodingCfg',
         meta: { title: 'Lucky89 - Boding配置' }
       },*/
-      {
+      /* {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -282,7 +282,7 @@ export const asyncRoutes = [
             meta: { title: 'TexasNlh 配置' }
           }
         ]
-      },
+      },*/
       /*
       {
         path: 'bodingRobotSetting',
@@ -1024,6 +1024,12 @@ export const asyncRoutes = [
             meta: { title: '版本管理' }
           }
         ]
+      },
+      {
+        path: '/texasProActivityNotice',
+        component: () => import('@/views/config/tableConfig/texasProActivityNotice'),
+        name: 'noticeList',
+        meta: { title: '活动公告' }
       }
     ]
   },
