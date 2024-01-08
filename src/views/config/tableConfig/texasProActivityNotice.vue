@@ -37,36 +37,36 @@
           width="70"
         />
         <el-table-column
-          prop="SortNum"
+          prop="sort_num"
           label="排序"
           sortable="custom"
           width="80"
         />
         <el-table-column
-          prop="Name"
+          prop="name"
           label="公告名称"
           width="100"
         >
           <template slot-scope="scope">
-            {{ scope.row.Name }}
+            {{ scope.row.name }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="ContentType"
+          prop="content_type"
           label="公告类型"
           width="100"
         >
           <template slot-scope="scope">
-            {{ getTypeName(scope.row.ContentType) }}
+            {{ getTypeName(scope.row.content_type) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="IconBanner"
+          prop="icon_banner"
           label="banner图预览"
           width="120"
         >
           <template slot-scope="scope">
-            <img :src="getFullPath(scope.row.IconBanner)" height="80px">
+            <img :src="getFullPath(scope.row.icon_banner)" height="80px">
           </template>
         </el-table-column>
         <el-table-column
@@ -75,18 +75,18 @@
           width="170"
         >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.ShowTimeBegin) }}-{{ formatTime(scope.row.ShowTimeEnd) }}
+            {{ formatTime(scope.row.show_time_begin) }}-{{ formatTime(scope.row.show_time_end) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="IconPage"
+          prop="icon_page"
           label="活动页面预览"
           width="150"
         >
           <template slot-scope="scope">
-            <img v-if="scope.row.ContentType === 1" :src="getFullPath(scope.row.IconPage)" height="80px">
-            <span v-if="scope.row.ContentType === 2">
-              {{ scope.row.Content }}
+            <img v-if="scope.row.content_type === 1" :src="getFullPath(scope.row.icon_page)" height="80px">
+            <span v-if="scope.row.content_type === 2">
+              {{ scope.row.content }}
             </span>
           </template>
         </el-table-column>
@@ -95,7 +95,7 @@
           width="170"
         >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.ValidTimeBegin) }}-{{ formatTime(scope.row.ValidTimeEnd) }}
+            {{ formatTime(scope.row.valid_time_begin) }}-{{ formatTime(scope.row.valid_time_end) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -104,36 +104,36 @@
           width="120"
         >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.TimeCreated) }}
+            {{ formatTime(scope.row.time_created) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="TimeUpdated"
+          prop="time_updated"
           label="最近修改"
           width="120"
         >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.TimeUpdated) }}
+            {{ formatTime(scope.row.time_updated) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="ModifyUser"
+          prop="modify_user"
           label="最后修改人"
           width="120"
         />
         <el-table-column
-          prop="Status"
+          prop="status"
           label="状态"
           width="120"
         >
           <template v-slot:header>
-            <el-select v-model="clientDB.FilterValueMap['Status']" size="mini" @change="handleFilter">
+            <el-select v-model="clientDB.FilterValueMap['status']" size="mini" @change="handleFilter">
               <el-option label="状态" :value="0" />
-              <el-option v-for="(o,key) in clientDB.FilterMap['Status']" :key="key" :label="o" :value="key" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['status']" :key="key" :label="o" :value="key" />
             </el-select>
           </template>
           <template slot-scope="scope">
-            {{ clientDB.GetShowValue('Status', scope.row.Status) }}
+            {{ clientDB.GetShowValue('status', scope.row.status) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -182,16 +182,16 @@
       <el-form ref="editForm" :model="edit.item" :rules="rules" label-width="150px" size="small">
         <el-tabs type="card">
           <el-tab-pane label="基础信息">
-            <el-form-item label="活动公告名称：" :required="true" prop="Name">
-              <el-col :span="16"><el-input v-model="edit.item.Name" /></el-col>
+            <el-form-item label="活动公告名称：" :required="true" prop="name">
+              <el-col :span="16"><el-input v-model="edit.item.name" /></el-col>
             </el-form-item>
             <el-form-item
               label="活动公告类型："
               :required="true"
-              prop="ContentType"
+              prop="content_type"
             >
               <el-radio-group
-                v-model="edit.item.ContentType"
+                v-model="edit.item.content_type"
                 @change="handleContentTypeChange"
               >
                 <el-radio :label="1">图片</el-radio>
@@ -207,11 +207,11 @@
                 :on-success="SuccUpload1"
                 :before-upload="beforeAvatarUpload"
               >
-                <img v-if="edit.item.IconBanner" :src="getFullPath(edit.item.IconBanner)" class="avatar" height="100px">
+                <img v-if="edit.item.icon_banner" :src="getFullPath(edit.item.icon_banner)" class="avatar" height="100px">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
-            <el-form-item v-if="edit.item.ContentType === 1" label="上传活动页面图：" :required="true">
+            <el-form-item v-if="edit.item.content_type === 1" label="上传活动页面图：" :required="true">
               <el-upload
                 class="avatar-uploader"
                 :action="actionURL"
@@ -220,23 +220,23 @@
                 :on-success="SuccUploadBack"
                 :before-upload="beforeAvatarUpload"
               >
-                <img v-if="edit.item.IconPage" :src="getFullPath(edit.item.IconPage)" class="avatar" height="100px">
+                <img v-if="edit.item.icon_page" :src="getFullPath(edit.item.icon_page)" class="avatar" height="100px">
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
             <el-form-item
-              v-if="edit.item.ContentType === 2"
+              v-if="edit.item.content_type === 2"
               label="富文本内容："
               :required="true"
-              prop="Content"
+              prop="content"
             >
-              <el-input v-model="edit.item.Content" type="textarea" placeholder="" />
+              <el-input v-model="edit.item.content" type="textarea" placeholder="" />
             </el-form-item>
             <el-form-item label="Banner展示时间：" :required="true">
               <el-col :span="8">
                 <el-date-picker
-                  v-model="edit.item.ShowTimeBegin"
-                  format="yyyy/MM/DD hh:mm:00"
+                  v-model="edit.item.show_time_begin"
+                  format="yyyy/MM/dd HH:mm:00"
                   value-format="timestamp"
                   type="datetime"
                   placeholder="开始时间"
@@ -245,8 +245,8 @@
               <el-col :span="1">-</el-col>
               <el-col :span="1">
                 <el-date-picker
-                  v-model="edit.item.ShowTimeEnd"
-                  format="yyyy/MM/DD hh:mm:00"
+                  v-model="edit.item.show_time_end"
+                  format="yyyy/MM/dd HH:mm:00"
                   value-format="timestamp"
                   type="datetime"
                   placeholder="结束时间"
@@ -256,8 +256,8 @@
             <el-form-item label="活动公告展示时间：" :required="true">
               <el-col :span="8">
                 <el-date-picker
-                  v-model="edit.item.ValidTimeBegin"
-                  format="yyyy/MM/DD hh:mm:00"
+                  v-model="edit.item.valid_time_begin"
+                  format="yyyy/MM/dd HH:mm:00"
                   value-format="timestamp"
                   type="datetime"
                   placeholder="开始时间"
@@ -266,8 +266,8 @@
               <el-col :span="1">-</el-col>
               <el-col :span="1">
                 <el-date-picker
-                  v-model="edit.item.ValidTimeEnd"
-                  format="yyyy/MM/DD hh:mm:00"
+                  v-model="edit.item.valid_time_end"
+                  format="yyyy/MM/dd HH:mm:00"
                   value-format="timestamp"
                   type="datetime"
                   placeholder="结束时间"
@@ -275,18 +275,18 @@
               </el-col>
             </el-form-item>
             <el-form-item label="活动公告状态：" :required="true">
-              <el-select v-model.number="edit.item.Status" placeholder="请选择">
+              <el-select v-model.number="edit.item.status" placeholder="请选择">
                 <el-option label="禁用" :value="0" />
                 <el-option label="启用" :value="1" />
               </el-select>
             </el-form-item>
-            <el-form-item label="活动排序：" :required="true" prop="SortNum">
+            <el-form-item label="活动排序：" :required="true" prop="sort_num">
               <el-col :span="11">
-                <el-input v-model="edit.item.SortNum" placeholder="活动排序" />
+                <el-input-number v-model="edit.item.sort_num" placeholder="活动排序" />
               </el-col>
             </el-form-item>
             <el-form-item label="登录强弹：" :required="true">
-              <el-select v-model.number="edit.item.AlertRule" placeholder="请选择">
+              <el-select v-model.number="edit.item.alert_rule" placeholder="请选择">
                 <el-option label="每天只弹一次" :value="1" />
                 <el-option label="每次登录都弹" :value="2" />
                 <el-option label="不强弹" :value="3" />
@@ -340,32 +340,32 @@ import Publish from '@/components/Publish'
 import { Message } from 'element-ui'
 
 const filterMap = {
-  'Status': { 0: '禁用', 1: '启用' }
+  'status': { 0: '禁用', 1: '启用' }
 }
 
 function newItem() {
   return {
     ID: '',
-    Name: '',
-    Content: '',
-    ContentType: 1,
-    IconBanner: '',
-    IconPage: '',
-    ShowTimeBegin: new Date().getTime(),
-    ShowTimeEnd: new Date().getTime(),
-    ValidTimeBegin: new Date().getTime(),
-    ValidTimeEnd: new Date().getTime(),
-    Status: 1,
-    SortNum: 1,
-    AlertRule: 1,
-    ModifyUser: '',
-    TimeCreated: '',
-    TimeUpdated: ''
+    name: '',
+    content: '',
+    content_type: 1,
+    icon_banner: '',
+    icon_page: '',
+    show_time_begin: new Date().getTime(),
+    show_time_end: new Date().getTime(),
+    valid_time_begin: new Date().getTime(),
+    valid_time_end: new Date().getTime(),
+    status: 1,
+    sort_num: 1,
+    alert_rule: 1,
+    modify_user: '',
+    time_created: '',
+    time_updated: ''
   }
 }
 
 export default {
-  components: {Publish, Compare },
+  components: { Publish, Compare },
   data() {
     return {
       customCfg: {},
@@ -378,8 +378,8 @@ export default {
       langTypes: ['en', 'hi'],
       subKey: 'texas_pro_activity_nt',
       rules: {
-        Name: this.dataRule(true, { type: 's', range: '2-50' }),
-        SortNum: this.dataRule(true, { type: '', range: '1' })
+        name: this.dataRule(true, { type: 's', range: '2-50' }),
+        sort_num: this.dataRule(true, { type: '', range: '1' })
       },
 
       edit: {
@@ -396,18 +396,18 @@ export default {
       ],
 
       AttrNames: {
-        Name: '活动公告名称',
-        Content: '活动内容',
-        ContentType: '活动内容类型',
-        IconBanner: 'Banner图片',
-        IconPage: '内容图片',
-        ShowTimeBegin: 'Banner展示开始时间',
-        ShowTimeEnd: 'Banner展示结束时间',
-        ValidTimeBegin: '公告展示开始时间',
-        ValidTimeEnd: '公告展示结束时间',
-        Status: '公告状态',
-        SortNum: '排序号码',
-        AlertRule: '弹窗规则'
+        name: '活动公告名称',
+        content: '活动内容',
+        content_type: '活动内容类型',
+        icon_banner: 'Banner图片',
+        icon_page: '内容图片',
+        show_time_begin: 'Banner展示开始时间',
+        show_time_end: 'Banner展示结束时间',
+        valid_time_begin: '公告展示开始时间',
+        valid_time_end: '公告展示结束时间',
+        status: '公告状态',
+        sort_num: '排序号码',
+        alert_rule: '弹窗规则'
       }
     }
   },
@@ -445,7 +445,7 @@ export default {
       this.dragItems = []
       for (const i in this.clientDB.TotalData) {
         const ob = this.clientDB.TotalData[i]
-        if (ob.Status === 1) {
+        if (ob.status === 1) {
           this.dragItems.push({ ID: ob.ID, Sort: ob.Sort, Name: ob.Name })
         }
       }
@@ -457,7 +457,7 @@ export default {
       return n.toLocaleString()
     },
     formatTime(ts) {
-      return $libDate.FormateSecondStr(ts / 1000, 1).replaceAll('-', '/')
+      return $libDate.FormateSecondStr(ts, 1).replaceAll('-', '/')
     },
     getName(name) {
       return $libLang.GetLangEN(name)
@@ -485,9 +485,9 @@ export default {
     handleContentTypeChange(val) {
       console.log('radio:', val)
       if (val === 1) {
-        this.rules.Content = []
+        this.rules.content = []
       } else {
-        this.rules.Content = this.dataRule(true, { type: 's', range: '2-100' })
+        this.rules.content = this.dataRule(true, { type: 's', range: '2-100' })
       }
       this.$refs.editForm.clearValidate()
     },
@@ -580,10 +580,10 @@ export default {
       this.edit.langPic[res.Data.Param] = res.Data.Path
     },
     SuccUpload1(res, file) {
-      this.edit.item.IconBanner = res.Data
+      this.edit.item.icon_banner = res.Data
     },
     SuccUploadBack(res, file) {
-      this.edit.item.IconPage = res.Data
+      this.edit.item.icon_page = res.Data
     },
     beforeAvatarUpload(file) {
       const isOK = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -601,13 +601,18 @@ export default {
     },
     initFormData(bEdit, ID) {
       this.edit.isEdit = bEdit
+      console.log(this.edit.item.show_time_begin)
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
           Object.assign(this.edit.item, _data)
+          this.edit.item.show_time_begin *= 1000
+          this.edit.item.show_time_end *= 1000
+          this.edit.item.valid_time_begin *= 1000
+          this.edit.item.valid_time_end *= 1000
           if (bEdit) {
             // 设置修改之前数据
-            this.$refs.compare.SetOldVal(_data)
+            this.$refs.compare.SetOldVal(this.edit.item)
           }
         }
       }
@@ -616,29 +621,29 @@ export default {
       return DataRule(required, config)
     },
     checkEditForm() {
-      if (this.edit.item.Name === '') {
+      if (this.edit.item.name === '') {
         this.$alert('活动公告名称不能为空')
         return false
       }
-      if (this.edit.item.IconBanner === '') {
+      if (this.edit.item.icon_banner === '') {
         this.$alert('请上传公告Banner图片')
         return false
       }
-      if (this.edit.item.ContentType === 1 && this.edit.item.IconPage === '') {
+      if (this.edit.item.content_type === 1 && this.edit.item.icon_page === '') {
         this.$alert('请上传活动页面图片')
         return false
       }
-      if (this.edit.item.ContentType === 2 && this.edit.item.Content === '') {
+      if (this.edit.item.content_type === 2 && this.edit.item.content === '') {
         this.$alert('活动公告内容不能为空')
         return false
       }
-      if (this.edit.item.SortNum === '') {
-        this.edit.item.SortNum = 1
+      if (this.edit.item.sort_num === '') {
+        this.edit.item.sort_num = 1
       }
       return true
     },
     getMaxID() {
-      let max = 1
+      let max = 0
       for (let i = 0; i < this.clientDB.TotalData.length; i++) {
         const data = this.clientDB.TotalData[i]
         if (data.ID > max) {
@@ -673,8 +678,12 @@ export default {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
-            $this.edit.item.TimeUpdated = new Date().getTime()
-            $this.edit.item.ModifyUser = this.$store.getters.name
+            $this.edit.item.time_updated = new Date().getTime() / 1000 | 0
+            $this.edit.item.show_time_begin = $this.edit.item.show_time_begin / 1000 | 0
+            $this.edit.item.show_time_end = $this.edit.item.show_time_end / 1000 | 0
+            $this.edit.item.valid_time_begin = $this.edit.item.valid_time_begin / 1000 | 0
+            $this.edit.item.valid_time_end = $this.edit.item.valid_time_end / 1000 | 0
+            $this.edit.item.modify_user = $this.$store.getters.name
             $this.clientDB.UpdateData($this.edit.item)
             $this.customCfg.Data = JSON.stringify($this.clientDB.TotalData)
             $this.editSave($this.customCfg)
@@ -682,9 +691,13 @@ export default {
         })
       } else {
         this.edit.item.ID = this.getMaxID()
-        this.edit.item.TimeCreated = new Date().getTime()
-        this.edit.item.TimeUpdated = this.edit.item.TimeCreated
-        this.edit.item.ModifyUser = this.$store.getters.name
+        this.edit.item.time_created = new Date().getTime() / 1000 | 0
+        this.edit.item.time_updated = this.edit.item.time_created
+        this.edit.item.show_time_begin = this.edit.item.show_time_begin / 1000 | 0
+        this.edit.item.show_time_end = this.edit.item.show_time_end / 1000 | 0
+        this.edit.item.valid_time_begin = this.edit.item.valid_time_begin / 1000 | 0
+        this.edit.item.valid_time_end = this.edit.item.valid_time_end / 1000 | 0
+        this.edit.item.modify_user = this.$store.getters.name
         this.clientDB.AddData(this.edit.item)
         this.customCfg.Data = JSON.stringify(this.clientDB.TotalData)
         this.editSave(this.customCfg)
