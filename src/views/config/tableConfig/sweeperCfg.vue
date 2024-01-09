@@ -920,12 +920,11 @@ export default {
       jackpotInfoV2.BetMoreThan *= 1000
       for (const o in this.JackpotRandAward) {
         const raObj = {}
-        Object.assign(raObj, this.JackpotRandAwards[o])
-        raObj.PoolVal *= 1000
+        Object.assign(raObj, this.JackpotRandAward[o])
         jackpotInfoV2.RandAwards.push(raObj)
       }
       ret.JackpotV2 = jackpotInfoV2
-
+      console.log(ret.JackpotV2)
       return ret
     },
     setData() {
