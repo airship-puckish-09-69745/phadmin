@@ -21,8 +21,8 @@
       <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
         添加机器人
       </el-button>
-      <el-button type="success" size="mini"  icon="el-icon-refresh" @click="refresh">刷新</el-button>
-   <!--   <el-col :span="2" :offset="1">
+      <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh">刷新</el-button>
+      <!--   <el-col :span="2" :offset="1">
       <el-upload
         class="upload-demo"
         :action="actionURL"
@@ -307,7 +307,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-const filterMap = {currentTableMoney:'all'}
+const filterMap = { currentTableMoney: 'all' }
 
 function newItem() {
   return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '' }
@@ -473,6 +473,9 @@ export default {
             objs[i].initMoney /= 1000
             objs[i].currentTableMoney /= 1000
           }
+          objs.sort(function(i, j) {
+            return objs[i].currentTid - objs[j].currentTid
+          })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
           _this.statItem = { money: 0, initMoney: 0 }
@@ -665,7 +668,7 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
-    },
+    }
   }
 }
 </script>
