@@ -54,7 +54,7 @@
             </el-row>
             <el-row>
               <template>
-              <el-table :data="item.JackpotDistribution" border>
+                <el-table :data="item.JackpotDistribution" border>
                   <el-table-column label="范围(值用 - 连接，如 2-10 表示第2到10张牌中)">
                     <template scope="scope">
                       <el-input v-model="scope.row.Range" />
@@ -71,7 +71,7 @@
                     </template>
                   </el-table-column>
                 </el-table>
-                </template>
+              </template>
             </el-row>
           </fieldset>
         </el-row>
@@ -633,11 +633,11 @@ export default {
     // 添加JP分布
     addJackpotDistributionRow() {
       // console.log(this.item.JackpotDistribution)
-    const newRow = {
-      Range: '',
-      Rate: 0
-    };
-    this.item.JackpotDistribution.push(newRow);
+      const newRow = {
+        Range: '',
+        Rate: 0
+      }
+      this.item.JackpotDistribution.push(newRow)
     },
     // 删除JP分布
     removeJackpotDistributionRow(index) {

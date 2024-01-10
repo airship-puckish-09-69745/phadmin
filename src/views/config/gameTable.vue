@@ -11,8 +11,8 @@
               v-for="item in gameIds"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
-            </el-option>
+              :value="item.value"
+            />
           </el-select>
         </el-form-item>
 
@@ -25,35 +25,32 @@
     <el-table
       :data="tableData"
       border
-      style="width: 100%">
+      style="width: 100%"
+    >
       <el-table-column
         prop="MaxPlayerNum"
         label="场次"
       >
         <template slot-scope="scope">
-          {{ scope.row.MaxPlayerNum}}人桌 -  {{ scope.row.TableMoney /1000}}场次
+          {{ scope.row.MaxPlayerNum }}人桌 -  {{ scope.row.TableMoney /1000 }}场次
         </template>
       </el-table-column>
 
       <el-table-column
         prop="Free"
         label="可用桌子"
-      >
-      </el-table-column>
-
+      />
 
       <el-table-column
         prop="Total"
-        label="桌子总数">
-      </el-table-column>
+        label="桌子总数"
+      />
 
     </el-table>
 
     <el-row type="flex" justify="end">
       <el-col :span="12">
-        <div class="block">
-
-        </div>
+        <div class="block" />
       </el-col>
     </el-row>
   </div>
@@ -62,40 +59,40 @@
 
 <script>
 
-import request from "@/utils/request";
-import {Message} from "element-ui";
+import request from '@/utils/request'
+import { Message } from 'element-ui'
 
 export default {
-  components: {Message, request},
+  components: { Message, request },
   data() {
     return {
       gameIds: [{
         value: 22,
-        label: 'Tongits-pot',
+        label: 'Tongits-pot'
       },
-        //   {
-        //   value: 29,
-        //   label: 'Tongits-Quick'
-        // },
-        //   {
-        //   value: 28,
-        //   label: 'Tongits-赖子'
-        // },
-        {
-          value: 31,
-          label: 'Tongits 经典'
-        }, {
-          value: 23,
-          label: 'Lucky9'
-        }, {
-          value: 15,
-          label: ' 德州扑克'
-        }, {
-          value: 21,
-          label: 'Pusoy'
-        }],
+      //   {
+      //   value: 29,
+      //   label: 'Tongits-Quick'
+      // },
+      //   {
+      //   value: 28,
+      //   label: 'Tongits-赖子'
+      // },
+      {
+        value: 31,
+        label: 'Tongits 经典'
+      }, {
+        value: 23,
+        label: 'Lucky9'
+      }, {
+        value: 15,
+        label: ' 德州扑克'
+      }, {
+        value: 21,
+        label: 'Pusoy'
+      }],
       tableData: [],
-      gameId: 22,
+      gameId: 22
     }
   },
   created() {
@@ -128,7 +125,7 @@ export default {
         }
       })
     },
-    format(data){
+    format(data) {
       return data / 1000
     }
   }
