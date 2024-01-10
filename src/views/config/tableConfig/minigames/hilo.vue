@@ -41,6 +41,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="跳过次数：">
+              <el-input v-model.number="item.SkipNum"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <fieldset style="margin-top:10px">
