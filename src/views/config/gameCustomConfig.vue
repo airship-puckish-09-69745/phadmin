@@ -25,7 +25,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="查询">
+            <el-form-item l>
               <el-button type="primary" size="mini" @click="refresh">查询</el-button>
             </el-form-item>
           </el-form-item>
