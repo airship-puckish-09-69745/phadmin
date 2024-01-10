@@ -75,12 +75,12 @@
         <el-table-column
           prop="nick"
           label="昵称"
-          width="90"
+          width="120"
         />
         <el-table-column
           prop="account"
           label="账号标识"
-          width="100"
+          width="120"
         />
         <el-table-column
           prop="app"
@@ -90,7 +90,7 @@
         <el-table-column
           prop="channel"
           label="渠道"
-          width="90"
+          width="80"
         />
         <el-table-column
           prop="money"
@@ -143,8 +143,8 @@
         />
         <el-table-column
           prop="level"
-          label="机器人等级"
-          width="120"
+          label="等级"
+          width="80"
         >
           <template slot-scope="scope">
             <span v-if="scope.row.initMoney >= scope.row.money" style="color:green">
@@ -158,13 +158,13 @@
 
         <el-table-column
           prop="currentGame"
-          label="当前所在的游戏"
-          width="120"
+          label="游戏"
+          width="80"
         />
         <el-table-column
           prop="currentTableMoney"
           label="当前所在的场次"
-          width="120"
+          width="100"
         >
           <template v-slot:header>
             <el-select v-model="clientDB.FilterValueMap['currentTableMoney']" size="mini" @change="handleFilter">
