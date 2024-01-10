@@ -19,7 +19,7 @@
         <el-form-item>
           <div>
             <publish primary-key="ID" key-id="TexasVersionConfig" :env-empty="true" />
-         <el-button type="success" @click="openCreated()">添加版本</el-button>
+            <el-button type="success" @click="openCreated()">添加版本</el-button>
             <el-dialog :title="Tips" :visible.sync="dialogVisible" width="35%">
               <el-form ref="form" :model="obj" label-width="180px">
                 <el-form-item label="平台">
@@ -444,7 +444,7 @@ export default {
         GrayVersion: 0,
         Conditions: ''
       }
-    },
+    }
   }
 }
 

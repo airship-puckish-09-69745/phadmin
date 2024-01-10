@@ -115,132 +115,132 @@
             </el-form-item>
           </el-col>
         </el-row>
-          <table class="formTable" style="width:700px;margin-left: 50px;">
-            <thead>
-              <tr>
-                <td>按钮</td>
-                <td>类型</td>
-                <td>数值</td>
-                <td>展示文字</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>一</td>
-                <td>
-                  <el-select v-model="btnType1" placeholder="请选择">
-                    <el-option
-                      v-for="item in btnOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <td>
-                  <el-input v-model.number="btnNum1" :required="true" />
-                </td>
-                <td>
-                  <el-input v-model="btnShow1" :required="true" />
-                </td>
-              </tr>
-              <tr>
-                <td>二</td>
-                <td>
-                  <el-select v-model="btnType2" placeholder="请选择">
-                    <el-option
-                      v-for="item in btnOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <td>
-                  <el-input v-model.number="btnNum2" :required="true" />
-                </td>
-                <td>
-                  <el-input v-model="btnShow2" :required="true" />
-                </td>
-              </tr>
-              <tr>
-                <td>三</td>
-                <td>
-                  <el-select v-model="btnType3" placeholder="请选择">
-                    <el-option
-                      v-for="item in btnOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <td>
-                  <el-input v-model.number="btnNum3" :required="true" />
-                </td>
-                <td>
-                  <el-input v-model="btnShow3" :required="true" />
-                </td>
-              </tr>
-              <tr>
-                <td>四</td>
-                <td>
-                  <el-select v-model="btnType4" placeholder="请选择">
-                    <el-option
-                      v-for="item in btnOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <td>
-                  <el-input v-model.number="btnNum4" :required="true" />
-                </td>
-                <td>
-                  <el-input v-model="btnShow4" :required="true" />
-                </td>
-              </tr>
-              <tr>
-                <td>五</td>
-                <td>
-                  <el-select v-model="btnType5" placeholder="请选择">
-                    <el-option
-                      v-for="item in btnOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <td>
-                  <el-input v-model.number="btnNum5" :required="true" />
-                </td>
-                <td>
-                  <el-input v-model="btnShow5" :required="true" />
-                </td>
-              </tr>
-              <tr>
-                <td>六</td>
-                <td>
-                  <el-select v-model="btnType6" placeholder="请选择">
-                    <el-option
-                      v-for="item in btnOptions"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    />
-                  </el-select>
-                </td>
-                <td>
-                  <el-input v-model.number="btnNum6" :required="true" />
-                </td>
-                <td>
-                  <el-input v-model="btnShow6" :required="true" />
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <table class="formTable" style="width:700px;margin-left: 50px;">
+          <thead>
+            <tr>
+              <td>按钮</td>
+              <td>类型</td>
+              <td>数值</td>
+              <td>展示文字</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>一</td>
+              <td>
+                <el-select v-model="btnType1" placeholder="请选择">
+                  <el-option
+                    v-for="item in btnOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </td>
+              <td>
+                <el-input v-model.number="btnNum1" :required="true" />
+              </td>
+              <td>
+                <el-input v-model="btnShow1" :required="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>二</td>
+              <td>
+                <el-select v-model="btnType2" placeholder="请选择">
+                  <el-option
+                    v-for="item in btnOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </td>
+              <td>
+                <el-input v-model.number="btnNum2" :required="true" />
+              </td>
+              <td>
+                <el-input v-model="btnShow2" :required="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>三</td>
+              <td>
+                <el-select v-model="btnType3" placeholder="请选择">
+                  <el-option
+                    v-for="item in btnOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </td>
+              <td>
+                <el-input v-model.number="btnNum3" :required="true" />
+              </td>
+              <td>
+                <el-input v-model="btnShow3" :required="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>四</td>
+              <td>
+                <el-select v-model="btnType4" placeholder="请选择">
+                  <el-option
+                    v-for="item in btnOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </td>
+              <td>
+                <el-input v-model.number="btnNum4" :required="true" />
+              </td>
+              <td>
+                <el-input v-model="btnShow4" :required="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>五</td>
+              <td>
+                <el-select v-model="btnType5" placeholder="请选择">
+                  <el-option
+                    v-for="item in btnOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </td>
+              <td>
+                <el-input v-model.number="btnNum5" :required="true" />
+              </td>
+              <td>
+                <el-input v-model="btnShow5" :required="true" />
+              </td>
+            </tr>
+            <tr>
+              <td>六</td>
+              <td>
+                <el-select v-model="btnType6" placeholder="请选择">
+                  <el-option
+                    v-for="item in btnOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </td>
+              <td>
+                <el-input v-model.number="btnNum6" :required="true" />
+              </td>
+              <td>
+                <el-input v-model="btnShow6" :required="true" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
         </el-row>
         <el-scrollbar>
           <table class="formTable">
@@ -435,7 +435,6 @@
           </el-table>
         </fieldset>
 
-
         <fieldset style="margin-top:20px;">
           <legend>jackpot审核版本调控配置</legend>
           <el-row :gutter="10" style="margin-top:20px;">
@@ -496,7 +495,6 @@
               </el-table-column>
             </el-table>
           </el-row>
-
 
         </fieldset>
 
@@ -912,7 +910,6 @@ export default {
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.Jackpot = jackpotInfo
-
 
       const jackpotInfoV2 = {}
       Object.assign(jackpotInfoV2, this.item.JackpotV2)

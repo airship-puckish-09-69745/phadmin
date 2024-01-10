@@ -13,6 +13,9 @@
         <el-col :span="4">
           <el-button type="success" size="mini" @click="showAccountQuery">用App和Account查询</el-button>
         </el-col>
+        <el-col :span="4">
+          <el-button type="default" size="mini" @click="getFriendList">好友列表</el-button>
+        </el-col>
       </el-form>
     </el-row>
     <el-row v-show="queryFlag === 2" class="account-query">
@@ -554,6 +557,54 @@
       </span>
     </el-dialog>
     <!--添加标签end-->
+
+    <!--好友列表start-->
+    <el-dialog
+      title="好友列表"
+      :visible.sync="friendListDialog"
+      width="30%"
+    >
+      <span>
+        <el-table
+          ref="filterTable"
+          :data="friendList"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="Id"
+            label="ID"
+            sortable
+            width="100"
+          />
+          <el-table-column
+            prop="Uid"
+            label="UID"
+            width="100"
+          />
+          <el-table-column
+            prop="Nick"
+            label="昵称"
+            width="150"
+          />
+          <el-table-column
+            prop="AddTime"
+            label="时间"
+            width="180"
+          >
+            <template slot-scope="scope">
+              {{ formatTime(scope.row.AddTime ) }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </span>
+    </el-dialog>
+    <!--好友列表end-->
+
   </div>
 </template>
 
@@ -583,6 +634,7 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput },
   data() {
     return {
+      libShow: $libShow,
       queryFlag: 1, // 1 uid查询，2 account 查询
       appInfo: [],
       item: {
@@ -688,6 +740,9 @@ export default {
         { label: '4级推广者充值', value: 13 },
         { label: '罐子进行中', value: 14 }
       ],
+      // 好友列表
+      friendListDialog: false,
+      friendList: [],
 
       tabName: 'inviteUsers', //
       inviteSelectTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
@@ -1655,6 +1710,28 @@ export default {
     },
     showUidQuery() {
       this.queryFlag = 1
+    },
+    getFriendList() {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/friend/list',
+          Uid: this.item.Uid
+        }
+      }).then(response => {
+        // console.log(response)
+        if (response.RetCode === 0) {
+          this.friendList = response.Data
+          this.friendListDialog = true
+        }
+      })
     }
   }
 }
