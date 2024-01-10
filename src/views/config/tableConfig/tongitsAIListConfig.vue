@@ -165,7 +165,17 @@
           prop="currentTableMoney"
           label="当前所在的场次"
           width="120"
-        />
+        >
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['currentTableMoney']" size="mini" @change="handleFilter">
+              <el-option label="场次" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['currentTableMoney']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+            {{ clientDB.GetShowValue('currentTableMoney', scope.row.currentTableMoney) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="currentTid"
           label="当前所在的桌子"
@@ -297,7 +307,8 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-const filterMap = {}
+const filterMap = {currentTableMoney:'all'}
+
 function newItem() {
   return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '' }
 }
@@ -313,7 +324,7 @@ export default {
       statNames: { 0: '冻结', 1: '正常', 2: '游戏中' },
       libShow: $libShow,
       showData: [],
-      clientDB: new ClientTableData([], 1, filterMap),
+      clientDB: new ClientTableData([], 1, {}),
       tableData: [],
       edit: {
         visible: false,
@@ -460,6 +471,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             objs[i].money /= 1000
             objs[i].initMoney /= 1000
+            objs[i].currentTableMoney /= 1000
           }
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
