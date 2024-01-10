@@ -348,6 +348,12 @@ export const asyncRoutes = [
             meta: { title: 'Tower ◐' }
           },
           {
+            path: 'hilo_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/hilo'),
+            name: 'hilo_cfg',
+            meta: { title: 'Hilo ◐' }
+          },
+          {
             path: 'sicbo_cfg',
             component: () => import('@/views/config/tableConfig/sicboGame'),
             name: 'sicbo_cfg',
