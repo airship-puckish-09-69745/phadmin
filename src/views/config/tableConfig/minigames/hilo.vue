@@ -55,9 +55,14 @@
             <el-row>
               <template>
                 <el-table :data="item.JackpotDistribution" border>
-                  <el-table-column label="范围(值用 - 连接，如 2-10 表示第2到10张牌中)">
+                  <el-table-column label="范围开始(第N张牌)">
                     <template scope="scope">
-                      <el-input v-model="scope.row.Range" />
+                      <el-input v-model="scope.row.Start" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="范围结束(第N张牌)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.End" />
                     </template>
                   </el-table-column>
                   <el-table-column label="概率%(放大100倍, 如 20 表示20%)">
