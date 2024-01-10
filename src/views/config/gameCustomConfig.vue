@@ -58,7 +58,11 @@
               prop="game_id"
               label="游戏"
             >
-
+              <template slot-scope="scope">
+                <span v-for="(item, index) in gameOptions" :key="index">
+              {{ (scope.row.game_id == item.key ? item.label : "" )}}
+            </span>
+              </template>
             </el-table-column>
 
             <el-table-column
@@ -221,7 +225,7 @@ export default {
         22: 'Tongits-Pot',
         23: 'Lucky9',
         // 25: 'Color Game',
-       31: 'Tongits-Classic'
+        31: 'Tongits-Classic'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
@@ -244,7 +248,7 @@ export default {
       showBtn: 0,
       oldData: {},
       selectedGid: 0,
-      DuplicateData:[]
+      DuplicateData: []
     }
   },
   created() {
@@ -252,22 +256,22 @@ export default {
     this.getData()
   },
   methods: {
-    editIsReturn(idx,row){
+    editIsReturn(idx, row) {
       const cfg = {}
       copyObj(row, cfg)
-      if (row.is_return==1){
-        cfg.is_return=0
-      }else {
-        cfg.is_return=1
+      if (row.is_return == 1) {
+        cfg.is_return = 0
+      } else {
+        cfg.is_return = 1
       }
-      if (!this.checkDuplicate(row)){
+      if (!this.checkDuplicate(row)) {
         Message.error('已经有重复的游戏配置了！')
-          row.is_return=cfg.is_return
+        row.is_return = cfg.is_return
         return
       }
       for (let i = 0; i < this.allCfg.length; i++) {
         // 确定哪一行是一样的
-        if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel &&cfg.is_return == this.allCfg[i].is_return) {
+        if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel && cfg.is_return == this.allCfg[i].is_return) {
 
           this.allCfg.splice(i, 1, row)
           this.selectGameVisible = false
@@ -275,7 +279,7 @@ export default {
           return
         }
       }
-      this.updateDuplicate(row,cfg)
+      this.updateDuplicate(row, cfg)
 
     },
     refresh() {
@@ -315,7 +319,7 @@ export default {
         return false
       }
 
-      if (!this.checkDuplicate( this.item)){
+      if (!this.checkDuplicate(this.item)) {
         Message.error('已经有重复的游戏配置了！')
         this.selectGameVisible = false
         return
@@ -324,7 +328,7 @@ export default {
       copyObj(this.newItem(), cfg)
       this.allCfg.push(cfg)
       this.selectGameVisible = false
-      this.updateDuplicate(this.item,this.oldData)
+      this.updateDuplicate(this.item, this.oldData)
       this.refresh()
     },
     editRow(idx, row) {
@@ -349,7 +353,7 @@ export default {
         Message.error('请选择渠道！')
         return false
       }
-      if (!this.checkDuplicate( this.item)){
+      if (!this.checkDuplicate(this.item)) {
         Message.error('已经有重复的游戏配置了！')
         this.selectGameVisible = false
         return
@@ -363,7 +367,7 @@ export default {
           this.allCfg.splice(i, 1, cfg)
           this.selectGameVisible = false
           this.refresh()
-          this.updateDuplicate(this.item,this.oldData)
+          this.updateDuplicate(this.item, this.oldData)
           return
         }
       }
@@ -393,7 +397,7 @@ export default {
             const cfg = JSON.parse(response.Data.Data)
             $this.allCfg = cfg
             for (let i = 0; i < $this.allCfg.length; i++) {
-              $this.DuplicateData.push( $this.allCfg[i].channel+ $this.allCfg[i].game_id+ $this.allCfg[i].app_id+ $this.allCfg[i].is_return)
+              $this.DuplicateData.push($this.allCfg[i].channel + $this.allCfg[i].game_id + $this.allCfg[i].app_id + $this.allCfg[i].is_return)
             }
             this.refresh()
           }
@@ -449,18 +453,18 @@ export default {
       }
       return true
     },
-    checkDuplicate(data){
-      if (this.DuplicateData.includes(data.channel+""+data.game_id+""+data.app_id+""+data.is_return)){
+    checkDuplicate(data) {
+      if (this.DuplicateData.includes(data.channel + "" + data.game_id + "" + data.app_id + "" + data.is_return)) {
         return false
       }
       return true
     },
-    updateDuplicate(newData,oldData){
-    var newKey=  newData.channel+""+newData.game_id+""+newData.app_id+""+newData.is_return
-    var oldKey=  oldData.channel+""+oldData.game_id+""+oldData.app_id+""+oldData.is_return
+    updateDuplicate(newData, oldData) {
+      var newKey = newData.channel + "" + newData.game_id + "" + newData.app_id + "" + newData.is_return
+      var oldKey = oldData.channel + "" + oldData.game_id + "" + oldData.app_id + "" + oldData.is_return
       for (let i = 0; i < this.DuplicateData.length; i++) {
-        if (this.DuplicateData[i]==oldKey){
-          this.DuplicateData.splice(i,1,newKey)
+        if (this.DuplicateData[i] == oldKey) {
+          this.DuplicateData.splice(i, 1, newKey)
           return
         }
       }
