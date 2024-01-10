@@ -1,13 +1,8 @@
 <template>
   <div class="app-container">
 
-    <publish
-      primary-key="Volume"
-      :key-id="getFullKey(this.subKey)"
-      :env-empty="false"
-      compare-type="Object"
-      :attr-names="AttrNames"
-    />
+    <publish primary-key="Volume" :key-id="getFullKey(this.subKey)" :env-empty="false" compare-type="Object"
+             :attr-names="AttrNames"/>
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="15">
         <el-form inline>
@@ -30,7 +25,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="查询">
+            <el-form-item l>
               <el-button type="primary" size="mini" @click="refresh">查询</el-button>
             </el-form-item>
           </el-form-item>
@@ -56,7 +51,7 @@
             <el-table-column
               prop="app_id"
               label="应用"
-            />
+            ></el-table-column>
 
             <el-table-column
               prop="game_id"
@@ -64,15 +59,17 @@
             >
               <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
-                  {{ (scope.row.game_id == item.key ? item.label : "" ) }}
-                </span>
+              {{ (scope.row.game_id == item.key ? item.label : "" )}}
+            </span>
               </template>
             </el-table-column>
 
             <el-table-column
               prop="channel"
               label="站点渠道"
-            />
+            >
+
+            </el-table-column>
 
             <el-table-column
               prop="is_return"
@@ -86,10 +83,13 @@
                   :active-value="1"
                   :inactive-value="0"
                   @change="editIsReturn(scope.$index,scope.row)"
-                />
-                <el-form-item v-model="scope.row.is_return" label-width="0" />
+                >
+                </el-switch>
+                <el-form-item v-model="scope.row.is_return" label-width="0">
+                </el-form-item>
               </template>
             </el-table-column>
+
 
             <el-table-column label="操作">
               <template slot-scope="scope">
@@ -108,7 +108,7 @@
     </el-row>
 
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare"/>
 
     <el-dialog
       title="选择游戏"
@@ -168,16 +168,16 @@
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import { copyObj } from 'codemirror/src/util/misc'
+import {copyObj} from 'codemirror/src/util/misc'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: {Compare, Publish, MoneyInput},
   data() {
     return {
       form: {},
@@ -190,26 +190,26 @@ export default {
       },
       allCfg: [],
       appInfo: [],
-      channel: 'DEV',
+      channel: "DEV",
       appId: 100002,
 
       channelOptions: [
         // {key: "0", label: '请选择'},
-        { key: 'DEV', label: 'DEV' },
-        { key: 'BP', label: 'BP' },
-        { key: 'GP', label: 'GP' }
+        {key: "DEV", label: 'DEV'},
+        {key: "BP", label: 'BP'},
+        {key: "GP", label: 'GP'},
       ],
       isReturnOptions: [
-        { key: 0, label: '否' },
-        { key: 1, label: '是' }
+        {key: 0, label: '否'},
+        {key: 1, label: '是'},
       ],
       appIdOptions: [
         // {key: "0", label: '请选择'},
-        { key: 100002, label: '100002' },
-        { key: 100003, label: '100003' },
-        { key: 100004, label: '100004' },
-        { key: 100005, label: '100005' },
-        { key: 100006, label: '100006' }
+        {key: 100002, label: '100002'},
+        {key: 100003, label: '100003'},
+        {key: 100004, label: '100004'},
+        {key: 100005, label: '100005'},
+        {key: 100006, label: '100006'}
       ],
       showData: [],
       games: {
@@ -230,17 +230,17 @@ export default {
       },
       item: {
         app_id: 100002,
-        channel: 'DEV',
+        channel: "DEV",
         game_id: 0,
-        is_return: 0
+        is_return: 0,
       },
       gameOptions: [
-        { key: 0, label: '请选择' },
-        { key: 15, label: 'Texas Poker' },
-        { key: 21, label: 'Pusoy' },
-        { key: 22, label: 'Tongits-Pot' },
-        { key: 23, label: 'Lucky9' },
-        { key: 31, label: 'Tongits-Classic' }
+        {key: 0, label: '请选择'},
+        {key: 15, label: 'Texas Poker'},
+        {key: 21, label: 'Pusoy'},
+        {key: 22, label: 'Tongits-Pot'},
+        {key: 23, label: 'Lucky9'},
+        {key: 31, label: 'Tongits-Classic'}
       ],
       dialogGameOptions: [],
       selectGameVisible: false,
@@ -271,6 +271,7 @@ export default {
       for (let i = 0; i < this.allCfg.length; i++) {
         // 确定哪一行是一样的
         if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel && cfg.is_return == this.allCfg[i].is_return) {
+
           this.allCfg.splice(i, 1, row)
           this.selectGameVisible = false
           this.refresh()
@@ -278,6 +279,7 @@ export default {
         }
       }
       this.updateDuplicate(row, cfg)
+
     },
     refresh() {
       if (this.channel == 0 && this.appId == 0) {
@@ -414,7 +416,7 @@ export default {
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.SetNewVal(this.postData)
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
@@ -451,14 +453,14 @@ export default {
       return true
     },
     checkDuplicate(data) {
-      if (this.DuplicateData.includes(data.channel + '' + data.game_id + '' + data.app_id + '' + data.is_return)) {
+      if (this.DuplicateData.includes(data.channel + "" + data.game_id + "" + data.app_id + "" + data.is_return)) {
         return false
       }
       return true
     },
     updateDuplicate(newData, oldData) {
-      var newKey = newData.channel + '' + newData.game_id + '' + newData.app_id + '' + newData.is_return
-      var oldKey = oldData.channel + '' + oldData.game_id + '' + oldData.app_id + '' + oldData.is_return
+      var newKey = newData.channel + "" + newData.game_id + "" + newData.app_id + "" + newData.is_return
+      var oldKey = oldData.channel + "" + oldData.game_id + "" + oldData.app_id + "" + oldData.is_return
       for (let i = 0; i < this.DuplicateData.length; i++) {
         if (this.DuplicateData[i] == oldKey) {
           this.DuplicateData.splice(i, 1, newKey)
