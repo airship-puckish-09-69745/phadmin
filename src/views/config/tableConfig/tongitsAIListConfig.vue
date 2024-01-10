@@ -473,8 +473,8 @@ export default {
             objs[i].initMoney /= 1000
             objs[i].currentTableMoney /= 1000
           }
-          objs.sort(function(i, j) {
-            return objs[i].currentTid - objs[j].currentTid
+          objs.sort(function(a, b) {
+            return a.currentTid - b.currentTid
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
