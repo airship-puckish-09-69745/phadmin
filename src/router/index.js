@@ -949,7 +949,19 @@ export const asyncRoutes = [
         path: 'logDeal',
         component: () => import('@/views/devTools/logDeal'),
         name: 'logDeal',
-        meta: { title: '错误日志处理' }
+        meta: {title: '错误日志处理'}
+      },
+      {
+        path: 'gameTable',
+        component: () => import('@/views/config/tableConfig/gameTable'),
+        name: 'gameTable',
+        meta: {title: '空闲游戏桌子'}
+      },
+      {
+        path: 'gameCustomConfig',
+        component: () => import('@/views/config/tableConfig/gameCustomConfig'),
+        name: 'game_custom_config',
+        meta: {title: '游戏自定义配置'}
       }
     ]
   },
