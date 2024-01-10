@@ -953,13 +953,13 @@ export const asyncRoutes = [
       },
       {
         path: 'gameTable',
-        component: () => import('@/views/config/tableConfig/gameTable'),
+        component: () => import('@/views/config/gameTable'),
         name: 'gameTable',
         meta: {title: '空闲游戏桌子'}
       },
       {
         path: 'gameCustomConfig',
-        component: () => import('@/views/config/tableConfig/gameCustomConfig'),
+        component: () => import('@/views/config/gameCustomConfig'),
         name: 'game_custom_config',
         meta: {title: '游戏自定义配置'}
       }
