@@ -58,18 +58,7 @@
               prop="game_id"
               label="游戏"
             >
-              <!--              <template slot-scope="scope">-->
-              <!--                <el-form-item v-model="scope.row.GameId" :required="true" label-width="0">-->
-              <!--                  <el-select v-model="scope.row.GameId" :disabled="true" placeholder="请选择" size="mini">-->
-              <!--                    <el-option-->
-              <!--                      v-for="row in gameOptions"-->
-              <!--                      :key="row.key"-->
-              <!--                      :label="row.label"-->
-              <!--                      :value="row.key"-->
-              <!--                    />-->
-              <!--                  </el-select>-->
-              <!--                </el-form-item>-->
-              <!--              </template>-->
+
             </el-table-column>
 
             <el-table-column
@@ -84,8 +73,16 @@
               label="是否需要返回"
             >
               <template slot-scope="scope">
+                <el-switch
+                  v-model="scope.row.is_return"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  :active-value="1"
+                  :inactive-value="0"
+                  @change="editIsReturn(scope.$index,scope.row)"
+                >
+                </el-switch>
                 <el-form-item v-model="scope.row.is_return" label-width="0">
-                  {{ scope.row.is_return == 1 ? "是" : "否" }}
                 </el-form-item>
               </template>
             </el-table-column>
@@ -191,7 +188,7 @@ export default {
       allCfg: [],
       appInfo: [],
       channel: "DEV",
-      appId: "100002",
+      appId: 100002,
 
       channelOptions: [
         // {key: "0", label: '请选择'},
@@ -205,11 +202,11 @@ export default {
       ],
       appIdOptions: [
         // {key: "0", label: '请选择'},
-        {key: "100002", label: '100002'},
-        {key: "100003", label: '100003'},
-        {key: "100004", label: '100004'},
-        {key: "100005", label: '100005'},
-        {key: "100006", label: '100006'}
+        {key: 100002, label: '100002'},
+        {key: 100003, label: '100003'},
+        {key: 100004, label: '100004'},
+        {key: 100005, label: '100005'},
+        {key: 100006, label: '100006'}
       ],
       showData: [],
       games: {
@@ -218,35 +215,36 @@ export default {
         // 5: 'Car Roulette',
         // 9: 'Baccarat',
         // 10: 'Crash',
-        '15': 'Texas Poker',
+        15: 'Texas Poker',
         // 20: 'MINES',
-        '21': 'Pusoy',
-        '22': 'Tongits-Pot',
-        '23': 'Lucky9',
+        21: 'Pusoy',
+        22: 'Tongits-Pot',
+        23: 'Lucky9',
         // 25: 'Color Game',
-        '31': 'Tongits-Classic'
+       31: 'Tongits-Classic'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
       item: {
-        app_id: "100002",
+        app_id: 100002,
         channel: "DEV",
-        game_id: "0",
+        game_id: 0,
         is_return: 0,
       },
       gameOptions: [
-        {key: "0", label: '请选择'},
-        {key: "15", label: 'Texas Poker'},
-        {key: "21", label: 'Pusoy'},
-        {key: "22", label: 'Tongits-Pot'},
-        {key: "23", label: 'Lucky9'},
-        {key: "31", label: 'Tongits-Classic'}
+        {key: 0, label: '请选择'},
+        {key: 15, label: 'Texas Poker'},
+        {key: 21, label: 'Pusoy'},
+        {key: 22, label: 'Tongits-Pot'},
+        {key: 23, label: 'Lucky9'},
+        {key: 31, label: 'Tongits-Classic'}
       ],
       dialogGameOptions: [],
       selectGameVisible: false,
       showBtn: 0,
       oldData: {},
-      selectedGid: 0
+      selectedGid: 0,
+      DuplicateData:[]
     }
   },
   created() {
@@ -254,6 +252,32 @@ export default {
     this.getData()
   },
   methods: {
+    editIsReturn(idx,row){
+      const cfg = {}
+      copyObj(row, cfg)
+      if (row.is_return==1){
+        cfg.is_return=0
+      }else {
+        cfg.is_return=1
+      }
+      if (!this.checkDuplicate(row)){
+        Message.error('已经有重复的游戏配置了！')
+          row.is_return=cfg.is_return
+        return
+      }
+      for (let i = 0; i < this.allCfg.length; i++) {
+        // 确定哪一行是一样的
+        if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel &&cfg.is_return == this.allCfg[i].is_return) {
+
+          this.allCfg.splice(i, 1, row)
+          this.selectGameVisible = false
+          this.refresh()
+          return
+        }
+      }
+      this.updateDuplicate(row,cfg)
+
+    },
     refresh() {
       if (this.channel == 0 && this.appId == 0) {
         this.showData = this.allCfg
@@ -262,11 +286,9 @@ export default {
       var data = this.allCfg
       if (this.channel != 0) {
         var data2 = data.filter(ele => ele.channel == this.channel)
-        console.log(1, data2)
       }
       if (this.appId != 0) {
         var data3 = data2.filter(ele => ele.app_id == this.appId)
-        console.log(2, data3)
       }
       this.showData = data3
     },
@@ -292,18 +314,17 @@ export default {
         Message.error('请选择渠道！')
         return false
       }
-      const gameIds = [] // 已经有配置的 gid
-      for (let i = 0; i < this.allCfg.length; i++) {
-        gameIds.push(this.allCfg[i].game_id + "" + this.allCfg[i].channel + "" + this.allCfg[i].app_id + "" + this.allCfg[i].is_return)
-      }
-      if (gameIds.includes(this.item.game_id + "" + this.item.channel + "" + this.item.app_id + "" + this.item.is_return)) {
-        Message.error('现有游戏都已经有配置')
+
+      if (!this.checkDuplicate( this.item)){
+        Message.error('已经有重复的游戏配置了！')
+        this.selectGameVisible = false
         return
       }
       const cfg = {}
       copyObj(this.newItem(), cfg)
       this.allCfg.push(cfg)
       this.selectGameVisible = false
+      this.updateDuplicate(this.item,this.oldData)
       this.refresh()
     },
     editRow(idx, row) {
@@ -328,25 +349,22 @@ export default {
         Message.error('请选择渠道！')
         return false
       }
-      for (let i = 0; i < this.allCfg.length; i++) {
-        if (this.allCfg[i].game_id == this.item.game_id && this.allCfg[i].app_id == this.item.app_id && this.allCfg[i].channel == this.item.channel && this.allCfg[i].is_return == parseInt(this.item.is_return)) {
-          Message.error('已经有重复的游戏配置了！')
-          this.selectGameVisible = false
-          return
-        }
+      if (!this.checkDuplicate( this.item)){
+        Message.error('已经有重复的游戏配置了！')
+        this.selectGameVisible = false
+        return
       }
+
       for (let i = 0; i < this.allCfg.length; i++) {
-        console.log(this.oldData)
-        console.log(this.oldData)
-        // 确定哪一行是一样的的
-        if (this.oldData.game_id == this.allCfg[i].game_id && this.oldData.app_id == this.allCfg[i].app_id && this.oldData.channel == this.allCfg[i].channel && this.oldData.is_return == parseInt(this.allCfg[i].is_return)) {
+        // 确定哪一行是一样的
+        if (this.oldData.game_id == this.allCfg[i].game_id && this.oldData.app_id == this.allCfg[i].app_id && this.oldData.channel == this.allCfg[i].channel && this.oldData.is_return == this.allCfg[i].is_return) {
           const cfg = {}
           copyObj(this.newItem(), cfg)
           this.allCfg.splice(i, 1, cfg)
           this.selectGameVisible = false
           this.refresh()
+          this.updateDuplicate(this.item,this.oldData)
           return
-
         }
       }
       Message.error('修改失败！')
@@ -373,10 +391,11 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-
             $this.allCfg = cfg
+            for (let i = 0; i < $this.allCfg.length; i++) {
+              $this.DuplicateData.push( $this.allCfg[i].channel+ $this.allCfg[i].game_id+ $this.allCfg[i].app_id+ $this.allCfg[i].is_return)
+            }
             this.refresh()
-            $this.$refs.compare.SetOldVal(response.Data)
           }
         }
       })
@@ -423,13 +442,29 @@ export default {
     },
     checkData(cfg) {
       for (const i in cfg) {
-        console.log(cfg)
         if (!cfg[i].game_id || !cfg[i].app_id || !cfg[i].channel) {
           Message.error('请查看配置是否有漏')
           return false
         }
       }
       return true
+    },
+    checkDuplicate(data){
+      if (this.DuplicateData.includes(data.channel+""+data.game_id+""+data.app_id+""+data.is_return)){
+        return false
+      }
+      return true
+    },
+    updateDuplicate(newData,oldData){
+    var newKey=  newData.channel+""+newData.game_id+""+newData.app_id+""+newData.is_return
+    var oldKey=  oldData.channel+""+oldData.game_id+""+oldData.app_id+""+oldData.is_return
+      for (let i = 0; i < this.DuplicateData.length; i++) {
+        if (this.DuplicateData[i]==oldKey){
+          this.DuplicateData.splice(i,1,newKey)
+          return
+        }
+      }
+      this.DuplicateData.push(newKey)
     },
     getAppInfo() {
       request({
