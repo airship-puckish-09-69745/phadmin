@@ -32,8 +32,7 @@
         </el-form>
 
       </el-col>
-      <el-col :span="15">
-      </el-col>
+      <el-col :span="15" />
       <el-col :span="22">
         <el-button type="primary" size="mini" @click="addOne">添加游戏返回配置项</el-button>
       </el-col>
@@ -52,7 +51,6 @@
             <el-table-column
               prop="app_id"
               label="应用"
-              style=";margin: auto"
             ></el-table-column>
 
             <el-table-column

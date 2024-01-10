@@ -348,6 +348,12 @@ export const asyncRoutes = [
             meta: { title: 'Tower ◐' }
           },
           {
+            path: 'hilo_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/hilo'),
+            name: 'hilo_cfg',
+            meta: { title: 'Hilo ◐' }
+          },
+          {
             path: 'sicbo_cfg',
             component: () => import('@/views/config/tableConfig/sicboGame'),
             name: 'sicbo_cfg',
@@ -949,19 +955,19 @@ export const asyncRoutes = [
         path: 'logDeal',
         component: () => import('@/views/devTools/logDeal'),
         name: 'logDeal',
-        meta: {title: '错误日志处理'}
+        meta: { title: '错误日志处理' }
       },
       {
         path: 'gameTable',
         component: () => import('@/views/config/gameTable'),
         name: 'gameTable',
-        meta: {title: '空闲游戏桌子'}
+        meta: { title: '空闲游戏桌子' }
       },
       {
         path: 'gameCustomConfig',
         component: () => import('@/views/config/gameCustomConfig'),
         name: 'game_custom_config',
-        meta: {title: '游戏自定义配置'}
+        meta: { title: '游戏自定义配置' }
       }
     ]
   },
