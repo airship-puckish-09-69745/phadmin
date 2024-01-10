@@ -52,6 +52,7 @@
             <el-table-column
               prop="app_id"
               label="应用"
+              style=";margin: auto"
             ></el-table-column>
 
             <el-table-column
