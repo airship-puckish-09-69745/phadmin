@@ -263,7 +263,7 @@ export const asyncRoutes = [
         name: 'bodingCfg',
         meta: { title: 'Lucky89 - Boding配置' }
       },*/
-      {
+      /* {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -282,7 +282,7 @@ export const asyncRoutes = [
             meta: { title: 'TexasNlh 配置' }
           }
         ]
-      },
+      },*/
       /*
       {
         path: 'bodingRobotSetting',
@@ -346,6 +346,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/tower'),
             name: 'tower_cfg',
             meta: { title: 'Tower ◐' }
+          },
+          {
+            path: 'sicbo_cfg',
+            component: () => import('@/views/config/tableConfig/sicboGame'),
+            name: 'sicbo_cfg',
+            meta: { title: 'Sicbo ◐' }
           }
           /* {
             path: 'windrop_cfg',
@@ -1024,6 +1030,12 @@ export const asyncRoutes = [
             meta: { title: '版本管理' }
           }
         ]
+      },
+      {
+        path: '/texasProActivityNotice',
+        component: () => import('@/views/config/tableConfig/texasProActivityNotice'),
+        name: 'noticeList',
+        meta: { title: '活动公告' }
       }
     ]
   },

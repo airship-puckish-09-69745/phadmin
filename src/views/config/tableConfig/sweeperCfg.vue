@@ -287,23 +287,7 @@
 
         <fieldset style="margin-top:20px;">
           <legend>jackpot调控配置</legend>
-          <el-row>
-            <el-alert
-              type="error"
-              description="开启后，Jackpot的中奖概率以下表数值为准。"
-            />
-            <el-form ref="item" :model="item" label-width="100px">
-              <el-form-item label="调控总开关">
-                <el-switch
-                  v-model="item.Jackpot.ToggleSwitch"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  active-text="开"
-                  inactive-text="关"
-                />
-              </el-form-item>
-            </el-form>
-          </el-row>
+
           <el-row :gutter="10" style="margin-top:20px;">
             <el-col :span="7">
               <el-form-item label="本局下注额度(≥)：">
@@ -449,6 +433,71 @@
               </template>
             </el-table-column>
           </el-table>
+        </fieldset>
+
+
+        <fieldset style="margin-top:20px;">
+          <legend>jackpot审核版本调控配置</legend>
+          <el-row :gutter="10" style="margin-top:20px;">
+            <el-col :span="7">
+              <el-form-item label="本局下注额度(≥)：">
+                <el-input v-model.number="item.JackpotV2.BetMoreThan" size="mini" :required="true" style="width:100px" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="出现jackpot之前抽水：">
+                <el-input v-model.number="item.JackpotV2.AddPoolPctPreJp" size="mini" :required="true" style="width:100px" />(‰)
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="出现jackpot之后抽水：">
+                <el-input v-model.number="item.JackpotV2.AddPoolPctAfterJp" size="mini" :required="true" style="width:100px" />(‰)
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-table
+              ref="filterTable"
+              :data="JackpotRandAward"
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column type="index" />
+              <el-table-column label="奖励类型" prop="JackpotType">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.JackpotType" disabled>
+                    <el-option
+                      v-for="typeItem in JackpotTypes"
+                      :key="typeItem.value"
+                      :label="typeItem.label"
+                      :value="typeItem.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="发放数量" prop="Value">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Value" style="width: 150px;" size="mini" :required="true">
+                    <template v-if="scope.row.AwardType==1" slot="append">%</template>
+                    <template v-if="scope.row.AwardType==2" slot="append">倍</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="中奖概率" prop="JackpotRate">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
+                    <template slot="append">‱</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-row>
+
+
         </fieldset>
 
         <el-form-item>
@@ -613,10 +662,19 @@ export default {
           // PoolIncrArr: [{ 'Id': 1, 'MinPool': 0, 'MaxPool': 200000000, 'TimeArr': [{ 'EndHour': 1, 'Index': 1, 'StartHour': 0, 'PerHourIncr': 40000000 }, { 'EndHour': 6, 'Index': 2, 'StartHour': 2, 'PerHourIncr': 20000000 }, { 'EndHour': 8, 'Index': 3, 'StartHour': 7, 'PerHourIncr': 40000000 }, { 'EndHour': 17, 'Index': 4, 'StartHour': 9, 'PerHourIncr': 50000000 }, { 'EndHour': 23, 'Index': 5, 'StartHour': 18, 'PerHourIncr': 60000000 }] }, { 'Id': 2, 'MinPool': 200000000, 'MaxPool': 250000000, 'TimeArr': [{ 'Index': 1, 'StartHour': 0, 'EndHour': 1, 'PerHourIncr': 15000000 }, { 'Index': 2, 'StartHour': 2, 'EndHour': 6, 'PerHourIncr': 10000000 }, { 'Index': 3, 'StartHour': 7, 'EndHour': 8, 'PerHourIncr': 20000000 }, { 'Index': 4, 'StartHour': 9, 'EndHour': 17, 'PerHourIncr': 25000000 }, { 'Index': 5, 'StartHour': 18, 'EndHour': 23, 'PerHourIncr': 30000000 }] }, { 'Id': 3, 'MinPool': 250000000, 'MaxPool': 300000000, 'TimeArr': [{ 'Index': 1, 'StartHour': 0, 'EndHour': 1, 'PerHourIncr': 7500000 }, { 'Index': 2, 'StartHour': 2, 'EndHour': 6, 'PerHourIncr': 5000000 }, { 'Index': 3, 'StartHour': 7, 'EndHour': 8, 'PerHourIncr': 10000000 }, { 'Index': 4, 'StartHour': 9, 'EndHour': 17, 'PerHourIncr': 12500000 }, { 'Index': 5, 'StartHour': 18, 'EndHour': 23, 'PerHourIncr': 15000000 }] }, { 'Id': 4, 'MinPool': 300000000, 'MaxPool': -1, 'TimeArr': [{ 'EndHour': 1, 'Index': 1, 'StartHour': 0, 'PerHourIncr': 3000000 }, { 'EndHour': 6, 'Index': 2, 'StartHour': 2, 'PerHourIncr': 2000000 }, { 'EndHour': 8, 'Index': 3, 'StartHour': 7, 'PerHourIncr': 4000000 }, { 'EndHour': 17, 'Index': 4, 'StartHour': 9, 'PerHourIncr': 5000000 }, { 'EndHour': 23, 'Index': 5, 'StartHour': 18, 'PerHourIncr': 6000000 }] }]
           PoolIncrArr: []
         },
+        JackpotV2: {
+          BetMoreThan: 0,
+          AddPoolPctAfterJp: 0,
+          AddPoolPctPreJp: 0,
+          RandAwards: [
+            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [], 'VrPoolRate': 0, 'RealPoolRate': 0, 'JackpotRate': 0 }
+          ]
+        },
         jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
       },
-      //  JackpotRandAwards: [{ 'AwardType': 1, 'Value': 50, 'PoolVal': 200000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 80 }, { 'Id': 2, 'Num': 1, 'Rate': 20 }], 'JackpotType': 1, 'DayLimit': 1 }, { 'AwardType': 1, 'Value': 20, 'PoolVal': 100000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 0 }, { 'Id': 2, 'Num': 1, 'Rate': 0 }, { 'Id': 3, 'Num': 2, 'Rate': 100 }], 'JackpotType': 2, 'DayLimit': 3 }, { 'AwardType': 1, 'Value': 10, 'PoolVal': 8000, 'RateArr': [{ 'Id': 1, 'Num': 2, 'Rate': 40 }, { 'Id': 2, 'Num': 3, 'Rate': 30 }, { 'Id': 3, 'Num': 4, 'Rate': 30 }], 'JackpotType': 3, 'DayLimit': 40 }, { 'AwardType': 2, 'Value': 3, 'PoolVal': 0, 'RateArr': [], 'JackpotType': 4, 'DayLimit': 0 }],
+      //
       JackpotRandAwards: [],
+      JackpotRandAward: [{ 'AwardType': 1, 'Value': 50, 'PoolVal': 200000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 80 }, { 'Id': 2, 'Num': 1, 'Rate': 20 }], 'JackpotType': 1, 'DayLimit': 1 }, { 'AwardType': 1, 'Value': 20, 'PoolVal': 100000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 0 }, { 'Id': 2, 'Num': 1, 'Rate': 0 }, { 'Id': 3, 'Num': 2, 'Rate': 100 }], 'JackpotType': 2, 'DayLimit': 3 }, { 'AwardType': 1, 'Value': 10, 'PoolVal': 8000, 'RateArr': [{ 'Id': 1, 'Num': 2, 'Rate': 40 }, { 'Id': 2, 'Num': 3, 'Rate': 30 }, { 'Id': 3, 'Num': 4, 'Rate': 30 }], 'JackpotType': 3, 'DayLimit': 40 }],
       betMoneyList: '200,100',
       subKey: 'gameSweeper',
       libShow: $libShow,
@@ -772,6 +830,9 @@ export default {
             this.betMoneyList = this.item.TableMoneyList ? this.item.TableMoneyList.join(',') : this.betMoneyList
             // 设置修改之前数据
             this.JackpotRandAwards = this.item.Jackpot.RandAwards
+
+            this.JackpotRandAward = this.item.JackpotV2.RandAwards
+
             this.$refs.compare.SetOldVal(response.Data)
           }
         }
@@ -782,6 +843,7 @@ export default {
       this.item.maxMoneyBet /= 1000
       this.item.minMoneyCarry /= 1000
       this.item.Jackpot.BetMoreThan /= 1000
+      this.item.JackpotV2.BetMoreThan /= 1000
       for (const k in this.item.Jackpot.RandAwards) {
         this.item.Jackpot.RandAwards[k].PoolVal /= 1000
       }
@@ -851,6 +913,18 @@ export default {
       }
       ret.Jackpot = jackpotInfo
 
+
+      const jackpotInfoV2 = {}
+      Object.assign(jackpotInfoV2, this.item.JackpotV2)
+      jackpotInfoV2.RandAwards = []
+      jackpotInfoV2.BetMoreThan *= 1000
+      for (const o in this.JackpotRandAward) {
+        const raObj = {}
+        Object.assign(raObj, this.JackpotRandAward[o])
+        jackpotInfoV2.RandAwards.push(raObj)
+      }
+      ret.JackpotV2 = jackpotInfoV2
+      console.log(ret.JackpotV2)
       return ret
     },
     setData() {

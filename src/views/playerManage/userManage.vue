@@ -76,6 +76,7 @@
           <el-descriptions-item label="来源Appid：">{{ showSourceAppid(item.SourceAppid) }}</el-descriptions-item>
           <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
+          <!--
           <el-descriptions-item label="小黑屋标志">
             <el-tag v-if="item.SchemaXMan > 0" type="danger">是({{ item.SchemaXMan }})</el-tag>
             <el-tag v-else>否</el-tag>
@@ -83,10 +84,10 @@
             <el-button v-if="item.SchemaXMan != 1" type="primary" size="mini" style="margin-left: 10px;" @click="setSchemaXMan(1)">设置标志(1)</el-button>
             <el-button v-if="item.SchemaXMan != 2" type="primary" size="mini" style="margin-left: 10px;" @click="setSchemaXMan(2)">设置专享标志(2)</el-button>
           </el-descriptions-item>
-
+          -->
           <el-descriptions-item label="最近登录IP：">{{ item.Ip }}</el-descriptions-item>
           <el-descriptions-item label="最近登录设备码：">{{ item.DeviceCode }}</el-descriptions-item>
-
+          <!--
           <el-descriptions-item label="基础值："> {{ formatNumber(item.BaseValue) }}</el-descriptions-item>
           <el-descriptions-item label="贡献值：">{{ formatNumber(item.ProduceValue) }}</el-descriptions-item>
 
@@ -98,7 +99,7 @@
               <el-button size="mini" type="success" @click="edit.visible=true">详情</el-button>
             </el-col>
           </el-descriptions-item>
-
+          -->
           <el-descriptions-item label="是否绑定手机号："><el-tag :type="item.IsBindPhone ? 'success' : 'danger'">{{ formatBool(item.IsBindPhone) }}</el-tag>{{ item.Phone }}</el-descriptions-item>
           <el-descriptions-item label="账号类型：">{{ formatAccountType(item.AccountType) }}</el-descriptions-item>
 
@@ -135,7 +136,7 @@
             <el-button v-if="item.Status == 1" type="success" size="mini" style="margin-left: 10px;" @click="disableUser(0)">解禁</el-button>
             <el-button v-else type="danger" size="mini" style="margin-left: 10px;" @click="disableUser(1)">禁用</el-button>
           </el-descriptions-item>
-
+          <!--
           <el-descriptions-item label="用户标签：" :span="3">
             <el-tag
               v-for="tag in UserTags"
@@ -151,6 +152,7 @@
             </el-tag>
             <el-button class="button-new-tag" size="small" @click="clickAddTag">+ 新标签</el-button>
           </el-descriptions-item>
+
           <el-descriptions-item label="调控结果：">
             <el-tag :type="paySchemaResultColor">{{ item.PaySchema.ResultName }}</el-tag>
             <el-button size="mini" type="primary" style="margin-left: 10px" @click="setSchemaResult">修改</el-button>
@@ -167,6 +169,7 @@
           <el-descriptions-item label="输标签：">
             {{ item.PaySchema.LoseTagCnt }}
           </el-descriptions-item>
+          -->
           <el-descriptions-item label="是否设置登录密码：">
             <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
           </el-descriptions-item>
@@ -1342,6 +1345,7 @@ export default {
       })
     },
     getTags() {
+      return // by chen bin 无标签
       if (this.item.Uid === 0) {
         console.log('uid 不能为空')
         return

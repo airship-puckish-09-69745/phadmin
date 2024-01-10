@@ -408,6 +408,16 @@
               <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="上庄资产系数(0:不限)："
+              :required="true"
+              prop="item.DealerMoneyRates"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.DealerMoneyRates" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-row>
@@ -612,7 +622,8 @@ function newItem() {
     PotTaxRates: 0,
     MinPlayMoney: 0,
     Button1Antes: 0,
-    Button2Antes: 0
+    Button2Antes: 0,
+    DealerMoneyRates: 0
   }
 }
 
@@ -669,7 +680,8 @@ export default {
         HitPotTaxRates: 'HitPot奖励抽水比例(%)',
         AlterRobotCardsRate: '真实玩家弃牌后修改机器人手牌概率',
         Button1Antes: '按钮1的底注倍数',
-        Button2Antes: '按钮2的底注倍数'
+        Button2Antes: '按钮2的底注倍数',
+        DealerMoneyRates: '上庄资产系数'
       }
     }
   },
