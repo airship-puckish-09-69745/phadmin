@@ -230,8 +230,8 @@ export default {
           { Name: '点数和_16', Val: 30, Id: 17 },
           { Name: '点数和_17', Val: 60, Id: 18 },
           { Name: 'One Dice', Val: 1, Id: 19 },
-          { Name: 'Two Dice', Val: 2, Id: 21 },
-          { Name: 'Three Dice', Val: 3, Id: 22 }
+          { Name: 'Two Dice', Val: 2, Id: 20 },
+          { Name: 'Three Dice', Val: 3, Id: 21 }
         ]
       },
       testRand: {
