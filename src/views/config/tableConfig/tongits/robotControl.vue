@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
 
-      <!--el-col :span="11">
+    <!--el-col :span="11">
         <el-form-item
           label="玩家首次进入1个机器人概率："
           label-width="200px"
@@ -79,7 +79,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <div style="color:red" v-if="tongitsConfig.robotConfig.Control.RobotOpenFlag">
+      <div v-if="tongitsConfig.robotConfig.Control.RobotOpenFlag" style="color:red">
         <el-row>1、打开对应场次机器人开关</el-row>
         <el-row>2、打开构建好牌开关</el-row>
         <el-row>3、配置对应场次机器人排队入桌逻辑</el-row>

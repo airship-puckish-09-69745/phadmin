@@ -21,8 +21,8 @@
       <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
         添加机器人
       </el-button>
-      <el-button type="success" size="mini"  icon="el-icon-refresh" @click="refresh">刷新</el-button>
-   <!--   <el-col :span="2" :offset="1">
+      <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh">刷新</el-button>
+      <!--   <el-col :span="2" :offset="1">
       <el-upload
         class="upload-demo"
         :action="actionURL"
@@ -75,12 +75,12 @@
         <el-table-column
           prop="nick"
           label="昵称"
-          width="90"
+          width="120"
         />
         <el-table-column
           prop="account"
           label="账号标识"
-          width="100"
+          width="120"
         />
         <el-table-column
           prop="app"
@@ -90,7 +90,7 @@
         <el-table-column
           prop="channel"
           label="渠道"
-          width="90"
+          width="80"
         />
         <el-table-column
           prop="money"
@@ -143,8 +143,8 @@
         />
         <el-table-column
           prop="level"
-          label="机器人等级"
-          width="120"
+          label="等级"
+          width="80"
         >
           <template slot-scope="scope">
             <span v-if="scope.row.initMoney >= scope.row.money" style="color:green">
@@ -158,14 +158,24 @@
 
         <el-table-column
           prop="currentGame"
-          label="当前所在的游戏"
-          width="120"
+          label="游戏"
+          width="80"
         />
         <el-table-column
           prop="currentTableMoney"
           label="当前所在的场次"
-          width="120"
-        />
+          width="100"
+        >
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['currentTableMoney']" size="mini" @change="handleFilter">
+              <el-option label="场次" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['currentTableMoney']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+            {{ clientDB.GetShowValue('currentTableMoney', scope.row.currentTableMoney) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="currentTid"
           label="当前所在的桌子"
@@ -297,7 +307,8 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-const filterMap = {}
+const filterMap = { currentTableMoney: 'all' }
+
 function newItem() {
   return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '' }
 }
@@ -313,7 +324,7 @@ export default {
       statNames: { 0: '冻结', 1: '正常', 2: '游戏中' },
       libShow: $libShow,
       showData: [],
-      clientDB: new ClientTableData([], 1, filterMap),
+      clientDB: new ClientTableData([], 1, {}),
       tableData: [],
       edit: {
         visible: false,
@@ -460,7 +471,11 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             objs[i].money /= 1000
             objs[i].initMoney /= 1000
+            objs[i].currentTableMoney /= 1000
           }
+          objs.sort(function(a, b) {
+            return a.currentTid - b.currentTid
+          })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
           _this.statItem = { money: 0, initMoney: 0 }
@@ -653,7 +668,7 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`)
-    },
+    }
   }
 }
 </script>
