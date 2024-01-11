@@ -50,7 +50,7 @@
 
             <el-table-column
               prop="app_id"
-              label="app_"
+              label="app_id"
             ></el-table-column>
 
             <el-table-column
@@ -174,6 +174,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {copyObj} from 'codemirror/src/util/misc'
+import {ClientTableData} from "@/utils/common";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -207,22 +208,6 @@ export default {
       ],
 
       showData: [],
-      games: {
-        // 2: 'Andar Bahar',
-        // 3: 'Dragon VS Tiger',
-        // 5: 'Car Roulette',
-        // 9: 'Baccarat',
-        // 10: 'Crash',
-        15: 'Texas Poker',
-        // 20: 'MINES',
-        21: 'Pusoy',
-        22: 'Tongits-Pot',
-        23: 'Lucky9',
-        // 25: 'Color Game',
-        31: 'Tongits-Classic'
-        // 52: 'Sleeping Beauty',
-        // 51: 'Phoenix'
-      },
       item: {
         app_id: 1000002,
         channel: "Dev",
@@ -230,12 +215,7 @@ export default {
         is_return: 0,
       },
       gameOptions: [
-        {key: 0, label: '请选择'},
-        {key: 15, label: 'Texas Poker'},
-        {key: 21, label: 'Pusoy'},
-        {key: 22, label: 'Tongits-Pot'},
-        {key: 23, label: 'Lucky9'},
-        {key: 31, label: 'Tongits-Classic'}
+
       ],
       dialogGameOptions: [],
       selectGameVisible: false,
@@ -248,6 +228,7 @@ export default {
   created() {
     this.getAppInfo()
     this.getData()
+    this.getList()
   },
   methods: {
     editIsReturn(idx, row) {
@@ -366,9 +347,7 @@ export default {
       Message.error('修改失败！')
       this.selectGameVisible = false
     },
-    showGameName(gid) {
-      return this.games[gid] || gid
-    },
+
     getFullKey(k) {
       return 'CustomizeCfg_' + k
     },
@@ -480,7 +459,23 @@ export default {
           }
         }
       })
-    }
+    },
+    getList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            this.gameOptions.push({
+              key: response.Data[i].Gid,
+              label: response.Data[i].Name
+            })
+          }
+        }
+      })
+    },
   }
 }
 </script>
