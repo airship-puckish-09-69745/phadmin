@@ -107,6 +107,42 @@
               </el-table>
             </el-row>
           </fieldset>
+
+          <fieldset style="margin-top:10px">
+            <legend>下注赔率配置</legend>
+            <el-row>
+              <el-table
+                ref="filterTable"
+                :data="item.BetOptionsRate"
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column
+                  type="index"
+                />
+                <el-table-column
+                  prop="Low"
+                  label="下注区域名称"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.Name" disabled size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="中奖赔率"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Val" size="mini" />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-row>
+          </fieldset>
+
         </el-col>
         <el-col style="margin-top:16px;" :offset="8" :span="8">
           <el-form-item>
@@ -172,6 +208,30 @@ export default {
           { Name: '骰子三点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 33 },
           { Name: 'Any Triple', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 34 }
 
+        ],
+        BetOptionsRate: [
+          { Name: 'SMALL', Val: 1, Id: 0 },
+          { Name: 'BIG', Val: 1, Id: 1 },
+          { Name: 'ANY Triple', Val: 30, Id: 2 },
+          { Name: 'Each Doubule', Val: 10, Id: 3 },
+          { Name: 'Each Triple', Val: 200, Id: 4 },
+          { Name: '点数和_4', Val: 60, Id: 5 },
+          { Name: '点数和_5', Val: 30, Id: 6 },
+          { Name: '点数和_6', Val: 18, Id: 7 },
+          { Name: '点数和_7', Val: 12, Id: 8 },
+          { Name: '点数和_8', Val: 8, Id: 9 },
+          { Name: '点数和_9', Val: 6.5, Id: 10 },
+          { Name: '点数和_10', Val: 6, Id: 11 },
+          { Name: '点数和_11', Val: 6, Id: 12 },
+          { Name: '点数和_12', Val: 6.5, Id: 13 },
+          { Name: '点数和_13', Val: 8, Id: 14 },
+          { Name: '点数和_14', Val: 12, Id: 15 },
+          { Name: '点数和_15', Val: 18, Id: 16 },
+          { Name: '点数和_16', Val: 30, Id: 17 },
+          { Name: '点数和_17', Val: 60, Id: 18 },
+          { Name: 'One Dice', Val: 1, Id: 19 },
+          { Name: 'Two Dice', Val: 2, Id: 20 },
+          { Name: 'Three Dice', Val: 3, Id: 21 }
         ]
       },
       testRand: {
@@ -219,6 +279,11 @@ export default {
       for (const j in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
+
+      /*     for (const j in this.item.BetOptionsRate) {
+        this.item.BetOptionsRate[j].Val /= 1000
+      }*/
+
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
@@ -260,6 +325,15 @@ export default {
         obj.MaxMoneyBet *= 1000
         ret.BetAreaOptions.push(obj)
       }
+
+      /*      ret.BetOptionsRate = []
+      for (const o in this.item.BetOptionsRate) {
+        const obj = {}
+        Object.assign(obj, this.item.BetOptionsRate[o])
+        obj.Val *= 1000
+        ret.BetOptionsRate.push(obj)
+      }*/
+
       return ret
     },
     getData() {
