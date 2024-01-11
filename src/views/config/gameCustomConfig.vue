@@ -6,7 +6,7 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="15">
         <el-form inline>
-          <el-form-item label="应用id">
+          <el-form-item label="app_id">
             <el-select v-model="appId">
               <el-option
                 v-for="item in appIdOptions"
@@ -15,7 +15,7 @@
                 :value="item.key"
               />
             </el-select>
-            <el-form-item label="渠道">
+            <el-form-item label="站点渠道">
               <el-select v-model="channel">
                 <el-option
                   v-for="item in channelOptions"
@@ -50,7 +50,7 @@
 
             <el-table-column
               prop="app_id"
-              label="应用"
+              label="app_"
             ></el-table-column>
 
             <el-table-column
@@ -127,7 +127,7 @@
           </el-select>
 
         </el-form-item>
-        <el-form-item label="应用">
+        <el-form-item label="app_">
           <el-select v-model="item.app_id" placeholder="请选择" size="mini">
             <el-option
               v-for="item in appIdOptions"
@@ -195,9 +195,11 @@ export default {
 
       channelOptions: [
         // {key: "0", label: '请选择'},
-        {key: "DEV", label: 'DEV'},
+        {key: "Dev", label: 'Dev'},
         {key: "BP", label: 'BP'},
+        {key: "AP", label: 'AP'},
         {key: "GP", label: 'GP'},
+        {key: "PG", label: 'PG'},
       ],
       isReturnOptions: [
         {key: 0, label: '否'},
@@ -263,11 +265,7 @@ export default {
       } else {
         cfg.is_return = 1
       }
-      if (!this.checkDuplicate(row)) {
-        Message.error('已经有重复的游戏配置了！')
-        row.is_return = cfg.is_return
-        return
-      }
+
       for (let i = 0; i < this.allCfg.length; i++) {
         // 确定哪一行是一样的
         if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel && cfg.is_return == this.allCfg[i].is_return) {
@@ -275,6 +273,7 @@ export default {
           this.allCfg.splice(i, 1, row)
           this.selectGameVisible = false
           this.refresh()
+          Message.error('成功！')
           return
         }
       }
@@ -310,7 +309,7 @@ export default {
         return false
       }
       if (this.item.app_id == 0) {
-        Message.error('请选择应用id！')
+        Message.error('请选择app_id！')
         return false
       }
       if (this.item.channel == 0) {
@@ -345,7 +344,7 @@ export default {
         return false
       }
       if (this.item.app_id == 0) {
-        Message.error('请选择应用id！')
+        Message.error('请选择app_id！')
         return false
       }
       if (this.item.channel == 0) {
@@ -396,7 +395,7 @@ export default {
             const cfg = JSON.parse(response.Data.Data)
             $this.allCfg = cfg
             for (let i = 0; i < $this.allCfg.length; i++) {
-              $this.DuplicateData.push($this.allCfg[i].channel + $this.allCfg[i].game_id + $this.allCfg[i].app_id + $this.allCfg[i].is_return)
+              $this.DuplicateData.push($this.allCfg[i].channel + $this.allCfg[i].game_id + $this.allCfg[i].app_id )
             }
             this.refresh()
           }
@@ -453,14 +452,16 @@ export default {
       return true
     },
     checkDuplicate(data) {
-      if (this.DuplicateData.includes(data.channel + "" + data.game_id + "" + data.app_id + "" + data.is_return)) {
+      console.log(this.DuplicateData)
+      console.log(data.channel + "" + data.game_id + "" + data.app_id)
+      if (this.DuplicateData.includes(data.channel + "" + data.game_id + "" + data.app_id )) {
         return false
       }
       return true
     },
     updateDuplicate(newData, oldData) {
-      var newKey = newData.channel + "" + newData.game_id + "" + newData.app_id + "" + newData.is_return
-      var oldKey = oldData.channel + "" + oldData.game_id + "" + oldData.app_id + "" + oldData.is_return
+      var newKey = newData.channel + "" + newData.game_id + "" + newData.app_id
+      var oldKey = oldData.channel + "" + oldData.game_id + "" + oldData.app_id
       for (let i = 0; i < this.DuplicateData.length; i++) {
         if (this.DuplicateData[i] == oldKey) {
           this.DuplicateData.splice(i, 1, newKey)
