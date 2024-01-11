@@ -9,9 +9,9 @@
           <el-form-item label="app_id">
             <el-select v-model="appId">
               <el-option
-                v-for="item in appIdOptions"
+                v-for="item in appInfo"
                 :key="item.key"
-                :label="item.label"
+                :label="item.label+'-'+item.key"
                 :value="item.key"
               />
             </el-select>
@@ -127,12 +127,12 @@
           </el-select>
 
         </el-form-item>
-        <el-form-item label="app_">
+        <el-form-item label="app_id">
           <el-select v-model="item.app_id" placeholder="请选择" size="mini">
             <el-option
-              v-for="item in appIdOptions"
+              v-for="item in appInfo"
               :key="item.key"
-              :label="item.label"
+              :label="item.label+'-'+item.key"
               :value="item.key"
             />
           </el-select>
@@ -190,8 +190,8 @@ export default {
       },
       allCfg: [],
       appInfo: [],
-      channel: "DEV",
-      appId: 100002,
+      channel: "Dev",
+      appId: 1000002,
 
       channelOptions: [
         // {key: "0", label: '请选择'},
@@ -205,14 +205,7 @@ export default {
         {key: 0, label: '否'},
         {key: 1, label: '是'},
       ],
-      appIdOptions: [
-        // {key: "0", label: '请选择'},
-        {key: 100002, label: '100002'},
-        {key: 100003, label: '100003'},
-        {key: 100004, label: '100004'},
-        {key: 100005, label: '100005'},
-        {key: 100006, label: '100006'}
-      ],
+
       showData: [],
       games: {
         // 2: 'Andar Bahar',
@@ -231,8 +224,8 @@ export default {
         // 51: 'Phoenix'
       },
       item: {
-        app_id: 100002,
-        channel: "DEV",
+        app_id: 1000002,
+        channel: "Dev",
         game_id: 0,
         is_return: 0,
       },
@@ -327,6 +320,7 @@ export default {
       this.allCfg.push(cfg)
       this.selectGameVisible = false
       this.updateDuplicate(this.item, this.oldData)
+      console.log("========",this.item)
       this.refresh()
     },
     editRow(idx, row) {
