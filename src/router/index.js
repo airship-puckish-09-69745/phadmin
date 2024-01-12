@@ -926,18 +926,6 @@ export const asyncRoutes = [
         meta: { title: '测试工具集', icon: 'tab' },
         children: [
           {
-            path: 'fakeOrderSucc',
-            component: () => import('@/views/devTools/fakeOrderSucc'),
-            name: 'fakeOrderSucc',
-            meta: { title: '测试订单成功' }
-          },
-          {
-            path: 'testTools',
-            component: () => import('@/views/devTools/test_tools'),
-            name: 'testTools',
-            meta: { title: '测试小工具' }
-          },
-          {
             path: 'testSign',
             component: () => import('@/views/devTools/testSign'),
             name: 'testSign',

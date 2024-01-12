@@ -107,7 +107,6 @@
           <el-descriptions-item label="账号类型：">{{ formatAccountType(item.AccountType) }}</el-descriptions-item>
 
           <el-descriptions-item label="登录账号：">{{ item.Account }}</el-descriptions-item>
-          <!--          <el-descriptions-item label="邀请码：">{{ item.InviteCode }}</el-descriptions-item>-->
           <el-descriptions-item label="绑定邮箱：">
             <template v-if="!mailEditable">
               {{ item.Email }}<el-button size="mini" @click="mailEditable=true">修改</el-button>
