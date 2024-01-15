@@ -78,7 +78,7 @@
                 width="380"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Rate"><template slot="append">%</template></el-input>
+                  <el-input v-model.number="scope.row.Rate"><template slot="append">‰</template></el-input>
                 </template>
               </el-table-column>
             </el-table>
@@ -142,7 +142,7 @@
                 width="380"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RowJackpot"><template slot="append">‰</template></el-input>
+                  <el-input v-model.number="scope.row.RowJackpot"><template slot="append">%</template></el-input>
                 </template>
               </el-table-column>
             </el-table>
