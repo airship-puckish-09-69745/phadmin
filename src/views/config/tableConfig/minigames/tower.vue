@@ -465,7 +465,12 @@ export default {
         data: [],
         jackpotType: 0
       },
-      subKey: 'tower_cfg'
+      subKey: 'tower_cfg',
+      AttrNames: {
+        types: {
+          Data: 'jsonString' // 整个数据项的类型
+        }
+      }
     }
   },
 
