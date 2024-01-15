@@ -467,6 +467,8 @@ export default {
       },
       subKey: 'tower_cfg',
       AttrNames: {
+        'Data.MinBet': '最小下注',
+        'Data.BetMoney': '下注额度',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
