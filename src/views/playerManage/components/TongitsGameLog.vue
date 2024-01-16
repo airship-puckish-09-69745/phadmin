@@ -151,7 +151,7 @@ export default {
         0x1000: '发牌',
         0x1001: '结算'
       },
-      UidMap:{},
+      UidMap: {}
     }
   },
   watch: {
@@ -236,7 +236,7 @@ export default {
           isPoint = true // contritube 代表结算时点数
         } else if (actionName == '发牌') {
           idx = 0
-          if(uid <1000000){
+          if (uid < 1000000) {
             this.UidMap[uid] = val.players[uidIndex].uid
           }
           uidIndex++
@@ -301,13 +301,13 @@ export default {
       }
       return false
     },
-    getRealUid(uid){
-       if(uid <1000000){
-          if(this.UidMap.hasOwnProperty(uid)){
-            return this.UidMap[uid]
-          }
+    getRealUid(uid) {
+      if (uid < 1000000) {
+        if (this.UidMap.hasOwnProperty(uid)) {
+          return this.UidMap[uid]
         }
-        return uid
+      }
+      return uid
     },
     getCardUrl(card) {
       return require('@/assets/poker/' + card + '.png')

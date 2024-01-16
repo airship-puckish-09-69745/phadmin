@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row>
       <el-col :offset="16" :span="2">
-        <el-button size="mini" @click="getInfo(100, 1)">刷新</el-button>
+        <el-button size="mini" @click="getInfo(10000, 1)">刷新</el-button>
       </el-col>
       <el-col :span="6">
         排序：
@@ -15,19 +15,19 @@
     </el-row>
     <el-row class="panel-group" :gutter="10">
       <el-col :span="4" class="card-panel-col">
-        <div :class="gid===100?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(100,2)">
+        <div :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(10000,2)">
           <div class="card-panel-description">
             <div class="card-panel-text">
-              汇总：<span :class="getSummaryClass(summary[100])"> {{ getSummaryResult(summary[100]).toFixed(2) }}% </span>
+              汇总：<span :class="getSummaryClass(summary[10000])"> {{ getSummaryResult(summary[10000]).toFixed(2) }}% </span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[100]) }}
+              收益：{{ getSystemGot(summary[10000]) }}
             </div>
             <div>
-              流水：{{ summary[100]?formatNumber(Math.floor(summary[100].Bet/1000)):0 }}
+              流水：{{ summary[10000]?formatNumber(Math.floor(summary[10000].Bet/1000)):0 }}
             </div>
             <div>
-              在玩：{{ summary[100]?summary[100].OnlineCount:0 }}({{ summary[100]?summary[100].RecentFive:0 }})
+              在玩：{{ summary[10000]?summary[10000].OnlineCount:0 }}({{ summary[10000]?summary[10000].RecentFive:0 }})
             </div>
           </div>
         </div>
@@ -109,8 +109,8 @@
             />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" size="mini" @click="getInfo(gid,2)">查询</el-button>
-            <el-button v-if="gid!=100" size="mini" type="text" @click="getUsers(gid)">在线</el-button>
+<!--            <el-button type="primary" size="mini" @click="getInfo(gid,2)">查询</el-button>-->
+            <el-button v-if="gid!=10000" size="mini" type="primary" @click="getUsers(gid)">在线</el-button>
           </el-form-item>
         </el-form>
       </el-col>
@@ -244,13 +244,13 @@ export default {
       originData: newOriginData(),
       libShow: $libShow,
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
-      gid: 100,
+      gid: 10000,
       summary: {},
-      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 31: 'Tongits-经典', 100: '汇总' },
+      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 100: 'Tower', 31: 'Tongits-经典', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 51, 52],
+      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 100, 51, 52],
       sortOrder: [],
       env: 'test'
     }
@@ -466,7 +466,7 @@ export default {
             for (const o in $this.summary) {
               totalOnline += $this.summary[o].OnlineCount
             }
-            $this.summary[100].OnlineCount = totalOnline
+            $this.summary[10000].OnlineCount = totalOnline
           }
           $this.initChartData()
           $this.showHealth()

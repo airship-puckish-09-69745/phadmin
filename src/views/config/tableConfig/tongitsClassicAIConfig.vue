@@ -357,8 +357,8 @@ export default {
       this.editVisible = true
       console.log('row==>', row)
       this.edit = row
-      if (!row.Fight.Special.hasOwnProperty("RealPlayerNotDrop")){
-        row.Fight.Special["RealPlayerNotDrop"] = []
+      if (!row.Fight.Special.hasOwnProperty('RealPlayerNotDrop')) {
+        row.Fight.Special['RealPlayerNotDrop'] = []
       }
     },
     moneyProc(isMul) {
