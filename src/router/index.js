@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/playerManage/systemMoneyChart'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk' }
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'CFG_MANAGEMENT'}
       }
     ]
   },
@@ -109,7 +109,7 @@ export const asyncRoutes = [
     path: '/online',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'SWITCH_PAY_METHOD' },
+    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
       {
         path: 'data',
@@ -134,12 +134,6 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/PlaylogTop100'),
         name: 'play_log_top100',
         meta: { title: '牌局排行榜 ◐' }
-      },
-      {
-        path: 'play_log_together_top100',
-        component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
-        name: 'play_log_together_top100',
-        meta: { title: 'Tongits同桌排行榜 ◐' }
       },
       {
         path: 'sweeperTableUserData',
@@ -179,12 +173,12 @@ export const asyncRoutes = [
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
           },
-          {
+/*          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
             meta: { title: '同桌黑名单 ◐' }
-          },
+          },*/
           {
             path: 'tongitsTableAI',
             component: () => import('@/views/config/tableConfig/tongitsAIConfig'),

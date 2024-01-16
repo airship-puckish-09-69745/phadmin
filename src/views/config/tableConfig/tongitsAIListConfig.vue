@@ -40,18 +40,36 @@
     </el-row>
     <div style="padding-top: 10px">
       <el-col span="16">
-        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+        <el-table
+          ref="filterTable"
+          :data="statItems"
           border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
         >
-          <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
-          <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money) }}</el-descriptions-item>
-          <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
-          <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-descriptions-item>
-        </el-descriptions>
+          <el-table-column
+            prop="key"
+            label="场次"
+          />
+          <el-table-column
+            prop="initMoney"
+            label="初始金额"
+          />
+          <el-table-column
+            prop="money"
+            label="余额"
+          />
+          <el-table-column
+            prop="win"
+            label="输赢"
+          />
+          <el-table-column
+            prop="rate"
+            label="比例"
+          />
+        </el-table>
       </el-col>
 
       <el-table
@@ -334,7 +352,9 @@ export default {
       isDisabled: false,
       form: {
       },
-      statItem: { money: 0, initMoney: 0 },
+      // statItem: { money: 0, initMoney: 0 },
+      stats: { 50: { money: 0, initMoney: 0 }},
+      statItems: [],
       txt: '',
       subKey: 'tongits_ai_list_cfg'
     }
@@ -478,12 +498,26 @@ export default {
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
-          _this.statItem = { money: 0, initMoney: 0 }
+          // _this.statItem = { money: 0, initMoney: 0 }
           for (let i = 0; i < objs.length; i++) {
             if (objs[i].status != 0) {
-              _this.statItem.money += objs[i].money
-              _this.statItem.initMoney += objs[i].initMoney
+              const key = objs[i].currentTableMoney
+              if (!_this.stats[key]) {
+                _this.stats[key] = { money: 0, initMoney: 0 }
+              }
+              _this.stats[key].money += objs[i].money
+              _this.stats[key].initMoney += objs[i].initMoney
             }
+          }
+
+          for (const key in _this.stats) {
+            _this.statItems.push({
+              tableMoney: key,
+              initMoney: this.formatNumber(_this.stats[key].initMoney),
+              money: this.formatNumber(_this.stats[key].money),
+              win: this.formatNumber(_this.stats[key].money - _this.stats[key].initMoney),
+              rate: this.formatNumber((_this.stats[key].money - _this.stats[key].initMoney) * 100 / _this.stats[key].initMoney) + '%'
+            })
           }
         }
         // loading.close()
