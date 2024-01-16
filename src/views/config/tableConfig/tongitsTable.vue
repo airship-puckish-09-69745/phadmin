@@ -523,7 +523,8 @@ function newItem() {
     LuckyLevelLimitMax: 0,
     LuckyLevelLimitMoney: 0,
     MinPlayMoney: 0,
-    Anticheating: 0
+    Anticheating: 0,
+    RoomLevel: 0
   }
 }
 
@@ -568,6 +569,7 @@ export default {
         MinPlayMoney: '最小玩牌金额',
         RobotCardBuildConfig: '机器人好牌配置',
         Anticheating: '是否防作弊',
+        RoomLevel: '房间类型',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
         // 'RobotConfig.Common.RobotCarryMoneyEnd': '机器人最大携带',
         // 'RobotConfig.Common.RobotMaxPlayTimesStart': '机器人玩牌次数下限',
