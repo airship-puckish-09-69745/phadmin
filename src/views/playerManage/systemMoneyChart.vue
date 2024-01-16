@@ -109,7 +109,7 @@
             />
           </el-form-item>
           <el-form-item>
-<!--            <el-button type="primary" size="mini" @click="getInfo(gid,2)">查询</el-button>-->
+            <!--            <el-button type="primary" size="mini" @click="getInfo(gid,2)">查询</el-button>-->
             <el-button v-if="gid!=10000" size="mini" type="primary" @click="getUsers(gid)">在线</el-button>
           </el-form-item>
         </el-form>

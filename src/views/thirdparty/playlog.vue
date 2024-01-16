@@ -331,7 +331,7 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix', 
+      games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix',
         7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette', 14: 'Pusoy', 15: 'Tower' },
       games2: [
         { id: 0, name: 'All games' },

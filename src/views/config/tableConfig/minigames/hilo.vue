@@ -44,7 +44,7 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="跳过次数：">
-              <el-input v-model.number="item.SkipNum"></el-input>
+              <el-input v-model.number="item.SkipNum" />
             </el-form-item>
           </el-col>
         </el-row>
