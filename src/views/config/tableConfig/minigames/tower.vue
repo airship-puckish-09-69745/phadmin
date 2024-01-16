@@ -342,7 +342,7 @@
             {{ scope.row.Id }}
           </template>
         </el-table-column>
-        <el-table-column label="开出数量" prop="Num">
+        <el-table-column label="开出数量(一次最多只有一个)" prop="Num">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
           </template>
