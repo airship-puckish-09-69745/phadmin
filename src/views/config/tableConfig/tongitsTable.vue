@@ -97,6 +97,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="RoomLevel"
+          label="房间类型"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ showRoomLevel(scope.row.RoomLevel) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="LastModify"
           label="最近修改"
           width="150"
@@ -182,6 +191,14 @@
                 <el-option label="200" :value="200" />
                 <el-option label="11(专用)" :value="11" />
                 <!-- <el-option label="500" :value="500" /> -->
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="房间类型：" :required="true" prop="item.RoomLevel">
+              <el-select v-model.number="edit.item.RoomLevel" placeholder="请选择">
+                <el-option label="普通房" :value="0" />
+                <el-option label="好友房" :value="100" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -583,6 +600,12 @@ export default {
       } else {
         return '否'
       }
+    },
+    showRoomLevel(n) {
+      if (n === 100) {
+        return '好友房'
+      }
+      return '普通房'
     },
     formatNumber(n) {
       return n.toLocaleString()
