@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/playerManage/systemMoneyChart'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'CFG_MANAGEMENT'}
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'CFG_MANAGEMENT' }
       }
     ]
   },
@@ -173,7 +173,7 @@ export const asyncRoutes = [
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
           },
-/*          {
+          /*          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',

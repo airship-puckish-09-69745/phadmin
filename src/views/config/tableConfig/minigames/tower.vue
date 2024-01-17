@@ -41,6 +41,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="保底奖池抽水：">
+              <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <fieldset style="margin-top:10px">

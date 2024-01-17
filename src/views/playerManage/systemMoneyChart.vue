@@ -99,7 +99,7 @@
         <el-button type="success" plain @click="showOrigin">原始值</el-button>
       </el-col>
       <el-col :span="14">
-        <el-form :model="item" label-width="150px" size="small" :inline="true">
+        <el-form  v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
           <el-form-item label="日期：">
             <el-date-picker
               v-model="item.date"
@@ -109,8 +109,8 @@
             />
           </el-form-item>
           <el-form-item>
-<!--            <el-button type="primary" size="mini" @click="getInfo(gid,2)">查询</el-button>-->
-            <el-button v-if="gid!=10000" size="mini" type="primary" @click="getUsers(gid)">在线</el-button>
+            <!--            <el-button type="primary" size="mini" @click="getInfo(gid,2)">查询</el-button>-->
+            <el-button size="mini" type="primary" @click="getUsers(gid)">在线</el-button>
           </el-form-item>
         </el-form>
       </el-col>
