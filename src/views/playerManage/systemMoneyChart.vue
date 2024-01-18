@@ -312,7 +312,7 @@ export default {
       }
     },
     isSlots(o) {
-      if (o > 50) {
+      if (o > 50 && o < 100) {
         return true
       } else {
         return false
