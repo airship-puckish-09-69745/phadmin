@@ -31,18 +31,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="中Jackpot后的Jackpot贡献率：">
-              <el-input v-model.number="item.HitJackpotFee"><template slot="append">‰</template></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="7" :offset="1">
             <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
               <el-input v-model.number="item.JackpotBetMin" />
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="7">
+          <el-col :span="7" :offset="1">
             <el-form-item label="保底奖池抽水：">
               <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
@@ -54,7 +47,7 @@
             <legend>Jackpot配置</legend>
             <el-alert
               type="success"
-              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
+              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比"
             />
 
             <el-table
