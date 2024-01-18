@@ -54,7 +54,7 @@
             <legend>Jackpot配置</legend>
             <el-alert
               type="success"
-              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
+              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比"
             />
 
             <el-table
