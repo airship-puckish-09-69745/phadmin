@@ -334,9 +334,7 @@ export default {
       isDisabled: false,
       form: {
       },
-      //statItem: { money: 0, initMoney: 0 },
-      stats: { 50: { money: 0, initMoney: 0 }},
-      statItems:[],
+      statItem: { money: 0, initMoney: 0 },
       txt: '',
       subKey: 'tongits_ai_list_cfg'
     }
@@ -480,26 +478,12 @@ export default {
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
-          // _this.statItem = { money: 0, initMoney: 0 }
+          _this.statItem = { money: 0, initMoney: 0 }
           for (let i = 0; i < objs.length; i++) {
             if (objs[i].status != 0) {
-              const key = objs[i].currentTableMoney
-              if (!_this.stats[key]) {
-                _this.stats[key] = { money: 0, initMoney: 0 }
-              }
-              _this.stats[key].money += objs[i].money
-              _this.stats[key].initMoney += objs[i].initMoney
+              _this.statItem.money += objs[i].money
+              _this.statItem.initMoney += objs[i].initMoney
             }
-          }
-
-          for(const key in _this.stats){
-            _this.statItems.push({
-              tableMoney:key,
-              initMoney:this.formatNumber(_this.stats[key].initMoney),
-              money:this.formatNumber(_this.stats[key].money),
-              win:this.formatNumber(_this.stats[key].money - _this.stats[key].initMoney),
-              rate:this.formatNumber((_this.stats[key].money - _this.stats[key].initMoney)*100/_this.stats[key].initMoney) + "%",
-            })
           }
         }
         // loading.close()
