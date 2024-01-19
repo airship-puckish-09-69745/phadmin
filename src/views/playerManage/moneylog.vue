@@ -548,8 +548,9 @@ export default {
           for (const o in winInfo) {
             this.gameTableData.push(winInfo[o])
           }
-          loading.close()
         }
+
+        loading.close()
       })
     },
     getLuckValue(baseValue, moneyAll) {
