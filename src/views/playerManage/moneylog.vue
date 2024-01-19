@@ -9,7 +9,7 @@
         <el-form-item>
           <el-date-picker
             v-model="timeRange"
-            type="date"
+            type="datetimerange"
             value-format="timestamp"
             :picker-options="pickerOptions"
             range-separator="至"
@@ -338,32 +338,8 @@ export default {
       gameTableData: [],
       gamePanelVisible: false,
       moneyData: [],
-      timeRange: $libDate.GetDayBegin(new Date()),
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
-      },
+      timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
+      pickerOptions: $libShow.DefaultDatePickerOptions(),
       chartData: newChartData(),
       env: 'test',
 
@@ -463,8 +439,8 @@ export default {
       let bTime = 0
       let eTime = 0
       if (this.timeRange) {
-        bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange) / 1000)
-        eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange) / 1000)
+        bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
+        eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
       }
       const loading = this.$loading({
         lock: true,
@@ -572,8 +548,9 @@ export default {
           for (const o in winInfo) {
             this.gameTableData.push(winInfo[o])
           }
-          loading.close()
         }
+
+        loading.close()
       })
     },
     getLuckValue(baseValue, moneyAll) {
