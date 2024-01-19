@@ -166,6 +166,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/millionPointRaceRuleConfig'),
             name: 'millionPointRaceRuleConfig',
             meta: { title: '百万积分赛配置 ◐' }
+          },
+          {
+            path: 'millionPointRaceRuleCommonConfig',
+            component: () => import('@/views/config/tableConfig/millionPointRaceRuleCommonConfig'),
+            name: 'millionPointRaceRuleCommonConfig',
+            meta: { title: '积分赛公共奖励配置 ◐' }
           }
         ]
       },

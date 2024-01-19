@@ -1,13 +1,17 @@
 <template>
   <div class="app-container">
+<el-row>
+  <publish primary-key="Volume" :key-id="getFullKey(this.subKey)" :env-empty="false" compare-type="Object"
+           :attr-names="AttrNames" />
 
-    <publish primary-key="Volume" :key-id="getFullKey(this.subKey)" :env-empty="false" compare-type="Object"
-             :attr-names="AttrNames"/>
+</el-row>
+
+
     <el-row :gutter="10" style="margin-top: 30px">
 
       <el-col :span="15"/>
       <el-col :span="22">
-        <el-button type="primary" size="mini" @click="addOne">添加游戏返回配置项</el-button>
+        <el-button type="primary" size="mini" @click="addOne">添加置项</el-button>
         <el-button type="primary" size="mini" @click="setData">保存</el-button>
       </el-col>
       <el-col :span="2">
@@ -15,9 +19,9 @@
       </el-col>
 
       <el-col :span="24">
-        <el-form ref="allCfg" v-model="allCfg" label-width="150px">
+        <el-form ref="allCfg"  label-width="150px">
           <el-table
-            :data="allCfg"
+            :data="showData"
             style="width: 95%"
             border
           >
@@ -60,9 +64,12 @@
               prop="Update"
               label="最后更新时间"
             >
+              <template scope="scope">
+                {{ new Date(scope.row.Update).Format("yyyy-MM-dd HH:mm:ss") }}
+              </template>
             </el-table-column>
             <el-table-column
-              prop="Updater"
+              prop="Update"
               label="最后更新人"
             >
             </el-table-column>
@@ -83,68 +90,6 @@
 
 
     </el-row>
-    <el-row>
-      <fieldset style="margin-top:10px">
-        <legend>公共配置</legend>
-        <!--          <el-alert-->
-        <!--            type="success"-->
-        <!--            description="根据分布概率随机取出其中一张牌"-->
-        <!--          />-->
-        <el-row style="margin-top:10px">
-          <el-button type="primary" size="mini" @click="openCommonConfig">添加</el-button>
-          <el-button type="primary" @click="setCommonData"  size="mini">保存</el-button>
-        </el-row>
-        <el-row>
-          <template>
-            <el-table :data="pointRaceRuleList" border>
-              <el-table-column label="开始名次">
-                <template scope="scope">
-                  <el-input v-model="scope.row.Start"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="结束名次">
-                <template scope="scope">
-                  <el-input v-model.number="scope.row.End"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="奖励">
-                <template scope="scope">
-                  <el-input v-model.number="scope.row.Reward"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作">
-                <template scope="scope">
-                  <el-button size="mini" type="danger" @click="removeCommonConfigRow(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
-        </el-row>
-      </fieldset>
-    </el-row>
-    <el-dialog
-      title="选择游戏"
-      :visible.sync="commonVisible"
-      width="650px"
-    >
-      <el-form label-width="150px">
-        <el-form-item label="开始名次">
-          <el-input v-model="comonItem.Start" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-
-        <el-form-item label="结束名次">
-          <el-input v-model="comonItem.End" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-
-        <el-form-item label="奖励">
-          <el-input v-model="comonItem.Reward" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="addCommonConfig">确定</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
 
     <!--对比组件-->
     <compare ref="compare"/>
@@ -156,7 +101,7 @@
     >
       <el-form label-width="150px">
         <el-form-item label="活动ID">
-          <el-input v-model="item.ActId" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
+          <el-input v-model="item.ActId" type="number" placeholder="请输入" size="mini" oninput="value=value.replace(/[^\d.]/g,'')" STYLE="width: 220px"></el-input>
 
         </el-form-item>
         <el-form-item label="游戏类型">
@@ -170,16 +115,16 @@
           </el-select>
         </el-form-item>
         <el-form-item label="开始时间">
-          <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" size="mini">
+          <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini">
           </el-date-picker>
         </el-form-item>
 
         <el-form-item label="结束时间">
-          <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" size="mini">
+          <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="需要的虚拟币">
-          <el-input v-model="item.NeedVirtualCoin" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
+          <el-input v-model="item.NeedVirtualCoin" type="number" oninput="value=value.replace(/[^\d.]/g,'')" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button v-if="showBtn==0" type="primary" @click="addGameItem">确定</el-button>
@@ -216,6 +161,7 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
+      showData:[],
       allCfg: [],
       appInfo: [],
       channel: "Dev",
@@ -232,7 +178,7 @@ export default {
         Reward: 0,
       },
       item: {
-        ActId: "",
+        ActId: 0,
         Type: 0,
         StartTime: Date.parse(new Date()),
         EndTime: Date.parse(new Date()),
@@ -257,7 +203,6 @@ export default {
     this.getAppInfo()
     this.getData()
     this.getList()
-    this.getCommonData()
   },
   methods: {
     newItem() {
@@ -267,8 +212,12 @@ export default {
       this.selectedGid = 0
       this.showBtn = 0
       this.selectGameVisible = true
+      this.item.StartTime= this.item.StartTime
+      this.item.EndTime= this.item.EndTime
     },
-    check() {
+
+
+    addGameItem() {
       if (this.item.ActId == 0) {
         Message.error('请输入活动ID！')
         return false
@@ -281,53 +230,70 @@ export default {
         Message.error('请输需要的虚拟币！')
         return false
       }
-      // if (this.item.EndTime>this.item.StartTime) {
-      //   Message.error('结束时间不能大于开始时间！')
-      //   return false
-      // }
-    },
-    addCommonConfig() {
-      this.pointRaceRuleList.push(this.comonItem)
-      this.commonVisible = false
-    },
-    addGameItem() {
-      if (!this.check) {
-        return
-      }
 
-      this.item.Update = Date.parse(new Date()) / 1000
+      this.item.Update = Date.parse(new Date())
+
+      this.showData.push(this.item)
       const cfg = {}
       copyObj(this.newItem(), cfg)
-      this.allCfg.push(cfg)
 
+      const cfg2 = {}
+      copyObj(this.newItem(), cfg2)
+      this.setDataTime(cfg2)
+      this.allCfg.push(cfg2)
       this.selectGameVisible = false
-
+      console.log(this.showData)
+      console.log(this.allCfg)
     },
     editRow(idx, row) {
-      this.idx=idx
       console.log(row)
+      this.idx=idx
       this.oldData = row
       this.showBtn = 1
       this.item.ActId = row.ActId
       this.item.Type = row.Type
       this.item.StartTime = row.StartTime
-      this.item.EndTime = row.EndTime
+      this.item.EndTime =  row.EndTime
       this.item.NeedVirtualCoin = row.NeedVirtualCoin
-      this.item.EndTime = Date.parse(new Date()) / 1000
       this.selectGameVisible = true
     },
     saveEdit() {
-      if (!this.check) {
-        return
+      console.log(Date.parse(new Date()))
+      if (this.item.ActId == 0) {
+        Message.error('请输入活动ID！')
+        return false
       }
-      console.log("this.idx",this.idx)
+      if (this.item.Type == 0) {
+        Message.error('请输游戏ID！')
+        return false
+      }
+      if (this.item.NeedVirtualCoin == 0) {
+        Message.error('请输需要的虚拟币！')
+        return false
+      }
+
+
+      this.item.Update = Date.parse(new Date())
       const cfg = {}
       copyObj(this.newItem(), cfg)
-      this.allCfg.splice(this.idx,1,cfg)
+      this.showData.splice(this.idx,1,cfg)
+
+      const cfg2 = {}
+      copyObj(this.newItem(), cfg2)
+      this.setDataTime(cfg2)
       Message.success('修改成功！')
+      this.allCfg.splice(this.idx,1,cfg2)
+      console.log(this.showData)
+      console.log("=====",this.allCfg)
       this.selectGameVisible = false
+
     },
 
+    setDataTime(data){
+      data.StartTime=data.StartTime/1000
+      data.EndTime=data.EndTime/1000
+      data.Update=data.Update/1000
+    },
     getFullKey(k) {
       return 'CustomizeCfg_' + k
     },
@@ -335,7 +301,6 @@ export default {
       this.commonVisible=true
     },
     removeCommonConfigRow(idx) {
-      console.log("======", idx)
       this.pointRaceRuleList.splice(idx, 1)
     },
     getData() {
@@ -353,38 +318,23 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            console.log("====1==",cfg)
+            const show =[]
+            copyObj(cfg, show)
+            for (let i = 0; i <show.length ; i++) {
+              show[i].Update=show[i].Update*1000
+              show[i].StartTime=show[i].StartTime*1000
+              show[i].EndTime=show[i].EndTime*1000
+            }
+            $this.showData=show
             $this.allCfg = cfg
           }
         }
       })
     },
     refresh(){
-      this.getCommonData()
       this.getData()
     },
-    getCommonData() {
-      const $this = this
-      // 加载基础数值配置
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.PointRaceCommonKey
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          $this.form = response.Data || {}
-          $this.postCommonData = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            const cfg = JSON.parse(response.Data.Data)
-            console.log("===", cfg)
-            // $this.allCfg = cfg
-            $this.pointRaceRuleList = cfg
-          }
-        }
-      })
-    },
+
     setData() {
       const cfg = this.getCfg()
       console.log('saveData ===> ', cfg)
@@ -428,7 +378,6 @@ export default {
     checkData(cfg) {
       for (const i in cfg) {
         if (!cfg[i].ActId || !cfg[i].Type || !cfg[i].NeedVirtualCoin) {
-          console.log(cfg[i])
           Message.error('请查看配置是否有漏')
           return false
         }
@@ -468,56 +417,6 @@ export default {
           }
         }
       })
-    },
-    setCommonData() {
-      const cfg = this.getCommonCfg()
-      console.log('saveData ===> ', cfg)
-      if (!this.checkCommonData(cfg)) {
-        return false
-      }
-
-      // this.form.Data = JSON.stringify(cfg)
-      this.postCommonData.Data = JSON.stringify(cfg)
-      const $this = this
-      // 设置修改后数据
-      // this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.SetNewVal(this.postCommonData)
-      this.$refs.compare.Compare(function (isEdit) {
-        if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
-          return
-        }
-
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          // data: $this.form
-          data: $this.postCommonData
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('保存成功')
-          }
-        })
-      })
-    },
-    getCommonCfg() {
-      const cfg = []
-      for (const i in this.pointRaceRuleList) {
-        const item = {}
-        copyObj(this.pointRaceRuleList[i], item)
-        cfg.push(item)
-      }
-      return cfg
-    },
-    checkCommonData(cfg) {
-      for (const i in cfg) {
-        if (!cfg[i].Start || !cfg[i].End || !cfg[i].Reward) {
-          console.log(cfg[i])
-          Message.error('请查看配置是否有漏')
-          return false
-        }
-      }
-      return true
     },
 
     getList() {
