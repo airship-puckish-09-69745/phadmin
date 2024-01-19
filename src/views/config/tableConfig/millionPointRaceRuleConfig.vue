@@ -324,7 +324,7 @@ export default {
       const cfg = {}
       copyObj(this.newItem(), cfg)
       this.allCfg.splice(this.idx,1,cfg)
-      Message.error('修改成功！')
+      Message.success('修改成功！')
       this.selectGameVisible = false
     },
 
