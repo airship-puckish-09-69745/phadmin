@@ -162,6 +162,20 @@ export const asyncRoutes = [
     meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
       {
+        path: 'millionPointRaceRuleConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '积分赛活动配置', noCache: true },
+        children: [
+          {
+            path: 'millionPointRaceRuleConfig',
+            component: () => import('@/views/config/tableConfig/millionPointRaceRuleConfig'),
+            name: 'millionPointRaceRuleConfig',
+            meta: { title: '百万积分赛配置 ◐' }
+          }
+        ]
+      },
+      {
         path: 'TongitsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
