@@ -34,17 +34,27 @@
             <el-table :data="allCfg" border>
               <el-table-column label="开始名次">
                 <template scope="scope">
-                  <el-input v-model="scope.row.Start"/>
+                  <el-input v-model="scope.row.Start"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" @input="usernameInput(scope.$index)"/>
                 </template>
               </el-table-column>
               <el-table-column label="结束名次">
                 <template scope="scope">
-                  <el-input v-model.number="scope.row.End"/>
+                  <el-input v-model.number="scope.row.End"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" @input="usernameInput(scope.$index)"/>
                 </template>
               </el-table-column>
               <el-table-column label="奖励">
                 <template scope="scope">
-                  <el-input v-model.number="scope.row.Reward"/>
+                  <el-input  v-model.number="scope.row.Reward"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" @input="usernameInput(scope.$index)"/>
+                </template>
+              </el-table-column>
+              <el-table-column label="最后更新时间">
+                <template scope="scope">
+                  <span>{{scope.row.Update*1000>0?new Date(scope.row.Update*1000).Format("yyyy-MM-dd HH:mm:ss"):''}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="最后更新人">
+                <template scope="scope">
+                  <span  >{{ scope.row.Updater}}</span>
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -84,44 +94,7 @@
     <!--对比组件-->
     <compare ref="compare"/>
 
-    <el-dialog
-      title="选择游戏"
-      :visible.sync="selectGameVisible"
-      width="650px"
-    >
-      <el-form label-width="150px">
-        <el-form-item label="活动ID">
-          <el-input v-model="item.ActId" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
 
-        </el-form-item>
-        <el-form-item label="游戏类型">
-          <el-select v-model="item.Type" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in gameOptions"
-              :key="item.key"
-              :label="item.label+'-'+item.key"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="开始时间">
-          <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" size="mini">
-          </el-date-picker>
-        </el-form-item>
-
-        <el-form-item label="结束时间">
-          <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" size="mini">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="需要的虚拟币">
-          <el-input v-model="item.NeedVirtualCoin" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button v-if="showBtn==0" type="primary" @click="addGameItem">确定</el-button>
-          <el-button v-if="showBtn==1" type="primary" @click="saveEdit">确认修改</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
 
   </div>
 </template>
@@ -137,9 +110,10 @@ import {getInfo} from "@/api/user";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput, getInfo},
+  components: {Compare, Publish, MoneyInput},
   data() {
     return {
+      userName:"",
       form: {},
       Visible: false,
       postData: {},
@@ -149,47 +123,31 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      appInfo: [],
-      channel: "Dev",
-      appId: 1000002,
-
-      isReturnOptions: [
-        {key: 0, label: '否'},
-        {key: 1, label: '是'},
-      ],
       allCfg: [],
       comonItem: {
         Start: 0,
         End: 0,
         Reward: 0,
-      },
-      item: {
-        ActId: 0,
-        Type: 0,
-        StartTime: Date.parse(new Date()),
-        EndTime: Date.parse(new Date()),
-        NeedVirtualCoin: 0,
-        Update: 0,
-        Updater: "",
+        Update:0,
+        Updater:"",
       },
       user: {},
       gameOptions: [],
       dialogGameOptions: [],
       selectGameVisible: false,
       oldData: {},
-      selectedGid: 0,
-      DuplicateData: [],
-      maxId: 0,
-      idx:0,
-      showBtn:false,
     }
   },
   created() {
-    this.getAppInfo()
     this.getData()
-    this.getList()
-    this.getData()
+    getInfo().then((res) => {
+      console.log("get,", res)
+      if (res.RetCode == 0) {
+        this.userName = res.Data.name
+      }
+    })
   },
+
   methods: {
     newItem() {
       return this.item
@@ -199,7 +157,11 @@ export default {
       this.showBtn = 0
       this.selectGameVisible = true
     },
-
+    usernameInput(idx){
+console.log(idx)
+      this.allCfg[idx].Updater=this.userName
+      this.allCfg[idx].Update=Date.parse(new Date())/1000
+    },
     addConfig() {
       if (this.comonItem.Start== 0) {
         Message.error('请输入开始名次！')
@@ -213,6 +175,8 @@ export default {
         Message.error('请输入奖励！')
         return false
       }
+      this.comonItem.Update=Date.parse(new Date())
+      this.comonItem.Updater=this.userName
       this.allCfg.push(this.comonItem)
       this.Visible = false
     },
@@ -337,6 +301,9 @@ export default {
     getCfg() {
       const cfg = []
       for (const i in this.allCfg) {
+        this.allCfg[i].Start=parseInt(  this.allCfg[i].Start)
+        this.allCfg[i].End=parseInt(  this.allCfg[i].End)
+        this.allCfg[i].Reward=parseInt(  this.allCfg[i].Reward)
         const item = {}
         copyObj(this.allCfg[i], item)
         cfg.push(item)
@@ -345,6 +312,10 @@ export default {
     },
     checkData(cfg) {
       for (const i in cfg) {
+        if (cfg[i].Start >cfg[i].End ){
+          Message.error('开始名次不能大于结束名次')
+          return false
+        }
         if (!cfg[i].Start || !cfg[i].End || !cfg[i].Reward) {
           Message.error('请查看配置是否有漏')
           return false
@@ -369,39 +340,8 @@ export default {
       }
       this.DuplicateData.push(newKey)
     },
-    getAppInfo() {
-      request({
-        url: '/thirdparties/all',
-        method: 'get',
-        data: {}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          // const objs = response.Data || []
-          for (let i = 0; i < response.Data.length; i++) {
-            this.appInfo.push({
-              key: response.Data[i].ID,
-              label: response.Data[i].Account
-            })
-          }
-        }
-      })
-    },
-    getList() {
-      request({
-        url: '/thirdpartygames/all',
-        method: 'get',
-        data: {}
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (let i = 0; i < response.Data.length; i++) {
-            this.gameOptions.push({
-              key: response.Data[i].Gid,
-              label: response.Data[i].Name
-            })
-          }
-        }
-      })
-    },
+
+
   }
 }
 
