@@ -378,6 +378,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/windrop_cfg'),
             name: 'windrop_cfg',
             meta: { title: 'Windrop ◐' }
+          },
+          {
+            path: 'miniWindrop_cfg',
+            component: () => import('@/views/config/tableConfig/miniWindrop_cfg'),
+            name: 'miniWindrop_cfg',
+            meta: { title: 'MiniWindrop ◐' }
           }
 
         ]
