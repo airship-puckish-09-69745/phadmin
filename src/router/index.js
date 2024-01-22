@@ -685,6 +685,12 @@ export const asyncRoutes = [
         meta: { title: 'Tower ◐', gid: 100 }
       },
       {
+        path: 'playlog_hilo',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_hilo',
+        meta: { title: 'Hilo ◐', gid: 102 }
+      },
+      {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
