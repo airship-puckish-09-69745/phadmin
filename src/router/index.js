@@ -163,15 +163,27 @@ export const asyncRoutes = [
         children: [
           {
             path: 'millionPointRaceRuleConfig',
-            component: () => import('@/views/config/tableConfig/millionPointRaceRuleConfig'),
+            component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleConfig'),
             name: 'millionPointRaceRuleConfig',
-            meta: { title: '百万积分赛配置 ◐' }
+            meta: { title: '百万积分赛配置 🎶' }
           },
           {
             path: 'millionPointRaceRuleCommonConfig',
-            component: () => import('@/views/config/tableConfig/millionPointRaceRuleCommonConfig'),
+            component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleCommonConfig'),
             name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛公共奖励配置 ◐' }
+            meta: { title: '积分赛公共奖励配置 ' }
+          },
+          {
+            path: 'activityLog',
+            component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
+            name: 'millionPointRaceRuleCommonConfig',
+            meta: { title: '积分赛活动日志  🚩️' }
+          },
+          {
+            path: 'pointRaceUserLog',
+            component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
+            name: 'millionPointRaceRuleCommonConfig',
+            meta: { title: '积分赛用户日志  ' }
           }
         ]
       },
