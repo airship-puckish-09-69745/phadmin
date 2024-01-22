@@ -33,16 +33,10 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="自动投注次数。-1为不限：">
-              <el-input v-model="cfg.AutomaticTimesStr" placeholder="" />
-            </el-form-item>
-          </el-row>
-          <el-row>
             <el-form-item label="加倍行数显示：">
               <el-input v-model="cfg.AddTimesRow" placeholder="" />
             </el-form-item>
           </el-row>
-          AddTimesRow
         </el-form>
       </el-col>
     </el-row>
@@ -79,6 +73,7 @@
       </el-col>
     </el-row>
     <el-row>
+      <!-- eslint-disable-next-line vue/valid-v-for -->
       <el-col v-for="item in cfg.LevelCfg">
         <el-row style="margin-top: 30px">
           <el-col :span="16" :offset="3">
@@ -223,7 +218,7 @@ export default {
         BallNums: [5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         Bets: [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000],
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
-        AddTimesRow:[6,10,14],
+        AddTimesRow: [6, 10, 14],
         HappyRouletteCfg: [
           {
             Id: 1,
@@ -301,138 +296,138 @@ export default {
               {
                 Id: -8,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
 
               },
               {
                 Id: -7,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 30
               },
               {
                 Id: -6,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 10
               },
               {
                 Id: -5,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 5
               },
               {
                 Id: -4,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 2
               },
               {
                 Id: -3,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1.5
               },
               {
                 Id: -2,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1
               },
               {
                 Id: -1,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0.5
               },
               {
                 Id: 0,
                 HitRates: 0,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0
               },
               {
                 Id: 1,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0.5
               },
               {
                 Id: 2,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1
               },
               {
                 Id: 3,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1.5
               },
               {
                 Id: 4,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 2
               },
               {
                 Id: 5,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 5
               },
               {
                 Id: 6,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 10
               },
               {
                 Id: 7,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 30
               },
               {
                 Id: 8,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               }
             ],
@@ -440,89 +435,89 @@ export default {
               {
                 Id: 1,
                 HitRates: 2000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 5
               },
               {
                 Id: 2,
                 HitRates: 2000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 10
               },
               {
                 Id: 3,
                 HitRates: 2000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 15
               },
               {
                 Id: 4,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 20
               },
               {
                 Id: 5,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 25
               },
               {
                 Id: 6,
                 HitRates: 800,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 50
               },
               {
                 Id: 7,
                 HitRates: 500,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 100
               },
               {
                 Id: 8,
                 HitRates: 500,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               },
               {
                 Id: 9,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 500
               },
               {
                 Id: 10,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: 11,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -2
               }
             ]
@@ -541,137 +536,137 @@ export default {
               {
                 Id: -8,
                 HitRates: 80,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               },
               {
                 Id: -7,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 30
               },
               {
                 Id: -6,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: -5,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: -4,
                 HitRates: 500,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 2
               },
               {
                 Id: -3,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1.5
               },
               {
                 Id: -2,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1
               },
               {
                 Id: -1,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0.5
               },
               {
                 Id: 0,
                 HitRates: 0,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0
               },
               {
                 Id: 1,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0.5
               },
               {
                 Id: 2,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1
               },
               {
                 Id: 3,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1.5
               },
               {
                 Id: 4,
                 HitRates: 500,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 2
               },
               {
                 Id: 5,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: 6,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: 7,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 30
               },
               {
                 Id: 8,
                 HitRates: 80,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               }
             ],
@@ -679,89 +674,89 @@ export default {
               {
                 Id: 1,
                 HitRates: 2000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 5
               },
               {
                 Id: 2,
                 HitRates: 2000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 10
               },
               {
                 Id: 3,
                 HitRates: 2000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 15
               },
               {
                 Id: 4,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 20
               },
               {
                 Id: 5,
                 HitRates: 1000,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 25
               },
               {
                 Id: 6,
                 HitRates: 800,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 50
               },
               {
                 Id: 7,
                 HitRates: 500,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 100
               },
               {
                 Id: 8,
                 HitRates: 500,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               },
               {
                 Id: 9,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 500
               },
               {
                 Id: 10,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: 11,
                 HitRates: 50,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -2
               }
             ]
@@ -780,137 +775,137 @@ export default {
               {
                 Id: -8,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               },
               {
                 Id: -7,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 30
               },
               {
                 Id: -6,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: -5,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: -4,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 2
               },
               {
                 Id: -3,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1.5
               },
               {
                 Id: -2,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1
               },
               {
                 Id: -1,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0.5
               },
               {
                 Id: 0,
                 HitRates: 0,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0
               },
               {
                 Id: 1,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 0.5
               },
               {
                 Id: 2,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1
               },
               {
                 Id: 3,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 1.5
               },
               {
                 Id: 4,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 2
               },
               {
                 Id: 5,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: 6,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: -1
               },
               {
                 Id: 7,
                 HitRates: 100,
-                 FirstTimesRates:100,
-                 SecondTimesRates:100,
-                 ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 30
               },
               {
                 Id: 8,
                 HitRates: 100,
-                FirstTimesRates:100,
-                SecondTimesRates:100,
-                ThirdTimesRates:100,
+                FirstTimesRates: 100,
+                SecondTimesRates: 100,
+                ThirdTimesRates: 100,
                 Odds: 200
               }
             ],
@@ -1104,7 +1099,7 @@ export default {
           }
         })
       })
-    },
+    }
   }
 }
 </script>
