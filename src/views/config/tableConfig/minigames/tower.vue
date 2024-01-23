@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
       <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>
     </el-row>
     <!--公共配置-->
@@ -31,13 +31,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="中Jackpot后的Jackpot贡献率：">
-              <el-input v-model.number="item.HitJackpotFee"><template slot="append">‰</template></el-input>
+            <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
+              <el-input v-model.number="item.JackpotBetMin" />
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
-              <el-input v-model.number="item.JackpotBetMin" />
+            <el-form-item label="保底奖池抽水：">
+              <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -47,7 +47,7 @@
             <legend>Jackpot配置</legend>
             <el-alert
               type="success"
-              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
+              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比"
             />
 
             <el-table
@@ -74,11 +74,11 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="概率"
+                label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Rate"><template slot="append">%</template></el-input>
+                  <el-input v-model.number="scope.row.Rate"><template slot="append">‰</template></el-input>
                 </template>
               </el-table-column>
             </el-table>
@@ -138,7 +138,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="出现Jackpot的概率"
+                label="JP图标显示在x行的概率"
                 width="380"
               >
                 <template slot-scope="scope">
@@ -342,7 +342,7 @@
             {{ scope.row.Id }}
           </template>
         </el-table-column>
-        <el-table-column label="开出数量" prop="Num">
+        <el-table-column label="开出数量(一次最多只有一个)" prop="Num">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
           </template>
@@ -465,7 +465,14 @@ export default {
         data: [],
         jackpotType: 0
       },
-      subKey: 'tower_cfg'
+      subKey: 'tower_cfg',
+      AttrNames: {
+        'Data.MinBet': '最小下注',
+        'Data.BetMoney': '下注额度',
+        types: {
+          Data: 'jsonString' // 整个数据项的类型
+        }
+      }
     }
   },
 

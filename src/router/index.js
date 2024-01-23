@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/playerManage/systemMoneyChart'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk' }
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'CFG_MANAGEMENT' }
       }
     ]
   },
@@ -109,7 +109,7 @@ export const asyncRoutes = [
     path: '/online',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'SWITCH_PAY_METHOD' },
+    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
       {
         path: 'data',
@@ -136,12 +136,6 @@ export const asyncRoutes = [
         meta: { title: '牌局排行榜 ◐' }
       },
       {
-        path: 'play_log_together_top100',
-        component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
-        name: 'play_log_together_top100',
-        meta: { title: 'Tongits同桌排行榜 ◐' }
-      },
-      {
         path: 'sweeperTableUserData',
         component: () => import('@/views/playerManage/sweeperTableUserData'),
         name: 'sweeperTableUserData',
@@ -162,6 +156,44 @@ export const asyncRoutes = [
     meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
       {
+        path: 'millionPointRaceRuleConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '积分赛活动配置', noCache: true },
+        children: [
+          {
+            path: 'millionPointRaceRuleConfig',
+            component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleConfig'),
+            name: 'millionPointRaceRuleConfig',
+            meta: { title: '百万积分赛配置 🎶' }
+          },
+          {
+            path: 'millionPointRaceRuleCommonConfig',
+            component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleCommonConfig'),
+            name: 'millionPointRaceRuleCommonConfig',
+            meta: { title: '积分赛公共奖励配置 ' }
+          },
+          {
+            path: 'activityLog',
+            component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
+            name: 'millionPointRaceRuleCommonConfig',
+            meta: { title: '积分赛活动日志  🚩️' }
+          },
+          {
+            path: 'pointRaceUserLog',
+            component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
+            name: 'pointRaceUserLog',
+            meta: { title: '积分赛用户榜单  ' }
+          },
+          {
+            path: 'UserDetailLog',
+            component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
+            name: 'UserDetailLog',
+            meta: { title: '用户详情  ' }
+          }
+        ]
+      },
+      {
         path: 'TongitsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -179,12 +211,12 @@ export const asyncRoutes = [
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
           },
-          {
+          /*          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
             meta: { title: '同桌黑名单 ◐' }
-          },
+          },*/
           {
             path: 'tongitsTableAI',
             component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
@@ -358,13 +390,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/sicboGame'),
             name: 'sicbo_cfg',
             meta: { title: 'Sicbo ◐' }
-          }
-          /* {
+          },
+          {
             path: 'windrop_cfg',
             component: () => import('@/views/config/tableConfig/windrop_cfg'),
             name: 'windrop_cfg',
             meta: { title: 'Windrop ◐' }
-          }*/
+          }
 
         ]
       },
@@ -657,6 +689,18 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_tower',
         meta: { title: 'Tower ◐', gid: 100 }
+      },
+      {
+        path: 'playlog_hilo',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_hilo',
+        meta: { title: 'Hilo ◐', gid: 102 }
+      },
+      {
+        path: 'playlog_sicbo',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_sicbo',
+        meta: { title: 'Sicbo ◐', gid: 101 }
       },
       {
         path: 'playlog_boding',
