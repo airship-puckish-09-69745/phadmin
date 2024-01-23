@@ -19,10 +19,17 @@
             <el-button type="success" @click="getData">查询</el-button>
 
           </el-form-item>
+          <el-form-item label="添加虚拟币" >
+            <el-input v-model="addVirtualCoin" size="mini"></el-input>
+          </el-form-item >
+
+          <el-form-item label="添加积分">
+            <el-input v-model="addPoint" size="mini"></el-input>
+          </el-form-item>
           <el-form-item >
-          <el-col span="8" offset="20">
+
+
             <el-button type="primary" @click="getData">更新虚拟币</el-button>
-          </el-col>
           </el-form-item>
         </el-form>
 
@@ -69,10 +76,12 @@ export default {
   components: {Compare, MoneyInput, getInfo},
   data() {
     return {
-      rank:"阿斯顿",
+      rank:"",
       uid:"",
       point:"",
       virtualCoin:"",
+      addVirtualCoin:"",
+      addPoint:"",
       activityIds:[],
       queryData: {
         ActivityId: 0,
