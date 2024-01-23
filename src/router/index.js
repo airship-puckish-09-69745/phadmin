@@ -182,8 +182,14 @@ export const asyncRoutes = [
           {
             path: 'pointRaceUserLog',
             component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
-            name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛用户日志  ' }
+            name: 'pointRaceUserLog',
+            meta: { title: '积分赛用户榜单  ' }
+          },
+          {
+            path: 'UserDetailLog',
+            component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
+            name: 'UserDetailLog',
+            meta: { title: '用户详情  ' }
           }
         ]
       },

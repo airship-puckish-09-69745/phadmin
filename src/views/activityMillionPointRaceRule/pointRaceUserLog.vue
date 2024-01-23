@@ -1,352 +1,201 @@
-
 <template>
   <div class="app-container">
-    <el-row>
-      <publish primary-key="Volume" :key-id="getFullKey(this.subKey)" :env-empty="false" compare-type="Object"
-               :attr-names="AttrNames" />
-
-    </el-row>
 
 
     <el-row :gutter="10" style="margin-top: 30px">
 
       <el-col :span="15"/>
       <el-col :span="22">
-        <el-button type="primary" size="mini" @click="openConfig">添加配置项</el-button>
-        <el-button type="primary" @click="setData"  size="mini">保存</el-button>
+        <el-form inline>
+          <el-form-item label="活动ID">
+            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+          </el-form-item>
+          <el-form-item label="L">
+            <el-input v-model="queryData.LastRank" size="mini" placeholder="活动ID"/>
+          </el-form-item>
+          <el-form-item label="活动ID">
+            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+          </el-form-item>
+<!--          <el-form-item label="类型：">-->
+<!--            <el-select v-model="queryData.Type" placeholder="请选择" size="mini">-->
+<!--              <el-option label="全部" :value="0"/>-->
+<!--              <el-option-->
+<!--                  v-for="item in activityTypeOptions"-->
+<!--                  :key="item.key"-->
+<!--                  :label="item.value+'-'+item.key"-->
+<!--                  :value="item.key"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="开始日期：">-->
+<!--            <el-date-picker-->
+<!--                v-model="queryData.StartTime"-->
+<!--                value-format="timestamp"-->
+<!--                type="date"-->
+<!--                placeholder="选择日期"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="结束日期：">-->
+<!--            <el-date-picker-->
+<!--                v-model="queryData.EndTime"-->
+<!--                value-format="timestamp"-->
+<!--                type="date"-->
+<!--                placeholder="选择日期"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="状态">-->
+<!--            <el-select v-model="queryData.Status" size="mini">-->
+<!--              <el-option label="全部" :value="0"/>-->
+<!--              <el-option v-for="(o,k) in statusOption" :label="o" :value="k"/>-->
+<!--            </el-select>-->
+<!--            <el-button type="success" @click="getData">查询</el-button>-->
+<!--          </el-form-item>-->
+        </el-form>
+
+      </el-col>
+      <el-col :span="22">
+        <el-button type="primary" size="mini" @click="openCreated">添加置项</el-button>
+        <el-button type="success" size="mini" @click="publishData">发布配置</el-button>
       </el-col>
       <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh()">刷新</el-button>
       </el-col>
 
-    </el-row>
-    <el-row>
+      <el-col :span="24">
+        <el-form ref="allCfg" label-width="150px">
+          <el-table
+              :data="dataList"
+              style="width: 95%"
+              border
+          >
 
-      <fieldset style="margin-top:10px">
-        <legend>公共配置</legend>
-        <!--          <el-alert-->
-        <!--            type="success"-->
-        <!--            description="根据分布概率随机取出其中一张牌"-->
-        <!--          />-->
-        <el-row style="margin-top:10px">
-        </el-row>
+            <el-table-column
+                prop="Rank"
+                label="排名"
+            ></el-table-column>
+
+            <el-table-column
+                prop="UID"
+                label="UID"
+            >
+            </el-table-column>
+
+            <el-table-column
+                prop="Point"
+                label="积分"
+            >
+
+            </el-table-column>
+
+
+          </el-table>
+          <br>
+          <br>
+          <br>
+
+        </el-form>
         <el-row>
-          <template>
-            <el-table :data="allCfg" border>
-              <el-table-column label="开始名次">
-                <template scope="scope">
-                  <el-input v-model="scope.row.Start"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" @input="usernameInput(scope.$index)"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="结束名次">
-                <template scope="scope">
-                  <el-input v-model.number="scope.row.End"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" @input="usernameInput(scope.$index)"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="奖励">
-                <template scope="scope">
-                  <el-input  v-model.number="scope.row.Reward"  type="number" oninput="value=value.replace(/[^\d.]/g,'')" @input="usernameInput(scope.$index)"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="最后更新时间">
-                <template scope="scope">
-                  <span>{{scope.row.Update*1000>0?new Date(scope.row.Update*1000).Format("yyyy-MM-dd HH:mm:ss"):''}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="最后更新人">
-                <template scope="scope">
-                  <span  >{{ scope.row.Updater}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="操作">
-                <template scope="scope">
-                  <el-button size="mini" type="danger" @click="removeConfigRow(scope.$index)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </template>
+          <div class="block" style="text-align: center">
+            <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="offset"
+                :page-sizes="[20, 50, 100, 200,300]"
+                :page-size="limit"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+            </el-pagination>
+          </div>
         </el-row>
-      </fieldset>
+      </el-col>
     </el-row>
-    <el-dialog
-        title="选择游戏"
-        :visible.sync="Visible"
-        width="650px"
-    >
-      <el-form label-width="150px">
-        <el-form-item label="开始名次">
-          <el-input v-model="comonItem.Start" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-
-        <el-form-item label="结束名次">
-          <el-input v-model="comonItem.End" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-
-        <el-form-item label="奖励">
-          <el-input v-model="comonItem.Reward" placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
-        </el-form-item>
-
-        <el-form-item>
-          <el-button type="primary" @click="addConfig">确定</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-
-    <!--对比组件-->
-    <compare ref="compare"/>
-
-
-
   </div>
 </template>
 
 <script>
 import {Message} from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
-import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {copyObj} from 'codemirror/src/util/misc'
 import {getInfo} from "@/api/user";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: {Compare, MoneyInput, getInfo},
   data() {
     return {
-      userName:"",
-      form: {},
-      Visible: false,
-      postData: {},
-      subKey: 'PointRaceCommonConfig',
-      AttrNames: {
-        types: {
-          Data: 'jsonString' // 整个数据项的类型
-        }
+      dataList: [],
+      total: 0,
+      showVisible: false,
+      types: {1: '转出', 2: '转入'},
+      activityTypeOptions: [
+        {'key': 1, 'value': "Tongits"}],
+      statusOption: {1: '上架', 2: '下架'},
+      item: {
+        ID: 0,
+        ActivityType: 0,
+        EndTime: 0,
+        StartTime: 0,
+        Title: "",
+        NeedVirtualCoin: 0,
+        TaskVirtualCoin: 0,
+        Status: 0,
       },
-      allCfg: [],
-      comonItem: {
-        Start: 0,
-        End: 0,
-        Reward: 0,
-        Update:0,
-        Updater:"",
+      offset: 1,
+      limit: 20,
+      queryData: {
+        ActivityId: 0,
+        LastRank: 0,
+        StartTime: Date.parse(new Date()) - (60 * 60 * 24 * 30 * 1000),
+        EndTime: Date.parse(new Date().toString()),
+        Status: 0,
       },
-      user: {},
-      gameOptions: [],
-      dialogGameOptions: [],
-      selectGameVisible: false,
-      oldData: {},
+      showBtn: false,
+      startTime: Date.parse(new Date().toString()),
+      endTime: Date.parse(new Date().toString()),
+
     }
   },
+
   created() {
     this.getData()
-    getInfo().then((res) => {
-      console.log("get,", res)
-      if (res.RetCode == 0) {
-        this.userName = res.Data.name
-      }
-    })
   },
-
   methods: {
-    newItem() {
-      return this.item
+    handleSizeChange(val) {
+      this.limit = val
+      this.getData()
     },
-    addOne() {
-      this.selectedGid = 0
-      this.showBtn = 0
-      this.selectGameVisible = true
-    },
-    usernameInput(idx){
-      console.log(idx)
-      this.allCfg[idx].Updater=this.userName
-      this.allCfg[idx].Update=Date.parse(new Date())/1000
-    },
-    addConfig() {
-      if (this.comonItem.Start== 0) {
-        Message.error('请输入开始名次！')
-        return false
-      }
-      if (this.comonItem.End == 0) {
-        Message.error('请输入结束名词！')
-        return false
-      }
-      if (this.comonItem.Reward == 0) {
-        Message.error('请输入奖励！')
-        return false
-      }
-      this.comonItem.Update=Date.parse(new Date())
-      this.comonItem.Updater=this.userName
-      this.allCfg.push(this.comonItem)
-      this.Visible = false
-    },
-    addGameItem() {
-      if (this.item.ActId == 0) {
-        Message.error('请输入活动ID！')
-        return false
-      }
-      if (this.item.Type == 0) {
-        Message.error('请输游戏ID！')
-        return false
-      }
-      if (this.item.NeedVirtualCoin == 0) {
-        Message.error('请输需要的虚拟币！')
-        return false
-      }
-
-      this.item.Update = Date.parse(new Date()) / 1000
-      const cfg = {}
-      copyObj(this.newItem(), cfg)
-      this.allCfg.push(cfg)
-
-      this.selectGameVisible = false
-
-    },
-    editRow(idx, row) {
-      this.idx=idx
-      this.oldData = row
-      this.showBtn = 1
-      this.item.ActId = row.ActId
-      this.item.Type = row.Type
-      this.item.StartTime = row.StartTime
-      this.item.EndTime = row.EndTime
-      this.item.NeedVirtualCoin = row.NeedVirtualCoin
-      this.item.EndTime = Date.parse(new Date()) / 1000
-      this.selectGameVisible = true
-    },
-    saveEdit() {
-      if (this.item.ActId == 0) {
-        Message.error('请输入活动ID！')
-        return false
-      }
-      if (this.item.Type == 0) {
-        Message.error('请输游戏ID！')
-        return false
-      }
-      if (this.item.NeedVirtualCoin == 0) {
-        Message.error('请输需要的虚拟币！')
-        return false
-      }
-      const cfg = {}
-      copyObj(this.newItem(), cfg)
-      this.allCfg.splice(this.idx,1,cfg)
-      Message.success('修改成功！')
-      this.selectGameVisible = false
-    },
-
-    getFullKey(k) {
-      return 'CustomizeCfg_' + k
-    },
-    openConfig(){
-      this.Visible=true
-    },
-    removeConfigRow(idx) {
-      this.allCfg.splice(idx, 1)
+    handleCurrentChange(val) {
+      this.currentPage = val
+      this.getData()
     },
     getData() {
       const $this = this
+      if (this.queryData.ID == "") {
+        this.queryData.ID = 0
+      }
       // 加载基础数值配置
       request({
-        url: '/customizeconfig/one',
+        url: '/millionpointracerule/user/rank',
         method: 'get',
         data: {
-          SubKey: this.subKey
+          ActivityId: 0,
+          LastRank: this.limit,
+          PageSize: this.offset,
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.form = response.Data || {}
-          $this.postData = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            const cfg = JSON.parse(response.Data.Data)
-            $this.allCfg = cfg
-          }
+          $this.dataList = response.Data.Data || []
+          $this.total = response.Data.Count
+          console.log(this.dataList)
+          console.log(this.total)
+          console.log(this.dataList)
+
+        } else {
+          Message.error('查询失败')
         }
       })
     },
-    refresh(){
-      this.getData()
-    },
-
-    setData() {
-      const cfg = this.getCfg()
-      console.log('saveData ===> ', cfg)
-      if (!this.checkData(cfg)) {
-        return false
-      }
-
-      // this.form.Data = JSON.stringify(cfg)
-      this.postData.Data = JSON.stringify(cfg)
-      const $this = this
-      // 设置修改后数据
-      // this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.SetNewVal(this.postData)
-      this.$refs.compare.Compare(function (isEdit) {
-        if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
-          return
-        }
-
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          // data: $this.form
-          data: $this.postData
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('保存成功')
-          }
-        })
-      })
-    },
-    getCfg() {
-      const cfg = []
-      for (const i in this.allCfg) {
-        this.allCfg[i].Start=parseInt(  this.allCfg[i].Start)
-        this.allCfg[i].End=parseInt(  this.allCfg[i].End)
-        this.allCfg[i].Reward=parseInt(  this.allCfg[i].Reward)
-        const item = {}
-        copyObj(this.allCfg[i], item)
-        cfg.push(item)
-      }
-      return cfg
-    },
-    checkData(cfg) {
-      for (const i in cfg) {
-        if (cfg[i].Start >cfg[i].End ){
-          Message.error('开始名次不能大于结束名次')
-          return false
-        }
-        if (!cfg[i].Start || !cfg[i].End || !cfg[i].Reward) {
-          Message.error('请查看配置是否有漏')
-          return false
-        }
-      }
-      return true
-    },
-    checkDuplicate(data) {
-      if (this.DuplicateData.includes(data.channel + "" + data.game_id + "" + data.app_id)) {
-        return false
-      }
-      return true
-    },
-    updateDuplicate(newData, oldData) {
-      var newKey = newData.channel + "" + newData.game_id + "" + newData.app_id
-      var oldKey = oldData.channel + "" + oldData.game_id + "" + oldData.app_id
-      for (let i = 0; i < this.DuplicateData.length; i++) {
-        if (this.DuplicateData[i] == oldKey) {
-          this.DuplicateData.splice(i, 1, newKey)
-          return
-        }
-      }
-      this.DuplicateData.push(newKey)
-    },
-
-
   }
 }
 
 </script>
-<style scoped>
-
-</style>
