@@ -69,7 +69,7 @@
                 <el-table :data="item.JackpotDistributionItems" border>
                   <el-table-column label="范围开始(第N张牌)">
                     <template scope="scope">
-                      <el-input v-model="scope.row.Start" />
+                      <el-input v-model.number="scope.row.Start" />
                     </template>
                   </el-table-column>
                   <el-table-column label="范围结束(第N张牌)">
