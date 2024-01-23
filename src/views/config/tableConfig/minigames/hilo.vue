@@ -47,6 +47,11 @@
               <el-input v-model.number="item.SkipNum" />
             </el-form-item>
           </el-col>
+          <el-col :span="7">
+            <el-form-item label="中奖抽水率：">
+              <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-row>
@@ -61,7 +66,7 @@
             </el-row>
             <el-row>
               <template>
-                <el-table :data="item.JackpotDistribution" border>
+                <el-table :data="item.JackpotDistributionItems" border>
                   <el-table-column label="范围开始(第N张牌)">
                     <template scope="scope">
                       <el-input v-model="scope.row.Start" />
@@ -400,7 +405,7 @@ export default {
   data() {
     return {
       item: {
-        JackpotDistribution: [],
+        JackpotDistributionItems: [],
         JackpotRegulation: {
           BetMoreThan: 0,
           AddPoolPctAfterJp: 0,
@@ -644,16 +649,16 @@ export default {
     },
     // 添加JP分布
     addJackpotDistributionRow() {
-      // console.log(this.item.JackpotDistribution)
+      // console.log(this.item.JackpotDistributionItems)
       const newRow = {
         Range: '',
         Rate: 0
       }
-      this.item.JackpotDistribution.push(newRow)
+      this.item.JackpotDistributionItems.push(newRow)
     },
     // 删除JP分布
     removeJackpotDistributionRow(index) {
-      this.item.JackpotDistribution.splice(index, 1)
+      this.item.JackpotDistributionItems.splice(index, 1)
     },
 
     goSearch() {
