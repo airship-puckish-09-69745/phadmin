@@ -8,54 +8,21 @@
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="活动ID">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+            <el-select v-model="queryData.ActivityId" size="mini">
+              <el-option v-for="(o,k) in activityIds" :label="o" :value="k"/>
+            </el-select>
           </el-form-item>
-          <el-form-item label="L">
-            <el-input v-model="queryData.LastRank" size="mini" placeholder="活动ID"/>
+          <el-form-item label="名次范围" >
+            <el-input v-model="queryData.PageSize" size="mini" placeholder="开始"/>
           </el-form-item>
-          <el-form-item label="活动ID">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+          <el-form-item label="-" >
+             <el-input v-model="queryData.LastRank" size="mini" placeholder="结束"/>
           </el-form-item>
-<!--          <el-form-item label="类型：">-->
-<!--            <el-select v-model="queryData.Type" placeholder="请选择" size="mini">-->
-<!--              <el-option label="全部" :value="0"/>-->
-<!--              <el-option-->
-<!--                  v-for="item in activityTypeOptions"-->
-<!--                  :key="item.key"-->
-<!--                  :label="item.value+'-'+item.key"-->
-<!--                  :value="item.key"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="开始日期：">-->
-<!--            <el-date-picker-->
-<!--                v-model="queryData.StartTime"-->
-<!--                value-format="timestamp"-->
-<!--                type="date"-->
-<!--                placeholder="选择日期"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="结束日期：">-->
-<!--            <el-date-picker-->
-<!--                v-model="queryData.EndTime"-->
-<!--                value-format="timestamp"-->
-<!--                type="date"-->
-<!--                placeholder="选择日期"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="状态">-->
-<!--            <el-select v-model="queryData.Status" size="mini">-->
-<!--              <el-option label="全部" :value="0"/>-->
-<!--              <el-option v-for="(o,k) in statusOption" :label="o" :value="k"/>-->
-<!--            </el-select>-->
-<!--            <el-button type="success" @click="getData">查询</el-button>-->
-<!--          </el-form-item>-->
+          <el-form-item>
+            <el-button type="success" @click="getData">查询</el-button>
+          </el-form-item>
         </el-form>
 
-      </el-col>
-      <el-col :span="22">
-        <el-button type="primary" size="mini" @click="openCreated">添加置项</el-button>
-        <el-button type="success" size="mini" @click="publishData">发布配置</el-button>
       </el-col>
       <el-col :span="2">
       </el-col>
@@ -140,14 +107,14 @@ export default {
         TaskVirtualCoin: 0,
         Status: 0,
       },
+      activityIds:[],
       offset: 1,
       limit: 20,
       queryData: {
-        ActivityId: 0,
-        LastRank: 0,
-        StartTime: Date.parse(new Date()) - (60 * 60 * 24 * 30 * 1000),
-        EndTime: Date.parse(new Date().toString()),
-        Status: 0,
+        ActivityId: "",
+        LastRank: 100,
+        PageSize:1,
+
       },
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
@@ -157,7 +124,7 @@ export default {
   },
 
   created() {
-    this.getData()
+    this.getAllActivityId()
   },
   methods: {
     handleSizeChange(val) {
@@ -167,6 +134,21 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.getData()
+    },
+    getAllActivityId(){
+      request({
+        url: '/millionpointracerule/all/activity',
+        method: 'get',
+        data: {        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.activityIds=response.Data
+
+          this.queryData.ActivityId=0
+        } else {
+          Message.error('查询失败')
+        }
+      })
     },
     getData() {
       const $this = this
@@ -179,8 +161,8 @@ export default {
         method: 'get',
         data: {
           ActivityId: 0,
-          LastRank: this.limit,
-          PageSize: this.offset,
+          LastRank: 1,
+          PageSize: 100,
         }
       }).then(response => {
         if (response.RetCode === 0) {

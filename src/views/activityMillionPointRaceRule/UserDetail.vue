@@ -8,55 +8,49 @@
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="活动ID：">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+            <el-select v-model="queryData.ActivityId" size="mini">
+              <el-option v-for="(o,k) in activityIds" :label="o" :value="k"/>
+            </el-select>
           </el-form-item>
           <el-form-item label="UID：">
             <el-input v-model="queryData.UID" size="mini" placeholder="活动ID"/>
           </el-form-item>
+          <el-form-item>
+            <el-button type="success" @click="getData">查询</el-button>
 
+          </el-form-item>
+          <el-form-item >
+          <el-col span="8" offset="20">
+            <el-button type="primary" @click="getData">更新虚拟币</el-button>
+          </el-col>
+          </el-form-item>
         </el-form>
 
       </el-col>
 
-      <el-descriptions class="margin-top" title="带边框列表" :column="3" :size="size" border>
-        <template slot="extra">
-          <el-button type="primary" size="small">操作</el-button>
-        </template>
-        <el-descriptions-item>
-          <template slot="label">
-            <i class="el-icon-user"></i>
-            用户名
-          </template>
-          kooriookami
-        </el-descriptions-item>
+      <el-descriptions class="margin-top"  :column="1" :size="max" border>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-mobile-phone"></i>
-            手机号
+            当前虚拟币
           </template>
-          18100000000
+          {{virtualCoin}}
         </el-descriptions-item>
         <el-descriptions-item>
-          <template slot="label">
+          <template slot="label"  >
             <i class="el-icon-location-outline"></i>
-            居住地
+            当前积分
           </template>
-          苏州市
+          {{ point }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets"></i>
-            备注
+            当前排名
           </template>
-          <el-tag size="small">学校</el-tag>
+          {{rank}}
         </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
-            <i class="el-icon-office-building"></i>
-            联系地址
-          </template>
-          江苏省苏州市吴中区吴中大道 1188 号
-        </el-descriptions-item>
+
       </el-descriptions>
     </el-row>
 
@@ -75,52 +69,42 @@ export default {
   components: {Compare, MoneyInput, getInfo},
   data() {
     return {
-      dataList: [],
-      total: 0,
-      showVisible: false,
-      types: {1: '转出', 2: '转入'},
-      activityTypeOptions: [
-        {'key': 1, 'value': "Tongits"}],
-      statusOption: {1: '上架', 2: '下架'},
-      item: {
-        ID: 0,
-        ActivityType: 0,
-        EndTime: 0,
-        StartTime: 0,
-        Title: "",
-        NeedVirtualCoin: 0,
-        TaskVirtualCoin: 0,
-        Status: 0,
-      },
-      offset: 1,
-      limit: 20,
+      rank:"阿斯顿",
+      uid:"",
+      point:"",
+      virtualCoin:"",
+      activityIds:[],
       queryData: {
-        ID: 0,
-        Type: 0,
-        StartTime: Date.parse(new Date()) - (60 * 60 * 24 * 30 * 1000),
-        EndTime: Date.parse(new Date().toString()),
-        Status: 0,
+        ActivityId: 0,
+        UID: "",
       },
-      showBtn: false,
-      startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
 
     }
   },
 
   created() {
-    this.getData()
+    this.getAllActivityId()
   },
   methods: {
-    handleSizeChange(val) {
-      this.limit = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val
-      this.getData()
+    getAllActivityId(){
+      request({
+        url: '/millionpointracerule/all/activity',
+        method: 'get',
+        data: {        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.activityIds=response.Data
+
+          this.queryData.ActivityId=0
+        } else {
+          Message.error('查询失败')
+        }
+      })
     },
     getData() {
+      if (this.queryData.UID==""){
+        Message.error('请输入UID')
+      }
       const $this = this
       if (this.queryData.ID == "") {
         this.queryData.ID = 0
@@ -153,3 +137,8 @@ export default {
 }
 
 </script>
+<style scoped>
+>>> .el-descriptions__body {
+  width: 20%;
+}
+</style>

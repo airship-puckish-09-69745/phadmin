@@ -13,34 +13,33 @@
       <el-col :span="22">
         <el-form inline>
           <el-form-item>
-            <el-button type="primary" size="mini" @click="openConfig">添加配置项</el-button>
-          </el-form-item>
-          <el-form-item>
             <el-button type="primary" @click="setData" size="mini">保存</el-button>
           </el-form-item>
           <el-form-item>
             <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh()">刷新</el-button>
           </el-form-item>
-          <el-form-item label="分享链接">
-            <el-input size="mini" v-model="shareLink" style="width: 200px;"></el-input>
-          </el-form-item>
         </el-form>
-
       </el-col>
 
-
+      <el-col>
+       <el-form>
+         <el-form-item label="分享链接">
+           <el-input size="mini" v-model="shareLink" style="width: 200px;"></el-input>
+         </el-form-item>
+       </el-form>
+      </el-col>
 
     </el-row>
     <el-row>
 
       <fieldset style="margin-top:10px">
-        <legend>公共配置</legend>
+        <legend>奖励配置</legend>
         <!--          <el-alert-->
         <!--            type="success"-->
         <!--            description="根据分布概率随机取出其中一张牌"-->
         <!--          />-->
         <el-row style="margin-top:10px">
-
+          <el-button type="primary" size="mini" @click="openConfig">添加配置项</el-button>
         </el-row>
         <el-row>
 
@@ -48,30 +47,17 @@
             <el-table :data="allCfg" border>
               <el-table-column label="开始名次">
                 <template scope="scope">
-                  <el-input v-model="scope.row.Start" type="number" oninput="value=value.replace(/[^\d.]/g,'')"
-                            @input="usernameInput(scope.$index)"/>
+                  <el-input v-model="scope.row.Start" type="number" oninput="value=value.replace(/[^\d.]/g,'')"/>
                 </template>
               </el-table-column>
               <el-table-column label="结束名次">
                 <template scope="scope">
-                  <el-input v-model.number="scope.row.End" type="number" oninput="value=value.replace(/[^\d.]/g,'')"
-                            @input="usernameInput(scope.$index)"/>
+                  <el-input v-model.number="scope.row.End" type="number" oninput="value=value.replace(/[^\d.]/g,'')"/>
                 </template>
               </el-table-column>
               <el-table-column label="奖励">
                 <template scope="scope">
-                  <el-input v-model.number="scope.row.Reward" type="number" oninput="value=value.replace(/[^\d.]/g,'')"
-                            @input="usernameInput(scope.$index)"/>
-                </template>
-              </el-table-column>
-              <el-table-column label="最后更新时间">
-                <template scope="scope">
-                  <span>{{ scope.row.Update * 1000 > 0 ? new Date(scope.row.Update * 1000).Format("yyyy-MM-dd HH:mm:ss") : '' }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="最后更新人">
-                <template scope="scope">
-                  <span>{{ scope.row.Updater }}</span>
+                  <el-input v-model.number="scope.row.Reward" type="number" oninput="value=value.replace(/[^\d.]/g,'')"/>
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -152,7 +138,7 @@ export default {
       dialogGameOptions: [],
       selectGameVisible: false,
       oldData: {},
-      shareLink:"",
+      shareLink: "",
     }
   },
   created() {
@@ -183,50 +169,19 @@ export default {
         return false
       }
       if (this.comonItem.End == 0) {
-        Message.error('请输入结束名词！')
+        Message.error('请输入结束名次！')
         return false
       }
       if (this.comonItem.Reward == 0) {
         Message.error('请输入奖励！')
         return false
       }
-      this.comonItem.Update = Date.parse(new Date())/1000
+      this.comonItem.Update = Date.parse(new Date()) / 1000
       this.comonItem.Updater = this.userName
       this.allCfg.push(this.comonItem)
       this.Visible = false
     },
 
-    editRow(idx, row) {
-      this.idx = idx
-      this.oldData = row
-      this.showBtn = 1
-      this.item.ActId = row.ActId
-      this.item.Type = row.Type
-      this.item.StartTime = row.StartTime
-      this.item.EndTime = row.EndTime
-      this.item.NeedVirtualCoin = row.NeedVirtualCoin
-      this.item.EndTime = Date.parse(new Date()) / 1000
-      this.selectGameVisible = true
-    },
-    saveEdit() {
-      if (this.item.ActId == 0) {
-        Message.error('请输入活动ID！')
-        return false
-      }
-      if (this.item.Type == 0) {
-        Message.error('请输游戏ID！')
-        return false
-      }
-      if (this.item.NeedVirtualCoin == 0) {
-        Message.error('请输需要的虚拟币！')
-        return false
-      }
-      const cfg = {}
-      copyObj(this.newItem(), cfg)
-      this.allCfg.splice(this.idx, 1, cfg)
-      Message.success('修改成功！')
-      this.selectGameVisible = false
-    },
 
     getFullKey(k) {
       return 'CustomizeCfg_' + k
@@ -253,7 +208,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             $this.allCfg = cfg.PrizeList
-            $this.shareLink=cfg.ShareLink
+            $this.shareLink = cfg.ShareLink
           }
         }
       })
@@ -303,9 +258,9 @@ export default {
         copyObj(this.allCfg[i], item)
         cfg.push(item)
       }
-      const data ={
-        "PrizeList":cfg,
-        "ShareLink":this.shareLink
+      const data = {
+        "PrizeList": cfg,
+        "ShareLink": this.shareLink
       }
       return data
     },
@@ -320,7 +275,7 @@ export default {
         //   return false
         // }
       }
-      if (cfg.ShareLink==""){
+      if (cfg.ShareLink == "") {
         Message.error('ShareLink不能为空')
         return false
       }

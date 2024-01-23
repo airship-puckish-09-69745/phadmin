@@ -6,45 +6,45 @@
 
       <el-col :span="15"/>
       <el-col :span="22">
-        <el-form inline>
-          <el-form-item label="活动ID">
-            <el-input v-model="queryData.ID" size="mini" placeholder="活动ID"/>
-          </el-form-item>
-          <el-form-item label="类型：">
-            <el-select v-model="queryData.Type" placeholder="请选择" size="mini">
-              <el-option label="全部" :value="0"/>
-              <el-option
-                  v-for="item in activityTypeOptions"
-                  :key="item.key"
-                  :label="item.value+'-'+item.key"
-                  :value="item.key"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="开始日期：">
-            <el-date-picker
-                v-model="queryData.StartTime"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择日期"
-            />
-          </el-form-item>
-          <el-form-item label="结束日期：">
-            <el-date-picker
-                v-model="queryData.EndTime"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择日期"
-            />
-          </el-form-item>
-          <el-form-item label="状态">
-            <el-select v-model="queryData.Status" size="mini">
-              <el-option label="全部" :value="0"/>
-              <el-option v-for="(o,k) in statusOption" :label="o" :value="k"/>
-            </el-select>
-            <el-button type="success" @click="getData">查询</el-button>
-          </el-form-item>
-        </el-form>
+<!--        <el-form inline>-->
+<!--          <el-form-item label="活动ID">-->
+<!--            <el-input v-model="ID" size="mini" placeholder="活动ID"/>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="类型：">-->
+<!--            <el-select v-model="queryData.Type" placeholder="请选择" size="mini">-->
+<!--              <el-option label="全部" :value="0"/>-->
+<!--              <el-option-->
+<!--                  v-for="item in activityTypeOptions"-->
+<!--                  :key="item.key"-->
+<!--                  :label="item.value+'-'+item.key"-->
+<!--                  :value="item.key"-->
+<!--              />-->
+<!--            </el-select>-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="开始日期：">-->
+<!--            <el-date-picker-->
+<!--                v-model="queryData.StartTime"-->
+<!--                value-format="timestamp"-->
+<!--                type="date"-->
+<!--                placeholder="选择日期"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="结束日期：">-->
+<!--            <el-date-picker-->
+<!--                v-model="queryData.EndTime"-->
+<!--                value-format="timestamp"-->
+<!--                type="date"-->
+<!--                placeholder="选择日期"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--          <el-form-item label="状态">-->
+<!--            <el-select v-model="queryData.Status" size="mini">-->
+<!--              <el-option label="全部" :value="0"/>-->
+<!--              <el-option v-for="(o,k) in statusOption" :label="o" :value="k"/>-->
+<!--            </el-select>-->
+<!--            <el-button type="success" @click="getData">查询</el-button>-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
 
       </el-col>
       <el-col :span="22">
@@ -92,20 +92,20 @@
             </el-table-column>
             <el-table-column
                 prop="NeedVirtualCoin"
-                label="需求虚拟币"
+                label="需要的虚拟币"
             >
+            </el-table-column>
+              <el-table-column
+                  prop="TaskVirtualCoin"
+                  label="分享发放的虚拟币"
+              >
             </el-table-column>
             <el-table-column
                 prop="Status"
                 label="状态"
             >
               <template scope="scope">
-                <el-button v-if="scope.row.Status==1" type="success" size="mini" @click="updateStatus(2, scope.row)">
-                  上架
-                </el-button>
-                <el-button v-else-if="scope.row.Status==2||scope.row.Status==0" type="danger" size="mini"
-                           @click="updateStatus(1, scope.row)">下架
-                </el-button>
+          {{scope.row.Status==1?"上架":"下架"}}
               </template>
             </el-table-column>
             <el-table-column
@@ -128,6 +128,12 @@
 
             <el-table-column label="操作">
               <template slot-scope="scope">
+                <el-button v-if="scope.row.Status==1" type="success" size="mini" @click="updateStatus(2, scope.row)">
+                  上架
+                </el-button>
+                <el-button v-else-if="scope.row.Status==2||scope.row.Status==0" type="danger" size="mini"
+                           @click="updateStatus(1, scope.row)">下架
+                </el-button>
                 <el-button type="success" size="mini" @click="openEdit(scope.$index, scope.row)">修改</el-button>
               </template>
             </el-table-column>
@@ -199,7 +205,7 @@
           <el-input v-model="item.NeedVirtualCoin" type="number" oninput="value=value.replace(/[^\d.]/g,'')"
                     placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
         </el-form-item>
-        <el-form-item label="需要的游戏币">
+        <el-form-item label="分享发放的虚拟币">
           <el-input v-model="item.TaskVirtualCoin" type="number" oninput="value=value.replace(/[^\d.]/g,'')"
                     placeholder="请输入" size="mini" STYLE="width: 220px"></el-input>
         </el-form-item>
@@ -244,6 +250,7 @@ export default {
       },
       offset: 1,
       limit: 20,
+      ID:"",
       queryData: {
         ID: 0,
         Type: 0,
@@ -312,9 +319,11 @@ export default {
     },
     saveEdit() {
       this.showVisible = false
+      this.item.StartTime=this.startTime/1000
+      this.item.EndTime=this.endTime/1000
       request({
         url: '/millionpointracerule/update',
-        method: 'get',
+        method: 'post',
         data: {
           ID: this.item.ID,
           Status: this.item.Status,

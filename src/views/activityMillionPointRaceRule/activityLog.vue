@@ -8,14 +8,15 @@
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="UID">
-            <el-input v-model="queryData.UID" size="mini" placeholder="活动ID"/>
+            <el-input v-model="UID" size="mini" placeholder="请输入"/>
           </el-form-item>
           <el-form-item label="活动ID">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+            <el-select v-model="queryData.ActivityId" size="mini">
+              <el-option v-for="(o,k) in activityIds" :label="o" :value="k"/>
+            </el-select>
           </el-form-item>
           <el-form-item label="活动类型：">
             <el-select v-model="queryData.ActivityType" placeholder="请选择" size="mini">
-              <el-option label="全部" :value="0"/>
               <el-option
                   v-for="item in activityTypeOptions"
                   :key="item.key"
@@ -27,8 +28,12 @@
 
           <el-form-item label="事件类型">
             <el-select v-model="queryData.EventType" size="mini">
-              <el-option label="全部" :value="0"/>
-              <el-option v-for="(o,k) in EventTypeOption" :label="o" :value="k"/>
+              <el-option
+                  v-for="item in EventTypeOption"
+                  :key="item.key"
+                  :label="item.value"
+                  :value="item.key"
+              />
             </el-select>
           </el-form-item>
 
@@ -58,7 +63,12 @@
         </el-form>
 
       </el-col>
-
+    <el-col>
+      <el-alert
+          type="success"
+          description="必须指定UID-活动ID等，信息查询"
+      />
+    </el-col>
       <el-col :span="2">
       </el-col>
 
@@ -156,12 +166,14 @@ export default {
   data() {
     return {
       dataList: [],
+      activityIds:[],
       total: 0,
       showVisible: false,
       types: {1: '转出', 2: '转入'},
       activityTypeOptions: [
-        {'key': 1, 'value': "Tongits"}],
-      EventTypeOption: {1: '虚拟币', 2: '积分'},
+        {'key': "1", 'value': "Tongits"}],
+      EventTypeOption: [
+        {'key': "1", 'value': "虚拟币"}, {'key': "2", 'value': "积分"}],
       item: {
         ID: 0,
         ActivityType: 0,
@@ -174,13 +186,14 @@ export default {
       },
       offset: 1,
       limit: 20,
+      UID: "",
       queryData: {
-        UID: "",
-        ActivityType: "",
+        UID: 0,
+        ActivityType: "1",
         ActivityId: "",
-        StartTime: Date.parse(new Date()) - (60 * 60 * 24 * 30 * 1000),
+        StartTime: Date.parse(new Date().toString()),
         EndTime: Date.parse(new Date().toString()),
-        EventType: 0,
+        EventType: "1",
       },
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
@@ -190,21 +203,37 @@ export default {
   },
 
   created() {
-    this.getData()
+    this.getAllActivityId()
+
   },
   methods: {
     handleSizeChange(val) {
       this.limit = val
-      this.getData()
     },
     handleCurrentChange(val) {
       this.currentPage = val
       this.getData()
     },
+    getAllActivityId(){
+      request({
+        url: '/millionpointracerule/all/activity',
+        method: 'get',
+        data: {        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.activityIds=response.Data
+
+          this.queryData.ActivityId=0
+        } else {
+          Message.error('查询失败')
+        }
+      })
+    },
     getData() {
       const $this = this
-      if (this.queryData.UID == "") {
-        this.queryData.UID = 0
+      if (this.UID == "") {
+        Message.error('请输入用户ID')
+        return
       }
       if (this.queryData.ActivityId == "") {
         this.queryData.ActivityId = 0
@@ -212,27 +241,28 @@ export default {
       if (this.queryData.ActivityType == "") {
         this.queryData.ActivityType = 0
       }
+      this.queryData.UID=this.UID
       // 加载基础数值配置
       request({
         url: '/millionpointracerule/activity/log',
         method: 'get',
         data: {
-          // UID: this.queryData.UID,
-          // ActivityId: this.queryData.ActivityId,
-          // EventType: this.queryData.EventType,
-          // ActivityType: this.queryData.ActivityType,
-          // StartTime: this.queryData.StartTime / 1000,
-          // EndTime: this.queryData.EndTime / 1000,
-          // Offset: this.offset,
-          // Limit: this.limit,
-          UID:1009695,
-          ActivityId: 1,
-          EventType: 1,
-          ActivityType: 1,
-          StartTime: 1705835038,
-          EndTime:1706007838,
+          UID: this.queryData.UID,
+          ActivityId: this.queryData.ActivityId,
+          EventType: this.queryData.EventType,
+          ActivityType: this.queryData.ActivityType,
+          StartTime: this.queryData.StartTime / 1000,
+          EndTime: this.queryData.EndTime / 1000,
           Offset: this.offset,
           Limit: this.limit,
+          // UID:1009695,
+          // ActivityId: 1,
+          // EventType: 1,
+          // ActivityType: 1,
+          // StartTime: 1705835038,
+          // EndTime:1706007838,
+          // Offset: this.offset,
+          // Limit: this.limit,
         }
       }).then(response => {
         if (response.RetCode === 0) {
