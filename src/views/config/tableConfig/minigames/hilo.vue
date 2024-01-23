@@ -47,7 +47,7 @@
               <el-input v-model.number="item.SkipNum" />
             </el-form-item>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="7" :offset="1">
             <el-form-item label="中奖抽水率：">
               <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
