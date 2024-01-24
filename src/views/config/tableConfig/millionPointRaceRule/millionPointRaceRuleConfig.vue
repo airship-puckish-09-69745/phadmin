@@ -20,7 +20,7 @@
               {{ formatNumber(scope.row.TableMoney) }}
             </template>
           </el-table-column>
-  
+
           <el-table-column prop="StartTime" label="开始时间" width="180">
             <template slot-scope="scope">
               {{ formatTime(scope.row.StartTime) }}
@@ -129,7 +129,7 @@
               </el-form-item>
             </el-col>
           </el-row>
-  
+
           <el-form-item>
             <el-row style="margin-top: 10px;">
               <el-col :span="12" :offset="10">
@@ -143,7 +143,7 @@
       <compare ref="compare" :attr-names="AttrNames" />
     </div>
   </template>
-  
+
   <script>
   import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
   import store from '@/store'
@@ -153,9 +153,9 @@
   import Publish from '@/components/Publish'
   import GameLevel from '@/components/GameLevel'
   import MoneyInput from '@/components/MoneyInput'
-  
+
   const filterMap = {}
-  
+
   function newItem() {
     return {
         ActivityType: 0,
@@ -167,7 +167,7 @@
         TableMoney: 0
     }
   }
-  
+
   export default {
     // eslint-disable-next-line vue/no-unused-components
     components: { Compare, Publish, GameLevel, MoneyInput },
@@ -180,7 +180,7 @@
         libShow: $libShow,
         env: 'test',
         libMoney: new MoneyShow(['TableMoney', 'TaskVirtualCoin', 'NeedVirtualCoin']),
-  
+
         edit: {
           visible: false,
           item: newItem(),
@@ -188,7 +188,7 @@
         },
         startTime: Date.parse(new Date().toString()),
         endTime: Date.parse(new Date().toString()),
-  
+
         AttrNames: {
           ActivityType: '活动类型',
           Title: '标题',
@@ -231,7 +231,7 @@
         this.clientDB.GetPage().SetPageNo(val)
         this.refreshShow()
       },
-  
+
       sortChange(ob) {
         this.clientDB.SortByProp(ob.prop, ob.order)
         this.refreshShow()
@@ -243,7 +243,7 @@
           this.edit.visible = true
         }
       },
-  
+
       handleCreate() {
         this.edit.item = newItem()
         this.edit.isEdit = false
@@ -403,4 +403,3 @@
     }
   }
   </script>
-  

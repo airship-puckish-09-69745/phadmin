@@ -36,8 +36,8 @@
               <el-option
                 v-for="item in EventTypeOption"
                 :key="item.key"
-                :label="item.value"
-                :value="item.key"
+                :label="item.key"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -137,16 +137,8 @@
 
         </el-form>
         <el-row>
-          <div class="block" style="text-align: center">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="offset"
-              :page-sizes="[20, 50, 100, 200,300]"
-              :page-size="limit"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total">
-            </el-pagination>
+          <div class="block">
+            <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
           </div>
         </el-row>
       </el-col>
@@ -164,21 +156,23 @@ import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
 import {getInfo} from "@/api/user";
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
 
+const filterMap = {}
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {Compare, MoneyInput, getInfo},
   data() {
     return {
+      clientDB: new ClientTableData([], 1, filterMap),
       dataList: [],
       activityIds: [],
-      total: 0,
       showVisible: false,
       types: {1: '转出', 2: '转入'},
       activityTypeOptions: [
-        {'key': "1", 'value': "Tongits"}],
+        {'key': "Tongits", 'value': 1}],
       EventTypeOption: [
-        {'key': "1", 'value': "虚拟币"}, {'key': "2", 'value': "积分"}],
+        {'key': "虚拟币", 'value': 1}, {'key': "积分", 'value': "2"}],
       item: {
         ID: 0,
         ActivityType: 0,
@@ -194,11 +188,11 @@ export default {
       UID: "",
       queryData: {
         UID: 0,
-        ActivityType: "1",
+        ActivityType: 1,
         ActivityId: "",
         StartTime: Date.parse(new Date().toString()),
         EndTime: Date.parse(new Date().toString()),
-        EventType: "1",
+        EventType: 1,
       },
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
@@ -212,12 +206,33 @@ export default {
 
   },
   methods: {
+    formatTime(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
+    clearFilter() {
+      this.clientDB.ClearFilterMap()
+      this.refreshShow()
+    },
+    handleFilter() {
+      this.clientDB.FilterData()
+      this.refreshShow()
+    },
+    // 分页处理
+    refreshShow() {
+      this.dataList = this.clientDB.GetCurrentPageData()
+    },
     handleSizeChange(val) {
-      this.limit = val
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getData()
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
+    },
+
+    sortChange(ob) {
+      this.clientDB.SortByProp(ob.prop, ob.order)
+      this.refreshShow()
     },
     getAllActivityId() {
       request({
@@ -226,7 +241,6 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log(response.Data)
           for (let i = 0; i < response.Data.length; i++) {
             var cfg = {'key': response.Data[i].Title, 'value': response.Data[i].ID}
             this.activityIds.push(cfg)
@@ -273,17 +287,17 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           var parse = JSON.parse(response.Data);
+          console.log(parse)
           if (parse.RetCode != 0 ) {
             Message.error('查询失败')
             return
           }
-          if ( parse.Data.Count == 0){
+          if ( parse.Data == null ||  parse.Data.Count==0){
             Message.error('无查询数据')
+            return;
           }
-          $this.total = parse.Data.Count
-          $this.dataList = parse.Data.Data
-          console.log(this.dataList)
-          console.log(this.total)
+          this.clientDB = new ClientTableData( parse.Data.Data, 10, filterMap, '', -1)
+          this.handleCurrentChange(1)
         } else {
           Message.error('查询失败')
         }

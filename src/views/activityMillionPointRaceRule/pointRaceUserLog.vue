@@ -66,16 +66,8 @@
 
         </el-form>
         <el-row>
-          <div class="block" style="text-align: center">
-            <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="offset"
-                :page-sizes="[20, 50, 100, 200,300]"
-                :page-size="limit"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
-            </el-pagination>
+          <div class="block">
+            <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
           </div>
         </el-row>
       </el-col>
@@ -84,17 +76,21 @@
 </template>
 
 <script>
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
 import {Message} from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
 import {getInfo} from "@/api/user";
+const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {Compare, MoneyInput, getInfo},
+
   data() {
     return {
+      clientDB: new ClientTableData([], 1, filterMap),
       dataList: [],
       total: 0,
       showVisible: false,
@@ -133,13 +129,33 @@ export default {
     this.getData()
   },
   methods: {
+    formatTime(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
+    clearFilter() {
+      this.clientDB.ClearFilterMap()
+      this.refreshShow()
+    },
+    handleFilter() {
+      this.clientDB.FilterData()
+      this.refreshShow()
+    },
+    // 分页处理
+    refreshShow() {
+      this.dataList = this.clientDB.GetCurrentPageData()
+    },
     handleSizeChange(val) {
-      this.limit = val
-      this.getData()
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getData()
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
+    },
+
+    sortChange(ob) {
+      this.clientDB.SortByProp(ob.prop, ob.order)
+      this.refreshShow()
     },
     getAllActivityId(){
       request({
@@ -148,12 +164,10 @@ export default {
         data: {        }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log(response.Data)
           for (let i = 0; i < response.Data.length; i++) {
             var cfg= {'key':response.Data[i].Title, 'value': response.Data[i].ID}
             this.activityIds.push(cfg)
           }
-          console.log(  this.activityIds)
           this.queryData.ActivityId=  this.activityIds[0].value
         } else {
           Message.error('查询失败')
@@ -162,7 +176,7 @@ export default {
     },
     getData() {
       if (this.queryData.LastRank<=0||this.queryData.PageSize<=0){
-        Message.error('范围不能为负')
+        Message.error('排名必须大于等于1')
         return
       }
 
@@ -184,7 +198,8 @@ export default {
         if (response.RetCode === 0) {
          var obj=JSON.parse(response.Data)
           if (obj.RetCode===0){
-            this.dataList=obj.Data.List
+            this.clientDB = new ClientTableData(obj.Data.List, 10, filterMap, '', -1)
+            this.handleCurrentChange(1)
           }else {
             Message.error('查询失败')
           }
