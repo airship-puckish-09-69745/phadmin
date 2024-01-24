@@ -13,8 +13,8 @@
       </el-row>
       <div style="padding-top: 10px">
         <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
-          <el-table-column prop="ID" label="活动ID" sortable="custom" width="100" />
-          <el-table-column prop="Title" label="Title" sortable="custom" width="100" />
+          <el-table-column prop="ID" label="ID" sortable="custom" width="100" />
+          <el-table-column prop="Title" label="Title" sortable="custom" width="200" />
           <el-table-column prop="TableMoney" label="前注" sortable="custom" width="100">
             <template slot-scope="scope">
               {{ formatNumber(scope.row.TableMoney) }}
@@ -86,7 +86,7 @@
         <el-form ref="edit" :model="edit" label-width="180px" size="small">
           <el-row>
             <el-col :span="11">
-              <el-form-item label="活动类型：" :required="true" prop="item.ActivityType">
+              <el-form-item label="类型：" :required="true" prop="item.ActivityType">
                 <el-select v-model="edit.item.ActivityType" placeholder="请选择" :disabled="edit.isEdit">
                   <el-option label="Tongits积分赛" :value="1" />
                 </el-select>
@@ -190,7 +190,7 @@
         endTime: Date.parse(new Date().toString()),
 
         AttrNames: {
-          ActivityType: '活动类型',
+          ActivityType: '类型',
           Title: '标题',
           StartTime: '开始时间',
           EndTime: '结束时间',

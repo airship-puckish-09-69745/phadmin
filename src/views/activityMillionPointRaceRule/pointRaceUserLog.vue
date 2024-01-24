@@ -1,13 +1,12 @@
 <template>
   <div class="app-container">
 
+    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询" /> </el-row>
 
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15"/>
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
-          <el-form-item label="活动ID">
+          <el-form-item label="周期">
             <el-select v-model="queryData.ActivityId" size="mini">
               <el-option
                 v-for="item in activityIds"
@@ -56,14 +55,12 @@
                 label="积分"
             >
 
+        <template slot-scope="scope">
+          {{ scope.row.Point | toRupee }}
+        </template>
             </el-table-column>
 
-
           </el-table>
-          <br>
-          <br>
-          <br>
-
         </el-form>
         <el-row>
           <div class="block">
@@ -82,6 +79,7 @@ import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
 import {getInfo} from "@/api/user";
+import { toRupee } from '@/utils'
 const filterMap = {}
 
 export default {
@@ -115,15 +113,14 @@ export default {
         ActivityId: "",
         LastRank: 1,
         PageSize:100,
-
       },
       showBtn: false,
     }
   },
 
-  async created() {
-     await this.getAllActivityId()
-    this.getData()
+  created() {
+    this.getAllActivityId()
+    // this.getData()
   },
   methods: {
     formatTime(ts) {
@@ -189,8 +186,8 @@ export default {
         method: 'get',
         data: {
           ActivityId: this.queryData.ActivityId,
-          LastRank: this.queryData.LastRank,
-          PageSize: this.queryData.PageSize,
+          LastRank: parseInt(this.queryData.LastRank)-1,
+          PageSize: parseInt(this.queryData.PageSize)-parseInt(this.queryData.LastRank)+1,
           Path:'/millonpointrace/user/rank',
         }
       }).then(response => {

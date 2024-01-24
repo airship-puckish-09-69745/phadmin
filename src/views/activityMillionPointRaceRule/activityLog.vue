@@ -1,16 +1,13 @@
 <template>
   <div class="app-container">
-
-
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15"/>
+    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询" /> </el-row>
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="UID">
             <el-input v-model="UID" size="mini" placeholder="请输入"/>
           </el-form-item>
-          <el-form-item label="活动ID">
+          <el-form-item label="周期">
             <el-select v-model="queryData.ActivityId" size="mini">
               <el-option
                   v-for="item in activityIds"
@@ -20,7 +17,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="活动类型：">
+          <el-form-item label="类型：">
             <el-select v-model="queryData.ActivityType" placeholder="请选择" size="mini">
               <el-option
                   v-for="item in activityTypeOptions"
@@ -49,7 +46,7 @@
                 type="date"
                 placeholder="选择日期"
                 size="mini"
-                format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd"
             />
           </el-form-item>
           <el-form-item label="结束日期：">
@@ -59,7 +56,7 @@
                 type="date"
                 placeholder="选择日期"
                 size="mini"
-                format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd"
             />
 
 
@@ -69,12 +66,6 @@
           </el-form-item>
         </el-form>
 
-      </el-col>
-      <el-col>
-        <el-alert
-            type="success"
-            description="必须指定UID-活动ID等，信息查询"
-        />
       </el-col>
       <el-col :span="2">
       </el-col>
@@ -100,30 +91,31 @@
 
             <el-table-column
                 prop="ActivityType"
-                label="活动类型"
+                label="类型"
             >
+              <template scope="scope">
+                {{ activityTypeOptionsMap[scope.row.ActivityType] }}
+              </template>
             </el-table-column>
 
             <el-table-column
                 prop="ActivityId"
-                label="活动Id"
+                label="周期"
             >
-
+              <template scope="scope">
+                {{ activityMap[scope.row.ActivityId] }}
+              </template>
             </el-table-column>
             <el-table-column
                 prop="EventType"
                 label="事件类型"
             >
-            </el-table-column>
-            <el-table-column
-                prop="Data"
-                label=" 最终积分"
-            >
               <template scope="scope">
-                {{ JSON.parse(scope.row.Data).PointLast }}
+                {{ EventTypeOptionMap[scope.row.EventType] }}
               </template>
             </el-table-column>
             <el-table-column
+              v-if="queryData.EventType === 2"
                 prop="Data"
                 label="积分变化"
             >
@@ -132,19 +124,30 @@
               </template>
             </el-table-column>
             <el-table-column
+              v-if="queryData.EventType === 2"
                 prop="Data"
-                label="最终虚拟币"
+                label="最终积分"
             >
               <template scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinLast }}
+                {{ JSON.parse(scope.row.Data).PointLast }}
               </template>
             </el-table-column>
             <el-table-column
+              v-if="queryData.EventType === 1"
                 prop="Data"
                 label="虚拟币变化"
             >
               <template scope="scope">
                 {{ JSON.parse(scope.row.Data).VirtualCoinChange }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              v-if="queryData.EventType === 1"
+                prop="Data"
+                label="最终虚拟币"
+            >
+              <template scope="scope">
+                {{ JSON.parse(scope.row.Data).VirtualCoinLast }}
               </template>
             </el-table-column>
             <el-table-column
@@ -155,14 +158,8 @@
                 {{ new Date(scope.row.UpdateTime * 1000).Format("yyyy-MM-dd HH:mm:ss") }}
               </template>
             </el-table-column>
-
-            <!--            <el-table-column label="操作">-->
-            <!--              <template slot-scope="scope">-->
-            <!--                <el-button type="success" size="mini" @click="openEdit(scope.$index, scope.row)">修改</el-button>-->
-            <!--              </template>-->
-            <!--            </el-table-column>-->
+    
           </el-table>
-          <br>
 
         </el-form>
         <el-row>
@@ -199,12 +196,22 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       dataList: [],
       activityIds: [],
+      activityMap: {},
       showVisible: false,
       types: {1: '转出', 2: '转入'},
       activityTypeOptions: [
-        {'key': "Tongits", 'value': 1}],
+        {'key': "Tongits", 'value': 1}
+      ],
+      activityTypeOptionsMap: {
+        1: 'Tongits'
+      },
       EventTypeOption: [
-        {'key': "虚拟币", 'value': 1}, {'key': "积分", 'value': "2"}],
+        {'key': "虚拟币", 'value': 1}, {'key': "积分", 'value': 2}
+      ],
+      EventTypeOptionMap: {
+        1: '虚拟币',
+        2: '积分'
+      },
       item: {
         ID: 0,
         ActivityType: 0,
@@ -293,6 +300,7 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             var cfg = {'key': response.Data[i].Title, 'value': response.Data[i].ID}
             this.activityIds.push(cfg)
+            this.activityMap[response.Data[i].ID] = response.Data[i].Title
           }
           this.queryData.ActivityId = this.activityIds[0].value
         } else {
@@ -327,7 +335,7 @@ export default {
           EventType: this.queryData.EventType,
           ActivityType: this.queryData.ActivityType,
           StartTime: Math.floor(this.queryData.StartTime / 1000),
-          EndTime:  Math.floor(this.queryData.EndTime / 1000),
+          EndTime:  Math.floor(this.queryData.EndTime / 1000)+86400-1,
           Offset: offset,
           Limit: this.limit,
           Path: '/millonpointrace/activity/log',
