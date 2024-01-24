@@ -5,25 +5,25 @@
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="UID">
-            <el-input v-model="UID" size="mini" placeholder="请输入"/>
+            <el-input v-model="UID" size="mini" placeholder="请输入" />
           </el-form-item>
           <el-form-item label="周期">
             <el-select v-model="queryData.ActivityId" size="mini">
               <el-option
-                  v-for="item in activityIds"
-                  :key="item.key"
-                  :label="item.key"
-                  :value="item.value"
+                v-for="item in activityIds"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
           <el-form-item label="类型：">
             <el-select v-model="queryData.ActivityType" placeholder="请选择" size="mini">
               <el-option
-                  v-for="item in activityTypeOptions"
-                  :key="item.key"
-                  :label="item.key"
-                  :value="item.value"
+                v-for="item in activityTypeOptions"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -31,34 +31,33 @@
           <el-form-item label="事件类型">
             <el-select v-model="queryData.EventType" size="mini">
               <el-option
-                  v-for="item in EventTypeOption"
-                  :key="item.key"
-                  :label="item.key"
-                  :value="item.value"
+                v-for="item in EventTypeOption"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
 
           <el-form-item label="开始日期：">
             <el-date-picker
-                v-model="queryData.StartTime"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择日期"
-                size="mini"
-                format="yyyy-MM-dd"
+              v-model="queryData.StartTime"
+              value-format="timestamp"
+              type="date"
+              placeholder="选择日期"
+              size="mini"
+              format="yyyy-MM-dd"
             />
           </el-form-item>
           <el-form-item label="结束日期：">
             <el-date-picker
-                v-model="queryData.EndTime"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择日期"
-                size="mini"
-                format="yyyy-MM-dd"
+              v-model="queryData.EndTime"
+              value-format="timestamp"
+              type="date"
+              placeholder="选择日期"
+              size="mini"
+              format="yyyy-MM-dd"
             />
-
 
           </el-form-item>
           <el-form-item>
@@ -67,31 +66,29 @@
         </el-form>
 
       </el-col>
-      <el-col :span="2">
-      </el-col>
+      <el-col :span="2" />
 
       <el-col :span="24">
         <el-form ref="allCfg" label-width="150px">
           <el-table
-              :data="dataList"
-              style="width: 95%"
-              border
+            :data="dataList"
+            style="width: 95%"
+            border
           >
 
             <el-table-column
-                prop="ID"
-                label="ID"
-            ></el-table-column>
+              prop="ID"
+              label="ID"
+            />
 
             <el-table-column
-                prop="UID"
-                label="UID"
-            >
-            </el-table-column>
+              prop="UID"
+              label="UID"
+            />
 
             <el-table-column
-                prop="ActivityType"
-                label="类型"
+              prop="ActivityType"
+              label="类型"
             >
               <template scope="scope">
                 {{ activityTypeOptionsMap[scope.row.ActivityType] }}
@@ -99,16 +96,16 @@
             </el-table-column>
 
             <el-table-column
-                prop="ActivityId"
-                label="周期"
+              prop="ActivityId"
+              label="周期"
             >
               <template scope="scope">
                 {{ activityMap[scope.row.ActivityId] }}
               </template>
             </el-table-column>
             <el-table-column
-                prop="EventType"
-                label="事件类型"
+              prop="EventType"
+              label="事件类型"
             >
               <template scope="scope">
                 {{ EventTypeOptionMap[scope.row.EventType] }}
@@ -116,8 +113,8 @@
             </el-table-column>
             <el-table-column
               v-if="queryData.EventType === 2"
-                prop="Data"
-                label="积分变化"
+              prop="Data"
+              label="积分变化"
             >
               <template scope="scope">
                 {{ JSON.parse(scope.row.Data).PointChange }}
@@ -125,8 +122,8 @@
             </el-table-column>
             <el-table-column
               v-if="queryData.EventType === 2"
-                prop="Data"
-                label="最终积分"
+              prop="Data"
+              label="最终积分"
             >
               <template scope="scope">
                 {{ JSON.parse(scope.row.Data).PointLast }}
@@ -134,8 +131,8 @@
             </el-table-column>
             <el-table-column
               v-if="queryData.EventType === 1"
-                prop="Data"
-                label="虚拟币变化"
+              prop="Data"
+              label="虚拟币变化"
             >
               <template scope="scope">
                 {{ JSON.parse(scope.row.Data).VirtualCoinChange }}
@@ -143,54 +140,57 @@
             </el-table-column>
             <el-table-column
               v-if="queryData.EventType === 1"
-                prop="Data"
-                label="最终虚拟币"
+              prop="Data"
+              label="最终虚拟币"
             >
               <template scope="scope">
                 {{ JSON.parse(scope.row.Data).VirtualCoinLast }}
               </template>
             </el-table-column>
             <el-table-column
-                prop="UpdateTime"
-                label="更新时间"
+              prop="UpdateTime"
+              label="更新时间"
             >
               <template scope="scope">
                 {{ new Date(scope.row.UpdateTime * 1000).Format("yyyy-MM-dd HH:mm:ss") }}
               </template>
             </el-table-column>
-    
+
           </el-table>
 
         </el-form>
         <el-row>
           <div class="block">
-            <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]"
-                           :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper"
-                           :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange"
-                           @current-change="handleCurrentChange"/>
+            <el-pagination
+              :current-page="clientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetPage().GetTotalCount()"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
           </div>
         </el-row>
       </el-col>
 
-
     </el-row>
-
 
   </div>
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {getInfo} from "@/api/user";
-import {$libDate, ClientTableData} from '@/utils/common'
+import { getInfo } from '@/api/user'
+import { $libDate, ClientTableData } from '@/utils/common'
 
 const filterMap = {}
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, MoneyInput, getInfo},
+  components: { Compare, MoneyInput, getInfo },
   data() {
     return {
       clientDB: new ClientTableData([], 1, filterMap),
@@ -198,15 +198,15 @@ export default {
       activityIds: [],
       activityMap: {},
       showVisible: false,
-      types: {1: '转出', 2: '转入'},
+      types: { 1: '转出', 2: '转入' },
       activityTypeOptions: [
-        {'key': "Tongits", 'value': 1}
+        { 'key': 'Tongits', 'value': 1 }
       ],
       activityTypeOptionsMap: {
         1: 'Tongits'
       },
       EventTypeOption: [
-        {'key': "虚拟币", 'value': 1}, {'key': "积分", 'value': 2}
+        { 'key': '虚拟币', 'value': 1 }, { 'key': '积分', 'value': 2 }
       ],
       EventTypeOptionMap: {
         1: '虚拟币',
@@ -217,25 +217,25 @@ export default {
         ActivityType: 0,
         EndTime: 0,
         StartTime: 0,
-        Title: "",
+        Title: '',
         NeedVirtualCoin: 0,
         TaskVirtualCoin: 0,
-        Status: 0,
+        Status: 0
       },
       offset: 1,
       limit: 20,
-      UID: "",
+      UID: '',
       queryData: {
         UID: 0,
         ActivityType: 1,
-        ActivityId: "",
-        StartTime: "",
+        ActivityId: '',
+        StartTime: '',
         EndTime: Date.parse(new Date().toString()),
-        EventType: 1,
+        EventType: 1
       },
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
+      endTime: Date.parse(new Date().toString())
 
     }
   },
@@ -243,8 +243,8 @@ export default {
   created() {
     this.getAllActivityId()
     console.log(this.setStartTime())
-    this.queryData.StartTime=this.setStartTime()
-    this.queryData.EndTime=this.setEndTime()
+    this.queryData.StartTime = this.setStartTime()
+    this.queryData.EndTime = this.setEndTime()
   },
   methods: {
     setStartTime() {
@@ -298,7 +298,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            var cfg = {'key': response.Data[i].Title, 'value': response.Data[i].ID}
+            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
             this.activityIds.push(cfg)
             this.activityMap[response.Data[i].ID] = response.Data[i].Title
           }
@@ -310,14 +310,14 @@ export default {
     },
     getData() {
       console.log(this.queryData.ActivityId)
-      if (this.UID == "") {
+      if (this.UID == '') {
         Message.error('请输入用户ID')
         return
       }
-      if (this.queryData.ActivityId == "") {
+      if (this.queryData.ActivityId == '') {
         this.queryData.ActivityId = 0
       }
-      if (this.queryData.ActivityType == "") {
+      if (this.queryData.ActivityType == '') {
         this.queryData.ActivityType = 0
       }
       this.queryData.UID = this.UID
@@ -335,14 +335,14 @@ export default {
           EventType: this.queryData.EventType,
           ActivityType: this.queryData.ActivityType,
           StartTime: Math.floor(this.queryData.StartTime / 1000),
-          EndTime:  Math.floor(this.queryData.EndTime / 1000)+86400-1,
+          EndTime: Math.floor(this.queryData.EndTime / 1000) + 86400 - 1,
           Offset: offset,
           Limit: this.limit,
-          Path: '/millonpointrace/activity/log',
+          Path: '/millonpointrace/activity/log'
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          var parse = JSON.parse(response.Data);
+          var parse = JSON.parse(response.Data)
           console.log(parse)
           if (parse.RetCode != 0) {
             Message.error('查询失败')
@@ -350,7 +350,7 @@ export default {
           }
           if (parse.Data == null || parse.Data.Count == 0) {
             Message.error('无查询数据')
-            return;
+            return
           }
           this.clientDB = new ClientTableData(parse.Data.Data, 10, filterMap, '', -1)
           this.handleCurrentChange(1)
@@ -358,7 +358,7 @@ export default {
           Message.error('查询失败')
         }
       })
-    },
+    }
   }
 }
 

@@ -81,7 +81,7 @@ export default {
   data() {
     return {
       item: {
-        PrizeList: [],
+        PrizeList: []
   	  },
       load: false,
       form: {
