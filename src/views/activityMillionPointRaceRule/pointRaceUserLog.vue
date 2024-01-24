@@ -118,14 +118,11 @@ export default {
 
       },
       showBtn: false,
-      startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
-
     }
   },
 
-  created() {
-    this.getAllActivityId()
+  async created() {
+     await this.getAllActivityId()
     this.getData()
   },
   methods: {
@@ -158,10 +155,10 @@ export default {
       this.refreshShow()
     },
     getAllActivityId(){
-      request({
+        request({
         url: '/millionpointracerule/all',
         method: 'get',
-        data: {        }
+        data: {  }
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
@@ -175,12 +172,14 @@ export default {
       })
     },
     getData() {
+      if (this.queryData.ActivityId==""){
+        this.queryData.ActivityId=  this.activityIds[0].value
+      }
       if (this.queryData.LastRank<=0||this.queryData.PageSize<=0){
         Message.error('排名必须大于等于1')
         return
       }
 
-      const $this = this
       if (this.queryData.ID == "") {
         this.queryData.ID = 0
       }
@@ -189,7 +188,7 @@ export default {
         url: '/millionpointracerule/user/rank',
         method: 'get',
         data: {
-          ActivityId: 1,
+          ActivityId: this.queryData.ActivityId,
           LastRank: this.queryData.LastRank,
           PageSize: this.queryData.PageSize,
           Path:'/millonpointrace/user/rank',
@@ -198,13 +197,20 @@ export default {
         if (response.RetCode === 0) {
          var obj=JSON.parse(response.Data)
           if (obj.RetCode===0){
+            console.log(obj.Data.hasOwnProperty('List'))
+            console.log( obj.Data)
+            if ( !obj.Data.hasOwnProperty('List')){
+              this.clientDB = new ClientTableData([], 10, filterMap, '', -1)
+              this.handleCurrentChange(1)
+            }
+
             this.clientDB = new ClientTableData(obj.Data.List, 10, filterMap, '', -1)
             this.handleCurrentChange(1)
           }else {
             Message.error('查询失败')
           }
         } else {
-          Message.error('查询失败')
+          Message.error('无数据')
         }
       })
     },

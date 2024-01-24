@@ -102,11 +102,11 @@ export default {
     }
   },
 
-  created() {
-    this.getAllActivityId()
+  async created() {
+   await  this.getAllActivityId()
   },
   methods: {
-    getAllActivityId(){
+    async getAllActivityId(){
       request({
         url: '/millionpointracerule/all',
         method: 'get',
