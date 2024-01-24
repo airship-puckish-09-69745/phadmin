@@ -299,7 +299,6 @@ export default {
       this.allCfg.push(cfg)
       this.selectGameVisible = false
       this.updateDuplicate(this.item, this.oldData)
-      console.log('========', this.item)
       this.refresh()
     },
     editRow(idx, row) {

@@ -115,8 +115,35 @@
             </el-table-column>
             <el-table-column
               prop="Data"
-              label="数据"
+              label=" 最终积分"
             >
+              <template scope="scope">
+                {{JSON.parse(scope.row.Data).PointLast }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="Data"
+              label="积分变化"
+            >
+              <template scope="scope">
+                {{JSON.parse(scope.row.Data).PointChange }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="Data"
+              label="最终虚拟币"
+            >
+              <template scope="scope">
+                {{JSON.parse(scope.row.Data).VirtualCoinLast }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="Data"
+              label="虚拟币变化"
+            >
+              <template scope="scope">
+                {{JSON.parse(scope.row.Data).VirtualCoinChange }}
+              </template>
             </el-table-column>
             <el-table-column
               prop="UpdateTime"
