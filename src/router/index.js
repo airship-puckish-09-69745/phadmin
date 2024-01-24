@@ -588,7 +588,7 @@ export const asyncRoutes = [
             path: 'playlog_colorgame',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_colorgame',
-            meta: { title: 'ColorGame - ◐', gid: 25 }
+            meta: { title: '游戏日志 - ◐', gid: 25 }
           },
           {
             path: 'jackpotLog',
