@@ -9,14 +9,19 @@
         <el-form inline>
           <el-form-item label="活动ID">
             <el-select v-model="queryData.ActivityId" size="mini">
-              <el-option v-for="(o,k) in activityIds" :label="o" :value="k"/>
+              <el-option
+                v-for="item in activityIds"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="名次范围" >
-            <el-input v-model="queryData.PageSize" size="mini" placeholder="开始"/>
+            <el-input v-model="queryData.LastRank" size="mini" placeholder="开始"/>
           </el-form-item>
           <el-form-item label="-" >
-             <el-input v-model="queryData.LastRank" size="mini" placeholder="结束"/>
+             <el-input v-model="queryData.PageSize" size="mini" placeholder="结束"/>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="getData">查询</el-button>
@@ -112,8 +117,8 @@ export default {
       limit: 20,
       queryData: {
         ActivityId: "",
-        LastRank: 100,
-        PageSize:1,
+        LastRank: 1,
+        PageSize:100,
 
       },
       showBtn: false,
@@ -125,6 +130,7 @@ export default {
 
   created() {
     this.getAllActivityId()
+    this.getData()
   },
   methods: {
     handleSizeChange(val) {
@@ -137,20 +143,29 @@ export default {
     },
     getAllActivityId(){
       request({
-        url: '/millionpointracerule/all/activity',
+        url: '/millionpointracerule/all',
         method: 'get',
         data: {        }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.activityIds=response.Data
-
-          this.queryData.ActivityId=0
+          console.log(response.Data)
+          for (let i = 0; i < response.Data.length; i++) {
+            var cfg= {'key':response.Data[i].Title, 'value': response.Data[i].ID}
+            this.activityIds.push(cfg)
+          }
+          console.log(  this.activityIds)
+          this.queryData.ActivityId=  this.activityIds[0].value
         } else {
           Message.error('查询失败')
         }
       })
     },
     getData() {
+      if (this.queryData.LastRank<=0||this.queryData.PageSize<=0){
+        Message.error('范围不能为负')
+        return
+      }
+
       const $this = this
       if (this.queryData.ID == "") {
         this.queryData.ID = 0
@@ -160,18 +175,19 @@ export default {
         url: '/millionpointracerule/user/rank',
         method: 'get',
         data: {
-          ActivityId: 0,
-          LastRank: 1,
-          PageSize: 100,
+          ActivityId: 1,
+          LastRank: this.queryData.LastRank,
+          PageSize: this.queryData.PageSize,
+          Path:'/millonpointrace/user/rank',
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.dataList = response.Data.Data || []
-          $this.total = response.Data.Count
-          console.log(this.dataList)
-          console.log(this.total)
-          console.log(this.dataList)
-
+         var obj=JSON.parse(response.Data)
+          if (obj.RetCode===0){
+            this.dataList=obj.Data.List
+          }else {
+            Message.error('查询失败')
+          }
         } else {
           Message.error('查询失败')
         }

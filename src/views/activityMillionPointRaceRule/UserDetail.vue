@@ -9,33 +9,44 @@
         <el-form inline>
           <el-form-item label="活动ID：">
             <el-select v-model="queryData.ActivityId" size="mini">
-              <el-option v-for="(o,k) in activityIds" :label="o" :value="k"/>
+              <el-option
+                v-for="item in activityIds"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="UID：">
-            <el-input v-model="queryData.UID" size="mini" placeholder="活动ID"/>
+            <el-input v-model="queryData.UID" size="mini" placeholder="UID"/>
           </el-form-item>
           <el-form-item>
             <el-button type="success" @click="getData">查询</el-button>
 
           </el-form-item>
-          <el-form-item label="添加虚拟币" >
-            <el-input v-model="addVirtualCoin" size="mini"></el-input>
-          </el-form-item >
-
-          <el-form-item label="添加积分">
-            <el-input v-model="addPoint" size="mini"></el-input>
-          </el-form-item>
-          <el-form-item >
-
-
-            <el-button type="primary" @click="getData">更新虚拟币</el-button>
-          </el-form-item>
         </el-form>
 
       </el-col>
 
-      <el-descriptions class="margin-top"  :column="1" :size="max" border>
+      <el-descriptions class="margin-top"  :column="1"  border>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-mobile-phone"></i>
+            添加或扣减虚拟币
+
+          </template>
+         <el-col>
+           <el-form inline>
+             <el-form-item>
+               <el-input v-model="addVirtualCoin" size="mini" style="width: 200px"></el-input>
+             </el-form-item>
+             <el-form-item>
+               <el-button type="primary" @click="updateUser">更新虚拟币</el-button>
+
+             </el-form-item>
+           </el-form>
+         </el-col>
+        </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-mobile-phone"></i>
@@ -97,22 +108,60 @@ export default {
   methods: {
     getAllActivityId(){
       request({
-        url: '/millionpointracerule/all/activity',
+        url: '/millionpointracerule/all',
         method: 'get',
         data: {        }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.activityIds=response.Data
-
-          this.queryData.ActivityId=0
+          console.log(response.Data)
+          for (let i = 0; i < response.Data.length; i++) {
+            var cfg= {'key':response.Data[i].Title, 'value': response.Data[i].ID}
+            this.activityIds.push(cfg)
+          }
+          this.queryData.ActivityId=  this.activityIds[0].value
         } else {
           Message.error('查询失败')
         }
       })
     },
+    updateUser() {
+      if (this.queryData.UID==""){
+        Message.error('请输入UID')
+        return
+      }
+      const $this = this
+      if (this.queryData.ID == "") {
+        this.queryData.ID = 0
+      }
+      request({
+        url: 'millionpointracerule/update/user',
+        method: 'post',
+        data: {
+          UID:  this.queryData.UID,
+          ActivityId: this.queryData.ActivityId,
+          VirtualCoin:this.addVirtualCoin,
+          Point:0,
+          Path:'/millonpointrace/update/user',
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log(response.data)
+          if (response.RetCode!==0){
+            Message.error('更新失败')
+            return
+          }
+          Message.success('更新成功')
+        this. getData()
+        } else {
+          Message.error('查询失败')
+        }
+      })
+    },
+
     getData() {
       if (this.queryData.UID==""){
         Message.error('请输入UID')
+        return
       }
       const $this = this
       if (this.queryData.ID == "") {
@@ -123,20 +172,27 @@ export default {
         url: '/millionpointracerule/user/detail',
         method: 'get',
         data: {
-          UID: 0,
-          ActivityId: 0,
-          EventType: 0,
+          UID:  this.queryData.UID,
+          ActivityId:this.queryData.ActivityId,
+          EventType: this.queryData.EventType,
           Offset: this.offset,
           Limit: this.limit,
+          Path:'/millonpointrace/user/detail',
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.dataList = response.Data.Data || []
-          $this.total = response.Data.Count
-          console.log(this.dataList)
-          console.log(this.total)
-          console.log(this.dataList)
-
+          var obj = JSON.parse(response.Data);
+          console.log(obj)
+          if (obj.RetCode!=0){
+            Message.error("查询失败")
+            return
+          }
+          this.virtualCoin=obj.Data.userData.VirtualCoin
+          this.point=obj.Data.userData.Point
+          this.rank=obj.Data.rank.Rank
+          console.log(this.virtualCoin)
+          console.log(this.point)
+          console.log(this.rank)
         } else {
           Message.error('查询失败')
         }
@@ -145,9 +201,13 @@ export default {
   }
 }
 
+
+
+
+
 </script>
 <style scoped>
 >>> .el-descriptions__body {
-  width: 20%;
+  width: 50%;
 }
 </style>

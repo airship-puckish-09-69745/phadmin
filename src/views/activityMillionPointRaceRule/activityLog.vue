@@ -12,16 +12,21 @@
           </el-form-item>
           <el-form-item label="活动ID">
             <el-select v-model="queryData.ActivityId" size="mini">
-              <el-option v-for="(o,k) in activityIds" :label="o" :value="k"/>
+              <el-option
+                v-for="item in activityIds"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
+              />
             </el-select>
           </el-form-item>
           <el-form-item label="活动类型：">
             <el-select v-model="queryData.ActivityType" placeholder="请选择" size="mini">
               <el-option
-                  v-for="item in activityTypeOptions"
-                  :key="item.key"
-                  :label="item.value+'-'+item.key"
-                  :value="item.key"
+                v-for="item in activityTypeOptions"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
               />
             </el-select>
           </el-form-item>
@@ -29,30 +34,30 @@
           <el-form-item label="事件类型">
             <el-select v-model="queryData.EventType" size="mini">
               <el-option
-                  v-for="item in EventTypeOption"
-                  :key="item.key"
-                  :label="item.value"
-                  :value="item.key"
+                v-for="item in EventTypeOption"
+                :key="item.key"
+                :label="item.value"
+                :value="item.key"
               />
             </el-select>
           </el-form-item>
 
           <el-form-item label="开始日期：">
             <el-date-picker
-                v-model="queryData.StartTime"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择日期"
-                size="mini"
+              v-model="queryData.StartTime"
+              value-format="timestamp"
+              type="date"
+              placeholder="选择日期"
+              size="mini"
             />
           </el-form-item>
           <el-form-item label="结束日期：">
             <el-date-picker
-                v-model="queryData.EndTime"
-                value-format="timestamp"
-                type="date"
-                placeholder="选择日期"
-                size="mini"
+              v-model="queryData.EndTime"
+              value-format="timestamp"
+              type="date"
+              placeholder="选择日期"
+              size="mini"
             />
 
 
@@ -63,59 +68,59 @@
         </el-form>
 
       </el-col>
-    <el-col>
-      <el-alert
+      <el-col>
+        <el-alert
           type="success"
           description="必须指定UID-活动ID等，信息查询"
-      />
-    </el-col>
+        />
+      </el-col>
       <el-col :span="2">
       </el-col>
 
       <el-col :span="24">
         <el-form ref="allCfg" label-width="150px">
           <el-table
-              :data="dataList"
-              style="width: 95%"
-              border
+            :data="dataList"
+            style="width: 95%"
+            border
           >
 
             <el-table-column
-                prop="ID"
-                label="ID"
+              prop="ID"
+              label="ID"
             ></el-table-column>
 
             <el-table-column
-                prop="UID"
-                label="UID"
+              prop="UID"
+              label="UID"
             >
             </el-table-column>
 
             <el-table-column
-                prop="ActivityType"
-                label="活动类型"
+              prop="ActivityType"
+              label="活动类型"
             >
             </el-table-column>
 
             <el-table-column
-                prop="ActivityId"
-                label="活动Id"
+              prop="ActivityId"
+              label="活动Id"
             >
 
             </el-table-column>
             <el-table-column
-                prop="EventType"
-                label="事件类型"
+              prop="EventType"
+              label="事件类型"
             >
             </el-table-column>
             <el-table-column
-                prop="Data"
-                label="数据"
+              prop="Data"
+              label="数据"
             >
             </el-table-column>
             <el-table-column
-                prop="UpdateTime"
-                label="更新时间"
+              prop="UpdateTime"
+              label="更新时间"
             >
               <template scope="scope">
                 {{ new Date(scope.row.UpdateTime * 1000).Format("yyyy-MM-dd HH:mm:ss") }}
@@ -134,13 +139,13 @@
         <el-row>
           <div class="block" style="text-align: center">
             <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="offset"
-                :page-sizes="[20, 50, 100, 200,300]"
-                :page-size="limit"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="offset"
+              :page-sizes="[20, 50, 100, 200,300]"
+              :page-size="limit"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="total">
             </el-pagination>
           </div>
         </el-row>
@@ -166,7 +171,7 @@ export default {
   data() {
     return {
       dataList: [],
-      activityIds:[],
+      activityIds: [],
       total: 0,
       showVisible: false,
       types: {1: '转出', 2: '转入'},
@@ -214,22 +219,26 @@ export default {
       this.currentPage = val
       this.getData()
     },
-    getAllActivityId(){
+    getAllActivityId() {
       request({
-        url: '/millionpointracerule/all/activity',
+        url: '/millionpointracerule/all',
         method: 'get',
-        data: {        }
+        data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          this.activityIds=response.Data
-
-          this.queryData.ActivityId=0
+          console.log(response.Data)
+          for (let i = 0; i < response.Data.length; i++) {
+            var cfg = {'key': response.Data[i].Title, 'value': response.Data[i].ID}
+            this.activityIds.push(cfg)
+          }
+          this.queryData.ActivityId = this.activityIds[0].value
         } else {
           Message.error('查询失败')
         }
       })
     },
     getData() {
+      console.log(this.queryData.ActivityId)
       const $this = this
       if (this.UID == "") {
         Message.error('请输入用户ID')
@@ -241,7 +250,11 @@ export default {
       if (this.queryData.ActivityType == "") {
         this.queryData.ActivityType = 0
       }
-      this.queryData.UID=this.UID
+      this.queryData.UID = this.UID
+      var offset =0
+      if ( this.offset!=1){
+        offset=this.offset
+      }
       // 加载基础数值配置
       request({
         url: '/millionpointracerule/activity/log',
@@ -253,21 +266,22 @@ export default {
           ActivityType: this.queryData.ActivityType,
           StartTime: this.queryData.StartTime / 1000,
           EndTime: this.queryData.EndTime / 1000,
-          Offset: this.offset,
+          Offset: offset,
           Limit: this.limit,
-          // UID:1009695,
-          // ActivityId: 1,
-          // EventType: 1,
-          // ActivityType: 1,
-          // StartTime: 1705835038,
-          // EndTime:1706007838,
-          // Offset: this.offset,
-          // Limit: this.limit,
+          Path: '/millonpointrace/activity/log',
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.dataList = response.Data.Data || []
-          $this.total = response.Data.Count
+          var parse = JSON.parse(response.Data);
+          if (parse.RetCode != 0 ) {
+            Message.error('查询失败')
+            return
+          }
+          if ( parse.Data.Count == 0){
+            Message.error('无查询数据')
+          }
+          $this.total = parse.Data.Count
+          $this.dataList = parse.Data.Data
           console.log(this.dataList)
           console.log(this.total)
         } else {
