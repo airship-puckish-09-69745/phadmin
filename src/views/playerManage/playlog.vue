@@ -814,7 +814,8 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Rate" />
+            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-else>0</span>
           </template>
         </el-table-column>
 

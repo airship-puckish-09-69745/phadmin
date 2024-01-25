@@ -98,7 +98,7 @@
         </el-row>
         <el-row :gutter="10">
           <el-col :span="7">
-            <el-form-item label="抽水额度(%)：" prop="feeRate">
+            <el-form-item label="保底奖池抽水(%)：" prop="feeRate">
               <el-col :span="7">
                 <el-input v-model.number="item.feeRate" :required="true" />
               </el-col>

@@ -3,6 +3,14 @@
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
+
+        <el-col :span="7" :offset="1">
+          <el-form-item label="保底奖池抽水：">
+            <el-input v-model.number="item.FeeRate"><template slot="append">%</template></el-input>
+          </el-form-item>
+        </el-col>
+
+
         <el-col :span="16" :offset="2">
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
