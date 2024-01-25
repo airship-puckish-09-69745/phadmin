@@ -1442,8 +1442,12 @@ export default {
         const ob = sicbObj.options[i]
         tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
       }
+
       for (let i = 0; i < sicbObj.players.length; i++) {
         const player = sicbObj.players[i]
+        if (player.optionsResult === null) {
+          continue
+        }
         for (let j = 0; j < player.optionsResult.length; j++) {
           const result = player.optionsResult[j]
           let won = 0
