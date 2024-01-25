@@ -481,9 +481,14 @@ export default {
     },
     initChartData() {
       const objs = this.logData
-      const preObjs = this.preData
+      let preObjs = this.preData
       const healthData = newHealthData()
       const originData = newOriginData()
+
+      // 如果昨天没有数据，赋予今天的数据
+      if (preObjs.length === 0) {
+        preObjs = objs
+      }
 
       for (const i in preObjs) {
         const ob = preObjs[i]
