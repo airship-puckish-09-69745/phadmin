@@ -489,6 +489,29 @@ export default {
       if (preObjs.length === 0) {
         preObjs = objs
       }
+      if (preObjs.length > 0) {
+        preObjs.sort(function(a, b) {
+          if (a.TimeKey < b.TimeKey) {
+            return -1
+          }
+          if (a.TimeKey > b.TimeKey) {
+            return 1
+          }
+          return 0
+        })
+        console.log(preObjs)
+      }
+      if (objs.length > 0) {
+        objs.sort(function(a, b) {
+          if (a.TimeKey < b.TimeKey) {
+            return -1
+          }
+          if (a.TimeKey > b.TimeKey) {
+            return 1
+          }
+          return 0
+        })
+      }
 
       for (const i in preObjs) {
         const ob = preObjs[i]
