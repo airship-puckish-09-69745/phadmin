@@ -854,7 +854,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  <span v-if="scope.row.Won>0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
                   <span v-else>{{ scope.row.Won / 1000 }}</span>
                 </template>
               </el-table-column>
@@ -1454,6 +1454,8 @@ export default {
           let won = 0
           if (tMap[result.id].Hit) {
             won = tMap[result.id].Rate * result.moneyBet
+          } else {
+            won = -result.moneyBet
           }
           tMap[result.id].Ret.push({
             Uid: player.uid,
