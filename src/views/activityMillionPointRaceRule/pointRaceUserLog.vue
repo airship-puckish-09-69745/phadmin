@@ -38,8 +38,8 @@
             border
           >
             <el-table-column prop="Rank" label="排名" />
-            <el-table-column prop="UID" label="UID" />
-            <el-table-column prop="Nick" label="Nick" />
+            <el-table-column prop="UID" label="用户ID" />
+            <el-table-column prop="Nick" label="昵称" />
             <el-table-column prop="Point" label="积分" >
               <template slot-scope="scope">
                 {{ scope.row.Point | toRupee }}
