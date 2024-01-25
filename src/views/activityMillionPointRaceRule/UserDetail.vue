@@ -1,9 +1,7 @@
 <template>
   <div class="app-container">
 
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15" />
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="周期：">
@@ -20,8 +18,7 @@
             <el-input v-model="queryData.UID" size="mini" placeholder="UID" />
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
-
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
 
@@ -32,7 +29,6 @@
           <template slot="label">
             <i class="el-icon-mobile-phone" />
             添加或扣减虚拟币
-
           </template>
           <el-col>
             <el-form inline>
@@ -40,8 +36,7 @@
                 <el-input v-model="addVirtualCoin" size="mini" style="width: 200px" />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="updateUser">更新虚拟币</el-button>
-
+                <el-button type="primary" size="mini" @click="updateUser">更新虚拟币</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -51,14 +46,14 @@
             <i class="el-icon-mobile-phone" />
             当前虚拟币
           </template>
-          {{ virtualCoin }}
+          {{ virtualCoin | toRupee }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-location-outline" />
             当前积分
           </template>
-          {{ point }}
+          {{ point | toRupee }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -88,10 +83,9 @@ export default {
     return {
       rank: '',
       uid: '',
-      point: '',
-      virtualCoin: '',
-      addVirtualCoin: '',
-      addPoint: '',
+      point: 0,
+      virtualCoin: 0,
+      addVirtualCoin: 0,
       activityIds: [],
       queryData: {
         ActivityId: 0,
