@@ -61,7 +61,7 @@
 
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
 

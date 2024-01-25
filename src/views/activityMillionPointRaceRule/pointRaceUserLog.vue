@@ -23,7 +23,7 @@
             <el-input v-model="queryData.PageSize" size="mini" placeholder="结束" />
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
 
