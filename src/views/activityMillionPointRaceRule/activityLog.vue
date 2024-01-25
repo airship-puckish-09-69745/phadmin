@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询" /> </el-row>
+    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询，切换选项后请重新查询" /> </el-row>
     <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
@@ -94,19 +94,13 @@
               </template>
             </el-table-column>
             <el-table-column prop="Data" label="变化值" >
-              <template v-if="queryData.EventType === 1" scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinChange | toRupee }}
-              </template>
-              <template v-if="queryData.EventType === 2" scope="scope">
-                {{ JSON.parse(scope.row.Data).PointChange | toRupee }}
+              <template scope="scope">
+                {{ getChangeVal(scope.row.Data) | toRupee }}
               </template>
             </el-table-column>
             <el-table-column prop="Data" label="当前剩余" >
-              <template v-if="queryData.EventType === 1" scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinLast | toRupee }}
-              </template>
-              <template v-if="queryData.EventType === 2" scope="scope">
-                {{ JSON.parse(scope.row.Data).PointLast | toRupee }}
+              <template scope="scope">
+                {{ getLastVal(scope.row.Data) | toRupee }}
               </template>
             </el-table-column>
             <el-table-column
@@ -160,15 +154,15 @@ export default {
       activityIds: [],
       activityMap: {},
       showVisible: false,
-      types: { 1: '转出', 2: '转入' },
       activityTypeOptions: [
-        { 'key': 'Tongits', 'value': 1 }
+        { "key": "Tongits", "value": 1 }
       ],
       activityTypeOptionsMap: {
         1: 'Tongits'
       },
       EventTypeOption: [
-        { 'key': '虚拟币', 'value': 1 }, { 'key': '积分', 'value': 2 }
+        { "key": "虚拟币", "value": 1 }, 
+        { "key": "积分", "value": 2 }
       ],
       EventTypeOptionMap: {
         1: '虚拟币',
@@ -187,6 +181,7 @@ export default {
       offset: 1,
       limit: 20,
       UID: '',
+      eventType: 1,
       queryData: {
         UID: 0,
         ActivityType: 1,
@@ -198,7 +193,6 @@ export default {
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString())
-
     }
   },
 
@@ -247,7 +241,20 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
+    getChangeVal(data) {
+      const tmp = JSON.parse(data)
+      if (this.eventType === 1) {
+        return tmp.VirtualCoinChange
+      }
+      return tmp.PointChange
+    },
+    getLastVal(data) {
+      const tmp = JSON.parse(data)
+      if (this.eventType === 1) {
+        return tmp.VirtualCoinLast
+      }
+      return tmp.PointLast
+    },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
@@ -305,7 +312,8 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           var parse = JSON.parse(response.Data)
-          console.log(parse)
+          this.eventType = this.queryData.EventType
+          // console.log(parse)
           if (parse.RetCode != 0) {
             Message.error('查询失败')
             return
