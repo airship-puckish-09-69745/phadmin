@@ -172,7 +172,10 @@ export default {
         Message.error('排名必须大于等于1')
         return
       }
-
+      if (parseInt(this.queryData.PageSize) - parseInt(this.queryData.LastRank) >= 100) {
+        Message.error('排名一次最多查看100名')
+        return
+      }
       if (this.queryData.ID == '') {
         this.queryData.ID = 0
       }

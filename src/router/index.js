@@ -396,6 +396,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/windrop_cfg'),
             name: 'windrop_cfg',
             meta: { title: 'Windrop ◐' }
+          },
+          {
+            path: 'miniWindrop_cfg',
+            component: () => import('@/views/config/tableConfig/miniWindrop_cfg'),
+            name: 'miniWindrop_cfg',
+            meta: { title: 'MiniWindrop ◐' }
           }
 
         ]
@@ -562,9 +568,22 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/moneylog'),
         name: 'moneylog',
         meta: { title: '金币流水 ◐' }
+      },
+      {
+        path: 'jackpotLog',
+        component: () => import('@/views/playerManage/jackpotLog'),
+        name: 'ban',
+        meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'jackpotAward',
+        component: () => import('@/views/playerManage/jackpotAward'),
+        name: 'ban',
+        meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
       }
     ]
   },
+
   {
     path: '/playlog',
     component: Layout,
@@ -579,30 +598,10 @@ export const asyncRoutes = [
         meta: { title: 'Car - 车标转盘 ◐', gid: 5 }
       },*/
       {
-        path: 'Colorlogs',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'ColorGame - ◐', noCache: true },
-        children: [
-          {
-            path: 'playlog_colorgame',
-            component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_colorgame',
-            meta: { title: '游戏日志 - ◐', gid: 25 }
-          },
-          {
-            path: 'jackpotLog',
-            component: () => import('@/views/playerManage/jackpotLog'),
-            name: 'ban',
-            meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
-          },
-          {
-            path: 'jackpotAward',
-            component: () => import('@/views/playerManage/jackpotAward'),
-            name: 'ban',
-            meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
-          }
-        ]
+        path: 'playlog_colorgame',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_colorgame',
+        meta: { title: 'ColorGame - ◐', gid: 25 }
       },
       {
         path: 'playlog_crash',
