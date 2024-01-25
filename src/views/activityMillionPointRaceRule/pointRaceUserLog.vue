@@ -37,21 +37,10 @@
             style="width: 95%"
             border
           >
-
-            <el-table-column
-              prop="Rank"
-              label="排名"
-            />
-
-            <el-table-column
-              prop="UID"
-              label="UID"
-            />
-
-            <el-table-column
-              prop="Point"
-              label="积分"
-            >
+            <el-table-column prop="Rank" label="排名" />
+            <el-table-column prop="UID" label="UID" />
+            <el-table-column prop="Nick" label="Nick" />
+            <el-table-column prop="Point" label="积分" >
               <template slot-scope="scope">
                 {{ scope.row.Point | toRupee }}
               </template>
@@ -193,14 +182,8 @@ export default {
         if (response.RetCode === 0) {
           var obj = JSON.parse(response.Data)
           if (obj.RetCode === 0) {
-            console.log(obj.Data.hasOwnProperty('List'))
-            console.log(obj.Data)
-            if (!obj.Data.hasOwnProperty('List')) {
-              this.clientDB = new ClientTableData([], 10, filterMap, '', -1)
-              this.handleCurrentChange(1)
-            }
-
-            this.clientDB = new ClientTableData(obj.Data.List, 10, filterMap, '', -1)
+            // console.log(obj.Data)
+            this.clientDB = new ClientTableData(obj.Data, 10, filterMap, '', -1)
             this.handleCurrentChange(1)
           } else {
             Message.error('查询失败')
