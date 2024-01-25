@@ -760,6 +760,109 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog
+      title="骰宝牌局详情"
+      :visible.sync="sicboGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">骰子结果：</span><div style="color:red;">{{ sicboGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="sicboGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="命中"
+          width="80"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="IsBonus"
+          label="ExtraPay命中"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsBonus==1" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Rate"
+          label="命中总赔率"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Rate" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.Ret"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won>0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -848,6 +951,10 @@ export default {
 
       towerVisible: false,
       towerData: '',
+
+      sicboGameVisible: false,
+      sicboGameResult: '',
+      sicboGameOptions: [],
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
@@ -1215,6 +1322,8 @@ export default {
             $this.showPusoyGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
+          } else if (gid === 101) {
+            $this.showSicboGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1322,6 +1431,45 @@ export default {
       this.colorGameResult = resultTmp.join('，')
       this.colorGameVisible = true
     },
+    showSicboGame(obj) {
+      const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
+        '骰子双点数_3', '骰子双点数_4', '骰子双点数_5', '骰子双点数_6', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12',
+        '点数和_13', '点数和_14', '点数和_15', '点数和_16', '点数和_17', '骰子三点数_1', '骰子三点数_2', '骰子三点数_3', '骰子三点数_4', '骰子三点数_5', '骰子三点数_6', 'Any Triple']
+      const tMap = {}
+      this.sicboGameOptions = []
+      const sicbObj = obj.Sicbo
+      for (let i = 0; i < sicbObj.options.length; i++) {
+        const ob = sicbObj.options[i]
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
+      }
+      for (let i = 0; i < sicbObj.players.length; i++) {
+        const player = sicbObj.players[i]
+        for (let j = 0; j < player.optionsResult.length; j++) {
+          const result = player.optionsResult[j]
+          let won = 0
+          if (tMap[result.id].Hit) {
+            won = tMap[result.id].Rate * result.moneyBet
+          }
+          tMap[result.id].Ret.push({
+            Uid: player.uid,
+            Bet: result.moneyBet,
+            Won: won
+          })
+        }
+      }
+
+      for (let i = 0; i < sicbObj.options.length; i++) {
+        this.sicboGameOptions.push(tMap[i])
+      }
+      console.log(this.sicboGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < sicbObj.dices.length; i++) {
+        resultTmp.push(sicbObj.dices[i])
+      }
+      this.sicboGameResult = resultTmp.join('，')
+      this.sicboGameVisible = true
+    },
+
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {
         const detailRow = obj.players[i]
@@ -1494,6 +1642,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       this.colorGameOptions = []
       this.colorGameVisible = false
       this.colorGameResult = ''
+
+      // 清空sicboGame数据
+      this.sicboGameResult = ''
     },
     showChart() {
       this.initChartData()
