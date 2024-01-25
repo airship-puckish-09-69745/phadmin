@@ -10,14 +10,6 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <money-input v-model.number="cfg.EnergyNum" label="转盘小游戏能量条数额" />
-          </el-row>
-          <el-row>
-            <el-form-item label="转盘小游戏能量转化率：">
-              <el-input v-model.number="cfg.EnergyTransferRate" placeholder="" />‱（万分比）
-            </el-form-item>
-          </el-row>
-          <el-row>
             <el-form-item label="可投注球数量：">
               <el-input v-model="cfg.BallNumsStr" placeholder="" />
             </el-form-item>
@@ -35,6 +27,11 @@
           <el-row>
             <el-form-item label="加倍行数显示：">
               <el-input v-model="cfg.AddTimesRow" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="三种颜色 （red, green ,blue)：">
+              <el-input v-model="cfg.Splice" placeholder="" />
             </el-form-item>
           </el-row>
         </el-form>
@@ -88,6 +85,19 @@
                       <el-option label="high" :value="3" />
                     </el-select>
                   </el-form-item>
+                </el-row>
+                <el-row>
+                  <money-input v-model.number="item.EnergyNum" label="转盘小游戏能量条数额" />
+                </el-row>
+                <el-row>
+                  <el-form-item label="转盘小游戏能量转化率：">
+                    <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）
+                  </el-form-item>
+                </el-row>
+                  <el-row>
+                    <el-form-item label="金币换能量：">
+                      <el-input v-model.number="item.ScoreToEnergy" placeholder="" />‱（万分比）
+                    </el-form-item>
                 </el-row>
                 <el-row>
                   <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">
@@ -213,12 +223,11 @@ export default {
     return {
       cfg: {
         MinVersion: 0,
-        EnergyNum: 0,
-        EnergyTransferRate: 0,
         BallNums: [5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         Bets: [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000],
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
         AddTimesRow: [6, 10, 14],
+        Splice: [1, 2, 3],
         HappyRouletteCfg: [
           {
             Id: 1,
@@ -286,6 +295,9 @@ export default {
             Level: 1,
             LuckyJPInitMoney: 0,
             LuckyJPOdds: 0,
+            EnergyNum: 0,
+            EnergyTransferRate: 0,
+            ScoreToEnergy: 0,
             LuckyJPTransferRate: 0,
             LuckyJPKey: '',
             SuperJPInitMoney: 0,
