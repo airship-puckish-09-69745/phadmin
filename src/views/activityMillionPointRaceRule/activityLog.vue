@@ -75,76 +75,38 @@
             style="width: 95%"
             border
           >
-
-            <el-table-column
-              prop="ID"
-              label="ID"
-            />
-
-            <el-table-column
-              prop="UID"
-              label="UID"
-            />
-
-            <el-table-column
-              prop="ActivityType"
-              label="类型"
-            >
+            <el-table-column prop="ID" label="ID" />
+            <el-table-column prop="UID" label="UID" />
+            <el-table-column prop="ActivityType" label="类型" >
               <template scope="scope">
                 {{ activityTypeOptionsMap[scope.row.ActivityType] }}
               </template>
             </el-table-column>
 
-            <el-table-column
-              prop="ActivityId"
-              label="周期"
-            >
+            <el-table-column prop="ActivityId" label="周期" >
               <template scope="scope">
                 {{ activityMap[scope.row.ActivityId] }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="EventType"
-              label="事件类型"
-            >
+            <el-table-column prop="EventType" label="事件类型" >
               <template scope="scope">
                 {{ EventTypeOptionMap[scope.row.EventType] }}
               </template>
             </el-table-column>
-            <el-table-column
-              v-if="queryData.EventType === 2"
-              prop="Data"
-              label="积分变化"
-            >
-              <template scope="scope">
-                {{ JSON.parse(scope.row.Data).PointChange }}
+            <el-table-column prop="Data" label="变化值" >
+              <template v-if="queryData.EventType === 1" scope="scope">
+                {{ JSON.parse(scope.row.Data).VirtualCoinChange | toRupee }}
+              </template>
+              <template v-if="queryData.EventType === 2" scope="scope">
+                {{ JSON.parse(scope.row.Data).PointChange | toRupee }}
               </template>
             </el-table-column>
-            <el-table-column
-              v-if="queryData.EventType === 2"
-              prop="Data"
-              label="最终积分"
-            >
-              <template scope="scope">
-                {{ JSON.parse(scope.row.Data).PointLast }}
+            <el-table-column prop="Data" label="当前剩余" >
+              <template v-if="queryData.EventType === 1" scope="scope">
+                {{ JSON.parse(scope.row.Data).VirtualCoinLast | toRupee }}
               </template>
-            </el-table-column>
-            <el-table-column
-              v-if="queryData.EventType === 1"
-              prop="Data"
-              label="虚拟币变化"
-            >
-              <template scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinChange }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              v-if="queryData.EventType === 1"
-              prop="Data"
-              label="最终虚拟币"
-            >
-              <template scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinLast }}
+              <template v-if="queryData.EventType === 2" scope="scope">
+                {{ JSON.parse(scope.row.Data).PointLast | toRupee }}
               </template>
             </el-table-column>
             <el-table-column
