@@ -99,7 +99,7 @@
         <el-button type="success" plain @click="showOrigin">原始值</el-button>
       </el-col>
       <el-col :span="14">
-        <el-form  v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
+        <el-form v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
           <el-form-item label="日期：">
             <el-date-picker
               v-model="item.date"

@@ -1,62 +1,68 @@
 <template>
   <div class="app-container">
 
-
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15"/>
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
-          <el-form-item label="活动ID：">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+          <el-form-item label="周期：">
+            <el-select v-model="queryData.ActivityId" size="mini">
+              <el-option
+                v-for="item in activityIds"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
           <el-form-item label="UID：">
-            <el-input v-model="queryData.UID" size="mini" placeholder="活动ID"/>
+            <el-input v-model="queryData.UID" size="mini" placeholder="UID" />
           </el-form-item>
-
+          <el-form-item>
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
+          </el-form-item>
         </el-form>
 
       </el-col>
 
-      <el-descriptions class="margin-top" title="带边框列表" :column="3" :size="size" border>
-        <template slot="extra">
-          <el-button type="primary" size="small">操作</el-button>
-        </template>
+      <el-descriptions class="margin-top" :column="1" border>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-user"></i>
-            用户名
+            <i class="el-icon-mobile-phone" />
+            添加或扣减虚拟币
           </template>
-          kooriookami
+          <el-col>
+            <el-form inline>
+              <el-form-item>
+                <el-input v-model="addVirtualCoin" size="mini" style="width: 200px" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="mini" @click="updateUser">更新虚拟币</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-mobile-phone"></i>
-            手机号
+            <i class="el-icon-mobile-phone" />
+            当前虚拟币
           </template>
-          18100000000
+          {{ virtualCoin | toRupee }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-location-outline"></i>
-            居住地
+            <i class="el-icon-location-outline" />
+            当前积分
           </template>
-          苏州市
+          {{ point | toRupee }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            <i class="el-icon-tickets"></i>
-            备注
+            <i class="el-icon-tickets" />
+            当前排名
           </template>
-          <el-tag size="small">学校</el-tag>
+          {{ rank }}
         </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
-            <i class="el-icon-office-building"></i>
-            联系地址
-          </template>
-          江苏省苏州市吴中区吴中大道 1188 号
-        </el-descriptions-item>
+
       </el-descriptions>
     </el-row>
 
@@ -64,65 +70,94 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {getInfo} from "@/api/user";
+import { getInfo } from '@/api/user'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, MoneyInput, getInfo},
+  components: { Compare, MoneyInput, getInfo },
   data() {
     return {
-      dataList: [],
-      total: 0,
-      showVisible: false,
-      types: {1: '转出', 2: '转入'},
-      activityTypeOptions: [
-        {'key': 1, 'value': "Tongits"}],
-      statusOption: {1: '上架', 2: '下架'},
-      item: {
-        ID: 0,
-        ActivityType: 0,
-        EndTime: 0,
-        StartTime: 0,
-        Title: "",
-        NeedVirtualCoin: 0,
-        TaskVirtualCoin: 0,
-        Status: 0,
-      },
-      offset: 1,
-      limit: 20,
+      rank: '',
+      uid: '',
+      point: 0,
+      virtualCoin: 0,
+      addVirtualCoin: 0,
+      activityIds: [],
       queryData: {
-        ID: 0,
-        Type: 0,
-        StartTime: Date.parse(new Date()) - (60 * 60 * 24 * 30 * 1000),
-        EndTime: Date.parse(new Date().toString()),
-        Status: 0,
-      },
-      showBtn: false,
-      startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
+        ActivityId: 0,
+        UID: ''
+      }
 
     }
   },
 
-  created() {
-    this.getData()
+  async created() {
+    await this.getAllActivityId()
   },
   methods: {
-    handleSizeChange(val) {
-      this.limit = val
-      this.getData()
+    async getAllActivityId() {
+      request({
+        url: '/millionpointracerule/all',
+        method: 'get',
+        data: { }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log(response.Data)
+          for (let i = 0; i < response.Data.length; i++) {
+            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
+            this.activityIds.push(cfg)
+          }
+          this.queryData.ActivityId = this.activityIds[0].value
+        } else {
+          Message.error('查询失败')
+        }
+      })
     },
-    handleCurrentChange(val) {
-      this.currentPage = val
-      this.getData()
-    },
-    getData() {
+    updateUser() {
+      if (this.queryData.UID == '') {
+        Message.error('请输入UID')
+        return
+      }
       const $this = this
-      if (this.queryData.ID == "") {
+      if (this.queryData.ID == '') {
+        this.queryData.ID = 0
+      }
+      request({
+        url: 'millionpointracerule/update/user',
+        method: 'post',
+        data: {
+          UID: this.queryData.UID,
+          ActivityId: this.queryData.ActivityId,
+          VirtualCoin: this.addVirtualCoin,
+          Point: 0,
+          Path: '/millonpointrace/update/user'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log(response.data)
+          if (response.RetCode !== 0) {
+            Message.error('更新失败')
+            return
+          }
+          Message.success('更新成功')
+          this.getData()
+        } else {
+          Message.error('查询失败')
+        }
+      })
+    },
+
+    getData() {
+      if (this.queryData.UID == '') {
+        Message.error('请输入UID')
+        return
+      }
+      const $this = this
+      if (this.queryData.ID == '') {
         this.queryData.ID = 0
       }
       // 加载基础数值配置
@@ -130,26 +165,38 @@ export default {
         url: '/millionpointracerule/user/detail',
         method: 'get',
         data: {
-          UID: 0,
-          ActivityId: 0,
-          EventType: 0,
+          UID: this.queryData.UID,
+          ActivityId: this.queryData.ActivityId,
+          EventType: this.queryData.EventType,
           Offset: this.offset,
           Limit: this.limit,
+          Path: '/millonpointrace/user/detail'
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.dataList = response.Data.Data || []
-          $this.total = response.Data.Count
-          console.log(this.dataList)
-          console.log(this.total)
-          console.log(this.dataList)
-
+          var obj = JSON.parse(response.Data)
+          console.log(obj)
+          if (obj.RetCode != 0) {
+            Message.error('查询失败')
+            return
+          }
+          this.virtualCoin = obj.Data.userData.VirtualCoin
+          this.point = obj.Data.userData.Point
+          this.rank = obj.Data.rank.Rank
+          console.log(this.virtualCoin)
+          console.log(this.point)
+          console.log(this.rank)
         } else {
           Message.error('查询失败')
         }
       })
-    },
+    }
   }
 }
 
 </script>
+<style scoped>
+>>> .el-descriptions__body {
+  width: 50%;
+}
+</style>

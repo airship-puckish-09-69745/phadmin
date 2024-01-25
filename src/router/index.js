@@ -159,13 +159,13 @@ export const asyncRoutes = [
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '积分赛活动配置', noCache: true },
+        meta: { title: '积分赛配置', noCache: true },
         children: [
           {
             path: 'millionPointRaceRuleConfig',
             component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleConfig'),
             name: 'millionPointRaceRuleConfig',
-            meta: { title: '百万积分赛配置 🎶' }
+            meta: { title: '积分赛周期配置 🎶' }
           },
           {
             path: 'millionPointRaceRuleCommonConfig',
@@ -177,13 +177,13 @@ export const asyncRoutes = [
             path: 'activityLog',
             component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
             name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛活动日志  🚩️' }
+            meta: { title: '积分赛用户日志  🚩️' }
           },
           {
             path: 'pointRaceUserLog',
             component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
             name: 'pointRaceUserLog',
-            meta: { title: '积分赛用户榜单  ' }
+            meta: { title: '积分赛排行榜  ' }
           },
           {
             path: 'UserDetailLog',
@@ -562,56 +562,6 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/moneylog'),
         name: 'moneylog',
         meta: { title: '金币流水 ◐' }
-      },
-      {
-        path: 'jackpotLog',
-        component: () => import('@/views/playerManage/jackpotLog'),
-        name: 'ban',
-        meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
-      },
-      {
-        path: 'jackpotAward',
-        component: () => import('@/views/playerManage/jackpotAward'),
-        name: 'ban',
-        meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
-      }
-    ]
-  },
-  {
-    path: '/thirdparty',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '第三方管理', icon: 'user', perm: 'CFG_MANAGEMENT' },
-    children: [
-      {
-        path: 'thirdparty',
-        component: () => import('@/views/thirdparty/thirdparty'),
-        name: 'thirdpartyManage',
-        meta: { title: '第三方信息 ◐' }
-      },
-      {
-        path: 'transfer',
-        component: () => import('@/views/thirdparty/transfer'),
-        name: 'transfer_log',
-        meta: { title: '转账流水 ◐' }
-      },
-      {
-        path: 'playlog_list',
-        component: () => import('@/views/thirdparty/playlog'),
-        name: 'thirdparty_playlog',
-        meta: { title: '牌局流水 ◐' }
-      },
-      {
-        path: 'thirdparty_game_list',
-        component: () => import('@/views/thirdparty/gamelist'),
-        name: 'thirdparty_game_list',
-        meta: { title: '第三方子游戏 ◐' }
-      },
-      {
-        path: 'enterurl',
-        component: () => import('@/views/thirdparty/enterurl'),
-        name: 'enterurl',
-        meta: { title: '生成游戏链接 ◐' }
       }
     ]
   },
@@ -629,10 +579,30 @@ export const asyncRoutes = [
         meta: { title: 'Car - 车标转盘 ◐', gid: 5 }
       },*/
       {
-        path: 'playlog_colorgame',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_colorgame',
-        meta: { title: 'ColorGame - ◐', gid: 25 }
+        path: 'Colorlogs',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'ColorGame - ◐', noCache: true },
+        children: [
+          {
+            path: 'playlog_colorgame',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_colorgame',
+            meta: { title: '游戏日志 - ◐', gid: 25 }
+          },
+          {
+            path: 'jackpotLog',
+            component: () => import('@/views/playerManage/jackpotLog'),
+            name: 'ban',
+            meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
+          },
+          {
+            path: 'jackpotAward',
+            component: () => import('@/views/playerManage/jackpotAward'),
+            name: 'ban',
+            meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
+          }
+        ]
       },
       {
         path: 'playlog_crash',
@@ -777,6 +747,44 @@ export const asyncRoutes = [
           }*/
 
         ]
+      }
+    ]
+  },
+  {
+    path: '/thirdparty',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '第三方管理', icon: 'user', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'thirdparty',
+        component: () => import('@/views/thirdparty/thirdparty'),
+        name: 'thirdpartyManage',
+        meta: { title: '第三方信息 ◐' }
+      },
+      {
+        path: 'transfer',
+        component: () => import('@/views/thirdparty/transfer'),
+        name: 'transfer_log',
+        meta: { title: '转账流水 ◐' }
+      },
+      {
+        path: 'playlog_list',
+        component: () => import('@/views/thirdparty/playlog'),
+        name: 'thirdparty_playlog',
+        meta: { title: '牌局流水 ◐' }
+      },
+      {
+        path: 'thirdparty_game_list',
+        component: () => import('@/views/thirdparty/gamelist'),
+        name: 'thirdparty_game_list',
+        meta: { title: '第三方子游戏 ◐' }
+      },
+      {
+        path: 'enterurl',
+        component: () => import('@/views/thirdparty/enterurl'),
+        name: 'enterurl',
+        meta: { title: '生成游戏链接 ◐' }
       }
     ]
   },

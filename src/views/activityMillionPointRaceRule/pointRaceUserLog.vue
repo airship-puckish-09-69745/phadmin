@@ -1,109 +1,67 @@
 <template>
   <div class="app-container">
 
+    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询" /> </el-row>
 
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15"/>
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
-          <el-form-item label="活动ID">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+          <el-form-item label="周期">
+            <el-select v-model="queryData.ActivityId" size="mini">
+              <el-option
+                v-for="item in activityIds"
+                :key="item.key"
+                :label="item.key"
+                :value="item.value"
+              />
+            </el-select>
           </el-form-item>
-          <el-form-item label="L">
-            <el-input v-model="queryData.LastRank" size="mini" placeholder="活动ID"/>
+          <el-form-item label="名次范围">
+            <el-input v-model="queryData.LastRank" size="mini" placeholder="开始" />
           </el-form-item>
-          <el-form-item label="活动ID">
-            <el-input v-model="queryData.ActivityId" size="mini" placeholder="活动ID"/>
+          <el-form-item label="-">
+            <el-input v-model="queryData.PageSize" size="mini" placeholder="结束" />
           </el-form-item>
-<!--          <el-form-item label="类型：">-->
-<!--            <el-select v-model="queryData.Type" placeholder="请选择" size="mini">-->
-<!--              <el-option label="全部" :value="0"/>-->
-<!--              <el-option-->
-<!--                  v-for="item in activityTypeOptions"-->
-<!--                  :key="item.key"-->
-<!--                  :label="item.value+'-'+item.key"-->
-<!--                  :value="item.key"-->
-<!--              />-->
-<!--            </el-select>-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="开始日期：">-->
-<!--            <el-date-picker-->
-<!--                v-model="queryData.StartTime"-->
-<!--                value-format="timestamp"-->
-<!--                type="date"-->
-<!--                placeholder="选择日期"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="结束日期：">-->
-<!--            <el-date-picker-->
-<!--                v-model="queryData.EndTime"-->
-<!--                value-format="timestamp"-->
-<!--                type="date"-->
-<!--                placeholder="选择日期"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="状态">-->
-<!--            <el-select v-model="queryData.Status" size="mini">-->
-<!--              <el-option label="全部" :value="0"/>-->
-<!--              <el-option v-for="(o,k) in statusOption" :label="o" :value="k"/>-->
-<!--            </el-select>-->
-<!--            <el-button type="success" @click="getData">查询</el-button>-->
-<!--          </el-form-item>-->
+          <el-form-item>
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
+          </el-form-item>
         </el-form>
 
       </el-col>
-      <el-col :span="22">
-        <el-button type="primary" size="mini" @click="openCreated">添加置项</el-button>
-        <el-button type="success" size="mini" @click="publishData">发布配置</el-button>
-      </el-col>
-      <el-col :span="2">
-      </el-col>
+      <el-col :span="2" />
 
       <el-col :span="24">
         <el-form ref="allCfg" label-width="150px">
           <el-table
-              :data="dataList"
-              style="width: 95%"
-              border
+            :data="dataList"
+            style="width: 95%"
+            border
           >
 
             <el-table-column
-                prop="Rank"
-                label="排名"
-            ></el-table-column>
+              prop="Rank"
+              label="排名"
+            />
 
             <el-table-column
-                prop="UID"
-                label="UID"
-            >
-            </el-table-column>
+              prop="UID"
+              label="UID"
+            />
 
             <el-table-column
-                prop="Point"
-                label="积分"
+              prop="Point"
+              label="积分"
             >
-
+              <template slot-scope="scope">
+                {{ scope.row.Point | toRupee }}
+              </template>
             </el-table-column>
-
 
           </el-table>
-          <br>
-          <br>
-          <br>
-
         </el-form>
         <el-row>
-          <div class="block" style="text-align: center">
-            <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="offset"
-                :page-sizes="[20, 50, 100, 200,300]"
-                :page-size="limit"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
-            </el-pagination>
+          <div class="block">
+            <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
           </div>
         </el-row>
       </el-col>
@@ -112,65 +70,110 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {getInfo} from "@/api/user";
+import { getInfo } from '@/api/user'
+import { toRupee } from '@/utils'
+const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, MoneyInput, getInfo},
+  components: { Compare, MoneyInput, getInfo },
+
   data() {
     return {
+      clientDB: new ClientTableData([], 1, filterMap),
       dataList: [],
       total: 0,
       showVisible: false,
-      types: {1: '转出', 2: '转入'},
+      types: { 1: '转出', 2: '转入' },
       activityTypeOptions: [
-        {'key': 1, 'value': "Tongits"}],
-      statusOption: {1: '上架', 2: '下架'},
+        { 'key': 1, 'value': 'Tongits' }],
+      statusOption: { 1: '上架', 2: '下架' },
       item: {
         ID: 0,
         ActivityType: 0,
         EndTime: 0,
         StartTime: 0,
-        Title: "",
+        Title: '',
         NeedVirtualCoin: 0,
         TaskVirtualCoin: 0,
-        Status: 0,
+        Status: 0
       },
+      activityIds: [],
       offset: 1,
       limit: 20,
       queryData: {
-        ActivityId: 0,
-        LastRank: 0,
-        StartTime: Date.parse(new Date()) - (60 * 60 * 24 * 30 * 1000),
-        EndTime: Date.parse(new Date().toString()),
-        Status: 0,
+        ActivityId: '',
+        LastRank: 1,
+        PageSize: 100
       },
-      showBtn: false,
-      startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
-
+      showBtn: false
     }
   },
-
   created() {
-    this.getData()
+    this.getAllActivityId()
+    // this.getData()
   },
   methods: {
+    formatTime(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
+    clearFilter() {
+      this.clientDB.ClearFilterMap()
+      this.refreshShow()
+    },
+    handleFilter() {
+      this.clientDB.FilterData()
+      this.refreshShow()
+    },
+    // 分页处理
+    refreshShow() {
+      this.dataList = this.clientDB.GetCurrentPageData()
+    },
     handleSizeChange(val) {
-      this.limit = val
-      this.getData()
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getData()
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
+    },
+
+    sortChange(ob) {
+      this.clientDB.SortByProp(ob.prop, ob.order)
+      this.refreshShow()
+    },
+    getAllActivityId() {
+      request({
+        url: '/millionpointracerule/all',
+        method: 'get',
+        data: { }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
+            this.activityIds.push(cfg)
+          }
+          this.queryData.ActivityId = this.activityIds[0].value
+        } else {
+          Message.error('查询失败')
+        }
+      })
     },
     getData() {
-      const $this = this
-      if (this.queryData.ID == "") {
+      if (this.queryData.ActivityId == '') {
+        this.queryData.ActivityId = this.activityIds[0].value
+      }
+      if (this.queryData.LastRank <= 0 || this.queryData.PageSize <= 0) {
+        Message.error('排名必须大于等于1')
+        return
+      }
+
+      if (this.queryData.ID == '') {
         this.queryData.ID = 0
       }
       // 加载基础数值配置
@@ -178,23 +181,32 @@ export default {
         url: '/millionpointracerule/user/rank',
         method: 'get',
         data: {
-          ActivityId: 0,
-          LastRank: this.limit,
-          PageSize: this.offset,
+          ActivityId: this.queryData.ActivityId,
+          LastRank: parseInt(this.queryData.LastRank) - 1,
+          PageSize: parseInt(this.queryData.PageSize) - parseInt(this.queryData.LastRank) + 1,
+          Path: '/millonpointrace/user/rank'
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.dataList = response.Data.Data || []
-          $this.total = response.Data.Count
-          console.log(this.dataList)
-          console.log(this.total)
-          console.log(this.dataList)
+          var obj = JSON.parse(response.Data)
+          if (obj.RetCode === 0) {
+            console.log(obj.Data.hasOwnProperty('List'))
+            console.log(obj.Data)
+            if (!obj.Data.hasOwnProperty('List')) {
+              this.clientDB = new ClientTableData([], 10, filterMap, '', -1)
+              this.handleCurrentChange(1)
+            }
 
+            this.clientDB = new ClientTableData(obj.Data.List, 10, filterMap, '', -1)
+            this.handleCurrentChange(1)
+          } else {
+            Message.error('查询失败')
+          }
         } else {
-          Message.error('查询失败')
+          Message.error('无数据')
         }
       })
-    },
+    }
   }
 }
 
