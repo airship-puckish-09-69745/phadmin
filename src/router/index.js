@@ -135,6 +135,12 @@ export const asyncRoutes = [
         name: 'play_log_top100',
         meta: { title: '牌局排行榜 ◐' }
       },
+ /*     {
+        path: 'play_log_together_top100',
+        component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
+        name: 'play_log_together_top100',
+        meta: { title: 'Tongits同桌排行榜 ◐' }
+      },*/
       {
         path: 'sweeperTableUserData',
         component: () => import('@/views/playerManage/sweeperTableUserData'),
@@ -211,12 +217,12 @@ export const asyncRoutes = [
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
           },
-          /*          {
+                    {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
             meta: { title: '同桌黑名单 ◐' }
-          },*/
+          },
           {
             path: 'tongitsTableAI',
             component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
@@ -568,9 +574,22 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/moneylog'),
         name: 'moneylog',
         meta: { title: '金币流水 ◐' }
+      },
+      {
+        path: 'jackpotLog',
+        component: () => import('@/views/playerManage/jackpotLog'),
+        name: 'ban',
+        meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'jackpotAward',
+        component: () => import('@/views/playerManage/jackpotAward'),
+        name: 'ban',
+        meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
       }
     ]
   },
+
   {
     path: '/playlog',
     component: Layout,
@@ -585,30 +604,10 @@ export const asyncRoutes = [
         meta: { title: 'Car - 车标转盘 ◐', gid: 5 }
       },*/
       {
-        path: 'Colorlogs',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'ColorGame - ◐', noCache: true },
-        children: [
-          {
-            path: 'playlog_colorgame',
-            component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_colorgame',
-            meta: { title: '游戏日志 - ◐', gid: 25 }
-          },
-          {
-            path: 'jackpotLog',
-            component: () => import('@/views/playerManage/jackpotLog'),
-            name: 'ban',
-            meta: { title: 'jackpot 奖池流水 ◐', noCache: true, perm: 'CUTOMER' }
-          },
-          {
-            path: 'jackpotAward',
-            component: () => import('@/views/playerManage/jackpotAward'),
-            name: 'ban',
-            meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
-          }
-        ]
+        path: 'playlog_colorgame',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_colorgame',
+        meta: { title: 'ColorGame - ◐', gid: 25 }
       },
       {
         path: 'playlog_crash',
