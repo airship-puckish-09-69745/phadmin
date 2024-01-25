@@ -1,16 +1,13 @@
 <template>
   <div class="app-container">
-
-
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15"/>
+    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询" /> </el-row>
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
           <el-form-item label="UID">
-            <el-input v-model="UID" size="mini" placeholder="请输入"/>
+            <el-input v-model="UID" size="mini" placeholder="请输入" />
           </el-form-item>
-          <el-form-item label="活动ID">
+          <el-form-item label="周期">
             <el-select v-model="queryData.ActivityId" size="mini">
               <el-option
                 v-for="item in activityIds"
@@ -20,7 +17,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="活动类型：">
+          <el-form-item label="类型：">
             <el-select v-model="queryData.ActivityType" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in activityTypeOptions"
@@ -49,6 +46,7 @@
               type="date"
               placeholder="选择日期"
               size="mini"
+              format="yyyy-MM-dd"
             />
           </el-form-item>
           <el-form-item label="结束日期：">
@@ -58,24 +56,17 @@
               type="date"
               placeholder="选择日期"
               size="mini"
+              format="yyyy-MM-dd"
             />
-
 
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
 
       </el-col>
-      <el-col>
-        <el-alert
-          type="success"
-          description="必须指定UID-活动ID等，信息查询"
-        />
-      </el-col>
-      <el-col :span="2">
-      </el-col>
+      <el-col :span="2" />
 
       <el-col :span="24">
         <el-form ref="allCfg" label-width="150px">
@@ -84,65 +75,38 @@
             style="width: 95%"
             border
           >
-
-            <el-table-column
-              prop="ID"
-              label="ID"
-            ></el-table-column>
-
-            <el-table-column
-              prop="UID"
-              label="UID"
-            >
-            </el-table-column>
-
-            <el-table-column
-              prop="ActivityType"
-              label="活动类型"
-            >
-            </el-table-column>
-
-            <el-table-column
-              prop="ActivityId"
-              label="活动Id"
-            >
-
-            </el-table-column>
-            <el-table-column
-              prop="EventType"
-              label="事件类型"
-            >
-            </el-table-column>
-            <el-table-column
-              prop="Data"
-              label=" 最终积分"
-            >
+            <el-table-column prop="ID" label="ID" />
+            <el-table-column prop="UID" label="UID" />
+            <el-table-column prop="ActivityType" label="类型" >
               <template scope="scope">
-                {{JSON.parse(scope.row.Data).PointLast }}
+                {{ activityTypeOptionsMap[scope.row.ActivityType] }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="Data"
-              label="积分变化"
-            >
+
+            <el-table-column prop="ActivityId" label="周期" >
               <template scope="scope">
-                {{JSON.parse(scope.row.Data).PointChange }}
+                {{ activityMap[scope.row.ActivityId] }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="Data"
-              label="最终虚拟币"
-            >
+            <el-table-column prop="EventType" label="事件类型" >
               <template scope="scope">
-                {{JSON.parse(scope.row.Data).VirtualCoinLast }}
+                {{ EventTypeOptionMap[scope.row.EventType] }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="Data"
-              label="虚拟币变化"
-            >
-              <template scope="scope">
-                {{JSON.parse(scope.row.Data).VirtualCoinChange }}
+            <el-table-column prop="Data" label="变化值" >
+              <template v-if="queryData.EventType === 1" scope="scope">
+                {{ JSON.parse(scope.row.Data).VirtualCoinChange | toRupee }}
+              </template>
+              <template v-if="queryData.EventType === 2" scope="scope">
+                {{ JSON.parse(scope.row.Data).PointChange | toRupee }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="Data" label="当前剩余" >
+              <template v-if="queryData.EventType === 1" scope="scope">
+                {{ JSON.parse(scope.row.Data).VirtualCoinLast | toRupee }}
+              </template>
+              <template v-if="queryData.EventType === 2" scope="scope">
+                {{ JSON.parse(scope.row.Data).PointLast | toRupee }}
               </template>
             </el-table-column>
             <el-table-column
@@ -154,85 +118,112 @@
               </template>
             </el-table-column>
 
-            <!--            <el-table-column label="操作">-->
-            <!--              <template slot-scope="scope">-->
-            <!--                <el-button type="success" size="mini" @click="openEdit(scope.$index, scope.row)">修改</el-button>-->
-            <!--              </template>-->
-            <!--            </el-table-column>-->
           </el-table>
-          <br>
 
         </el-form>
         <el-row>
           <div class="block">
-            <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            <el-pagination
+              :current-page="clientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetPage().GetTotalCount()"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
           </div>
         </el-row>
       </el-col>
 
-
     </el-row>
-
 
   </div>
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {getInfo} from "@/api/user";
-import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import { getInfo } from '@/api/user'
+import { $libDate, ClientTableData } from '@/utils/common'
 
 const filterMap = {}
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, MoneyInput, getInfo},
+  components: { Compare, MoneyInput, getInfo },
   data() {
     return {
       clientDB: new ClientTableData([], 1, filterMap),
       dataList: [],
       activityIds: [],
+      activityMap: {},
       showVisible: false,
-      types: {1: '转出', 2: '转入'},
+      types: { 1: '转出', 2: '转入' },
       activityTypeOptions: [
-        {'key': "Tongits", 'value': 1}],
+        { 'key': 'Tongits', 'value': 1 }
+      ],
+      activityTypeOptionsMap: {
+        1: 'Tongits'
+      },
       EventTypeOption: [
-        {'key': "虚拟币", 'value': 1}, {'key': "积分", 'value': "2"}],
+        { 'key': '虚拟币', 'value': 1 }, { 'key': '积分', 'value': 2 }
+      ],
+      EventTypeOptionMap: {
+        1: '虚拟币',
+        2: '积分'
+      },
       item: {
         ID: 0,
         ActivityType: 0,
         EndTime: 0,
         StartTime: 0,
-        Title: "",
+        Title: '',
         NeedVirtualCoin: 0,
         TaskVirtualCoin: 0,
-        Status: 0,
+        Status: 0
       },
       offset: 1,
       limit: 20,
-      UID: "",
+      UID: '',
       queryData: {
         UID: 0,
         ActivityType: 1,
-        ActivityId: "",
-        StartTime: Date.parse(new Date().toString()),
+        ActivityId: '',
+        StartTime: '',
         EndTime: Date.parse(new Date().toString()),
-        EventType: 1,
+        EventType: 1
       },
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
+      endTime: Date.parse(new Date().toString())
 
     }
   },
 
   created() {
     this.getAllActivityId()
-
+    console.log(this.setStartTime())
+    this.queryData.StartTime = this.setStartTime()
+    this.queryData.EndTime = this.setEndTime()
   },
   methods: {
+    setStartTime() {
+      var d = new Date()
+      d.setHours(0)
+      d.setMinutes(0)
+      d.setSeconds(0)
+      console.log(d.getTime())
+      return d
+    },
+    setEndTime() {
+      var d = new Date()
+      d.setHours(23)
+      d.setMinutes(59)
+      d.setSeconds(59)
+      return d
+    },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
@@ -269,8 +260,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            var cfg = {'key': response.Data[i].Title, 'value': response.Data[i].ID}
+            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
             this.activityIds.push(cfg)
+            this.activityMap[response.Data[i].ID] = response.Data[i].Title
           }
           this.queryData.ActivityId = this.activityIds[0].value
         } else {
@@ -280,21 +272,20 @@ export default {
     },
     getData() {
       console.log(this.queryData.ActivityId)
-      const $this = this
-      if (this.UID == "") {
+      if (this.UID == '') {
         Message.error('请输入用户ID')
         return
       }
-      if (this.queryData.ActivityId == "") {
+      if (this.queryData.ActivityId == '') {
         this.queryData.ActivityId = 0
       }
-      if (this.queryData.ActivityType == "") {
+      if (this.queryData.ActivityType == '') {
         this.queryData.ActivityType = 0
       }
       this.queryData.UID = this.UID
-      var offset =0
-      if ( this.offset!=1){
-        offset=this.offset
+      var offset = 0
+      if (this.offset != 1) {
+        offset = this.offset
       }
       // 加载基础数值配置
       request({
@@ -305,31 +296,31 @@ export default {
           ActivityId: this.queryData.ActivityId,
           EventType: this.queryData.EventType,
           ActivityType: this.queryData.ActivityType,
-          StartTime: this.queryData.StartTime / 1000,
-          EndTime: this.queryData.EndTime / 1000,
+          StartTime: Math.floor(this.queryData.StartTime / 1000),
+          EndTime: Math.floor(this.queryData.EndTime / 1000) + 86400 - 1,
           Offset: offset,
           Limit: this.limit,
-          Path: '/millonpointrace/activity/log',
+          Path: '/millonpointrace/activity/log'
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          var parse = JSON.parse(response.Data);
+          var parse = JSON.parse(response.Data)
           console.log(parse)
-          if (parse.RetCode != 0 ) {
+          if (parse.RetCode != 0) {
             Message.error('查询失败')
             return
           }
-          if ( parse.Data == null ||  parse.Data.Count==0){
+          if (parse.Data == null || parse.Data.Count == 0) {
             Message.error('无查询数据')
-            return;
+            return
           }
-          this.clientDB = new ClientTableData( parse.Data.Data, 10, filterMap, '', -1)
+          this.clientDB = new ClientTableData(parse.Data.Data, 10, filterMap, '', -1)
           this.handleCurrentChange(1)
         } else {
           Message.error('查询失败')
         }
       })
-    },
+    }
   }
 }
 

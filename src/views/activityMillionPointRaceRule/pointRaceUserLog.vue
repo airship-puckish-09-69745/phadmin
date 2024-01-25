@@ -1,13 +1,12 @@
 <template>
   <div class="app-container">
 
+    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询" /> </el-row>
 
-    <el-row :gutter="10" style="margin-top: 30px">
-
-      <el-col :span="15"/>
+    <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
-          <el-form-item label="活动ID">
+          <el-form-item label="周期">
             <el-select v-model="queryData.ActivityId" size="mini">
               <el-option
                 v-for="item in activityIds"
@@ -17,53 +16,48 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="名次范围" >
-            <el-input v-model="queryData.LastRank" size="mini" placeholder="开始"/>
+          <el-form-item label="名次范围">
+            <el-input v-model="queryData.LastRank" size="mini" placeholder="开始" />
           </el-form-item>
-          <el-form-item label="-" >
-             <el-input v-model="queryData.PageSize" size="mini" placeholder="结束"/>
+          <el-form-item label="-">
+            <el-input v-model="queryData.PageSize" size="mini" placeholder="结束" />
           </el-form-item>
           <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
+            <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
 
       </el-col>
-      <el-col :span="2">
-      </el-col>
+      <el-col :span="2" />
 
       <el-col :span="24">
         <el-form ref="allCfg" label-width="150px">
           <el-table
-              :data="dataList"
-              style="width: 95%"
-              border
+            :data="dataList"
+            style="width: 95%"
+            border
           >
 
             <el-table-column
-                prop="Rank"
-                label="排名"
-            ></el-table-column>
+              prop="Rank"
+              label="排名"
+            />
 
             <el-table-column
-                prop="UID"
-                label="UID"
-            >
-            </el-table-column>
+              prop="UID"
+              label="UID"
+            />
 
             <el-table-column
-                prop="Point"
-                label="积分"
+              prop="Point"
+              label="积分"
             >
-
+              <template slot-scope="scope">
+                {{ scope.row.Point | toRupee }}
+              </template>
             </el-table-column>
-
 
           </el-table>
-          <br>
-          <br>
-          <br>
-
         </el-form>
         <el-row>
           <div class="block">
@@ -77,16 +71,17 @@
 
 <script>
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {getInfo} from "@/api/user";
+import { getInfo } from '@/api/user'
+import { toRupee } from '@/utils'
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, MoneyInput, getInfo},
+  components: { Compare, MoneyInput, getInfo },
 
   data() {
     return {
@@ -94,39 +89,34 @@ export default {
       dataList: [],
       total: 0,
       showVisible: false,
-      types: {1: '转出', 2: '转入'},
+      types: { 1: '转出', 2: '转入' },
       activityTypeOptions: [
-        {'key': 1, 'value': "Tongits"}],
-      statusOption: {1: '上架', 2: '下架'},
+        { 'key': 1, 'value': 'Tongits' }],
+      statusOption: { 1: '上架', 2: '下架' },
       item: {
         ID: 0,
         ActivityType: 0,
         EndTime: 0,
         StartTime: 0,
-        Title: "",
+        Title: '',
         NeedVirtualCoin: 0,
         TaskVirtualCoin: 0,
-        Status: 0,
+        Status: 0
       },
-      activityIds:[],
+      activityIds: [],
       offset: 1,
       limit: 20,
       queryData: {
-        ActivityId: "",
+        ActivityId: '',
         LastRank: 1,
-        PageSize:100,
-
+        PageSize: 100
       },
-      showBtn: false,
-      startTime: Date.parse(new Date().toString()),
-      endTime: Date.parse(new Date().toString()),
-
+      showBtn: false
     }
   },
-
   created() {
     this.getAllActivityId()
-    this.getData()
+    // this.getData()
   },
   methods: {
     formatTime(ts) {
@@ -157,31 +147,36 @@ export default {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
-    getAllActivityId(){
+    getAllActivityId() {
       request({
         url: '/millionpointracerule/all',
         method: 'get',
-        data: {        }
+        data: { }
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            var cfg= {'key':response.Data[i].Title, 'value': response.Data[i].ID}
+            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
             this.activityIds.push(cfg)
           }
-          this.queryData.ActivityId=  this.activityIds[0].value
+          this.queryData.ActivityId = this.activityIds[0].value
         } else {
           Message.error('查询失败')
         }
       })
     },
     getData() {
-      if (this.queryData.LastRank<=0||this.queryData.PageSize<=0){
+      if (this.queryData.ActivityId == '') {
+        this.queryData.ActivityId = this.activityIds[0].value
+      }
+      if (this.queryData.LastRank <= 0 || this.queryData.PageSize <= 0) {
         Message.error('排名必须大于等于1')
         return
       }
-
-      const $this = this
-      if (this.queryData.ID == "") {
+      if (parseInt(this.queryData.PageSize) - parseInt(this.queryData.LastRank) >= 100) {
+        Message.error('排名一次最多查看100名')
+        return
+      }
+      if (this.queryData.ID == '') {
         this.queryData.ID = 0
       }
       // 加载基础数值配置
@@ -189,25 +184,32 @@ export default {
         url: '/millionpointracerule/user/rank',
         method: 'get',
         data: {
-          ActivityId: 1,
-          LastRank: this.queryData.LastRank,
-          PageSize: this.queryData.PageSize,
-          Path:'/millonpointrace/user/rank',
+          ActivityId: this.queryData.ActivityId,
+          LastRank: parseInt(this.queryData.LastRank) - 1,
+          PageSize: parseInt(this.queryData.PageSize) - parseInt(this.queryData.LastRank) + 1,
+          Path: '/millonpointrace/user/rank'
         }
       }).then(response => {
         if (response.RetCode === 0) {
-         var obj=JSON.parse(response.Data)
-          if (obj.RetCode===0){
+          var obj = JSON.parse(response.Data)
+          if (obj.RetCode === 0) {
+            console.log(obj.Data.hasOwnProperty('List'))
+            console.log(obj.Data)
+            if (!obj.Data.hasOwnProperty('List')) {
+              this.clientDB = new ClientTableData([], 10, filterMap, '', -1)
+              this.handleCurrentChange(1)
+            }
+
             this.clientDB = new ClientTableData(obj.Data.List, 10, filterMap, '', -1)
             this.handleCurrentChange(1)
-          }else {
+          } else {
             Message.error('查询失败')
           }
         } else {
-          Message.error('查询失败')
+          Message.error('无数据')
         }
       })
-    },
+    }
   }
 }
 

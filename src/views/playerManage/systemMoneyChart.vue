@@ -99,7 +99,7 @@
         <el-button type="success" plain @click="showOrigin">原始值</el-button>
       </el-col>
       <el-col :span="14">
-        <el-form  v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
+        <el-form v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
           <el-form-item label="日期：">
             <el-date-picker
               v-model="item.date"
@@ -481,9 +481,37 @@ export default {
     },
     initChartData() {
       const objs = this.logData
-      const preObjs = this.preData
+      let preObjs = this.preData
       const healthData = newHealthData()
       const originData = newOriginData()
+
+      // 如果昨天没有数据，赋予今天的数据
+      if (preObjs.length === 0) {
+        preObjs = objs
+      }
+      if (preObjs.length > 0) {
+        preObjs.sort(function(a, b) {
+          if (a.TimeKey < b.TimeKey) {
+            return -1
+          }
+          if (a.TimeKey > b.TimeKey) {
+            return 1
+          }
+          return 0
+        })
+        console.log(preObjs)
+      }
+      if (objs.length > 0) {
+        objs.sort(function(a, b) {
+          if (a.TimeKey < b.TimeKey) {
+            return -1
+          }
+          if (a.TimeKey > b.TimeKey) {
+            return 1
+          }
+          return 0
+        })
+      }
 
       for (const i in preObjs) {
         const ob = preObjs[i]
