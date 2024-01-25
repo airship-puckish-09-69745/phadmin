@@ -13,8 +13,8 @@
     </el-row>
     <div style="padding-top: 10px">
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
-        <el-table-column prop="ID" label="ID" sortable="custom" width="100" />
-        <el-table-column prop="Title" label="Title" sortable="custom" width="200" />
+        <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
+        <el-table-column prop="Title" label="Title" width="200" />
         <el-table-column prop="TableMoney" label="前注" sortable="custom" width="100">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.TableMoney) }}
@@ -26,7 +26,7 @@
             {{ formatTime(scope.row.StartTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="EndTime" label="结束时间" width="180">
+        <el-table-column prop="EndTime" label="结束时间" sortable="custom" width="180">
           <template slot-scope="scope">
             {{ formatTime(scope.row.EndTime) }}
           </template>
@@ -261,7 +261,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'EndTime', -1)
           this.handleCurrentChange(1)
         }
       })
