@@ -10,6 +10,15 @@
           </el-form-item>
         </el-col>
 
+
+
+          <el-col :span="7" :offset="1">
+            <el-form-item label="开奖结果（测试用如:1,2,5）" prop="dices">
+                <el-input v-model="dices" :required="true" />
+            </el-form-item>
+          </el-col>
+
+
         <el-col :span="16" :offset="2">
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
@@ -241,6 +250,7 @@ export default {
           { Name: 'Three Dice', Val: 3, Id: 21 }
         ]
       },
+      dices: [],
       testRand: {
         visible: false,
         times: 0,
@@ -333,6 +343,12 @@ export default {
         ret.BetAreaOptions.push(obj)
       }
 
+      const items = this.dices.split(',')
+      ret.Dices = []
+      for (const o in items) {
+        ret.Dices.push(parseInt(items[o]))
+      }
+
       /*      ret.BetOptionsRate = []
       for (const o in this.item.BetOptionsRate) {
         const obj = {}
@@ -359,6 +375,7 @@ export default {
             this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
+            this.dices = this.item.Dices ? this.item.Dices.join(',') : this.dices
           }
         }
       })
