@@ -21,7 +21,6 @@
             <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
-
       </el-col>
 
       <el-descriptions class="margin-top" :column="1" border>
@@ -58,7 +57,7 @@
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets" />
-            当前排名
+            当前排名(0表示未上榜)
           </template>
           {{ rank }}
         </el-descriptions-item>
@@ -81,7 +80,7 @@ export default {
   components: { Compare, MoneyInput, getInfo },
   data() {
     return {
-      rank: '',
+      rank: 0,
       uid: '',
       point: 0,
       virtualCoin: 0,
@@ -132,7 +131,7 @@ export default {
         data: {
           UID: this.queryData.UID,
           ActivityId: this.queryData.ActivityId,
-          VirtualCoin: parseInt(this.addVirtualCoin)*1000,
+          VirtualCoin: parseInt(this.addVirtualCoin) * 1000,
           Point: 0,
           Path: '/millonpointrace/update/user'
         }

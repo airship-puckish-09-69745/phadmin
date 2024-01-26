@@ -10,7 +10,6 @@
           </el-form-item>
         </el-col>
 
-
         <el-col :span="16" :offset="2">
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>

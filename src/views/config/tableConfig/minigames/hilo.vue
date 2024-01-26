@@ -53,6 +53,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="配牌(仅测试服生效 格式:A23456789XJQK-5)：">
+              <el-input v-model="item.TestCards" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <fieldset style="margin-top:10px">
