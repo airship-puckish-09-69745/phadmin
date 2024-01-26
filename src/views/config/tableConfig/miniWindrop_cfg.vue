@@ -99,10 +99,10 @@
                     <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）
                   </el-form-item>
                 </el-row>
-                  <el-row>
-                    <el-form-item label="金币换能量：">
-                      <el-input v-model.number="item.ScoreToEnergy" placeholder="" />‱（万分比）
-                    </el-form-item>
+                <el-row>
+                  <el-form-item label="金币换能量：">
+                    <el-input v-model.number="item.ScoreToEnergy" placeholder="" />‱（万分比）
+                  </el-form-item>
                 </el-row>
                 <el-row>
                   <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">

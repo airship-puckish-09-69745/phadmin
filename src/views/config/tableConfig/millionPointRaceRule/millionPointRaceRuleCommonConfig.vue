@@ -6,26 +6,26 @@
     <!--公共配置-->
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="14" :offset="3">
-      <el-form ref="form" label-position="left">
-        <el-row>
-          <el-col :span="24">
-            <el-form-item label="分享链接：">
-              <el-input v-model.number="item.ShareLink" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+        <el-form ref="form" label-position="left">
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="分享链接：">
+                <el-input v-model.number="item.ShareLink" />
+              </el-form-item>
+            </el-col>
+          </el-row>
 
-        <template>
-          <el-alert type="success" description="多个应用英文逗号(,)分开,开放所有应用留空" />
-        </template>
+          <template>
+            <el-alert type="success" description="多个应用英文逗号(,)分开,开放所有应用留空" />
+          </template>
 
-        <el-row>
-          <el-col :span="24">
-          <el-form-item label="开放的应用列表">
-            <el-input v-model="item.AppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用留空" />
-          </el-form-item>
-          </el-col>
-        </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="开放的应用列表">
+                <el-input v-model="item.AppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用留空" />
+              </el-form-item>
+            </el-col>
+          </el-row>
 
         <!--
         <el-row>
@@ -68,7 +68,7 @@
         </el-row>
         -->
 
-      </el-form>
+        </el-form>
       </el-col>
     </el-row>
 

@@ -135,7 +135,7 @@ export const asyncRoutes = [
         name: 'play_log_top100',
         meta: { title: '牌局排行榜 ◐' }
       },
- /*     {
+      /*     {
         path: 'play_log_together_top100',
         component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
         name: 'play_log_together_top100',
@@ -217,7 +217,7 @@ export const asyncRoutes = [
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
           },
-                    {
+          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',

@@ -77,28 +77,28 @@
           >
             <el-table-column prop="ID" label="ID" />
             <el-table-column prop="UID" label="UID" />
-            <el-table-column prop="ActivityType" label="类型" >
+            <el-table-column prop="ActivityType" label="类型">
               <template scope="scope">
                 {{ activityTypeOptionsMap[scope.row.ActivityType] }}
               </template>
             </el-table-column>
 
-            <el-table-column prop="ActivityId" label="周期" >
+            <el-table-column prop="ActivityId" label="周期">
               <template scope="scope">
                 {{ activityMap[scope.row.ActivityId] }}
               </template>
             </el-table-column>
-            <el-table-column prop="EventType" label="事件类型" >
+            <el-table-column prop="EventType" label="事件类型">
               <template scope="scope">
                 {{ EventTypeOptionMap[scope.row.EventType] }}
               </template>
             </el-table-column>
-            <el-table-column prop="Data" label="变化值" >
+            <el-table-column prop="Data" label="变化值">
               <template scope="scope">
                 {{ getChangeVal(scope.row.Data) | toRupee }}
               </template>
             </el-table-column>
-            <el-table-column prop="Data" label="当前剩余" >
+            <el-table-column prop="Data" label="当前剩余">
               <template scope="scope">
                 {{ getLastVal(scope.row.Data) | toRupee }}
               </template>
@@ -155,14 +155,14 @@ export default {
       activityMap: {},
       showVisible: false,
       activityTypeOptions: [
-        { "key": "Tongits", "value": 1 }
+        { 'key': 'Tongits', 'value': 1 }
       ],
       activityTypeOptionsMap: {
         1: 'Tongits'
       },
       EventTypeOption: [
-        { "key": "虚拟币", "value": 1 }, 
-        { "key": "积分", "value": 2 }
+        { 'key': '虚拟币', 'value': 1 },
+        { 'key': '积分', 'value': 2 }
       ],
       EventTypeOptionMap: {
         1: '虚拟币',

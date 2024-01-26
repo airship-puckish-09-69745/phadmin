@@ -131,7 +131,7 @@ export default {
         data: {
           UID: this.queryData.UID,
           ActivityId: this.queryData.ActivityId,
-          VirtualCoin: parseInt(this.addVirtualCoin)*1000,
+          VirtualCoin: parseInt(this.addVirtualCoin) * 1000,
           Point: 0,
           Path: '/millonpointrace/update/user'
         }
