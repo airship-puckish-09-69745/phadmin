@@ -177,7 +177,7 @@ export const asyncRoutes = [
             path: 'millionPointRaceRuleCommonConfig',
             component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleCommonConfig'),
             name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛公共奖励配置 ', noCache: true }
+            meta: { title: '积分赛公共配置', noCache: true }
           },
           {
             path: 'activityLog',
@@ -189,13 +189,13 @@ export const asyncRoutes = [
             path: 'pointRaceUserLog',
             component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
             name: 'pointRaceUserLog',
-            meta: { title: '积分赛排行榜  ' }
+            meta: { title: '积分赛排行榜' }
           },
           {
             path: 'UserDetailLog',
             component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
             name: 'UserDetailLog',
-            meta: { title: '用户详情  ' }
+            meta: { title: '积分赛用户信息' }
           }
         ]
       },
