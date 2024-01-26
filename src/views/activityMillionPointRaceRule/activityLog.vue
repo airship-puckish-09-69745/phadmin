@@ -103,6 +103,11 @@
                 {{ getLastVal(scope.row.Data) | toRupee }}
               </template>
             </el-table-column>
+            <el-table-column prop="Data" label="备注">
+              <template scope="scope">
+                {{ getComment(scope.row.Data) }}
+              </template>
+            </el-table-column>
             <el-table-column
               prop="UpdateTime"
               label="更新时间"
@@ -255,6 +260,13 @@ export default {
       }
       return tmp.PointLast
     },
+    getComment(data) {
+      const tmp = JSON.parse(data)
+      if (tmp.hasOwnProperty('Comment')) {
+        return tmp.Comment
+      }
+      return ''
+    },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
@@ -319,7 +331,7 @@ export default {
             return
           }
           if (parse.Data == null || parse.Data.Count == 0) {
-            Message.error('无查询数据')
+            Message.error('数据为空')
             return
           }
           this.clientDB = new ClientTableData(parse.Data.Data, 10, filterMap, '', -1)
