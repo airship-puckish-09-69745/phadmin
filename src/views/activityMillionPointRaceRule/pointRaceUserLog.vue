@@ -38,9 +38,9 @@
             border
           >
             <el-table-column prop="Rank" label="排名" />
-            <el-table-column prop="UID" label="用户ID" />
+            <el-table-column prop="UID" label="UID" />
             <el-table-column prop="Nick" label="昵称" />
-            <el-table-column prop="Point" label="积分" >
+            <el-table-column prop="Point" label="积分">
               <template slot-scope="scope">
                 {{ scope.row.Point | toRupee }}
               </template>
@@ -182,7 +182,11 @@ export default {
         if (response.RetCode === 0) {
           var obj = JSON.parse(response.Data)
           if (obj.RetCode === 0) {
-            // console.log(obj.Data)
+            console.log(obj.Data)
+            if (obj.Data === null) {
+              Message.error('数据为空')
+              return
+            }
             this.clientDB = new ClientTableData(obj.Data, 10, filterMap, '', -1)
             this.handleCurrentChange(1)
           } else {

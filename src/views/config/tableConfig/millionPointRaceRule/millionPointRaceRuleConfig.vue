@@ -15,7 +15,7 @@
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
         <el-table-column prop="Title" label="Title" width="200" />
-        <el-table-column prop="TableMoney" label="前注" sortable="custom" width="100">
+        <el-table-column prop="TableMoney" label="底注" sortable="custom" width="100">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.TableMoney) }}
           </template>
@@ -47,9 +47,9 @@
             <!--
             <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="handleCopy(scope.row)" >复制 </el-button>
             -->
-            <el-button v-if="scope.row.Status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)" >上架 </el-button>
-            <el-button v-if="scope.row.Status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" /> 
-            <el-button v-if="scope.row.Status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)" >下架 </el-button>
+            <el-button v-if="scope.row.Status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
+            <el-button v-if="scope.row.Status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
+            <el-button v-if="scope.row.Status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -89,20 +89,20 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="需要的虚拟币：" :required="true" prop="item.NeedVirtualCoin" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.NeedVirtualCoin" placeholder="请输入" />
+            <el-form-item label="需要的虚拟币：" prop="item.NeedVirtualCoin" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.NeedVirtualCoin" placeholder="请输入" :disabled="true" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="分享发放虚拟币：" :required="true" prop="item.TaskVirtualCoin" :rules="dataRule(true,{type:'n',range:'1'})">
-              <el-input v-model.number="edit.item.TaskVirtualCoin" placeholder="请输入" />
+              <el-input v-model.number="edit.item.TaskVirtualCoin" placeholder="请输入" :disabled="true" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="前注：" :required="true" prop="item.TableMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.TableMoney" placeholder="请输入" />
+            <el-form-item label="底注：" :required="true" prop="item.TableMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TableMoney" placeholder="请输入" :disabled="true" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -122,7 +122,7 @@
 </template>
 
 <script>
-import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow, ValidateVueItem } from '@/utils/common'
 import store from '@/store'
 import request from '@/utils/request'
 import Compare from '@/components/Compare'
@@ -135,13 +135,13 @@ const filterMap = {}
 
 function newItem() {
   return {
-    ActivityType: 0,
+    ActivityType: 1,
     Title: '',
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
-    NeedVirtualCoin: 0,
-    TaskVirtualCoin: 0,
-    TableMoney: 0
+    NeedVirtualCoin: 200,
+    TaskVirtualCoin: 2000,
+    TableMoney: 10
   }
 }
 
@@ -284,7 +284,8 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
-            $this.clientDB.UpdateData({ ID: id, Status: status })
+            // $this.clientDB.UpdateData({ ID: id, Status: status })
+            this.getList()
           }
         })
       }).catch(() => {
@@ -321,9 +322,12 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
+          this.getList()
+          /*
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
+          */
           Message.success('保存成功！')
         }
       })
@@ -336,8 +340,11 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
+          this.getList()
+          /*
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
+          */
           Message.success('保存成功！')
         }
       })
@@ -356,8 +363,9 @@ export default {
       return true
     },
     save() {
-      console.log()
       if (!this.checkData()) return
+      if (!ValidateVueItem(this.$refs['edit'])) return false
+
       this.edit.item.StartTime = this.startTime / 1000
       this.edit.item.EndTime = this.endTime / 1000
       if (this.edit.isEdit) {

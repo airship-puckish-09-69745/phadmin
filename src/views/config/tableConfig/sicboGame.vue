@@ -4,14 +4,31 @@
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
 
-        <el-col :span="7" :offset="1">
+        <el-col :span="8" :offset="1">
           <el-form-item label="保底奖池抽水：">
             <el-input v-model.number="item.FeeRate"><template slot="append">%</template></el-input>
           </el-form-item>
         </el-col>
 
+        <el-col :span="8" :offset="1">
+          <el-form-item label="开奖结果（测试用如:1,2,5）">
+            <el-input v-model="dices" :required="true" />
+          </el-form-item>
+        </el-col>
 
-        <el-col :span="16" :offset="2">
+        <el-col :span="8" :offset="1">
+          <el-form-item label="用户未下注提示离开时长(s):">
+            <el-input v-model.number="item.NoticeTime" :required="true" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8" :offset="1">
+          <el-form-item label="用户未下注踢出时长(s):" prop="outTime">
+            <el-input v-model.number="item.OutTime" :required="true" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
             <el-row>
@@ -240,8 +257,12 @@ export default {
           { Name: 'One Dice', Val: 1, Id: 19 },
           { Name: 'Two Dice', Val: 2, Id: 20 },
           { Name: 'Three Dice', Val: 3, Id: 21 }
-        ]
+        ],
+        FeeRate: 5,
+        NoticeTime: 10,
+        OutTime: 30
       },
+      dices: [],
       testRand: {
         visible: false,
         times: 0,
@@ -334,6 +355,12 @@ export default {
         ret.BetAreaOptions.push(obj)
       }
 
+      const items = this.dices.split(',')
+      ret.Dices = []
+      for (const o in items) {
+        ret.Dices.push(parseInt(items[o]))
+      }
+
       /*      ret.BetOptionsRate = []
       for (const o in this.item.BetOptionsRate) {
         const obj = {}
@@ -360,6 +387,7 @@ export default {
             this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
+            this.dices = this.item.Dices ? this.item.Dices.join(',') : this.dices
           }
         }
       })

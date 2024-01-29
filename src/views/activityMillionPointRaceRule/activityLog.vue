@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询" /> </el-row>
+    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询，切换选项后请重新查询" /> </el-row>
     <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="22">
         <el-form inline>
@@ -77,36 +77,35 @@
           >
             <el-table-column prop="ID" label="ID" />
             <el-table-column prop="UID" label="UID" />
-            <el-table-column prop="ActivityType" label="类型" >
+            <el-table-column prop="ActivityType" label="类型">
               <template scope="scope">
                 {{ activityTypeOptionsMap[scope.row.ActivityType] }}
               </template>
             </el-table-column>
 
-            <el-table-column prop="ActivityId" label="周期" >
+            <el-table-column prop="ActivityId" label="周期">
               <template scope="scope">
                 {{ activityMap[scope.row.ActivityId] }}
               </template>
             </el-table-column>
-            <el-table-column prop="EventType" label="事件类型" >
+            <el-table-column prop="EventType" label="事件类型">
               <template scope="scope">
                 {{ EventTypeOptionMap[scope.row.EventType] }}
               </template>
             </el-table-column>
-            <el-table-column prop="Data" label="变化值" >
-              <template v-if="queryData.EventType === 1" scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinChange | toRupee }}
-              </template>
-              <template v-if="queryData.EventType === 2" scope="scope">
-                {{ JSON.parse(scope.row.Data).PointChange | toRupee }}
+            <el-table-column prop="Data" label="变化值">
+              <template scope="scope">
+                {{ getChangeVal(scope.row.Data) | toRupee }}
               </template>
             </el-table-column>
-            <el-table-column prop="Data" label="当前剩余" >
-              <template v-if="queryData.EventType === 1" scope="scope">
-                {{ JSON.parse(scope.row.Data).VirtualCoinLast | toRupee }}
+            <el-table-column prop="Data" label="当前剩余">
+              <template scope="scope">
+                {{ getLastVal(scope.row.Data) | toRupee }}
               </template>
-              <template v-if="queryData.EventType === 2" scope="scope">
-                {{ JSON.parse(scope.row.Data).PointLast | toRupee }}
+            </el-table-column>
+            <el-table-column prop="Data" label="备注">
+              <template scope="scope">
+                {{ getComment(scope.row.Data) }}
               </template>
             </el-table-column>
             <el-table-column
@@ -160,7 +159,6 @@ export default {
       activityIds: [],
       activityMap: {},
       showVisible: false,
-      types: { 1: '转出', 2: '转入' },
       activityTypeOptions: [
         { 'key': 'Tongits', 'value': 1 }
       ],
@@ -168,7 +166,8 @@ export default {
         1: 'Tongits'
       },
       EventTypeOption: [
-        { 'key': '虚拟币', 'value': 1 }, { 'key': '积分', 'value': 2 }
+        { 'key': '虚拟币', 'value': 1 },
+        { 'key': '积分', 'value': 2 }
       ],
       EventTypeOptionMap: {
         1: '虚拟币',
@@ -187,6 +186,7 @@ export default {
       offset: 1,
       limit: 20,
       UID: '',
+      eventType: 1,
       queryData: {
         UID: 0,
         ActivityType: 1,
@@ -198,7 +198,6 @@ export default {
       showBtn: false,
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString())
-
     }
   },
 
@@ -247,7 +246,27 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
+    getChangeVal(data) {
+      const tmp = JSON.parse(data)
+      if (this.eventType === 1) {
+        return tmp.VirtualCoinChange
+      }
+      return tmp.PointChange
+    },
+    getLastVal(data) {
+      const tmp = JSON.parse(data)
+      if (this.eventType === 1) {
+        return tmp.VirtualCoinLast
+      }
+      return tmp.PointLast
+    },
+    getComment(data) {
+      const tmp = JSON.parse(data)
+      if (tmp.hasOwnProperty('Comment')) {
+        return tmp.Comment
+      }
+      return ''
+    },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
@@ -305,13 +324,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           var parse = JSON.parse(response.Data)
-          console.log(parse)
+          this.eventType = this.queryData.EventType
+          // console.log(parse)
           if (parse.RetCode != 0) {
             Message.error('查询失败')
             return
           }
           if (parse.Data == null || parse.Data.Count == 0) {
-            Message.error('无查询数据')
+            Message.error('数据为空')
             return
           }
           this.clientDB = new ClientTableData(parse.Data.Data, 10, filterMap, '', -1)

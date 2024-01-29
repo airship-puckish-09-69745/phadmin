@@ -21,7 +21,6 @@
             <el-button type="success" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
-
       </el-col>
 
       <el-descriptions class="margin-top" :column="1" border>
@@ -36,7 +35,23 @@
                 <el-input v-model="addVirtualCoin" size="mini" style="width: 200px" />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" size="mini" @click="updateUser">更新虚拟币</el-button>
+                <el-button type="primary" size="mini" @click="updateUserVirtualCoin">更新虚拟币</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            <i class="el-icon-mobile-phone" />
+            添加或扣减积分(只提供开发环境)
+          </template>
+          <el-col>
+            <el-form inline>
+              <el-form-item>
+                <el-input v-model="addPoint" size="mini" style="width: 200px" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="mini" @click="updateUserPoint">更新积分</el-button>
               </el-form-item>
             </el-form>
           </el-col>
@@ -58,7 +73,7 @@
         <el-descriptions-item>
           <template slot="label">
             <i class="el-icon-tickets" />
-            当前排名
+            当前排名(0表示未上榜)
           </template>
           {{ rank }}
         </el-descriptions-item>
@@ -81,11 +96,12 @@ export default {
   components: { Compare, MoneyInput, getInfo },
   data() {
     return {
-      rank: '',
+      rank: 0,
       uid: '',
       point: 0,
       virtualCoin: 0,
       addVirtualCoin: 0,
+      addPoint: 0,
       activityIds: [],
       queryData: {
         ActivityId: 0,
@@ -117,28 +133,73 @@ export default {
         }
       })
     },
-    updateUser() {
+    updateUserVirtualCoin() {
       if (this.queryData.UID == '') {
         Message.error('请输入UID')
         return
       }
-      const $this = this
-      if (this.queryData.ID == '') {
-        this.queryData.ID = 0
+      // const $this = this
+      if (parseInt(this.queryData.ID) === 0) {
+        Message.error('请选择周期')
+        return
       }
+      if (parseInt(this.addVirtualCoin) === 0) {
+        Message.error('变化的值不能为0')
+        return
+      }
+
       request({
         url: 'millionpointracerule/update/user',
         method: 'post',
         data: {
           UID: this.queryData.UID,
           ActivityId: this.queryData.ActivityId,
-          VirtualCoin: parseInt(this.addVirtualCoin)*1000,
+          VirtualCoin: parseInt(this.addVirtualCoin) * 1000,
           Point: 0,
           Path: '/millonpointrace/update/user'
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log(response.data)
+          // console.log(response.data)
+          if (response.RetCode !== 0) {
+            Message.error('更新失败')
+            return
+          }
+          Message.success('更新成功')
+          this.getData()
+        } else {
+          Message.error('查询失败')
+        }
+      })
+    },
+    updateUserPoint() {
+      if (this.queryData.UID == '') {
+        Message.error('请输入UID')
+        return
+      }
+      // const $this = this
+      if (parseInt(this.queryData.ID) === 0) {
+        Message.error('请选择周期')
+        return
+      }
+      if (parseInt(this.addPoint) === 0) {
+        Message.error('变化的值不能为0')
+        return
+      }
+
+      request({
+        url: 'millionpointracerule/update/user',
+        method: 'post',
+        data: {
+          UID: this.queryData.UID,
+          ActivityId: this.queryData.ActivityId,
+          VirtualCoin: 0,
+          Point: parseInt(this.addPoint) * 1000,
+          Path: '/millonpointrace/update/user'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log(response.data)
           if (response.RetCode !== 0) {
             Message.error('更新失败')
             return
@@ -183,9 +244,9 @@ export default {
           this.virtualCoin = obj.Data.userData.VirtualCoin
           this.point = obj.Data.userData.Point
           this.rank = obj.Data.rank.Rank
-          console.log(this.virtualCoin)
-          console.log(this.point)
-          console.log(this.rank)
+          // console.log(this.virtualCoin)
+          // console.log(this.point)
+          // console.log(this.rank)
         } else {
           Message.error('查询失败')
         }

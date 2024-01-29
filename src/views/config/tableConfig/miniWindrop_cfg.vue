@@ -10,6 +10,11 @@
             </el-form-item>
           </el-row>
           <el-row>
+            <el-form-item label="当前场次：（low: 1，mid: 2，hight:3）">
+              <el-input v-model="cfg.Level" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
             <el-form-item label="可投注球数量：">
               <el-input v-model="cfg.BallNumsStr" placeholder="" />
             </el-form-item>
@@ -94,10 +99,10 @@
                     <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）
                   </el-form-item>
                 </el-row>
-                  <el-row>
-                    <el-form-item label="金币换能量：">
-                      <el-input v-model.number="item.ScoreToEnergy" placeholder="" />‱（万分比）
-                    </el-form-item>
+                <el-row>
+                  <el-form-item label="金币换能量：">
+                    <el-input v-model.number="item.ScoreToEnergy" placeholder="" />‱（万分比）
+                  </el-form-item>
                 </el-row>
                 <el-row>
                   <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">
@@ -223,6 +228,7 @@ export default {
     return {
       cfg: {
         MinVersion: 0,
+        Level: 1,
         BallNums: [5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100],
         Bets: [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000],
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
