@@ -231,7 +231,7 @@ export default {
           Uid: _this.searchForm.uid,
           PoolType: _this.searchForm.poolType,
           ActType: _this.searchForm.actType,
-          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
+          Time: this.searchForm.date / 1000,
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
           Limit: _this.pageNum,
