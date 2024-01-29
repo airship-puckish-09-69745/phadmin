@@ -182,7 +182,11 @@ export default {
         if (response.RetCode === 0) {
           var obj = JSON.parse(response.Data)
           if (obj.RetCode === 0) {
-            // console.log(obj.Data)
+            console.log(obj.Data)
+            if (obj.Data === null) {
+              Message.error('数据为空')
+              return
+            }
             this.clientDB = new ClientTableData(obj.Data, 10, filterMap, '', -1)
             this.handleCurrentChange(1)
           } else {
