@@ -488,13 +488,13 @@
       :visible.sync="sweeperVisible"
       width="650px"
     >
-    <div id="sweeperShowTable">
-      <table >
-        <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td></tr>
-        <tr><td>{{sweeperPlay.JackpotContribute/1000}}</td><td>{{sweeperPlay.ReduceContribute/1000}}</td><td>{{sweeperPlay.CurrentContribute
-        /1000}}</td></tr>
-      </table>
-    </div>
+      <div id="sweeperShowTable">
+        <table>
+          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td></tr>
+          <tr><td>{{ sweeperPlay.JackpotContribute/1000 }}</td><td>{{ sweeperPlay.ReduceContribute/1000 }}</td><td>{{ sweeperPlay.CurrentContribute
+            /1000 }}</td></tr>
+        </table>
+      </div>
       <ul id="sweeperShow">
         <li v-for="(o,key) in sweeperDetails" :key="key" :label="o" :value="key">
           <template>
@@ -954,7 +954,7 @@ export default {
       sweeperDetails: [],
       sweeperRate: [],
       sweeperSTD: [8.00, 8.33, 8.70, 9.09, 9.52, 10.00, 10.53, 11.11, 11.76, 12.50, 13.33, 14.29, 15.38, 16.67, 18.18, 20.00, 22.22, 25.00, 28.57, 33.33, 40.00, 50.00, 66.67, 100],
-      sweeperPlay:[],
+      sweeperPlay: [],
       sweeperRateVisible: false,
 
       towerVisible: false,
@@ -1778,7 +1778,6 @@ ul#sweeperShow li .showStep {
   line-height: 31px;
   padding: 2px;
 }
-
 
 #towerShow table {
   border-collapse: collapse;

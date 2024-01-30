@@ -147,7 +147,7 @@ function newItem() {
     NeedVirtualCoin: 200,
     TaskVirtualCoin: 2000,
     TableMoney: 10,
-    AppId: 0,
+    AppId: 0
   }
 }
 
@@ -180,7 +180,7 @@ export default {
         NeedVirtualCoin: '需求的虚拟币',
         TaskVirtualCoin: '分享发放虚拟币：',
         TableMoney: '前注',
-        AppId: 'AppId' 
+        AppId: 'AppId'
       }
     }
   },
