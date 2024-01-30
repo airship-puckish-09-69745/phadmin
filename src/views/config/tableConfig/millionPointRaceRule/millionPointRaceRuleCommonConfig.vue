@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
     </el-row>
     <!--公共配置-->
     <el-row :gutter="10" style="margin-top: 30px">
@@ -103,7 +103,14 @@ export default {
       form: {
       },
       libShow: $libShow,
-      subKey: 'PointRaceCommonConfig'
+      subKey: 'PointRaceCommonConfig',
+      AttrNames: {
+        'Data.ShareLink': '分享链接',
+        'Data.AppsStr': '开放的应用列表',
+        types: {
+          Data: 'jsonString' // 整个数据项的类型
+        }
+      }
     }
   },
 
