@@ -498,7 +498,7 @@
       <ul id="sweeperShow">
         <li v-for="(o,key) in sweeperDetails" :key="key" :label="o" :value="key">
           <template>
-            <span v-if="o.result=='金币'" :style="o.step!=0?'color:green':'color:gold'"> {{ o.result }}</span>
+            <span v-if="o.result=='金币1'" :style="o.step!=0?'color:green':'color:gold'"> {{ o.result }}</span>
             <span v-else :style="o.step!=0?'color:red':''">{{ o.result }}</span>
           </template>
           <div class="showStep">
