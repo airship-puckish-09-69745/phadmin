@@ -105,6 +105,11 @@
               <el-input v-model.number="edit.item.TableMoney" placeholder="请输入" :disabled="true" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="AppId(不限制填0)：" :required="true" prop="item.AppId" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.AppId" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-form-item>
@@ -141,7 +146,8 @@ function newItem() {
     EndTime: Date.parse(new Date().toString()),
     NeedVirtualCoin: 200,
     TaskVirtualCoin: 2000,
-    TableMoney: 10
+    TableMoney: 10,
+    AppId: 0,
   }
 }
 
@@ -173,7 +179,8 @@ export default {
         EndTime: '结束时间',
         NeedVirtualCoin: '需求的虚拟币',
         TaskVirtualCoin: '分享发放虚拟币：',
-        TableMoney: '前注'
+        TableMoney: '前注',
+        AppId: 'AppId' 
       }
     }
   },
