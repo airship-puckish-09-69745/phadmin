@@ -1515,6 +1515,11 @@ export default {
         if (detailRow.result == 1) {
           showName = '金币'
         }
+
+        if (detailRow.result == 3) {
+          showName = '宝箱'
+        }
+
         showDetail[areaIndex] = { result: showName, step: detailRow.step }
       }
 
