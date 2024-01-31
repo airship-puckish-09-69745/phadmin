@@ -498,8 +498,8 @@
       <ul id="sweeperShow">
         <li v-for="(o,key) in sweeperDetails" :key="key" :label="o" :value="key">
           <template>
-            <span v-if="o.result=='金币'" :style="o.step!=0?'color:green':'color:gold'"> {{ o.result }}</span>
-            <span v-else :style="o.step!=0?'color:red':''">{{ o.result }}</span>
+            <span v-if="o.result==1" :style="o.step!=0?'color:green':'color:gold'"> {{ o.name }}</span>
+            <span v-else :style="o.step!=0?'color:red':''">{{ o.name }}</span>
           </template>
           <div class="showStep">
             <template>
@@ -1520,7 +1520,7 @@ export default {
           showName = '宝箱'
         }
 
-        showDetail[areaIndex] = { result: showName, step: detailRow.step }
+        showDetail[areaIndex] = { name: showName, step: detailRow.step, result: detailRow.result }
       }
 
       this.sweeperDetails = showDetail
