@@ -871,6 +871,21 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Hilo详情" :visible.sync="hiloVisible" width="650px">
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">Jackpot贡献：</span><div>{{ hiloJackpotContribute }}</div>
+      </div>
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">Jackpot累计贡献：</span><div>{{ hiloJackpotContributeTotal }}</div>
+      </div>
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">Jackpot奖励：</span><div>{{ hiloJackpotAward }}</div>
+      </div>
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">操作记录：</span><div>{{ hiloOpRecord }}</div>
+      </div>
+    </el-dialog>
+
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -959,6 +974,12 @@ export default {
 
       towerVisible: false,
       towerData: '',
+
+      hiloVisible: false,
+      hiloOpRecord: '',
+      hiloJackpotContribute: 0,
+      hiloJackpotContributeTotal: 0,
+      hiloJackpotAward: 0,
 
       sicboGameVisible: false,
       sicboGameResult: '',
@@ -1332,6 +1353,8 @@ export default {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
             $this.showSicboGame(obj)
+          } else if (gid === 102) {
+            $this.showHiloGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1439,6 +1462,62 @@ export default {
       this.colorGameResult = resultTmp.join('，')
       this.colorGameVisible = true
     },
+
+    showHiloGame(obj) {
+      this.hiloVisible = true
+      const hiloCardList = obj.Hilo.CardList
+      const hiloOp = []
+      for (let i = 0; i < hiloCardList.length - 1; i++) {
+        const hiloCard = hiloCardList[i]
+        const hiloNextCard = hiloCardList[i + 1]
+        const card = hiloCard.Card & 0x0f
+        console.log(card)
+        if (hiloCard.HitJackpot) {
+          hiloOp.push(card.toString() + '(Jackpot)')
+        } else {
+          hiloOp.push(card.toString())
+        }
+
+        if (hiloNextCard.Status === 2) {
+          hiloOp.push('skip')
+        } else {
+          if (hiloNextCard.Notation === 1) {
+            hiloOp.push('>')
+          } else if (hiloNextCard.Notation === 2) {
+            hiloOp.push('<')
+          } else if (hiloNextCard.Notation === 3) {
+            hiloOp.push('≥')
+          } else if (hiloNextCard.Notation === 4) {
+            hiloOp.push('≤')
+          } else if (hiloNextCard.Notation === 5) {
+            hiloOp.push('=')
+          } else if (hiloNextCard.Notation === 6) {
+            hiloOp.push('skip')
+          } else {
+            hiloOp.push('unknown')
+          }
+        }
+      }
+
+      hiloOp.push(hiloCardList[hiloCardList.length - 1].Card & 0x0f)
+      hiloOp.push('|')
+
+      if (obj.Hilo.StopFlag === 1) {
+        hiloOp.push('lost')
+      } else if (obj.Hilo.StopFlag === 2) {
+        hiloOp.push('win')
+      } else {
+        hiloOp.push('unknown')
+      }
+
+      this.hiloOpRecord = hiloOp.join(' ')
+      this.hiloJackpotContribute = obj.Hilo.JackpotContribute / 1000
+      this.hiloJackpotContributeTotal = obj.Hilo.JackpotContributeTotal / 1000
+      this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
+
+      console.log(this.hiloOpRecord)
+    },
+
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
         '骰子双点数_3', '骰子双点数_4', '骰子双点数_5', '骰子双点数_6', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12',

@@ -55,11 +55,88 @@
         </el-row>
         <el-row>
           <el-col :span="7">
-            <el-form-item label="配牌(仅测试服生效 格式:A23456789XJQK-5)：">
+            <el-form-item label="配牌(仅测试服会生效 格式:A23456789XJQK-5)：">
               <el-input v-model="item.TestCards" />
             </el-form-item>
           </el-col>
         </el-row>
+
+        <!-- <p> 提审 牌值的概率\倍率控制
+        <el-row>
+          <fieldset style="margin-top:10px">
+            <legend>概率\倍率配置 -----
+              <el-switch
+                v-model="item.HasWinRate"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-text="开"
+                inactive-text="关"
+              />
+            </legend>
+
+            <el-row>
+              <el-button type="primary" size="mini" @click="addWinRateRow">添加</el-button>
+            </el-row>
+
+            <el-row>
+              <template>
+                <el-table :data="item.WinRateItems" border>
+
+                  <el-table-column prop="Type" label="牌值">
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.Card" size="small" placeholder="placeholder">
+                        <el-option label="A" :value="1" />
+                        <el-option label="2" :value="2" />
+                        <el-option label="3" :value="3" />
+                        <el-option label="4" :value="4" />
+                        <el-option label="5" :value="5" />
+                        <el-option label="6" :value="6" />
+                        <el-option label="7" :value="7" />
+                        <el-option label="8" :value="8" />
+                        <el-option label="9" :value="9" />
+                        <el-option label="10" :value="10" />
+                        <el-option label="J" :value="11" />
+                        <el-option label="Q" :value="12" />
+                        <el-option label="K" :value="13" />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="top概率(‱)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.TopRate" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="down概率(‱)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.DownRate" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="top倍率(*100)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.TopOdds" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="down倍率(*100)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.DownOdds" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="操作">
+                    <template scope="scope">
+                      <el-button size="mini" type="danger" @click="removeWinRateRow(scope.$index)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+            </el-row>
+          </fieldset>
+        </el-row>
+        </p> -->
 
         <el-row>
           <fieldset style="margin-top:10px">
@@ -147,24 +224,22 @@
     </el-row>
 
     <fieldset style="margin-top:20px;">
-      <legend>jackpot调控配置</legend>
-      <el-row>
-        <el-alert
-          type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
+      <legend>jackpot调控配置-----
+        <el-switch
+           v-model="item.JackpotRegulation.ToggleSwitch"
+           active-color="#13ce66"
+           inactive-color="#ff4949"
+           active-text="开"
+           inactive-text="关"
         />
-        <el-form ref="item" :model="item" label-width="100px">
-          <el-form-item label="调控总开关">
-            <el-switch
-              v-model="item.JackpotRegulation.ToggleSwitch"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="开"
-              inactive-text="关"
-            />
-          </el-form-item>
-        </el-form>
-      </el-row>
+      </legend>
+
+      <el-descriptions >
+        <el-descriptions-item>
+          <span style="color:red;">开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)</span>
+        </el-descriptions-item>
+      </el-descriptions>
+
       <el-row>
         <el-table
           ref="filterTable"
@@ -232,7 +307,8 @@
           </el-table-column>
         </el-table>
       </el-row>
-      <el-descriptions class="margin-top" border>
+
+      <el-descriptions>
         <el-descriptions-item>
           <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
         </el-descriptions-item>
@@ -666,6 +742,21 @@ export default {
     // 删除JP分布
     removeJackpotDistributionRow(index) {
       this.item.JackpotDistributionItems.splice(index, 1)
+    },
+    // 添加card的概率\倍率配置
+    addWinRateRow() {
+      const newRow = {
+        Card: 0,
+        TopRate: 0,
+        TopOdds: 0,
+        DownRate: 0,
+        DownOdds: 0
+      }
+      this.item.WinRateItems.push(newRow)
+    },
+    // 删除card的概率\倍率配置
+    removeWinRateRow(index) {
+      this.item.WinRateItems.splice(index, 1)
     },
 
     goSearch() {
