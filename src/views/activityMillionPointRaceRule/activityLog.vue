@@ -279,7 +279,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
+            var cfg = { 'key': response.Data[i].ID + '-' + response.Data[i].Title, 'value': response.Data[i].ID }
             this.activityIds.push(cfg)
             this.activityMap[response.Data[i].ID] = response.Data[i].Title
           }

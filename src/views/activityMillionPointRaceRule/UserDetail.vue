@@ -124,7 +124,7 @@ export default {
         if (response.RetCode === 0) {
           console.log(response.Data)
           for (let i = 0; i < response.Data.length; i++) {
-            var cfg = { 'key': response.Data[i].Title, 'value': response.Data[i].ID }
+            var cfg = { 'key': response.Data[i].ID + '-' + response.Data[i].Title, 'value': response.Data[i].ID }
             this.activityIds.push(cfg)
           }
           this.queryData.ActivityId = this.activityIds[0].value
