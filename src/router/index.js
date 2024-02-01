@@ -767,12 +767,12 @@ export const asyncRoutes = [
         name: 'thirdpartyManage',
         meta: { title: '第三方信息 ◐' }
       },
-      {
-        path: 'transfer',
-        component: () => import('@/views/thirdparty/transfer'),
-        name: 'transfer_log',
-        meta: { title: '转账流水 ◐' }
-      },
+      // {
+      //   path: 'transfer',
+      //   component: () => import('@/views/thirdparty/transfer'),
+      //   name: 'transfer_log',
+      //   meta: { title: '转账流水 ◐' }
+      // },
       {
         path: 'playlog_list',
         component: () => import('@/views/thirdparty/playlog'),
