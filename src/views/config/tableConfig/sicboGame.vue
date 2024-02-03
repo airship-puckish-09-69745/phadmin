@@ -28,7 +28,6 @@
           </el-form-item>
         </el-col>
 
-
         <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
@@ -338,6 +337,7 @@ export default {
         for (const i in items) {
           betMoneyList.push(parseInt(items[i]) * 1000)
         }
+
         const obj = {}
         Object.assign(obj, this.item.BetMoneyLevel[o])
         obj.MaxMoneyBet *= 1000
@@ -401,6 +401,15 @@ export default {
           this.item.BetAreaOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
         }
       }
+
+      for (const o in this.item.BetMoneyLevel) {
+        const items = this.item.BetMoneyLevel[o].TableMoney.split(',')
+        if (items.length !== 6) {
+          Message.error('下注列表只能6个投注项')
+          return
+        }
+      }
+
       this.form.Data = JSON.stringify(this.getPostData())
 
       console.log(this.form)
@@ -431,7 +440,7 @@ export default {
       this.item.BetMoneyList.splice(index, 1)
     },
     doAdd() {
-      this.item.BetMoneyLevel.push({ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 })
+      this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
     delRow(index) {
       console.log(index)
