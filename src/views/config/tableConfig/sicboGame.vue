@@ -53,6 +53,22 @@
                     <el-input v-model="scope.row.TableMoney" size="mini" />
                   </template>
                 </el-table-column>
+                <el-table-column
+                  prop="Low"
+                  label="最小下注限制"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.MaxMoneyBet" size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="MaxMoneyBet"
+                  label="最大下注限制"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />
+                  </template>
+                </el-table-column>
                 <el-table-column label="操作">
                   <template slot-scope="scope">
                     <el-button
@@ -415,7 +431,7 @@ export default {
       this.item.BetMoneyList.splice(index, 1)
     },
     doAdd() {
-      this.item.BetMoneyLevel.push({ TableMoney: '10,20,30,50,100,300' })
+      this.item.BetMoneyLevel.push({ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
     delRow(index) {
       console.log(index)
