@@ -49,6 +49,9 @@ export default {
     this.env = store.getters.env || this.env
   },
   methods: {
+    formatNumber(n) {
+      return n.toLocaleString()
+    },
     transfer() {
       let searchUid = 0
       if (this.searchForm.Uid > 0) {
@@ -58,34 +61,60 @@ export default {
         this.$message.error('请输入用户ID')
         return
       }
-      if (this.searchForm.TransferType === 1 && this.searchForm.Money <= 0) {
+      if (this.searchForm.TransferType == 2 && this.searchForm.Money <= 0) {
         this.$message.error('请输入正确金额')
         return
       }
-      const loading = this.$loading({
-        lock: true,
-        text: '数据拉取中，请稍候...',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Env: this.env,
-          Uid: searchUid,
-          TransferType: this.searchForm.TransferType,
-          Money: this.searchForm.Money,
-          Path: '/other/test/transfer'
-        }
-      }).then(response => {
-        loading.close()
-        console.log(response)
-        if (response.RetCode === 0) {
-          this.$message.success('SUCCESS')
-        }
-      }).catch(function() {
-        loading.close()
+      let confirmMsg = '确定转出用户 [' + searchUid + '] 的可转移金额吗？'
+      if (this.searchForm.TransferType == 2) {
+        confirmMsg = '确定给用户 [' + searchUid + '] 转入：' + this.formatNumber(this.searchForm.Money / 1000) + ' 吗？'
+      }
+      this.$confirm(confirmMsg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '数据拉取中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Uid: searchUid,
+            TransferType: this.searchForm.TransferType,
+            Money: this.searchForm.Money,
+            Path: '/other/test/transfer'
+          }
+        }).then(response => {
+          loading.close()
+          // console.log(response)
+          if (response.RetCode === 0) {
+            let msg = '转出成功。'
+            if (this.searchForm.TransferType == 2) {
+              msg = '转入成功。'
+            }
+            const amountAfter = response.Data.amount_after || 0
+            if (this.searchForm.TransferType == 1) {
+              msg += '转移金额：' + this.formatNumber((response.Data.amount_before - response.Data.amount_after) / 1000) + '。'
+            } else {
+              msg += '转移金额：' + this.formatNumber(this.searchForm.Money / 1000) + '。'
+            }
+            msg += '剩余余额：' + this.formatNumber(amountAfter / 1000)
+            this.$message.success(msg)
+          }
+        }).catch(function() {
+          loading.close()
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消【转账】操作'
+        })
       })
     }
   }
