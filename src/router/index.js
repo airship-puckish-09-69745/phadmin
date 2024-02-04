@@ -982,29 +982,35 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: '测试工具集', icon: 'tab' },
         children: [
+          // {
+          //   path: 'fakeOrderSucc',
+          //   component: () => import('@/views/devTools/fakeOrderSucc'),
+          //   name: 'fakeOrderSucc',
+          //   meta: { title: '测试订单成功' }
+          // },
+          // {
+          //   path: 'testTools',
+          //   component: () => import('@/views/devTools/test_tools'),
+          //   name: 'testTools',
+          //   meta: { title: '测试小工具' }
+          // },
+          // {
+          //   path: 'testSign',
+          //   component: () => import('@/views/devTools/testSign'),
+          //   name: 'testSign',
+          //   meta: { title: '签到小工具' }
+          // },
+          // {
+          //   path: 'testMonthCard',
+          //   component: () => import('@/views/devTools/testMonthCard'),
+          //   name: 'testMonthCard',
+          //   meta: { title: '月卡小工具' }
+          // },
           {
-            path: 'fakeOrderSucc',
-            component: () => import('@/views/devTools/fakeOrderSucc'),
-            name: 'fakeOrderSucc',
-            meta: { title: '测试订单成功' }
-          },
-          {
-            path: 'testTools',
-            component: () => import('@/views/devTools/test_tools'),
-            name: 'testTools',
-            meta: { title: '测试小工具' }
-          },
-          {
-            path: 'testSign',
-            component: () => import('@/views/devTools/testSign'),
-            name: 'testSign',
-            meta: { title: '签到小工具' }
-          },
-          {
-            path: 'testMonthCard',
-            component: () => import('@/views/devTools/testMonthCard'),
-            name: 'testMonthCard',
-            meta: { title: '月卡小工具' }
+            path: 'testWebThirdpartyTransfer',
+            component: () => import('@/views/devTools/testWebThirdpartyTransfer'),
+            name: 'TestWebThirdpartyTransfer',
+            meta: { title: '转入转出小工具' }
           }
         ]
       },
