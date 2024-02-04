@@ -678,6 +678,12 @@ export const asyncRoutes = [
         meta: { title: 'Sicbo ◐', gid: 101 }
       },
       {
+        path: 'playlog_windrop',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_windrop',
+        meta: { title: 'Windrop ◐', gid: 103 }
+      },
+      {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
