@@ -62,7 +62,7 @@
         </el-row>
         <el-row>
           <el-col :span="7">
-            <el-form-item label="配牌(仅测试服会生效 格式:A23456789XJQK-5)：">
+            <el-form-item label="配牌(仅点击右上角用户在玩图案后对该用户生效 格式:A289XJQK-5)：">
               <el-input v-model="item.TestCards" />
             </el-form-item>
           </el-col>
@@ -774,7 +774,7 @@ export default {
         data: {
           Env: this.env,
           Path: '/game/show/hilo',
-          Gid: 100,
+          Gid: 102,
           Uid: this.showArea.uid
         }
       }).then(response => {
