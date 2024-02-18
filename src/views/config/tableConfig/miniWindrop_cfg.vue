@@ -39,6 +39,36 @@
               <el-input v-model="cfg.Splice" placeholder="" />
             </el-form-item>
           </el-row>
+          <el-row>
+            <el-form-item label="费率：">
+              <el-input v-model="cfg.FeeRate" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="Jackpot贡献率:">
+              <el-input v-model="cfg.JackpotFee" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="中Jackpot后的Jackpot贡献率：">
+              <el-input v-model="cfg.HitJackpotFee" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
+              <el-input v-model="cfg.JackpotBetMin" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="跳过次数：">
+              <el-input v-model="cfg.SkipNum" placeholder="" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-form-item label="中奖抽水率:">
+              <el-input v-model="cfg.HitFeeRate" placeholder="" />
+            </el-form-item>
+          </el-row>
         </el-form>
       </el-col>
     </el-row>
@@ -234,6 +264,12 @@ export default {
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
         AddTimesRow: [6, 10, 14],
         Splice: [1, 2, 3],
+        FeeRate: 0,
+        JackpotFee: 0,
+        HitJackpotFee: 0,
+        JackpotBetMin: 0,
+        SkipNum: 0,
+        HitFeeRate: 0,
         HappyRouletteCfg: [
           {
             Id: 1,

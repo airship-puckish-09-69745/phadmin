@@ -349,7 +349,9 @@ export default {
         { id: 12, name: 'Car Roulette' },
         { id: 14, name: 'Pusoy' },
         { id: 15, name: 'Tower' },
-        { id: 16, name: 'Sicbo' }
+        { id: 16, name: 'Sicbo' },
+        { id: 17, name: 'Windrop' }
+
       ],
       totalBets: [0, 15000, 100000, 400000, 1000000, 5000000, 4000000],
       showDetail: false,

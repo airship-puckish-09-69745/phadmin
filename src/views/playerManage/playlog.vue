@@ -768,6 +768,99 @@
       </el-table>
     </el-dialog>
 
+
+    <el-dialog
+      title="Windrop详情"
+      :visible.sync="WindropGameVisible"
+      width="50%"
+     >
+      <br>
+      <el-descriptions title="总信息">
+        <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
+        <el-descriptions-item label="总金币">{{ WindropGameResult.BetAllScore }}</el-descriptions-item>
+        <el-descriptions-item label="下注金币">{{ WindropGameResult.BetScore }}</el-descriptions-item>
+        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy }}</el-descriptions-item>
+        <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000  ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
+        <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount  }}</el-descriptions-item>
+      </el-descriptions>
+      <br>
+      <el-table
+        ref="filterTable"
+        :data="WindropGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="ID"
+          label="ID"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.ID" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ODDS"
+          label="倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.ODDS<0" style="color:red">spin</span>
+            <span v-else>{{scope.row.ODDS}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="BallTimes"
+          label="翻倍次数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.BallTimes" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinOdd"
+          label="spin中奖倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinOdd" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinScore"
+          label="spin中奖金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinScore" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Score"
+          label="金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Score" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="TracksPos"
+          label="路径"
+          width="620"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.TracksPos" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+
+
     <el-dialog
       title="骰宝牌局详情"
       :visible.sync="sicboGameVisible"
@@ -1030,6 +1123,17 @@ export default {
       sicboGameVisible: false,
       sicboGameResult: '',
       sicboGameOptions: [],
+
+      WindropGameVisible: false,
+      WindropGameResult: {
+        BallNum: 0,
+        BetAllScore: 0,
+        BetScore: 0,
+        CurEnergy: 0,
+        EnergyNum: 0,
+        SpinCount: 0,
+      },
+      WindropGameOptions: [],
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
@@ -1401,7 +1505,9 @@ export default {
             $this.showSicboGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
-          } else {
+          } else if(gid === 103){
+            $this.showWindropGame(obj)
+          }else {
             $this.showSmallGame(obj)
           }
         }
@@ -1539,7 +1645,43 @@ export default {
           return '-'
       }
     },
-
+    showWindropGame(obj) {
+      const tMap = {}
+      this.WindropGameOptions = []
+      const windropObj = obj.Windrop
+      if (Array.isArray(windropObj.optionData.bouns) && windropObj.optionData.bouns.length > 0) {
+        for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
+          const tracksPos = []
+          for (const pos of windropObj.optionData.bouns[i].TracksPos) {
+            tracksPos.push({
+              posX: pos.posX,
+              posY: pos.posY,
+            });
+          }
+          const bouns = windropObj.optionData.bouns[i];
+          tMap[i] = {
+            ID: i,
+            ODDS: bouns.odds,
+            BallTimes: bouns.ballTimes,
+            SpinOdd: bouns.spinOdd,
+            SpinScore: bouns.spinScore,
+            Score: bouns.score,
+            TracksPos: tracksPos,
+          };
+        }
+        for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
+          this.WindropGameOptions.push(tMap[i])
+        }
+      }
+      console.log(this.windropGameOptions)
+      this.WindropGameResult.BallNum  = windropObj.optionData.ballNum
+      this.WindropGameResult.BetAllScore  = windropObj.optionData.betAllScore
+      this.WindropGameResult.BetScore  = windropObj.optionData.betScore
+      this.WindropGameResult.CurEnergy  = windropObj.optionData.curEnergy
+      this.WindropGameResult.EnergyNum  = windropObj.optionData.energyNum
+      this.WindropGameResult.SpinCount  = windropObj.optionData.spinCount
+      this.WindropGameVisible = true
+    },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
         '骰子双点数_3', '骰子双点数_4', '骰子双点数_5', '骰子双点数_6', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12',
