@@ -964,23 +964,65 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="Hilo详情" :visible.sync="hiloVisible" width="650px">
-      <div style=" font-size:14px; line-height: 18px; height: 25px;">
-        <span style="float:left;">Jackpot贡献：</span><div>{{ hiloJackpotContribute }}</div>
-      </div>
-      <div style=" font-size:14px; line-height: 18px; height: 25px;">
-        <span style="float:left;">Jackpot累计贡献：</span><div>{{ hiloJackpotContributeTotal }}</div>
-      </div>
-      <div style=" font-size:14px; line-height: 18px; height: 25px;">
-        <span style="float:left;">Jackpot奖励：</span><div>{{ hiloJackpotAward }}</div>
-      </div>
-      <div style=" font-size:14px; line-height: 18px; height: 25px;">
-        <span style="float:left;">操作记录：</span><div>{{ hiloOpRecord }}</div>
-      </div>
+    <el-dialog title="Hilo详情" :visible.sync="hiloVisible" width="800px">
+
+      <el-descriptions class="margin-top" title="" :column="4" border>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot贡献：
+          </template>
+          {{ hiloJackpotContribute }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot累计贡献：
+          </template>
+          {{ hiloJackpotContributeTotal }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot奖励：
+          </template>
+          {{ hiloJackpotAward }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总输赢倍数：
+          </template>
+          {{ (hiloTotalOdds / 100).toFixed(2) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            输赢：
+          </template>
+          {{ hiloStopFlag == 2 ? 'win' : (hiloStopFlag == 1 ? 'lost' : 'unknown') }}
+        </el-descriptions-item>
+
+      </el-descriptions>
+
+      <el-table :data="hiloCardList" border>
+        <el-table-column prop="uid" label="Step">
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="操作">
+          <template slot-scope="scope">{{ selectHiloNotation(scope.row.Notation) }}</template>
+        </el-table-column>
+        <el-table-column prop="cards" label="手牌">
+          <template slot-scope="scope">
+            <div v-html="libShow.CardShow(scope.row.Card)"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="倍数">
+          <template slot-scope="scope">{{ (scope.row.Odds / 100).toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column prop="isDealer" label="HitJackpot">
+          <template slot-scope="scope">{{ scope.row.HitJackpot ? "是" : "-" }}</template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
 
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
   </div>
 </template>
@@ -1073,6 +1115,10 @@ export default {
       hiloJackpotContribute: 0,
       hiloJackpotContributeTotal: 0,
       hiloJackpotAward: 0,
+      hiloTotalOdds: 0,
+      hiloCardList: [],
+      hiloStopFlag: 0,
+      hiloNotation: '',
 
       sicboGameVisible: false,
       sicboGameResult: '',
@@ -1571,57 +1617,33 @@ export default {
 
     showHiloGame(obj) {
       this.hiloVisible = true
-      const hiloCardList = obj.Hilo.CardList
+      this.hiloCardList = obj.Hilo.CardList
+      console.log(this.hiloCardList)
       const hiloOp = []
-      for (let i = 0; i < hiloCardList.length - 1; i++) {
-        const hiloCard = hiloCardList[i]
-        const hiloNextCard = hiloCardList[i + 1]
-        const card = hiloCard.Card & 0x0f
-        console.log(card)
-        if (hiloCard.HitJackpot) {
-          hiloOp.push(card.toString() + '(Jackpot)')
-        } else {
-          hiloOp.push(card.toString())
-        }
-
-        if (hiloNextCard.Status === 2) {
-          hiloOp.push('skip')
-        } else {
-          if (hiloNextCard.Notation === 1) {
-            hiloOp.push('>')
-          } else if (hiloNextCard.Notation === 2) {
-            hiloOp.push('<')
-          } else if (hiloNextCard.Notation === 3) {
-            hiloOp.push('≥')
-          } else if (hiloNextCard.Notation === 4) {
-            hiloOp.push('≤')
-          } else if (hiloNextCard.Notation === 5) {
-            hiloOp.push('=')
-          } else if (hiloNextCard.Notation === 6) {
-            hiloOp.push('skip')
-          } else {
-            hiloOp.push('unknown')
-          }
-        }
-      }
-
-      hiloOp.push(hiloCardList[hiloCardList.length - 1].Card & 0x0f)
-      hiloOp.push('|')
-
-      if (obj.Hilo.StopFlag === 1) {
-        hiloOp.push('lost')
-      } else if (obj.Hilo.StopFlag === 2) {
-        hiloOp.push('win')
-      } else {
-        hiloOp.push('unknown')
-      }
-
+      this.hiloStopFlag = obj.Hilo.StopFlag
       this.hiloOpRecord = hiloOp.join(' ')
       this.hiloJackpotContribute = obj.Hilo.JackpotContribute / 1000
       this.hiloJackpotContributeTotal = obj.Hilo.JackpotContributeTotal / 1000
       this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
-
-      console.log(this.hiloOpRecord)
+      this.hiloTotalOdds = obj.Hilo.TotalOdds
+    },
+    selectHiloNotation(notation) {
+      switch (notation) {
+        case 1 :
+          return '高'
+        case 2 :
+          return '低'
+        case 3 :
+          return '高等'
+        case 4 :
+          return '低等'
+        case 5 :
+          return '等'
+        case 6 :
+          return '跳过'
+        default:
+          return '-'
+      }
     },
     showWindropGame(obj) {
       const tMap = {}
@@ -1708,7 +1730,7 @@ export default {
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {
         const detailRow = obj.players[i]
-        const rowHtml = ''
+        let rowHtml = ''
         if (detailRow.groups != null && detailRow.groups != undefined) {
           for (let j = 0; j < detailRow.groups.length; j++) {
             let jokerType = '不成型'
