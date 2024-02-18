@@ -467,7 +467,7 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameOptions.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Name
+              label: response.Data[i].Scene
             })
           }
         }
