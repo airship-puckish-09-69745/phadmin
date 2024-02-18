@@ -405,7 +405,7 @@ export const asyncRoutes = [
           },
           {
             path: 'miniWindrop_cfg',
-            component: () => import('@/views/config/tableConfig/miniWindrop_cfg'),
+            component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg.vue'),
             name: 'miniWindrop_cfg',
             meta: { title: 'MiniWindrop ◐' }
           }
