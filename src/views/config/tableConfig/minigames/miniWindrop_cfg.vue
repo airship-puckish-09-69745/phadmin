@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <publish primary-key="Volume" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+    <el-row>
+<!--      <publish primary-key="Volume" :key-id="getFullKey('miniWindrop_slots_cfg')" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />-->
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>
+    </el-row>
+    <el-row>
+
+    </el-row>
     <!--公共配置-->
     <el-row style="margin-top: 30px">
       <el-form ref="form" label-position="left">
@@ -84,6 +91,9 @@
         </el-row>
       </el-form>
     </el-row>
+
+
+
     <fieldset style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
       <el-row>
@@ -235,7 +245,7 @@
             <el-input v-model.number="showArea.uid" size="11" placeholder="请输入在用户id" />
           </el-form-item>
           <el-form-item label="生成图案：">
-            <div id="towerShow" v-html="windropData" />
+            <div id="windropShow" v-html="windropData" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="goSearch">执行</el-button>
@@ -243,6 +253,9 @@
         </el-form>
       </el-row>
     </el-dialog>
+
+
+
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -322,6 +335,10 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+
+
+
     <el-row style="margin-top: 30px">
       <el-col :span="8" :offset="4">
         <el-form ref="form" :model="form" label-width="300px">
@@ -623,7 +640,6 @@ export default {
         jackpotType: 0
       },
 
-
       cfg: {
         MinVersion: 0,
         Level: 1,
@@ -632,13 +648,14 @@ export default {
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
         AddTimesRow: [6, 10, 14],
         Splice: [1, 2, 3],
-        WinType:[2,6,16],
+        WinType:[2, 6, 16],
         FeeRate: 0,
         JackpotFee: 0,
         HitJackpotFee: 0,
         JackpotBetMin: 0,
         SkipNum: 0,
         HitFeeRate: 0,
+        JackPotBool :false,
         HappyRouletteCfg: [
           {
             Id: 1,
@@ -1395,7 +1412,7 @@ export default {
       form: {
       },
       txt: '',
-      subKey: 'miniWindrop_slots_cfg',
+      subKey: 'miniWindrop_cfg',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型
@@ -1409,7 +1426,7 @@ export default {
   },
   methods: {
     getFullKey() {
-      return 'CustomizeCfg_' + this.subKey
+      return 'CustomizeCfg_' + 'miniWindrop_cfg'
     },
     addChannel(idx) {
       this.cfg.Channels.splice(idx + 1, 0, {
@@ -1460,16 +1477,41 @@ export default {
                 cfgJson.HappyRouletteCfg[k].Num /= 1000
               }
             }
-            $this.cfg = cfgJson
+            this.cfg = cfgJson
+            $this.item = cfgJson
             for (const k in this.item.JackpotRegulation.RandAwards) {
               this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
             }
             this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
-            // 设置修改之前数据
+            console.log('JackpotRandAwards',this.JackpotRandAwards)
+           // 设置修改之前数据
             $this.$refs.compare.SetOldVal(response.Data)
           }
         }
       })
+      // // 加载规则配置
+      // request({
+      //   url: '/customizeconfig/one',
+      //   method: 'get',
+      //   data: {
+      //     SubKey: 'windrop_jackpot'
+      //   }
+      // }).then(response => {
+      //   if (response.RetCode === 0) {
+      //     this.ruleForm = response.Data || {}
+      //     if (response.Data && response.Data.Data !== '') {
+      //       this.item = JSON.parse(response.Data.Data)
+      //       // 设置修改之前数据
+      //       // this.$refs.compare.SetOldVal(response.Data.Data)
+      //     }
+      //     this.JackPotBool = true
+      //     for (const k in this.item.JackpotRegulation.RandAwards) {
+      //       this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
+      //     }
+      //     this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
+      //     console.log('JackpotRandAwards',this.JackpotRandAwards)
+      //   }
+      // })
     },
     getPostData() {
       const postData = {}
@@ -1679,3 +1721,28 @@ export default {
   }
 }
 </script>
+<style>
+.symbol-img {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+.symbol-img:hover, .symbol-img.active {
+  border: 3px solid red;
+}
+
+#windropShow table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#windropShow table td{
+  border: 1px solid #eee;
+  height: 31px;
+  line-height: 31px;
+  padding: 2px;
+}
+
+</style>
