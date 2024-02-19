@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="../../../../assets/custom-theme/index.css">
 <template>
   <div class="app-container">
     <publish primary-key="Volume" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
@@ -223,6 +222,27 @@
         </el-table-column>
       </el-table>
     </fieldset>
+    <el-dialog
+      title="查看玩家在玩图案"
+      :modal="false"
+      :visible.sync="showArea.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-form :model="showArea" label-width="120px" size="small">
+          <el-form-item label="玩家id：">
+            <el-input v-model.number="showArea.uid" size="11" placeholder="请输入在用户id" />
+          </el-form-item>
+          <el-form-item label="生成图案：">
+            <div id="towerShow" v-html="windropData" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="goSearch">执行</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
+    </el-dialog>
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -575,12 +595,14 @@ export default {
         },
         jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
       },
+
       load: false,
       showArea: {
         visible: false,
         uid: 0,
         showUlReslt: false
       },
+      windropData: '',
       JackpotTypeCfg: {
         1: '一等奖',
         2: '二等奖',
@@ -1422,8 +1444,9 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('windrop reward', response)
+          //console.log('windrop reward',response)
           $this.form = response.Data || {}
+         console.log('response.Data.Data',response.Data.Data)
           if (response.Data && response.Data.Data !== '') {
             var cfgJson = JSON.parse(response.Data.Data)
             for (var i in cfgJson.Bets) {
@@ -1453,7 +1476,7 @@ export default {
       Object.assign(postData, this.cfg)
       const jackpotInfo = {}
       Object.assign(jackpotInfo, this.item.JackpotRegulation)
-      console.log("jackpotInfo:"+ jackpotInfo)
+      console.log("jackpotInfo:",jackpotInfo)
       jackpotInfo.RandAwards = []
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
@@ -1467,7 +1490,7 @@ export default {
     },
     setData() {
       const postData = this.getPostData()
-      console.log("postData:"+ postData)
+      console.log("postData:",postData)
       // 配置检查
       if (postData.BetsStr) {
         const bets = postData.BetsStr.split(',')
@@ -1522,7 +1545,7 @@ export default {
       this.showArea.visible = true
     },
     showOpenPoolRate(jpType, data) {
-      console.log("data:"+data)
+      console.log("data:",data)
       if (jpType == 4) {
         return '不限制'
       } else {
@@ -1582,7 +1605,7 @@ export default {
       }
     },
     showPoolNumDialog(data) {
-      console.log("showPoolNumDialog:"+data)
+      console.log("showPoolNumDialog:",data)
       if (data.JackpotType == 4) {
         return
       }
@@ -1644,7 +1667,7 @@ export default {
            console.log('response reward', response)
           if (response.Data && response.Data.Data !== '') {
             if (response.RetCode === 0) {
-              this.towerData = response.Data.details
+              this.windropData = response.Data.details
               this.showArea.showUlReslt = true
             } else {
               this.$message.error(response.Data)
