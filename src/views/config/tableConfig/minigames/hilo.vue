@@ -579,6 +579,7 @@ export default {
             }
             this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
             // 设置修改之前数据
+            console.log('JackpotRandAwards',this.JackpotRandAwards)
             this.$refs.compare.SetOldVal(response.Data.Data)
             // this.load = true
           }
@@ -600,7 +601,7 @@ export default {
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.JackpotRegulation = jackpotInfo
-      // console.log(ret.JackpotRegulation)
+       console.log(ret.JackpotRegulation)
 
       return ret
     },
@@ -609,7 +610,7 @@ export default {
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
-      // console.log(this.form.Data)
+       console.log(this.form.Data)
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
