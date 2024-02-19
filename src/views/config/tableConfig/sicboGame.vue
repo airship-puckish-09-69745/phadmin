@@ -85,6 +85,11 @@
 
           <fieldset style="margin-top:10px">
             <legend>下注区域配置</legend>
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <span style="color:red;"> 审核服extra pay 配置不生效</span>
+              </el-descriptions-item>
+            </el-descriptions>
             <el-row>
               <el-table
                 ref="filterTable"
@@ -168,7 +173,173 @@
             </el-row>
           </fieldset>
 
+
+          <fieldset style="margin-top:10px">
+            <legend>机器人配置</legend>
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <span style="color:red;">以下配置，在两个时段交叉时，有半小时时间差来完成变化人数。</span>
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-table
+              ref="filterTable"
+              :data="item.RobotMemberArr"
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column type="index" />
+              <el-table-column label="时间段" prop="TimeTitle">
+                <template slot-scope="scope">
+                  [{{ scope.row.StartHour }},{{ scope.row.EndHour }}]
+                </template>
+              </el-table-column>
+              <el-table-column label="机器人+真人人数下限" prop="MinRobotNum">
+                <template slot-scope="scope">
+                  {{ scope.row.MinRobotNum }}
+                </template>
+              </el-table-column>
+              <el-table-column label="机器人+真人人数上限限" prop="MaxRobotNum">
+                <template slot-scope="scope">
+                  {{ scope.row.MaxRobotNum }}
+                </template>
+              </el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button type="normal" icon="el-icon-edit" size="mini" @click="showRobotNumForm(scope.row)">编辑</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人人数安全值（%）：" prop="RobotUserNumSafeVal" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.RobotUserNumSafeVal" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="真人人数安全值（%）：" prop="RealUserNumSafeVal" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.RealUserNumSafeVal" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人携带金币下限：" prop="MinRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MinRobotMoney" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="机器人携带金币上限：" prop="MaxRobotMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MaxRobotMoney" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人最大玩牌局数下限：" prop="MinRobotPlayTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MinRobotPlayTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="机器人最大玩牌局数上限：" prop="MaxRobotPlayTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MaxRobotPlayTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人最大赢牌次数下限：" prop="MinRobotWinTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MinRobotWinTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="机器人最大赢牌次数上限：" prop="MaxRobotWinTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MaxRobotWinTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人最大输牌次数下限：" prop="MinRobotLoseTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MinRobotLoseTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="机器人最大输牌次数上限：" prop="MaxRobotLoseTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MaxRobotLoseTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人最小下注次数：" prop="MinRobotBetTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MinRobotBetTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="机器人最大下注次数：" prop="MaxRobotBetTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-col :span="20">
+                    <el-input v-model.number="item.MaxRobotBetTimes" size="mini" :required="true" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <span style="color:red;">以下为机器人单局下注限制，以上把真人玩家下注额为基准</span>
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人下注最小倍数：" prop="MinRobotBetLastMemberMultiple" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-input v-model.number="item.MinRobotBetLastMemberMultiple" style="width:100px" size="mini" :required="true" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="机器人下注最大倍数：" prop="MaxRobotBetLastMemberMultiple" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-input v-model.number="item.MaxRobotBetLastMemberMultiple" style="width:100px" size="mini" :required="true" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <span style="color:red;">以下为上把没真人下注，机器人下注上限为房间在线人数乘于下面配置值</span>
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-row>
+              <el-col :span="11" :offset="1">
+                <el-form-item label="机器人平均下注额：" prop="RobotAverageBetMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-input v-model.number="item.RobotAverageBetMoney" style="width:100px" size="mini" :required="true" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
         </el-col>
+
         <el-col style="margin-top:16px;" :offset="8" :span="8">
           <el-form-item>
             <el-button type="primary" @click="setData">保存</el-button>
@@ -176,6 +347,38 @@
         </el-col>
       </el-form>
     </el-row>
+
+
+    <!-- 【dialog】编辑机器人人数 -->
+    <el-dialog
+      title="编辑机器人人数"
+      :modal="false"
+      :visible.sync="robotDialogForm.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="robotForm" :model="robotDialogForm.data" label-width="200px">
+        <el-form-item label="序号：">
+          {{ robotDialogForm.data.Index }}
+        </el-form-item>
+        <el-form-item label="开始时段：">
+          <el-input v-model.number="robotDialogForm.data.StartHour" disable style="width: 100px;" size="mini" :required="true" />
+        </el-form-item>
+        <el-form-item label="结束时段：">
+          <el-input v-model.number="robotDialogForm.data.EndHour" disable style="width: 100px;" size="mini" :required="true" />
+        </el-form-item>
+        <el-form-item label="机器人最小人数：">
+          <el-input v-model.number="robotDialogForm.data.MinRobotNum" style="width: 100px;" size="mini" :required="true" />
+        </el-form-item>
+        <el-form-item label="机器人最大人数：">
+          <el-input v-model.number="robotDialogForm.data.MaxRobotNum" style="width: 100px;" size="mini" :required="true" />
+        </el-form-item>
+        <el-form-item>
+          <el-button style="margin-bottom:10px;" type="primary" size="mini" @click="saveRobotDialog()">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -261,7 +464,27 @@ export default {
         FeeRate: 5,
         NoticeTime: 10,
         ExTraPayRate: 10,
-        OutTime: 30
+        OutTime: 30,
+
+        MinRobotNumber: 0, // 机器人最小人数
+        MaxRobotNumber: 0, // 机器人最大人数
+        RobotMemberArr: [],
+        RobotAverageBetMoney: 0, // 机器人平均下注额
+        MinRobotPlayTimes: 0, // 机器人最小玩牌局数
+        MaxRobotPlayTimes: 0, // 机器人最大玩牌局数
+        MinRobotMoney: 0, // 机器人金币下限
+        MaxRobotMoney: 0, // 机器人金币上限
+        MinRobotWinTimes: 0, // 机器人最大赢牌次数下限
+        MaxRobotWinTimes: 0, // 机器人最大赢牌次数上限
+        MinRobotLoseTimes: 0, // 机器人最大输牌次数下限
+        MaxRobotLoseTimes: 0, // 机器人最大输牌次数上限
+        MinRobotBetTimes: 0, // 机器人最小下注次数
+        MaxRobotBetTimes: 0, // 机器人最大下注次数
+        MinRobotBetLastMemberMultiple: 0, // 机器人下注最小倍数
+        MaxRobotBetLastMemberMultiple: 0, // 机器人下注最大倍数
+        MinPlayersEnableSchema: 10, // 最低调控玩家数
+        RobotUserNumSafeVal: 0,
+        RealUserNumSafeVal: 0
       },
       dices: [],
       testRand: {
@@ -441,6 +664,10 @@ export default {
     },
     doAdd() {
       this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
+    },
+    showRobotNumForm(data) {
+      this.robotDialogForm.data = data
+      this.robotDialogForm.visible = true
     },
     delRow(index) {
       console.log(index)
