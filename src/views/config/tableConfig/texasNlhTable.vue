@@ -317,13 +317,13 @@
                 <el-col :span="12">
 
                   <el-form-item label="outs牌数量">
-                    <el-input v-model="edit.OutsRatio[index].OutsNum" size="mini" :required="true" />
+                    <el-input v-model.number="edit.OutsRatio[index].OutsNum" size="mini" :required="true" type="number" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="12">
-                  <el-form-item label="赔率%">
-                    <el-input v-model="edit.OutsRatio[index].Ratio" size="mini" :required="true" />
+                  <el-form-item label="赔率(千分比)">
+                    <el-input v-model.number="edit.OutsRatio[index].Ratio" size="mini" :required="true" type="number" />
                   </el-form-item>
                 </el-col>
               </el-row>
