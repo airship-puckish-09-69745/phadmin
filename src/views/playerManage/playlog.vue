@@ -768,6 +768,99 @@
       </el-table>
     </el-dialog>
 
+
+    <el-dialog
+      title="Windrop详情"
+      :visible.sync="WindropGameVisible"
+      width="50%"
+     >
+      <br>
+      <el-descriptions title="总信息">
+        <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
+        <el-descriptions-item label="总金币">{{ WindropGameResult.BetAllScore }}</el-descriptions-item>
+        <el-descriptions-item label="下注金币">{{ WindropGameResult.BetScore }}</el-descriptions-item>
+        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy }}</el-descriptions-item>
+        <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000  ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
+        <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount  }}</el-descriptions-item>
+      </el-descriptions>
+      <br>
+      <el-table
+        ref="filterTable"
+        :data="WindropGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="ID"
+          label="ID"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.ID" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ODDS"
+          label="倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.ODDS<0" style="color:red">spin</span>
+            <span v-else>{{scope.row.ODDS}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="BallTimes"
+          label="翻倍次数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.BallTimes" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinOdd"
+          label="spin中奖倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinOdd" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinScore"
+          label="spin中奖金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinScore" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Score"
+          label="金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Score" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="TracksPos"
+          label="路径"
+          width="620"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.TracksPos" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+
+
     <el-dialog
       title="骰宝牌局详情"
       :visible.sync="sicboGameVisible"
@@ -871,8 +964,65 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Hilo详情" :visible.sync="hiloVisible" width="800px">
+
+      <el-descriptions class="margin-top" title="" :column="4" border>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot贡献：
+          </template>
+          {{ hiloJackpotContribute }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot累计贡献：
+          </template>
+          {{ hiloJackpotContributeTotal }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot奖励：
+          </template>
+          {{ hiloJackpotAward }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总输赢倍数：
+          </template>
+          {{ (hiloTotalOdds / 100).toFixed(2) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            输赢：
+          </template>
+          {{ hiloStopFlag == 2 ? 'win' : (hiloStopFlag == 1 ? 'lost' : 'unknown') }}
+        </el-descriptions-item>
+
+      </el-descriptions>
+
+      <el-table :data="hiloCardList" border>
+        <el-table-column prop="uid" label="Step">
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="操作">
+          <template slot-scope="scope">{{ selectHiloNotation(scope.row.Notation) }}</template>
+        </el-table-column>
+        <el-table-column prop="cards" label="手牌">
+          <template slot-scope="scope">
+            <div v-html="libShow.CardShow(scope.row.Card)"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="倍数">
+          <template slot-scope="scope">{{ (scope.row.Odds / 100).toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column prop="isDealer" label="HitJackpot">
+          <template slot-scope="scope">{{ scope.row.HitJackpot ? "是" : "-" }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
   </div>
 </template>
@@ -960,9 +1110,30 @@ export default {
       towerVisible: false,
       towerData: '',
 
+      hiloVisible: false,
+      hiloOpRecord: '',
+      hiloJackpotContribute: 0,
+      hiloJackpotContributeTotal: 0,
+      hiloJackpotAward: 0,
+      hiloTotalOdds: 0,
+      hiloCardList: [],
+      hiloStopFlag: 0,
+      hiloNotation: '',
+
       sicboGameVisible: false,
       sicboGameResult: '',
       sicboGameOptions: [],
+
+      WindropGameVisible: false,
+      WindropGameResult: {
+        BallNum: 0,
+        BetAllScore: 0,
+        BetScore: 0,
+        CurEnergy: 0,
+        EnergyNum: 0,
+        SpinCount: 0,
+      },
+      WindropGameOptions: [],
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
@@ -1332,7 +1503,11 @@ export default {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
             $this.showSicboGame(obj)
-          } else {
+          } else if (gid === 102) {
+            $this.showHiloGame(obj)
+          } else if(gid === 103){
+            $this.showWindropGame(obj)
+          }else {
             $this.showSmallGame(obj)
           }
         }
@@ -1439,6 +1614,74 @@ export default {
       this.colorGameResult = resultTmp.join('，')
       this.colorGameVisible = true
     },
+
+    showHiloGame(obj) {
+      this.hiloVisible = true
+      this.hiloCardList = obj.Hilo.CardList
+      console.log(this.hiloCardList)
+      const hiloOp = []
+      this.hiloStopFlag = obj.Hilo.StopFlag
+      this.hiloOpRecord = hiloOp.join(' ')
+      this.hiloJackpotContribute = obj.Hilo.JackpotContribute / 1000
+      this.hiloJackpotContributeTotal = obj.Hilo.JackpotContributeTotal / 1000
+      this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
+      this.hiloTotalOdds = obj.Hilo.TotalOdds
+    },
+    selectHiloNotation(notation) {
+      switch (notation) {
+        case 1 :
+          return '高'
+        case 2 :
+          return '低'
+        case 3 :
+          return '高等'
+        case 4 :
+          return '低等'
+        case 5 :
+          return '等'
+        case 6 :
+          return '跳过'
+        default:
+          return '-'
+      }
+    },
+    showWindropGame(obj) {
+      const tMap = {}
+      this.WindropGameOptions = []
+      const windropObj = obj.Windrop
+      if (Array.isArray(windropObj.optionData.bouns) && windropObj.optionData.bouns.length > 0) {
+        for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
+          const tracksPos = []
+          for (const pos of windropObj.optionData.bouns[i].TracksPos) {
+            tracksPos.push({
+              posX: pos.posX,
+              posY: pos.posY,
+            });
+          }
+          const bouns = windropObj.optionData.bouns[i];
+          tMap[i] = {
+            ID: i,
+            ODDS: bouns.odds,
+            BallTimes: bouns.ballTimes,
+            SpinOdd: bouns.spinOdd,
+            SpinScore: bouns.spinScore,
+            Score: bouns.score,
+            TracksPos: tracksPos,
+          };
+        }
+        for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
+          this.WindropGameOptions.push(tMap[i])
+        }
+      }
+      console.log(this.windropGameOptions)
+      this.WindropGameResult.BallNum  = windropObj.optionData.ballNum
+      this.WindropGameResult.BetAllScore  = windropObj.optionData.betAllScore
+      this.WindropGameResult.BetScore  = windropObj.optionData.betScore
+      this.WindropGameResult.CurEnergy  = windropObj.optionData.curEnergy
+      this.WindropGameResult.EnergyNum  = windropObj.optionData.energyNum
+      this.WindropGameResult.SpinCount  = windropObj.optionData.spinCount
+      this.WindropGameVisible = true
+    },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
         '骰子双点数_3', '骰子双点数_4', '骰子双点数_5', '骰子双点数_6', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12',
@@ -1487,7 +1730,7 @@ export default {
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {
         const detailRow = obj.players[i]
-        const rowHtml = ''
+        let rowHtml = ''
         if (detailRow.groups != null && detailRow.groups != undefined) {
           for (let j = 0; j < detailRow.groups.length; j++) {
             let jokerType = '不成型'

@@ -115,6 +115,7 @@ import Clipboard from 'clipboard'
 import { $libDate, $libShow } from '@/utils/common'
 // import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
+import store from '@/store'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -178,6 +179,10 @@ export default {
         {
           val: '1234567899',
           nick: 'bingoplus899'
+        },
+        {
+          val: 'f6d88517a7a97e8eb68f51835dcea543',
+          nick: 'Player-HMlB'
         }
       ],
       screens: [
@@ -262,6 +267,26 @@ export default {
   },
   computed: {},
   created() {
+    this.env = store.getters.env || this.env
+    if (this.env == 'test') {
+      this.agents = [
+        {
+          id: 1000002,
+          agentId: 'dayusenlin',
+          desc: '内部用[1000002]'
+        },
+        {
+          id: 1000003,
+          agentId: 'testaccount',
+          desc: 'BP 提审、测试账号[1000003]'
+        },
+        {
+          id: 1000005,
+          agentId: 'BingoPlusTongits',
+          desc: 'BP正式账号[1000005]'
+        }
+      ]
+    }
   },
   methods: {
     formatNumber(n) {

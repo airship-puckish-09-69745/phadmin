@@ -40,6 +40,31 @@
             />
           </el-select>
         </el-form-item>
+
+
+
+        <el-form-item label="应用APP：">
+          <el-select v-model="searchForm.app" placeholder="请选择">
+            <el-option
+              v-for="item in appConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="场次类型：">
+          <el-select v-model="searchForm.level" placeholder="请选择">
+            <el-option
+              v-for="item in levelConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="用户ID：">
           <el-input v-model="searchForm.uid" placeholder="请输入查询id" />
         </el-form-item>
@@ -176,14 +201,26 @@ export default {
         gameId: 25,
         awardType: 0,
         uid: 0,
-        isRobot: -1
+        isRobot: -1,
+        app: 0,
+        level: 0
       },
+      appConfig: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1000002, 'label': '1000002' },
+        { 'value': 1000005, 'label': '1000005' }
+      ],
+      levelConfig: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1, 'label': '普通场次' }
+      ],
       gameConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 25, 'label': 'color game' },
         { 'value': 20, 'label': 'Mines - 扫雷' },
         { 'value': 100, 'label': 'Tower' },
-        { 'value': 102, 'label': 'Hilo' }
+        { 'value': 102, 'label': 'Hilo' },
+        { 'value': 103, 'label': 'Windrop' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
@@ -240,7 +277,9 @@ export default {
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
           Limit: _this.pageNum,
-          IsRobot: _this.searchForm.isRobot
+          IsRobot: _this.searchForm.isRobot,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -272,7 +311,9 @@ export default {
           Env: _this.env,
           Path: '/jackpot/day/limit',
           GameId: _this.searchForm.gameId,
-          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000
+          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level
         }
       }).then(response => {
         if (response.RetCode === 0) {
