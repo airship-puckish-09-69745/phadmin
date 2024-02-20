@@ -62,7 +62,7 @@
         </el-row>
         <el-row>
           <el-col :span="7">
-            <el-form-item label="配牌(仅点击右上角用户在玩图案后对该用户生效 格式:A289XJQK-5)：">
+            <el-form-item label="配牌(仅点击右上角用户在玩图案后对该用户生效 格式:A23489XJQK-5)： 流程: 填写配牌数据>保存>测试>确定>进桌>用户在玩图案>填写uid>执行">
               <el-input v-model="item.TestCards" />
             </el-form-item>
           </el-col>
