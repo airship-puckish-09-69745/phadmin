@@ -54,15 +54,15 @@
                 </el-table-column>
                 <el-table-column
                   prop="Low"
-                  label="最小下注限制"
+                  label="最大下注限制"
                 >
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MaxMoneyBet" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="MaxMoneyBet"
-                  label="最大下注限制"
+                  prop="Low"
+                  label="最小下注限制"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />
@@ -529,6 +529,9 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
+      this.item.MinRobotMoney /= 1000
+      this.item.MaxRobotMoney /= 1000
+      this.item.RobotAverageBetMoney /= 1000
       for (const j in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
@@ -553,6 +556,12 @@ export default {
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
+
+      ret.MinRobotMoney *= 1000
+      ret.MaxRobotMoney *= 1000
+      ret.RobotAverageBetMoney *= 1000
+
+
       ret.BetMoneyLevel = []
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
@@ -632,6 +641,31 @@ export default {
           return
         }
       }
+
+      if (this.item.MaxRobotNumber < this.item.MinRobotNumber) {
+        Message.error('“机器人最大人数”不能小于“机器人最小人数”')
+        return
+      } else if (this.item.MaxRobotMoney < this.item.MinRobotMoney) {
+        Message.error('“机器人携带金币上限”不能小于“机器人携带金币下限”')
+        return
+      } else if (this.item.MaxRobotPlayTimes < this.item.MinRobotPlayTimes) {
+        Message.error('“机器人最大玩牌局数上限”不能小于“机器人最大玩牌局数下限”')
+        return
+      } else if (this.item.MaxRobotWinTimes < this.item.MinRobotWinTimes) {
+        Message.error('“机器人最大赢牌次数上限”不能小于“机器人最大赢牌次数下限”')
+        return
+      } else if (this.item.MaxRobotLoseTimes < this.item.MinRobotLoseTimes) {
+        Message.error('“机器人最大输牌次数上限”不能小于“机器人最大输牌次数下限”')
+        return
+      } else if (this.item.MaxRobotBetTimes < this.item.MinRobotBetTimes) {
+        Message.error('“机器人最大下注次数”不能小于“机器人最小下注次数”')
+        return
+      } else if (this.item.MinRobotBetTimes < 1 || this.item.MaxRobotBetTimes > 15) {
+        Message.error('“机器人最小下注次数”不能小于1，“机器人最大下注次数”不能大于15')
+        return
+      }
+
+
 
       this.form.Data = JSON.stringify(this.getPostData())
 
