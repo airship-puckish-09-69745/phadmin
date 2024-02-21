@@ -5,19 +5,19 @@
         <el-form ref="frm2" :model="cfg" label-width="200px">
 
           <el-form-item label="普通模式中奖倍数">
-            <el-input placeholder="请输入内容,如1,2,3,5,7" v-model="cfg.MultiStr"> <template slot="append">多个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式中奖倍数">
-            <el-input placeholder="请输入内容,如2,4,6,8,10" v-model="cfg.FreeMultiStr"> <template slot="append">多个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,8,10"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买金额">
-            <el-input placeholder="请输入内容" v-model.number="cfg.BuyFreeMoney"> <template slot="append">放大1000倍</template> </el-input>
+            <el-input v-model.number="cfg.BuyFreeMoney" placeholder="请输入内容"> <template slot="append">放大1000倍</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围">
-            <el-input placeholder="请输入内容,如-2000,2000" v-model.number="cfg.BuyFreeOddsRange"> <template slot="append">两值用 , 连接</template> </el-input>
+            <el-input v-model.number="cfg.BuyFreeOddsRange" placeholder="请输入内容,如-2000,2000"> <template slot="append">两值用 , 连接</template> </el-input>
           </el-form-item>
 
         </el-form>

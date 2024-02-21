@@ -306,7 +306,7 @@ export default {
           Path: '/jackpot/info',
           GameId: _this.searchForm.gameId,
           App: _this.searchForm.app,
-          Level: _this.searchForm.level,
+          Level: _this.searchForm.level
         }
       }).then(response => {
         if (response.RetCode === 0) {

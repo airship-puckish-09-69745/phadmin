@@ -41,8 +41,6 @@
           </el-select>
         </el-form-item>
 
-
-
         <el-form-item label="应用APP：">
           <el-select v-model="searchForm.app" placeholder="请选择">
             <el-option
