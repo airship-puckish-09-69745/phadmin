@@ -46,6 +46,10 @@
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
 
+          <el-form-item label="基础投注">
+            <el-input v-model.number="slotsData.BaseBet" />
+          </el-form-item>
+
           <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)" />
 
           <el-form-item label="输最大倍率的概率%">
@@ -106,6 +110,7 @@ export default {
         'MinVersion': this.slotsData.MinVersion,
         'Bets': this.slotsData.Bets,
         'OddsStr': this.slotsData.OddsStr,
+        'BaseBet': this.slotsData.BaseBet,
         'LoseMaxOddsRate': this.slotsData.LoseMaxOddsRate,
         'MoneyConfig': {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
