@@ -47,7 +47,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.path" label="进厅路径 path：" :required="true" label-width="110px">
+        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">
           <el-select v-model="item.path" placeholder="请选择" size="mini">
             <el-option label="常规" value="1" />
             <el-option label="Banner（返回gamefun.ph）" value="2" />
@@ -59,7 +59,7 @@
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.cashier" label="充值链接：" :required="true" label-width="140px">
+        <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
         <el-form-item>
