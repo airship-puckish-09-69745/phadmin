@@ -768,20 +768,19 @@
       </el-table>
     </el-dialog>
 
-
     <el-dialog
       title="Windrop详情"
       :visible.sync="WindropGameVisible"
       width="50%"
-     >
+    >
       <br>
       <el-descriptions title="总信息">
         <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
         <el-descriptions-item label="总金币">{{ WindropGameResult.BetAllScore }}</el-descriptions-item>
         <el-descriptions-item label="下注金币">{{ WindropGameResult.BetScore }}</el-descriptions-item>
         <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy }}</el-descriptions-item>
-        <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000  ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
-        <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount  }}</el-descriptions-item>
+        <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000 ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
+        <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount }}</el-descriptions-item>
       </el-descriptions>
       <br>
       <el-table
@@ -808,7 +807,7 @@
         >
           <template slot-scope="scope">
             <span v-if="scope.row.ODDS<0" style="color:red">spin</span>
-            <span v-else>{{scope.row.ODDS}}</span>
+            <span v-else>{{ scope.row.ODDS }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -858,8 +857,6 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-
-
 
     <el-dialog
       title="骰宝牌局详情"
@@ -1009,7 +1006,7 @@
         </el-table-column>
         <el-table-column prop="cards" label="手牌">
           <template slot-scope="scope">
-            <div v-html="libShow.CardShow(scope.row.Card)"/>
+            <div v-html="libShow.CardShow(scope.row.Card)" />
           </template>
         </el-table-column>
         <el-table-column prop="cardScore" label="倍数">
@@ -1022,7 +1019,7 @@
     </el-dialog>
 
     <el-row>
-      <line-chart :chart-data="chartData" height="600px"/>
+      <line-chart :chart-data="chartData" height="600px" />
     </el-row>
   </div>
 </template>
@@ -1131,7 +1128,7 @@ export default {
         BetScore: 0,
         CurEnergy: 0,
         EnergyNum: 0,
-        SpinCount: 0,
+        SpinCount: 0
       },
       WindropGameOptions: [],
 
@@ -1505,9 +1502,9 @@ export default {
             $this.showSicboGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
-          } else if(gid === 103){
+          } else if (gid === 103) {
             $this.showWindropGame(obj)
-          }else {
+          } else {
             $this.showSmallGame(obj)
           }
         }
@@ -1655,10 +1652,10 @@ export default {
           for (const pos of windropObj.optionData.bouns[i].TracksPos) {
             tracksPos.push({
               posX: pos.posX,
-              posY: pos.posY,
-            });
+              posY: pos.posY
+            })
           }
-          const bouns = windropObj.optionData.bouns[i];
+          const bouns = windropObj.optionData.bouns[i]
           tMap[i] = {
             ID: i,
             ODDS: bouns.odds,
@@ -1666,20 +1663,20 @@ export default {
             SpinOdd: bouns.spinOdd,
             SpinScore: bouns.spinScore,
             Score: bouns.score,
-            TracksPos: tracksPos,
-          };
+            TracksPos: tracksPos
+          }
         }
         for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
           this.WindropGameOptions.push(tMap[i])
         }
       }
       console.log(this.windropGameOptions)
-      this.WindropGameResult.BallNum  = windropObj.optionData.ballNum
-      this.WindropGameResult.BetAllScore  = windropObj.optionData.betAllScore
-      this.WindropGameResult.BetScore  = windropObj.optionData.betScore
-      this.WindropGameResult.CurEnergy  = windropObj.optionData.curEnergy
-      this.WindropGameResult.EnergyNum  = windropObj.optionData.energyNum
-      this.WindropGameResult.SpinCount  = windropObj.optionData.spinCount
+      this.WindropGameResult.BallNum = windropObj.optionData.ballNum
+      this.WindropGameResult.BetAllScore = windropObj.optionData.betAllScore
+      this.WindropGameResult.BetScore = windropObj.optionData.betScore
+      this.WindropGameResult.CurEnergy = windropObj.optionData.curEnergy
+      this.WindropGameResult.EnergyNum = windropObj.optionData.energyNum
+      this.WindropGameResult.SpinCount = windropObj.optionData.spinCount
       this.WindropGameVisible = true
     },
     showSicboGame(obj) {

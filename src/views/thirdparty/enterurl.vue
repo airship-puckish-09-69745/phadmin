@@ -179,10 +179,6 @@ export default {
         {
           val: '1234567899',
           nick: 'bingoplus899'
-        },
-        {
-          val: 'f6d88517a7a97e8eb68f51835dcea543',
-          nick: 'Player-HMlB'
         }
       ],
       screens: [

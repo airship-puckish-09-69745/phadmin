@@ -183,7 +183,6 @@
             </el-row>
           </fieldset>
 
-
           <fieldset style="margin-top:10px">
             <legend>机器人配置</legend>
             <el-descriptions class="margin-top" border>
@@ -357,7 +356,6 @@
         </el-col>
       </el-form>
     </el-row>
-
 
     <!-- 【dialog】编辑机器人人数 -->
     <el-dialog
@@ -571,7 +569,6 @@ export default {
       ret.MaxRobotMoney *= 1000
       ret.RobotAverageBetMoney *= 1000
 
-
       ret.BetMoneyLevel = []
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
@@ -674,8 +671,6 @@ export default {
         Message.error('“机器人最小下注次数”不能小于1，“机器人最大下注次数”不能大于15')
         return
       }
-
-
 
       this.form.Data = JSON.stringify(this.getPostData())
 
