@@ -12,8 +12,8 @@
             <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,8,10"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式购买金额">
-            <el-input v-model.number="cfg.BuyFreeMoney" placeholder="请输入内容"> <template slot="append">放大1000倍</template> </el-input>
+          <el-form-item label="免费模式购买倍数">
+            <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容"> <template slot="append">放大100倍</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围">
