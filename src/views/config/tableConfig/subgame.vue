@@ -49,6 +49,20 @@
 
     <el-row style="padding-top: 5px">
       <el-col :span="4">
+        <el-form label-width="50px">
+          <el-form-item label="AppId">
+            <el-select v-model="appId" @change="getList()">
+              <el-option
+                v-for="item in appInfo"
+                :key="item.key"
+                :label="item.label+'-'+item.key"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="2">
         <el-button
           size="mini"
           type="primary"
@@ -57,7 +71,7 @@
         >添加配置项
         </el-button>
       </el-col>
-      <el-col :span="4" :offset="12">
+      <el-col :span="4" :offset="9">
         <TableSort :items="dragItems" :on-success="sortSucc" post-url="/subgame/update/sort" />
       </el-col>
       <el-col :span="2">
@@ -87,6 +101,11 @@
           prop="Sort"
           label="排序"
           sortable="custom"
+          width="75"
+        />
+        <el-table-column
+          prop="AppId"
+          label="AppId"
           width="100"
         />
         <el-table-column
@@ -228,6 +247,16 @@
       <el-form ref="edit" :model="edit" label-width="150px" size="small">
         <el-tabs type="card">
           <el-tab-pane label="基础信息">
+            <el-form-item label="AppId" :required="true">
+              <el-select v-model="edit.item.AppId" placeholder="请选择" size="mini">
+                <el-option
+                  v-for="item in appInfo"
+                  :key="item.key"
+                  :label="item.label+'-'+item.key"
+                  :value="item.key"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label="名称：" :required="true">
               <el-row>
                 <el-col :span="2">英文: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['en']" /></el-col>
@@ -304,11 +333,6 @@
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="指定AppID可见：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.WhiteAppIDs" placeholder="多个AppID用,号分隔" />
-              </el-col>
-            </el-form-item>
             <el-form-item label="最低版本限制：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
@@ -381,6 +405,7 @@ const filterMap = {
 function newItem() {
   return {
     ID: '',
+    AppId: 1000002,
     GameKey: '',
     Name: '',
     Description: '',
@@ -413,6 +438,8 @@ export default {
       dragItems: [],
       langTypes: ['en', 'hi'],
       platform: 'android',
+      appId: 1000002,
+      appInfo: [],
 
       edit: {
         visible: false,
@@ -438,6 +465,7 @@ export default {
       ],
 
       AttrNames: {
+        AppId: '应用',
         Name: '游戏名称',
         Description: '描述',
         IconInner: '客户端图标ID',
@@ -469,9 +497,27 @@ export default {
     this.env = store.getters.env || this.env
     this.platform = this.$route.meta.platform
     this.getList()
+    this.getAppInfo()
     console.log(1)
   },
   methods: {
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
     getTypeName(type) {
       let name = type
       for (const i in this.typeOption) {
@@ -613,7 +659,8 @@ export default {
         url: '/subgame/all',
         method: 'get',
         data: {
-          Platform: this.platform
+          Platform: this.platform,
+          AppId: this.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
