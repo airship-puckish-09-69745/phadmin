@@ -47,13 +47,19 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item v-model="item.path" label="进厅 path：" label-width="110px">
+          <el-select v-model="item.path" placeholder="请选择" size="mini">
+            <el-option label="常规" value="1" />
+            <el-option label="Banner（返回gamefun.ph）" value="2" />
+          </el-select>
+        </el-form-item>
         <el-form-item v-model="item.need_test_uri" label="指定链接类型：" :required="true" label-width="140px">
           <el-select v-model="item.need_test_uri" placeholder="请选择" size="mini">
             <el-option label="平台配置链接" value="0" />
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
-        <el-form-item v-model="item.cashier" label="充值链接：" :required="true" label-width="140px">
+        <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
         <el-form-item>
@@ -112,7 +118,7 @@ import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import Clipboard from 'clipboard'
-import { $libDate, $libShow } from '@/utils/common'
+import { $libDate, $libShow, ClientTableData } from '@/utils/common'
 // import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 import store from '@/store'
@@ -196,34 +202,6 @@ export default {
         {
           name: '大厅',
           val: ''
-        },
-        {
-          name: 'Tongits',
-          val: 'tongits'
-        },
-        {
-          name: 'Tongits-经典',
-          val: 'tongits_classic'
-        },
-        {
-          name: 'Lucky9',
-          val: 'lucky9'
-        },
-        {
-          name: 'Texas',
-          val: 'texas'
-        },
-        {
-          name: '小火箭',
-          val: 'rocket'
-        },
-        {
-          name: 'Color',
-          val: 'colorgame'
-        },
-        {
-          name: 'Pusoy',
-          val: 'pusoy'
         }
       ],
       clientTerminalTypes: [
@@ -254,7 +232,8 @@ export default {
         site_id: 'Dev',
         debug: '0',
         need_test_uri: '0',
-        cashier: 'http://baidu.com'
+        cashier: 'http://baidu.com',
+        path: '1'
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -283,6 +262,7 @@ export default {
         }
       ]
     }
+    this.getAllGames()
   },
   methods: {
     formatNumber(n) {
@@ -316,7 +296,8 @@ export default {
           need_test_uri: this.item.need_test_uri,
           direct_scene: this.item.directScene,
           clientTerminalType: this.item.clientTerminalType,
-          cashier: this.item.cashier
+          cashier: this.item.cashier,
+          path: this.item.path
         }
       }).then(response => {
         console.log(response)
@@ -347,6 +328,24 @@ export default {
       clipboard.on('error', e => {
         this.$message({ message: '该浏览器不支持自动复制', type: 'error' })
         clipboard.destroy()
+      })
+    },
+    getAllGames() {
+      const $this = this
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            const item = {}
+            item.name = objs[i].Name
+            item.val = objs[i].Scene
+            $this.directScenes.push(item)
+          }
+        }
       })
     }
   }

@@ -195,7 +195,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-         <el-row>
+        <el-row>
           <el-col :span="11">
             <el-form-item label="开启Straddle：" :required="true">
               <el-radio-group v-model.number="edit.item.IsEnableStraddle">
@@ -258,7 +258,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-         <el-row>
+        <el-row>
           <el-col :span="9">
             <el-form-item label="VPIP入池率(百分比)：" :required="true" prop="item.TablePourRatio" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.TablePourRatio" placeholder="请输入" />
@@ -317,13 +317,13 @@
                 <el-col :span="12">
 
                   <el-form-item label="outs牌数量">
-                    <el-input v-model="edit.OutsRatio[index].OutsNum" size="mini" :required="true" />
+                    <el-input v-model.number="edit.OutsRatio[index].OutsNum" size="mini" :required="true" type="number" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="12">
-                  <el-form-item label="赔率%">
-                    <el-input v-model="edit.OutsRatio[index].Ratio" size="mini" :required="true" />
+                  <el-form-item label="赔率(千分比)">
+                    <el-input v-model.number="edit.OutsRatio[index].Ratio" size="mini" :required="true" type="number" />
                   </el-form-item>
                 </el-col>
               </el-row>

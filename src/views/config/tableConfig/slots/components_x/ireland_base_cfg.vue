@@ -22,6 +22,7 @@
               <el-option label="爱尔兰精灵" :value="66" />
               <el-option label="金钱兔" :value="67" />
               <el-option label="十倍金牛" :value="68" />
+              <el-option label="糖果派对Way" :value="76" />
             </el-select>
           </el-form-item>
 
@@ -43,6 +44,10 @@
 
           <el-form-item label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
+          </el-form-item>
+
+          <el-form-item label="基础投注">
+            <el-input v-model.number="slotsData.BaseBet" />
           </el-form-item>
 
           <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)" />
@@ -105,6 +110,7 @@ export default {
         'MinVersion': this.slotsData.MinVersion,
         'Bets': this.slotsData.Bets,
         'OddsStr': this.slotsData.OddsStr,
+        'BaseBet': this.slotsData.BaseBet,
         'LoseMaxOddsRate': this.slotsData.LoseMaxOddsRate,
         'MoneyConfig': {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
