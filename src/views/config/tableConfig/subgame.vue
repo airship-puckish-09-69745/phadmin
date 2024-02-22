@@ -55,7 +55,7 @@
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
-                :label="item.label+'-'+item.key"
+                :label="appInfoLabel(item.key, item.label, 'search')"
                 :value="item.key"
               />
             </el-select>
@@ -252,7 +252,7 @@
                 <el-option
                   v-for="item in appInfo"
                   :key="item.key"
-                  :label="item.label+'-'+item.key"
+                  :label="appInfoLabel(item.key, item.label, 'edit')"
                   :value="item.key"
                 />
               </el-select>
@@ -405,7 +405,7 @@ const filterMap = {
 function newItem() {
   return {
     ID: '',
-    AppId: 1000002,
+    AppId: 0,
     GameKey: '',
     Name: '',
     Description: '',
@@ -438,8 +438,8 @@ export default {
       dragItems: [],
       langTypes: ['en', 'hi'],
       platform: 'android',
-      appId: 1000002,
-      appInfo: [],
+      appId: 0,
+      appInfo: [{ key: 0, label: '请选择' }],
 
       edit: {
         visible: false,
@@ -517,6 +517,12 @@ export default {
           }
         }
       })
+    },
+    appInfoLabel(key, label, type) {
+      if (key === 0) {
+        return type === 'search' ? '全部' : '请选择'
+      }
+      return label + '-' + key
     },
     getTypeName(type) {
       let name = type
@@ -647,6 +653,7 @@ export default {
 
     handleCreate() {
       this.edit.item = newItem()
+      this.edit.item.AppId = this.appId
       this.edit.isEdit = false
       this.edit.visible = true
     },
