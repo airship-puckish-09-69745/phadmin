@@ -76,7 +76,7 @@ export default {
       })
     },
     setData() {
-      this.form.Data = JSON.stringify({ Price: this.price, CoolingTime: this.cooling_time })
+      this.form.Data = JSON.stringify({ Price: this.price * 1000, CoolingTime: this.cooling_time })
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
