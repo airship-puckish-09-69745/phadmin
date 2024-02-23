@@ -61,6 +61,9 @@
               :value="item.value"
             />
           </el-select>
+          <el-form-item label="玩家id：">
+            <el-input v-model="searchForm.uid" size="mini" />
+          </el-form-item>
         </el-form-item>
 
         <el-form-item>
