@@ -233,15 +233,15 @@
     <fieldset style="margin-top:20px;">
       <legend>jackpot调控配置-----
         <el-switch
-           v-model="item.JackpotRegulation.ToggleSwitch"
-           active-color="#13ce66"
-           inactive-color="#ff4949"
-           active-text="开"
-           inactive-text="关"
+          v-model="item.JackpotRegulation.ToggleSwitch"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          active-text="开"
+          inactive-text="关"
         />
       </legend>
 
-      <el-descriptions >
+      <el-descriptions>
         <el-descriptions-item>
           <span style="color:red;">开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)</span>
         </el-descriptions-item>
@@ -579,7 +579,7 @@ export default {
             }
             this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
             // 设置修改之前数据
-            console.log('JackpotRandAwards',this.JackpotRandAwards)
+            console.log('JackpotRandAwards', this.JackpotRandAwards)
             this.$refs.compare.SetOldVal(response.Data.Data)
             // this.load = true
           }
@@ -601,7 +601,7 @@ export default {
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.JackpotRegulation = jackpotInfo
-       console.log(ret.JackpotRegulation)
+      console.log(ret.JackpotRegulation)
 
       return ret
     },
@@ -610,7 +610,7 @@ export default {
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
-       console.log(this.form.Data)
+      console.log(this.form.Data)
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
