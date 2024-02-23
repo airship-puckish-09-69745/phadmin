@@ -55,7 +55,7 @@
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
-                :label="appInfoLabel(item.key, item.label, 'search')"
+                :label="appInfoLabel(item.key, item.label)"
                 :value="item.key"
               />
             </el-select>
@@ -69,6 +69,15 @@
           icon="el-icon-plus"
           @click="handleCreate()"
         >添加配置项
+        </el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCopyList()"
+        >复制配置列表
         </el-button>
       </el-col>
       <el-col :span="4" :offset="9">
@@ -248,11 +257,11 @@
         <el-tabs type="card">
           <el-tab-pane label="基础信息">
             <el-form-item label="AppId" :required="true">
-              <el-select v-model="edit.item.AppId" placeholder="请选择" size="mini">
+              <el-select v-model="edit.item.AppId" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
                 <el-option
                   v-for="item in appInfo"
                   :key="item.key"
-                  :label="appInfoLabel(item.key, item.label, 'edit')"
+                  :label="appInfoLabel(item.key, item.label)"
                   :value="item.key"
                 />
               </el-select>
@@ -384,6 +393,43 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      :title="copyListDialog.title"
+      :visible.sync="copyListDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="edit" label-width="150px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="从原AppId" :required="true">
+            <el-select v-model="appId" disabled placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in appInfo"
+                :key="item.key"
+                :label="appInfoLabel(item.key, item.label)"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="复制到AppId" :required="true">
+            <el-select v-model="copyListDialog.targetAppId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in getAppsFiltered(appId)"
+                :key="item.key"
+                :label="appInfoLabel(item.key, item.label)"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="copyList">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -405,7 +451,6 @@ const filterMap = {
 function newItem() {
   return {
     ID: '',
-    AppId: 0,
     GameKey: '',
     Name: '',
     Description: '',
@@ -422,7 +467,8 @@ function newItem() {
     Type: 0,
     IsPlaying: 0,
     IsHot: 0,
-    IsNew: 0
+    IsNew: 0,
+    AppId: 0
   }
 }
 
@@ -438,15 +484,22 @@ export default {
       dragItems: [],
       langTypes: ['en', 'hi'],
       platform: 'android',
-      appId: 0,
-      appInfo: [{ key: 0, label: '请选择' }],
+      appId: 1000002,
+      appInfo: [],
 
       edit: {
         visible: false,
         item: newItem(),
         isEdit: false,
+        isCopy: false,
         langPic: NewLangObj(),
         itemNames: NewLangObj()
+      },
+
+      copyListDialog: {
+        title: '复制配置列表',
+        visible: false,
+        targetAppId: 0
       },
 
       gameComm: {
@@ -465,7 +518,6 @@ export default {
       ],
 
       AttrNames: {
-        AppId: '应用',
         Name: '游戏名称',
         Description: '描述',
         IconInner: '客户端图标ID',
@@ -481,7 +533,8 @@ export default {
         Type: '分类',
         IsPlaying: '免费玩家是否可玩',
         IsNew: '是否新游戏',
-        IsHot: '是否热门'
+        IsHot: '是否热门',
+        AppId: '应用'
       }
     }
   },
@@ -518,11 +571,17 @@ export default {
         }
       })
     },
-    appInfoLabel(key, label, type) {
-      if (key === 0) {
-        return type === 'search' ? '全部' : '请选择'
-      }
+    appInfoLabel(key, label) {
       return label + '-' + key
+    },
+    getAppsFiltered(appId) {
+      const apps = [{ key: 0, label: '请选择' }]
+      for (const i in this.appInfo) {
+        if (this.appInfo[i].key !== appId) {
+          apps.push(this.appInfo[i])
+        }
+      }
+      return apps
     },
     getTypeName(type) {
       let name = type
@@ -647,6 +706,7 @@ export default {
     clickData(row, column, event) {
       if (column.columnKey !== 'op') {
         this.initFormData(true, row.ID)
+        this.edit.isCopy = false
         this.edit.visible = true
       }
     },
@@ -655,11 +715,16 @@ export default {
       this.edit.item = newItem()
       this.edit.item.AppId = this.appId
       this.edit.isEdit = false
+      this.edit.isCopy = false
       this.edit.visible = true
     },
     handleCopy(ob) {
       this.initFormData(false, ob.ID)
+      this.edit.isCopy = true
       this.edit.visible = true
+    },
+    handleCopyList() {
+      this.copyListDialog.visible = true
     },
     getList() {
       request({
@@ -810,6 +875,19 @@ export default {
         this.createSave(this.edit.item)
       }
       this.edit.visible = false
+    },
+    copyList() {
+      request({
+        url: 'subgame/copy/list',
+        method: 'post',
+        data: { SrcAppId: this.appId, TargetAppId: this.copyListDialog.targetAppId }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.clientDB.UpdateData(this.edit.item)
+          this.refreshShow()
+          Message.success('保存成功！')
+        }
+      })
     }
   }
 }
