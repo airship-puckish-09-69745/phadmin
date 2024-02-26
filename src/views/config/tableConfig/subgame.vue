@@ -402,7 +402,7 @@
     >
       <el-form ref="edit" :model="edit" label-width="150px" size="small" inline>
         <el-tabs type="card">
-          <el-form-item label="从原AppId" :required="true">
+          <el-form-item label="从原始AppId" :required="true">
             <el-select v-model="appId" disabled placeholder="请选择" size="mini">
               <el-option
                 v-for="item in appInfo"
@@ -725,6 +725,7 @@ export default {
     },
     handleCopyList() {
       this.copyListDialog.visible = true
+      this.copyListDialog.targetAppId = 0
     },
     getList() {
       request({
@@ -877,17 +878,25 @@ export default {
       this.edit.visible = false
     },
     copyList() {
+      if (this.copyListDialog.targetAppId === 0) {
+        this.$alert('未指定目标AppId')
+        return
+      }
       request({
         url: 'subgame/copy/list',
         method: 'post',
-        data: { SrcAppId: this.appId, TargetAppId: this.copyListDialog.targetAppId }
+        data: { SrcAppId: this.appId, TargetAppId: this.copyListDialog.targetAppId, Platform: this.platform }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          this.refreshShow()
-          Message.success('保存成功！')
+          this.getList()
+          if (response.Data !== '') {
+            Message.success(response.Data)
+          } else {
+            Message.success('配置列表复制成功！')
+          }
         }
       })
+      this.copyListDialog.visible = false
     }
   }
 }
