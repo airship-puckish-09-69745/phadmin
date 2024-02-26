@@ -30,14 +30,21 @@
               <el-input v-model.number="item.JackpotFee"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
+          <!-- <p>
           <el-col :span="7" :offset="1">
             <el-form-item label="中Jackpot后的Jackpot贡献率：">
               <el-input v-model.number="item.HitJackpotFee"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
+          </p> -->
           <el-col :span="7" :offset="1">
             <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
               <el-input v-model.number="item.JackpotBetMin" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="保底奖池抽水：">
+              <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -47,12 +54,96 @@
               <el-input v-model.number="item.SkipNum" />
             </el-form-item>
           </el-col>
-          <el-col :span="7">
+          <el-col :span="7" :offset="1">
             <el-form-item label="中奖抽水率：">
               <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="7">
+            <el-form-item label="配牌(仅点击右上角用户在玩图案后对该用户生效 格式:A23489XJQK-5)： 流程: 填写配牌数据>保存>测试>确定>进桌>用户在玩图案>填写uid>执行">
+              <el-input v-model="item.TestCards" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <!-- <p> 提审 牌值的概率\倍率控制
+        <el-row>
+          <fieldset style="margin-top:10px">
+            <legend>概率\倍率配置 -----
+              <el-switch
+                v-model="item.HasWinRate"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-text="开"
+                inactive-text="关"
+              />
+            </legend>
+
+            <el-row>
+              <el-button type="primary" size="mini" @click="addWinRateRow">添加</el-button>
+            </el-row>
+
+            <el-row>
+              <template>
+                <el-table :data="item.WinRateItems" border>
+
+                  <el-table-column prop="Type" label="牌值">
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.Card" size="small" placeholder="placeholder">
+                        <el-option label="A" :value="1" />
+                        <el-option label="2" :value="2" />
+                        <el-option label="3" :value="3" />
+                        <el-option label="4" :value="4" />
+                        <el-option label="5" :value="5" />
+                        <el-option label="6" :value="6" />
+                        <el-option label="7" :value="7" />
+                        <el-option label="8" :value="8" />
+                        <el-option label="9" :value="9" />
+                        <el-option label="10" :value="10" />
+                        <el-option label="J" :value="11" />
+                        <el-option label="Q" :value="12" />
+                        <el-option label="K" :value="13" />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="top概率(‱)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.TopRate" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="down概率(‱)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.DownRate" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="top倍率(*100)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.TopOdds" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="down倍率(*100)">
+                    <template scope="scope">
+                      <el-input v-model.number="scope.row.DownOdds" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="操作">
+                    <template scope="scope">
+                      <el-button size="mini" type="danger" @click="removeWinRateRow(scope.$index)">删除</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+            </el-row>
+          </fieldset>
+        </el-row>
+        </p> -->
 
         <el-row>
           <fieldset style="margin-top:10px">
@@ -69,7 +160,7 @@
                 <el-table :data="item.JackpotDistributionItems" border>
                   <el-table-column label="范围开始(第N张牌)">
                     <template scope="scope">
-                      <el-input v-model="scope.row.Start" />
+                      <el-input v-model.number="scope.row.Start" />
                     </template>
                   </el-table-column>
                   <el-table-column label="范围结束(第N张牌)">
@@ -140,24 +231,22 @@
     </el-row>
 
     <fieldset style="margin-top:20px;">
-      <legend>jackpot调控配置</legend>
-      <el-row>
-        <el-alert
-          type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
+      <legend>jackpot调控配置-----
+        <el-switch
+          v-model="item.JackpotRegulation.ToggleSwitch"
+          active-color="#13ce66"
+          inactive-color="#ff4949"
+          active-text="开"
+          inactive-text="关"
         />
-        <el-form ref="item" :model="item" label-width="100px">
-          <el-form-item label="调控总开关">
-            <el-switch
-              v-model="item.JackpotRegulation.ToggleSwitch"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="开"
-              inactive-text="关"
-            />
-          </el-form-item>
-        </el-form>
-      </el-row>
+      </legend>
+
+      <el-descriptions>
+        <el-descriptions-item>
+          <span style="color:red;">开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)</span>
+        </el-descriptions-item>
+      </el-descriptions>
+
       <el-row>
         <el-table
           ref="filterTable"
@@ -225,7 +314,8 @@
           </el-table-column>
         </el-table>
       </el-row>
-      <el-descriptions class="margin-top" border>
+
+      <el-descriptions>
         <el-descriptions-item>
           <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
         </el-descriptions-item>
@@ -489,6 +579,7 @@ export default {
             }
             this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
             // 设置修改之前数据
+            console.log('JackpotRandAwards', this.JackpotRandAwards)
             this.$refs.compare.SetOldVal(response.Data.Data)
             // this.load = true
           }
@@ -510,7 +601,7 @@ export default {
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.JackpotRegulation = jackpotInfo
-      // console.log(ret.JackpotRegulation)
+      console.log(ret.JackpotRegulation)
 
       return ret
     },
@@ -519,7 +610,7 @@ export default {
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
-      // console.log(this.form.Data)
+      console.log(this.form.Data)
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -660,6 +751,21 @@ export default {
     removeJackpotDistributionRow(index) {
       this.item.JackpotDistributionItems.splice(index, 1)
     },
+    // 添加card的概率\倍率配置
+    addWinRateRow() {
+      const newRow = {
+        Card: 0,
+        TopRate: 0,
+        TopOdds: 0,
+        DownRate: 0,
+        DownOdds: 0
+      }
+      this.item.WinRateItems.push(newRow)
+    },
+    // 删除card的概率\倍率配置
+    removeWinRateRow(index) {
+      this.item.WinRateItems.splice(index, 1)
+    },
 
     goSearch() {
       this.showArea.showUlReslt = false
@@ -669,7 +775,7 @@ export default {
         data: {
           Env: this.env,
           Path: '/game/show/hilo',
-          Gid: 100,
+          Gid: 102,
           Uid: this.showArea.uid
         }
       }).then(response => {

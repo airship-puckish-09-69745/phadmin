@@ -7,7 +7,22 @@
           <el-form-item label="道具价格：">
             <el-input v-model="price" placeholder="placeholder" />
           </el-form-item>
-          <el-col :offset="16" :span="8">
+          <el-form-item label="冷却时间：">
+            <el-input v-model="cooling_time" placeholder="placeholder">
+              <template slot="append">秒</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="间隔发送时间：">
+            <el-input v-model="interval_send_time" placeholder="placeholder">
+              <template slot="append">秒</template>
+            </el-input>
+          </el-form-item>
+          <el-form-item label="间隔发送次数：">
+            <el-input v-model="interval_send_times" placeholder="placeholder">
+              <template slot="append">次</template>
+            </el-input>
+          </el-form-item>
+          <el-col :offset="8" :span="8">
             <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
@@ -34,6 +49,9 @@ export default {
   data() {
     return {
       price: 1, // 道具价格
+      cooling_time: 5, // 冷却时间
+      interval_send_time: 10, // 间隔发送时间
+      interval_send_times: 5, // 间隔发送次数
       form: {
       },
       txt: '',
@@ -60,7 +78,9 @@ export default {
           // console.log('sign reward', response)
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
-            this.price = parseInt(response.Data.Data) / 1000
+            const item = JSON.parse(response.Data.Data)
+            this.price = parseInt(item.Price) / 1000
+            this.cooling_time = parseInt(item.CoolingTime)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
           }
@@ -68,7 +88,12 @@ export default {
       })
     },
     setData() {
-      this.form.Data = this.price * 1000
+      this.form.Data = JSON.stringify({
+        Price: this.price * 1000,
+        CoolingTime: this.cooling_time,
+        IntervalSendTime: this.interval_send_time,
+        IntervalSendTimes: this.interval_send_times
+      })
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)

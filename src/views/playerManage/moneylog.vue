@@ -299,6 +299,8 @@ const filterMap = {
     30: '老虎机返奖',
     31: '老虎机Wild返奖',
     32: '老虎机Scatter返奖',
+    33: '扫雷下注',
+    34: '扫雷奖励',
     37: '购买添加Bonus',
     38: '输钱添加Bonus',
     39: '游戏中Jackpot',
@@ -349,7 +351,7 @@ export default {
       },
 
       gameNames: ['TeenPatti', 'DragonVsTiger', 'Rummy', 'AndarBahar', 'CarRoulette', 'JHandiMunda', 'AK47', '7Up7Down', 'RedVsBlack', 'TeenPatti100',
-        '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha'],
+        '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha', '糖果派对WAY'],
       libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll'])
     }
   },

@@ -488,11 +488,18 @@
       :visible.sync="sweeperVisible"
       width="650px"
     >
+      <div id="sweeperShowTable">
+        <table>
+          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td></tr>
+          <tr><td>{{ sweeperPlay.JackpotContribute/1000 }}</td><td>{{ sweeperPlay.ReduceContribute/1000 }}</td><td>{{ sweeperPlay.CurrentContribute
+            /1000 }}</td></tr>
+        </table>
+      </div>
       <ul id="sweeperShow">
         <li v-for="(o,key) in sweeperDetails" :key="key" :label="o" :value="key">
           <template>
-            <span v-if="o.result=='金币'" :style="o.step!=0?'color:green':'color:gold'"> {{ o.result }}</span>
-            <span v-else :style="o.step!=0?'color:red':''">{{ o.result }}</span>
+            <span v-if="o.result==1" :style="o.step!=0?'color:green':'color:gold'"> {{ o.name }}</span>
+            <span v-else :style="o.step!=0?'color:red':''">{{ o.name }}</span>
           </template>
           <div class="showStep">
             <template>
@@ -760,6 +767,257 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog
+      title="Windrop详情"
+      :visible.sync="WindropGameVisible"
+      width="50%"
+    >
+      <br>
+      <el-descriptions title="总信息">
+        <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
+        <el-descriptions-item label="总金币">{{ WindropGameResult.BetAllScore }}</el-descriptions-item>
+        <el-descriptions-item label="下注金币">{{ WindropGameResult.BetScore }}</el-descriptions-item>
+        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy }}</el-descriptions-item>
+        <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000 ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
+        <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount }}</el-descriptions-item>
+      </el-descriptions>
+      <br>
+      <el-table
+        ref="filterTable"
+        :data="WindropGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="ID"
+          label="ID"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.ID" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ODDS"
+          label="倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.ODDS<0" style="color:red">spin</span>
+            <span v-else>{{ scope.row.ODDS }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="BallTimes"
+          label="翻倍次数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.BallTimes" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinOdd"
+          label="spin中奖倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinOdd" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinScore"
+          label="spin中奖金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinScore" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Score"
+          label="金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Score" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="TracksPos"
+          label="路径"
+          width="620"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.TracksPos" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog
+      title="骰宝牌局详情"
+      :visible.sync="sicboGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">骰子结果：</span><div style="color:red;">{{ sicboGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="sicboGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="命中"
+          width="80"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="IsBonus"
+          label="ExtraPay命中"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsBonus==1" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Rate"
+          label="命中总赔率"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.Ret"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog title="Hilo详情" :visible.sync="hiloVisible" width="800px">
+
+      <el-descriptions class="margin-top" title="" :column="4" border>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot贡献：
+          </template>
+          {{ hiloJackpotContribute }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot累计贡献：
+          </template>
+          {{ hiloJackpotContributeTotal }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            Jackpot奖励：
+          </template>
+          {{ hiloJackpotAward }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总输赢倍数：
+          </template>
+          {{ (hiloTotalOdds / 100).toFixed(2) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            输赢：
+          </template>
+          {{ hiloStopFlag == 2 ? 'win' : (hiloStopFlag == 1 ? 'lost' : 'unknown') }}
+        </el-descriptions-item>
+
+      </el-descriptions>
+
+      <el-table :data="hiloCardList" border>
+        <el-table-column prop="uid" label="Step">
+          <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="操作">
+          <template slot-scope="scope">{{ selectHiloNotation(scope.row.Notation) }}</template>
+        </el-table-column>
+        <el-table-column prop="cards" label="手牌">
+          <template slot-scope="scope">
+            <div v-html="libShow.CardShow(scope.row.Card)" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="倍数">
+          <template slot-scope="scope">{{ (scope.row.Odds / 100).toFixed(2) }}</template>
+        </el-table-column>
+        <el-table-column prop="isDealer" label="HitJackpot">
+          <template slot-scope="scope">{{ scope.row.HitJackpot ? "是" : "-" }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -843,11 +1101,36 @@ export default {
       sweeperDetails: [],
       sweeperRate: [],
       sweeperSTD: [8.00, 8.33, 8.70, 9.09, 9.52, 10.00, 10.53, 11.11, 11.76, 12.50, 13.33, 14.29, 15.38, 16.67, 18.18, 20.00, 22.22, 25.00, 28.57, 33.33, 40.00, 50.00, 66.67, 100],
-
+      sweeperPlay: [],
       sweeperRateVisible: false,
 
       towerVisible: false,
       towerData: '',
+
+      hiloVisible: false,
+      hiloOpRecord: '',
+      hiloJackpotContribute: 0,
+      hiloJackpotContributeTotal: 0,
+      hiloJackpotAward: 0,
+      hiloTotalOdds: 0,
+      hiloCardList: [],
+      hiloStopFlag: 0,
+      hiloNotation: '',
+
+      sicboGameVisible: false,
+      sicboGameResult: '',
+      sicboGameOptions: [],
+
+      WindropGameVisible: false,
+      WindropGameResult: {
+        BallNum: 0,
+        BetAllScore: 0,
+        BetScore: 0,
+        CurEnergy: 0,
+        EnergyNum: 0,
+        SpinCount: 0
+      },
+      WindropGameOptions: [],
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
@@ -1215,6 +1498,12 @@ export default {
             $this.showPusoyGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
+          } else if (gid === 101) {
+            $this.showSicboGame(obj)
+          } else if (gid === 102) {
+            $this.showHiloGame(obj)
+          } else if (gid === 103) {
+            $this.showWindropGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1322,10 +1611,123 @@ export default {
       this.colorGameResult = resultTmp.join('，')
       this.colorGameVisible = true
     },
+
+    showHiloGame(obj) {
+      this.hiloVisible = true
+      this.hiloCardList = obj.Hilo.CardList
+      console.log(this.hiloCardList)
+      const hiloOp = []
+      this.hiloStopFlag = obj.Hilo.StopFlag
+      this.hiloOpRecord = hiloOp.join(' ')
+      this.hiloJackpotContribute = obj.Hilo.JackpotContribute / 1000
+      this.hiloJackpotContributeTotal = obj.Hilo.JackpotContributeTotal / 1000
+      this.hiloJackpotAward = obj.Hilo.JackpotAward / 1000
+      this.hiloTotalOdds = obj.Hilo.TotalOdds
+    },
+    selectHiloNotation(notation) {
+      switch (notation) {
+        case 1 :
+          return '高'
+        case 2 :
+          return '低'
+        case 3 :
+          return '高等'
+        case 4 :
+          return '低等'
+        case 5 :
+          return '等'
+        case 6 :
+          return '跳过'
+        default:
+          return '-'
+      }
+    },
+    showWindropGame(obj) {
+      const tMap = {}
+      this.WindropGameOptions = []
+      const windropObj = obj.Windrop
+      if (Array.isArray(windropObj.optionData.bouns) && windropObj.optionData.bouns.length > 0) {
+        for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
+          const tracksPos = []
+          for (const pos of windropObj.optionData.bouns[i].TracksPos) {
+            tracksPos.push({
+              posX: pos.posX,
+              posY: pos.posY
+            })
+          }
+          const bouns = windropObj.optionData.bouns[i]
+          tMap[i] = {
+            ID: i,
+            ODDS: bouns.odds,
+            BallTimes: bouns.ballTimes,
+            SpinOdd: bouns.spinOdd,
+            SpinScore: bouns.spinScore,
+            Score: bouns.score,
+            TracksPos: tracksPos
+          }
+        }
+        for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
+          this.WindropGameOptions.push(tMap[i])
+        }
+      }
+      console.log(this.windropGameOptions)
+      this.WindropGameResult.BallNum = windropObj.optionData.ballNum
+      this.WindropGameResult.BetAllScore = windropObj.optionData.betAllScore
+      this.WindropGameResult.BetScore = windropObj.optionData.betScore
+      this.WindropGameResult.CurEnergy = windropObj.optionData.curEnergy
+      this.WindropGameResult.EnergyNum = windropObj.optionData.energyNum
+      this.WindropGameResult.SpinCount = windropObj.optionData.spinCount
+      this.WindropGameVisible = true
+    },
+    showSicboGame(obj) {
+      const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
+        '骰子双点数_3', '骰子双点数_4', '骰子双点数_5', '骰子双点数_6', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12',
+        '点数和_13', '点数和_14', '点数和_15', '点数和_16', '点数和_17', '骰子三点数_1', '骰子三点数_2', '骰子三点数_3', '骰子三点数_4', '骰子三点数_5', '骰子三点数_6', 'Any Triple']
+      const tMap = {}
+      this.sicboGameOptions = []
+      const sicbObj = obj.Sicbo
+      for (let i = 0; i < sicbObj.options.length; i++) {
+        const ob = sicbObj.options[i]
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
+      }
+
+      for (let i = 0; i < sicbObj.players.length; i++) {
+        const player = sicbObj.players[i]
+        if (player.optionsResult === null) {
+          continue
+        }
+        for (let j = 0; j < player.optionsResult.length; j++) {
+          const result = player.optionsResult[j]
+          let won = 0
+          if (tMap[result.id].Hit) {
+            won = tMap[result.id].Rate * result.moneyBet
+          } else {
+            won = -result.moneyBet
+          }
+          tMap[result.id].Ret.push({
+            Uid: player.uid,
+            Bet: result.moneyBet,
+            Won: won
+          })
+        }
+      }
+
+      for (let i = 0; i < sicbObj.options.length; i++) {
+        this.sicboGameOptions.push(tMap[i])
+      }
+      console.log(this.sicboGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < sicbObj.dices.length; i++) {
+        resultTmp.push(sicbObj.dices[i])
+      }
+      this.sicboGameResult = resultTmp.join('，')
+      this.sicboGameVisible = true
+    },
+
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {
         const detailRow = obj.players[i]
-        const rowHtml = ''
+        let rowHtml = ''
         if (detailRow.groups != null && detailRow.groups != undefined) {
           for (let j = 0; j < detailRow.groups.length; j++) {
             let jokerType = '不成型'
@@ -1353,10 +1755,19 @@ export default {
         if (detailRow.result == 1) {
           showName = '金币'
         }
-        showDetail[areaIndex] = { result: showName, step: detailRow.step }
+
+        if (detailRow.result == 3) {
+          showName = '宝箱'
+        }
+
+        showDetail[areaIndex] = { name: showName, step: detailRow.step, result: detailRow.result }
       }
+
       this.sweeperDetails = showDetail
       console.log(this.sweeperDetails)
+      this.sweeperPlay = obj.players
+
+      console.log(this.sweeperPlay)
 
       this.sweeperVisible = true
     },
@@ -1494,6 +1905,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       this.colorGameOptions = []
       this.colorGameVisible = false
       this.colorGameResult = ''
+
+      // 清空sicboGame数据
+      this.sicboGameResult = ''
     },
     showChart() {
       this.initChartData()
@@ -1589,6 +2003,20 @@ ul#sweeperShow li .showStep {
   float: left;
   margin-top:80px;
   margin-right:0px;
+}
+
+#sweeperShowTable table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#sweeperShowTable table td{
+  border: 1px solid #eee;
+  height: 31px;
+  line-height: 31px;
+  padding: 2px;
 }
 
 #towerShow table {

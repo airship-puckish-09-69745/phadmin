@@ -40,6 +40,32 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="应用APP：">
+          <el-select v-model="searchForm.app" placeholder="请选择">
+            <el-option
+              v-for="item in appConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="场次类型：">
+          <el-select v-model="searchForm.level" placeholder="请选择">
+            <el-option
+              v-for="item in levelConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-form-item label="玩家id：">
+            <el-input v-model="searchForm.uid" size="mini" />
+          </el-form-item>
+        </el-form-item>
+
         <el-form-item>
           <el-button type="primary" size="mini" @click="search">查询流水</el-button>
         </el-form-item>
@@ -171,13 +197,27 @@ export default {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
         poolType: 0,
-        actType: 0
+        actType: 0,
+        app: 0,
+        level: 0
       },
       gameConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 25, 'label': 'color game' },
         { 'value': 20, 'label': 'Mines - 扫雷' },
-        { 'value': 100, 'label': 'Tower' }
+        { 'value': 100, 'label': 'Tower' },
+        { 'value': 101, 'label': 'Sicbo' },
+        { 'value': 102, 'label': 'Hilo' },
+        { 'value': 103, 'label': 'Windrop' }
+      ],
+      appConfig: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1000002, 'label': '1000002' },
+        { 'value': 1000005, 'label': '1000005' }
+      ],
+      levelConfig: [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1, 'label': '普通场次' }
       ],
       poolConfig: [
         { 'value': 0, 'label': '全部' },
@@ -230,10 +270,12 @@ export default {
           Uid: _this.searchForm.uid,
           PoolType: _this.searchForm.poolType,
           ActType: _this.searchForm.actType,
-          Time: $libDate.SelectTimeToIndia(this.searchForm.date) / 1000,
+          Time: this.searchForm.date / 1000,
           GameId: _this.searchForm.gameId,
           Page: _this.currentPage,
           Limit: _this.pageNum,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
           SearchType: _this.searchForm.searchType
         }
       }).then(response => {
@@ -265,7 +307,9 @@ export default {
         data: {
           Env: _this.env,
           Path: '/jackpot/info',
-          GameId: _this.searchForm.gameId
+          GameId: _this.searchForm.gameId,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -299,6 +343,8 @@ export default {
           Path: '/jackpot/operate',
           GameId: _this.searchForm.gameId,
           ChangeNum: changeNum * 1000,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
           IsRobot: robotFlag
         }
       }).then(response => {

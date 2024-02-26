@@ -195,6 +195,16 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="开启Straddle：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsEnableStraddle">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-row>
           <el-col :span="11">
@@ -248,6 +258,18 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="9">
+            <el-form-item label="VPIP入池率(百分比)：" :required="true" prop="item.TablePourRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TablePourRatio" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="抽50%，则填写50" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
 
         <fieldset>
           <legend>时间配置</legend>
@@ -295,13 +317,13 @@
                 <el-col :span="12">
 
                   <el-form-item label="outs牌数量">
-                    <el-input v-model="edit.OutsRatio[index].OutsNum" size="mini" :required="true" />
+                    <el-input v-model.number="edit.OutsRatio[index].OutsNum" size="mini" :required="true" type="number" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="12">
-                  <el-form-item label="赔率%">
-                    <el-input v-model="edit.OutsRatio[index].Ratio" size="mini" :required="true" />
+                  <el-form-item label="赔率(千分比)">
+                    <el-input v-model.number="edit.OutsRatio[index].Ratio" size="mini" :required="true" type="number" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -379,6 +401,7 @@ function newItem() {
     Level: 1,
     PrefixChip: 0,
     NoRathole: 0,
+    IsEnableStraddle: 0,
     AutoStartPlayerNumer: 0,
     OutsRatio: [],
     IsEnableInsure: 0,
@@ -387,7 +410,8 @@ function newItem() {
     DelayOpTimeUsedTimes: 0,
     ShowPublicCardCostMoney: 0,
     HideLevel: 0,
-    MinPlayMoney: 0
+    MinPlayMoney: 0,
+    TablePourRatio: 0
   }
 }
 
@@ -430,6 +454,7 @@ export default {
         WatchTimesMax: '最大旁观局数',
         PrefixChip: '前注',
         NoRathole: '是否开启NoRathole',
+        IsEnableStraddle: '是否开启Straddle',
         AutoStartPlayerNumer: '自动开始人数',
         IsEnableInsure: '是否开启保险',
         IsEnableMultiPerflop: '是否多次发牌',
@@ -437,7 +462,8 @@ export default {
         HideLevel: '进入该场次后隐藏场次',
         DelayOpTimeUsedTimes: '最多使用次数',
         ShowPublicCardCostMoney: '显示公共牌消耗金额',
-        MinPlayMoney: '最小玩牌金额'
+        MinPlayMoney: '最小玩牌金额',
+        TablePourRatio: 'VPIP入池率'
       }
     }
   },

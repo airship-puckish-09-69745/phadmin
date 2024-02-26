@@ -299,7 +299,6 @@ export default {
       this.allCfg.push(cfg)
       this.selectGameVisible = false
       this.updateDuplicate(this.item, this.oldData)
-      console.log('========', this.item)
       this.refresh()
     },
     editRow(idx, row) {
@@ -468,7 +467,7 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameOptions.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Name
+              label: response.Data[i].Scene
             })
           }
         }

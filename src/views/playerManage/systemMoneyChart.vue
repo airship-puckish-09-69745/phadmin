@@ -99,7 +99,7 @@
         <el-button type="success" plain @click="showOrigin">原始值</el-button>
       </el-col>
       <el-col :span="14">
-        <el-form  v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
+        <el-form v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
           <el-form-item label="日期：">
             <el-date-picker
               v-model="item.date"
@@ -246,11 +246,11 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
-      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 100: 'Tower', 31: 'Tongits-经典', 10000: '汇总' },
+      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 100: 'Tower', 31: 'Tongits-经典', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 100],
+      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 100, 102, 101, 103],
       sortOrder: [],
       env: 'test'
     }
@@ -305,7 +305,7 @@ export default {
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 31) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 31 || o === 101 || o === 103) {
         return false
       } else {
         return true
@@ -481,9 +481,37 @@ export default {
     },
     initChartData() {
       const objs = this.logData
-      const preObjs = this.preData
+      let preObjs = this.preData
       const healthData = newHealthData()
       const originData = newOriginData()
+
+      // 如果昨天没有数据，赋予今天的数据
+      if (preObjs.length === 0) {
+        preObjs = objs
+      }
+      if (preObjs.length > 0) {
+        preObjs.sort(function(a, b) {
+          if (a.TimeKey < b.TimeKey) {
+            return -1
+          }
+          if (a.TimeKey > b.TimeKey) {
+            return 1
+          }
+          return 0
+        })
+        console.log(preObjs)
+      }
+      if (objs.length > 0) {
+        objs.sort(function(a, b) {
+          if (a.TimeKey < b.TimeKey) {
+            return -1
+          }
+          if (a.TimeKey > b.TimeKey) {
+            return 1
+          }
+          return 0
+        })
+      }
 
       for (const i in preObjs) {
         const ob = preObjs[i]

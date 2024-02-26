@@ -135,6 +135,12 @@ export const asyncRoutes = [
         name: 'play_log_top100',
         meta: { title: '牌局排行榜 ◐' }
       },
+      /*     {
+        path: 'play_log_together_top100',
+        component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
+        name: 'play_log_together_top100',
+        meta: { title: 'Tongits同桌排行榜 ◐' }
+      },*/
       {
         path: 'sweeperTableUserData',
         component: () => import('@/views/playerManage/sweeperTableUserData'),
@@ -159,37 +165,37 @@ export const asyncRoutes = [
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '积分赛活动配置', noCache: true },
+        meta: { title: '积分赛配置' },
         children: [
           {
             path: 'millionPointRaceRuleConfig',
             component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleConfig'),
             name: 'millionPointRaceRuleConfig',
-            meta: { title: '百万积分赛配置 🎶' }
+            meta: { title: '积分赛周期配置 🎶', noCache: true }
           },
           {
             path: 'millionPointRaceRuleCommonConfig',
             component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleCommonConfig'),
             name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛公共奖励配置 ' }
+            meta: { title: '积分赛公共配置', noCache: true }
           },
           {
             path: 'activityLog',
             component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
             name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛活动日志  🚩️' }
+            meta: { title: '积分赛用户日志  🚩️' }
           },
           {
             path: 'pointRaceUserLog',
             component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
             name: 'pointRaceUserLog',
-            meta: { title: '积分赛用户榜单  ' }
+            meta: { title: '积分赛排行榜' }
           },
           {
             path: 'UserDetailLog',
             component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
             name: 'UserDetailLog',
-            meta: { title: '用户详情  ' }
+            meta: { title: '积分赛用户信息' }
           }
         ]
       },
@@ -211,12 +217,12 @@ export const asyncRoutes = [
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
           },
-          /*          {
+          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
             meta: { title: '同桌黑名单 ◐' }
-          },*/
+          },
           {
             path: 'tongitsTableAI',
             component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
@@ -396,6 +402,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/windrop_cfg'),
             name: 'windrop_cfg',
             meta: { title: 'Windrop ◐' }
+          },
+          {
+            path: 'miniWindrop_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
+            name: 'miniWindrop_cfg',
+            meta: { title: 'MiniWindrop ◐' }
           }
 
         ]
@@ -463,6 +475,12 @@ export const asyncRoutes = [
             name: 'rabbit_slots_cfg',
             meta: { title: '金钱兔' }
           },*/
+          {
+            path: 'candypartyway_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
+            name: 'candypartyway_slots_cfg',
+            meta: { title: '糖果派对Way' }
+          },
           {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
@@ -577,44 +595,7 @@ export const asyncRoutes = [
       }
     ]
   },
-  {
-    path: '/thirdparty',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '第三方管理', icon: 'user', perm: 'CFG_MANAGEMENT' },
-    children: [
-      {
-        path: 'thirdparty',
-        component: () => import('@/views/thirdparty/thirdparty'),
-        name: 'thirdpartyManage',
-        meta: { title: '第三方信息 ◐' }
-      },
-      {
-        path: 'transfer',
-        component: () => import('@/views/thirdparty/transfer'),
-        name: 'transfer_log',
-        meta: { title: '转账流水 ◐' }
-      },
-      {
-        path: 'playlog_list',
-        component: () => import('@/views/thirdparty/playlog'),
-        name: 'thirdparty_playlog',
-        meta: { title: '牌局流水 ◐' }
-      },
-      {
-        path: 'thirdparty_game_list',
-        component: () => import('@/views/thirdparty/gamelist'),
-        name: 'thirdparty_game_list',
-        meta: { title: '第三方子游戏 ◐' }
-      },
-      {
-        path: 'enterurl',
-        component: () => import('@/views/thirdparty/enterurl'),
-        name: 'enterurl',
-        meta: { title: '生成游戏链接 ◐' }
-      }
-    ]
-  },
+
   {
     path: '/playlog',
     component: Layout,
@@ -703,6 +684,12 @@ export const asyncRoutes = [
         meta: { title: 'Sicbo ◐', gid: 101 }
       },
       {
+        path: 'playlog_windrop',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_windrop',
+        meta: { title: 'Windrop ◐', gid: 103 }
+      },
+      {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
@@ -777,6 +764,44 @@ export const asyncRoutes = [
           }*/
 
         ]
+      }
+    ]
+  },
+  {
+    path: '/thirdparty',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '第三方管理', icon: 'user', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'thirdparty',
+        component: () => import('@/views/thirdparty/thirdparty'),
+        name: 'thirdpartyManage',
+        meta: { title: '第三方信息 ◐' }
+      },
+      // {
+      //   path: 'transfer',
+      //   component: () => import('@/views/thirdparty/transfer'),
+      //   name: 'transfer_log',
+      //   meta: { title: '转账流水 ◐' }
+      // },
+      {
+        path: 'playlog_list',
+        component: () => import('@/views/thirdparty/playlog'),
+        name: 'thirdparty_playlog',
+        meta: { title: '牌局流水 ◐' }
+      },
+      {
+        path: 'thirdparty_game_list',
+        component: () => import('@/views/thirdparty/gamelist'),
+        name: 'thirdparty_game_list',
+        meta: { title: '第三方子游戏 ◐' }
+      },
+      {
+        path: 'enterurl',
+        component: () => import('@/views/thirdparty/enterurl'),
+        name: 'enterurl',
+        meta: { title: '生成游戏链接 ◐' }
       }
     ]
   },
@@ -969,17 +994,35 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: '测试工具集', icon: 'tab' },
         children: [
+          // {
+          //   path: 'fakeOrderSucc',
+          //   component: () => import('@/views/devTools/fakeOrderSucc'),
+          //   name: 'fakeOrderSucc',
+          //   meta: { title: '测试订单成功' }
+          // },
+          // {
+          //   path: 'testTools',
+          //   component: () => import('@/views/devTools/test_tools'),
+          //   name: 'testTools',
+          //   meta: { title: '测试小工具' }
+          // },
+          // {
+          //   path: 'testSign',
+          //   component: () => import('@/views/devTools/testSign'),
+          //   name: 'testSign',
+          //   meta: { title: '签到小工具' }
+          // },
+          // {
+          //   path: 'testMonthCard',
+          //   component: () => import('@/views/devTools/testMonthCard'),
+          //   name: 'testMonthCard',
+          //   meta: { title: '月卡小工具' }
+          // },
           {
-            path: 'testSign',
-            component: () => import('@/views/devTools/testSign'),
-            name: 'testSign',
-            meta: { title: '签到小工具' }
-          },
-          {
-            path: 'testMonthCard',
-            component: () => import('@/views/devTools/testMonthCard'),
-            name: 'testMonthCard',
-            meta: { title: '月卡小工具' }
+            path: 'testWebThirdpartyTransfer',
+            component: () => import('@/views/devTools/testWebThirdpartyTransfer'),
+            name: 'TestWebThirdpartyTransfer',
+            meta: { title: '转入转出小工具', perm: 'ADMINUSER_MANAGEMENT' }
           }
         ]
       },

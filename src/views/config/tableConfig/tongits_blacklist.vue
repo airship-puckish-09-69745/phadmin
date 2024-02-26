@@ -211,7 +211,7 @@ export default {
       })
     },
     refreshData() {
-      this.clientDB = new ClientTableData(this.showData, 10, {}, 'index', 1)
+      this.clientDB = new ClientTableData(this.showData, 10, {}, 'index', -1)
       this.refreshShow()
     },
     setData() {
