@@ -137,7 +137,7 @@
 
                 <el-table-column
                   prop="RobotBetOdds"
-                  label="机器人下注概率(%)"
+                  label="机器人下注概率(‰)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.RobotBetOdds" size="mini" />
