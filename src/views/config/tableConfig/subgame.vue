@@ -423,6 +423,11 @@
             </el-select>
           </el-form-item>
           <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上；若状态为非上架状态，需先进行上架后点击发布</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
             <el-col :span="12" :offset="10">
               <el-button type="primary" size="medium" @click="copyList">保存</el-button>
             </el-col>
