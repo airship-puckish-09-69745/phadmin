@@ -70,7 +70,8 @@ export default {
       },
       JackpotConf: {
         BlindRatio: 0,
-        JackpotCardTypeConf: []
+        JackpotCardTypeConf: [
+        ]
       },
       form: {},
       subKey: 'gameTexasNlh'
