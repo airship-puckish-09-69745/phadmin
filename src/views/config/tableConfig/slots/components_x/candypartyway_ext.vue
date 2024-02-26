@@ -13,7 +13,7 @@
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容"> <template slot="append">放大100倍</template> </el-input>
+            <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容"> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围">
