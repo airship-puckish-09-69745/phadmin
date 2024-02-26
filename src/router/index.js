@@ -408,7 +408,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
             name: 'miniWindrop_cfg',
             meta: { title: 'MiniWindrop ◐' }
-          }
+          },
+          {
+            path: 'UpDown',
+            component: () => import('@/views/config/tableConfig/UpDownTable'),
+            name: 'UpDown',
+            meta: { title: '7Up7Down ◐' }
+          },
 
         ]
       },

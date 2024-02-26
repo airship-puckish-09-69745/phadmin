@@ -48,7 +48,21 @@
     </el-row>
 
     <el-row style="padding-top: 5px">
-      <el-col :span="4">
+      <el-col :span="5">
+        <el-form label-width="50px">
+          <el-form-item label="AppId">
+            <el-select v-model="appId" style="width: 230px" size="small" @change="getList()">
+              <el-option
+                v-for="item in appInfo"
+                :key="item.key"
+                :label="appInfoLabel(item.key, item.label)"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="2">
         <el-button
           size="mini"
           type="primary"
@@ -57,7 +71,16 @@
         >添加配置项
         </el-button>
       </el-col>
-      <el-col :span="4" :offset="12">
+      <el-col :span="2">
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCopyList()"
+        >复制配置列表
+        </el-button>
+      </el-col>
+      <el-col :span="4" :offset="9">
         <TableSort :items="dragItems" :on-success="sortSucc" post-url="/subgame/update/sort" />
       </el-col>
       <el-col :span="2">
@@ -87,6 +110,11 @@
           prop="Sort"
           label="排序"
           sortable="custom"
+          width="75"
+        />
+        <el-table-column
+          prop="AppId"
+          label="AppId"
           width="100"
         />
         <el-table-column
@@ -228,6 +256,16 @@
       <el-form ref="edit" :model="edit" label-width="150px" size="small">
         <el-tabs type="card">
           <el-tab-pane label="基础信息">
+            <el-form-item label="AppId" :required="true">
+              <el-select v-model="edit.item.AppId" style="width: 230px" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
+                <el-option
+                  v-for="item in appInfo"
+                  :key="item.key"
+                  :label="appInfoLabel(item.key, item.label)"
+                  :value="item.key"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item label="名称：" :required="true">
               <el-row>
                 <el-col :span="2">英文: </el-col><el-col :span="16"><el-input v-model="edit.itemNames['en']" /></el-col>
@@ -304,11 +342,6 @@
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="指定AppID可见：" :required="true">
-              <el-col :span="11">
-                <el-input v-model="edit.item.WhiteAppIDs" placeholder="多个AppID用,号分隔" />
-              </el-col>
-            </el-form-item>
             <el-form-item label="最低版本限制：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
@@ -360,6 +393,48 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      :title="copyListDialog.title"
+      :visible.sync="copyListDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="edit" label-width="150px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="从原始AppId" :required="true">
+            <el-select v-model="copyListDialog.srcAppId" style="width: 230px" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in appInfo"
+                :key="item.key"
+                :label="appInfoLabel(item.key, item.label)"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="复制到AppId" :required="true">
+            <el-select v-model="copyListDialog.targetAppId" style="width: 230px" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in getAppsFiltered(copyListDialog.srcAppId)"
+                :key="item.key"
+                :label="appInfoLabel(item.key, item.label)"
+                :value="item.key"
+              />
+            </el-select>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上；若状态为非上架状态，需先进行上架后点击发布</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="copyList">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -397,7 +472,8 @@ function newItem() {
     Type: 0,
     IsPlaying: 0,
     IsHot: 0,
-    IsNew: 0
+    IsNew: 0,
+    AppId: 0
   }
 }
 
@@ -413,13 +489,23 @@ export default {
       dragItems: [],
       langTypes: ['en', 'hi'],
       platform: 'android',
+      appId: 1000002,
+      appInfo: [],
 
       edit: {
         visible: false,
         item: newItem(),
         isEdit: false,
+        isCopy: false,
         langPic: NewLangObj(),
         itemNames: NewLangObj()
+      },
+
+      copyListDialog: {
+        title: '复制配置列表',
+        visible: false,
+        srcAppId: 1000002,
+        targetAppId: 0
       },
 
       gameComm: {
@@ -453,7 +539,8 @@ export default {
         Type: '分类',
         IsPlaying: '免费玩家是否可玩',
         IsNew: '是否新游戏',
-        IsHot: '是否热门'
+        IsHot: '是否热门',
+        AppId: '应用'
       }
     }
   },
@@ -469,9 +556,39 @@ export default {
     this.env = store.getters.env || this.env
     this.platform = this.$route.meta.platform
     this.getList()
+    this.getAppInfo()
     console.log(1)
   },
   methods: {
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+    appInfoLabel(key, label) {
+      return label + '-' + key
+    },
+    getAppsFiltered(appId) {
+      const apps = [{ key: 0, label: '请选择' }]
+      for (const i in this.appInfo) {
+        if (this.appInfo[i].key !== appId) {
+          apps.push(this.appInfo[i])
+        }
+      }
+      return apps
+    },
     getTypeName(type) {
       let name = type
       for (const i in this.typeOption) {
@@ -595,25 +712,35 @@ export default {
     clickData(row, column, event) {
       if (column.columnKey !== 'op') {
         this.initFormData(true, row.ID)
+        this.edit.isCopy = false
         this.edit.visible = true
       }
     },
 
     handleCreate() {
       this.edit.item = newItem()
+      this.edit.item.AppId = this.appId
       this.edit.isEdit = false
+      this.edit.isCopy = false
       this.edit.visible = true
     },
     handleCopy(ob) {
       this.initFormData(false, ob.ID)
+      this.edit.isCopy = true
       this.edit.visible = true
+    },
+    handleCopyList() {
+      this.copyListDialog.visible = true
+      this.copyListDialog.srcAppId = this.appId
+      this.copyListDialog.targetAppId = 0
     },
     getList() {
       request({
         url: '/subgame/all',
         method: 'get',
         data: {
-          Platform: this.platform
+          Platform: this.platform,
+          AppId: this.appId
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -756,6 +883,27 @@ export default {
         this.createSave(this.edit.item)
       }
       this.edit.visible = false
+    },
+    copyList() {
+      if (this.copyListDialog.targetAppId === 0) {
+        this.$alert('未指定目标AppId')
+        return
+      }
+      request({
+        url: 'subgame/copy/list',
+        method: 'post',
+        data: { SrcAppId: this.appId, TargetAppId: this.copyListDialog.targetAppId, Platform: this.platform }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.getList()
+          if (response.Data !== '') {
+            Message.success(response.Data)
+          } else {
+            Message.success('配置列表复制成功！')
+          }
+        }
+      })
+      this.copyListDialog.visible = false
     }
   }
 }
