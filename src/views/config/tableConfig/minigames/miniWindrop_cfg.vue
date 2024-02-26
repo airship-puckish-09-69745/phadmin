@@ -350,7 +350,7 @@
             />
 
             <el-table
-              :data="item2.JackpotCfg"
+              :data="item.JackpotCfg2"
               border
               style="width: 100%"
             >
@@ -396,10 +396,10 @@
           type="error"
           description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
         />
-        <el-form ref="item2" :model="item" label-width="100px">
+        <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
             <el-switch
-              v-model="item2.JackpotRegulation.ToggleSwitch"
+              v-model="item.JackpotRegulation2.ToggleSwitch"
               active-color="#13ce66"
               inactive-color="#ff4949"
               active-text="开"
@@ -428,7 +428,7 @@
           <!--
           <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              {{ item2.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%
+              {{ item.JackpotCfg2[scope.row.JackpotType-1].AwardRate }}%
             </template>
           </el-table-column>
           -->
@@ -482,7 +482,7 @@
       </el-descriptions>
       <el-table
         ref="filterTable"
-        :data="item2.JackpotRegulation.PoolIncrArr"
+        :data="item.JackpotRegulation2.PoolIncrArr"
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
         :row-style="{height:'10px'}"
@@ -497,27 +497,27 @@
         </el-table-column>
         <el-table-column label="[0,2)点" prop="MinRobotNum">
           <template slot-scope="scope">
-            {{ getJackpotIncrShow(scope.row, 0, 1) }}
+            {{ getJackpotIncrShow2(scope.row, 0, 1) }}
           </template>
         </el-table-column>
         <el-table-column label="[2,7)点" prop="MinRobotNum">
           <template slot-scope="scope">
-            {{ getJackpotIncrShow(scope.row, 2, 6) }}
+            {{ getJackpotIncrShow2(scope.row, 2, 6) }}
           </template>
         </el-table-column>
         <el-table-column label="[7,9)点" prop="MinRobotNum">
           <template slot-scope="scope">
-            {{ getJackpotIncrShow(scope.row, 7, 8) }}
+            {{ getJackpotIncrShow2(scope.row, 7, 8) }}
           </template>
         </el-table-column>
         <el-table-column label="[9,18)点" prop="MinRobotNum">
           <template slot-scope="scope">
-            {{ getJackpotIncrShow(scope.row, 9, 17) }}
+            {{ getJackpotIncrShow2(scope.row, 9, 17) }}
           </template>
         </el-table-column>
         <el-table-column label="[18,24)点" prop="MinRobotNum">
           <template slot-scope="scope">
-            {{ getJackpotIncrShow(scope.row, 18, 23) }}
+            {{ getJackpotIncrShow2(scope.row, 18, 23) }}
           </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -898,7 +898,18 @@ export default {
           ],
           PoolIncrArr: []
         },
-        jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
+        jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 },
+        JackpotRegulation2: {
+          BetMoreThan: 0,
+          AddPoolPctAfterJp: 0,
+          AddPoolPctPreJp: 0,
+          RandAwards: [
+            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [], 'VrPoolRate': 0, 'RealPoolRate': 0, 'JackpotRate': 0 }
+          ],
+          PoolIncrArr: []
+        },
+        jackpotShowOption2: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
+
       },
 
       load: false,
@@ -929,18 +940,6 @@ export default {
       },
 
 
-      item2: {
-        JackpotRegulation: {
-          BetMoreThan: 0,
-          AddPoolPctAfterJp: 0,
-          AddPoolPctPreJp: 0,
-          RandAwards: [
-            { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [], 'VrPoolRate': 0, 'RealPoolRate': 0, 'JackpotRate': 0 }
-          ],
-          PoolIncrArr: []
-        },
-        jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
-      },
 
       load2: false,
       showArea2: {
@@ -978,7 +977,7 @@ export default {
         AddTimesRow: [6, 10, 14],
         Splice: [1, 2, 3],
         WinType:[2, 6, 16],
-        FeeRate: 0,
+        FeeRate: 1,
         JackpotNormal:0,
         JackpotHight:0,
         HappyRouletteCfg: [
@@ -1817,14 +1816,13 @@ export default {
             console.log('JackpotRandAwards',this.JackpotRandAwards)
 
 
-            $this.item2 = cfgJson
-            for (const k in this.item2.JackpotRegulation.RandAwards) {
-              this.item2.JackpotRegulation.RandAwards[k].PoolVal /= 1000
+            for (const k in this.item.JackpotRegulation2.RandAwards) {
+              this.item.JackpotRegulation2.RandAwards[k].PoolVal /= 1000
             }
-            this.JackpotRandAwards2 = this.item2.JackpotRegulation.RandAwards
+            this.JackpotRandAwards2 = this.item.JackpotRegulation2.RandAwards
             console.log('JackpotRandAwards',this.JackpotRandAwards2)
            // 设置修改之前数据
-            $this.$refs.compare.SetOldVal(response.Data)
+            $this.$refs.compare.SetOldVal(response.Data.Data)
           }
         }
       })
@@ -1856,6 +1854,7 @@ export default {
       const postData = {}
       Object.assign(postData, this.cfg)
       const jackpotInfo = {}
+      const jackpotInfo2 = {}
       Object.assign(jackpotInfo, this.item.JackpotRegulation)
       console.log("jackpotInfo:",jackpotInfo)
       jackpotInfo.RandAwards = []
@@ -1867,16 +1866,16 @@ export default {
         jackpotInfo.RandAwards.push(raObj)
       }
       postData.JackpotRegulation = jackpotInfo
-
+      Object.assign(jackpotInfo2, this.item.JackpotRegulation2)
       jackpotInfo2.RandAwards = []
       for (const o in this.JackpotRandAwards2) {
         const raObj = {}
-        this.JackpotRandAwards2[o].AwardRate = this.item2.JackpotCfg[o].AwardRate // 同步奖励占比
+        this.JackpotRandAwards2[o].AwardRate = this.item.JackpotCfg2[o].AwardRate // 同步奖励占比
         Object.assign(raObj, this.JackpotRandAwards2[o])
         raObj.PoolVal *= 1000
         jackpotInfo2.RandAwards.push(raObj)
       }
-      postData.JackpotRegulation2 = jackpotInfo
+      postData.JackpotRegulation2 = jackpotInfo2
       return postData
     },
     setData() {
@@ -1907,14 +1906,15 @@ export default {
       if (postData.HappyRouletteCfg) {
         for (const i in postData.HappyRouletteCfg) {
           if (postData.HappyRouletteCfg[i].Type === 1) {
-            postData.HappyRouletteCfg[i].Num = parseFloat(postData.HappyRouletteCfg[i].Num) * 1000
+            postData.HappyRouletteCfg[i].Num = parseFloat(postData.HappyRouletteCfg[i].Num)*1000
           }
         }
       }
       this.form.Data = JSON.stringify(postData)
+   //   console.log("this.form.Data ",this.form.Data )
       const $this = this
       // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.form)
+      this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -2086,11 +2086,11 @@ export default {
       }
     },
     saveIncrJackpotDialog2() {
-      for (var i = 0; i < this.item2.JackpotRegulation.PoolIncrArr.length; i++) {
-        if (this.item2.JackpotRegulation.PoolIncrArr[i].Id == this.incrJackpotForm2.id) {
-          this.item2.JackpotRegulation.PoolIncrArr[i].TimeArr = this.incrJackpotForm2.data
-          for (var j = 0; j < this.item2.JackpotRegulation.PoolIncrArr[i].TimeArr.length; j++) {
-            this.item2.JackpotRegulation.PoolIncrArr[i].TimeArr[j].PerHourIncr *= 1000
+      for (var i = 0; i < this.item.JackpotRegulation2.PoolIncrArr.length; i++) {
+        if (this.item.JackpotRegulation2.PoolIncrArr[i].Id == this.incrJackpotForm2.id) {
+          this.item.JackpotRegulation2.PoolIncrArr[i].TimeArr = this.incrJackpotForm2.data
+          for (var j = 0; j < this.item.JackpotRegulation2.PoolIncrArr[i].TimeArr.length; j++) {
+            this.item.JackpotRegulation2.PoolIncrArr[i].TimeArr[j].PerHourIncr *= 1000
           }
           break
         }
