@@ -408,7 +408,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
             name: 'miniWindrop_cfg',
             meta: { title: 'MiniWindrop ◐' }
-          }
+          },
+          {
+            path: 'UpDown',
+            component: () => import('@/views/config/tableConfig/UpDownTable'),
+            name: 'UpDown',
+            meta: { title: '7Up7Down ◐' }
+          },
 
         ]
       },
@@ -475,6 +481,12 @@ export const asyncRoutes = [
             name: 'rabbit_slots_cfg',
             meta: { title: '金钱兔' }
           },*/
+          {
+            path: 'candypartyway_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
+            name: 'candypartyway_slots_cfg',
+            meta: { title: '糖果派对Way' }
+          },
           {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),

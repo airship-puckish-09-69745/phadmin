@@ -54,15 +54,15 @@
                 </el-table-column>
                 <el-table-column
                   prop="Low"
-                  label="最小下注限制"
+                  label="最大下注限制"
                 >
                   <template slot-scope="scope">
                     <el-input v-model="scope.row.MaxMoneyBet" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="MaxMoneyBet"
-                  label="最大下注限制"
+                  prop="Low"
+                  label="最小下注限制"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />
@@ -134,6 +134,16 @@
                     <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
                   </template>
                 </el-table-column>
+
+                <el-table-column
+                  prop="RobotBetOdds"
+                  label="机器人下注概率(‰)"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.RobotBetOdds" size="mini" />
+                  </template>
+                </el-table-column>
+
               </el-table>
             </el-row>
           </fieldset>
@@ -172,7 +182,6 @@
               </el-table>
             </el-row>
           </fieldset>
-
 
           <fieldset style="margin-top:10px">
             <legend>机器人配置</legend>
@@ -348,7 +357,6 @@
       </el-form>
     </el-row>
 
-
     <!-- 【dialog】编辑机器人人数 -->
     <el-dialog
       title="编辑机器人人数"
@@ -400,41 +408,41 @@ export default {
       item: {
         BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 }],
         BetAreaOptions: [
-          { Name: 'SMALL_小点', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 0 },
-          { Name: 'BIG_大点', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 1 },
-          { Name: '骰子单点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 2 },
-          { Name: '骰子单点数_2', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 3 },
-          { Name: '骰子单点数_3', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 4 },
-          { Name: '骰子单点数_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 5 },
-          { Name: '骰子单点数_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 6 },
-          { Name: '骰子单点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 7 },
-          { Name: '骰子双点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 8 },
-          { Name: '骰子双点数_2', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 9 },
-          { Name: '骰子双点数_3', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 10 },
-          { Name: '骰子双点数_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 11 },
-          { Name: '骰子双点数_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 12 },
-          { Name: '骰子双点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 13 },
-          { Name: '点数和_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 14 },
-          { Name: '点数和_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 15 },
-          { Name: '点数和_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 16 },
-          { Name: '点数和_7', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 17 },
-          { Name: '点数和_8', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 18 },
-          { Name: '点数和_9', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 19 },
-          { Name: '点数和_10', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 20 },
-          { Name: '点数和_11', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 21 },
-          { Name: '点数和_12', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 22 },
-          { Name: '点数和_13', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 23 },
-          { Name: '点数和_14', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 24 },
-          { Name: '点数和_15', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 25 },
-          { Name: '点数和_16', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 26 },
-          { Name: '点数和_17', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 27 },
-          { Name: '骰子三点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 28 },
-          { Name: '骰子三点数_2', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 29 },
-          { Name: '骰子三点数_3', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 30 },
-          { Name: '骰子三点数_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 31 },
-          { Name: '骰子三点数_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 32 },
-          { Name: '骰子三点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 33 },
-          { Name: 'Any Triple', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 34 }
+          { Name: 'SMALL_小点', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 0, RobotBetOdds: 1 },
+          { Name: 'BIG_大点', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 1, RobotBetOdds: 1 },
+          { Name: '骰子单点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 2, RobotBetOdds: 1 },
+          { Name: '骰子单点数_2', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 3, RobotBetOdds: 1 },
+          { Name: '骰子单点数_3', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 4, RobotBetOdds: 1 },
+          { Name: '骰子单点数_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 5, RobotBetOdds: 1 },
+          { Name: '骰子单点数_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 6, RobotBetOdds: 1 },
+          { Name: '骰子单点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 7, RobotBetOdds: 1 },
+          { Name: '骰子双点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 8, RobotBetOdds: 1 },
+          { Name: '骰子双点数_2', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 9, RobotBetOdds: 1 },
+          { Name: '骰子双点数_3', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 10, RobotBetOdds: 1 },
+          { Name: '骰子双点数_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 11, RobotBetOdds: 1 },
+          { Name: '骰子双点数_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 12, RobotBetOdds: 1 },
+          { Name: '骰子双点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 13, RobotBetOdds: 1 },
+          { Name: '点数和_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 14, RobotBetOdds: 1 },
+          { Name: '点数和_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 15, RobotBetOdds: 1 },
+          { Name: '点数和_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 16, RobotBetOdds: 1 },
+          { Name: '点数和_7', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 17, RobotBetOdds: 1 },
+          { Name: '点数和_8', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 18, RobotBetOdds: 1 },
+          { Name: '点数和_9', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 19, RobotBetOdds: 1 },
+          { Name: '点数和_10', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 20, RobotBetOdds: 1 },
+          { Name: '点数和_11', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 21, RobotBetOdds: 1 },
+          { Name: '点数和_12', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 22, RobotBetOdds: 1 },
+          { Name: '点数和_13', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 23, RobotBetOdds: 1 },
+          { Name: '点数和_14', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 24, RobotBetOdds: 1 },
+          { Name: '点数和_15', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 25, RobotBetOdds: 1 },
+          { Name: '点数和_16', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 26, RobotBetOdds: 1 },
+          { Name: '点数和_17', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 27, RobotBetOdds: 1 },
+          { Name: '骰子三点数_1', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 28, RobotBetOdds: 1 },
+          { Name: '骰子三点数_2', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 29, RobotBetOdds: 1 },
+          { Name: '骰子三点数_3', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 30, RobotBetOdds: 1 },
+          { Name: '骰子三点数_4', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 31, RobotBetOdds: 1 },
+          { Name: '骰子三点数_5', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 32, RobotBetOdds: 1 },
+          { Name: '骰子三点数_6', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 33, RobotBetOdds: 1 },
+          { Name: 'Any Triple', Odds: 10, Double: 5, MaxMoneyBet: 2000, Id: 34, RobotBetOdds: 1 }
 
         ],
         BetOptionsRate: [
@@ -529,6 +537,9 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
+      this.item.MinRobotMoney /= 1000
+      this.item.MaxRobotMoney /= 1000
+      this.item.RobotAverageBetMoney /= 1000
       for (const j in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
@@ -553,6 +564,11 @@ export default {
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
+
+      ret.MinRobotMoney *= 1000
+      ret.MaxRobotMoney *= 1000
+      ret.RobotAverageBetMoney *= 1000
+
       ret.BetMoneyLevel = []
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
@@ -631,6 +647,29 @@ export default {
           Message.error('下注列表只能6个投注项')
           return
         }
+      }
+
+      if (this.item.MaxRobotNumber < this.item.MinRobotNumber) {
+        Message.error('“机器人最大人数”不能小于“机器人最小人数”')
+        return
+      } else if (this.item.MaxRobotMoney < this.item.MinRobotMoney) {
+        Message.error('“机器人携带金币上限”不能小于“机器人携带金币下限”')
+        return
+      } else if (this.item.MaxRobotPlayTimes < this.item.MinRobotPlayTimes) {
+        Message.error('“机器人最大玩牌局数上限”不能小于“机器人最大玩牌局数下限”')
+        return
+      } else if (this.item.MaxRobotWinTimes < this.item.MinRobotWinTimes) {
+        Message.error('“机器人最大赢牌次数上限”不能小于“机器人最大赢牌次数下限”')
+        return
+      } else if (this.item.MaxRobotLoseTimes < this.item.MinRobotLoseTimes) {
+        Message.error('“机器人最大输牌次数上限”不能小于“机器人最大输牌次数下限”')
+        return
+      } else if (this.item.MaxRobotBetTimes < this.item.MinRobotBetTimes) {
+        Message.error('“机器人最大下注次数”不能小于“机器人最小下注次数”')
+        return
+      } else if (this.item.MinRobotBetTimes < 1 || this.item.MaxRobotBetTimes > 15) {
+        Message.error('“机器人最小下注次数”不能小于1，“机器人最大下注次数”不能大于15')
+        return
       }
 
       this.form.Data = JSON.stringify(this.getPostData())

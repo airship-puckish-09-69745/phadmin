@@ -61,6 +61,9 @@
               :value="item.value"
             />
           </el-select>
+          <el-form-item label="玩家id：">
+            <el-input v-model="searchForm.uid" size="mini" />
+          </el-form-item>
         </el-form-item>
 
         <el-form-item>
@@ -203,6 +206,7 @@ export default {
         { 'value': 25, 'label': 'color game' },
         { 'value': 20, 'label': 'Mines - 扫雷' },
         { 'value': 100, 'label': 'Tower' },
+        { 'value': 101, 'label': 'Sicbo' },
         { 'value': 102, 'label': 'Hilo' },
         { 'value': 103, 'label': 'Windrop' }
       ],
@@ -305,7 +309,7 @@ export default {
           Path: '/jackpot/info',
           GameId: _this.searchForm.gameId,
           App: _this.searchForm.app,
-          Level: _this.searchForm.level,
+          Level: _this.searchForm.level
         }
       }).then(response => {
         if (response.RetCode === 0) {

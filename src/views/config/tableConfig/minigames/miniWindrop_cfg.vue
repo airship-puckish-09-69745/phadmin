@@ -1,13 +1,11 @@
 <template>
   <div class="app-container">
     <el-row>
-<!--      <publish primary-key="Volume" :key-id="getFullKey('miniWindrop_slots_cfg')" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />-->
+      <!--      <publish primary-key="Volume" :key-id="getFullKey('miniWindrop_slots_cfg')" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />-->
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
       <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>
     </el-row>
-    <el-row>
-
-    </el-row>
+    <el-row />
     <!--公共配置-->
     <el-row style="margin-top: 30px">
       <el-form ref="form" label-position="left">
@@ -91,8 +89,6 @@
         </el-row>
       </el-form>
     </el-row>
-
-
 
     <fieldset style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
@@ -254,8 +250,6 @@
       </el-row>
     </el-dialog>
 
-
-
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -335,9 +329,6 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-
-
-
 
     <el-row style="margin-top: 30px">
       <el-col :span="8" :offset="4">
@@ -593,7 +584,7 @@ import Compare from '@/components/Compare/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {$libShow} from "@/utils/common";
+import { $libShow } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -648,14 +639,14 @@ export default {
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
         AddTimesRow: [6, 10, 14],
         Splice: [1, 2, 3],
-        WinType:[2, 6, 16],
+        WinType: [2, 6, 16],
         FeeRate: 0,
         JackpotFee: 0,
         HitJackpotFee: 0,
         JackpotBetMin: 0,
         SkipNum: 0,
         HitFeeRate: 0,
-        JackPotBool :false,
+        JackPotBool: false,
         HappyRouletteCfg: [
           {
             Id: 1,
@@ -1461,9 +1452,9 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          //console.log('windrop reward',response)
+          // console.log('windrop reward',response)
           $this.form = response.Data || {}
-         console.log('response.Data.Data',response.Data.Data)
+          console.log('response.Data.Data', response.Data.Data)
           if (response.Data && response.Data.Data !== '') {
             var cfgJson = JSON.parse(response.Data.Data)
             for (var i in cfgJson.Bets) {
@@ -1483,8 +1474,8 @@ export default {
               this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
             }
             this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
-            console.log('JackpotRandAwards',this.JackpotRandAwards)
-           // 设置修改之前数据
+            console.log('JackpotRandAwards', this.JackpotRandAwards)
+            // 设置修改之前数据
             $this.$refs.compare.SetOldVal(response.Data)
           }
         }
@@ -1518,7 +1509,7 @@ export default {
       Object.assign(postData, this.cfg)
       const jackpotInfo = {}
       Object.assign(jackpotInfo, this.item.JackpotRegulation)
-      console.log("jackpotInfo:",jackpotInfo)
+      console.log('jackpotInfo:', jackpotInfo)
       jackpotInfo.RandAwards = []
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
@@ -1532,7 +1523,7 @@ export default {
     },
     setData() {
       const postData = this.getPostData()
-      console.log("postData:",postData)
+      console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
         const bets = postData.BetsStr.split(',')
@@ -1587,7 +1578,7 @@ export default {
       this.showArea.visible = true
     },
     showOpenPoolRate(jpType, data) {
-      console.log("data:",data)
+      console.log('data:', data)
       if (jpType == 4) {
         return '不限制'
       } else {
@@ -1647,7 +1638,7 @@ export default {
       }
     },
     showPoolNumDialog(data) {
-      console.log("showPoolNumDialog:",data)
+      console.log('showPoolNumDialog:', data)
       if (data.JackpotType == 4) {
         return
       }
@@ -1706,7 +1697,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-           console.log('response reward', response)
+          console.log('response reward', response)
           if (response.Data && response.Data.Data !== '') {
             if (response.RetCode === 0) {
               this.windropData = response.Data.details
