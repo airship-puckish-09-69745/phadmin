@@ -20,17 +20,17 @@
             <el-row>
               <el-button type="primary" size="mini" @click="addJackpotCardTypeConfRow">添加</el-button>
             </el-row>
-            <el-row v-for="(value, index) in JackpotConf.CardTypeConf" :key="index">
+            <el-row v-for="(value, index) in JackpotConf.JackpotCardTypeConf" :key="index">
               <el-col :span="22">
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="牌型" :required="true">
-                      <el-input v-model="JackpotConf.CardTypeConf[index].CardType" size="mini" :required="true" />
+                      <el-input v-model="JackpotConf.JackpotCardTypeConf[index].CardType" size="mini" :required="true" />
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="牌型比例%" :required="true">
-                      <el-input v-model="JackpotConf.CardTypeConf[index].Ratio" size="mini" :required="true" />
+                      <el-input v-model="JackpotConf.JackpotCardTypeConf[index].Ratio" size="mini" :required="true" />
                     </el-form-item>
                   </el-col>
 
@@ -70,7 +70,7 @@ export default {
       },
       JackpotConf: {
         BlindRatio: 0,
-        CardTypeConf: []
+        JackpotCardTypeConf: []
       },
       form: {},
       subKey: 'gameTexasNlh'
@@ -126,13 +126,15 @@ export default {
       })
     },
     addJackpotCardTypeConfRow() {
-      this.JackpotConf.CardTypeConf.push({
+
+      this.JackpotConf.JackpotCardTypeConf.push({
         CardType: 1,
         Ratio: 10
       })
+      console.log(this.JackpotConf.JackpotCardTypeConf)
     },
     removeJackpotCardTypeConfRow(index) {
-      this.JackpotConf.CardTypeConf.splice(index, 1)
+      this.JackpotConf.JackpotCardTypeConf.splice(index, 1)
     }
   }
 }
