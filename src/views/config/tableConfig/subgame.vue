@@ -51,7 +51,7 @@
       <el-col :span="5">
         <el-form label-width="50px">
           <el-form-item label="AppId">
-            <el-select v-model="appId" style="width: 230px" size="mini" @change="getList()">
+            <el-select v-model="appId" style="width: 230px" size="small" @change="getList()">
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
