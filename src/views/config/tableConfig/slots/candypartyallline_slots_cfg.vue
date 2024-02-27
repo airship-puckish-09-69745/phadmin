@@ -6,7 +6,7 @@
           <el-tab-pane label="基础配置" name="base">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('candypartyallline_slots_base')" :env-empty="false" compare-type="Object" />
-            <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" @saveData="saveBaseCfg" />
+            <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :oddsStr="false" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>

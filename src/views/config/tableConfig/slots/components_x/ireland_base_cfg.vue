@@ -43,7 +43,7 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <el-form-item label="下注倍数">
+          <el-form-item v-if="oddsStr" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
 
@@ -88,6 +88,10 @@ export default {
       default: function() {
         return {}
       }
+    },
+    oddsStr: {
+      type: Boolean,
+      default: true,
     }
   },
   data() {
