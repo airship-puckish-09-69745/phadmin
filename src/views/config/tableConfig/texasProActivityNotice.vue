@@ -439,7 +439,8 @@ export default {
       if (url === undefined) {
         return ''
       }
-      fullPatch = $libShow.GetFullPath(url.replace('/static/', '/'))
+      let fullPatch = $libShow.GetFullPath(url.replace('/static/', '/'))
+      console.log(fullPatch)
       return fullPatch
     },
     initDragItems() {
