@@ -440,7 +440,6 @@ export default {
         return ''
       }
       let fullPatch = $libShow.GetFullPath(url.replace('/static/', '/'))
-      console.log(fullPatch)
       return fullPatch
     },
     initDragItems() {
@@ -583,6 +582,8 @@ export default {
     },
     SuccUpload1(res, file) {
       this.edit.item.icon_banner = res.Data
+      console.log(this.edit.item.icon_banner)
+      console.log(res.Data)
     },
     SuccUploadBack(res, file) {
       this.edit.item.icon_page = res.Data
