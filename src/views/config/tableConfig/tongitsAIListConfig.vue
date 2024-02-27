@@ -50,7 +50,10 @@
           <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
           <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money) }}</el-descriptions-item>
           <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
-          <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-descriptions-item>
+          <el-descriptions-item label="比例：">
+            <span v-if="statItem.initMoney==0">0</span>
+            <el-span v-else >  {{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-span>
+          </el-descriptions-item>
         </el-descriptions>
       </el-col>
 
@@ -161,21 +164,24 @@
           label="游戏"
           width="80"
         />
+
         <el-table-column
-          prop="currentTableMoney"
-          label="当前所在的场次"
-          width="100"
+          prop="allowTableMoney"
+          label="允许出现场次"
+          width="120"
         >
+
           <template v-slot:header>
-            <el-select v-model="clientDB.FilterValueMap['currentTableMoney']" size="mini" @change="handleFilter">
-              <el-option label="场次" :value="0" />
-              <el-option v-for="(o,key) in clientDB.FilterMap['currentTableMoney']" :key="key" :label="o" :value="key" />
+            <el-select v-model="clientDB.FilterValueMap['allowTableMoney']" size="mini" @change="handleFilter">
+              <el-option label="允许出现场次" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['allowTableMoney']" :key="key" :label="o" :value="key" />
             </el-select>
           </template>
           <template slot-scope="scope">
-            {{ clientDB.GetShowValue('currentTableMoney', scope.row.currentTableMoney) }}
+            {{ clientDB.GetShowValue('currentTableMoney', scope.row.allowTableMoney) }}
           </template>
         </el-table-column>
+
         <el-table-column
           prop="currentTid"
           label="当前所在的桌子"
@@ -286,6 +292,12 @@
           </el-col>
         </el-form-item>
 
+        <el-form-item label="允许出现的场次：" :required="true" prop="allowTableMoney">
+          <el-col :span="15">
+            <el-input v-model="edit.item.allowTableMoney" />
+          </el-col>
+        </el-form-item>
+
         <el-form-item>
           <el-row>
             <el-col :span="15" :offset="10">
@@ -307,10 +319,12 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-const filterMap = { currentTableMoney: 'all' }
-
+const filterMap = {
+  currentTableMoney: 'all',
+  allowTableMoney: 'all'
+}
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '' }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '','allowTableMoney':0 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -472,6 +486,7 @@ export default {
             objs[i].money /= 1000
             objs[i].initMoney /= 1000
             objs[i].currentTableMoney /= 1000
+            objs[i].allowTableMoney /= 1000
           }
           objs.sort(function(a, b) {
             return a.currentTid - b.currentTid
@@ -495,17 +510,28 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    refreshStat() {
+      this.statItem = { money: 0, initMoney: 0 }
+      for (let i = 0; i < this.clientDB.ShowData.length; i++) {
+        if (this.clientDB.ShowData[i].status !== 0) {
+          this.statItem.money += this.clientDB.ShowData[i].money
+          this.statItem.initMoney += this.clientDB.ShowData[i].initMoney
+        }
+      }
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
     },
-    handleFilter() {
+    handleFilter(k,v) {
+      console.log("k=>",k,"v==>",v)
       this.clientDB.FilterData()
       this.refreshShow()
     },
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
+      this.refreshStat()
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -555,6 +581,7 @@ export default {
     getRobotData() {
       this.edit.item.money *= 1000
       this.edit.item.initMoney *= 1000
+      this.edit.item.allowTableMoney *= 1000
       return this.edit.item
     },
     /*    checkData() {
@@ -594,6 +621,7 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.money /= 1000
           this.edit.item.initMoney /= 1000
+          this.edit.item.allowTableMoney /= 1000
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
