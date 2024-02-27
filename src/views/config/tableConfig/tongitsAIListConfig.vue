@@ -168,7 +168,7 @@
         >
           <template v-slot:header>
             <el-select v-model="clientDB.FilterValueMap['currentTableMoney']" size="mini" @change="handleFilter">
-              <el-option label="场次" :value="0" />
+              <el-option label="当前所在的场次" :value="0" />
               <el-option v-for="(o,key) in clientDB.FilterMap['currentTableMoney']" :key="key" :label="o" :value="key" />
             </el-select>
           </template>
@@ -176,6 +176,11 @@
             {{ clientDB.GetShowValue('currentTableMoney', scope.row.currentTableMoney) }}
           </template>
         </el-table-column>
+        <el-table-column
+          prop="allowTableMoney"
+          label="允许出现场次"
+          width="120"
+        />
         <el-table-column
           prop="currentTid"
           label="当前所在的桌子"
@@ -286,6 +291,12 @@
           </el-col>
         </el-form-item>
 
+        <el-form-item label="允许出现的场次：" :required="true" prop="allowTableMoney">
+          <el-col :span="15">
+            <el-input v-model="edit.item.allowTableMoney" />
+          </el-col>
+        </el-form-item>
+
         <el-form-item>
           <el-row>
             <el-col :span="15" :offset="10">
@@ -310,7 +321,7 @@ import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/util
 const filterMap = { currentTableMoney: 'all' }
 
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '' }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '','allowTableMoney':0 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -472,6 +483,7 @@ export default {
             objs[i].money /= 1000
             objs[i].initMoney /= 1000
             objs[i].currentTableMoney /= 1000
+            objs[i].allowTableMoney /= 1000
           }
           objs.sort(function(a, b) {
             return a.currentTid - b.currentTid
@@ -499,7 +511,8 @@ export default {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
     },
-    handleFilter() {
+    handleFilter(k,v) {
+      console.log("k=>",k,"v==>",v)
       this.clientDB.FilterData()
       this.refreshShow()
     },
@@ -555,6 +568,7 @@ export default {
     getRobotData() {
       this.edit.item.money *= 1000
       this.edit.item.initMoney *= 1000
+      this.edit.item.allowTableMoney *= 1000
       return this.edit.item
     },
     /*    checkData() {
@@ -594,6 +608,7 @@ export default {
         if (response.RetCode === 0) {
           this.edit.item.money /= 1000
           this.edit.item.initMoney /= 1000
+          this.edit.item.allowTableMoney /= 1000
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
