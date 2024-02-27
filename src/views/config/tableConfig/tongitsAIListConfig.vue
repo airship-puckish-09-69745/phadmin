@@ -50,7 +50,10 @@
           <el-descriptions-item label="总成本：">{{ formatNumber(statItem.initMoney) }}</el-descriptions-item>
           <el-descriptions-item label="当前金额："> {{ formatNumber(statItem.money) }}</el-descriptions-item>
           <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
-          <el-descriptions-item label="比例：">{{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-descriptions-item>
+          <el-descriptions-item label="比例：">
+            <span v-if="statItem.initMoney==0">0</span>
+            <el-span v-else >  {{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-span>
+          </el-descriptions-item>
         </el-descriptions>
       </el-col>
 
@@ -161,26 +164,24 @@
           label="游戏"
           width="80"
         />
-        <el-table-column
-          prop="currentTableMoney"
-          label="当前所在的场次"
-          width="100"
-        >
-          <template v-slot:header>
-            <el-select v-model="clientDB.FilterValueMap['currentTableMoney']" size="mini" @change="handleFilter">
-              <el-option label="当前所在的场次" :value="0" />
-              <el-option v-for="(o,key) in clientDB.FilterMap['currentTableMoney']" :key="key" :label="o" :value="key" />
-            </el-select>
-          </template>
-          <template slot-scope="scope">
-            {{ clientDB.GetShowValue('currentTableMoney', scope.row.currentTableMoney) }}
-          </template>
-        </el-table-column>
+
         <el-table-column
           prop="allowTableMoney"
           label="允许出现场次"
           width="120"
-        />
+        >
+
+          <template v-slot:header>
+            <el-select v-model="clientDB.FilterValueMap['allowTableMoney']" size="mini" @change="handleFilter">
+              <el-option label="允许出现场次" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['allowTableMoney']" :key="key" :label="o" :value="key" />
+            </el-select>
+          </template>
+          <template slot-scope="scope">
+            {{ clientDB.GetShowValue('currentTableMoney', scope.row.allowTableMoney) }}
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="currentTid"
           label="当前所在的桌子"
@@ -318,8 +319,10 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-const filterMap = { currentTableMoney: 'all' }
-
+const filterMap = {
+  currentTableMoney: 'all',
+  allowTableMoney: 'all'
+}
 function newItem() {
   return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '','allowTableMoney':0 }
 }
@@ -507,6 +510,15 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    refreshStat() {
+      this.statItem = { money: 0, initMoney: 0 }
+      for (let i = 0; i < this.clientDB.ShowData.length; i++) {
+        if (this.clientDB.ShowData[i].status !== 0) {
+          this.statItem.money += this.clientDB.ShowData[i].money
+          this.statItem.initMoney += this.clientDB.ShowData[i].initMoney
+        }
+      }
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
@@ -519,6 +531,7 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
+      this.refreshStat()
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
