@@ -440,6 +440,7 @@ export default {
         return ''
       }
       let fullPatch = $libShow.GetFullPath(url.replace('/static/', '/'))
+      console.log(fullPatch)
       return fullPatch
     },
     initDragItems() {
