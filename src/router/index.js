@@ -488,6 +488,12 @@ export const asyncRoutes = [
             meta: { title: '糖果派对Way' }
           },
           {
+            path: 'candypartyallline_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
+            name: 'candypartyallline_slots_cfg',
+            meta: { title: '糖果派对Allline' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
