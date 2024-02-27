@@ -581,6 +581,7 @@ export default {
       this.edit.langPic[res.Data.Param] = res.Data.Path
     },
     SuccUpload1(res, file) {
+      console.log("SuccUpload1")
       this.edit.item.icon_banner = res.Data
       console.log(this.edit.item.icon_banner)
       console.log(res.Data)
@@ -589,6 +590,7 @@ export default {
       this.edit.item.icon_page = res.Data
     },
     beforeAvatarUpload(file) {
+      console.log("beforeAvatarUpload")
       const isOK = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isOK) {
         this.$message.error('上传图片只能是 JPG or PNG  格式!')
