@@ -81,6 +81,8 @@ export default {
             const item = JSON.parse(response.Data.Data)
             this.price = parseInt(item.Price) / 1000
             this.cooling_time = parseInt(item.CoolingTime)
+            this.interval_send_time = parseInt(item.IntervalSendTime)
+            this.interval_send_times = parseInt(item.IntervalSendTimes)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
           }
@@ -90,9 +92,9 @@ export default {
     setData() {
       this.form.Data = JSON.stringify({
         Price: this.price * 1000,
-        CoolingTime: this.cooling_time,
-        IntervalSendTime: this.interval_send_time,
-        IntervalSendTimes: this.interval_send_times
+        CoolingTime: parseInt(this.cooling_time),
+        IntervalSendTime: parseInt(this.interval_send_time),
+        IntervalSendTimes: parseInt(this.interval_send_times)
       })
       const $this = this
       // 设置修改后数据

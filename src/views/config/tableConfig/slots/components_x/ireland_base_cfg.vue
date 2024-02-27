@@ -23,6 +23,7 @@
               <el-option label="金钱兔" :value="67" />
               <el-option label="十倍金牛" :value="68" />
               <el-option label="糖果派对Way" :value="76" />
+              <el-option label="糖果派对Allline" :value="77" />
             </el-select>
           </el-form-item>
 
@@ -42,7 +43,7 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <el-form-item label="下注倍数">
+          <el-form-item v-if="oddsStr" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
 
@@ -87,6 +88,10 @@ export default {
       default: function() {
         return {}
       }
+    },
+    oddsStr: {
+      type: Boolean,
+      default: true,
     }
   },
   data() {
