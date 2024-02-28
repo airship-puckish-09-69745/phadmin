@@ -178,7 +178,7 @@
             </el-select>
           </template>
           <template slot-scope="scope">
-            {{ clientDB.GetShowValue('currentTableMoney', scope.row.allowTableMoney) }}
+            {{ clientDB.GetShowValue('allowTableMoney', scope.row.allowTableMoney) }}
           </template>
         </el-table-column>
 
@@ -584,6 +584,31 @@ export default {
       this.edit.item.allowTableMoney *= 1000
       return this.edit.item
     },
+    getEditData(){
+      let o = {
+        uid:this.edit.item.uid,
+        initMoney:-1,
+        allowTableMoney:-1,
+        money:-1,
+      }
+      this.edit.item.money *= 1000
+      this.edit.item.initMoney *= 1000
+      this.edit.item.allowTableMoney *= 1000
+      let oldData = this.getDataByUid(this.edit.item.uid)
+      if ( oldData.nick != this.edit.item.nick  ){
+        o.nick = this.edit.item.nick
+      }
+      if ( oldData.icon != this.edit.item.icon  ){
+        o.icon = this.edit.item.icon
+      }
+      if ( oldData.initMoney != this.edit.item.initMoney  ){
+        o.initMoney = this.edit.item.initMoney
+      }
+      if ( oldData.allowTableMoney != this.edit.item.allowTableMoney  ){
+        o.allowTableMoney = this.edit.item.allowTableMoney
+      }
+      return o
+    },
     /*    checkData() {
       this.$refs['edit.item'].validate(valid => {})
       if (this.getRobotData().uid <= 0) {
@@ -595,7 +620,7 @@ export default {
     save() {
       // if (!this.checkData()) return
       if (this.edit.isEdit) {
-        this.editSave(this.getRobotData())
+        this.editSave(this.getEditData())
       } else {
         this.createSave(this.getRobotData())
       }
