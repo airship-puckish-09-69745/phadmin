@@ -43,8 +43,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="保底奖池抽水：">
-              <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
+            <el-form-item label="每一张牌触发Jackpot的概率(仅审核服生效)：">
+              <el-input v-model.number="item.HitJackpotRate"><template slot="append">‱</template></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -57,6 +57,11 @@
           <el-col :span="7" :offset="1">
             <el-form-item label="中奖抽水率：">
               <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
+            <el-form-item label="保底奖池抽水：">
+              <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -147,7 +152,7 @@
 
         <el-row>
           <fieldset style="margin-top:10px">
-            <legend>Jackpot分布配置</legend>
+            <legend>Jackpot分布配置(非审核服生效)</legend>
             <el-alert
               type="success"
               description="根据分布概率随机取出其中一张牌"
