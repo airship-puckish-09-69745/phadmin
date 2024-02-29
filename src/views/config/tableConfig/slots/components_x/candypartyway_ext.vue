@@ -4,24 +4,20 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="200px">
 
-          <el-form-item label="普通模式中奖倍数">
-            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">五个值用 , 连接</template> </el-input>
+          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="普通模式中奖倍数权重">
-            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">五个值用 , 连接(只针对提审)</template> </el-input>
+          <el-form-item label="普通模式中奖倍数">
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">五个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式中奖倍数">
             <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,8,10"> <template slot="append">五个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式中奖倍数权重">
-            <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">五个值用 , 连接(只针对提审)</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="免费模式购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容"> </el-input>
+          <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围">
@@ -46,6 +42,7 @@
 <script>
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
+import { DataRule, ValidateVueItem } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -77,10 +74,14 @@ export default {
     })
   },
   methods: {
+    dataRule(required, config) {
+      return DataRule(required, config)
+    },
     getDiffData() {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
