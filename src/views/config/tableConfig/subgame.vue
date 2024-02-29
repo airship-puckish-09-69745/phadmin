@@ -490,7 +490,7 @@ export default {
       langTypes: ['en', 'hi'],
       platform: 'android',
       appId: 1000002,
-      appInfo: [],
+      appInfo: [{ key: 0, label: '默认配置' }],
 
       edit: {
         visible: false,
@@ -581,7 +581,7 @@ export default {
       return label + '-' + key
     },
     getAppsFiltered(appId) {
-      const apps = [{ key: 0, label: '请选择' }]
+      const apps = []
       for (const i in this.appInfo) {
         if (this.appInfo[i].key !== appId) {
           apps.push(this.appInfo[i])
@@ -885,10 +885,6 @@ export default {
       this.edit.visible = false
     },
     copyList() {
-      if (this.copyListDialog.targetAppId === 0) {
-        this.$alert('未指定目标AppId')
-        return
-      }
       request({
         url: 'subgame/copy/list',
         method: 'post',
