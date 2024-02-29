@@ -59,6 +59,11 @@
           width="100"
         />
         <el-table-column
+          prop="GamefunVer"
+          label="gamefun版本"
+          width="100"
+        />
+        <el-table-column
           prop="GameUri"
           label="客户端地址"
           width="200"
@@ -196,10 +201,25 @@
             <el-input v-model="edit.item.Ver" />
           </el-col>
         </el-form-item>
+        <el-form-item label="gamefun版本：" :required="true" prop="Ver">
+          <el-col :span="15">
+            <el-input v-model="edit.item.GamefunVer" />
+          </el-col>
+          <el-col style="width: auto">
+            <el-tooltip class="item" effect="dark" content="返回gamefun链接时，增加 gv 参数" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-form-item>
         <el-form-item label="客户端uri：" :required="true" prop="GameUri">
           <el-col :span="15">
             <el-input v-model="edit.item.GameUri" />
           </el-col>
+          <!--          <el-col style="width: auto">-->
+          <!--            <el-tooltip class="item" effect="dark" content="版本号占位符： ${ver}" placement="left-start">-->
+          <!--              <i class="el-icon-info" />-->
+          <!--            </el-tooltip>-->
+          <!--          </el-col>-->
         </el-form-item>
         <el-form-item label="客户端测试uri：" prop="TestUri">
           <el-col :span="15">
@@ -243,7 +263,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { Account: '', Intro: '', Ip: '', Ver: '', GameUri: '', Screen: '', TestUri: '', TestUids: '' }
+  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: '', TestUri: '', TestUids: '' }
 }
 
 export default {
@@ -271,7 +291,7 @@ export default {
       rules: {
         account: [{ required: true, trigger: 'blur' }],
         intro: [{ required: true, trigger: 'blur' }],
-        ver: [{ required: true, trigger: 'blur' }],
+        // ver: [{ required: true, trigger: 'blur' }],
         game_uri: [{ required: true, trigger: 'blur' }],
         screen: [{ required: true, trigger: ['blur', 'change', 'submit'] }]
       },
@@ -282,6 +302,7 @@ export default {
         Secret: '密钥',
         Ip: 'IP白名单',
         Ver: '客户端版本',
+        GamefunVer: 'gamefun版本',
         GameUri: '客户端uri',
         Screen: '横竖屏',
         TestUri: '客户端测试uri',

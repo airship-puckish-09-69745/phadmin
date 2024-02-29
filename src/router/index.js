@@ -408,6 +408,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
             name: 'miniWindrop_cfg',
             meta: { title: 'MiniWindrop ◐' }
+          },
+          {
+            path: 'UpDown',
+            component: () => import('@/views/config/tableConfig/UpDownTable'),
+            name: 'UpDown',
+            meta: { title: '7Up7Down ◐' }
           }
 
         ]
@@ -475,6 +481,18 @@ export const asyncRoutes = [
             name: 'rabbit_slots_cfg',
             meta: { title: '金钱兔' }
           },*/
+          {
+            path: 'candypartyway_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
+            name: 'candypartyway_slots_cfg',
+            meta: { title: '糖果派对Way' }
+          },
+          {
+            path: 'candypartyallline_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
+            name: 'candypartyallline_slots_cfg',
+            meta: { title: '糖果派对Allline' }
+          },
           {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
@@ -725,7 +743,8 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
-          }/*,
+          },
+          /*
           {
             path: 'gold_miner_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -756,7 +775,18 @@ export const asyncRoutes = [
             name: 'rabbit_slots_log',
             meta: { title: 'Rabbit - 金钱兔', gid: 67 }
           }*/
-
+          {
+            path: 'candypartyway_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candypartyway_slots_log',
+            meta: { title: '糖果派对Way', gid: 76 }
+          },
+          {
+            path: 'candypartyallline_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candypartyallline_slots_log',
+            meta: { title: '糖果派对Allline', gid: 77 }
+          }
         ]
       }
     ]
