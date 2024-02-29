@@ -1,18 +1,18 @@
 <template>
   <div class="app-container">
     <el-row>
-<!--      <publish primary-key="Volume" :key-id="getFullKey('miniWindrop_slots_cfg')" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />-->
+      <!--      <publish primary-key="Volume" :key-id="getFullKey('miniWindrop_slots_cfg')" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />-->
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
 
       <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>
     </el-row>
     <el-row>
       <div style="display: flex; align-items: center;">
-        <div style="flex: 1; height: 2px; background-color: black;"></div>
+        <div style="flex: 1; height: 2px; background-color: black;" />
         <div style="padding: 0 10px;"> <!-- 文字部分 -->
           <slot> <span style="color:red;font-size:20px ">中级Jackpot</span></slot>
         </div>
-        <div style="flex: 1; height: 2px; background-color: black;"></div>
+        <div style="flex: 1; height: 2px; background-color: black;" />
       </div>
 
     </el-row>
@@ -72,8 +72,6 @@
         </el-row>
       </el-form>
     </el-row>
-
-
 
     <fieldset style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
@@ -235,8 +233,6 @@
       </el-row>
     </el-dialog>
 
-
-
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -319,11 +315,11 @@
     <div><br></div>
     <div><br></div>
     <div style="display: flex; align-items: center;">
-      <div style="flex: 1; height: 2px; background-color: black;"></div>
+      <div style="flex: 1; height: 2px; background-color: black;" />
       <div style="padding: 0 10px;"> <!-- 文字部分 -->
         <slot> <span style="color:red;font-size:20px ">高级JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
       </div>
-      <div style="flex: 1; height: 2px; background-color: black;"></div>
+      <div style="flex: 1; height: 2px; background-color: black;" />
     </div>
     <div><br></div>
     <div><br></div>
@@ -386,8 +382,6 @@
         </el-row>
       </el-form>
     </el-row>
-
-
 
     <fieldset style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
@@ -549,8 +543,6 @@
       </el-row>
     </el-dialog>
 
-
-
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
       :title="poolNumChange.title"
@@ -634,11 +626,11 @@
     <div><br></div>
     <div style="display: flex; align-items: center;">
 
-      <div style="flex: 1; height: 2px; background-color: black;"></div>
+      <div style="flex: 1; height: 2px; background-color: black;" />
       <div style="padding: 0 10px;"> <!-- 文字部分 -->
         <slot> <span style="color:red;font-size:20px ">游戏配置</span></slot>
       </div>
-      <div style="flex: 1; height: 2px; background-color: black;"></div>
+      <div style="flex: 1; height: 2px; background-color: black;" />
     </div>
     <div><br></div>
     <div><br></div>
@@ -881,7 +873,7 @@ import Compare from '@/components/Compare/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {$libShow} from "@/utils/common";
+import { $libShow } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -939,8 +931,6 @@ export default {
         jackpotType: 0
       },
 
-
-
       load2: false,
       showArea2: {
         visible: false,
@@ -976,10 +966,10 @@ export default {
         AutomaticTimes: [10, 20, 50, 80, 100, -1],
         AddTimesRow: [6, 10, 14],
         Splice: [1, 2, 3],
-        WinType:[2, 6, 16],
+        WinType: [2, 6, 16],
         FeeRate: 1,
-        JackpotNormal:0,
-        JackpotHight:0,
+        JackpotNormal: 0,
+        JackpotHight: 0,
         HappyRouletteCfg: [
           {
             Id: 1,
@@ -1052,11 +1042,11 @@ export default {
             ScoreToEnergy: 0,
             LuckyJPTransferRate: 0,
             LuckyJPKey: '',
-            LuckyJPRate:10,
+            LuckyJPRate: 10,
             SuperJPInitMoney: 0,
             SuperJPOdds: 0,
             SuperJPTransferRate: 0,
-            superJPRate:90,
+            superJPRate: 90,
             SuperJPKey: '',
             Channels: [
               {
@@ -1294,12 +1284,12 @@ export default {
             LuckyJPOdds: 50,
             LuckyJPTransferRate: 3,
             LuckyJPKey: 'jackpot_1',
-            LuckyJPRate:10,
+            LuckyJPRate: 10,
             SuperJPInitMoney: 100000,
             SuperJPOdds: 200,
             SuperJPTransferRate: 3,
             SuperJPKey: 'jackpot_2',
-            superJPRate:90,
+            superJPRate: 90,
             Channels: [
               {
                 Id: -8,
@@ -1535,12 +1525,12 @@ export default {
             LuckyJPOdds: 50,
             LuckyJPTransferRate: 3,
             LuckyJPKey: 'jackpot_3',
-            LuckyJPRate:10,
+            LuckyJPRate: 10,
             SuperJPInitMoney: 100000,
             SuperJPOdds: 200,
             SuperJPTransferRate: 3,
             SuperJPKey: 'jackpot_4',
-            superJPRate:90,
+            superJPRate: 90,
             Channels: [
               {
                 Id: -8,
@@ -1791,9 +1781,9 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          //console.log('windrop reward',response)
+          // console.log('windrop reward',response)
           $this.form = response.Data || {}
-         console.log('response.Data.Data',response.Data.Data)
+          console.log('response.Data.Data', response.Data.Data)
           if (response.Data && response.Data.Data !== '') {
             var cfgJson = JSON.parse(response.Data.Data)
             for (var i in cfgJson.Bets) {
@@ -1813,15 +1803,14 @@ export default {
               this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
             }
             this.JackpotRandAwards = this.item.JackpotRegulation.RandAwards
-            console.log('JackpotRandAwards',this.JackpotRandAwards)
-
+            console.log('JackpotRandAwards', this.JackpotRandAwards)
 
             for (const k in this.item.JackpotRegulation2.RandAwards) {
               this.item.JackpotRegulation2.RandAwards[k].PoolVal /= 1000
             }
             this.JackpotRandAwards2 = this.item.JackpotRegulation2.RandAwards
-            console.log('JackpotRandAwards',this.JackpotRandAwards2)
-           // 设置修改之前数据
+            console.log('JackpotRandAwards', this.JackpotRandAwards2)
+            // 设置修改之前数据
             $this.$refs.compare.SetOldVal(response.Data.Data)
           }
         }
@@ -1856,7 +1845,7 @@ export default {
       const jackpotInfo = {}
       const jackpotInfo2 = {}
       Object.assign(jackpotInfo, this.item.JackpotRegulation)
-      console.log("jackpotInfo:",jackpotInfo)
+      console.log('jackpotInfo:', jackpotInfo)
       jackpotInfo.RandAwards = []
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
@@ -1880,7 +1869,7 @@ export default {
     },
     setData() {
       const postData = this.getPostData()
-      console.log("postData:",postData)
+      console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
         const bets = postData.BetsStr.split(',')
@@ -1906,12 +1895,12 @@ export default {
       if (postData.HappyRouletteCfg) {
         for (const i in postData.HappyRouletteCfg) {
           if (postData.HappyRouletteCfg[i].Type === 1) {
-            postData.HappyRouletteCfg[i].Num = parseFloat(postData.HappyRouletteCfg[i].Num)*1000
+            postData.HappyRouletteCfg[i].Num = parseFloat(postData.HappyRouletteCfg[i].Num) * 1000
           }
         }
       }
       this.form.Data = JSON.stringify(postData)
-   //   console.log("this.form.Data ",this.form.Data )
+      //   console.log("this.form.Data ",this.form.Data )
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
@@ -1936,7 +1925,7 @@ export default {
       this.showArea.visible = true
     },
     showOpenPoolRate(jpType, data) {
-      console.log("data:",data)
+      console.log('data:', data)
       if (jpType == 4) {
         return '不限制'
       } else {
@@ -1996,7 +1985,7 @@ export default {
       }
     },
     showPoolNumDialog(data) {
-      console.log("showPoolNumDialog:",data)
+      console.log('showPoolNumDialog:', data)
       if (data.JackpotType == 4) {
         return
       }
@@ -2055,7 +2044,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-           console.log('response reward', response)
+          console.log('response reward', response)
           if (response.Data && response.Data.Data !== '') {
             if (response.RetCode === 0) {
               this.windropData = response.Data.details
@@ -2072,7 +2061,7 @@ export default {
       this.showArea2.visible = true
     },
     showOpenPoolRate2(jpType, data) {
-      console.log("data:",data)
+      console.log('data:', data)
       if (jpType == 4) {
         return '不限制'
       } else {
@@ -2132,7 +2121,7 @@ export default {
       }
     },
     showPoolNumDialog2(data) {
-      console.log("showPoolNumDialog:",data)
+      console.log('showPoolNumDialog:', data)
       if (data.JackpotType == 4) {
         return
       }
@@ -2204,7 +2193,7 @@ export default {
       })
     }
 
-    }
+  }
 }
 </script>
 <style>

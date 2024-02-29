@@ -91,7 +91,7 @@ export default {
     },
     oddsStr: {
       type: Boolean,
-      default: true,
+      default: true
     }
   },
   data() {

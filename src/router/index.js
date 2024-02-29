@@ -414,7 +414,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/UpDownTable'),
             name: 'UpDown',
             meta: { title: '7Up7Down ◐' }
-          },
+          }
 
         ]
       },

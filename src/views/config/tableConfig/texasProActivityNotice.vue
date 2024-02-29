@@ -198,7 +198,7 @@
                 <el-radio :label="2">文本</el-radio>
               </el-radio-group>
             </el-form-item>
-<!--             <el-form-item label="上传Banner图：" :required="true">
+            <!--             <el-form-item label="上传Banner图：" :required="true">
               <el-upload
                 class="avatar-uploader"
                 :action="actionURL"
@@ -211,10 +211,10 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item> -->
-             <el-form-item label="Banner图：" :required="true" prop="name">
+            <el-form-item label="Banner图：" :required="true" prop="name">
               <el-col :span="16"><el-input v-model="edit.item.icon_banner" /></el-col>
             </el-form-item>
-<!--            
+            <!--
             <el-form-item v-if="edit.item.content_type === 1" label="上传活动页面图：" :required="true">
               <el-upload
                 class="avatar-uploader"
@@ -446,7 +446,7 @@ export default {
       if (url === undefined) {
         return ''
       }
-      let fullPatch = $libShow.GetFullPath(url.replace('/static/', '/'))
+      const fullPatch = $libShow.GetFullPath(url.replace('/static/', '/'))
       console.log(fullPatch)
       return fullPatch
     },
@@ -589,7 +589,7 @@ export default {
       this.edit.langPic[res.Data.Param] = res.Data.Path
     },
     SuccUpload1(res, file) {
-      console.log("SuccUpload1")
+      console.log('SuccUpload1')
       this.edit.item.icon_banner = res.Data
       console.log(this.edit.item.icon_banner)
       console.log(res.Data)
@@ -598,7 +598,7 @@ export default {
       this.edit.item.icon_page = res.Data
     },
     beforeAvatarUpload(file) {
-      console.log("beforeAvatarUpload")
+      console.log('beforeAvatarUpload')
       const isOK = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isOK) {
         this.$message.error('上传图片只能是 JPG or PNG  格式!')
