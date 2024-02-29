@@ -52,7 +52,7 @@
           <el-descriptions-item label="输赢：">{{ formatNumber((statItem.money - statItem.initMoney)) }}</el-descriptions-item>
           <el-descriptions-item label="比例：">
             <span v-if="statItem.initMoney==0">0</span>
-            <el-span v-else >  {{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-span>
+            <el-span v-else>  {{ formatNumber((statItem.money - statItem.initMoney)*100/statItem.initMoney) }}%</el-span>
           </el-descriptions-item>
         </el-descriptions>
       </el-col>
@@ -178,7 +178,7 @@
             </el-select>
           </template>
           <template slot-scope="scope">
-            {{ clientDB.GetShowValue('currentTableMoney', scope.row.allowTableMoney) }}
+            {{ clientDB.GetShowValue('allowTableMoney', scope.row.allowTableMoney) }}
           </template>
         </el-table-column>
 
@@ -324,7 +324,7 @@ const filterMap = {
   allowTableMoney: 'all'
 }
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '','allowTableMoney':0 }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -523,8 +523,8 @@ export default {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
     },
-    handleFilter(k,v) {
-      console.log("k=>",k,"v==>",v)
+    handleFilter(k, v) {
+      console.log('k=>', k, 'v==>', v)
       this.clientDB.FilterData()
       this.refreshShow()
     },
@@ -584,6 +584,31 @@ export default {
       this.edit.item.allowTableMoney *= 1000
       return this.edit.item
     },
+    getEditData() {
+      const o = {
+        uid: this.edit.item.uid,
+        initMoney: -1,
+        allowTableMoney: -1,
+        money: -1
+      }
+      this.edit.item.money *= 1000
+      this.edit.item.initMoney *= 1000
+      this.edit.item.allowTableMoney *= 1000
+      const oldData = this.getDataByUid(this.edit.item.uid)
+      if (oldData.nick != this.edit.item.nick) {
+        o.nick = this.edit.item.nick
+      }
+      if (oldData.icon != this.edit.item.icon) {
+        o.icon = this.edit.item.icon
+      }
+      if (oldData.initMoney != this.edit.item.initMoney) {
+        o.initMoney = this.edit.item.initMoney
+      }
+      if (oldData.allowTableMoney != this.edit.item.allowTableMoney) {
+        o.allowTableMoney = this.edit.item.allowTableMoney
+      }
+      return o
+    },
     /*    checkData() {
       this.$refs['edit.item'].validate(valid => {})
       if (this.getRobotData().uid <= 0) {
@@ -595,7 +620,7 @@ export default {
     save() {
       // if (!this.checkData()) return
       if (this.edit.isEdit) {
-        this.editSave(this.getRobotData())
+        this.editSave(this.getEditData())
       } else {
         this.createSave(this.getRobotData())
       }
