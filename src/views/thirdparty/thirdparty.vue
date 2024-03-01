@@ -215,11 +215,11 @@
           <el-col :span="15">
             <el-input v-model="edit.item.GameUri" />
           </el-col>
-<!--          <el-col style="width: auto">-->
-<!--            <el-tooltip class="item" effect="dark" content="版本号占位符： ${ver}" placement="left-start">-->
-<!--              <i class="el-icon-info" />-->
-<!--            </el-tooltip>-->
-<!--          </el-col>-->
+          <!--          <el-col style="width: auto">-->
+          <!--            <el-tooltip class="item" effect="dark" content="版本号占位符： ${ver}" placement="left-start">-->
+          <!--              <i class="el-icon-info" />-->
+          <!--            </el-tooltip>-->
+          <!--          </el-col>-->
         </el-form-item>
         <el-form-item label="客户端测试uri：" prop="TestUri">
           <el-col :span="15">
