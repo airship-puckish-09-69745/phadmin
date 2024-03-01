@@ -527,6 +527,7 @@ export default {
     }
   },
   created() {
+    console.log(process.env)
     this.getData()
   },
   methods: {
