@@ -1046,7 +1046,7 @@ export const asyncRoutes = [
             path: 'testWebThirdpartyTransfer',
             component: () => import('@/views/devTools/testWebThirdpartyTransfer'),
             name: 'TestWebThirdpartyTransfer',
-            meta: { title: '转入转出小工具', perm: 'ADMINUSER_MANAGEMENT' }
+            meta: { title: '转入转出小工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
