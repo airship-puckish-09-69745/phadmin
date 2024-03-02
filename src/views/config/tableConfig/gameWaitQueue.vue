@@ -30,7 +30,35 @@
                   </span>
                 </div>
               </el-row>
-
+              <el-row v-if="item.GameId===31">
+                <div style="margin-bottom:20px;">
+                  <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits经典场 发车说明</p>
+                  <span style="font-size:14px;font-weight: bolder;">
+                    1. 真人优先发有人的桌子<br>
+                    2. 开启机器人进桌后，分配机器人进新桌<br>
+                    3. 开启机器人进新桌后分配方案<br/>
+                  </span>
+                  <el-table
+                    :data="tongitsClassicProp"
+                    border
+                    style="width: 100%">
+                    <el-table-column
+                      prop="pn"
+                      label="人数"
+                      width="180">
+                    </el-table-column>
+                    <el-table-column
+                      prop="tn"
+                      label="桌子数"
+                      width="180">
+                    </el-table-column>
+                    <el-table-column
+                      prop="rn"
+                      label="补充机器人">
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </el-row>
               <el-table
                 :data="item.Config"
                 style="width: 95%"
@@ -82,6 +110,18 @@
 
                 <el-table-column
                   v-if="item.GameId===22"
+                  prop="IsOpenRobot"
+                  label="是否开启机器人进桌"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsOpenRobot" active-color="#13ce66" inactive-color="#ff4949" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId===31"
                   prop="IsOpenRobot"
                   label="是否开启机器人进桌"
                 >
@@ -213,7 +253,15 @@ export default {
 
       selectedGid: 0,
       gameOptions: [],
-      selectGameVisible: false
+      selectGameVisible: false,
+      tongitsClassicProp:[
+        {"pn":1,"tn":1,"rn":2 },
+        {"pn":2,"tn":2,"rn":4 },
+        {"pn":4,"tn":2,"rn":2 },
+        {"pn":5,"tn":2,"rn":1 },
+        {"pn":7,"tn":3,"rn":2 },
+        {"pn":8,"tn":3,"rn":1 }
+      ]
     }
   },
   created() {
