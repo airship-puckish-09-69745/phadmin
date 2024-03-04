@@ -547,16 +547,15 @@ export default {
     getRemark() {
       if (process.env.NODE_ENV === 'production') {
         if (process.env.VUE_APP_PROJECT === 'ph') {
-          this.remark = '内部正式包，路径配置: 1000002->客户端uri<br/>内部预发布，路径配置: 1000002->客户端测试uri'
+          this.remark = '1. 内部正式包，路径配置: 1000002->客户端 uri。 2. 内部预发布，路径配置: 1000002->客户端测试 uri'
         } else {
-          this.remark = '正式审核包，路径配置: 1000002->客户端uri<br/>正式UAT环境，路径配置: 1000002->客户端测试uri'
+          this.remark = '1. 正式审核包，路径配置: 1000002->客户端 uri。 2. 正式 UAT 环境，路径配置: 1000002->客户端测试 uri'
         }
       } else {
         if (process.env.VUE_APP_PROJECT === 'ph') {
-          this.remark = '内部正式包，路径配置: 1000002->客户端uri<br/>内部预发布，路径配置: 1000002->客户端测试uri'
-          // this.remark = '开发包，路径配置: 1000002->客户端uri'
+          this.remark = '开发包，路径配置: 1000002->客户端 uri。'
         } else {
-          this.remark = '开发审核包，路径配置: 1000002->客户端uri'
+          this.remark = '开发审核包，路径配置: 1000002->客户端 uri'
         }
       }
     }
