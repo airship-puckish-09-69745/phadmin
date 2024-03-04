@@ -81,9 +81,8 @@
     <el-row>
       <div v-if="tongitsConfig.robotConfig.Control.RobotOpenFlag" style="color:red">
         <el-row>1、打开对应场次机器人开关</el-row>
-        <el-row>2、打开构建好牌开关</el-row>
-        <el-row>3、配置对应场次机器人排队入桌逻辑</el-row>
-        <el-row>4、配置机器人AI逻辑</el-row>
+        <el-row>2、配置对应场次机器人排队入桌逻辑</el-row>
+        <el-row>3、配置机器人AI逻辑</el-row>
       </div>
     </el-row>
   </fieldset>

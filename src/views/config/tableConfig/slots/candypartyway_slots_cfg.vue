@@ -112,9 +112,7 @@ export default {
 
             const BetListAct = []
             for (const k in cfg.BetList) {
-              for (const t in cfg.OddsList) {
-                BetListAct.push(cfg.BetList[k] * cfg.OddsList[t])
-              }
+              BetListAct.push(cfg.BetList[k])
             }
             cfg.BetListAct = BetListAct
 
