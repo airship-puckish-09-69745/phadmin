@@ -284,7 +284,7 @@ export default {
             return
           }
           for (const i in objs) {
-            if (objs[i]['ActLog']) {
+            if (objs[i]['ActLog'] && objs[i]['ActLog'] !== 'null') {
               objs[i]['ActLogObj'] = JSON.parse(objs[i]['ActLog'])
             } else {
               objs[i]['ActLogObj'] = {}
@@ -448,7 +448,7 @@ export default {
           }
 
           for (const i in objs) {
-            if (objs[i]['ActLog']) {
+            if (objs[i]['ActLog'] && objs[i]['ActLog'] !== 'null') {
               objs[i]['ActLogObj'] = JSON.parse(objs[i]['ActLog'])
             } else {
               objs[i]['ActLogObj'] = {}
