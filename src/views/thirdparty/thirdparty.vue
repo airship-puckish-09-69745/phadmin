@@ -17,6 +17,19 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
     </el-row>
+    <el-row>
+      <el-col :span="20">
+        <el-descriptions
+          class="margin-top"
+          :column="1"
+          size="medium"
+          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px', 'color':'red'}"
+          border
+        >
+          <el-descriptions-item label="备注：">{{ remark }}</el-descriptions-item>
+        </el-descriptions>
+      </el-col>
+    </el-row>
     <div style="padding-top: 10px">
       <el-table
         ref="filterTable"
@@ -283,6 +296,7 @@ export default {
         item: newItem(),
         isEdit: false
       },
+      remark: '',
       isDisabled: false,
       screens: [
         { value: 'horizontal', label: '横屏' },
@@ -313,6 +327,7 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.isDisabled = false
+    this.getRemark()
     this.getList()
   },
   methods: {
@@ -528,6 +543,21 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    getRemark() {
+      if (process.env.NODE_ENV === 'production') {
+        if (process.env.VUE_APP_PROJECT === 'ph') {
+          this.remark = '1. 内部正式包，路径配置: 1000002->客户端 uri。 2. 内部预发布，路径配置: 1000002->客户端测试 uri'
+        } else {
+          this.remark = '1. 正式审核包，路径配置: 1000002->客户端 uri。 2. 正式 UAT 环境，路径配置: 1000002->客户端测试 uri'
+        }
+      } else {
+        if (process.env.VUE_APP_PROJECT === 'ph') {
+          this.remark = '开发包，路径配置: 1000002->客户端 uri。'
+        } else {
+          this.remark = '开发审核包，路径配置: 1000002->客户端 uri'
+        }
+      }
     }
   }
 }

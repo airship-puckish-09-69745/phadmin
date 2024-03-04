@@ -183,7 +183,7 @@
             </el-row>
           </fieldset>
 
-          <fieldset style="margin-top:10px">
+          <fieldset style="margin-top:10px" v-if="!isHidden" >
             <legend>机器人配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
@@ -494,6 +494,7 @@ export default {
         RobotUserNumSafeVal: 0,
         RealUserNumSafeVal: 0
       },
+      isHidden: true, // 默认隐藏
       dices: [],
       testRand: {
         visible: false,
@@ -527,6 +528,10 @@ export default {
     }
   },
   created() {
+    console.log(process.env.VUE_APP_PROJECT_NAME)
+     if (process.env.VUE_APP_PROJECT_NAME=="菲1-开发环境" || process.env.VUE_APP_PROJECT_NAME=="菲1-线上环境"){
+       this.isHidden = false
+     }
     this.getData()
   },
   methods: {
