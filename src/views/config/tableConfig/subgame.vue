@@ -48,10 +48,10 @@
     </el-row>
 
     <el-row style="padding-top: 5px">
-      <el-col :span="4">
+      <el-col :span="5">
         <el-form label-width="50px">
           <el-form-item label="AppId">
-            <el-select v-model="appId" @change="getList()">
+            <el-select v-model="appId" style="width: 230px" size="small" @change="getList()">
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
@@ -257,7 +257,7 @@
         <el-tabs type="card">
           <el-tab-pane label="基础信息">
             <el-form-item label="AppId" :required="true">
-              <el-select v-model="edit.item.AppId" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
+              <el-select v-model="edit.item.AppId" style="width: 230px" :disabled="!edit.isCopy" placeholder="请选择" size="mini">
                 <el-option
                   v-for="item in appInfo"
                   :key="item.key"
@@ -403,7 +403,7 @@
       <el-form ref="edit" :model="edit" label-width="150px" size="small" inline>
         <el-tabs type="card">
           <el-form-item label="从原始AppId" :required="true">
-            <el-select v-model="appId" disabled placeholder="请选择" size="mini">
+            <el-select v-model="copyListDialog.srcAppId" style="width: 230px" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
@@ -413,9 +413,9 @@
             </el-select>
           </el-form-item>
           <el-form-item label="复制到AppId" :required="true">
-            <el-select v-model="copyListDialog.targetAppId" placeholder="请选择" size="mini">
+            <el-select v-model="copyListDialog.targetAppId" style="width: 230px" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in getAppsFiltered(appId)"
+                v-for="item in getAppsFiltered(copyListDialog.srcAppId)"
                 :key="item.key"
                 :label="appInfoLabel(item.key, item.label)"
                 :value="item.key"
@@ -423,6 +423,11 @@
             </el-select>
           </el-form-item>
           <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上；若状态为非上架状态，需先进行上架后点击发布</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
             <el-col :span="12" :offset="10">
               <el-button type="primary" size="medium" @click="copyList">保存</el-button>
             </el-col>
@@ -485,7 +490,7 @@ export default {
       langTypes: ['en', 'hi'],
       platform: 'android',
       appId: 1000002,
-      appInfo: [],
+      appInfo: [{ key: 0, label: '默认配置' }],
 
       edit: {
         visible: false,
@@ -499,6 +504,7 @@ export default {
       copyListDialog: {
         title: '复制配置列表',
         visible: false,
+        srcAppId: 1000002,
         targetAppId: 0
       },
 
@@ -575,7 +581,7 @@ export default {
       return label + '-' + key
     },
     getAppsFiltered(appId) {
-      const apps = [{ key: 0, label: '请选择' }]
+      const apps = []
       for (const i in this.appInfo) {
         if (this.appInfo[i].key !== appId) {
           apps.push(this.appInfo[i])
@@ -725,6 +731,7 @@ export default {
     },
     handleCopyList() {
       this.copyListDialog.visible = true
+      this.copyListDialog.srcAppId = this.appId
       this.copyListDialog.targetAppId = 0
     },
     getList() {
@@ -878,10 +885,6 @@ export default {
       this.edit.visible = false
     },
     copyList() {
-      if (this.copyListDialog.targetAppId === 0) {
-        this.$alert('未指定目标AppId')
-        return
-      }
       request({
         url: 'subgame/copy/list',
         method: 'post',

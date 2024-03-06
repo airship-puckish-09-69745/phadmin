@@ -210,9 +210,10 @@
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-select v-model="edit.item.Level" placeholder="请选择" :disabled="edit.isEdit">
-                <el-option label="初级" :value="1" />
-                <el-option label="中级" :value="2" />
-                <el-option label="高级" :value="3" />
+                <el-option label="微级" :value="1" />
+                <el-option label="初级" :value="2" />
+                <el-option label="中级" :value="3" />
+                <el-option label="高级" :value="4" />
               </el-select>
             </el-form-item>
           </el-col>

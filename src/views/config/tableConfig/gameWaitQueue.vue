@@ -19,6 +19,47 @@
           <div v-for="item in allCfg.All">
             <fieldset>
               <legend>{{ showGameName(item.GameId) }}</legend>
+              <el-row v-if="item.GameId===22">
+                <div style="margin-bottom:20px;">
+                  <p style="color:rgb(211,8,8, 1.0);font-size:18px;">TongitsPot 发车说明</p>
+                  <span style="font-size:14px;font-weight: bolder;">
+                    1. 开启机器人进桌后，如果在等待时间内没有凑满发车人数，则补充机器人到发车人数，然后随机打乱队列发车<br>
+                    2. 1等2时全进机器人: 是指某桌出现1个玩家等待2个玩家加入时，如果开启则发2个机器人进该桌 <br>
+                    3. 2等1时进机器人: 是指某桌出现2个玩家等待1个玩家加入时，如果开启则发1个机器人进该桌 <br>
+                    4. 如果1等2和2等1未开启，则空位入桌逻辑从队列里面按顺序取出用户发车到空位桌上<br>
+                  </span>
+                </div>
+              </el-row>
+              <el-row v-if="item.GameId===31">
+                <div style="margin-bottom:20px;">
+                  <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits经典场 发车说明</p>
+                  <span style="font-size:14px;font-weight: bolder;">
+                    1. 真人优先发有人的桌子<br>
+                    2. 开启机器人进桌后，分配机器人进新桌<br>
+                    3. 开启机器人进新桌后分配方案<br>
+                  </span>
+                  <el-table
+                    :data="tongitsClassicProp"
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      prop="pn"
+                      label="人数"
+                      width="180"
+                    />
+                    <el-table-column
+                      prop="tn"
+                      label="桌子数"
+                      width="180"
+                    />
+                    <el-table-column
+                      prop="rn"
+                      label="补充机器人"
+                    />
+                  </el-table>
+                </div>
+              </el-row>
               <el-table
                 :data="item.Config"
                 style="width: 95%"
@@ -64,6 +105,54 @@
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
                       <el-input v-model="scope.row.FreeSeatNum" type="text" placeholder="空座位发车值" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId===22"
+                  prop="IsOpenRobot"
+                  label="是否开启机器人进桌"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsOpenRobot" active-color="#13ce66" inactive-color="#ff4949" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId===31"
+                  prop="IsOpenRobot"
+                  label="是否开启机器人进桌"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsOpenRobot" active-color="#13ce66" inactive-color="#ff4949" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId === 22"
+                  prop="IsTableFree2RobotJoin"
+                  label="1等2时全进机器人"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsTableFree2RobotJoin" active-color="#13ce66" inactive-color="#ff4949" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId==22"
+                  prop="IsTableFree1RobotJoin"
+                  label="2等1时进机器人"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsTableFree1RobotJoin" active-color="#13ce66" inactive-color="#ff4949" />
                     </el-form-item>
                   </template>
                 </el-table-column>
@@ -165,7 +254,15 @@ export default {
 
       selectedGid: 0,
       gameOptions: [],
-      selectGameVisible: false
+      selectGameVisible: false,
+      tongitsClassicProp: [
+        { 'pn': 1, 'tn': 1, 'rn': 2 },
+        { 'pn': 2, 'tn': 2, 'rn': 4 },
+        { 'pn': 4, 'tn': 2, 'rn': 2 },
+        { 'pn': 5, 'tn': 2, 'rn': 1 },
+        { 'pn': 7, 'tn': 3, 'rn': 2 },
+        { 'pn': 8, 'tn': 3, 'rn': 1 }
+      ]
     }
   },
   created() {
