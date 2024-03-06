@@ -730,8 +730,8 @@ export default {
       for (const j in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
         this.item.BetAreaOptions[j].Odds /= 1000
-        this.item.BetAreaOptions[j].AreaMin /= 1000
-        this.item.BetAreaOptions[j].AreaMax /= 1000
+        this.item.BetAreaOptions[j].AreaMin /= 100
+        this.item.BetAreaOptions[j].AreaMax /= 100
       }
 
       for (const j in this.item.BetMoneyLevel) {
@@ -779,8 +779,8 @@ export default {
         Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
         obj.Odds *= 1000
-        obj.AreaMax *= 1000
-        obj.AreaMin *= 1000
+        obj.AreaMax *= 100
+        obj.AreaMin *= 100
         ret.BetAreaOptions.push(obj)
       }
 
