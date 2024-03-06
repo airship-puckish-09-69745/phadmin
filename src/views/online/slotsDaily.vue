@@ -230,6 +230,30 @@ export default {
           return '侏罗纪'
         case 63:
           return '夺宝奇兵'
+        case 67:
+          return '金钱兔'
+        case 68:
+          return '十倍金牛'
+        case 69:
+          return '虎虎生财'
+        case 70:
+          return '鼠鼠福福'
+        case 71:
+          return '嘻哈熊猫'
+        case 72:
+          return '象财神'
+        case 73:
+          return '忍者武士'
+        case 74:
+          return '亡灵大盗'
+        case 75:
+          return '小红帽'
+        case 76:
+          return '糖果派对Way'
+        case 77:
+          return '糖果派对Allline'
+        case 78:
+          return '超级宝石'
       }
       return '未知老虎机-' + sType
     },
@@ -239,6 +263,7 @@ export default {
       one.Yesterday = this.libMoney.TransForShow(one.Yesterday)
       one.Day7 = this.libMoney.TransForShow(one.Day7)
       const lists = []
+          console.log(222222222, one.SlotsType)
       switch (one.SlotsType) {
         case 51:
         {
@@ -362,6 +387,17 @@ export default {
           lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
           lists.push(this.calcItem('Bonus返奖', 'SlotsReturn3', one))
+          lists.push(this.calcItemTotal('总计', one))
+          break
+        }
+        case 76:
+        case 77:
+        case 78:
+        {
+          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
+          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
+          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
           lists.push(this.calcItemTotal('总计', one))
           break
         }
@@ -539,6 +575,13 @@ export default {
             case 63:
             {
               this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', 'Bonus返奖', 'BonusRTP', '总RTP', '正常中奖率', 'Scatter中奖率', 'Bonus中奖率']
+              break
+            }
+            case 76:
+            case 77:
+            case 78:
+            {
+              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
               break
             }
           }
@@ -850,6 +893,23 @@ export default {
                 this.createSeries('正常中奖率', SlotsReturn1Times),
                 this.createSeries('Scatter中奖率', SlotsReturn2Times),
                 this.createSeries('Bonus中奖率', SlotsReturn3Times)
+              ]
+              break
+            }
+            case 76:
+            case 77:
+            case 78:
+            {
+              this.chartData.xSeries = [
+                this.createSeries('玩牌次数', PlayTimes),
+                this.createSeries('总下注', TotalBet),
+                this.createSeries('正常返奖', SlotsReturn1),
+                this.createSeries('正常RTP', SlotsReturn1RTP),
+                this.createSeries('Scatter返奖', SlotsReturn2),
+                this.createSeries('ScatterRTP', SlotsReturn2RTP),
+                this.createSeries('总RTP', TotalRTP),
+                this.createSeries('正常中奖率', SlotsReturn1Times),
+                this.createSeries('Scatter中奖率', SlotsReturn2Times)
               ]
               break
             }

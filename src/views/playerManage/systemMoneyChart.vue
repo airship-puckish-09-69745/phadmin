@@ -246,11 +246,13 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
-      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 100: 'Tower', 31: 'Tongits-经典', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 10000: '汇总' },
+      gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 100: 'Tower',
+        76: '糖果派对Way', 77: '糖果派对Allline', 78: '超级宝石',
+        31: 'Tongits-经典', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 100, 102, 101, 103],
+      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 100, 102, 101, 103, 76, 77, 78],
       sortOrder: [],
       env: 'test'
     }
