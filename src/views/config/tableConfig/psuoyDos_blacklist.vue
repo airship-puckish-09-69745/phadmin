@@ -7,7 +7,7 @@
         <el-button size="mini" type="primary" @click="setData">保存</el-button>
 
         <el-row>
-          <el-col :offset="8" span="2">
+          <el-col :offset="8" :span="2">
             <el-button size="mini" @click="clearFilter">清除过滤</el-button>
           </el-col>
           <el-col :span="6">
@@ -22,9 +22,9 @@
         <el-form ref="form" :model="form" label-width="150px">
           <el-row :gutter="10" style="margin-top: 30px">
             <el-col>
-              <el-form-item label="交Pot次数强制踢出：" prop="BlackPayPotTimesKick">
+              <el-form-item label="交Pot次数强制踢出：" >
                 <el-col :span="12">
-                  <el-input v-model.number="form.BlackPayPotTimesKick" :required="true" />
+                  <el-input v-model.number="BlackPayPotTimesKick" :required="true" />
                 </el-col>
               </el-form-item>
             </el-col>
@@ -97,6 +97,8 @@ export default {
       showData: [],
       clientDB: new ClientTableData([], 1, {}),
       tableData: [],
+      search:'',
+      BlackPayPotTimesKick:'',
       form: {
       },
       txt: '',
@@ -202,7 +204,7 @@ export default {
             for (let i = 0; i < $this.item.List.length; i++) {
               $this.showData.push({ index: i, items: $this.item.List[i].UidList, showStr: $this.item.List[i].UidList.join(',') })
             }
-            $this.form.BlackPayPotTimesKick = $this.item.BlackPayPotTimesKick
+            $this.BlackPayPotTimesKick = $this.item.BlackPayPotTimesKick
             $this.refreshData()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
@@ -215,7 +217,7 @@ export default {
       this.refreshShow()
     },
     setData() {
-      const item = { List: [], BlackPayPotTimesKick: this.form.BlackPayPotTimesKick }
+      const item = { List: [], BlackPayPotTimesKick: this.BlackPayPotTimesKick }
       for (let i = 0; i < this.showData.length; i++) {
         item.List.push({ UidList: this.showData[i].items })
       }
