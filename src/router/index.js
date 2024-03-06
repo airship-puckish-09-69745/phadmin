@@ -283,7 +283,7 @@ export const asyncRoutes = [
           },
           {
             path: 'pusoyDosTogetherBlackList',
-            component: () => import('@/views/config/tableConfig/psuoDos_blacklist'),
+            component: () => import('@/views/config/tableConfig/psuoyDos_blacklist'),
             name: 'pusoyDosTogetherBlackList',
             meta: { title: 'PusoyDos 同桌黑名单' }
           }
