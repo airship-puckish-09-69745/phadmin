@@ -727,6 +727,13 @@ export default {
       this.item.PreBetRate /= 100
       this.item.BetRate /= 100
 
+      for (const j in this.item.BetAreaOptions) {
+        this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
+        this.item.BetAreaOptions[j].Odds /= 1000
+        this.item.BetAreaOptions[j].AreaMin /= 1000
+        this.item.BetAreaOptions[j].AreaMax /= 1000
+      }
+
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         const betMoneyList = []
@@ -765,6 +772,17 @@ export default {
       ret.IncrBet *= 100
       ret.PreBetRate *= 100
       ret.BetRate *= 100
+
+      ret.BetAreaOptions = []
+      for (const o in this.item.BetAreaOptions) {
+        const obj = {}
+        Object.assign(obj, this.item.BetAreaOptions[o])
+        obj.MaxMoneyBet *= 1000
+        obj.Odds *= 1000
+        obj.AreaMax *= 1000
+        obj.AreaMin *= 1000
+        ret.BetAreaOptions.push(obj)
+      }
 
       ret.BetMoneyLevel = []
       for (const o in this.item.BetMoneyLevel) {
