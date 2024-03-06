@@ -150,7 +150,7 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.initMoney*Ratio/1000 >= scope.row.money" style="color:green">
+            <span v-if="scope.row.level==5" style="color:green">
               需要赢
             </span>
             <span v-else style="color:red">
