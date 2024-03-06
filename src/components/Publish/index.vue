@@ -572,9 +572,9 @@ export default {
             break
           case 'CustomizeConfig':
             preVal = JSON.parse(preVal.Data)
-            if(proVal&&proVal.Data) {
+            if (proVal && proVal.Data) {
               proVal = JSON.parse(proVal.Data)
-            }else{
+            } else {
               proVal = {}
             }
             $this.compareRets = []

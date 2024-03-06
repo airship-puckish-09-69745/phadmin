@@ -1869,7 +1869,7 @@ export default {
     },
     setData() {
       const obj = this.getPostData()
-      let postData = JSON.parse(JSON.stringify(obj))
+      const postData = JSON.parse(JSON.stringify(obj))
       console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
