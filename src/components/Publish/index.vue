@@ -572,7 +572,11 @@ export default {
             break
           case 'CustomizeConfig':
             preVal = JSON.parse(preVal.Data)
-            proVal = JSON.parse(proVal.Data)
+            if(proVal&&proVal.Data) {
+              proVal = JSON.parse(proVal.Data)
+            }else{
+              proVal = {}
+            }
             $this.compareRets = []
             $this.compareObject(proVal, preVal)
             $this.ObjectData.Result = $this.compareRets
