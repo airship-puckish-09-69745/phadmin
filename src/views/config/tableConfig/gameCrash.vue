@@ -225,7 +225,7 @@
                   label="最小飞行值"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.AreaMin" size="mini" />
+                    <el-input v-model="scope.row.AreaMin" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -234,7 +234,7 @@
                   label="最大飞行值"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.AreaMax" size="mini" />
+                    <el-input v-model="scope.row.AreaMax" size="mini" />
                   </template>
                 </el-table-column>
 
