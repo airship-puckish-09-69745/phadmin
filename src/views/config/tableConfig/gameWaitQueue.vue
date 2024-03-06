@@ -36,26 +36,27 @@
                   <span style="font-size:14px;font-weight: bolder;">
                     1. 真人优先发有人的桌子<br>
                     2. 开启机器人进桌后，分配机器人进新桌<br>
-                    3. 开启机器人进新桌后分配方案<br/>
+                    3. 开启机器人进新桌后分配方案<br>
                   </span>
                   <el-table
                     :data="tongitsClassicProp"
                     border
-                    style="width: 100%">
+                    style="width: 100%"
+                  >
                     <el-table-column
                       prop="pn"
                       label="人数"
-                      width="180">
-                    </el-table-column>
+                      width="180"
+                    />
                     <el-table-column
                       prop="tn"
                       label="桌子数"
-                      width="180">
-                    </el-table-column>
+                      width="180"
+                    />
                     <el-table-column
                       prop="rn"
-                      label="补充机器人">
-                    </el-table-column>
+                      label="补充机器人"
+                    />
                   </el-table>
                 </div>
               </el-row>
@@ -254,13 +255,13 @@ export default {
       selectedGid: 0,
       gameOptions: [],
       selectGameVisible: false,
-      tongitsClassicProp:[
-        {"pn":1,"tn":1,"rn":2 },
-        {"pn":2,"tn":2,"rn":4 },
-        {"pn":4,"tn":2,"rn":2 },
-        {"pn":5,"tn":2,"rn":1 },
-        {"pn":7,"tn":3,"rn":2 },
-        {"pn":8,"tn":3,"rn":1 }
+      tongitsClassicProp: [
+        { 'pn': 1, 'tn': 1, 'rn': 2 },
+        { 'pn': 2, 'tn': 2, 'rn': 4 },
+        { 'pn': 4, 'tn': 2, 'rn': 2 },
+        { 'pn': 5, 'tn': 2, 'rn': 1 },
+        { 'pn': 7, 'tn': 3, 'rn': 2 },
+        { 'pn': 8, 'tn': 3, 'rn': 1 }
       ]
     }
   },
