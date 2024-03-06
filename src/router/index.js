@@ -500,6 +500,12 @@ export const asyncRoutes = [
             meta: { title: '糖果派对Allline' }
           },
           {
+            path: 'supergem_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
+            name: 'supergem_slots_cfg',
+            meta: { title: 'SuperGem - 超级宝石' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',

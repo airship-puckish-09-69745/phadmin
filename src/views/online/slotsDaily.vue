@@ -263,7 +263,7 @@ export default {
       one.Yesterday = this.libMoney.TransForShow(one.Yesterday)
       one.Day7 = this.libMoney.TransForShow(one.Day7)
       const lists = []
-          console.log(222222222, one.SlotsType)
+      console.log(222222222, one.SlotsType)
       switch (one.SlotsType) {
         case 51:
         {

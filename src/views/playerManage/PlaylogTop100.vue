@@ -155,7 +155,7 @@ export default {
       libShow: $libShow,
       gid: 22,
       ctime: new Date().getTime() - 86400000,
-      gameSort: [22, 10, 25, 23, 15, 20,34, 100, 101, 102, 103],
+      gameSort: [22, 10, 25, 23, 15, 20, 34, 100, 101, 102, 103],
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > new Date().getTime()

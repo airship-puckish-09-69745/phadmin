@@ -132,7 +132,6 @@
             <el-col :span="11" />
           </el-row>
 
-
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
             <el-row>
@@ -180,12 +179,9 @@
             </el-row>
           </fieldset>
 
-
-
           <fieldset style="margin-top:10px">
             <legend>下注区域配置</legend>
-            <el-descriptions class="margin-top" border>
-            </el-descriptions>
+            <el-descriptions class="margin-top" border />
             <el-row>
               <el-table
                 ref="filterTable"
@@ -233,7 +229,6 @@
                   </template>
                 </el-table-column>
 
-
                 <el-table-column
                   prop="AreaMax"
                   label="最大飞行值"
@@ -243,12 +238,9 @@
                   </template>
                 </el-table-column>
 
-
               </el-table>
             </el-row>
           </fieldset>
-
-
 
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
@@ -581,14 +573,14 @@ export default {
   data() {
     return {
       item: {
-        BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000}],
+        BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000 }],
         BetAreaOptions: [
-          { AreaMin: 1, Odds: 10,  MaxMoneyBet: 2000, Id: 0, AreaMax: 2 },
-          { AreaMin: 3, Odds: 10,  MaxMoneyBet: 2000, Id: 1, AreaMax: 4 },
-          { AreaMin: 5, Odds: 10,  MaxMoneyBet: 2000, Id: 2, AreaMax: 6 },
-          { AreaMin: 7, Odds: 10,  MaxMoneyBet: 2000, Id: 3, AreaMax: 8 },
-          { AreaMin: 9, Odds: 10,  MaxMoneyBet: 2000, Id: 4, AreaMax: 10 },
-          { AreaMin: 11,Odds: 10, MaxMoneyBet: 2000, Id: 5, AreaMax: 12 }
+          { AreaMin: 1, Odds: 10, MaxMoneyBet: 2000, Id: 0, AreaMax: 2 },
+          { AreaMin: 3, Odds: 10, MaxMoneyBet: 2000, Id: 1, AreaMax: 4 },
+          { AreaMin: 5, Odds: 10, MaxMoneyBet: 2000, Id: 2, AreaMax: 6 },
+          { AreaMin: 7, Odds: 10, MaxMoneyBet: 2000, Id: 3, AreaMax: 8 },
+          { AreaMin: 9, Odds: 10, MaxMoneyBet: 2000, Id: 4, AreaMax: 10 },
+          { AreaMin: 11, Odds: 10, MaxMoneyBet: 2000, Id: 5, AreaMax: 12 }
         ],
         MaxPlayers: 400,
         BetMoneyList: [10, 50, 100, 500, 1000],
