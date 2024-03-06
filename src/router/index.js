@@ -280,6 +280,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
             name: 'pusoyRobotSetting',
             meta: { title: 'Pusoy AI◐' }
+          },
+          {
+            path: 'pusoyDosTogetherBlackList',
+            component: () => import('@/views/config/tableConfig/psuoDos_blacklist'),
+            name: 'pusoyDosTogetherBlackList',
+            meta: { title: 'PusoyDos 同桌黑名单' }
           }
         ]
       },
