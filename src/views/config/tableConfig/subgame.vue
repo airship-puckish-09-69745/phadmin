@@ -888,7 +888,7 @@ export default {
       request({
         url: 'subgame/copy/list',
         method: 'post',
-        data: { SrcAppId: this.appId, TargetAppId: this.copyListDialog.targetAppId, Platform: this.platform }
+        data: { SrcAppId: this.copyListDialog.srcAppId, TargetAppId: this.copyListDialog.targetAppId, Platform: this.platform }
       }).then(response => {
         if (response.RetCode === 0) {
           this.getList()

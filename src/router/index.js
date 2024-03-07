@@ -664,6 +664,12 @@ export const asyncRoutes = [
         meta: { title: 'Pusoy - ◐', gid: 21 }
       },
       {
+        path: 'playlog_pusoyDos',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_pusoyDos',
+        meta: { title: 'PusoyDos - ◐', gid: 34 }
+      },
+      {
         path: 'playlog_texas',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_texas',
