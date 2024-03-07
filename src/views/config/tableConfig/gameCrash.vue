@@ -132,7 +132,6 @@
             <el-col :span="11" />
           </el-row>
 
-
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
             <el-row>
@@ -180,12 +179,9 @@
             </el-row>
           </fieldset>
 
-
-
           <fieldset style="margin-top:10px">
             <legend>下注区域配置</legend>
-            <el-descriptions class="margin-top" border>
-            </el-descriptions>
+            <el-descriptions class="margin-top" border />
             <el-row>
               <el-table
                 ref="filterTable"
@@ -229,26 +225,22 @@
                   label="最小飞行值"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.AreaMin" size="mini" />
+                    <el-input v-model="scope.row.AreaMin" size="mini" />
                   </template>
                 </el-table-column>
-
 
                 <el-table-column
                   prop="AreaMax"
                   label="最大飞行值"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.AreaMax" size="mini" />
+                    <el-input v-model="scope.row.AreaMax" size="mini" />
                   </template>
                 </el-table-column>
-
 
               </el-table>
             </el-row>
           </fieldset>
-
-
 
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
@@ -581,14 +573,14 @@ export default {
   data() {
     return {
       item: {
-        BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000}],
+        BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000 }],
         BetAreaOptions: [
-          { AreaMin: 1, Odds: 10,  MaxMoneyBet: 2000, Id: 0, AreaMax: 2 },
-          { AreaMin: 3, Odds: 10,  MaxMoneyBet: 2000, Id: 1, AreaMax: 4 },
-          { AreaMin: 5, Odds: 10,  MaxMoneyBet: 2000, Id: 2, AreaMax: 6 },
-          { AreaMin: 7, Odds: 10,  MaxMoneyBet: 2000, Id: 3, AreaMax: 8 },
-          { AreaMin: 9, Odds: 10,  MaxMoneyBet: 2000, Id: 4, AreaMax: 10 },
-          { AreaMin: 11,Odds: 10, MaxMoneyBet: 2000, Id: 5, AreaMax: 12 }
+          { AreaMin: 1, Odds: 10, MaxMoneyBet: 2000, Id: 0, AreaMax: 2 },
+          { AreaMin: 3, Odds: 10, MaxMoneyBet: 2000, Id: 1, AreaMax: 4 },
+          { AreaMin: 5, Odds: 10, MaxMoneyBet: 2000, Id: 2, AreaMax: 6 },
+          { AreaMin: 7, Odds: 10, MaxMoneyBet: 2000, Id: 3, AreaMax: 8 },
+          { AreaMin: 9, Odds: 10, MaxMoneyBet: 2000, Id: 4, AreaMax: 10 },
+          { AreaMin: 11, Odds: 10, MaxMoneyBet: 2000, Id: 5, AreaMax: 12 }
         ],
         MaxPlayers: 400,
         BetMoneyList: [10, 50, 100, 500, 1000],
@@ -735,6 +727,13 @@ export default {
       this.item.PreBetRate /= 100
       this.item.BetRate /= 100
 
+      for (const j in this.item.BetAreaOptions) {
+        this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
+        this.item.BetAreaOptions[j].Odds /= 1000
+        this.item.BetAreaOptions[j].AreaMin /= 100
+        this.item.BetAreaOptions[j].AreaMax /= 100
+      }
+
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         const betMoneyList = []
@@ -773,6 +772,17 @@ export default {
       ret.IncrBet *= 100
       ret.PreBetRate *= 100
       ret.BetRate *= 100
+
+      ret.BetAreaOptions = []
+      for (const o in this.item.BetAreaOptions) {
+        const obj = {}
+        Object.assign(obj, this.item.BetAreaOptions[o])
+        obj.MaxMoneyBet *= 1000
+        obj.Odds *= 1000
+        obj.AreaMax = Math.round(obj.AreaMax * 100)
+        obj.AreaMin = Math.round(obj.AreaMin * 100)
+        ret.BetAreaOptions.push(obj)
+      }
 
       ret.BetMoneyLevel = []
       for (const o in this.item.BetMoneyLevel) {

@@ -300,6 +300,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
             name: 'pusoyRobotSetting',
             meta: { title: 'Pusoy AI◐' }
+          },
+          {
+            path: 'pusoyDosTogetherBlackList',
+            component: () => import('@/views/config/tableConfig/psuoyDos_blacklist'),
+            name: 'pusoyDosTogetherBlackList',
+            meta: { title: 'PusoyDos 同桌黑名单' }
           }
         ]
       },
@@ -514,6 +520,12 @@ export const asyncRoutes = [
             meta: { title: '糖果派对Allline' }
           },
           {
+            path: 'supergem_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
+            name: 'supergem_slots_cfg',
+            meta: { title: 'SuperGem - 超级宝石' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -672,6 +684,12 @@ export const asyncRoutes = [
         meta: { title: 'Pusoy - ◐', gid: 21 }
       },
       {
+        path: 'playlog_pusoyDos',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_pusoyDos',
+        meta: { title: 'PusoyDos - ◐', gid: 34 }
+      },
+      {
         path: 'playlog_texas',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_texas',
@@ -806,6 +824,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
             meta: { title: '糖果派对Allline', gid: 77 }
+          },
+          {
+            path: 'supergem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergem_slots_log',
+            meta: { title: '超级宝石', gid: 78 }
           }
         ]
       }

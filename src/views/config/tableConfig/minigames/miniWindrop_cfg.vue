@@ -1868,7 +1868,8 @@ export default {
       return postData
     },
     setData() {
-      const postData = this.getPostData()
+      const obj = this.getPostData()
+      const postData = JSON.parse(JSON.stringify(obj))
       console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
@@ -1896,6 +1897,7 @@ export default {
         for (const i in postData.HappyRouletteCfg) {
           if (postData.HappyRouletteCfg[i].Type === 1) {
             postData.HappyRouletteCfg[i].Num = parseFloat(postData.HappyRouletteCfg[i].Num) * 1000
+            console.log()
           }
         }
       }

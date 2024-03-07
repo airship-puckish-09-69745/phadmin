@@ -51,7 +51,7 @@
         </el-row>
         <el-row>
 
-          <el-col :span="7" >
+          <el-col :span="7">
             <el-form-item label="中奖抽水率：">
               <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
