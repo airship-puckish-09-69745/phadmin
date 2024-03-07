@@ -1038,7 +1038,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="cards" label="中手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupMiddle.cards)" /><span>({{ pusoyDos.pusoyDosGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template></el-table-column>
-          <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{pusoyDos. pusoyDosGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
+          <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{ pusoyDos. pusoyDosGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
         </el-table-column>
         <el-table-column prop="cardType" label="牌型" width="90">
           <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }} {{ pusoyShowGroupExtra(scope.row) }}</template>
@@ -1216,7 +1216,7 @@ export default {
       },
       pusoyShootOneShow: false,
 
-      pusoyDos:{
+      pusoyDos: {
         pusoyDosDetail: {},
         pusoyDosDetailVisible: false,
         pusoyDosCardTypes: {
@@ -1242,7 +1242,7 @@ export default {
           9: '同花顺',
           10: '皇家同花顺'
         },
-        pusoyDosShootOneShow: false,
+        pusoyDosShootOneShow: false
       },
 
       rummyDetailVisible: false,
@@ -1576,7 +1576,7 @@ export default {
             $this.showBodingGame(obj)
           } else if (gid === 34) {
             $this.showPusoyDosGame(obj)
-          }else if (gid === 21) {
+          } else if (gid === 21) {
             $this.showPusoyGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
