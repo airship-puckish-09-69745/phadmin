@@ -779,8 +779,8 @@ export default {
         Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
         obj.Odds *= 1000
-        obj.AreaMax *= 100
-        obj.AreaMin *= 100
+        obj.AreaMax = Math.round(obj.AreaMax * 100)
+        obj.AreaMin = Math.round(obj.AreaMin * 100)
         ret.BetAreaOptions.push(obj)
       }
 
