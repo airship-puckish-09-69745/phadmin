@@ -246,7 +246,8 @@ export default {
         22: 'Tongits-Pot',
         23: 'Lucky9',
         // 25: 'Color Game',
-        31: 'Tongits-Classic'
+        31: 'Tongits-Classic',
+        34: 'PusoyDos'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
