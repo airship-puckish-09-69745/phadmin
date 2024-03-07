@@ -244,6 +244,26 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'PusoyDosCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'PusoyDos', noCache: true },
+        children: [
+          {
+            path: 'PusoyDosTable',
+            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
+            name: 'PusoyDosTable',
+            meta: { title: 'PusoyDos ◐' }
+          },
+          {
+            path: 'PusoyDosTogether',
+            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDos_blacklist'),
+            name: 'PusoyDosTogether',
+            meta: { title: '同桌黑名单 ◐' }
+          }
+        ]
+      },
+      {
         path: 'Lucky9Cfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
