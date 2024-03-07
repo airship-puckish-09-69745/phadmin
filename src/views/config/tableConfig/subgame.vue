@@ -505,7 +505,7 @@ export default {
         title: '复制配置列表',
         visible: false,
         srcAppId: 1000002,
-        targetAppId: 0
+        targetAppId: 1000002
       },
 
       gameComm: {
@@ -732,7 +732,12 @@ export default {
     handleCopyList() {
       this.copyListDialog.visible = true
       this.copyListDialog.srcAppId = this.appId
-      this.copyListDialog.targetAppId = 0
+      for (const i in this.appInfo) {
+        if (this.appInfo[i].key !== this.copyListDialog.srcAppId) {
+          this.copyListDialog.targetAppId = this.appInfo[i].key
+          break
+        }
+      }
     },
     getList() {
       request({
