@@ -490,7 +490,7 @@ export default {
       langTypes: ['en', 'hi'],
       platform: 'android',
       appId: 1000002,
-      appInfo: [{ key: 0, label: '默认配置' }],
+      appInfo: [],
 
       edit: {
         visible: false,
