@@ -798,6 +798,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
             meta: { title: '糖果派对Allline', gid: 77 }
+          },
+          {
+            path: 'supergem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergem_slots_log',
+            meta: { title: '超级宝石', gid: 78 }
           }
         ]
       }
