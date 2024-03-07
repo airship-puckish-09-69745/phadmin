@@ -961,6 +961,99 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog
+      title="小火箭牌局详情"
+      :visible.sync="rocketGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">爆炸点：</span><div style="color:red;">{{ rocketGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="rocketGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="命中"
+          width="80"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+
+        <el-table-column
+          prop="Rate"
+          label="命中总赔率"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.Ret"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog title="Hilo详情" :visible.sync="hiloVisible" width="800px">
 
       <el-descriptions class="margin-top" title="" :column="4" border>
@@ -1169,8 +1262,14 @@ export default {
       hiloNotation: '',
 
       sicboGameVisible: false,
+
       sicboGameResult: '',
       sicboGameOptions: [],
+
+      rocketGameVisible: false,
+      rocketGameResult: '',
+      rocketGameOptions: [],
+
 
       WindropGameVisible: false,
       WindropGameResult: {
@@ -1533,16 +1632,12 @@ export default {
       this.sweeperRateVisible = true
     },
     clickData(row, column, event) {
-      if (row.Gid === 10) {
-        return
-      }
       if (column.label !== 'Uid') {
         this.getDetail(row.LogID, row.FinishTime)
       }
     },
     getDetail(id, dt) {
       const $this = this
-
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -1560,6 +1655,8 @@ export default {
           console.log(obj)
           if (gid == 9 || gid == 8 || gid == 14) {
             $this.showTPGame(obj)
+          }else if (gid == 10) {
+            $this.showRocketGame(obj)
           } else if (gid == 15) {
             $this.showTexasGame(obj)
           } else if (gid == 16) {
@@ -1760,6 +1857,40 @@ export default {
       this.WindropGameResult.EnergyNum = windropObj.optionData.energyNum
       this.WindropGameResult.SpinCount = windropObj.optionData.spinCount
       this.WindropGameVisible = true
+    },
+
+    showRocketGame(obj) {
+      const names = ['下注区域0', '下注区域1', '下注区域2', '下注区域3', '下注区域4', '下注区域5']
+      const tMap = {}
+      this.rocketGameOptions = []
+      const rocketObj = obj
+      for (let i = 0; i < rocketObj.optionsData.length; i++) {
+        const ob = rocketObj.optionsData[i]
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, Ret: [] }
+      }
+
+      for (let i = 0; i < rocketObj.players.length; i++) {
+        const player = rocketObj.players[i]
+        if (player.UserBetOptions === null) {
+          continue
+        }
+        console.log(player.UserBetOptions)
+        for (let j = 0; j < player.UserBetOptions.Option.length; j++) {
+          const result = player.UserBetOptions.Option[j]
+          tMap[result.id].Ret.push({
+            Uid: player.uid,
+            Bet: result.moneyBet,
+            Won: result.moneyWon,
+          })
+        }
+      }
+
+      for (let i = 0; i < rocketObj.optionsData.length; i++) {
+        this.rocketGameOptions.push(tMap[i])
+      }
+      this.rocketGameResult = rocketObj.stopOdds/100
+      console.log(this.rocketGameOptions)
+      this.rocketGameVisible = true
     },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
