@@ -1866,15 +1866,14 @@ export default {
       const rocketObj = obj
       for (let i = 0; i < rocketObj.optionsData.length; i++) {
         const ob = rocketObj.optionsData[i]
-        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, Ret: [] }
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
       }
 
       for (let i = 0; i < rocketObj.players.length; i++) {
         const player = rocketObj.players[i]
-        if (player.UserBetOptions === null) {
+        if (player.UserBetOptions.moneyTotalBet === 0) {
           continue
         }
-        console.log(player.UserBetOptions)
         for (let j = 0; j < player.UserBetOptions.Option.length; j++) {
           const result = player.UserBetOptions.Option[j]
           tMap[result.id].Ret.push({
