@@ -745,7 +745,6 @@ export const asyncRoutes = [
         name: 'playlog_boding',
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
-
       {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
@@ -832,6 +831,18 @@ export const asyncRoutes = [
             meta: { title: '超级宝石', gid: 78 }
           }
         ]
+      },
+      {
+        path: 'tongits_cheatlog',
+        component: () => import('@/views/playerManage/tongitsCheatlog'),
+        name: 'tongits_cheatlog',
+        meta: { title: 'tongits作弊识别日志 ◐' }
+      },
+      {
+        path: 'game_kick_user_log',
+        component: () => import('@/views/playerManage/gameKickUserlog'),
+        name: 'game_kick_user_log',
+        meta: { title: '游戏作弊踢出用户日志 ◐' }
       }
     ]
   },
