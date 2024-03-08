@@ -1732,7 +1732,7 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      levelShow: { 1: 'low', 2: 'medium', 3: 'high' }
+      levelShow: { 1: 'low', 2: 'norm', 3: 'high' }
     }
   },
   created() {
