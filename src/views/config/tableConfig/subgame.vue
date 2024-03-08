@@ -505,7 +505,7 @@ export default {
         title: '复制配置列表',
         visible: false,
         srcAppId: 1000002,
-        targetAppId: 0
+        targetAppId: 1000002
       },
 
       gameComm: {
@@ -581,7 +581,7 @@ export default {
       return label + '-' + key
     },
     getAppsFiltered(appId) {
-      const apps = [{ key: 0, label: '请选择' }]
+      const apps = []
       for (const i in this.appInfo) {
         if (this.appInfo[i].key !== appId) {
           apps.push(this.appInfo[i])
@@ -732,7 +732,12 @@ export default {
     handleCopyList() {
       this.copyListDialog.visible = true
       this.copyListDialog.srcAppId = this.appId
-      this.copyListDialog.targetAppId = 0
+      for (const i in this.appInfo) {
+        if (this.appInfo[i].key !== this.copyListDialog.srcAppId) {
+          this.copyListDialog.targetAppId = this.appInfo[i].key
+          break
+        }
+      }
     },
     getList() {
       request({
@@ -885,14 +890,10 @@ export default {
       this.edit.visible = false
     },
     copyList() {
-      if (this.copyListDialog.targetAppId === 0) {
-        this.$alert('未指定目标AppId')
-        return
-      }
       request({
         url: 'subgame/copy/list',
         method: 'post',
-        data: { SrcAppId: this.appId, TargetAppId: this.copyListDialog.targetAppId, Platform: this.platform }
+        data: { SrcAppId: this.copyListDialog.srcAppId, TargetAppId: this.copyListDialog.targetAppId, Platform: this.platform }
       }).then(response => {
         if (response.RetCode === 0) {
           this.getList()

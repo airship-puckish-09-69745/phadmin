@@ -97,7 +97,8 @@ export default {
         '23': 'Lucky9',
         '25': 'Color',
         '100': 'Tower',
-        '103': 'Windrop'
+        '103': 'Windrop',
+        '34': 'PusoyDos'
       },
       form: {},
       libShow: $libShow,

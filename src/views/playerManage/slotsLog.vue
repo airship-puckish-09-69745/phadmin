@@ -119,7 +119,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[51,52,53,54,57,58,59,66,67].indexOf(gid) >= 0">
+        <template v-if="[51,52,53,54,57,58,59,66,67,76].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -284,7 +284,7 @@ export default {
             return
           }
           for (const i in objs) {
-            if (objs[i]['ActLog']) {
+            if (objs[i]['ActLog'] && objs[i]['ActLog'] !== 'null') {
               objs[i]['ActLogObj'] = JSON.parse(objs[i]['ActLog'])
             } else {
               objs[i]['ActLogObj'] = {}
@@ -448,7 +448,7 @@ export default {
           }
 
           for (const i in objs) {
-            if (objs[i]['ActLog']) {
+            if (objs[i]['ActLog'] && objs[i]['ActLog'] !== 'null') {
               objs[i]['ActLogObj'] = JSON.parse(objs[i]['ActLog'])
             } else {
               objs[i]['ActLogObj'] = {}

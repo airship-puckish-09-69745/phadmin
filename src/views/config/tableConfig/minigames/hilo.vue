@@ -19,7 +19,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="下注额度(值用 , 连接如 4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
+            <el-form-item label="下注额度(示例:4000,300,10,3000,200,5,2000,100,3,1000,50,2,50,20,1)">
               <el-input v-model="item.BetMoney" />
             </el-form-item>
           </el-col>
@@ -43,6 +43,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
+            <el-form-item label="跳过次数：">
+              <el-input v-model.number="item.SkipNum" />
+            </el-form-item>
+          </el-col>
+
+        </el-row>
+        <el-row>
+
+          <el-col :span="7">
+            <el-form-item label="中奖抽水率：">
+              <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="7" :offset="1">
             <el-form-item label="保底奖池抽水：">
               <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
             </el-form-item>
@@ -50,19 +64,7 @@
         </el-row>
         <el-row>
           <el-col :span="7">
-            <el-form-item label="跳过次数：">
-              <el-input v-model.number="item.SkipNum" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="7" :offset="1">
-            <el-form-item label="中奖抽水率：">
-              <el-input v-model.number="item.HitFeeRate"><template slot="append">‰</template></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="7">
-            <el-form-item label="配牌(仅点击右上角用户在玩图案后对该用户生效 格式:A23489XJQK-5)： 流程: 填写配牌数据>保存>测试>确定>进桌>用户在玩图案>填写uid>执行">
+            <el-form-item label="配牌(仅点击右上角用户在玩图案后对该用户生效 格式:A23456789XJQK)： 流程: 填写配牌数据>保存>测试>确定>进桌>用户在玩图案>填写uid>执行">
               <el-input v-model="item.TestCards" />
             </el-form-item>
           </el-col>
@@ -147,14 +149,23 @@
 
         <el-row>
           <fieldset style="margin-top:10px">
-            <legend>Jackpot分布配置</legend>
-            <el-alert
-              type="success"
-              description="根据分布概率随机取出其中一张牌"
-            />
+            <legend>Jackpot 位置配置</legend>
+
             <el-row style="margin-top:10px">
-              <el-button type="primary" size="mini" @click="addJackpotDistributionRow">添加</el-button>
+              <el-col :span="7">
+                <el-form-item label="A: 每一张牌触发Jackpot的概率(仅审核服生效)：">
+                  <el-input v-model.number="item.HitJackpotRate"><template slot="append">‱</template></el-input>
+                </el-form-item>
+              </el-col>
             </el-row>
+
+            <el-row style="margin-top:10px">
+              <el-form-item label="B: 根据分布概率随机取出其中一张牌 (仅非审核服生效)">
+                <el-button type="primary" size="mini" @click="addJackpotDistributionRow">添加</el-button>
+              </el-form-item>
+
+            </el-row>
+
             <el-row>
               <template>
                 <el-table :data="item.JackpotDistributionItems" border>
@@ -186,7 +197,7 @@
 
         <el-row>
           <fieldset style="margin-top:10px">
-            <legend>Jackpot配置</legend>
+            <legend>Jackpot 奖励配置</legend>
             <el-alert
               type="success"
               description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
