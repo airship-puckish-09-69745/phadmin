@@ -648,7 +648,8 @@ export default {
           this.edit.item.money /= 1000
           this.edit.item.initMoney /= 1000
           this.edit.item.allowTableMoney /= 1000
-          this.clientDB.UpdateData(this.edit.item)
+          this.clientDB.UpdateData2('uid', this.edit.item)
+
           this.refreshShow()
           Message.success('保存成功！')
         }
