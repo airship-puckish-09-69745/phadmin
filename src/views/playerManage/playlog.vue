@@ -961,6 +961,110 @@
       </el-table>
     </el-dialog>
 
+
+    <el-dialog
+      title="7Up7Down牌局详情"
+      :visible.sync="sevenGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">骰子结果：</span><div style="color:red;">{{ sevenGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="sevenGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="命中"
+          width="80"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="IsBonus"
+          label="ExtraPay命中"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsBonus==1" style="color:red">是</span>
+            <span v-else>否</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Rate"
+          label="命中总赔率"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.Ret"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog
       title="小火箭牌局详情"
       :visible.sync="rocketGameVisible"
@@ -1265,6 +1369,12 @@ export default {
 
       sicboGameResult: '',
       sicboGameOptions: [],
+
+
+      sevenGameVisible: false,
+
+      sevenGameResult: '',
+      sevenGameOptions: [],
 
       rocketGameVisible: false,
       rocketGameResult: '',
@@ -1683,6 +1793,8 @@ export default {
             $this.showHiloGame(obj)
           } else if (gid === 103) {
             $this.showWindropGame(obj)
+          } else if (gid === 6) {
+            $this.showSevenGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -1935,7 +2047,48 @@ export default {
       this.sicboGameResult = resultTmp.join('，')
       this.sicboGameVisible = true
     },
+    showSevenGame(obj) {
+      const names = ['SMALL_小点', 'BIG_大点', '点数和_2', '点数和_3', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12']
+      const tMap = {}
+      this.sevenGameOptions = []
+      const sevenObj = obj.Seven
+      for (let i = 0; i < sevenObj.options.length; i++) {
+        const ob = sevenObj.options[i]
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
+      }
 
+      for (let i = 0; i < sevenObj.players.length; i++) {
+        const player = sevenObj.players[i]
+        if (player.optionsResult === null) {
+          continue
+        }
+        for (let j = 0; j < player.optionsResult.length; j++) {
+          const result = player.optionsResult[j]
+          let won = 0
+          if (tMap[result.id].Hit) {
+            won = tMap[result.id].Rate * result.moneyBet
+          } else {
+            won = -result.moneyBet
+          }
+          tMap[result.id].Ret.push({
+            Uid: player.uid,
+            Bet: result.moneyBet,
+            Won: won
+          })
+        }
+      }
+
+      for (let i = 0; i < sevenObj.options.length; i++) {
+        this.sevenGameOptions.push(tMap[i])
+      }
+      console.log(this.sevenGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < sevenObj.dices.length; i++) {
+        resultTmp.push(sevenObj.dices[i])
+      }
+      this.sevenGameResult = resultTmp.join('，')
+      this.sevenGameVisible = true
+    },
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {
         const detailRow = obj.players[i]
