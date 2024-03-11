@@ -34,7 +34,7 @@
           prop="ID"
           label="ID"
           sortable="custom"
-          width="90"
+          width="50"
         />
         <el-table-column
           prop="GameID"
@@ -57,7 +57,7 @@
           prop="CategoryID"
           label="游戏类别"
           sortable="custom"
-          width="150"
+          width="100"
         >
           <template slot-scope="scope">
             {{ getCategory(scope.row.CategoryID) }}
@@ -94,6 +94,15 @@
         >
           <template slot-scope="scope">
             {{ statNames[scope.row.Status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ShowDatacenter"
+          label="显示到数据中心"
+          width="70"
+        >
+          <template slot-scope="scope">
+            {{ showNames[scope.row.ShowDatacenter] }}
           </template>
         </el-table-column>
         <el-table-column
@@ -141,6 +150,20 @@
               type="danger"
               @click="handleOffline(scope.row)"
             >下架
+            </el-button>
+            <el-button
+              v-if="scope.row.ShowDatacenter==0"
+              size="mini"
+              type="danger"
+              @click="handShowDatacenter(scope.row)"
+            >显示
+            </el-button>
+            <el-button
+              v-if="scope.row.ShowDatacenter==1"
+              size="mini"
+              type="success"
+              @click="handHideShowDatacenter(scope.row)"
+            >隐藏
             </el-button>
           </template>
         </el-table-column>
@@ -198,6 +221,18 @@
             <el-input v-model="edit.item.Scene" />
           </el-col>
         </el-form-item>
+        <el-form-item  label="显示到数据中心：" :required="true" prop="Scene">
+          <el-col :span="15">
+            <el-switch
+              v-model="edit.item.ShowDatacenter"
+              active-text="显示"
+              :active-value="1"
+              inactive-text="不显示"
+              inactive-value="0"
+            >
+            </el-switch>
+          </el-col>
+        </el-form-item>
         <el-form-item>
           <el-row>
             <el-col :span="15" :offset="10">
@@ -223,7 +258,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { GameID: 0, Name: '', Description: '', CategoryID: 0, Gid: 0, Scene: '' }
+  return { GameID: 0, Name: '', Description: '', CategoryID: 0, Gid: 0, Scene: '',ShowDatacenter:0 }
 }
 
 export default {
@@ -232,6 +267,7 @@ export default {
     return {
       tableData: [],
       statNames: { 0: '正常', 2: '上架', 6: '上架', 1: '关闭', 7: '预上架', 8: '预下架' },
+      showNames: { 0: '不显示', 1: '显示'},
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -368,7 +404,13 @@ export default {
       this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleOffline(ob) {
-      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+      this.changeStatus(ob.ID, 6, '您确定要将记录展示到数据中心吗？')
+    },
+    handShowDatacenter(ob) {
+      this.changeShowDatacenter(ob.ID, 1, '您确定要将记录展示到数据中心吗？')
+    },
+    handHideShowDatacenter(ob) {
+      this.changeShowDatacenter(ob.ID, 0, '您确定要将记录在数据中心隐藏吗？')
     },
     handleDelete(ob) {
       this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
@@ -391,6 +433,30 @@ export default {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
             $this.clientDB.UpdateData({ ID: id, Status: status })
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    changeShowDatacenter(id, show, msg) {
+      const $this = this
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/thirdpartygames/update/show/datacenter',
+          method: 'post',
+          data: {
+            ID: id,
+            ShowDatacenter: show
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改记录展示成功！')
+            $this.clientDB.UpdateData({ ID: id, ShowDatacenter: show })
           }
         })
       }).catch(() => {
