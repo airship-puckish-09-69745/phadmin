@@ -22,7 +22,7 @@
         <el-form ref="form" :model="form" label-width="150px">
           <el-row :gutter="10" style="margin-top: 30px">
             <el-col>
-              <el-form-item label="交Pot次数强制踢出：" >
+              <el-form-item label="交Pot次数强制踢出：">
                 <el-col :span="12">
                   <el-input v-model.number="BlackPayPotTimesKick" :required="true" />
                 </el-col>
@@ -97,8 +97,8 @@ export default {
       showData: [],
       clientDB: new ClientTableData([], 1, {}),
       tableData: [],
-      search:'',
-      BlackPayPotTimesKick:'',
+      search: '',
+      BlackPayPotTimesKick: '',
       form: {
       },
       txt: '',

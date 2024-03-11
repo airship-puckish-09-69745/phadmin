@@ -150,7 +150,7 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.initMoney*Ratio/1000 >= scope.row.money" style="color:green">
+            <span v-if="scope.row.level==5" style="color:green">
               需要赢
             </span>
             <span v-else style="color:red">
@@ -648,7 +648,8 @@ export default {
           this.edit.item.money /= 1000
           this.edit.item.initMoney /= 1000
           this.edit.item.allowTableMoney /= 1000
-          this.clientDB.UpdateData(this.edit.item)
+          this.clientDB.UpdateData2('uid', this.edit.item)
+
           this.refreshShow()
           Message.success('保存成功！')
         }

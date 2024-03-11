@@ -743,11 +743,6 @@
                   </el-form-item>
                 </el-row>
                 <el-row>
-                  <el-form-item label="金币换能量：">
-                    <el-input v-model.number="item.ScoreToEnergy" placeholder="" />‱（万分比）
-                  </el-form-item>
-                </el-row>
-                <el-row>
                   <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">
                     <el-input v-model="item.LuckyJPKey" placeholder="请输入" disabled />
                   </el-form-item>
@@ -1039,7 +1034,6 @@ export default {
             LuckyJPOdds: 0,
             EnergyNum: 0,
             EnergyTransferRate: 0,
-            ScoreToEnergy: 0,
             LuckyJPTransferRate: 0,
             LuckyJPKey: '',
             LuckyJPRate: 10,
@@ -1738,7 +1732,7 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      levelShow: { 1: 'low', 2: 'medium', 3: 'high' }
+      levelShow: { 1: 'low', 2: 'norm', 3: 'high' }
     }
   },
   created() {

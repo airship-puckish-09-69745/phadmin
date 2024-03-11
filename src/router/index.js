@@ -244,6 +244,26 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'PusoyDosCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'PusoyDos', noCache: true },
+        children: [
+          {
+            path: 'PusoyDosTable',
+            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
+            name: 'PusoyDosTable',
+            meta: { title: 'PusoyDos ◐' }
+          },
+          {
+            path: 'PusoyDosTogether',
+            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDos_blacklist'),
+            name: 'PusoyDosTogether',
+            meta: { title: '同桌黑名单 ◐' }
+          }
+        ]
+      },
+      {
         path: 'Lucky9Cfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -725,7 +745,6 @@ export const asyncRoutes = [
         name: 'playlog_boding',
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
-
       {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
@@ -804,8 +823,26 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
             meta: { title: '糖果派对Allline', gid: 77 }
+          },
+          {
+            path: 'supergem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergem_slots_log',
+            meta: { title: '超级宝石', gid: 78 }
           }
         ]
+      },
+      {
+        path: 'tongits_cheatlog',
+        component: () => import('@/views/playerManage/tongitsCheatlog'),
+        name: 'tongits_cheatlog',
+        meta: { title: 'tongits作弊识别日志 ◐' }
+      },
+      {
+        path: 'game_kick_user_log',
+        component: () => import('@/views/playerManage/gameKickUserlog'),
+        name: 'game_kick_user_log',
+        meta: { title: '游戏作弊踢出用户日志 ◐' }
       }
     ]
   },
