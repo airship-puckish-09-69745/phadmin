@@ -654,11 +654,12 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
+          console.log(_data)
           Object.assign(this.edit.item, _data)
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             this.edit.OutsRatio = JSON.parse(_data.OutsRatio)
-            this.edit.FeeLimit = JSON.parse(_data.FeeLimit)
+            this.edit.FeeLimit = JSON.parse(_data.FeeLimitStr)
           } catch (e) {
             this.edit.TimeConfig = NewTimeConfig()
             this.edit.OutsRatio = NewOutsRatio()
