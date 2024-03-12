@@ -337,7 +337,7 @@
         </fieldset>
 
          <fieldset>
-          <legend>台费配置(人数以英文逗号分割)</legend>
+          <legend>台费配置</legend>
           <el-row style="margin-top:10px">
             <el-button type="primary" size="mini" @click="addFeeLimitRow">添加</el-button>
           </el-row>
