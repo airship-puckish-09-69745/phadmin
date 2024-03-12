@@ -492,20 +492,19 @@ export default {
         Module: 0,
         AppVersion: 0,
         Version: 0,
-        Title: '',
-        Content: '',
+        Title: '0',
+        Content: '0',
         UpdateType: 0,
         DebugVersion: 0,
         GrayVersion: 0,
-        DebugUidList: '',
-        IpForbidList: '',
-        GrayUidList: '',
-        GrayVersionTitle: '',
-        GrayVersionContent: '',
-        Conditions: ''
+        DebugUidList: '0',
+        IpForbidList: '0',
+        GrayUidList: '0',
+        GrayVersionTitle: '0',
+        GrayVersionContent: '0',
+        Conditions: '0'
       }
     }
   }
 }
-
 </script>
