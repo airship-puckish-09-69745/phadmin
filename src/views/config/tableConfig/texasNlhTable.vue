@@ -336,6 +336,40 @@
 
         </fieldset>
 
+         <fieldset>
+          <legend>台费配置(人数以英文逗号分割)</legend>
+          <el-row style="margin-top:10px">
+            <el-button type="primary" size="mini" @click="addFeeLimitRow">添加</el-button>
+          </el-row>
+          <el-row v-for="(value, index) in edit.FeeLimit" :key="index">
+            <el-col :span="20">
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="最小人数">
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true" type="number" />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="8">
+                  <el-form-item label="最大人数">
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true" type="number" />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="8">
+                  <el-form-item label="抽水上限">
+                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true" type="number" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="2">
+              <el-button type="danger" size="mini" @click="removeFeeLimitRow(index)">删除</el-button>
+            </el-col>
+          </el-row>
+
+        </fieldset>
+
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -383,6 +417,15 @@ function NewOutsRatio() {
     }
   ]
 }
+function NewFeeLimit() {
+  return [
+    {
+      MinPlayerNum: 0,
+      MaxPlayerNum: 0,
+      FeeLimit: 30
+    }
+  ]
+}
 
 function newItem() {
   return {
@@ -405,6 +448,7 @@ function newItem() {
     IsEnableStraddle: 0,
     AutoStartPlayerNumer: 0,
     OutsRatio: [],
+    FeeLimit: [],
     IsEnableInsure: 0,
     IsEnableMultiPerflop: 0,
     DelayOpTimeCostMoney: 0,
@@ -435,7 +479,8 @@ export default {
         item: newItem(),
         isEdit: false,
         TimeConfig: NewTimeConfig(),
-        OutsRatio: NewOutsRatio()
+        OutsRatio: NewOutsRatio(),
+        FeeLimit: NewFeeLimit()
       },
 
       AttrNames: {
@@ -613,9 +658,11 @@ export default {
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             this.edit.OutsRatio = JSON.parse(_data.OutsRatio)
+            this.edit.FeeLimit = JSON.parse(_data.FeeLimit)
           } catch (e) {
             this.edit.TimeConfig = NewTimeConfig()
             this.edit.OutsRatio = NewOutsRatio()
+            this.edit.FeeLimit = NewFeeLimit()
           }
           if (bEdit) {
             // 设置修改之前数据
@@ -681,6 +728,7 @@ export default {
       if (!this.checkData()) return
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       this.edit.item.OutsRatio = JSON.stringify(this.edit.OutsRatio)
+      this.edit.item.FeeLimit = JSON.stringify(this.edit.FeeLimit)
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
@@ -703,6 +751,12 @@ export default {
     },
     removeOutsRatioRow(index) {
       this.edit.OutsRatio.splice(index, 1)
+    },
+    addFeeLimitRow() {
+      this.edit.FeeLimit.push({})
+    },
+    removeFeeLimitRow(index) {
+      this.edit.FeeLimit.splice(index, 1)
     }
   }
 }
