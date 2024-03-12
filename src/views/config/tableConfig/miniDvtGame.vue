@@ -428,7 +428,7 @@ export default {
         },
       },
       isHidden: true, // 默认隐藏
-      testCards: [],
+      testCards: '',
       testRand: {
         visible: false,
         times: 0,
@@ -497,14 +497,15 @@ export default {
       console.log('this.item:', this.item)
     },
     getPostData() {
-      const ret = {}
-      Object.assign(ret, this.item)
-      console.log('222222222222222 ')
+      const ret = JSON.parse( JSON.stringify( this.item))
+
+      // Object.assign(ret, this.item)
       ret.RobotCfg.MinRobotMoney *= 1000
       ret.RobotCfg.MaxRobotMoney *= 1000
       ret.RobotCfg.RobotAverageBetMoney *= 1000
 
       ret.BetMoneyLevel = []
+
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
         const items = this.item.BetMoneyLevel[o].CanBet.split(',')
