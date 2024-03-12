@@ -221,7 +221,7 @@
             <el-input v-model="edit.item.Scene" />
           </el-col>
         </el-form-item>
-        <el-form-item  label="显示到数据中心：" :required="true" prop="Scene">
+        <el-form-item label="显示到数据中心：" :required="true" prop="Scene">
           <el-col :span="15">
             <el-switch
               v-model="edit.item.ShowDatacenter"
@@ -229,8 +229,7 @@
               :active-value="1"
               inactive-text="不显示"
               inactive-value="0"
-            >
-            </el-switch>
+            />
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -258,7 +257,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { GameID: 0, Name: '', Description: '', CategoryID: 0, Gid: 0, Scene: '',ShowDatacenter:0 }
+  return { GameID: 0, Name: '', Description: '', CategoryID: 0, Gid: 0, Scene: '', ShowDatacenter: 0 }
 }
 
 export default {
@@ -267,7 +266,7 @@ export default {
     return {
       tableData: [],
       statNames: { 0: '正常', 2: '上架', 6: '上架', 1: '关闭', 7: '预上架', 8: '预下架' },
-      showNames: { 0: '不显示', 1: '显示'},
+      showNames: { 0: '不显示', 1: '显示' },
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,

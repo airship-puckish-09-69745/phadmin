@@ -51,7 +51,7 @@
                 <el-form-item label="资源版本">
                   <el-input v-model="obj.Version" />
                 </el-form-item>
-              <!--   <el-form-item label="更新标题">
+                <!--   <el-form-item label="更新标题">
                   <el-input v-model="obj.Title" />
                 </el-form-item>
                 <el-form-item label="	更新内容描述">
@@ -85,7 +85,7 @@
                 <el-form-item label="灰度版本内容">
                   <el-input v-model="obj.GrayVersionContent" />
                 </el-form-item>
-<!--                 <el-form-item label="灰度版本标题">
+                <!--                 <el-form-item label="灰度版本标题">
                   <el-input v-model="obj.GrayVersionTitle" />
                 </el-form-item> -->
                 <div>
