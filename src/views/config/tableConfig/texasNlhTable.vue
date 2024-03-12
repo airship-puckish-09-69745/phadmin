@@ -346,19 +346,19 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="最小人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true" type="number" />
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" @change="handlerChangeMin" :required="true"/>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="最大人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true" type="number" />
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" @change="handlerChangeMax" :required="true"/>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="抽水上限">
-                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true" type="number" />
+                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -754,10 +754,44 @@ export default {
       this.edit.OutsRatio.splice(index, 1)
     },
     addFeeLimitRow() {
-      this.edit.FeeLimit.push({})
+      var item = {
+        MinPlayerNum: 0,
+        MaxPlayerNum: 0,
+        FeeLimit: 0
+      }
+      this.edit.FeeLimit.push(item)
     },
     removeFeeLimitRow(index) {
       this.edit.FeeLimit.splice(index, 1)
+    },
+    handlerChangeMin(e) {
+      if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
+        Message.error('数据错误')
+        return
+      }
+      if (this.edit.FeeLimit.length <= 1) {
+        if (parseInt(e) !== 2) {
+          Message.error('数据错误')
+          return
+        }
+      } else {
+        if (parseInt(e) !== this.edit.FeeLimit[this.edit.FeeLimit.length - 2].MaxPlayerNum + 1) {
+          Message.error('数据错误')
+          return
+        }
+      }
+    },
+    handlerChangeMax(e) {
+      if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
+        Message.error('数据错误')
+        return
+      }
+      if (this.edit.FeeLimit.length > 1) {
+        if (parseInt(e) < this.edit.FeeLimit[this.edit.FeeLimit.length - 1].MinPlayerNum) {
+          Message.error('数据错误')
+          return
+        }
+      }
     }
   }
 }
