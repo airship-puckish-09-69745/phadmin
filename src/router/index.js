@@ -129,12 +129,12 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
-      {
+     /* {
         path: 'play_log_top100',
         component: () => import('@/views/playerManage/PlaylogTop100'),
         name: 'play_log_top100',
         meta: { title: '牌局排行榜 ◐' }
-      },
+      },*/
       /*     {
         path: 'play_log_together_top100',
         component: () => import('@/views/playerManage/PlaylogTogetherTop100'),
@@ -244,6 +244,26 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'PusoyDosCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'PusoyDos', noCache: true },
+        children: [
+          {
+            path: 'PusoyDosTable',
+            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
+            name: 'PusoyDosTable',
+            meta: { title: 'PusoyDos ◐' }
+          },
+          {
+            path: 'PusoyDosTogether',
+            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDos_blacklist'),
+            name: 'PusoyDosTogether',
+            meta: { title: '同桌黑名单 ◐' }
+          }
+        ]
+      },
+      {
         path: 'Lucky9Cfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -280,6 +300,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
             name: 'pusoyRobotSetting',
             meta: { title: 'Pusoy AI◐' }
+          },
+          {
+            path: 'pusoyDosTogetherBlackList',
+            component: () => import('@/views/config/tableConfig/psuoyDos_blacklist'),
+            name: 'pusoyDosTogetherBlackList',
+            meta: { title: 'PusoyDos 同桌黑名单' }
           }
         ]
       },
@@ -500,6 +526,12 @@ export const asyncRoutes = [
             meta: { title: '糖果派对Allline' }
           },
           {
+            path: 'supergem_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
+            name: 'supergem_slots_cfg',
+            meta: { title: 'SuperGem - 超级宝石' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -658,6 +690,12 @@ export const asyncRoutes = [
         meta: { title: 'Pusoy - ◐', gid: 21 }
       },
       {
+        path: 'playlog_pusoyDos',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_pusoyDos',
+        meta: { title: 'PusoyDos - ◐', gid: 34 }
+      },
+      {
         path: 'playlog_texas',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_texas',
@@ -702,6 +740,12 @@ export const asyncRoutes = [
         meta: { title: 'Sicbo ◐', gid: 101 }
       },
       {
+        path: 'playlog_seven',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_seven',
+        meta: { title: '7Up7Down ◐', gid: 6 }
+      },
+      {
         path: 'playlog_windrop',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_windrop',
@@ -713,7 +757,6 @@ export const asyncRoutes = [
         name: 'playlog_boding',
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
-
       {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
@@ -792,8 +835,26 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
             meta: { title: '糖果派对Allline', gid: 77 }
+          },
+          {
+            path: 'supergem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergem_slots_log',
+            meta: { title: '超级宝石', gid: 78 }
           }
         ]
+      },
+      {
+        path: 'tongits_cheatlog',
+        component: () => import('@/views/playerManage/tongitsCheatlog'),
+        name: 'tongits_cheatlog',
+        meta: { title: 'tongits作弊识别日志 ◐' }
+      },
+      {
+        path: 'game_kick_user_log',
+        component: () => import('@/views/playerManage/gameKickUserlog'),
+        name: 'game_kick_user_log',
+        meta: { title: '游戏作弊踢出用户日志 ◐' }
       }
     ]
   },

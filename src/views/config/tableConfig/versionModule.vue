@@ -1,6 +1,10 @@
 <template>
   <div class="app-container">
     <el-row>
+      <publish primary-key="ID" key-id="TexasVersionConfig" :env-empty="true" />
+    </el-row>
+    <br>
+    <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="平台：">
           <el-select v-model="selectPlatform" placeholder="请选择">
@@ -18,7 +22,6 @@
         <br>
         <el-form-item>
           <div>
-            <publish primary-key="ID" key-id="TexasVersionConfig" :env-empty="true" />
             <el-button type="success" @click="openCreated()">添加版本</el-button>
             <el-dialog :title="Tips" :visible.sync="dialogVisible" width="35%">
               <el-form ref="form" :model="obj" label-width="180px">
@@ -48,7 +51,7 @@
                 <el-form-item label="资源版本">
                   <el-input v-model="obj.Version" />
                 </el-form-item>
-                <el-form-item label="更新标题">
+              <!--   <el-form-item label="更新标题">
                   <el-input v-model="obj.Title" />
                 </el-form-item>
                 <el-form-item label="	更新内容描述">
@@ -63,16 +66,28 @@
                       :value="item.value"
                     />
                   </el-select>
+                </el-form-item> -->
+                <el-form-item label="禁用IP">
+                  <el-input v-model="obj.IpForbidList" />
                 </el-form-item>
                 <el-form-item label="调试版本">
                   <el-input v-model="obj.DebugVersion" />
                 </el-form-item>
+                <el-form-item label="调试版本玩家列表">
+                  <el-input v-model="obj.DebugUidList" />
+                </el-form-item>
                 <el-form-item label="灰度版本">
                   <el-input v-model="obj.GrayVersion" />
                 </el-form-item>
-                <el-form-item label="更新条件">
-                  <el-input v-model="obj.Conditions" />
+                <el-form-item label="灰度版本玩家列表">
+                  <el-input v-model="obj.GrayUidList" />
                 </el-form-item>
+                <el-form-item label="灰度版本内容">
+                  <el-input v-model="obj.GrayVersionContent" />
+                </el-form-item>
+<!--                 <el-form-item label="灰度版本标题">
+                  <el-input v-model="obj.GrayVersionTitle" />
+                </el-form-item> -->
                 <div>
                   <br>
                   说明：调试用户和尾号使英文状态下,分割<br>
@@ -122,7 +137,12 @@
           width="100%"
         />
         <el-table-column
-          prop="FileSize"
+          prop="IpForbidList"
+          label="禁用IP"
+          width="100%"
+        />
+        <el-table-column
+          prop="DebugUidList"
           label="调试用户"
           width="100%"
         />
@@ -132,22 +152,12 @@
           width="100%"
         />
         <el-table-column
-          prop="FileMd5"
+          prop="GrayUidList"
           label="灰度尾号"
           width="100%"
         />
         <el-table-column
-          prop="Title"
-          label="更新标题"
-          width="250"
-        />
-        <el-table-column
-          prop="Content"
-          label="更新内容"
-          width="250"
-        />
-        <el-table-column
-          prop="FileMd5"
+          prop="GrayVersionContent"
           label="灰度更新内容"
           width="250"
         />
@@ -198,7 +208,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import { $libDate, $libShow, $libUrl } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 import store from '@/store'
 // import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
@@ -237,11 +247,7 @@ export default {
       platformTypes: [{ key: '安卓', value: 1 }, { key: 'IOS', value: 2 }],
       moduleTypes: [
         { key: '[0]大厅', value: 0 },
-        { key: '[1]无限德州', value: 1 },
-        { key: '[2]短牌德州', value: 2 },
-        { key: '[3]奥马哈', value: 3 },
-        { key: '[4]三公', value: 4 },
-        { key: ' [5]AOF', value: 5 }
+        { key: '[1]无限德州', value: 1 }
       ],
       updateTypes: [{ key: '强制更新', value: 0 }, { key: '可选更新', value: 1 }],
       showDetail: false,
@@ -262,6 +268,11 @@ export default {
         UpdateType: 0,
         DebugVersion: 0,
         GrayVersion: 0,
+        DebugUidList: '',
+        IpForbidList: '',
+        GrayUidList: '',
+        GrayVersionTitle: '',
+        GrayVersionContent: '',
         Conditions: ''
       },
       Tips: '',
@@ -306,6 +317,36 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
+    formatString(dataList) {
+      console.log(dataList)
+      var result = ''
+      for (var i = 0; i < dataList.length; i++) {
+        result += dataList[i]
+        if (i < dataList.length - 1) {
+          result += ','
+        }
+      }
+      return result
+    },
+    praseConditions() {
+      for (var i = 0; i < this.tableData.length; i++) {
+        console.log(this.tableData[i].Conditions)
+        var jsonObj = JSON.parse(this.tableData[i].Conditions)
+        for (var key in jsonObj) {
+          if (key === 'ip_forbid_list') {
+            console.log(jsonObj[key])
+            this.tableData[i]['IpForbidList'] = this.formatString(jsonObj[key])
+          } else if (key === 'debug_uid_list') {
+            this.tableData[i].DebugUidList = this.formatString(jsonObj[key])
+          } else if (key === 'gray_uid_list') {
+            this.tableData[i].GrayUidList = this.formatString(jsonObj[key])
+          } else if (key === 'gray_version_content') {
+            this.tableData[i].GrayVersionContent = jsonObj[key]
+          }
+        }
+      }
+      console.log(this.tableData)
+    },
     getVersionList() {
       request({
         url: '/texasversion/list',
@@ -320,6 +361,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.tableData = response.Data
+          this.praseConditions()
         }
       })
     },
@@ -352,6 +394,11 @@ export default {
       this.obj.Conditions = row.Conditions
       this.obj.Platform = row.Platform
       this.obj.Module = row.Module
+      this.obj.DebugUidList = row.DebugUidList
+      this.obj.IpForbidList = row.IpForbidList
+      this.obj.GrayUidList = row.GrayUidList
+      this.obj.GrayVersionTitle = row.GrayVersionTitle
+      this.obj.GrayVersionContent = row.GrayVersionContent
       this.obj.ID = row.ID
       this.dialogVisible = true
     },
@@ -372,7 +419,11 @@ export default {
           UpdateType: this.obj.UpdateType,
           DebugVersion: this.obj.DebugVersion,
           GrayVersion: this.obj.GrayVersion,
-          Conditions: this.obj.Conditions
+          DebugUidList: this.obj.DebugUidList,
+          IpForbidList: this.obj.IpForbidList,
+          GrayUidList: this.obj.GrayUidList,
+          GrayVersionTitle: this.obj.GrayVersionTitle,
+          GrayVersionContent: this.obj.GrayVersionContent
         }
       }).then(response => {
         console.log(response)
@@ -397,7 +448,11 @@ export default {
           UpdateType: this.obj.UpdateType,
           DebugVersion: this.obj.DebugVersion,
           GrayVersion: this.obj.GrayVersion,
-          Conditions: this.obj.Conditions
+          DebugUidList: this.obj.DebugUidList,
+          IpForbidList: this.obj.IpForbidList,
+          GrayUidList: this.obj.GrayUidList,
+          GrayVersionTitle: this.obj.GrayVersionTitle,
+          GrayVersionContent: this.obj.GrayVersionContent
         }
       }).then(response => {
         console.log(response)
@@ -437,15 +492,19 @@ export default {
         Module: 0,
         AppVersion: 0,
         Version: 0,
-        Title: '',
-        Content: '',
+        Title: '0',
+        Content: '0',
         UpdateType: 0,
         DebugVersion: 0,
         GrayVersion: 0,
-        Conditions: ''
+        DebugUidList: '0',
+        IpForbidList: '0',
+        GrayUidList: '0',
+        GrayVersionTitle: '0',
+        GrayVersionContent: '0',
+        Conditions: '0'
       }
     }
   }
 }
-
 </script>

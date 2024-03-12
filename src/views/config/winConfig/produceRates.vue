@@ -77,7 +77,8 @@ export default {
         '21': 'Pusoy',
         '22': 'TongitsGo',
         '23': 'Lucky9',
-        '25': 'Color'
+        '25': 'Color',
+        '34': 'PusoyDos'
       },
       form: {},
       libShow: $libShow,

@@ -168,7 +168,9 @@ export default {
         '22': 'Tongits-Pot',
         '23': 'Lucky9',
         // 25: 'Color Game',
-        '31': 'Tongits-Classic'
+        '31': 'Tongits-Classic',
+        '34': 'PusoyDos',
+
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
@@ -178,7 +180,8 @@ export default {
         { key: 21, label: 'Pusoy' },
         { key: 22, label: 'Tongits-Pot' },
         { key: 23, label: 'Lucky9' },
-        { key: 31, label: 'Tongits-Classic' }
+        { key: 31, label: 'Tongits-Classic' },
+        { key: 34, label: 'PusoyDos' }
       ],
       dialogGameOptions: [],
       selectGameVisible: false,

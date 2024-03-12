@@ -7,6 +7,7 @@
     "dev": "vue-cli-service serve",
     "local": "vue-cli-service serve --mode=local",
     "dev.sh": "vue-cli-service serve --mode sh_dev",
+    "localhost": "vue-cli-service serve --mode localhost",
     "lint": "eslint --fix --ext .js,.vue src",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",

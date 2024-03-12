@@ -132,6 +132,116 @@
             <el-col :span="11" />
           </el-row>
 
+          <fieldset style="margin-top:10px">
+            <legend>下注配置</legend>
+            <el-row>
+              <el-table
+                ref="filterTable"
+                :data="item.BetMoneyLevel"
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column
+                  type="index"
+                />
+                <el-table-column
+                  prop="Low"
+                  label="下注列表"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.TableMoney" size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="Low"
+                  label="最大下注限制"
+                >
+
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      type="primary"
+                      @click="doAdd"
+                    >添加</el-button>
+                    <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
+                  </template>
+
+                </el-table-column>
+              </el-table>
+            </el-row>
+          </fieldset>
+
+          <fieldset style="margin-top:10px">
+            <legend>下注区域配置</legend>
+            <el-descriptions class="margin-top" border />
+            <el-row>
+              <el-table
+                ref="filterTable"
+                :data="item.BetAreaOptions"
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column
+                  type="index"
+                />
+                <el-table-column
+                  prop="Low"
+                  label="区域ID"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.Id" disabled size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  label="赔率"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Odds" size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="MaxMoneyBet"
+                  label="区域下注上限"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="AreaMin"
+                  label="最小飞行值"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.AreaMin" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="AreaMax"
+                  label="最大飞行值"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.AreaMax" size="mini" />
+                  </template>
+                </el-table-column>
+
+              </el-table>
+            </el-row>
+          </fieldset>
+
           <fieldset style="margin:20px auto;">
             <legend>机器人配置</legend>
             <el-row>
@@ -463,6 +573,15 @@ export default {
   data() {
     return {
       item: {
+        BetMoneyLevel: [{ TableMoney: 100, MaxMoneyBet: 2000 }],
+        BetAreaOptions: [
+          { AreaMin: 1, Odds: 10, MaxMoneyBet: 2000, Id: 0, AreaMax: 2 },
+          { AreaMin: 3, Odds: 10, MaxMoneyBet: 2000, Id: 1, AreaMax: 4 },
+          { AreaMin: 5, Odds: 10, MaxMoneyBet: 2000, Id: 2, AreaMax: 6 },
+          { AreaMin: 7, Odds: 10, MaxMoneyBet: 2000, Id: 3, AreaMax: 8 },
+          { AreaMin: 9, Odds: 10, MaxMoneyBet: 2000, Id: 4, AreaMax: 10 },
+          { AreaMin: 11, Odds: 10, MaxMoneyBet: 2000, Id: 5, AreaMax: 12 }
+        ],
         MaxPlayers: 400,
         BetMoneyList: [10, 50, 100, 500, 1000],
         BetMoneyMax: 2000,
@@ -607,6 +726,23 @@ export default {
       this.item.IncrBet /= 100
       this.item.PreBetRate /= 100
       this.item.BetRate /= 100
+
+      for (const j in this.item.BetAreaOptions) {
+        this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
+        this.item.BetAreaOptions[j].Odds /= 1000
+        this.item.BetAreaOptions[j].AreaMin /= 100
+        this.item.BetAreaOptions[j].AreaMax /= 100
+      }
+
+      for (const j in this.item.BetMoneyLevel) {
+        this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
+        const betMoneyList = []
+        const items = this.item.BetMoneyLevel[j].TableMoney
+        for (const i in this.item.BetMoneyLevel[j].TableMoney) {
+          betMoneyList.push(parseInt(items[i]) / 1000)
+        }
+        this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
+      }
     },
     getPostData() {
       const ret = {}
@@ -636,6 +772,33 @@ export default {
       ret.IncrBet *= 100
       ret.PreBetRate *= 100
       ret.BetRate *= 100
+
+      ret.BetAreaOptions = []
+      for (const o in this.item.BetAreaOptions) {
+        const obj = {}
+        Object.assign(obj, this.item.BetAreaOptions[o])
+        obj.MaxMoneyBet *= 1000
+        obj.Odds *= 1000
+        obj.AreaMax = Math.round(obj.AreaMax * 100)
+        obj.AreaMin = Math.round(obj.AreaMin * 100)
+        ret.BetAreaOptions.push(obj)
+      }
+
+      ret.BetMoneyLevel = []
+      for (const o in this.item.BetMoneyLevel) {
+        const betMoneyList = []
+        const items = this.item.BetMoneyLevel[o].TableMoney.split(',')
+        for (const i in items) {
+          betMoneyList.push(parseInt(items[i]) * 1000)
+        }
+
+        const obj = {}
+        Object.assign(obj, this.item.BetMoneyLevel[o])
+        obj.MaxMoneyBet *= 1000
+        obj.TableMoney = betMoneyList
+        ret.BetMoneyLevel.push(obj)
+      }
+      console.log(this.item.BetMoneyLevel)
       return ret
     },
     getData() {
@@ -709,6 +872,19 @@ export default {
     },
     showTestRand() {
       this.testRand.visible = true
+    },
+    addBetMoneyListRow() {
+      this.item.BetMoneyList.push({ TableMoney: 0, MaxMoneyBet: 0, MinMoneyBet: 0 })
+    },
+    removeBetMoneyListRow(index) {
+      this.item.BetMoneyList.splice(index, 1)
+    },
+    doAdd() {
+      this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
+    },
+    delRow(index) {
+      console.log(index)
+      this.item.BetMoneyLevel.splice(index, 1)
     },
     goRand() {
       request({

@@ -66,7 +66,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
-              <el-select v-model="edit.item.SmallBlind" placeholder="请选择" :disabled="edit.isEdit">
+              <el-select v-model="edit.item.SmallBlind" placeholder="请选择" >
                 <el-option label="0.1" :value="0.1" />
                 <el-option label="1" :value="1" />
                 <el-option label="2.5" :value="2.5" />
@@ -209,7 +209,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-select v-model="edit.item.Level" placeholder="请选择" :disabled="edit.isEdit">
+              <el-select v-model="edit.item.Level" placeholder="请选择" >
                 <el-option label="微级" :value="1" />
                 <el-option label="初级" :value="2" />
                 <el-option label="中级" :value="3" />
