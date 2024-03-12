@@ -129,7 +129,7 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
-     /* {
+      /* {
         path: 'play_log_top100',
         component: () => import('@/views/playerManage/PlaylogTop100'),
         name: 'play_log_top100',

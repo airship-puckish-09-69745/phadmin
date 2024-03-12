@@ -108,63 +108,63 @@
           label="最近修改"
           width="150"
         >
-        <el-table-column
-          prop="Status"
-          label="状态"
-          width="70"
-        >
-          <template slot-scope="scope">
-            {{ statNames[scope.row.Status] }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          column-key="op"
-          width="250"
-        >
-          <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              @click="handleCopy(scope.row)"
-            >复制
-            </el-button>
-            <el-button
-              v-if="scope.row.Status==6"
-              size="mini"
-              type="success"
-              @click="handlePreOn(scope.row)"
-            >预上
-            </el-button>
-            <el-button
-              v-if="scope.row.Status==7"
-              size="mini"
-              type="success"
-              @click="handleOn(scope.row)"
-            >上架
-            </el-button>
-            <el-button
-              v-if="scope.row.Status==2"
-              size="mini"
-              type="warning"
-              @click="handlePreOff(scope.row)"
-            >预下
-            </el-button>
-            <el-button
-              v-if="scope.row.Status==6"
-              size="mini"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-            />
-            <el-button
-              v-if="scope.row.Status==8"
-              size="mini"
-              type="danger"
-              @click="handleOffline(scope.row)"
-            >下架
-            </el-button>
-          </template>
-        </el-table-column>
+          <el-table-column
+            prop="Status"
+            label="状态"
+            width="70"
+          >
+            <template slot-scope="scope">
+              {{ statNames[scope.row.Status] }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="操作"
+            column-key="op"
+            width="250"
+          >
+            <template slot-scope="scope">
+              <el-button
+                type="primary"
+                size="mini"
+                @click="handleCopy(scope.row)"
+              >复制
+              </el-button>
+              <el-button
+                v-if="scope.row.Status==6"
+                size="mini"
+                type="success"
+                @click="handlePreOn(scope.row)"
+              >预上
+              </el-button>
+              <el-button
+                v-if="scope.row.Status==7"
+                size="mini"
+                type="success"
+                @click="handleOn(scope.row)"
+              >上架
+              </el-button>
+              <el-button
+                v-if="scope.row.Status==2"
+                size="mini"
+                type="warning"
+                @click="handlePreOff(scope.row)"
+              >预下
+              </el-button>
+              <el-button
+                v-if="scope.row.Status==6"
+                size="mini"
+                icon="el-icon-delete"
+                @click="handleDelete(scope.row)"
+              />
+              <el-button
+                v-if="scope.row.Status==8"
+                size="mini"
+                type="danger"
+                @click="handleOffline(scope.row)"
+              >下架
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table-column>
       </el-table>
       <el-col :offset="16" :span="8">
@@ -356,7 +356,7 @@ import Publish from '@/components/Publish'
 import SelectGoods from '@/components/SelectGoods'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
-import emojPrice from "@/views/config/baseConfig/emojPrice.vue";
+import emojPrice from '@/views/config/baseConfig/emojPrice.vue'
 
 const filterMap = {}
 
@@ -384,7 +384,6 @@ function newItem() {
     MinPlayMoney: 0,
     Anticheating: 0,
     RoomLevel: 0
-
 
   }
 }
@@ -427,7 +426,7 @@ export default {
         Control: '机器人控制配置',
         MinPlayMoney: '最小玩牌金额',
         Anticheating: '是否防作弊',
-        RoomLevel: '房间类型',
+        RoomLevel: '房间类型'
       }
     }
   },
@@ -494,7 +493,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log("objs：" ,objs)
+          console.log('objs：', objs)
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }

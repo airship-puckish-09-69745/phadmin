@@ -91,9 +91,9 @@ export default {
         value: 21,
         label: 'Pusoy'
       }, {
-          value: 34,
-          label: 'PusoyDos'
-        }
+        value: 34,
+        label: 'PusoyDos'
+      }
       ],
       tableData: [],
       gameId: 22
