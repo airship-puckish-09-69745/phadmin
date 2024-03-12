@@ -206,7 +206,7 @@ export default {
         { 'value': 25, 'label': 'color game' },
         { 'value': 20, 'label': 'Mines - 扫雷' },
         { 'value': 100, 'label': 'Tower' },
-        { 'value': 101, 'label': 'Sicbo' },
+        // { 'value': 101, 'label': 'Sicbo' },
         { 'value': 102, 'label': 'Hilo' },
         { 'value': 103, 'label': 'Windrop' }
       ],
