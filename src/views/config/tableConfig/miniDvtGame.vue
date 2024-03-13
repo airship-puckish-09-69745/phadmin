@@ -475,7 +475,6 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-      console.log('11111111111111 ')
       this.item.RobotCfg.MinRobotMoney /= 1000
       this.item.RobotCfg.MaxRobotMoney /= 1000
       this.item.RobotCfg.RobotAverageBetMoney /= 1000
@@ -494,7 +493,6 @@ export default {
         this.item.BetMoneyLevel[j].CanBet = betMoneyList.join(',')
       }
 
-      console.log('this.item:', this.item)
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
@@ -520,7 +518,6 @@ export default {
         obj.CanBet = betMoneyList
         ret.BetMoneyLevel.push(obj)
       }
-      console.log(this.item.BetMoneyLevel)
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
       }
@@ -558,6 +555,17 @@ export default {
             this.$refs.compare.SetOldVal(response.Data)
             this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards
           }
+        }
+      })
+      request({
+        url: '/texastable/test',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+           console.log(response)
         }
       })
     },
@@ -602,7 +610,6 @@ export default {
 
       this.form.Data = JSON.stringify(this.getPostData())
 
-      console.log(this.form)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
@@ -617,7 +624,6 @@ export default {
           data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
-            console.log('sign reward save', response)
             Message.success('保存成功')
           }
         })
@@ -637,7 +643,6 @@ export default {
       this.robotDialogForm.visible = true
     },
     delRow(index) {
-      console.log(index)
       this.item.BetMoneyLevel.splice(index, 1)
     }
   }
