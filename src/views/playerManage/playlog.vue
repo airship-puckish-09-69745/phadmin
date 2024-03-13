@@ -961,7 +961,6 @@
       </el-table>
     </el-dialog>
 
-
     <el-dialog
       title="7Up7Down牌局详情"
       :visible.sync="sevenGameVisible"
@@ -1100,7 +1099,6 @@
             <span v-else>否</span>
           </template>
         </el-table-column>
-
 
         <el-table-column
           prop="Rate"
@@ -1370,7 +1368,6 @@ export default {
       sicboGameResult: '',
       sicboGameOptions: [],
 
-
       sevenGameVisible: false,
 
       sevenGameResult: '',
@@ -1379,7 +1376,6 @@ export default {
       rocketGameVisible: false,
       rocketGameResult: '',
       rocketGameOptions: [],
-
 
       WindropGameVisible: false,
       WindropGameResult: {
@@ -1765,7 +1761,7 @@ export default {
           console.log(obj)
           if (gid == 9 || gid == 8 || gid == 14) {
             $this.showTPGame(obj)
-          }else if (gid == 10) {
+          } else if (gid == 10) {
             $this.showRocketGame(obj)
           } else if (gid == 15) {
             $this.showTexasGame(obj)
@@ -1991,7 +1987,7 @@ export default {
           tMap[result.id].Ret.push({
             Uid: player.uid,
             Bet: result.moneyBet,
-            Won: result.moneyWon,
+            Won: result.moneyWon
           })
         }
       }
@@ -1999,7 +1995,7 @@ export default {
       for (let i = 0; i < rocketObj.optionsData.length; i++) {
         this.rocketGameOptions.push(tMap[i])
       }
-      this.rocketGameResult = rocketObj.stopOdds/100
+      this.rocketGameResult = rocketObj.stopOdds / 100
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
     },

@@ -66,7 +66,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
-              <el-select v-model="edit.item.SmallBlind" placeholder="请选择" >
+              <el-select v-model="edit.item.SmallBlind" placeholder="请选择">
                 <el-option label="0.1" :value="0.1" />
                 <el-option label="1" :value="1" />
                 <el-option label="2.5" :value="2.5" />
@@ -209,7 +209,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-select v-model="edit.item.Level" placeholder="请选择" >
+              <el-select v-model="edit.item.Level" placeholder="请选择">
                 <el-option label="微级" :value="1" />
                 <el-option label="初级" :value="2" />
                 <el-option label="中级" :value="3" />
@@ -336,7 +336,7 @@
 
         </fieldset>
 
-         <fieldset>
+        <fieldset>
           <legend>台费配置</legend>
           <el-row style="margin-top:10px">
             <el-button type="primary" size="mini" @click="addFeeLimitRow">添加</el-button>
@@ -346,19 +346,19 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="最小人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true" type="number" />
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true"/>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="最大人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true" type="number" />
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true"/>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="抽水上限">
-                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true" type="number" />
+                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true"/>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -726,6 +726,7 @@ export default {
       return true
     },
     save() {
+      if (!this.checkFeeLimitValue('2')) return
       if (!this.checkData()) return
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       this.edit.item.OutsRatio = JSON.stringify(this.edit.OutsRatio)
@@ -754,10 +755,66 @@ export default {
       this.edit.OutsRatio.splice(index, 1)
     },
     addFeeLimitRow() {
-      this.edit.FeeLimit.push({})
+      var item = {
+        MinPlayerNum: 0,
+        MaxPlayerNum: 0,
+        FeeLimit: 0
+      }
+      this.edit.FeeLimit.push(item)
     },
     removeFeeLimitRow(index) {
       this.edit.FeeLimit.splice(index, 1)
+    },
+    handlerChangeMin(e) {
+      if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
+        Message.error('数据错误')
+        return
+      }
+      if (this.edit.FeeLimit.length <= 1) {
+        if (parseInt(e) !== 2) {
+          Message.error('数据错误')
+          return
+        }
+      } else {
+        if (parseInt(e) !== this.edit.FeeLimit[this.edit.FeeLimit.length - 2].MaxPlayerNum + 1) {
+          Message.error('数据错误')
+          return
+        }
+      }
+    },
+    checkFeeLimitValue() {
+      var min = 0
+      var max = 0
+      for (var i = 0; i < this.edit.FeeLimit.length; i++) {
+        if (this.edit.FeeLimit[i].MinPlayerNum < 2 || this.edit.FeeLimit[i].MinPlayerNum > this.edit.item.TableMaxPlayerNum) {
+          Message.error('数据错误, 抽水人数超出范围')
+          return false
+        }
+        if (this.edit.FeeLimit[i].MaxPlayerNum < 2 || this.edit.FeeLimit[i].MaxPlayerNum > this.edit.item.TableMaxPlayerNum) {
+          Message.error('数据错误, 抽水人数超出范围')
+          return false
+        }
+        if (this.edit.FeeLimit[i].MaxPlayerNum < this.edit.FeeLimit[i].MinPlayerNum) {
+          Message.error('数据错误, 抽水人数超出范围')
+          return false
+        }
+        if (this.edit.FeeLimit[i].FeeLimit <= 0) {
+          Message.error('数据错误, 抽水上限为 0')
+          return false
+        }
+        if (i === 0) {
+          min = this.edit.FeeLimit[i].MinPlayerNum
+          max = this.edit.FeeLimit[i].MaxPlayerNum
+        } else {
+          if (this.edit.FeeLimit[i].MinPlayerNum <= min || this.edit.FeeLimit[i].MinPlayerNum !== max + 1) {
+            Message.error('数据错误 人数错误')
+            return false
+          }
+          min = this.edit.FeeLimit[i].MinPlayerNum
+          max = this.edit.FeeLimit[i].MaxPlayerNum
+        }
+      }
+      return true
     }
   }
 }

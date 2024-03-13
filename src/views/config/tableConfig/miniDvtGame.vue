@@ -132,7 +132,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                    label="出现extrapay概率(%)"
+                  label="出现extrapay概率(%)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.ERate" size="mini" />
@@ -167,7 +167,7 @@
             </el-row>
           </fieldset>
 
-          <fieldset style="margin-top:10px" v-if="!isHidden" >
+          <fieldset v-if="!isHidden" style="margin-top:10px">
             <legend>机器人配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
@@ -405,7 +405,7 @@ export default {
         MaxCtrlTimes: 20,
         ExTraPayRate: 10,
 
-        RobotCfg:{
+        RobotCfg: {
           MinRobotNumber: 0, // 机器人最小人数
           MaxRobotNumber: 0, // 机器人最大人数
           RobotMemberArr: [],
@@ -425,7 +425,7 @@ export default {
           MinPlayersEnableSchema: 10, // 最低调控玩家数
           RobotUserNumSafeVal: 0,
           RealUserNumSafeVal: 0
-        },
+        }
       },
       isHidden: true, // 默认隐藏
       testCards: '',
@@ -462,9 +462,9 @@ export default {
   },
   created() {
     console.log(process.env.VUE_APP_PROJECT_NAME)
-     if (process.env.VUE_APP_PROJECT_NAME=="菲1-开发环境" || process.env.VUE_APP_PROJECT_NAME=="菲1-线上环境"){
-       this.isHidden = false
-     }
+    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
+      this.isHidden = false
+    }
     this.getData()
   },
   methods: {
@@ -475,7 +475,6 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-      console.log('11111111111111 ')
       this.item.RobotCfg.MinRobotMoney /= 1000
       this.item.RobotCfg.MaxRobotMoney /= 1000
       this.item.RobotCfg.RobotAverageBetMoney /= 1000
@@ -494,10 +493,9 @@ export default {
         this.item.BetMoneyLevel[j].CanBet = betMoneyList.join(',')
       }
 
-      console.log('this.item:', this.item)
     },
     getPostData() {
-      const ret = JSON.parse( JSON.stringify( this.item))
+      const ret = JSON.parse(JSON.stringify(this.item))
 
       // Object.assign(ret, this.item)
       ret.RobotCfg.MinRobotMoney *= 1000
@@ -520,7 +518,6 @@ export default {
         obj.CanBet = betMoneyList
         ret.BetMoneyLevel.push(obj)
       }
-      console.log(this.item.BetMoneyLevel)
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
       }
@@ -535,7 +532,7 @@ export default {
       const items = this.testCards.split(',')
       ret.TestCards = []
       for (const o in items) {
-        ret.TestCards.push(parseInt(items[o],16))
+        ret.TestCards.push(parseInt(items[o], 16))
       }
 
       return ret
@@ -556,8 +553,19 @@ export default {
             this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
-            this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards;
+            this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards
           }
+        }
+      })
+      request({
+        url: '/texastable/test',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+           console.log(response)
         }
       })
     },
@@ -602,7 +610,6 @@ export default {
 
       this.form.Data = JSON.stringify(this.getPostData())
 
-      console.log(this.form)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
@@ -617,7 +624,6 @@ export default {
           data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
-            console.log('sign reward save', response)
             Message.success('保存成功')
           }
         })
@@ -637,7 +643,6 @@ export default {
       this.robotDialogForm.visible = true
     },
     delRow(index) {
-      console.log(index)
       this.item.BetMoneyLevel.splice(index, 1)
     }
   }
