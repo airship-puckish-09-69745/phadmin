@@ -35,7 +35,7 @@
         </el-col>
 
         <el-col :span="8" :offset="1">
-          <el-form-item label="extrapay出现概率（%）:">
+          <el-form-item label="extra出现概率（%）:">
             <el-input v-model.number="item.ExTraPayRate" :required="true" />
           </el-form-item>
         </el-col>
@@ -99,7 +99,7 @@
             <legend>下注区域配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;"> 审核服extra pay 配置不生效</span>
+                <span style="color:red;"> 说明: --1.审核服extra配置不生效  --2.倍率不支持小数填写真实值*100，例如期望是2.06 填写206</span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -125,21 +125,21 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="倍率"
+                  label="倍率(real*100)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Odds" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="出现extrapay概率(%)"
+                  label="出现extra概率(%)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.ERate" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="extrapay倍数"
+                  label="extra倍数(real*100)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.EOdds" size="mini" />
