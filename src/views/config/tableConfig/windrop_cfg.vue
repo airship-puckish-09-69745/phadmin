@@ -938,10 +938,10 @@ export default {
           var channleCfg = data.LevelCfg[kC].Channels[iC]
           hitRateTotalC += channleCfg.HitRates
         }
-        if (hitRateTotalC !== 10000) {
-          this.$alert(this.levelShow[data.LevelCfg[kC].Level] + ' 场次的普通通道配置的命中概率总和不等于10000')
-          return false
-        }
+        // if (hitRateTotalC !== 10000) {
+        //   this.$alert(this.levelShow[data.LevelCfg[kC].Level] + ' 场次的普通通道配置的命中概率总和不等于10000')
+        //   return false
+        // }
       }
       return true
     }
