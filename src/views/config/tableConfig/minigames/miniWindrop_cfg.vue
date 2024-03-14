@@ -1738,7 +1738,7 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      levelShow: { 1: 'low', 2: 'norml', 3: 'high' }
+      levelShow: { 1: 'Normal', 2: 'High', 3: 'Expert' }
     }
   },
   created() {
@@ -1786,6 +1786,11 @@ export default {
           console.log('response.Data.Data', response.Data.Data)
           if (response.Data && response.Data.Data !== '') {
             var cfgJson = JSON.parse(response.Data.Data)
+
+            var  subArray= cfgJson.LevelCfg.slice(0, 2);
+            console.log("======",subArray)
+            cfgJson.LevelCfg=subArray
+
             for (var i in cfgJson.Bets) {
               cfgJson.Bets[i] /= 1000
             }
