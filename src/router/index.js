@@ -532,6 +532,12 @@ export const asyncRoutes = [
             meta: { title: 'SuperGem - 超级宝石' }
           },
           {
+            path: 'candycandygrid_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandygrid_slots_cfg'),
+            name: 'candycandygrid_slots_cfg',
+            meta: { title: '糖果糖果Grid' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -841,6 +847,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
             meta: { title: '超级宝石', gid: 78 }
+          },
+          {
+            path: 'candycandygrid_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandygrid_slots_log',
+            meta: { title: '糖果糖果Grid', gid: 79 }
           }
         ]
       },

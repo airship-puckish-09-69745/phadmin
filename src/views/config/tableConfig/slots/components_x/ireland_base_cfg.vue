@@ -25,6 +25,8 @@
               <el-option label="糖果派对Way" :value="76" />
               <el-option label="糖果派对Allline" :value="77" />
               <el-option label="超级宝石" :value="78" />
+              <el-option label="糖果糖果Grid" :value="79" />
+              <el-option label="糖果糖果" :value="80" />
             </el-select>
           </el-form-item>
 

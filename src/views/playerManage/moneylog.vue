@@ -352,7 +352,7 @@ export default {
 
       gameNames: ['TeenPatti', 'DragonVsTiger', 'Rummy', 'AndarBahar', 'CarRoulette', 'JHandiMunda', 'AK47', '7Up7Down', 'RedVsBlack', 'TeenPatti100',
         '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha',
-        '糖果派对Way', '糖果派对Allline'],
+        '糖果派对Way', '糖果派对Allline', '糖果糖果Grid', '糖果糖果'],
       libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll'])
     }
   },
