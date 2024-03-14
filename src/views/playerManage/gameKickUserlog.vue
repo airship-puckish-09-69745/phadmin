@@ -116,7 +116,7 @@ export default {
         Uid: 0,
         Gid: 0,
         start: $libDate.GetDayBegin(new Date().getTime()), // Date.parse(new Date(this.dDate(0, 30))),
-        end: Date.parse(new Date()) // $libDate.GetDayEnd(new Date().getTime()),
+        end: $libDate.GetDayEnd(new Date().getTime()) // Date.parse(new Date())
       },
       tableData: [],
       libShow: $libShow,
