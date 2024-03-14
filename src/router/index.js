@@ -1176,10 +1176,30 @@ export const asyncRoutes = [
     meta: { title: '德州专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
       {
+        path: 'texasNlhStat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '数据中心', noCache: true },
+        children: [
+          {
+            path: 'texasNlhInsure',
+            component: () => import('@/views/texas2dpro/texasNlhInsure'),
+            name: 'texasNlhInsure',
+            meta: { title: '保险数据' }
+          },
+          {
+            path: 'texasNlhJP',
+            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            name: 'texasNlhJP',
+            meta: { title: 'JackPot数据' }
+          }
+        ]
+      },
+      {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'TexasNlh - 无限德州', noCache: true },
+        meta: { title: '无限德州', noCache: true },
         children: [
           {
             path: 'texasNlhTable',
