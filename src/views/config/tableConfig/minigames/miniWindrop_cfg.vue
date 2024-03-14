@@ -682,6 +682,11 @@
               <el-input v-model="cfg.FeeRate" placeholder="" />
             </el-form-item>
           </el-row>
+          <el-row>
+            <el-form-item label="通知时间：">
+              <el-input v-model="cfg.NoticeTime" placeholder="" />
+            </el-form-item>
+          </el-row>
         </el-form>
       </el-col>
     </el-row>
@@ -799,7 +804,7 @@
                       </el-table-column>
                       <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 spin)">
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds" placeholder="" />
+                          <el-input type="number" v-model="scope.row.Odds" placeholder="" />
                         </template>
                       </el-table-column>
                       <el-table-column prop="item.HitRates" label="命中概率总和比例）">
@@ -836,7 +841,7 @@
                       </el-table-column>
                       <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds" placeholder="" />
+                          <el-input type="number"   v-model="scope.row.Odds" placeholder="" />
                         </template>
                       </el-table-column>
                       <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
@@ -965,6 +970,7 @@ export default {
         FeeRate: 1,
         JackpotNormal: 0,
         JackpotHight: 0,
+        NoticeTime: 0,
         HappyRouletteCfg: [
           {
             Id: 1,
