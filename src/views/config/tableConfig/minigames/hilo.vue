@@ -227,7 +227,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="概率"
+                label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
                 <template slot-scope="scope">
