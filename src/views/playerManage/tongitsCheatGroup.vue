@@ -87,6 +87,15 @@
             <DateTimeShow :show-type="2" :timestamp="scope.row.UpdateTime" />
           </template>
         </el-table-column>
+        <el-table-column
+          prop="CreateTime"
+          label="创建时间"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <DateTimeShow :show-type="2" :timestamp="scope.row.CreateTime" />
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
     <el-row type="flex" justify="end">
