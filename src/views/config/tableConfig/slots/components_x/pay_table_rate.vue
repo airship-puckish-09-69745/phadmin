@@ -65,7 +65,7 @@ export default {
     labelMap: {
       type: Object,
       default: function() {
-        return {};
+        return {}
       }
     },
     startCol: {

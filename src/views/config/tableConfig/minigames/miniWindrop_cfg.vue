@@ -684,7 +684,7 @@
           </el-row>
           <el-row>
             <el-form-item label="通知时间：">
-              <el-input type="number" v-model.number="cfg.NoticeTime" placeholder="" />
+              <el-input v-model.number="cfg.NoticeTime" type="number" placeholder="" />
             </el-form-item>
           </el-row>
         </el-form>
@@ -750,7 +750,7 @@
                   </el-row>
                   <div v-if="item.Level!=1">
                     <el-row>
-                      <el-form-item  label="LuckyJP key：" prop="item.LuckyJPKey">
+                      <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">
                         <el-input v-model.number="item.LuckyJPKey" placeholder="请输入" disabled />
                       </el-form-item>
                     </el-row>
@@ -784,12 +784,12 @@
                     </el-row>
                     <el-row>
                       <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">
-                        <el-input  v-model.number="item.SuperJPOdds" placeholder="请输入" />
+                        <el-input v-model.number="item.SuperJPOdds" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
                     <el-row>
                       <el-form-item label="SuperJP Jackpot显示比率(百分比90% 输入90）：" prop="item.superJPRate">
-                        <el-input  v-model.number="item.superJPRate" placeholder="请输入" />
+                        <el-input v-model.number="item.superJPRate" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
                     <el-row>
@@ -807,7 +807,7 @@
                         </el-table-column>
                         <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 spin)">
                           <template slot-scope="scope">
-                            <el-input type="number" v-model.number="scope.row.Odds" placeholder="" />
+                            <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                           </template>
                         </el-table-column>
                         <el-table-column prop="item.HitRates" label="命中概率总和比例）">
@@ -839,17 +839,17 @@
                       <el-table :data="item.Spins" border style="width: 100%">
                         <el-table-column prop="Id" label="通道ID" width="100">
                           <template slot-scope="scope">
-                            <el-input type="number" v-model.number="scope.row.Id" placeholder="" disabled />
+                            <el-input v-model.number="scope.row.Id" type="number" placeholder="" disabled />
                           </template>
                         </el-table-column>
                         <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
                           <template slot-scope="scope">
-                            <el-input type="number"   v-model.number="scope.row.Odds" placeholder="" />
+                            <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                           </template>
                         </el-table-column>
                         <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
                           <template slot-scope="scope">
-                            <el-input type="number" v-model.number="scope.row.HitRates" placeholder="" />
+                            <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
                           </template>
                         </el-table-column>
                       </el-table>
@@ -2229,7 +2229,6 @@ export default {
   line-height: 31px;
   padding: 2px;
 }
-
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
