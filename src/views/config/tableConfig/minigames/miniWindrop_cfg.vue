@@ -682,6 +682,11 @@
               <el-input v-model="cfg.FeeRate" placeholder="" />
             </el-form-item>
           </el-row>
+          <el-row>
+            <el-form-item label="通知时间：">
+              <el-input v-model="cfg.NoticeTime" placeholder="" />
+            </el-form-item>
+          </el-row>
         </el-form>
       </el-col>
     </el-row>
@@ -742,52 +747,52 @@
                     <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）
                   </el-form-item>
                 </el-row>
-                <el-row>
-                  <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">
-                    <el-input v-model="item.LuckyJPKey" placeholder="请输入" disabled />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">
-                    <el-input v-model="item.LuckyJPTransferRate" placeholder="请输入" />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">
-                    <el-input v-model="item.LuckyJPOdds" placeholder="请输入" />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <el-form-item label="LuckyJP Jackpot显示比率(百分比10% 输入10）：" prop="item.LuckyJPRate">
-                    <el-input v-model="item.LuckyJPRate" placeholder="请输入" />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <money-input v-model.number="item.LuckyJPInitMoney" label="LuckyJP 初始化金额" />
-                </el-row>
-                <el-row>
-                  <el-form-item label="SuperJP key：" prop="item.SuperJPKey">
-                    <el-input v-model="item.SuperJPKey" placeholder="请输入" disabled />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">
-                    <el-input v-model="item.SuperJPTransferRate" placeholder="请输入" />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">
-                    <el-input v-model="item.SuperJPOdds" placeholder="请输入" />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <el-form-item label="SuperJP Jackpot显示比率(百分比90% 输入90）：" prop="item.superJPRate">
-                    <el-input v-model="item.superJPRate" placeholder="请输入" />
-                  </el-form-item>
-                </el-row>
-                <el-row>
-                  <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />
-                </el-row>
+<!--                <el-row>-->
+<!--                  <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">-->
+<!--                    <el-input v-model="item.LuckyJPKey" placeholder="请输入" disabled />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">-->
+<!--                    <el-input v-model="item.LuckyJPTransferRate" placeholder="请输入" />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">-->
+<!--                    <el-input v-model="item.LuckyJPOdds" placeholder="请输入" />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="LuckyJP Jackpot显示比率(百分比10% 输入10）：" prop="item.LuckyJPRate">-->
+<!--                    <el-input v-model="item.LuckyJPRate" placeholder="请输入" />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <money-input v-model.number="item.LuckyJPInitMoney" label="LuckyJP 初始化金额" />-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="SuperJP key：" prop="item.SuperJPKey">-->
+<!--                    <el-input v-model="item.SuperJPKey" placeholder="请输入" disabled />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">-->
+<!--                    <el-input v-model="item.SuperJPTransferRate" placeholder="请输入" />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">-->
+<!--                    <el-input v-model="item.SuperJPOdds" placeholder="请输入" />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <el-form-item label="SuperJP Jackpot显示比率(百分比90% 输入90）：" prop="item.superJPRate">-->
+<!--                    <el-input v-model="item.superJPRate" placeholder="请输入" />-->
+<!--                  </el-form-item>-->
+<!--                </el-row>-->
+<!--                <el-row>-->
+<!--                  <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />-->
+<!--                </el-row>-->
                 <fieldset>
                   <legend>普通选项配置</legend>
                   <el-row>
@@ -799,7 +804,7 @@
                       </el-table-column>
                       <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 spin)">
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds" placeholder="" />
+                          <el-input type="number" v-model="scope.row.Odds" placeholder="" />
                         </template>
                       </el-table-column>
                       <el-table-column prop="item.HitRates" label="命中概率总和比例）">
@@ -836,7 +841,7 @@
                       </el-table-column>
                       <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
                         <template slot-scope="scope">
-                          <el-input v-model.number="scope.row.Odds" placeholder="" />
+                          <el-input type="number"   v-model="scope.row.Odds" placeholder="" />
                         </template>
                       </el-table-column>
                       <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
@@ -965,6 +970,7 @@ export default {
         FeeRate: 1,
         JackpotNormal: 0,
         JackpotHight: 0,
+        NoticeTime: 0,
         HappyRouletteCfg: [
           {
             Id: 1,
@@ -1732,7 +1738,7 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      levelShow: { 1: 'low', 2: 'norm', 3: 'high' }
+      levelShow: { 1: 'low', 2: 'norml', 3: 'high' }
     }
   },
   created() {

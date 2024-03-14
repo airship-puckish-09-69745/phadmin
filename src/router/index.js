@@ -429,12 +429,12 @@ export const asyncRoutes = [
             name: 'miniDvt_cfg',
             meta: { title: '龙虎 ◐' }
           },
-          {
-            path: 'windrop_cfg',
-            component: () => import('@/views/config/tableConfig/windrop_cfg'),
-            name: 'windrop_cfg',
-            meta: { title: 'Windrop ◐' }
-          },
+          // {
+          //   path: 'windrop_cfg',
+          //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
+          //   name: 'windrop_cfg',
+          //   meta: { title: 'Windrop ◐' }
+          // },
           {
             path: 'miniWindrop_cfg',
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
@@ -576,6 +576,26 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
         name: 'gameWaitQueue',
         meta: { title: '排队入桌配置 ◐' }
+      },
+      {
+        path: 'h5game',
+        component: () => import('@/views/empty'),
+        name: 'h5game',
+        meta: { title: 'H5游戏配置', noCache: true },
+        children: [
+          {
+            path: 'basketballShootConfig',
+            component: () => import('@/views/config/tableConfig/h5Game/basketballShootConfig.vue'),
+            name: 'basketballShootConfig',
+            meta: { title: '投篮游戏配置项', noCache: true }
+          },
+          {
+            path: 'basketballShootRedeemCodes',
+            component: () => import('@/views/config/tableConfig/h5Game/basketballShootRedeemCodes.vue'),
+            name: 'basketballShootRedeemCodes',
+            meta: { title: '投篮游戏兑奖券', noCache: true }
+          }
+        ]
       },
       {
         path: 'gameAuditConfig',
