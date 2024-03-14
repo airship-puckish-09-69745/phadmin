@@ -160,12 +160,16 @@
             </el-row>
 
             <el-row style="margin-top:10px">
-              <el-form-item label="B: 根据分布概率随机取出其中一张牌 (仅非审核服生效)">
-                <el-button type="primary" size="mini" @click="addJackpotDistributionRow">添加</el-button>
-              </el-form-item>
-
+              <el-col :span="7">
+                <el-form-item label="B: 总控：(比如这个值为11 那么玩家有万分之11的概率有jp出现 具体哪张由分布配置决定) (仅非审核服生效)">
+                  <el-input v-model.number="item.JpRate"><template slot="append">‱</template></el-input>
+                </el-form-item>
+              </el-col>
             </el-row>
 
+            <el-form-item label=" ---- 根据分布概率随机取出其中一张牌">
+              <el-button type="primary" size="mini" @click="addJackpotDistributionRow">添加</el-button>
+            </el-form-item>
             <el-row>
               <template>
                 <el-table :data="item.JackpotDistributionItems" border>
@@ -227,7 +231,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="概率"
+                label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
                 <template slot-scope="scope">

@@ -429,12 +429,12 @@ export const asyncRoutes = [
             name: 'miniDvt_cfg',
             meta: { title: '龙虎 ◐' }
           },
-          {
-            path: 'windrop_cfg',
-            component: () => import('@/views/config/tableConfig/windrop_cfg'),
-            name: 'windrop_cfg',
-            meta: { title: 'Windrop ◐' }
-          },
+          // {
+          //   path: 'windrop_cfg',
+          //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
+          //   name: 'windrop_cfg',
+          //   meta: { title: 'Windrop ◐' }
+          // },
           {
             path: 'miniWindrop_cfg',
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
@@ -582,6 +582,26 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
         name: 'gameWaitQueue',
         meta: { title: '排队入桌配置 ◐' }
+      },
+      {
+        path: 'h5game',
+        component: () => import('@/views/empty'),
+        name: 'h5game',
+        meta: { title: 'H5游戏配置', noCache: true },
+        children: [
+          {
+            path: 'basketballShootConfig',
+            component: () => import('@/views/config/tableConfig/h5Game/basketballShootConfig.vue'),
+            name: 'basketballShootConfig',
+            meta: { title: '投篮游戏配置项', noCache: true }
+          },
+          {
+            path: 'basketballShootRedeemCodes',
+            component: () => import('@/views/config/tableConfig/h5Game/basketballShootRedeemCodes.vue'),
+            name: 'basketballShootRedeemCodes',
+            meta: { title: '投篮游戏兑奖券', noCache: true }
+          }
+        ]
       },
       {
         path: 'gameAuditConfig',
@@ -857,16 +877,30 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'tongits_cheatlog',
-        component: () => import('@/views/playerManage/tongitsCheatlog'),
-        name: 'tongits_cheatlog',
-        meta: { title: 'tongits作弊识别日志 ◐' }
-      },
-      {
-        path: 'game_kick_user_log',
-        component: () => import('@/views/playerManage/gameKickUserlog'),
-        name: 'game_kick_user_log',
-        meta: { title: '游戏作弊踢出用户日志 ◐' }
+        path: 'tongitsCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Tongits-作弊识别 ◐' },
+        children: [
+          {
+            path: 'tongits_cheat_group',
+            component: () => import('@/views/playerManage/tongitsCheatGroup'),
+            name: 'tongits_cheat_group',
+            meta: { title: 'tongits作弊组合 ◐' }
+          },
+          {
+            path: 'tongits_cheatlog',
+            component: () => import('@/views/playerManage/tongitsCheatlog'),
+            name: 'tongits_cheatlog',
+            meta: { title: 'tongits作弊识别日志 ◐' }
+          },
+          {
+            path: 'game_kick_user_log',
+            component: () => import('@/views/playerManage/gameKickUserlog'),
+            name: 'game_kick_user_log',
+            meta: { title: '游戏作弊踢出用户日志 ◐' }
+          }
+        ]
       }
     ]
   },
@@ -1188,10 +1222,30 @@ export const asyncRoutes = [
     meta: { title: '德州专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
       {
+        path: 'texasNlhStat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '数据中心', noCache: true },
+        children: [
+          {
+            path: 'texasNlhInsure',
+            component: () => import('@/views/texas2dpro/texasNlhInsure'),
+            name: 'texasNlhInsure',
+            meta: { title: '保险数据' }
+          },
+          {
+            path: 'texasNlhJP',
+            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            name: 'texasNlhJP',
+            meta: { title: 'JackPot数据' }
+          }
+        ]
+      },
+      {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'TexasNlh - 无限德州', noCache: true },
+        meta: { title: '无限德州', noCache: true },
         children: [
           {
             path: 'texasNlhTable',
