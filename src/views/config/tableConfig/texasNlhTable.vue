@@ -131,6 +131,11 @@
           </el-col>
         </el-row>
         <el-row>
+           <el-col :span="11">
+            <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
+              <el-input v-model.number="edit.item.IntervalBuyIn" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
           <el-col :span="11">
             <el-form-item label="桌子数量：" :required="true" prop="item.ObjectCount" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.ObjectCount" placeholder="请输入" />
@@ -189,6 +194,14 @@
           <el-col :span="11">
             <el-form-item label="开启NoRathole：" :required="true">
               <el-radio-group v-model.number="edit.item.NoRathole">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="开启延时看牌：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsDelayShow">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
@@ -346,13 +359,13 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="最小人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" @change="handlerChangeMin" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true"/>
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="最大人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" @change="handlerChangeMax" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true"/>
                   </el-form-item>
                 </el-col>
 
@@ -439,12 +452,14 @@ function newItem() {
     TimeConfig: {},
     MinBuyIn: 0,
     MaxBuyIn: 0,
+    IntervalBuyIn: 0,
     GPSLimit: 0,
     IPLimit: 0,
     WatchTimesMax: 0,
     Level: 1,
     PrefixChip: 0,
     NoRathole: 0,
+    IsDelayShow: 0,
     IsEnableStraddle: 0,
     AutoStartPlayerNumer: 0,
     OutsRatio: [],
@@ -494,12 +509,14 @@ export default {
         TableFee: '台费',
         MinBuyIn: '最低买入',
         MaxBuyIn: '最大买入',
+        IntervalBuyIn: '买入间隔',
         LuckyLevelLimitMax: '',
         GPSLimit: '是否GPS限制',
         IPLimit: '是否IP限制',
         WatchTimesMax: '最大旁观局数',
         PrefixChip: '前注',
         NoRathole: '是否开启NoRathole',
+        IsDelayShow: '是否开启延迟看牌',
         IsEnableStraddle: '是否开启Straddle',
         AutoStartPlayerNumer: '自动开始人数',
         IsEnableInsure: '是否开启保险',
@@ -726,6 +743,7 @@ export default {
       return true
     },
     save() {
+      if (!this.checkFeeLimitValue('2')) return
       if (!this.checkData()) return
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       this.edit.item.OutsRatio = JSON.stringify(this.edit.OutsRatio)
@@ -781,17 +799,39 @@ export default {
         }
       }
     },
-    handlerChangeMax(e) {
-      if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
-        Message.error('数据错误')
-        return
-      }
-      if (this.edit.FeeLimit.length > 1) {
-        if (parseInt(e) < this.edit.FeeLimit[this.edit.FeeLimit.length - 1].MinPlayerNum) {
-          Message.error('数据错误')
-          return
+    checkFeeLimitValue() {
+      var min = 0
+      var max = 0
+      for (var i = 0; i < this.edit.FeeLimit.length; i++) {
+        if (this.edit.FeeLimit[i].MinPlayerNum < 2 || this.edit.FeeLimit[i].MinPlayerNum > this.edit.item.TableMaxPlayerNum) {
+          Message.error('数据错误, 抽水人数超出范围')
+          return false
+        }
+        if (this.edit.FeeLimit[i].MaxPlayerNum < 2 || this.edit.FeeLimit[i].MaxPlayerNum > this.edit.item.TableMaxPlayerNum) {
+          Message.error('数据错误, 抽水人数超出范围')
+          return false
+        }
+        if (this.edit.FeeLimit[i].MaxPlayerNum < this.edit.FeeLimit[i].MinPlayerNum) {
+          Message.error('数据错误, 抽水人数超出范围')
+          return false
+        }
+        if (this.edit.FeeLimit[i].FeeLimit <= 0) {
+          Message.error('数据错误, 抽水上限为 0')
+          return false
+        }
+        if (i === 0) {
+          min = this.edit.FeeLimit[i].MinPlayerNum
+          max = this.edit.FeeLimit[i].MaxPlayerNum
+        } else {
+          if (this.edit.FeeLimit[i].MinPlayerNum <= min || this.edit.FeeLimit[i].MinPlayerNum !== max + 1) {
+            Message.error('数据错误 人数错误')
+            return false
+          }
+          min = this.edit.FeeLimit[i].MinPlayerNum
+          max = this.edit.FeeLimit[i].MaxPlayerNum
         }
       }
+      return true
     }
   }
 }
