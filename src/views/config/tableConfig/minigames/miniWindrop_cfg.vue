@@ -684,7 +684,7 @@
           </el-row>
           <el-row>
             <el-form-item label="通知时间：">
-              <el-input v-model="cfg.NoticeTime" placeholder="" />
+              <el-input type="number" v-model.number="cfg.NoticeTime" placeholder="" />
             </el-form-item>
           </el-row>
         </el-form>
