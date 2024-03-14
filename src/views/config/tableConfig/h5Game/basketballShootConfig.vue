@@ -10,14 +10,14 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="分享链接：">
-                <el-input v-model.number="item.ShareLink" />
+                <el-input v-model="item.ShareLink" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="24">
               <el-form-item label="防刷设置-间隔时间">
-                <el-input v-model="item.GuardTime" placeholder="请设置防刷的时间间隔，单位为秒">
+                <el-input v-model.number="item.GuardTime" type="number" placeholder="请设置防刷的时间间隔，单位为秒">
                   <template slot="append">秒</template>
                 </el-input>
               </el-form-item>
@@ -26,7 +26,7 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="防刷设置-最大兑奖券数量">
-                <el-input v-model="item.RedeemMax" placeholder="请设置同IP在指定时间段内能够产生的最大兑奖券数量">
+                <el-input v-model.number="item.RedeemMax" type="number" placeholder="请设置同IP在指定时间段内能够获得的最大兑奖券数量">
                   <template slot="append">个</template>
                 </el-input>
               </el-form-item>
@@ -35,7 +35,7 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="游戏时长">
-                <el-input v-model="item.GameDuration" placeholder="请设置游戏时长，单位为秒">
+                <el-input v-model.number="item.GameDuration" type="number" placeholder="请设置游戏时长，单位为秒">
                   <template slot="append">秒</template>
                 </el-input>
               </el-form-item>
@@ -120,7 +120,9 @@ export default {
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
-
+      ret.GameDuration = parseInt(ret.GameDuration)
+      ret.RedeemMax = parseInt(ret.RedeemMax)
+      ret.GuardTime = parseInt(ret.GuardTime)
       return ret
     },
     setData() {

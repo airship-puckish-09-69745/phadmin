@@ -131,6 +131,11 @@
           </el-col>
         </el-row>
         <el-row>
+           <el-col :span="11">
+            <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
+              <el-input v-model.number="edit.item.IntervalBuyIn" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
           <el-col :span="11">
             <el-form-item label="桌子数量：" :required="true" prop="item.ObjectCount" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.ObjectCount" placeholder="请输入" />
@@ -189,6 +194,14 @@
           <el-col :span="11">
             <el-form-item label="开启NoRathole：" :required="true">
               <el-radio-group v-model.number="edit.item.NoRathole">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="开启延时看牌：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsDelayShow">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
@@ -439,12 +452,14 @@ function newItem() {
     TimeConfig: {},
     MinBuyIn: 0,
     MaxBuyIn: 0,
+    IntervalBuyIn: 0,
     GPSLimit: 0,
     IPLimit: 0,
     WatchTimesMax: 0,
     Level: 1,
     PrefixChip: 0,
     NoRathole: 0,
+    IsDelayShow: 0,
     IsEnableStraddle: 0,
     AutoStartPlayerNumer: 0,
     OutsRatio: [],
@@ -494,12 +509,14 @@ export default {
         TableFee: '台费',
         MinBuyIn: '最低买入',
         MaxBuyIn: '最大买入',
+        IntervalBuyIn: '买入间隔',
         LuckyLevelLimitMax: '',
         GPSLimit: '是否GPS限制',
         IPLimit: '是否IP限制',
         WatchTimesMax: '最大旁观局数',
         PrefixChip: '前注',
         NoRathole: '是否开启NoRathole',
+        IsDelayShow: '是否开启延迟看牌',
         IsEnableStraddle: '是否开启Straddle',
         AutoStartPlayerNumer: '自动开始人数',
         IsEnableInsure: '是否开启保险',
