@@ -865,16 +865,30 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'tongits_cheatlog',
-        component: () => import('@/views/playerManage/tongitsCheatlog'),
-        name: 'tongits_cheatlog',
-        meta: { title: 'tongits作弊识别日志 ◐' }
-      },
-      {
-        path: 'game_kick_user_log',
-        component: () => import('@/views/playerManage/gameKickUserlog'),
-        name: 'game_kick_user_log',
-        meta: { title: '游戏作弊踢出用户日志 ◐' }
+        path: 'tongitsCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Tongits-作弊识别 ◐' },
+        children: [
+          {
+            path: 'tongits_cheat_group',
+            component: () => import('@/views/playerManage/tongitsCheatGroup'),
+            name: 'tongits_cheat_group',
+            meta: { title: 'tongits作弊组合 ◐' }
+          },
+          {
+            path: 'tongits_cheatlog',
+            component: () => import('@/views/playerManage/tongitsCheatlog'),
+            name: 'tongits_cheatlog',
+            meta: { title: 'tongits作弊识别日志 ◐' }
+          },
+          {
+            path: 'game_kick_user_log',
+            component: () => import('@/views/playerManage/gameKickUserlog'),
+            name: 'game_kick_user_log',
+            meta: { title: '游戏作弊踢出用户日志 ◐' }
+          }
+        ]
       }
     ]
   },
