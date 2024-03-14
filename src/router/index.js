@@ -429,12 +429,12 @@ export const asyncRoutes = [
             name: 'miniDvt_cfg',
             meta: { title: '龙虎 ◐' }
           },
-          {
-            path: 'windrop_cfg',
-            component: () => import('@/views/config/tableConfig/windrop_cfg'),
-            name: 'windrop_cfg',
-            meta: { title: 'Windrop ◐' }
-          },
+          // {
+          //   path: 'windrop_cfg',
+          //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
+          //   name: 'windrop_cfg',
+          //   meta: { title: 'Windrop ◐' }
+          // },
           {
             path: 'miniWindrop_cfg',
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
