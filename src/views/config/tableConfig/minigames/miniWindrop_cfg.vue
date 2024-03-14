@@ -644,7 +644,7 @@
           </el-row>
           <el-row>
             <el-form-item label="当前场次：（low: 1，mid: 2，hight:3）">
-              <el-input v-model="cfg.Level" placeholder="" />
+              <el-input v-model.number="cfg.Level" placeholder="" />
             </el-form-item>
           </el-row>
           <el-row>
