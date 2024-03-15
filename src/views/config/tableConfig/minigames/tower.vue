@@ -152,7 +152,7 @@
       </el-tabs>
     </el-row>
 
-    <fieldset  style="margin-top:20px;">
+    <fieldset  style="margin-top:20px;" v-if="envProjectName!='ph_audit'">
       <legend>jackpot调控配置</legend>
       <el-row  v-if="envProjectName=='ph' && envName=='development'">
         <el-alert
