@@ -74,7 +74,6 @@
                 </template>
               </el-table-column>
               <el-table-column
-                  v-if="process.env.NODE_ENV==='production'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
