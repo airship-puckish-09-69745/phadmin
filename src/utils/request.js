@@ -105,7 +105,7 @@ service.interceptors.response.use(
       }
 
       Message({
-        message: res.Data && res.Data.Msg || 'Error',
+        message: res.Data || res.Data.Msg || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
