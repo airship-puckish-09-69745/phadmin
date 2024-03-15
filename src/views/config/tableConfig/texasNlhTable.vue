@@ -67,19 +67,17 @@
           <el-col :span="11">
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
               <el-select v-model="edit.item.SmallBlind" placeholder="请选择">
-                <el-option label="0.1" :value="0.1" />
                 <el-option label="1" :value="1" />
-                <el-option label="2.5" :value="2.5" />
+                <el-option label="2" :value="2" />
                 <el-option label="5" :value="5" />
                 <el-option label="10" :value="10" />
-                <el-option label="25" :value="25" />
+                <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
                 <el-option label="100" :value="100" />
-                <el-option label="250" :value="250" />
+                <el-option label="200" :value="200" />
                 <el-option label="500" :value="500" />
                 <el-option label="1000" :value="1000" />
-                <el-option label="2500" :value="2500" />
-                <el-option label="5000" :value="5000" />
+                <el-option label="2000" :value="2000" />
               </el-select>
             </el-form-item>
           </el-col>
