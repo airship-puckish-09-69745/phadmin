@@ -74,6 +74,7 @@
                 </template>
               </el-table-column>
               <el-table-column
+                  v-if="process.env.NODE_ENV==='production'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
@@ -151,7 +152,7 @@
       </el-tabs>
     </el-row>
 
-    <fieldset style="margin-top:20px;">
+    <fieldset v-if="process.env.VUE_APP_PROJECT!='ph_audit'" style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
