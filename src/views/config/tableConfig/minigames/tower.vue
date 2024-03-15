@@ -74,7 +74,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                  v-if="envName==='production'"
+                  v-if="envName!=='production'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
@@ -162,6 +162,7 @@
         <el-form ref="item" :model="item" label-width="100px">
           <el-form-item label="调控总开关">
             <el-switch
+                v-if="envProjectName=='ph' && envName=='development'"
               v-model="item.JackpotRegulation.ToggleSwitch"
               active-color="#13ce66"
               inactive-color="#ff4949"
