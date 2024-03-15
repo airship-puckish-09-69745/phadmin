@@ -74,7 +74,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                  v-if="envName!=='production'"
+                  v-if="envProjectName=='ph_audit'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
@@ -154,24 +154,24 @@
 
     <fieldset  style="margin-top:20px;" v-if="envProjectName!='ph_audit'">
       <legend>jackpot调控配置</legend>
-      <el-row  v-if="envProjectName=='ph' && envName=='development'">
-        <el-alert
-          type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
-        />
-        <el-form ref="item" :model="item" label-width="100px">
-          <el-form-item  label="调控总开关">
-            <el-switch
+<!--      <el-row  v-if="envProjectName=='ph' ">-->
+<!--        <el-alert-->
+<!--          type="error"-->
+<!--          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"-->
+<!--        />-->
+<!--        <el-form ref="item" :model="item" label-width="100px">-->
+<!--          <el-form-item  label="调控总开关">-->
+<!--            <el-switch-->
 
-              v-model="item.JackpotRegulation.ToggleSwitch"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="开"
-              inactive-text="关"
-            />
-          </el-form-item>
-        </el-form>
-      </el-row>
+<!--              v-model="item.JackpotRegulation.ToggleSwitch"-->
+<!--              active-color="#13ce66"-->
+<!--              inactive-color="#ff4949"-->
+<!--              active-text="开"-->
+<!--              inactive-text="关"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--        </el-form>-->
+<!--      </el-row>-->
       <el-row>
         <el-table
           ref="filterTable"
@@ -438,8 +438,6 @@ export default {
         uid: 0,
         showUlReslt: false
       },
-      envName:process.env.NODE_ENV,
-      // envName:process.env.VUE_APP_PROJECT_NAME,
       envProjectName:process.env.VUE_APP_PROJECT,
       towerData: '',
       JackpotTypeCfg: {
@@ -483,7 +481,7 @@ export default {
 
   created() {
     this.getData()
-    console.log("=========",this.envName,this.envProjectName)
+    console.log("=========",this.envProjectName)
   },
   methods: {
   	getLabelName(k) {
