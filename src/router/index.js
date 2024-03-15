@@ -532,6 +532,12 @@ export const asyncRoutes = [
             meta: { title: 'SuperGem - 超级宝石' }
           },
           {
+            path: 'candycandygrid_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandygrid_slots_cfg'),
+            name: 'candycandygrid_slots_cfg',
+            meta: { title: '糖果糖果Grid' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -861,26 +867,46 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
             meta: { title: '超级宝石', gid: 78 }
+          },
+          {
+            path: 'candycandygrid_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandygrid_slots_log',
+            meta: { title: '糖果糖果Grid', gid: 79 }
+          },
+          {
+            path: 'candycandy_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandy_slots_log',
+            meta: { title: '糖果糖果', gid: 80 }
           }
         ]
       },
       {
-        path: 'tongits_cheatlog',
-        component: () => import('@/views/playerManage/tongitsCheatlog'),
-        name: 'tongits_cheatlog',
-        meta: { title: 'tongits作弊识别日志 ◐' }
-      },
-      {
-        path: 'game_kick_user_log',
-        component: () => import('@/views/playerManage/gameKickUserlog'),
-        name: 'game_kick_user_log',
-        meta: { title: '游戏作弊踢出用户日志 ◐' }
-      },
-      {
-        path: 'tongits_cheat_group',
-        component: () => import('@/views/playerManage/tongitsCheatGroup'),
-        name: 'tongits_cheat_group',
-        meta: { title: 'tongits作弊组合 ◐' }
+        path: 'tongitsCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Tongits-作弊识别 ◐' },
+        children: [
+          {
+            path: 'tongits_cheat_group',
+            component: () => import('@/views/playerManage/tongitsCheatGroup'),
+            name: 'tongits_cheat_group',
+            meta: { title: 'tongits作弊组合 ◐' }
+          },
+          {
+            path: 'tongits_cheatlog',
+            component: () => import('@/views/playerManage/tongitsCheatlog'),
+            name: 'tongits_cheatlog',
+            meta: { title: 'tongits作弊识别日志 ◐' }
+          },
+          {
+            path: 'game_kick_user_log',
+            component: () => import('@/views/playerManage/gameKickUserlog'),
+            name: 'game_kick_user_log',
+            meta: { title: '游戏作弊踢出用户日志 ◐' }
+          }
+        ]
       }
     ]
   },
@@ -1161,6 +1187,12 @@ export const asyncRoutes = [
         name: 'game_custom_config',
         meta: { title: '游戏自定义配置' }
       }
+      // {
+      //   path: 'timeoutGameLog',
+      //   component: () => import('@/views/config/timeoutGameLog'),
+      //   name: 'timeout_game_log',
+      //   meta: { title: '游戏超时记录' }
+      // }
     ]
   },
   {

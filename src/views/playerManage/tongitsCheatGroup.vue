@@ -7,29 +7,29 @@
         </el-form-item>
         <el-form-item v-model="item.black" label="是否加黑：" label-width="100px">
           <el-select v-model="item.black" placeholder="请选择" size="small">
-            <el-option label="全部" key="-1" value="-1" />
-            <el-option label="是" key="1" value="1" />
-            <el-option label="否" key="0" value="0" />
+            <el-option key="-1" label="全部" value="-1" />
+            <el-option key="1" label="是" value="1" />
+            <el-option key="0" label="否" value="0" />
           </el-select>
         </el-form-item>
-<!--        <el-form-item label="开始日期：">-->
-<!--          <el-date-picker-->
-<!--            v-model="item.start"-->
-<!--            value-format="timestamp"-->
-<!--            type="datetime"-->
-<!--            placeholder="选择日期"-->
-<!--            size="mini"-->
-<!--          />-->
-<!--        </el-form-item>-->
-<!--        <el-form-item label="结束日期：">-->
-<!--          <el-date-picker-->
-<!--            v-model="item.end"-->
-<!--            value-format="timestamp"-->
-<!--            type="datetime"-->
-<!--            placeholder="选择日期"-->
-<!--            size="mini"-->
-<!--          />-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="开始日期：">-->
+        <!--          <el-date-picker-->
+        <!--            v-model="item.start"-->
+        <!--            value-format="timestamp"-->
+        <!--            type="datetime"-->
+        <!--            placeholder="选择日期"-->
+        <!--            size="mini"-->
+        <!--          />-->
+        <!--        </el-form-item>-->
+        <!--        <el-form-item label="结束日期：">-->
+        <!--          <el-date-picker-->
+        <!--            v-model="item.end"-->
+        <!--            value-format="timestamp"-->
+        <!--            type="datetime"-->
+        <!--            placeholder="选择日期"-->
+        <!--            size="mini"-->
+        <!--          />-->
+        <!--        </el-form-item>-->
         <el-form-item>
           <el-button type="primary" size="mini" @click="click2getInfo">查询</el-button>
         </el-form-item>
@@ -73,7 +73,8 @@
         >
           <template slot-scope="scope">
             <el-tag
-              :type="tagtype(scope.row.Black)">
+              :type="tagtype(scope.row.Black)"
+            >
               {{ scope.row.Black == 1 ? '是' : '否' }}
             </el-tag>
           </template>
@@ -85,6 +86,15 @@
         >
           <template slot-scope="scope">
             <DateTimeShow :show-type="2" :timestamp="scope.row.UpdateTime" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="CreateTime"
+          label="创建时间"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <DateTimeShow :show-type="2" :timestamp="scope.row.CreateTime" />
           </template>
         </el-table-column>
       </el-table>

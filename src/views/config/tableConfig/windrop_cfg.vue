@@ -88,34 +88,34 @@
                     <el-input v-model="item.LuckyJPKey" placeholder="请输入" disabled />
                   </el-form-item>
                 </el-row>
-<!--                <el-row>-->
-<!--                  <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">-->
-<!--                    <el-input v-model="item.LuckyJPTransferRate" placeholder="请输入" />-->
-<!--                  </el-form-item>-->
-<!--                </el-row>-->
-<!--                <el-row>-->
-<!--                  <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">-->
-<!--                    <el-input v-model="item.LuckyJPOdds" placeholder="请输入" />-->
-<!--                  </el-form-item>-->
-<!--                </el-row>-->
-<!--                <el-row>-->
-<!--                  <money-input v-model.number="item.LuckyJPInitMoney" label="LuckyJP 初始化金额" />-->
-<!--                </el-row>-->
-<!--                <el-row>-->
-<!--                  <el-form-item label="SuperJP key：" prop="item.SuperJPKey">-->
-<!--                    <el-input v-model="item.SuperJPKey" placeholder="请输入" disabled />-->
-<!--                  </el-form-item>-->
-<!--                </el-row>-->
-<!--                <el-row>-->
-<!--                  <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">-->
-<!--                    <el-input v-model="item.SuperJPTransferRate" placeholder="请输入" />-->
-<!--                  </el-form-item>-->
-<!--                </el-row>-->
-<!--                <el-row>-->
-<!--                  <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">-->
-<!--                    <el-input v-model="item.SuperJPOdds" placeholder="请输入" />-->
-<!--                  </el-form-item>-->
-<!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                  <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">-->
+                <!--                    <el-input v-model="item.LuckyJPTransferRate" placeholder="请输入" />-->
+                <!--                  </el-form-item>-->
+                <!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                  <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">-->
+                <!--                    <el-input v-model="item.LuckyJPOdds" placeholder="请输入" />-->
+                <!--                  </el-form-item>-->
+                <!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                  <money-input v-model.number="item.LuckyJPInitMoney" label="LuckyJP 初始化金额" />-->
+                <!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                  <el-form-item label="SuperJP key：" prop="item.SuperJPKey">-->
+                <!--                    <el-input v-model="item.SuperJPKey" placeholder="请输入" disabled />-->
+                <!--                  </el-form-item>-->
+                <!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                  <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">-->
+                <!--                    <el-input v-model="item.SuperJPTransferRate" placeholder="请输入" />-->
+                <!--                  </el-form-item>-->
+                <!--                </el-row>-->
+                <!--                <el-row>-->
+                <!--                  <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">-->
+                <!--                    <el-input v-model="item.SuperJPOdds" placeholder="请输入" />-->
+                <!--                  </el-form-item>-->
+                <!--                </el-row>-->
                 <el-row>
                   <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />
                 </el-row>

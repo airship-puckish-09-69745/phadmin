@@ -8,6 +8,7 @@
     <el-table
       :data="actions"
       border
+      :row-style="getDetailRowStyle"
       style="width: 100%"
     >
       <el-table-column
@@ -151,7 +152,8 @@ export default {
         0x1000: '发牌',
         0x1001: '结算'
       },
-      UidMap: {}
+      UidMap: {},
+      UidStyleMap:{},
     }
   },
   watch: {
@@ -175,15 +177,29 @@ export default {
     }
   },
   created() {
+
   },
   methods: {
+    getDetailRowStyle(row){
+      switch(this.UidStyleMap[row.row.Uid]){
+        case 1:
+          return {background:"#00800036"}
+        case 2:
+          return {background:"#46a6ff30"}
+        case 3:
+          return {background:"#68008029"}
+      }
+
+    },
     initData(val) {
+      console.log(1)
       this.actions = []
       console.log('val===>', val)
       const stepArr = val.actionLogs.split('|')
       let stepIdx = 1
       this.UidMap = {}
       let uidIndex = 0
+      let styleIndex = 1
       for (let i = 0; i < stepArr.length; i++) {
         const detail = stepArr[i].split('-')
         if (detail.length !== 4) {
@@ -191,6 +207,10 @@ export default {
           return
         }
         const uid = parseInt(detail[0])
+        if(!this.UidStyleMap[uid]){
+          this.UidStyleMap[uid] = styleIndex
+          styleIndex++
+        }
         const actionName = this.actionNames[parseInt(detail[1])]
         let cards = this.splitCards(detail[2]) // 牌值
         const contritube = this.splitCards(detail[3]) // 贴牌
