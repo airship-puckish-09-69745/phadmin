@@ -129,7 +129,7 @@
           </el-col>
         </el-row>
         <el-row>
-           <el-col :span="11">
+          <el-col :span="11">
             <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.IntervalBuyIn" placeholder="请输入" />
             </el-form-item>
@@ -357,19 +357,19 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="最小人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="最大人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="抽水上限">
-                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
               </el-row>

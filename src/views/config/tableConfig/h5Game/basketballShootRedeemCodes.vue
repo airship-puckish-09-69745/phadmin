@@ -31,7 +31,12 @@
             {{ formatTime(scope.row.RedeemTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="IP" label="兑奖IP" />
+        <el-table-column prop="IP" label="玩家IP" />
+        <el-table-column prop="IP" label="玩家ID">
+          <template slot-scope="scope">
+            {{ ipToInt(scope.row.IP) }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="Status"
           label="状态"
@@ -57,7 +62,8 @@
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount"
             @size-change="handleSizeChange"
-            @current-change="handleCurrentChange" />
+            @current-change="handleCurrentChange"
+          />
         </div>
       </el-col>
     </div>
@@ -118,6 +124,27 @@ export default {
         return ''
       }
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    ipToInt(ip) {
+      if (ip === '') {
+        return ''
+      }
+
+      const octets = ip.split('.')
+      if (octets.length !== 4) {
+        return 'Invalid IP address'
+      }
+
+      let intIp = 0
+      for (let i = 0; i < octets.length; i++) {
+        const num = parseInt(octets[i], 10)
+        if (isNaN(num) || num < 0 || num > 255) {
+          return 'Invalid IP address segment'
+        }
+        intIp |= num << ((3 - i) * 8)
+      }
+
+      return intIp >>> 0
     },
     handleFilter() {
       this.getList()

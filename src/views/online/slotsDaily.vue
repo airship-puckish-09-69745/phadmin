@@ -254,6 +254,10 @@ export default {
           return '糖果派对Allline'
         case 78:
           return '超级宝石'
+        case 79:
+          return '糖果糖果Grid'
+        case 80:
+          return '糖果糖果'
       }
       return '未知老虎机-' + sType
     },
@@ -393,6 +397,8 @@ export default {
         case 76:
         case 77:
         case 78:
+        case 79:
+        case 80:
         {
           lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
           lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
@@ -580,6 +586,8 @@ export default {
             case 76:
             case 77:
             case 78:
+            case 79:
+            case 80:
             {
               this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
               break
@@ -899,6 +907,8 @@ export default {
             case 76:
             case 77:
             case 78:
+            case 79:
+            case 80:
             {
               this.chartData.xSeries = [
                 this.createSeries('玩牌次数', PlayTimes),
