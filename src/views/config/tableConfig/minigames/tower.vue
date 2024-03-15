@@ -74,6 +74,7 @@
                 </template>
               </el-table-column>
               <el-table-column
+                  v-if="envName==='production'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
@@ -151,7 +152,7 @@
       </el-tabs>
     </el-row>
 
-    <fieldset style="margin-top:20px;">
+    <fieldset v-if="envProjectName!=='ph_audit'" style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
@@ -436,6 +437,8 @@ export default {
         uid: 0,
         showUlReslt: false
       },
+      envName:process.env.NODE_ENV,
+      envProjectName:process.env.VUE_APP_PROJECT,
       towerData: '',
       JackpotTypeCfg: {
         1: '一等奖',
@@ -478,7 +481,7 @@ export default {
 
   created() {
     this.getData()
-    console.log(1)
+    console.log("=========",this.envName)
   },
   methods: {
   	getLabelName(k) {
