@@ -802,7 +802,7 @@ export default {
     }
   },
   created() {
-    console.log(1)
+    console.log("===============",process.env.NODE_ENV)
     const pers = store.getters.pers
     this.hasEditPerm = (pers['USER_MANAGEMENT'] & 2) > 0
     this.hasCustomerPerm = (pers['CUTOMER'] & 2) > 0
