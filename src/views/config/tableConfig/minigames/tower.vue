@@ -152,7 +152,7 @@
       </el-tabs>
     </el-row>
 
-    <fieldset v-if="process.env.VUE_APP_PROJECT!='ph_audit'" style="margin-top:20px;">
+    <fieldset style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
