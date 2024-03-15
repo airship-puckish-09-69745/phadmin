@@ -481,7 +481,7 @@ export default {
 
   created() {
     this.getData()
-    console.log("=========",this.envName)
+    console.log("=========",this.envName,this.envProjectName)
   },
   methods: {
   	getLabelName(k) {
