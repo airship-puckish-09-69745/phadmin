@@ -873,6 +873,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandygrid_slots_log',
             meta: { title: '糖果糖果Grid', gid: 79 }
+          },
+          {
+            path: 'candycandy_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandy_slots_log',
+            meta: { title: '糖果糖果', gid: 80 }
           }
         ]
       },

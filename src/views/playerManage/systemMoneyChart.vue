@@ -252,7 +252,7 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 76, 77, 78, 6],
+      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 76, 77, 78, 79, 80, 6],
       sortOrder: [],
       env: 'test'
     }
