@@ -332,8 +332,8 @@ export default {
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
       games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix',
-        7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette', 14: 'Pusoy', 15: 'Tower', 16: 'Sicbo', 17: 'Hilo',
-        18: 'Windrop',  21:'7Up7Down',22:'CandyParty'},
+        76: 'CandyPartyWay', 77: 'CandyPartyAllline', 78: 'SuperGem', 79: 'CandyCandyGrid', 80: 'CandyCandy',
+        7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette', 14: 'Pusoy', 15: 'Tower', 16: 'Sicbo', 17: 'Hilo', 18: 'Windrop',  21:'7Up7Down',22:'CandyParty' },
       games2: [
         { id: 0, name: 'All games' },
         { id: 1, name: 'Color Game' },
@@ -352,6 +352,12 @@ export default {
         { id: 15, name: 'Tower' },
         { id: 16, name: 'Sicbo' },
         { id: 17, name: 'Hilo' },
+        { id: 18, name: 'Windrop' },
+        { id: 76, name: 'CandyPartyWay' },
+        { id: 77, name: 'CandyPartyAllline' },
+        { id: 78, name: 'SuperGem' },
+        { id: 79, name: 'CandyCandyGrid' },
+        { id: 80, name: 'CandyCandy' }
         { id: 18, name: 'Windrop' },
         {id:21,name: '7Up7Down'},
         {id:22,name: 'CandyParty'}
