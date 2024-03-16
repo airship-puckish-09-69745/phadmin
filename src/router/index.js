@@ -429,12 +429,12 @@ export const asyncRoutes = [
             name: 'miniDvt_cfg',
             meta: { title: '龙虎 ◐' }
           },
-          {
-            path: 'windrop_cfg',
-            component: () => import('@/views/config/tableConfig/windrop_cfg'),
-            name: 'windrop_cfg',
-            meta: { title: 'Windrop ◐' }
-          },
+          // {
+          //   path: 'windrop_cfg',
+          //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
+          //   name: 'windrop_cfg',
+          //   meta: { title: 'Windrop ◐' }
+          // },
           {
             path: 'miniWindrop_cfg',
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
@@ -530,6 +530,18 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
             name: 'supergem_slots_cfg',
             meta: { title: 'SuperGem - 超级宝石' }
+          },
+          {
+            path: 'candycandygrid_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandygrid_slots_cfg'),
+            name: 'candycandygrid_slots_cfg',
+            meta: { title: '糖果糖果Grid' }
+          },
+          {
+            path: 'candycandy_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandy_slots_cfg'),
+            name: 'candycandy_slots_cfg',
+            meta: { title: '糖果糖果' }
           },
           {
             path: 'slots_winner_record',
@@ -861,20 +873,46 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
             meta: { title: '超级宝石', gid: 78 }
+          },
+          {
+            path: 'candycandygrid_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandygrid_slots_log',
+            meta: { title: '糖果糖果Grid', gid: 79 }
+          },
+          {
+            path: 'candycandy_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandy_slots_log',
+            meta: { title: '糖果糖果', gid: 80 }
           }
         ]
       },
       {
-        path: 'tongits_cheatlog',
-        component: () => import('@/views/playerManage/tongitsCheatlog'),
-        name: 'tongits_cheatlog',
-        meta: { title: 'tongits作弊识别日志 ◐' }
-      },
-      {
-        path: 'game_kick_user_log',
-        component: () => import('@/views/playerManage/gameKickUserlog'),
-        name: 'game_kick_user_log',
-        meta: { title: '游戏作弊踢出用户日志 ◐' }
+        path: 'tongitsCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Tongits-作弊识别 ◐' },
+        children: [
+          {
+            path: 'tongits_cheat_group',
+            component: () => import('@/views/playerManage/tongitsCheatGroup'),
+            name: 'tongits_cheat_group',
+            meta: { title: 'tongits作弊组合 ◐' }
+          },
+          {
+            path: 'tongits_cheatlog',
+            component: () => import('@/views/playerManage/tongitsCheatlog'),
+            name: 'tongits_cheatlog',
+            meta: { title: 'tongits作弊识别日志 ◐' }
+          },
+          {
+            path: 'game_kick_user_log',
+            component: () => import('@/views/playerManage/gameKickUserlog'),
+            name: 'game_kick_user_log',
+            meta: { title: '游戏作弊踢出用户日志 ◐' }
+          }
+        ]
       }
     ]
   },
@@ -1155,6 +1193,12 @@ export const asyncRoutes = [
         name: 'game_custom_config',
         meta: { title: '游戏自定义配置' }
       }
+      // {
+      //   path: 'timeoutGameLog',
+      //   component: () => import('@/views/config/timeoutGameLog'),
+      //   name: 'timeout_game_log',
+      //   meta: { title: '游戏超时记录' }
+      // }
     ]
   },
   {
@@ -1196,10 +1240,30 @@ export const asyncRoutes = [
     meta: { title: '德州专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
       {
+        path: 'texasNlhStat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '数据中心', noCache: true },
+        children: [
+          {
+            path: 'texasNlhInsure',
+            component: () => import('@/views/texas2dpro/texasNlhInsure'),
+            name: 'texasNlhInsure',
+            meta: { title: '保险数据' }
+          },
+          {
+            path: 'texasNlhJP',
+            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            name: 'texasNlhJP',
+            meta: { title: 'JackPot数据' }
+          }
+        ]
+      },
+      {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'TexasNlh - 无限德州', noCache: true },
+        meta: { title: '无限德州', noCache: true },
         children: [
           {
             path: 'texasNlhTable',

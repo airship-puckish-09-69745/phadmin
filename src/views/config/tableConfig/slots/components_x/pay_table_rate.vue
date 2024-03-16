@@ -62,6 +62,12 @@ export default {
         return []
       }
     },
+    labelMap: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
     startCol: {
       type: Number,
       default: 2
@@ -117,6 +123,9 @@ export default {
       return 'rate' + col
     },
     getLabel(col) {
+      if (this.labelMap.hasOwnProperty(col)) {
+        return this.labelMap[col]
+      }
       return col + '种'
     },
     initSymbolMap() {
