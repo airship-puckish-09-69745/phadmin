@@ -357,7 +357,7 @@ export default {
         { id: 77, name: 'CandyPartyAllline' },
         { id: 78, name: 'SuperGem' },
         { id: 79, name: 'CandyCandyGrid' },
-        { id: 80, name: 'CandyCandy' }
+        { id: 80, name: 'CandyCandy' },
         { id: 18, name: 'Windrop' },
         {id:21,name: '7Up7Down'},
         {id:22,name: 'CandyParty'}
