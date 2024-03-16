@@ -420,8 +420,8 @@ export default {
           this.allCfg.All[i].Config[j].PlayerNum = parseInt(this.allCfg.All[i].Config[j].PlayerNum)
           this.allCfg.All[i].Config[j].WaitTime = parseInt(this.allCfg.All[i].Config[j].WaitTime)
           this.allCfg.All[i].Config[j].FreeSeatNum = parseInt(this.allCfg.All[i].Config[j].FreeSeatNum)
-          if(this.allCfg.All[i].Config[j].hasOwnProperty('MinPlayerNum')){
-           this.allCfg.All[i].Config[j].MinPlayerNum = parseInt(this.allCfg.All[i].Config[j].MinPlayerNum) 
+          if(this.allCfg.All[i].Config[j].hasOwnProperty('MinLaunchNum')){
+           this.allCfg.All[i].Config[j].MinLaunchNum = parseInt(this.allCfg.All[i].Config[j].MinLaunchNum) 
          }
         }
       }
@@ -445,7 +445,7 @@ export default {
             Message.error('Tongits 的【发车人数】必须大于等于 3')
             return false
           }
-          if (this.allCfg.All[i].Config[j].hasOwnProperty('MinPlayerNum') && this.allCfg.All[i].Config[j].MinPlayerNum > this.allCfg.All[i].Config[j].PlayerNum ) {
+          if (this.allCfg.All[i].Config[j].hasOwnProperty('MinLaunchNum') && this.allCfg.All[i].Config[j].MinLaunchNum > this.allCfg.All[i].Config[j].PlayerNum ) {
             Message.error('最低发车人数必须小于发车人数')
             return false
           }
