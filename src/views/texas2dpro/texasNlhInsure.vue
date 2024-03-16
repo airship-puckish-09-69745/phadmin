@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item label="">
           <el-form-item label="玩家id">
-            <el-input v-model.number="searchForm.Uid" size="mini"  placeholder="玩家id"/>
+            <el-input v-model.number="searchForm.Uid" size="mini" placeholder="玩家id" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="search">查询</el-button>
@@ -32,7 +32,7 @@
 
         <el-form-item label="">
           <el-form-item label="牌局id">
-            <el-input v-model.number="searchForm.LogID" size="mini"  placeholder="牌局id"/>
+            <el-input v-model.number="searchForm.LogID" size="mini" placeholder="牌局id" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="search">查询</el-button>
@@ -98,7 +98,7 @@
         sortable="custom"
       >
         <template slot-scope="scope">
-          {{ scope.row.Insure  / 1000}}
+          {{ scope.row.Insure / 1000 }}
         </template>
       </el-table-column>
       <el-table-column
@@ -109,19 +109,19 @@
           {{ scope.row.Outs }}
         </template>
       </el-table-column>
-       <el-table-column
+      <el-table-column
         prop="InsureRatio"
         label="赔率"
       >
-       <template slot-scope="scope">
-          {{ scope.row.InsureRatio / 1000}}
+        <template slot-scope="scope">
+          {{ scope.row.InsureRatio / 1000 }}
         </template>
       </el-table-column>
-       <el-table-column label="操作" column-key="op" width="120">
-          <template slot-scope="">
-            <el-button icon='el-icon-search' type="primary" size="mini">查询</el-button>
-          </template>
-        </el-table-column>
+      <el-table-column label="操作" column-key="op" width="120">
+        <template slot-scope="">
+          <el-button icon="el-icon-search" type="primary" size="mini">查询</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <br>
     <el-row type="flex" justify="center">

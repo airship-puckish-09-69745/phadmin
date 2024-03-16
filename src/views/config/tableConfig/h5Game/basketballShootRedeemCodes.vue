@@ -67,6 +67,49 @@
         </div>
       </el-col>
     </div>
+
+    <el-dialog
+      :title="getEditTitle()"
+      :visible.sync="edit.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="edit" label-width="150px" size="small">
+        <el-form-item label="上传文件：" :required="true">
+          <el-row>
+            <el-col :span="16">
+              <el-upload
+                ref="upload"
+                class="upload-demo"
+                drag
+                :action="actionURL"
+                :on-preview="handlePreview"
+                :on-change="handleChange"
+                :before-upload="beforeUpload"
+                :on-success="handleUploadSuccess"
+                :auto-upload="false"
+                :limit="1"
+              >
+                <el-icon class="el-icon-upload" />
+                <div class="el-upload__text">
+                  将文件拖到此处 或 <em>点击上传</em>
+                </div>
+                <div slot="tip" class="el-upload__tip">
+                  只能上传 csv/xls/xlsx 格式文件，且不超过2MB
+                </div>
+              </el-upload>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 10px">
+            <el-col :span="16">
+              <el-button class="ml-3" type="success" @click="submitUpload">
+                上传兑奖码数据
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -111,11 +154,19 @@ export default {
       }
     }
   },
+  computed: {
+    actionURL() {
+      return process.env.VUE_APP_BASE_API + '/other/upload'
+    }
+  },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
   },
   methods: {
+    getEditTitle() {
+      return '导入兑奖码'
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -158,6 +209,11 @@ export default {
       this.getList()
     },
     handleImport() {
+      this.edit.visible = true
+      if (this.$refs.upload) {
+        this.$refs.upload.clearFiles()
+      }
+      console.log(this.$refs.upload)
     },
     getList() {
       request({
@@ -177,6 +233,57 @@ export default {
           this.totalCount = response.Data.TotalCount
         }
       })
+    },
+    beforeUpload(file) {
+      const isCsv = file.type === 'text/csv'
+      const isXls = file.type === 'xls'
+      const isXlsx = file.type === 'xlsx'
+      const isLt2M = file.size / 1024 / 1024 < 2
+      const isValidType = isCsv || isXls || isXlsx
+
+      console.log('file.type:', file.type, ' isValidType:', isValidType)
+
+      if (!isValidType) {
+        this.$message.error('上传的文件只能是 csv/xls/xlsx 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('上传的文件大小不能超过 2MB!')
+        return false
+      }
+      return true
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleChange(file, fileList) {
+      console.log(file)
+    },
+    submitUpload() {
+      this.$refs.upload.submit()
+    },
+    handleUploadSuccess(response, file, fileList) {
+      const $this = this
+      if (response.RetCode === 0) {
+        const uploadedFilename = response.Data
+        console.log('upload success:', uploadedFilename)
+
+        request({
+          url: '/other/basketballshoot/redeem/codes/import',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Filename: uploadedFilename
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            $this.$message.success('兑奖码上传成功，数量为：' + response.Data.imported)
+          }
+          $this.$refs.upload.clearFiles()
+          $this.edit.visible = false
+          $this.getList()
+        })
+      }
     }
   }
 }
