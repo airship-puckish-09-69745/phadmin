@@ -538,6 +538,12 @@ export const asyncRoutes = [
             meta: { title: '糖果糖果Grid' }
           },
           {
+            path: 'candycandy_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandy_slots_cfg'),
+            name: 'candycandy_slots_cfg',
+            meta: { title: '糖果糖果' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
