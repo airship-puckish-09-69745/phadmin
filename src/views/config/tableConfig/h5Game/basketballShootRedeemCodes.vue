@@ -1,14 +1,21 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
-      <el-col :span="20">
-        <el-button size="mini" type="primary" icon="el-icon-plus" @click="openImportDialog()">导入兑奖码</el-button>
-      </el-col>
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      <el-col :span="16">
+        <el-form inline>
+          <el-form-item label="玩家IP:">
+            <el-input v-model="ip" size="mini" clearable />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" icon="el-icon-refresh" @click="getList()">查询</el-button>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" type="primary" icon="el-icon-plus" @click="openImportDialog()">导入兑奖码</el-button>
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
-    <div style="padding-top: 10px">
+    <div style="padding-top: -30px">
       <el-table
         :data="tableData"
         stripe
@@ -25,7 +32,7 @@
             {{ formatTime(scope.row.CreateTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="RedeemTime" label="兑奖时间" sortable="custom">
+        <el-table-column prop="RedeemTime" label="获取时间" sortable="custom">
           <template slot-scope="scope">
             {{ formatTime(scope.row.RedeemTime) }}
           </template>
@@ -48,7 +55,7 @@
             </el-select>
           </template>
           <template slot-scope="scope">
-            {{ scope.row.RedeemTime > 0 ? '已兑奖' : '未兑奖' }}
+            {{ scope.row.RedeemTime > 0 ? '已获取' : '未获取' }}
           </template>
         </el-table-column>
       </el-table>
@@ -132,7 +139,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 
 const filterMap = {
-  'Status': { 1: '已兑奖', 2: '未兑奖' }
+  'Status': { 1: '已获取', 2: '未获取' }
 }
 const loadingText = '兑奖码导入中，请稍等...'
 
@@ -149,6 +156,7 @@ export default {
       pageSize: 20,
       totalCount: 0,
       status: 0,
+      ip: '',
       filterMap: filterMap,
 
       edit: {
@@ -233,6 +241,7 @@ export default {
         data: {
           Env: this.env,
           Path: '/basketballshoot/redeem/codes',
+          IP: this.ip,
           Status: this.status,
           PageNo: this.currentPage,
           PageSize: this.pageSize
