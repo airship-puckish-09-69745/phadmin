@@ -267,7 +267,7 @@ export default {
       gid: 10000,
       summary: {},
       gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 34: 'Pusoy-Dos', 100: 'Tower',
-        // 76: '糖果派对Way', 77: '糖果派对Allline', 78: '超级宝石', 79: '糖果糖果Grid', 80: '糖果糖果', // 这行老虎机 开发，审核环境特殊处理，调用addGameNames()
+        76: '糖果派对Way', 77: '糖果派对Allline', 78: '超级宝石', 79: '糖果糖果Grid', 80: '糖果糖果', // 这行老虎机
         31: 'Tongits-经典', 32: 'Texas Master', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 10000: '汇总' },
 
       userVisible: false,
@@ -332,10 +332,8 @@ export default {
       // 76: '糖果派对Way', 77: '糖果派对Allline',
       console.log('envProjectName:',this.envProjectName)
       if (this.envProjectName=='ph'){
-        this.gameNames[76]='糖果派对Way'
         this.defaultOrder.push(76)
       }else if (this.envProjectName=='ph_audit'){
-        this.gameNames[77]='糖果派对Allline'
         this.defaultOrder.push(77)
       }
     },
