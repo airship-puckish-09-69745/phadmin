@@ -90,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'">
+          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
             <div class="card-panel-description">
               <div class="card-panel-text">
                 {{ gameNames[o] }}：<span :class="getSummaryRtpClass(summary[o])"> {{ getSlotsSummaryResult(summary[o]) }}%</span>
