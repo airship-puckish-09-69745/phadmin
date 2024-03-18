@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vue-cli-service serve --port 9527",
     "local": "vue-cli-service serve --mode=local",
-    "dev.sh": "vue-cli-service serve --mode sh_dev",
+    "dev.sh": "vue-cli-service serve --mode sh_dev --port 9527",
     "localhost": "vue-cli-service serve --mode localhost",
     "lint": "eslint --fix --ext .js,.vue src",
     "build:prod": "vue-cli-service build",

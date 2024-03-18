@@ -103,6 +103,7 @@
                 :on-change="handleChange"
                 :before-upload="beforeUpload"
                 :on-success="handleUploadSuccess"
+                :with-credentials="true"
                 :auto-upload="false"
                 :limit="1"
               >
