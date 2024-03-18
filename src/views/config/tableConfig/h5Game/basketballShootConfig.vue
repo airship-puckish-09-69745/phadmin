@@ -5,7 +5,7 @@
     </el-row>
     <!--公共配置-->
     <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="8" :offset="4">
+      <el-col :span="10" :offset="4">
         <el-form ref="form" label-position="left">
           <el-row>
             <el-col :span="24">
@@ -41,12 +41,46 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-form-item label="兑奖规则">
+                <el-table
+                  :data="item.RedeemRules"
+                >
+                  <el-table-column
+                    prop="MinScore"
+                    label="得分 >= X"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.MinScore" type="number" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="MaxScore"
+                    label="得分 <= X"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.MaxScore" type="number" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="MinScore"
+                    label="兑换券数量"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.Quantity" type="number" />
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </el-col>
     </el-row>
 
     <el-row>
-      <el-col style="margin-top:16px;" :offset="7" :span="8">
+      <el-col style="margin-top:16px;" :offset="8" :span="8">
         <el-button type="primary" size="mini" @click="setData()">保存</el-button>
       </el-col>
     </el-row>
@@ -69,7 +103,19 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
-      item: {},
+      item: {
+        ShareLink: '',
+        GuardTime: 600,
+        RedeemMax: 5,
+        GameDuration: 30,
+        RedeemRules: [
+          { MinScore: 1, MaxScore: 5, Quantity: 0 },
+          { MinScore: 6, MaxScore: 14, Quantity: 0 },
+          { MinScore: 15, MaxScore: 19, Quantity: 0 },
+          { MinScore: 20, MaxScore: 25, Quantity: 0 },
+          { MinScore: 26, MaxScore: 100, Quantity: 0 }
+        ]
+      },
       load: false,
       form: {
       },
@@ -80,6 +126,7 @@ export default {
         'Data.GuardTime': '防刷设置-间隔时间',
         'Data.RedeemMax': '防刷设置-最大兑奖券数量',
         'Data.GameDuration': '游戏时长',
+        'Data.RedeemRules': '兑奖规则',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -106,7 +153,7 @@ export default {
         if (response.RetCode === 0) {
           console.log('cfg', response)
           this.form = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const cfg = JSON.parse(response.Data.Data)
             this.item = cfg
 
@@ -123,6 +170,16 @@ export default {
       ret.GameDuration = parseInt(ret.GameDuration)
       ret.RedeemMax = parseInt(ret.RedeemMax)
       ret.GuardTime = parseInt(ret.GuardTime)
+      if (ret.RedeemRules === undefined) {
+        ret.RedeemRules = []
+      }
+
+      for (var i in this.redeemRules) {
+        ret.RedeemRules[i] = {}
+        ret.RedeemRules[i].MinScore = parseInt(this.redeemRules[i].MinScore)
+        ret.RedeemRules[i].MaxScore = parseInt(this.redeemRules[i].MaxScore)
+        ret.RedeemRules[i].Quantity = parseInt(this.redeemRules[i].Quantity)
+      }
       return ret
     },
     setData() {
