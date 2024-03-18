@@ -334,7 +334,7 @@ export default {
       if (this.envProjectName=='ph'){
         this.defaultOrder.push(76)
       }else if (this.envProjectName=='ph_audit'){
-        this.defaultOrder.push(77)
+        this.defaultOrder.push(76, 77)
       }
     },
     isPopType(o) {
