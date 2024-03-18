@@ -1192,13 +1192,13 @@ export const asyncRoutes = [
         component: () => import('@/views/config/gameCustomConfig'),
         name: 'game_custom_config',
         meta: { title: '游戏自定义配置' }
+      },
+      {
+        path: 'timeoutGameLog',
+        component: () => import('@/views/devTools/timeoutGameLog'),
+        name: 'timeout_game_log',
+        meta: { title: '游戏超时记录' }
       }
-      // {
-      //   path: 'timeoutGameLog',
-      //   component: () => import('@/views/config/timeoutGameLog'),
-      //   name: 'timeout_game_log',
-      //   meta: { title: '游戏超时记录' }
-      // }
     ]
   },
   {
