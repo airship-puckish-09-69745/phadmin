@@ -27,6 +27,7 @@
                     2. 1等2时全进机器人: 是指某桌出现1个玩家等待2个玩家加入时，如果开启则发2个机器人进该桌 <br>
                     3. 2等1时进机器人: 是指某桌出现2个玩家等待1个玩家加入时，如果开启则发1个机器人进该桌 <br>
                     4. 如果1等2和2等1未开启，则空位入桌逻辑从队列里面按顺序取出用户发车到空位桌上<br>
+                    5. 最低发车人数: 如果此值大于0，则必须要满足此条件的情况下才发车，低于此值排队玩家重新排队<br>
                   </span>
                 </div>
               </el-row>
@@ -105,6 +106,18 @@
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
                       <el-input v-model="scope.row.FreeSeatNum" type="text" placeholder="空座位发车值" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId===22"
+                  prop="MinLaunchNum"
+                  label="最低发车人数"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-input v-model="scope.row.MinLaunchNum" type="text" placeholder="最低发车人数" />
                     </el-form-item>
                   </template>
                 </el-table-column>
@@ -407,6 +420,9 @@ export default {
           this.allCfg.All[i].Config[j].PlayerNum = parseInt(this.allCfg.All[i].Config[j].PlayerNum)
           this.allCfg.All[i].Config[j].WaitTime = parseInt(this.allCfg.All[i].Config[j].WaitTime)
           this.allCfg.All[i].Config[j].FreeSeatNum = parseInt(this.allCfg.All[i].Config[j].FreeSeatNum)
+          if(this.allCfg.All[i].Config[j].hasOwnProperty('MinLaunchNum')){
+           this.allCfg.All[i].Config[j].MinLaunchNum = parseInt(this.allCfg.All[i].Config[j].MinLaunchNum) 
+         }
         }
       }
     },
@@ -427,6 +443,10 @@ export default {
           // tongits 判断发车人数有配置的时候，必须大于等于 3
           if ((this.allCfg.All[i].GameId == 22 || this.allCfg.All[i].GameId == 31) && this.allCfg.All[i].Config[j].IsOpen && this.allCfg.All[i].Config[j].PlayerNum > 0 && this.allCfg.All[i].Config[j].PlayerNum < 3) {
             Message.error('Tongits 的【发车人数】必须大于等于 3')
+            return false
+          }
+          if (this.allCfg.All[i].Config[j].hasOwnProperty('MinLaunchNum') && this.allCfg.All[i].Config[j].MinLaunchNum > this.allCfg.All[i].Config[j].PlayerNum ) {
+            Message.error('最低发车人数必须小于发车人数')
             return false
           }
         }
