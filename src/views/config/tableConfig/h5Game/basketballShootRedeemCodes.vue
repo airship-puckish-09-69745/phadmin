@@ -103,6 +103,7 @@
                 :on-change="handleChange"
                 :before-upload="beforeUpload"
                 :on-success="handleUploadSuccess"
+                :with-credentials="true"
                 :auto-upload="false"
                 :limit="1"
               >
@@ -230,6 +231,7 @@ export default {
     },
     openImportDialog() {
       this.edit.visible = true
+      this.edit.loading = false
       if (this.$refs.upload) {
         this.$refs.upload.clearFiles()
       }
@@ -285,50 +287,57 @@ export default {
     changeLoadingText(process, subTime) {
       this.edit.loadingText = loadingText + '进度：' + process + '%...用时：' + subTime + 's'
     },
-    handleUploadSuccess(response, file, fileList) {
+    importData(uploadedFilename, ticker, startTime) {
       const $this = this
+      request({
+        url: '/other/basketballshoot/redeem/codes/import',
+        method: 'post',
+        timeout: 90000,
+        data: {
+          Env: this.env,
+          Filename: uploadedFilename
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.$message.success('兑奖码上传成功，数量为：' + response.Data.imported)
+        }
+        $this.$refs.upload.clearFiles()
+        $this.edit.visible = false
+        $this.edit.loading = false
+        $this.getList()
+
+        clearInterval(ticker)
+        const subTime = (new Date().getTime() - startTime.getTime()) / 1000
+        this.changeLoadingText(100, subTime)
+        console.log('导入兑奖码，数量：' + response.Data.imported + '，用时：' + subTime + 's')
+      }).catch((reason) => {
+        console.log('取消导入：', reason)
+        clearInterval(ticker)
+        $this.edit.visible = false
+        $this.edit.loading = false
+      })
+    },
+    handleUploadSuccess(response, file, fileList) {
       if (response.RetCode === 0) {
         const uploadedFilename = response.Data
         console.log('upload success:', uploadedFilename)
 
         this.edit.loading = true
-        const t = new Date()
+        const startTime = new Date()
         let n = Math.ceil(Math.random() * 10)
         const ticker = setInterval(() => {
           n += Math.ceil(Math.random() * 10)
           if (n > 100) {
             n = 99
           }
-          const subTime = (new Date().getTime() - t.getTime()) / 1000
+          const subTime = (new Date().getTime() - startTime.getTime()) / 1000
           this.changeLoadingText(n, subTime)
           n === 99 && clearInterval(ticker)
         }, 1000)
 
-        request({
-          url: '/other/basketballshoot/redeem/codes/import',
-          method: 'post',
-          timeout: 90000,
-          data: {
-            Env: this.env,
-            Filename: uploadedFilename
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            $this.$message.success('兑奖码上传成功，数量为：' + response.Data.imported)
-          }
-          $this.$refs.upload.clearFiles()
-          $this.edit.visible = false
-          $this.edit.visible = false
-          $this.getList()
-
-          clearInterval(ticker)
-          const subTime = (new Date().getTime() - t.getTime()) / 1000
-          this.changeLoadingText(100, subTime)
-          console.log('导入兑奖码，数量：' + response.Data.imported + '，用时：' + subTime + 's')
-        }).catch(() => {
-          console.log('取消')
-          $this.edit.visible = false
-        })
+        this.importData(uploadedFilename, ticker, startTime)
+      } else {
+        this.$message.error(response.Data)
       }
     }
   }
