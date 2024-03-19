@@ -231,6 +231,7 @@ export default {
     },
     openImportDialog() {
       this.edit.visible = true
+      this.edit.loading = false
       if (this.$refs.upload) {
         this.$refs.upload.clearFiles()
       }
@@ -302,17 +303,18 @@ export default {
         }
         $this.$refs.upload.clearFiles()
         $this.edit.visible = false
-        $this.edit.visible = false
+        $this.edit.loading = false
         $this.getList()
 
         clearInterval(ticker)
         const subTime = (new Date().getTime() - startTime.getTime()) / 1000
         this.changeLoadingText(100, subTime)
         console.log('导入兑奖码，数量：' + response.Data.imported + '，用时：' + subTime + 's')
-      }).catch(() => {
-        console.log('取消')
+      }).catch((reason) => {
+        console.log('取消导入：', reason)
         clearInterval(ticker)
         $this.edit.visible = false
+        $this.edit.loading = false
       })
     },
     handleUploadSuccess(response, file, fileList) {

@@ -110,7 +110,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
 
-      return Promise.reject(new Error(res.Data && res.Data.Msg || 'Error'))
+      return Promise.reject(new Error(res.Data || res.Data.Msg || 'Error'))
     } else {
       return res
     }
