@@ -121,9 +121,25 @@
                 </el-table-column>
                 <el-table-column
                   label="extrapay倍数"
+                  width="320"
                 >
+
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Double" size="mini" />
+                    <div v-if="BetOddsList[scope.$index]">
+                      <div v-for="(data, index ) in BetOddsList[scope.$index].OddsList" style="line-height: 1.5; ">
+                        <el-row style="line-height: 1.5; "  >
+                          <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
+                          <span style="margin-left: 20px">倍数:</span>
+                          <el-input v-model.number="data.Double" size="mini" style="width: 80px" placeholder="倍数"
+                                    @input="wallpaperInput(scope.$index,index) "/>
+                          <span style="margin-left: 10px">概率:</span>
+                          <el-input v-model.number="data.Odds" size="mini" style="width: 80px" placeholder="概率%"
+                                    @input="wallpaperInput(scope.$index,index)"/>
+                          <a style="margin-left: 20px" @click="delOddsList(scope.$index,index)" type="danger" size="mini">-</a>
+                        </el-row>
+                      </div>
+
+                    </div>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -492,7 +508,8 @@ export default {
         one: 0,
         two: 0,
         three: 0
-      }
+      },
+      BetOddsList:[]
     }
   },
   created() {
@@ -561,11 +578,16 @@ export default {
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
       }
+
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
         const obj = {}
         Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
+        obj.OddsList  = obj.OddsList.filter(function(item) {
+          return JSON.stringify(item) != "{}"
+        });
+
         ret.BetAreaOptions.push(obj)
       }
 
@@ -602,9 +624,36 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             this.dices = this.item.Dices ? this.item.Dices.join(',') : this.dices
+
+
+            for (let i = 0; i < this.item.BetAreaOptions.length; i++) {
+              if (!this.item.BetAreaOptions[i].OddsList||typeof(this.item.BetAreaOptions[i].OddsList) == "undefined"||this.item.BetAreaOptions[i].OddsList.length==0){
+                this.item.BetAreaOptions[i]["OddsList"]=[]
+                this.item.BetAreaOptions[i]["OddsList"].push({})
+              }else {
+                this.item.BetAreaOptions[i]["OddsList"]=this.item.BetAreaOptions[i].OddsList
+              }
+            }
+            this.BetOddsList = this.item.BetAreaOptions
           }
         }
       })
+    },
+    wallpaperInput(val, index) {
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
+    },
+    addOddsList(idx) {
+      this.BetOddsList[idx].OddsList.push({})
+      // 刷新页面
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
+    },
+    delOddsList(idx, index) {
+      if (this.BetOddsList[idx].OddsList.length == 1) {
+        this.BetOddsList[idx].OddsList.push({})
+      }
+      this.BetOddsList[idx].OddsList.splice(index, 1)
+      // 刷新页面
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false

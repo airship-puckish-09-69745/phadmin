@@ -124,29 +124,24 @@
                 </el-table-column>
                 <el-table-column
                     label="extrapay倍数"
-                    width="250px"
+                    width="320"
                 >
 
                   <template slot-scope="scope">
                     <div v-if="BetOddsList[scope.$index]">
-                      <div v-for="(data, index ) in BetOddsList[scope.$index].OddsList">
-                        <el-row>
-                          <el-col :span="11" style="width: 30px">
-                            <a @click="addOddsList(scope.$index)">+</a>
-                          </el-col>
-                          <el-col :span="11" style="width: 70px">
-                            <el-input v-model.number="data.Double" size="mini" placeholder="倍数"
-                                      @input="wallpaperInput(scope.$index,index) "/>
-                          </el-col>
-                          <el-col :span="12" style="width: 70px">
-                            <el-input v-model.number="data.Odds" size="mini" placeholder="概率"
-                                      @input="wallpaperInput(scope.$index,index)"/>
-                          </el-col>
-                          <el-col :span="18" style="width: 40px">
-                            <a @click="delOddsList(scope.$index,index)" style="margin-left: 10px"><b>-</b></a>
-                          </el-col>
+                      <div v-for="(data, index ) in BetOddsList[scope.$index].OddsList" style="line-height: 1.5; ">
+                        <el-row style="line-height: 1.5; "  >
+                          <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
+                              <span style="margin-left: 20px">倍数:</span>
+                              <el-input v-model.number="data.Double" size="mini" style="width: 80px" placeholder="倍数"
+                                        @input="wallpaperInput(scope.$index,index) "/>
+                                <span style="margin-left: 10px">概率:</span>
+                                <el-input v-model.number="data.Odds" size="mini" style="width: 80px" placeholder="概率%"
+                                          @input="wallpaperInput(scope.$index,index)"/>
+                          <a style="margin-left: 20px" @click="delOddsList(scope.$index,index)" type="danger" size="mini">-</a>
                         </el-row>
                       </div>
+
                     </div>
                   </template>
 
@@ -627,7 +622,6 @@ export default {
         this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
       }
 
-      console.log('this.item:', this.item)
     },
     getPostData() {
       const ret = {}
@@ -652,7 +646,6 @@ export default {
         obj.TableMoney = betMoneyList
         ret.BetMoneyLevel.push(obj)
       }
-      console.log(this.item.BetMoneyLevel)
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
       }
@@ -661,16 +654,12 @@ export default {
         const obj = {}
         Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        if (obj.OddsList.length === 1) {
-          // 空对象
-          if (JSON.stringify(obj.OddsList[0]) == "{}" ) {
-            obj.OddsList = obj.OddsList.slice(0, 0)
-          }
+        obj.OddsList  = obj.OddsList.filter(function(item) {
+          return JSON.stringify(item) != "{}"
+        });
 
-          ret.BetAreaOptions.push(obj)
-
-        }
-      }
+        ret.BetAreaOptions.push(obj)
+    }
 
       const items = this.dices.split(',')
       ret.Dices = []
@@ -707,10 +696,11 @@ export default {
             this.dices = this.item.Dices ? this.item.Dices.join(',') : this.dices
 
             for (let i = 0; i < this.item.BetAreaOptions.length; i++) {
-              if (this.item.BetAreaOptions[i].OddsList.length!=0){
-                this.item.BetAreaOptions[i]["OddsList"]=this.item.BetAreaOptions[i].OddsList
-              }else {
+              if (!this.item.BetAreaOptions[i].OddsList||typeof(this.item.BetAreaOptions[i].OddsList) == "undefined"||this.item.BetAreaOptions[i].OddsList.length==0){
+                this.item.BetAreaOptions[i]["OddsList"]=[]
                 this.item.BetAreaOptions[i]["OddsList"].push({})
+              }else {
+                this.item.BetAreaOptions[i]["OddsList"]=this.item.BetAreaOptions[i].OddsList
               }
             }
             this.BetOddsList = this.item.BetAreaOptions
@@ -759,9 +749,9 @@ export default {
         Message.error('“机器人最小下注次数”不能小于1，“机器人最大下注次数”不能大于15')
         return
       }
-
+      var postData = this.getPostData();
       this.form.Data = JSON.stringify(this.getPostData())
-      console.log(this.form)
+      console.log("=======",postData)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
