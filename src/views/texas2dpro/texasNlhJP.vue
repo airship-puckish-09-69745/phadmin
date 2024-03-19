@@ -4,7 +4,7 @@
       <el-form :model="searchForm" label-width="90px" :inline="true" size="small">
         <el-form-item label="级别">
            <el-select v-model="searchForm.Level" placeholder="请选择">
-            <el-option v-for="(item, key) in levelList" :key="key" :value="showLevel(item)" />
+            <el-option v-for="(item, key) in levelList" :key="key" :value="showLevel(item / 1000 )" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -302,7 +302,7 @@ export default {
         data: {
           Env: _this.env,
           Path: '/tesasnlhdata/jackpot',
-          Level: Number(_this.searchForm.Level)
+          Level: _this.getLevel(_this.searchForm.Level)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -315,8 +315,10 @@ export default {
             _this.totalCount = objs.list.length
             _this.tableData = objs.list
             _this.currentPage = 1
-            _this.getLevelList()
             _this.refreshShow()
+            if (_this.searchForm.Level === '') {
+              _this.getLevelList()
+            }
           } else {
             _this.totalCount = 0
             _this.tableData = []
@@ -385,14 +387,30 @@ export default {
       return this.editShow ? this.showLevel(this.currLevel) + ' 级别JP实时奖池' : 'JackPot当前级别中奖明细查询'
     },
     getLevelList() {
-      this.levelList = []
+      this.levelList = ['0']
+      var newlList = []
       for (var i = 0; i < this.tableData.length; i++) {
-        this.levelList.push(Number(this.tableData[i].SmallBlind))
+        newlList.push(Number(this.tableData[i].SmallBlind))
       }
-      this.levelList.sort(function(a, b) { return a - b })
+      newlList.sort(function(a, b) { return a - b })
+
+      for (var j = 0; j < newlList.length; j++) {
+        this.levelList.push(newlList[j])
+      }
     },
     showLevel(level) {
+      if (level === '0' || level === 0) {
+        return '所有'
+      }
       return level + '/' + level * 2
+    },
+    getLevel(level) {
+      var result = level.split('/')
+      if (result.length !== 2) {
+        return 0
+      } else {
+        return Number(result[0]) * 1000
+      }
     },
     showNickName(profile) {
       return JSON.parse(profile)['player_name']

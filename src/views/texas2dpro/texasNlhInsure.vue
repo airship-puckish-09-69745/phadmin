@@ -127,7 +127,7 @@
     <el-row type="flex" justify="center">
 
       <el_col :span="6">
-        <div> 汇总： {{ totalInsure }} </div>
+        <div> 汇总： {{ totalInsure.toFixed(2) }} </div>
       </el_col>
     </el-row>
     <el-row type="flex" justify="end">
