@@ -311,6 +311,7 @@ export default {
         console.log('导入兑奖码，数量：' + response.Data.imported + '，用时：' + subTime + 's')
       }).catch(() => {
         console.log('取消')
+        clearInterval(ticker)
         $this.edit.visible = false
       })
     },
