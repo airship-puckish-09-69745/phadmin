@@ -86,6 +86,8 @@
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
               <el-select v-model="edit.item.SmallBlind" placeholder="请选择" :disabled="edit.isEdit">
                 <el-option label="0.1" :value="0.1" />
+                <el-option label="0.2" :value="0.2" />
+                <el-option label="0.5" :value="0.5" />
                 <el-option label="1" :value="1" />
                 <el-option label="2.5" :value="2.5" />
                 <el-option label="5" :value="5" />
