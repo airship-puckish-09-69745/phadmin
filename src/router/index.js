@@ -1253,7 +1253,7 @@ export const asyncRoutes = [
           },
           {
             path: 'texasNlhJP',
-            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            component: () => import('@/views/texas2dpro/texasNlhJP'),
             name: 'texasNlhJP',
             meta: { title: 'JackPot数据' }
           }
