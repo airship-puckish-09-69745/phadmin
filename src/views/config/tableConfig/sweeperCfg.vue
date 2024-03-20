@@ -674,6 +674,7 @@ export default {
       JackpotRandAwards: [],
       JackpotRandAward: [{ 'AwardType': 1, 'Value': 50, 'PoolVal': 200000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 80 }, { 'Id': 2, 'Num': 1, 'Rate': 20 }], 'JackpotType': 1, 'DayLimit': 1 }, { 'AwardType': 1, 'Value': 20, 'PoolVal': 100000, 'RateArr': [{ 'Id': 1, 'Num': 0, 'Rate': 0 }, { 'Id': 2, 'Num': 1, 'Rate': 0 }, { 'Id': 3, 'Num': 2, 'Rate': 100 }], 'JackpotType': 2, 'DayLimit': 3 }, { 'AwardType': 1, 'Value': 10, 'PoolVal': 8000, 'RateArr': [{ 'Id': 1, 'Num': 2, 'Rate': 40 }, { 'Id': 2, 'Num': 3, 'Rate': 30 }, { 'Id': 3, 'Num': 4, 'Rate': 30 }], 'JackpotType': 3, 'DayLimit': 40 }],
       betMoneyList: '200,100',
+      betOptionEdit: [],
       subKey: 'gameSweeper',
       libShow: $libShow,
       AttrNames: {

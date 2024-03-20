@@ -1346,6 +1346,7 @@ export default {
       sweeperVisible: false,
       sweeperDetails: [],
       sweeperRate: [],
+      sweeperRowUid: 0,
       sweeperSTD: [8.00, 8.33, 8.70, 9.09, 9.52, 10.00, 10.53, 11.11, 11.76, 12.50, 13.33, 14.29, 15.38, 16.67, 18.18, 20.00, 22.22, 25.00, 28.57, 33.33, 40.00, 50.00, 66.67, 100],
       sweeperPlay: [],
       sweeperRateVisible: false,
@@ -1739,8 +1740,12 @@ export default {
     },
     clickData(row, column, event) {
       if (column.label !== 'Uid') {
+        this.setRowUid(row.Uid)
         this.getDetail(row.LogID, row.FinishTime)
       }
+    },
+    setRowUid(uid){
+      this.sweeperRowUid = uid
     },
     getDetail(id, dt) {
       const $this = this
@@ -2109,6 +2114,15 @@ export default {
     },
     showSweeperGame(obj) {
       const showDetail = []
+      for (let j = 0; j < obj.totalPlayers.length; j++) {
+        const players = obj.totalPlayers[j]
+        console.log(this.sweeperRowUid)
+        if (players.uid === this.sweeperRowUid) {
+          obj.players = players
+          break
+        }
+      }
+
       for (let i = 0; i < obj.players.details.length; i++) {
         const detailRow = obj.players.details[i]
         const areaIndex = detailRow.index - 1
