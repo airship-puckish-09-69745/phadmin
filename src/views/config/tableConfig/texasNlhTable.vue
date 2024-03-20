@@ -283,6 +283,61 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="猎兔价格配置" :required="true" prop="item.RabbitPrice" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RabbitPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每日免费次数" :required="true" prop="item.InteractDayFreeTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.InteractDayFreeTimes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
+              <el-input v-model.number="edit.item.InteractItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="延时道具消耗(逗号隔开)" :required="true" prop="item.DelayItemPrice">
+              <el-input v-model="edit.item.DelayItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="强制看牌价格(逗号隔开)" :required="true" prop="item.ForceLookCardPrice">
+              <el-input v-model="edit.item.ForceLookCardPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
         <fieldset>
           <legend>时间配置</legend>
           <el-row>
@@ -469,7 +524,12 @@ function newItem() {
     ShowPublicCardCostMoney: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    TablePourRatio: 0
+    TablePourRatio: 0,
+    RabbitPrice: 0,
+    InteractDayFreeTimes: 0,
+    InteractItemPrice: 0,
+    DelayItemPrice: '0,0',
+    ForceLookCardPrice: '0,0'
   }
 }
 
@@ -524,7 +584,12 @@ export default {
         DelayOpTimeUsedTimes: '最多使用次数',
         ShowPublicCardCostMoney: '显示公共牌消耗金额',
         MinPlayMoney: '最小玩牌金额',
-        TablePourRatio: 'VPIP入池率'
+        TablePourRatio: 'VPIP入池率',
+        RabbitPrice: '猎兔价格配置',
+        InteractDayFreeTimes: '互动道具每日免费次数',
+        InteractItemPrice: '互动道具每次价格消耗',
+        DelayItemPrice: '延时道具消耗',
+        ForceLookCardPrice: '强制看牌价格'
       }
     }
   },
