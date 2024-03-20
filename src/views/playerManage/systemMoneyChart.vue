@@ -1,4 +1,4 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template xmlns="http://www.w3.org/1999/html>
   <div class="app-container">
     <el-row>
       <el-col :offset="16" :span="2">
@@ -90,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'">
+          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
             <div class="card-panel-description">
               <div class="card-panel-text">
                 {{ gameNames[o] }}：<span :class="getSummaryRtpClass(summary[o])"> {{ getSlotsSummaryResult(summary[o]) }}%</span>
@@ -272,9 +272,10 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 76, 77, 78, 79, 80, 6, 32],
+      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,  6, 32],// 糖果派对调用addGameName特殊处理
       sortOrder: [],
-      env: 'test'
+      env: 'test',
+      envProjectName: process.env.VUE_APP_PROJECT,
     }
   },
   computed: {
@@ -287,6 +288,7 @@ export default {
     // } else {
     //   this.sortOrder = this.BROrder
     // }
+    this.addGameNames()
     this.getInfo(this.gid)
     console.log(1)
   },
@@ -324,6 +326,15 @@ export default {
           retSort.push(objs[o].Gid)
         }
         this.sortOrder = retSort
+      }
+    },
+    addGameNames(){
+      // 76: '糖果派对Way', 77: '糖果派对Allline',
+      console.log('envProjectName:',this.envProjectName)
+      if (this.envProjectName=='ph'){
+        this.defaultOrder.push(76)
+      }else if (this.envProjectName=='ph_audit'){
+        this.defaultOrder.push(76, 77)
       }
     },
     isPopType(o) {

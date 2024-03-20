@@ -336,7 +336,7 @@
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="免费用户是否可玩：" :required="true">
+            <el-form-item label="非真实用户是否显示：" :required="true">
               <el-radio-group v-model.number="edit.item.IsPlaying">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
