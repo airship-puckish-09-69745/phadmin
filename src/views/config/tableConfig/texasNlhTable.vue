@@ -318,11 +318,6 @@
               <el-input v-model="edit.DelayItemPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
-          </el-col>
         </el-row>
 
         <el-row>
@@ -753,7 +748,16 @@ export default {
             var isFirst = true
             this.edit.DelayItemPrice = ''
             for (var i = 0; i < tmpP.length; i++) {
-              var tmpP2 = Number(parseFloat(tmpP[i]) / 10).toFixed(1)
+              const tmp3 = parseFloat(tmpP[i])
+              // console.log('tmpP3:', tmp3)
+              var tmpP2 = 0.0
+              if (tmp3 % 10 === 0) {
+                tmpP2 = Number(tmp3 / 10).toFixed(0)
+              } else {
+                tmpP2 = Number(tmp3 / 10).toFixed(1)
+              }
+              // console.log('tmpP2:', tmpP2)
+
               if (isFirst) {
                 this.edit.DelayItemPrice += tmpP2
                 isFirst = false
@@ -767,7 +771,15 @@ export default {
             isFirst = true
             this.edit.ForceLookCardPrice = ''
             for (i = 0; i < tmpP.length; i++) {
-              tmpP2 = Number(parseFloat(tmpP[i]) / 10).toFixed(1)
+              // tmpP2 = Number(parseFloat(tmpP[i]) / 10).toFixed(1)
+              const tmp3 = parseFloat(tmpP[i])
+              // console.log('tmpP3:', tmp3)
+              tmpP2 = 0.0
+              if (tmp3 % 10 === 0) {
+                tmpP2 = Number(tmp3 / 10).toFixed(0)
+              } else {
+                tmpP2 = Number(tmp3 / 10).toFixed(1)
+              }
               if (isFirst) {
                 this.edit.ForceLookCardPrice += tmpP2
                 isFirst = false
