@@ -518,8 +518,8 @@ function newItem() {
     RabbitPrice: 0,
     InteractDayFreeTimes: 0,
     InteractItemPrice: 0,
-    DelayItemPrice: [],
-    ForceLookCardPrice: []
+    DelayItemPrice: '',
+    ForceLookCardPrice: ''
   }
 }
 
@@ -726,8 +726,11 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
-          console.log(_data)
+          // console.log('initFormData 1 _data:', _data)
+          // console.log('initFormData 1 this.edit.item:', this.edit.item)
           Object.assign(this.edit.item, _data)
+          // console.log('initFormData 2 _data:', _data)
+          // console.log('initFormData 2 this.edit.item:', this.edit.item)
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             this.edit.OutsRatio = JSON.parse(_data.OutsRatio)
@@ -784,6 +787,7 @@ export default {
               }
             }
           } catch (e) {
+            console.log('initFormData error 2 e:', e)
             this.edit.TimeConfig = NewTimeConfig()
             this.edit.OutsRatio = NewOutsRatio()
             this.edit.FeeLimit = NewFeeLimit()
@@ -858,17 +862,33 @@ export default {
       this.edit.item.FeeLimit = JSON.stringify(this.edit.FeeLimit)
 
       var tmpP = this.edit.DelayItemPrice.split(',')
-      this.edit.item.DelayItemPrice = []
+      this.edit.item.DelayItemPrice = ''
+      var isFirst = true
       for (var i = 0; i < tmpP.length; i++) {
         var tmpP2 = Number(parseFloat(tmpP[i]) * 10).toFixed(0)
-        this.edit.item.DelayItemPrice.push(tmpP2)
+        // this.edit.item.DelayItemPrice.push(tmpP2)
+        if (isFirst) {
+          isFirst = false
+          this.edit.item.DelayItemPrice += tmpP2
+        } else {
+          this.edit.item.DelayItemPrice += ','
+          this.edit.item.DelayItemPrice += tmpP2
+        }
       }
 
       tmpP = this.edit.ForceLookCardPrice.split(',')
-      this.edit.item.ForceLookCardPrice = []
+      this.edit.item.ForceLookCardPrice = ''
+      isFirst = true
       for (i = 0; i < tmpP.length; i++) {
         tmpP2 = Number(parseFloat(tmpP[i]) * 10).toFixed(0)
-        this.edit.item.ForceLookCardPrice.push(tmpP2)
+        // this.edit.item.ForceLookCardPrice.push(tmpP2)
+        if (isFirst) {
+          isFirst = false
+          this.edit.item.ForceLookCardPrice += tmpP2
+        } else {
+          this.edit.item.ForceLookCardPrice += ','
+          this.edit.item.ForceLookCardPrice += tmpP2
+        }
       }
 
       if (this.edit.isEdit) {
