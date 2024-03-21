@@ -272,7 +272,7 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,  6, 32],// 糖果派对调用addGameName特殊处理
+      defaultOrder: [15, 22, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,  6, 32],// 糖果派对调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT,
