@@ -98,6 +98,7 @@
         </template>
       </el-table-column>
       <el-table-column
+          v-if="envProjectName=='ph'"
         prop="PoolType"
         label="奖池类型"
       >
@@ -106,6 +107,7 @@
         </template>
       </el-table-column>
       <el-table-column
+          v-if="envProjectName=='ph'"
         prop="ActType"
         label="操作类型"
       >
@@ -167,7 +169,7 @@
     >
       <el-descriptions title="">
         <el-descriptions-item label="用户奖池">{{ toRupee(prizeInfo.UserPool) }}</el-descriptions-item>
-        <el-descriptions-item label="展示奖池">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
+        <el-descriptions-item label="展示奖池" v-if="envProjectName=='ph'">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
         <el-descriptions-item label="最后更新时间">{{ formatTime(prizeInfo.UpdateTime) }}</el-descriptions-item>
       </el-descriptions>
       <el-form :model="prizeForm">
