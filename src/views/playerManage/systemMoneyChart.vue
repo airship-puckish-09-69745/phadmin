@@ -1,4 +1,4 @@
-<template xmlns="http://www.w3.org/1999/html>
+<template xmlns="http://www.w3.org/1999/html">
   <div class="app-container">
     <el-row>
       <el-col :offset="16" :span="2">
