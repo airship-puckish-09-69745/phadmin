@@ -315,7 +315,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="延时道具消耗(逗号隔开)" :required="true" prop="item.DelayItemPrice">
-              <el-input v-model="edit.item.DelayItemPrice" placeholder="请输入" />
+              <el-input v-model="edit.DelayItemPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="2">
@@ -328,7 +328,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="强制看牌价格(逗号隔开)" :required="true" prop="item.ForceLookCardPrice">
-              <el-input v-model="edit.item.ForceLookCardPrice" placeholder="请输入" />
+              <el-input v-model="edit.ForceLookCardPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="2">
@@ -528,8 +528,8 @@ function newItem() {
     RabbitPrice: 0,
     InteractDayFreeTimes: 0,
     InteractItemPrice: 0,
-    DelayItemPrice: '0,0',
-    ForceLookCardPrice: '0,0'
+    DelayItemPrice: [],
+    ForceLookCardPrice: []
   }
 }
 
@@ -553,7 +553,9 @@ export default {
         isEdit: false,
         TimeConfig: NewTimeConfig(),
         OutsRatio: NewOutsRatio(),
-        FeeLimit: NewFeeLimit()
+        FeeLimit: NewFeeLimit(),
+        DelayItemPrice: '',
+        ForceLookCardPrice: ''
       },
 
       AttrNames: {
@@ -740,10 +742,46 @@ export default {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             this.edit.OutsRatio = JSON.parse(_data.OutsRatio)
             this.edit.FeeLimit = JSON.parse(_data.FeeLimitStr)
+
+            // this.edit.DelayItemPrice = _data.DelayItemPrice
+            // this.edit.ForceLookCardPrice = _data.ForceLookCardPrice
+
+            this.edit.DelayItemPrice = ''
+            this.edit.ForceLookCardPrice = ''
+
+            var tmpP = _data.DelayItemPrice.split(',')
+            var isFirst = true
+            this.edit.DelayItemPrice = ''
+            for (var i = 0; i < tmpP.length; i++) {
+              var tmpP2 = Number(parseFloat(tmpP[i]) / 10).toFixed(1)
+              if (isFirst) {
+                this.edit.DelayItemPrice += tmpP2
+                isFirst = false
+              } else {
+                this.edit.DelayItemPrice += ','
+                this.edit.DelayItemPrice += tmpP2
+              }
+            }
+
+            tmpP = _data.ForceLookCardPrice.split(',')
+            isFirst = true
+            this.edit.ForceLookCardPrice = ''
+            for (i = 0; i < tmpP.length; i++) {
+              tmpP2 = Number(parseFloat(tmpP[i]) / 10).toFixed(1)
+              if (isFirst) {
+                this.edit.ForceLookCardPrice += tmpP2
+                isFirst = false
+              } else {
+                this.edit.ForceLookCardPrice += ','
+                this.edit.ForceLookCardPrice += tmpP2
+              }
+            }
           } catch (e) {
             this.edit.TimeConfig = NewTimeConfig()
             this.edit.OutsRatio = NewOutsRatio()
             this.edit.FeeLimit = NewFeeLimit()
+            this.edit.DelayItemPrice = ''
+            this.edit.ForceLookCardPrice = ''
           }
           if (bEdit) {
             // 设置修改之前数据
@@ -811,6 +849,21 @@ export default {
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       this.edit.item.OutsRatio = JSON.stringify(this.edit.OutsRatio)
       this.edit.item.FeeLimit = JSON.stringify(this.edit.FeeLimit)
+
+      var tmpP = this.edit.DelayItemPrice.split(',')
+      this.edit.item.DelayItemPrice = []
+      for (var i = 0; i < tmpP.length; i++) {
+        var tmpP2 = Number(parseFloat(tmpP[i]) * 10).toFixed(0)
+        this.edit.item.DelayItemPrice.push(tmpP2)
+      }
+
+      tmpP = this.edit.ForceLookCardPrice.split(',')
+      this.edit.item.ForceLookCardPrice = []
+      for (i = 0; i < tmpP.length; i++) {
+        tmpP2 = Number(parseFloat(tmpP[i]) * 10).toFixed(0)
+        this.edit.item.ForceLookCardPrice.push(tmpP2)
+      }
+
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
