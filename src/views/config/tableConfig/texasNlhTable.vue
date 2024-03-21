@@ -326,11 +326,6 @@
               <el-input v-model="edit.ForceLookCardPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
-          </el-col>
         </el-row>
 
         <fieldset>
