@@ -125,9 +125,16 @@
         prop="EndNum"
         label="操作后奖池数量"
       >
-        <template slot-scope="{row}">
-          {{ toRupee(row.EndNum) }}
-        </template>
+
+          <template slot-scope="{row}" >
+            <div v-if="envProjectName=='ph'">
+            {{ toRupee(row.EndNum) }}
+            </div>
+            <div v-if="envProjectName=='ph_audit'">
+              {{ toRupee(row.PoolMoney) }}
+            </div>
+          </template>
+
       </el-table-column>
       <el-table-column
         prop="UpdateTime"
@@ -243,6 +250,7 @@ export default {
         ShowPool: 0,
         UpdateTime: 0
       },
+      envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
         ChangeNum: 0,
         ChangeRobotNum: 0
@@ -250,7 +258,7 @@ export default {
     }
   },
   created() {
-
+console.log("======",this.envProjectName)
   },
   methods: {
     search() {
