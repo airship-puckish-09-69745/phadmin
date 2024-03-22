@@ -337,7 +337,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76)
         } else {
-          this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
+          this.defaultOrder.push(76, 78, 80, 82)
         }
       }
     },
