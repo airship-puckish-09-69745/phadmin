@@ -714,6 +714,16 @@ export default {
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
       for (const o in this.item.BetAreaOptions) {
+        for (const i in this.item.BetAreaOptions[o]){
+          let count=0
+           for ( const i in this.item.BetAreaOptions[o].OddsList){
+             count+= this.item.BetAreaOptions[o].OddsList[i].Odds
+             if (count>100) {
+               Message.error('extrapay倍数总概率不能大于100')
+               return
+             }
+           }
+        }
         for (const oi in o.Odds) {
           this.item.BetAreaOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
         }
@@ -749,9 +759,8 @@ export default {
         Message.error('“机器人最小下注次数”不能小于1，“机器人最大下注次数”不能大于15')
         return
       }
-      var postData = this.getPostData();
+
       this.form.Data = JSON.stringify(this.getPostData())
-      console.log("=======",postData)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
