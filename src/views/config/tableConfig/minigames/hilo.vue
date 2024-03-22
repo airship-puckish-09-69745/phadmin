@@ -161,7 +161,7 @@
 
             <el-row style="margin-top:10px">
               <el-col :span="7">
-                <el-form-item label="B: 总控：(比如这个值为11 那么玩家有万分之11的概率有jp出现 具体哪张由分布配置决定) (仅非审核服生效)">
+                <el-form-item label="B: 总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定) (仅非审核服生效)">
                   <el-input v-model.number="item.JpRate"><template slot="append">‱</template></el-input>
                 </el-form-item>
               </el-col>

@@ -171,7 +171,7 @@
             <legend>机器人配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;">以下配置，在两个时段交叉时，有半小时时间差来完成变化人数。</span>
+                <span style="color:red;">以下配置,在两个时段机器人数目标替换时,缺补:[50,∞)[2,5]; [30,50)[1,3]; [10,30)[1,2]; (0,10)[0.5,1]  多退:[50,∞)[2,3]; [20,50)[1,2]; (0,20)[0.5,1]</span>
               </el-descriptions-item>
             </el-descriptions>
             <el-table
@@ -278,6 +278,11 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <span style="color:red;">以下这两个值不做保证，如果总下注额度满足以后，机器人会停止下注--------------------</span>
+              </el-descriptions-item>
+            </el-descriptions>
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="机器人最小下注次数：" prop="RobotCfg.MinRobotBetTimes" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -313,7 +318,7 @@
             </el-row>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;">上一局真人下注额度=0，所有机器人这一局总下注限制: [0,房间在线人数乘于*avg]</span>
+                <span style="color:red;">上一局真人下注额度=0，所有机器人这一局总下注限制: [0,房间真人数乘于*avg]</span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
