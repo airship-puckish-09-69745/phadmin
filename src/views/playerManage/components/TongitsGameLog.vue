@@ -153,7 +153,7 @@ export default {
         0x1001: '结算'
       },
       UidMap: {},
-      UidStyleMap:{},
+      UidStyleMap: {}
     }
   },
   watch: {
@@ -180,16 +180,15 @@ export default {
 
   },
   methods: {
-    getDetailRowStyle(row){
-      switch(this.UidStyleMap[row.row.Uid]){
+    getDetailRowStyle(row) {
+      switch (this.UidStyleMap[row.row.Uid]) {
         case 1:
-          return {background:"#00800036"}
+          return { background: '#00800036' }
         case 2:
-          return {background:"#46a6ff30"}
+          return { background: '#46a6ff30' }
         case 3:
-          return {background:"#68008029"}
+          return { background: '#68008029' }
       }
-
     },
     initData(val) {
       console.log(1)
@@ -207,7 +206,7 @@ export default {
           return
         }
         const uid = parseInt(detail[0])
-        if(!this.UidStyleMap[uid]){
+        if (!this.UidStyleMap[uid]) {
           this.UidStyleMap[uid] = styleIndex
           styleIndex++
         }

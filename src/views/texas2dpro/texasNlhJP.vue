@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="searchForm" label-width="90px" :inline="true" size="small">
         <el-form-item label="级别">
-           <el-select v-model="searchForm.Level" placeholder="请选择">
+          <el-select v-model="searchForm.Level" placeholder="请选择">
             <el-option v-for="(item, key) in levelList" :key="key" :value="showLevel(item / 1000 )" />
           </el-select>
         </el-form-item>
@@ -40,15 +40,15 @@
           {{ scope.row.Jackpot/1000 }}
         </template>
       </el-table-column>
-       <el-table-column label="当前级别中奖明细" column-key="op" width="180">
+      <el-table-column label="当前级别中奖明细" column-key="op" width="180">
         <template slot-scope="scope">
-          <el-button icon="el-icon-search" type="primary" size="mini"  @click="handJackPotRecord(scope.row)" >查询</el-button>
+          <el-button icon="el-icon-search" type="primary" size="mini" @click="handJackPotRecord(scope.row)">查询</el-button>
         </template>
       </el-table-column>
 
       <el-table-column label="操作" column-key="op" width="160">
         <template slot-scope="scope">
-          <el-button icon="el-icon-edit" type="primary" size="mini"  @click="handChangeJackPot(scope.row)">更改</el-button>
+          <el-button icon="el-icon-edit" type="primary" size="mini" @click="handChangeJackPot(scope.row)">更改</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,7 +72,7 @@
       <div style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
         <el-form :inline="true">
           <el-form-item>
-            <el-input v-model="editValue" placeholder="输入JackPot奖池" clearable></el-input>
+            <el-input v-model="editValue" placeholder="输入JackPot奖池" clearable />
           </el-form-item>
         </el-form>
       </div>
@@ -137,7 +137,7 @@
           <el-table-column
             prop="SmallBlind"
             label="级别"
-            width='60%'
+            width="60%"
           >
             <template slot-scope="scope">
               {{ showLevel(scope.row.SmallBlind/1000) }}
@@ -146,7 +146,7 @@
           <el-table-column
             prop="Time"
             label="时间"
-            width='160%'
+            width="160%"
           >
             <template slot-scope="scope">
               {{ formateDate(scope.row.Time, 2) }}
@@ -171,31 +171,28 @@
           <el-table-column
             prop="HdCards"
             label="手牌"
-            width='100%'
+            width="100%"
           >
             <template slot-scope="scope">
-              <el-image v-for="(item, index) in showCards(scope.row.CardInfo, 1)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px">
-              </el-image>
+              <el-image v-for="(item, index) in showCards(scope.row.CardInfo, 1)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
             </template>
           </el-table-column>
           <el-table-column
             prop="PublichCards"
             label="公共牌"
-            width='200%'
+            width="200%"
           >
             <template slot-scope="scope">
-              <el-image v-for="(item, index) in showCards(scope.row.CardInfo, 2)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-              </el-image>
+              <el-image v-for="(item, index) in showCards(scope.row.CardInfo, 2)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
             </template>
           </el-table-column>
           <el-table-column
             prop="BestCards"
             label="获奖牌型"
-            width='200%'
+            width="200%"
           >
             <template slot-scope="scope">
-              <el-image v-for="(item, index) in showCards(scope.row.CardInfo, 3)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px">
-              </el-image>
+              <el-image v-for="(item, index) in showCards(scope.row.CardInfo, 3)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
             </template>
           </el-table-column>
           <el-table-column
@@ -206,7 +203,7 @@
               {{ scope.row.Money }}
             </template>
           </el-table-column>
-           <el-table-column
+          <el-table-column
             prop="BeforeMoney"
             label="触发前JP余额"
           >
@@ -222,13 +219,13 @@
               {{ scope.row.AfterMoney }}
             </template>
           </el-table-column>
-           <el-table-column
+          <el-table-column
             prop="LogId"
             label="牌局ID"
-            width='180%'
+            width="180%"
           >
             <template slot-scope="scope">
-              <router-link :to= "{name: 'texasNlhInsure', params: {Uid: 100 }}" @click.native="recordShow = false" style="color: blue">
+              <router-link :to="{name: 'texasNlhInsure', params: {Uid: 100 }}" style="color: blue" @click.native="recordShow = false">
                 {{ scope.row.LogId }}
               </router-link>
             </template>

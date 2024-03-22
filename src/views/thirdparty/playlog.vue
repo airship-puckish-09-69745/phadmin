@@ -286,7 +286,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import {$libDate, $libShow, ClientTableData} from '@/utils/common'
+import { $libDate, $libShow, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 // import LineChart from './components/LineChart'
@@ -424,7 +424,7 @@ export default {
       })
     },
     getSubGames() {
-      let $this = this
+      const $this = this
       request({
         url: '/thirdpartygames/all',
         method: 'get',

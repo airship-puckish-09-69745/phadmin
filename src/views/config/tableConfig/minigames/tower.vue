@@ -403,22 +403,22 @@
 
     <!-- 【dialog】每日限制开出个数 -->
     <el-dialog
-        :title="dayLimitChange.title"
-        :modal="false"
-        :visible.sync="dayLimitChange.visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      :title="dayLimitChange.title"
+      :modal="false"
+      :visible.sync="dayLimitChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit">添加</el-button>
       <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit">保存</el-button>
       <el-table
-          ref="filterTable"
-          :data="dayLimitChange.data"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
+        ref="filterTable"
+        :data="dayLimitChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column label="配置ID" prop="Id">
           <template slot-scope="scope">
@@ -520,7 +520,7 @@ export default {
         visible: false,
         data: [],
         jackpotType: 0,
-        title:"",
+        title: ''
       },
       subKey: 'tower_cfg',
       AttrNames: {
@@ -662,7 +662,7 @@ export default {
         let showStr = ''
         if (data) {
           for (var i = 0; i < data.length; i++) {
-            showStr += data[i].StartHours +'到' +data[i].EndHours +'点'+ data[i].Num +'个   '
+            showStr += data[i].StartHours + '到' + data[i].EndHours + '点' + data[i].Num + '个   '
           }
         }
         return showStr
@@ -692,11 +692,11 @@ export default {
     },
     addDayLimit() {
       let maxId = 0
-      if (!this.dayLimitChange.data){
-        this.dayLimitChange["data"]=[]
+      if (!this.dayLimitChange.data) {
+        this.dayLimitChange['data'] = []
         this.dayLimitChange.data.push({ 'Id': maxId, 'StartHours': 0, 'EndHours': 0 })
         return
-      }else {
+      } else {
         for (var i = 0; i < this.dayLimitChange.data.length; i++) {
           if (this.dayLimitChange.data[i].Id > maxId) {
             maxId = this.dayLimitChange.data[i].Id
@@ -705,7 +705,6 @@ export default {
       }
       maxId++
       this.dayLimitChange.data.push({ 'Id': maxId, 'StartHours': 0, 'EndHours': 0 })
-
     },
     removePoolNum(id) {
       for (var i = 0; i < this.poolNumChange.data.length; i++) {
@@ -734,21 +733,21 @@ export default {
     },
     saveDayLimit() {
       for (let i = 0; i < this.dayLimitChange.data.length; i++) {
-        if (this.dayLimitChange.data[i].StartHours<0||this.dayLimitChange.data[i].EndHours>24){
+        if (this.dayLimitChange.data[i].StartHours < 0 || this.dayLimitChange.data[i].EndHours > 24) {
           Message.error('请输入正确的时间')
           return
         }
-        if (this.dayLimitChange.data[i].StartHours>this.dayLimitChange.data[i].EndHours ){
+        if (this.dayLimitChange.data[i].StartHours > this.dayLimitChange.data[i].EndHours) {
           Message.error('请输入正确的时间')
           return
         }
       }
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
         if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
-          if (this.JackpotRandAwards[i]["DayLimitArr"]) {
-            this.JackpotRandAwards[i]["DayLimitArr"] = []
+          if (this.JackpotRandAwards[i]['DayLimitArr']) {
+            this.JackpotRandAwards[i]['DayLimitArr'] = []
           }
-          this.JackpotRandAwards[i]["DayLimitArr"] = this.dayLimitChange.data
+          this.JackpotRandAwards[i]['DayLimitArr'] = this.dayLimitChange.data
           break
         }
       }
@@ -775,16 +774,16 @@ export default {
         return
       }
       let jpTypeName = ''
-      if (this.JackpotTypes){
-      for (var i = 0; i < this.JackpotTypes.length; i++) {
-        if (this.JackpotTypes[i].value == data.JackpotType) {
-          jpTypeName = this.JackpotTypes[i].label
-          break
+      if (this.JackpotTypes) {
+        for (var i = 0; i < this.JackpotTypes.length; i++) {
+          if (this.JackpotTypes[i].value == data.JackpotType) {
+            jpTypeName = this.JackpotTypes[i].label
+            break
+          }
         }
       }
-      }
       this.dayLimitChange.title = jpTypeName + '(开奖数量概率)'
-      this.dayLimitChange.data = data.DayLimitArr||[{}]
+      this.dayLimitChange.data = data.DayLimitArr || [{}]
       this.dayLimitChange.visible = true
       this.dayLimitChange.jackpotType = data.JackpotType
     },

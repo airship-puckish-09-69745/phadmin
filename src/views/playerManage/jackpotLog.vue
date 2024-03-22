@@ -98,7 +98,7 @@
         </template>
       </el-table-column>
       <el-table-column
-          v-if="envProjectName=='ph'"
+        v-if="envProjectName=='ph'"
         prop="PoolType"
         label="奖池类型"
       >
@@ -107,7 +107,7 @@
         </template>
       </el-table-column>
       <el-table-column
-          v-if="envProjectName=='ph'"
+        v-if="envProjectName=='ph'"
         prop="ActType"
         label="操作类型"
       >
@@ -128,14 +128,14 @@
         label="操作后奖池数量"
       >
 
-          <template slot-scope="{row}" >
-            <div v-if="envProjectName=='ph'">
+        <template slot-scope="{row}">
+          <div v-if="envProjectName=='ph'">
             {{ toRupee(row.EndNum) }}
-            </div>
-            <div v-if="envProjectName=='ph_audit'">
-              {{ toRupee(row.PoolMoney) }}
-            </div>
-          </template>
+          </div>
+          <div v-if="envProjectName=='ph_audit'">
+            {{ toRupee(row.PoolMoney) }}
+          </div>
+        </template>
 
       </el-table-column>
       <el-table-column
@@ -169,7 +169,7 @@
     >
       <el-descriptions title="">
         <el-descriptions-item label="用户奖池">{{ toRupee(prizeInfo.UserPool) }}</el-descriptions-item>
-        <el-descriptions-item label="展示奖池" v-if="envProjectName=='ph'">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
+        <el-descriptions-item v-if="envProjectName=='ph'" label="展示奖池">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
         <el-descriptions-item label="最后更新时间">{{ formatTime(prizeInfo.UpdateTime) }}</el-descriptions-item>
       </el-descriptions>
       <el-form :model="prizeForm">
@@ -260,7 +260,7 @@ export default {
     }
   },
   created() {
-console.log("======",this.envProjectName)
+    console.log('======', this.envProjectName)
   },
   methods: {
     search() {
