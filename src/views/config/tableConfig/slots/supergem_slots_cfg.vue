@@ -15,7 +15,7 @@
           </el-tab-pane>
           <el-tab-pane label="支付线配置" name="pay_line">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('aladdin_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('supergem_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-pay-line v-if="ruleCfgBool" v-model="ruleCfg" :rows="baseCfg.Rows" :cols="baseCfg.Clos" @saveData="saveRuleCfg" />
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
