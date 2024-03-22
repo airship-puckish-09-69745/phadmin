@@ -50,6 +50,26 @@
           </div>
         </div>
 
+        <div v-else-if="isTexasMaster(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+            </div>
+            <div>
+              收益：{{ getSystemGot(summary[o]) }}
+            </div>
+            <div>
+              流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
+            </div>
+            <div>
+              在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
+            </div>
+             <div>
+              保险：{{ summary[o]?formatNumber(summary[o].Insure/1000):0 }}
+            </div>
+          </div>
+        </div>
+
         <div v-else>
           <div v-if="!isSlots(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
             <div class="card-panel-description">
@@ -70,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'">
+          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
             <div class="card-panel-description">
               <div class="card-panel-text">
                 {{ gameNames[o] }}：<span :class="getSummaryRtpClass(summary[o])"> {{ getSlotsSummaryResult(summary[o]) }}%</span>
@@ -247,14 +267,15 @@ export default {
       gid: 10000,
       summary: {},
       gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 34: 'Pusoy-Dos', 100: 'Tower',
-        76: '糖果派对Way', 77: '糖果派对Allline', 78: '超级宝石',
-        31: 'Tongits-经典', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 10000: '汇总' },
+        76: '糖果派对Way', 77: '糖果派对Allline', 78: '超级宝石', 79: '糖果糖果Grid', 80: '糖果糖果', // 这行老虎机
+        31: 'Tongits-经典', 32: 'Texas Master', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 76, 77, 78, 6],
+      defaultOrder: [15, 22, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,  6, 32],// 糖果派对调用addGameName特殊处理
       sortOrder: [],
-      env: 'test'
+      env: 'test',
+      envProjectName: process.env.VUE_APP_PROJECT,
     }
   },
   computed: {
@@ -267,12 +288,13 @@ export default {
     // } else {
     //   this.sortOrder = this.BROrder
     // }
+    this.addGameNames()
     this.getInfo(this.gid)
     console.log(1)
   },
   methods: {
     changeOrder(iType) {
-      if (iType == 1) {
+      if (iType === 1) {
         this.sortOrder = this.defaultOrder
       } else {
         let objs = []
@@ -306,8 +328,17 @@ export default {
         this.sortOrder = retSort
       }
     },
+    addGameNames(){
+      // 76: '糖果派对Way', 77: '糖果派对Allline',
+      console.log('envProjectName:',this.envProjectName)
+      if (this.envProjectName=='ph'){
+        this.defaultOrder.push(76)
+      }else if (this.envProjectName=='ph_audit'){
+        this.defaultOrder.push(76, 77)
+      }
+    },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 31 || o === 34 || o === 101 || o === 103) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 31 || o === 34 || o === 101 || o === 103|| o === 6) {
         return false
       } else {
         return true
@@ -315,6 +346,13 @@ export default {
     },
     isSlots(o) {
       if (o > 50 && o < 100) {
+        return true
+      } else {
+        return false
+      }
+    },
+    isTexasMaster(o) {
+      if (o === 32) {
         return true
       } else {
         return false
@@ -454,7 +492,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          if (iType == 2) {
+          if (iType === 2) {
             const objs = response.Data.Items || []
             if (objs.length === 0) {
               Message.success('查询结果为空')
@@ -464,6 +502,7 @@ export default {
             $this.preData = this.libMoney.TransForShow(response.Data.YesterdayItems)
           } else {
             $this.summary = response.Data.Summary
+            console.log($this.summary)
             let totalOnline = 0
             for (const o in $this.summary) {
               totalOnline += $this.summary[o].OnlineCount

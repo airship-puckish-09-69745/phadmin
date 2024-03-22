@@ -286,7 +286,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import { $libDate, $libShow } from '@/utils/common'
+import {$libDate, $libShow, ClientTableData} from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 // import LineChart from './components/LineChart'
@@ -331,28 +331,9 @@ export default {
       types: { 1: '转出', 2: '转入' },
       allStatus: { 1: '赢', 2: '输', 3: '平' },
       gameTypes: { 1: '老虎机', 2: '纸牌', 3: '街机' },
-      games: { 0: 'All games', 1: 'Color Game', 2: 'Crash', 3: 'Lucky9', 4: 'Tongits', 5: 'Sleeping Beauty', 6: 'Phoenix',
-        7: 'Texas Poker', 8: 'Andar Bahar', 9: 'Baccarat', 10: 'MINES', 11: 'Dragon VS Tiger', 12: 'Car Roulette', 14: 'Pusoy', 15: 'Tower', 16: 'Sicbo', 17: 'Hilo', 18: 'Windrop' },
+      games: {},
       games2: [
-        { id: 0, name: 'All games' },
-        { id: 1, name: 'Color Game' },
-        { id: 2, name: 'Crash' },
-        { id: 3, name: 'Lucky9' },
-        { id: 4, name: 'Tongits' },
-        { id: 5, name: 'Sleeping Beauty' },
-        { id: 6, name: 'Phoenix' },
-        { id: 7, name: 'Texas Poker' },
-        { id: 8, name: 'Andar Bahar' },
-        { id: 9, name: 'Baccarat' },
-        { id: 10, name: 'MINES' },
-        { id: 11, name: 'Dragon VS Tiger' },
-        { id: 12, name: 'Car Roulette' },
-        { id: 14, name: 'Pusoy' },
-        { id: 15, name: 'Tower' },
-        { id: 16, name: 'Sicbo' },
-        { id: 17, name: 'Hilo' },
-        { id: 18, name: 'Windrop' }
-
+        { id: 0, name: 'All games' }
       ],
       totalBets: [0, 15000, 100000, 400000, 1000000, 5000000, 4000000],
       showDetail: false,
@@ -366,6 +347,7 @@ export default {
     this.gid = this.$route.meta.gid
     this.item.gameId = 0
     this.getAppInfo()
+    this.getSubGames()
   },
   methods: {
     // 设置默认日期
@@ -437,6 +419,30 @@ export default {
               key: response.Data[i].ID,
               label: response.Data[i].Account
             })
+          }
+        }
+      })
+    },
+    getSubGames() {
+      let $this = this
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log('objs>>>>>', objs)
+          for (let i = 0; i < response.Data.length; i++) {
+            if (objs[i].ID === 13) {
+              continue
+            }
+            $this.games[objs[i].GameID] = objs[i].Name
+            const oneGame = {
+              id: objs[i].GameID,
+              name: objs[i].Name
+            }
+            $this.games2.push(oneGame)
           }
         }
       })

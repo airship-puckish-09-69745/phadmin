@@ -105,12 +105,12 @@ service.interceptors.response.use(
       }
 
       Message({
-        message: res.Data && res.Data.Msg || 'Error',
+        message: res.Data || res.Data.Msg || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
 
-      return Promise.reject(new Error(res.Data && res.Data.Msg || 'Error'))
+      return Promise.reject(new Error(res.Data || res.Data.Msg || 'Error'))
     } else {
       return res
     }

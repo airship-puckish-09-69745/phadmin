@@ -9,6 +9,7 @@
         <p>1，底注不可直接修改，需要新添加新的场次配置，再去掉旧的场次配置；</p>
         <p>2，新加的场次需要保持在预上状态，重启游戏服务后才能上架；要去掉的场次需要先改为预下状态，延迟半天之后再下架；</p>
         <p>3，配置项【最大人数、桌子数量、是否练习场】修改后，需要重启游戏服务才能生效。</p>
+        <p>4，小盲小于1都不对菲1开放，大于等于250的都不对Xworld开放。</p>
       </el-col>
     </el-row>
     <el-row style="padding-top: 5px">
@@ -86,6 +87,8 @@
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
               <el-select v-model="edit.item.SmallBlind" placeholder="请选择" :disabled="edit.isEdit">
                 <el-option label="0.1" :value="0.1" />
+                <el-option label="0.2" :value="0.2" />
+                <el-option label="0.5" :value="0.5" />
                 <el-option label="1" :value="1" />
                 <el-option label="2.5" :value="2.5" />
                 <el-option label="5" :value="5" />

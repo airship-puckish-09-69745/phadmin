@@ -497,7 +497,6 @@ export default {
         }
         this.item.BetMoneyLevel[j].CanBet = betMoneyList.join(',')
       }
-
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
@@ -570,7 +569,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-           console.log(response)
+          console.log(response)
         }
       })
     },

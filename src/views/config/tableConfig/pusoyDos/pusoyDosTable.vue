@@ -102,7 +102,15 @@
             {{ formatNumber(scope.row.MaxPlayerCount) }}
           </template>
         </el-table-column>
-
+        <el-table-column
+          prop="RemainAlarm"
+          label="剩余警报"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.RemainAlarm}}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="LastModify"
           label="最近修改"
@@ -256,7 +264,7 @@
               prop="item.MaxPlayerCount"
               :rules="dataRule(true,{type:'n',range:'2'})"
             >
-              <el-input v-model.number="edit.item.MaxPlayerCount" disabled="true" placeholder="座位数" />
+              <el-input v-model.number="edit.item.MaxPlayerCount"  placeholder="座位数" />
             </el-form-item>
           </el-col>
           <el-col :span="9">
@@ -317,6 +325,7 @@
           <el-col :span="11">
             <game-level v-model="edit.item.Level" />
           </el-col>
+
         </el-row>
 
         <el-row>
@@ -329,6 +338,15 @@
             >
               <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
+<!--            <el-col :span="11">-->
+              <el-form-item
+                label="剩余警报："
+                prop="item.WatchTimesMax"
+                :rules="dataRule(true,{type:'n',range:'2'})"
+              >
+                <el-input v-model.number="edit.item.RemainAlarm" />
+              </el-form-item>
+<!--            </el-col>-->
           </el-col>
         </el-row>
 
@@ -383,7 +401,8 @@ function newItem() {
     LuckyLevelLimitMoney: 0,
     MinPlayMoney: 0,
     Anticheating: 0,
-    RoomLevel: 0
+    RoomLevel: 0,
+    RemainAlarm:0
 
   }
 }

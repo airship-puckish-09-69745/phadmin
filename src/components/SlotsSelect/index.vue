@@ -40,7 +40,12 @@ export default {
         { label: 'FireKick老虎机', value: 61 },
         { label: '侏罗纪老虎机', value: 62 },
         { label: '夺宝奇兵老虎机', value: 63 },
-        { label: '植物大战僵尸老虎机', value: 64 }
+        { label: '植物大战僵尸老虎机', value: 64 },
+        { label: '糖果派对Way', value: 76 },
+        { label: '糖果派对Allline', value: 77 },
+        { label: '超级宝石', value: 78 },
+        { label: '糖果糖果Grid', value: 79 },
+        { label: '糖果糖果', value: 80 }
       ]
     }
   },

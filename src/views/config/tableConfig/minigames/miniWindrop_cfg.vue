@@ -73,7 +73,7 @@
       </el-form>
     </el-row>
 
-    <fieldset style="margin-top:20px;">
+    <fieldset style="margin-top:20px;"  v-if="envProjectName!='ph_audit'">
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
@@ -312,6 +312,7 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <div  v-if="envProjectName!='ph_audit'">
     <div><br></div>
     <div><br></div>
     <div style="display: flex; align-items: center;">
@@ -383,7 +384,7 @@
       </el-form>
     </el-row>
 
-    <fieldset style="margin-top:20px;">
+    <fieldset style="margin-top:20px;"  v-if="envProjectName!='ph_audit'">
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
@@ -627,6 +628,7 @@
     <div style="display: flex; align-items: center;">
 
       <div style="flex: 1; height: 2px; background-color: black;" />
+    </div>
       <div style="padding: 0 10px;"> <!-- 文字部分 -->
         <slot> <span style="color:red;font-size:20px ">游戏配置</span></slot>
       </div>
@@ -657,12 +659,12 @@
               <el-input v-model="cfg.BetsStr" placeholder="" />
             </el-form-item>
           </el-row>
-          <el-row>
+          <el-row v-if="envProjectName!='ph_audit'">
             <el-form-item label="自动投注次数。-1为不限：">
               <el-input v-model="cfg.AutomaticTimesStr" placeholder="" />
             </el-form-item>
           </el-row>
-          <el-row>
+          <el-row  v-if="envProjectName!='ph_audit'">
             <el-form-item label="加倍行数显示：">
               <el-input v-model="cfg.AddTimesRow" placeholder="" />
             </el-form-item>
@@ -684,13 +686,13 @@
           </el-row>
           <el-row>
             <el-form-item label="通知时间：">
-              <el-input type="number" v-model.number="cfg.NoticeTime" placeholder="" />
+              <el-input v-model.number="cfg.NoticeTime" type="number" placeholder="" />
             </el-form-item>
           </el-row>
         </el-form>
       </el-col>
     </el-row>
-    <el-row style="margin-top: 30px">
+    <el-row style="margin-top: 30px"  v-if="envProjectName!='ph_audit'">
       <el-col :span="16" :offset="3">
         <h3>小转盘选项配置(概率总和取比)</h3>
         <el-row>
@@ -740,25 +742,25 @@
                       </el-select>
                     </el-form-item>
                   </el-row>
-                  <el-row>
+                  <el-row  v-if="envProjectName!='ph_audit'">
                     <money-input v-model.number="item.EnergyNum" label="转盘小游戏能量条数额" />
                   </el-row>
-                  <el-row>
+                  <el-row v-if="envProjectName!='ph_audit'">
                     <el-form-item label="转盘小游戏能量转化率：">
                       <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）
                     </el-form-item>
                   </el-row>
                   <div v-if="item.Level!=1">
                     <el-row>
-                      <el-form-item  label="LuckyJP key：" prop="item.LuckyJPKey">
+                      <el-form-item label="LuckyJP key：" prop="item.LuckyJPKey">
                         <el-input v-model.number="item.LuckyJPKey" placeholder="请输入" disabled />
                       </el-form-item>
                     </el-row>
-                    <el-row>
-                      <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">
-                        <el-input v-model.number="item.LuckyJPTransferRate" placeholder="请输入" />
-                      </el-form-item>
-                    </el-row>
+<!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
+<!--                      <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">-->
+<!--                        <el-input v-model.number="item.LuckyJPTransferRate" placeholder="请输入" />-->
+<!--                      </el-form-item>-->
+<!--                    </el-row>-->
                     <el-row>
                       <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">
                         <el-input v-model.number="item.LuckyJPOdds" placeholder="请输入" />
@@ -769,7 +771,7 @@
                         <el-input v-model.number="item.LuckyJPRate" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
-                    <el-row>
+                    <el-row  v-if="envProjectName!='ph_audit'">
                       <money-input v-model.number="item.LuckyJPInitMoney" label="LuckyJP 初始化金额" />
                     </el-row>
                     <el-row>
@@ -777,24 +779,24 @@
                         <el-input v-model="item.SuperJPKey" placeholder="请输入" disabled />
                       </el-form-item>
                     </el-row>
-                    <el-row>
-                      <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">
-                        <el-input v-model.number="item.SuperJPTransferRate" placeholder="请输入" />
-                      </el-form-item>
-                    </el-row>
+<!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
+<!--                      <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">-->
+<!--                        <el-input v-model.number="item.SuperJPTransferRate" placeholder="请输入" />-->
+<!--                      </el-form-item>-->
+<!--                    </el-row>-->
                     <el-row>
                       <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">
-                        <el-input  v-model.number="item.SuperJPOdds" placeholder="请输入" />
+                        <el-input v-model.number="item.SuperJPOdds" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
                     <el-row>
                       <el-form-item label="SuperJP Jackpot显示比率(百分比90% 输入90）：" prop="item.superJPRate">
-                        <el-input  v-model.number="item.superJPRate" placeholder="请输入" />
+                        <el-input v-model.number="item.superJPRate" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
-                    <el-row>
-                      <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />
-                    </el-row>
+<!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
+<!--                      <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />-->
+<!--                    </el-row>-->
                   </div>
                   <fieldset>
                     <legend>普通选项配置</legend>
@@ -807,7 +809,7 @@
                         </el-table-column>
                         <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 spin)">
                           <template slot-scope="scope">
-                            <el-input type="number" v-model.number="scope.row.Odds" placeholder="" />
+                            <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                           </template>
                         </el-table-column>
                         <el-table-column prop="item.HitRates" label="命中概率总和比例）">
@@ -815,17 +817,17 @@
                             <el-input v-model.number="scope.row.HitRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column prop="item.FirstTimesRates" label="翻倍1次命中概率）">
+                        <el-table-column  v-if="envProjectName!='ph_audit'" prop="item.FirstTimesRates" label="翻倍1次命中概率）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.FirstTimesRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column prop="item.SecondTimesRates" label="翻倍2次命中概率）">
+                        <el-table-column  v-if="envProjectName!='ph_audit'" prop="item.SecondTimesRates" label="翻倍2次命中概率）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.SecondTimesRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column prop="item.ThirdTimesRates" label="翻倍3次命中概率）">
+                        <el-table-column  v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" />
                           </template>
@@ -839,17 +841,17 @@
                       <el-table :data="item.Spins" border style="width: 100%">
                         <el-table-column prop="Id" label="通道ID" width="100">
                           <template slot-scope="scope">
-                            <el-input type="number" v-model.number="scope.row.Id" placeholder="" disabled />
+                            <el-input v-model.number="scope.row.Id" type="number" placeholder="" disabled />
                           </template>
                         </el-table-column>
                         <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
                           <template slot-scope="scope">
-                            <el-input type="number"   v-model.number="scope.row.Odds" placeholder="" />
+                            <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                           </template>
                         </el-table-column>
                         <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
                           <template slot-scope="scope">
-                            <el-input type="number" v-model.number="scope.row.HitRates" placeholder="" />
+                            <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
                           </template>
                         </el-table-column>
                       </el-table>
@@ -885,6 +887,7 @@ export default {
   components: { Publish, Compare, MoneyInput },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       item: {
         JackpotRegulation: {
           BetMoreThan: 0,
@@ -2229,7 +2232,6 @@ export default {
   line-height: 31px;
   padding: 2px;
 }
-
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

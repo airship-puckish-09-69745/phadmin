@@ -67,19 +67,17 @@
           <el-col :span="11">
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
               <el-select v-model="edit.item.SmallBlind" placeholder="请选择">
-                <el-option label="0.1" :value="0.1" />
                 <el-option label="1" :value="1" />
-                <el-option label="2.5" :value="2.5" />
+                <el-option label="2" :value="2" />
                 <el-option label="5" :value="5" />
                 <el-option label="10" :value="10" />
-                <el-option label="25" :value="25" />
+                <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
                 <el-option label="100" :value="100" />
-                <el-option label="250" :value="250" />
+                <el-option label="200" :value="200" />
                 <el-option label="500" :value="500" />
                 <el-option label="1000" :value="1000" />
-                <el-option label="2500" :value="2500" />
-                <el-option label="5000" :value="5000" />
+                <el-option label="2000" :value="2000" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -131,7 +129,7 @@
           </el-col>
         </el-row>
         <el-row>
-           <el-col :span="11">
+          <el-col :span="11">
             <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.IntervalBuyIn" placeholder="请输入" />
             </el-form-item>
@@ -285,6 +283,51 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="猎兔价格配置" :required="true" prop="item.RabbitPrice" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RabbitPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每日免费次数" :required="true" prop="item.InteractDayFreeTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.InteractDayFreeTimes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
+              <el-input v-model.number="edit.item.InteractItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="延时道具消耗(逗号隔开)" :required="true" prop="item.DelayItemPrice">
+              <el-input v-model="edit.DelayItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="强制看牌价格(逗号隔开)" :required="true" prop="item.ForceLookCardPrice">
+              <el-input v-model="edit.ForceLookCardPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <fieldset>
           <legend>时间配置</legend>
           <el-row>
@@ -359,19 +402,19 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label="最小人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="最大人数">
-                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
 
                 <el-col :span="8">
                   <el-form-item label="抽水上限">
-                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true"/>
+                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -471,7 +514,12 @@ function newItem() {
     ShowPublicCardCostMoney: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    TablePourRatio: 0
+    TablePourRatio: 0,
+    RabbitPrice: 0,
+    InteractDayFreeTimes: 0,
+    InteractItemPrice: 0,
+    DelayItemPrice: '',
+    ForceLookCardPrice: ''
   }
 }
 
@@ -495,7 +543,9 @@ export default {
         isEdit: false,
         TimeConfig: NewTimeConfig(),
         OutsRatio: NewOutsRatio(),
-        FeeLimit: NewFeeLimit()
+        FeeLimit: NewFeeLimit(),
+        DelayItemPrice: '',
+        ForceLookCardPrice: ''
       },
 
       AttrNames: {
@@ -526,7 +576,12 @@ export default {
         DelayOpTimeUsedTimes: '最多使用次数',
         ShowPublicCardCostMoney: '显示公共牌消耗金额',
         MinPlayMoney: '最小玩牌金额',
-        TablePourRatio: 'VPIP入池率'
+        TablePourRatio: 'VPIP入池率',
+        RabbitPrice: '猎兔价格配置',
+        InteractDayFreeTimes: '互动道具每日免费次数',
+        InteractItemPrice: '互动道具每次价格消耗',
+        DelayItemPrice: '延时道具消耗',
+        ForceLookCardPrice: '强制看牌价格'
       }
     }
   },
@@ -671,16 +726,73 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
-          console.log(_data)
+          // console.log('initFormData 1 _data:', _data)
+          // console.log('initFormData 1 this.edit.item:', this.edit.item)
           Object.assign(this.edit.item, _data)
+          // console.log('initFormData 2 _data:', _data)
+          // console.log('initFormData 2 this.edit.item:', this.edit.item)
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             this.edit.OutsRatio = JSON.parse(_data.OutsRatio)
             this.edit.FeeLimit = JSON.parse(_data.FeeLimitStr)
+
+            // this.edit.DelayItemPrice = _data.DelayItemPrice
+            // this.edit.ForceLookCardPrice = _data.ForceLookCardPrice
+
+            this.edit.DelayItemPrice = ''
+            this.edit.ForceLookCardPrice = ''
+
+            var tmpP = _data.DelayItemPrice.split(',')
+            var isFirst = true
+            this.edit.DelayItemPrice = ''
+            for (var i = 0; i < tmpP.length; i++) {
+              const tmp3 = parseFloat(tmpP[i])
+              // console.log('tmpP3:', tmp3)
+              var tmpP2 = 0.0
+              if (tmp3 % 10 === 0) {
+                tmpP2 = Number(tmp3 / 10).toFixed(0)
+              } else {
+                tmpP2 = Number(tmp3 / 10).toFixed(1)
+              }
+              // console.log('tmpP2:', tmpP2)
+
+              if (isFirst) {
+                this.edit.DelayItemPrice += tmpP2
+                isFirst = false
+              } else {
+                this.edit.DelayItemPrice += ','
+                this.edit.DelayItemPrice += tmpP2
+              }
+            }
+
+            tmpP = _data.ForceLookCardPrice.split(',')
+            isFirst = true
+            this.edit.ForceLookCardPrice = ''
+            for (i = 0; i < tmpP.length; i++) {
+              // tmpP2 = Number(parseFloat(tmpP[i]) / 10).toFixed(1)
+              const tmp3 = parseFloat(tmpP[i])
+              // console.log('tmpP3:', tmp3)
+              tmpP2 = 0.0
+              if (tmp3 % 10 === 0) {
+                tmpP2 = Number(tmp3 / 10).toFixed(0)
+              } else {
+                tmpP2 = Number(tmp3 / 10).toFixed(1)
+              }
+              if (isFirst) {
+                this.edit.ForceLookCardPrice += tmpP2
+                isFirst = false
+              } else {
+                this.edit.ForceLookCardPrice += ','
+                this.edit.ForceLookCardPrice += tmpP2
+              }
+            }
           } catch (e) {
+            console.log('initFormData error 2 e:', e)
             this.edit.TimeConfig = NewTimeConfig()
             this.edit.OutsRatio = NewOutsRatio()
             this.edit.FeeLimit = NewFeeLimit()
+            this.edit.DelayItemPrice = ''
+            this.edit.ForceLookCardPrice = ''
           }
           if (bEdit) {
             // 设置修改之前数据
@@ -748,6 +860,37 @@ export default {
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       this.edit.item.OutsRatio = JSON.stringify(this.edit.OutsRatio)
       this.edit.item.FeeLimit = JSON.stringify(this.edit.FeeLimit)
+
+      var tmpP = this.edit.DelayItemPrice.split(',')
+      this.edit.item.DelayItemPrice = ''
+      var isFirst = true
+      for (var i = 0; i < tmpP.length; i++) {
+        var tmpP2 = Number(parseFloat(tmpP[i]) * 10).toFixed(0)
+        // this.edit.item.DelayItemPrice.push(tmpP2)
+        if (isFirst) {
+          isFirst = false
+          this.edit.item.DelayItemPrice += tmpP2
+        } else {
+          this.edit.item.DelayItemPrice += ','
+          this.edit.item.DelayItemPrice += tmpP2
+        }
+      }
+
+      tmpP = this.edit.ForceLookCardPrice.split(',')
+      this.edit.item.ForceLookCardPrice = ''
+      isFirst = true
+      for (i = 0; i < tmpP.length; i++) {
+        tmpP2 = Number(parseFloat(tmpP[i]) * 10).toFixed(0)
+        // this.edit.item.ForceLookCardPrice.push(tmpP2)
+        if (isFirst) {
+          isFirst = false
+          this.edit.item.ForceLookCardPrice += tmpP2
+        } else {
+          this.edit.item.ForceLookCardPrice += ','
+          this.edit.item.ForceLookCardPrice += tmpP2
+        }
+      }
+
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
