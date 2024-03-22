@@ -206,7 +206,8 @@
           </el-table-column>
           <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+              <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
+              {{ showOpenDayLimit(scope.row.JackpotType, scope.row.DayLimitArr) }}
             </template>
           </el-table-column>
           <el-table-column label="玩家开奖池条件(%)" width="300">
@@ -400,6 +401,53 @@
       </el-form>
     </el-dialog>
 
+    <!-- 【dialog】每日限制开出个数 -->
+    <el-dialog
+        :title="dayLimitChange.title"
+        :modal="false"
+        :visible.sync="dayLimitChange.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit">保存</el-button>
+      <el-table
+          ref="filterTable"
+          :data="dayLimitChange.data"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+      >
+        <el-table-column label="配置ID" prop="Id">
+          <template slot-scope="scope">
+            {{ scope.row.Id }}
+          </template>
+        </el-table-column>
+        <el-table-column label="开始小时" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="结束小时" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="开奖数量" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum(scope.row.Id)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" />
 
@@ -467,6 +515,12 @@ export default {
         visible: false,
         data: [],
         jackpotType: 0
+      },
+      dayLimitChange: {
+        visible: false,
+        data: [],
+        jackpotType: 0,
+        title:"",
       },
       subKey: 'tower_cfg',
       AttrNames: {
@@ -601,6 +655,19 @@ export default {
         return showStr
       }
     },
+    showOpenDayLimit(jpType, data) {
+      if (jpType == 4) {
+        return '不限制'
+      } else {
+        let showStr = ''
+        if (data) {
+          for (var i = 0; i < data.length; i++) {
+            showStr += data[i].StartHours +'到' +data[i].EndHours +'点'+ data[i].Num +'个   '
+          }
+        }
+        return showStr
+      }
+    },
     saveIncrJackpotDialog() {
       for (var i = 0; i < this.item.JackpotRegulation.PoolIncrArr.length; i++) {
         if (this.item.JackpotRegulation.PoolIncrArr[i].Id == this.incrJackpotForm.id) {
@@ -623,10 +690,35 @@ export default {
       maxId++
       this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
     },
+    addDayLimit() {
+      let maxId = 0
+      if (!this.dayLimitChange.data){
+        this.dayLimitChange["data"]=[]
+        this.dayLimitChange.data.push({ 'Id': maxId, 'StartHours': 0, 'EndHours': 0 })
+        return
+      }else {
+        for (var i = 0; i < this.dayLimitChange.data.length; i++) {
+          if (this.dayLimitChange.data[i].Id > maxId) {
+            maxId = this.dayLimitChange.data[i].Id
+          }
+        }
+      }
+      maxId++
+      this.dayLimitChange.data.push({ 'Id': maxId, 'StartHours': 0, 'EndHours': 0 })
+
+    },
     removePoolNum(id) {
       for (var i = 0; i < this.poolNumChange.data.length; i++) {
         if (this.poolNumChange.data[i].Id == id) {
           this.poolNumChange.data.splice(i, 1)
+          break
+        }
+      }
+    },
+    removeDayLimitNum(id) {
+      for (var i = 0; i < this.dayLimitChange.data.length; i++) {
+        if (this.dayLimitChange.data[i].Id == id) {
+          this.dayLimitChange.data.splice(i, 1)
           break
         }
       }
@@ -639,6 +731,28 @@ export default {
         }
       }
       this.poolNumChange.visible = false
+    },
+    saveDayLimit() {
+      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
+        if (this.dayLimitChange.data[i].StartHours<0||this.dayLimitChange.data[i].EndHours>24){
+          Message.error('请输入正确的时间')
+          return
+        }
+        if (this.dayLimitChange.data[i].StartHours>this.dayLimitChange.data[i].EndHours ){
+          Message.error('请输入正确的时间')
+          return
+        }
+      }
+      for (var i = 0; i < this.JackpotRandAwards.length; i++) {
+        if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
+          if (this.JackpotRandAwards[i]["DayLimitArr"]) {
+            this.JackpotRandAwards[i]["DayLimitArr"] = []
+          }
+          this.JackpotRandAwards[i]["DayLimitArr"] = this.dayLimitChange.data
+          break
+        }
+      }
+      this.dayLimitChange.visible = false
     },
     checkShowDayLimit(awardType) {
       if (awardType == 2) {
@@ -655,6 +769,24 @@ export default {
       this.poolNumChange.data = data.RateArr
       this.poolNumChange.visible = true
       this.poolNumChange.jackpotType = data.JackpotType
+    },
+    showDayLimitDialog(data) {
+      if (data.JackpotType == 4) {
+        return
+      }
+      let jpTypeName = ''
+      if (this.JackpotTypes){
+      for (var i = 0; i < this.JackpotTypes.length; i++) {
+        if (this.JackpotTypes[i].value == data.JackpotType) {
+          jpTypeName = this.JackpotTypes[i].label
+          break
+        }
+      }
+      }
+      this.dayLimitChange.title = jpTypeName + '(开奖数量概率)'
+      this.dayLimitChange.data = data.DayLimitArr||[{}]
+      this.dayLimitChange.visible = true
+      this.dayLimitChange.jackpotType = data.JackpotType
     },
     // 展示jackpot奖池增长标题
     getJackpotPoolTitle(row) {

@@ -1224,14 +1224,15 @@
 <!--        <el-table-column label="手牌" width="450" align="center">-->
 
 <!--        </el-table-column>-->
-
-        <el-table-column prop="MatchScore" label="点数" width="100" />
-        <el-table-column prop="hitPotScore" label="hitPot奖池" width="100" />
-        <el-table-column prop="payPot" label="下注" width="100"><template slot-scope="scope">{{ scope.row.payPot/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyChange" label="筹码变化" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyFee" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyFee/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyChange" label="筹码变化" width="100"><template slot-scope="scope">{{ scope.row.moneyChange/1000 }}</template></el-table-column>
         <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+        <el-table-column prop="burnedScore" label="燃烧获得" width="100"><template slot-scope="scope">{{ scope.row.burnedScore/1000 }}</template></el-table-column>
+        <el-table-column prop="normalScore" label="正常结算" width="100"><template slot-scope="scope">{{ scope.row.normalScore/1000 }}</template></el-table-column>
+        <el-table-column prop="extraScore" label="额外结算" width="100"><template slot-scope="scope">{{ scope.row.extraScore/1000 }}</template></el-table-column>
+        <el-table-column prop="pusoyDosScore" label="pusoyDos金币" width="100"><template slot-scope="scope">{{ scope.row.pusoyDosScore/1000 }}</template></el-table-column>
+
+        <el-table-column prop="hitPotScore" label="hitPot奖池" width="100" />
+        <el-table-column prop="potMoney" label="奖池" width="100"><template slot-scope="scope">{{ scope.row.potMoney/1000 }}</template></el-table-column>
       </el-table>
       <br>
       <el-table
