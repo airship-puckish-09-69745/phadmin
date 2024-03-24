@@ -131,7 +131,7 @@
                           <a size="mini" type="primary" @click="addOddsList(scope.$index)">+</a>
                           <span style="margin-left: 20px">倍数:</span>
                           <el-input
-                            v-model.number="data.Double"
+                            v-model.number="data.Odds"
                             size="mini"
                             style="width: 80px"
                             placeholder="倍数"
@@ -139,7 +139,7 @@
                           />
                           <span style="margin-left: 10px">概率:</span>
                           <el-input
-                            v-model.number="data.Odds"
+                            v-model.number="data.Rate"
                             size="mini"
                             style="width: 80px"
                             placeholder="概率%"
