@@ -544,9 +544,9 @@ export default {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
 
-      /*     for (const j in this.item.BetOptionsRate) {
+      for (const j in this.item.BetOptionsRate) {
         this.item.BetOptionsRate[j].Val /= 1000
-      }*/
+      }
 
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -587,6 +587,16 @@ export default {
       console.log(this.item.BetMoneyLevel)
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
+      }
+
+
+      ret.BetOptionsRate = []
+      for (const o in this.item.BetOptionsRate) {
+        const obj = {}
+        Object.assign(obj, this.item.BetOptionsRate[o])
+        obj.Val *= 1000
+        console.log(obj)
+        ret.BetOptionsRate.push(obj)
       }
 
       ret.BetAreaOptions = []
