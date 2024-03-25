@@ -131,7 +131,7 @@
                           <a size="mini" type="primary" @click="addOddsList(scope.$index)">+</a>
                           <span style="margin-left: 20px">倍数:</span>
                           <el-input
-                            v-model.number="data.Double"
+                            v-model.number="data.Odds"
                             size="mini"
                             style="width: 80px"
                             placeholder="倍数"
@@ -139,7 +139,7 @@
                           />
                           <span style="margin-left: 10px">概率:</span>
                           <el-input
-                            v-model.number="data.Odds"
+                            v-model.number="data.Rate"
                             size="mini"
                             style="width: 80px"
                             placeholder="概率%"
@@ -544,9 +544,9 @@ export default {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
 
-      /*     for (const j in this.item.BetOptionsRate) {
+      for (const j in this.item.BetOptionsRate) {
         this.item.BetOptionsRate[j].Val /= 1000
-      }*/
+      }
 
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -587,6 +587,16 @@ export default {
       console.log(this.item.BetMoneyLevel)
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
+      }
+
+
+      ret.BetOptionsRate = []
+      for (const o in this.item.BetOptionsRate) {
+        const obj = {}
+        Object.assign(obj, this.item.BetOptionsRate[o])
+        obj.Val *= 1000
+        console.log(obj)
+        ret.BetOptionsRate.push(obj)
       }
 
       ret.BetAreaOptions = []

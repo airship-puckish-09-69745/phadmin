@@ -654,7 +654,7 @@
             <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
           </template>
         </el-table-column>
-        <el-table-column label="结束小时" prop="EndHours">
+        <el-table-column label="结束小时（不包含结束时间点）" prop="EndHours">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
           </template>

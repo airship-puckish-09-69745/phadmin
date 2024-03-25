@@ -68,14 +68,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="LogID"
-        label="牌局ID"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.logid }}
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="InsureChange"
         label="保险账变"
         sortable="custom"
@@ -117,9 +109,14 @@
           {{ scope.row.InsureRatio / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" column-key="op" width="120">
-        <template slot-scope="">
-          <el-button icon="el-icon-search" type="primary" size="mini">查询</el-button>
+      <el-table-column
+        prop="LogID"
+        label="牌局ID"
+      >
+        <template slot-scope="scope">
+          <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.logid, dateTime: scope.row.InsureTime }}" @click.native="recordShow = false" style="color: blue">
+            {{ scope.row.logid }}
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -183,7 +180,7 @@ export default {
         method: 'get',
         data: {
           Env: _this.env,
-          Path: '/tesasnlhdata/insure',
+          Path: '/texasnlhdata/insure',
           Uid: Number(_this.searchForm.Uid),
           logId: Number(_this.searchForm.LogID),
           beginTime: Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000,
