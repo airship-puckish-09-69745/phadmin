@@ -655,7 +655,7 @@ export default {
       }
     },
     showOpenDayLimit(data) {
-      return data['StartHours'] + '点-' + data['EndHours'] + '点：' + data['Num'] + '个'
+      return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
     },
     saveIncrJackpotDialog() {
       for (var i = 0; i < this.item.JackpotRegulation.PoolIncrArr.length; i++) {
