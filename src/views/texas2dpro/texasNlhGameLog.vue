@@ -115,7 +115,7 @@
     </el-table>
     <br>
     <el-row type="flex" justify="end">
-      <el-col :span="6">
+      <el-col :span="10">
         <div class="block">
           <el-pagination
             :current-page="currentPage"
@@ -143,7 +143,7 @@ export default {
     return {
       searchForm: {
         BeginDate: $libDate.GetDayBegin(new Date().getTime()),
-        Uid: 1010575,
+        Uid: 1010434,
         LogID: ''
       },
       selectUid: 0,
@@ -201,7 +201,6 @@ export default {
           selectIds += ','
         }
       }
-      console.log(selectIds)
       const _this = this
       request({
         url: '/dataProxy/info',
@@ -217,6 +216,13 @@ export default {
           const objs = response.Data || []
           for (var i = 0; i < objs.list.length; i++) {
             _this.tableData.push(objs.list[i])
+          }
+          for (var j = 0; j < this.tableData.length; j++) {
+            console.log(_this.tableData[j].StartTime)
+          }
+          _this.tableData.sort(this.sortBy("StartTime", -1))
+          for (var k = 0; k < this.tableData.length; k++) {
+            console.log(_this.tableData[k].StartTime)
           }
           _this.refreshShow()
         } else {
