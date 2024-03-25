@@ -37,7 +37,7 @@
         width="100%"
       >
         <template>
-          {{ searchForm.Uid }}
+          {{ selectUid }}
         </template>
       </el-table-column>
       <el-table-column
@@ -53,7 +53,7 @@
         label="玩家昵称"
       >
       <template slot-scope="scope">
-          {{ getNickByUid(scope.row, searchForm.Uid) }}
+          {{ getNickByUid(scope.row, selectUid) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -62,7 +62,7 @@
         width="100%"
       >
         <template slot-scope="scope">
-          <el-image v-for="(item, index) in getHdCardByUid(scope.row, searchForm.Uid)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
+          <el-image v-for="(item, index) in getHdCardByUid(scope.row, selectUid)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
           </el-image>
         </template>
       </el-table-column>
@@ -136,6 +136,7 @@ export default {
         Uid: 1010575,
         LogID: ''
       },
+      selectUid: 0,
       gid: 32,
       totalInsure: 0,
       tableData: [],
@@ -176,6 +177,7 @@ export default {
             this.searchDetail(objs)
           }
           _this.totalCount = objs.length
+          _this.selectUid = _this.searchForm.Uid
         } else {
           Message.error(response.Data)
         }
