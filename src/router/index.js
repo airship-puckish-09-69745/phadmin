@@ -1279,7 +1279,19 @@ export const asyncRoutes = [
             path: 'texasNlhJP',
             component: () => import('@/views/texas2dpro/texasNlhJP'),
             name: 'texasNlhJP',
-            meta: { title: 'JackPot数据' }
+            meta: { title: 'JP数据' }
+          },
+          {
+            path: 'texasNlhGameLog',
+            component: () => import('@/views/texas2dpro/texasNlhGameLog'),
+            name: 'texasNlhGameLog',
+            meta: { title: '牌局记录' }
+          },
+          {
+            path: 'texasNlhGameDetail',
+            component: () => import('@/views/texas2dpro/texasNlhGameDetail'),
+            name: 'texasNlhGameDetail',
+            meta: { title: '牌局详情' }
           }
         ]
       },

@@ -206,6 +206,11 @@
           </el-table-column>
           <el-table-column label="每日限制开出个数分布" prop="DayLimit">
             <template slot-scope="scope">
+              <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+            </template>
+          </el-table-column>
+          <el-table-column label="分段限制" prop="DayLimit">
+            <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
               <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
               <el-tag v-if="scope.row.AwardType == 2">不限制</el-tag>

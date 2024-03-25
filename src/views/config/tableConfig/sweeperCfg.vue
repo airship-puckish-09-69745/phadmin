@@ -356,6 +356,11 @@
               </el-table-column>
               <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
                 <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="分段限制" prop="DayLimit">
+                <template slot-scope="scope">
                   <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
                   {{ showOpenDayLimit(scope.row.JackpotType, scope.row.DayLimitArr) }}
                 </template>
@@ -1097,7 +1102,7 @@ export default {
       this.poolNumChange.visible = false
     },
     saveDayLimit() {
-      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
+/*      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
         if (this.dayLimitChange.data[i].StartHours < 0 || this.dayLimitChange.data[i].EndHours > 24) {
           Message.error('请输入正确的时间')
           return
@@ -1106,7 +1111,7 @@ export default {
           Message.error('请输入正确的时间')
           return
         }
-      }
+      }*/
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
         if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
           if (this.JackpotRandAwards[i]['DayLimitArr']) {
