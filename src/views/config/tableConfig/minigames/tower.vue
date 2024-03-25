@@ -183,7 +183,7 @@
           style="width: 100%"
         >
           <el-table-column type="index" />
-          <el-table-column label="奖励类型" prop="JackpotType">
+          <el-table-column label="奖励类型" prop="JackpotType" width="100">
             <template slot-scope="scope">
               {{ JackpotTypeCfg[scope.row.JackpotType] }}
             </template>
@@ -197,28 +197,28 @@
           </el-table-column>
           -->
 
-          <el-table-column label="中奖概率" prop="JackpotRate">
+          <el-table-column label="中奖概率" prop="JackpotRate" width="200">
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
                 <template slot="append">‰</template>
               </el-input>
             </template>
           </el-table-column>
-          <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+          <el-table-column label="每日限制开出个数分布" prop="DayLimit">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
-              {{ showOpenDayLimit(scope.row.JackpotType, scope.row.DayLimitArr) }}
+              <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
+              <el-tag v-if="scope.row.AwardType == 2">不限制</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="玩家开奖池条件(%)" width="300">
+          <el-table-column label="玩家开奖池条件(%)" width="250">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
               &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
             </template>
-
           </el-table-column>
 
-          <el-table-column label="机器人开奖池值" prop="PoolVal">
+          <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
             </template>
@@ -232,7 +232,7 @@
           </el-table-column>
           -->
 
-          <el-table-column label="机器人开奖数量概率" prop="RateArr">
+          <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
               {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -420,11 +420,7 @@
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
       >
-        <el-table-column label="配置ID" prop="Id">
-          <template slot-scope="scope">
-            {{ scope.row.Id }}
-          </template>
-        </el-table-column>
+        <el-table-column type="index" />
         <el-table-column label="开始小时" prop="StartHours">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
@@ -655,18 +651,8 @@ export default {
         return showStr
       }
     },
-    showOpenDayLimit(jpType, data) {
-      if (jpType == 4) {
-        return '不限制'
-      } else {
-        let showStr = ''
-        if (data) {
-          for (var i = 0; i < data.length; i++) {
-            showStr += data[i].StartHours + '到' + data[i].EndHours + '点' + data[i].Num + '个   '
-          }
-        }
-        return showStr
-      }
+    showOpenDayLimit(data) {
+      return data['StartHours'] + '点-' + data['EndHours'] + '点：' + data['Num'] + '个'
     },
     saveIncrJackpotDialog() {
       for (var i = 0; i < this.item.JackpotRegulation.PoolIncrArr.length; i++) {
@@ -691,20 +677,10 @@ export default {
       this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
     },
     addDayLimit() {
-      let maxId = 0
       if (!this.dayLimitChange.data) {
         this.dayLimitChange['data'] = []
-        this.dayLimitChange.data.push({ 'Id': maxId, 'StartHours': 0, 'EndHours': 0 })
-        return
-      } else {
-        for (var i = 0; i < this.dayLimitChange.data.length; i++) {
-          if (this.dayLimitChange.data[i].Id > maxId) {
-            maxId = this.dayLimitChange.data[i].Id
-          }
-        }
       }
-      maxId++
-      this.dayLimitChange.data.push({ 'Id': maxId, 'StartHours': 0, 'EndHours': 0 })
+      this.dayLimitChange.data.push({ 'StartHours': 0, 'EndHours': 0, 'Num': 0 })
     },
     removePoolNum(id) {
       for (var i = 0; i < this.poolNumChange.data.length; i++) {
@@ -742,15 +718,17 @@ export default {
           return
         }
       }
+      console.log(this.dayLimitChange)
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
         if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
-          if (this.JackpotRandAwards[i]['DayLimitArr']) {
+          if (!this.JackpotRandAwards[i]['DayLimitArr']) {
             this.JackpotRandAwards[i]['DayLimitArr'] = []
           }
           this.JackpotRandAwards[i]['DayLimitArr'] = this.dayLimitChange.data
           break
         }
       }
+          console.log('>>>>>>>>.', this.JackpotRandAwards)
       this.dayLimitChange.visible = false
     },
     checkShowDayLimit(awardType) {
@@ -773,16 +751,7 @@ export default {
       if (data.JackpotType == 4) {
         return
       }
-      let jpTypeName = ''
-      if (this.JackpotTypes) {
-        for (var i = 0; i < this.JackpotTypes.length; i++) {
-          if (this.JackpotTypes[i].value == data.JackpotType) {
-            jpTypeName = this.JackpotTypes[i].label
-            break
-          }
-        }
-      }
-      this.dayLimitChange.title = jpTypeName + '(开奖数量概率)'
+      this.dayLimitChange.title = this.JackpotTypeCfg[data.JackpotType] + '(限量分布)'
       this.dayLimitChange.data = data.DayLimitArr || [{}]
       this.dayLimitChange.visible = true
       this.dayLimitChange.jackpotType = data.JackpotType
