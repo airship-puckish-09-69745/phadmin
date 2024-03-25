@@ -228,7 +228,7 @@
             width='180%'
           >
             <template slot-scope="scope">
-              <router-link :to= "{name: 'texasNlhInsure', params: {Uid: 100 }}" @click.native="recordShow = false" style="color: blue">
+              <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.Time }}" @click.native="recordShow = false" style="color: blue">
                 {{ scope.row.LogId }}
               </router-link>
             </template>
@@ -301,7 +301,7 @@ export default {
         method: 'get',
         data: {
           Env: _this.env,
-          Path: '/tesasnlhdata/jackpot',
+          Path: '/texasnlhdata/jackpot',
           Level: _this.getLevel(_this.searchForm.Level)
         }
       }).then(response => {
@@ -340,7 +340,7 @@ export default {
         method: 'get',
         data: {
           Env: _this.env,
-          Path: '/tesasnlhdata/jackpotrecord',
+          Path: '/texasnlhdata/jackpotrecord',
           Level: Number(this.currLevel * 1000)
         }
       }).then(response => {
