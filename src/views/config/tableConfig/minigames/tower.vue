@@ -215,14 +215,14 @@
               <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="玩家开奖池条件(%)">
+          <el-table-column label="玩家开奖池条件(%)" width="260">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
               &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
             </template>
           </el-table-column>
 
-          <el-table-column label="机器人开奖池值" prop="PoolVal" width="200">
+          <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
             </template>
@@ -236,7 +236,7 @@
           </el-table-column>
           -->
 
-          <el-table-column label="机器人开奖数量概率" prop="RateArr" width="200">
+          <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
               {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -442,7 +442,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum(scope.row.Id)">移除</el-button>
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum(scope.$index)">移除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -535,7 +535,6 @@ export default {
 
   created() {
     this.getData()
-    console.log('=========', this.envProjectName)
   },
   methods: {
   	getLabelName(k) {
@@ -694,13 +693,8 @@ export default {
         }
       }
     },
-    removeDayLimitNum(id) {
-      for (var i = 0; i < this.dayLimitChange.data.length; i++) {
-        if (this.dayLimitChange.data[i].Id == id) {
-          this.dayLimitChange.data.splice(i, 1)
-          break
-        }
-      }
+    removeDayLimitNum(index) {
+      this.dayLimitChange.data.splice(index, 1)
     },
     savePoolNum() {
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
