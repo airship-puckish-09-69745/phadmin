@@ -93,6 +93,16 @@
         </template>
       </el-table-column>
       <el-table-column
+        prop="InsureChange"
+        label="获胜玩家手牌"
+        width="100%"
+      >
+        <template slot-scope="scope">
+          <el-image v-for="(item, index) in getMaxWinPlayerHdCard(scope.row)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
+          </el-image>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="LogID"
         label="牌局ID"
       >
@@ -246,6 +256,21 @@ export default {
       }
       return ''
     },
+    getMaxWinPlayerHdCard(row) {
+      var maxWinPlayer
+      for (var i = 0; i < row.Players.length; i++) {
+        if (maxWinPlayer === undefined) {
+          maxWinPlayer = row.Players[i]
+        }
+        if (row.Players[i].TurnMoney > maxWinPlayer.TurnMoney) {
+          maxWinPlayer = row.Players[i]
+        }
+      }
+      if (maxWinPlayer === undefined) {
+        return ''
+      }
+      return this.getHdCardByUid(row, maxWinPlayer.Uid)
+    },
     getHdCardByUid(row, uid) {
       for (var i = 0; i < row.Players.length; i++) {
         if (row.Players[i].Uid !== uid) {
@@ -272,8 +297,6 @@ export default {
         if (this.currentData.length === this.pageNum) {
           break
         }
-        console.log(i)
-        console.log(this.tableData[i])
         this.currentData.push(this.tableData[i])
       }
     },
