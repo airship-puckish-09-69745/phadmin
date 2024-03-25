@@ -182,7 +182,7 @@ export const asyncRoutes = [
           {
             path: 'activityLog',
             component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
-            name: 'millionPointRaceRuleCommonConfig',
+            name: 'activityLog',
             meta: { title: '积分赛用户日志  🚩️' }
           },
           {
@@ -529,19 +529,25 @@ export const asyncRoutes = [
             path: 'supergem_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
             name: 'supergem_slots_cfg',
-            meta: { title: 'SuperGem - 超级宝石' }
+            meta: { title: '超级宝石' }
           },
           {
-            path: 'candycandygrid_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candycandygrid_slots_cfg'),
-            name: 'candycandygrid_slots_cfg',
-            meta: { title: '糖果糖果Grid' }
+            path: 'supergemmars_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/supergemmars_slots_cfg'),
+            name: 'supergemmars_slots_cfg',
+            meta: { title: '超级宝石Mars' }
           },
           {
             path: 'candycandy_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/candycandy_slots_cfg'),
             name: 'candycandy_slots_cfg',
             meta: { title: '糖果糖果' }
+          },
+          {
+            path: 'candycandymars_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandymars_slots_cfg'),
+            name: 'candycandymars_slots_cfg',
+            meta: { title: '糖果糖果Mars' }
           },
           {
             path: 'slots_winner_record',
@@ -875,16 +881,34 @@ export const asyncRoutes = [
             meta: { title: '超级宝石', gid: 78 }
           },
           {
-            path: 'candycandygrid_slots_log',
+            path: 'supergemmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'candycandygrid_slots_log',
-            meta: { title: '糖果糖果Grid', gid: 79 }
+            name: 'supergemmars_slots_log',
+            meta: { title: '超级宝石Mars', gid: 81 }
+          },
+          {
+            path: 'candycandymars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandymars_slots_log',
+            meta: { title: '糖果糖果Mars', gid: 79 }
           },
           {
             path: 'candycandy_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandy_slots_log',
             meta: { title: '糖果糖果', gid: 80 }
+          },
+          {
+            path: 'millionaire_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'millionaire_slots_log',
+            meta: { title: '百万富翁', gid: 82 }
+          },
+          {
+            path: 'millionairemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'millionairemars_slots_log',
+            meta: { title: '百万富翁Mars', gid: 83 }
           }
         ]
       },

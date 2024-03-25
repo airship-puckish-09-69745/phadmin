@@ -127,15 +127,25 @@
                   <template slot-scope="scope">
                     <div v-if="BetOddsList[scope.$index]">
                       <div v-for="(data, index ) in BetOddsList[scope.$index].OddsList" style="line-height: 1.5; ">
-                        <el-row style="line-height: 1.5; "  >
-                          <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
+                        <el-row style="line-height: 1.5; ">
+                          <a size="mini" type="primary" @click="addOddsList(scope.$index)">+</a>
                           <span style="margin-left: 20px">倍数:</span>
-                          <el-input v-model.number="data.Double" size="mini" style="width: 80px" placeholder="倍数"
-                                    @input="wallpaperInput(scope.$index,index) "/>
+                          <el-input
+                            v-model.number="data.Odds"
+                            size="mini"
+                            style="width: 80px"
+                            placeholder="倍数"
+                            @input="wallpaperInput(scope.$index,index) "
+                          />
                           <span style="margin-left: 10px">概率:</span>
-                          <el-input v-model.number="data.Odds" size="mini" style="width: 80px" placeholder="概率%"
-                                    @input="wallpaperInput(scope.$index,index)"/>
-                          <a style="margin-left: 20px" @click="delOddsList(scope.$index,index)" type="danger" size="mini">-</a>
+                          <el-input
+                            v-model.number="data.Rate"
+                            size="mini"
+                            style="width: 80px"
+                            placeholder="概率%"
+                            @input="wallpaperInput(scope.$index,index)"
+                          />
+                          <a style="margin-left: 20px" type="danger" size="mini" @click="delOddsList(scope.$index,index)">-</a>
                         </el-row>
                       </div>
 
@@ -509,7 +519,7 @@ export default {
         two: 0,
         three: 0
       },
-      BetOddsList:[]
+      BetOddsList: []
     }
   },
   created() {
@@ -534,9 +544,9 @@ export default {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
 
-      /*     for (const j in this.item.BetOptionsRate) {
+      for (const j in this.item.BetOptionsRate) {
         this.item.BetOptionsRate[j].Val /= 1000
-      }*/
+      }
 
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -579,14 +589,24 @@ export default {
         ret.BetMoneyList[o] *= 1000
       }
 
+
+      ret.BetOptionsRate = []
+      for (const o in this.item.BetOptionsRate) {
+        const obj = {}
+        Object.assign(obj, this.item.BetOptionsRate[o])
+        obj.Val *= 1000
+        console.log(obj)
+        ret.BetOptionsRate.push(obj)
+      }
+
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
         const obj = {}
         Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        obj.OddsList  = obj.OddsList.filter(function(item) {
-          return JSON.stringify(item) != "{}"
-        });
+        obj.OddsList = obj.OddsList.filter(function(item) {
+          return JSON.stringify(item) != '{}'
+        })
 
         ret.BetAreaOptions.push(obj)
       }
@@ -625,13 +645,12 @@ export default {
             this.$refs.compare.SetOldVal(response.Data)
             this.dices = this.item.Dices ? this.item.Dices.join(',') : this.dices
 
-
             for (let i = 0; i < this.item.BetAreaOptions.length; i++) {
-              if (!this.item.BetAreaOptions[i].OddsList||typeof(this.item.BetAreaOptions[i].OddsList) == "undefined"||this.item.BetAreaOptions[i].OddsList.length==0){
-                this.item.BetAreaOptions[i]["OddsList"]=[]
-                this.item.BetAreaOptions[i]["OddsList"].push({})
-              }else {
-                this.item.BetAreaOptions[i]["OddsList"]=this.item.BetAreaOptions[i].OddsList
+              if (!this.item.BetAreaOptions[i].OddsList || typeof (this.item.BetAreaOptions[i].OddsList) === 'undefined' || this.item.BetAreaOptions[i].OddsList.length == 0) {
+                this.item.BetAreaOptions[i]['OddsList'] = []
+                this.item.BetAreaOptions[i]['OddsList'].push({})
+              } else {
+                this.item.BetAreaOptions[i]['OddsList'] = this.item.BetAreaOptions[i].OddsList
               }
             }
             this.BetOddsList = this.item.BetAreaOptions
@@ -658,6 +677,16 @@ export default {
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
       for (const o in this.item.BetAreaOptions) {
+        for (const i in this.item.BetAreaOptions[o]) {
+          let count = 0
+          for (const i in this.item.BetAreaOptions[o].OddsList) {
+            count += this.item.BetAreaOptions[o].OddsList[i].Odds
+            if (count > 100) {
+              Message.error('extrapay倍数总概率不能大于100')
+              return
+            }
+          }
+        }
         for (const oi in o.Odds) {
           this.item.BetAreaOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
         }

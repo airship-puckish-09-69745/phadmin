@@ -1221,41 +1221,48 @@
       >
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column label="手牌" width="450" align="center">
-          <el-table-column prop="cards" label="后手牌" width="150">
-            <template #default="scope">
-              <template v-if="scope.row.cardType > 1">
-                <div v-html="showCard(scope.row.cards)" /><span>({{ pusoyDos.pusoyDosCardTypes[scope.row.cardType] || '' }})</span>
-              </template>
-              <template v-else>
-                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyDos.pusoyDosGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column prop="cards" label="中手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupMiddle.cards)" /><span>({{ pusoyDos.pusoyDosGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template></el-table-column>
-          <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{ pusoyDos. pusoyDosGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
-        </el-table-column>
-        <el-table-column prop="cardType" label="牌型" width="90">
-          <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }} {{ pusoyShowGroupExtra(scope.row) }}</template>
-        </el-table-column>
-        <el-table-column prop="cardScore" label="点数" width="100" />
-        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyFee" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyFee/1000 }}</template></el-table-column>
+        <!--        <el-table-column label="手牌" width="450" align="center">-->
+
+        <!--        </el-table-column>-->
+        <el-table-column prop="moneyChange" label="筹码变化" width="100"><template slot-scope="scope">{{ scope.row.moneyChange/1000 }}</template></el-table-column>
         <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+        <el-table-column prop="burnedScore" label="燃烧获得" width="100"><template slot-scope="scope">{{ scope.row.burnedScore/1000 }}</template></el-table-column>
+        <el-table-column prop="normalScore" label="正常结算" width="100"><template slot-scope="scope">{{ scope.row.normalScore/1000 }}</template></el-table-column>
+        <el-table-column prop="extraScore" label="额外结算" width="100"><template slot-scope="scope">{{ scope.row.extraScore/1000 }}</template></el-table-column>
+        <el-table-column prop="pusoyDosScore" label="pusoyDos金币" width="100"><template slot-scope="scope">{{ scope.row.pusoyDosScore/1000 }}</template></el-table-column>
+
+        <el-table-column prop="hitPotScore" label="hitPot奖池" width="100" />
+        <el-table-column prop="potMoney" label="奖池" width="100"><template slot-scope="scope">{{ scope.row.potMoney/1000 }}</template></el-table-column>
       </el-table>
       <br>
       <el-table
-        title="打枪："
         :visible.sync="pusoyDos.pusoyDosShootOneShow"
-        :data="pusoyDos.pusoyDosDetail.shootOne"
+        :data="pusoyDos.pusoyDosDetail.displayCardsList"
         width="100%"
         border
       >
         <el-table-column label="Pusoy List：">
-          <el-table-column prop="SourcePlayer.uid" label="打枪"><template slot-scope="scope">{{ scope.row.SourcePlayer.uid }}</template></el-table-column>
-          <el-table-column prop="TargetPlayer.uid" label="Pusoy"><template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template></el-table-column>
-          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
+          <el-table-column prop="uid" label="uid"><template slot-scope="scope">{{ scope.row.uid }}</template></el-table-column>
+          <el-table-column label="出牌">
+            <template slot-scope="scope">
+              <div v-html="showPusoyDosCards(scope.row.cards)" />
+            </template>
+          </el-table-column>
+          <el-table-column label="是否跳过">
+            <template slot-scope="scope">
+              {{ (scope.row.isPass ==0?"否":"是") }}
+            </template>
+          </el-table-column>
+          <el-table-column label="牌型">
+            <template slot-scope="scope">
+              {{ pusoyDos.pusoyDosGroupCardTypes[scope.row.cardType] }}
+            </template>
+          </el-table-column>
+          <el-table-column label="剩余手牌">
+            <template slot-scope="scope">
+              {{ scope.row.handCardCount }}
+            </template>
+          </el-table-column>
         </el-table-column>
       </el-table>
       <br>
@@ -1276,7 +1283,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, LibShow, MoneyShow } from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 import LineChart from './components/LineChart'
@@ -1437,17 +1444,16 @@ export default {
         //   113: '清龙'
         // },
         pusoyDosGroupCardTypes: {
-          0: 'Nil',
-          1: '高牌',
+          0: '',
+          1: '单张',
           2: '对子',
-          3: '两对',
-          4: '三条',
-          5: '顺子',
-          6: '同花',
-          7: '葫芦',
-          8: '四条',
-          9: '同花顺',
-          10: '皇家同花顺'
+          3: '三条',
+          4: '顺子',
+          5: '同花',
+          6: '葫芦',
+          7: '四带一',
+          8: '同花顺',
+          9: '皇家同花顺'
         },
         pusoyDosShootOneShow: false
       },
@@ -1526,6 +1532,25 @@ export default {
       } else {
         return ''
       }
+    },
+    showPusoyDosCards(cards) {
+      const m = {}
+      m[3] = 1 // 方块
+      m[0] = 2 // 梅花
+      m[2] = 3 // 红桃
+      m[1] = 4 // 黑桃
+      let ret = ''
+      if (cards) {
+        for (let i = 0; i < cards.length; i++) {
+          const color = cards[i] >> 4
+          const num = cards[i] & 0x0F
+          const colors = $libShow.ColorMap[m[color]]
+          const nums = $libShow.NumMap[num]
+          console.log('============', colors, nums)
+          ret += '<span style="color:' + ((color === 1 || color === 3) ? 'red' : 'black') + '">' + colors + nums + '</span>'
+        }
+      }
+      return ret
     },
     showCard(cards) {
       if (cards == null || cards == undefined) {
@@ -1745,7 +1770,7 @@ export default {
         this.getDetail(row.LogID, row.FinishTime)
       }
     },
-    setRowUid(uid){
+    setRowUid(uid) {
       this.sweeperRowUid = uid
     },
     getDetail(id, dt) {
@@ -2119,6 +2144,7 @@ export default {
         const players = obj.totalPlayers[j]
         console.log(this.sweeperRowUid)
         if (players.uid === this.sweeperRowUid) {
+          console.log(this.players)
           obj.players = players
           break
         }
@@ -2160,31 +2186,6 @@ export default {
       this.bodingDetailVisible = true
     },
     showPusoyDosGame(obj) {
-      console.log(obj)
-      this.pusoyDos.pusoyDosShootOneShow = false
-      for (const k in obj.players) {
-        for (const i in obj.groupTop) {
-          if (obj.groupTop[i].uid === obj.players[k].uid) {
-            obj.players[k].groupTop = obj.groupTop[i]
-            break
-          }
-        }
-        for (const i in obj.groupMiddle) {
-          if (obj.groupMiddle[i].uid === obj.players[k].uid) {
-            obj.players[k].groupMiddle = obj.groupMiddle[i]
-            break
-          }
-        }
-        for (const i in obj.groupBottom) {
-          if (obj.groupBottom[i].uid === obj.players[k].uid) {
-            obj.players[k].groupBottom = obj.groupBottom[i]
-            break
-          }
-        }
-      }
-      if (obj.shootOne) {
-        this.pusoyDos.pusoyDosShootOneShow = true
-      }
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
     },

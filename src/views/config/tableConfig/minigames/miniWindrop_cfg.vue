@@ -73,7 +73,7 @@
       </el-form>
     </el-row>
 
-    <fieldset style="margin-top:20px;"  v-if="envProjectName!='ph_audit'">
+    <fieldset v-if="envProjectName!='ph_audit'" style="margin-top:20px;">
       <legend>jackpot调控配置</legend>
       <el-row>
         <el-alert
@@ -312,293 +312,101 @@
         </el-form-item>
       </el-form>
     </el-dialog>
-    <div  v-if="envProjectName!='ph_audit'">
-    <div><br></div>
-    <div><br></div>
-    <div style="display: flex; align-items: center;">
-      <div style="flex: 1; height: 2px; background-color: black;" />
-      <div style="padding: 0 10px;"> <!-- 文字部分 -->
-        <slot> <span style="color:red;font-size:20px ">高级JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
+    <div v-if="envProjectName!='ph_audit'">
+      <div><br></div>
+      <div><br></div>
+      <div style="display: flex; align-items: center;">
+        <div style="flex: 1; height: 2px; background-color: black;" />
+        <div style="padding: 0 10px;"> <!-- 文字部分 -->
+          <slot> <span style="color:red;font-size:20px ">高级JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
+        </div>
+        <div style="flex: 1; height: 2px; background-color: black;" />
       </div>
-      <div style="flex: 1; height: 2px; background-color: black;" />
-    </div>
-    <div><br></div>
-    <div><br></div>
-    <el-row>
-      <el-button type="warning" round @click="showUserArea2">用户在玩图案</el-button>
-    </el-row>
-    <!--公共配置-->
-    <el-row style="margin-top: 30px">
-      <el-form ref="form" label-position="left">
+      <div><br></div>
+      <div><br></div>
+      <el-row>
+        <el-button type="warning" round @click="showUserArea2">用户在玩图案</el-button>
+      </el-row>
+      <!--公共配置-->
+      <el-row style="margin-top: 30px">
+        <el-form ref="form" label-position="left">
+          <el-row>
+            <el-col :span="7">
+              <el-form-item label="Jackpot贡献率：">
+                <el-input v-model.number="cfg.JackpotHight"><template slot="append">‰</template></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <fieldset style="margin-top:10px">
+              <legend>Jackpot2配置</legend>
+              <el-alert
+                type="success"
+                description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比"
+              />
+
+              <el-table
+                :data="item.JackpotCfg2"
+                border
+                style="width: 100%"
+              >
+                <el-table-column
+                  label="级别"
+                  width="180"
+                >
+                  <template slot-scope="scope">
+                    {{ JackpotTypeCfg[scope.row.Type] }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="奖励占比"
+                  width="380"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.AwardRate">
+                      <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">‱</template>
+                    </el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="概率(Jackpot调控开启后此配置无效)"
+                  width="380"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Rate"><template slot="append">‰</template></el-input>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+            </fieldset>
+          </el-row>
+        </el-form>
+      </el-row>
+
+      <fieldset v-if="envProjectName!='ph_audit'" style="margin-top:20px;">
+        <legend>jackpot调控配置</legend>
         <el-row>
-          <el-col :span="7">
-            <el-form-item label="Jackpot贡献率：">
-              <el-input v-model.number="cfg.JackpotHight"><template slot="append">‰</template></el-input>
+          <el-alert
+            type="error"
+            description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
+          />
+          <el-form ref="item" :model="item" label-width="100px">
+            <el-form-item label="调控总开关">
+              <el-switch
+                v-model="item.JackpotRegulation2.ToggleSwitch"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                active-text="开"
+                inactive-text="关"
+              />
             </el-form-item>
-          </el-col>
+          </el-form>
         </el-row>
-
         <el-row>
-          <fieldset style="margin-top:10px">
-            <legend>Jackpot2配置</legend>
-            <el-alert
-              type="success"
-              description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比"
-            />
-
-            <el-table
-              :data="item.JackpotCfg2"
-              border
-              style="width: 100%"
-            >
-              <el-table-column
-                label="级别"
-                width="180"
-              >
-                <template slot-scope="scope">
-                  {{ JackpotTypeCfg[scope.row.Type] }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="奖励占比"
-                width="380"
-              >
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.AwardRate">
-                    <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">‱</template>
-                  </el-input>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="概率(Jackpot调控开启后此配置无效)"
-                width="380"
-              >
-                <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Rate"><template slot="append">‰</template></el-input>
-                </template>
-              </el-table-column>
-            </el-table>
-
-          </fieldset>
-        </el-row>
-      </el-form>
-    </el-row>
-
-    <fieldset style="margin-top:20px;"  v-if="envProjectName!='ph_audit'">
-      <legend>jackpot调控配置</legend>
-      <el-row>
-        <el-alert
-          type="error"
-          description="开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)"
-        />
-        <el-form ref="item" :model="item" label-width="100px">
-          <el-form-item label="调控总开关">
-            <el-switch
-              v-model="item.JackpotRegulation2.ToggleSwitch"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="开"
-              inactive-text="关"
-            />
-          </el-form-item>
-        </el-form>
-      </el-row>
-      <el-row>
-        <el-table
-          ref="filterTable"
-          :data="JackpotRandAwards2"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
-        >
-          <el-table-column type="index" />
-          <el-table-column label="奖励类型" prop="JackpotType">
-            <template slot-scope="scope">
-              {{ JackpotTypeCfg[scope.row.JackpotType] }}
-            </template>
-          </el-table-column>
-
-          <!--
-          <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
-            <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              {{ item.JackpotCfg2[scope.row.JackpotType-1].AwardRate }}%
-            </template>
-          </el-table-column>
-          -->
-
-          <el-table-column label="中奖概率" prop="JackpotRate">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
-                <template slot="append">‰</template>
-              </el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit2(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
-            </template>
-          </el-table-column>
-          <el-table-column label="玩家开奖池条件(%)" width="300">
-            <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-              &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
-            </template>
-
-          </el-table-column>
-
-          <el-table-column label="机器人开奖池值" prop="PoolVal">
-            <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
-            </template>
-          </el-table-column>
-
-          <!--
-          <el-table-column label="机器人发奖上限(%)" prop="VrPoolRateMax">
-            <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              <el-input v-model.number="scope.row.VrPoolRateMax" style="width: 120px;" size="mini" :required="true" />
-            </template>
-          </el-table-column>
-          -->
-
-          <el-table-column label="机器人开奖数量概率" prop="RateArr">
-            <template slot-scope="scope">
-              <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog2(scope.row)" />
-              {{ showOpenPoolRate2(scope.row.JackpotType, scope.row.RateArr) }}
-            </template>
-          </el-table-column>
-        </el-table>
-      </el-row>
-      <el-descriptions class="margin-top" border>
-        <el-descriptions-item>
-          <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
-        </el-descriptions-item>
-      </el-descriptions>
-      <el-table
-        ref="filterTable"
-        :data="item.JackpotRegulation2.PoolIncrArr"
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-      >
-        <el-table-column label="Id" prop="Id" />
-        <el-table-column label="奖池范围">
-          <template slot-scope="scope">
-            {{ getJackpotPoolTitle2(scope.row) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="[0,2)点" prop="MinRobotNum">
-          <template slot-scope="scope">
-            {{ getJackpotIncrShow2(scope.row, 0, 1) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="[2,7)点" prop="MinRobotNum">
-          <template slot-scope="scope">
-            {{ getJackpotIncrShow2(scope.row, 2, 6) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="[7,9)点" prop="MinRobotNum">
-          <template slot-scope="scope">
-            {{ getJackpotIncrShow2(scope.row, 7, 8) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="[9,18)点" prop="MinRobotNum">
-          <template slot-scope="scope">
-            {{ getJackpotIncrShow2(scope.row, 9, 17) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="[18,24)点" prop="MinRobotNum">
-          <template slot-scope="scope">
-            {{ getJackpotIncrShow2(scope.row, 18, 23) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm2(scope.row)">编辑</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </fieldset>
-    <el-dialog
-      title="查看玩家在玩图案"
-      :modal="false"
-      :visible.sync="showArea2.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-row>
-        <el-form :model="showArea2" label-width="120px" size="small">
-          <el-form-item label="玩家id：">
-            <el-input v-model.number="showArea2.uid" size="11" placeholder="请输入在用户id" />
-          </el-form-item>
-          <el-form-item label="生成图案：">
-            <div id="windropShow2" v-html="windropData2" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="mini" @click="goSearch2()">执行</el-button>
-          </el-form-item>
-        </el-form>
-      </el-row>
-    </el-dialog>
-
-    <!-- 【dialog】jackpot开出奖励 -->
-    <el-dialog
-      :title="poolNumChange.title"
-      :modal="false"
-      :visible.sync="poolNumChange.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum2()">添加</el-button>
-      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum2()">保存</el-button>
-      <el-table
-        ref="filterTable"
-        :data="poolNumChange2.data"
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-      >
-        <el-table-column label="配置ID" prop="Id">
-          <template slot-scope="scope">
-            {{ scope.row.Id }}
-          </template>
-        </el-table-column>
-        <el-table-column label="开出数量(一次最多只有一个)" prop="Num">
-          <template slot-scope="scope">
-            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
-          </template>
-        </el-table-column>
-        <el-table-column label="开出概率(%)" prop="Rate">
-          <template slot-scope="scope">
-            <el-input v-model.number="scope.row.Rate" style="width: 100px;" size="mini" :required="true" />
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
-            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum2(scope.row.Id)">移除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
-
-    <!-- 【dialog】Jackpot奖池增长 -->
-    <el-dialog
-      :title="incrJackpotForm2.title"
-      :modal="false"
-      :visible.sync="incrJackpotForm2.visible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-form ref="robotForm" :model="incrJackpotForm2.data">
-        <el-form-item>
           <el-table
             ref="filterTable"
-            :data="incrJackpotForm2.data"
+            :data="JackpotRandAwards2"
             border
             :header-cell-style="libShow.DefaultTableHeadClass"
             :row-style="{height:'10px'}"
@@ -606,29 +414,221 @@
             style="width: 100%"
           >
             <el-table-column type="index" />
-            <el-table-column label="时间段">
+            <el-table-column label="奖励类型" prop="JackpotType">
               <template slot-scope="scope">
-                [{{ scope.row.StartHour }},{{ scope.row.EndHour+1 }})点
+                {{ JackpotTypeCfg[scope.row.JackpotType] }}
               </template>
             </el-table-column>
-            <el-table-column label="每小时增长">
+
+            <!--
+          <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
+            <template v-if="scope.row.AwardType==1" slot-scope="scope">
+              {{ item.JackpotCfg2[scope.row.JackpotType-1].AwardRate }}%
+            </template>
+          </el-table-column>
+          -->
+
+            <el-table-column label="中奖概率" prop="JackpotRate">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.PerHourIncr" style="width: 100px;" size="mini" :required="true" />
+                <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
+                  <template slot="append">‰</template>
+                </el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit2(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="玩家开奖池条件(%)" width="300">
+              <template v-if="scope.row.AwardType==1" slot-scope="scope">
+                虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+              </template>
+
+            </el-table-column>
+
+            <el-table-column label="机器人开奖池值" prop="PoolVal">
+              <template v-if="scope.row.AwardType==1" slot-scope="scope">
+                >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+              </template>
+            </el-table-column>
+
+            <!--
+          <el-table-column label="机器人发奖上限(%)" prop="VrPoolRateMax">
+            <template v-if="scope.row.AwardType==1" slot-scope="scope">
+              <el-input v-model.number="scope.row.VrPoolRateMax" style="width: 120px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+          -->
+
+            <el-table-column label="机器人开奖数量概率" prop="RateArr">
+              <template slot-scope="scope">
+                <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog2(scope.row)" />
+                {{ showOpenPoolRate2(scope.row.JackpotType, scope.row.RateArr) }}
               </template>
             </el-table-column>
           </el-table>
-        </el-form-item>
-        <el-form-item>
-          <el-button style="margin-bottom:10px;" type="primary" size="mini" @click="saveIncrJackpotDialog2()">保存</el-button>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <div><br></div>
-    <div><br></div>
-    <div style="display: flex; align-items: center;">
+        </el-row>
+        <el-descriptions class="margin-top" border>
+          <el-descriptions-item>
+            <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
+          </el-descriptions-item>
+        </el-descriptions>
+        <el-table
+          ref="filterTable"
+          :data="item.JackpotRegulation2.PoolIncrArr"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column label="Id" prop="Id" />
+          <el-table-column label="奖池范围">
+            <template slot-scope="scope">
+              {{ getJackpotPoolTitle2(scope.row) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="[0,2)点" prop="MinRobotNum">
+            <template slot-scope="scope">
+              {{ getJackpotIncrShow2(scope.row, 0, 1) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="[2,7)点" prop="MinRobotNum">
+            <template slot-scope="scope">
+              {{ getJackpotIncrShow2(scope.row, 2, 6) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="[7,9)点" prop="MinRobotNum">
+            <template slot-scope="scope">
+              {{ getJackpotIncrShow2(scope.row, 7, 8) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="[9,18)点" prop="MinRobotNum">
+            <template slot-scope="scope">
+              {{ getJackpotIncrShow2(scope.row, 9, 17) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="[18,24)点" prop="MinRobotNum">
+            <template slot-scope="scope">
+              {{ getJackpotIncrShow2(scope.row, 18, 23) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm2(scope.row)">编辑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </fieldset>
+      <el-dialog
+        title="查看玩家在玩图案"
+        :modal="false"
+        :visible.sync="showArea2.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-row>
+          <el-form :model="showArea2" label-width="120px" size="small">
+            <el-form-item label="玩家id：">
+              <el-input v-model.number="showArea2.uid" size="11" placeholder="请输入在用户id" />
+            </el-form-item>
+            <el-form-item label="生成图案：">
+              <div id="windropShow2" v-html="windropData2" />
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" size="mini" @click="goSearch2()">执行</el-button>
+            </el-form-item>
+          </el-form>
+        </el-row>
+      </el-dialog>
 
-      <div style="flex: 1; height: 2px; background-color: black;" />
-    </div>
+      <!-- 【dialog】jackpot开出奖励 -->
+      <el-dialog
+        :title="poolNumChange.title"
+        :modal="false"
+        :visible.sync="poolNumChange.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum2()">添加</el-button>
+        <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum2()">保存</el-button>
+        <el-table
+          ref="filterTable"
+          :data="poolNumChange2.data"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column label="配置ID" prop="Id">
+            <template slot-scope="scope">
+              {{ scope.row.Id }}
+            </template>
+          </el-table-column>
+          <el-table-column label="开出数量(一次最多只有一个)" prop="Num">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+          <el-table-column label="开出概率(%)" prop="Rate">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.Rate" style="width: 100px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum2(scope.row.Id)">移除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+
+      <!-- 【dialog】Jackpot奖池增长 -->
+      <el-dialog
+        :title="incrJackpotForm2.title"
+        :modal="false"
+        :visible.sync="incrJackpotForm2.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-form ref="robotForm" :model="incrJackpotForm2.data">
+          <el-form-item>
+            <el-table
+              ref="filterTable"
+              :data="incrJackpotForm2.data"
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column type="index" />
+              <el-table-column label="时间段">
+                <template slot-scope="scope">
+                  [{{ scope.row.StartHour }},{{ scope.row.EndHour+1 }})点
+                </template>
+              </el-table-column>
+              <el-table-column label="每小时增长">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.PerHourIncr" style="width: 100px;" size="mini" :required="true" />
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+          <el-form-item>
+            <el-button style="margin-bottom:10px;" type="primary" size="mini" @click="saveIncrJackpotDialog2()">保存</el-button>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+      <div><br></div>
+      <div><br></div>
+      <div style="display: flex; align-items: center;">
+
+        <div style="flex: 1; height: 2px; background-color: black;" />
+      </div>
       <div style="padding: 0 10px;"> <!-- 文字部分 -->
         <slot> <span style="color:red;font-size:20px ">游戏配置</span></slot>
       </div>
@@ -664,7 +664,7 @@
               <el-input v-model="cfg.AutomaticTimesStr" placeholder="" />
             </el-form-item>
           </el-row>
-          <el-row  v-if="envProjectName!='ph_audit'">
+          <el-row v-if="envProjectName!='ph_audit'">
             <el-form-item label="加倍行数显示：">
               <el-input v-model="cfg.AddTimesRow" placeholder="" />
             </el-form-item>
@@ -692,7 +692,7 @@
         </el-form>
       </el-col>
     </el-row>
-    <el-row style="margin-top: 30px"  v-if="envProjectName!='ph_audit'">
+    <el-row v-if="envProjectName!='ph_audit'" style="margin-top: 30px">
       <el-col :span="16" :offset="3">
         <h3>小转盘选项配置(概率总和取比)</h3>
         <el-row>
@@ -742,7 +742,7 @@
                       </el-select>
                     </el-form-item>
                   </el-row>
-                  <el-row  v-if="envProjectName!='ph_audit'">
+                  <el-row v-if="envProjectName!='ph_audit'">
                     <money-input v-model.number="item.EnergyNum" label="转盘小游戏能量条数额" />
                   </el-row>
                   <el-row v-if="envProjectName!='ph_audit'">
@@ -756,11 +756,11 @@
                         <el-input v-model.number="item.LuckyJPKey" placeholder="请输入" disabled />
                       </el-form-item>
                     </el-row>
-<!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
-<!--                      <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">-->
-<!--                        <el-input v-model.number="item.LuckyJPTransferRate" placeholder="请输入" />-->
-<!--                      </el-form-item>-->
-<!--                    </el-row>-->
+                    <!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
+                    <!--                      <el-form-item label="LuckyJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.LuckyJPTransferRate">-->
+                    <!--                        <el-input v-model.number="item.LuckyJPTransferRate" placeholder="请输入" />-->
+                    <!--                      </el-form-item>-->
+                    <!--                    </el-row>-->
                     <el-row>
                       <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">
                         <el-input v-model.number="item.LuckyJPOdds" placeholder="请输入" />
@@ -771,7 +771,7 @@
                         <el-input v-model.number="item.LuckyJPRate" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
-                    <el-row  v-if="envProjectName!='ph_audit'">
+                    <el-row v-if="envProjectName!='ph_audit'">
                       <money-input v-model.number="item.LuckyJPInitMoney" label="LuckyJP 初始化金额" />
                     </el-row>
                     <el-row>
@@ -779,11 +779,11 @@
                         <el-input v-model="item.SuperJPKey" placeholder="请输入" disabled />
                       </el-form-item>
                     </el-row>
-<!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
-<!--                      <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">-->
-<!--                        <el-input v-model.number="item.SuperJPTransferRate" placeholder="请输入" />-->
-<!--                      </el-form-item>-->
-<!--                    </el-row>-->
+                    <!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
+                    <!--                      <el-form-item label="SuperJP 入池转换率（万分比，例：值为 3，代表万分之三）：" prop="item.SuperJPTransferRate">-->
+                    <!--                        <el-input v-model.number="item.SuperJPTransferRate" placeholder="请输入" />-->
+                    <!--                      </el-form-item>-->
+                    <!--                    </el-row>-->
                     <el-row>
                       <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">
                         <el-input v-model.number="item.SuperJPOdds" placeholder="请输入" />
@@ -794,9 +794,9 @@
                         <el-input v-model.number="item.superJPRate" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
-<!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
-<!--                      <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />-->
-<!--                    </el-row>-->
+                    <!--                    <el-row  v-if="envProjectName!='ph_audit'">-->
+                    <!--                      <money-input v-model.number="item.SuperJPInitMoney" label="SuperJP 初始化金额" />-->
+                    <!--                    </el-row>-->
                   </div>
                   <fieldset>
                     <legend>普通选项配置</legend>
@@ -817,17 +817,17 @@
                             <el-input v-model.number="scope.row.HitRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column  v-if="envProjectName!='ph_audit'" prop="item.FirstTimesRates" label="翻倍1次命中概率）">
+                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.FirstTimesRates" label="翻倍1次命中概率）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.FirstTimesRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column  v-if="envProjectName!='ph_audit'" prop="item.SecondTimesRates" label="翻倍2次命中概率）">
+                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.SecondTimesRates" label="翻倍2次命中概率）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.SecondTimesRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column  v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）">
+                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" />
                           </template>

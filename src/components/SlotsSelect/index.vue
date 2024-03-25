@@ -44,8 +44,11 @@ export default {
         { label: '糖果派对Way', value: 76 },
         { label: '糖果派对Allline', value: 77 },
         { label: '超级宝石', value: 78 },
-        { label: '糖果糖果Grid', value: 79 },
-        { label: '糖果糖果', value: 80 }
+        { label: '超级宝石Mars', value: 81 },
+        { label: '糖果糖果Mars', value: 79 },
+        { label: '糖果糖果', value: 80 },
+        { label: '百万富翁', value: 82 },
+        { label: '百万富翁Mars', value: 83 }
       ]
     }
   },
