@@ -366,9 +366,14 @@
                 </template>
               </el-table-column>
               <el-table-column label="玩家开奖池条件(%)" width="300">
-                <template v-if="scope.row.AwardType==1" slot-scope="scope">
-                  虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-                  &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                <template slot-scope="scope">
+                 <div v-if="scope.row.AwardType==1" >
+                   虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                   &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                 </div>
+                  <span  v-if="scope.row.JackpotType==4" >
+                     3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+                  </span>
                 </template>
 
               </el-table-column>
@@ -1102,7 +1107,7 @@ export default {
       this.poolNumChange.visible = false
     },
     saveDayLimit() {
-/*      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
+      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
         if (this.dayLimitChange.data[i].StartHours < 0 || this.dayLimitChange.data[i].EndHours > 24) {
           Message.error('请输入正确的时间')
           return
@@ -1111,7 +1116,7 @@ export default {
           Message.error('请输入正确的时间')
           return
         }
-      }*/
+      }
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
         if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
           if (this.JackpotRandAwards[i]['DayLimitArr']) {
