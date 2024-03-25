@@ -183,7 +183,7 @@
           style="width: 100%"
         >
           <el-table-column type="index" />
-          <el-table-column label="奖励类型" prop="JackpotType" width="100">
+          <el-table-column label="奖励类型" prop="JackpotType" width="120">
             <template slot-scope="scope">
               {{ JackpotTypeCfg[scope.row.JackpotType] }}
             </template>
@@ -204,26 +204,25 @@
               </el-input>
             </template>
           </el-table-column>
-          <el-table-column label="每日限制开出个数分布" prop="DayLimit">
+          <el-table-column label="每日限制开出个数" prop="DayLimit" width="200">
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+              <el-input v-if="scope.row.AwardType == 1" v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
             </template>
           </el-table-column>
-          <el-table-column label="分段限制" prop="DayLimit">
+          <el-table-column label="分段限制" prop="DayLimitArr">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
               <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
-              <el-tag v-if="scope.row.AwardType == 2">不限制</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="玩家开奖池条件(%)" width="250">
+          <el-table-column label="玩家开奖池条件(%)">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
               &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
             </template>
           </el-table-column>
 
-          <el-table-column label="机器人开奖池值" prop="PoolVal" width="180">
+          <el-table-column label="机器人开奖池值" prop="PoolVal" width="200">
             <template v-if="scope.row.AwardType==1" slot-scope="scope">
               >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
             </template>
@@ -237,7 +236,7 @@
           </el-table-column>
           -->
 
-          <el-table-column label="机器人开奖数量概率" prop="RateArr" width="160">
+          <el-table-column label="机器人开奖数量概率" prop="RateArr" width="200">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
               {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -723,7 +722,6 @@ export default {
           return
         }
       }
-      console.log(this.dayLimitChange)
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
         if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
           if (!this.JackpotRandAwards[i]['DayLimitArr']) {
@@ -733,7 +731,6 @@ export default {
           break
         }
       }
-          console.log('>>>>>>>>.', this.JackpotRandAwards)
       this.dayLimitChange.visible = false
     },
     checkShowDayLimit(awardType) {
@@ -756,7 +753,7 @@ export default {
       if (data.JackpotType == 4) {
         return
       }
-      this.dayLimitChange.title = this.JackpotTypeCfg[data.JackpotType] + '(限量分布)'
+      this.dayLimitChange.title = this.JackpotTypeCfg[data.JackpotType] + '(分段限制)'
       this.dayLimitChange.data = data.DayLimitArr || [{}]
       this.dayLimitChange.visible = true
       this.dayLimitChange.jackpotType = data.JackpotType
