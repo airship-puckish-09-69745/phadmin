@@ -123,7 +123,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="extrapay倍数"
+                  :label="'extrapay倍数(单项概率总和必须等于100)'"
                   width="320"
                 >
 
@@ -801,8 +801,8 @@ export default {
           let count = 0
           for (const i in this.item.BetAreaOptions[o].OddsList) {
             count += this.item.BetAreaOptions[o].OddsList[i].Odds
-            if (count > 100) {
-              Message.error('extrapay倍数总概率不能大于100')
+            if (count == 100) {
+              Message.error('extrapay倍数总概率必须等于100')
               return
             }
           }
