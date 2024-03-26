@@ -73,7 +73,7 @@
         sortable="custom"
       >
         <template slot-scope="scope">
-          {{ (scope.row.InsureFail - scope.row.Insure) / 1000 }}
+          {{ (scope.row.Insure - scope.row.InsureFail ) / 1000 }}
         </template>
       </el-table-column>
       <el-table-column
@@ -212,7 +212,7 @@ export default {
     calTotalInsure() {
       this.totalInsure = 0
       for (var i = 0; i < this.tableData.length; i++) {
-        this.totalInsure += (this.tableData[i].InsureFail - this.tableData[i].Insure) / 1000
+        this.totalInsure += (this.tableData[i].Insure - this.tableData[i].InsureFail) / 1000
       }
     },
     // 分页处理
