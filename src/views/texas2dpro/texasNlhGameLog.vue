@@ -232,7 +232,7 @@ export default {
           for (var i = 0; i < objs.list.length; i++) {
             _this.tableData.push(objs.list[i])
           }
-          _this.tableData.sort(this.sortBy("StartTime", -1))
+          _this.tableData.sort(this.sortBy('StartTime', -1))
           _this.refreshShow()
         } else {
           Message.error(response.Data)
@@ -241,7 +241,7 @@ export default {
     },
     getRoomLevel(row) {
       var gameInfo = JSON.parse(row.GameInfo)
-      var level = (gameInfo.SmallBlind / 1000)+ '/' + (gameInfo.BigBlind / 1000)
+      var level = (gameInfo.SmallBlind / 1000) + '/' + (gameInfo.BigBlind / 1000)
       if (gameInfo.Straddle > 0) {
         level = level + '/' + (2 * gameInfo.BigBlind / 1000)
       }
