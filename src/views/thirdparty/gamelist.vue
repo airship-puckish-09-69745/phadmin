@@ -229,6 +229,7 @@
               :active-value="1"
               inactive-text="不显示"
               inactive-value="0"
+              type="number"
             />
           </el-col>
         </el-form-item>
@@ -295,7 +296,8 @@ export default {
         Name: '游戏名',
         CategoryID: '类别id',
         Gid: '本方实际游戏id',
-        Scene: '进入游戏的key'
+        Scene: '进入游戏的key',
+        ShowDatacenter: '展示到数据中心'
       }
     }
   },
@@ -440,6 +442,7 @@ export default {
     },
     changeShowDatacenter(id, show, msg) {
       const $this = this
+      this.edit.item.ShowDatacenter=show
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -449,13 +452,15 @@ export default {
           url: '/thirdpartygames/update/show/datacenter',
           method: 'post',
           data: {
-            ID: id,
-            ShowDatacenter: show
+            ID:  id,
+            ShowDatacenter: this.edit.item.ShowDatacenter
           }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('修改记录展示成功！')
             $this.clientDB.UpdateData({ ID: id, ShowDatacenter: show })
+            this.refreshShow()
+            this.$refs.compare.SetNewVal(this.edit.item)
           }
         })
       }).catch(() => {
@@ -471,6 +476,7 @@ export default {
       this.edit.isEdit = bEdit
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
+
         if (_data) {
           Object.assign(this.edit.item, _data)
           if (bEdit) {
@@ -510,6 +516,7 @@ export default {
           Message.success('保存成功！')
         }
       })
+
     },
     getPostData() {
       return this.libMoney.TransForStore(this.edit.item)

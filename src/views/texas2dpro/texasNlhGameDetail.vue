@@ -165,12 +165,6 @@ export default {
     if (Number(this.$route.query.SrvLogId) > 0 && Number(this.$route.query.dateTime) > 0) {
       this.searchForm.SrvLogId = this.$route.query.SrvLogId
       this.searchForm.dateTime = $libDate.GetDayBegin(this.$route.query.dateTime * 1000)
-      
-      this.userInfo = []
-      this.roundInfo = []
-      this.publishCards = []
-      this.pots = []
-
       this.getDetail()
     }
   },
@@ -179,6 +173,10 @@ export default {
   methods: {
     getDetail() {
       console.log(this.searchForm)
+      this.userInfo = []
+      this.roundInfo = []
+      this.publishCards = []
+      this.pots = []
       const _this = this
       request({
         url: '/dataProxy/info',
