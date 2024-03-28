@@ -525,7 +525,7 @@ export default {
 
       let actType = 1
 
-      if (this.searchForm.PlayMethod === '全部玩法') {
+      if (this.searchForm.PlayMethod === '全部付费项') {
         actType = 1
       } else if (this.searchForm.PlayMethod === '猎兔') {
         actType = 49
@@ -552,7 +552,7 @@ export default {
 
       bTime = Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000
       eTime = Date.parse(new Date(_this.searchForm.EndDate).toString()) / 1000 + 86400
-      
+
       const loading = this.$loading({
         lock: true,
         text: '数据拉取中，请稍候...',
@@ -612,7 +612,7 @@ export default {
       this.isShowDelay = false
       this.isShowForce = false
       this.isShowInteract = false
-      if (this.searchForm.PlayMethod === '全部玩法') {
+      if (this.searchForm.PlayMethod === '全部付费项') {
         this.isShowAll = true
       } else if (this.searchForm.PlayMethod === '猎兔') {
         this.isShowRabbit = true
