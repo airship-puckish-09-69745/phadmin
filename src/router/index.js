@@ -1292,7 +1292,14 @@ export const asyncRoutes = [
             component: () => import('@/views/texas2dpro/texasNlhGameDetail'),
             name: 'texasNlhGameDetail',
             meta: { title: '牌局详情' }
+          },
+          {
+            path: 'texasNlhGameConsumeSta',
+            component: () => import('@/views/texas2dpro/texasNlhGameConsumeSta'),
+            name: 'texasNlhGameDetail',
+            meta: { title: '每日消耗统计' }
           }
+
         ]
       },
       {

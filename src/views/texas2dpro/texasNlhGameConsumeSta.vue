@@ -344,12 +344,14 @@ export default {
         BeginDate: $libDate.GetDayBegin(new Date().getTime()),
         EndDate: $libDate.GetDayBegin(new Date().getTime()),
         Uid: '',
-        LogID: ''
-        // PlayMethod: 0
+        LogID: '',
+        PlayMethod: '全部玩法',
+        RoundTimes: '全部场次',
+        Payment: '全部付费项'
       },
-      playMethodList: [],
-      roundTimesList: [],
-      paymentList: [],
+      playMethodList: ['全部玩法', '猎兔', '延时道具', '强制看牌道具', '付费互动道具'],
+      roundTimesList: ['全部场次', '1/2', '2/4', '5/10'],
+      paymentList: ['全部付费项', '延时道具消耗', '付费道具消耗'],
       isShowAll: true,
       isShowRabbit: false,
       isShowDelay: false,
@@ -370,25 +372,25 @@ export default {
     }
   },
   created() {
-    this.playMethodList = []
-    this.playMethodList.push('全部玩法')
-    this.playMethodList.push('猎兔')
-    this.playMethodList.push('延时道具')
-    this.playMethodList.push('强制看牌道具')
-    this.playMethodList.push('付费互动道具')
+    // this.playMethodList = []
+    // this.playMethodList.push('全部玩法')
+    // this.playMethodList.push('猎兔')
+    // this.playMethodList.push('延时道具')
+    // this.playMethodList.push('强制看牌道具')
+    // this.playMethodList.push('付费互动道具')
 
-    this.roundTimesList.push('全部场次')
-    this.roundTimesList.push('1/2')
-    this.roundTimesList.push('2/4')
-    this.roundTimesList.push('5/10')
+    // this.roundTimesList.push('全部场次')
+    // this.roundTimesList.push('1/2')
+    // this.roundTimesList.push('2/4')
+    // this.roundTimesList.push('5/10')
 
-    this.paymentList.push('全部付费项')
-    this.paymentList.push('延时道具消耗')
-    this.paymentList.push('付费道具消耗')
+    // this.paymentList.push('全部付费项')
+    // this.paymentList.push('延时道具消耗')
+    // this.paymentList.push('付费道具消耗')
 
-    this.searchForm.PlayMethod = '全部玩法'
-    this.searchForm.RoundTimes = '全部场次'
-    this.searchForm.Payment = '全部付费项'
+    // this.searchForm.PlayMethod = '全部玩法'
+    // this.searchForm.RoundTimes = '全部场次'
+    // this.searchForm.Payment = '全部付费项'
   },
   methods: {
 
@@ -602,6 +604,12 @@ export default {
       })
     },
 
+    showPlayMethod(item) {
+      // console.log('key:', key, 'item:', item)
+      console.log('item:', item)
+      return item
+    },
+
     clearData() {
       this.allCurrentData = []
       this.rabbitCurrentData = []
@@ -628,6 +636,12 @@ export default {
         this.isShowInteract = true
       }
     },
+
+    // changeMethod(value) {
+    //   console.log('changeMethod 1 value: ', value)
+    //   this.searchForm.PlayMethod = value
+    //   console.log('changeMethod 2 value: ', value)
+    // },
 
     // 分页处理
     refreshShow() {
