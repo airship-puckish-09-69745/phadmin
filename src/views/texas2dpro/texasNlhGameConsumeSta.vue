@@ -24,7 +24,7 @@
           />
         </el-form-item>
 
-        <el-form-item label="玩法">
+        <el-form-item label="付费项">
           <el-select v-model="searchForm.PlayMethod" placeholder="请选择">
             <el-option v-for="(item, key) in playMethodList" :key="key" :value="item" />
           </el-select>
@@ -33,12 +33,6 @@
         <el-form-item label="场次">
           <el-select v-model="searchForm.RoundTimes" placeholder="请选择">
             <el-option v-for="(item, key) in roundTimesList" :key="key" :value="item" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="付费项">
-          <el-select v-model="searchForm.Payment" placeholder="请选择">
-            <el-option v-for="(item, key) in paymentList" :key="key" :value="item" />
           </el-select>
         </el-form-item>
 
@@ -345,13 +339,11 @@ export default {
         EndDate: $libDate.GetDayBegin(new Date().getTime()),
         Uid: '',
         LogID: '',
-        PlayMethod: '全部玩法',
-        RoundTimes: '全部场次',
-        Payment: '全部付费项'
+        PlayMethod: '全部付费项',
+        RoundTimes: '全部场次'
       },
-      playMethodList: ['全部玩法', '猎兔', '延时道具', '强制看牌道具', '付费互动道具'],
+      playMethodList: ['全部付费项', '猎兔', '延时道具', '强制看牌道具', '付费互动道具'],
       roundTimesList: ['全部场次', '1/2', '2/4', '5/10'],
-      paymentList: ['全部付费项', '延时道具消耗', '付费道具消耗'],
       isShowAll: true,
       isShowRabbit: false,
       isShowDelay: false,
@@ -384,13 +376,8 @@ export default {
     // this.roundTimesList.push('2/4')
     // this.roundTimesList.push('5/10')
 
-    // this.paymentList.push('全部付费项')
-    // this.paymentList.push('延时道具消耗')
-    // this.paymentList.push('付费道具消耗')
-
     // this.searchForm.PlayMethod = '全部玩法'
     // this.searchForm.RoundTimes = '全部场次'
-    // this.searchForm.Payment = '全部付费项'
   },
   methods: {
 
@@ -585,7 +572,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           // _this.currentData = response.Data
-          if (this.searchForm.PlayMethod === '全部玩法') {
+          if (this.searchForm.PlayMethod === '全部付费项') {
             _this.allCurrentData = response.Data
           } else if (this.searchForm.PlayMethod === '猎兔') {
             _this.rabbitCurrentData = response.Data
