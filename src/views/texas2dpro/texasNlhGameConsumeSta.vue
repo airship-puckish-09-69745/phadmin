@@ -30,7 +30,7 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="场次">
+        <el-form-item label="场次(小盲)">
           <el-select v-model="searchForm.RoundTimes" placeholder="请选择">
             <el-option v-for="(item, key) in roundTimesList" :key="key" :value="item" />
           </el-select>
@@ -343,7 +343,7 @@ export default {
         RoundTimes: '全部场次'
       },
       playMethodList: ['全部付费项', '猎兔', '延时道具', '强制看牌道具', '付费互动道具'],
-      roundTimesList: ['全部场次', '1/2', '2/4', '5/10'],
+      roundTimesList: ['全部场次', '1', '2', '5', '10', '50', '100', '1000'],
       isShowAll: true,
       isShowRabbit: false,
       isShowDelay: false,
@@ -526,20 +526,20 @@ export default {
       let actType = 1
 
       if (this.searchForm.PlayMethod === '全部玩法') {
-        console.log('inquire 1')
         actType = 1
       } else if (this.searchForm.PlayMethod === '猎兔') {
-        console.log('inquire 2')
         actType = 49
       } else if (this.searchForm.PlayMethod === '延时道具') {
-        console.log('inquire 3')
         actType = 50
       } else if (this.searchForm.PlayMethod === '强制看牌道具') {
-        console.log('inquire 4')
         actType = 53
       } else if (this.searchForm.PlayMethod === '付费互动道具') {
-        console.log('inquire 5')
         actType = 55
+      }
+
+      let smallBind = 0
+      if (this.searchForm.RoundTimes !== '全部场次') {
+        smallBind = parseInt(this.searchForm.RoundTimes) * 1000
       }
 
       this.clearData()
@@ -552,7 +552,7 @@ export default {
 
       bTime = Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000
       eTime = Date.parse(new Date(_this.searchForm.EndDate).toString()) / 1000 + 86400
-
+      
       const loading = this.$loading({
         lock: true,
         text: '数据拉取中，请稍候...',
@@ -566,6 +566,7 @@ export default {
           Env: this.env,
           Path: '/log/texasnlhmoneylog',
           Type: actType,
+          SmallBind: smallBind,
           BTime: bTime,
           ETime: eTime
         }
