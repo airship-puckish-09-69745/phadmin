@@ -54,7 +54,7 @@
           </el-form-item>
 
           <el-form-item label="基础投注">
-            <el-input v-model.number="slotsData.BaseBet" />
+            <el-input v-model.number="slotsData.BaseBet" disabled />
           </el-form-item>
 
           <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)" />

@@ -43,6 +43,7 @@
       <el-table-column
         prop="LogTime"
         label="玩牌时间"
+        width="160%"
       >
         <template slot-scope="scope">
           {{ formateDate(scope.row.StartTime , 2) }}
@@ -50,7 +51,17 @@
       </el-table-column>
       <el-table-column
         prop="LogID"
+        label="级别"
+        width="100%"
+      >
+      <template slot-scope="scope">
+          {{ getRoomLevel(scope.row) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="LogID"
         label="玩家昵称"
+        width="160%"
       >
       <template slot-scope="scope">
           {{ getNickByUid(scope.row, selectUid) }}
@@ -69,6 +80,7 @@
       <el-table-column
         prop="Uid"
         label="公共牌"
+        width="200%"
       >
         <template slot-scope="scope">
            <el-image v-for="(item, index) in showCards(scope.row.AllPublishCards)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
@@ -79,6 +91,7 @@
         prop="Insure"
         label="有效底池"
         sortable="custom"
+        width="100%"
       >
         <template slot-scope="scope">
           {{ getPool(scope.row) }}
@@ -87,6 +100,7 @@
       <el-table-column
         prop="Outs"
         label="获胜玩家&昵称"
+        width="200%"
       >
       <template slot-scope="scope">
           {{ getMaxWinPlayer(scope.row) }}
@@ -105,6 +119,7 @@
       <el-table-column
         prop="LogID"
         label="牌局ID"
+        width="160%"
       >
         <template slot-scope="scope">
           <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.StartTime }}" @click.native="recordShow = false" style="color: blue">
@@ -217,25 +232,30 @@ export default {
           for (var i = 0; i < objs.list.length; i++) {
             _this.tableData.push(objs.list[i])
           }
-          for (var j = 0; j < this.tableData.length; j++) {
-            console.log(_this.tableData[j].StartTime)
-          }
-          _this.tableData.sort(this.sortBy("StartTime", -1))
-          for (var k = 0; k < this.tableData.length; k++) {
-            console.log(_this.tableData[k].StartTime)
-          }
+          _this.tableData.sort(this.sortBy('StartTime', -1))
           _this.refreshShow()
         } else {
           Message.error(response.Data)
         }
       })
     },
+    getRoomLevel(row) {
+      var gameInfo = JSON.parse(row.GameInfo)
+      var level = (gameInfo.SmallBlind / 1000) + '/' + (gameInfo.BigBlind / 1000)
+      if (gameInfo.Straddle > 0) {
+        level = level + '/' + (2 * gameInfo.BigBlind / 1000)
+      }
+      if (gameInfo.PrefixChip > 0) {
+        level = level + '(' + (gameInfo.PrefixChip / 100) + ')'
+      }
+      return level
+    },
     getPool(row) {
       for (var i = row.StepInfo.length - 1; i >= 0; i--) {
         if (row.StepInfo[i].StepType !== 1) {
           continue
         }
-        return row.StepInfo[i].Pot
+        return row.StepInfo[i].Pot / 1000
       }
     },
     getMaxWinPlayer(row) {
@@ -305,6 +325,7 @@ export default {
         }
         this.currentData.push(this.tableData[i])
       }
+      console.log(this.currentData)
     },
     handleSizeChange(val) {
       console.log(val)

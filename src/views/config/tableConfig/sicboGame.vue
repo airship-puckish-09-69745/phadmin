@@ -123,7 +123,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="extrapay倍数"
+                  :label="'extrapay倍数(单项概率总和必须等于100)'"
                   width="320"
                 >
 
@@ -796,17 +796,17 @@ export default {
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+
+
       for (const o in this.item.BetAreaOptions) {
-        for (const i in this.item.BetAreaOptions[o]) {
           let count = 0
           for (const i in this.item.BetAreaOptions[o].OddsList) {
             count += this.item.BetAreaOptions[o].OddsList[i].Odds
-            if (count > 100) {
-              Message.error('extrapay倍数总概率不能大于100')
-              return
-            }
           }
-        }
+            if (count !== 100) {
+                Message.error('extrapay倍数总概率必须等于100')
+                return
+            }
         for (const oi in o.Odds) {
           this.item.BetAreaOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
         }
