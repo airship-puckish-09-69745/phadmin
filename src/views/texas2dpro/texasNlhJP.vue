@@ -269,6 +269,7 @@ export default {
       currentData: [],
       editShow: false,
       editValue: 0,
+      editLevel: 0,
       currLevel: 0,
       recordShow: false,
       totalCount: 0,
@@ -357,6 +358,26 @@ export default {
             _this.totalRecordCount = 0
             _this.tableRecordData = []
           }
+        } else {
+          Message.error(response.Data)
+        }
+      })
+    },
+    updateRecord(level, change) {
+      const _this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/texasnlhdata/opjackpot',
+          Level: level,
+          Change: change
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('修改成功')
+          this.search()
         } else {
           Message.error(response.Data)
         }
@@ -462,13 +483,8 @@ export default {
       this.searchRecord()
     },
     handChangeJackPot(ob) {
-      this.currLevel = ob.SmallBlind / 1000
+      this.editLevel = ob.SmallBlind / 1000
       this.editShow = true
-      for (var i = 0; i < this.tableData.length; i++) {
-        if (ob.SmallBlind === this.tableData[i].SmallBlind) {
-          this.editValue = this.tableData[i].Jackpot / 1000
-        }
-      }
     },
     handleSizeChange(val) {
       console.log(val)
@@ -491,6 +507,12 @@ export default {
     },
     confirmDelete() {
       this.editShow = false
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.editLevel * 1000 === this.tableData[i].SmallBlind) {
+          this.updateRecord(this.tableData[i].SmallBlind, this.editValue)
+        }
+      }
+      this.editLevel = 0
     },
     sortBy(attr, rev) {
       return function(a, b) {
