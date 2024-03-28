@@ -53,6 +53,8 @@
       v-if="isShowAll"
       ref="filterTable"
       :data="allCurrentData"
+      show-summary
+      :summary-method="getSummaries"
       stripe
       border
       :header-cell-style="libShow.DefaultTableHeadClass"
@@ -119,6 +121,8 @@
       v-if="isShowRabbit"
       ref="filterTable"
       :data="rabbitCurrentData"
+      show-summary
+      :summary-method="getSummariesRabbit"
       stripe
       border
       :header-cell-style="libShow.DefaultTableHeadClass"
@@ -173,6 +177,8 @@
       v-if="isShowDelay"
       ref="filterTable"
       :data="delayCurrentData"
+      show-summary
+      :summary-method="getSummariesOther"
       stripe
       border
       :header-cell-style="libShow.DefaultTableHeadClass"
@@ -215,6 +221,8 @@
       v-if="isShowForce"
       ref="filterTable"
       :data="forceCurrentData"
+      show-summary
+      :summary-method="getSummariesOther"
       stripe
       border
       :header-cell-style="libShow.DefaultTableHeadClass"
@@ -257,6 +265,8 @@
       v-if="isShowInteract"
       ref="filterTable"
       :data="interactCurrentData"
+      show-summary
+      :summary-method="getSummariesOther"
       stripe
       border
       :header-cell-style="libShow.DefaultTableHeadClass"
@@ -376,6 +386,130 @@ export default {
   },
   methods: {
 
+    getSummaries(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '汇总'
+          return
+        }
+        let total = 0
+        if (index === 1) {
+          for (const key in data) {
+            total += data[key].RabbitPeopleNum
+          }
+          sums[index] = total
+        } else if (index === 2) {
+          for (const key in data) {
+            total += data[key].RabbitCost
+          }
+          sums[index] = total
+        } else if (index === 3) {
+          for (const key in data) {
+            total += data[key].DelayPeopleNum
+          }
+          sums[index] = total
+        } else if (index === 4) {
+          for (const key in data) {
+            total += data[key].DelayCost
+          }
+          sums[index] = total
+        } else if (index === 5) {
+          for (const key in data) {
+            total += data[key].ForcePeopleNum
+          }
+          sums[index] = total
+        } else if (index === 6) {
+          for (const key in data) {
+            total += data[key].ForceCost
+          }
+          sums[index] = total
+        } else if (index === 7) {
+          for (const key in data) {
+            total += data[key].InteractPeopleNum
+          }
+          sums[index] = total
+        } else if (index === 8) {
+          for (const key in data) {
+            total += data[key].InteractCost
+          }
+          sums[index] = total
+        }
+      })
+      return sums
+    },
+
+    getSummariesRabbit(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '汇总'
+          return
+        }
+        let total = 0
+        if (index === 1) {
+          for (const key in data) {
+            total += data[key].PeopleNum
+          }
+          sums[index] = total
+        } else if (index === 2) {
+          for (const key in data) {
+            total += data[key].Times
+          }
+          sums[index] = total          
+        } else if (index === 3) {
+          for (const key in data) {
+            total += data[key].AverageTimes
+          }
+          sums[index] = total          
+        } else if (index === 4) {
+          for (const key in data) {
+            total += data[key].TotalCost
+          }
+          sums[index] = total
+        }
+      })
+      return sums
+
+    },
+
+    getSummariesOther(param) {
+      const { columns, data } = param
+      const sums = []
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '汇总'
+          return
+        }
+        let total = 0
+        if (index === 1) {
+          for (const key in data) {
+            console.log('data[key]: ', data[key])
+            total += data[key].PeopleNum
+          }
+          sums[index] = total
+        } else if (index === 2) {
+          for (const key in data) {
+            total += data[key].Times
+          }
+          sums[index] = total
+        } else if (index === 3) {
+          for (const key in data) {
+            total += data[key].AverageTimes
+          }
+          sums[index] = total
+        } else if (index === 4) {
+          for (const key in data) {
+            total += data[key].TotalCost
+          }
+          sums[index] = total
+        }
+      })
+      return sums
+    },
+
     // 查询
     inquire() {
       console.log('searchForm: ', this.searchForm)
@@ -406,10 +540,6 @@ export default {
 
       let bTime = 0
       let eTime = 0
-      // if (this.timeRange) {
-      //   bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
-      //   eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
-      // }
 
       bTime = Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000
       eTime = Date.parse(new Date(_this.searchForm.EndDate).toString()) / 1000 + 86400
