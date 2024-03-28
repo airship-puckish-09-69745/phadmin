@@ -160,16 +160,22 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="Outs" label="翻牌圈猎兔次数">
+      <el-table-column prop="PreflopRoundTimes" label="翻牌前猎兔次数">
         <template slot-scope="scope">
-          {{ scope.row.Outs }}
+          {{ scope.row.PreflopRoundTimes }}
         </template>
       </el-table-column>
 
-      <el-table-column prop="InsureRatio" label="转牌圈猎兔次数">
+      <el-table-column prop="FlopRoundTimes" label="翻牌圈猎兔次数">
+        <template slot-scope="scope">
+          {{ scope.row.FlopRoundTimes }}
+        </template>
       </el-table-column>
 
-      <el-table-column prop="InsureRatio" label="河牌圈猎兔次数">
+      <el-table-column prop="TurnRoundTimes" label="转牌圈猎兔次数">
+        <template slot-scope="scope">
+          {{ scope.row.TurnRoundTimes }}
+        </template>
       </el-table-column>
     </el-table>
 
@@ -458,21 +464,35 @@ export default {
           for (const key in data) {
             total += data[key].Times
           }
-          sums[index] = total          
+          sums[index] = total
         } else if (index === 3) {
           for (const key in data) {
             total += data[key].AverageTimes
           }
-          sums[index] = total          
+          sums[index] = total
         } else if (index === 4) {
           for (const key in data) {
             total += data[key].TotalCost
           }
           sums[index] = total
+        } else if (index === 5) {
+          for (const key in data) {
+            total += data[key].PreflopRoundTimes
+          }
+          sums[index] = total
+        } else if (index === 6) {
+          for (const key in data) {
+            total += data[key].FlopRoundTimes
+          }
+          sums[index] = total
+        } else if (index === 7) {
+          for (const key in data) {
+            total += data[key].TurnRoundTimes
+          }
+          sums[index] = total
         }
       })
       return sums
-
     },
 
     getSummariesOther(param) {
