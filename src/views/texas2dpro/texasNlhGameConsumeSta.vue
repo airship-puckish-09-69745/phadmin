@@ -343,7 +343,8 @@ export default {
         RoundTimes: '全部场次'
       },
       playMethodList: ['全部付费项', '猎兔', '延时道具', '强制看牌道具', '付费互动道具'],
-      roundTimesList: ['全部场次', '1', '2', '5', '10', '50', '100', '1000'],
+      // roundTimesList: ['全部场次', '1', '2', '5', '10', '50', '100', '1000'],
+      roundTimesList: [],
       isShowAll: true,
       isShowRabbit: false,
       isShowDelay: false,
@@ -364,8 +365,24 @@ export default {
     }
   },
   created() {
+    // console.log('created 11')
+    this.roundTimesList = ['全部场次']
+    request({
+      url: 'texasnlhtable/smallbinds',
+      method: 'get',
+      data: {}
+    }).then(response => {
+      if (response.RetCode === 0) {
+        console.log('created 1 request response.Data:', response.Data)
+        for (var i = 0; i < response.Data.length; i++) {
+          this.roundTimesList.push(response.Data[i])
+        }
+      } else {
+        console.log('created 2 request error response:', response)
+      }
+    })
     // this.playMethodList = []
-    // this.playMethodList.push('全部玩法')
+    // this.playMethodList.push('全部付费项')
     // this.playMethodList.push('猎兔')
     // this.playMethodList.push('延时道具')
     // this.playMethodList.push('强制看牌道具')
@@ -379,6 +396,7 @@ export default {
     // this.searchForm.PlayMethod = '全部玩法'
     // this.searchForm.RoundTimes = '全部场次'
   },
+
   methods: {
 
     getSummaries(param) {
