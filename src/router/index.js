@@ -1299,7 +1299,7 @@ export const asyncRoutes = [
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '无限德州', noCache: true },
+        meta: { title: '德州配桌', noCache: true },
         children: [
           {
             path: 'texasNlhTable',
@@ -1308,10 +1308,16 @@ export const asyncRoutes = [
             meta: { title: 'TexasNlh 桌子' }
           },
           {
+            path: 'texasOmhTable',
+            component: () => import('@/views/config/tableConfig/texasOmhTable'),
+            name: 'texasNlhTable',
+            meta: { title: 'TexasOmh 桌子' }
+          },
+          {
             path: 'texasNlhCfg',
             component: () => import('@/views/config/tableConfig/texasNlhCfg'),
             name: 'texasNlhCfg',
-            meta: { title: 'TexasNlh 配置' }
+            meta: { title: '公共配置' }
           }
         ]
       },
