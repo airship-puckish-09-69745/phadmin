@@ -161,7 +161,7 @@
 
             <el-row style="margin-top:10px">
               <el-col :span="7">
-                <el-form-item label="B: 总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定) (仅非审核服生效)">
+                <el-form-item label="B: 总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定)">
                   <el-input v-model.number="item.JpRate"><template slot="append">‱</template></el-input>
                 </el-form-item>
               </el-col>
@@ -300,9 +300,14 @@
             </template>
           </el-table-column>
           <el-table-column label="玩家开奖池条件(%)" width="300">
-            <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-              &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+            <template slot-scope="scope">
+              <div v-if="scope.row.AwardType==1" >
+                虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+              </div>
+              <span  v-if="scope.row.JackpotType==4" >
+                     3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+                  </span>
             </template>
 
           </el-table-column>

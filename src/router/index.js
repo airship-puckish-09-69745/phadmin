@@ -550,6 +550,18 @@ export const asyncRoutes = [
             meta: { title: '糖果糖果Mars' }
           },
           {
+            path: 'millionaire_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
+            name: 'millionaire_slots_cfg',
+            meta: { title: '百万富翁' }
+          },
+          {
+            path: 'millionairemars_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
+            name: 'millionairemars_slots_cfg',
+            meta: { title: '百万富翁Mars' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -1292,7 +1304,14 @@ export const asyncRoutes = [
             component: () => import('@/views/texas2dpro/texasNlhGameDetail'),
             name: 'texasNlhGameDetail',
             meta: { title: '牌局详情' }
+          },
+          {
+            path: 'texasNlhGameConsumeSta',
+            component: () => import('@/views/texas2dpro/texasNlhGameConsumeSta'),
+            name: 'texasNlhGameDetail',
+            meta: { title: '每日消耗统计' }
           }
+
         ]
       },
       {
