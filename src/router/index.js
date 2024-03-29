@@ -1283,31 +1283,31 @@ export const asyncRoutes = [
         children: [
           {
             path: 'texasNlhInsure',
-            component: () => import('@/views/texas2dpro/texasNlhInsure'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
             name: 'texasNlhInsure',
             meta: { title: '保险数据' }
           },
           {
             path: 'texasNlhJP',
-            component: () => import('@/views/texas2dpro/texasNlhJP'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
             name: 'texasNlhJP',
             meta: { title: 'JP数据' }
           },
           {
             path: 'texasNlhGameLog',
-            component: () => import('@/views/texas2dpro/texasNlhGameLog'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
             name: 'texasNlhGameLog',
             meta: { title: '牌局记录' }
           },
           {
             path: 'texasNlhGameDetail',
-            component: () => import('@/views/texas2dpro/texasNlhGameDetail'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
             name: 'texasNlhGameDetail',
             meta: { title: '牌局详情' }
           },
           {
             path: 'texasNlhGameConsumeSta',
-            component: () => import('@/views/texas2dpro/texasNlhGameConsumeSta'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
             name: 'texasNlhGameDetail',
             meta: { title: '每日消耗统计' }
           }
@@ -1322,19 +1322,19 @@ export const asyncRoutes = [
         children: [
           {
             path: 'texasNlhTable',
-            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            component: () => import('@/views/texas2dpro/table/texasNlhTable'),
             name: 'texasNlhTable',
             meta: { title: 'TexasNlh 桌子' }
           },
           {
             path: 'texasOmhTable',
-            component: () => import('@/views/config/tableConfig/texasOmhTable'),
+            component: () => import('@/views/texas2dpro/table/texasOmhTable'),
             name: 'texasNlhTable',
             meta: { title: 'TexasOmh 桌子' }
           },
           {
             path: 'texasNlhCfg',
-            component: () => import('@/views/config/tableConfig/texasNlhCfg'),
+            component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
             meta: { title: '公共配置' }
           }
@@ -1348,13 +1348,13 @@ export const asyncRoutes = [
         children: [
           {
             path: 'packageList',
-            component: () => import('@/views/config/tableConfig/packageModule'),
+            component: () => import('@/views/texas2dpro/version/packageModule'),
             name: 'packageList',
             meta: { title: '包管理' }
           },
           {
             path: 'versionList',
-            component: () => import('@/views/config/tableConfig/versionModule'),
+            component: () => import('@/views/texas2dpro/version/versionModule'),
             name: 'versionList',
             meta: { title: '版本管理' }
           }
@@ -1362,7 +1362,7 @@ export const asyncRoutes = [
       },
       {
         path: '/texasProActivityNotice',
-        component: () => import('@/views/config/tableConfig/texasProActivityNotice'),
+        component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
         name: 'noticeList',
         meta: { title: '活动公告' }
       }
