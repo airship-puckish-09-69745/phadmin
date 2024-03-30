@@ -208,7 +208,8 @@ export default {
         poolType: 0,
         actType: 0,
         app: 0,
-        level: 0
+        level: 0,
+        uid:0,
       },
       gameConfig: [
         { 'value': 0, 'label': '全部' },
@@ -286,7 +287,7 @@ export default {
           Limit: _this.pageNum,
           App: _this.searchForm.app,
           Level: _this.searchForm.level,
-          SearchType: _this.searchForm.searchType
+          SearchType: _this.searchForm.searchType,
         }
       }).then(response => {
         if (response.RetCode === 0) {

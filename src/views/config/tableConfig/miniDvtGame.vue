@@ -125,6 +125,24 @@
                 </el-table-column>
 
                 <el-table-column
+                    prop="RobotBetRate"
+                    label="机器人下注权重"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                    prop="MaxMoneyBet"
+                    label="区域下注上限"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
                   label="倍率(real*100)"
                 >
                   <template slot-scope="scope">
@@ -138,30 +156,33 @@
                     <el-input v-model.number="scope.row.ERate" size="mini" />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  label="extra倍数(real*100)"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.EOdds" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="MaxMoneyBet"
-                  label="区域下注上限"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
-                  </template>
-                </el-table-column>
 
                 <el-table-column
-                  prop="RobotBetRate"
-                  label="机器人下注概率(‰)"
+                    label="extra倍数(real*100)"
+                    width="320"
                 >
+
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
+                    <div v-if="BetOddsList[scope.$index]">
+                      <div v-for="(data, index ) in BetOddsList[scope.$index].EOddsCfg" style="line-height: 1.5; ">
+                        <el-row style="line-height: 1.5; "  >
+                          <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
+                          <span style="margin-left: 20px">倍数:</span>
+                          <el-input v-model.number="data.EOdds" size="mini" style="width: 80px" placeholder="倍数"
+                                    @input="wallpaperInput(scope.$index,index) "/>
+                          <span style="margin-left: 10px">权重:</span>
+                          <el-input v-model.number="data.Weight" size="mini" style="width: 80px" placeholder="权重"
+                                    @input="wallpaperInput(scope.$index,index)"/>
+                          <a style="margin-left: 20px" @click="delOddsList(scope.$index,index)" type="danger" size="mini">-</a>
+                        </el-row>
+                      </div>
+
+                    </div>
                   </template>
+
                 </el-table-column>
+
+
 
               </el-table>
             </el-row>
@@ -455,6 +476,7 @@ export default {
         data: []
       },
       form: {},
+      BetOddsList: [],
       subKey: 'miniDvt_cfg',
       libShow: $libShow,
       showSetResultPage: false,
@@ -471,6 +493,17 @@ export default {
       this.isHidden = false
     }
     this.getData()
+  },
+  watch: {
+    // 监听json数据变化，重新渲染文件夹内容
+    BetOddsList(newVal) {
+      this.file_is_show = false
+      if (true) {
+        this.$nextTick(() => { // $nextTick 是在 DOM 更新循环结束之后执行延迟回调
+          this.file_is_show = true
+        })
+      }
+    }
   },
   methods: {
     dataRule(required, config) {
@@ -558,6 +591,16 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards
+
+            for (let i = 0; i < this.item.BetAreaOptions.length; i++) {
+              if (!this.item.BetAreaOptions[i].EOddsCfg||typeof(this.item.BetAreaOptions[i].EOddsCfg) == "undefined"||this.item.BetAreaOptions[i].EOddsCfg.length==0){
+                this.item.BetAreaOptions[i]["EOddsCfg"]=[]
+                this.item.BetAreaOptions[i]["EOddsCfg"].push({})
+              }else {
+                this.item.BetAreaOptions[i]["EOddsCfg"]=this.item.BetAreaOptions[i].EOddsCfg
+              }
+            }
+            this.BetOddsList = this.item.BetAreaOptions
           }
         }
       })
@@ -572,6 +615,9 @@ export default {
           console.log(response)
         }
       })
+    },
+    wallpaperInput(val, index) {
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
@@ -632,6 +678,19 @@ export default {
           }
         })
       })
+    },
+    addOddsList(idx) {
+      this.BetOddsList[idx].EOddsCfg.push({})
+      // 刷新页面
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
+    },
+    delOddsList(idx, index) {
+      if (this.BetOddsList[idx].EOddsCfg.length == 1) {
+        this.BetOddsList[idx].EOddsCfg.push({})
+      }
+      this.BetOddsList[idx].EOddsCfg.splice(index, 1)
+      // 刷新页面
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     addBetMoneyListRow() {
       this.item.BetMoneyList.push({ CanBet: 0, MaxMoneyBet: 0, MinMoneyBet: 0 })
