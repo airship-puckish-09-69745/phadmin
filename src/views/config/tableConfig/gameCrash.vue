@@ -392,6 +392,79 @@
             </el-row>
           </fieldset>
 
+          <fieldset style="margin:20px auto;">
+            <legend>机器人聊天配置</legend>
+            <el-alert
+              type="success"
+              description="机器人在发送间隔时间范围内按一定概率触发，总人数不超过最多发送人数"
+            />
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="发送间隔时间范围(秒)：">
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotSendIntervalMin" size="mini" />
+                  </el-col>
+                  <el-col :span="4">
+                    到
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotSendIntervalMax" size="mini" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="发送概率(%)：" prop="ChatRobotSendRate" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotSendRate" size="mini" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="最多发送人数：" prop="ChatRobotSendMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotSendMaxNum" size="mini" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-alert
+              type="success"
+              description="机器人在回复间隔时间范围内按一定概率触发，总人数不超过最多回复人数"
+            />
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="回复间隔时间范围(秒)：">
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotReplyIntervalMin" size="mini" />
+                  </el-col>
+                  <el-col :span="4">
+                    到
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-model.number="item.ChatRobotReplyIntervalMax" size="mini" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="回复概率(%)：" prop="ChatRobotReplyRate" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotReplyRate" size="mini" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="最多回复人数：" prop="ChatRobotReplyMaxNum" :rules="dataRule(false,{type:'n',range:'0'})">
+                  <el-col>
+                    <el-input v-model.number="item.ChatRobotReplyMaxNum" size="mini" />
+                  </el-col>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </fieldset>
+
+
+
           <el-row>
             <el-col :span="4" style="text-align:right">赔率配置：</el-col>
             <el-col :span="12">
@@ -616,7 +689,15 @@ export default {
         HandleTakeShiftingTime: 0,
         HandleTakeShiftingRate: 0,
         EnableControl: false,
-        MaxOddsRound: 0
+        MaxOddsRound: 0,
+        ChatRobotSendIntervalMin: 0,
+        ChatRobotSendIntervalMax: 0,
+        ChatRobotSendRate: 0,
+        ChatRobotSendMaxNum: 0,
+        ChatRobotReplyIntervalMin: 0,
+        ChatRobotReplyIntervalMax: 0,
+        ChatRobotReplyRate: 0,
+        ChatRobotReplyMaxNum: 0
       },
       testRand: {
         visible: false,
