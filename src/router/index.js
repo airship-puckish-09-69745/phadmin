@@ -284,6 +284,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'BlackJackCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'BlackJack', noCache: true },
+        children: [
+          {
+            path: 'blackJackTable',
+            component: () => import('@/views/config/tableConfig/blackJackTable'),
+            name: 'blackJackTable',
+            meta: { title: 'BlackJack ◐' }
+          }
+        ]
+      },
+      {
         path: 'PusoyCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
