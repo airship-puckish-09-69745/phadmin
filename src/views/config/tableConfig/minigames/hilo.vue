@@ -168,10 +168,10 @@
               </el-col>
             </el-row>
 
-            <el-form-item label=" ---- 根据分布概率随机取出其中一张牌">
+            <el-form-item v-if="envProjectName != 'ph_audit'" label=" ---- 根据分布概率随机取出其中一张牌">
               <el-button type="primary" size="mini" @click="addJackpotDistributionRow">添加</el-button>
             </el-form-item>
-            <el-row>
+            <el-row v-if="envProjectName != 'ph_audit'">
               <template>
                 <el-table :data="item.JackpotDistributionItems" border>
                   <el-table-column label="范围开始(第N张牌)">
