@@ -151,7 +151,7 @@
           <fieldset style="margin-top:10px">
             <legend>Jackpot 位置配置</legend>
 
-            <el-row style="margin-top:10px">
+            <el-row style="margin-top:10px" v-if="envProjectName=='ph_audit'" >
               <el-col :span="7">
                 <el-form-item label="A: 每一张牌触发Jackpot的概率(仅审核服生效)：">
                   <el-input v-model.number="item.HitJackpotRate"><template slot="append">‱</template></el-input>
@@ -161,7 +161,10 @@
 
             <el-row style="margin-top:10px">
               <el-col :span="7">
-                <el-form-item label="B: 总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定)">
+                <el-form-item v-if="envProjectName=='ph_audit'" label="B: 总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定)">
+                  <el-input v-model.number="item.JpRate"><template slot="append">‱</template></el-input>
+                </el-form-item>
+                <el-form-item v-if="envProjectName!=='ph_audit'" label="总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定)">
                   <el-input v-model.number="item.JpRate"><template slot="append">‱</template></el-input>
                 </el-form-item>
               </el-col>
@@ -233,6 +236,7 @@
               <el-table-column
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
+                v-if="envProjectName=='ph_audit'"
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.Rate"><template slot="append">%</template></el-input>
@@ -253,12 +257,16 @@
           inactive-color="#ff4949"
           active-text="开"
           inactive-text="关"
+          v-if="envProjectName=='ph_audit'"
         />
       </legend>
 
       <el-descriptions>
-        <el-descriptions-item>
+        <el-descriptions-item        v-if="envProjectName=='ph_audit'">
           <span style="color:red;">开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)</span>
+        </el-descriptions-item>
+        <el-descriptions-item        v-if="envProjectName!='ph_audit'">
+          <span style="color:red;">Jackpot的中奖概率以下表数值为准。</span>
         </el-descriptions-item>
       </el-descriptions>
 
@@ -564,6 +572,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       item: {
         JackpotDistributionItems: [],
         JackpotRegulation: {
