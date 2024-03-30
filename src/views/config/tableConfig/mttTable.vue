@@ -55,33 +55,27 @@
               <el-input v-model="edit.item.RaceName" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="开始日期:" :required="true" prop="item.RaceBeginDate">
-              <!-- <el-input v-model="edit.item.RaceBeginDate" placeholder="请输入" /> -->
-              <el-date-picker v-model="edit.item.RaceBeginDate" value-format="timestamp" type="date" placeholder="开始日期" />
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="开始时间(时分):" :required="true" prop="item.RaceBeginTime">
-              <el-input v-model="edit.item.RaceBeginTime" placeholder="请输入" />
+            <el-form-item label="开始日期:" :required="true" prop="item.RaceBeginDate">
+              <el-date-picker v-model="edit.item.RaceBeginDate" value-format="timestamp" type="datetime" placeholder="开始日期" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="显示时间:" :required="true" prop="item.RaceShowTime">
-              <el-input v-model="edit.item.RaceShowTime" placeholder="请输入" />
+              <el-date-picker v-model="edit.item.RaceShowTime" value-format="timestamp" type="datetime" placeholder="显示时间" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="报名费用:" :required="true" prop="item.SignupFee">
+            <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.SignupFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="服务费:" :required="true" prop="item.ServiceFee">
+            <el-form-item label="服务费:" :required="true" prop="item.ServiceFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.ServiceFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -100,7 +94,7 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="初始筹码:" :required="true" prop="item.InitChip" :rules="dataRule(true,{type:'n',range:'1'})">
+            <el-form-item label="初始筹码:" :required="true" prop="item.InitChip" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.InitChip" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -112,7 +106,7 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="每桌人数上限:" :required="true" prop="item.PerTableMaxNum" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="每桌人数上限:" :required="true" prop="item.PerTableMaxNum" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.PerTableMaxNum" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -360,15 +354,15 @@ export default {
     },
     getList() {
       request({
-        url: '/texasnlhtable/all',
+        url: '/mtttable/all',
         method: 'get',
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          for (const o in objs) {
-            objs[o].PrefixChip /= 100 // 100倍
-          }
+          // for (const o in objs) {
+          //   objs[o].PrefixChip /= 100 // 100倍
+          // }
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
