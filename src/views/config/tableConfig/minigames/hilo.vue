@@ -151,17 +151,18 @@
           <fieldset style="margin-top:10px">
             <legend>Jackpot 位置配置</legend>
 
-            <el-row style="margin-top:10px">
+            <el-row v-if="envProjectName == 'ph_audit'" style="margin-top:10px">
+
               <el-col :span="7">
-                <el-form-item label="A: 每一张牌触发Jackpot的概率(仅审核服生效)：">
+                <el-form-item label="每一张牌触发Jackpot的概率">
                   <el-input v-model.number="item.HitJackpotRate"><template slot="append">‱</template></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
 
-            <el-row style="margin-top:10px">
+            <el-row v-if="envProjectName != 'ph_audit'" style="margin-top:10px">
               <el-col :span="7">
-                <el-form-item label="B: 总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定)">
+                <el-form-item label="总控：(比如这个值配置成11 那么玩家每局有万分之11的概率有jp出现 具体出现在哪张由分布配置决定)">
                   <el-input v-model.number="item.JpRate"><template slot="append">‱</template></el-input>
                 </el-form-item>
               </el-col>
@@ -231,6 +232,7 @@
                 </template>
               </el-table-column>
               <el-table-column
+                  v-if="envProjectName=='ph_audit'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
@@ -245,22 +247,26 @@
       </el-form>
     </el-row>
 
-    <fieldset style="margin-top:20px;">
-      <legend>jackpot调控配置-----
-        <el-switch
+    <fieldset v-if="envProjectName != 'ph_audit'"  style="margin-top:20px;">
+      <legend>jackpot调控配置
+<!--
+          <el-switch
           v-model="item.JackpotRegulation.ToggleSwitch"
           active-color="#13ce66"
           inactive-color="#ff4949"
           active-text="开"
           inactive-text="关"
         />
+        -->
       </legend>
+<!--
 
       <el-descriptions>
         <el-descriptions-item>
           <span style="color:red;">开启后，Jackpot的中奖概率以下表数值为准。(审核版无效)</span>
         </el-descriptions-item>
       </el-descriptions>
+-->
 
       <el-row>
         <el-table
