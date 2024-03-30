@@ -517,13 +517,13 @@ export const asyncRoutes = [
             path: 'candypartyway_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
             name: 'candypartyway_slots_cfg',
-            meta: { title: '糖果派对Way' }
+            meta: { title: '糖果传奇Way' }
           },
           {
             path: 'candypartyallline_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
             name: 'candypartyallline_slots_cfg',
-            meta: { title: '糖果派对Allline' }
+            meta: { title: '糖果传奇Allline' }
           },
           {
             path: 'supergem_slots_cfg',
@@ -878,13 +878,13 @@ export const asyncRoutes = [
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyway_slots_log',
-            meta: { title: '糖果派对Way', gid: 76 }
+            meta: { title: '糖果传奇Way', gid: 76 }
           },
           {
             path: 'candypartyallline_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
-            meta: { title: '糖果派对Allline', gid: 77 }
+            meta: { title: '糖果传奇Allline', gid: 77 }
           },
           {
             path: 'supergem_slots_log',
