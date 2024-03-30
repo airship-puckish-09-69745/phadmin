@@ -15,10 +15,19 @@
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
         <el-table-column prop="RaceName" label="名称" width="70" />
-        <el-table-column prop="RaceBeginTime" label="开始时间" width="90" />
+        <el-table-column prop="RaceBeginTime" label="开始时间" width="150">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceBeginTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceShowTime" label="显示时间" width="150">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceShowTime) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
         <el-table-column prop="ServiceFee" label="服务费" width="70" />
-        <el-table-column prop="LastModify" label="最近修改" width="160">
+        <el-table-column prop="LastModify" label="最近修改" width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
           </template>
@@ -57,8 +66,8 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="开始日期:" :required="true" prop="item.RaceBeginTime">
-              <el-date-picker v-model="edit.item.RaceBeginTime" value-format="timestamp" type="datetime" placeholder="开始日期" />
+            <el-form-item label="开始时间:" :required="true" prop="item.RaceBeginTime">
+              <el-date-picker v-model="edit.item.RaceBeginTime" value-format="timestamp" type="datetime" placeholder="开始时间" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -168,8 +177,8 @@ const filterMap = {}
 function newItem() {
   return {
     RaceName: '',
-    RaceBeginTime: '',
-    RaceShowTime: '',
+    RaceBeginTime: 0,
+    RaceShowTime: 0,
     SignupFee: 0,
     ServiceFee: 0,
     EndSignupClass: 0,
@@ -177,10 +186,13 @@ function newItem() {
     InitChip: 0,
     OperateSeconds: 0,
     PerTableMaxNum: 0,
-    IsSupportRebuy: 0,
+    IsSupportRebuy: 1,
     RebuyClassLimit: 0,
     RebuyChipNum: 0,
-    RebuyMaxTimes: 0
+    RebuyMaxTimes: 0,
+    LastModify: 0,
+    ModifyUser: '',
+    Status: 0
   }
 }
 
@@ -234,6 +246,9 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    formatTime2(ts) {
+      return $libDate.FormateSecondStr(ts / 1000, 2)
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
@@ -245,6 +260,7 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
+      console.log('refreshShow tableData: ', this.tableData)
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -284,9 +300,10 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          // for (const o in objs) {
-          //   objs[o].PrefixChip /= 100 // 100倍
-          // }
+          for (const o in objs) {
+            objs[o].RaceBeginTime *= 1000
+            objs[o].RaceShowTime *= 1000
+          }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
@@ -364,6 +381,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
+          this.edit.item.LastModify = response.Data.LastModify
+          this.edit.item.ModifyUser = response.Data.ModifyUser
+          this.edit.item.Status = response.Data.Status
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
@@ -371,13 +391,16 @@ export default {
       })
     },
     editSave(postData) {
-      console.log('editSave', postData)
+      console.log('editSave postData: ', postData)
       request({
         url: 'mtttable/update',
         method: 'post',
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
+          // console.log('editSave this.edit.item: ', this.edit.item)
+          // this.edit.item.RaceBeginTime *= 1000
+          // this.edit.item.RaceShowTime *= 1000
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
@@ -387,7 +410,9 @@ export default {
     getPostData() {
       // const postData = this.libMoney.TransForStore(this.edit.item)
       // postData.PrefixChip *= 100 // 放大100倍
-      const postData = this.edit.item
+      const postData = JSON.parse(JSON.stringify(this.edit.item))
+      postData.RaceBeginTime /= 1000
+      postData.RaceShowTime /= 1000
       return postData
     },
     checkData() {
