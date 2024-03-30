@@ -249,9 +249,9 @@ export default {
         case 75:
           return '小红帽'
         case 76:
-          return '糖果派对Way'
+          return '糖果传奇Way'
         case 77:
-          return '糖果派对Allline'
+          return '糖果传奇Allline'
         case 78:
           return '超级宝石'
         case 79:

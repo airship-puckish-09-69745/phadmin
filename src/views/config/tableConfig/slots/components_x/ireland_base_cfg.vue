@@ -22,8 +22,8 @@
               <el-option label="爱尔兰精灵" :value="66" />
               <el-option label="金钱兔" :value="67" />
               <el-option label="十倍金牛" :value="68" />
-              <el-option label="糖果派对Way" :value="76" />
-              <el-option label="糖果派对Allline" :value="77" />
+              <el-option label="糖果传奇Way" :value="76" />
+              <el-option label="糖果传奇Allline" :value="77" />
               <el-option label="超级宝石" :value="78" />
               <el-option label="超级宝石Mars" :value="81" />
               <el-option label="糖果糖果Mars" :value="79" />
