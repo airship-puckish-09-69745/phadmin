@@ -77,10 +77,10 @@
                       </el-card>
                     </el-col>
                     <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="danger" size="mini" @click="DeleteCommCard">删除</el-button>
+                      <el-button type="danger" size="mini" @click="DeleteCommCard">清空</el-button>
                     </el-col>
                     <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="danger" size="mini" @click="AddCommCard">添加</el-button>
+                      <el-button type="primary" size="mini" @click="AddCommCard">配牌</el-button>
                     </el-col>
                   </el-row>
               </el-col>
@@ -106,13 +106,26 @@
                         <el-image v-if="value[1] > 0" :src="getCardUrl(value[1])" preview-teleported="false" style="width: 48px; height: 64px" />
                       </el-card>
                     </el-col>
-                    <el-col :span="6" >
+                     <el-col :span="2" >
+                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                        <el-image v-if="value[2] > 0" :src="getCardUrl(value[2])" preview-teleported="false" style="width: 48px; height: 64px" />
+                      </el-card>
+                    </el-col>
+                     <el-col :span="2" >
+                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                        <el-image v-if="value[3] > 0" :src="getCardUrl(value[3])" preview-teleported="false" style="width: 48px; height: 64px" />
+                      </el-card>
+                    </el-col>
+                     <el-col :span="2" >
+                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                        <el-image v-if="value[4] > 0" :src="getCardUrl(value[4])" preview-teleported="false" style="width: 48px; height: 64px" />
+                      </el-card>
                     </el-col>
                     <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="danger" size="mini" @click="DeleteHdCard(i)">删除</el-button>
+                      <el-button type="danger" size="mini" @click="DeleteHdCard(i)">清空</el-button>
                     </el-col>
                     <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="danger" size="mini" @click="AddHdCard(i)">添加</el-button>
+                      <el-button type="primary" size="mini" @click="AddHdCard(i)">配牌</el-button>
                     </el-col>
                   </el-row>
               </el-col>
@@ -164,7 +177,7 @@ export default {
       editHdRow: -1,
       NewTestCard: {
         CommCards: [0, 0, 0, 0, 0],
-        HandCards: [[0, 0]]
+        HandCards: [[0, 0, 0, 0, 0]]
       },
       TestCard: {
         CommCards: '',
@@ -198,6 +211,7 @@ export default {
           $this.form = response.Data || { Data: '{}' }
           const v = JSON.parse($this.form.Data)
           $this.cfg = v
+          console.log($this.cfg )
           if ('TestCard' in this.cfg) {
             $this.TestCard = v.TestCard
             $this.TestCard2NewTestCards()
@@ -244,8 +258,7 @@ export default {
       this.JackpotConf.CardTypeConf.splice(index, 1)
     },
     addTestHandCardRow() {
-      this.TestCard.HandCards.push('0,0')
-      this.NewTestCard.HandCards.push([0, 0])
+      this.NewTestCard.HandCards.push([0, 0, 0, 0, 0])
     },
     removeTestHandCardRow(index) {
       this.TestCard.HandCards.splice(index, 1)
@@ -299,6 +312,7 @@ export default {
       this.editHdRow = -1
     },
     TestCard2NewTestCards() {
+      console.log(this.TestCard)
       var result = this.TestCard.CommCards.split(',')
       if (result.length === 5) {
         this.NewTestCard.CommCards = []
@@ -319,7 +333,7 @@ export default {
       }
     },
     NewTestCard2TestCards() {
-      this.TestCard.CommCards = []
+      this.TestCard.CommCards = ''
       for (var i = 0; i < this.NewTestCard.CommCards.length; i++) {
         if (Number(this.NewTestCard.CommCards[i]) <= 0) {
           continue
