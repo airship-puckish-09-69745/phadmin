@@ -5,7 +5,7 @@
         <el-form ref="frm1" :model="slotsData" label-width="120px">
           <el-form-item label="老虎机类型">
             <el-select v-model.number="slotsData.SlotsType" disabled>
-              <el-option label="糖果派对" :value="60" />
+              <el-option label="糖果传奇" :value="60" />
             </el-select>
           </el-form-item>
 
