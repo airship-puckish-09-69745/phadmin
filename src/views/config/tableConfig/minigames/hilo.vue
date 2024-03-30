@@ -591,6 +591,7 @@ export default {
         uid: 0,
         showUlReslt: false
       },
+      envProjectName: process.env.VUE_APP_PROJECT,
       hiloData: '',
       JackpotTypeCfg: {
         1: '一等奖',
