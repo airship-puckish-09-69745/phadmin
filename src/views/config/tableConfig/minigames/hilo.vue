@@ -299,6 +299,12 @@
               <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
             </template>
           </el-table-column>
+          <el-table-column label="分段限制" prop="DayLimitArr">
+            <template slot-scope="scope">
+              <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
+              <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
+            </template>
+          </el-table-column>
           <el-table-column label="玩家开奖池条件(%)" width="300">
             <template slot-scope="scope">
               <div v-if="scope.row.AwardType==1" >
@@ -496,6 +502,50 @@
       </el-form>
     </el-dialog>
 
+    <!-- 【dialog】每日限制开出个数 -->
+    <el-dialog
+        :title="dayLimitChange.title"
+        :modal="false"
+        :visible.sync="dayLimitChange.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit">保存</el-button>
+      <el-table
+          ref="filterTable"
+          :data="dayLimitChange.data"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+      >
+        <el-table-column type="index" />
+        <el-table-column label="开始小时" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="结束小时(不包含结束时间点)" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="开奖数量" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum(scope.$index)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+
     <!--对比组件-->
     <compare ref="compare" />
 
@@ -549,6 +599,12 @@ export default {
       	4: 'Expert',
       	5: 'Master',
       	6: 'Nightmare'
+      },
+      dayLimitChange: {
+        visible: false,
+        data: [],
+        jackpotType: 0,
+        title: ''
       },
       txt: '',
       libShow: $libShow,
@@ -605,6 +661,9 @@ export default {
           }
         }
       })
+    },
+    showOpenDayLimit(data) {
+      return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
     },
     getPostData() {
       const ret = {}
@@ -704,6 +763,46 @@ export default {
         }
       }
       this.poolNumChange.visible = false
+    },
+    showDayLimitDialog(data) {
+      if (data.JackpotType == 4) {
+        return
+      }
+      this.dayLimitChange.title = this.JackpotTypeCfg[data.JackpotType] + '(分段限制)'
+      this.dayLimitChange.data = data.DayLimitArr || [{}]
+      this.dayLimitChange.visible = true
+      this.dayLimitChange.jackpotType = data.JackpotType
+    },
+    addDayLimit() {
+      if (!this.dayLimitChange.data) {
+        this.dayLimitChange['data'] = []
+      }
+      this.dayLimitChange.data.push({ 'StartHours': 0, 'EndHours': 0, 'Num': 0 })
+    },
+    removeDayLimitNum(index) {
+      this.dayLimitChange.data.splice(index, 1)
+    },
+    saveDayLimit() {
+      for (let i = 0; i < this.dayLimitChange.data.length; i++) {
+        if (this.dayLimitChange.data[i].StartHours < 0 || this.dayLimitChange.data[i].EndHours > 24) {
+          Message.error('请输入正确的时间')
+          return
+        }
+        if (this.dayLimitChange.data[i].StartHours > this.dayLimitChange.data[i].EndHours) {
+          Message.error('请输入正确的时间')
+          return
+        }
+      }
+      for (var i = 0; i < this.JackpotRandAwards.length; i++) {
+        if (this.dayLimitChange.jackpotType == this.JackpotRandAwards[i].JackpotType) {
+          if (!this.JackpotRandAwards[i]['DayLimitArr']) {
+            this.JackpotRandAwards[i]['DayLimitArr'] = []
+          }
+          this.JackpotRandAwards[i]['DayLimitArr'] = this.dayLimitChange.data
+          break
+        }
+      }
+      this.dayLimitChange.visible = false
     },
     checkShowDayLimit(awardType) {
       if (awardType == 2) {
