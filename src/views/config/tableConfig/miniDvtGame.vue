@@ -301,7 +301,7 @@
             </el-row>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;">以下这两个值不做保证，如果总下注额度满足以后，机器人会停止下注--------------------</span>
+                <span style="color:red;">以下这两个值不做保证，1.如果总下注额度满足以后，机器人会停止下注; 2.如果总下注额度没有完成，次数以达到上限机器人会继续下注</span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
