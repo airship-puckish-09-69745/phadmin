@@ -524,6 +524,13 @@ export default {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
       }
 
+      for (const i in this.item.BetAreaOptions) {
+        this.item.BetAreaOptions[i].Odds /= 10
+        for (const j in this.item.BetAreaOptions[i].EOddsCfg) {
+          this.item.BetAreaOptions[i].EOddsCfg[j].EOdds /= 100
+        }
+      }
+
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
@@ -542,6 +549,13 @@ export default {
       ret.RobotCfg.MinRobotMoney *= 1000
       ret.RobotCfg.MaxRobotMoney *= 1000
       ret.RobotCfg.RobotAverageBetMoney *= 1000
+
+      for (const i in ret.BetAreaOptions) {
+        ret.BetAreaOptions[i].Odds *= 10
+        for (const j in ret.BetAreaOptions[i].EOddsCfg) {
+          ret.BetAreaOptions[i].EOddsCfg[j].EOdds *= 100
+        }
+      }
 
       ret.BetMoneyLevel = []
 
