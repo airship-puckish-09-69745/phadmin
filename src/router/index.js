@@ -284,6 +284,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'BlackJackCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'BlackJack', noCache: true },
+        children: [
+          {
+            path: 'blackJackTable',
+            component: () => import('@/views/config/tableConfig/blackJackTable'),
+            name: 'blackJackTable',
+            meta: { title: 'BlackJack ◐' }
+          }
+        ]
+      },
+      {
         path: 'PusoyCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -1337,6 +1351,12 @@ export const asyncRoutes = [
             component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
             meta: { title: '公共配置' }
+          },
+          {
+            path: 'mttTable',
+            component: () => import('@/views/config/tableConfig/mttTable'),
+            name: 'mttTable',
+            meta: { title: 'MTT 桌子' }
           }
         ]
       },
