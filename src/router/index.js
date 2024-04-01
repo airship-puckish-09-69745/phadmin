@@ -1351,6 +1351,12 @@ export const asyncRoutes = [
             component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
             meta: { title: '公共配置' }
+          },
+          {
+            path: 'mttTable',
+            component: () => import('@/views/config/tableConfig/mttTable'),
+            name: 'mttTable',
+            meta: { title: 'MTT 桌子' }
           }
         ]
       },
