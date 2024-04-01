@@ -604,17 +604,6 @@ export default {
           }
         }
       })
-      request({
-        url: '/texastable/test',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          console.log(response)
-        }
-      })
     },
     wallpaperInput(val, index) {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
