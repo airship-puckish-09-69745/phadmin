@@ -28,13 +28,13 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8" :offset="1">
+        <el-col v-if="envProjectName != 'ph_audit'"  :span="8" :offset="1">
           <el-form-item label="奖池不够输重新洗牌最大次数:">
             <el-input v-model.number="item.MaxCtrlTimes" :required="true" />
           </el-form-item>
         </el-col>
 
-        <el-col :span="8" :offset="1">
+        <el-col v-if="envProjectName != 'ph_audit'" :span="8" :offset="1">
           <el-form-item label="extra出现概率（%）:">
             <el-input v-model.number="item.ExTraPayRate" :required="true" />
           </el-form-item>
@@ -99,7 +99,7 @@
             <legend>下注区域配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;"> 说明: --1.审核服extra配置不生效  --2.倍率不支持小数填写真实值*100，例如期望是2.06 填写206</span>
+                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -125,6 +125,7 @@
                 </el-table-column>
 
                 <el-table-column
+                    v-if="envProjectName != 'ph_audit'"
                     prop="RobotBetRate"
                     label="机器人下注权重"
                 >
@@ -150,7 +151,8 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  label="出现extra概率(%)"
+                    v-if="envProjectName != 'ph_audit'"
+                    label="出现extra概率(%)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.ERate" size="mini" />
@@ -158,7 +160,8 @@
                 </el-table-column>
 
                 <el-table-column
-                    label="extra倍数(real*100)"
+                    v-if="envProjectName != 'ph_audit'"
+                    label="extra倍数(real*10)"
                     width="320"
                 >
 
@@ -484,7 +487,8 @@ export default {
         one: 0,
         two: 0,
         three: 0
-      }
+      },
+      envProjectName: process.env.VUE_APP_PROJECT,
     }
   },
   created() {
