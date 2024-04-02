@@ -550,15 +550,7 @@ export default {
       ret.RobotCfg.MaxRobotMoney *= 1000
       ret.RobotCfg.RobotAverageBetMoney *= 1000
 
-      for (const i in ret.BetAreaOptions) {
-        ret.BetAreaOptions[i].Odds *= 10
-        for (const j in ret.BetAreaOptions[i].EOddsCfg) {
-          ret.BetAreaOptions[i].EOddsCfg[j].EOdds *= 100
-        }
-      }
-
       ret.BetMoneyLevel = []
-
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
         const items = this.item.BetMoneyLevel[o].CanBet.split(',')
@@ -578,9 +570,13 @@ export default {
       }
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
-        const obj = {}
-        Object.assign(obj, this.item.BetAreaOptions[o])
+        const obj = JSON.parse(JSON.stringify( this.item.BetAreaOptions[o]))
+        // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
+        obj.Odds *= 10
+        for (const j in obj.EOddsCfg) {
+          obj.EOddsCfg[j].EOdds *= 100
+        }
         ret.BetAreaOptions.push(obj)
       }
 
