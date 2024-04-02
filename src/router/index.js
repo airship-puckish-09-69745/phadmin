@@ -1367,7 +1367,7 @@ export const asyncRoutes = [
           {
             path: 'texasMttTable',
             component: () => import('@/views/config/tableConfig/texasMttTable'),
-            name: 'mttTable',
+            name: 'texasMttTable',
             meta: { title: 'TexasMtt桌子' }
           }
         ]
