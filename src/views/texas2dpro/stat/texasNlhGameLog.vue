@@ -14,6 +14,11 @@
           <el-form-item label="玩家id">
             <el-input v-model.number="searchForm.Uid" size="mini" placeholder="玩家id" />
           </el-form-item>
+          <el-form-item label="玩法">
+          <el-select v-model="searchForm.Gid" placeholder="请选择" @change="clearData()">
+            <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value"/>
+          </el-select>
+        </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="searchByUid">查询</el-button>
           </el-form-item>
@@ -70,7 +75,7 @@
       <el-table-column
         prop="InsureChange"
         label="玩家手牌"
-        width="100%"
+        :width="getHdCardWidth()"
       >
         <template slot-scope="scope">
           <el-image v-for="(item, index) in getHdCardByUid(scope.row, selectUid)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
@@ -91,7 +96,7 @@
         prop="Insure"
         label="有效底池"
         sortable="custom"
-        width="100%"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ getPool(scope.row) }}
@@ -109,7 +114,7 @@
       <el-table-column
         prop="InsureChange"
         label="获胜玩家手牌"
-        width="100%"
+        :width="getHdCardWidth()"
       >
         <template slot-scope="scope">
           <el-image v-for="(item, index) in getMaxWinPlayerHdCard(scope.row)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
@@ -158,11 +163,15 @@ export default {
     return {
       searchForm: {
         BeginDate: $libDate.GetDayBegin(new Date().getTime()),
-        Uid: 1010434,
-        LogID: ''
+        Uid: '',
+        LogID: '',
+        Gid: ''
       },
+      GidTypes: [
+        { key: '[0]无限德州', value: 32 },
+        { key: '[1]奥马哈德州', value: 36 }
+      ],
       selectUid: 0,
-      gid: 32,
       totalInsure: 0,
       tableData: [],
       currentData: [],
@@ -193,7 +202,7 @@ export default {
           Uid: _this.searchForm.Uid,
           IsVup: 0,
           Time: Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000,
-          Gid: _this.gid
+          Gid: Number(_this.searchForm.Gid)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -370,6 +379,19 @@ export default {
         case 7:
           return dt.Format('MM-dd HH:mm:ss')
       }
+    },
+    getHdCardWidth() {
+      if (this.searchForm.Gid === 32) {
+        return '100%'
+      } else {
+        return '200%'
+      }
+    },
+    clearData() {
+      this.tableData = []
+      this.currentData = []
+      this.totalCount = 0
+      this.currentPage = 1
     }
   }
 }

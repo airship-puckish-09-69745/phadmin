@@ -962,6 +962,108 @@
     </el-dialog>
 
     <el-dialog
+      title="骰宝牌局详情"
+      :visible.sync="miniDvtGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">发牌：</span><div style="color:red;">{{ miniDvtGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="miniDvtGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="赔率"
+          width="80"
+        >
+          <template slot-scope="scope">
+              <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 100 }}</span>
+              <span v-else>0</span>
+
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="IsBonus"
+          label="ExtraPay"
+          width="100"
+        >
+          <template slot-scope="scope">
+              {{ scope.row.EOdds / 100 }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Rate"
+          label="总赔率"
+          width="100"
+        >
+          <template slot-scope="scope">
+              {{ scope.row.totalOdds / 10000 }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.players"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog
       title="7Up7Down牌局详情"
       :visible.sync="sevenGameVisible"
       width="50%"
@@ -1376,6 +1478,10 @@ export default {
 
       sicboGameResult: '',
       sicboGameOptions: [],
+
+      miniDvtGameVisible: false,
+      miniDvtGameResult: '',
+      miniDvtGameOptions: [],
 
       sevenGameVisible: false,
 
@@ -1816,6 +1922,8 @@ export default {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
             $this.showSicboGame(obj)
+          } else if (gid === 104) {
+            $this.showMiniDvtGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
           } else if (gid === 103) {
@@ -2081,6 +2189,45 @@ export default {
       this.sicboGameResult = resultTmp.join('，')
       this.sicboGameVisible = true
     },
+    showMiniDvtGame(obj) {
+      const names = ['龙', '虎', '龙♠♣', '龙♥♦', 'TIE', '虎♠♣', '虎♥♦', '2,26', '3-6', '7-11', '12-16', '17-21', '22-25']
+      const tMap = {}
+      this.miniDvtGameOptions = []
+      const miniDvtObj = obj.Dvt
+      for (let i = 0; i < miniDvtObj.options.length; i++) {
+        const ob = miniDvtObj.options[i]
+        ob.totalOdds = ob.Odds * ob.extraPay
+        console.log(ob)
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Odds: ob.Odds, IsHit: ob.isHit, EOdds: ob.extraPay, totalOdds: ob.totalOdds, players: [] }
+        console.log(tMap[ob.id])
+      }
+
+      for (let i = 0; i < miniDvtObj.players.length; i++) {
+        const player = miniDvtObj.players[i]
+        if (player.areaRet === null) {
+          continue
+        }
+        for (let j = 0; j < player.areaRet.length; j++) {
+          const result = player.areaRet[j]
+          tMap[result.id].players.push({
+            Uid: player.uid,
+            Bet: result.optionBet,
+            Won: result.moneyWon
+          })
+        }
+      }
+
+      for (let i = 0; i < miniDvtObj.options.length; i++) {
+        this.miniDvtGameOptions.push(tMap[i])
+      }
+      console.log(this.miniDvtGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < miniDvtObj.cards.length; i++) {
+        resultTmp.push(miniDvtObj.cards[i].toString(16))
+      }
+      this.miniDvtGameResult = resultTmp.join('，')
+      this.miniDvtGameVisible = true
+    },
     showSevenGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '点数和_2', '点数和_3', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12']
       const tMap = {}
@@ -2321,6 +2468,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 
       // 清空sicboGame数据
       this.sicboGameResult = ''
+
+      // 清空miniDvtGame数据
+      this.miniDvtGameResult = ''
     },
     showChart() {
       this.initChartData()
