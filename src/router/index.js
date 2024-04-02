@@ -1365,10 +1365,10 @@ export const asyncRoutes = [
             meta: { title: '公共配置' }
           },
           {
-            path: 'mttTable',
-            component: () => import('@/views/config/tableConfig/mttTable'),
+            path: 'texasMttTable',
+            component: () => import('@/views/config/tableConfig/texasMttTable'),
             name: 'mttTable',
-            meta: { title: 'MTT 桌子' }
+            meta: { title: 'TexasMtt桌子' }
           }
         ]
       },
