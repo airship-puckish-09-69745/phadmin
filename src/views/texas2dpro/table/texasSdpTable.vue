@@ -83,7 +83,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="最大玩牌人数：" :required="true" prop="item.TableMaxPlayerNum" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.TableMaxPlayerNum" placeholder="请输入" />
+              <el-input v-model.number="edit.item.TableMaxPlayerNum" placeholder="请输入" :disabled="true"/>
             </el-form-item>
           </el-col>
         </el-row>
@@ -490,7 +490,7 @@ function newItem() {
     SmallBlind: 0.1,
     BigBlind: 0,
     ObjectCount: 0,
-    TableMaxPlayerNum: 0,
+    TableMaxPlayerNum: 6,
     TableFee: 0,
     TimeConfig: {},
     MinBuyIn: 0,
