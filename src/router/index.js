@@ -284,6 +284,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'BlackJackCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'BlackJack', noCache: true },
+        children: [
+          {
+            path: 'blackJackTable',
+            component: () => import('@/views/config/tableConfig/blackJackTable'),
+            name: 'blackJackTable',
+            meta: { title: 'BlackJack ◐' }
+          }
+        ]
+      },
+      {
         path: 'PusoyCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -427,7 +441,7 @@ export const asyncRoutes = [
             path: 'miniDvt_cfg',
             component: () => import('@/views/config/tableConfig/miniDvtGame'),
             name: 'miniDvt_cfg',
-            meta: { title: '龙虎 ◐' }
+            meta: { title: 'mini龙虎 ◐' }
           },
           // {
           //   path: 'windrop_cfg',
@@ -788,6 +802,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_sicbo',
         meta: { title: 'Sicbo ◐', gid: 101 }
+      },
+      {
+        path: 'playlog_dvt',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_dvt',
+        meta: { title: 'mini龙虎 ◐', gid: 104 }
       },
       {
         path: 'playlog_seven',
@@ -1343,6 +1363,12 @@ export const asyncRoutes = [
             component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
             meta: { title: '公共配置' }
+          },
+          {
+            path: 'mttTable',
+            component: () => import('@/views/config/tableConfig/mttTable'),
+            name: 'mttTable',
+            meta: { title: 'MTT 桌子' }
           }
         ]
       },

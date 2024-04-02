@@ -211,7 +211,7 @@ export default {
           $this.form = response.Data || { Data: '{}' }
           const v = JSON.parse($this.form.Data)
           $this.cfg = v
-          console.log($this.cfg )
+          console.log($this.cfg)
           if ('TestCard' in this.cfg) {
             $this.TestCard = v.TestCard
             $this.TestCard2NewTestCards()
@@ -353,7 +353,7 @@ export default {
           if (k > 0) {
             sub += ','
           }
-          sub +=  String(this.NewTestCard.HandCards[j][k])
+          sub += String(this.NewTestCard.HandCards[j][k])
         }
         this.TestCard.HandCards.push(sub)
       }
