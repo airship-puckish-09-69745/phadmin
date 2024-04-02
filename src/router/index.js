@@ -1324,13 +1324,19 @@ export const asyncRoutes = [
             path: 'texasNlhTable',
             component: () => import('@/views/texas2dpro/table/texasNlhTable'),
             name: 'texasNlhTable',
-            meta: { title: 'TexasNlh 桌子' }
+            meta: { title: '无限德州' }
           },
           {
             path: 'texasOmhTable',
             component: () => import('@/views/texas2dpro/table/texasOmhTable'),
             name: 'texasNlhTable',
-            meta: { title: 'TexasOmh 桌子' }
+            meta: { title: '奥马哈' }
+          },
+          {
+            path: 'texasSdpTable',
+            component: () => import('@/views/texas2dpro/table/texasSdpTable'),
+            name: 'texasNlhTable',
+            meta: { title: '6+短牌' }
           },
           {
             path: 'texasNlhCfg',

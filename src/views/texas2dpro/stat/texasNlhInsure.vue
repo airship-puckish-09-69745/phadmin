@@ -54,6 +54,7 @@
       <el-table-column
         prop="LogDate"
         label="日期"
+        width="100%"
       >
         <template slot-scope="scope">
           {{ formateDate(scope.row.InsureTime, 1) }}
@@ -62,15 +63,26 @@
       <el-table-column
         prop="LogTime"
         label="时间"
+        width="100%"
       >
         <template slot-scope="scope">
           {{ formateDate(scope.row.InsureTime, 4) }}
         </template>
       </el-table-column>
       <el-table-column
+        prop="Gid"
+        label="玩法ID"
+        width="80%"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.gid }}
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="InsureChange"
         label="保险账变"
         sortable="custom"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ (scope.row.Insure - scope.row.InsureFail ) / 1000 }}
@@ -79,6 +91,7 @@
       <el-table-column
         prop="Uid"
         label="投保玩家ID"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ scope.row.Uid }}
@@ -88,6 +101,7 @@
         prop="Insure"
         label="投保金额"
         sortable="custom"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ scope.row.Insure / 1000 }}
@@ -96,6 +110,7 @@
       <el-table-column
         prop="Outs"
         label="OUTS数量"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ scope.row.Outs }}
@@ -104,6 +119,7 @@
       <el-table-column
         prop="InsureRatio"
         label="赔率"
+        width="80%"
       >
         <template slot-scope="scope">
           {{ scope.row.InsureRatio / 1000 }}
@@ -112,6 +128,7 @@
       <el-table-column
         prop="LogID"
         label="牌局ID"
+        width="200%"
       >
         <template slot-scope="scope">
           <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.logid, dateTime: scope.row.InsureTime }}" @click.native="recordShow = false" style="color: blue">
@@ -122,7 +139,6 @@
     </el-table>
     <br>
     <el-row type="flex" justify="center">
-
       <el_col :span="6">
         <div> 汇总： {{ totalInsure.toFixed(2) }} </div>
       </el_col>
@@ -196,6 +212,7 @@ export default {
           if (objs.total > 0) {
             _this.totalCount = objs.list.length
             _this.tableData = objs.list
+            console.log(_this.tableData)
             _this.currentPage = 1
             _this.refreshShow()
             _this.calTotalInsure()

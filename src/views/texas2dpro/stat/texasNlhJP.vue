@@ -7,6 +7,11 @@
             <el-option v-for="(item, key) in levelList" :key="key" :value="showLevel(item / 1000 )" />
           </el-select>
         </el-form-item>
+        <el-form-item label="玩法">
+          <el-select v-model="searchForm.Gid" placeholder="请选择">
+            <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value"/>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="search">查询</el-button>
         </el-form-item>
@@ -262,8 +267,13 @@ export default {
   data() {
     return {
       searchForm: {
-        Level: ''
+        Level: '',
+        Gid: ''
       },
+      GidTypes: [
+        { key: '[0]无限德州', value: 32 },
+        { key: '[1]奥马哈德州', value: 36 }
+      ],
       levelList: [],
       tableData: [],
       currentData: [],
@@ -289,18 +299,19 @@ export default {
     }
   },
   created() {
-    this.search()
   },
   methods: {
     search() {
       const _this = this
+       _this.tableData = []
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Env: _this.env,
           Path: '/texasnlhdata/jackpot',
-          Level: _this.getLevel(_this.searchForm.Level)
+          Level: _this.getLevel(_this.searchForm.Level),
+          Gid: Number(_this.searchForm.Gid)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -314,7 +325,8 @@ export default {
             _this.tableData = objs.list
             _this.currentPage = 1
             _this.refreshShow()
-            if (_this.searchForm.Level === '') {
+            console.log(_this.searchForm)
+            if (_this.searchForm.Level === '' || _this.searchForm.Level === '所有') {
               _this.getLevelList()
             }
           } else {
@@ -328,6 +340,7 @@ export default {
       })
     },
     searchRecord() {
+      console.log(this.searchForm)
       this.tableRecordData = []
       this.currentRecordData = []
       this.totalRecordCount = 0
@@ -339,7 +352,8 @@ export default {
         data: {
           Env: _this.env,
           Path: '/texasnlhdata/jackpotrecord',
-          Level: Number(this.currLevel * 1000)
+          Level: Number(this.currLevel * 1000),
+          Gid: Number(_this.searchForm.Gid)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -372,6 +386,7 @@ export default {
           Env: _this.env,
           Path: '/texasnlhdata/opjackpot',
           Level: level,
+          Gid: Number(_this.searchForm.Gid),
           Change: change
         }
       }).then(response => {
