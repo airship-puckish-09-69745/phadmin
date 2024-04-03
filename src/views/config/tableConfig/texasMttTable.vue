@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="MttTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="TexasMttTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -294,7 +294,7 @@ export default {
     },
     getList() {
       request({
-        url: '/mtttable/all',
+        url: '/texasmtttable/all',
         method: 'get',
         data: {}
       }).then(response => {
@@ -336,7 +336,7 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/mtttable/update/status',
+          url: '/texasmtttable/update/status',
           method: 'post',
           data: {
             ID: id,
@@ -375,7 +375,7 @@ export default {
     createSave(postData) {
       console.log('createSave', postData)
       request({
-        url: '/mtttable/create',
+        url: '/texasmtttable/create',
         method: 'post',
         data: postData
       }).then(response => {
@@ -393,7 +393,7 @@ export default {
     editSave(postData) {
       console.log('editSave postData: ', postData)
       request({
-        url: 'mtttable/update',
+        url: 'texasmtttable/update',
         method: 'post',
         data: postData
       }).then(response => {
