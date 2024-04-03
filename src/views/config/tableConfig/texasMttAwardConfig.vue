@@ -495,18 +495,81 @@ export default {
       var pData = []
       for (let i = 0; i < this.rankData.length; i++) {
         let row = this.rankData[i]
-        let tmpData = newItem()
-        this.assignData(tmpData, row)
-        pData.push(tmpData)
+        let tmpData = this.doPostData(row)
+        if (tmpData.MinMaxNumList.length > 0) {
+          pData.push(tmpData)
+        }
+        // let tmpData = newItem()
+        // this.assignData(tmpData, row)
+        // pData.push(tmpData)
       }
       return pData
+    },
+
+    newMinMaxRankData(minRank, maxRank, numList) {
+      return {
+        MinRank: minRank,
+        MaxRank: maxRank,
+        MinMaxNumList: numList,
+      }
+    },
+
+    newMinMaxNumData(minNum, maxNum, percent) {
+      return {
+        MinNum: minNum,
+        MaxNum: maxNum,
+        Percent: percent,
+      }
+    },
+
+    addMinMaxNumData(row, nn, minMaxNumList, minNum, maxNum) {
+      if (nn != '') {
+        let a = nn.split('%')        
+        let b = Math.floor(parseFloat(a[0]) * 100)
+        let c = this.newMinMaxNumData(minNum, maxNum, b)
+        minMaxNumList.push(c)
+      }
+    },
+
+    doPostData(row) {
+      var minMaxNumList = []
+      this.addMinMaxNumData(row, row.Num2_10, minMaxNumList, 2, 10)
+      this.addMinMaxNumData(row, row.Num11_20, minMaxNumList, 11, 20)
+      this.addMinMaxNumData(row, row.Num21_30, minMaxNumList, 21, 30)
+      this.addMinMaxNumData(row, row.Num31_40, minMaxNumList, 31, 40)
+      this.addMinMaxNumData(row, row.Num41_50, minMaxNumList, 41, 50)
+      this.addMinMaxNumData(row, row.Num51_60, minMaxNumList, 50, 60)
+      this.addMinMaxNumData(row, row.Num61_87, minMaxNumList, 61, 87)
+      this.addMinMaxNumData(row, row.Num88_112, minMaxNumList, 88, 112)
+      this.addMinMaxNumData(row, row.Num113_137, minMaxNumList, 113, 137)
+      this.addMinMaxNumData(row, row.Num138_162, minMaxNumList, 138, 162)
+      this.addMinMaxNumData(row, row.Num163_187, minMaxNumList, 163, 187)
+      this.addMinMaxNumData(row, row.Num188_212, minMaxNumList, 188, 212)
+      this.addMinMaxNumData(row, row.Num213_262, minMaxNumList, 213, 262)
+      this.addMinMaxNumData(row, row.Num263_337, minMaxNumList, 263, 337)
+      this.addMinMaxNumData(row, row.Num338_412, minMaxNumList, 338, 412)
+      this.addMinMaxNumData(row, row.Num413_487, minMaxNumList, 413, 487)
+      this.addMinMaxNumData(row, row.Num488_562, minMaxNumList, 488, 562)
+      this.addMinMaxNumData(row, row.Num563_637, minMaxNumList, 563, 637)
+      this.addMinMaxNumData(row, row.Num638_712, minMaxNumList, 638, 712)
+      this.addMinMaxNumData(row, row.Num713_787, minMaxNumList, 713, 787)
+      this.addMinMaxNumData(row, row.Num788_862, minMaxNumList, 788, 862)
+      this.addMinMaxNumData(row, row.Num863_937, minMaxNumList, 863, 937)
+      this.addMinMaxNumData(row, row.Num938_1012, minMaxNumList, 938, 1012)
+      this.addMinMaxNumData(row, row.Num1013_1087, minMaxNumList, 1013, 1087)
+      this.addMinMaxNumData(row, row.Num1088_1162, minMaxNumList, 1088, 1162)
+      this.addMinMaxNumData(row, row.Num1163_1237, minMaxNumList, 1163, 1237)
+      this.addMinMaxNumData(row, row.Num1238_1312, minMaxNumList, 1238, 1312)
+      this.addMinMaxNumData(row, row.Num1313, minMaxNumList, 1313, 1313)
+
+      return this.newMinMaxRankData(row.MinRank, row.MaxRank, minMaxNumList)
+
     },
 
     assignData(tmpData, row) {
       tmpData.ID = row.ID
       tmpData.MinRank = row.MinRank
       tmpData.MaxRank = row.MaxRank
-      console.log("row.Num2_10:", row.Num2_10)
       if (row.Num2_10 != '') {
         let a = row.Num2_10.split('%')        
         tmpData.Num2_10 = Math.floor(parseFloat(a[0]) * 100)
