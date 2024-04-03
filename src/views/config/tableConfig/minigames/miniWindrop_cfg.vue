@@ -735,7 +735,7 @@
       <el-col v-for="item in cfg.LevelCfg">
         <el-row style="margin-top: 30px">
           <el-col :span="16" :offset="3">
-            <div v-if="item.Level!=3">
+            <div v-if="!isPhAuditEnv() || item.Level !=3 ">
               <fieldset>
                 <legend>{{ levelShow[item.Level] }} 场次配置(赔率支持3位小数)</legend>
                 <el-form ref="form" :model="form" label-width="300px">
@@ -842,26 +842,28 @@
                     </el-row>
                   </fieldset>
                   <fieldset>
-                    <legend>Spin 转盘选项配置</legend>
-                    <el-row>
-                      <el-table :data="item.Spins" border style="width: 100%">
-                        <el-table-column prop="Id" label="通道ID" width="100">
-                          <template slot-scope="scope">
-                            <el-input v-model.number="scope.row.Id" type="number" placeholder="" disabled />
-                          </template>
-                        </el-table-column>
-                        <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
-                          <template slot-scope="scope">
-                            <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
-                          <template slot-scope="scope">
-                            <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-row>
+               <div v-if="!isPhAuditEnv() || item.Level !=1">
+                 <legend>Spin 转盘选项配置</legend>
+                 <el-row>
+                   <el-table :data="item.Spins" border style="width: 100%">
+                     <el-table-column prop="Id" label="通道ID" width="100">
+                       <template slot-scope="scope">
+                         <el-input v-model.number="scope.row.Id" type="number" placeholder="" disabled />
+                       </template>
+                     </el-table-column>
+                     <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
+                       <template slot-scope="scope">
+                         <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
+                       </template>
+                     </el-table-column>
+                     <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
+                       <template slot-scope="scope">
+                         <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
+                       </template>
+                     </el-table-column>
+                   </el-table>
+                 </el-row>
+               </div>
                   </fieldset>
                 </el-form>
               </fieldset>
@@ -1804,6 +1806,7 @@ export default {
     }
   },
   created() {
+    console.log("=====", this.envProjectName)
     this.getData()
   },
   methods: {
@@ -1829,6 +1832,9 @@ export default {
           HitRates: 0
         }
       })
+    },
+    isPhAuditEnv(){
+      return this.envProjectName=='ph_audit'
     },
     delChannel(idx) {
       this.$delete(this.cfg.Channels, idx)
