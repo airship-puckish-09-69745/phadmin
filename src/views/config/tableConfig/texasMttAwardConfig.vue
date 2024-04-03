@@ -427,6 +427,7 @@ export default {
       env: 'test',
       subKey: 'texasMttAwardConfig',
       ID: 0,
+      form: {},
       edit: {
         visible: false,
         item: newItem(),
@@ -490,126 +491,204 @@ export default {
       this.clientDB.FilterData()
       this.refreshShow()
     },
-    // 操作类函数
-    clickData(row, column, event) {
-      this.edit.item = newItem()
-      this.edit.item.ID = row.ID
+    getPostData() {
+      var pData = []
+      for (let i = 0; i < this.rankData.length; i++) {
+        let row = this.rankData[i]
+        let tmpData = this.doPostData(row)
+        if (tmpData.MinMaxNumList.length > 0) {
+          pData.push(tmpData)
+        }
+        // let tmpData = newItem()
+        // this.assignData(tmpData, row)
+        // pData.push(tmpData)
+      }
+      return pData
+    },
 
-      this.edit.item.MinRank = row.MinRank
-      this.edit.item.MaxRank = row.MaxRank
+    newMinMaxRankData(minRank, maxRank, numList) {
+      return {
+        MinRank: minRank,
+        MaxRank: maxRank,
+        MinMaxNumList: numList,
+      }
+    },
+
+    newMinMaxNumData(minNum, maxNum, percent) {
+      return {
+        MinNum: minNum,
+        MaxNum: maxNum,
+        Percent: percent,
+      }
+    },
+
+    addMinMaxNumData(row, nn, minMaxNumList, minNum, maxNum) {
+      if (nn != '') {
+        let a = nn.split('%')        
+        let b = Math.floor(parseFloat(a[0]) * 100)
+        let c = this.newMinMaxNumData(minNum, maxNum, b)
+        minMaxNumList.push(c)
+      }
+    },
+
+    doPostData(row) {
+      var minMaxNumList = []
+      this.addMinMaxNumData(row, row.Num2_10, minMaxNumList, 2, 10)
+      this.addMinMaxNumData(row, row.Num11_20, minMaxNumList, 11, 20)
+      this.addMinMaxNumData(row, row.Num21_30, minMaxNumList, 21, 30)
+      this.addMinMaxNumData(row, row.Num31_40, minMaxNumList, 31, 40)
+      this.addMinMaxNumData(row, row.Num41_50, minMaxNumList, 41, 50)
+      this.addMinMaxNumData(row, row.Num51_60, minMaxNumList, 50, 60)
+      this.addMinMaxNumData(row, row.Num61_87, minMaxNumList, 61, 87)
+      this.addMinMaxNumData(row, row.Num88_112, minMaxNumList, 88, 112)
+      this.addMinMaxNumData(row, row.Num113_137, minMaxNumList, 113, 137)
+      this.addMinMaxNumData(row, row.Num138_162, minMaxNumList, 138, 162)
+      this.addMinMaxNumData(row, row.Num163_187, minMaxNumList, 163, 187)
+      this.addMinMaxNumData(row, row.Num188_212, minMaxNumList, 188, 212)
+      this.addMinMaxNumData(row, row.Num213_262, minMaxNumList, 213, 262)
+      this.addMinMaxNumData(row, row.Num263_337, minMaxNumList, 263, 337)
+      this.addMinMaxNumData(row, row.Num338_412, minMaxNumList, 338, 412)
+      this.addMinMaxNumData(row, row.Num413_487, minMaxNumList, 413, 487)
+      this.addMinMaxNumData(row, row.Num488_562, minMaxNumList, 488, 562)
+      this.addMinMaxNumData(row, row.Num563_637, minMaxNumList, 563, 637)
+      this.addMinMaxNumData(row, row.Num638_712, minMaxNumList, 638, 712)
+      this.addMinMaxNumData(row, row.Num713_787, minMaxNumList, 713, 787)
+      this.addMinMaxNumData(row, row.Num788_862, minMaxNumList, 788, 862)
+      this.addMinMaxNumData(row, row.Num863_937, minMaxNumList, 863, 937)
+      this.addMinMaxNumData(row, row.Num938_1012, minMaxNumList, 938, 1012)
+      this.addMinMaxNumData(row, row.Num1013_1087, minMaxNumList, 1013, 1087)
+      this.addMinMaxNumData(row, row.Num1088_1162, minMaxNumList, 1088, 1162)
+      this.addMinMaxNumData(row, row.Num1163_1237, minMaxNumList, 1163, 1237)
+      this.addMinMaxNumData(row, row.Num1238_1312, minMaxNumList, 1238, 1312)
+      this.addMinMaxNumData(row, row.Num1313, minMaxNumList, 1313, 1313)
+
+      return this.newMinMaxRankData(row.MinRank, row.MaxRank, minMaxNumList)
+
+    },
+
+    assignData(tmpData, row) {
+      tmpData.ID = row.ID
+      tmpData.MinRank = row.MinRank
+      tmpData.MaxRank = row.MaxRank
       if (row.Num2_10 != '') {
         let a = row.Num2_10.split('%')        
-        this.edit.item.Num2_10 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num2_10 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num11_20 != '') {
         let a = row.Num11_20.split('%')        
-        this.edit.item.Num11_20 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num11_20 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num21_30 != '') {
         let a = row.Num21_30.split('%')        
-        this.edit.item.Num21_30 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num21_30 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num31_40 != '') {
         let a = row.Num31_40.split('%')        
-        this.edit.item.Num31_40 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num31_40 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num41_50 != '') {
         let a = row.Num41_50.split('%')        
-        this.edit.item.Num41_50 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num41_50 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num51_60 != '') {
         let a = row.Num51_60.split('%')        
-        this.edit.item.Num51_60 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num51_60 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num61_87 != '') {
         let a = row.Num61_87.split('%')        
-        this.edit.item.Num61_87 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num61_87 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num88_112 != '') {
         let a = row.Num88_112.split('%')        
-        this.edit.item.Num88_112 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num88_112 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num113_137 != '') {
         let a = row.Num113_137.split('%')        
-        this.edit.item.Num113_137 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num113_137 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num138_162 != '') {
         let a = row.Num138_162.split('%')        
-        this.edit.item.Num138_162 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num138_162 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num163_187 != '') {
         let a = row.Num163_187.split('%')        
-        this.edit.item.Num163_187 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num163_187 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num188_212 != '') {
         let a = row.Num188_212.split('%')        
-        this.edit.item.Num188_212 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num188_212 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num213_262 != '') {
         let a = row.Num213_262.split('%')        
-        this.edit.item.Num213_262 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num213_262 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num263_337 != '') {
         let a = row.Num263_337.split('%')        
-        this.edit.item.Num263_337 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num263_337 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num338_412 !== '') {
         let a = row.Num338_412.split('%')        
-        this.edit.item.Num338_412 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num338_412 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num413_487 !== '') {
         let a = row.Num413_487.split('%')        
-        this.edit.item.Num413_487 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num413_487 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num488_562 !== '') {
         let a = row.Num488_562.split('%')        
-        this.edit.item.Num488_562 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num488_562 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num563_637 !== '') {
         let a = row.Num563_637.split('%')        
-        this.edit.item.Num563_637 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num563_637 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num638_712 !== '') {
         let a = row.Num638_712.split('%')        
-        this.edit.item.Num638_712 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num638_712 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num713_787 !== '') {
         let a = row.Num713_787.split('%')        
-        this.edit.item.Num713_787 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num713_787 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num788_862 !== '') {
         let a = row.Num788_862.split('%')        
-        this.edit.item.Num788_862 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num788_862 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num863_937 !== '') {
         let a = row.Num863_937.split('%')        
-        this.edit.item.Num863_937 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num863_937 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num938_1012 !== '') {
         let a = row.Num938_1012.split('%')        
-        this.edit.item.Num938_1012 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num938_1012 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1013_1087 !== '') {
         let a = row.Num1013_1087.split('%')        
-        this.edit.item.Num1013_1087 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num1013_1087 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1088_1162 !== '') {
         let a = row.Num1088_1162.split('%')        
-        this.edit.item.Num1088_1162 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num1088_1162 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1163_1237 !== '') {
         let a = row.Num1163_1237.split('%')        
-        this.edit.item.Num1163_1237 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num1163_1237 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1238_1312 !== '') {
         let a = row.Num1238_1312.split('%')        
-        this.edit.item.Num1238_1312 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num1238_1312 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1313 !== '') {
         let a = row.Num1313.split('%')        
-        this.edit.item.Num1313 = Math.floor(parseFloat(a[0]) * 100)
+        tmpData.Num1313 = Math.floor(parseFloat(a[0]) * 100)
       }
 
+    },
+
+    // 操作类函数
+    clickData(row, column, event) {
+      this.edit.item = newItem()
+      this.assignData(this.edit.item, row)
       var oldData = JSON.stringify(this.edit.item)
       this.$refs.compare.SetOldVal(oldData)
       this.edit.isEdit = true
@@ -631,23 +710,26 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('getList 1')
-          // $this.form = response.Data || { Data: '{}' }
-          // const v = JSON.parse($this.form.Data)
-          // $this.cfg = v
-          // console.log($this.cfg)
-          // if ('TestCard' in this.cfg) {
-          //   $this.TestCard = v.TestCard
-          //   $this.TestCard2NewTestCards()
-          // }
-          // $this.JackpotConf = v.JackpotConf
-          // // 设置修改之前数据
-          // $this.$refs.compare.SetOldVal($this.form)
+          $this.form = response.Data || { Data: '{}' }
+          console.log('getList 1 form:', $this.form)
+          $this.rankData = $this.do_get_data(JSON.parse($this.form.Data), $this)
+          console.log('getList 2 rankData:', $this.rankData)
         } else {
           console.log('getList error response:', response)
         }
       })
     },
+
+    do_get_data(formData, oldthis) {
+      var tmpRankDataList = []
+      for (let i = 0; i < formData.length; i++) {
+        let tmpRankData = oldthis.newRank()
+        oldthis.tmpSave(tmpRankData, formData[i])
+        tmpRankDataList.push(tmpRankData)    
+      }
+      return tmpRankDataList
+    },
+
     configCheck() {
       return true
     },
@@ -695,103 +777,99 @@ export default {
         Num1313: ''
       }
     },
-    tmpSave(a) {
-      a.MinRank = this.edit.item.MinRank
-      a.MaxRank = this.edit.item.MaxRank
-      a.RankNum = this.edit.item.MinRank + '-' + this.edit.item.MaxRank
-      if (this.edit.item.Num2_10 > 0) {
-        a.Num2_10 = this.edit.item.Num2_10 / 100 + '%'
+    tmpSave(a, dst) {
+      a.MinRank = dst.MinRank
+      a.MaxRank = dst.MaxRank
+      a.RankNum = dst.MinRank + '-' + dst.MaxRank
+      if (dst.Num2_10 > 0) {
+        a.Num2_10 = dst.Num2_10 / 100 + '%'
       }
-      if (this.edit.item.Num11_20 > 0) {
-        a.Num11_20 = this.edit.item.Num11_20 / 100 + '%'
+      if (dst.Num11_20 > 0) {
+        a.Num11_20 = dst.Num11_20 / 100 + '%'
       }
-      if (this.edit.item.Num21_30 > 0) {
-        a.Num21_30 = this.edit.item.Num21_30 / 100 + '%'
+      if (dst.Num21_30 > 0) {
+        a.Num21_30 = dst.Num21_30 / 100 + '%'
       }
-      if (this.edit.item.Num31_40 > 0) {
-        a.Num31_40 = this.edit.item.Num31_40 / 100 + '%'
+      if (dst.Num31_40 > 0) {
+        a.Num31_40 = dst.Num31_40 / 100 + '%'
       }
-      if (this.edit.item.Num41_50 > 0) {
-        a.Num41_50 = this.edit.item.Num41_50 / 100 + '%'
+      if (dst.Num41_50 > 0) {
+        a.Num41_50 = dst.Num41_50 / 100 + '%'
       }
-      if (this.edit.item.Num51_60 > 0) {
-        a.Num51_60 = this.edit.item.Num51_60 / 100 + '%'
+      if (dst.Num51_60 > 0) {
+        a.Num51_60 = dst.Num51_60 / 100 + '%'
       }
-      if (this.edit.item.Num61_87 > 0) {
-        a.Num61_87 = this.edit.item.Num61_87 / 100 + '%'
+      if (dst.Num61_87 > 0) {
+        a.Num61_87 = dst.Num61_87 / 100 + '%'
       }
-      if (this.edit.item.Num88_112 > 0) {
-        a.Num88_112 = this.edit.item.Num88_112 / 100 + '%'
+      if (dst.Num88_112 > 0) {
+        a.Num88_112 = dst.Num88_112 / 100 + '%'
       }
-      if (this.edit.item.Num113_137 > 0) {
-        a.Num113_137 = this.edit.item.Num113_137 / 100 + '%'
+      if (dst.Num113_137 > 0) {
+        a.Num113_137 = dst.Num113_137 / 100 + '%'
       }
-      if (this.edit.item.Num138_162 > 0) {
-        a.Num138_162 = this.edit.item.Num138_162 / 100 + '%'
+      if (dst.Num138_162 > 0) {
+        a.Num138_162 = dst.Num138_162 / 100 + '%'
       }
-      if (this.edit.item.Num163_187 > 0) {
-        a.Num163_187 = this.edit.item.Num163_187 / 100 + '%'
+      if (dst.Num163_187 > 0) {
+        a.Num163_187 = dst.Num163_187 / 100 + '%'
       }
-      if (this.edit.item.Num188_212 > 0) {
-        a.Num188_212 = this.edit.item.Num188_212 / 100 + '%'
+      if (dst.Num188_212 > 0) {
+        a.Num188_212 = dst.Num188_212 / 100 + '%'
       }
-      if (this.edit.item.Num213_262 > 0) {
-        a.Num213_262 = this.edit.item.Num213_262 / 100 + '%'
+      if (dst.Num213_262 > 0) {
+        a.Num213_262 = dst.Num213_262 / 100 + '%'
       }
-      if (this.edit.item.Num263_337 > 0) {
-        a.Num263_337 = this.edit.item.Num263_337 / 100 + '%'
+      if (dst.Num263_337 > 0) {
+        a.Num263_337 = dst.Num263_337 / 100 + '%'
       }
-      if (this.edit.item.Num338_412 > 0) {
-        a.Num338_412 = this.edit.item.Num338_412 / 100 + '%'
+      if (dst.Num338_412 > 0) {
+        a.Num338_412 = dst.Num338_412 / 100 + '%'
       }
-      if (this.edit.item.Num413_487 > 0) {
-        a.Num413_487 = this.edit.item.Num413_487 / 100 + '%'
+      if (dst.Num413_487 > 0) {
+        a.Num413_487 = dst.Num413_487 / 100 + '%'
       }
-      if (this.edit.item.Num488_562 > 0) {
-        a.Num488_562 = this.edit.item.Num488_562 / 100 + '%'
+      if (dst.Num488_562 > 0) {
+        a.Num488_562 = dst.Num488_562 / 100 + '%'
       }
-      if (this.edit.item.Num563_637 > 0) {
-        a.Num563_637 = this.edit.item.Num563_637 / 100 + '%'
+      if (dst.Num563_637 > 0) {
+        a.Num563_637 = dst.Num563_637 / 100 + '%'
       }
-      if (this.edit.item.Num638_712 > 0) {
-        a.Num638_712 = this.edit.item.Num638_712 / 100 + '%'
+      if (dst.Num638_712 > 0) {
+        a.Num638_712 = dst.Num638_712 / 100 + '%'
       }
-      if (this.edit.item.Num713_787 > 0) {
-        a.Num713_787 = this.edit.item.Num713_787 / 100 + '%'
+      if (dst.Num713_787 > 0) {
+        a.Num713_787 = dst.Num713_787 / 100 + '%'
       }
-      if (this.edit.item.Num788_862 > 0) {
-        a.Num788_862 = this.edit.item.Num788_862 / 100 + '%'
+      if (dst.Num788_862 > 0) {
+        a.Num788_862 = dst.Num788_862 / 100 + '%'
       }
-      if (this.edit.item.Num863_937 > 0) {
-        a.Num863_937 = this.edit.item.Num863_937 / 100 + '%'
+      if (dst.Num863_937 > 0) {
+        a.Num863_937 = dst.Num863_937 / 100 + '%'
       }
-      if (this.edit.item.Num938_1012 > 0) {
-        a.Num938_1012 = this.edit.item.Num938_1012 / 100 + '%'
+      if (dst.Num938_1012 > 0) {
+        a.Num938_1012 = dst.Num938_1012 / 100 + '%'
       }
-      if (this.edit.item.Num1013_1087 > 0) {
-        a.Num1013_1087 = this.edit.item.Num1013_1087 / 100 + '%'
+      if (dst.Num1013_1087 > 0) {
+        a.Num1013_1087 = dst.Num1013_1087 / 100 + '%'
       }
-      if (this.edit.item.Num1088_1162 > 0) {
-        a.Num1088_1162 = this.edit.item.Num1088_1162 / 100 + '%'
+      if (dst.Num1088_1162 > 0) {
+        a.Num1088_1162 = dst.Num1088_1162 / 100 + '%'
       }
-      if (this.edit.item.Num1163_1237 > 0) {
-        a.Num1163_1237 = this.edit.item.Num1163_1237 / 100 + '%'
+      if (dst.Num1163_1237 > 0) {
+        a.Num1163_1237 = dst.Num1163_1237 / 100 + '%'
       }
-      if (this.edit.item.Num1238_1312 > 0) {
-        a.Num1238_1312 = this.edit.item.Num1238_1312 / 100 + '%'
+      if (dst.Num1238_1312 > 0) {
+        a.Num1238_1312 = dst.Num1238_1312 / 100 + '%'
       }
-      if (this.edit.item.Num1313 > 0) {
-        a.Num1313 = this.edit.item.Num1313 / 100 + '%'
+      if (dst.Num1313 > 0) {
+        a.Num1313 = dst.Num1313 / 100 + '%'
       }
     },
+
     createSave() {
-      // this.NewTestCard2TestCards()
-      // this.cfg.JackpotConf = this.JackpotConf
-      // this.cfg.TestCard = this.TestCard
-      // const postData = JSON.parse(JSON.stringify(this.cfg))
-      // this.form.Data = JSON.stringify(postData)
-      // console.log(this.form.Data)
       const $this = this
+      var bkRankData = JSON.parse(JSON.stringify(this.rankData))    
       var newData = JSON.stringify(this.edit.item)
       // 设置修改后数据
       this.$refs.compare.SetOldVal({})
@@ -801,24 +879,32 @@ export default {
           Message.error('没有任何修改，不需要提交')
           return
         }
-        console.log('createSave 1')
-        // request({
-        //   url: 'customizeconfig/update',
-        //   method: 'post',
-        //   data: $this.form
-        // }).then(response => {
-        //   if (response.RetCode === 0) {
-        //     Message.success('保存成功')
-        //   }
-        // })
         var a = $this.newRank()
         $this.ID++
         a.ID = this.ID
-        $this.tmpSave(a)      
+        $this.tmpSave(a, $this.edit.item)        
         $this.rankData.push(a)
+        let postData = $this.getPostData()
+        console.log('createSave 1', postData)
+        $this.form.Data = JSON.stringify(postData)
+
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: $this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          } else {
+            $this.rankData = bkRankData
+            Message.success('保存失败')            
+          }
+        })
+        
       })      
     },
     editSave() {
+      var bkRankData = JSON.parse(JSON.stringify(this.rankData)) 
       var tmpid = this.edit.item.ID
       for (let i = 0; i < this.rankData.length; i++) {
         var a = this.rankData[i]
@@ -833,14 +919,26 @@ export default {
             Message.error('没有任何修改，不需要提交')
             return
           }
-          $this.tmpSave(a)
+          $this.tmpSave(a, $this.edit.item)
+          let postData = $this.getPostData()
+          $this.form.Data = JSON.stringify(postData)
+          console.log('editSave 1', postData)
+          request({
+            url: 'customizeconfig/update',
+            method: 'post',
+            data: $this.form
+          }).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('保存成功')
+            } else {
+              $this.rankData = bkRankData
+              Message.success('保存失败')            
+            }
+          })
+
         })
         return
       }
-    },
-    getPostData() {
-      const postData = JSON.parse(JSON.stringify(this.edit.item))
-      return postData
     },
     checkData() {
       // TODO 完善
@@ -855,22 +953,11 @@ export default {
       return true
     },
     save() {
-      if (!this.checkData()) return
+      if (!this.checkData()) 
+        return
       if (this.edit.isEdit) {
-        // // 设置修改后数据
-        // this.$refs.compare.SetNewVal(this.edit.item)
-        // const $this = this
-        // this.$refs.compare.Compare(function(isEdit) {
-        //   if (!isEdit) {
-        //     Message.error('没有任何修改，不需要提交')
-        //     return
-        //   } else {
-        //     $this.editSave($this.getPostData())
-        //   }
-        // })
         this.editSave()
       } else {
-        // this.createSave(this.getPostData())
         this.createSave()
       }
       this.edit.visible = false
