@@ -282,7 +282,7 @@ export default {
       this.editHdRow = -1
     },
     DeleteCommCard() {
-      this.NewTestCard.CommCards = []
+      this.NewTestCard.CommCards = [0, 0, 0, 0, 0]
       this.editHdRow = -1
     },
     SelectCard(card) {

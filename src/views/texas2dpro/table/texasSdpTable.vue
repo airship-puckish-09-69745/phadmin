@@ -100,7 +100,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="前注：" :required="true" prop="item.PrefixChip" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.PrefixChip" placeholder="请输入" />
+              <el-input v-model.number="edit.item.PrefixChip" placeholder="请输入" :disabled="true"/>
             </el-form-item>
           </el-col>
         </el-row>
