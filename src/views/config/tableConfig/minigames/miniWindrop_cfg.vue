@@ -136,9 +136,14 @@
             </template>
           </el-table-column>
           <el-table-column label="玩家开奖池条件(%)" width="300">
-            <template v-if="scope.row.AwardType==1" slot-scope="scope">
-              虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-              &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+            <template  slot-scope="scope">
+             <div v-if="scope.row.AwardType==1">
+               虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+               &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+             </div>
+              <div v-else-if="scope.row.AwardType==2">
+                3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+              </div>
             </template>
 
           </el-table-column>
@@ -439,6 +444,12 @@
                 <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">
                   <template slot="append">‰</template>
                 </el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="分段限制" prop="DayLimitArr">
+              <template slot-scope="scope">
+                <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog2(scope.row)" />
+                <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
               </template>
             </el-table-column>
             <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
@@ -768,7 +779,12 @@
                     <!--                      </el-form-item>-->
                     <!--                    </el-row>-->
                     <el-row>
-                      <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.LuckyJPOdds">
+                      <el-form-item label="MiniJPOdds：" prop="item.LuckyJPKey">
+                        <el-input v-model.number="item.MiniJPOdds" placeholder="请输入"  />
+                      </el-form-item>
+                    </el-row>
+                    <el-row>
+                      <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2位小数）：" prop="item.LuckyJPOdds">
                         <el-input v-model.number="item.LuckyJPOdds" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
@@ -791,7 +807,7 @@
                     <!--                      </el-form-item>-->
                     <!--                    </el-row>-->
                     <el-row>
-                      <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2为小数）：" prop="item.SuperJPOdds">
+                      <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2位小数）：" prop="item.SuperJPOdds">
                         <el-input v-model.number="item.SuperJPOdds" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
@@ -823,17 +839,17 @@
                             <el-input v-model.number="scope.row.HitRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.FirstTimesRates" label="翻倍1次命中概率）">
+                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.FirstTimesRates" label="翻倍1次命中概率）‱（万分比）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.FirstTimesRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.SecondTimesRates" label="翻倍2次命中概率）">
+                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.SecondTimesRates" label="翻倍2次命中概率）‱（万分比）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.SecondTimesRates" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）">
+                        <el-table-column v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）‱（万分比）">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" />
                           </template>
@@ -919,7 +935,48 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-
+    <!-- 【dialog】每日限制开出个数 -->
+    <el-dialog
+      :title="dayLimitChange2.title"
+      :modal="false"
+      :visible.sync="dayLimitChange2.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit2">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit2">保存</el-button>
+      <el-table
+        ref="filterTable"
+        :data="dayLimitChange2.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column type="index" />
+        <el-table-column label="开始小时" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="结束小时(不包含结束时间点)" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="开奖数量" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removeDayLimitNum2(scope.$index)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -963,6 +1020,12 @@ export default {
 
       },
       dayLimitChange: {
+        visible: false,
+        data: [],
+        jackpotType: 0,
+        title: ''
+      },
+      dayLimitChange2: {
         visible: false,
         data: [],
         jackpotType: 0,
@@ -1112,6 +1175,7 @@ export default {
             SuperJPTransferRate: 0,
             superJPRate: 90,
             SuperJPKey: '',
+            MiniJPOdds: 0,
             Channels: [
               {
                 Id: -8,
@@ -1950,14 +2014,32 @@ export default {
       this.dayLimitChange.visible = true
       this.dayLimitChange.jackpotType = data.JackpotType
     },
+    showDayLimitDialog2(data) {
+      if (data.JackpotType == 4) {
+        return
+      }
+      this.dayLimitChange2.title = this.JackpotTypeCfg[data.JackpotType] + '(分段限制)'
+      this.dayLimitChange2.data = data.DayLimitArr || [{}]
+      this.dayLimitChange2.visible = true
+      this.dayLimitChange2.jackpotType = data.JackpotType
+    },
     addDayLimit() {
       if (!this.dayLimitChange.data) {
         this.dayLimitChange['data'] = []
       }
       this.dayLimitChange.data.push({ 'StartHours': 0, 'EndHours': 0, 'Num': 0 })
     },
+    addDayLimit2() {
+      if (!this.dayLimitChange2.data) {
+        this.dayLimitChange2['data'] = []
+      }
+      this.dayLimitChange2.data.push({ 'StartHours': 0, 'EndHours': 0, 'Num': 0 })
+    },
     removeDayLimitNum(index) {
       this.dayLimitChange.data.splice(index, 1)
+    },
+    removeDayLimitNum2(index) {
+      this.dayLimitChange2.data.splice(index, 1)
     },
     saveDayLimit() {
       for (let i = 0; i < this.dayLimitChange.data.length; i++) {
@@ -1980,6 +2062,28 @@ export default {
         }
       }
       this.dayLimitChange.visible = false
+    },
+    saveDayLimit2() {
+      for (let i = 0; i < this.dayLimitChange2.data.length; i++) {
+        if (this.dayLimitChange2.data[i].StartHours < 0 || this.dayLimitChange2.data[i].EndHours > 24) {
+          Message.error('请输入正确的时间')
+          return
+        }
+        if (this.dayLimitChange2.data[i].StartHours > this.dayLimitChange2.data[i].EndHours) {
+          Message.error('请输入正确的时间')
+          return
+        }
+      }
+      for (var i = 0; i < this.JackpotRandAwards2.length; i++) {
+        if (this.dayLimitChange2.jackpotType == this.JackpotRandAwards2[i].JackpotType) {
+          if (!this.JackpotRandAwards2[i]['DayLimitArr']) {
+            this.JackpotRandAwards2[i]['DayLimitArr'] = []
+          }
+          this.JackpotRandAwards2[i]['DayLimitArr'] = this.dayLimitChange2.data
+          break
+        }
+      }
+      this.dayLimitChange2.visible = false
     },
     setData() {
       const obj = this.getPostData()
