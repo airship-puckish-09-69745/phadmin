@@ -716,7 +716,7 @@
           <el-table :data="cfg.HappyRouletteCfg" border style="width: 100%">
             <el-table-column prop="Id" label="通道ID" width="100">
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.Id" placeholder="" disabled />
+                <el-input  v-model.number="scope.row.Id" placeholder="" disabled />
               </template>
             </el-table-column>
             <el-table-column prop="Type" label="奖项类型">
@@ -729,12 +729,12 @@
             </el-table-column>
             <el-table-column prop="HitRates" label="命中概率">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.HitRates" placeholder="" />
+                <el-input v-model.number="scope.row.HitRates" placeholder="" />
               </template>
             </el-table-column>
             <el-table-column prop="Num" label="奖项数量">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.Num" placeholder="" />
+                <el-input v-model.number="scope.row.Num" placeholder="" />
               </template>
             </el-table-column>
           </el-table>
