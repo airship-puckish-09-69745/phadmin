@@ -687,7 +687,7 @@ function newItem() {
     DealerMoneyRates: 0,
     InsureSeconds: '',
     BetMaxRate: 0,
-    BetOption: '',
+    BetOption: [],
     MaxBet:0,
     HideValue: 0,
     RedCardStart: 0,
@@ -994,6 +994,11 @@ export default {
     save() {
       if (!this.checkData()) return
       if (this.edit.isEdit) {
+        this.edit.item.BetOption = []
+        this.edit.item.BetOption.push(parseInt(this.edit.item.Button1Antes))
+        this.edit.item.BetOption.push(parseInt(this.edit.item.Button2Antes))
+        this.edit.item.BetOption.push(parseInt(this.edit.item.Button3Antes))
+        this.edit.item.BetOption.push(parseInt(this.edit.item.Button4Antes))
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
         const $this = this
