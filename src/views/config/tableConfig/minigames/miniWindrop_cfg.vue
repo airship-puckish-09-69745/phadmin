@@ -2119,12 +2119,19 @@ export default {
           }
         }
       }
-      var split = postData.AddTimesRow.split(",");
-      postData.AddTimesRow=[]
-      for (const i of split) {
-        postData.AddTimesRow.push(parseInt(i))
+      console.log("========",postData.AddTimesRow)
+      if (postData.AddTimesRow instanceof Array) {
+        console.log("======2==",postData.AddTimesRow)
+      }else if (postData.AddTimesRow instanceof String) {
+        var split = postData.AddTimesRow.split(",");
+        postData.AddTimesRow=[]
+        for (const i of split) {
+          postData.AddTimesRow.push(parseInt(i))
+        }
       }
+
       this.form.Data = JSON.stringify(postData)
+
       //   console.log("this.form.Data ",this.form.Data )
       const $this = this
       // 设置修改后数据
