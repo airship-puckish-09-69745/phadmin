@@ -867,27 +867,27 @@ export default {
       })
     },
     configCheck() {
-      let count = 0
-      const goodsCheck = false
-      for (const i in this.clientDB.TotalData) {
-        if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 1) {
-          count++
-        }
-        // 除了练习场，其它场次必须配置推荐商品
-        /*        if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
-          goodsCheck = true
-        }*/
+      /*  let count = 0
+     const goodsCheck = false
+     for (const i in this.clientDB.TotalData) {
+       if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 1) {
+         count++
+       }
+       // 除了练习场，其它场次必须配置推荐商品
+       if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
+         goodsCheck = true
+       }
       }
 
-      /*      if (goodsCheck) {
+      if (goodsCheck) {
         this.$alert('除了练习场，其它场次必须配置金币不足推荐商品')
         return false
-      }*/
+      }
       console.log(count)
       if (count !== 1) {
         this.$alert('发布的配置项中，必须有且仅有一个练习场配置')
         return false
-      }
+      }*/
       return true
     },
     handlePreOn(ob) {
