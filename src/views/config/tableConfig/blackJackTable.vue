@@ -226,7 +226,7 @@
               prop="item.CarryLower"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="edit.item.MaxBet" placeholder="请输入" />
+              <el-input v-model.number="edit.item.BetMoneyMax" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
