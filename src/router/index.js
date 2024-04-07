@@ -287,7 +287,7 @@ export const asyncRoutes = [
         path: 'NewGameCfg',
         component: () => import('@/views/empty'),
         redirect: 'NewGameCfg',
-        meta: { title: 'newGameCfg', noCache: true },
+        meta: { title: 'NewGameCfg', noCache: true },
         children: [
           {
             path: 'blackJackTable',

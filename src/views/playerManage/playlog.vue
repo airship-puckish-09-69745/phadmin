@@ -1652,8 +1652,7 @@ export default {
           const num = cards[i] & 0x0F
           const colors = $libShow.ColorMap[m[color]]
           const nums = $libShow.NumMap[num]
-          console.log('============', colors, nums)
-          ret += '<span style="color:' + ((color === 1 || color === 3) ? 'red' : 'black') + '">' + colors + nums + '</span>'
+          ret += '<span style="color:' + ((color === 0 || color === 2) ? 'red' : 'black') + '">' + colors + nums + '</span>'
         }
       }
       return ret

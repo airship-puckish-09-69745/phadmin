@@ -722,8 +722,8 @@
             <el-table-column prop="Type" label="奖项类型">
               <template slot-scope="scope">
                 <el-select v-model.number="scope.row.Type" size="small" placeholder="placeholder">
-                  <el-option label="免费球" :value="1" />
-                  <el-option label="金币" :value="2" />
+                  <el-option label="金币" :value="1" />
+                  <el-option label="小球" :value="2" />
                 </el-select>
               </template>
             </el-table-column>
