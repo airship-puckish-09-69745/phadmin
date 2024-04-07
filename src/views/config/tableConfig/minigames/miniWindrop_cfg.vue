@@ -2119,6 +2119,11 @@ export default {
           }
         }
       }
+      var split = postData.AddTimesRow.split(",");
+      postData.AddTimesRow=[]
+      for (const i of split) {
+        postData.AddTimesRow.push(parseInt(i))
+      }
       this.form.Data = JSON.stringify(postData)
       //   console.log("this.form.Data ",this.form.Data )
       const $this = this
