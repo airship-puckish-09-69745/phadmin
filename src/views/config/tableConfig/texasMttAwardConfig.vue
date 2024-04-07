@@ -499,9 +499,6 @@ export default {
         if (tmpData.MinMaxNumList.length > 0) {
           pData.push(tmpData)
         }
-        // let tmpData = newItem()
-        // this.assignData(tmpData, row)
-        // pData.push(tmpData)
       }
       return pData
     },
@@ -711,9 +708,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || { Data: '{}' }
-          console.log('getList 1 form:', $this.form)
+          // console.log('getList 1 form:', $this.form)
           $this.rankData = $this.do_get_data(JSON.parse($this.form.Data), $this)
-          console.log('getList 2 rankData:', $this.rankData)
+          // console.log('getList 2 rankData:', $this.rankData)
         } else {
           console.log('getList error response:', response)
         }
@@ -721,11 +718,74 @@ export default {
     },
 
     do_get_data(formData, oldthis) {
+      // console.log('do_get_data 1 formData:', formData)
       var tmpRankDataList = []
       for (let i = 0; i < formData.length; i++) {
         let tmpRankData = oldthis.newRank()
-        oldthis.tmpSave(tmpRankData, formData[i])
-        tmpRankDataList.push(tmpRankData)    
+        tmpRankData.MinRank = formData[i].MinRank
+        tmpRankData.MaxRank = formData[i].MaxRank
+        tmpRankData.RankNum = formData[i].MinRank + '_' + formData[i].MaxRank
+        let tmpList = formData[i].MinMaxNumList
+        for (let j = 0; j < tmpList.length; j++) {
+          if (tmpList[j].MinNum == 2) {
+            tmpRankData.Num2_10 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 11) {
+            tmpRankData.Num11_20 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 21) {
+            tmpRankData.Num21_30 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 31) {
+            tmpRankData.Num31_40 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 41) {
+            tmpRankData.Num41_50 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 51) {
+            tmpRankData.Num51_60 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 61) {
+            tmpRankData.Num61_87 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 88) {
+            tmpRankData.Num88_112 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 113) {
+            tmpRankData.Num113_137 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 138) {
+            tmpRankData.Num138_162 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 163) {
+            tmpRankData.Num163_187 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 188) {
+            tmpRankData.Num188_212 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 213) {
+            tmpRankData.Num213_262 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 263) {
+            tmpRankData.Num263_337 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 338) {
+            tmpRankData.Num338_412 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 413) {
+            tmpRankData.Num413_487 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 488) {
+            tmpRankData.Num488_562 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 563) {
+            tmpRankData.Num563_637 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 638) {
+            tmpRankData.Num638_712 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 713) {
+            tmpRankData.Num713_787 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 788) {
+            tmpRankData.Num788_862 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 863) {
+            tmpRankData.Num863_937 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 938) {
+            tmpRankData.Num938_1012 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 1013) {
+            tmpRankData.Num1013_1087 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 1088) {
+            tmpRankData.Num1088_1162 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 1163) {
+            tmpRankData.Num1163_1237 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 1238) {
+            tmpRankData.Num1238_1312 = tmpList[j].Percent / 100 + '%'
+          } else if (tmpList[j].MinNum == 1313) {
+            tmpRankData.Num1313 = tmpList[j].Percent / 100 + '%'
+          }
+        }
+        tmpRankDataList.push(tmpRankData)
       }
       return tmpRankDataList
     },
