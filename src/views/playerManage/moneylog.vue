@@ -533,23 +533,23 @@ export default {
                   break
               }
             } else {
-              if (objs[i].ActType === 1000) {
-                if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
-                  winInfo.Other.Win += objs[i].MoneyChanged
-                  if (!timeMap[t]) {
-                    timeMap[t] = true
-                    winInfo.Other.WinTimes++
-                  }
-                }
-              } else if (objs[i].ActType === 1001) {
-                if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
-                  winInfo.Other.Lose += objs[i].MoneyChanged
-                  if (!timeMap[t]) {
-                    timeMap[t] = true
-                    winInfo.Other.LoseTimes++
-                  }
-                }
-              }
+              // if (objs[i].ActType === 1000) {
+              //   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
+              //     winInfo.Other.Win += objs[i].MoneyChanged
+              //     if (!timeMap[t]) {
+              //       timeMap[t] = true
+              //       winInfo.Other.WinTimes++
+              //     }
+              //   }
+              // } else if (objs[i].ActType === 1001) {
+              //   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
+              //     winInfo.Other.Lose += objs[i].MoneyChanged
+              //     if (!timeMap[t]) {
+              //       timeMap[t] = true
+              //       winInfo.Other.LoseTimes++
+              //     }
+              //   }
+              // }
               if (objs[i].MoneyChanged>0){
                 winInfo[gameName].Win += objs[i].MoneyChanged
                 if (!timeMap[t]) {

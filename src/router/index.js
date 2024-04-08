@@ -284,24 +284,16 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'NewGameCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'NewGameCfg',
-        meta: { title: 'NewGameCfg', noCache: true },
-        children: [
-          {
-            path: 'blackJackTable',
-            component: () => import('@/views/config/tableConfig/blackJackTable'),
-            name: 'blackJackTable',
-            meta: { title: 'BlackJack ◐' }
-          },
-          {
-            path: 'solitaire',
-            component: () => import('@/views/config/tableConfig/solitaire'),
-            name: 'solitaire',
-            meta: { title: 'solitaire ◐' }
-          }
-        ]
+        path: 'blackJackTable',
+        component: () => import('@/views/config/tableConfig/blackJackTable'),
+        name: 'blackJackTable',
+        meta: { title: 'BlackJack ◐' }
+      },
+      {
+        path: 'solitaire',
+        component: () => import('@/views/config/tableConfig/solitaire'),
+        name: 'solitaire',
+        meta: { title: 'solitaire ◐' }
       },
       {
         path: 'PusoyCfg',
