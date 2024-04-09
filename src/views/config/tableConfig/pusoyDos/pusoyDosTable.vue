@@ -425,6 +425,7 @@ function newItem() {
     RoomLevel: 0,
     RemainAlarm: 0,
     PotScore:0 ,
+    PlayMode: 1,
   }
 }
 
@@ -628,6 +629,7 @@ export default {
       })
     },
     editSave(postData) {
+      delete postData['PlayMode']
       request({
         url: 'pusoydostable/update',
         method: 'post',
