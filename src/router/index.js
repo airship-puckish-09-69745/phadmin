@@ -441,6 +441,12 @@ export const asyncRoutes = [
             name: 'miniDvt_cfg',
             meta: { title: 'mini龙虎 ◐' }
           },
+          {
+            path: 'miniAb_cfg',
+            component: () => import('@/views/config/tableConfig/miniAbGame'),
+            name: 'miniAb_cfg',
+            meta: { title: 'miniAB ◐' }
+          },
           // {
           //   path: 'windrop_cfg',
           //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
@@ -806,6 +812,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_dvt',
         meta: { title: 'mini龙虎 ◐', gid: 104 }
+      },
+      {
+        path: 'playlog_ab',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ab',
+        meta: { title: 'miniAB ◐', gid: 105 }
       },
       {
         path: 'playlog_seven',
