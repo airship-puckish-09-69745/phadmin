@@ -438,14 +438,13 @@ function newItem() {
     HideCarry: '',
     TableMoney: '',
     JokerNum: 0,
-    MaxPlayerCount: 3,
+    MaxPlayerCount: 2,
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
     WatchTimesMax: '',
     IsPractice: 0,
     Level: 1,
-    PlayMode:1,
     MatchTime: 0,
     GameTime: 0,
     FlopCount: 1,
@@ -656,9 +655,7 @@ export default {
       })
     },
     editSave(postData) {
-      console.log("======1======",postData)
-      delete postData['PlayMode']
-      console.log("======2======",postData)
+
       request({
         url: 'solitairetable/update',
         method: 'post',

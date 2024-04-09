@@ -629,7 +629,6 @@ export default {
       })
     },
     editSave(postData) {
-      delete postData['PlayMode']
       request({
         url: 'pusoydostable/update',
         method: 'post',
