@@ -200,7 +200,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
-              <el-select v-model="edit.item.TableMoney" placeholder="请选择" :disabled="edit.isEdit">
+              <el-select v-model="edit.item.TableMoney" placeholder="请选择"  >
                 <el-option label="0.1" :value="0.1" />
                 <el-option label="0.3" :value="0.3" />
                 <el-option label="0.5" :value="0.5" />
@@ -278,6 +278,7 @@
               <el-input v-model.number="edit.item.ObjectCount" placeholder="桌子数量" />
             </el-form-item>
           </el-col>
+
 <!--          <el-col :span="2">-->
 <!--            <el-tooltip class="item" effect="dark" content="修改需要重启服务器" placement="left-start">-->
 <!--              <i class="el-icon-info" />-->
@@ -326,6 +327,9 @@
             >
               <el-input v-model="edit.item.FlowRate" placeholder="请输入" />
             </el-form-item>
+            <el-row :span="9">
+              <game-level v-model="edit.item.Level" />
+            </el-row>
           </el-col>
           <el-col :span="2">
             <el-tooltip class="item" effect="dark" content="抽3%，则填写0.03" placement="left-start">
@@ -346,7 +350,10 @@
                 prop="item.FlopCount"
                 :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.FlopCount" placeholder="请输入"/>
+              <el-select v-model="edit.item.FlopCount" placeholder="请选择"  >
+                <el-option label="1" :value="1" />
+                <el-option label="3" :value="3" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -431,17 +438,16 @@ function newItem() {
     HideCarry: '',
     TableMoney: '',
     JokerNum: 0,
-    MaxPlayerCount: 3,
+    MaxPlayerCount: 2,
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
     WatchTimesMax: '',
     IsPractice: 0,
-    // Level: 1,
-
+    Level: 1,
     MatchTime: 0,
     GameTime: 0,
-    FlopCount: 0,
+    FlopCount: 1,
     FreeResetCount: 0,
     FreeWithdrawCount: 0,
     RecommendTimes: 0,
@@ -649,6 +655,7 @@ export default {
       })
     },
     editSave(postData) {
+
       request({
         url: 'solitairetable/update',
         method: 'post',

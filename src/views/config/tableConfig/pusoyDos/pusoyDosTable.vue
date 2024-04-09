@@ -425,6 +425,7 @@ function newItem() {
     RoomLevel: 0,
     RemainAlarm: 0,
     PotScore:0 ,
+    PlayMode: 1,
   }
 }
 
