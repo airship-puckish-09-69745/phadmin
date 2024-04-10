@@ -992,7 +992,7 @@
           width="80"
         >
           <template slot-scope="scope">
-              <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 100 }}</span>
+              <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
               <span v-else>0</span>
 
           </template>
@@ -1004,7 +1004,7 @@
           width="100"
         >
           <template slot-scope="scope">
-              {{ scope.row.EOdds / 100 }}
+              {{ scope.row.EOdds / 1000 }}
           </template>
         </el-table-column>
 
@@ -1014,7 +1014,7 @@
           width="100"
         >
           <template slot-scope="scope">
-              {{ scope.row.totalOdds / 10000 }}
+              {{ scope.row.totalOdds / 100000 }}
           </template>
         </el-table-column>
 
@@ -1051,6 +1051,88 @@
                 prop="Won"
                 label="输赢"
                 width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog
+        title="骰宝牌局详情"
+        :visible.sync="miniAbGameVisible"
+        width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">发牌：</span><div style="color:red;">{{ miniAbGameResult }}</div>
+      </div>
+      <el-table
+          ref="filterTable"
+          :data="miniAbGameOptions"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+      >
+        <el-table-column
+            prop="Name"
+            label="下注项"
+            width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="Hit"
+            label="赔率"
+            width="80"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
+            <span v-else>-1</span>
+
+          </template>
+        </el-table-column>
+
+        <el-table-column
+            prop="Result"
+            label="下注结果"
+            width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+                ref="filterTable"
+                :data="scope.row.players"
+                border
+                :show-header="true"
+                :row-class-name="tableRowClassName"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+            >
+              <el-table-column
+                  prop="Uid"
+                  label="Uid"
+                  width="150"
+              />
+              <el-table-column
+                  prop="Bet"
+                  label="下注"
+                  width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                  prop="Won"
+                  label="输赢"
+                  width="200"
               >
                 <template slot-scope="scope">
                   <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
@@ -1482,6 +1564,10 @@ export default {
       miniDvtGameVisible: false,
       miniDvtGameResult: '',
       miniDvtGameOptions: [],
+
+      miniAbGameVisible: false,
+      miniAbGameResult: '',
+      miniAbGameOptions: [],
 
       sevenGameVisible: false,
 
@@ -1923,6 +2009,8 @@ export default {
             $this.showSicboGame(obj)
           } else if (gid === 104) {
             $this.showMiniDvtGame(obj)
+          } else if (gid === 105) {
+            $this.showMiniAbGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
           } else if (gid === 103) {
@@ -2227,6 +2315,44 @@ export default {
       this.miniDvtGameResult = resultTmp.join('，')
       this.miniDvtGameVisible = true
     },
+    showMiniAbGame(obj) {
+      const names = ['A', 'B', '1-5', '6-10', '11-15', '16-24', '25-30', '31-35', '36-40', '41-49']
+      const tMap = {}
+      this.miniAbGameOptions = []
+      const miniAbObj = obj.Ab
+      for (let i = 0; i < miniAbObj.options.length; i++) {
+        const ob = miniAbObj.options[i]
+        console.log(ob)
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Odds: ob.Odds, IsHit: ob.isHit, players: [] }
+        console.log(tMap[ob.id])
+      }
+
+      for (let i = 0; i < miniAbObj.players.length; i++) {
+        const player = miniAbObj.players[i]
+        if (player.areaRet === null) {
+          continue
+        }
+        for (let j = 0; j < player.areaRet.length; j++) {
+          const result = player.areaRet[j]
+          tMap[result.id].players.push({
+            Uid: player.uid,
+            Bet: result.optionBet,
+            Won: result.moneyWon
+          })
+        }
+      }
+
+      for (let i = 0; i < miniAbObj.options.length; i++) {
+        this.miniAbGameOptions.push(tMap[i])
+      }
+      console.log(this.miniAbGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < miniAbObj.cards.length; i++) {
+        resultTmp.push(miniAbObj.cards[i].toString(16))
+      }
+      this.miniAbGameResult = resultTmp.join('，')
+      this.miniAbGameVisible = true
+    },
     showSevenGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '点数和_2', '点数和_3', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12']
       const tMap = {}
@@ -2470,6 +2596,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 
       // 清空miniDvtGame数据
       this.miniDvtGameResult = ''
+
+      // 清空miniAbGame数据
+      this.miniAbGameResult = ''
     },
     showChart() {
       this.initChartData()
