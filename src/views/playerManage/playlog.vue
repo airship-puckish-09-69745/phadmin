@@ -2198,9 +2198,11 @@ export default {
       const tMap = {}
       this.rocketGameOptions = []
       const rocketObj = obj
-      for (let i = 0; i < rocketObj.optionsData.length; i++) {
-        const ob = rocketObj.optionsData[i]
-        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
+      if (rocketObj.optionsData){
+        for (let i = 0; i < rocketObj.optionsData.length; i++) {
+          const ob = rocketObj.optionsData[i]
+          tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
+        }
       }
 
       for (let i = 0; i < rocketObj.players.length; i++) {
@@ -2217,10 +2219,12 @@ export default {
           })
         }
       }
-
-      for (let i = 0; i < rocketObj.optionsData.length; i++) {
-        this.rocketGameOptions.push(tMap[i])
+      if (rocketObj.optionsData){
+        for (let i = 0; i < rocketObj.optionsData.length; i++) {
+          this.rocketGameOptions.push(tMap[i])
+        }
       }
+
       this.rocketGameResult = rocketObj.stopOdds / 100
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
