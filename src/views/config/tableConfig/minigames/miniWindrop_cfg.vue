@@ -573,6 +573,48 @@
         <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum2()">保存</el-button>
         <el-table
           ref="filterTable"
+          :data="poolNumChange.data"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column label="配置ID" prop="Id">
+            <template slot-scope="scope">
+              {{ scope.row.Id }}
+            </template>
+          </el-table-column>
+          <el-table-column label="开出数量(一次最多只有一个)" prop="Num">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+          <el-table-column label="开出概率(%)" prop="Rate">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.Rate" style="width: 100px;" size="mini" :required="true" />
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum2(scope.row.Id)">移除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
+
+      <!-- 【dialog】jackpot开出奖励 -->
+      <el-dialog
+        :title="poolNumChange2.title"
+        :modal="false"
+        :visible.sync="poolNumChange2.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum2()">添加</el-button>
+        <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum2()">保存</el-button>
+        <el-table
+          ref="filterTable"
           :data="poolNumChange2.data"
           border
           :header-cell-style="libShow.DefaultTableHeadClass"
@@ -857,8 +899,9 @@
                       </el-table>
                     </el-row>
                   </fieldset>
+                  <div v-if="item.Level !=1">
+
                   <fieldset>
-               <div v-if="!isPhAuditEnv() || item.Level !=1">
                  <legend>Spin 转盘选项配置</legend>
                  <el-row>
                    <el-table :data="item.Spins" border style="width: 100%">
@@ -867,7 +910,7 @@
                          <el-input v-model.number="scope.row.Id" type="number" placeholder="" disabled />
                        </template>
                      </el-table-column>
-                     <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP)">
+                     <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP;-3为命中MiniJP)">
                        <template slot-scope="scope">
                          <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                        </template>
@@ -879,8 +922,9 @@
                      </el-table-column>
                    </el-table>
                  </el-row>
-               </div>
                   </fieldset>
+                  </div>
+
                 </el-form>
               </fieldset>
             </div>
@@ -2221,10 +2265,13 @@ export default {
       if (data.JackpotType == 4) {
         return
       }
+      this.poolNumChange.visible = true
+
       this.poolNumChange.title = this.JackpotTypeCfg[data.JackpotType] + '(开奖数量概率)'
       this.poolNumChange.data = data.RateArr
-      this.poolNumChange.visible = true
       this.poolNumChange.jackpotType = data.JackpotType
+
+
     },
     // 展示jackpot奖池增长标题
     getJackpotPoolTitle(row) {
@@ -2357,9 +2404,10 @@ export default {
       if (data.JackpotType == 4) {
         return
       }
+      this.poolNumChange2.visible = true
+
       this.poolNumChange2.title = this.JackpotTypeCfg2[data.JackpotType] + '(开奖数量概率)'
       this.poolNumChange2.data = data.RateArr
-      this.poolNumChange2.visible = true
       this.poolNumChange2.jackpotType = data.JackpotType
     },
     // 展示jackpot奖池增长标题
