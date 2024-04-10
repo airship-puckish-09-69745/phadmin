@@ -1385,6 +1385,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/texasMttAwardConfig'),
             name: 'texasMttAwardConfig',
             meta: { title: 'Mtt奖励配置' }
+          },
+          {
+            path: 'texasPusoyTable',
+            component: () => import('@/views/config/tableConfig/texasPusoyTable'),
+            name: 'texasPusoyTable',
+            meta: { title: 'texasPusoy桌子' }
           }
         ]
       },
