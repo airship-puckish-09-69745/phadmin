@@ -218,6 +218,12 @@ export const asyncRoutes = [
             meta: { title: 'Tongits-经典 ◐' }
           },
           {
+            path: 'tongitsLaiZiTable',
+            component: () => import('@/views/config/tableConfig/tongitsTableLaiZi'),
+            name: 'tongitsTableLaiZi',
+            meta: { title: 'Tongits-赖子 ◐' }
+          },
+          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
