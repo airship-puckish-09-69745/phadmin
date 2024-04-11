@@ -453,7 +453,7 @@ export default {
         HideCarry: '隐藏目标值',
         TableMoney: '桌子大小',
         JokerNum: '癞子数',
-        MaxPlayerCount: 3,
+        MaxPlayerCount: '座位数',
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
