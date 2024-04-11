@@ -306,13 +306,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item
-              label="最大围观局数："
-              prop="item.WatchTimesMax"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model.number="edit.item.WatchTimesMax" />
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="最大围观局数："-->
+<!--              prop="item.WatchTimesMax"-->
+<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
+<!--            </el-form-item>-->
           </el-col>
         </el-row>
 
