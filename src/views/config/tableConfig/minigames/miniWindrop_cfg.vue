@@ -54,7 +54,7 @@
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.AwardRate">
-                    <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">‱</template>
+                    <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">%</template>
                   </el-input>
                 </template>
               </el-table-column>
