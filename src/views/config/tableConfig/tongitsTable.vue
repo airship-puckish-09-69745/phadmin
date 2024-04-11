@@ -18,6 +18,7 @@
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
+      <p style="margin:30px;color:#dd0000;">注意：修改底注、桌子数量需要重启游戏服务才能生效！</p>
       <el-table
         ref="filterTable"
         :data="tableData"
@@ -56,7 +57,7 @@
         />
         <el-table-column
           prop="TableMoney"
-          label="前注"
+          label="底注"
           sortable="custom"
           width="100"
         >
@@ -182,15 +183,11 @@
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
               <el-select v-model="edit.item.TableMoney" placeholder="请选择">
-                <el-option label="1" :value="1" />
-                <el-option label="5" :value="5" />
-                <el-option label="10" :value="10" />
-                <el-option label="20" :value="20" />
-                <el-option label="50" :value="50" />
-                <el-option label="100" :value="100" />
-                <el-option label="200" :value="200" />
-                <el-option label="11(专用)" :value="11" />
-                <!-- <el-option label="500" :value="500" /> -->
+	      	<el-option v-for="item in tableMoneyCfg"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"/> 
+
               </el-select>
             </el-form-item>
           </el-col>
@@ -547,14 +544,23 @@ export default {
         isEdit: false,
         robotConfig: NewRobotConfig()
       },
+      tableMoneyCfg:[
+        {"label":"1","value":1},
+        {"label":"5","value":5},
+        {"label":"10","value":10},
+        {"label":"20","value":20},
+        {"label":"50","value":50},
+        {"label":"100","value":100},
+        {"label":"200","value":200},
+      ],
 
       AttrNames: {
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
         HideCarry: '隐藏目标值',
-        TableMoney: '桌子大小',
+        TableMoney: '底注',
         JokerNum: '癞子数',
-        MaxPlayerCount: 3,
+        MaxPlayerCount: "最大玩牌人数",
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
