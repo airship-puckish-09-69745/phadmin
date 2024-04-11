@@ -787,6 +787,12 @@ export const asyncRoutes = [
         name: 'playlog_classic_tongits',
         meta: { title: 'Tongits - 经典 ◐', gid: 31 }
       },
+      {
+        path: 'playlog_laizi_tongits',
+        component: () => import('@/views/playerManage/tongitsPlaylog'),
+        name: 'playlog_laizi_tongits',
+        meta: { title: 'Tongits - 癞子 ◐', gid: 28 }
+      },
 
       /* {
         path: 'playlog_ab',
