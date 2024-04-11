@@ -744,9 +744,12 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="通知时间：">
+            <el-form-item label="通知时间(S)：">
               <el-input v-model.number="cfg.NoticeTime" type="number" placeholder="" />
             </el-form-item>
+            <el-row v-if="envProjectName!='ph_audit'">
+              <money-input v-model.number="cfg.EnergyNum" label="转盘小游戏能量条数额" />
+            </el-row>
           </el-row>
         </el-form>
       </el-col>
@@ -801,9 +804,7 @@
                       </el-select>
                     </el-form-item>
                   </el-row>
-                  <el-row v-if="envProjectName!='ph_audit'">
-                    <money-input v-model.number="item.EnergyNum" label="转盘小游戏能量条数额" />
-                  </el-row>
+
                   <el-row v-if="envProjectName!='ph_audit'">
                     <el-form-item label="转盘小游戏能量转化率：">
                       <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）

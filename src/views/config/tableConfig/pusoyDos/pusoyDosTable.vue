@@ -268,14 +268,14 @@
 
         <el-row>
           <el-col :span="11">
-            <el-form-item
-              label="座位数："
-              :required="true"
-              prop="item.MaxPlayerCount"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="座位数："-->
+<!--              :required="true"-->
+<!--              prop="item.MaxPlayerCount"-->
+<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
+<!--            </el-form-item>-->
           </el-col>
           <el-col :span="9">
             <el-form-item
@@ -406,7 +406,7 @@ function newItem() {
     HideCarry: '',
     TableMoney: '',
     JokerNum: 0,
-    MaxPlayerCount: 3,
+    MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
