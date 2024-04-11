@@ -410,7 +410,7 @@ function newItem() {
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
-    WatchTimesMax: '',
+    WatchTimesMax: 0,
     IsPractice: 0,
     Level: 1,
 
