@@ -324,6 +324,72 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <fieldset style="margin:20px auto;">
+              <legend>机器人下注配置</legend>
+                <el-row>
+                    <el-table
+                            ref="filterTable"
+                            :data="item.RobotBetAreaArr"
+                            border
+                            :header-cell-style="libShow.DefaultTableHeadClass"
+                            :row-style="{height:'10px'}"
+                            :cell-style="libShow.DefaultTableCell"
+                            style="width: 100%">
+                        <el-table-column prop="are" label="区域">
+                            <template slot-scope="scope">
+                                    <el-input v-model="scope.row.Area"  size="mini" disabled/>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="are" label="机器人下注概率%">
+                            <template slot-scope="scope">
+                                <el-input type="number" :step="0.01" v-model.number="scope.row.Probability" size="mini" />
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+            </fieldset>
+            <fieldset style="margin:20px auto;">
+              <legend>机器人Take配置</legend>
+                <el-row>
+                    <button @click="addRobotTakeArea">+添加</button>
+                    <el-table
+                            ref="filterTable"
+                            :data="item.RobotTakeAreaArr"
+                            border
+                            :header-cell-style="libShow.DefaultTableHeadClass"
+                            :row-style="{height:'10px'}"
+                            :cell-style="libShow.DefaultTableCell"
+                            style="width: 100%">
+                        <el-table-column prop="are" label="配置ID">
+                            <template slot-scope="scope">
+                                <el-input v-model="scope.row.ID" size="mini" disabled/>
+                            </template>
+                        </el-table-column>
+                        <el-table-column prop="are" label="机器人Take倍数区间">
+                                <el-table-column label="起始">
+                                    <template slot-scope="scope">
+                                        <el-input   v-model.number="scope.row.StartTake" size="mini" />
+                                    </template>
+                                </el-table-column>
+                                <el-table-column  label="结束">
+                                    <template slot-scope="scope">
+                                        <el-input   v-model.number="scope.row.EndTake" size="mini"  />
+                                    </template>
+                                </el-table-column>
+                            </el-table-column>
+                      <el-table-column prop="are" label="概率%">
+                        <template slot-scope="scope">
+                          <el-input type="number" :step="0.01"  v-model.number="scope.row.Probability" size="mini" />
+                        </template>
+                      </el-table-column>
+                        <el-table-column prop="are" label="操作">
+                            <template slot-scope="scope">
+                               <el-button type="danger" @click="removeRobotTakeArea(scope.$index)">移除</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+            </fieldset>
           </fieldset>
 
           <fieldset style="margin:20px auto;">
@@ -697,7 +763,9 @@ export default {
         ChatRobotReplyIntervalMin: 0,
         ChatRobotReplyIntervalMax: 0,
         ChatRobotReplyRate: 0,
-        ChatRobotReplyMaxNum: 0
+        ChatRobotReplyMaxNum: 0,
+        RobotBetAreaArr:[],
+        RobotTakeAreaArr:[],
       },
       testRand: {
         visible: false,
@@ -742,6 +810,17 @@ export default {
       form: {},
       subKey: 'gameCrash',
       libShow: $libShow,
+      RobotBetAreaArr:[
+        {Area:0,Probability:5},
+        {Area:1,Probability:5},
+        {Area:2,Probability:5},
+        {Area:3,Probability:5},
+        {Area:4,Probability:5},
+        {Area:5,Probability:5},
+        {Area:6,Probability:5},
+        {Area:-1,Probability:5},
+      ],
+      RobotTakeAreaArr:[],
       AttrNames: {
         'Data.MaxPlayers': '最大人数',
         'Data.MinMoneyCarry': '入场限制',
@@ -766,6 +845,9 @@ export default {
         'Data.MinRobotLoseTimes': '机器人最大输牌次数下限',
         'Data.MaxRobotLoseTimes': '机器人最大输牌次数上限',
         'Data.MaxOddsRound': '开100倍局数间隔限制',
+        'Data.robotBetAreaArr': '开100倍局数间隔限制',
+        // 'Data.RobotBetAreaArr': '机器人下注区间',
+        // 'Data.RobotTakeAreaArr': '机器人抢注区间',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -784,12 +866,25 @@ export default {
         return "<span style='color:red'>" + (val - std).toFixed(2) + '%</span>'
       }
     },
+      addRobotTakeArea(){
+        let id = 0
+        for (const argument of this.item.RobotTakeAreaArr) {
+         if ( id<argument.ID){
+           id=argument.ID
+         }
+        }
+        this.item.RobotTakeAreaArr.push({ID:id+1,StartTake:0,EndTake:0,Probability:0})
+      },
     dataRule(required, config) {
       return DataRule(required, config)
     },
+
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+      removeRobotTakeArea(index){
+        this.item.RobotTakeAreaArr.splice(index,1)
+      },
     transMoneyForShow() {
       this.item.MinMoneyCarry /= 1000
       this.item.BetMoneyMax /= 1000
@@ -896,6 +991,18 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
             Object.assign(this.item, item)
+              // 没有就新加
+              if(Array.isArray(this.item.RobotBetAreaArr)&&!this.item.RobotBetAreaArr.length){
+                  console.log("=======ASAS=======", this.item.RobotBetAreaArr)
+                  this.item['RobotBetAreaArr']=this.RobotBetAreaArr
+                  console.log("=======ASASAS======", this.item.RobotBetAreaArr)
+              }
+
+              if(Array.isArray(this.item.RobotTakeAreaArr)&&!this.item.RobotTakeAreaArr.length){
+                  console.log("=======1========", this.item.RobotTakeAreaArr)
+                  this.item['RobotTakeAreaArr']=this.RobotTakeAreaArr
+                  console.log("========2=======", this.item.RobotTakeAreaArr,this.RobotTakeAreaArr)
+              }
             this.transMoneyForShow()
             this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
             // 设置修改之前数据
