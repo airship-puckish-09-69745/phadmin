@@ -111,7 +111,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  v-if="item.GameId===22"
+                  v-if="item.GameId===22||item.GameId===34"
                   prop="MinLaunchNum"
                   label="最低发车人数"
                 >
