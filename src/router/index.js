@@ -610,6 +610,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'pokerTopic',
+        component: () => import('@/views/empty'),
+        name: 'pokerTopic',
+        meta: { title: 'Poker专题活动配置', noCache: true },
+        children: [
+          {
+            path: 'activityConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicActivityConfig.vue'),
+            name: 'activityConfig',
+            meta: { title: '活动信息配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'gameAuditConfig',
         component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
         name: 'gameAuditConfig',
