@@ -108,9 +108,19 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ scope.row.RemainAlarm}}
+            {{ scope.row.RemainAlarm }}
           </template>
         </el-table-column>
+        <el-table-column
+            prop="PotScore"
+            label="Pot配置"
+            width="150"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.PotScore }}
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="LastModify"
           label="最近修改"
@@ -258,14 +268,14 @@
 
         <el-row>
           <el-col :span="11">
-            <el-form-item
-              label="座位数："
-              :required="true"
-              prop="item.MaxPlayerCount"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model.number="edit.item.MaxPlayerCount"  placeholder="座位数" />
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="座位数："-->
+<!--              :required="true"-->
+<!--              prop="item.MaxPlayerCount"-->
+<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
+<!--            </el-form-item>-->
           </el-col>
           <el-col :span="9">
             <el-form-item
@@ -296,13 +306,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item
-              label="最大围观局数："
-              prop="item.WatchTimesMax"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model.number="edit.item.WatchTimesMax" />
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="最大围观局数："-->
+<!--              prop="item.WatchTimesMax"-->
+<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
+<!--            </el-form-item>-->
           </el-col>
         </el-row>
 
@@ -331,22 +341,33 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="最小玩牌金额："
-              :required="true"
-              prop="item.MinPlayMoney"
-              :rules="dataRule(true,{type:'n',range:'0'})"
+                label="最小玩牌金额："
+                :required="true"
+                prop="item.MinPlayMoney"
+                :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
+              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入"/>
             </el-form-item>
-<!--            <el-col :span="11">-->
-              <el-form-item
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
                 label="剩余警报："
                 prop="item.WatchTimesMax"
                 :rules="dataRule(true,{type:'n',range:'2'})"
-              >
-                <el-input v-model.number="edit.item.RemainAlarm" />
-              </el-form-item>
-<!--            </el-col>-->
+            >
+              <el-input v-model.number="edit.item.RemainAlarm"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+                label="pot配置："
+                prop="item.PotScore"
+                :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.PotScore" />
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -385,11 +406,11 @@ function newItem() {
     HideCarry: '',
     TableMoney: '',
     JokerNum: 0,
-    MaxPlayerCount: 3,
+    MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
-    WatchTimesMax: '',
+    WatchTimesMax: 0,
     IsPractice: 0,
     Level: 1,
 
@@ -402,8 +423,9 @@ function newItem() {
     MinPlayMoney: 0,
     Anticheating: 0,
     RoomLevel: 0,
-    RemainAlarm:0
-
+    RemainAlarm: 0,
+    PotScore:0 ,
+    PlayMode: 1,
   }
 }
 
@@ -431,7 +453,7 @@ export default {
         HideCarry: '隐藏目标值',
         TableMoney: '桌子大小',
         JokerNum: '癞子数',
-        MaxPlayerCount: 3,
+        MaxPlayerCount: '座位数',
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',

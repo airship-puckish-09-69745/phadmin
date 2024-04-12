@@ -64,7 +64,7 @@
             <div>
               在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
             </div>
-             <div>
+            <div>
               保险：{{ summary[o]?formatNumber(summary[o].Insure/1000):0 }}
             </div>
           </div>
@@ -221,6 +221,7 @@ import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import LineChart from './components/LineChart'
 import { $libDate, $libShow, MoneyShow } from '@/utils/common'
+import { IsMars, IsProd } from '@/utils/env'
 import store from '@/store'
 import { Message } from 'element-ui'
 
@@ -267,19 +268,20 @@ export default {
       gid: 10000,
       summary: {},
       gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 34: 'Pusoy-Dos', 100: 'Tower',
-        76: '糖果派对Way', 77: '糖果派对Allline', 78: '超级宝石', 79: '糖果糖果Grid', 80: '糖果糖果', // 这行老虎机
-        31: 'Tongits-经典', 32: 'Texas Master', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 10000: '汇总' },
+        76: '糖果传奇Way', 77: '糖果传奇Allline', 78: '超级宝石', 79: '糖果糖果Mars', 80: '糖果糖果', 81: '超级宝石Mars', 82: '百万富翁', 83: '百万富翁Mars', // 这行老虎机
+        31: 'Tongits-经典', 32: 'Texas Master', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down',104:"mini龙虎",105:"miniAB", 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 31, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,  6, 32],// 糖果派对调用addGameName特殊处理
+      defaultOrder: [15, 22, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,104,105, 6, 32], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
-      envProjectName: process.env.VUE_APP_PROJECT,
+      envProjectName: process.env.VUE_APP_PROJECT
     }
   },
   computed: {
   },
+  // mixins: [IsMars],
   created() {
     this.env = store.getters.env || this.env
     this.sortOrder = this.defaultOrder
@@ -328,17 +330,19 @@ export default {
         this.sortOrder = retSort
       }
     },
-    addGameNames(){
-      // 76: '糖果派对Way', 77: '糖果派对Allline',
-      console.log('envProjectName:',this.envProjectName)
-      if (this.envProjectName=='ph'){
-        this.defaultOrder.push(76)
-      }else if (this.envProjectName=='ph_audit'){
-        this.defaultOrder.push(76, 77)
+    addGameNames() {
+      if (IsMars()) { // 审核
+        this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
+      } else {
+        if (IsProd()) { // 线上
+          this.defaultOrder.push(76)
+        } else {
+          this.defaultOrder.push(76, 78, 80, 82)
+        }
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 31 || o === 34 || o === 101 || o === 103|| o === 6) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 31 || o === 34 ) {
         return false
       } else {
         return true

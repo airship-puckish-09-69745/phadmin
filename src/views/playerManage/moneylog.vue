@@ -178,7 +178,7 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
       >
-        <el-table-column property="Name" label="游戏名称" width="200" />
+        <el-table-column property="Name" label="操作说明" width="200" />
         <el-table-column property="Win" label="赢流水" width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.Win) }}
@@ -352,7 +352,7 @@ export default {
 
       gameNames: ['TeenPatti', 'DragonVsTiger', 'Rummy', 'AndarBahar', 'CarRoulette', 'JHandiMunda', 'AK47', '7Up7Down', 'RedVsBlack', 'TeenPatti100',
         '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha',
-        '糖果派对Way', '糖果派对Allline', '糖果糖果Grid', '糖果糖果', // 别加后面，这行老虎机的
+        '糖果传奇Way', '糖果传奇Allline', '糖果糖果Mars', '糖果糖果', '超级宝石', '超级宝石Mars', '百万富翁', '百万富翁Mars', // 别加后面，这行老虎机的
         'sicbo', 'Hilo'],
       libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll'])
     }
@@ -473,18 +473,21 @@ export default {
 
           $this.handleCurrentChange(1)
           const winInfo = {}
-          for (const o in this.gameNames) {
-            const name = this.gameNames[o]
-            winInfo[name] = { Name: name, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
-          }
-          winInfo['Other'] = { Name: '未知', Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
+          // for (const o in this.gameNames) {
+          //   const name = this.gameNames[o]
+          //   winInfo[name] = { Name: name, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
+          // }
+          // winInfo['Other'] = { Name: '未知', Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
 
           const timeMap = {}
           let gameName = ''
           for (let i = 0; i < objs.length; i++) {
-            const t = objs[i].UpdateTime
             gameName = objs[i].ActMsg === 'sweeper' ? 'Sweeper' : objs[i].ActMsg
-            if (winInfo[gameName] || $this.isSlotInfo(objs[i])) {
+            if (winInfo[gameName]===undefined){
+               winInfo[gameName] = { Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
+            }
+            const t = objs[i].UpdateTime
+            if (winInfo[gameName] && $this.isSlotInfo(objs[i])) {
               switch (objs[i].ActType) {
                 case 1000:
                   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
@@ -507,7 +510,8 @@ export default {
                   break
                 case 29:
                   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
-                    gameName = this.getSlotsName(objs[i].ActMsg)
+                    console.log("====",winInfo[gameName], winInfo[gameName].Lose)
+                    // gameName = this.getSlotsName(objs[i].ActMsg)
                     winInfo[gameName].Lose += objs[i].MoneyChanged
                     if (!timeMap[t]) {
                       timeMap[t] = true
@@ -518,7 +522,7 @@ export default {
                 case 30:
                 case 31:
                 case 32:
-                  gameName = this.getSlotsName(objs[i].ActMsg)
+                  // gameName = this.getSlotsName(objs[i].ActMsg)
                   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
                     winInfo[gameName].Win += objs[i].MoneyChanged
                     if (!timeMap[t]) {
@@ -529,21 +533,34 @@ export default {
                   break
               }
             } else {
-              if (objs[i].ActType === 1000) {
-                if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
-                  winInfo.Other.Win += objs[i].MoneyChanged
-                  if (!timeMap[t]) {
-                    timeMap[t] = true
-                    winInfo.Other.WinTimes++
-                  }
+              // if (objs[i].ActType === 1000) {
+              //   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
+              //     winInfo.Other.Win += objs[i].MoneyChanged
+              //     if (!timeMap[t]) {
+              //       timeMap[t] = true
+              //       winInfo.Other.WinTimes++
+              //     }
+              //   }
+              // } else if (objs[i].ActType === 1001) {
+              //   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
+              //     winInfo.Other.Lose += objs[i].MoneyChanged
+              //     if (!timeMap[t]) {
+              //       timeMap[t] = true
+              //       winInfo.Other.LoseTimes++
+              //     }
+              //   }
+              // }
+              if (objs[i].MoneyChanged>0){
+                winInfo[gameName].Win += objs[i].MoneyChanged
+                if (!timeMap[t]) {
+                  timeMap[t] = true
+                  winInfo[gameName].WinTimes++
                 }
-              } else if (objs[i].ActType === 1001) {
-                if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
-                  winInfo.Other.Lose += objs[i].MoneyChanged
-                  if (!timeMap[t]) {
-                    timeMap[t] = true
-                    winInfo.Other.LoseTimes++
-                  }
+              }else {
+                winInfo[gameName].Lose += objs[i].MoneyChanged
+                if (!timeMap[t]) {
+                  timeMap[t] = true
+                  winInfo[gameName].LoseTimes++
                 }
               }
             }

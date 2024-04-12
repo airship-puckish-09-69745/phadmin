@@ -54,6 +54,7 @@
       <el-table-column
         prop="LogDate"
         label="日期"
+        width="100%"
       >
         <template slot-scope="scope">
           {{ formateDate(scope.row.InsureTime, 1) }}
@@ -62,31 +63,35 @@
       <el-table-column
         prop="LogTime"
         label="时间"
+        width="100%"
       >
         <template slot-scope="scope">
           {{ formateDate(scope.row.InsureTime, 4) }}
         </template>
       </el-table-column>
       <el-table-column
-        prop="LogID"
-        label="牌局ID"
+        prop="Gid"
+        label="玩法ID"
+        width="80%"
       >
         <template slot-scope="scope">
-          {{ scope.row.logid }}
+          {{ scope.row.gid }}
         </template>
       </el-table-column>
       <el-table-column
         prop="InsureChange"
         label="保险账变"
         sortable="custom"
+        width="120%"
       >
         <template slot-scope="scope">
-          {{ (scope.row.InsureFail - scope.row.Insure) / 1000 }}
+          {{ (scope.row.Insure - scope.row.InsureFail ) / 1000 }}
         </template>
       </el-table-column>
       <el-table-column
         prop="Uid"
         label="投保玩家ID"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ scope.row.Uid }}
@@ -96,6 +101,7 @@
         prop="Insure"
         label="投保金额"
         sortable="custom"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ scope.row.Insure / 1000 }}
@@ -104,6 +110,7 @@
       <el-table-column
         prop="Outs"
         label="OUTS数量"
+        width="120%"
       >
         <template slot-scope="scope">
           {{ scope.row.Outs }}
@@ -112,22 +119,28 @@
       <el-table-column
         prop="InsureRatio"
         label="赔率"
+        width="80%"
       >
         <template slot-scope="scope">
           {{ scope.row.InsureRatio / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column label="操作" column-key="op" width="120">
-        <template slot-scope="">
-          <el-button icon="el-icon-search" type="primary" size="mini">查询</el-button>
+      <el-table-column
+        prop="LogID"
+        label="牌局ID"
+        width="200%"
+      >
+        <template slot-scope="scope">
+          <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.logid, dateTime: scope.row.InsureTime }}" @click.native="recordShow = false" style="color: blue">
+            {{ scope.row.logid }}
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
     <br>
     <el-row type="flex" justify="center">
-
       <el_col :span="6">
-        <div> 汇总： {{ totalInsure }} </div>
+        <div> 汇总： {{ totalInsure.toFixed(2) }} </div>
       </el_col>
     </el-row>
     <el-row type="flex" justify="end">
@@ -183,7 +196,7 @@ export default {
         method: 'get',
         data: {
           Env: _this.env,
-          Path: '/tesasnlhdata/insure',
+          Path: '/texasnlhdata/insure',
           Uid: Number(_this.searchForm.Uid),
           logId: Number(_this.searchForm.LogID),
           beginTime: Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000,
@@ -199,6 +212,7 @@ export default {
           if (objs.total > 0) {
             _this.totalCount = objs.list.length
             _this.tableData = objs.list
+            console.log(_this.tableData)
             _this.currentPage = 1
             _this.refreshShow()
             _this.calTotalInsure()
@@ -215,7 +229,7 @@ export default {
     calTotalInsure() {
       this.totalInsure = 0
       for (var i = 0; i < this.tableData.length; i++) {
-        this.totalInsure += (this.tableData[i].InsureFail - this.tableData[i].Insure) / 1000
+        this.totalInsure += (this.tableData[i].Insure - this.tableData[i].InsureFail) / 1000
       }
     },
     // 分页处理

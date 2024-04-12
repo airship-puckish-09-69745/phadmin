@@ -962,6 +962,190 @@
     </el-dialog>
 
     <el-dialog
+      title="骰宝牌局详情"
+      :visible.sync="miniDvtGameVisible"
+      width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">发牌：</span><div style="color:red;">{{ miniDvtGameResult }}</div>
+      </div>
+      <el-table
+        ref="filterTable"
+        :data="miniDvtGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="Name"
+          label="下注项"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Hit"
+          label="赔率"
+          width="80"
+        >
+          <template slot-scope="scope">
+              <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
+              <span v-else>0</span>
+
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="IsBonus"
+          label="ExtraPay"
+          width="100"
+        >
+          <template slot-scope="scope">
+              {{ scope.row.EOdds / 1000 }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Rate"
+          label="总赔率"
+          width="100"
+        >
+          <template slot-scope="scope">
+              {{ scope.row.totalOdds / 100000 }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Result"
+          label="下注结果"
+          width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+              ref="filterTable"
+              :data="scope.row.players"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column
+                prop="Uid"
+                label="Uid"
+                width="150"
+              />
+              <el-table-column
+                prop="Bet"
+                label="下注"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Won"
+                label="输赢"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog
+        title="骰宝牌局详情"
+        :visible.sync="miniAbGameVisible"
+        width="50%"
+    >
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">发牌：</span><div style="color:red;">{{ miniAbGameResult }}</div>
+      </div>
+      <el-table
+          ref="filterTable"
+          :data="miniAbGameOptions"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+      >
+        <el-table-column
+            prop="Name"
+            label="下注项"
+            width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="Hit"
+            label="赔率"
+            width="80"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
+            <span v-else>-1</span>
+
+          </template>
+        </el-table-column>
+
+        <el-table-column
+            prop="Result"
+            label="下注结果"
+            width="800"
+        >
+          <template slot-scope="scope">
+            <el-table
+                ref="filterTable"
+                :data="scope.row.players"
+                border
+                :show-header="true"
+                :row-class-name="tableRowClassName"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+            >
+              <el-table-column
+                  prop="Uid"
+                  label="Uid"
+                  width="150"
+              />
+              <el-table-column
+                  prop="Bet"
+                  label="下注"
+                  width="150"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                  prop="Won"
+                  label="输赢"
+                  width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog
       title="7Up7Down牌局详情"
       :visible.sync="sevenGameVisible"
       width="50%"
@@ -1221,41 +1405,48 @@
       >
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column label="手牌" width="450" align="center">
-          <el-table-column prop="cards" label="后手牌" width="150">
-            <template #default="scope">
-              <template v-if="scope.row.cardType > 1">
-                <div v-html="showCard(scope.row.cards)" /><span>({{ pusoyDos.pusoyDosCardTypes[scope.row.cardType] || '' }})</span>
-              </template>
-              <template v-else>
-                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyDos.pusoyDosGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
-              </template>
-            </template>
-          </el-table-column>
-          <el-table-column prop="cards" label="中手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupMiddle.cards)" /><span>({{ pusoyDos.pusoyDosGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template></el-table-column>
-          <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{ pusoyDos. pusoyDosGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
-        </el-table-column>
-        <el-table-column prop="cardType" label="牌型" width="90">
-          <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }} {{ pusoyShowGroupExtra(scope.row) }}</template>
-        </el-table-column>
-        <el-table-column prop="cardScore" label="点数" width="100" />
-        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyFee" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyFee/1000 }}</template></el-table-column>
+        <!--        <el-table-column label="手牌" width="450" align="center">-->
+
+        <!--        </el-table-column>-->
+        <el-table-column prop="moneyChange" label="筹码变化" width="100"><template slot-scope="scope">{{ scope.row.moneyChange/1000 }}</template></el-table-column>
         <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+        <el-table-column prop="burnedScore" label="燃烧获得" width="100"><template slot-scope="scope">{{ scope.row.burnedScore/1000 }}</template></el-table-column>
+        <el-table-column prop="normalScore" label="正常结算" width="100"><template slot-scope="scope">{{ scope.row.normalScore/1000 }}</template></el-table-column>
+        <el-table-column prop="extraScore" label="额外结算" width="100"><template slot-scope="scope">{{ scope.row.extraScore/1000 }}</template></el-table-column>
+        <el-table-column prop="pusoyDosScore" label="pusoyDos金币" width="100"><template slot-scope="scope">{{ scope.row.pusoyDosScore/1000 }}</template></el-table-column>
+
+        <el-table-column prop="hitPotScore" label="hitPot奖池" width="100" />
+        <el-table-column prop="potMoney" label="奖池" width="100"><template slot-scope="scope">{{ scope.row.potMoney/1000 }}</template></el-table-column>
       </el-table>
       <br>
       <el-table
-        title="打枪："
         :visible.sync="pusoyDos.pusoyDosShootOneShow"
-        :data="pusoyDos.pusoyDosDetail.shootOne"
+        :data="pusoyDos.pusoyDosDetail.displayCardsList"
         width="100%"
         border
       >
         <el-table-column label="Pusoy List：">
-          <el-table-column prop="SourcePlayer.uid" label="打枪"><template slot-scope="scope">{{ scope.row.SourcePlayer.uid }}</template></el-table-column>
-          <el-table-column prop="TargetPlayer.uid" label="Pusoy"><template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template></el-table-column>
-          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
+          <el-table-column prop="uid" label="uid"><template slot-scope="scope">{{ scope.row.uid }}</template></el-table-column>
+          <el-table-column label="出牌">
+            <template slot-scope="scope">
+              <div v-html="showPusoyDosCards(scope.row.cards)" />
+            </template>
+          </el-table-column>
+          <el-table-column label="是否跳过">
+            <template slot-scope="scope">
+              {{ (scope.row.isPass ==0?"否":"是") }}
+            </template>
+          </el-table-column>
+          <el-table-column label="牌型">
+            <template slot-scope="scope">
+              {{ pusoyDos.pusoyDosGroupCardTypes[scope.row.cardType] }}
+            </template>
+          </el-table-column>
+          <el-table-column label="剩余手牌">
+            <template slot-scope="scope">
+              {{ scope.row.handCardCount }}
+            </template>
+          </el-table-column>
         </el-table-column>
       </el-table>
       <br>
@@ -1276,7 +1467,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, LibShow, MoneyShow } from '@/utils/common'
 import store from '@/store'
 import { Message } from 'element-ui'
 import LineChart from './components/LineChart'
@@ -1347,6 +1538,7 @@ export default {
       sweeperVisible: false,
       sweeperDetails: [],
       sweeperRate: [],
+      sweeperRowUid: 0,
       sweeperSTD: [8.00, 8.33, 8.70, 9.09, 9.52, 10.00, 10.53, 11.11, 11.76, 12.50, 13.33, 14.29, 15.38, 16.67, 18.18, 20.00, 22.22, 25.00, 28.57, 33.33, 40.00, 50.00, 66.67, 100],
       sweeperPlay: [],
       sweeperRateVisible: false,
@@ -1368,6 +1560,14 @@ export default {
 
       sicboGameResult: '',
       sicboGameOptions: [],
+
+      miniDvtGameVisible: false,
+      miniDvtGameResult: '',
+      miniDvtGameOptions: [],
+
+      miniAbGameVisible: false,
+      miniAbGameResult: '',
+      miniAbGameOptions: [],
 
       sevenGameVisible: false,
 
@@ -1436,17 +1636,16 @@ export default {
         //   113: '清龙'
         // },
         pusoyDosGroupCardTypes: {
-          0: 'Nil',
-          1: '高牌',
+          0: '',
+          1: '单张',
           2: '对子',
-          3: '两对',
-          4: '三条',
-          5: '顺子',
-          6: '同花',
-          7: '葫芦',
-          8: '四条',
-          9: '同花顺',
-          10: '皇家同花顺'
+          3: '三条',
+          4: '顺子',
+          5: '同花',
+          6: '葫芦',
+          7: '四带一',
+          8: '同花顺',
+          9: '皇家同花顺'
         },
         pusoyDosShootOneShow: false
       },
@@ -1525,6 +1724,24 @@ export default {
       } else {
         return ''
       }
+    },
+    showPusoyDosCards(cards) {
+      const m = {}
+      m[3] = 1 // 方块
+      m[0] = 2 // 梅花
+      m[2] = 3 // 红桃
+      m[1] = 4 // 黑桃
+      let ret = ''
+      if (cards) {
+        for (let i = 0; i < cards.length; i++) {
+          const color = cards[i] >> 4
+          const num = cards[i] & 0x0F
+          const colors = $libShow.ColorMap[m[color]]
+          const nums = $libShow.NumMap[num]
+          ret += '<span style="color:' + ((color === 0 || color === 2) ? 'red' : 'black') + '">' + colors + nums + '</span>'
+        }
+      }
+      return ret
     },
     showCard(cards) {
       if (cards == null || cards == undefined) {
@@ -1740,8 +1957,12 @@ export default {
     },
     clickData(row, column, event) {
       if (column.label !== 'Uid') {
+        this.setRowUid(row.Uid)
         this.getDetail(row.LogID, row.FinishTime)
       }
+    },
+    setRowUid(uid) {
+      this.sweeperRowUid = uid
     },
     getDetail(id, dt) {
       const $this = this
@@ -1786,6 +2007,10 @@ export default {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
             $this.showSicboGame(obj)
+          } else if (gid === 104) {
+            $this.showMiniDvtGame(obj)
+          } else if (gid === 105) {
+            $this.showMiniAbGame(obj)
           } else if (gid === 102) {
             $this.showHiloGame(obj)
           } else if (gid === 103) {
@@ -1973,9 +2198,11 @@ export default {
       const tMap = {}
       this.rocketGameOptions = []
       const rocketObj = obj
-      for (let i = 0; i < rocketObj.optionsData.length; i++) {
-        const ob = rocketObj.optionsData[i]
-        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
+      if (rocketObj.optionsData){
+        for (let i = 0; i < rocketObj.optionsData.length; i++) {
+          const ob = rocketObj.optionsData[i]
+          tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
+        }
       }
 
       for (let i = 0; i < rocketObj.players.length; i++) {
@@ -1992,10 +2219,12 @@ export default {
           })
         }
       }
-
-      for (let i = 0; i < rocketObj.optionsData.length; i++) {
-        this.rocketGameOptions.push(tMap[i])
+      if (rocketObj.optionsData){
+        for (let i = 0; i < rocketObj.optionsData.length; i++) {
+          this.rocketGameOptions.push(tMap[i])
+        }
       }
+
       this.rocketGameResult = rocketObj.stopOdds / 100
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
@@ -2009,6 +2238,13 @@ export default {
       const sicbObj = obj.Sicbo
       for (let i = 0; i < sicbObj.options.length; i++) {
         const ob = sicbObj.options[i]
+
+        for (let j = 0; j < sicbObj.bonus.length; j++) {
+          if (i === sicbObj.bonus[j].Id) {
+            ob.Rate = ob.Rate * sicbObj.bonus[j].Double
+            console.log(ob.Rate)
+          }
+        }
         tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
       }
 
@@ -2043,6 +2279,83 @@ export default {
       }
       this.sicboGameResult = resultTmp.join('，')
       this.sicboGameVisible = true
+    },
+    showMiniDvtGame(obj) {
+      const names = ['龙', '虎', '龙♠♣', '龙♥♦', 'TIE', '虎♠♣', '虎♥♦', '2,26', '3-6', '7-11', '12-16', '17-21', '22-25']
+      const tMap = {}
+      this.miniDvtGameOptions = []
+      const miniDvtObj = obj.Dvt
+      for (let i = 0; i < miniDvtObj.options.length; i++) {
+        const ob = miniDvtObj.options[i]
+        ob.totalOdds = ob.Odds * ob.extraPay
+        console.log(ob)
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Odds: ob.Odds, IsHit: ob.isHit, EOdds: ob.extraPay, totalOdds: ob.totalOdds, players: [] }
+        console.log(tMap[ob.id])
+      }
+
+      for (let i = 0; i < miniDvtObj.players.length; i++) {
+        const player = miniDvtObj.players[i]
+        if (player.areaRet === null) {
+          continue
+        }
+        for (let j = 0; j < player.areaRet.length; j++) {
+          const result = player.areaRet[j]
+          tMap[result.id].players.push({
+            Uid: player.uid,
+            Bet: result.optionBet,
+            Won: result.moneyWon
+          })
+        }
+      }
+
+      for (let i = 0; i < miniDvtObj.options.length; i++) {
+        this.miniDvtGameOptions.push(tMap[i])
+      }
+      console.log(this.miniDvtGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < miniDvtObj.cards.length; i++) {
+        resultTmp.push(miniDvtObj.cards[i].toString(16))
+      }
+      this.miniDvtGameResult = resultTmp.join('，')
+      this.miniDvtGameVisible = true
+    },
+    showMiniAbGame(obj) {
+      const names = ['A', 'B', '1-5', '6-10', '11-15', '16-24', '25-30', '31-35', '36-40', '41-49']
+      const tMap = {}
+      this.miniAbGameOptions = []
+      const miniAbObj = obj.Ab
+      for (let i = 0; i < miniAbObj.options.length; i++) {
+        const ob = miniAbObj.options[i]
+        console.log(ob)
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Odds: ob.Odds, IsHit: ob.isHit, players: [] }
+        console.log(tMap[ob.id])
+      }
+
+      for (let i = 0; i < miniAbObj.players.length; i++) {
+        const player = miniAbObj.players[i]
+        if (player.areaRet === null) {
+          continue
+        }
+        for (let j = 0; j < player.areaRet.length; j++) {
+          const result = player.areaRet[j]
+          tMap[result.id].players.push({
+            Uid: player.uid,
+            Bet: result.optionBet,
+            Won: result.moneyWon
+          })
+        }
+      }
+
+      for (let i = 0; i < miniAbObj.options.length; i++) {
+        this.miniAbGameOptions.push(tMap[i])
+      }
+      console.log(this.miniAbGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < miniAbObj.cards.length; i++) {
+        resultTmp.push(miniAbObj.cards[i].toString(16))
+      }
+      this.miniAbGameResult = resultTmp.join('，')
+      this.miniAbGameVisible = true
     },
     showSevenGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '点数和_2', '点数和_3', '点数和_4', '点数和_5', '点数和_6', '点数和_7', '点数和_8', '点数和_9', '点数和_10', '点数和_11', '点数和_12']
@@ -2110,6 +2423,16 @@ export default {
     },
     showSweeperGame(obj) {
       const showDetail = []
+      for (let j = 0; j < obj.totalPlayers.length; j++) {
+        const players = obj.totalPlayers[j]
+        console.log(this.sweeperRowUid)
+        if (players.uid === this.sweeperRowUid) {
+          console.log(this.players)
+          obj.players = players
+          break
+        }
+      }
+
       for (let i = 0; i < obj.players.details.length; i++) {
         const detailRow = obj.players.details[i]
         const areaIndex = detailRow.index - 1
@@ -2146,31 +2469,6 @@ export default {
       this.bodingDetailVisible = true
     },
     showPusoyDosGame(obj) {
-      console.log(obj)
-      this.pusoyDos.pusoyDosShootOneShow = false
-      for (const k in obj.players) {
-        for (const i in obj.groupTop) {
-          if (obj.groupTop[i].uid === obj.players[k].uid) {
-            obj.players[k].groupTop = obj.groupTop[i]
-            break
-          }
-        }
-        for (const i in obj.groupMiddle) {
-          if (obj.groupMiddle[i].uid === obj.players[k].uid) {
-            obj.players[k].groupMiddle = obj.groupMiddle[i]
-            break
-          }
-        }
-        for (const i in obj.groupBottom) {
-          if (obj.groupBottom[i].uid === obj.players[k].uid) {
-            obj.players[k].groupBottom = obj.groupBottom[i]
-            break
-          }
-        }
-      }
-      if (obj.shootOne) {
-        this.pusoyDos.pusoyDosShootOneShow = true
-      }
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
     },
@@ -2299,6 +2597,12 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 
       // 清空sicboGame数据
       this.sicboGameResult = ''
+
+      // 清空miniDvtGame数据
+      this.miniDvtGameResult = ''
+
+      // 清空miniAbGame数据
+      this.miniAbGameResult = ''
     },
     showChart() {
       this.initChartData()

@@ -182,7 +182,7 @@ export const asyncRoutes = [
           {
             path: 'activityLog',
             component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
-            name: 'millionPointRaceRuleCommonConfig',
+            name: 'activityLog',
             meta: { title: '积分赛用户日志  🚩️' }
           },
           {
@@ -216,6 +216,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/tongitsTableClassic'),
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
+          },
+          {
+            path: 'tongitsLaiZiTable',
+            component: () => import('@/views/config/tableConfig/tongitsTableLaiZi'),
+            name: 'tongitsTableLaiZi',
+            meta: { title: 'Tongits-赖子 ◐' }
           },
           {
             path: 'tongitsTogether',
@@ -282,6 +288,18 @@ export const asyncRoutes = [
             meta: { title: 'Lucky9 AI◐' }
           }
         ]
+      },
+      {
+        path: 'blackJackTable',
+        component: () => import('@/views/config/tableConfig/blackJackTable'),
+        name: 'blackJackTable',
+        meta: { title: 'BlackJack ◐' }
+      },
+      {
+        path: 'solitaire',
+        component: () => import('@/views/config/tableConfig/solitaire'),
+        name: 'solitaire',
+        meta: { title: 'solitaire ◐' }
       },
       {
         path: 'PusoyCfg',
@@ -427,7 +445,13 @@ export const asyncRoutes = [
             path: 'miniDvt_cfg',
             component: () => import('@/views/config/tableConfig/miniDvtGame'),
             name: 'miniDvt_cfg',
-            meta: { title: '龙虎 ◐' }
+            meta: { title: 'mini龙虎 ◐' }
+          },
+          {
+            path: 'miniAb_cfg',
+            component: () => import('@/views/config/tableConfig/miniAbGame'),
+            name: 'miniAb_cfg',
+            meta: { title: 'miniAB ◐' }
           },
           // {
           //   path: 'windrop_cfg',
@@ -517,31 +541,49 @@ export const asyncRoutes = [
             path: 'candypartyway_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
             name: 'candypartyway_slots_cfg',
-            meta: { title: '糖果派对Way' }
+            meta: { title: '糖果传奇Way' }
           },
           {
             path: 'candypartyallline_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
             name: 'candypartyallline_slots_cfg',
-            meta: { title: '糖果派对Allline' }
+            meta: { title: '糖果传奇Allline' }
           },
           {
             path: 'supergem_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
             name: 'supergem_slots_cfg',
-            meta: { title: 'SuperGem - 超级宝石' }
+            meta: { title: '超级宝石' }
           },
           {
-            path: 'candycandygrid_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candycandygrid_slots_cfg'),
-            name: 'candycandygrid_slots_cfg',
-            meta: { title: '糖果糖果Grid' }
+            path: 'supergemmars_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/supergemmars_slots_cfg'),
+            name: 'supergemmars_slots_cfg',
+            meta: { title: '超级宝石Mars' }
           },
           {
             path: 'candycandy_slots_cfg',
             component: () => import('@/views/config/tableConfig/slots/candycandy_slots_cfg'),
             name: 'candycandy_slots_cfg',
             meta: { title: '糖果糖果' }
+          },
+          {
+            path: 'candycandymars_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/candycandymars_slots_cfg'),
+            name: 'candycandymars_slots_cfg',
+            meta: { title: '糖果糖果Mars' }
+          },
+          {
+            path: 'millionaire_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
+            name: 'millionaire_slots_cfg',
+            meta: { title: '百万富翁' }
+          },
+          {
+            path: 'millionairemars_slots_cfg',
+            component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
+            name: 'millionairemars_slots_cfg',
+            meta: { title: '百万富翁Mars' }
           },
           {
             path: 'slots_winner_record',
@@ -759,6 +801,12 @@ export const asyncRoutes = [
         name: 'playlog_classic_tongits',
         meta: { title: 'Tongits - 经典 ◐', gid: 31 }
       },
+      {
+        path: 'playlog_laizi_tongits',
+        component: () => import('@/views/playerManage/tongitsPlaylog'),
+        name: 'playlog_laizi_tongits',
+        meta: { title: 'Tongits - 癞子 ◐', gid: 28 }
+      },
 
       /* {
         path: 'playlog_ab',
@@ -784,6 +832,18 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_sicbo',
         meta: { title: 'Sicbo ◐', gid: 101 }
+      },
+      {
+        path: 'playlog_dvt',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_dvt',
+        meta: { title: 'mini龙虎 ◐', gid: 104 }
+      },
+      {
+        path: 'playlog_ab',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ab',
+        meta: { title: 'miniAB ◐', gid: 105 }
       },
       {
         path: 'playlog_seven',
@@ -874,13 +934,13 @@ export const asyncRoutes = [
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyway_slots_log',
-            meta: { title: '糖果派对Way', gid: 76 }
+            meta: { title: '糖果传奇Way', gid: 76 }
           },
           {
             path: 'candypartyallline_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyallline_slots_log',
-            meta: { title: '糖果派对Allline', gid: 77 }
+            meta: { title: '糖果传奇Allline', gid: 77 }
           },
           {
             path: 'supergem_slots_log',
@@ -889,16 +949,34 @@ export const asyncRoutes = [
             meta: { title: '超级宝石', gid: 78 }
           },
           {
-            path: 'candycandygrid_slots_log',
+            path: 'supergemmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'candycandygrid_slots_log',
-            meta: { title: '糖果糖果Grid', gid: 79 }
+            name: 'supergemmars_slots_log',
+            meta: { title: '超级宝石Mars', gid: 81 }
+          },
+          {
+            path: 'candycandymars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandymars_slots_log',
+            meta: { title: '糖果糖果Mars', gid: 79 }
           },
           {
             path: 'candycandy_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandy_slots_log',
             meta: { title: '糖果糖果', gid: 80 }
+          },
+          {
+            path: 'millionaire_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'millionaire_slots_log',
+            meta: { title: '百万富翁', gid: 82 }
+          },
+          {
+            path: 'millionairemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'millionairemars_slots_log',
+            meta: { title: '百万富翁Mars', gid: 83 }
           }
         ]
       },
@@ -1261,35 +1339,84 @@ export const asyncRoutes = [
         children: [
           {
             path: 'texasNlhInsure',
-            component: () => import('@/views/texas2dpro/texasNlhInsure'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
             name: 'texasNlhInsure',
             meta: { title: '保险数据' }
           },
           {
             path: 'texasNlhJP',
-            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
             name: 'texasNlhJP',
-            meta: { title: 'JackPot数据' }
+            meta: { title: 'JP数据' }
+          },
+          {
+            path: 'texasNlhGameLog',
+            component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
+            name: 'texasNlhGameLog',
+            meta: { title: '牌局记录' }
+          },
+          {
+            path: 'texasNlhGameDetail',
+            component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
+            name: 'texasNlhGameDetail',
+            meta: { title: '牌局详情' }
+          },
+          {
+            path: 'texasNlhGameConsumeSta',
+            component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
+            name: 'texasNlhGameDetail',
+            meta: { title: '每日消耗统计' }
           }
+
         ]
       },
       {
         path: 'texasNlhTable',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '无限德州', noCache: true },
+        meta: { title: '德州配桌', noCache: true },
         children: [
           {
             path: 'texasNlhTable',
-            component: () => import('@/views/config/tableConfig/texasNlhTable'),
+            component: () => import('@/views/texas2dpro/table/texasNlhTable'),
             name: 'texasNlhTable',
-            meta: { title: 'TexasNlh 桌子' }
+            meta: { title: '无限德州' }
+          },
+          {
+            path: 'texasOmhTable',
+            component: () => import('@/views/texas2dpro/table/texasOmhTable'),
+            name: 'texasNlhTable',
+            meta: { title: '奥马哈' }
+          },
+          {
+            path: 'texasSdpTable',
+            component: () => import('@/views/texas2dpro/table/texasSdpTable'),
+            name: 'texasNlhTable',
+            meta: { title: '6+短牌' }
           },
           {
             path: 'texasNlhCfg',
-            component: () => import('@/views/config/tableConfig/texasNlhCfg'),
+            component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
-            meta: { title: 'TexasNlh 配置' }
+            meta: { title: '公共配置' }
+          },
+          {
+            path: 'texasMttTable',
+            component: () => import('@/views/config/tableConfig/texasMttTable'),
+            name: 'texasMttTable',
+            meta: { title: 'Mtt桌子' }
+          },
+          {
+            path: 'texasMttAwardConfig',
+            component: () => import('@/views/config/tableConfig/texasMttAwardConfig'),
+            name: 'texasMttAwardConfig',
+            meta: { title: 'Mtt奖励配置' }
+          },
+          {
+            path: 'texasPusoyTable',
+            component: () => import('@/views/config/tableConfig/texasPusoyTable'),
+            name: 'texasPusoyTable',
+            meta: { title: 'texasPusoy桌子' }
           }
         ]
       },
@@ -1301,13 +1428,13 @@ export const asyncRoutes = [
         children: [
           {
             path: 'packageList',
-            component: () => import('@/views/config/tableConfig/packageModule'),
+            component: () => import('@/views/texas2dpro/version/packageModule'),
             name: 'packageList',
             meta: { title: '包管理' }
           },
           {
             path: 'versionList',
-            component: () => import('@/views/config/tableConfig/versionModule'),
+            component: () => import('@/views/texas2dpro/version/versionModule'),
             name: 'versionList',
             meta: { title: '版本管理' }
           }
@@ -1315,7 +1442,7 @@ export const asyncRoutes = [
       },
       {
         path: '/texasProActivityNotice',
-        component: () => import('@/views/config/tableConfig/texasProActivityNotice'),
+        component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
         name: 'noticeList',
         meta: { title: '活动公告' }
       }

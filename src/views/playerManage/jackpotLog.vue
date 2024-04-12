@@ -98,6 +98,7 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="envProjectName=='ph'"
         prop="PoolType"
         label="奖池类型"
       >
@@ -106,6 +107,7 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="envProjectName=='ph'"
         prop="ActType"
         label="操作类型"
       >
@@ -125,9 +127,16 @@
         prop="EndNum"
         label="操作后奖池数量"
       >
+
         <template slot-scope="{row}">
-          {{ toRupee(row.EndNum) }}
+          <div v-if="envProjectName=='ph'">
+            {{ toRupee(row.EndNum) }}
+          </div>
+          <div v-if="envProjectName=='ph_audit'">
+            {{ toRupee(row.PoolMoney) }}
+          </div>
         </template>
+
       </el-table-column>
       <el-table-column
         prop="UpdateTime"
@@ -160,7 +169,7 @@
     >
       <el-descriptions title="">
         <el-descriptions-item label="用户奖池">{{ toRupee(prizeInfo.UserPool) }}</el-descriptions-item>
-        <el-descriptions-item label="展示奖池">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
+        <el-descriptions-item v-if="envProjectName=='ph'" label="展示奖池">{{ toRupee(prizeInfo.ShowPool) }}</el-descriptions-item>
         <el-descriptions-item label="最后更新时间">{{ formatTime(prizeInfo.UpdateTime) }}</el-descriptions-item>
       </el-descriptions>
       <el-form :model="prizeForm">
@@ -199,7 +208,8 @@ export default {
         poolType: 0,
         actType: 0,
         app: 0,
-        level: 0
+        level: 0,
+        uid:0,
       },
       gameConfig: [
         { 'value': 0, 'label': '全部' },
@@ -243,6 +253,7 @@ export default {
         ShowPool: 0,
         UpdateTime: 0
       },
+      envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
         ChangeNum: 0,
         ChangeRobotNum: 0
@@ -250,7 +261,7 @@ export default {
     }
   },
   created() {
-
+    console.log('======', this.envProjectName)
   },
   methods: {
     search() {
@@ -276,7 +287,7 @@ export default {
           Limit: _this.pageNum,
           App: _this.searchForm.app,
           Level: _this.searchForm.level,
-          SearchType: _this.searchForm.searchType
+          SearchType: _this.searchForm.searchType,
         }
       }).then(response => {
         if (response.RetCode === 0) {

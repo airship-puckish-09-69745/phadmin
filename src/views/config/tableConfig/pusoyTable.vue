@@ -338,6 +338,14 @@
               <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="房间类型：" :required="true" prop="item.RoomLevel">
+              <el-select v-model.number="edit.item.RoomLevel" placeholder="请选择">
+                <el-option label="普通房" :value="0" />
+                <el-option label="好友房" :value="100" />
+              </el-select>
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-form-item>
@@ -395,7 +403,8 @@ function newItem() {
     SinglePay: 0,
     TotalPay: 0,
     HideLevel: 0,
-    MinPlayMoney: 0
+    MinPlayMoney: 0,
+    RoomLevel: 0,
   }
 }
 
@@ -443,7 +452,8 @@ export default {
         SinglePay: '单次充值大于',
         TotalPay: '总充值大于',
         MinPlayMoney: '最小玩牌金额',
-        HideLevel: '进入该场次后隐藏场次'
+        HideLevel: '进入该场次后隐藏场次',
+        RoomLevel: '房间类型',
       }
     }
   },

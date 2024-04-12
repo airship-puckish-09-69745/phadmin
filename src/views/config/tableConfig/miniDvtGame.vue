@@ -28,13 +28,13 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8" :offset="1">
+        <el-col v-if="envProjectName != 'ph_audit'"  :span="8" :offset="1">
           <el-form-item label="奖池不够输重新洗牌最大次数:">
             <el-input v-model.number="item.MaxCtrlTimes" :required="true" />
           </el-form-item>
         </el-col>
 
-        <el-col :span="8" :offset="1">
+        <el-col v-if="envProjectName != 'ph_audit'" :span="8" :offset="1">
           <el-form-item label="extra出现概率（%）:">
             <el-input v-model.number="item.ExTraPayRate" :required="true" />
           </el-form-item>
@@ -99,7 +99,7 @@
             <legend>下注区域配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;"> 说明: --1.审核服extra配置不生效  --2.倍率不支持小数填写真实值*100，例如期望是2.06 填写206</span>
+                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -125,29 +125,18 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="倍率(real*100)"
+                    v-if="envProjectName != 'ph_audit'"
+                    prop="RobotBetRate"
+                    label="机器人下注权重"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Odds" size="mini" />
+                    <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
                   </template>
                 </el-table-column>
+
                 <el-table-column
-                  label="出现extra概率(%)"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ERate" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="extra倍数(real*100)"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.EOdds" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="MaxMoneyBet"
-                  label="区域下注上限"
+                    prop="MaxMoneyBet"
+                    label="区域下注上限"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
@@ -155,13 +144,48 @@
                 </el-table-column>
 
                 <el-table-column
-                  prop="RobotBetRate"
-                  label="机器人下注概率(‰)"
+                  label="倍率(real*100)"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
+                    <el-input v-model.number="scope.row.Odds" size="mini" />
                   </template>
                 </el-table-column>
+                <el-table-column
+                    v-if="envProjectName != 'ph_audit'"
+                    label="出现extra概率(%)"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ERate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                    v-if="envProjectName != 'ph_audit'"
+                    label="extra倍数(real*10)"
+                    width="320"
+                >
+
+                  <template slot-scope="scope">
+                    <div v-if="BetOddsList[scope.$index]">
+                      <div v-for="(data, index ) in BetOddsList[scope.$index].EOddsCfg" style="line-height: 1.5; ">
+                        <el-row style="line-height: 1.5; "  >
+                          <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
+                          <span style="margin-left: 20px">倍数:</span>
+                          <el-input v-model.number="data.EOdds" size="mini" style="width: 80px" placeholder="倍数"
+                                    @input="wallpaperInput(scope.$index,index) "/>
+                          <span style="margin-left: 10px">权重:</span>
+                          <el-input v-model.number="data.Weight" size="mini" style="width: 80px" placeholder="权重"
+                                    @input="wallpaperInput(scope.$index,index)"/>
+                          <a style="margin-left: 20px" @click="delOddsList(scope.$index,index)" type="danger" size="mini">-</a>
+                        </el-row>
+                      </div>
+
+                    </div>
+                  </template>
+
+                </el-table-column>
+
+
 
               </el-table>
             </el-row>
@@ -171,7 +195,7 @@
             <legend>机器人配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;">以下配置，在两个时段交叉时，有半小时时间差来完成变化人数。</span>
+                <span style="color:red;">以下配置,在两个时段机器人数目标替换时,缺补:[50,∞)[2,5]; [30,50)[1,3]; [10,30)[1,2]; (0,10)[0.5,1]  多退:[50,∞)[2,3]; [20,50)[1,2]; (0,20)[0.5,1]</span>
               </el-descriptions-item>
             </el-descriptions>
             <el-table
@@ -278,6 +302,11 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-descriptions class="margin-top" border>
+              <el-descriptions-item>
+                <span style="color:red;">以下这两个值不做保证，1.如果总下注额度满足以后，机器人会停止下注; 2.如果总下注额度没有完成，次数以达到上限机器人会继续下注</span>
+              </el-descriptions-item>
+            </el-descriptions>
             <el-row>
               <el-col :span="11" :offset="1">
                 <el-form-item label="机器人最小下注次数：" prop="RobotCfg.MinRobotBetTimes" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -313,7 +342,7 @@
             </el-row>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;">上一局真人下注额度=0，所有机器人这一局总下注限制: [0,房间在线人数乘于*avg]</span>
+                <span style="color:red;">上一局真人下注额度=0，所有机器人这一局总下注限制: [0,房间真人数乘于*avg]</span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -450,6 +479,7 @@ export default {
         data: []
       },
       form: {},
+      BetOddsList: [],
       subKey: 'miniDvt_cfg',
       libShow: $libShow,
       showSetResultPage: false,
@@ -457,7 +487,8 @@ export default {
         one: 0,
         two: 0,
         three: 0
-      }
+      },
+      envProjectName: process.env.VUE_APP_PROJECT,
     }
   },
   created() {
@@ -466,6 +497,17 @@ export default {
       this.isHidden = false
     }
     this.getData()
+  },
+  watch: {
+    // 监听json数据变化，重新渲染文件夹内容
+    BetOddsList(newVal) {
+      this.file_is_show = false
+      if (true) {
+        this.$nextTick(() => { // $nextTick 是在 DOM 更新循环结束之后执行延迟回调
+          this.file_is_show = true
+        })
+      }
+    }
   },
   methods: {
     dataRule(required, config) {
@@ -480,6 +522,13 @@ export default {
       this.item.RobotCfg.RobotAverageBetMoney /= 1000
       for (const j in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[j].MaxMoneyBet /= 1000
+      }
+
+      for (const i in this.item.BetAreaOptions) {
+        this.item.BetAreaOptions[i].Odds /= 10
+        for (const j in this.item.BetAreaOptions[i].EOddsCfg) {
+          this.item.BetAreaOptions[i].EOddsCfg[j].EOdds /= 100
+        }
       }
 
       for (const j in this.item.BetMoneyLevel) {
@@ -502,7 +551,6 @@ export default {
       ret.RobotCfg.RobotAverageBetMoney *= 1000
 
       ret.BetMoneyLevel = []
-
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
         const items = this.item.BetMoneyLevel[o].CanBet.split(',')
@@ -522,9 +570,13 @@ export default {
       }
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
-        const obj = {}
-        Object.assign(obj, this.item.BetAreaOptions[o])
+        const obj = JSON.parse(JSON.stringify( this.item.BetAreaOptions[o]))
+        // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
+        obj.Odds *= 10
+        for (const j in obj.EOddsCfg) {
+          obj.EOddsCfg[j].EOdds *= 100
+        }
         ret.BetAreaOptions.push(obj)
       }
 
@@ -553,20 +605,22 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards
+
+            for (let i = 0; i < this.item.BetAreaOptions.length; i++) {
+              if (!this.item.BetAreaOptions[i].EOddsCfg||typeof(this.item.BetAreaOptions[i].EOddsCfg) == "undefined"||this.item.BetAreaOptions[i].EOddsCfg.length==0){
+                this.item.BetAreaOptions[i]["EOddsCfg"]=[]
+                this.item.BetAreaOptions[i]["EOddsCfg"].push({})
+              }else {
+                this.item.BetAreaOptions[i]["EOddsCfg"]=this.item.BetAreaOptions[i].EOddsCfg
+              }
+            }
+            this.BetOddsList = this.item.BetAreaOptions
           }
         }
       })
-      request({
-        url: '/texastable/test',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          console.log(response)
-        }
-      })
+    },
+    wallpaperInput(val, index) {
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
@@ -627,6 +681,19 @@ export default {
           }
         })
       })
+    },
+    addOddsList(idx) {
+      this.BetOddsList[idx].EOddsCfg.push({})
+      // 刷新页面
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
+    },
+    delOddsList(idx, index) {
+      if (this.BetOddsList[idx].EOddsCfg.length == 1) {
+        this.BetOddsList[idx].EOddsCfg.push({})
+      }
+      this.BetOddsList[idx].EOddsCfg.splice(index, 1)
+      // 刷新页面
+      this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     addBetMoneyListRow() {
       this.item.BetMoneyList.push({ CanBet: 0, MaxMoneyBet: 0, MinMoneyBet: 0 })
