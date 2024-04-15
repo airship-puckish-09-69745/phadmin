@@ -161,7 +161,7 @@
 
                 <el-table-column
                     v-if="envProjectName != 'ph_audit'"
-                    label="extra倍数(real*10)"
+                    label="extra倍数(real*1000)"
                     width="320"
                 >
 
@@ -171,7 +171,7 @@
                         <el-row style="line-height: 1.5; "  >
                           <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
                           <span style="margin-left: 20px">倍数:</span>
-                          <el-input v-model.number="data.EOdds" size="mini" style="width: 80px" placeholder="倍数"
+                          <el-input type="number" v-model.number="data.EOdds" size="mini" style="width: 80px" placeholder="倍数"
                                     @input="wallpaperInput(scope.$index,index) "/>
                           <span style="margin-left: 10px">权重:</span>
                           <el-input v-model.number="data.Weight" size="mini" style="width: 80px" placeholder="权重"
@@ -526,8 +526,8 @@ export default {
 
       for (const i in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[i].Odds /= 1000
-        for (const j in this.item.BetAreaOptions[i].EOddsCfg) {
-          this.item.BetAreaOptions[i].EOddsCfg[j].EOdds /= 100
+        for (const o of this.item.BetAreaOptions[i].EOddsCfg) {
+          o.EOdds=o.EOdds/1000
         }
       }
 
@@ -575,7 +575,7 @@ export default {
         obj.MaxMoneyBet *= 1000
         obj.Odds *= 1000
         for (const j in obj.EOddsCfg) {
-          obj.EOddsCfg[j].EOdds *= 100
+          obj.EOddsCfg[j].EOdds *= 1000
         }
         ret.BetAreaOptions.push(obj)
       }
