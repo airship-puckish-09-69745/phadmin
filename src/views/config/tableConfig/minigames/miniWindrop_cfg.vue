@@ -916,9 +916,18 @@
                          <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                        </template>
                      </el-table-column>
-                     <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）">
-                       <template slot-scope="scope">
-                         <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
+                     <el-table-column prop="item.HitRates" label="命中概率（万分比，如 3 表示万分之三，即0.0003）" >
+
+
+                       <template slot-scope="scope" >
+                         <div v-if="scope.row.Id!=8&&scope.row.Id!=10&&scope.row.Id!=9">
+                           <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
+                         </div>
+                         <div v-if="scope.row.Id===9">
+                           <el-form-item label="Jackpot命中概率：" label-width="150px">
+                             <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
+                           </el-form-item>
+                         </div>
                        </template>
                      </el-table-column>
                    </el-table>
@@ -1986,10 +1995,7 @@ export default {
             for (const k in this.item.JackpotRegulation2.RandAwards) {
               this.item.JackpotRegulation2.RandAwards[k].PoolVal /= 1000
             }
-            // 截取掉最后一个，后面保存再添加一个空的
-            for (const I in   this.item.LevelCfg) {
-              this.item.LevelCfg[I].Spins = this.item.LevelCfg[I].Spins.slice(0, this.item.LevelCfg[I].Spins.length-1)
-            }
+
             this.JackpotRandAwards2 = this.item.JackpotRegulation2.RandAwards
             console.log('JackpotRandAwards', this.JackpotRandAwards2)
             // 设置修改之前数据
@@ -2046,8 +2052,12 @@ export default {
         raObj.PoolVal *= 1000
         jackpotInfo2.RandAwards.push(raObj)
       }
-      for (const o of postData.LevelCfg) {
-        o.Spins.push({"Id":10,"HitRates":0,"Odds":-2})
+      for (const i in postData.LevelCfg) {
+        for (const o of postData.LevelCfg[i].Spins) {
+            if (o.Id==8||o.Id==10){
+                o.HitRates=0
+            }
+        }
       }
       postData.JackpotRegulation2 = jackpotInfo2
       return postData
