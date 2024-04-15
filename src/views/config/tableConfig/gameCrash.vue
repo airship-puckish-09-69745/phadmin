@@ -340,9 +340,9 @@
                                     <el-input v-model="scope.row.Area"  size="mini" disabled/>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="are" label="机器人下注概率%">
+                        <el-table-column prop="are" label="机器人下注概率%"  >
                             <template slot-scope="scope">
-                                <el-input type="number" :step="0.01" v-model.number="scope.row.Probability" size="mini" />
+                                <el-input  type="number"  v-model.number="scope.row.Probability" size="mini" oninput="if(value > 100) value = 100; if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}"/>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -379,7 +379,7 @@
                             </el-table-column>
                       <el-table-column prop="are" label="概率%">
                         <template slot-scope="scope">
-                          <el-input type="number" :step="0.01"  v-model.number="scope.row.Probability" size="mini" />
+                          <el-input   type="number"  v-model.number="scope.row.Probability" size="mini" oninput="if(value > 100) value = 100; if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}"/>
                         </template>
                       </el-table-column>
                         <el-table-column prop="are" label="操作">
@@ -878,7 +878,11 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
+    checkRanges(value ){
 
+      return 100
+
+    },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
@@ -1070,6 +1074,7 @@ export default {
     doAdd() {
       this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
+
     delRow(index) {
       console.log(index)
       this.item.BetMoneyLevel.splice(index, 1)
