@@ -920,10 +920,10 @@
 
 
                        <template slot-scope="scope" >
-                         <div v-if="scope.row.Id!=8&&scope.row.Id!=10&&scope.row.Id!=9">
+                         <div v-if="scope.row.Odds!=-1&&scope.row.Odds!=-2&&scope.row.Odds!=-3">
                            <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
                          </div>
-                         <div v-if="scope.row.Id===9">
+                         <div v-if="scope.row.Odds===-1">
                            <el-form-item label="Jackpot命中概率：" label-width="150px">
                              <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
                            </el-form-item>
@@ -2054,7 +2054,7 @@ export default {
       }
       for (const i in postData.LevelCfg) {
         for (const o of postData.LevelCfg[i].Spins) {
-            if (o.Id==8||o.Id==10){
+            if (o.Id==-2||o.Id==-3){
                 o.HitRates=0
             }
         }
