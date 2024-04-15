@@ -144,10 +144,10 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="赔率(real*100)"
+                  label="赔率(real*1000)"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Odds" size="mini" />
+                    <el-input type="number" :step="0.01" v-model.number="scope.row.Odds" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -525,7 +525,7 @@ export default {
       }
 
       for (const i in this.item.BetAreaOptions) {
-        this.item.BetAreaOptions[i].Odds /= 10
+        this.item.BetAreaOptions[i].Odds /= 1000
         for (const j in this.item.BetAreaOptions[i].EOddsCfg) {
           this.item.BetAreaOptions[i].EOddsCfg[j].EOdds /= 100
         }
@@ -573,7 +573,7 @@ export default {
         const obj = JSON.parse(JSON.stringify( this.item.BetAreaOptions[o]))
         // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        obj.Odds *= 10
+        obj.Odds *= 1000
         for (const j in obj.EOddsCfg) {
           obj.EOddsCfg[j].EOdds *= 100
         }

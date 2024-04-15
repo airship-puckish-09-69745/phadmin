@@ -206,7 +206,7 @@
                   label="中奖赔率"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Val" size="mini" />
+                    <el-input type="number" :step="0.01" v-model.number="scope.row.Val" size="mini" />
                   </template>
                 </el-table-column>
               </el-table>
