@@ -2054,7 +2054,7 @@ export default {
       }
       for (const i in postData.LevelCfg) {
         for (const o of postData.LevelCfg[i].Spins) {
-            if (o.Id==-2||o.Id==-3){
+            if (o.Odds==-2||o.Odds==-3){
                 o.HitRates=0
             }
         }
