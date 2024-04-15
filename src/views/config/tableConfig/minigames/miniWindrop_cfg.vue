@@ -794,7 +794,7 @@
             <div v-if="!isPhAuditEnv() || item.Level !=3 ">
               <fieldset>
                 <legend>{{ levelShow[item.Level] }} 场次配置(倍数支持3位小数)</legend>
-                <el-form ref="form" :model="form" label-width="300px">
+                <el-form ref="form" label-width="300px">
                   <el-row>
                     <el-form-item label="场次等级：" prop="item.Level">
                       <el-select v-model="item.Level" placeholder="请选择" disabled>
@@ -1064,6 +1064,7 @@ export default {
         jackpotShowOption2: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
 
       },
+      LevelCfg:[],
       dayLimitChange: {
         visible: false,
         data: [],
@@ -1963,9 +1964,6 @@ export default {
           console.log('response.Data.Data', response.Data.Data)
           if (response.Data && response.Data.Data !== '') {
             var cfgJson = JSON.parse(response.Data.Data)
-            // 截取掉high场
-            // cfgJson.LevelCfg[2].Level=3
-            // console.log( cfgJson.LevelCfg[2])
             for (var i in cfgJson.Bets) {
               cfgJson.Bets[i] /= 1000
             }
@@ -1987,6 +1985,10 @@ export default {
 
             for (const k in this.item.JackpotRegulation2.RandAwards) {
               this.item.JackpotRegulation2.RandAwards[k].PoolVal /= 1000
+            }
+            // 截取掉最后一个，后面保存再添加一个空的
+            for (const I in   this.item.LevelCfg) {
+              this.item.LevelCfg[I].Spins = this.item.LevelCfg[I].Spins.slice(0, this.item.LevelCfg[I].Spins.length-1)
             }
             this.JackpotRandAwards2 = this.item.JackpotRegulation2.RandAwards
             console.log('JackpotRandAwards', this.JackpotRandAwards2)
@@ -2020,8 +2022,8 @@ export default {
       // })
     },
     getPostData() {
-      const postData = {}
-      Object.assign(postData, this.cfg)
+      const postData = JSON.parse(JSON.stringify(this.cfg))
+      // Object.assign(postData, this.cfg)
       const jackpotInfo = {}
       const jackpotInfo2 = {}
       Object.assign(jackpotInfo, this.item.JackpotRegulation)
@@ -2043,6 +2045,9 @@ export default {
         Object.assign(raObj, this.JackpotRandAwards2[o])
         raObj.PoolVal *= 1000
         jackpotInfo2.RandAwards.push(raObj)
+      }
+      for (const o of postData.LevelCfg) {
+        o.Spins.push({"Id":10,"HitRates":0,"Odds":-2})
       }
       postData.JackpotRegulation2 = jackpotInfo2
       return postData
@@ -2160,13 +2165,10 @@ export default {
         for (const i in postData.HappyRouletteCfg) {
           if (postData.HappyRouletteCfg[i].Type === 1) {
             postData.HappyRouletteCfg[i].Num = parseFloat(postData.HappyRouletteCfg[i].Num) * 1000
-            console.log()
           }
         }
       }
-      console.log("========",postData.AddTimesRow)
       if (postData.AddTimesRow instanceof Array) {
-        console.log("======2==",postData.AddTimesRow)
       }else if (postData.AddTimesRow instanceof String) {
         var split = postData.AddTimesRow.split(",");
         postData.AddTimesRow=[]
@@ -2176,7 +2178,6 @@ export default {
       }
 
       this.form.Data = JSON.stringify(postData)
-
       //   console.log("this.form.Data ",this.form.Data )
       const $this = this
       // 设置修改后数据
