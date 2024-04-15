@@ -532,7 +532,7 @@
 
 
           <el-row>
-            <el-col :span="4" style="text-align:right">赔率配置：</el-col>
+            <el-col :span="4" style="text-align:right">中奖倍数配置：</el-col>
             <el-col :span="12">
               <el-table ref="filterTable" :data="item.OddsRates" stripe border fit :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell">
                 <el-table-column type="index" label="时间(秒)" width="100">

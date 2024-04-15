@@ -99,7 +99,7 @@
             <legend>下注区域配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
+                <span style="color:red;"> 说明: 1.赔率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -144,7 +144,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="倍率(real*100)"
+                  label="赔率(real*100)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.Odds" size="mini" />

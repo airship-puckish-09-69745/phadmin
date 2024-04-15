@@ -353,7 +353,7 @@
             <el-form-item
                 label="剩余警报："
                 prop="item.WatchTimesMax"
-                :rules="dataRule(true,{type:'n',range:'2'})"
+                :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="edit.item.RemainAlarm"/>
             </el-form-item>

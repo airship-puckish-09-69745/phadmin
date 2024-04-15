@@ -793,7 +793,7 @@
           <el-col :span="16" :offset="3">
             <div v-if="!isPhAuditEnv() || item.Level !=3 ">
               <fieldset>
-                <legend>{{ levelShow[item.Level] }} 场次配置(赔率支持3位小数)</legend>
+                <legend>{{ levelShow[item.Level] }} 场次配置(倍数支持3位小数)</legend>
                 <el-form ref="form" :model="form" label-width="300px">
                   <el-row>
                     <el-form-item label="场次等级：" prop="item.Level">
@@ -827,7 +827,7 @@
                       </el-form-item>
                     </el-row>
                     <el-row>
-                      <el-form-item label="LuckyJP 赔付倍数（1代表百分之百，支持2位小数）：" prop="item.LuckyJPOdds">
+                      <el-form-item label="LuckyJP 中奖倍数（1代表百分之百，支持2位小数）：" prop="item.LuckyJPOdds">
                         <el-input v-model.number="item.LuckyJPOdds" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
@@ -850,7 +850,7 @@
                     <!--                      </el-form-item>-->
                     <!--                    </el-row>-->
                     <el-row>
-                      <el-form-item label="SuperJP 赔付倍数（1代表百分之百，支持2位小数）：" prop="item.SuperJPOdds">
+                      <el-form-item label="SuperJP 中奖倍数（1代表百分之百，支持2位小数）：" prop="item.SuperJPOdds">
                         <el-input v-model.number="item.SuperJPOdds" placeholder="请输入" />
                       </el-form-item>
                     </el-row>
@@ -872,7 +872,7 @@
                             <el-input v-model.number="scope.row.Id" placeholder="" disabled />
                           </template>
                         </el-table-column>
-                        <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 spin)">
+                        <el-table-column prop="item.Odds" label="中奖倍数(-1 为命中 spin)">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                           </template>
@@ -911,7 +911,7 @@
                          <el-input v-model.number="scope.row.Id" type="number" placeholder="" disabled />
                        </template>
                      </el-table-column>
-                     <el-table-column prop="item.Odds" label="赔付赔率(-1 为命中 LuckyJP; -2 为命中 SuperJP;-3为命中MiniJP)">
+                     <el-table-column prop="item.Odds" label="中奖倍数(-1 为命中 LuckyJP; -2 为命中 SuperJP;-3为命中MiniJP)">
                        <template slot-scope="scope">
                          <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                        </template>

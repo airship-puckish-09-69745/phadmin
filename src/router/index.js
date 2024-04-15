@@ -662,6 +662,18 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicActivityConfig.vue'),
             name: 'activityConfig',
             meta: { title: '活动信息配置', noCache: true }
+          },
+          {
+            path: 'taskConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicTaskConfig'),
+            name: 'taskConfig',
+            meta: { title: '积分任务配置', noCache: true }
+          },
+          {
+            path: 'rankConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicRankConfig'),
+            name: 'rankConfig',
+            meta: { title: '积分排名配置', noCache: true }
           }
         ]
       },

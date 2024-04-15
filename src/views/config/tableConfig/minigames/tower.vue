@@ -131,11 +131,11 @@
                 </template>
               </el-table-column>
               <el-table-column
-                label="倍率(说明：2.06倍数值为206)"
+                label="中奖倍数(说明：2.06倍数值为206)"
                 width="380"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.RowOdds"><template slot="append">倍率*100</template></el-input>
+                  <el-input v-model.number="scope.row.RowOdds"><template slot="append">倍数*100</template></el-input>
                 </template>
               </el-table-column>
               <el-table-column

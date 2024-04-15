@@ -227,7 +227,8 @@ export default {
       ],
       levelConfig: [
         { 'value': 0, 'label': '全部' },
-        { 'value': 1, 'label': '普通场次' }
+        { 'value': 1, 'label': '普通场次' },
+        { 'value': 2, 'label': '普通场次2' }
       ],
       poolConfig: [
         { 'value': 0, 'label': '全部' },
