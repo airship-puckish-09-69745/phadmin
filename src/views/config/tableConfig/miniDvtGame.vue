@@ -18,7 +18,7 @@
 
         <el-col :span="8" :offset="1">
           <el-form-item label="用户长时间未下注提示(s):">
-            <el-input v-model.number="item.NoticeTime" :required="true" />
+            <el-input v-model.number="item.NoticeTime" :required="true"  @input="wallpaperInput2" />
           </el-form-item>
         </el-col>
 
@@ -621,6 +621,9 @@ export default {
     },
     wallpaperInput(val, index) {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
+    },
+    wallpaperInput2(val, index) {
+      this.$forceUpdate()
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
