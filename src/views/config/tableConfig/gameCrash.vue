@@ -368,12 +368,12 @@
                         <el-table-column prop="are" label="机器人Take倍数区间">
                                 <el-table-column label="起始">
                                     <template slot-scope="scope">
-                                        <el-input   v-model.number="scope.row.StartTake" size="mini" />
+                                        <el-input  type="number" v-model.number="scope.row.StartTake" size="mini" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=value.toFixed(2);}"/>
                                     </template>
                                 </el-table-column>
                                 <el-table-column  label="结束">
                                     <template slot-scope="scope">
-                                        <el-input   v-model.number="scope.row.EndTake" size="mini"  />
+                                        <el-input  type="number"  v-model.number="scope.row.EndTake" size="mini"   oninput=" if(value < 0 || value == '' || value == null){value = 0;}value=value.toFixed(2);" />
                                     </template>
                                 </el-table-column>
                             </el-table-column>
@@ -913,7 +913,10 @@ export default {
         this.item.BetAreaOptions[j].AreaMin /= 100
         this.item.BetAreaOptions[j].AreaMax /= 100
       }
-
+      for (const o of this.item.RobotTakeAreaArr) {
+        o.StartTake/=100
+        o.EndTake/=100
+      }
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         const betMoneyList = []
@@ -963,7 +966,14 @@ export default {
         obj.AreaMin = Math.round(obj.AreaMin * 100)
         ret.BetAreaOptions.push(obj)
       }
+      ret.RobotTakeAreaArr=[]
+      for (const o of this.item.RobotTakeAreaArr) {
+        const obj = JSON.parse(JSON.stringify(o))
 
+        obj.StartTake =parseInt(obj.StartTake*100)
+        obj.EndTake=parseInt(obj.EndTake*100)
+         ret.RobotTakeAreaArr.push(obj)
+      }
       ret.BetMoneyLevel = []
       for (const o in this.item.BetMoneyLevel) {
         const betMoneyList = []
@@ -997,15 +1007,11 @@ export default {
             Object.assign(this.item, item)
               // 没有就新加
               if(Array.isArray(this.item.RobotBetAreaArr)&&!this.item.RobotBetAreaArr.length){
-                  console.log("=======ASAS=======", this.item.RobotBetAreaArr)
                   this.item['RobotBetAreaArr']=this.RobotBetAreaArr
-                  console.log("=======ASASAS======", this.item.RobotBetAreaArr)
               }
 
               if(Array.isArray(this.item.RobotTakeAreaArr)&&!this.item.RobotTakeAreaArr.length){
-                  console.log("=======1========", this.item.RobotTakeAreaArr)
                   this.item['RobotTakeAreaArr']=this.RobotTakeAreaArr
-                  console.log("========2=======", this.item.RobotTakeAreaArr,this.RobotTakeAreaArr)
               }
             this.transMoneyForShow()
             this.betMoneyList = this.item.BetMoneyList ? this.item.BetMoneyList.join(',') : this.betMoneyList
