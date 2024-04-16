@@ -542,6 +542,21 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="Blackjack牌局详情" :visible.sync="blackjackDetailVisible" width="1200px">
+      <el-table :data="blackjackDetail.players" border>
+          <el-table-column prop="uid" label="UID"  />
+          <el-table-column prop="seat" label="座位"  />
+          <el-table-column prop="moneyBet" label="投注金额"  />
+          <el-table-column prop="cards" label="手牌"  />
+          <el-table-column  label="是否爆牌"  />
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ blackjackDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ blackjackDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Pusoy牌局详情" :visible.sync="pusoyDetailVisible" width="1400px">
       <el-table
         :data="pusoyDetail.players"
@@ -1596,6 +1611,10 @@ export default {
       lucky9Detail: {},
       lucky9DetailVisible: false,
 
+
+      blackjackDetail: {},
+      blackjackDetailVisible: false,
+
       bodingDetail: {},
       bodingDetailVisible: false,
 
@@ -2005,6 +2024,8 @@ export default {
             $this.showBodingGame(obj)
           } else if (gid === 34) {
             $this.showPusoyDosGame(obj)
+          } else if (gid == 37) {
+            $this.showBlackjackGame(obj)
           } else if (gid === 21) {
             $this.showPusoyGame(obj)
           } else if (gid === 100) {
@@ -2471,6 +2492,11 @@ export default {
     showBodingGame(obj) {
       this.bodingDetail = obj
       this.bodingDetailVisible = true
+    },
+    showBlackjackGame(obj) {
+      console.log(obj)
+      this.blackjackDetail = obj
+      this.blackjackDetailVisible = true
     },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj

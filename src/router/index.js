@@ -882,6 +882,12 @@ export const asyncRoutes = [
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
       },
       {
+        path: 'playlog_blackjack',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_blackjack',
+        meta: { title: 'BlackJack ◐', gid: 37 }
+      },
+      {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
         name: 'playlog_lotterylog',
