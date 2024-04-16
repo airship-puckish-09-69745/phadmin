@@ -817,7 +817,6 @@ export default {
         {Area:3,Probability:5},
         {Area:4,Probability:5},
         {Area:5,Probability:5},
-        {Area:6,Probability:5},
         {Area:-1,Probability:5},
       ],
       RobotTakeAreaArr:[],
