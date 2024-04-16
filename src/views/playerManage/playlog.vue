@@ -1430,6 +1430,10 @@
           <el-table-column label="出牌">
             <template slot-scope="scope">
               <div v-html="showPusoyDosCards(scope.row.cards)" />
+              {{ pusoyDos.pusoyDosGroupCardTypes[scope.row.cardType] }}
+              <div v-if="scope.row.isPass ==1">
+                {{ "跳过"}}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="是否跳过">

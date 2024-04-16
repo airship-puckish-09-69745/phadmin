@@ -147,7 +147,7 @@
                   label="赔率(real*1000)"
                 >
                   <template slot-scope="scope">
-                    <el-input type="number" :step="0.01" v-model.number="scope.row.Odds" size="mini" />
+                    <el-input type="number" :step="0.01" v-model.number="scope.row.Odds" size="mini" oninput="if(value < 0 || value == '' || value == null){value = 0;}"/>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -172,7 +172,7 @@
                           <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
                           <span style="margin-left: 20px">倍数:</span>
                           <el-input type="number" v-model.number="data.EOdds" size="mini" style="width: 80px" placeholder="倍数"
-                                    @input="wallpaperInput(scope.$index,index) "/>
+                                    @input="wallpaperInput(scope.$index,index)"  oninput="if(value < 0 || value == '' || value == null){value = 0;}"/>
                           <span style="margin-left: 10px">权重:</span>
                           <el-input v-model.number="data.Weight" size="mini" style="width: 80px" placeholder="权重"
                                     @input="wallpaperInput(scope.$index,index)"/>

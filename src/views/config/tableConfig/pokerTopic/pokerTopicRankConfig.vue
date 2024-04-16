@@ -9,110 +9,162 @@
         :attr-names="AttrNames"
     />
     <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="15">
-        <el-form inline>
-          <el-form-item label="游戏：">
-            <el-select v-model="selectGid" placeholder="请选择">
-              <el-option v-for="(value, k) in gameOptions" :label="value" :key="parseInt(k)"
-                         :value="parseInt(k)"></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="mini" @click="queryData()">查询</el-button>
-          </el-form-item>
-        </el-form>
 
-      </el-col>
 
-      <el-col :span="22">
-        <el-button type="primary" size="mini" @click="addOne">添加</el-button>
-      </el-col>
 
-      <el-col :span="2">
+      <el-col :span="24">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
       <el-col :span="12">
-        <el-form ref="allCfg" v-model="showData" label-width="150px">
+        <el-button type="primary" size="mini" @click="addOverallRankRewardsCfg">添加总排名奖励</el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="primary" size="mini" @click="addSubRankRewardsCfg">添加次级奖励</el-button>
+      </el-col>
+      <el-col :span="12">
+        <el-form ref="OverallRankRewardsCfg" v-model="showData" label-width="150px">
           <el-table
-              :data="showData"
+              :data="OverallRankRewardsCfg"
               style="width: 95%"
               border
+              :header-cell-style="{textAlign: 'center'}"
           >
+            <el-table-column
+            label="总排名奖励"
+            border
+            :cell-style="{ textAlign: 'center' }"
+            >
 
-            <el-table-column
-                prop="Gid"
-                label="游戏"
-            >
-              <template slot-scope="scope">
-                <div v-if="scope.row.Gid!==0 && scope.row.Gid!=='' && scope.row.Gid!==null ">
-                  {{ gameOptions[scope.row.Gid] }}
-                </div>
-                <div v-if="scope.row.Gid==0 || scope.row.Gid==''">
-                  <el-select v-model="scope.row.Gid" placeholder="请选择">
-                    <el-option v-for="(value, k) in gameOptions" :label="value" :key="parseInt(k)"
-                               :value="parseInt(k)"></el-option>
-                  </el-select>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column
-                prop="Type"
-                label="任务类型"
-            >
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.Type" placeholder="请选择">
-                  <el-option v-for="(value, k) in taskOptions" :label="value" :key="parseInt(k)"
-                             :value="parseInt(k)"></el-option>
-                </el-select>
-              </template>
+              <el-table-column
+                  prop="RankBegin"
+                  label="开始位置"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    <el-input type="number" :step="0.01" v-model.number="scope.row.RankBegin" size="mini"
+                              oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                  </div>
+                </template>
+              </el-table-column>
+              <el-table-column
+                  prop="RankEnd"
+                  label="结束位置"
+              >
+                <template slot-scope="scope">
+                  <div>
+                    <el-input type="number" v-model.number="scope.row.RankEnd" size="mini"
+                              oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                  </div>
+                </template>
+              </el-table-column>
+
+              <el-table-column
+                  prop="Reward"
+                  label="奖励"
+              >
+                <template slot-scope="scope">
+                  <el-input type="number" v-model.number="scope.row.Reward" size="mini"
+                            oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="操作" width="120px">
+                <template slot-scope="scope">
+                  <el-button type="danger" size="mini" @click="deleteOverallRow(scope.$index, scope.row)">删除
+                  </el-button>
+                </template>
+              </el-table-column>
             </el-table-column>
 
-            <el-table-column
-                prop="Score"
-                label="积分"
-            >
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.Score"/>
-              </template>
-            </el-table-column>
-            <el-table-column
-                prop="Description"
-                label="描述"
-            >
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.Description"/>
-              </template>
-            </el-table-column>
-
-            <!--            <el-table-column label="操作">-->
-            <!--              <template slot-scope="scope">-->
-            <!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
-            <!--              </template>-->
-            <!--            </el-table-column>-->
           </el-table>
-          <br>
-          <br>
-          <br>
-          <el-form-item>
-            <el-button type="primary" @click="setData">保存</el-button>
-          </el-form-item>
         </el-form>
+        <!--        <el-col :offset="5" :span="8">-->
+        <!--          <div class="block">-->
+        <!--            <el-pagination-->
+        <!--                :current-page="clientDB.GetPage().GetCurrentPage()"-->
+        <!--                :page-sizes="[10, 20, 30, 40]"-->
+        <!--                :page-size="clientDB.GetPage().GetPageNum()"-->
+        <!--                layout="total, sizes, prev, pager, next, jumper"-->
+        <!--                :total="clientDB.GetPage().GetTotalCount()"-->
+        <!--                @size-change="handleSizeChange"-->
+        <!--                @current-change="handleCurrentChange"-->
+        <!--            />-->
+        <!--          </div>-->
+        <!--        </el-col>-->
+      </el-col>
+
+      <el-col :span="12">
+
+        <el-form ref="SubRankRewardsCfg" v-model="showData" label-width="150px">
+          <el-table
+              :data="SubRankRewardsCfg"
+              style="width: 95%"
+              border
+              :header-cell-style="{textAlign: 'center'}"
+          >
+            <el-table-column
+                label="次级奖励"
+                style="text-align: center;margin-left: 500px"
+            >
+            <el-table-column
+                prop="RankBegin"
+                label="开始位置"
+            >
+              <template slot-scope="scope">
+                <div>
+                  <el-input type="number"   v-model.number="scope.row.RankBegin" size="mini"
+                            oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column
+                prop="RankEnd"
+                label="结束位置"
+            >
+              <template slot-scope="scope">
+                <div>
+                  <el-input type="number" v-model.number="scope.row.RankEnd" size="mini"
+                            oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                </div>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+                prop="Reward"
+                label="奖励"
+            >
+              <template slot-scope="scope">
+                <el-input type="number" v-model.number="scope.row.Reward" size="mini"
+                          oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="操作" width="120px">
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="deleteSubRow(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+            </el-table-column>
+          </el-table>
+        </el-form>
+        <!--        <el-col :offset="5" :span="8">-->
+        <!--          <div class="block">-->
+        <!--            <el-pagination-->
+        <!--                :current-page="clientDB.GetPage().GetCurrentPage()"-->
+        <!--                :page-sizes="[10, 20, 30, 40]"-->
+        <!--                :page-size="clientDB.GetPage().GetPageNum()"-->
+        <!--                layout="total, sizes, prev, pager, next, jumper"-->
+        <!--                :total="clientDB.GetPage().GetTotalCount()"-->
+        <!--                @size-change="handleSizeChange"-->
+        <!--                @current-change="handleCurrentChange"-->
+        <!--            />-->
+        <!--          </div>-->
+        <!--        </el-col>-->
       </el-col>
     </el-row>
 
-    <el-col :offset="16" :span="8">
-      <div class="block">
-        <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-        />
-      </div>
-    </el-col>
+
+    <el-button type="primary" @click="setData">保存</el-button>
     <!--对比组件-->
     <compare ref="compare"/>
 
@@ -127,7 +179,6 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {copyObj} from 'codemirror/src/util/misc'
 import {ClientTableData} from '@/utils/common'
 
 export default {
@@ -138,13 +189,14 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       form: {},
       postData: {},
-      subKey: 'poker_topic_score_tasks',
+      subKey: 'poker_topic_rank_rewards',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      allCfg: [],
+      OverallRankRewardsCfg: [],
+      SubRankRewardsCfg: [],
       appInfo: [],
 
       channelOptions: [
@@ -162,10 +214,10 @@ export default {
 
       showData: [],
       item: {
-        Gid: 0,
-        Type: 0,
-        Score: 0,
-        Description: '',
+        RankBegin: 0,
+        RankEnd: 0,
+        Reward: 0,
+
       },
       selectGid: 0,
       taskOptions: {
@@ -203,7 +255,6 @@ export default {
 
     refresh() {
 
-      this.showData = this.allCfg
       return
 
       // var data = this.allCfg
@@ -214,6 +265,12 @@ export default {
       //   var data3 = data2.filter(ele => ele.app_id == this.appId)
       // }
       // this.showData = data3
+    },
+    deleteOverallRow(idx, row) {
+      this.OverallRankRewardsCfg.splice(idx, 1)
+    },
+    deleteSubRow(idx, row) {
+      this.SubRankRewardsCfg.splice(idx, 1)
     },
     clearFilter() {
       this.clientDB.ClearFilterMap()
@@ -238,10 +295,12 @@ export default {
     newItem() {
       return this.item
     },
-    addOne() {
-      this.showData.push(this.newItem())
+    addOverallRankRewardsCfg() {
+      this.OverallRankRewardsCfg.push(this.newItem())
     },
-
+    addSubRankRewardsCfg() {
+      this.SubRankRewardsCfg.push(this.newItem())
+    },
     queryData() {
       const gid = this.selectGid
       this.clientDB.FilterValueMap['Gid'] = this.selectGid
@@ -281,12 +340,15 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            $this.allCfg = cfg
-            $this.clientDB = new ClientTableData(cfg, 10, filterMap, "Gid", -1)
+            console.log("====", cfg)
+            this.OverallRankRewardsCfg = cfg.OverallRankRewards
+            this.SubRankRewardsCfg = cfg.SubRankRewards
+            // $this.clientDB = new ClientTableData(cfg, 10, filterMap, "", -1)
+            // $this.clientDBOver = new ClientTableData(OverallRankRewardsCfg, 10, filterMap, "", -1)
+            // $this.clientDBSub = new ClientTableData(SubRankRewardsCfg, 10, filterMap, "", -1)
             this.$refs.compare.SetOldVal(response.Data.Data)
+            console.log("====", response.Data.Data)
             $this.handleCurrentChange(1)
-            for (let i = 0; i < $this.allCfg.length; i++) {
-            }
             this.refresh()
           }
         }
@@ -299,12 +361,12 @@ export default {
         return false
       }
 
-      // this.form.Data = JSON.stringify(cfg)
-      this.postData.Data = JSON.stringify(cfg)
+
+      let newData = JSON.stringify(cfg)
       const $this = this
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.SetNewVal(this.postData.Data)
+      this.$refs.compare.SetNewVal(newData)
       this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -324,13 +386,11 @@ export default {
       })
     },
     getCfg() {
-      const cfg = []
-      for (const i in this.clientDB.TotalData) {
-        const item = {}
-        copyObj(this.clientDB.TotalData[i], item)
-        cfg.push(item)
+      let obj = {
+        OverallRankRewards: this.OverallRankRewardsCfg,
+        SubRankRewards: this.SubRankRewardsCfg
       }
-      return cfg
+      return obj
     },
     checkData(cfg) {
 

@@ -82,7 +82,11 @@
                 <el-input v-model="scope.row.Description"/>
               </template>
             </el-table-column>
-
+            <el-table-column label="操作" width="120px">
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
             <!--            <el-table-column label="操作">-->
             <!--              <template slot-scope="scope">-->
             <!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
@@ -240,7 +244,9 @@ export default {
     addOne() {
       this.showData.push(this.newItem())
     },
-
+    deleteRow(idx,row){
+      this.showData.splice(idx,1)
+    },
     queryData() {
       const gid = this.selectGid
       this.clientDB.FilterValueMap['Gid'] = this.selectGid
@@ -284,8 +290,7 @@ export default {
             $this.clientDB = new ClientTableData(cfg, 10, filterMap, "Gid", -1)
             this.$refs.compare.SetOldVal(response.Data.Data)
             $this.handleCurrentChange(1)
-            for (let i = 0; i < $this.allCfg.length; i++) {
-            }
+
             this.refresh()
           }
         }

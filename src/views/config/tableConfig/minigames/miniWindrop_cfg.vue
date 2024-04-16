@@ -4,7 +4,7 @@
       <!--      <publish primary-key="Volume" :key-id="getFullKey('miniWindrop_slots_cfg')" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />-->
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
 
-      <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>
+<!--      <el-button type="warning" round @click="showUserArea">用户在玩图案</el-button>-->
     </el-row>
     <el-row>
       <div style="display: flex; align-items: center;">
@@ -336,7 +336,7 @@
       <div><br></div>
       <div><br></div>
       <el-row>
-        <el-button type="warning" round @click="showUserArea2">用户在玩图案</el-button>
+<!--        <el-button type="warning" round @click="showUserArea2">用户在玩图案</el-button>-->
       </el-row>
       <!--公共配置-->
       <el-row style="margin-top: 30px">
