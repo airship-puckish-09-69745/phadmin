@@ -36,6 +36,8 @@
               :data="showData"
               style="width: 95%"
               border
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
           >
 
             <el-table-column
@@ -71,7 +73,7 @@
                 label="积分"
             >
               <template slot-scope="scope">
-                <el-input v-model="scope.row.Score"/>
+                <el-input v-model.number="scope.row.Score"  oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}"/>
               </template>
             </el-table-column>
             <el-table-column
@@ -131,7 +133,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {copyObj} from 'codemirror/src/util/misc'
-import {ClientTableData} from '@/utils/common'
+import {$libShow, ClientTableData} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -149,7 +151,7 @@ export default {
       },
       allCfg: [],
       appInfo: [],
-
+      libShow: $libShow,
       channelOptions: [
         // {key: "0", label: '请选择'},
         {key: 'Dev', label: 'Dev'},
@@ -239,7 +241,7 @@ export default {
       this.refreshShow()
     },
     newItem() {
-      return this.item
+      return JSON.parse(JSON.stringify(this.item))
     },
     addOne() {
       this.showData.push(this.newItem())

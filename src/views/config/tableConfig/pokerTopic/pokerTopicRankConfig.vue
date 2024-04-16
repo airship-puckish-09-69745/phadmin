@@ -28,6 +28,8 @@
               style="width: 95%"
               border
               :header-cell-style="{textAlign: 'center'}"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
           >
             <el-table-column
             label="总排名奖励"
@@ -101,6 +103,8 @@
               style="width: 95%"
               border
               :header-cell-style="{textAlign: 'center'}"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
           >
             <el-table-column
                 label="次级奖励"
@@ -179,7 +183,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {ClientTableData} from '@/utils/common'
+import {$libShow, ClientTableData} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -198,7 +202,7 @@ export default {
       OverallRankRewardsCfg: [],
       SubRankRewardsCfg: [],
       appInfo: [],
-
+      libShow: $libShow,
       channelOptions: [
         // {key: "0", label: '请选择'},
         {key: 'Dev', label: 'Dev'},
@@ -293,7 +297,7 @@ export default {
       this.refreshShow()
     },
     newItem() {
-      return this.item
+      return JSON.parse(JSON.stringify(this.item))
     },
     addOverallRankRewardsCfg() {
       this.OverallRankRewardsCfg.push(this.newItem())

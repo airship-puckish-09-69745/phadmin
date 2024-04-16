@@ -728,16 +728,16 @@
               <el-input v-model="cfg.AddTimesRow" placeholder="" />
             </el-form-item>
           </el-row>
-          <el-row>
-            <el-form-item label="三种颜色 （red, green ,blue)：">
-              <el-input v-model="cfg.Splice" placeholder="" />
-            </el-form-item>
-          </el-row>
-          <el-row>
-            <el-form-item label="赢金币动效(big Win 2-5, MageWin 6-15,Super Win 16">
-              <el-input v-model="cfg.WinType" placeholder="" />
-            </el-form-item>
-          </el-row>
+<!--          <el-row>-->
+<!--            <el-form-item label="三种颜色 （red, green ,blue)：">-->
+<!--              <el-input v-model="cfg.Splice" placeholder="" />-->
+<!--            </el-form-item>-->
+<!--          </el-row>-->
+<!--          <el-row>-->
+<!--            <el-form-item label="赢金币动效(big Win 2-5, MageWin 6-15,Super Win 16">-->
+<!--              <el-input v-model="cfg.WinType" placeholder="" />-->
+<!--            </el-form-item>-->
+<!--          </el-row>-->
           <el-row>
             <el-form-item label="费率(‰)：">
               <el-input v-model.number="cfg.FeeRate" placeholder="" />

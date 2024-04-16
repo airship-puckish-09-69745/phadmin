@@ -10,84 +10,104 @@
     />
     <el-row :gutter="10" style="margin-top: 30px">
 
-      <el-col :span="2">
+      <el-col :span="24">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
+      <fieldset style="width: 80%;   margin: auto;" >
+      <legend>配置 </legend>
+        <el-row >
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item label="活动时间(s)"   required>
+                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" ></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item label="差异比例(%)" required>
+                <el-input type="number" v-model.number="showData.DisparityRatio"   oninput=" if(value < 0 || value == '' || value == null)value = 0;  " ></el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+
       <el-row>
-        <el-col :span="8">
-          <el-form>
-            <el-form-item label="活动时间"  label-width="20%" required>
-                <el-input v-model="showData.BoxActiveTime" ></el-input>
+        <el-col :span="12">
+          <el-form inline>
+            <el-form-item label="开始时间"   required>
+                <el-date-picker
+                  v-model="showData.StartTime"
+                  value-format="timestamp"
+                  type="date"
+                  placeholder="选择日期"
+                />
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :span="8">
-          <el-form>
-            <el-form-item label="差异比例(%)" label-width="20%" required>
-              <el-input v-model="showData.DisparityRatio"  ></el-input>
+        <el-col :span="12">
+          <el-form inline>
+            <el-form-item label="结束时间" v-model="showData.EndTime" required>
+              <el-date-picker
+                v-model="showData.EndTime"
+                value-format="timestamp"
+                type="datetime"
+                placeholder="选择结束时间"
+                size="mini"
+              />
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
 
       <el-row>
-        <el-col :span="8">
-          <el-form>
-            <el-form-item label="开始时间"  label-width="20%" required>
-              <el-input v-model="showData.StartTime"></el-input>
+        <el-col :span="12">
+          <el-form inline>
+            <el-form-item label="发布间隔(S)"   required>
+              <el-input v-model="showData.IssueInterval"  oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" ></el-input>
             </el-form-item>
           </el-form>
         </el-col>
-        <el-col :span="8">
-          <el-form>
-            <el-form-item label="结束时间" label-width="20%" required>
-              <el-input v-model="showData.EndTime"></el-input>
+        <el-col :span="12">
+          <el-form inline>
+            <el-form-item label="更新时间"  required>
+              {{parseTime(showData.UpdateTime,'')}}
             </el-form-item>
           </el-form>
         </el-col>
       </el-row>
+      </fieldset>
 
-      <el-row>
-        <el-col :span="8">
-          <el-form>
-            <el-form-item label="发布间隔(S)"  label-width="20%" required>
-              <el-input v-model="showData.IssueInterval"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="8">
-          <el-form>
-            <el-form-item label="更新时间" label-width="20%" required>
-              {{showData.UpdateTime}}
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
+      <fieldset style="width: 80%;   margin: auto;" >
+        <legend>配置 </legend>
       <el-col :span="22">
         <el-button type="primary" size="mini" @click="addOne">添加</el-button>
       </el-col>
       <el-col :span="24">
-        <el-form ref="allCfg" v-model="showData.Boxes" label-width="150px">
+        <el-form ref="showData" v-model="showData.Boxes" label-width="150px">
           <el-table
               :data="showData.Boxes"
               style="width: 95%"
               border
+              :header-cell-style="{textAlign: 'center'}"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
           >
             <el-table-column
                 prop="IssueAmount"
-                label="奖券"
+                label="发放金额"
             >
               <template slot-scope="scope">
-                  {{scope.row.IssueAmount}}
+                <el-input type="number" v-model.number="scope.row.IssueAmount" oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"></el-input>
               </template>
             </el-table-column>
 
             <el-table-column
                 prop="IssuePlayers"
-                label="奖券2"
+                label="发放玩家"
             >
               <template slot-scope="scope">
-                {{scope.row.IssuePlayers}}
+                <el-input type="number" v-model.number="scope.row.IssuePlayers" oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"></el-input>
               </template>
             </el-table-column>
 
@@ -110,6 +130,7 @@
           </el-form-item>
         </el-form>
       </el-col>
+      </fieldset>
     </el-row>
 
     <!--对比组件-->
@@ -119,6 +140,8 @@
 </template>
 
 <script>
+import {formatTime, parseTime} from "../../../../utils";
+
 const filterMap = {}
 
 import {Message} from 'element-ui'
@@ -127,7 +150,7 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {copyObj} from 'codemirror/src/util/misc'
-import {ClientTableData} from '@/utils/common'
+import {$libShow, ClientTableData} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -146,13 +169,11 @@ export default {
       allCfg: [],
       appInfo: [],
       item: {
-        Gid: 0,
-        Type: 0,
-        Score: 0,
-        Description: '',
+        IssueAmount: 0,
+        IssuePlayers: 0,
       },
       selectGid: 0,
-
+      libShow: $libShow,
       gameOptions: {},
     }
   },
@@ -161,6 +182,7 @@ export default {
     this.getData()
   },
   methods: {
+    parseTime,
 
     refresh() {
 
@@ -171,13 +193,13 @@ export default {
 
 
     newItem() {
-      return this.item
+      return JSON.parse(JSON.stringify(this.item))
     },
     addOne() {
-      this.showData.push(this.newItem())
+      this.showData.Boxes.push(this.newItem())
     },
     deleteRow(idx,row){
-      this.showData.splice(idx,1)
+      this.showData.Boxes.splice(idx,1)
     },
 
     getFullKey(k) {
@@ -198,10 +220,12 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            $this.allCfg = cfg
+            $this.showData = cfg
+            $this.showData.StartTime*=1000
+            $this.showData.EndTime*=1000
             console.log("=======",cfg)
             this.$refs.compare.SetOldVal(response.Data.Data)
-            this.refresh()
+
           }
         }
       })
@@ -213,12 +237,11 @@ export default {
         return false
       }
 
-      // this.form.Data = JSON.stringify(cfg)
-      this.postData.Data = JSON.stringify(cfg)
+
       const $this = this
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.SetNewVal(this.postData.Data)
+      this.$refs.compare.SetNewVal(JSON.stringify(cfg))
       this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
@@ -238,12 +261,10 @@ export default {
       })
     },
     getCfg() {
-      const cfg = []
-      for (const i in this.clientDB.TotalData) {
-        const item = {}
-        copyObj(this.clientDB.TotalData[i], item)
-        cfg.push(item)
-      }
+      const cfg =JSON.parse(JSON.stringify(this.showData))
+      cfg.StartTime=parseInt(cfg.StartTime/1000)
+      cfg.EndTime=parseInt(cfg.EndTime/1000)
+
       return cfg
     },
     checkData(cfg) {
@@ -266,3 +287,8 @@ export default {
   }
 }
 </script>
+<style>
+.el-form-item__label-wrap {
+  margin-left: 0px !important;
+}
+</style>
