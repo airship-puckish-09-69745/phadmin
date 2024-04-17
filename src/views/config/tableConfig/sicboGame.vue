@@ -206,7 +206,7 @@
                   label="中奖赔率"
                 >
                   <template slot-scope="scope">
-                    <el-input type="number" :step="0.01" v-model.number="scope.row.Val" size="mini"  oninput="if(value < 0 || value == '' || value == null){value = 0;}"/>
+                    <el-input v-model.number="scope.row.Val" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value == '' || value == null){value = 0;}" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -797,16 +797,15 @@ export default {
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
 
-
       for (const o in this.item.BetAreaOptions) {
-          let count = 0
-          for (const i in this.item.BetAreaOptions[o].OddsList) {
-            count += this.item.BetAreaOptions[o].OddsList[i].Odds
-          }
-            if (count !== 100) {
-                Message.error('extrapay倍数总概率必须等于100')
-                return
-            }
+        let count = 0
+        for (const i in this.item.BetAreaOptions[o].OddsList) {
+          count += this.item.BetAreaOptions[o].OddsList[i].Odds
+        }
+        if (count !== 100) {
+          Message.error('extrapay倍数总概率必须等于100')
+          return
+        }
         for (const oi in o.Odds) {
           this.item.BetAreaOptions[o].Odds[oi].Odd = parseFloat(o[oi].Odd)
         }

@@ -183,10 +183,12 @@
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
               <el-select v-model="edit.item.TableMoney" placeholder="请选择">
-	      	<el-option v-for="item in tableMoneyCfg"
+                <el-option
+                  v-for="item in tableMoneyCfg"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"/> 
+                  :value="item.value"
+                />
 
               </el-select>
             </el-form-item>
@@ -544,14 +546,14 @@ export default {
         isEdit: false,
         robotConfig: NewRobotConfig()
       },
-      tableMoneyCfg:[
-        {"label":"1","value":1},
-        {"label":"5","value":5},
-        {"label":"10","value":10},
-        {"label":"20","value":20},
-        {"label":"50","value":50},
-        {"label":"100","value":100},
-        {"label":"200","value":200},
+      tableMoneyCfg: [
+        { 'label': '1', 'value': 1 },
+        { 'label': '5', 'value': 5 },
+        { 'label': '10', 'value': 10 },
+        { 'label': '20', 'value': 20 },
+        { 'label': '50', 'value': 50 },
+        { 'label': '100', 'value': 100 },
+        { 'label': '200', 'value': 200 }
       ],
 
       AttrNames: {
@@ -560,7 +562,7 @@ export default {
         HideCarry: '隐藏目标值',
         TableMoney: '底注',
         JokerNum: '癞子数',
-        MaxPlayerCount: "最大玩牌人数",
+        MaxPlayerCount: '最大玩牌人数',
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
