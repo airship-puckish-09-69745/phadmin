@@ -2,17 +2,14 @@
   <div class="app-container">
 
     <publish
-        primary-key="Volume"
-        :key-id="getFullKey(this.subKey)"
-        :env-empty="false"
-        compare-type="Object"
-        :attr-names="AttrNames"
+      primary-key="Volume"
+      :key-id="getFullKey(this.subKey)"
+      :env-empty="false"
+      compare-type="Object"
+      :attr-names="AttrNames"
     />
     <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="15">
-
-
-      </el-col>
+      <el-col :span="15" />
       <el-col :span="22">
         <el-button type="primary" size="mini" @click="addOne">添加</el-button>
       </el-col>
@@ -23,51 +20,51 @@
       <el-col :span="24">
         <el-form ref="allCfg" v-model="showData" label-width="150px">
           <el-table
-              :data="showData"
-              style="width: 95%"
-              border
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
+            :data="showData"
+            style="width: 95%"
+            border
+            :row-style="{height:'10px'}"
+            :cell-style="libShow.DefaultTableCell"
           >
 
             <el-table-column
-                prop="AvgReward"
-                label="奖励积分"
-            >
-               <template slot-scope="scope">
-                 <el-input type="number" v-model.number="scope.row.AvgReward"  oninput=" if(value < 0 || value == '' || value == null){value = 0;} "></el-input>
-               </template>
-            </el-table-column>
-            <el-table-column
-                prop="BoxLevel"
-                label="宝箱等级"
+              prop="AvgReward"
+              label="平均奖励"
             >
               <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.BoxLevel"  oninput=" if(value < 0 || value == '' || value == null){value = 0;} "></el-input>
+                <el-input v-model.number="scope.row.AvgReward" type="number" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
-                prop="MinReword"
-                label="最小积分"
+              prop="BoxLevel"
+              label="宝箱等级"
             >
               <template slot-scope="scope">
-                <el-input  v-model.number="scope.row.MinReword"  oninput=" if(value < 0 || value == '' || value == null){value = 0;} "></el-input>
+                <el-input v-model.number="scope.row.BoxLevel" type="number" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
-                prop="MaxReword"
-                label="最大积分"
+              prop="MinReword"
+              label="最小奖励"
             >
               <template slot-scope="scope">
-                <el-input  v-model.number="scope.row.MaxReword"  oninput=" if(value < 0 || value == '' || value == null){value = 0;} "></el-input>
+                <el-input v-model.number="scope.row.MinReword" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
-                prop="ScoreRequired"
-                label="需求积分"
+              prop="MaxReword"
+              label="最大奖励"
             >
               <template slot-scope="scope">
-                <el-input  v-model.number="scope.row.ScoreRequired"  oninput=" if(value < 0 || value == '' || value == null){value = 0;} "></el-input>
+                <el-input v-model.number="scope.row.MaxReword" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="ScoreRequired"
+              label="需求积分"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.ScoreRequired" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column label="操作" width="180px">
@@ -95,50 +92,50 @@
     <el-col :offset="16" :span="8">
       <div class="block">
         <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+          :current-page="clientDB.GetPage().GetCurrentPage()"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="clientDB.GetPage().GetPageNum()"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="clientDB.GetPage().GetTotalCount()"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
         />
       </div>
     </el-col>
     <!--对比组件-->
-    <compare ref="compare"/>
+    <compare ref="compare" />
 
     <el-dialog
-        title="编辑"
-        :modal="false"
-        :visible.sync="visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      title="编辑"
+      :modal="false"
+      :visible.sync="visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-button type="primary" @click="addRow()">新增</el-button>
       <el-button type="success" @click="saveRow()">保存</el-button>
       <el-table
-          :data="pairs"
-          style="width: 95%"
-          border
-          :header-cell-style="{textAlign: 'center'}"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
+        :data="pairs"
+        style="width: 95%"
+        border
+        :header-cell-style="{textAlign: 'center'}"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
       >
         <el-table-column
-            prop="Reward"
-            label="奖励"
+          prop="Reward"
+          label="奖励"
         >
           <template slot-scope="scope">
-            <el-input type="number" v-model.number="scope.row.Reward"  oninput=" if(value < 0 || value == '' || value == null){value = 0;} "></el-input>
+            <el-input v-model.number="scope.row.Reward" type="number" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
           </template>
         </el-table-column>
         <el-table-column
-            prop="Weight"
-            label="权重"
+          prop="Weight"
+          label="权重"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.Weight"  oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}"></el-input>
+            <el-input v-model.number="scope.row.Weight" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120px">
@@ -154,44 +151,44 @@
 <script>
 const filterMap = {}
 
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {copyObj} from 'codemirror/src/util/misc'
-import {$libShow, ClientTableData} from '@/utils/common'
+import { copyObj } from 'codemirror/src/util/misc'
+import { $libShow, ClientTableData } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
   data() {
     return {
       clientDB: new ClientTableData([], 1, filterMap),
       form: {},
       postData: {},
-      subKey:  'poker_topic_score_rewards',
+      subKey: 'poker_topic_score_rewards',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      visible:false,
+      visible: false,
       allCfg: [],
       appInfo: [],
-      pairs:[],
+      pairs: [],
       libShow: $libShow,
       channelOptions: [
         // {key: "0", label: '请选择'},
-        {key: 'Dev', label: 'Dev'},
-        {key: 'BP', label: 'BP'},
-        {key: 'AP', label: 'AP'},
-        {key: 'GP', label: 'GP'},
-        {key: 'PG', label: 'PG'}
+        { key: 'Dev', label: 'Dev' },
+        { key: 'BP', label: 'BP' },
+        { key: 'AP', label: 'AP' },
+        { key: 'GP', label: 'GP' },
+        { key: 'PG', label: 'PG' }
       ],
       isReturnOptions: [
-        {key: 0, label: '否'},
-        {key: 1, label: '是'}
+        { key: 0, label: '否' },
+        { key: 1, label: '是' }
       ],
 
       showData: [],
@@ -201,34 +198,34 @@ export default {
         BoxLevel: 0,
         ScoreRequired: 0,
         AvgReward: 0,
-        Pairs: [],
+        Pairs: []
       },
       selectGid: 0,
       taskOptions: {
-        1: "参与游戏 Tongits",
-        2: "获胜",
-        3: "发起「Fight」并获胜",
-        4: "获胜时持有「A」或「K」",
-        5: "结算时手牌持有「Special Meld」（同花顺、四条）",
-        6: "通过「Tongits」获胜",
-        11: "参与游戏 Pusoy",
-        12: "获胜",
-        13: "PUSOY其他玩家并获胜",
-        14: "获胜时持有「Straight Flush」或「Four of a Kind」",
-        15: "透过「NATURALS」获胜（Three Straight、Three Flush、6 Pairs、Dragon）",
-        16: "以「全垒打」获胜",
-        21: "参与游戏 Lucky9",
-        22: "获胜",
-        23: "获胜时以3张手牌9点获胜",
-        24: "以「Lucky9 」获胜",
-        31: "参与游戏 Texas",
-        32: "获胜",
-        33: "透过「High Card」获胜",
-        34: "开出「Flush」或「Straight」",
-        35: "开出「Four of a Kind」或「Full House」",
-        36: "开出「Straight Flush」"
+        1: '参与游戏 Tongits',
+        2: '获胜',
+        3: '发起「Fight」并获胜',
+        4: '获胜时持有「A」或「K」',
+        5: '结算时手牌持有「Special Meld」（同花顺、四条）',
+        6: '通过「Tongits」获胜',
+        11: '参与游戏 Pusoy',
+        12: '获胜',
+        13: 'PUSOY其他玩家并获胜',
+        14: '获胜时持有「Straight Flush」或「Four of a Kind」',
+        15: '透过「NATURALS」获胜（Three Straight、Three Flush、6 Pairs、Dragon）',
+        16: '以「全垒打」获胜',
+        21: '参与游戏 Lucky9',
+        22: '获胜',
+        23: '获胜时以3张手牌9点获胜',
+        24: '以「Lucky9 」获胜',
+        31: '参与游戏 Texas',
+        32: '获胜',
+        33: '透过「High Card」获胜',
+        34: '开出「Flush」或「Straight」',
+        35: '开出「Four of a Kind」或「Full House」',
+        36: '开出「Straight Flush」'
       },
-      gameOptions: {},
+      gameOptions: {}
     }
   },
   created() {
@@ -236,19 +233,18 @@ export default {
     this.getData()
   },
   methods: {
-    editRow(idx,row){
-      this.pairs=row.Pairs
-      this.visible=true
+    editRow(idx, row) {
+      this.pairs = row.Pairs
+      this.visible = true
     },
-    saveRow(){
-      this.visible=false
+    saveRow() {
+      this.visible = false
     },
-    addRow(){
-      this.pairs.push({"Reward":0,"Weight":0})
+    addRow() {
+      this.pairs.push({ 'Reward': 0, 'Weight': 0 })
     },
 
     refresh() {
-
       this.showData = this.allCfg
       return
 
@@ -287,22 +283,22 @@ export default {
     addOne() {
       this.showData.push(this.newItem())
     },
-    deletePairsRow(idx,row){
-      this.pairs.splice(idx,1)
+    deletePairsRow(idx, row) {
+      this.pairs.splice(idx, 1)
     },
-    deleteRow(idx,row){
-      console.log(idx,row)
-      this.showData.splice(idx,1)
+    deleteRow(idx, row) {
+      console.log(idx, row)
+      this.showData.splice(idx, 1)
     },
-    transMoneyForShow(obj){
+    transMoneyForShow(obj) {
       for (const i in obj) {
         for (const o of obj[i].Pairs) {
-          o.Reward=(o.Reward/1000)
+          o.Reward = (o.Reward / 1000)
         }
-        obj[i].AvgReward=(obj[i].AvgReward/1000)
-        obj[i].MinReword=(obj[i].MinReword/1000)
-        obj[i].MaxReword=(obj[i].MaxReword/1000)
-        obj[i].ScoreRequired=(obj[i].ScoreRequired/1000)
+        obj[i].AvgReward = (obj[i].AvgReward / 1000)
+        obj[i].MinReword = (obj[i].MinReword / 1000)
+        obj[i].MaxReword = (obj[i].MaxReword / 1000)
+        // obj[i].ScoreRequired = (obj[i].ScoreRequired / 1000)
       }
     },
     queryData() {
@@ -312,13 +308,13 @@ export default {
 
       if (this.clientDB.FilterValueMap['Gid'] !== 0) {
         this.clientDB.ShowData = this.clientDB.TotalData.filter(
-            function (data) {
-              if (data.Gid == gid) {
-                return true
-              } else {
-                return false
-              }
+          function(data) {
+            if (data.Gid == gid) {
+              return true
+            } else {
+              return false
             }
+          }
         )
         this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       } else {
@@ -346,8 +342,8 @@ export default {
             const cfg = JSON.parse(response.Data.Data)
             $this.allCfg = cfg
             $this.transMoneyForShow(cfg)
-            console.log("=====",cfg)
-            $this.clientDB = new ClientTableData(cfg, 10, filterMap, "Gid", -1)
+            console.log('=====', cfg)
+            $this.clientDB = new ClientTableData(cfg, 10, filterMap, 'Gid', -1)
             this.$refs.compare.SetOldVal(response.Data.Data)
             $this.handleCurrentChange(1)
 
@@ -369,7 +365,7 @@ export default {
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.SetNewVal(this.postData.Data)
-      this.$refs.compare.Compare(function (isEdit) {
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
@@ -394,18 +390,17 @@ export default {
         cfg.push(item)
       }
       for (const i in cfg) {
-        cfg[i].AvgReward=parseInt((cfg[i].AvgReward*1000).toFixed(0))
-        cfg[i].MinReword=parseInt((cfg[i].MinReword*1000).toFixed(0))
-        cfg[i].MaxReword=parseInt((cfg[i].MaxReword*1000).toFixed(0))
-        cfg[i].ScoreRequired=parseInt((cfg[i].ScoreRequired*1000).toFixed(0))
+        cfg[i].AvgReward = parseInt((cfg[i].AvgReward * 1000).toFixed(0))
+        cfg[i].MinReword = parseInt((cfg[i].MinReword * 1000).toFixed(0))
+        cfg[i].MaxReword = parseInt((cfg[i].MaxReword * 1000).toFixed(0))
+        // cfg[i].ScoreRequired = parseInt((cfg[i].ScoreRequired * 1000).toFixed(0))
         for (const o of cfg[i].Pairs) {
-          o.Reward=parseInt((o.Reward*1000).toFixed(0))
+          o.Reward = parseInt((o.Reward * 1000).toFixed(0))
         }
       }
       return JSON.parse(JSON.stringify(cfg))
     },
     checkData(cfg) {
-
       return true
     },
     getGameList() {
