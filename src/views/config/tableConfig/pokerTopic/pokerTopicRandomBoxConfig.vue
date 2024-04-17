@@ -14,28 +14,7 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
       <fieldset style="width: 80%;   margin: auto;">
-        <legend>配置 </legend>
-        <el-row>
-          <el-col :span="12">
-            <el-form inline>
-              <el-form-item label="有效时间" required>
-                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
-                  <template slot="append">分钟</template>
-                </el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col :span="12">
-            <el-form inline>
-              <el-form-item label="差异比例" required>
-                <el-input v-model.number="showData.DisparityRatio" type="number" oninput=" if(value < 0 || value == '' || value == null)value = 0;  " >
-                  <template slot="append">%</template>
-                </el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
-
+        <legend>基础配置 </legend>
         <el-row>
           <el-col :span="12">
             <el-form inline>
@@ -66,6 +45,27 @@
         <el-row>
           <el-col :span="12">
             <el-form inline>
+              <el-form-item label="有效时间" required>
+                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
+                  <template slot="append">分钟</template>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item label="差异比例" required>
+                <el-input v-model.number="showData.DisparityRatio" type="number" oninput=" if(value < 0 || value == '' || value == null)value = 0;  " >
+                  <template slot="append">%</template>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <el-form inline>
               <el-form-item label="发放间隔" required>
                 <el-input v-model="showData.IssueInterval" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
                   <template slot="append">分钟</template>
@@ -84,7 +84,7 @@
       </fieldset>
 
       <fieldset style="width: 80%;   margin: auto;">
-        <legend>配置 </legend>
+        <legend>宝箱配置 </legend>
         <el-col :span="22">
           <el-button type="primary" size="mini" @click="addOne">添加</el-button>
         </el-col>
