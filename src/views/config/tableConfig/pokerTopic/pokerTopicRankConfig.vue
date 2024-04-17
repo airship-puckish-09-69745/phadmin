@@ -365,12 +365,11 @@ export default {
         return false
       }
 
-
-      let newData = JSON.stringify(cfg)
       const $this = this
+      $this.postData.Data = JSON.stringify(cfg)
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.SetNewVal(newData)
+      this.$refs.compare.SetNewVal($this.postData.Data)
       this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
