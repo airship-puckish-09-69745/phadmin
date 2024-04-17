@@ -223,7 +223,6 @@ export default {
             $this.showData = cfg
             $this.showData.StartTime*=1000
             $this.showData.EndTime*=1000
-            console.log("=======",cfg)
             this.$refs.compare.SetOldVal(response.Data.Data)
 
           }

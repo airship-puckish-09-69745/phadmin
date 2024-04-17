@@ -680,6 +680,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicRandomBoxConfig'),
             name: 'randomBoxConfig',
             meta: { title: '随机宝箱配置', noCache: true }
+          },
+          {
+            path: 'scoreRewardsConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerScoreRewardsConfig'),
+            name: 'scoreRewardsConfig',
+            meta: { title: '活动积分奖配置', noCache: true }
           }
         ]
       },
