@@ -490,9 +490,9 @@
     >
       <div id="sweeperShowTable">
         <table>
-          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td></tr>
+          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td><td>点控命中</td></tr>
           <tr><td>{{ sweeperPlay.JackpotContribute/1000 }}</td><td>{{ sweeperPlay.ReduceContribute/1000 }}</td><td>{{ sweeperPlay.CurrentContribute
-            /1000 }}</td></tr>
+            /1000 }}</td><td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td></tr>
         </table>
       </div>
       <ul id="sweeperShow">
@@ -2354,6 +2354,30 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else {
         return '是否命中'
       }
+    },
+    getMicroCtrlName(val) {
+      if (val === 0) {
+        return '空'
+      }
+      const flag = parseInt(val/100)
+      const step = parseInt(val%100)
+      var name = '';
+      if ((flag & 1) !== 0) {
+        name += '新手'
+      }
+      if ((flag & 2) !== 0) {
+        name += '普通'
+      }
+      if ((flag & 4) !== 0) {
+        name += '杀'
+      }
+      if ((flag & 8) !== 0) {
+        name += '帮'
+      }
+      if (step > 0) {
+        name += `第${step}步`
+      }
+      return name
     },
     getWinRateName() {
       if (this.gid == 20) {
