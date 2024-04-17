@@ -97,11 +97,12 @@
 
           <fieldset style="margin-top:10px">
             <legend>下注区域配置</legend>
-            <el-descriptions class="margin-top" border>
-              <el-descriptions-item>
-                <span style="color:red;"> 说明: 1.赔率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
-              </el-descriptions-item>
-            </el-descriptions>
+
+<!--            <el-descriptions class="margin-top" border>-->
+<!--              <el-descriptions-item>-->
+<!--                <span style="color:red;"> 说明: 1.赔率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>-->
+<!--              </el-descriptions-item>-->
+<!--            </el-descriptions>-->
             <el-row>
               <el-table
                 ref="filterTable"
@@ -144,7 +145,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="赔率(real*1000)"
+                  label="赔率(支持2位小数)"
                 >
                   <template slot-scope="scope">
                     <el-input type="number" :step="0.01" v-model.number="scope.row.Odds" size="mini" oninput="if(value < 0 || value == '' || value == null){value = 0;}"/>
@@ -161,7 +162,7 @@
 
                 <el-table-column
                     v-if="envProjectName != 'ph_audit'"
-                    label="extra倍数(real*1000)"
+                    label="extra倍数(支持1位小数)"
                     width="320"
                 >
 
