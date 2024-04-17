@@ -538,7 +538,7 @@
                 <el-table-column type="index" label="时间(秒)" width="100">
                   <template slot-scope="scope">{{ scope.$index+1 }}</template>
                 </el-table-column>
-                <el-table-column prop="Odds" label="倍数(最多2位小数)">
+                <el-table-column prop="Odds" label="中奖倍数(最多2位小数)">
                   <template slot-scope="scope">
                     <el-col :span="4">&lt;=</el-col>
                     <el-col :span="20">
