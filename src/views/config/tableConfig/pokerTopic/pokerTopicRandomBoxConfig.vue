@@ -2,159 +2,164 @@
   <div class="app-container">
 
     <publish
-        primary-key="Volume"
-        :key-id="getFullKey(this.subKey)"
-        :env-empty="false"
-        compare-type="Object"
-        :attr-names="AttrNames"
+      primary-key="Volume"
+      :key-id="getFullKey(this.subKey)"
+      :env-empty="false"
+      compare-type="Object"
+      :attr-names="AttrNames"
     />
     <el-row :gutter="10" style="margin-top: 30px">
 
       <el-col :span="24">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
-      <fieldset style="width: 80%;   margin: auto;" >
-      <legend>配置 </legend>
-        <el-row >
+      <fieldset style="width: 80%;   margin: auto;">
+        <legend>配置 </legend>
+        <el-row>
           <el-col :span="12">
             <el-form inline>
-              <el-form-item label="活动时间(s)"   required>
-                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" ></el-input>
+              <el-form-item label="有效时间" required>
+                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
+                  <template slot="append">分钟</template>
+                </el-input>
               </el-form-item>
             </el-form>
           </el-col>
           <el-col :span="12">
             <el-form inline>
-              <el-form-item label="差异比例(%)" required>
-                <el-input type="number" v-model.number="showData.DisparityRatio"   oninput=" if(value < 0 || value == '' || value == null)value = 0;  " ></el-input>
+              <el-form-item label="差异比例" required>
+                <el-input v-model.number="showData.DisparityRatio" type="number" oninput=" if(value < 0 || value == '' || value == null)value = 0;  " >
+                  <template slot="append">%</template>
+                </el-input>
               </el-form-item>
             </el-form>
           </el-col>
         </el-row>
 
-      <el-row>
-        <el-col :span="12">
-          <el-form inline>
-            <el-form-item label="开始时间"   required>
+        <el-row>
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item label="开始时间" required>
                 <el-date-picker
                   v-model="showData.StartTime"
                   value-format="timestamp"
                   type="date"
                   placeholder="选择日期"
                 />
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="12">
-          <el-form inline>
-            <el-form-item label="结束时间" v-model="showData.EndTime" required>
-              <el-date-picker
-                v-model="showData.EndTime"
-                value-format="timestamp"
-                type="datetime"
-                placeholder="选择结束时间"
-                size="mini"
-              />
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item v-model="showData.EndTime" label="结束时间" required>
+                <el-date-picker
+                  v-model="showData.EndTime"
+                  value-format="timestamp"
+                  type="datetime"
+                  placeholder="选择结束时间"
+                />
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
 
-      <el-row>
-        <el-col :span="12">
-          <el-form inline>
-            <el-form-item label="发布间隔(S)"   required>
-              <el-input v-model="showData.IssueInterval"  oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" ></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="12">
-          <el-form inline>
-            <el-form-item label="更新时间"  required>
-              {{parseTime(showData.UpdateTime,'')}}
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item label="发放间隔" required>
+                <el-input v-model="showData.IssueInterval" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
+                  <template slot="append">分钟</template>
+                </el-input>
+              </el-form-item>
+            </el-form>
+          </el-col>
+          <el-col :span="12">
+            <el-form inline>
+              <el-form-item label="更新时间" required>
+                {{ parseTime(showData.UpdateTime,'') }}
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
       </fieldset>
 
-      <fieldset style="width: 80%;   margin: auto;" >
+      <fieldset style="width: 80%;   margin: auto;">
         <legend>配置 </legend>
-      <el-col :span="22">
-        <el-button type="primary" size="mini" @click="addOne">添加</el-button>
-      </el-col>
-      <el-col :span="24">
-        <el-form ref="showData" v-model="showData.Boxes" label-width="150px">
-          <el-table
+        <el-col :span="22">
+          <el-button type="primary" size="mini" @click="addOne">添加</el-button>
+        </el-col>
+        <el-col :span="24">
+          <el-form ref="showData" v-model="showData.Boxes" label-width="150px">
+            <el-table
               :data="showData.Boxes"
               style="width: 95%"
               border
               :header-cell-style="{textAlign: 'center'}"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-          >
-            <el-table-column
+            >
+              <el-table-column
                 prop="IssueAmount"
                 label="发放金额"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.IssueAmount" oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"></el-input>
-              </template>
-            </el-table-column>
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.IssueAmount" type="number" oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}" />
+                </template>
+              </el-table-column>
 
-            <el-table-column
+              <el-table-column
                 prop="IssuePlayers"
                 label="发放玩家"
-            >
-              <template slot-scope="scope">
-                <el-input type="number" v-model.number="scope.row.IssuePlayers" oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"></el-input>
-              </template>
-            </el-table-column>
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.IssuePlayers" type="number" oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}" />
+                </template>
+              </el-table-column>
 
-            <el-table-column label="操作" width="120px">
-              <template slot-scope="scope">
-                <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
+              <el-table-column label="操作" width="120px">
+                <template slot-scope="scope">
+                  <el-button type="danger" size="mini" @click="deleteRow(scope.$index, scope.row)">删除</el-button>
+                </template>
+              </el-table-column>
             <!--            <el-table-column label="操作">-->
             <!--              <template slot-scope="scope">-->
             <!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
             <!--              </template>-->
             <!--            </el-table-column>-->
-          </el-table>
-          <br>
-          <br>
-          <br>
-          <el-form-item>
-            <el-button type="primary" @click="setData">保存</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
+            </el-table>
+            <br>
+            <br>
+            <br>
+            <el-form-item>
+              <el-button type="primary" @click="setData">保存</el-button>
+            </el-form-item>
+          </el-form>
+        </el-col>
       </fieldset>
     </el-row>
 
     <!--对比组件-->
-    <compare ref="compare"/>
+    <compare ref="compare" />
 
   </div>
 </template>
 
 <script>
-import {formatTime, parseTime} from "../../../../utils";
+import { formatTime, parseTime } from '../../../../utils'
 
 const filterMap = {}
 
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {copyObj} from 'codemirror/src/util/misc'
-import {$libShow, ClientTableData} from '@/utils/common'
+import { copyObj } from 'codemirror/src/util/misc'
+import { $libShow, ClientTableData } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
   data() {
     return {
       form: {},
@@ -165,16 +170,16 @@ export default {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      showData:{},
+      showData: {},
       allCfg: [],
       appInfo: [],
       item: {
         IssueAmount: 0,
-        IssuePlayers: 0,
+        IssuePlayers: 0
       },
       selectGid: 0,
       libShow: $libShow,
-      gameOptions: {},
+      gameOptions: {}
     }
   },
   created() {
@@ -185,12 +190,9 @@ export default {
     parseTime,
 
     refresh() {
-
       this.showData = this.allCfg
       return
-
     },
-
 
     newItem() {
       return JSON.parse(JSON.stringify(this.item))
@@ -198,8 +200,8 @@ export default {
     addOne() {
       this.showData.Boxes.push(this.newItem())
     },
-    deleteRow(idx,row){
-      this.showData.Boxes.splice(idx,1)
+    deleteRow(idx, row) {
+      this.showData.Boxes.splice(idx, 1)
     },
 
     getFullKey(k) {
@@ -221,10 +223,9 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             $this.showData = cfg
-            $this.showData.StartTime*=1000
-            $this.showData.EndTime*=1000
+            $this.showData.StartTime *= 1000
+            $this.showData.EndTime *= 1000
             this.$refs.compare.SetOldVal(response.Data.Data)
-
           }
         }
       })
@@ -236,12 +237,11 @@ export default {
         return false
       }
 
-
       const $this = this
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.SetNewVal(JSON.stringify(cfg))
-      this.$refs.compare.Compare(function (isEdit) {
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
@@ -260,14 +260,13 @@ export default {
       })
     },
     getCfg() {
-      const cfg =JSON.parse(JSON.stringify(this.showData))
-      cfg.StartTime=parseInt(cfg.StartTime/1000)
-      cfg.EndTime=parseInt(cfg.EndTime/1000)
+      const cfg = JSON.parse(JSON.stringify(this.showData))
+      cfg.StartTime = parseInt(cfg.StartTime / 1000)
+      cfg.EndTime = parseInt(cfg.EndTime / 1000)
 
       return cfg
     },
     checkData(cfg) {
-
       return true
     },
     getGameList() {

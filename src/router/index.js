@@ -685,7 +685,7 @@ export const asyncRoutes = [
             path: 'scoreRewardsConfig',
             component: () => import('@/views/config/tableConfig/pokerTopic/pokerScoreRewardsConfig'),
             name: 'scoreRewardsConfig',
-            meta: { title: '活动积分奖配置', noCache: true }
+            meta: { title: '积分奖励配置', noCache: true }
           }
         ]
       },
