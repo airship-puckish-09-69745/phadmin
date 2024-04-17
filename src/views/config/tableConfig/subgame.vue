@@ -519,7 +519,7 @@ export default {
       typeOption: [
         { label: 'Cassino', value: 1 },
         { label: 'Slots', value: 2 },
-        { label: 'Habilidade', value: 3 },
+        { label: 'Poker', value: 3 },
         { label: 'Mini game', value: 4 }
       ],
 

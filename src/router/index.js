@@ -218,6 +218,12 @@ export const asyncRoutes = [
             meta: { title: 'Tongits-经典 ◐' }
           },
           {
+            path: 'tongitsLaiZiTable',
+            component: () => import('@/views/config/tableConfig/tongitsTableLaiZi'),
+            name: 'tongitsTableLaiZi',
+            meta: { title: 'Tongits-赖子 ◐' }
+          },
+          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
@@ -282,6 +288,18 @@ export const asyncRoutes = [
             meta: { title: 'Lucky9 AI◐' }
           }
         ]
+      },
+      {
+        path: 'blackJackTable',
+        component: () => import('@/views/config/tableConfig/blackJackTable'),
+        name: 'blackJackTable',
+        meta: { title: 'BlackJack ◐' }
+      },
+      {
+        path: 'solitaire',
+        component: () => import('@/views/config/tableConfig/solitaire'),
+        name: 'solitaire',
+        meta: { title: 'solitaire ◐' }
       },
       {
         path: 'PusoyCfg',
@@ -427,7 +445,13 @@ export const asyncRoutes = [
             path: 'miniDvt_cfg',
             component: () => import('@/views/config/tableConfig/miniDvtGame'),
             name: 'miniDvt_cfg',
-            meta: { title: '龙虎 ◐' }
+            meta: { title: 'mini龙虎 ◐' }
+          },
+          {
+            path: 'miniAb_cfg',
+            component: () => import('@/views/config/tableConfig/miniAbGame'),
+            name: 'miniAb_cfg',
+            meta: { title: 'miniAB ◐' }
           },
           // {
           //   path: 'windrop_cfg',
@@ -628,6 +652,44 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'pokerTopic',
+        component: () => import('@/views/empty'),
+        name: 'pokerTopic',
+        meta: { title: 'Poker专题活动配置', noCache: true },
+        children: [
+          {
+            path: 'activityConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicActivityConfig.vue'),
+            name: 'activityConfig',
+            meta: { title: '活动信息配置', noCache: true }
+          },
+          {
+            path: 'taskConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicTaskConfig'),
+            name: 'taskConfig',
+            meta: { title: '积分任务配置', noCache: true }
+          },
+          {
+            path: 'rankConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicRankConfig'),
+            name: 'rankConfig',
+            meta: { title: '积分排名配置', noCache: true }
+          },
+          {
+            path: 'randomBoxConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicRandomBoxConfig'),
+            name: 'randomBoxConfig',
+            meta: { title: '随机宝箱配置', noCache: true }
+          },
+          {
+            path: 'scoreRewardsConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerScoreRewardsConfig'),
+            name: 'scoreRewardsConfig',
+            meta: { title: '积分奖励配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'gameAuditConfig',
         component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
         name: 'gameAuditConfig',
@@ -763,6 +825,12 @@ export const asyncRoutes = [
         name: 'playlog_classic_tongits',
         meta: { title: 'Tongits - 经典 ◐', gid: 31 }
       },
+      {
+        path: 'playlog_laizi_tongits',
+        component: () => import('@/views/playerManage/tongitsPlaylog'),
+        name: 'playlog_laizi_tongits',
+        meta: { title: 'Tongits - 癞子 ◐', gid: 28 }
+      },
 
       /* {
         path: 'playlog_ab',
@@ -790,6 +858,18 @@ export const asyncRoutes = [
         meta: { title: 'Sicbo ◐', gid: 101 }
       },
       {
+        path: 'playlog_dvt',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_dvt',
+        meta: { title: 'mini龙虎 ◐', gid: 104 }
+      },
+      {
+        path: 'playlog_ab',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_ab',
+        meta: { title: 'miniAB ◐', gid: 105 }
+      },
+      {
         path: 'playlog_seven',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_seven',
@@ -806,6 +886,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
+      },
+      {
+        path: 'playlog_blackjack',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_blackjack',
+        meta: { title: 'BlackJack ◐', gid: 37 }
       },
       {
         path: 'playlog_lotterylog',
@@ -1324,19 +1410,43 @@ export const asyncRoutes = [
             path: 'texasNlhTable',
             component: () => import('@/views/texas2dpro/table/texasNlhTable'),
             name: 'texasNlhTable',
-            meta: { title: 'TexasNlh 桌子' }
+            meta: { title: '无限德州' }
           },
           {
             path: 'texasOmhTable',
             component: () => import('@/views/texas2dpro/table/texasOmhTable'),
             name: 'texasNlhTable',
-            meta: { title: 'TexasOmh 桌子' }
+            meta: { title: '奥马哈' }
+          },
+          {
+            path: 'texasSdpTable',
+            component: () => import('@/views/texas2dpro/table/texasSdpTable'),
+            name: 'texasNlhTable',
+            meta: { title: '6+短牌' }
           },
           {
             path: 'texasNlhCfg',
             component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
             meta: { title: '公共配置' }
+          },
+          {
+            path: 'texasMttTable',
+            component: () => import('@/views/config/tableConfig/texasMttTable'),
+            name: 'texasMttTable',
+            meta: { title: 'Mtt桌子' }
+          },
+          {
+            path: 'texasMttAwardConfig',
+            component: () => import('@/views/config/tableConfig/texasMttAwardConfig'),
+            name: 'texasMttAwardConfig',
+            meta: { title: 'Mtt奖励配置' }
+          },
+          {
+            path: 'texasPusoyTable',
+            component: () => import('@/views/config/tableConfig/texasPusoyTable'),
+            name: 'texasPusoyTable',
+            meta: { title: 'texasPusoy桌子' }
           }
         ]
       },

@@ -252,7 +252,7 @@
               prop="item.MaxPlayerCount"
               :rules="dataRule(true,{type:'n',range:'2'})"
             >
-              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="操作时长" />
+              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="操作时长"  disabled/>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -592,7 +592,7 @@ function newItem() {
     CarryLower: '',
     CarryUpper: '',
     TableMoney: '',
-    MaxPlayerCount: 5,
+    MaxPlayerCount: 8,
     ObjectCount: '',
     FlowRate: '',
     BetSeconds: '',

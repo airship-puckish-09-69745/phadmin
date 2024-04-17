@@ -871,7 +871,6 @@ export default {
           ],
           JackpotRate: 0
         },
-        RobotMemberArr: [],
         LowLotteryPoolReChoice: 0,
         LowLotteryPoolReChoiceRate: 0,
         HighLotteryPoolReChoice: 0,
@@ -1014,6 +1013,9 @@ export default {
       }
       for (const j in this.item.BetOptions) {
         this.item.BetOptions[j].MaxMoneyBet /= 1000
+        for (const jElement of this.item.BetOptions[j].Odds) {
+          jElement.Odd-=1
+        }
       }
       for (const k in this.item.Jackpot.RandAwards) {
         this.item.Jackpot.RandAwards[k].PoolVal /= 1000
@@ -1055,8 +1057,12 @@ export default {
       }
       ret.BetOptions = []
       for (const o in this.item.BetOptions) {
-        const obj = {}
-        Object.assign(obj, this.item.BetOptions[o])
+        // const obj = {}
+        // Object.assign(obj, this.item.BetOptions[o])
+        const obj   = JSON.parse(JSON.stringify(this.item.BetOptions[o]))
+        for (const objElement of obj.Odds) {
+          objElement.Odd+=1
+        }
         obj.MaxMoneyBet *= 1000
         ret.BetOptions.push(obj)
       }
