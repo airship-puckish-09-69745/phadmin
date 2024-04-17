@@ -34,7 +34,7 @@
                 <el-date-picker
                   v-model="showData.EndTime"
                   value-format="timestamp"
-                  type="datetime"
+                  type="date"
                   placeholder="选择结束时间"
                 />
               </el-form-item>
