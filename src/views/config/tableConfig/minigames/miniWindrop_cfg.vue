@@ -877,7 +877,7 @@
                             <el-input v-model.number="scope.row.Odds" type="number" placeholder="" />
                           </template>
                         </el-table-column>
-                        <el-table-column prop="item.HitRates" label="命中概率总和比例）">
+                        <el-table-column prop="item.HitRates" label="命中概率总和比例">
                           <template slot-scope="scope">
                             <el-input v-model.number="scope.row.HitRates" placeholder="" />
                           </template>
@@ -2186,7 +2186,21 @@ export default {
           postData.AddTimesRow.push(parseInt(i))
         }
       }
+      console.log("====1===,",postData.LevelCfg)
+      if (postData.LevelCfg){
+        for (const i in postData.LevelCfg) {
+          let cnt = 0
+          for (const o of postData.LevelCfg[i].Channels) {
+            console.log("=======",cnt,o)
+            cnt+= o.HitRates
 
+            if (cnt<=0){
+              Message.error('命中概率总和比例 必须大于0')
+              return
+            }
+          }
+        }
+      }
       this.form.Data = JSON.stringify(postData)
       //   console.log("this.form.Data ",this.form.Data )
       const $this = this
