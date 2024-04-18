@@ -296,6 +296,7 @@ export default {
   },
   methods: {
     changeOrder(iType) {
+      console.log("summary===>",this.summary)
       if (iType === 1) {
         this.sortOrder = this.defaultOrder
       } else {
@@ -304,6 +305,7 @@ export default {
           const gid = this.sortOrder[i]
           if (!this.isSlots(gid)) {
             const ob = this.summary[gid]
+            console.log("=====",gid,ob)
             if (ob){
               const got = ob.Lose + ob.Tax - ob.Won
               objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
