@@ -847,7 +847,7 @@ export default {
         },
         jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 },
         microControlCfg: {
-          items: [],
+          items: []
         }
       },
       //
@@ -900,7 +900,7 @@ export default {
         { 'label': '新手杀', 'value': 5 },
         { 'label': '新手帮', 'value': 9 },
         { 'label': '普通杀', 'value': 6 },
-        { 'label': '普通帮', 'value': 10 },
+        { 'label': '普通帮', 'value': 10 }
       ],
       robotDialogForm: {
         visible: false,
@@ -1168,9 +1168,9 @@ export default {
     showKills(data) {
       let showStr = ''
       if (data.length > 0) {
-          for (var i = 0; i < data.length; i++) {
-            showStr += data[i].step + '步(' + data[i].percent + '‱);'
-          }
+        for (var i = 0; i < data.length; i++) {
+          showStr += data[i].step + '步(' + data[i].percent + '‱);'
+        }
       }
       return showStr
     },

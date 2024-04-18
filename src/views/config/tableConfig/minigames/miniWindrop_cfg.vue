@@ -2185,15 +2185,15 @@ export default {
           postData.AddTimesRow.push(parseInt(i))
         }
       }
-      console.log("====1===,",postData.LevelCfg)
-      if (postData.LevelCfg){
+      console.log('====1===,', postData.LevelCfg)
+      if (postData.LevelCfg) {
         for (const i in postData.LevelCfg) {
           let cnt = 0
           for (const o of postData.LevelCfg[i].Channels) {
-            console.log("=======",cnt,o)
-            cnt+= o.HitRates
+            console.log('=======', cnt, o)
+            cnt += o.HitRates
 
-            if (cnt<=0){
+            if (cnt <= 0) {
               Message.error('命中概率总和比例 必须大于0')
               return
             }
