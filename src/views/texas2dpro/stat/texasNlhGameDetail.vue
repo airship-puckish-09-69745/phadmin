@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-     <el-row>
+    <el-row>
       <el-form :model="searchForm" label-width="90px" :inline="true" size="small">
         <el-form-item label="">
           <el-form-item label="">
@@ -20,37 +20,35 @@
         </el-form-item>
       </el-form>
     </el-row>
-    <ul :span="5" v-for="item in roundInfo" :key="item.id" >
-       <template>
+    <ul v-for="item in roundInfo" :key="item.id" :span="5">
+      <template>
         <el-card style="border-bottom: 0px;width: 60%">
           <template #header>
             <div :data="item" class="card-header">
               <el-row>
                 <div>
-                    {{ getRoundName(item[0].Round) }}
+                  {{ getRoundName(item[0].Round) }}
                 </div>
                 <div style="align-items: center;justify-content: center;display: flex;">
-                  <el-image v-for="(imageItem, index) in getPublishCard(item)" :key="index" :src="imageItem" :preview-src-list="[imageItem]"  style="width: 32px; height: 48px">
-                  </el-image>
+                  <el-image v-for="(imageItem, index) in getPublishCard(item)" :key="index" :src="imageItem" :preview-src-list="[imageItem]" style="width: 32px; height: 48px" />
                 </div>
               </el-row>
             </div>
           </template>
           <el-table :data="getStepInfo(item)" :show-header="false" style="--el-table-border-color: none;">
-            <el-table-column margin-right= "1px">
+            <el-table-column margin-right="1px">
               <template slot-scope="scope">
                 {{ getRoleByUid(scope.row.Uid) }}
               </template>
             </el-table-column>
-            <el-table-column margin-left= "1px">
+            <el-table-column margin-left="1px">
               <template slot-scope="scope">
                 {{ getNickByUid(scope.row.Uid) }}
               </template>
             </el-table-column>
             <el-table-column>
               <template slot-scope="scope">
-                <el-image v-for="(item, index) in getHdCardByUid(scope.row.Uid)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-                </el-image>
+                <el-image v-for="(item, index) in getHdCardByUid(scope.row.Uid)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
               </template>
             </el-table-column>
             <el-table-column>
@@ -71,38 +69,36 @@
       </template>
     </ul>
 
-    <ul :span="6" v-if="userInfo.length!==0">
+    <ul v-if="userInfo.length!==0" :span="6">
       <el-card border-bottom="0px" style="width: 60%">
-         <template #header>
-            <div class="card-header">
-              <el-row>
-                <div>
-                  {{ getRoundName(0) }}
-                </div>
-              </el-row>
-            </div>
-          </template>
+        <template #header>
+          <div class="card-header">
+            <el-row>
+              <div>
+                {{ getRoundName(0) }}
+              </div>
+            </el-row>
+          </div>
+        </template>
         <el-table :data="userInfo" :show-header="false" style="--el-table-border-color: none;">
-          <el-table-column margin-right= "1px">
+          <el-table-column margin-right="1px">
             <template slot-scope="scope">
               {{ getRoleByUid(scope.row.Uid) }}
             </template>
           </el-table-column>
-          <el-table-column margin-left= "1px">
+          <el-table-column margin-left="1px">
             <template slot-scope="scope">
               {{ getNickByUid(scope.row.Uid) }}
             </template>
           </el-table-column>
           <el-table-column>
             <template slot-scope="scope">
-              <el-image v-for="(item, index) in getHdCardByUid(scope.row.Uid)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-              </el-image>
+              <el-image v-for="(item, index) in getHdCardByUid(scope.row.Uid)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
             </template>
           </el-table-column>
           <el-table-column>
             <template>
-              <el-image v-for="(item, index) in showCards(publishCards)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-              </el-image>
+              <el-image v-for="(item, index) in showCards(publishCards)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
             </template>
           </el-table-column>
           <el-table-column>
@@ -251,7 +247,7 @@ export default {
       for (var i = 0; i < this.pots.length; i++) {
         pot += this.pots[i].Pots
       }
-      return 'POT: ' + pot/1000
+      return 'POT: ' + pot / 1000
     },
     getRoleByUid(uid) {
       for (var i = 0; i < this.userInfo.length; i++) {

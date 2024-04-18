@@ -589,7 +589,6 @@ export default {
         ret.BetMoneyList[o] *= 1000
       }
 
-
       ret.BetOptionsRate = []
       for (const o in this.item.BetOptionsRate) {
         const obj = {}

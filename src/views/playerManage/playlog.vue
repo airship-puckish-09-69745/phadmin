@@ -490,9 +490,9 @@
     >
       <div id="sweeperShowTable">
         <table>
-          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td></tr>
+          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td><td>点控命中</td></tr>
           <tr><td>{{ sweeperPlay.JackpotContribute/1000 }}</td><td>{{ sweeperPlay.ReduceContribute/1000 }}</td><td>{{ sweeperPlay.CurrentContribute
-            /1000 }}</td></tr>
+            /1000 }}</td><td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td></tr>
         </table>
       </div>
       <ul id="sweeperShow">
@@ -539,6 +539,21 @@
         <el-descriptions-item label="POT机器人保护">{{ lucky9Detail.potRobotProtected ? '是' : '-' }}</el-descriptions-item>
         <el-descriptions-item label="机器人缓冲池保护">{{ lucky9Detail.robotPoolProtected ? '是' : '-' }}</el-descriptions-item>
         <el-descriptions-item label="机器人庄家保护">{{ lucky9Detail.robotDealerProtected ? '是' : '-' }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
+    <el-dialog title="Blackjack牌局详情" :visible.sync="blackjackDetailVisible" width="1200px">
+      <el-table :data="blackjackDetail.players" border>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="seat" label="座位" />
+        <el-table-column prop="moneyBet" label="投注金额" />
+        <el-table-column prop="cards" label="手牌" />
+        <el-table-column label="是否爆牌" />
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ blackjackDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ blackjackDetail.logId }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
 
@@ -992,8 +1007,8 @@
           width="80"
         >
           <template slot-scope="scope">
-              <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
-              <span v-else>0</span>
+            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
+            <span v-else>0</span>
 
           </template>
         </el-table-column>
@@ -1004,7 +1019,7 @@
           width="100"
         >
           <template slot-scope="scope">
-              {{ scope.row.EOdds / 1000 }}
+            {{ scope.row.EOdds / 1000 }}
           </template>
         </el-table-column>
 
@@ -1014,7 +1029,7 @@
           width="100"
         >
           <template slot-scope="scope">
-              {{ scope.row.totalOdds / 100000 }}
+            {{ scope.row.totalOdds / 100000 }}
           </template>
         </el-table-column>
 
@@ -1064,34 +1079,34 @@
     </el-dialog>
 
     <el-dialog
-        title="骰宝牌局详情"
-        :visible.sync="miniAbGameVisible"
-        width="50%"
+      title="骰宝牌局详情"
+      :visible.sync="miniAbGameVisible"
+      width="50%"
     >
       <div style=" font-size:14px; line-height: 18px; height: 25px;">
         <span style="float:left;">发牌：</span><div style="color:red;">{{ miniAbGameResult }}</div>
       </div>
       <el-table
-          ref="filterTable"
-          :data="miniAbGameOptions"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
+        ref="filterTable"
+        :data="miniAbGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column
-            prop="Name"
-            label="下注项"
-            width="120"
+          prop="Name"
+          label="下注项"
+          width="120"
         >
           <template slot-scope="scope">
             <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
-            prop="Hit"
-            label="赔率"
-            width="80"
+          prop="Hit"
+          label="赔率"
+          width="80"
         >
           <template slot-scope="scope">
             <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
@@ -1101,38 +1116,38 @@
         </el-table-column>
 
         <el-table-column
-            prop="Result"
-            label="下注结果"
-            width="800"
+          prop="Result"
+          label="下注结果"
+          width="800"
         >
           <template slot-scope="scope">
             <el-table
-                ref="filterTable"
-                :data="scope.row.players"
-                border
-                :show-header="true"
-                :row-class-name="tableRowClassName"
-                :cell-style="libShow.DefaultTableCell"
-                style="width: 100%"
+              ref="filterTable"
+              :data="scope.row.players"
+              border
+              :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
             >
               <el-table-column
-                  prop="Uid"
-                  label="Uid"
-                  width="150"
+                prop="Uid"
+                label="Uid"
+                width="150"
               />
               <el-table-column
-                  prop="Bet"
-                  label="下注"
-                  width="150"
+                prop="Bet"
+                label="下注"
+                width="150"
               >
                 <template slot-scope="scope">
                   {{ scope.row.Bet / 1000 }}
                 </template>
               </el-table-column>
               <el-table-column
-                  prop="Won"
-                  label="输赢"
-                  width="200"
+                prop="Won"
+                label="输赢"
+                width="200"
               >
                 <template slot-scope="scope">
                   <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
@@ -1430,6 +1445,10 @@
           <el-table-column label="出牌">
             <template slot-scope="scope">
               <div v-html="showPusoyDosCards(scope.row.cards)" />
+              {{ pusoyDos.pusoyDosGroupCardTypes[scope.row.cardType] }}
+              <div v-if="scope.row.isPass ==1">
+                {{ "跳过" }}
+              </div>
             </template>
           </el-table-column>
           <el-table-column label="是否跳过">
@@ -1591,6 +1610,9 @@ export default {
 
       lucky9Detail: {},
       lucky9DetailVisible: false,
+
+      blackjackDetail: {},
+      blackjackDetailVisible: false,
 
       bodingDetail: {},
       bodingDetailVisible: false,
@@ -2001,6 +2023,8 @@ export default {
             $this.showBodingGame(obj)
           } else if (gid === 34) {
             $this.showPusoyDosGame(obj)
+          } else if (gid == 37) {
+            $this.showBlackjackGame(obj)
           } else if (gid === 21) {
             $this.showPusoyGame(obj)
           } else if (gid === 100) {
@@ -2198,7 +2222,7 @@ export default {
       const tMap = {}
       this.rocketGameOptions = []
       const rocketObj = obj
-      if (rocketObj.optionsData){
+      if (rocketObj.optionsData) {
         for (let i = 0; i < rocketObj.optionsData.length; i++) {
           const ob = rocketObj.optionsData[i]
           tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
@@ -2219,7 +2243,7 @@ export default {
           })
         }
       }
-      if (rocketObj.optionsData){
+      if (rocketObj.optionsData) {
         for (let i = 0; i < rocketObj.optionsData.length; i++) {
           this.rocketGameOptions.push(tMap[i])
         }
@@ -2468,6 +2492,11 @@ export default {
       this.bodingDetail = obj
       this.bodingDetailVisible = true
     },
+    showBlackjackGame(obj) {
+      console.log(obj)
+      this.blackjackDetail = obj
+      this.blackjackDetailVisible = true
+    },
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
@@ -2636,6 +2665,30 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else {
         return '是否命中'
       }
+    },
+    getMicroCtrlName(val) {
+      if (val === 0) {
+        return '空'
+      }
+      const flag = parseInt(val / 100)
+      const step = parseInt(val % 100)
+      var name = ''
+      if ((flag & 1) !== 0) {
+        name += '新手'
+      }
+      if ((flag & 2) !== 0) {
+        name += '普通'
+      }
+      if ((flag & 4) !== 0) {
+        name += '杀'
+      }
+      if ((flag & 8) !== 0) {
+        name += '帮'
+      }
+      if (step > 0) {
+        name += `第${step}步`
+      }
+      return name
     },
     getWinRateName() {
       if (this.gid == 20) {

@@ -61,6 +61,14 @@
                   </el-table>
                 </div>
               </el-row>
+              <el-row v-if="item.GameId===28">
+                <div style="margin-bottom:20px;">
+                  <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits-Joker 发车说明</p>
+                  <span style="font-size:14px;font-weight: bolder;">
+                    1. 真人优先发有人的桌子<br>
+                  </span>
+                </div>
+              </el-row>
               <el-table
                 :data="item.Config"
                 style="width: 95%"
@@ -111,7 +119,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  v-if="item.GameId===22||item.GameId===34"
+                  v-if="item.GameId===22"
                   prop="MinLaunchNum"
                   label="最低发车人数"
                 >
@@ -261,6 +269,8 @@ export default {
         23: 'Lucky9',
         // 25: 'Color Game',
         31: 'Tongits-Classic',
+        28: 'Tongits-Joker',
+        29: 'Tongits-Quick',
         34: 'PusoyDos'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'

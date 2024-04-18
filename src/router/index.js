@@ -674,6 +674,18 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicRankConfig'),
             name: 'rankConfig',
             meta: { title: '积分排名配置', noCache: true }
+          },
+          {
+            path: 'randomBoxConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerTopicRandomBoxConfig'),
+            name: 'randomBoxConfig',
+            meta: { title: '随机宝箱配置', noCache: true }
+          },
+          {
+            path: 'scoreRewardsConfig',
+            component: () => import('@/views/config/tableConfig/pokerTopic/pokerScoreRewardsConfig'),
+            name: 'scoreRewardsConfig',
+            meta: { title: '积分奖励配置', noCache: true }
           }
         ]
       },
@@ -874,6 +886,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
         meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
+      },
+      {
+        path: 'playlog_blackjack',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_blackjack',
+        meta: { title: 'BlackJack ◐', gid: 37 }
       },
       {
         path: 'playlog_lotterylog',
@@ -1276,6 +1294,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testWebThirdpartyTransfer'),
             name: 'TestWebThirdpartyTransfer',
             meta: { title: '转入转出小工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testClearGameScheam',
+            component: () => import('@/views/devTools/testClearGameSchema'),
+            name: 'TestClearGameScheam',
+            meta: { title: '清理游戏健康数据', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },

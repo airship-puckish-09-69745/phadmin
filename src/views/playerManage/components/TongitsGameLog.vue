@@ -310,11 +310,11 @@ export default {
       if (group.groupId === 0) {
         if (group.cardType === 2 && !group.joker) { // 没有使用癞子
           return true
-        } else if (group.cardType === 2 && group.joker && group.Joker.IsSecretGroup) { // 癞子5条以上
+        } else if (group.cardType === 2 && group.joker && group.joker.isSecretGroup) { // 癞子5条以上
           return true
         } else if (group.cardType === 3 && !group.joker && group.cards.length >= 5) {
           return true
-        } else if (group.cardType === 3 && group.joker && group.Joker.IsSecretGroup) {
+        } else if (group.cardType === 3 && group.joker && group.joker.isSecretGroup) {
           return true
         }
       }

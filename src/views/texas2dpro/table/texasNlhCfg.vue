@@ -42,47 +42,47 @@
             </el-row>
           </fieldset>
 
-           <fieldset style="margin-top:10px">
+          <fieldset style="margin-top:10px">
             <legend>配牌</legend>
 
             <el-row>
               <el-col :span="24">
-                  <el-row type="flex">
-                    <el-col :span="4"  style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <span>公共牌：</span>
-                    </el-col>
-                    <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
-                        <el-image v-if="NewTestCard.CommCards[0] > 0" :src="getCardUrl(NewTestCard.CommCards[0])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
-                        <el-image v-if="NewTestCard.CommCards[1] > 0" :src="getCardUrl(NewTestCard.CommCards[1])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
-                        <el-image v-if="NewTestCard.CommCards[2] > 0" :src="getCardUrl(NewTestCard.CommCards[2])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
-                        <el-image v-if="NewTestCard.CommCards[3] > 0" :src="getCardUrl(NewTestCard.CommCards[3])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
-                        <el-image v-if="NewTestCard.CommCards[4] > 0" :src="getCardUrl(NewTestCard.CommCards[4])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="danger" size="mini" @click="DeleteCommCard">清空</el-button>
-                    </el-col>
-                    <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="primary" size="mini" @click="AddCommCard">配牌</el-button>
-                    </el-col>
-                  </el-row>
+                <el-row type="flex">
+                  <el-col :span="4" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                    <span>公共牌：</span>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
+                      <el-image v-if="NewTestCard.CommCards[0] > 0" :src="getCardUrl(NewTestCard.CommCards[0])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
+                      <el-image v-if="NewTestCard.CommCards[1] > 0" :src="getCardUrl(NewTestCard.CommCards[1])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
+                      <el-image v-if="NewTestCard.CommCards[2] > 0" :src="getCardUrl(NewTestCard.CommCards[2])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
+                      <el-image v-if="NewTestCard.CommCards[3] > 0" :src="getCardUrl(NewTestCard.CommCards[3])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCommCard(card)">
+                      <el-image v-if="NewTestCard.CommCards[4] > 0" :src="getCardUrl(NewTestCard.CommCards[4])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                    <el-button type="danger" size="mini" @click="DeleteCommCard">清空</el-button>
+                  </el-col>
+                  <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                    <el-button type="primary" size="mini" @click="AddCommCard">配牌</el-button>
+                  </el-col>
+                </el-row>
               </el-col>
             </el-row>
 
@@ -91,43 +91,43 @@
             </el-row>
             <el-row v-for="(value, i) in NewTestCard.HandCards" :key="i">
               <br>
-               <el-col :span="24">
-                  <el-row type="flex">
-                    <el-col :span="4"  style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <span>手牌：</span>
-                    </el-col>
-                    <el-col :span="2">
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
-                        <el-image v-if="value[0] > 0" :src="getCardUrl(value[0])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
-                        <el-image v-if="value[1] > 0" :src="getCardUrl(value[1])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                     <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
-                        <el-image v-if="value[2] > 0" :src="getCardUrl(value[2])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                     <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
-                        <el-image v-if="value[3] > 0" :src="getCardUrl(value[3])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                     <el-col :span="2" >
-                      <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
-                        <el-image v-if="value[4] > 0" :src="getCardUrl(value[4])" preview-teleported="false" style="width: 48px; height: 64px" />
-                      </el-card>
-                    </el-col>
-                    <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="danger" size="mini" @click="DeleteHdCard(i)">清空</el-button>
-                    </el-col>
-                    <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-                      <el-button type="primary" size="mini" @click="AddHdCard(i)">配牌</el-button>
-                    </el-col>
-                  </el-row>
+              <el-col :span="24">
+                <el-row type="flex">
+                  <el-col :span="4" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                    <span>手牌：</span>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                      <el-image v-if="value[0] > 0" :src="getCardUrl(value[0])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                      <el-image v-if="value[1] > 0" :src="getCardUrl(value[1])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                      <el-image v-if="value[2] > 0" :src="getCardUrl(value[2])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                      <el-image v-if="value[3] > 0" :src="getCardUrl(value[3])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2">
+                    <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectHdCard(card, i)">
+                      <el-image v-if="value[4] > 0" :src="getCardUrl(value[4])" preview-teleported="false" style="width: 48px; height: 64px" />
+                    </el-card>
+                  </el-col>
+                  <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                    <el-button type="danger" size="mini" @click="DeleteHdCard(i)">清空</el-button>
+                  </el-col>
+                  <el-col :span="2" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+                    <el-button type="primary" size="mini" @click="AddHdCard(i)">配牌</el-button>
+                  </el-col>
+                </el-row>
               </el-col>
             </el-row>
           </fieldset>
@@ -140,8 +140,8 @@
     </el-row>
     <el-dialog :visible.sync="editShow" center width="50%">
       <div style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
-        <el-row type="flex" v-for="data, i in CardList" :key="i">
-          <el-col :span="4" v-for="(card, index) in data" :key="index">
+        <el-row v-for="data, i in CardList" :key="i" type="flex">
+          <el-col v-for="(card, index) in data" :key="index" :span="4">
             <el-card :body-style="{ padding: '0px'}" style="width: 48px; height: 64px" @click.native="SelectCard(card)">
               <el-image :key="index" :src="getCardUrl(card)" preview-teleported="false" style="width: 48px; height: 64px" />
             </el-card>

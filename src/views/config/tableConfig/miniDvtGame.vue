@@ -18,7 +18,7 @@
 
         <el-col :span="8" :offset="1">
           <el-form-item label="用户长时间未下注提示(s):">
-            <el-input v-model.number="item.NoticeTime" :required="true"  @input="wallpaperInput2" />
+            <el-input v-model.number="item.NoticeTime" :required="true" @input="wallpaperInput2" />
           </el-form-item>
         </el-col>
 
@@ -28,7 +28,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col v-if="envProjectName != 'ph_audit'"  :span="8" :offset="1">
+        <el-col v-if="envProjectName != 'ph_audit'" :span="8" :offset="1">
           <el-form-item label="奖池不够输重新洗牌最大次数:">
             <el-input v-model.number="item.MaxCtrlTimes" :required="true" />
           </el-form-item>
@@ -97,11 +97,12 @@
 
           <fieldset style="margin-top:10px">
             <legend>下注区域配置</legend>
-            <el-descriptions class="margin-top" border>
-              <el-descriptions-item>
-                <span style="color:red;"> 说明: 1.赔率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
-              </el-descriptions-item>
-            </el-descriptions>
+
+            <!--            <el-descriptions class="margin-top" border>-->
+            <!--              <el-descriptions-item>-->
+            <!--                <span style="color:red;"> 说明: 1.赔率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>-->
+            <!--              </el-descriptions-item>-->
+            <!--            </el-descriptions>-->
             <el-row>
               <el-table
                 ref="filterTable"
@@ -125,9 +126,9 @@
                 </el-table-column>
 
                 <el-table-column
-                    v-if="envProjectName != 'ph_audit'"
-                    prop="RobotBetRate"
-                    label="机器人下注权重"
+                  v-if="envProjectName != 'ph_audit'"
+                  prop="RobotBetRate"
+                  label="机器人下注权重"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
@@ -135,8 +136,8 @@
                 </el-table-column>
 
                 <el-table-column
-                    prop="MaxMoneyBet"
-                    label="区域下注上限"
+                  prop="MaxMoneyBet"
+                  label="区域下注上限"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
@@ -144,15 +145,15 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="赔率(real*100)"
+                  label="赔率(支持2位小数)"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Odds" size="mini" />
+                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value == '' || value == null){value = 0;}" />
                   </template>
                 </el-table-column>
                 <el-table-column
-                    v-if="envProjectName != 'ph_audit'"
-                    label="出现extra概率(%)"
+                  v-if="envProjectName != 'ph_audit'"
+                  label="出现extra概率(%)"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.ERate" size="mini" />
@@ -160,23 +161,35 @@
                 </el-table-column>
 
                 <el-table-column
-                    v-if="envProjectName != 'ph_audit'"
-                    label="extra倍数(real*10)"
-                    width="320"
+                  v-if="envProjectName != 'ph_audit'"
+                  label="extra倍数(支持1位小数)"
+                  width="320"
                 >
 
                   <template slot-scope="scope">
                     <div v-if="BetOddsList[scope.$index]">
                       <div v-for="(data, index ) in BetOddsList[scope.$index].EOddsCfg" style="line-height: 1.5; ">
-                        <el-row style="line-height: 1.5; "  >
-                          <a @click="addOddsList(scope.$index)" size="mini" type="primary">+</a>
+                        <el-row style="line-height: 1.5; ">
+                          <a size="mini" type="primary" @click="addOddsList(scope.$index)">+</a>
                           <span style="margin-left: 20px">倍数:</span>
-                          <el-input v-model.number="data.EOdds" size="mini" style="width: 80px" placeholder="倍数"
-                                    @input="wallpaperInput(scope.$index,index) "/>
+                          <el-input
+                            v-model.number="data.EOdds"
+                            type="number"
+                            size="mini"
+                            style="width: 80px"
+                            placeholder="倍数"
+                            oninput="if(value < 0 || value == '' || value == null){value = 0;}"
+                            @input="wallpaperInput(scope.$index,index)"
+                          />
                           <span style="margin-left: 10px">权重:</span>
-                          <el-input v-model.number="data.Weight" size="mini" style="width: 80px" placeholder="权重"
-                                    @input="wallpaperInput(scope.$index,index)"/>
-                          <a style="margin-left: 20px" @click="delOddsList(scope.$index,index)" type="danger" size="mini">-</a>
+                          <el-input
+                            v-model.number="data.Weight"
+                            size="mini"
+                            style="width: 80px"
+                            placeholder="权重"
+                            @input="wallpaperInput(scope.$index,index)"
+                          />
+                          <a style="margin-left: 20px" type="danger" size="mini" @click="delOddsList(scope.$index,index)">-</a>
                         </el-row>
                       </div>
 
@@ -184,8 +197,6 @@
                   </template>
 
                 </el-table-column>
-
-
 
               </el-table>
             </el-row>
@@ -488,15 +499,8 @@ export default {
         two: 0,
         three: 0
       },
-      envProjectName: process.env.VUE_APP_PROJECT,
+      envProjectName: process.env.VUE_APP_PROJECT
     }
-  },
-  created() {
-    console.log(process.env.VUE_APP_PROJECT_NAME)
-    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
-      this.isHidden = false
-    }
-    this.getData()
   },
   watch: {
     // 监听json数据变化，重新渲染文件夹内容
@@ -508,6 +512,13 @@ export default {
         })
       }
     }
+  },
+  created() {
+    console.log(process.env.VUE_APP_PROJECT_NAME)
+    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
+      this.isHidden = false
+    }
+    this.getData()
   },
   methods: {
     dataRule(required, config) {
@@ -525,9 +536,9 @@ export default {
       }
 
       for (const i in this.item.BetAreaOptions) {
-        this.item.BetAreaOptions[i].Odds /= 10
-        for (const j in this.item.BetAreaOptions[i].EOddsCfg) {
-          this.item.BetAreaOptions[i].EOddsCfg[j].EOdds /= 100
+        this.item.BetAreaOptions[i].Odds /= 1000
+        for (const o of this.item.BetAreaOptions[i].EOddsCfg) {
+          o.EOdds = o.EOdds / 1000
         }
       }
 
@@ -570,12 +581,12 @@ export default {
       }
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
-        const obj = JSON.parse(JSON.stringify( this.item.BetAreaOptions[o]))
+        const obj = JSON.parse(JSON.stringify(this.item.BetAreaOptions[o]))
         // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        obj.Odds *= 10
+        obj.Odds *= 1000
         for (const j in obj.EOddsCfg) {
-          obj.EOddsCfg[j].EOdds *= 100
+          obj.EOddsCfg[j].EOdds *= 1000
         }
         ret.BetAreaOptions.push(obj)
       }
@@ -607,11 +618,11 @@ export default {
             this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards
 
             for (let i = 0; i < this.item.BetAreaOptions.length; i++) {
-              if (!this.item.BetAreaOptions[i].EOddsCfg||typeof(this.item.BetAreaOptions[i].EOddsCfg) == "undefined"||this.item.BetAreaOptions[i].EOddsCfg.length==0){
-                this.item.BetAreaOptions[i]["EOddsCfg"]=[]
-                this.item.BetAreaOptions[i]["EOddsCfg"].push({})
-              }else {
-                this.item.BetAreaOptions[i]["EOddsCfg"]=this.item.BetAreaOptions[i].EOddsCfg
+              if (!this.item.BetAreaOptions[i].EOddsCfg || typeof (this.item.BetAreaOptions[i].EOddsCfg) === 'undefined' || this.item.BetAreaOptions[i].EOddsCfg.length == 0) {
+                this.item.BetAreaOptions[i]['EOddsCfg'] = []
+                this.item.BetAreaOptions[i]['EOddsCfg'].push({})
+              } else {
+                this.item.BetAreaOptions[i]['EOddsCfg'] = this.item.BetAreaOptions[i].EOddsCfg
               }
             }
             this.BetOddsList = this.item.BetAreaOptions
