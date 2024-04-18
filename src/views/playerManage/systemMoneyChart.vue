@@ -296,7 +296,7 @@ export default {
   },
   methods: {
     changeOrder(iType) {
-      console.log("summary===>",this.summary)
+      console.log('summary===>', this.summary)
       if (iType === 1) {
         this.sortOrder = this.defaultOrder
       } else {
