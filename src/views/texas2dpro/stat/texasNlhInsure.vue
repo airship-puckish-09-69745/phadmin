@@ -131,7 +131,7 @@
         width="200%"
       >
         <template slot-scope="scope">
-          <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.logid, dateTime: scope.row.InsureTime }}" @click.native="recordShow = false" style="color: blue">
+          <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.logid, dateTime: scope.row.InsureTime }}" style="color: blue" @click.native="recordShow = false">
             {{ scope.row.logid }}
           </router-link>
         </template>

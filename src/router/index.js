@@ -1294,6 +1294,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testWebThirdpartyTransfer'),
             name: 'TestWebThirdpartyTransfer',
             meta: { title: '转入转出小工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testClearGameScheam',
+            component: () => import('@/views/devTools/testClearGameSchema'),
+            name: 'TestClearGameScheam',
+            meta: { title: '清理游戏健康数据', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },

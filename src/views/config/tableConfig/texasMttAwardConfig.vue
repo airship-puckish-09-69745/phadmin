@@ -12,13 +12,13 @@
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
-      <el-table ref="filterTable" :data="rankData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" >
-        <el-table-column prop="" label="名次/人数" width="110" >
+      <el-table ref="filterTable" :data="rankData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData">
+        <el-table-column prop="" label="名次/人数" width="110">
           <template slot-scope="scope">
             {{ scope.row.RankNum }}
           </template>
         </el-table-column>
-        <el-table-column prop="" label="2-10人" width="90" >
+        <el-table-column prop="" label="2-10人" width="90">
           <template slot-scope="scope">
             {{ scope.row.Num2_10 }}
           </template>
@@ -165,8 +165,7 @@
       <el-form ref="edit" :model="edit" label-width="180px" size="small">
         <el-row>
           <el-col :span="11">
-            <el-form-item label="人数都乘以100,比如12.34%则填1234即可" label-width="320px" prop="" >
-            </el-form-item>
+            <el-form-item label="人数都乘以100,比如12.34%则填1234即可" label-width="320px" prop="" />
           </el-col>
         </el-row>
         <el-row>
@@ -185,168 +184,167 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="2-10人:" prop="item.Num2_10">
-              <el-input v-model.number="edit.item.Num2_10" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num2_10" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="11-20人:" prop="item.Num11_20">
-              <el-input v-model.number="edit.item.Num11_20" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num11_20" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="21-30人:" prop="item.Num21_30">
-              <el-input v-model.number="edit.item.Num21_30" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num21_30" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="31-40人:" prop="item.Num31_40">
-              <el-input v-model.number="edit.item.Num31_40" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
-            </el-form-item>
-          </el-col>          
-        </el-row>
-          <el-col :span="11">
-            <el-form-item label="41-50人:" prop="item.Num41_50">
-              <el-input v-model.number="edit.item.Num41_50" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num31_40" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="51-60人:" prop="item.Num51_60">
-              <el-input v-model.number="edit.item.Num51_60" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
-            </el-form-item>
-          </el-col>
-        <el-row>          
         </el-row>
+        <el-col :span="11">
+          <el-form-item label="41-50人:" prop="item.Num41_50">
+            <el-input v-model.number="edit.item.Num41_50" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="51-60人:" prop="item.Num51_60">
+            <el-input v-model.number="edit.item.Num51_60" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
+          </el-form-item>
+        </el-col>
+        <el-row />
         <el-row>
           <el-col :span="11">
             <el-form-item label="61-87人:" prop="item.Num61_87">
-              <el-input v-model.number="edit.item.Num61_87" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num61_87" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="88-112人:" prop="item.Num88_112">
-              <el-input v-model.number="edit.item.Num88_112" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num88_112" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="113-137人:" prop="item.Num113_137">
-              <el-input v-model.number="edit.item.Num113_137" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num113_137" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="138-162人:" prop="item.Num138_162">
-              <el-input v-model.number="edit.item.Num138_162" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num138_162" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="163-187人:" prop="item.Num163_187">
-              <el-input v-model.number="edit.item.Num163_187" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num163_187" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="188-212人:" prop="item.Num188_212">
-              <el-input v-model.number="edit.item.Num188_212" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num188_212" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="213-262人:" prop="item.Num213_262">
-              <el-input v-model.number="edit.item.Num213_262" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num213_262" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="263-337人:" prop="item.Num263_337">
-              <el-input v-model.number="edit.item.Num263_337" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num263_337" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="338-412人:" prop="item.Num338_412">
-              <el-input v-model.number="edit.item.Num338_412" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num338_412" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="413-487人:" prop="item.Num413_487">
-              <el-input v-model.number="edit.item.Num413_487" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num413_487" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="488-562人:" prop="item.Num488_562">
-              <el-input v-model.number="edit.item.Num488_562" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num488_562" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="563-637人:" prop="item.Num563_637">
-              <el-input v-model.number="edit.item.Num563_637" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num563_637" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="638-712人:" prop="item.Num638_712">
-              <el-input v-model.number="edit.item.Num638_712" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num638_712" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="713-787人:" prop="item.Num713_787">
-              <el-input v-model.number="edit.item.Num713_787" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num713_787" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="788-862人:" prop="item.Num788_862">
-              <el-input v-model.number="edit.item.Num788_862" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num788_862" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="863-937人:" prop="item.Num863_937">
-              <el-input v-model.number="edit.item.Num863_937" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num863_937" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="938-1012人:" prop="item.Num938_1012">
-              <el-input v-model.number="edit.item.Num938_1012" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num938_1012" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="1013-1087人:" prop="item.Num1013_1087">
-              <el-input v-model.number="edit.item.Num1013_1087" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num1013_1087" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="1088-1162人:" prop="item.Num1088_1162">
-              <el-input v-model.number="edit.item.Num1088_1162" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num1088_1162" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="1163-1237人:" prop="item.Num1163_1237">
-              <el-input v-model.number="edit.item.Num1163_1237" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num1163_1237" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="1238-1312人:"  prop="item.Num1238_1312">
-              <el-input v-model.number="edit.item.Num1238_1312" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+            <el-form-item label="1238-1312人:" prop="item.Num1238_1312">
+              <el-input v-model.number="edit.item.Num1238_1312" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="1313人:" prop="item.Num1313">
-              <el-input v-model.number="edit.item.Num1313" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})"/>
+              <el-input v-model.number="edit.item.Num1313" placeholder="请输入" :rules="dataRule(true,{type:'n',range:'0'})" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -494,8 +492,8 @@ export default {
     getPostData() {
       var pData = []
       for (let i = 0; i < this.rankData.length; i++) {
-        let row = this.rankData[i]
-        let tmpData = this.doPostData(row)
+        const row = this.rankData[i]
+        const tmpData = this.doPostData(row)
         if (tmpData.MinMaxNumList.length > 0) {
           pData.push(tmpData)
         }
@@ -507,7 +505,7 @@ export default {
       return {
         MinRank: minRank,
         MaxRank: maxRank,
-        MinMaxNumList: numList,
+        MinMaxNumList: numList
       }
     },
 
@@ -515,15 +513,15 @@ export default {
       return {
         MinNum: minNum,
         MaxNum: maxNum,
-        Percent: percent,
+        Percent: percent
       }
     },
 
     addMinMaxNumData(row, nn, minMaxNumList, minNum, maxNum) {
       if (nn != '') {
-        let a = nn.split('%')        
-        let b = Math.floor(parseFloat(a[0]) * 100)
-        let c = this.newMinMaxNumData(minNum, maxNum, b)
+        const a = nn.split('%')
+        const b = Math.floor(parseFloat(a[0]) * 100)
+        const c = this.newMinMaxNumData(minNum, maxNum, b)
         minMaxNumList.push(c)
       }
     },
@@ -560,7 +558,6 @@ export default {
       this.addMinMaxNumData(row, row.Num1313, minMaxNumList, 1313, 1313)
 
       return this.newMinMaxRankData(row.MinRank, row.MaxRank, minMaxNumList)
-
     },
 
     assignData(tmpData, row) {
@@ -568,118 +565,117 @@ export default {
       tmpData.MinRank = row.MinRank
       tmpData.MaxRank = row.MaxRank
       if (row.Num2_10 != '') {
-        let a = row.Num2_10.split('%')        
+        const a = row.Num2_10.split('%')
         tmpData.Num2_10 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num11_20 != '') {
-        let a = row.Num11_20.split('%')        
+        const a = row.Num11_20.split('%')
         tmpData.Num11_20 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num21_30 != '') {
-        let a = row.Num21_30.split('%')        
+        const a = row.Num21_30.split('%')
         tmpData.Num21_30 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num31_40 != '') {
-        let a = row.Num31_40.split('%')        
+        const a = row.Num31_40.split('%')
         tmpData.Num31_40 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num41_50 != '') {
-        let a = row.Num41_50.split('%')        
+        const a = row.Num41_50.split('%')
         tmpData.Num41_50 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num51_60 != '') {
-        let a = row.Num51_60.split('%')        
+        const a = row.Num51_60.split('%')
         tmpData.Num51_60 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num61_87 != '') {
-        let a = row.Num61_87.split('%')        
+        const a = row.Num61_87.split('%')
         tmpData.Num61_87 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num88_112 != '') {
-        let a = row.Num88_112.split('%')        
+        const a = row.Num88_112.split('%')
         tmpData.Num88_112 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num113_137 != '') {
-        let a = row.Num113_137.split('%')        
+        const a = row.Num113_137.split('%')
         tmpData.Num113_137 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num138_162 != '') {
-        let a = row.Num138_162.split('%')        
+        const a = row.Num138_162.split('%')
         tmpData.Num138_162 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num163_187 != '') {
-        let a = row.Num163_187.split('%')        
+        const a = row.Num163_187.split('%')
         tmpData.Num163_187 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num188_212 != '') {
-        let a = row.Num188_212.split('%')        
+        const a = row.Num188_212.split('%')
         tmpData.Num188_212 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num213_262 != '') {
-        let a = row.Num213_262.split('%')        
+        const a = row.Num213_262.split('%')
         tmpData.Num213_262 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num263_337 != '') {
-        let a = row.Num263_337.split('%')        
+        const a = row.Num263_337.split('%')
         tmpData.Num263_337 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num338_412 !== '') {
-        let a = row.Num338_412.split('%')        
+        const a = row.Num338_412.split('%')
         tmpData.Num338_412 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num413_487 !== '') {
-        let a = row.Num413_487.split('%')        
+        const a = row.Num413_487.split('%')
         tmpData.Num413_487 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num488_562 !== '') {
-        let a = row.Num488_562.split('%')        
+        const a = row.Num488_562.split('%')
         tmpData.Num488_562 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num563_637 !== '') {
-        let a = row.Num563_637.split('%')        
+        const a = row.Num563_637.split('%')
         tmpData.Num563_637 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num638_712 !== '') {
-        let a = row.Num638_712.split('%')        
+        const a = row.Num638_712.split('%')
         tmpData.Num638_712 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num713_787 !== '') {
-        let a = row.Num713_787.split('%')        
+        const a = row.Num713_787.split('%')
         tmpData.Num713_787 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num788_862 !== '') {
-        let a = row.Num788_862.split('%')        
+        const a = row.Num788_862.split('%')
         tmpData.Num788_862 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num863_937 !== '') {
-        let a = row.Num863_937.split('%')        
+        const a = row.Num863_937.split('%')
         tmpData.Num863_937 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num938_1012 !== '') {
-        let a = row.Num938_1012.split('%')        
+        const a = row.Num938_1012.split('%')
         tmpData.Num938_1012 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1013_1087 !== '') {
-        let a = row.Num1013_1087.split('%')        
+        const a = row.Num1013_1087.split('%')
         tmpData.Num1013_1087 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1088_1162 !== '') {
-        let a = row.Num1088_1162.split('%')        
+        const a = row.Num1088_1162.split('%')
         tmpData.Num1088_1162 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1163_1237 !== '') {
-        let a = row.Num1163_1237.split('%')        
+        const a = row.Num1163_1237.split('%')
         tmpData.Num1163_1237 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1238_1312 !== '') {
-        let a = row.Num1238_1312.split('%')        
+        const a = row.Num1238_1312.split('%')
         tmpData.Num1238_1312 = Math.floor(parseFloat(a[0]) * 100)
       }
       if (row.Num1313 !== '') {
-        let a = row.Num1313.split('%')        
+        const a = row.Num1313.split('%')
         tmpData.Num1313 = Math.floor(parseFloat(a[0]) * 100)
       }
-
     },
 
     // 操作类函数
@@ -721,11 +717,11 @@ export default {
       // console.log('do_get_data 1 formData:', formData)
       var tmpRankDataList = []
       for (let i = 0; i < formData.length; i++) {
-        let tmpRankData = oldthis.newRank()
+        const tmpRankData = oldthis.newRank()
         tmpRankData.MinRank = formData[i].MinRank
         tmpRankData.MaxRank = formData[i].MaxRank
         tmpRankData.RankNum = formData[i].MinRank + '_' + formData[i].MaxRank
-        let tmpList = formData[i].MinMaxNumList
+        const tmpList = formData[i].MinMaxNumList
         for (let j = 0; j < tmpList.length; j++) {
           if (tmpList[j].MinNum == 2) {
             tmpRankData.Num2_10 = tmpList[j].Percent / 100 + '%'
@@ -929,7 +925,7 @@ export default {
 
     createSave() {
       const $this = this
-      var bkRankData = JSON.parse(JSON.stringify(this.rankData))    
+      var bkRankData = JSON.parse(JSON.stringify(this.rankData))
       var newData = JSON.stringify(this.edit.item)
       // 设置修改后数据
       this.$refs.compare.SetOldVal({})
@@ -942,9 +938,9 @@ export default {
         var a = $this.newRank()
         $this.ID++
         a.ID = this.ID
-        $this.tmpSave(a, $this.edit.item)        
+        $this.tmpSave(a, $this.edit.item)
         $this.rankData.push(a)
-        let postData = $this.getPostData()
+        const postData = $this.getPostData()
         console.log('createSave 1', postData)
         $this.form.Data = JSON.stringify(postData)
 
@@ -957,14 +953,13 @@ export default {
             Message.success('保存成功')
           } else {
             $this.rankData = bkRankData
-            Message.success('保存失败')            
+            Message.success('保存失败')
           }
         })
-        
-      })      
+      })
     },
     editSave() {
-      var bkRankData = JSON.parse(JSON.stringify(this.rankData)) 
+      var bkRankData = JSON.parse(JSON.stringify(this.rankData))
       var tmpid = this.edit.item.ID
       for (let i = 0; i < this.rankData.length; i++) {
         var a = this.rankData[i]
@@ -973,14 +968,14 @@ export default {
         }
         const $this = this
         var newData = JSON.stringify(this.edit.item)
-        this.$refs.compare.SetNewVal(newData)     
+        this.$refs.compare.SetNewVal(newData)
         this.$refs.compare.Compare(function(isEdit) {
-          if(!isEdit) {
+          if (!isEdit) {
             Message.error('没有任何修改，不需要提交')
             return
           }
           $this.tmpSave(a, $this.edit.item)
-          let postData = $this.getPostData()
+          const postData = $this.getPostData()
           $this.form.Data = JSON.stringify(postData)
           console.log('editSave 1', postData)
           request({
@@ -992,10 +987,9 @@ export default {
               Message.success('保存成功')
             } else {
               $this.rankData = bkRankData
-              Message.success('保存失败')            
+              Message.success('保存失败')
             }
           })
-
         })
         return
       }
@@ -1013,8 +1007,7 @@ export default {
       return true
     },
     save() {
-      if (!this.checkData()) 
-        return
+      if (!this.checkData()) { return }
       if (this.edit.isEdit) {
         this.editSave()
       } else {

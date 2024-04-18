@@ -9,7 +9,7 @@
         </el-form-item>
         <el-form-item label="玩法">
           <el-select v-model="searchForm.Gid" placeholder="请选择">
-            <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value"/>
+            <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -230,7 +230,7 @@
             width="180%"
           >
             <template slot-scope="scope">
-              <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.Time }}" @click.native="recordShow = false" style="color: blue">
+              <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.Time }}" style="color: blue" @click.native="recordShow = false">
                 {{ scope.row.LogId }}
               </router-link>
             </template>
@@ -303,7 +303,7 @@ export default {
   methods: {
     search() {
       const _this = this
-       _this.tableData = []
+      _this.tableData = []
       request({
         url: '/dataProxy/info',
         method: 'get',

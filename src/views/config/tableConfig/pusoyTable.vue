@@ -404,7 +404,7 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    RoomLevel: 0,
+    RoomLevel: 0
   }
 }
 
@@ -453,7 +453,7 @@ export default {
         TotalPay: '总充值大于',
         MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次',
-        RoomLevel: '房间类型',
+        RoomLevel: '房间类型'
       }
     }
   },

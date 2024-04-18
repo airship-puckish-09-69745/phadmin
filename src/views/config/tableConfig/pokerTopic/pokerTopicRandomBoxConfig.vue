@@ -46,7 +46,7 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="有效时间" required>
-                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
+                <el-input v-model="showData.BoxActiveTime" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}">
                   <template slot="append">分钟</template>
                 </el-input>
               </el-form-item>
@@ -55,7 +55,7 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="差异比例" required>
-                <el-input v-model.number="showData.DisparityRatio" type="number" oninput=" if(value < 0 || value == '' || value == null)value = 0;  " >
+                <el-input v-model.number="showData.DisparityRatio" type="number" oninput=" if(value < 0 || value == '' || value == null)value = 0;  ">
                   <template slot="append">%</template>
                 </el-input>
               </el-form-item>
@@ -67,7 +67,7 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="发放间隔" required>
-                <el-input v-model="showData.IssueInterval" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" >
+                <el-input v-model="showData.IssueInterval" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}">
                   <template slot="append">分钟</template>
                 </el-input>
               </el-form-item>
@@ -238,7 +238,7 @@ export default {
       }
 
       const $this = this
-        $this.postData.Data = JSON.stringify(cfg)
+      $this.postData.Data = JSON.stringify(cfg)
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.SetNewVal($this.postData.Data)

@@ -188,10 +188,12 @@
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
               <el-select v-model="edit.item.TableMoney" placeholder="请选择">
-                <el-option v-for="item in tableMoneyCfg"
+                <el-option
+                  v-for="item in tableMoneyCfg"
                   :key="item.value"
                   :label="item.label"
-                  :value="item.value"/> 
+                  :value="item.value"
+                />
 
               </el-select>
             </el-form-item>
@@ -456,45 +458,45 @@ const filterMap = {}
 
 function NewRobotConfig() {
   return {
-    Common:{
-      RobotCarryMoneyStart:0,
-      RobotCarryMoneyEnd:0,
-      RobotMaxPlayTimesStart:0,
-      RobotMaxPlayTimesEnd:0,
-      RobotMaxWinTimesStart:0,
-      RobotMaxWinTimesEnd:0,
-      RobotMaxLoseTimesStart:0,
-      RobotMaxLoseTimesEnd:0,
-      RobotMaxWinMoneyStart:0,
-      RobotMaxWinMoneyEnd:0,
-      RobotMaxLoseMoneyStart:0,
-      RobotMaxLoseMoneyEnd:0,
-      Create1RobotPercents:0,
-      Create2RobotPercents:0,
-      Create3RobotPercents:0,
-      AppendRobotPercents:0
+    Common: {
+      RobotCarryMoneyStart: 0,
+      RobotCarryMoneyEnd: 0,
+      RobotMaxPlayTimesStart: 0,
+      RobotMaxPlayTimesEnd: 0,
+      RobotMaxWinTimesStart: 0,
+      RobotMaxWinTimesEnd: 0,
+      RobotMaxLoseTimesStart: 0,
+      RobotMaxLoseTimesEnd: 0,
+      RobotMaxWinMoneyStart: 0,
+      RobotMaxWinMoneyEnd: 0,
+      RobotMaxLoseMoneyStart: 0,
+      RobotMaxLoseMoneyEnd: 0,
+      Create1RobotPercents: 0,
+      Create2RobotPercents: 0,
+      Create3RobotPercents: 0,
+      AppendRobotPercents: 0
     },
-    Control:{
-      RobotOpenFlag:0,
-      Create1RobotPercents:0,
-      Create2RobotPercents:0,
-      Create3RobotPercents:0,
-      MaxRobotUserNum:0,
-      RobotLoginIntervalMin:0,
-      RobotLoginIntervalMax:0,
+    Control: {
+      RobotOpenFlag: 0,
+      Create1RobotPercents: 0,
+      Create2RobotPercents: 0,
+      Create3RobotPercents: 0,
+      MaxRobotUserNum: 0,
+      RobotLoginIntervalMin: 0,
+      RobotLoginIntervalMax: 0
     },
-    RobotCardBuildConfig:{
-      IsDoBuildCard:false,
-      BuildFourRatio:0,
-      BuildFlushGte5Ratio:0,
-      BuildFlush4Ratio:0,
-      BuildFlush3Ratio:0,
-      BuildThreeRatio:0,
-      BuildFourMaxNum:0,
-      BuildFlushGte5MaxNum:0,
-      BuildFlush4MaxNum:0,
-      BuildFlush3MaxNum:0,
-      BuildThree3MaxNum:0,
+    RobotCardBuildConfig: {
+      IsDoBuildCard: false,
+      BuildFourRatio: 0,
+      BuildFlushGte5Ratio: 0,
+      BuildFlush4Ratio: 0,
+      BuildFlush3Ratio: 0,
+      BuildThreeRatio: 0,
+      BuildFourMaxNum: 0,
+      BuildFlushGte5MaxNum: 0,
+      BuildFlush4MaxNum: 0,
+      BuildFlush3MaxNum: 0,
+      BuildThree3MaxNum: 0
     }
   }
 }
@@ -506,7 +508,7 @@ function newItem() {
     CarryUpper: '',
     HideCarry: '',
     TableMoney: '',
-    JokerNum:0,
+    JokerNum: 0,
     MaxPlayerCount: 3,
     ObjectCount: '',
     FlowRate: '',
@@ -532,7 +534,7 @@ export default {
   components: { Compare, Publish, tongitsRobotCommon, tongitsRobotControl, tongitsRobotBuildCard },
   data() {
     return {
-      playMode: 2, //癞子
+      playMode: 2, // 癞子
       tableData: [],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -547,14 +549,14 @@ export default {
         isEdit: false,
         robotConfig: NewRobotConfig()
       },
-      tableMoneyCfg:[
-        {"label":"1","value":1},
-        {"label":"5","value":5},
-        {"label":"10","value":10},
-        {"label":"20","value":20},
-        {"label":"50","value":50},
-        {"label":"100","value":100},
-        {"label":"200","value":200},
+      tableMoneyCfg: [
+        { 'label': '1', 'value': 1 },
+        { 'label': '5', 'value': 5 },
+        { 'label': '10', 'value': 10 },
+        { 'label': '20', 'value': 20 },
+        { 'label': '50', 'value': 50 },
+        { 'label': '100', 'value': 100 },
+        { 'label': '200', 'value': 200 }
       ],
 
       AttrNames: {
@@ -562,8 +564,8 @@ export default {
         CarryUpper: '最大携带',
         HideCarry: '隐藏目标值',
         TableMoney: '底注',
-        JokerNum:'癞子数',
-        MaxPlayerCount: "最大玩牌人数",
+        JokerNum: '癞子数',
+        MaxPlayerCount: '最大玩牌人数',
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
@@ -592,7 +594,7 @@ export default {
         // 'RobotConfig.Common.RobotMaxLoseMoneyStart': '机器人最大输金额上限',
         // 'RobotConfig.Common.RobotMaxLoseMoneyEnd': '机器人最大输金额下限',
         types: {
-          Common: 'jsonString',
+          Common: 'jsonString'
           // Control: 'jsonString',
           // RobotCardBuildConfig: 'jsonString',
         }
@@ -671,7 +673,7 @@ export default {
         url: '/tongitstable/all',
         method: 'get',
         data: {
-          PlayMode:this.playMode,
+          PlayMode: this.playMode
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -703,9 +705,9 @@ export default {
     handleDelete(ob) {
       this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
     },
-    getCompareVal(obj){
-      let one = JSON.parse(JSON.stringify(obj))
-      let row = JSON.parse(obj.RobotConfig)
+    getCompareVal(obj) {
+      const one = JSON.parse(JSON.stringify(obj))
+      const row = JSON.parse(obj.RobotConfig)
       one.Common = JSON.stringify(row.Common)
       one.Control = JSON.stringify(row.Control)
       one.RobotCardBuildConfig = JSON.stringify(row.RobotCardBuildConfig)
@@ -747,13 +749,13 @@ export default {
         if (_data) {
           Object.assign(this.edit.item, _data)
           try {
-            let one = JSON.parse(_data.RobotConfig)
+            const one = JSON.parse(_data.RobotConfig)
             one.Common = this.libMoneyRobot.TransForShow(one.Common)
             this.edit.robotConfig = one
           } catch (e) {
             this.edit.robotConfig = NewRobotConfig()
           }
-          console.log("robotConfig:",this.edit)
+          console.log('robotConfig:', this.edit)
           if (bEdit) {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(this.getCompareVal(_data))
@@ -816,14 +818,14 @@ export default {
     save() {
       this.edit.robotConfig.Control.RobotOpenFlag = parseInt(this.edit.robotConfig.Control.RobotOpenFlag)
       if (!this.checkData()) return
-      console.log("this.edit.item--->",this.edit.item)
-      console.log("this.edit.robotConfig--->",this.edit.robotConfig)
-      if(!this.edit.item.hasOwnProperty("RobotConfig")){
-        this.edit.item.RobotConfig = ""
+      console.log('this.edit.item--->', this.edit.item)
+      console.log('this.edit.robotConfig--->', this.edit.robotConfig)
+      if (!this.edit.item.hasOwnProperty('RobotConfig')) {
+        this.edit.item.RobotConfig = ''
       }
       this.edit.robotConfig.Common = this.libMoneyRobot.TransForStore(this.edit.robotConfig.Common)
       this.edit.item.RobotConfig = JSON.stringify(this.edit.robotConfig)
-      console.log("this.edit.item--->",this.edit.item)
+      console.log('this.edit.item--->', this.edit.item)
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.getCompareVal(this.edit.item))
@@ -833,7 +835,7 @@ export default {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
-            console.log("do get post data")
+            console.log('do get post data')
             $this.editSave($this.getPostData())
           }
         })
