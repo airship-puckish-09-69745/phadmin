@@ -1412,69 +1412,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="PusoyDos牌局详情" :visible.sync="pusoyDos.pusoyDosDetailVisible" width="1400px">
-      <el-table
-        :data="pusoyDos.pusoyDosDetail.players"
-        :span-method="pusoySpanMethods"
-        border
-      >
-        <el-table-column prop="uid" label="UID" width="100" />
-        <el-table-column prop="seat" label="座位" width="100" />
-        <!--        <el-table-column label="手牌" width="450" align="center">-->
-
-        <!--        </el-table-column>-->
-        <el-table-column prop="moneyChange" label="筹码变化" width="100"><template slot-scope="scope">{{ scope.row.moneyChange/1000 }}</template></el-table-column>
-        <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
-        <el-table-column prop="burnedScore" label="燃烧获得" width="100"><template slot-scope="scope">{{ scope.row.burnedScore/1000 }}</template></el-table-column>
-        <el-table-column prop="normalScore" label="正常结算" width="100"><template slot-scope="scope">{{ scope.row.normalScore/1000 }}</template></el-table-column>
-        <el-table-column prop="extraScore" label="额外结算" width="100"><template slot-scope="scope">{{ scope.row.extraScore/1000 }}</template></el-table-column>
-        <el-table-column prop="pusoyDosScore" label="pusoyDos金币" width="100"><template slot-scope="scope">{{ scope.row.pusoyDosScore/1000 }}</template></el-table-column>
-
-        <el-table-column prop="hitPotScore" label="hitPot奖池" width="100" />
-        <el-table-column prop="potMoney" label="奖池" width="100"><template slot-scope="scope">{{ scope.row.potMoney/1000 }}</template></el-table-column>
-      </el-table>
-      <br>
-      <el-table
-        :visible.sync="pusoyDos.pusoyDosShootOneShow"
-        :data="pusoyDos.pusoyDosDetail.displayCardsList"
-        width="100%"
-        border
-      >
-        <el-table-column label="Pusoy List：">
-          <el-table-column prop="uid" label="uid"><template slot-scope="scope">{{ scope.row.uid }}</template></el-table-column>
-          <el-table-column label="出牌">
-            <template slot-scope="scope">
-              <div v-html="showPusoyDosCards(scope.row.cards)" />
-              {{ pusoyDos.pusoyDosGroupCardTypes[scope.row.cardType] }}
-              <div v-if="scope.row.isPass ==1">
-                {{ "跳过" }}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column label="是否跳过">
-            <template slot-scope="scope">
-              {{ (scope.row.isPass ==0?"否":"是") }}
-            </template>
-          </el-table-column>
-          <el-table-column label="牌型">
-            <template slot-scope="scope">
-              {{ pusoyDos.pusoyDosGroupCardTypes[scope.row.cardType] }}
-            </template>
-          </el-table-column>
-          <el-table-column label="剩余手牌">
-            <template slot-scope="scope">
-              {{ scope.row.handCardCount }}
-            </template>
-          </el-table-column>
-        </el-table-column>
-      </el-table>
-      <br>
-      <el-descriptions title="扩展信息">
-        <el-descriptions-item label="桌子ID">{{ pusoyDos.pusoyDosDetail.tid }}</el-descriptions-item>
-        <el-descriptions-item label="Server日志ID">{{ pusoyDos.pusoyDosDetail.logId }}</el-descriptions-item>
-      </el-descriptions>
-    </el-dialog>
-
+  <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog"></pusoy-dos-detail-log>
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -1491,6 +1429,9 @@ import store from '@/store'
 import { Message } from 'element-ui'
 import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
+import PusoyDosTable from "@/views/config/tableConfig/pusoyDos/pusoyDosTable.vue";
+import PusoyDosDetailLog from "@/views/playerManage/components/PusoyDosDeatilLog.vue";
+import TongitsGameLog from "@/views/playerManage/components/TongitsGameLog.vue";
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -1508,7 +1449,7 @@ function newChartData() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { DateTimeShow, Compare, Publish, UidInput, LineChart },
+  components: {TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
   data() {
     return {
       tableData: [],
@@ -1630,17 +1571,7 @@ export default {
         113: '清龙'
       },
       pusoyGroupCardTypes: {
-        0: 'Nil',
-        1: '高牌',
-        2: '对子',
-        3: '两对',
-        4: '三条',
-        5: '顺子',
-        6: '同花',
-        7: '葫芦',
-        8: '四条',
-        9: '同花顺',
-        10: '皇家同花顺'
+
       },
       pusoyShootOneShow: false,
 
@@ -1657,18 +1588,6 @@ export default {
         //   112: '一条龙',
         //   113: '清龙'
         // },
-        pusoyDosGroupCardTypes: {
-          0: '',
-          1: '单张',
-          2: '对子',
-          3: '三条',
-          4: '顺子',
-          5: '同花',
-          6: '葫芦',
-          7: '四带一',
-          8: '同花顺',
-          9: '皇家同花顺'
-        },
         pusoyDosShootOneShow: false
       },
 
@@ -1747,24 +1666,7 @@ export default {
         return ''
       }
     },
-    showPusoyDosCards(cards) {
-      const m = {}
-      m[3] = 1 // 方块
-      m[0] = 2 // 梅花
-      m[2] = 3 // 红桃
-      m[1] = 4 // 黑桃
-      let ret = ''
-      if (cards) {
-        for (let i = 0; i < cards.length; i++) {
-          const color = cards[i] >> 4
-          const num = cards[i] & 0x0F
-          const colors = $libShow.ColorMap[m[color]]
-          const nums = $libShow.NumMap[num]
-          ret += '<span style="color:' + ((color === 0 || color === 2) ? 'red' : 'black') + '">' + colors + nums + '</span>'
-        }
-      }
-      return ret
-    },
+
     showCard(cards) {
       if (cards == null || cards == undefined) {
         return ''
@@ -2422,6 +2324,10 @@ export default {
       }
       this.sevenGameResult = resultTmp.join('，')
       this.sevenGameVisible = true
+    },
+    closeDialog() {
+      // console.log("close dialog")
+      this.pusoyDos.pusoyDosDetailVisible = false
     },
     showRummyGame(obj) {
       for (let i = 0; i < obj.players.length; i++) {

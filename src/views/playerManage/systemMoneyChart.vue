@@ -273,7 +273,7 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 6, 32, 28], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [15, 22, 28 ,23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 6, 32], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -305,7 +305,6 @@ export default {
           const gid = this.sortOrder[i]
           if (!this.isSlots(gid)) {
             const ob = this.summary[gid]
-            console.log("=====",gid,ob)
             if (ob){
               const got = ob.Lose + ob.Tax - ob.Won
               objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
