@@ -304,8 +304,10 @@ export default {
           const gid = this.sortOrder[i]
           if (!this.isSlots(gid)) {
             const ob = this.summary[gid]
-            const got = ob.Lose + ob.Tax - ob.Won
-            objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
+            if (ob){
+              const got = ob.Lose + ob.Tax - ob.Won
+              objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
+            }
           } else {
             objs.push({
               Gid: gid,
