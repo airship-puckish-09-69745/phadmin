@@ -483,8 +483,8 @@ export default {
           let gameName = ''
           for (let i = 0; i < objs.length; i++) {
             gameName = objs[i].ActMsg === 'sweeper' ? 'Sweeper' : objs[i].ActMsg
-            if (winInfo[gameName]===undefined){
-               winInfo[gameName] = { Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
+            if (winInfo[gameName] === undefined) {
+              winInfo[gameName] = { Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
             }
             const t = objs[i].UpdateTime
             if (winInfo[gameName] && $this.isSlotInfo(objs[i])) {
@@ -510,7 +510,7 @@ export default {
                   break
                 case 29:
                   if (objs[i].MoneyType === 1 || objs[i].MoneyType === 2) {
-                    console.log("====",winInfo[gameName], winInfo[gameName].Lose)
+                    console.log('====', winInfo[gameName], winInfo[gameName].Lose)
                     // gameName = this.getSlotsName(objs[i].ActMsg)
                     winInfo[gameName].Lose += objs[i].MoneyChanged
                     if (!timeMap[t]) {
@@ -550,13 +550,13 @@ export default {
               //     }
               //   }
               // }
-              if (objs[i].MoneyChanged>0){
+              if (objs[i].MoneyChanged > 0) {
                 winInfo[gameName].Win += objs[i].MoneyChanged
                 if (!timeMap[t]) {
                   timeMap[t] = true
                   winInfo[gameName].WinTimes++
                 }
-              }else {
+              } else {
                 winInfo[gameName].Lose += objs[i].MoneyChanged
                 if (!timeMap[t]) {
                   timeMap[t] = true

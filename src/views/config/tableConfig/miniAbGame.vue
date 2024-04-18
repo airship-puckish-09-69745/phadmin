@@ -28,7 +28,7 @@
           </el-form-item>
         </el-col>
 
-        <el-col v-if="envProjectName != 'ph_audit'"  :span="8" :offset="1">
+        <el-col v-if="envProjectName != 'ph_audit'" :span="8" :offset="1">
           <el-form-item label="奖池不够输重新洗牌最大次数:">
             <el-input v-model.number="item.MaxCtrlTimes" :required="true" />
           </el-form-item>
@@ -119,9 +119,9 @@
                 </el-table-column>
 
                 <el-table-column
-                    v-if="envProjectName != 'ph_audit'"
-                    prop="RobotBetRate"
-                    label="机器人下注权重"
+                  v-if="envProjectName != 'ph_audit'"
+                  prop="RobotBetRate"
+                  label="机器人下注权重"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
@@ -129,8 +129,8 @@
                 </el-table-column>
 
                 <el-table-column
-                    prop="MaxMoneyBet"
-                    label="区域下注上限"
+                  prop="MaxMoneyBet"
+                  label="区域下注上限"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
@@ -144,8 +144,6 @@
                     <el-input v-model.number="scope.row.Odds" size="mini" />
                   </template>
                 </el-table-column>
-
-
 
               </el-table>
             </el-row>
@@ -374,16 +372,16 @@ export default {
       item: {
         BetMoneyLevel: [{ CanBet: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 }],
         BetAreaOptions: [
-          { Name: 'A',  MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1 },
-          { Name: 'B',  MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1 },
+          { Name: 'A', MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1 },
+          { Name: 'B', MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1 },
           { Name: '1-5', MaxMoneyBet: 2000, Id: 2, RobotBetRate: 1 },
           { Name: '6-10', MaxMoneyBet: 2000, Id: 3, RobotBetRate: 1 },
-          { Name: '11-15',MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1 },
-          { Name: '16-24',MaxMoneyBet: 2000, Id: 5, RobotBetRate: 1 },
-          { Name: '25-30',MaxMoneyBet: 2000, Id: 6, RobotBetRate: 1 },
-          { Name: '31-35',MaxMoneyBet: 2000, Id: 7, RobotBetRate: 1 },
-          { Name: '36-40',MaxMoneyBet: 2000, Id: 8, RobotBetRate: 1 },
-          { Name: '41-49',MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 },
+          { Name: '11-15', MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1 },
+          { Name: '16-24', MaxMoneyBet: 2000, Id: 5, RobotBetRate: 1 },
+          { Name: '25-30', MaxMoneyBet: 2000, Id: 6, RobotBetRate: 1 },
+          { Name: '31-35', MaxMoneyBet: 2000, Id: 7, RobotBetRate: 1 },
+          { Name: '36-40', MaxMoneyBet: 2000, Id: 8, RobotBetRate: 1 },
+          { Name: '41-49', MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 }
         ],
         FeeRate: 5,
         KicKTime: 10,
@@ -443,15 +441,8 @@ export default {
         two: 0,
         three: 0
       },
-      envProjectName: process.env.VUE_APP_PROJECT,
+      envProjectName: process.env.VUE_APP_PROJECT
     }
-  },
-  created() {
-    console.log(process.env.VUE_APP_PROJECT_NAME)
-    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
-      this.isHidden = false
-    }
-    this.getData()
   },
   watch: {
     // 监听json数据变化，重新渲染文件夹内容
@@ -463,6 +454,13 @@ export default {
         })
       }
     }
+  },
+  created() {
+    console.log(process.env.VUE_APP_PROJECT_NAME)
+    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
+      this.isHidden = false
+    }
+    this.getData()
   },
   methods: {
     dataRule(required, config) {
@@ -522,7 +520,7 @@ export default {
       }
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
-        const obj = JSON.parse(JSON.stringify( this.item.BetAreaOptions[o]))
+        const obj = JSON.parse(JSON.stringify(this.item.BetAreaOptions[o]))
         // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
         obj.Odds *= 10

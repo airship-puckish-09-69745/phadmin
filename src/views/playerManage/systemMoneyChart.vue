@@ -269,11 +269,11 @@ export default {
       summary: {},
       gameNames: { 10: 'Crash', 15: '德州', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: '扫雷', 34: 'Pusoy-Dos', 100: 'Tower',
         76: '糖果传奇Way', 77: '糖果传奇Allline', 78: '超级宝石', 79: '糖果糖果Mars', 80: '糖果糖果', 81: '超级宝石Mars', 82: '百万富翁', 83: '百万富翁Mars', // 这行老虎机
-        28:'Tongits Joker',31: 'Tongits-经典', 32: 'Texas Master', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down',104:"Dragon Tiger",105:"Andar Bahar", 10000: '汇总' },
+        28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Master', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger', 105: 'Andar Bahar', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103,104,105, 6, 32,28], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [15, 22, 28 ,23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 6, 32], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -296,6 +296,7 @@ export default {
   },
   methods: {
     changeOrder(iType) {
+      console.log('summary===>', this.summary)
       if (iType === 1) {
         this.sortOrder = this.defaultOrder
       } else {
@@ -304,8 +305,10 @@ export default {
           const gid = this.sortOrder[i]
           if (!this.isSlots(gid)) {
             const ob = this.summary[gid]
-            const got = ob.Lose + ob.Tax - ob.Won
-            objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
+            if (ob){
+              const got = ob.Lose + ob.Tax - ob.Won
+              objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
+            }
           } else {
             objs.push({
               Gid: gid,
@@ -342,7 +345,7 @@ export default {
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 28|| o === 31 || o === 34 ) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 28 || o === 31 || o === 34) {
         return false
       } else {
         return true
