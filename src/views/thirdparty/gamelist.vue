@@ -442,7 +442,7 @@ export default {
     },
     changeShowDatacenter(id, show, msg) {
       const $this = this
-      this.edit.item.ShowDatacenter=show
+      this.edit.item.ShowDatacenter = show
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -452,7 +452,7 @@ export default {
           url: '/thirdpartygames/update/show/datacenter',
           method: 'post',
           data: {
-            ID:  id,
+            ID: id,
             ShowDatacenter: this.edit.item.ShowDatacenter
           }
         }).then(response => {
@@ -516,7 +516,6 @@ export default {
           Message.success('保存成功！')
         }
       })
-
     },
     getPostData() {
       return this.libMoney.TransForStore(this.edit.item)

@@ -54,12 +54,12 @@
             <span v-else style="color:#999999;">否</span>
           </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--          prop="Level"-->
-<!--          label="Level"-->
-<!--          sortable="custom"-->
-<!--          width="100"-->
-<!--        />-->
+        <!--        <el-table-column-->
+        <!--          prop="Level"-->
+        <!--          label="Level"-->
+        <!--          sortable="custom"-->
+        <!--          width="100"-->
+        <!--        />-->
         <el-table-column
           prop="TableMoney"
           label="前注"
@@ -102,15 +102,15 @@
             {{ formatNumber(scope.row.MaxPlayerCount) }}
           </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="FlowRate"-->
-<!--            label="Pot配置"-->
-<!--            width="150"-->
-<!--        >-->
-<!--          <template slot-scope="scope">-->
-<!--            {{ scope.row.PotScore }}-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column-->
+        <!--            prop="FlowRate"-->
+        <!--            label="Pot配置"-->
+        <!--            width="150"-->
+        <!--        >-->
+        <!--          <template slot-scope="scope">-->
+        <!--            {{ scope.row.PotScore }}-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
 
         <el-table-column
           prop="LastModify"
@@ -200,7 +200,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
-              <el-select v-model="edit.item.TableMoney" placeholder="请选择"  >
+              <el-select v-model="edit.item.TableMoney" placeholder="请选择">
                 <el-option label="0.1" :value="0.1" />
                 <el-option label="0.3" :value="0.3" />
                 <el-option label="0.5" :value="0.5" />
@@ -279,23 +279,23 @@
             </el-form-item>
           </el-col>
 
-<!--          <el-col :span="2">-->
-<!--            <el-tooltip class="item" effect="dark" content="修改需要重启服务器" placement="left-start">-->
-<!--              <i class="el-icon-info" />-->
-<!--            </el-tooltip>-->
-<!--          </el-col>-->
+          <!--          <el-col :span="2">-->
+          <!--            <el-tooltip class="item" effect="dark" content="修改需要重启服务器" placement="left-start">-->
+          <!--              <i class="el-icon-info" />-->
+          <!--            </el-tooltip>-->
+          <!--          </el-col>-->
         </el-row>
 
         <el-row>
           <el-col :span="11">
-<!--            <el-form-item-->
-<!--              label="操作时长(秒)："-->
-<!--              :required="true"-->
-<!--              prop="item.ActionSeconds"-->
-<!--              :rules="dataRule(true,{type:'n',range:'5'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item-->
+            <!--              label="操作时长(秒)："-->
+            <!--              :required="true"-->
+            <!--              prop="item.ActionSeconds"-->
+            <!--              :rules="dataRule(true,{type:'n',range:'5'})"-->
+            <!--            >-->
+            <!--              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />-->
+            <!--            </el-form-item>-->
           </el-col>
           <el-col :span="11">
             <el-form-item
@@ -336,21 +336,21 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
-<!--          <el-col :span="11">-->
-<!--            <game-level v-model="edit.item.Level" />-->
-<!--          </el-col>-->
+          <!--          <el-col :span="11">-->
+          <!--            <game-level v-model="edit.item.Level" />-->
+          <!--          </el-col>-->
 
         </el-row>
 
         <el-row>
           <el-col :span="11">
             <el-form-item
-                label="翻牌张数："
-                :required="true"
-                prop="item.FlopCount"
-                :rules="dataRule(true,{type:'n',range:'0'})"
+              label="翻牌张数："
+              :required="true"
+              prop="item.FlopCount"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-select v-model="edit.item.FlopCount" placeholder="请选择"  >
+              <el-select v-model="edit.item.FlopCount" placeholder="请选择">
                 <el-option label="1" :value="1" />
                 <el-option label="3" :value="3" />
               </el-select>
@@ -358,11 +358,11 @@
           </el-col>
           <el-col :span="11">
             <el-form-item
-                label="免费重置次数："
-                prop="item.FreeResetCount"
-                :rules="dataRule(true,{type:'n',range:'0'})"
+              label="免费重置次数："
+              prop="item.FreeResetCount"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="edit.item.FreeResetCount"/>
+              <el-input v-model.number="edit.item.FreeResetCount" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -393,10 +393,10 @@
               label="是否防作弊："
               prop="item.Anticheating"
             >
-                <el-radio-group v-model.number="edit.item.Anticheating">
-                  <el-radio :label=1>是</el-radio>
-                  <el-radio :label=0>否</el-radio>
-                </el-radio-group>
+              <el-radio-group v-model.number="edit.item.Anticheating">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
 
             </el-form-item>
           </el-col>
@@ -452,7 +452,7 @@ function newItem() {
     FreeWithdrawCount: 0,
     RecommendTimes: 0,
     Anticheating: 0,
-    RoomLevel: 0,
+    RoomLevel: 0
   }
 }
 
@@ -560,7 +560,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log('objs：', response.Data.length,response.Data[0])
+          console.log('objs：', response.Data.length, response.Data[0])
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
@@ -655,7 +655,6 @@ export default {
       })
     },
     editSave(postData) {
-
       request({
         url: 'solitairetable/update',
         method: 'post',

@@ -367,12 +367,12 @@
               </el-table-column>
               <el-table-column label="玩家开奖池条件(%)" width="300">
                 <template slot-scope="scope">
-                 <div v-if="scope.row.AwardType==1" >
-                   虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
-                   &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
-                 </div>
-                  <span  v-if="scope.row.JackpotType==4" >
-                     3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+                  <div v-if="scope.row.AwardType==1">
+                    虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
+                    &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
+                  </div>
+                  <span v-if="scope.row.JackpotType==4">
+                    3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
                   </span>
                 </template>
 
@@ -508,8 +508,97 @@
 
         </fieldset>
 
+        <fieldset style="margin-top:20px;">
+          <legend>点控配置</legend>
+          <el-row :gutter="10" style="margin-top:20px;">
+            <el-col :span="7">
+              <el-form-item label="新手模式局数：">
+                <el-input v-model.number="item.microControlCfg.newbieInnings" size="mini" :required="true" style="width:100px" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="新手模式每回合局数：">
+                <el-input v-model.number="item.microControlCfg.boutNumNewbie" size="mini" :required="true" style="width:100px" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="7">
+              <el-form-item label="普通模式每回合局数：">
+                <el-input v-model.number="item.microControlCfg.boutNumNormal" size="mini" :required="true" style="width:100px" disabled />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-table
+              ref="filterTable"
+              :data="item.microControlCfg.items"
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
+            >
+              <el-table-column label="ID" prop="itemId" />
+
+              <el-table-column label="类型" prop="flag">
+                <template slot-scope="scope">
+                  <el-select v-model="scope.row.flag" disabled>
+                    <el-option
+                      v-for="typeItem in MicroCtrlFlags"
+                      :key="typeItem.value"
+                      :label="typeItem.label"
+                      :value="typeItem.value"
+                    />
+                  </el-select>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="B/A范围开始(0值忽略,放大100倍)" prop="basicStart">
+                <template slot-scope="scope">
+                  <el-input v-if="scope.row.basicStart !== 0" v-model.number="scope.row.basicStart" style="width: 150px;" size="mini" :required="true" />
+                  <el-input v-else v-model.number="scope.row.basicStart" style="width: 150px;" size="mini" :required="true" disabled />
+                </template>
+              </el-table-column>
+              <el-table-column label="B/A范围结束(0值忽略,放大100倍)" prop="basicEnd">
+                <template slot-scope="scope">
+                  <el-input v-if="scope.row.basicEnd !== 0" v-model.number="scope.row.basicEnd" style="width: 150px;" size="mini" :required="true" />
+                  <el-input v-else v-model.number="scope.row.basicEnd" style="width: 150px;" size="mini" :required="true" disabled />
+                </template>
+              </el-table-column>
+              <el-table-column label="操作次数" prop="needOpNum">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.needOpNum" style="width: 150px;" size="mini" :required="true" />
+                </template>
+              </el-table-column>
+              <el-table-column label="跳过帮倍数(放大100倍)" prop="skipHelpWinOdds">
+                <template slot-scope="scope">
+                  <el-input v-if="scope.row.flag === 10" v-model.number="scope.row.skipHelpWinOdds" style="width: 150px;" size="mini" :required="true" />
+                  <el-input v-else v-model.number="scope.row.skipHelpWinOdds" style="width: 150px;" size="mini" :required="true" disabled />
+                </template>
+              </el-table-column>
+              <el-table-column label="帮的截止步数" prop="helpStepEnd">
+                <template slot-scope="scope">
+                  <el-input v-if="(scope.row.flag&8) !== 0" v-model.number="scope.row.helpStepEnd" style="width: 150px;" size="mini" :required="true" />
+                  <el-input v-else v-model.number="scope.row.helpStepEnd" style="width: 150px;" size="mini" :required="true" disabled />
+                </template>
+              </el-table-column>
+              <el-table-column label="杀的步数概率" prop="kills">
+                <template slot-scope="scope">
+                  <p v-if="(scope.row.flag&4) !== 0">
+                    <el-button type="primary" icon="el-icon-edit" circle size="mini" @click="showKillDialog(scope.row)" />
+                    {{ showKills(scope.row.kills) }}
+                  </p>
+                </template>
+              </el-table-column>
+
+            </el-table>
+          </el-row>
+
+        </fieldset>
+
         <el-form-item>
-          <el-button type="primary" @click="setData">保存</el-button>
+          <el-row :gutter="10" style="margin-top:20px;">
+            <el-button type="primary" @click="setData">保存</el-button>
+          </el-row>
         </el-form-item>
       </el-form>
     </div>
@@ -671,6 +760,38 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <!-- 【dialog】杀的步数概率 -->
+    <el-dialog
+      title="杀的步数概率"
+      :modal="false"
+      :visible.sync="killDialogForm.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveKill">保存</el-button>
+      <el-table
+        ref="filterTable"
+        :data="killDialogForm.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column label="步数" prop="step">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.step" style="width: 100px;" size="mini" :required="true" disabled />
+          </template>
+        </el-table-column>
+        <el-table-column label="命中概率(‰)" prop="percent">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.percent" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -724,7 +845,10 @@ export default {
             { 'AwardType': 1, 'Value': 10, 'PoolVal': 0, 'DayLimit': 0, 'RateArr': [], 'VrPoolRate': 0, 'RealPoolRate': 0, 'JackpotRate': 0 }
           ]
         },
-        jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
+        jackpotShowOption: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 },
+        microControlCfg: {
+          items: []
+        }
       },
       //
       JackpotRandAwards: [],
@@ -772,6 +896,12 @@ export default {
         { 'Type': 1, 'Name': '奖池百分比' },
         { 'Type': 2, 'Name': '下注额倍数' }
       ],
+      MicroCtrlFlags: [
+        { 'label': '新手杀', 'value': 5 },
+        { 'label': '新手帮', 'value': 9 },
+        { 'label': '普通杀', 'value': 6 },
+        { 'label': '普通帮', 'value': 10 }
+      ],
       robotDialogForm: {
         visible: false,
         data: {}
@@ -786,6 +916,11 @@ export default {
         visible: false,
         data: [],
         jackpotType: 0
+      },
+      killDialogForm: {
+        visible: false,
+        data: {},
+        itemId: 0
       },
       dayLimitChange: {
         visible: false,
@@ -1030,6 +1165,15 @@ export default {
         return showStr
       }
     },
+    showKills(data) {
+      let showStr = ''
+      if (data.length > 0) {
+        for (var i = 0; i < data.length; i++) {
+          showStr += data[i].step + '步(' + data[i].percent + '‱);'
+        }
+      }
+      return showStr
+    },
     showOpenDayLimit(jpType, data) {
       if (jpType == 4) {
         return '不限制'
@@ -1106,6 +1250,15 @@ export default {
       }
       this.poolNumChange.visible = false
     },
+    saveKill() {
+      for (var i = 0; i < this.item.microControlCfg.items.length; i++) {
+        if (this.killDialogForm.itemId == this.item.microControlCfg.items[i].itemId) {
+          this.item.microControlCfg.items[i].kills = this.killDialogForm.data
+          break
+        }
+      }
+      this.killDialogForm.visible = false
+    },
     saveDayLimit() {
       for (let i = 0; i < this.dayLimitChange.data.length; i++) {
         if (this.dayLimitChange.data[i].StartHours < 0 || this.dayLimitChange.data[i].EndHours > 24) {
@@ -1150,6 +1303,11 @@ export default {
       this.poolNumChange.data = data.RateArr
       this.poolNumChange.visible = true
       this.poolNumChange.jackpotType = data.JackpotType
+    },
+    showKillDialog(data) {
+      this.killDialogForm.data = data.kills
+      this.killDialogForm.itemId = data.itemId
+      this.killDialogForm.visible = true
     },
     showDayLimitDialog(data) {
       if (data.JackpotType == 4) {

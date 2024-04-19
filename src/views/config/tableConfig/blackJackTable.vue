@@ -211,14 +211,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-<!--          <el-col :span="11">-->
-<!--            <el-form-item label="练习场：" :required="true">-->
-<!--              <el-radio-group v-model.number="edit.item.IsPractice">-->
-<!--                <el-radio :label="1">是</el-radio>-->
-<!--                <el-radio :label="0">否</el-radio>-->
-<!--              </el-radio-group>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
+          <!--          <el-col :span="11">-->
+          <!--            <el-form-item label="练习场：" :required="true">-->
+          <!--              <el-radio-group v-model.number="edit.item.IsPractice">-->
+          <!--                <el-radio :label="1">是</el-radio>-->
+          <!--                <el-radio :label="0">否</el-radio>-->
+          <!--              </el-radio-group>-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
           <el-col :span="11">
             <el-form-item
               label="本局最大下注："
@@ -300,81 +300,81 @@
           </el-col>
         </el-row>
 
-<!--        <el-row>-->
-<!--          <el-col :span="9">-->
-<!--            <el-form-item-->
-<!--              label="抽水费率："-->
-<!--              :required="true"-->
-<!--              prop="item.FlowRate"-->
-<!--              :rules="dataRule(true,{type:'f',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model="edit.item.FlowRate" placeholder="请输入" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--          <el-col :span="2">-->
-<!--            <el-tooltip class="item" effect="dark" content="抽3%，则填写0.03" placement="left-start">-->
-<!--              <i class="el-icon-info" />-->
-<!--            </el-tooltip>-->
-<!--          </el-col>-->
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="玩家最大单次下注金额(未看牌)："-->
-<!--              :required="true"-->
-<!--              prop="item.BetMoneyMax"-->
-<!--              :rules="dataRule(true,{type:'f',range:'1'})"-->
-<!--            >-->
-<!--              <el-input v-model="edit.item.BetMoneyMax" placeholder="玩家最大下注数" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
+        <!--        <el-row>-->
+        <!--          <el-col :span="9">-->
+        <!--            <el-form-item-->
+        <!--              label="抽水费率："-->
+        <!--              :required="true"-->
+        <!--              prop="item.FlowRate"-->
+        <!--              :rules="dataRule(true,{type:'f',range:'0'})"-->
+        <!--            >-->
+        <!--              <el-input v-model="edit.item.FlowRate" placeholder="请输入" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--          <el-col :span="2">-->
+        <!--            <el-tooltip class="item" effect="dark" content="抽3%，则填写0.03" placement="left-start">-->
+        <!--              <i class="el-icon-info" />-->
+        <!--            </el-tooltip>-->
+        <!--          </el-col>-->
+        <!--          <el-col :span="11">-->
+        <!--            <el-form-item-->
+        <!--              label="玩家最大单次下注金额(未看牌)："-->
+        <!--              :required="true"-->
+        <!--              prop="item.BetMoneyMax"-->
+        <!--              :rules="dataRule(true,{type:'f',range:'1'})"-->
+        <!--            >-->
+        <!--              <el-input v-model="edit.item.BetMoneyMax" placeholder="玩家最大下注数" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--        </el-row>-->
 
-<!--        <el-row>-->
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="玩家买入等待时长："-->
-<!--              :required="true"-->
-<!--              prop="item.PurchaseSecondMax"-->
-<!--              :rules="dataRule(true,{type:'n',range:'1'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.PurchaseSecondMax" placeholder="玩家买入等待时长" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="最大围观局数："-->
-<!--              prop="item.WatchTimesMax"-->
-<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
+        <!--        <el-row>-->
+        <!--          <el-col :span="11">-->
+        <!--            <el-form-item-->
+        <!--              label="玩家买入等待时长："-->
+        <!--              :required="true"-->
+        <!--              prop="item.PurchaseSecondMax"-->
+        <!--              :rules="dataRule(true,{type:'n',range:'1'})"-->
+        <!--            >-->
+        <!--              <el-input v-model.number="edit.item.PurchaseSecondMax" placeholder="玩家买入等待时长" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--          <el-col :span="11">-->
+        <!--            <el-form-item-->
+        <!--              label="最大围观局数："-->
+        <!--              prop="item.WatchTimesMax"-->
+        <!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+        <!--            >-->
+        <!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--        </el-row>-->
 
-<!--        <el-row>-->
-<!--          <el-col :span="11">-->
-<!--            <game-level v-model="edit.item.Level" />-->
-<!--          </el-col>-->
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="Lucky9赔率："-->
-<!--              prop="item.Lucky9Rate"-->
-<!--              :rules="dataRule(true,{type:'n',range:'1'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.Lucky9Rate" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
+        <!--        <el-row>-->
+        <!--          <el-col :span="11">-->
+        <!--            <game-level v-model="edit.item.Level" />-->
+        <!--          </el-col>-->
+        <!--          <el-col :span="11">-->
+        <!--            <el-form-item-->
+        <!--              label="Lucky9赔率："-->
+        <!--              prop="item.Lucky9Rate"-->
+        <!--              :rules="dataRule(true,{type:'n',range:'1'})"-->
+        <!--            >-->
+        <!--              <el-input v-model.number="edit.item.Lucky9Rate" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--        </el-row>-->
 
         <el-row>
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="Pot下注倍数(0:关闭)："-->
-<!--              prop="item.PotBetTimes"-->
-<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.PotBetTimes" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
+          <!--          <el-col :span="11">-->
+          <!--            <el-form-item-->
+          <!--              label="Pot下注倍数(0:关闭)："-->
+          <!--              prop="item.PotBetTimes"-->
+          <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+          <!--            >-->
+          <!--              <el-input v-model.number="edit.item.PotBetTimes" />-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
           <el-col :span="11">
             <el-form-item
               label="Pot抽水比例(百分比)："
@@ -430,28 +430,28 @@
             </el-form-item>
           </el-col>
         </el-row>
-<!--        <el-row>-->
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="最小玩牌金额："-->
-<!--              :required="true"-->
-<!--              prop="item.MinPlayMoney"-->
-<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="上庄资产系数(0:不限)："-->
-<!--              :required="true"-->
-<!--              prop="item.DealerMoneyRates"-->
-<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.DealerMoneyRates" placeholder="请输入" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--        </el-row>-->
+        <!--        <el-row>-->
+        <!--          <el-col :span="11">-->
+        <!--            <el-form-item-->
+        <!--              label="最小玩牌金额："-->
+        <!--              :required="true"-->
+        <!--              prop="item.MinPlayMoney"-->
+        <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+        <!--            >-->
+        <!--              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--          <el-col :span="11">-->
+        <!--            <el-form-item-->
+        <!--              label="上庄资产系数(0:不限)："-->
+        <!--              :required="true"-->
+        <!--              prop="item.DealerMoneyRates"-->
+        <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+        <!--            >-->
+        <!--              <el-input v-model.number="edit.item.DealerMoneyRates" placeholder="请输入" />-->
+        <!--            </el-form-item>-->
+        <!--          </el-col>-->
+        <!--        </el-row>-->
         <el-row>
           <el-col :span="11">
             <el-form-item
@@ -472,10 +472,10 @@
               prop="item.PlayingMul"
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
-             <el-col>
-               开始:<el-input size="min" style="width: 50px"  v-model.number="edit.item.RedCardStart" placeholder="红卡开始位置"  />
-               结束:<el-input  size="min" style="width: 50px"  v-model.number="edit.item.RedCardEnd" placeholder="红卡结束位置" />
-             </el-col>
+              <el-col>
+                开始:<el-input v-model.number="edit.item.RedCardStart" size="min" style="width: 50px" placeholder="红卡开始位置" />
+                结束:<el-input v-model.number="edit.item.RedCardEnd" size="min" style="width: 50px" placeholder="红卡结束位置" />
+              </el-col>
             </el-form-item>
           </el-col>
         </el-row>
@@ -688,10 +688,10 @@ function newItem() {
     InsureSeconds: '',
     BetMaxRate: 0,
     BetOption: [],
-    MaxBet:0,
+    MaxBet: 0,
     HideValue: 0,
     RedCardStart: 0,
-    RedCardEnd: 0,
+    RedCardEnd: 0
   }
 }
 

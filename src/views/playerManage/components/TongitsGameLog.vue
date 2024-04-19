@@ -232,7 +232,7 @@ export default {
               }
               for (let k = 0; k < groups.length; k++) {
                 const one = groups[k]
-                one.isSecretGroup = this.isSecretGroup(one);
+                one.isSecretGroup = this.isSecretGroup(one)
                 const jokerMap = {}
                 // 查找是否癞子代替
                 if (one.hasOwnProperty('joker') && one.joker.replace.length > 0) {

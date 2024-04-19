@@ -15,10 +15,10 @@
             <el-input v-model.number="searchForm.Uid" size="mini" placeholder="玩家id" />
           </el-form-item>
           <el-form-item label="玩法">
-          <el-select v-model="searchForm.Gid" placeholder="请选择" @change="clearData()">
-            <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value"/>
-          </el-select>
-        </el-form-item>
+            <el-select v-model="searchForm.Gid" placeholder="请选择" @change="clearData()">
+              <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="searchByUid">查询</el-button>
           </el-form-item>
@@ -59,7 +59,7 @@
         label="级别"
         width="100%"
       >
-      <template slot-scope="scope">
+        <template slot-scope="scope">
           {{ getRoomLevel(scope.row) }}
         </template>
       </el-table-column>
@@ -68,7 +68,7 @@
         label="玩家昵称"
         width="160%"
       >
-      <template slot-scope="scope">
+        <template slot-scope="scope">
           {{ getNickByUid(scope.row, selectUid) }}
         </template>
       </el-table-column>
@@ -78,8 +78,7 @@
         :width="getHdCardWidth()"
       >
         <template slot-scope="scope">
-          <el-image v-for="(item, index) in getHdCardByUid(scope.row, selectUid)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-          </el-image>
+          <el-image v-for="(item, index) in getHdCardByUid(scope.row, selectUid)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
         </template>
       </el-table-column>
       <el-table-column
@@ -88,8 +87,7 @@
         width="200%"
       >
         <template slot-scope="scope">
-           <el-image v-for="(item, index) in showCards(scope.row.AllPublishCards)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-          </el-image>
+          <el-image v-for="(item, index) in showCards(scope.row.AllPublishCards)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
         </template>
       </el-table-column>
       <el-table-column
@@ -107,7 +105,7 @@
         label="获胜玩家&昵称"
         width="200%"
       >
-      <template slot-scope="scope">
+        <template slot-scope="scope">
           {{ getMaxWinPlayer(scope.row) }}
         </template>
       </el-table-column>
@@ -117,8 +115,7 @@
         :width="getHdCardWidth()"
       >
         <template slot-scope="scope">
-          <el-image v-for="(item, index) in getMaxWinPlayerHdCard(scope.row)" :key="index" :src="item" :preview-src-list="[item]"  style="width: 32px; height: 48px">
-          </el-image>
+          <el-image v-for="(item, index) in getMaxWinPlayerHdCard(scope.row)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
         </template>
       </el-table-column>
       <el-table-column
@@ -127,8 +124,8 @@
         width="160%"
       >
         <template slot-scope="scope">
-          <router-link :to= "{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.StartTime }}" @click.native="recordShow = false" style="color: blue">
-                {{ scope.row.LogId }}
+          <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.StartTime }}" style="color: blue" @click.native="recordShow = false">
+            {{ scope.row.LogId }}
           </router-link>
         </template>
       </el-table-column>

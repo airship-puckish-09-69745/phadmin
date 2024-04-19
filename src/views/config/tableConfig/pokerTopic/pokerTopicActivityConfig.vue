@@ -216,6 +216,7 @@ export default {
 
     onGameOptionsChange() {
       console.log('selected games', this.games)
+      this.edit.item.Games = this.games.join(',')
     },
 
     sortChange(ob) {
@@ -275,7 +276,7 @@ export default {
       this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
     },
     changeStatus(id, status, msg) {
-      const $this = this
+      // const $this = this
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

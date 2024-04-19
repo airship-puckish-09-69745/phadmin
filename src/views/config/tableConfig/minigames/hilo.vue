@@ -232,7 +232,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                  v-if="envProjectName=='ph_audit'"
+                v-if="envProjectName=='ph_audit'"
                 label="概率(Jackpot调控开启后此配置无效)"
                 width="380"
               >
@@ -247,9 +247,9 @@
       </el-form>
     </el-row>
 
-    <fieldset v-if="envProjectName != 'ph_audit'"  style="margin-top:20px;">
+    <fieldset v-if="envProjectName != 'ph_audit'" style="margin-top:20px;">
       <legend>jackpot调控配置
-<!--
+        <!--
           <el-switch
           v-model="item.JackpotRegulation.ToggleSwitch"
           active-color="#13ce66"
@@ -259,7 +259,7 @@
         />
         -->
       </legend>
-<!--
+      <!--
 
       <el-descriptions>
         <el-descriptions-item>
@@ -308,18 +308,18 @@
           <el-table-column label="分段限制" prop="DayLimitArr">
             <template slot-scope="scope">
               <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
-              <el-tag v-if="scope.row.AwardType == 1" disable-transitions v-for="tag, key in scope.row.DayLimitArr" :key="key">{{ showOpenDayLimit(tag) }}</el-tag>
+              <el-tag v-for="tag, key in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
             </template>
           </el-table-column>
           <el-table-column label="玩家开奖池条件(%)" width="300">
             <template slot-scope="scope">
-              <div v-if="scope.row.AwardType==1" >
+              <div v-if="scope.row.AwardType==1">
                 虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
                 &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
               </div>
-              <span  v-if="scope.row.JackpotType==4" >
-                     3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
-                  </span>
+              <span v-if="scope.row.JackpotType==4">
+                3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+              </span>
             </template>
 
           </el-table-column>
@@ -510,22 +510,22 @@
 
     <!-- 【dialog】每日限制开出个数 -->
     <el-dialog
-        :title="dayLimitChange.title"
-        :modal="false"
-        :visible.sync="dayLimitChange.visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      :title="dayLimitChange.title"
+      :modal="false"
+      :visible.sync="dayLimitChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit">添加</el-button>
       <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit">保存</el-button>
       <el-table
-          ref="filterTable"
-          :data="dayLimitChange.data"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
+        ref="filterTable"
+        :data="dayLimitChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column type="index" />
         <el-table-column label="开始小时" prop="StartHours">
@@ -550,7 +550,6 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-
 
     <!--对比组件-->
     <compare ref="compare" />

@@ -112,9 +112,9 @@
           </template>
         </el-table-column>
         <el-table-column
-            prop="PotScore"
-            label="Pot配置"
-            width="150"
+          prop="PotScore"
+          label="Pot配置"
+          width="150"
         >
           <template slot-scope="scope">
             {{ scope.row.PotScore }}
@@ -268,14 +268,14 @@
 
         <el-row>
           <el-col :span="11">
-<!--            <el-form-item-->
-<!--              label="座位数："-->
-<!--              :required="true"-->
-<!--              prop="item.MaxPlayerCount"-->
-<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item-->
+            <!--              label="座位数："-->
+            <!--              :required="true"-->
+            <!--              prop="item.MaxPlayerCount"-->
+            <!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+            <!--            >-->
+            <!--              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
+            <!--            </el-form-item>-->
           </el-col>
           <el-col :span="9">
             <el-form-item
@@ -306,13 +306,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-<!--            <el-form-item-->
-<!--              label="最大围观局数："-->
-<!--              prop="item.WatchTimesMax"-->
-<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
-<!--            </el-form-item>-->
+            <el-form-item
+              label="最大围观局数："
+              prop="item.WatchTimesMax"
+              :rules="dataRule(true,{type:'n',range:'2'})"
+            >
+              <el-input v-model.number="edit.item.WatchTimesMax" />
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -341,30 +341,30 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-                label="最小玩牌金额："
-                :required="true"
-                prop="item.MinPlayMoney"
-                :rules="dataRule(true,{type:'n',range:'0'})"
+              label="最小玩牌金额："
+              :required="true"
+              prop="item.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入"/>
+              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item
-                label="剩余警报："
-                prop="item.WatchTimesMax"
-                :rules="dataRule(true,{type:'n',range:'0'})"
+              label="剩余警报："
+              prop="item.WatchTimesMax"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="edit.item.RemainAlarm"/>
+              <el-input v-model.number="edit.item.RemainAlarm" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item
-                label="pot配置："
-                prop="item.PotScore"
-                :rules="dataRule(true,{type:'n',range:'0'})"
+              label="pot配置："
+              prop="item.PotScore"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="edit.item.PotScore" />
             </el-form-item>
@@ -424,8 +424,8 @@ function newItem() {
     Anticheating: 0,
     RoomLevel: 0,
     RemainAlarm: 0,
-    PotScore:0 ,
-    PlayMode: 1,
+    PotScore: 0,
+    PlayMode: 1
   }
 }
 

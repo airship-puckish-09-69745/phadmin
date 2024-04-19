@@ -1294,6 +1294,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testWebThirdpartyTransfer'),
             name: 'TestWebThirdpartyTransfer',
             meta: { title: '转入转出小工具', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testClearGameScheam',
+            component: () => import('@/views/devTools/testClearGameSchema'),
+            name: 'TestClearGameScheam',
+            meta: { title: '清理游戏健康数据', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
@@ -1425,28 +1431,34 @@ export const asyncRoutes = [
             meta: { title: '6+短牌' }
           },
           {
+            path: 'texasPusoyTable',
+            component: () => import('@/views/texas2dpro/table/texasPusoyTable'),
+            name: 'texasPusoyTable',
+            meta: { title: '大菠萝' }
+          },
+          {
+            path: 'texasAofTable',
+            component: () => import('@/views/texas2dpro/table/texasAofTable'),
+            name: 'texasAofTable',
+            meta: { title: 'AOF场' }
+          },
+          {
+            path: 'texasMttTable',
+            component: () => import('@/views/texas2dpro/table/texasMatchTable'),
+            name: 'texasMttTable',
+            meta: { title: '比赛场' }
+          },
+          {
+            path: 'texasMttAwardConfig',
+            component: () => import('@/views/texas2dpro/table/texasMatchRewardConfig'),
+            name: 'texasMttAwardConfig',
+            meta: { title: '比赛奖励' }
+          },
+          {
             path: 'texasNlhCfg',
             component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
             name: 'texasNlhCfg',
             meta: { title: '公共配置' }
-          },
-          {
-            path: 'texasMttTable',
-            component: () => import('@/views/config/tableConfig/texasMttTable'),
-            name: 'texasMttTable',
-            meta: { title: 'Mtt桌子' }
-          },
-          {
-            path: 'texasMttAwardConfig',
-            component: () => import('@/views/config/tableConfig/texasMttAwardConfig'),
-            name: 'texasMttAwardConfig',
-            meta: { title: 'Mtt奖励配置' }
-          },
-          {
-            path: 'texasPusoyTable',
-            component: () => import('@/views/config/tableConfig/texasPusoyTable'),
-            name: 'texasPusoyTable',
-            meta: { title: 'texasPusoy桌子' }
           }
         ]
       },
