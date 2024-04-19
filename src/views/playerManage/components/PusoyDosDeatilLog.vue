@@ -64,7 +64,7 @@
               <span>燃烧获得：{{ one.burnedScore / 1000 }}</span><br>
               <span>额外结算：{{ one.extraScore / 1000 }}</span><br>
               <span>pusoyDos金币：{{ one.pusoyDosScore / 1000 }}</span><br>
-              <span>奖池：{{ one.potMoney/1000 }}</span><br>
+              <span>奖池：{{ one.potMoney / 1000 }}</span><br>
               <span>剩余手牌：
                 <div v-for="card in one.handCards" class="block">
               <el-image
@@ -72,7 +72,7 @@
                   :src="getCardUrl(card)"
               />
             </div></span><br>
-<!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
+              <!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
             </div>
           </div>
         </template>
@@ -117,9 +117,9 @@ export default {
         7: '四带一',
         8: '同花顺',
         9: '皇家同花顺',
-        10:'发牌'
+        10: '发牌'
       },
-      cardMap : {
+      cardMap: {
         0: 2, // 梅花 0x01->>0x21
         1: 4, // 黑桃 0x11->>0x41
         2: 3, // 红桃 0x21->>0x31
@@ -183,20 +183,20 @@ export default {
           payPot: o.payPot,
           moneyWon: o.moneyWon,
           moneyTotal: o.moneyTotal,
-          burnedScore:o.burnedScore,
-          normalScore:o.normalScore,
-          extraScore:o.extraScore,
-          pusoyDosScore:o.pusoyDosScore,
-          potMoney:o.potMoney,
+          burnedScore: o.burnedScore,
+          normalScore: o.normalScore,
+          extraScore: o.extraScore,
+          pusoyDosScore: o.pusoyDosScore,
+          potMoney: o.potMoney,
           handCards: o.handCards,
           IsFinished: false,
         }
         finishArray.push(one)
       }
       for (const o of val.displayCardsList) {
-        let action =this.actionNames[o.cardType]
-        if (o.isPass===1){
-          action="跳过"
+        let action = this.actionNames[o.cardType]
+        if (o.isPass === 1) {
+          action = "跳过"
         }
         let obj = {
           Action: action,
@@ -206,7 +206,7 @@ export default {
           // HandCards: HandCards,
           IsFinished: false,
         }
-        console.log("=====",o.cards)
+        console.log("=====", o.cards)
         if (o.cards) {
           // for (const c of o.cards) {
           //   obj.cards.push(c)
@@ -250,12 +250,23 @@ export default {
     getCardNum(card) {
       const color = card >> 4
       const num = card & 0x0F
+      let newNum = ''+num
       let newColor = this.cardMap[color]
-      const newCard = parseInt("0x" + newColor + num)
-      console.log("============================",color,num,card,newColor,newCard)
+
+      if (num == 10) {
+        newNum = 'a'
+      } else if (num == 11) {
+        newNum = 'b'
+      } else if (num == 12) {
+        newNum = 'c'
+      } else if (num == 13) {
+        newNum = 'd'
+      }
+      const newCard = parseInt("0x" + newColor + newNum)
+      console.log("=>", color, num, card, newColor, newNum, newCard)
       return newCard
     },
-    getCardUrl(card) {      console.log("============================",card)
+    getCardUrl(card) {
       let cardNum = this.getCardNum(card)
       return require('@/assets/poker/' + cardNum + '.png')
     },
