@@ -64,23 +64,23 @@
                     <el-input v-model="scope.row.CanBet" size="mini" />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="Low"
-                  label="最大下注限制"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.MaxMoneyBet" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="Low"
-                  label="最小下注限制"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作">
+<!--                <el-table-column-->
+<!--                  prop="Low"-->
+<!--                  label="最大下注限制"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-input v-model="scope.row.MaxMoneyBet" size="mini" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="Low"-->
+<!--                  label="最小下注限制"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+                <el-table-column label="操作"   >
                   <template slot-scope="scope">
                     <el-button
                       size="mini"
