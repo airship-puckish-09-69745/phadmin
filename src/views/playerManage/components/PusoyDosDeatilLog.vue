@@ -156,13 +156,13 @@ export default {
     getDetailRowStyle(row) {
       switch (this.UidStyleMap[row.row.Uid]) {
         case 1:
-          return {background: 'rgba(190,74,220,0.21)'}
+          return {background: 'rgba(213,154,229,0.21)'}
         case 2:
-          return {background: 'rgba(77,148,208,0.19)'}
+          return {background: 'rgb(153,183,215)'}
         case 3:
-          return {background: 'rgba(204,35,96,0.16)'}
+          return {background: 'rgb(191,234,169)'}
         case 4:
-          return {background: 'rgba(127,9,152,0.16)'}
+          return {background: 'rgb(115,181,210)'}
       }
     },
     initData(val) {
@@ -194,26 +194,27 @@ export default {
         finishArray.push(one)
       }
       for (const o of val.displayCardsList) {
-        let HandCards = []
-        if (o.cards) {
-          for (const c of o.cards) {
-            HandCards.push(c)
-          }
-        }
         let action =this.actionNames[o.cardType]
         if (o.isPass===1){
           action="跳过"
         }
-        this.actions.push({
+        let obj = {
           Action: action,
-          roundID: this.roundID,
+          Index: o.roundID,
           Uid: this.getRealUid(o.uid),
-          Index: o.index,
           cards: o.cards,
           // HandCards: HandCards,
           IsFinished: false,
-        })
+        }
+        console.log("=====",o.cards)
+        if (o.cards) {
+          // for (const c of o.cards) {
+          //   obj.cards.push(c)
+          // }
+        }
+        this.actions.push(obj)
       }
+
       this.actions.push({
         Index: 100000,
         Uid: this.getRealUid(val.winUid),
@@ -251,9 +252,10 @@ export default {
       const num = card & 0x0F
       let newColor = this.cardMap[color]
       const newCard = parseInt("0x" + newColor + num)
+      console.log("============================",color,num,card,newColor,newCard)
       return newCard
     },
-    getCardUrl(card) {
+    getCardUrl(card) {      console.log("============================",card)
       let cardNum = this.getCardNum(card)
       return require('@/assets/poker/' + cardNum + '.png')
     },
