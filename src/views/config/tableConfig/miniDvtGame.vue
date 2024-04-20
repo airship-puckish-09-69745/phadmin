@@ -98,11 +98,11 @@
           <fieldset style="margin-top:10px">
             <legend>下注区域配置</legend>
 
-            <!--            <el-descriptions class="margin-top" border>-->
-            <!--              <el-descriptions-item>-->
-            <!--                <span style="color:red;"> 说明: 1.赔率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>-->
-            <!--              </el-descriptions-item>-->
-            <!--            </el-descriptions>-->
+                        <el-descriptions class="margin-top" border>
+                          <el-descriptions-item>
+                            <span style="color:red;"> 说明: 龙虎不会同时出现extrapay 所以龙虎公用一个extrapay配置 如果龙虎出现extrapay在由50%的概率分到龙 50%分到虎 </span>
+                          </el-descriptions-item>
+                        </el-descriptions>
             <el-row>
               <el-table
                 ref="filterTable"
@@ -155,7 +155,7 @@
                   v-if="envProjectName != 'ph_audit'"
                   label="出现extra概率(%)"
                 >
-                  <template slot-scope="scope">
+                  <template slot-scope="scope" v-if="scope.$index != 1" >
                     <el-input v-model.number="scope.row.ERate" size="mini" />
                   </template>
                 </el-table-column>
@@ -167,7 +167,7 @@
                 >
 
                   <template slot-scope="scope">
-                    <div v-if="BetOddsList[scope.$index]">
+                    <div v-if="BetOddsList[scope.$index] && scope.$index != 1">
                       <div v-for="(data, index ) in BetOddsList[scope.$index].EOddsCfg" style="line-height: 1.5; ">
                         <el-row style="line-height: 1.5; ">
                           <a size="mini" type="primary" @click="addOddsList(scope.$index)">+</a>

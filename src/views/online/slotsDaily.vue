@@ -413,6 +413,7 @@ export default {
           lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
           lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
+          lists.push(this.calcItem('购买Scatter返奖', 'SlotsReturn3', one))
           lists.push(this.calcItemTotal('总计', one))
           break
         }
@@ -601,7 +602,7 @@ export default {
             case 82:
             case 83:
             {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
+              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '购买Scatter返奖', '购买ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
               break
             }
           }
@@ -932,6 +933,8 @@ export default {
                 this.createSeries('正常RTP', SlotsReturn1RTP),
                 this.createSeries('Scatter返奖', SlotsReturn2),
                 this.createSeries('ScatterRTP', SlotsReturn2RTP),
+                this.createSeries('购买Scatter返奖', SlotsReturn3),
+                this.createSeries('购买ScatterRTP', SlotsReturn3RTP),
                 this.createSeries('总RTP', TotalRTP),
                 this.createSeries('正常中奖率', SlotsReturn1Times),
                 this.createSeries('Scatter中奖率', SlotsReturn2Times)
