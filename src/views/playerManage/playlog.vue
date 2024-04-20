@@ -2566,9 +2566,13 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       if (val === 0) {
         return '空'
       }
-      const flag = parseInt(val / 100)
+      const bout = parseInt(val / 10000)
+      const flag = parseInt((val % 10000) / 100)
       const step = parseInt(val % 100)
       var name = ''
+      if (val > 0) {
+        name += `回合${bout}`
+      }
       if ((flag & 1) !== 0) {
         name += '新手'
       }
