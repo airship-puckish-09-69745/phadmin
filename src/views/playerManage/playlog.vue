@@ -1578,16 +1578,6 @@ export default {
       pusoyDos: {
         pusoyDosDetail: {},
         pusoyDosDetailVisible: false,
-        // pusoyDosCardTypes: {
-        //   0: '爆牌',
-        //   1: '普通牌型',
-        //   101: '三同花',
-        //   102: '三顺子',
-        //   103: '六对半',
-        //   106: '清一色',
-        //   112: '一条龙',
-        //   113: '清龙'
-        // },
         pusoyDosShootOneShow: false
       },
 
@@ -2576,9 +2566,13 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       if (val === 0) {
         return '空'
       }
-      const flag = parseInt(val / 100)
+      const bout = parseInt(val / 10000)
+      const flag = parseInt((val % 10000) / 100)
       const step = parseInt(val % 100)
       var name = ''
+      if (val > 0) {
+        name += `回合${bout}`
+      }
       if ((flag & 1) !== 0) {
         name += '新手'
       }
