@@ -103,7 +103,7 @@
                             <span style="color:red;"> 说明: 龙虎不会同时出现extrapay 所以龙虎公用一个extrapay配置 如果龙虎出现extrapay在由50%的概率分到龙 50%分到虎 </span>
                           </el-descriptions-item>
                         </el-descriptions>
-            <el-row>
+            <el-row v-if="envProjectName != 'ph_audit' || scope.$index != 13">
               <el-table
                 ref="filterTable"
                 :data="item.BetAreaOptions"
@@ -429,7 +429,7 @@ export default {
           { Name: '虎', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1 },
           { Name: '龙♠♣', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 2, RobotBetRate: 1 },
           { Name: '龙♥♦', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 3, RobotBetRate: 1 },
-          { Name: 'TIE', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1 },
+          { Name: 'SUITED TIE', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1 },
           { Name: '虎♠♣', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 5, RobotBetRate: 1 },
           { Name: '虎♥♦', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 6, RobotBetRate: 1 },
           { Name: '2,26', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 7, RobotBetRate: 1 },
@@ -437,8 +437,8 @@ export default {
           { Name: '7-11', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 },
           { Name: '12-16', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 10, RobotBetRate: 1 },
           { Name: '17-21', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 11, RobotBetRate: 1 },
-          { Name: '22-25', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 12, RobotBetRate: 1 }
-
+          { Name: '22-25', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 12, RobotBetRate: 1 },
+          { Name: 'TIE', ERate: 10, EOdds: 5, MaxMoneyBet: 2000, Id: 13, RobotBetRate: 1 },
         ],
         FeeRate: 5,
         KicKTime: 10,
