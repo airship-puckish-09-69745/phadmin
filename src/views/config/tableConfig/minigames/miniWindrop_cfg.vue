@@ -894,7 +894,7 @@
                         </el-table-column>
                         <el-table-column v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）‱（万分比）">
                           <template slot-scope="scope">
-                            <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" />
+                            <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"/>
                           </template>
                         </el-table-column>
                       </el-table>
@@ -2185,12 +2185,10 @@ export default {
           postData.AddTimesRow.push(parseInt(i))
         }
       }
-      console.log('====1===,', postData.LevelCfg)
       if (postData.LevelCfg) {
         for (const i in postData.LevelCfg) {
           let cnt = 0
           for (const o of postData.LevelCfg[i].Channels) {
-            console.log('=======', cnt, o)
             cnt += o.HitRates
 
             if (cnt <= 0) {
