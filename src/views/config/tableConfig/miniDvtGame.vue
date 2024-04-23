@@ -103,7 +103,7 @@
                             <span style="color:red;"> 说明: 龙虎不会同时出现extrapay 所以龙虎公用一个extrapay配置 如果龙虎出现extrapay在由50%的概率分到龙 50%分到虎 </span>
                           </el-descriptions-item>
                         </el-descriptions>
-            <el-row v-if="envProjectName != 'ph_audit' || scope.$index != 13">
+            <el-row>
               <el-table
                 ref="filterTable"
                 :data="item.BetAreaOptions"
