@@ -32,7 +32,7 @@
               label="平均奖励"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.AvgReward" type="number" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+                <el-input v-model.number="scope.row.AvgReward" type="number" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
@@ -40,7 +40,7 @@
               label="宝箱等级"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.BoxLevel" type="number" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+                <el-input v-model.number="scope.row.BoxLevel" type="number" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
@@ -48,7 +48,7 @@
               label="最小奖励"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.MinReword" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+                <el-input v-model.number="scope.row.MinReword" readonly oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
@@ -56,7 +56,7 @@
               label="最大奖励"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.MaxReword" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+                <el-input v-model.number="scope.row.MaxReword" readonly oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column
@@ -64,7 +64,7 @@
               label="需求积分"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.ScoreRequired" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+                <el-input v-model.number="scope.row.ScoreRequired" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
               </template>
             </el-table-column>
             <el-table-column label="操作" width="180px">
@@ -127,7 +127,7 @@
           label="奖励"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.Reward" type="number" oninput=" if(value < 0 || value == '' || value == null){value = 0;} " />
+            <el-input v-model.number="scope.row.Reward" type="number" oninput=" if(value < 0 || value === '' || value == null){value = 0;} " />
           </template>
         </el-table-column>
         <el-table-column
@@ -135,7 +135,7 @@
           label="权重"
         >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.Weight" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" />
+            <el-input v-model.number="scope.row.Weight" oninput=" if(value < 0 || value === '' || value == null){value = 0;}else {value=parseInt(value)}" />
           </template>
         </el-table-column>
         <el-table-column label="操作" width="120px">
@@ -191,6 +191,7 @@ export default {
         { key: 1, label: '是' }
       ],
 
+      editRowIndex: 0,
       showData: [],
       item: {
         MinReword: 0,
@@ -236,9 +237,15 @@ export default {
     editRow(idx, row) {
       this.pairs = row.Pairs
       this.visible = true
+      this.editRowIndex = idx
     },
     saveRow() {
       this.visible = false
+      if (this.pairs) {
+        this.pairs.sort((a, b) => { return a.Reward - b.Reward })
+        this.showData[this.editRowIndex].MinReword = this.pairs[0].Reward
+        this.showData[this.editRowIndex].MaxReword = this.pairs[this.pairs.length - 1].Reward
+      }
     },
     addRow() {
       this.pairs.push({ 'Reward': 0, 'Weight': 0 })

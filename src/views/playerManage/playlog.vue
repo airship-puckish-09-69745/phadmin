@@ -1029,7 +1029,8 @@
           width="100"
         >
           <template slot-scope="scope">
-            {{ scope.row.totalOdds / 100000 }}
+            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.totalOdds / 1000000 }}</span>
+            <span v-else>0</span>
           </template>
         </el-table-column>
 
