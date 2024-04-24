@@ -98,6 +98,7 @@
       style="width: 100%"
       @row-click="clickData"
       @sort-change="sortChange"
+      :key="itemKey"
     >
       <el-table-column
         prop="ID"
@@ -185,7 +186,7 @@
         width="120px"
       >
         <template slot-scope="scope">
-          {{ showRobotLevel(scope.row.IsRobot) }}
+          {{ isRobotMap[scope.row.Uid]?"机器人":showRobotLevel(scope.row.IsRobot) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -590,7 +591,11 @@ export default {
       chartData: newChartData(),
       dataArr: [],
 
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney'])
+      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney']),
+      uids:[],
+      uidMap:{},
+      isRobotMap:{},
+      itemKey:"",
     }
   },
   computed: {},
@@ -732,7 +737,10 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-    },
+      this.getRobotMap()
+      // this.tableData.slice(0,this.tableData.length)
+      // this.$forceUpdate()
+      },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
       this.refreshShow()
@@ -759,6 +767,7 @@ export default {
       const $this = this
       this.sweeperRateVisible = false
       this.dataArr = []
+      this.uidMap={}
       const loading = this.$loading({
         lock: true,
         text: '数据拉取中，请稍候...',
@@ -826,6 +835,37 @@ export default {
     },
     clickData2(row) {
       this.getDetail(row.LogID, row.FinishTime)
+    },
+    geg(){
+      this.uidMap={}
+      for (const o in  this.tableData) {
+        console.log("====",this.tableData[o].Uid)
+        this.uidMap[this.tableData[o].Uid]=0
+      }
+
+      this.uids=[]
+      for (var key in this.uidMap) {
+        this.uids.push(key)
+      }
+      console.log("====1======",this.uids)
+      console.log("=====2=====",this.uidMap)
+    },
+    async getRobotMap() {
+      await this.geg()
+      request({
+        url: '/dataProxy/is/robot',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Uids: JSON.stringify(this.uids),
+        }
+      }).then(response => {
+        if (response.RetCode===0){
+          for (const key in response.Data) {
+            this.isRobotMap[key]=response.Data[key]
+          }
+        }
+      })
     },
     getDetail(id, dt) {
       const $this = this

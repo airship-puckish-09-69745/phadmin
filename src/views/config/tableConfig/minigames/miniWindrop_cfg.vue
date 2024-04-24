@@ -2147,6 +2147,58 @@ export default {
     setData() {
       const obj = this.getPostData()
       const postData = JSON.parse(JSON.stringify(obj))
+      for (const i in postData.JackpotRegulation.RandAwards) {
+        console.log('postData.JackpotRegulation.RandAwards[i]:', postData.JackpotRegulation.RandAwards[i].RateArr)
+        let count = 0
+        let hasZero = false
+        let maxId = 0
+        for (const o of postData.JackpotRegulation.RandAwards[i].RateArr) {
+          count += o.Rate
+          if (o.Num == 0) {
+            hasZero = true
+          }
+          if (o.Id > maxId) {
+            maxId = o.Id
+          }
+        }
+
+
+        if (!hasZero) {
+          postData.JackpotRegulation.RandAwards[i].RateArr.push({"Id": maxId + 1, "Rate": 100 - count, "Num": 0})
+        }else {
+           if (count!=100){
+             Message.error('JackpotRegulation 机器人开奖概率必须100')
+             return
+           }
+        }
+      }
+
+      for (const i in postData.JackpotRegulation2.RandAwards) {
+        console.log('postData.JackpotRegulation.RandAwards[i]:', postData.JackpotRegulation.RandAwards[i].RateArr)
+        let count = 0
+        let hasZero = false
+        let maxId = 0
+        for (const o of postData.JackpotRegulation2.RandAwards[i].RateArr) {
+          count += o.Rate
+          if (o.Num == 0) {
+            hasZero = true
+          }
+          if (o.Id > maxId) {
+            maxId = o.Id
+          }
+        }
+
+
+        if (!hasZero) {
+          postData.JackpotRegulation2.RandAwards[i].RateArr.push({"Id": maxId + 1, "Rate": 100 - count, "Num": 0})
+        }else {
+          if (count!=100){
+            Message.error('JackpotRegulation 机器人开奖概率必须100')
+            return
+          }
+        }
+      }
+
       console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
