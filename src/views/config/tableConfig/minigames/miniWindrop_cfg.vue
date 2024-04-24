@@ -569,8 +569,8 @@
         :close-on-click-modal="false"
         :close-on-press-escape="false"
       >
-        <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum2()">添加</el-button>
-        <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum2()">保存</el-button>
+        <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum()">添加</el-button>
+        <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum()">保存</el-button>
         <el-table
           ref="filterTable"
           :data="poolNumChange.data"
@@ -597,7 +597,7 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum2(scope.row.Id)">移除</el-button>
+              <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum(scope.row.Id)">移除</el-button>
             </template>
           </el-table-column>
         </el-table>
