@@ -72,10 +72,10 @@
       </el-table>
     </el-row>
     <el-row>
-      <el-col :offset="4" :span="20">
+      <el-col  :span="24">
         <el-descriptions
           class="margin-top"
-          :column="4"
+          :column="5"
           size="medium"
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
           border
@@ -83,6 +83,7 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
+          <el-descriptions-item label="胜率%：">{{( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0}}</el-descriptions-item>
           <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>

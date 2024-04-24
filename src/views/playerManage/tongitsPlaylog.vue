@@ -74,7 +74,7 @@
       <el-col :offset="2" :span="20">
         <el-descriptions
           class="margin-top"
-          :column="4"
+          :column="5"
           size="medium"
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
           border
@@ -82,6 +82,7 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
+          <el-descriptions-item label="胜率%：">{{( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0}}</el-descriptions-item>
           <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
@@ -187,7 +188,15 @@
           {{ showRobotLevel(scope.row.IsRobot) }}
         </template>
       </el-table-column>
-
+      <el-table-column
+          prop="IsRobot"
+          label="房间类型"
+          width="120px"
+      >
+        <template slot-scope="scope">
+          {{ showRoomLevel(scope.row.IsPractice) }}
+        </template>
+      </el-table-column>
       <template v-if="gid === 24">
         <el-table-column
           prop="SchemaData"
@@ -440,7 +449,6 @@
             {{ showRobotLevel(scope.row.IsRobot) }}
           </template>
         </el-table-column>
-
         <template v-if="gid === 24">
           <!--          <el-table-column-->
           <!--            prop="SchemaData"-->
@@ -612,6 +620,20 @@ export default {
           return '二级杀手机器人'
         case 10:
           return '收割机器人'
+        default:
+          return level <= 7 ? '陪玩机器人' : level
+      }
+    },
+    showRoomLevel(level) {
+      switch (level) {
+        case 0:
+          return '普通场'
+        case 1:
+          return '练习场'
+        case 100:
+          return '好友房'
+        case 110:
+          return '比赛场'
         default:
           return level <= 7 ? '陪玩机器人' : level
       }

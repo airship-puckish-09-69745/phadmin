@@ -2190,11 +2190,10 @@ export default {
           let cnt = 0
           for (const o of postData.LevelCfg[i].Channels) {
             cnt += o.HitRates
-
-            if (cnt <= 0) {
-              Message.error('命中概率总和比例 必须大于0')
-              return
-            }
+          }
+          if (cnt <= 0) {
+            Message.error('命中概率总和比例 必须大于0')
+            return
           }
         }
       }
