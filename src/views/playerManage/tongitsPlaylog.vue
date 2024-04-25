@@ -839,7 +839,6 @@ export default {
     geg(){
       this.uidMap={}
       for (const o in  this.tableData) {
-        console.log("====",this.tableData[o].Uid)
         this.uidMap[this.tableData[o].Uid]=0
       }
 
@@ -847,8 +846,6 @@ export default {
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
-      console.log("====1======",this.uids)
-      console.log("=====2=====",this.uidMap)
     },
     async getRobotMap() {
       await this.geg()
