@@ -2059,7 +2059,10 @@ export default {
         }
       }
 
-      postData.WinType =postData.WinType.split(',').map(Number);
+      if(postData.WinType instanceof String){
+        postData.WinType =postData.WinType.split(',').map(Number);
+      }
+
       postData.JackpotRegulation2 = jackpotInfo2
       return postData
     },
