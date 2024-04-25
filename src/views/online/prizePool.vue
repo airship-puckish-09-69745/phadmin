@@ -54,6 +54,9 @@
         <el-form-item label="增减奖池：" prop="PrizePool">
           <el-input v-model.number="form.PrizePool" size="medium" :required="true" :placeholder="form.LotteryPool" />
         </el-form-item>
+          <el-form-item label="下注：" prop="PrizePool">
+              <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
+          </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -87,7 +90,8 @@ export default {
         LotteryPool: 0, // 坚持现在值
         FeeRate: 0,
         RecountRate: 0,
-        Name: ''
+        Name: '',
+        Ante: 0
       },
       libShow: $libShow,
       dialogVisible: false
@@ -108,6 +112,7 @@ export default {
       this.form.FeeRate = row.FeeRate
       this.form.RecountRate = row.RecountRate
       this.form.Name = this.getGameName(row.Gid)
+      this.form.Ante = row.Ante
       this.dialogVisible = true
     },
     handleClose(done) {
@@ -124,7 +129,8 @@ export default {
         method: 'get',
         data: {
           Path: '/user/game/prize/pool/list',
-          Env: store.getters.env
+          Env: store.getters.env,
+
         }
       }).then(response => {
         console.log('list response', response)
@@ -171,7 +177,8 @@ export default {
         'Gid': this.form.Gid,
         'PrizePool': parseInt(this.form.LotteryPool) + parseInt(this.form.PrizePool * 1000),
         'FeeRate': this.form.FeeRate,
-        'RecountRate': this.form.RecountRate
+        'RecountRate': this.form.RecountRate,
+        'Ante': this.form.Ante
       }
 
       // 设置修改后数据
