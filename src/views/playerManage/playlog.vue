@@ -544,12 +544,77 @@
     </el-dialog>
 
     <el-dialog title="Blackjack牌局详情" :visible.sync="blackjackDetailVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="3" border>
+        <el-descriptions-item>
+          <template slot="label">
+            押注：
+          </template>
+          {{ blackjackDetail.antes/1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家点数：
+          </template>
+          {{ blackjackDetail.dealerPoints }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌型：
+          </template>
+          {{ blackjackDetail.dealerCardType==0?"爆牌":(blackjackDetail.dealerCardType==1?"点牌":"黑杰克")}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家手牌：
+          </template>
+          <div v-for="card in  blackjackDetail.dealerCards" class="block">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(card)"
+            />
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
+
       <el-table :data="blackjackDetail.players" border>
         <el-table-column prop="uid" label="UID" />
         <el-table-column prop="seat" label="座位" />
-        <el-table-column prop="moneyBet" label="投注金额" />
-        <el-table-column prop="cards" label="手牌" />
-        <el-table-column label="是否爆牌" />
+        <el-table-column prop="moneyBet" label="投注金额" >
+          <template slot-scope="scope">
+            {{ scope.row.moneyBet/1000 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cards" label="手牌">
+            <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.cardGroups" class="block">
+                {{'手牌'+(index+1)+': '}}
+                <div v-for="(card) in item.cards" class="block">
+                  <el-image
+                    style="width: 37px; height: 50px"
+                    :src="getCardUrl(card)"
+                  />
+                </div>
+              </div>
+            </template>
+
+        </el-table-column>
+        <el-table-column label="是否爆牌" >
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroups" class="block"  style="width: 50%;white-space: pre-wrap;">
+
+              <span style="white-space: pre-wrap;">
+                <br>
+              {{'手牌'+(index+1)+': '+ (item.cardType==0?"爆牌":( item.cardType==1?"点牌":"黑杰克"))}}
+             </span>
+
+            </div>
+          </template>
+        </el-table-column >
+        <el-table-column  label="输赢" prop="moneyChange">
+          <template slot-scope="scope">
+            {{ scope.row.moneyChange/1000 }}
+          </template>
+        </el-table-column>
       </el-table>
       <br>
       <el-descriptions title="扩展信息">
@@ -2503,6 +2568,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         this.detailData.push(tMap[i])
       }
       this.detailVisible = true
+    },
+
+    getCardUrl(card) {
+      return require('@/assets/poker/' + card + '.png')
     },
     initData() {
       this.detailVisible = false
