@@ -1175,7 +1175,7 @@ export default {
       let showStr = ''
       if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
-          showStr += data[i].step + '步(' + data[i].percent + '‱);'
+          showStr += data[i].step + '步(' + data[i].percent + '‰);'
         }
       }
       return showStr
