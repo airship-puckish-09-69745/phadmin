@@ -2175,7 +2175,7 @@ export default {
            }
          }
        }
-     }
+
 
       for (const i in postData.JackpotRegulation2.RandAwards) {
         console.log('postData.JackpotRegulation.RandAwards[i]:', postData.JackpotRegulation.RandAwards[i].RateArr)
@@ -2191,8 +2191,6 @@ export default {
             maxId = o.Id
           }
         }
-
-
         if (!hasZero) {
           postData.JackpotRegulation2.RandAwards[i].RateArr.push({"Id": maxId + 1, "Rate": 100 - count, "Num": 0})
         }else {
@@ -2202,7 +2200,7 @@ export default {
           }
         }
       }
-
+     }
       console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
