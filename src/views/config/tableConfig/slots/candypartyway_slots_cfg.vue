@@ -5,7 +5,7 @@
         <el-tabs type="border-card" value="base" @tab-click="onShowTab">
           <el-tab-pane label="基础配置" name="base">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('candypartyway_slots_base')" :env-empty="true" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('candypartyway_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
@@ -57,7 +57,6 @@ import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
-import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -81,7 +80,6 @@ export default {
   },
   created() {
     this.getData()
-    console.log("=============",store.getters.env)
   },
   methods: {
     getFullKey(k) {
