@@ -4,8 +4,8 @@
       <el-col :span="24">
         <el-tabs type="border-card" value="base" @tab-click="onShowTab">
           <el-tab-pane label="基础配置" name="base">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效1】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('candypartyway_slots_base')" :env-empty="true" compare-type="Object" />
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('candypartyway_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
