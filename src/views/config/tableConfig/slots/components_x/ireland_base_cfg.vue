@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm1" :model="slotsData" label-width="150px">
+        <el-form ref="frm1" :model="slotsData" label-width="200px">
           <el-form-item label="老虎机类型">
             <el-select v-model.number="slotsData.SlotsType" disabled>
               <el-option label="凤凰老虎机" :value="51" />
@@ -61,6 +61,14 @@
 
           <el-form-item label="输最大倍率的概率%">
             <el-input v-model.number="slotsData.LoseMaxOddsRate" />
+          </el-form-item>
+
+          <el-form-item label="普通模式保底奖池抽水‰">
+            <el-input v-model.number="slotsData.NormalFeeRate" />
+          </el-form-item>
+
+          <el-form-item label="购买免费模式保底奖池抽水‰">
+            <el-input v-model.number="slotsData.BuyFreeFeeRate" />
           </el-form-item>
 
           <el-form-item>
@@ -125,7 +133,9 @@ export default {
         'LoseMaxOddsRate': this.slotsData.LoseMaxOddsRate,
         'MoneyConfig': {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
-        }
+        },
+        'NormalFeeRate': this.slotsData.NormalFeeRate,
+        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
       }
     },
     submitFrm() {
