@@ -135,7 +135,7 @@ export default {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
-        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
+        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate
       }
     },
     submitFrm() {

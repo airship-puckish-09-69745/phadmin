@@ -72,7 +72,7 @@
       </el-table>
     </el-row>
     <el-row>
-      <el-col  :span="24">
+      <el-col :span="24">
         <el-descriptions
           class="margin-top"
           :column="5"
@@ -83,7 +83,7 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
-          <el-descriptions-item label="胜率%：">{{( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0}}</el-descriptions-item>
+          <el-descriptions-item label="胜率%：">{{ ( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0 }}</el-descriptions-item>
           <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
@@ -561,13 +561,13 @@
           <template slot="label">
             牌型：
           </template>
-          {{ blackjackDetail.dealerCardType==0?"爆牌":(blackjackDetail.dealerCardType==1?"点牌":"黑杰克")}}
+          {{ blackjackDetail.dealerCardType==0?"爆牌":(blackjackDetail.dealerCardType==1?"点牌":"黑杰克") }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             庄家手牌：
           </template>
-          <div v-for="card in  blackjackDetail.dealerCards" class="block">
+          <div v-for="card in blackjackDetail.dealerCards" class="block">
             <el-image
               style="width: 37px; height: 50px"
               :src="getCardUrl(card)"
@@ -579,38 +579,38 @@
       <el-table :data="blackjackDetail.players" border>
         <el-table-column prop="uid" label="UID" />
         <el-table-column prop="seat" label="座位" />
-        <el-table-column prop="moneyBet" label="投注金额" >
+        <el-table-column prop="moneyBet" label="投注金额">
           <template slot-scope="scope">
             {{ scope.row.moneyBet/1000 }}
           </template>
         </el-table-column>
         <el-table-column prop="cards" label="手牌">
-            <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.cardGroups" class="block">
-                {{'手牌'+(index+1)+': '}}
-                <div v-for="(card) in item.cards" class="block">
-                  <el-image
-                    style="width: 37px; height: 50px"
-                    :src="getCardUrl(card)"
-                  />
-                </div>
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroups" class="block">
+              {{ '手牌'+(index+1)+': ' }}
+              <div v-for="(card) in item.cards" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
+                />
               </div>
-            </template>
+            </div>
+          </template>
 
         </el-table-column>
-        <el-table-column label="是否爆牌" >
+        <el-table-column label="是否爆牌">
           <template slot-scope="scope">
-            <div v-for="(item,index) in scope.row.cardGroups" class="block"  style="width: 50%;white-space: pre-wrap;">
+            <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 50%;white-space: pre-wrap;">
 
               <span style="white-space: pre-wrap;">
                 <br>
-              {{'手牌'+(index+1)+': '+ (item.cardType==0?"爆牌":( item.cardType==1?"点牌":"黑杰克"))}}
-             </span>
+                {{ '手牌'+(index+1)+': '+ (item.cardType==0?"爆牌":( item.cardType==1?"点牌":"黑杰克")) }}
+              </span>
 
             </div>
           </template>
-        </el-table-column >
-        <el-table-column  label="输赢" prop="moneyChange">
+        </el-table-column>
+        <el-table-column label="输赢" prop="moneyChange">
           <template slot-scope="scope">
             {{ scope.row.moneyChange/1000 }}
           </template>
@@ -1479,7 +1479,7 @@
       </el-table>
     </el-dialog>
 
-  <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog"></pusoy-dos-detail-log>
+    <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -1496,9 +1496,9 @@ import store from '@/store'
 import { Message } from 'element-ui'
 import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
-import PusoyDosTable from "@/views/config/tableConfig/pusoyDos/pusoyDosTable.vue";
-import PusoyDosDetailLog from "@/views/playerManage/components/PusoyDosDeatilLog.vue";
-import TongitsGameLog from "@/views/playerManage/components/TongitsGameLog.vue";
+import PusoyDosTable from '@/views/config/tableConfig/pusoyDos/pusoyDosTable.vue'
+import PusoyDosDetailLog from '@/views/playerManage/components/PusoyDosDeatilLog.vue'
+import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -1516,7 +1516,7 @@ function newChartData() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
+  components: { TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
   data() {
     return {
       tableData: [],

@@ -894,7 +894,7 @@
                         </el-table-column>
                         <el-table-column v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）‱（万分比）">
                           <template slot-scope="scope">
-                            <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"/>
+                            <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}" />
                           </template>
                         </el-table-column>
                       </el-table>
@@ -2059,8 +2059,8 @@ export default {
         }
       }
 
-      if(postData.WinType instanceof String){
-        postData.WinType =postData.WinType.split(',').map(Number);
+      if (postData.WinType instanceof String) {
+        postData.WinType = postData.WinType.split(',').map(Number)
       }
 
       postData.JackpotRegulation2 = jackpotInfo2
@@ -2152,55 +2152,54 @@ export default {
     setData() {
       const obj = this.getPostData()
       const postData = JSON.parse(JSON.stringify(obj))
-     if (this.envProjectName!=='ph_audit'){
-       for (const i in postData.JackpotRegulation.RandAwards) {
-         let count = 0
-         let hasZero = false
-         let maxId = 0
-         for (const o of postData.JackpotRegulation.RandAwards[i].RateArr) {
-           count += o.Rate
-           if (o.Num == 0) {
-             hasZero = true
-           }
-           if (o.Id > maxId) {
-             maxId = o.Id
-           }
-         }
-         if (!hasZero) {
-           postData.JackpotRegulation.RandAwards[i].RateArr.push({"Id": maxId + 1, "Rate": 100 - count, "Num": 0})
-         }else {
-           if (count!=100){
-             Message.error('JackpotRegulation 机器人开奖概率必须100')
-             return
-           }
-         }
-       }
-
-
-      for (const i in postData.JackpotRegulation2.RandAwards) {
-        console.log('postData.JackpotRegulation.RandAwards[i]:', postData.JackpotRegulation.RandAwards[i].RateArr)
-        let count = 0
-        let hasZero = false
-        let maxId = 0
-        for (const o of postData.JackpotRegulation2.RandAwards[i].RateArr) {
-          count += o.Rate
-          if (o.Num == 0) {
-            hasZero = true
+      if (this.envProjectName !== 'ph_audit') {
+        for (const i in postData.JackpotRegulation.RandAwards) {
+          let count = 0
+          let hasZero = false
+          let maxId = 0
+          for (const o of postData.JackpotRegulation.RandAwards[i].RateArr) {
+            count += o.Rate
+            if (o.Num == 0) {
+              hasZero = true
+            }
+            if (o.Id > maxId) {
+              maxId = o.Id
+            }
           }
-          if (o.Id > maxId) {
-            maxId = o.Id
+          if (!hasZero) {
+            postData.JackpotRegulation.RandAwards[i].RateArr.push({ 'Id': maxId + 1, 'Rate': 100 - count, 'Num': 0 })
+          } else {
+            if (count != 100) {
+              Message.error('JackpotRegulation 机器人开奖概率必须100')
+              return
+            }
           }
         }
-        if (!hasZero) {
-          postData.JackpotRegulation2.RandAwards[i].RateArr.push({"Id": maxId + 1, "Rate": 100 - count, "Num": 0})
-        }else {
-          if (count!=100){
-            Message.error('JackpotRegulation 机器人开奖概率必须100')
-            return
+
+        for (const i in postData.JackpotRegulation2.RandAwards) {
+          console.log('postData.JackpotRegulation.RandAwards[i]:', postData.JackpotRegulation.RandAwards[i].RateArr)
+          let count = 0
+          let hasZero = false
+          let maxId = 0
+          for (const o of postData.JackpotRegulation2.RandAwards[i].RateArr) {
+            count += o.Rate
+            if (o.Num == 0) {
+              hasZero = true
+            }
+            if (o.Id > maxId) {
+              maxId = o.Id
+            }
+          }
+          if (!hasZero) {
+            postData.JackpotRegulation2.RandAwards[i].RateArr.push({ 'Id': maxId + 1, 'Rate': 100 - count, 'Num': 0 })
+          } else {
+            if (count != 100) {
+              Message.error('JackpotRegulation 机器人开奖概率必须100')
+              return
+            }
           }
         }
       }
-     }
       console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
@@ -2241,10 +2240,10 @@ export default {
       }
       if (postData.LevelCfg) {
         for (const i in postData.LevelCfg) {
-          let  cnt = 0
+          let cnt = 0
           for (const o of postData.LevelCfg[i].Channels) {
-            if (o.HitRates){
-              cnt +=o.HitRates
+            if (o.HitRates) {
+              cnt += o.HitRates
             }
           }
           if (cnt <= 0) {

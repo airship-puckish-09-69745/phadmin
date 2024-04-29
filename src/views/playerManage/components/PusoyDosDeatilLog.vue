@@ -1,51 +1,52 @@
 <template>
   <el-dialog
-      title="牌局过程"
-      :visible.sync="ComponentsGameLogVisible"
-      :before-close="closeView"
-      width="85%"
+    title="牌局过程"
+    :visible.sync="ComponentsGameLogVisible"
+    :before-close="closeView"
+    width="85%"
   >
     <el-table
-        :data="actions"
-        border
-        :row-style="getDetailRowStyle"
-        style="width: 100%"
+      :data="actions"
+      border
+      :row-style="getDetailRowStyle"
+      style="width: 100%"
     >
       <el-table-column
-          label="步骤"
-          width="100"
+        label="步骤"
+        width="100"
       >
         <template slot-scope="scope">
           第{{ scope.row.Index }}步
         </template>
       </el-table-column>
       <el-table-column
-          prop="Uid"
-          label="Uid"
-          width="100"
+        prop="Uid"
+        label="Uid"
+        width="100"
       />
       <el-table-column
-          prop="Action"
-          label="动作"
-          width="80"
+        prop="Action"
+        label="动作"
+        width="80"
       />
       <el-table-column
-          label="手牌"
+        label="手牌"
       >
         <template slot-scope="scope">
           <div v-for="card in scope.row.cards" class="block">
             <el-image
-                style="width: 37px; height: 50px"
-                :src="getCardUrl(card)"
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(card)"
             />
           </div>
           <div
-              v-if="scope.row.HandCards !== undefined && scope.row.HandCards != null && scope.row.HandCards.length > 0">
+            v-if="scope.row.HandCards !== undefined && scope.row.HandCards != null && scope.row.HandCards.length > 0"
+          >
             <span>剩余手牌:</span>
             <div v-for="card in scope.row.HandCards" class="block">
               <el-image
-                  style="width: 37px; height: 50px"
-                  :src="getCardUrl(card)"
+                style="width: 37px; height: 50px"
+                :src="getCardUrl(card)"
               />
             </div>
           </div>
@@ -67,11 +68,11 @@
               <span>奖池：{{ one.potMoney / 1000 }}</span><br>
               <span>剩余手牌：
                 <div v-for="card in one.handCards" class="block">
-              <el-image
-                  style="width: 37px; height: 50px"
-                  :src="getCardUrl(card)"
-              />
-            </div></span><br>
+                  <el-image
+                    style="width: 37px; height: 50px"
+                    :src="getCardUrl(card)"
+                  />
+                </div></span><br>
               <!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
             </div>
           </div>
@@ -91,13 +92,13 @@ export default {
   props: {
     GameLog: {
       type: Object,
-      default: function () {
+      default: function() {
         return {}
       }
     },
     Gid: {
       type: Number,
-      default: function () {
+      default: function() {
         return 0
       }
     },
@@ -123,7 +124,7 @@ export default {
         0: 2, // 梅花 0x01->>0x21
         1: 4, // 黑桃 0x11->>0x41
         2: 3, // 红桃 0x21->>0x31
-        3: 1, //  方片  0x31->>0x11
+        3: 1 //  方片  0x31->>0x11
       },
       UidMap: {},
       UidStyleMap: {}
@@ -132,19 +133,19 @@ export default {
   watch: {
     'GameLog': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'Gid': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.Gid = val
       }
     },
     'GameLogVisible': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.ComponentsGameLogVisible = val
       }
     }
@@ -156,13 +157,13 @@ export default {
     getDetailRowStyle(row) {
       switch (this.UidStyleMap[row.row.Uid]) {
         case 1:
-          return {background: 'rgba(213,154,229,0.21)'}
+          return { background: 'rgba(213,154,229,0.21)' }
         case 2:
-          return {background: 'rgb(153,183,215)'}
+          return { background: 'rgb(153,183,215)' }
         case 3:
-          return {background: 'rgb(191,234,169)'}
+          return { background: 'rgb(191,234,169)' }
         case 4:
-          return {background: 'rgb(115,181,210)'}
+          return { background: 'rgb(115,181,210)' }
       }
     },
     initData(val) {
@@ -175,7 +176,7 @@ export default {
           this.UidStyleMap[o.uid] = styleIndex
           styleIndex++
         }
-        let one = {
+        const one = {
           Uid: this.getRealUid(o.uid),
           Nick: o.nick,
           moneyFee: o.moneyFee,
@@ -189,24 +190,24 @@ export default {
           pusoyDosScore: o.pusoyDosScore,
           potMoney: o.potMoney,
           handCards: o.handCards,
-          IsFinished: false,
+          IsFinished: false
         }
         finishArray.push(one)
       }
       for (const o of val.displayCardsList) {
         let action = this.actionNames[o.cardType]
         if (o.isPass === 1) {
-          action = "跳过"
+          action = '跳过'
         }
-        let obj = {
+        const obj = {
           Action: action,
           Index: o.roundID,
           Uid: this.getRealUid(o.uid),
           cards: o.cards,
           // HandCards: HandCards,
-          IsFinished: false,
+          IsFinished: false
         }
-        console.log("=====", o.cards)
+        console.log('=====', o.cards)
         if (o.cards) {
           // for (const c of o.cards) {
           //   obj.cards.push(c)
@@ -222,7 +223,7 @@ export default {
         HandCards: [],
         Cards: [],
         FinishArray: finishArray,
-        IsFinished: true,
+        IsFinished: true
       })
     },
     isSecretGroup(group) {
@@ -250,8 +251,8 @@ export default {
     getCardNum(card) {
       const color = card >> 4
       const num = card & 0x0F
-      let newNum = ''+num
-      let newColor = this.cardMap[color]
+      let newNum = '' + num
+      const newColor = this.cardMap[color]
 
       if (num == 10) {
         newNum = 'a'
@@ -262,12 +263,12 @@ export default {
       } else if (num == 13) {
         newNum = 'd'
       }
-      const newCard = parseInt("0x" + newColor + newNum)
-      console.log("=>", color, num, card, newColor, newNum, newCard)
+      const newCard = parseInt('0x' + newColor + newNum)
+      console.log('=>', color, num, card, newColor, newNum, newCard)
       return newCard
     },
     getCardUrl(card) {
-      let cardNum = this.getCardNum(card)
+      const cardNum = this.getCardNum(card)
       return require('@/assets/poker/' + cardNum + '.png')
     },
     splitCards(cards) {

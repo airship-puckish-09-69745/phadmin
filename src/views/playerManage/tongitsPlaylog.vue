@@ -82,13 +82,14 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
-          <el-descriptions-item label="胜率%：">{{( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0}}</el-descriptions-item>
+          <el-descriptions-item label="胜率%：">{{ ( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0 }}</el-descriptions-item>
           <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
     <el-table
       ref="filterTable"
+      :key="itemKey"
       :data="tableData"
       stripe
       border
@@ -98,7 +99,6 @@
       style="width: 100%"
       @row-click="clickData"
       @sort-change="sortChange"
-      :key="itemKey"
     >
       <el-table-column
         prop="ID"
@@ -190,9 +190,9 @@
         </template>
       </el-table-column>
       <el-table-column
-          prop="IsRobot"
-          label="房间类型"
-          width="120px"
+        prop="IsRobot"
+        label="房间类型"
+        width="120px"
       >
         <template slot-scope="scope">
           {{ showRoomLevel(scope.row.IsPractice) }}
@@ -592,10 +592,10 @@ export default {
       dataArr: [],
 
       libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney']),
-      uids:[],
-      uidMap:{},
-      isRobotMap:{},
-      itemKey:"",
+      uids: [],
+      uidMap: {},
+      isRobotMap: {},
+      itemKey: ''
     }
   },
   computed: {},
@@ -740,7 +740,7 @@ export default {
       this.getRobotMap()
       // this.tableData.slice(0,this.tableData.length)
       // this.$forceUpdate()
-      },
+    },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
       this.refreshShow()
@@ -767,7 +767,7 @@ export default {
       const $this = this
       this.sweeperRateVisible = false
       this.dataArr = []
-      this.uidMap={}
+      this.uidMap = {}
       const loading = this.$loading({
         lock: true,
         text: '数据拉取中，请稍候...',
@@ -836,13 +836,13 @@ export default {
     clickData2(row) {
       this.getDetail(row.LogID, row.FinishTime)
     },
-    geg(){
-      this.uidMap={}
-      for (const o in  this.tableData) {
-        this.uidMap[this.tableData[o].Uid]=0
+    geg() {
+      this.uidMap = {}
+      for (const o in this.tableData) {
+        this.uidMap[this.tableData[o].Uid] = 0
       }
 
-      this.uids=[]
+      this.uids = []
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
@@ -854,12 +854,12 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Uids: JSON.stringify(this.uids),
+          Uids: JSON.stringify(this.uids)
         }
       }).then(response => {
-        if (response.RetCode===0){
+        if (response.RetCode === 0) {
           for (const key in response.Data) {
-            this.isRobotMap[key]=response.Data[key]
+            this.isRobotMap[key] = response.Data[key]
           }
         }
       })

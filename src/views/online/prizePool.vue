@@ -54,9 +54,9 @@
         <el-form-item label="增减奖池：" prop="PrizePool">
           <el-input v-model.number="form.PrizePool" size="medium" :required="true" :placeholder="form.LotteryPool" />
         </el-form-item>
-          <el-form-item label="低注：" prop="PrizePool" v-if="form.Gid==37">
-              <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
-          </el-form-item>
+        <el-form-item v-if="form.Gid==37" label="低注：" prop="PrizePool">
+          <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -114,7 +114,7 @@ export default {
       this.form.Name = this.getGameName(row.Gid)
       this.form.Ante = row.Ante
       this.dialogVisible = true
-      console.log(row.Gid,this.form.Gid)
+      console.log(row.Gid, this.form.Gid)
     },
     handleClose(done) {
       this.dialogVisible = false
@@ -130,7 +130,7 @@ export default {
         method: 'get',
         data: {
           Path: '/user/game/prize/pool/list',
-          Env: store.getters.env,
+          Env: store.getters.env
 
         }
       }).then(response => {
