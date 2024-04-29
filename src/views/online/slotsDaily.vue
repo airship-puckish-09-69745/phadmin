@@ -4,8 +4,11 @@
       <el-tabs tab-position="left">
         <el-tab-pane v-for="value in lists" :label="value.title">
           <el-row>
-            <el-col :offset="12">
+            <el-col :offset="12" :span="2">
               <el-button type="text" @click="doShowChart(value.slotsType)">图表</el-button>
+            </el-col>
+            <el-col :span="2">
+              <el-button size="mini" @click="getData()">刷新</el-button>
             </el-col>
           </el-row>
           <el-table
