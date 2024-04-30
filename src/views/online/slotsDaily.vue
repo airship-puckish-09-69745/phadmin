@@ -168,7 +168,8 @@ export default {
         queryTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
       },
       pickerOptions: $libShow.DefaultDatePickerOptions(),
-      tempLoading: {}
+      tempLoading: {},
+      ignoreGame:  [ 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83]
     }
   },
   created() {
@@ -191,6 +192,9 @@ export default {
         if (response.RetCode === 0) {
           const obj = response.Data
           for (const key in obj) {
+            if (this.ignoreGame.includes(obj[key].SlotsType)){
+              continue
+            }
             this.lists.push(this.calcData(obj[key]))
           }
         } else {
@@ -252,7 +256,7 @@ export default {
         case 75:
           return '小红帽'
         case 76:
-          return '糖果传奇Way'
+          return 'CandyRush'
         case 77:
           return '糖果传奇Allline'
         case 78:
@@ -271,12 +275,10 @@ export default {
       return '未知老虎机-' + sType
     },
     transData(one) {
-      console.log(one)
       one.Today = this.libMoney.TransForShow(one.Today)
       one.Yesterday = this.libMoney.TransForShow(one.Yesterday)
       one.Day7 = this.libMoney.TransForShow(one.Day7)
       const lists = []
-      console.log(222222222, one.SlotsType)
       switch (one.SlotsType) {
         case 51:
         {
