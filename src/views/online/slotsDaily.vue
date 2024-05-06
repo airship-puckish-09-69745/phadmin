@@ -473,7 +473,7 @@ export default {
       return one
     },
     calcPlayTimes(data) {
-      let name = '玩牌次数'
+      let name = '正常玩牌次数'
       const one = this.getObjRow(name)
       one.today.number = data.Today['PlayTimes'] - data.Today['SlotsReturn4Times'] // SlotsReturn4Times购买免费次数
       one.yesterday.number = data.Yesterday['PlayTimes'] - data.Yesterday['SlotsReturn4Times']
