@@ -400,8 +400,8 @@ export const asyncRoutes = [
           },*/
           {
             path: 'color_game',
-            component: () => import('@/views/config/tableConfig/colorGame'),
-            // component: () => import('@/views/config/tableConfig/colorGameMars'),
+            // component: () => import('@/views/config/tableConfig/colorGame'),
+            component: () => import('@/views/config/tableConfig/colorGameMars'),
             name: 'gameColorCfg',
             meta: { title: 'color game ◐' }
           },
