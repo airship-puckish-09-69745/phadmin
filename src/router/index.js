@@ -401,9 +401,23 @@ export const asyncRoutes = [
           {
             path: 'color_game',
             // component: () => import('@/views/config/tableConfig/colorGame'),
-            component: () => import('@/views/config/tableConfig/colorGameMars'),
+            // component: () => import('@/views/config/tableConfig/colorGameMars'),
+            components: {
+              default: () => import('@/views/config/tableConfig/colorGame'),
+              mars: () => import('@/views/config/tableConfig/colorGameMars')
+            },
             name: 'gameColorCfg',
-            meta: { title: 'color game ◐' }
+            meta: { title: 'color game ◐' },
+            beforeEnter: (to, from, next) => {
+              if (process.env.VUE_APP_PROJECT === 'ph_audit') {
+                import('@/views/config/tableConfig/colorGameMars').then(component => {
+                  to.matched[0].components.mars = component.default;
+                  next();
+                });
+              } else {
+                next();
+              }
+            }
           },
           {
             path: 'gameCrash',
