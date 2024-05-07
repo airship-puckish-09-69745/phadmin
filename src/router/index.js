@@ -333,12 +333,6 @@ export const asyncRoutes = [
         name: 'texasTable',
         meta: { title: 'Texas - 德州' }
       },
-      {
-        path: 'Piggy',
-        component: () => import('@/views/config/tableConfig/piggy'),
-        name: 'Piggy',
-        meta: { title: 'Piggy 🐽' }
-      },
       /* {
         path: 'bodingTable',
         component: () => import('@/views/config/tableConfig/bodingTable'),
@@ -476,7 +470,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/UpDownTable'),
             name: 'UpDown',
             meta: { title: '7Up7Down ◐' }
-          }
+          },
+          {
+            path: 'Piggy',
+            component: () => import('@/views/config/tableConfig/piggy'),
+            name: 'Piggy',
+            meta: { title: 'Piggy 🐽' }
+          },
         ]
       },
 

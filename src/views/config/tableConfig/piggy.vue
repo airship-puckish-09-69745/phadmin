@@ -270,8 +270,59 @@
           </fieldset>
         </el-row>
         </el-tab-pane>
-        <el-tab-pane label="开奖条件">机器人中奖</el-tab-pane>
-        <el-tab-pane label="机器人中奖">机器人中奖</el-tab-pane>
+        <el-tab-pane label="开奖条件">
+          <el-row :span="16" :offset="3">
+            <fieldset style="margin-top:10px">
+              <legend>Jackpot 奖励配置</legend>
+              <el-table
+                  :data="item.Jp"
+                  border
+                  style="width: 100%"
+              >
+                <el-table-column
+                    label="JACKPOT类型"
+                    width="180"
+                >
+                  <template slot-scope="scope">
+                    {{ JpTypeMap[scope.row.Typ] }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                    label="中奖获得奖池金额比例"
+                    width="180"
+                >
+                  <template slot-scope="scope">
+                   <div v-for="(data,idx) in scope.row.JackpotRegulation.RandAwards">
+                     <el-input v-model.number="data.AwardRate">
+                       <template  slot="append">%</template>
+                     </el-input>
+                   </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                    label="中奖人数"
+                    width="380"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
+                    </el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                    label="中奖时间(秒)"
+                    width="380"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Time"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
+                      <template  slot="append">S</template>
+                    </el-input>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+            </fieldset>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
     </el-tab-pane>
   </el-tabs>
@@ -370,9 +421,9 @@ export default {
           }],
         Plate:{Rate:0,PlateOdds:[{Weight: 1, Val: 2}]},//幸运转盘
         Jp:[// JP
-            {Typ:1,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:22,JackpotRegulation:{PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:0,EndHour:1,PerHourIncr:2}]},{Id:0,MinPool:2,MaxPool:7,TimeArr:[{Index:0,StartHour:2,EndHour:6,PerHourIncr:22},{Index:0,StartHour:0,EndHour:1,PerHourIncr:111}]}]}},
-            {Typ:2,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:22,JackpotRegulation:{PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:1,EndHour:12,PerHourIncr:22}]}]}},
-            {Typ:3,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:21,JackpotRegulation:{PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:1,EndHour:12,PerHourIncr:22}]}]}},
+            {Typ:1,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:22,JackpotRegulation:{RandAwards:[{AwardRate:100}],PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:0,EndHour:1,PerHourIncr:2}]},{Id:0,MinPool:2,MaxPool:7,TimeArr:[{Index:0,StartHour:2,EndHour:6,PerHourIncr:22},{Index:0,StartHour:0,EndHour:1,PerHourIncr:111}]}]}},
+            {Typ:2,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:22,JackpotRegulation:{RandAwards:[{AwardRate:100}],PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:1,EndHour:12,PerHourIncr:22}]}]}},
+            {Typ:3,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:21,JackpotRegulation:{RandAwards:[{AwardRate:100}],PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:1,EndHour:12,PerHourIncr:22}]}]}},
         ],
       },
       incrJackpotForm: {
