@@ -76,6 +76,16 @@
           <el-tag v-for="(tag, key) in scope.row.RateArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,tag) }}</el-tag>
         </template>
       </el-table-column>
+<!--      <el-table-column label="操作">-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-button-->
+<!--              size="mini"-->
+<!--              type="primary"-->
+<!--              @click="addJackpotRandAwards"-->
+<!--          >添加</el-button>-->
+<!--          <el-button type="danger" size="mini" @click="delJackpotRandAwards(scope.$index)">删除</el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
 
     <!-- 【dialog】每日限制开出个数 -->
@@ -248,6 +258,16 @@ export default {
     },
     doAdd() {
       this.piggyCfg.push({Weight:0,Val:0})
+    },
+    // addJackpotRandAwards(){
+    //   this.JackpotRandAwards.push({AwardRate:0,AwardType:0,DayLimit:0,DayLimitArr:[],JackpotRate:0,JackpotType})
+    // },
+    delJackpotRandAwards(index){
+      if (this.JackpotRandAwards.length<=1){
+        Message.error('再删就没了')
+        return
+      }
+      this.JackpotRandAwards.splice(index, 1)
     },
     checkShowDayLimit(awardType) {
       if (awardType == 2) {

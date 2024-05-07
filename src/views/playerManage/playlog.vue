@@ -164,7 +164,10 @@
         width="100"
       >
         <template slot-scope="scope">
-          <span :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
+            <span v-if="scope.row.Gid===20" :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
+            {{ formatNumber((scope.row.MoneyChanged+scope.row.PotChange)) }}
+          </span>
+          <span v-else :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
             {{ formatNumber(scope.row.MoneyChanged) }}
           </span>
         </template>
@@ -1870,8 +1873,11 @@ export default {
           objs = $this.libMoney.TransForShow(objs)
           $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)
           $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.fee = 0
+          let cnt = 0
+
           for (const o in objs) {
             const item = objs[o]
+            cnt+= item.MoneyChanged
             if (item.MoneyChanged > 0) {
               $this.item.win += item.MoneyChanged
               $this.item.winCount++
