@@ -1,52 +1,60 @@
 <template>
   <el-dialog
-    title="牌局过程"
-    :visible.sync="ComponentsGameLogVisible"
-    :before-close="closeView"
-    width="85%"
+      title="牌局过程"
+      :visible.sync="ComponentsGameLogVisible"
+      :before-close="closeView"
+      width="85%"
   >
     <el-table
-      :data="actions"
-      border
-      :row-style="getDetailRowStyle"
-      style="width: 100%"
+        :data="actions"
+        border
+        :row-style="getDetailRowStyle"
+        style="width: 100%"
     >
       <el-table-column
-        label="步骤"
-        width="100"
+          label="步骤"
+          width="100"
       >
         <template slot-scope="scope">
-          第{{ scope.row.Index }}步
+          <div v-if="scope.row.Action!=='结算'&& scope.row.roundID!=undefined">
+            <el-col>
+              第 {{ scope.row.roundID }}轮
+            </el-col>
+            <el-col>
+              第{{ scope.row.step }} 步
+            </el-col>
+          </div>
+          <div v-if="scope.row.Action=='结算'">
+            结算
+          </div>
         </template>
       </el-table-column>
       <el-table-column
-        prop="Uid"
-        label="Uid"
-        width="100"
+          prop="Uid"
+          label="Uid"
+          width="100"
       />
       <el-table-column
-        prop="Action"
-        label="动作"
-        width="80"
+          prop="Action"
+          label="动作"
+          width="80"
       />
       <el-table-column
-        label="手牌"
+          label="手牌"
       >
         <template slot-scope="scope">
           <div v-for="card in scope.row.cards" class="block">
             <el-image
-              style="width: 37px; height: 50px"
-              :src="getCardUrl(card)"
-            />
-          </div>
-          <div
-            v-if="scope.row.HandCards !== undefined && scope.row.HandCards != null && scope.row.HandCards.length > 0"
-          >
-            <span>剩余手牌:</span>
-            <div v-for="card in scope.row.HandCards" class="block">
-              <el-image
                 style="width: 37px; height: 50px"
                 :src="getCardUrl(card)"
+            />
+          </div>
+          <div v-if="scope.row.Action=='结算'" >
+            <span>剩余手牌:</span>
+            <div v-for="card in scope.row.Cards" class="block">
+              <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getCardUrl(card)"
               />
             </div>
           </div>
@@ -56,23 +64,19 @@
             <div v-for="one in scope.row.FinishArray" class="block-info">
               <span>用户：{{ one.Uid }} - {{ one.Nick }}</span><br>
               <span>Normal：{{ one.normalScore / 1000 }}</span><br>
-              <span>下注：{{ one.payPot / 1000 }}</span><br>
-              <span>输赢：{{ one.moneyWon / 1000 }}</span><br>
-              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>
-
-              <span>抽水：{{ one.moneyFee / 1000 }}</span><br>
-              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>
-              <span>燃烧获得：{{ one.burnedScore / 1000 }}</span><br>
               <span>额外结算：{{ one.extraScore / 1000 }}</span><br>
-              <span>pusoyDos金币：{{ one.pusoyDosScore / 1000 }}</span><br>
-              <span>奖池：{{ one.potMoney / 1000 }}</span><br>
-              <span>剩余手牌：
-                <div v-for="card in one.handCards" class="block">
-                  <el-image
-                    style="width: 37px; height: 50px"
-                    :src="getCardUrl(card)"
-                  />
-                </div></span><br>
+              <span>燃烧：{{ one.burnedScore / 1000 }}</span><br>
+              <span>pusoy dos：{{ one.pusoyDosScore / 1000 }}</span><br>
+              <span>POT：{{ one.potMoney / 1000 }}</span><br>
+              <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
+              <span>总输赢：{{ one.moneyWon / 1000 }}</span><br>
+
+
+<!--              <span>下注：{{ one.payPot / 1000 }}</span><br>-->
+<!--              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>-->
+
+<!--              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>-->
+               <br>
               <!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
             </div>
           </div>
@@ -92,13 +96,13 @@ export default {
   props: {
     GameLog: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     },
     Gid: {
       type: Number,
-      default: function() {
+      default: function () {
         return 0
       }
     },
@@ -133,19 +137,19 @@ export default {
   watch: {
     'GameLog': {
       deep: true,
-      handler: function(val) {
+      handler: function (val) {
         this.initData(val)
       }
     },
     'Gid': {
       deep: true,
-      handler: function(val) {
+      handler: function (val) {
         this.Gid = val
       }
     },
     'GameLogVisible': {
       deep: true,
-      handler: function(val) {
+      handler: function (val) {
         this.ComponentsGameLogVisible = val
       }
     }
@@ -155,22 +159,52 @@ export default {
   },
   methods: {
     getDetailRowStyle(row) {
+      if (row.row.step != 1 && row.row.roundID>0) {
+        return
+      }
       switch (this.UidStyleMap[row.row.Uid]) {
         case 1:
-          return { background: 'rgba(213,154,229,0.21)' }
+          return {background: 'rgba(170,41,217,0.58)'}
         case 2:
-          return { background: 'rgb(153,183,215)' }
+          return {background: 'rgba(236,173,121,0.58)'}
         case 3:
-          return { background: 'rgb(191,234,169)' }
+          return {background: 'rgba(156,188,231,0.58)'}
         case 4:
-          return { background: 'rgb(115,181,210)' }
+          return {background: 'rgba(120,222,113,0.56)'}
       }
     },
     initData(val) {
       this.actions = []
-      console.log('val===>', val)
       let styleIndex = 1
       const finishArray = []
+
+      let step = 1
+      let currRoundID =  val.displayCardsList[0].roundID
+      for (const o of val.displayCardsList) {
+        let action = this.actionNames[o.cardType]
+        if (o.isPass === 1) {
+          action = '跳过'
+        }
+        if (o.roundID < currRoundID) {
+          step++
+        }else if (o.roundID == currRoundID){
+          step = 1
+          currRoundID++
+        }
+
+        const obj = {
+          Action: action,
+          Index: o.roundID,
+          Uid: this.getRealUid(o.uid),
+          cards: o.cards,
+          roundID: o.roundID,
+          step: step,
+          // HandCards: HandCards,
+          IsFinished: false
+        }
+        this.actions.push(obj)
+      }
+
       for (const o of val.players) {
         if (!this.UidStyleMap[o.uid]) {
           this.UidStyleMap[o.uid] = styleIndex
@@ -193,27 +227,13 @@ export default {
           IsFinished: false
         }
         finishArray.push(one)
-      }
-      for (const o of val.displayCardsList) {
-        let action = this.actionNames[o.cardType]
-        if (o.isPass === 1) {
-          action = '跳过'
-        }
-        const obj = {
-          Action: action,
-          Index: o.roundID,
+
+        this.actions.push({
           Uid: this.getRealUid(o.uid),
-          cards: o.cards,
-          // HandCards: HandCards,
+          Action: '结算',
+          Cards: o.handCards,
           IsFinished: false
-        }
-        console.log('=====', o.cards)
-        if (o.cards) {
-          // for (const c of o.cards) {
-          //   obj.cards.push(c)
-          // }
-        }
-        this.actions.push(obj)
+        })
       }
 
       this.actions.push({
@@ -226,20 +246,7 @@ export default {
         IsFinished: true
       })
     },
-    isSecretGroup(group) {
-      if (group.groupId === 0) {
-        if (group.cardType === 2 && !group.joker) { // 没有使用癞子
-          return true
-        } else if (group.cardType === 2 && group.joker && group.joker.isSecretGroup) { // 癞子5条以上
-          return true
-        } else if (group.cardType === 3 && !group.joker && group.cards.length >= 5) {
-          return true
-        } else if (group.cardType === 3 && group.joker && group.joker.isSecretGroup) {
-          return true
-        }
-      }
-      return false
-    },
+
     getRealUid(uid) {
       if (uid < 1000000) {
         if (this.UidMap.hasOwnProperty(uid)) {
@@ -264,7 +271,6 @@ export default {
         newNum = 'd'
       }
       const newCard = parseInt('0x' + newColor + newNum)
-      console.log('=>', color, num, card, newColor, newNum, newCard)
       return newCard
     },
     getCardUrl(card) {
