@@ -1040,7 +1040,13 @@ export const asyncRoutes = [
             meta: { title: '游戏作弊踢出用户日志 ◐' }
           }
         ]
-      }
+      },
+      {
+        path: 'microctrl_log',
+        component: () => import('@/views/playerManage/microctrlLog'),
+        name: 'microctrl_log',
+        meta: { title: '扫雷点控日志 ◐' }
+      },
     ]
   },
   {
