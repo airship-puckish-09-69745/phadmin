@@ -138,7 +138,7 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="倍率(real*100)"
+                  label="赔率(支持2位小数)"
                 >
                   <template slot-scope="scope">
                     <el-input type="number" v-model.number="scope.row.Odds" size="mini" />
