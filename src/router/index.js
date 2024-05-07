@@ -409,9 +409,10 @@ export const asyncRoutes = [
             name: 'gameColorCfg',
             meta: { title: 'color game ◐' },
             beforeEnter: (to, from, next) => {
+              console.log('VUE_APP_PROJECT', process.env.VUE_APP_PROJECT)
               if (process.env.VUE_APP_PROJECT === 'ph_audit') {
                 import('@/views/config/tableConfig/colorGameMars').then(component => {
-                  to.matched[0].components.mars = component.default;
+                  to.matched[0].components.default = component.mars;
                   next();
                 });
               } else {
