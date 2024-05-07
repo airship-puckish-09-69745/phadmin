@@ -580,7 +580,7 @@ export default {
           originData.yData[1].Data.push(ob.MoneyTax.toFixed(2))
           originData.yData[2].Data.push(ob.MoneyBet.toFixed(2))
           if (ob2) {
-            originData.yData[3].Data.push((ob.MoneyBet- ob2.MoneyWon).toFixed(2))
+            originData.yData[3].Data.push((ob2.MoneyBet- ob2.MoneyWon).toFixed(2))
             originData.yData[4].Data.push(ob2.MoneyTax.toFixed(2))
             originData.yData[5].Data.push(ob2.MoneyBet.toFixed(2))
           }
