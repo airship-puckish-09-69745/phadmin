@@ -412,7 +412,7 @@ export const asyncRoutes = [
               console.log('VUE_APP_PROJECT', process.env.VUE_APP_PROJECT)
               if (process.env.VUE_APP_PROJECT === 'ph_audit') {
                 import('@/views/config/tableConfig/colorGameMars').then(component => {
-                  to.matched[0].components.default = component.mars;
+                  to.matched[0].components.mars = component.default;
                   next();
                 });
               } else {
