@@ -68,6 +68,7 @@
               <span>燃烧：{{ one.burnedScore / 1000 }}</span><br>
               <span>pusoy dos：{{ one.pusoyDosScore / 1000 }}</span><br>
               <span>POT：{{ one.payPot / -1000 }}</span><br>
+              <span>POTMoney：{{ one.hitPotScore / 1000 }}</span><br>
               <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
               <span>总输赢：{{ one.moneyChange / 1000 }}</span><br>
 
@@ -221,6 +222,7 @@ export default {
           burnedScore: o.burnedScore,
           normalScore: o.normalScore,
           extraScore: o.extraScore,
+          hitPotScore: o.hitPotScore,
           pusoyDosScore: o.pusoyDosScore,
           potMoney: o.potMoney,
           handCards: o.handCards,
