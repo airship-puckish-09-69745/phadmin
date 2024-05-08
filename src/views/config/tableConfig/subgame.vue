@@ -31,6 +31,7 @@
               <el-select v-model="gameComm.item[k][0]" size="mini">
                 <el-option value="poker" />
                 <el-option value="slots" />
+                <el-option value="casual" />
               </el-select>
             </el-form-item>
             <el-form-item>

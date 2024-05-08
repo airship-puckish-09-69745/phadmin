@@ -569,8 +569,8 @@
         :close-on-click-modal="false"
         :close-on-press-escape="false"
       >
-        <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum2()">添加</el-button>
-        <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum2()">保存</el-button>
+        <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum()">添加</el-button>
+        <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum()">保存</el-button>
         <el-table
           ref="filterTable"
           :data="poolNumChange.data"
@@ -597,7 +597,7 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum2(scope.row.Id)">移除</el-button>
+              <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum(scope.row.Id)">移除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -733,11 +733,11 @@
           <!--              <el-input v-model="cfg.Splice" placeholder="" />-->
           <!--            </el-form-item>-->
           <!--          </el-row>-->
-          <!--          <el-row>-->
-          <!--            <el-form-item label="赢金币动效(big Win 2-5, MageWin 6-15,Super Win 16">-->
-          <!--              <el-input v-model="cfg.WinType" placeholder="" />-->
-          <!--            </el-form-item>-->
-          <!--          </el-row>-->
+          <el-row>
+            <el-form-item label="赢金币动效(big Win 2-5, MageWin 6-15,Super Win 16">
+              <el-input v-model="cfg.WinType" placeholder="" />
+            </el-form-item>
+          </el-row>
           <el-row>
             <el-form-item label="费率(‰)：">
               <el-input v-model.number="cfg.FeeRate" placeholder="" />
@@ -894,7 +894,7 @@
                         </el-table-column>
                         <el-table-column v-if="envProjectName!='ph_audit'" prop="item.ThirdTimesRates" label="翻倍3次命中概率）‱（万分比）">
                           <template slot-scope="scope">
-                            <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"/>
+                            <el-input v-model.number="scope.row.ThirdTimesRates" placeholder="" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}" />
                           </template>
                         </el-table-column>
                       </el-table>
@@ -2058,6 +2058,11 @@ export default {
           }
         }
       }
+
+      if (( typeof  postData.WinType) ==='string') {
+        postData.WinType = postData.WinType.split(',').map(Number)
+      }
+
       postData.JackpotRegulation2 = jackpotInfo2
       return postData
     },
@@ -2147,6 +2152,54 @@ export default {
     setData() {
       const obj = this.getPostData()
       const postData = JSON.parse(JSON.stringify(obj))
+      if (this.envProjectName !== 'ph_audit') {
+        for (const i in postData.JackpotRegulation.RandAwards) {
+          let count = 0
+          let hasZero = false
+          let maxId = 0
+          for (const o of postData.JackpotRegulation.RandAwards[i].RateArr) {
+            count += o.Rate
+            if (o.Num == 0) {
+              hasZero = true
+            }
+            if (o.Id > maxId) {
+              maxId = o.Id
+            }
+          }
+          if (!hasZero) {
+            postData.JackpotRegulation.RandAwards[i].RateArr.push({ 'Id': maxId + 1, 'Rate': 100 - count, 'Num': 0 })
+          } else {
+            if (count != 100) {
+              Message.error('JackpotRegulation 机器人开奖概率必须100')
+              return
+            }
+          }
+        }
+
+        for (const i in postData.JackpotRegulation2.RandAwards) {
+          console.log('postData.JackpotRegulation.RandAwards[i]:', postData.JackpotRegulation.RandAwards[i].RateArr)
+          let count = 0
+          let hasZero = false
+          let maxId = 0
+          for (const o of postData.JackpotRegulation2.RandAwards[i].RateArr) {
+            count += o.Rate
+            if (o.Num == 0) {
+              hasZero = true
+            }
+            if (o.Id > maxId) {
+              maxId = o.Id
+            }
+          }
+          if (!hasZero) {
+            postData.JackpotRegulation2.RandAwards[i].RateArr.push({ 'Id': maxId + 1, 'Rate': 100 - count, 'Num': 0 })
+          } else {
+            if (count != 100) {
+              Message.error('JackpotRegulation 机器人开奖概率必须100')
+              return
+            }
+          }
+        }
+      }
       console.log('postData:', postData)
       // 配置检查
       if (postData.BetsStr) {
@@ -2189,12 +2242,13 @@ export default {
         for (const i in postData.LevelCfg) {
           let cnt = 0
           for (const o of postData.LevelCfg[i].Channels) {
-            cnt += o.HitRates
-
-            if (cnt <= 0) {
-              Message.error('命中概率总和比例 必须大于0')
-              return
+            if (o.HitRates) {
+              cnt += o.HitRates
             }
+          }
+          if (cnt <= 0) {
+            Message.error('命中概率总和比例 必须大于0')
+            return
           }
         }
       }

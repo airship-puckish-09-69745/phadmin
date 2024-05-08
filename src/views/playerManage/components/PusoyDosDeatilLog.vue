@@ -16,7 +16,17 @@
           width="100"
       >
         <template slot-scope="scope">
-          第{{ scope.row.Index }}步
+          <div v-if="scope.row.Action!=='结算'&& scope.row.roundID!=undefined">
+            <el-col>
+              第 {{ scope.row.roundID }}轮
+            </el-col>
+            <el-col>
+              第{{ scope.row.step }} 步
+            </el-col>
+          </div>
+          <div v-if="scope.row.Action=='结算'">
+            结算
+          </div>
         </template>
       </el-table-column>
       <el-table-column
@@ -39,10 +49,9 @@
                 :src="getCardUrl(card)"
             />
           </div>
-          <div
-              v-if="scope.row.HandCards !== undefined && scope.row.HandCards != null && scope.row.HandCards.length > 0">
+          <div v-if="scope.row.Action=='结算'" >
             <span>剩余手牌:</span>
-            <div v-for="card in scope.row.HandCards" class="block">
+            <div v-for="card in scope.row.Cards" class="block">
               <el-image
                   style="width: 37px; height: 50px"
                   :src="getCardUrl(card)"
@@ -55,23 +64,19 @@
             <div v-for="one in scope.row.FinishArray" class="block-info">
               <span>用户：{{ one.Uid }} - {{ one.Nick }}</span><br>
               <span>Normal：{{ one.normalScore / 1000 }}</span><br>
-              <span>下注：{{ one.payPot / 1000 }}</span><br>
-              <span>输赢：{{ one.moneyWon / 1000 }}</span><br>
-              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>
-
-              <span>抽水：{{ one.moneyFee / 1000 }}</span><br>
-              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>
-              <span>燃烧获得：{{ one.burnedScore / 1000 }}</span><br>
               <span>额外结算：{{ one.extraScore / 1000 }}</span><br>
-              <span>pusoyDos金币：{{ one.pusoyDosScore / 1000 }}</span><br>
-              <span>奖池：{{ one.potMoney / 1000 }}</span><br>
-              <span>剩余手牌：
-                <div v-for="card in one.handCards" class="block">
-              <el-image
-                  style="width: 37px; height: 50px"
-                  :src="getCardUrl(card)"
-              />
-            </div></span><br>
+              <span>燃烧：{{ one.burnedScore / 1000 }}</span><br>
+              <span>pusoy dos：{{ one.pusoyDosScore / 1000 }}</span><br>
+              <span>POT：{{ one.potMoney / 1000 }}</span><br>
+              <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
+              <span>总输赢：{{ one.moneyWon / 1000 }}</span><br>
+
+
+<!--              <span>下注：{{ one.payPot / 1000 }}</span><br>-->
+<!--              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>-->
+
+<!--              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>-->
+               <br>
               <!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
             </div>
           </div>
@@ -123,7 +128,7 @@ export default {
         0: 2, // 梅花 0x01->>0x21
         1: 4, // 黑桃 0x11->>0x41
         2: 3, // 红桃 0x21->>0x31
-        3: 1, //  方片  0x31->>0x11
+        3: 1 //  方片  0x31->>0x11
       },
       UidMap: {},
       UidStyleMap: {}
@@ -154,28 +159,58 @@ export default {
   },
   methods: {
     getDetailRowStyle(row) {
+      if (row.row.step != 1 && row.row.roundID>0) {
+        return
+      }
       switch (this.UidStyleMap[row.row.Uid]) {
         case 1:
-          return {background: 'rgba(213,154,229,0.21)'}
+          return {background: 'rgba(170,41,217,0.58)'}
         case 2:
-          return {background: 'rgb(153,183,215)'}
+          return {background: 'rgba(236,173,121,0.58)'}
         case 3:
-          return {background: 'rgb(191,234,169)'}
+          return {background: 'rgba(156,188,231,0.58)'}
         case 4:
-          return {background: 'rgb(115,181,210)'}
+          return {background: 'rgba(120,222,113,0.56)'}
       }
     },
     initData(val) {
       this.actions = []
-      console.log('val===>', val)
       let styleIndex = 1
       const finishArray = []
+
+      let step = 1
+      let currRoundID =  val.displayCardsList[0].roundID
+      for (const o of val.displayCardsList) {
+        let action = this.actionNames[o.cardType]
+        if (o.isPass === 1) {
+          action = '跳过'
+        }
+        if (o.roundID < currRoundID) {
+          step++
+        }else if (o.roundID == currRoundID){
+          step = 1
+          currRoundID++
+        }
+
+        const obj = {
+          Action: action,
+          Index: o.roundID,
+          Uid: this.getRealUid(o.uid),
+          cards: o.cards,
+          roundID: o.roundID,
+          step: step,
+          // HandCards: HandCards,
+          IsFinished: false
+        }
+        this.actions.push(obj)
+      }
+
       for (const o of val.players) {
         if (!this.UidStyleMap[o.uid]) {
           this.UidStyleMap[o.uid] = styleIndex
           styleIndex++
         }
-        let one = {
+        const one = {
           Uid: this.getRealUid(o.uid),
           Nick: o.nick,
           moneyFee: o.moneyFee,
@@ -189,30 +224,16 @@ export default {
           pusoyDosScore: o.pusoyDosScore,
           potMoney: o.potMoney,
           handCards: o.handCards,
-          IsFinished: false,
+          IsFinished: false
         }
         finishArray.push(one)
-      }
-      for (const o of val.displayCardsList) {
-        let action = this.actionNames[o.cardType]
-        if (o.isPass === 1) {
-          action = "跳过"
-        }
-        let obj = {
-          Action: action,
-          Index: o.roundID,
+
+        this.actions.push({
           Uid: this.getRealUid(o.uid),
-          cards: o.cards,
-          // HandCards: HandCards,
-          IsFinished: false,
-        }
-        console.log("=====", o.cards)
-        if (o.cards) {
-          // for (const c of o.cards) {
-          //   obj.cards.push(c)
-          // }
-        }
-        this.actions.push(obj)
+          Action: '结算',
+          Cards: o.handCards,
+          IsFinished: false
+        })
       }
 
       this.actions.push({
@@ -222,23 +243,10 @@ export default {
         HandCards: [],
         Cards: [],
         FinishArray: finishArray,
-        IsFinished: true,
+        IsFinished: true
       })
     },
-    isSecretGroup(group) {
-      if (group.groupId === 0) {
-        if (group.cardType === 2 && !group.joker) { // 没有使用癞子
-          return true
-        } else if (group.cardType === 2 && group.joker && group.joker.isSecretGroup) { // 癞子5条以上
-          return true
-        } else if (group.cardType === 3 && !group.joker && group.cards.length >= 5) {
-          return true
-        } else if (group.cardType === 3 && group.joker && group.joker.isSecretGroup) {
-          return true
-        }
-      }
-      return false
-    },
+
     getRealUid(uid) {
       if (uid < 1000000) {
         if (this.UidMap.hasOwnProperty(uid)) {
@@ -250,8 +258,8 @@ export default {
     getCardNum(card) {
       const color = card >> 4
       const num = card & 0x0F
-      let newNum = ''+num
-      let newColor = this.cardMap[color]
+      let newNum = '' + num
+      const newColor = this.cardMap[color]
 
       if (num == 10) {
         newNum = 'a'
@@ -262,12 +270,11 @@ export default {
       } else if (num == 13) {
         newNum = 'd'
       }
-      const newCard = parseInt("0x" + newColor + newNum)
-      console.log("=>", color, num, card, newColor, newNum, newCard)
+      const newCard = parseInt('0x' + newColor + newNum)
       return newCard
     },
     getCardUrl(card) {
-      let cardNum = this.getCardNum(card)
+      const cardNum = this.getCardNum(card)
       return require('@/assets/poker/' + cardNum + '.png')
     },
     splitCards(cards) {

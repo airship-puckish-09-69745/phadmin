@@ -569,7 +569,7 @@
                   <el-input v-model.number="scope.row.needOpNum" style="width: 150px;" size="mini" :required="true" />
                 </template>
               </el-table-column>
-              <el-table-column label="新手跳过帮倍数(放大100倍)[当前下注/平均下注]" prop="skipHelpLoseOdds">
+              <el-table-column label="跳过帮倍数(放大100倍)[当前下注/平均下注]" prop="skipHelpLoseOdds">
                 <template slot-scope="scope">
                   <el-input v-if="(scope.row.flag&8) !== 0" v-model.number="scope.row.skipHelpLossOdds" style="width: 150px;" size="mini" :required="true" />
                   <el-input v-else v-model.number="scope.row.skipHelpLossOdds" style="width: 150px;" size="mini" :required="true" disabled />
@@ -1175,7 +1175,7 @@ export default {
       let showStr = ''
       if (data.length > 0) {
         for (var i = 0; i < data.length; i++) {
-          showStr += data[i].step + '步(' + data[i].percent + '‱);'
+          showStr += data[i].step + '步(' + data[i].percent + '‰);'
         }
       }
       return showStr
