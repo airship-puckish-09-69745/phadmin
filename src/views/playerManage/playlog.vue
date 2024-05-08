@@ -1663,7 +1663,7 @@ export default {
       chartData: newChartData(),
       dataArr: [],
 
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange'])
+      libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange'])
     }
   },
   computed: {},
@@ -1874,9 +1874,9 @@ export default {
           $this.item.pot=0
           for (const o in objs) {
             const item = objs[o]
-            cnt+= item.PayoffAmount
+            cnt+= item.MoneyChanged
             $this.item.pot += item.PotChange
-            if (item.MoneyChanged > 0) {
+            if (item.PayoffAmount > 0) {
               $this.item.win += item.PayoffAmount
               $this.item.winCount++
             } else {
