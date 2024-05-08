@@ -67,7 +67,7 @@
               <span>额外结算：{{ one.extraScore / 1000 }}</span><br>
               <span>燃烧：{{ one.burnedScore / 1000 }}</span><br>
               <span>pusoy dos：{{ one.pusoyDosScore / 1000 }}</span><br>
-              <span>POT：{{ one.payPot / 1000 }}</span><br>
+              <span>POT：{{ one.payPot / -1000 }}</span><br>
               <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
               <span>总输赢：{{ one.moneyChange / 1000 }}</span><br>
 
