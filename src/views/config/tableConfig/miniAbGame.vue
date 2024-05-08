@@ -17,8 +17,8 @@
         </el-col>
 
         <el-col :span="8" :offset="1">
-          <el-form-item label="用户长时间未下注提示(s):">
-            <el-input v-model.number="item.NoticeTime" :required="true" />
+          <el-form-item prop="NoticeTime" label="用户长时间未下注提示(s):">
+            <el-input v-model.number="item.NoticeTime" :required="true" @input="change($event)" />
           </el-form-item>
         </el-col>
 
@@ -557,6 +557,9 @@ export default {
           }
         }
       })
+    },
+    change(event){
+      this.$forceUpdate()
     },
     wallpaperInput(val, index) {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
