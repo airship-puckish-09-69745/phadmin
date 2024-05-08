@@ -478,7 +478,7 @@ export default {
       }
 
       for (const i in this.item.BetAreaOptions) {
-        this.item.BetAreaOptions[i].Odds /= 10
+        this.item.BetAreaOptions[i].Odds /= 1000
       }
 
       for (const j in this.item.BetMoneyLevel) {
@@ -523,7 +523,7 @@ export default {
         const obj = JSON.parse(JSON.stringify(this.item.BetAreaOptions[o]))
         // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        obj.Odds *= 10
+        obj.Odds *= 1000
         ret.BetAreaOptions.push(obj)
       }
 
