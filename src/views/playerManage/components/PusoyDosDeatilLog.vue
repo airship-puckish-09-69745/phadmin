@@ -70,7 +70,7 @@
               <span>POT：{{ one.payPot / -1000 }}</span><br>
               <span>POTMoney：{{ one.hitPotScore / 1000 }}</span><br>
               <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
-              <span>总输赢：{{ one.moneyChange / 1000 }}</span><br>
+              <span>输赢：{{ one.moneyChange / 1000 }}</span><br>
 
 
 <!--              <span>下注：{{ one.payPot / 1000 }}</span><br>-->
