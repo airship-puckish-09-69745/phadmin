@@ -1871,10 +1871,11 @@ export default {
           $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)
           $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.fee = 0
           let cnt = 0
-
+          $this.item.pot=0
           for (const o in objs) {
             const item = objs[o]
-            cnt+= item.MoneyChanged
+            cnt+= item.PayoffAmount
+            $this.item.pot += item.PotChange
             if (item.MoneyChanged > 0) {
               $this.item.win += item.PayoffAmount
               $this.item.winCount++
@@ -1882,6 +1883,7 @@ export default {
               $this.item.lose += item.PayoffAmount
               $this.item.loseCount++
             }
+
             $this.item.fee += item.ServiceFee
             if (item.Gid === 14 && item.WinRate > 0) {
               // 真人场，需要特殊处理胜率展示

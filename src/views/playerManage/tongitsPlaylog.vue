@@ -798,7 +798,7 @@ export default {
           $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.seconds = $this.item.fee = 0
           for (const o in objs) {
             const item = objs[o]
-            if (item.MoneyChanged > 0) {
+            if (item.PayoffAmount > 0) {
               $this.item.win += item.PayoffAmount
               $this.item.winCount++
             } else {
