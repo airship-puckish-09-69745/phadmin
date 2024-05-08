@@ -112,7 +112,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog :title="getCycleDialogTitle()" width="65%" :visible.sync="edit.cyclesVisible" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog :title="getCycleDialogTitle()" width="65%" :visible.sync="edit.cyclesVisible" :close-on-click-modal="false">
       <publish primary-key="CycId" key-id="PokerTopicCycleConfig" :env-empty="true" :check="configCheck" :attr-names="CyclesAttrNames" />
       <el-button size="mini" type="primary" style="margin-bottom: 5px" @click="handleAddCycle">新增周期</el-button>
       <el-table ref="filterTable" :data="cycleList" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%">
@@ -345,18 +345,6 @@ export default {
       })
     },
     configCheck() {
-      /*
-        let goodsCheck = false
-        for (const i in this.clientDB.TotalData) {
-          if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 1) {
-            // count++
-          }
-          // 除了练习场，其它场次必须配置推荐商品
-          if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
-            goodsCheck = true
-          }
-        }
-        */
       return true
     },
     showCyclesDialog(ob) {
