@@ -142,8 +142,8 @@
         width="100"
       >
         <template slot-scope="scope">
-          <span :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
-            {{ formatNumber(scope.row.MoneyChanged) }}
+          <span :style="{color: scope.row.PayoffAmount >0?'red':'green'}">
+            {{ formatNumber(scope.row.PayoffAmount) }}
           </span>
         </template>
       </el-table-column>
@@ -799,10 +799,10 @@ export default {
           for (const o in objs) {
             const item = objs[o]
             if (item.MoneyChanged > 0) {
-              $this.item.win += item.MoneyChanged
+              $this.item.win += item.PayoffAmount
               $this.item.winCount++
             } else {
-              $this.item.lose += item.MoneyChanged
+              $this.item.lose += item.PayoffAmount
               $this.item.loseCount++
             }
             $this.item.fee += item.ServiceFee

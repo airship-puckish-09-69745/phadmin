@@ -164,11 +164,8 @@
         width="100"
       >
         <template slot-scope="scope">
-            <span v-if="scope.row.Gid===20" :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
-            {{ formatNumber((scope.row.MoneyChanged+scope.row.PotChange)) }}
-          </span>
-          <span v-else :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
-            {{ formatNumber(scope.row.MoneyChanged) }}
+          <span  :style="{color: scope.row.PayoffAmount >0?'red':'green'}">
+            {{ formatNumber(scope.row.PayoffAmount) }}
           </span>
         </template>
       </el-table-column>
@@ -1879,10 +1876,10 @@ export default {
             const item = objs[o]
             cnt+= item.MoneyChanged
             if (item.MoneyChanged > 0) {
-              $this.item.win += item.MoneyChanged
+              $this.item.win += item.PayoffAmount
               $this.item.winCount++
             } else {
-              $this.item.lose += item.MoneyChanged
+              $this.item.lose += item.PayoffAmount
               $this.item.loseCount++
             }
             $this.item.fee += item.ServiceFee
@@ -2448,6 +2445,14 @@ export default {
       console.log(this.sweeperPlay)
 
       this.sweeperVisible = true
+    },
+    getGamePot(pot){
+      // 有些游戏上报的时候没加pot，有些加了
+      if (this.gid==22){
+        console.log("=====1=====",this.gid,pot)
+        return pot
+      }
+     return 0
     },
     showTowerGame(obj) {
       this.towerData = obj.Tower.Symbol
