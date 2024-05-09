@@ -98,7 +98,7 @@
 
       <el-table-column
         prop="Innings"
-        label="回合触发局数"
+        label="回合第几局触发"
       />
 
       <el-table-column
