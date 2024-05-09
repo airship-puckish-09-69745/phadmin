@@ -293,7 +293,7 @@ export default {
           $this.dataArr = objs
 
           const stat = response.Data.Stat
-          this.statData.round = stat.Round
+          this.statData.round = stat.Rounds
           this.statData.totalFee = stat.Fee
           this.statData.betMoney = stat.TotalBet
           this.statData.winMoney = stat.TotalReturn
