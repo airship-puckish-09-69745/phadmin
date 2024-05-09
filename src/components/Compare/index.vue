@@ -192,10 +192,10 @@ export default {
       for (const k in keys) {
         const key = keys[k]
         let oldVal, newVal
-        if (oldObj[key]) {
+        if (oldObj[key] !== undefined) {
           oldVal = oldObj[key]
         }
-        if (newObj[key]) {
+        if (newObj[key] !== undefined) {
           newVal = newObj[key]
         }
 
@@ -209,7 +209,7 @@ export default {
           newVal = JSON.parse(newVal)
         }
 
-        const sKey = prefix ? prefix + '.' + key : key
+        const sKey = prefix ? this.getAttrName(prefix) + '.' + this.getAttrName(key) : this.getAttrName(key)
         if ($libType.IsObject(oldVal)) {
           this.compareObject(oldVal, newVal, sKey)
           continue

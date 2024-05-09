@@ -25,7 +25,7 @@
             {{ formatTime(scope.row.EndTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="ResetCycle" label="重置周期（天）" width="200" />
+        <el-table-column prop="ResetCycle" label="重置周期（天）" width="130" />
         <el-table-column prop="UpdateTime" label="最近修改" width="180">
           <template slot-scope="scope">
             {{ formatTime(scope.row.UpdateTime) }}
@@ -45,6 +45,7 @@
             <el-button v-if="scope.row.Status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
             <el-button v-if="scope.row.Status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
             <el-button v-if="scope.row.Status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
+            <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="showCyclesDialog(scope.row)">周期 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -110,8 +111,48 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog :title="getCycleDialogTitle()" width="65%" :visible.sync="edit.cyclesVisible" :close-on-click-modal="false">
+      <publish primary-key="CycId" key-id="PokerTopicCycleConfig" :env-empty="true" :check="configCheck" :attr-names="CyclesAttrNames" />
+      <el-button size="mini" type="primary" style="margin-bottom: 5px" @click="handleAddCycle">新增周期</el-button>
+      <el-table ref="filterTable" :data="cycleList" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%">
+        <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
+        <el-table-column prop="ActivityCycle" label="周期编号" width="110" />
+        <el-table-column prop="StartTime" label="开始时间" width="210">
+          <template slot-scope="scope">
+            <el-date-picker v-model="scope.row.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="EndTime" label="结束时间" sortable="custom" width="210">
+          <template slot-scope="scope">
+            <el-date-picker v-model="scope.row.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="Period" label="时长(天)" width="80">
+          <template slot-scope="scope">
+            {{ ((scope.row.EndTime - scope.row.StartTime)/1000/86400).toFixed(1) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="Number" label="第几期" width="80" />
+        <el-table-column prop="ModifyUser" label="最后修改人" width="120" />
+        <!--<el-table-column prop="Status" label="状态" width="70">
+          <template slot-scope="scope">
+            {{ statNames[scope.row.Status] }}
+          </template>
+        </el-table-column>-->
+        <el-table-column label="操作" column-key="op" width="230">
+          <template slot-scope="scope">
+            <el-button v-if="scope.row.Status!==2 && scope.row.Status!==0" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepareCycle(scope.row)">上架 </el-button>
+            <el-button v-if="scope.row.Status!==2" size="mini" icon="el-icon-delete" @click="handleDeleteCycle(scope.row)" />
+            <el-button v-if="scope.row.Status===2" size="mini" type="danger" icon="el-icon-download" @click="handleOfflineCycle(scope.row)">下架 </el-button>
+            <el-button v-if="scope.row.Status!==2" size="mini" type="primary" @click="handleSaveCycle(scope.row)">保存</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
+    <compare ref="compareCycles" :attr-names="CyclesAttrNames" />
   </div>
 </template>
 
@@ -137,14 +178,29 @@ function newItem() {
   }
 }
 
+function newCycle(activity, actCycle, number, startTime) {
+  return {
+    ID: 0,
+    ActivityId: activity.ID,
+    ActivityCycle: actCycle,
+    Number: number,
+    Period: activity.Period,
+    StartTime: startTime,
+    EndTime: startTime + 86400 * activity.ResetCycle * 1000,
+    Status: 0
+  }
+}
+
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: { Compare, Publish, GameLevel, MoneyInput },
   data() {
     return {
       tableData: [],
+      cycleList: [],
       statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       clientDB: new ClientTableData([], 1, filterMap),
+      cycleClientDB: new ClientTableData([], 1),
       search: '',
       libShow: $libShow,
       env: 'test',
@@ -166,6 +222,8 @@ export default {
 
       edit: {
         visible: false,
+        cyclesVisible: false,
+        activityId: 0,
         item: newItem(),
         isEdit: false
       },
@@ -179,6 +237,15 @@ export default {
         EndTime: '结束时间',
         ResetCycle: '重置周期',
         Games: '游戏ID'
+      },
+      CyclesAttrNames: {
+        ID: 'ID',
+        ActivityId: '活动ID',
+        ActivityCycle: '周期编号',
+        Number: '第几期',
+        Period: '时长（天）',
+        StartTime: '开始时间',
+        EndTime: '结束时间'
       }
     }
   },
@@ -216,6 +283,7 @@ export default {
 
     onGameOptionsChange() {
       console.log('selected games', this.games)
+      this.edit.item.Games = this.games.join(',')
     },
 
     sortChange(ob) {
@@ -250,20 +318,99 @@ export default {
         }
       })
     },
-    configCheck() {
-      /*
-        let goodsCheck = false
-        for (const i in this.clientDB.TotalData) {
-          if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 1) {
-            // count++
-          }
-          // 除了练习场，其它场次必须配置推荐商品
-          if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
-            goodsCheck = true
-          }
+    getCycles(actId) {
+      // 加载基础数值配置
+      request({
+        url: '/pokertopiccycle/all',
+        method: 'get',
+        data: {
+          actId: actId
         }
-        */
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('getCycles(', actId, ')', response.Data)
+          this.$refs.compareCycles.SetOldVal(response.Data)
+
+          this.cycleList = []
+          const list = response.Data || []
+          for (const i in list) {
+            const item = {}
+            Object.assign(item, list[i])
+            item.StartTime = item.StartTime * 1000
+            item.EndTime = item.EndTime * 1000
+            this.cycleList.push(item)
+          }
+          this.cycleClientDB = new ClientTableData(this.cycleList, 10, 'EndTime', -1)
+        }
+      })
+    },
+    configCheck() {
       return true
+    },
+    showCyclesDialog(ob) {
+      console.log('showCyclesDialog', ob)
+      this.edit.cyclesVisible = true
+      this.edit.activityId = ob.ID
+      this.getCycles(ob.ID)
+    },
+    saveCycleData() {
+      console.log('saveCycleData', this.edit.activityId)
+      const $this = this
+      const list = []
+      for (const i in this.cycleList) {
+        const item = {}
+        Object.assign(item, this.cycleList[i])
+        item.StartTime = item.StartTime / 1000
+        item.EndTime = item.EndTime / 1000
+        item.Period = parseInt(((item.EndTime - item.StartTime) / 86400).toString())
+        if (item.Period === 0) {
+          this.$alert('周期时长不能小于1天', '周期时长', { confirmButtonText: '确定' })
+          return
+        }
+        list.push(item)
+      }
+      console.log('saveCycleData-newList', list)
+      this.$refs.compareCycles.SetNewVal(list)
+      this.$refs.compareCycles.Compare(function(isEdit) {
+        console.log('saveCycleData-isEdit', isEdit)
+        if (isEdit) {
+          $this.saveCycles(list)
+        } else {
+          Message.error('没有任何修改，不需要提交')
+        }
+        // $this.getCycles($this.edit.activityId)
+      })
+    },
+    saveCycles(list) {
+      for (const i in list) {
+        this.editSaveCycle(list[i])
+      }
+    },
+    createSaveCycle(postData) {
+      console.log('createSaveCycle', postData)
+      request({
+        url: '/pokertopiccycle/create',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.getCycles(postData.ActivityId)
+          Message.success('保存成功！')
+        }
+      })
+    },
+    editSaveCycle(postData) {
+      console.log('editSaveCycle', postData)
+      request({
+        url: 'pokertopiccycle/update',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.getCycles(postData.ActivityId)
+          Message.success('保存成功！')
+        }
+      })
     },
     handlePrepare(ob) {
       this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
@@ -275,7 +422,7 @@ export default {
       this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
     },
     changeStatus(id, status, msg) {
-      const $this = this
+      // const $this = this
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -298,6 +445,119 @@ export default {
       }).catch(() => {
         console.log('取消')
       })
+    },
+    handlePrepareCycle(ob) {
+      this.changeStatusCycle(ob.ID, ob.ActivityId, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+    },
+    handleOfflineCycle(ob) {
+      this.changeStatusCycle(ob.ID, ob.ActivityId, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleDeleteCycle(ob) {
+      if (ob.ID === 0) {
+        this.cycleClientDB.DelData(ob.ID)
+        this.cycleList = this.cycleClientDB.GetCurrentPageData(1)
+        return
+      }
+      this.deleteCycle(ob.ID)
+      // this.changeStatusCycle(ob.ID, ob.ActivityId, 3, '您确定要将记录状态修改为废弃吗？')
+    },
+    handleAddCycle() {
+      if (this.cycleClientDB.GetDataByID(0)) {
+        Message.warning('请先保存新增的数据')
+        return
+      }
+      let cycle = {}
+      const activity = this.clientDB.GetDataByID(this.edit.activityId)
+      console.log('handleAddCycle', activity)
+      if (this.cycleList.length > 0) {
+        const lastCycle = this.cycleList[0]
+        const number = lastCycle.Number + 1
+        const startTime = (lastCycle.EndTime + 1000)
+        const actCycle = lastCycle.ActivityCycle + 1
+        cycle = newCycle(activity, actCycle, number, startTime)
+      } else {
+        const number = 1
+        const startTime = activity.StartTime * 1000
+        const actCycle = parseInt((new Date(activity.StartTime * 1000).Format('yyyyMMdd') + '01'))
+        cycle = newCycle(activity, actCycle, number, startTime)
+      }
+
+      if (cycle.StartTime / 1000 >= activity.EndTime) {
+        Message.warning('新的周期的起始时间已大于活动的结束时间，无法新增周期')
+        return
+      }
+
+      this.cycleClientDB.AddData(cycle)
+      this.cycleList = this.cycleClientDB.GetCurrentPageData(1)
+    },
+    handleSaveCycle(ob) {
+      const item = {}
+      Object.assign(item, ob)
+      item.StartTime = item.StartTime / 1000
+      item.EndTime = item.EndTime / 1000
+      item.Period = parseInt(((item.EndTime - item.StartTime) / 86400).toString())
+      if (item.Period === 0) {
+        this.$alert('周期时长不能小于1天', '周期时长', { confirmButtonText: '确定' })
+        return
+      }
+      if (ob.ID > 0) {
+        this.editSaveCycle(item)
+      } else {
+        this.createSaveCycle(item)
+      }
+    },
+    deleteCycle(id) {
+      this.$confirm('是否删除记录', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/pokertopiccycle/delete',
+          method: 'post',
+          data: {
+            ID: id
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('删除记录成功！')
+            this.getCycles(this.edit.activityId)
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    changeStatusCycle(id, activityId, status, msg) {
+      // const $this = this
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/pokertopiccycle/update/status',
+          method: 'post',
+          data: {
+            ID: id,
+            status: status
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改记录状态成功！')
+            this.getCycles(activityId)
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    getCycleDialogTitle() {
+      if (this.edit.activityId) {
+        const activity = this.clientDB.GetDataByID(this.edit.activityId)
+        return `周期配置：「活动ID：${activity.ID}，主题名称：${activity.TopicName}」`
+      }
+      return '周期配置'
     },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
@@ -353,10 +613,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.getList()
-          /*
-          this.clientDB.UpdateData(this.edit.item)
-          this.refreshShow()
-          */
           Message.success('保存成功！')
         }
       })

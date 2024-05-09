@@ -17,8 +17,8 @@
         </el-col>
 
         <el-col :span="8" :offset="1">
-          <el-form-item label="用户长时间未下注提示(s):">
-            <el-input v-model.number="item.NoticeTime" :required="true" />
+          <el-form-item prop="NoticeTime" label="用户长时间未下注提示(s):">
+            <el-input v-model.number="item.NoticeTime" :required="true" @input="change($event)" />
           </el-form-item>
         </el-col>
 
@@ -58,22 +58,22 @@
                     <el-input v-model="scope.row.CanBet" size="mini" />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="Low"
-                  label="最大下注限制"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.MaxMoneyBet" size="mini" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="Low"
-                  label="最小下注限制"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />
-                  </template>
-                </el-table-column>
+                <!--                <el-table-column-->
+                <!--                  prop="Low"-->
+                <!--                  label="最大下注限制"-->
+                <!--                >-->
+                <!--                  <template slot-scope="scope">-->
+                <!--                    <el-input v-model="scope.row.MaxMoneyBet" size="mini" />-->
+                <!--                  </template>-->
+                <!--                </el-table-column>-->
+                <!--                <el-table-column-->
+                <!--                  prop="Low"-->
+                <!--                  label="最小下注限制"-->
+                <!--                >-->
+                <!--                  <template slot-scope="scope">-->
+                <!--                    <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />-->
+                <!--                  </template>-->
+                <!--                </el-table-column>-->
                 <el-table-column label="操作">
                   <template slot-scope="scope">
                     <el-button
@@ -93,7 +93,7 @@
             <legend>下注区域配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>
+<!--                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>-->
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -138,10 +138,10 @@
                 </el-table-column>
 
                 <el-table-column
-                  label="倍率(real*100)"
+                  label="赔率(支持2位小数)"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Odds" size="mini" />
+                    <el-input type="number" v-model.number="scope.row.Odds" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -478,7 +478,7 @@ export default {
       }
 
       for (const i in this.item.BetAreaOptions) {
-        this.item.BetAreaOptions[i].Odds /= 10
+        this.item.BetAreaOptions[i].Odds /= 1000
       }
 
       for (const j in this.item.BetMoneyLevel) {
@@ -523,7 +523,7 @@ export default {
         const obj = JSON.parse(JSON.stringify(this.item.BetAreaOptions[o]))
         // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        obj.Odds *= 10
+        obj.Odds *= 1000
         ret.BetAreaOptions.push(obj)
       }
 
@@ -557,6 +557,9 @@ export default {
           }
         }
       })
+    },
+    change(event){
+      this.$forceUpdate()
     },
     wallpaperInput(val, index) {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)

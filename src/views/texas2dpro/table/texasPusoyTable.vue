@@ -298,22 +298,472 @@
       <!--对比组件-->
       <compare ref="compare" :attr-names="AttrNames" />
     </div>
-  </template>
-  
-  <script>
-  import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
-  import store from '@/store'
-  import request from '@/utils/request'
-  import Compare from '@/components/Compare'
-  import { Message } from 'element-ui'
-  import Publish from '@/components/Publish'
-  import SelectGoods from '@/components/SelectGoods'
-  import GameLevel from '@/components/GameLevel'
-  import MoneyInput from '@/components/MoneyInput'
-  
-  const filterMap = {}
-  
-  function newItem() {
+    <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-form ref="edit" :model="edit" label-width="180px" size="small">
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="底注：" :required="true" prop="item.SmallBlind">
+              <el-select v-model="edit.item.SmallBlind" placeholder="请选择">
+                <el-option label="1" :value="1" />
+                <el-option label="2" :value="2" />
+                <el-option label="5" :value="5" />
+                <el-option label="10" :value="10" />
+                <el-option label="20" :value="20" />
+                <el-option label="50" :value="50" />
+                <el-option label="100" :value="100" />
+                <el-option label="200" :value="200" />
+                <el-option label="500" :value="500" />
+                <el-option label="1000" :value="1000" />
+                <el-option label="2000" :value="2000" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="最大玩牌人数：" :required="true" prop="item.TableMaxPlayerNum" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TableMaxPlayerNum" placeholder="请输入" :disabled="true" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="9">
+            <el-form-item label="台费(千分比)：" :required="true" prop="item.TableFee" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TableFee" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="抽5%，则填写50" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="前注：" :required="true" prop="item.PrefixChip" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.PrefixChip" placeholder="请输入" :disabled="true" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="最小携带：" :required="true" prop="item.CarryLower" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.CarryLower" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="最大携带：" :required="true" prop="item.CarryUpper" :rules="dataRule(true,{type:'n',range:'1'})">
+              <el-input v-model.number="edit.item.CarryUpper" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="最低买入：" :required="true" prop="item.MinBuyIn" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.MinBuyIn" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="最大买入：" :required="true" prop="item.MaxBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
+              <el-input v-model.number="edit.item.MaxBuyIn" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="买入间隔" :required="true" prop="item.IntervalBuyIn" :rules="dataRule(true,{type:'n',range:'1'})">
+              <el-input v-model.number="edit.item.IntervalBuyIn" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="桌子数量：" :required="true" prop="item.ObjectCount" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.ObjectCount" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="最大旁观局数：" :required="true" prop="item.WatchTimesMax" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.WatchTimesMax" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="自动开始人数：" :required="true" prop="item.AutoStartPlayerNumer" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.AutoStartPlayerNumer" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="GPS限制：" :required="true">
+              <el-radio-group v-model.number="edit.item.GPSLimit">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="IP限制：" :required="true">
+              <el-radio-group v-model.number="edit.item.IPLimit">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="开启保险：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsEnableInsure">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="多次发牌：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsEnableMultiPerflop">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="开启NoRathole：" :required="true">
+              <el-radio-group v-model.number="edit.item.NoRathole">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="开启延时看牌：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsDelayShow">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="开启Straddle：" :required="true">
+              <el-radio-group v-model.number="edit.item.IsEnableStraddle">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-select v-model="edit.item.Level" placeholder="请选择">
+                <el-option label="微级" :value="1" />
+                <el-option label="初级" :value="2" />
+                <el-option label="中级" :value="3" />
+                <el-option label="高级" :value="4" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="最小玩牌金额：" :required="true" prop="item.MinPlayMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="延迟消耗金额：" :required="true" prop="item.DelayOpTimeCostMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.DelayOpTimeCostMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="最多使用次数：" :required="true" prop="item.DelayOpTimeUsedTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.DelayOpTimeUsedTimes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="显示公共牌消耗金额：" :required="true" prop="item.ShowPublicCardCostMoney" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.ShowPublicCardCostMoney" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="进入该场次后隐藏场次：" :required="true" prop="item.HideLevel">
+              <el-select v-model="edit.item.HideLevel" placeholder="请选择">
+                <el-option label="无" :value="0" />
+                <el-option label="0.1" :value="100" />
+                <el-option label="0.3" :value="300" />
+                <el-option label="0.5" :value="500" />
+                <el-option label="1" :value="1000" />
+                <el-option label="3" :value="3000" />
+                <el-option label="10" :value="10000" />
+                <el-option label="20" :value="20000" />
+                <el-option label="50" :value="50000" />
+                <el-option label="200" :value="200000" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="9">
+            <el-form-item label="VPIP入池率(百分比)：" :required="true" prop="item.TablePourRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.TablePourRatio" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="抽50%，则填写50" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="猎兔价格配置" :required="true" prop="item.RabbitPrice" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RabbitPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每日免费次数" :required="true" prop="item.InteractDayFreeTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.InteractDayFreeTimes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
+              <el-input v-model.number="edit.item.InteractItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="延时道具消耗(逗号隔开)" :required="true" prop="item.DelayItemPrice">
+              <el-input v-model="edit.DelayItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="强制看牌价格(逗号隔开)" :required="true" prop="item.ForceLookCardPrice">
+              <el-input v-model="edit.ForceLookCardPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <fieldset>
+          <legend>时间配置</legend>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="操作时间：" :required="true" prop="TimeConfig.OpTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.OpTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="买入超时时间：" :required="true" prop="TimeConfig.WantBuyTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.WantBuyTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="保险操作超时时间：" :required="true" prop="TimeConfig.InsureTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.InsureTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="选择多牌超时时间：" :required="true" prop="TimeConfig.SelectMultiTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.SelectMultiTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="同意多牌超时时间：" :required="true" prop="TimeConfig.AllowMultiTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.AllowMultiTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </fieldset>
+
+        <fieldset>
+          <legend>outs配置</legend>
+          <el-row style="margin-top:10px">
+            <el-button type="primary" size="mini" @click="addOutsRatioRow">添加</el-button>
+          </el-row>
+          <el-row v-for="(value, index) in edit.OutsRatio" :key="index">
+            <el-col :span="20">
+              <el-row>
+                <el-col :span="12">
+
+                  <el-form-item label="outs牌数量">
+                    <el-input v-model.number="edit.OutsRatio[index].OutsNum" size="mini" :required="true" type="number" />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                  <el-form-item label="赔率(千分比)">
+                    <el-input v-model.number="edit.OutsRatio[index].Ratio" size="mini" :required="true" type="number" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="2">
+              <el-button type="danger" size="mini" @click="removeOutsRatioRow(index)">删除</el-button>
+            </el-col>
+          </el-row>
+
+        </fieldset>
+
+        <fieldset>
+          <legend>台费配置</legend>
+          <el-row style="margin-top:10px">
+            <el-button type="primary" size="mini" @click="addFeeLimitRow">添加</el-button>
+          </el-row>
+          <el-row v-for="(value, index) in edit.FeeLimit" :key="index">
+            <el-col :span="20">
+              <el-row>
+                <el-col :span="8">
+                  <el-form-item label="最小人数">
+                    <el-input v-model.number="edit.FeeLimit[index].MinPlayerNum" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="8">
+                  <el-form-item label="最大人数">
+                    <el-input v-model.number="edit.FeeLimit[index].MaxPlayerNum" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="8">
+                  <el-form-item label="抽水上限">
+                    <el-input v-model.number="edit.FeeLimit[index].FeeLimit" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="2">
+              <el-button type="danger" size="mini" @click="removeFeeLimitRow(index)">删除</el-button>
+            </el-col>
+          </el-row>
+
+        </fieldset>
+
+        <el-form-item>
+          <el-row style="margin-top: 10px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="save">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <!--对比组件-->
+    <compare ref="compare" :attr-names="AttrNames" />
+  </div>
+</template>
+
+<script>
+import { $libDate, $libShow, ClientTableData, DataRule, MoneyShow } from '@/utils/common'
+import store from '@/store'
+import request from '@/utils/request'
+import Compare from '@/components/Compare'
+import { Message } from 'element-ui'
+import Publish from '@/components/Publish'
+import GameLevel from '@/components/GameLevel'
+import MoneyInput from '@/components/MoneyInput'
+
+const filterMap = {}
+
+function NewTimeConfig() {
+  return {
+    OpTimeout: 0,
+    WantBuyTimeout: 0,
+    InsureTimeout: 0,
+    SelectMultiTimeout: 0,
+    AllowMultiTimeout: 0
+  }
+}
+function NewOutsRatio() {
+  return [
+    {
+      OutsNum: 1,
+      Ratio: 30
+    },
+    {
+      OutsNum: 2,
+      Ratio: 16
+    }
+  ]
+}
+function NewFeeLimit() {
+  return [
+    {
+      MinPlayerNum: 0,
+      MaxPlayerNum: 0,
+      FeeLimit: 30
+    }
+  ]
+}
+
+function newItem() {
+  return {
+    CarryLower: 0,
+    CarryUpper: 0,
+    SmallBlind: 0.1,
+    BigBlind: 0,
+    ObjectCount: 0,
+    TableMaxPlayerNum: 6,
+    TableFee: 0,
+    TimeConfig: {},
+    MinBuyIn: 0,
+    MaxBuyIn: 0,
+    IntervalBuyIn: 0,
+    GPSLimit: 0,
+    IPLimit: 0,
+    WatchTimesMax: 0,
+    Level: 1,
+    PrefixChip: 0,
+    NoRathole: 0,
+    IsDelayShow: 0,
+    IsEnableStraddle: 0,
+    AutoStartPlayerNumer: 0,
+    OutsRatio: [],
+    FeeLimit: [],
+    IsEnableInsure: 0,
+    IsEnableMultiPerflop: 0,
+    DelayOpTimeCostMoney: 0,
+    DelayOpTimeUsedTimes: 0,
+    ShowPublicCardCostMoney: 0,
+    HideLevel: 0,
+    MinPlayMoney: 0,
+    TablePourRatio: 0,
+    RabbitPrice: 0,
+    InteractDayFreeTimes: 0,
+    InteractItemPrice: 0,
+    DelayItemPrice: '',
+    ForceLookCardPrice: ''
+  }
+}
+
+export default {
+  // eslint-disable-next-line vue/no-unused-components
+  components: { Compare, Publish, GameLevel, MoneyInput },
+  data() {
     return {
       CarryLower: '',
       CarryUpper: '',

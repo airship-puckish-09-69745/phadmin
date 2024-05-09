@@ -32,6 +32,7 @@
         title="对比结果"
         :visible.sync="dialogVisible"
         width="60%"
+        :append-to-body="true"
         :before-close="dialogClose"
         style="overflow: auto"
       >

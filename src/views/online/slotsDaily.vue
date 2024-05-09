@@ -4,8 +4,11 @@
       <el-tabs tab-position="left">
         <el-tab-pane v-for="value in lists" :label="value.title">
           <el-row>
-            <el-col :offset="12">
+            <el-col :offset="12" :span="2">
               <el-button type="text" @click="doShowChart(value.slotsType)">图表</el-button>
+            </el-col>
+            <el-col :span="2">
+              <el-button size="mini" @click="getData()">刷新</el-button>
             </el-col>
           </el-row>
           <el-table
@@ -149,6 +152,8 @@ import { $libDate, $libShow, MoneyShow } from '@/utils/common'
 import slotsLineChart from './components/slotsLineChart'
 
 const RETURN_ALL_KEY = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
+const RETURN_ALL_KEY_NORMAL = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
+const RETURN_ALL_KEY_SUM = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
 const RETURN_HIT_KEY = ['SlotsReturn1Times', 'SlotsReturn2Times', 'SlotsReturn3Times', 'SlotsReturn4Times', 'SlotsReturn5Times', 'SlotsReturn6Times', 'Jackpot1Times', 'Jackpot2Times', 'Jackpot3Times', 'Jackpot4Times', 'Jackpot5Times', 'Jackpot6Times']
 
 export default {
@@ -165,7 +170,8 @@ export default {
         queryTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
       },
       pickerOptions: $libShow.DefaultDatePickerOptions(),
-      tempLoading: {}
+      tempLoading: {},
+      ignoreGame:  [ 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83]
     }
   },
   created() {
@@ -188,6 +194,9 @@ export default {
         if (response.RetCode === 0) {
           const obj = response.Data
           for (const key in obj) {
+            if (this.ignoreGame.includes(obj[key].SlotsType)){
+              continue
+            }
             this.lists.push(this.calcData(obj[key]))
           }
         } else {
@@ -249,7 +258,7 @@ export default {
         case 75:
           return '小红帽'
         case 76:
-          return '糖果传奇Way'
+          return 'CandyRush'
         case 77:
           return '糖果传奇Allline'
         case 78:
@@ -268,12 +277,10 @@ export default {
       return '未知老虎机-' + sType
     },
     transData(one) {
-      console.log(one)
       one.Today = this.libMoney.TransForShow(one.Today)
       one.Yesterday = this.libMoney.TransForShow(one.Yesterday)
       one.Day7 = this.libMoney.TransForShow(one.Day7)
       const lists = []
-      console.log(222222222, one.SlotsType)
       switch (one.SlotsType) {
         case 51:
         {
@@ -409,11 +416,17 @@ export default {
         case 82:
         case 83:
         {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItemTotal('总计', one))
+          // 混有购买免费数据
+          lists.push(this.calcPlayTimes(one))
+          lists.push(this.calcTotalBet(one))
+          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
+          lists.push(this.calcItemTotalNormal('正常合计', one))
+          lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
+          lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
+          lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
+          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
+          lists.push(this.calcItemTotalSum('所有返奖总计', one))
           break
         }
       }
@@ -459,6 +472,74 @@ export default {
       one.day7.number = data.Day7[key]
       return one
     },
+    calcPlayTimes(data) {
+      let name = '正常玩牌次数'
+      const one = this.getObjRow(name)
+      one.today.number = data.Today['PlayTimes'] - data.Today['SlotsReturn4Times'] // SlotsReturn4Times购买免费次数
+      one.yesterday.number = data.Yesterday['PlayTimes'] - data.Yesterday['SlotsReturn4Times']
+      one.day7.number = data.Day7['PlayTimes'] - - data.Day7['SlotsReturn4Times']
+      return one
+    },
+    calcTotalBet(data) {
+      let name = '正常总下注'
+      const one = this.getObjRow(name)
+      one.today.number = data.Today['TotalBet'] - data.Today['SlotsReturn4'] // SlotsReturn4购买免费下注
+      one.yesterday.number = data.Yesterday['TotalBet'] - data.Yesterday['SlotsReturn4']
+      one.day7.number = data.Day7['TotalBet'] - - data.Day7['SlotsReturn4']
+      return one
+    },
+    calcItemNormal(name, key, data) {
+      const one = this.getObjRow(name)
+      one.today.number = data.Today[key]
+      one.yesterday.number = data.Yesterday[key]
+      one.day7.number = data.Day7[key]
+      one.today.percent = this.getPercent(data.Today[key], data.Today.TotalBet - data.Today.SlotsReturn4)
+      one.yesterday.percent = this.getPercent(data.Yesterday[key], data.Yesterday.TotalBet - data.Yesterday.SlotsReturn4)
+      one.day7.percent = this.getPercent(data.Day7[key], data.Day7.TotalBet - data.Day7.SlotsReturn4)
+
+      const hitKey = key + 'Times'
+      one.today.hit = this.getPercentFixed3(data.Today[hitKey], data.Today.PlayTimes - data.Today.SlotsReturn4Times)
+      one.yesterday.hit = this.getPercentFixed3(data.Yesterday[hitKey], data.Yesterday.PlayTimes - data.Yesterday.SlotsReturn4Times)
+      one.day7.hit = this.getPercentFixed3(data.Day7[hitKey], data.Day7.PlayTimes - data.Day7.SlotsReturn4Times)
+      return one
+    },
+    calcItemTotalNormal(name, data) {
+      const one = this.getObjRow(name)
+      one.today.number = this.getOneTotalNormal(data.Today)
+      one.yesterday.number = this.getOneTotalNormal(data.Yesterday)
+      one.day7.number = this.getOneTotalNormal(data.Day7)
+      one.today.percent = this.getPercent(one.today.number, data.Today.TotalBet - data.Today.SlotsReturn4)
+      one.today.color = this.calcColor(one.today.number, data.Today.TotalBet - data.Today.SlotsReturn4)
+      one.yesterday.percent = this.getPercent(one.yesterday.number, data.Yesterday.TotalBet - data.Yesterday.SlotsReturn4)
+      one.yesterday.color = this.calcColor(one.yesterday.number, data.Yesterday.TotalBet - data.Yesterday.SlotsReturn4)
+      one.day7.percent = this.getPercent(one.day7.number, data.Day7.TotalBet - data.Day7.SlotsReturn4)
+      one.day7.color = this.calcColor(one.day7.number, data.Day7.TotalBet - data.Day7.SlotsReturn4)
+      return one
+    },
+    calcItemBuy(name, key, data) {
+      const one = this.getObjRow(name)
+      one.today.number = data.Today[key]
+      one.yesterday.number = data.Yesterday[key]
+      one.day7.number = data.Day7[key]
+      one.today.percent = this.getPercent(data.Today[key], data.Today.SlotsReturn4)
+      one.yesterday.percent = this.getPercent(data.Yesterday[key], data.Yesterday.SlotsReturn4)
+      one.day7.percent = this.getPercent(data.Day7[key], data.Day7.SlotsReturn4)
+
+      return one
+    },
+    calcItemTotalSum(name, data) {
+      const one = this.getObjRow(name)
+      one.today.number = this.getOneTotalSum(data.Today)
+      one.yesterday.number = this.getOneTotalSum(data.Yesterday)
+      one.day7.number = this.getOneTotalSum(data.Day7)
+      one.today.percent = this.getPercent(one.today.number, data.Today.TotalBet)
+      one.today.color = this.calcColor(one.today.number, data.Today.TotalBet)
+      one.yesterday.percent = this.getPercent(one.yesterday.number, data.Yesterday.TotalBet)
+      one.yesterday.color = this.calcColor(one.yesterday.number, data.Yesterday.TotalBet)
+      one.day7.percent = this.getPercent(one.day7.number, data.Day7.TotalBet)
+      one.day7.color = this.calcColor(one.day7.number, data.Day7.TotalBet)
+      return one
+    },
     calcItem(name, key, data) {
       const one = this.getObjRow(name)
       one.today.number = data.Today[key]
@@ -486,6 +567,20 @@ export default {
       one.day7.percent = this.getPercent(one.day7.number, data.Day7.TotalBet)
       one.day7.color = this.calcColor(one.day7.number, data.Day7.TotalBet)
       return one
+    },
+    getOneTotalNormal(data) {
+      let total = 0
+      for (const key in RETURN_ALL_KEY_NORMAL) {
+        total += data[RETURN_ALL_KEY_NORMAL[key]]
+      }
+      return total.toFixed(2)
+    },
+    getOneTotalSum(data) {
+      let total = 0
+      for (const key in RETURN_ALL_KEY_SUM) {
+        total += data[RETURN_ALL_KEY_SUM[key]]
+      }
+      return total.toFixed(2)
     },
     getOneTotal(data) {
       let total = 0
@@ -601,7 +696,7 @@ export default {
             case 82:
             case 83:
             {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
+              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '购买Scatter返奖', '购买ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
               break
             }
           }
@@ -932,6 +1027,8 @@ export default {
                 this.createSeries('正常RTP', SlotsReturn1RTP),
                 this.createSeries('Scatter返奖', SlotsReturn2),
                 this.createSeries('ScatterRTP', SlotsReturn2RTP),
+                this.createSeries('购买Scatter返奖', SlotsReturn3),
+                this.createSeries('购买ScatterRTP', SlotsReturn3RTP),
                 this.createSeries('总RTP', TotalRTP),
                 this.createSeries('正常中奖率', SlotsReturn1Times),
                 this.createSeries('Scatter中奖率', SlotsReturn2Times)

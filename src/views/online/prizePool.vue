@@ -54,6 +54,9 @@
         <el-form-item label="增减奖池：" prop="PrizePool">
           <el-input v-model.number="form.PrizePool" size="medium" :required="true" :placeholder="form.LotteryPool" />
         </el-form-item>
+        <el-form-item v-if="form.Gid==37" label="低注：" prop="PrizePool">
+          <el-input v-model.number="form.Ante" size="medium" :required="true" :placeholder="form.Ante" />
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
@@ -87,7 +90,12 @@ export default {
         LotteryPool: 0, // 坚持现在值
         FeeRate: 0,
         RecountRate: 0,
-        Name: ''
+        Name: '',
+        Ante: 0
+      },
+      gameNamesSuffix: {
+        1: '普通',
+        2: '购买',
       },
       libShow: $libShow,
       dialogVisible: false
@@ -108,7 +116,9 @@ export default {
       this.form.FeeRate = row.FeeRate
       this.form.RecountRate = row.RecountRate
       this.form.Name = this.getGameName(row.Gid)
+      this.form.Ante = row.Ante
       this.dialogVisible = true
+      console.log(row.Gid, this.form.Gid)
     },
     handleClose(done) {
       this.dialogVisible = false
@@ -125,6 +135,7 @@ export default {
         data: {
           Path: '/user/game/prize/pool/list',
           Env: store.getters.env
+
         }
       }).then(response => {
         console.log('list response', response)
@@ -137,6 +148,11 @@ export default {
     },
     getGameName(gid) {
       const id = parseInt(gid)
+      if (id > 5000) {
+        let slotsType = parseInt(id/100)
+        let val = parseInt(id%100)
+        return $libShow.GameNames[slotsType] + this.gameNamesSuffix[val] 
+      }
       return $libShow.GameNames[id]
     },
     writeLog() {
@@ -171,7 +187,8 @@ export default {
         'Gid': this.form.Gid,
         'PrizePool': parseInt(this.form.LotteryPool) + parseInt(this.form.PrizePool * 1000),
         'FeeRate': this.form.FeeRate,
-        'RecountRate': this.form.RecountRate
+        'RecountRate': this.form.RecountRate,
+        'Ante': this.form.Ante
       }
 
       // 设置修改后数据

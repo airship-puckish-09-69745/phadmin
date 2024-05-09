@@ -74,7 +74,7 @@
       <el-col :offset="2" :span="20">
         <el-descriptions
           class="margin-top"
-          :column="4"
+          :column="5"
           size="medium"
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
           border
@@ -82,12 +82,14 @@
           <el-descriptions-item label="总赢：">{{ formatNumber(item.win + item.lose) }}</el-descriptions-item>
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
+          <el-descriptions-item label="胜率%：">{{ ( item.loseCount+item.winCount)>0?(item.winCount/ (item.loseCount+item.winCount)*100).toFixed(1):0 }}</el-descriptions-item>
           <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
     <el-table
       ref="filterTable"
+      :key="itemKey"
       :data="tableData"
       stripe
       border
@@ -140,8 +142,8 @@
         width="100"
       >
         <template slot-scope="scope">
-          <span :style="{color: scope.row.MoneyChanged >0?'red':'green'}">
-            {{ formatNumber(scope.row.MoneyChanged) }}
+          <span :style="{color: scope.row.PayoffAmount >0?'red':'green'}">
+            {{ formatNumber(scope.row.PayoffAmount) }}
           </span>
         </template>
       </el-table-column>
@@ -184,10 +186,18 @@
         width="120px"
       >
         <template slot-scope="scope">
-          {{ showRobotLevel(scope.row.IsRobot) }}
+          {{ isRobotMap[scope.row.Uid]?"机器人":showRobotLevel(scope.row.IsRobot) }}
         </template>
       </el-table-column>
-
+      <el-table-column
+        prop="IsRobot"
+        label="房间类型"
+        width="120px"
+      >
+        <template slot-scope="scope">
+          {{ showRoomLevel(scope.row.IsPractice) }}
+        </template>
+      </el-table-column>
       <template v-if="gid === 24">
         <el-table-column
           prop="SchemaData"
@@ -440,7 +450,6 @@
             {{ showRobotLevel(scope.row.IsRobot) }}
           </template>
         </el-table-column>
-
         <template v-if="gid === 24">
           <!--          <el-table-column-->
           <!--            prop="SchemaData"-->
@@ -582,7 +591,11 @@ export default {
       chartData: newChartData(),
       dataArr: [],
 
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney'])
+      libMoney: new MoneyShow(['MoneyChanged','PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney']),
+      uids: [],
+      uidMap: {},
+      isRobotMap: {},
+      itemKey: ''
     }
   },
   computed: {},
@@ -612,6 +625,20 @@ export default {
           return '二级杀手机器人'
         case 10:
           return '收割机器人'
+        default:
+          return level <= 7 ? '陪玩机器人' : level
+      }
+    },
+    showRoomLevel(level) {
+      switch (level) {
+        case 0:
+          return '普通场'
+        case 1:
+          return '练习场'
+        case 100:
+          return '好友房'
+        case 110:
+          return '比赛场'
         default:
           return level <= 7 ? '陪玩机器人' : level
       }
@@ -710,6 +737,9 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
+      // this.getRobotMap()
+      // this.tableData.slice(0,this.tableData.length)
+      // this.$forceUpdate()
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -737,6 +767,7 @@ export default {
       const $this = this
       this.sweeperRateVisible = false
       this.dataArr = []
+      this.uidMap = {}
       const loading = this.$loading({
         lock: true,
         text: '数据拉取中，请稍候...',
@@ -767,11 +798,12 @@ export default {
           $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.seconds = $this.item.fee = 0
           for (const o in objs) {
             const item = objs[o]
-            if (item.MoneyChanged > 0) {
-              $this.item.win += item.MoneyChanged
+            console.log("====",o,item.PayoffAmount,$this.item.winCount, $this.item.loseCount)
+            if (item.PayoffAmount > 0) {
+              $this.item.win += item.PayoffAmount
               $this.item.winCount++
             } else {
-              $this.item.lose += item.MoneyChanged
+              $this.item.lose += item.PayoffAmount
               $this.item.loseCount++
             }
             $this.item.fee += item.ServiceFee
@@ -804,6 +836,34 @@ export default {
     },
     clickData2(row) {
       this.getDetail(row.LogID, row.FinishTime)
+    },
+    geg() {
+      this.uidMap = {}
+      for (const o in this.tableData) {
+        this.uidMap[this.tableData[o].Uid] = 0
+      }
+
+      this.uids = []
+      for (var key in this.uidMap) {
+        this.uids.push(key)
+      }
+    },
+    async getRobotMap() {
+      await this.geg()
+      request({
+        url: '/dataProxy/is/robot',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Uids: JSON.stringify(this.uids)
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (const key in response.Data) {
+            this.isRobotMap[key] = response.Data[key]
+          }
+        }
+      })
     },
     getDetail(id, dt) {
       const $this = this

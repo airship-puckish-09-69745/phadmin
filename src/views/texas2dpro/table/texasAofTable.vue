@@ -84,7 +84,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="最大玩牌人数：" :required="true" prop="item.TableMaxPlayerNum" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.TableMaxPlayerNum" placeholder="请输入"/>
+              <el-input v-model.number="edit.item.TableMaxPlayerNum" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -101,7 +101,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="前注：" :required="true" prop="item.PrefixChip" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.PrefixChip" placeholder="请输入" :disabled="true"/>
+              <el-input v-model.number="edit.item.PrefixChip" placeholder="请输入" :disabled="true" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -219,7 +219,7 @@
         </el-row>
 
         <el-row>
-           <el-col :span="11">
+          <el-col :span="11">
             <el-form-item label="玩法：" :required="true" prop="item.GameId" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-select v-model="edit.item.GameId" placeholder="请选择">
                 <el-option label="Nlh" :value="32" />
