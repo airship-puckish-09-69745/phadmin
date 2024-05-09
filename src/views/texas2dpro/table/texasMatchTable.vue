@@ -15,14 +15,19 @@
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
         <el-table-column prop="RaceName" label="名称" width="70" />
-        <el-table-column prop="RaceBeginTime" label="开始时间" width="150">
+        <el-table-column prop="GameId" label="玩法" width="100">
           <template slot-scope="scope">
-            {{ formatTime2(scope.row.RaceBeginTime) }}
+            {{ getGameType(scope.row.GameId) }}
           </template>
         </el-table-column>
-        <el-table-column prop="RaceShowTime" label="显示时间" width="150">
+        <el-table-column prop="RaceType" label="赛事类型" width="100">
           <template slot-scope="scope">
-            {{ formatTime2(scope.row.RaceShowTime) }}
+            {{ getRaceType(scope.row.RaceType) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceShowTime" label="显示时间" width="100">
+          <template slot-scope="scope">
+            {{ scope.row.RaceShowTime }}
           </template>
         </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
@@ -63,16 +68,108 @@
               <el-input v-model="edit.item.RaceName" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="玩法">
+            <el-select v-model="edit.item.GameId" placeholder="请选择">
+              <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
+            </el-select>
+          </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
+           <el-col :span="20">
+             <el-form-item label="比赛类型:" :required="true">
+              <el-radio-group v-model.number="edit.item.RaceType">
+                <el-radio :label="0">单日赛</el-radio>
+                <el-radio :label="1">每日循环赛</el-radio>
+                <el-radio :label="2">每周循环赛</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="edit.item.RaceType == 0">
           <el-col :span="11">
-            <el-form-item label="开始时间:" :required="true" prop="item.RaceBeginTime">
-              <el-date-picker v-model="edit.item.RaceBeginTime" value-format="timestamp" type="datetime" placeholder="开始时间" />
+            <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
+              <el-date-picker v-model="edit.item.RaceBeginDate" placeholder="比赛开始日期"/>
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="显示时间:" :required="true" prop="item.RaceShowTime">
-              <el-date-picker v-model="edit.item.RaceShowTime" value-format="timestamp" type="datetime" placeholder="显示时间" />
+            <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
+              <el-time-picker v-model="edit.item.RaceBeginTime" placeholder="比赛开始时间"/>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="edit.item.RaceType == 1">
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
+                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="比赛结束日期:" :required="true" prop="item.RaceEndDate">
+                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
+                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="比赛结束时间:" :required="true" prop="item.RaceEndTime">
+                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-row>
+         <el-row v-if="edit.item.RaceType == 2">
+          <el-row>
+            <el-col :span="20">
+              <el-form-item label="星期:" :required="true" prop="item.RaceWeek">
+                <el-checkbox-group v-model="edit.item.RaceWeek" >
+                  <el-checkbox v-for="v, k in weekNames" :key=k :label=k >{{v}}
+                  </el-checkbox>
+                </el-checkbox-group>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
+                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="比赛结束日期:" :required="true" prop="item.RaceEndDate">
+                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
+                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="比赛结束时间:" :required="true" prop="item.RaceEndTime">
+                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="显示时间(分钟):" :required="true" prop="item.RaceShowTime">
+              <el-input v-model="edit.item.RaceShowTime" placeholder="显示时间" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11" v-if="edit.item.RaceType > 0">
+            <el-form-item label="间隔时间(分钟):" :required="true" prop="item.RaceIntervalTime">
+              <el-input v-model="edit.item.RaceIntervalTime"  placeholder="间隔时间" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -177,8 +274,16 @@ const filterMap = {}
 function newItem() {
   return {
     RaceName: '',
-    RaceBeginTime: 0,
+    GameId: 32,
+    RaceType: 0,
+    RaceWeek: [],
+    sRaceWeek: '',
+    RaceBeginDate: new Date(),
+    RaceEndDate: new Date(),
+    RaceBeginTime: new Date(),
+    RaceEndTime: new Date(),
     RaceShowTime: 0,
+    RaceIntervalTime: 0,
     SignupFee: 0,
     ServiceFee: 0,
     EndSignupClass: 0,
@@ -203,6 +308,11 @@ export default {
     return {
       tableData: [],
       statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
+      weekNames: { 0: '周日', 1: '周一', 2: '周二', 3: '周三', 4: '周四', 5: '周五', 6: '周六' },
+      GidTypes: [
+        { key: '[0]无限德州', value: 32 },
+        { key: '[1]奥马哈德州', value: 36 }
+      ],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -218,8 +328,14 @@ export default {
 
       AttrNames: {
         RaceName: '比赛名称',
+        GameId: '玩法',
+        RaceWeek: '星期',
+        RaceBeginDate: '开始日期',
+        RaceEndDate: '结束日期',
         RaceBeginTime: '开始时间',
+        RaceEndTime: '结束时间',
         RaceShowTime: '显示时间',
+        RaceIntervalTime: '间隔时间',
         SignupFee: '报名费用',
         ServiceFee: '服务费',
         EndSignupClass: '截止报名级别',
@@ -248,6 +364,24 @@ export default {
     },
     formatTime2(ts) {
       return $libDate.FormateSecondStr(ts / 1000, 2)
+    },
+    getGameType(gid) {
+      for (var i = 0; i < this.GidTypes.length; i++) {
+        for (const [k, v] of Object.entries(this.GidTypes[i])) {
+          if (k === 'value' && v === gid) {
+            return this.GidTypes[i]['key']
+          }
+        }
+      }
+    },
+    getRaceType(raceType) {
+      if (raceType === 0) {
+        return '单场赛'
+      } else if (raceType === 1) {
+        return '每日循环赛'
+      } else {
+        return '每周循环赛'
+      }
     },
     clearFilter() {
       this.clientDB.ClearFilterMap()
@@ -301,8 +435,33 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           for (const o in objs) {
-            objs[o].RaceBeginTime *= 1000
-            objs[o].RaceShowTime *= 1000
+            if (objs[o].RaceBeginDate === 0) {
+              objs[o].RaceBeginDate = new Date()
+            } else {
+              objs[o].RaceBeginDate = new Date(objs[o].RaceBeginDate * 1000)
+            }
+
+            if (objs[o].RaceEndDate === 0) {
+              objs[o].RaceEndDate = new Date()
+            } else {
+              objs[o].RaceEndDate = new Date(objs[o].RaceEndDate * 1000)
+            }
+
+            if (objs[o].RaceBeginTime === 0) {
+              objs[o].RaceBeginTime = new Date()
+            } else {
+              objs[o].RaceBeginTime = new Date(objs[o].RaceBeginTime * 1000 - 8 * 3600 * 1000)
+              console.log(objs[o].RaceBeginTime)
+            }
+
+            if (objs[o].RaceEndTime === 0) {
+              objs[o].RaceEndTime = new Date()
+            } else {
+              objs[o].RaceEndTime = new Date(objs[o].RaceEndTime * 1000 - 8 * 3600 * 1000)
+              console.log(objs[o].RaceEndTime)
+            }
+            objs[o].RaceShowTime /= 60
+            objs[o].RaceIntervalTime /= 60
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
@@ -407,12 +566,34 @@ export default {
         }
       })
     },
+    timeToTimestamp(time) {
+      if (time === 0 || time === '') {
+        return 0
+      }
+      let timestamp = Date.parse(new Date(time).toString())
+      timestamp = timestamp / 1000
+      return timestamp
+    },
     getPostData() {
-      // const postData = this.libMoney.TransForStore(this.edit.item)
-      // postData.PrefixChip *= 100 // 放大100倍
       const postData = JSON.parse(JSON.stringify(this.edit.item))
-      postData.RaceBeginTime /= 1000
-      postData.RaceShowTime /= 1000
+      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
+      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
+      postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
+      postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceType == 2) {
+        postData.sRaceWeek = ''
+      } else {
+        postData.sRaceWeek = '0,1,2,3,4,5,6'
+      }
+      for (var i = 0; i < postData.RaceWeek.length; i++) {
+        postData.sRaceWeek += postData.RaceWeek[i]
+        if (i < postData.RaceWeek.length - 1) {
+          postData.sRaceWeek += ','
+        }
+      }
+      postData.RaceShowTime *= 60
+      postData.RaceIntervalTime *= 60
+      console.log(postData)
       return postData
     },
     checkData() {
@@ -441,6 +622,7 @@ export default {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
+            console.log($this.getPostData())
             $this.editSave($this.getPostData())
           }
         })
