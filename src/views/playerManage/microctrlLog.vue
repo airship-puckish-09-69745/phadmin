@@ -98,7 +98,7 @@
 
       <el-table-column
         prop="Innings"
-        label="回合触发局数"
+        label="回合第几局触发"
       />
 
       <el-table-column
@@ -106,7 +106,7 @@
         label="回合平均输赢倍数"
       >
         <template slot-scope="{row}">
-          {{ toRupee(row.BasicVal) }}
+          {{ fmtValue(row.BasicVal) }}
         </template>
       </el-table-column>
 
@@ -231,6 +231,9 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.search()
+    },
+    fmtValue(val) {
+      return parseInt(val) / 100
     },
     // 转行卢比
     toRupee(amount) {

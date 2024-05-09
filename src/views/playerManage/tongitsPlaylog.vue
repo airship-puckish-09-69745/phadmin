@@ -591,7 +591,7 @@ export default {
       chartData: newChartData(),
       dataArr: [],
 
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'ServiceFee', 'TableMoney']),
+      libMoney: new MoneyShow(['MoneyChanged','PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney']),
       uids: [],
       uidMap: {},
       isRobotMap: {},

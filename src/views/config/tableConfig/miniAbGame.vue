@@ -17,8 +17,8 @@
         </el-col>
 
         <el-col :span="8" :offset="1">
-          <el-form-item label="用户长时间未下注提示(s):">
-            <el-input v-model.number="item.NoticeTime" :required="true" />
+          <el-form-item prop="NoticeTime" label="用户长时间未下注提示(s):">
+            <el-input v-model.number="item.NoticeTime" :required="true" @input="change($event)" />
           </el-form-item>
         </el-col>
 
@@ -478,7 +478,7 @@ export default {
       }
 
       for (const i in this.item.BetAreaOptions) {
-        this.item.BetAreaOptions[i].Odds /= 10
+        this.item.BetAreaOptions[i].Odds /= 1000
       }
 
       for (const j in this.item.BetMoneyLevel) {
@@ -523,7 +523,7 @@ export default {
         const obj = JSON.parse(JSON.stringify(this.item.BetAreaOptions[o]))
         // Object.assign(obj, this.item.BetAreaOptions[o])
         obj.MaxMoneyBet *= 1000
-        obj.Odds *= 10
+        obj.Odds *= 1000
         ret.BetAreaOptions.push(obj)
       }
 
@@ -557,6 +557,9 @@ export default {
           }
         }
       })
+    },
+    change(event){
+      this.$forceUpdate()
     },
     wallpaperInput(val, index) {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
