@@ -39,7 +39,7 @@
            </el-select>
            </span>
           <span v-if="valType=='1'">
-             <el-input  v-model.number="scope.row.Val" size="mini"   oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
+             <el-input  type="number" v-model.number="scope.row.Val" size="mini"   oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
           </span>
          </template>
        </el-table-column>

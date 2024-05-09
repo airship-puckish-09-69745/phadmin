@@ -105,7 +105,7 @@
                 </el-tabs>
               </el-tab-pane>
               <el-tab-pane label="金币奖励倍数配置">
-                <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds"   weight-name="权重" val-name="中奖配置" ></piggy-weight-cfg>
+                <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds"   weight-name="权重" val-name="中奖配置" val-type="1"></piggy-weight-cfg>
               </el-tab-pane>
             </el-tabs>
           </fieldset>
@@ -123,7 +123,7 @@
                   <el-tab-pane label="1*3滚轴配置">
                   <el-row>
                     <div v-for="(row,idx) in item.free[0].Spin">
-                      <piggy-weight-cfg :piggy-cfg="row.Choices" :tableTitle="'滚轴'+(idx+1)" weight-name="反奖倍数" val-name="概率"  val-type='1' style="width: 800px"></piggy-weight-cfg>
+                      <piggy-weight-cfg :piggy-cfg="row.Choices" :tableTitle="getSpinTitle(row.Tpy)" weight-name="权重" val-name="概率"  val-type='1' style="width: 800px"></piggy-weight-cfg>
                     </div>
                   </el-row>
                   </el-tab-pane>
@@ -131,7 +131,7 @@
                       <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards"   weight-name="中奖类型" val-name="中奖概率" ></piggy-weight-cfg>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds"   weight-name="获得概率" val-name="金币奖励类型" ></piggy-weight-cfg>
+                    <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds"   weight-name="权重" val-name="金币奖励类型" val-type='1' ></piggy-weight-cfg>
                   </el-tab-pane>
                 </el-tabs>
               </el-tab-pane>
@@ -140,15 +140,15 @@
                   <el-tab-pane label="1*3滚轴配置">
                     <el-row>
                       <div v-for="(row,idx) in item.free[1].Spin">
-                        <piggy-weight-cfg :piggy-cfg="row.Choices" :tableTitle="'滚轴'+(idx+1)" weight-name="反奖倍数" val-name="概率" style="width: 800px"></piggy-weight-cfg>
+                        <piggy-weight-cfg :piggy-cfg="row.Choices" :tableTitle="getSpinTitle(row.Tpy)" weight-name="反奖倍数" val-name="概率"   val-type='1'  style="width: 800px"></piggy-weight-cfg>
                       </div>
                     </el-row>
                   </el-tab-pane>
                   <el-tab-pane label="中奖概率配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards"   weight-name="中奖类型" val-name="中奖概率" ></piggy-weight-cfg>
+                    <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards"   weight-name="权重" val-name="中奖类型" ></piggy-weight-cfg>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds"   weight-name="中奖概率" val-name="倍数奖励" ></piggy-weight-cfg>
+                    <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds"   weight-name="权重" val-name="倍数奖励"  val-type='1' ></piggy-weight-cfg>
                   </el-tab-pane>
                 </el-tabs>
               </el-tab-pane>
@@ -165,7 +165,7 @@
           <el-input  v-model.number="item.Plate.Rate" size="mini"   oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
         </el-form-item>
       </el-form>
-        <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds"   weight-name="获得概率" val-name="金币奖励类型" ></piggy-weight-cfg>
+        <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds"   weight-name="权重" val-name="金币奖励类型" val-type='1' ></piggy-weight-cfg>
 
       </fieldset>
     </el-col>
@@ -409,7 +409,7 @@ export default {
         free: [ //free game
           {
             TpyIn: 1,
-            Spin: [{Tpy: 4, Choices: [{Weight: 1, Val: 2}]},{Tpy: 4, Choices: [{Weight: 1, Val: 2}, {Weight: 1, Val: 2}]}],
+            Spin: [{Tpy: 4, Choices: [{Weight: 1, Val: 2}]},{Tpy: 5, Choices: [{Weight: 1, Val: 2}, {Weight: 1, Val: 2}]}],
             MoneyOdds:[{Weight: 1, Val: 2}],
             Awards:[{Weight: 1, Val: 2}],
           },
@@ -455,8 +455,22 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-
-      console.log('this.item:', this.item)
+      for (let o of this.item.MoneyOdds) {
+        o.Val /= 1000
+      }
+      for (const o of  this.item.free) {
+        for (const omo of o.MoneyOdds) {
+          omo.Val /= 1000
+        }
+        for (const sp of o.Spin) {
+          for (const c of sp.Choices){
+            c.Val /= 1000
+          }
+        }
+      }
+      for (const o of this.item.Plate.PlateOdds) {
+        o.Val /= 1000
+      }
     },
     doAdd() {
       this.item.BetLevel.push({ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
@@ -507,6 +521,14 @@ export default {
       }
       return showNum.toLocaleString()
     },
+    getSpinTitle(val){
+      if (val===4){
+        return "次数"
+      }
+      if (val===5){
+        return "倍数"
+      }
+    },
     getJackpotPoolTitle(row) {
       if (row.MaxPool == -1) {
         return Math.floor(row.MinPool / 10000000) + '万以上每小时增长'
@@ -515,7 +537,24 @@ export default {
       }
     },
     getPostData() {
-      return this.item
+      let obj = JSON.parse(JSON.stringify(this.item))
+      for (let o of obj.MoneyOdds) {
+        o.Val  =parseInt(o.Val * 1000)
+      }
+      for (const o of  obj.free) {
+        for (const omo of o.MoneyOdds) {
+          omo.Val  = parseInt(omo.Val * 1000)
+        }
+        for (const sp of o.Spin) {
+          for (const c of sp.Choices){
+            c.Val  =parseInt(c.Val * 1000)
+          }
+        }
+      }
+      for (const o of obj.Plate.PlateOdds) {
+        o.Val = parseInt(o.Val * 1000)
+      }
+      return obj
     },
     getData() {
       request({
