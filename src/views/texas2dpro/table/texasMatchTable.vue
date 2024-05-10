@@ -14,7 +14,7 @@
     <div style="padding-top: 10px">
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
-        <el-table-column prop="RaceName" label="名称" width="70" />
+        <el-table-column prop="RaceName" label="名称" width="120" />
         <el-table-column prop="GameId" label="玩法" width="100">
           <template slot-scope="scope">
             {{ getGameType(scope.row.GameId) }}
@@ -25,9 +25,34 @@
             {{ getRaceType(scope.row.RaceType) }}
           </template>
         </el-table-column>
+        <el-table-column prop="RaceType" label="开始日期" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceBeginDate, 1) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="结束日期" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceEndDate, 1) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="开始时间" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceBeginTime, 4) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="结束时间" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceEndTime, 4) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="星期" width="100">
+          <template slot-scope="scope">
+            {{ getWeekName(scope.row.RaceType, scope.row.RaceWeek) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="RaceShowTime" label="显示时间" width="100">
           <template slot-scope="scope">
-            {{ scope.row.RaceShowTime }}
+            {{ getShowTime(scope.row.RaceShowTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
@@ -277,7 +302,7 @@ function newItem() {
     GameId: 32,
     RaceType: 0,
     RaceWeek: [],
-    sRaceWeek: '',
+    RaceWeekStr: '',
     RaceBeginDate: new Date(),
     RaceEndDate: new Date(),
     RaceBeginTime: new Date(),
@@ -362,8 +387,29 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    formatTime2(ts) {
-      return $libDate.FormateSecondStr(ts / 1000, 2)
+    formatTime2(date, type) {
+      var result = new Date(date).getTime()
+      return $libDate.FormateMilisecondStrByZone(result, type, '')
+    },
+    getWeekName(type, weeks) {
+      if (type != 2) {
+        return '无'
+      }
+      var weekNames = ''
+      for (var i = 0; i < weeks.length; i++) {
+        weekNames += this.weekNames[weeks[i]]
+        if (i != weeks.length -1) {
+          weekNames += ' , '
+        }
+      }
+      return weekNames
+    },
+    getShowTime(t) {
+      if (t % 60 === 0) {
+        return t/60 + 'h'
+      }
+      return t/60 + 'h' + t%60 + 'm'
+
     },
     getGameType(gid) {
       for (var i = 0; i < this.GidTypes.length; i++) {
@@ -462,6 +508,7 @@ export default {
             }
             objs[o].RaceShowTime /= 60
             objs[o].RaceIntervalTime /= 60
+            objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
@@ -581,14 +628,14 @@ export default {
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
       if (postData.RaceType == 2) {
-        postData.sRaceWeek = ''
+        postData.RaceWeekStr = ''
       } else {
-        postData.sRaceWeek = '0,1,2,3,4,5,6'
+        postData.RaceWeekStr = '0'
       }
       for (var i = 0; i < postData.RaceWeek.length; i++) {
-        postData.sRaceWeek += postData.RaceWeek[i]
+        postData.RaceWeekStr += postData.RaceWeek[i]
         if (i < postData.RaceWeek.length - 1) {
-          postData.sRaceWeek += ','
+          postData.RaceWeekStr += ','
         }
       }
       postData.RaceShowTime *= 60
