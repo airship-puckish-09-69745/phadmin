@@ -175,30 +175,41 @@ export default {
       }
     },
     initData(val) {
+      var split = val.actionLogs.split("|");
+      let  displayCardsList =[]
+
+      for (const o of split) {
+        let row = o.split("-")
+        displayCardsList.push(row)
+      }
+
       this.actions = []
       let styleIndex = 1
       const finishArray = []
 
       let step = 1
-      let currRoundID =  val.displayCardsList[0].roundID
-      for (const o of val.displayCardsList) {
-        let action = this.actionNames[o.cardType]
-        if (o.isPass === 1) {
+      let currRoundID =  displayCardsList[0][1]
+      for (const o of displayCardsList) {
+        let action = this.actionNames[parseInt(o[2])]
+        if (o[2] === '0') {
           action = '跳过'
         }
-        if (o.roundID < currRoundID) {
+        if (o[1] < currRoundID) {
           step++
-        }else if (o.roundID == currRoundID){
+        }else if (o[1] == currRoundID){
           step = 1
           currRoundID++
         }
-
+        let cards= []
+        if (o[2]!=='0'){
+          cards = o[3].split("_")
+        }
         const obj = {
           Action: action,
-          Index: o.roundID,
-          Uid: this.getRealUid(o.uid),
-          cards: o.cards,
-          roundID: o.roundID,
+          Index: o[1],
+          Uid: this.getRealUid(o[0]),
+          cards: cards,
+          roundID: o[1],
           step: step,
           // HandCards: HandCards,
           IsFinished: false
@@ -258,6 +269,7 @@ export default {
       return uid
     },
     getCardNum(card) {
+      card = parseInt(card)
       const color = card >> 4
       const num = card & 0x0F
       let newNum = '' + num
@@ -276,6 +288,9 @@ export default {
       return newCard
     },
     getCardUrl(card) {
+      if (card==''){
+        return
+      }
       const cardNum = this.getCardNum(card)
       return require('@/assets/poker/' + cardNum + '.png')
     },
