@@ -1,19 +1,19 @@
 <template>
   <el-dialog
-      title="牌局过程"
-      :visible.sync="ComponentsGameLogVisible"
-      :before-close="closeView"
-      width="85%"
+    title="牌局过程"
+    :visible.sync="ComponentsGameLogVisible"
+    :before-close="closeView"
+    width="85%"
   >
     <el-table
-        :data="actions"
-        border
-        :row-style="getDetailRowStyle"
-        style="width: 100%"
+      :data="actions"
+      border
+      :row-style="getDetailRowStyle"
+      style="width: 100%"
     >
       <el-table-column
-          label="步骤"
-          width="100"
+        label="步骤"
+        width="100"
       >
         <template slot-scope="scope">
           <div v-if="scope.row.Action!=='结算'&& scope.row.roundID!=undefined">
@@ -30,31 +30,31 @@
         </template>
       </el-table-column>
       <el-table-column
-          prop="Uid"
-          label="Uid"
-          width="100"
+        prop="Uid"
+        label="Uid"
+        width="100"
       />
       <el-table-column
-          prop="Action"
-          label="动作"
-          width="80"
+        prop="Action"
+        label="动作"
+        width="80"
       />
       <el-table-column
-          label="手牌"
+        label="手牌"
       >
         <template slot-scope="scope">
           <div v-for="card in scope.row.cards" class="block">
             <el-image
-                style="width: 37px; height: 50px"
-                :src="getCardUrl(card)"
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(card)"
             />
           </div>
-          <div v-if="scope.row.Action=='结算'" >
+          <div v-if="scope.row.Action=='结算'">
             <span>剩余手牌:</span>
             <div v-for="card in scope.row.Cards" class="block">
               <el-image
-                  style="width: 37px; height: 50px"
-                  :src="getCardUrl(card)"
+                style="width: 37px; height: 50px"
+                :src="getCardUrl(card)"
               />
             </div>
           </div>
@@ -72,12 +72,11 @@
               <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
               <span>输赢：{{ one.moneyChange / 1000 }}</span><br>
 
+              <!--              <span>下注：{{ one.payPot / 1000 }}</span><br>-->
+              <!--              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>-->
 
-<!--              <span>下注：{{ one.payPot / 1000 }}</span><br>-->
-<!--              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>-->
-
-<!--              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>-->
-               <br>
+              <!--              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>-->
+              <br>
               <!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
             </div>
           </div>
@@ -97,13 +96,13 @@ export default {
   props: {
     GameLog: {
       type: Object,
-      default: function () {
+      default: function() {
         return {}
       }
     },
     Gid: {
       type: Number,
-      default: function () {
+      default: function() {
         return 0
       }
     },
@@ -138,19 +137,19 @@ export default {
   watch: {
     'GameLog': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'Gid': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.Gid = val
       }
     },
     'GameLogVisible': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.ComponentsGameLogVisible = val
       }
     }
@@ -160,26 +159,26 @@ export default {
   },
   methods: {
     getDetailRowStyle(row) {
-      if (row.row.step != 1 && row.row.roundID>0) {
+      if (row.row.step != 1 && row.row.roundID > 0) {
         return
       }
       switch (this.UidStyleMap[row.row.Uid]) {
         case 1:
-          return {background: 'rgba(170,41,217,0.58)'}
+          return { background: 'rgba(170,41,217,0.58)' }
         case 2:
-          return {background: 'rgba(236,173,121,0.58)'}
+          return { background: 'rgba(236,173,121,0.58)' }
         case 3:
-          return {background: 'rgba(156,188,231,0.58)'}
+          return { background: 'rgba(156,188,231,0.58)' }
         case 4:
-          return {background: 'rgba(120,222,113,0.56)'}
+          return { background: 'rgba(120,222,113,0.56)' }
       }
     },
     initData(val) {
-      var split = val.actionLogs.split("|");
-      let  displayCardsList =[]
+      var split = val.actionLogs.split('|')
+      const displayCardsList = []
 
       for (const o of split) {
-        let row = o.split("-")
+        const row = o.split('-')
         displayCardsList.push(row)
       }
 
@@ -188,7 +187,7 @@ export default {
       const finishArray = []
 
       let step = 1
-      let currRoundID =  displayCardsList[0][1]
+      let currRoundID = displayCardsList[0][1]
       for (const o of displayCardsList) {
         let action = this.actionNames[parseInt(o[2])]
         if (o[2] === '0') {
@@ -196,13 +195,13 @@ export default {
         }
         if (o[1] < currRoundID) {
           step++
-        }else if (o[1] == currRoundID){
+        } else if (o[1] == currRoundID) {
           step = 1
           currRoundID++
         }
-        let cards= []
-        if (o[2]!=='0'){
-          cards = o[3].split("_")
+        let cards = []
+        if (o[2] !== '0') {
+          cards = o[3].split('_')
         }
         const obj = {
           Action: action,
@@ -288,7 +287,7 @@ export default {
       return newCard
     },
     getCardUrl(card) {
-      if (card==''){
+      if (card == '') {
         return
       }
       const cardNum = this.getCardNum(card)

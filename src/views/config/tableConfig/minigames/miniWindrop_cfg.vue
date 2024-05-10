@@ -2059,7 +2059,7 @@ export default {
         }
       }
 
-      if (( typeof  postData.WinType) ==='string') {
+      if ((typeof postData.WinType) === 'string') {
         postData.WinType = postData.WinType.split(',').map(Number)
       }
 

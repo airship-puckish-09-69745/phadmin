@@ -154,7 +154,7 @@ export default {
       gameConfig: [
         // { 'value': 0, 'label': '全部' },
         // { 'value': 25, 'label': 'color game' },
-        { 'value': 20, 'label': 'Mines - 扫雷' },
+        { 'value': 20, 'label': 'Mines - 扫雷' }
         // { 'value': 100, 'label': 'Tower' },
         // { 'value': 101, 'label': 'Sicbo' },
         // { 'value': 102, 'label': 'Hilo' },
@@ -168,7 +168,7 @@ export default {
       typeConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 4, 'label': '杀' },
-        { 'value': 8, 'label': '帮' },
+        { 'value': 8, 'label': '帮' }
       ],
       tableData: [],
       totalCount: 0,
@@ -177,7 +177,7 @@ export default {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       prizeVisible: false,
-      envProjectName: process.env.VUE_APP_PROJECT,
+      envProjectName: process.env.VUE_APP_PROJECT
     }
   },
   methods: {

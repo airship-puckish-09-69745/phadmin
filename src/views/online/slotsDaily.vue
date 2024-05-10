@@ -171,7 +171,7 @@ export default {
       },
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       tempLoading: {},
-      ignoreGame:  [ 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83]
+      ignoreGame: [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83]
     }
   },
   created() {
@@ -194,7 +194,7 @@ export default {
         if (response.RetCode === 0) {
           const obj = response.Data
           for (const key in obj) {
-            if (this.ignoreGame.includes(obj[key].SlotsType)){
+            if (this.ignoreGame.includes(obj[key].SlotsType)) {
               continue
             }
             this.lists.push(this.calcData(obj[key]))
@@ -473,19 +473,19 @@ export default {
       return one
     },
     calcPlayTimes(data) {
-      let name = '正常玩牌次数'
+      const name = '正常玩牌次数'
       const one = this.getObjRow(name)
       one.today.number = data.Today['PlayTimes'] - data.Today['SlotsReturn4Times'] // SlotsReturn4Times购买免费次数
       one.yesterday.number = data.Yesterday['PlayTimes'] - data.Yesterday['SlotsReturn4Times']
-      one.day7.number = data.Day7['PlayTimes'] - - data.Day7['SlotsReturn4Times']
+      one.day7.number = data.Day7['PlayTimes'] - -data.Day7['SlotsReturn4Times']
       return one
     },
     calcTotalBet(data) {
-      let name = '正常总下注'
+      const name = '正常总下注'
       const one = this.getObjRow(name)
       one.today.number = data.Today['TotalBet'] - data.Today['SlotsReturn4'] // SlotsReturn4购买免费下注
       one.yesterday.number = data.Yesterday['TotalBet'] - data.Yesterday['SlotsReturn4']
-      one.day7.number = data.Day7['TotalBet'] - - data.Day7['SlotsReturn4']
+      one.day7.number = data.Day7['TotalBet'] - -data.Day7['SlotsReturn4']
       return one
     },
     calcItemNormal(name, key, data) {
