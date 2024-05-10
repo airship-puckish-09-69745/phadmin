@@ -1,59 +1,59 @@
 <template>
   <div class="app-container">
 
-    <p>{{title}}</p>
+    <p>{{ title }}</p>
     <el-table
-        ref="filterTable"
-        :data="piggyCfg"
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
+      ref="filterTable"
+      :data="piggyCfg"
+      border
+      :header-cell-style="libShow.DefaultTableHeadClass"
+      :row-style="{height:'10px'}"
+      :cell-style="libShow.DefaultTableCell"
+      style="width: 100%"
     >
-     <el-table-column :label="tableTitle">
-       <el-table-column
-           type="index"
-       />
-       <el-table-column
-           prop="Weight"
-           :label="weightName"
-       >
-         <template slot-scope="scope">
-           <el-input  v-model.number="scope.row.Weight" size="mini"   oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
-         </template>
-       </el-table-column>
-       <el-table-column
-           prop="Val"
-           :label="valName"
-       >
-         <template slot-scope="scope">
-           <span v-if="valType=='0'">
-            <el-select v-model.number="scope.row.Val" placeholder="请选择" size="mini">
-               <el-option  label="空" :value="0"/>
-               <el-option label="金币" :value="1"/>
-               <el-option label="磁铁" :value="2"/>
-               <el-option label="F次数" :value="4"/>
-               <el-option label="N倍数" :value="5"/>
-               <el-option label="JP" :value="10"/>
-           </el-select>
-           </span>
-          <span v-if="valType=='1'">
-             <el-input  v-model.number="scope.row.Val" size="mini"   oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
-          </span>
-         </template>
-       </el-table-column>
-       <el-table-column label="操作"   >
-         <template slot-scope="scope">
-           <el-button
-               size="mini"
-               type="primary"
-               @click="doAdd"
-           >添加</el-button>
-           <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
-         </template>
-       </el-table-column>
-     </el-table-column>
+      <el-table-column :label="tableTitle">
+        <el-table-column
+          type="index"
+        />
+        <el-table-column
+          prop="Weight"
+          :label="weightName"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Weight" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Val"
+          :label="valName"
+        >
+          <template slot-scope="scope">
+            <span v-if="valType=='0'">
+              <el-select v-model.number="scope.row.Val" placeholder="请选择" size="mini">
+                <el-option label="空" :value="0" />
+                <el-option label="金币" :value="1" />
+                <el-option label="磁铁" :value="2" />
+                <el-option label="F次数" :value="4" />
+                <el-option label="N倍数" :value="5" />
+                <el-option label="JP" :value="10" />
+              </el-select>
+            </span>
+            <span v-if="valType=='1'">
+              <el-input v-model.number="scope.row.Val" type="number" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="doAdd"
+            >添加</el-button>
+            <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table-column>
 
     </el-table>
   </div>
@@ -61,111 +61,111 @@
 
 <script>
 
-import {$libShow} from "@/utils/common";
-import {Message} from "element-ui";
+import { $libShow } from '@/utils/common'
+import { Message } from 'element-ui'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'piggyWeightCfg',
+  name: 'PiggyWeightCfg',
   components: {},
   props: {
-    tableTitle:{
+    tableTitle: {
       type: String,
-      default: function () {
-        return ""
+      default: function() {
+        return ''
       }
     },
-    valName:{
+    valName: {
       type: String,
-      default: function () {
-        return "中奖配置"
+      default: function() {
+        return '中奖配置'
       }
     },
-    valType:{
+    valType: {
       type: String,
-      default: function () {
+      default: function() {
         return '0'
       }
     },
-    weightName:{
+    weightName: {
       type: String,
-      default: function () {
-        return "权重"
+      default: function() {
+        return '权重'
       }
     },
-    title:{
+    title: {
       type: String,
-      default: function () {
-        return ""
+      default: function() {
+        return ''
       }
     },
     piggyCfg: {
       type: Array,
-      default: function () {
+      default: function() {
         return {}
       }
-    },
+    }
   },
-  data(){
-    return{
-      libShow: $libShow,
+  data() {
+    return {
+      libShow: $libShow
     }
   },
 
   watch: {
     'piggyCfg': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'tableTitle': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'valType': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'weightName': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'valName': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     },
     'title': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
-    },
+    }
   },
   created() {
     this.initData()
   },
   methods: {
-    initData(){
+    initData() {
     },
     doAdd() {
-      this.piggyCfg.push({Weight:0,Val:0})
+      this.piggyCfg.push({ Weight: 0, Val: 0 })
     },
     delRow(index) {
-      if (this.piggyCfg.length<=1){
+      if (this.piggyCfg.length <= 1) {
         Message.error('再删就没了')
         return
       }
       this.piggyCfg.splice(index, 1)
-    },
+    }
   }
 }
 </script>

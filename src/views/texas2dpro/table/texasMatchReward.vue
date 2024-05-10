@@ -12,15 +12,15 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
     </el-row>
-    <el-table :data="rowData" ref="tb" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'2px'}" :cell-style="DefaultTableCell" style="width: 100%" >
+    <el-table ref="tb" :data="rowData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'2px'}" :cell-style="DefaultTableCell" style="width: 100%">
       <el-table-column v-for="item in columnName" :key="item.prop" :prop="item.prop" width="120%" align="center">
-          <template slot="header">
-            {{ item.label }}
-          </template>
-          <template slot-scope="scope">
-            <el-input v-if="isEdit" v-model="scope.row[item.label]" ></el-input>
-            <p v-else>{{scope.row[item.label]}}</p>
-          </template>
+        <template slot="header">
+          {{ item.label }}
+        </template>
+        <template slot-scope="scope">
+          <el-input v-if="isEdit" v-model="scope.row[item.label]" />
+          <p v-else>{{ scope.row[item.label] }}</p>
+        </template>
 
       </el-table-column>
     </el-table>

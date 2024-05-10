@@ -303,6 +303,7 @@ export default {
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
+      this.edit.item.Games = this.games.join(',')
       console.log(this.edit.item)
     },
     getList() {

@@ -95,15 +95,15 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="玩法">
-            <el-select v-model="edit.item.GameId" placeholder="请选择">
-              <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
-            </el-select>
-          </el-form-item>
+              <el-select v-model="edit.item.GameId" placeholder="请选择">
+                <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-           <el-col :span="20">
-             <el-form-item label="比赛类型:" :required="true">
+          <el-col :span="20">
+            <el-form-item label="比赛类型:" :required="true">
               <el-radio-group v-model.number="edit.item.RaceType">
                 <el-radio :label="0">单日赛</el-radio>
                 <el-radio :label="1">每日循环赛</el-radio>
@@ -115,12 +115,12 @@
         <el-row v-if="edit.item.RaceType == 0">
           <el-col :span="11">
             <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
-              <el-date-picker v-model="edit.item.RaceBeginDate" placeholder="比赛开始日期"/>
+              <el-date-picker v-model="edit.item.RaceBeginDate" placeholder="比赛开始日期" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
-              <el-time-picker v-model="edit.item.RaceBeginTime" placeholder="比赛开始时间"/>
+              <el-time-picker v-model="edit.item.RaceBeginTime" placeholder="比赛开始时间" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -128,34 +128,34 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
-                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期"/>
+                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束日期:" :required="true" prop="item.RaceEndDate">
-                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期"/>
+                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
-                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间"/>
+                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束时间:" :required="true" prop="item.RaceEndTime">
-                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间"/>
+                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间" />
               </el-form-item>
             </el-col>
           </el-row>
         </el-row>
-         <el-row v-if="edit.item.RaceType == 2">
+        <el-row v-if="edit.item.RaceType == 2">
           <el-row>
             <el-col :span="20">
               <el-form-item label="星期:" :required="true" prop="item.RaceWeek">
-                <el-checkbox-group v-model="edit.item.RaceWeek" >
-                  <el-checkbox v-for="v, k in weekNames" :key=k :label=k >{{v}}
+                <el-checkbox-group v-model="edit.item.RaceWeek">
+                  <el-checkbox v-for="v, k in weekNames" :key="k" :label="k">{{ v }}
                   </el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
@@ -164,24 +164,24 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
-                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期"/>
+                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束日期:" :required="true" prop="item.RaceEndDate">
-                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期"/>
+                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
-                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间"/>
+                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束时间:" :required="true" prop="item.RaceEndTime">
-                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间"/>
+                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -192,9 +192,9 @@
               <el-input v-model="edit.item.RaceShowTime" placeholder="显示时间" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" v-if="edit.item.RaceType > 0">
+          <el-col v-if="edit.item.RaceType > 0" :span="11">
             <el-form-item label="间隔时间(分钟):" :required="true" prop="item.RaceIntervalTime">
-              <el-input v-model="edit.item.RaceIntervalTime"  placeholder="间隔时间" />
+              <el-input v-model="edit.item.RaceIntervalTime" placeholder="间隔时间" />
             </el-form-item>
           </el-col>
         </el-row>

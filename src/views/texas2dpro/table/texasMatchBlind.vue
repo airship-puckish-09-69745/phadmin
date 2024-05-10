@@ -15,7 +15,7 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
     </el-row>
-    <el-table :data="tableData" ref="tb" height="640" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width:420px; padding-top: 10px" >
+    <el-table ref="tb" :data="tableData" height="640" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width:420px; padding-top: 10px">
       <el-table-column prop="BlindLevel" label="级别" sortable="custom" align="center" width="100">
         <template slot-scope="scope">
           {{ scope.row.blind_level }}
@@ -23,20 +23,20 @@
       </el-table-column>
       <el-table-column prop="SmallBlind" label="盲注" align="center" width="100">
         <template slot-scope="scope">
-          <el-input v-if="isEdit" v-model.number="scope.row.small_blind" ></el-input>
-          <p v-else>{{scope.row.small_blind}}</p>
+          <el-input v-if="isEdit" v-model.number="scope.row.small_blind" />
+          <p v-else>{{ scope.row.small_blind }}</p>
         </template>
       </el-table-column>
       <el-table-column prop="Ante" label="前注" align="center" width="100">
         <template slot-scope="scope">
-          <el-input v-if="isEdit" v-model.number="scope.row.ante" ></el-input>
-          <p v-else>{{scope.row.ante}}</p>
+          <el-input v-if="isEdit" v-model.number="scope.row.ante" />
+          <p v-else>{{ scope.row.ante }}</p>
         </template>
       </el-table-column>
       <el-table-column prop="RaiseBlindTime" label="升盲" align="center" width="100">
         <template slot-scope="scope">
-          <el-input v-if="isEdit" v-model.number="scope.row.raise_blind_time" ></el-input>
-          <p v-else>{{scope.row.raise_blind_time}}</p>
+          <el-input v-if="isEdit" v-model.number="scope.row.raise_blind_time" />
+          <p v-else>{{ scope.row.raise_blind_time }}</p>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +74,7 @@ export default {
     addRows() {
       var blind_level = this.tableData.length + 1
       this.tableData.push(
-        { 
+        {
           blind_level: blind_level,
           small_blind: 0,
           ante: 0,

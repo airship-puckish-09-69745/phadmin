@@ -1,5 +1,10 @@
 <template>
   <div class="app-container">
+    <el-row style="margin-bottom: 10px;">
+      <el-col :span="24">
+        <el-alert type="success" description="数据根据Uid分表，需要模糊匹配请输入 0-99 数字查询。输赢图表只支持指定有效Uid查询" />
+      </el-col>
+    </el-row>
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
@@ -293,6 +298,7 @@ export default {
           $this.dataArr = objs
 
           const stat = response.Data.Stat
+          this.statData.round = stat.Rounds
           this.statData.totalFee = stat.Fee
           this.statData.betMoney = stat.TotalBet
           this.statData.winMoney = stat.TotalReturn
@@ -457,7 +463,7 @@ export default {
 
           $this.totalCount = response.Data.Count
           $this.tableData = objs
-          $this.statData.round = response.Data.Round
+          // $this.statData.round = response.Data.Round
           /*  $this.statData.normalMoney = response.Data.NormalMoney
           $this.totalData.wildMoney = response.Data.WildMoney
           $this.totalData.scatterMoney = response.Data.ScatterMoney

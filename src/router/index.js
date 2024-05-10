@@ -476,7 +476,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/piggy'),
             name: 'Piggy',
             meta: { title: 'Piggy 🐽' }
-          },
+          }
         ]
       },
 
@@ -1046,7 +1046,7 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/microctrlLog'),
         name: 'microctrl_log',
         meta: { title: '扫雷点控日志 ◐' }
-      },
+      }
     ]
   },
   {
