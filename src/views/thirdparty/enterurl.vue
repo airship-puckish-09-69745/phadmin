@@ -62,6 +62,24 @@
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
+        <el-form-item v-model="item.source" label="用户来源：" :required="true" label-width="110px">
+          <el-select v-model="item.source" placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in sources"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item v-model="item.activity" label="活动场景：" label-width="110px">
+          <el-select v-model="item.activity" placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in activities"
+              :label="row.name"
+              :value="row.val"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>
         </el-form-item>
@@ -218,6 +236,46 @@ export default {
           val: ''
         }
       ],
+      sources: [
+        {
+          name: 'IOS',
+          val: 'IOS'
+        },
+        {
+          name: 'AOS',
+          val: 'AOS'
+        },
+        {
+          name: 'PC',
+          val: 'PC'
+        },
+        {
+          name: 'H5',
+          val: 'H5'
+        },
+        {
+          name: 'Glife',
+          val: 'Glife'
+        },
+        {
+          name: 'Maya',
+          val: 'Maya'
+        },
+        {
+          name: 'Lazada',
+          val: 'Lazada'
+        }
+      ],
+      activities: [
+        {
+          name: '无',
+          val: ''
+        },
+        {
+          name: '扑克乐园',
+          val: 'playgamelandactivity'
+        }
+      ],
       appInfo: [],
       tableData: [],
       env: 'dev',
@@ -233,7 +291,9 @@ export default {
         debug: '0',
         need_test_uri: '0',
         cashier: 'http://baidu.com',
-        path: '1'
+        path: '1',
+        source: 'H5',
+        activity: ''
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -297,7 +357,9 @@ export default {
           direct_scene: this.item.directScene,
           clientTerminalType: this.item.clientTerminalType,
           cashier: this.item.cashier,
-          path: this.item.path
+          path: this.item.path,
+          source: this.item.source,
+          activity: this.item.activity
         }
       }).then(response => {
         console.log(response)

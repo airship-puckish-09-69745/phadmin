@@ -1,175 +1,175 @@
 <template>
-    <div id="app" class="page-container" style="padding: 10px">
-      <el-row>
-        <publish primary-key="ID" key-id="TexasPusoyTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
-      </el-row>
-      <el-row>
-        <el-col :span="22" style="color:#BB0000;">
-          <p><strong>注意事项：</strong></p>
-          <p>1，底注不可直接修改，需要新添加新的场次配置，再去掉旧的场次配置；</p>
-          <p>2，新加的场次需要保持在预上状态，重启游戏服务后才能上架；要去掉的场次需要先改为预下状态，延迟半天之后再下架；</p>
-          <p>3，配置项【最大人数、桌子数量】修改后，需要重启游戏服务才能生效。</p>
-        </el-col>
-      </el-row>
-      <el-row style="padding-top: 5px">
-        <el-col :span="20">
-          <el-button
-            size="mini"
-            type="primary"
-            icon="el-icon-plus"
-            @click="handleCreate()"
-          >添加配置项
-          </el-button>
-        </el-col>
-        <el-col :span="2">
-          <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
-        </el-col>
-      </el-row>
-      <div style="padding-top: 10px">
-        <el-table
-          ref="filterTable"
-          :data="tableData"
-          stripe
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
-          @row-click="clickData"
-          @sort-change="sortChange"
+  <div id="app" class="page-container" style="padding: 10px">
+    <el-row>
+      <publish primary-key="ID" key-id="TexasPusoyTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+    </el-row>
+    <el-row>
+      <el-col :span="22" style="color:#BB0000;">
+        <p><strong>注意事项：</strong></p>
+        <p>1，底注不可直接修改，需要新添加新的场次配置，再去掉旧的场次配置；</p>
+        <p>2，新加的场次需要保持在预上状态，重启游戏服务后才能上架；要去掉的场次需要先改为预下状态，延迟半天之后再下架；</p>
+        <p>3，配置项【最大人数、桌子数量】修改后，需要重启游戏服务才能生效。</p>
+      </el-col>
+    </el-row>
+    <el-row style="padding-top: 5px">
+      <el-col :span="20">
+        <el-button
+          size="mini"
+          type="primary"
+          icon="el-icon-plus"
+          @click="handleCreate()"
+        >添加配置项
+        </el-button>
+      </el-col>
+      <el-col :span="2">
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      </el-col>
+    </el-row>
+    <div style="padding-top: 10px">
+      <el-table
+        ref="filterTable"
+        :data="tableData"
+        stripe
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+        @row-click="clickData"
+        @sort-change="sortChange"
+      >
+        <el-table-column
+          prop="ID"
+          label="ID"
+          sortable="custom"
+          width="70"
+        />
+        <el-table-column
+          prop="Level"
+          label="Level"
+          sortable="custom"
+          width="100"
+        />
+        <el-table-column
+          prop="TableMoney"
+          label="底注"
+          sortable="custom"
+          width="100"
         >
-          <el-table-column
-            prop="ID"
-            label="ID"
-            sortable="custom"
-            width="70"
-          />
-          <el-table-column
-            prop="Level"
-            label="Level"
-            sortable="custom"
-            width="100"
-          />
-          <el-table-column
-            prop="TableMoney"
-            label="底注"
-            sortable="custom"
-            width="100"
-          >
-            <template slot-scope="scope">
-              {{ formatNumber(scope.row.TableMoney) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="CarryLower"
-            label="携带"
-            width="200"
-          >
-            <template slot-scope="scope">
-              {{ scope.row.CarryLower }}/{{ scope.row.CarryUpper }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="ObjectCount"
-            label="桌子数"
-            width="100"
-          />
-          <el-table-column
-            prop="MaxPlayerCount"
-            label="座位数"
-            width="150"
-          >
-            <template slot-scope="scope">
-              {{ formatNumber(scope.row.MaxPlayerCount) }}
-            </template>
-          </el-table-column>
-  
-          <el-table-column
-            prop="LastModify"
-            label="最近修改"
-            width="150"
-          >
-            <template slot-scope="scope">
-              {{ formatTime(scope.row.LastModify) }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="ModifyUser"
-            label="最后修改人"
-            width="100"
-          />
-          <el-table-column
-            prop="Status"
-            label="状态"
-            width="70"
-          >
-            <template slot-scope="scope">
-              {{ statNames[scope.row.Status] }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            label="操作"
-            column-key="op"
-            width="250"
-          >
-            <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="handleCopy(scope.row)"
-              >复制
-              </el-button>
-              <el-button
-                v-if="scope.row.Status==6"
-                size="mini"
-                type="success"
-                @click="handlePreOn(scope.row)"
-              >预上
-              </el-button>
-              <el-button
-                v-if="scope.row.Status==7"
-                size="mini"
-                type="success"
-                @click="handleOn(scope.row)"
-              >上架
-              </el-button>
-              <el-button
-                v-if="scope.row.Status==2"
-                size="mini"
-                type="warning"
-                @click="handlePreOff(scope.row)"
-              >预下
-              </el-button>
-              <el-button
-                v-if="scope.row.Status==6"
-                size="mini"
-                icon="el-icon-delete"
-                @click="handleDelete(scope.row)"
-              />
-              <el-button
-                v-if="scope.row.Status==8"
-                size="mini"
-                type="danger"
-                @click="handleOffline(scope.row)"
-              >下架
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-        <el-col :offset="16" :span="8">
-          <div class="block">
-            <el-pagination
-              :current-page="clientDB.GetPage().GetCurrentPage()"
-              :page-sizes="[10, 20, 30, 40]"
-              :page-size="clientDB.GetPage().GetPageNum()"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="clientDB.GetPage().GetTotalCount()"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.TableMoney) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="CarryLower"
+          label="携带"
+          width="200"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.CarryLower }}/{{ scope.row.CarryUpper }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ObjectCount"
+          label="桌子数"
+          width="100"
+        />
+        <el-table-column
+          prop="MaxPlayerCount"
+          label="座位数"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.MaxPlayerCount) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="LastModify"
+          label="最近修改"
+          width="150"
+        >
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.LastModify) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ModifyUser"
+          label="最后修改人"
+          width="100"
+        />
+        <el-table-column
+          prop="Status"
+          label="状态"
+          width="70"
+        >
+          <template slot-scope="scope">
+            {{ statNames[scope.row.Status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          column-key="op"
+          width="250"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="handleCopy(scope.row)"
+            >复制
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==6"
+              size="mini"
+              type="success"
+              @click="handlePreOn(scope.row)"
+            >预上
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==7"
+              size="mini"
+              type="success"
+              @click="handleOn(scope.row)"
+            >上架
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==2"
+              size="mini"
+              type="warning"
+              @click="handlePreOff(scope.row)"
+            >预下
+            </el-button>
+            <el-button
+              v-if="scope.row.Status==6"
+              size="mini"
+              icon="el-icon-delete"
+              @click="handleDelete(scope.row)"
             />
-          </div>
-        </el-col>
-      </div>
+            <el-button
+              v-if="scope.row.Status==8"
+              size="mini"
+              type="danger"
+              @click="handleOffline(scope.row)"
+            >下架
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-col :offset="16" :span="8">
+        <div class="block">
+          <el-pagination
+            :current-page="clientDB.GetPage().GetCurrentPage()"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+          />
+        </div>
+      </el-col>
+    </div>
     <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="edit" :model="edit" label-width="180px" size="small">
         <el-row>
@@ -632,238 +632,238 @@ function newItem() {
   }
 }
 
-  export default {
-    components: { Compare, Publish, SelectGoods, GameLevel, MoneyInput },
-    data() {
-      return {
-        tableData: [],
-        statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
-        clientDB: new ClientTableData([], 1, filterMap),
-        search: '',
-        libShow: $libShow,
-        env: 'test',
-        libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'HideCarry', 'TableMoney', 'TotalRecharge', 'MaxPayAmount', 'MinPlayMoney']),
-  
-        edit: {
-          visible: false,
-          item: newItem(),
-          isEdit: false
-        },
-  
-        AttrNames: {
-          CarryLower: '最小携带',
-          CarryUpper: '最大携带',
-          HideCarry: '隐藏目标值',
-          TableMoney: '底注',
-          MaxPlayerCount: 4,
-          ObjectCount: '桌子数',
-          FlowRate: '抽水率',
-          ActionSeconds: '操作时长',
-          Level: '等级'
-        }
-      }
-    },
-    created() {
-      this.env = store.getters.env || this.env
-      this.getList()
-    },
-    methods: {
-      formatNumber(n) {
-        return n.toLocaleString()
+export default {
+  components: { Compare, Publish, SelectGoods, GameLevel, MoneyInput },
+  data() {
+    return {
+      tableData: [],
+      statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
+      clientDB: new ClientTableData([], 1, filterMap),
+      search: '',
+      libShow: $libShow,
+      env: 'test',
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'HideCarry', 'TableMoney', 'TotalRecharge', 'MaxPayAmount', 'MinPlayMoney']),
+
+      edit: {
+        visible: false,
+        item: newItem(),
+        isEdit: false
       },
-      formatTime(ts) {
-        return $libDate.FormateSecondStr(ts, 2)
-      },
-      clearFilter() {
-        this.clientDB.ClearFilterMap()
-        this.refreshShow()
-      },
-      handleFilter() {
-        this.clientDB.FilterData()
-        this.refreshShow()
-      },
-      // 分页处理
-      refreshShow() {
-        this.tableData = this.clientDB.GetCurrentPageData()
-      },
-      handleSizeChange(val) {
-        this.clientDB.GetPage().SetPageNum(val)
-        this.refreshShow()
-      },
-      handleCurrentChange(val) {
-        this.clientDB.GetPage().SetPageNo(val)
-        this.refreshShow()
-      },
-  
-      sortChange(ob) {
-        this.clientDB.SortByProp(ob.prop, ob.order)
-        this.refreshShow()
-      },
-      // 操作类函数
-      clickData(row, column, event) {
-        if (column.columnKey !== 'op') {
-          this.initFormData(true, row.ID)
-          this.edit.visible = true
-        }
-      },
-  
-      handleCreate() {
-        this.edit.item = newItem()
-        this.edit.isEdit = false
-        this.edit.visible = true
-      },
-      handleCopy(ob) {
-        this.initFormData(false, ob.ID)
-        this.edit.visible = true
-      },
-      getList() {
-        request({
-          url: '/texaspusoytable/all',
-          method: 'get',
-          data: {}
-        }).then(response => {
-          if (response.RetCode === 0) {
-            const objs = response.Data || []
-            this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
-            this.handleCurrentChange(1)
-          }
-        })
-      },
-      configCheck() {
-        return true
-        let goodsCheck = false
-        for (const i in this.clientDB.TotalData) {
-          // 除了练习场，其它场次必须配置推荐商品
-          if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
-            goodsCheck = true
-          }
-        }
-        if (goodsCheck) {
-          this.$alert('除了练习场，其它场次必须配置金币不足推荐商品')
-          return false
-        }
-        return true
-      },
-      handlePreOn(ob) {
-        this.changeStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
-      },
-      handleOn(ob) {
-        this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
-      },
-      handlePreOff(ob) {
-        this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
-      },
-      handleOffline(ob) {
-        this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
-      },
-      handleDelete(ob) {
-        this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
-      },
-      changeStatus(id, status, msg) {
-        const $this = this
-        this.$confirm(msg, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          request({
-            url: '/texaspusoytable/update/status',
-            method: 'post',
-            data: {
-              ID: id,
-              status: status
-            }
-          }).then(response => {
-            if (response.RetCode === 0) {
-              Message.success('修改记录状态成功！')
-              $this.clientDB.UpdateData({ ID: id, Status: status })
-            }
-          })
-        }).catch(() => {
-          console.log('取消')
-        })
-      },
-      //* * ********************** 修改/添加弹框相关 *****************
-      getEditTitle() {
-        return this.edit.isEdit ? '修改配置' : '新增配置'
-      },
-      initFormData(bEdit, ID) {
-        this.edit.isEdit = bEdit
-        if (ID) {
-          const _data = this.clientDB.GetDataByID(ID)
-          if (_data) {
-            Object.assign(this.edit.item, _data)
-            if (bEdit) {
-              // 设置修改之前数据
-              this.$refs.compare.SetOldVal(_data)
-            }
-          }
-        }
-      },
-      dataRule(required, config) {
-        return DataRule(required, config)
-      },
-      createSave(postData) {
-        request({
-          url: '/texaspusoytable/create',
-          method: 'post',
-          data: postData
-        }).then(response => {
-          if (response.RetCode === 0) {
-            this.edit.item.ID = response.Data.ID
-            this.clientDB.AddData(this.edit.item)
-            this.refreshShow()
-            Message.success('保存成功！')
-          }
-        })
-      },
-      editSave(postData) {
-        request({
-          url: 'texaspusoytable/update',
-          method: 'post',
-          data: postData
-        }).then(response => {
-          if (response.RetCode === 0) {
-            this.clientDB.UpdateData(this.edit.item)
-            this.refreshShow()
-            Message.success('保存成功！')
-          }
-        })
-      },
-      getPostData() {
-        const postData = this.libMoney.TransForStore(this.edit.item)
-        return postData
-      },
-      checkData() {
-        if (this.edit.item.CarryLower > this.edit.item.CarryUpper) {
-          Message.warning('下限不能大于上限，请检查数值正确性！')
-          return false
-        }
-        if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
-          Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
-          return false
-        }
-        return true
-      },
-      save() {
-        if (!this.checkData()) return
-        if (this.edit.isEdit) {
-          // 设置修改后数据
-          this.$refs.compare.SetNewVal(this.edit.item)
-          const $this = this
-          this.$refs.compare.Compare(function(isEdit) {
-            if (!isEdit) {
-              Message.error('没有任何修改，不需要提交')
-              return
-            } else {
-              $this.editSave($this.getPostData())
-            }
-          })
-        } else {
-          this.createSave(this.getPostData())
-        }
-        this.edit.visible = false
+
+      AttrNames: {
+        CarryLower: '最小携带',
+        CarryUpper: '最大携带',
+        HideCarry: '隐藏目标值',
+        TableMoney: '底注',
+        MaxPlayerCount: 4,
+        ObjectCount: '桌子数',
+        FlowRate: '抽水率',
+        ActionSeconds: '操作时长',
+        Level: '等级'
       }
     }
+  },
+  created() {
+    this.env = store.getters.env || this.env
+    this.getList()
+  },
+  methods: {
+    formatNumber(n) {
+      return n.toLocaleString()
+    },
+    formatTime(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
+    clearFilter() {
+      this.clientDB.ClearFilterMap()
+      this.refreshShow()
+    },
+    handleFilter() {
+      this.clientDB.FilterData()
+      this.refreshShow()
+    },
+    // 分页处理
+    refreshShow() {
+      this.tableData = this.clientDB.GetCurrentPageData()
+    },
+    handleSizeChange(val) {
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
+    },
+    handleCurrentChange(val) {
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
+    },
+
+    sortChange(ob) {
+      this.clientDB.SortByProp(ob.prop, ob.order)
+      this.refreshShow()
+    },
+    // 操作类函数
+    clickData(row, column, event) {
+      if (column.columnKey !== 'op') {
+        this.initFormData(true, row.ID)
+        this.edit.visible = true
+      }
+    },
+
+    handleCreate() {
+      this.edit.item = newItem()
+      this.edit.isEdit = false
+      this.edit.visible = true
+    },
+    handleCopy(ob) {
+      this.initFormData(false, ob.ID)
+      this.edit.visible = true
+    },
+    getList() {
+      request({
+        url: '/texaspusoytable/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.handleCurrentChange(1)
+        }
+      })
+    },
+    configCheck() {
+      return true
+      let goodsCheck = false
+      for (const i in this.clientDB.TotalData) {
+        // 除了练习场，其它场次必须配置推荐商品
+        if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
+          goodsCheck = true
+        }
+      }
+      if (goodsCheck) {
+        this.$alert('除了练习场，其它场次必须配置金币不足推荐商品')
+        return false
+      }
+      return true
+    },
+    handlePreOn(ob) {
+      this.changeStatus(ob.ID, 7, '您确定要将记录状态修改为"预备上架"吗？该记录将在发布后同步到外网。')
+    },
+    handleOn(ob) {
+      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+    },
+    handlePreOff(ob) {
+      this.changeStatus(ob.ID, 8, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleOffline(ob) {
+      this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
+    },
+    handleDelete(ob) {
+      this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
+    },
+    changeStatus(id, status, msg) {
+      const $this = this
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/texaspusoytable/update/status',
+          method: 'post',
+          data: {
+            ID: id,
+            status: status
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改记录状态成功！')
+            $this.clientDB.UpdateData({ ID: id, Status: status })
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    //* * ********************** 修改/添加弹框相关 *****************
+    getEditTitle() {
+      return this.edit.isEdit ? '修改配置' : '新增配置'
+    },
+    initFormData(bEdit, ID) {
+      this.edit.isEdit = bEdit
+      if (ID) {
+        const _data = this.clientDB.GetDataByID(ID)
+        if (_data) {
+          Object.assign(this.edit.item, _data)
+          if (bEdit) {
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(_data)
+          }
+        }
+      }
+    },
+    dataRule(required, config) {
+      return DataRule(required, config)
+    },
+    createSave(postData) {
+      request({
+        url: '/texaspusoytable/create',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.item.ID = response.Data.ID
+          this.clientDB.AddData(this.edit.item)
+          this.refreshShow()
+          Message.success('保存成功！')
+        }
+      })
+    },
+    editSave(postData) {
+      request({
+        url: 'texaspusoytable/update',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.clientDB.UpdateData(this.edit.item)
+          this.refreshShow()
+          Message.success('保存成功！')
+        }
+      })
+    },
+    getPostData() {
+      const postData = this.libMoney.TransForStore(this.edit.item)
+      return postData
+    },
+    checkData() {
+      if (this.edit.item.CarryLower > this.edit.item.CarryUpper) {
+        Message.warning('下限不能大于上限，请检查数值正确性！')
+        return false
+      }
+      if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
+        Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
+        return false
+      }
+      return true
+    },
+    save() {
+      if (!this.checkData()) return
+      if (this.edit.isEdit) {
+        // 设置修改后数据
+        this.$refs.compare.SetNewVal(this.edit.item)
+        const $this = this
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          } else {
+            $this.editSave($this.getPostData())
+          }
+        })
+      } else {
+        this.createSave(this.getPostData())
+      }
+      this.edit.visible = false
+    }
   }
-  </script>
+}
+</script>

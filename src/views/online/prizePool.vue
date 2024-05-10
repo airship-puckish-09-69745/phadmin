@@ -95,7 +95,7 @@ export default {
       },
       gameNamesSuffix: {
         1: '普通',
-        2: '购买',
+        2: '购买'
       },
       libShow: $libShow,
       dialogVisible: false
@@ -149,9 +149,9 @@ export default {
     getGameName(gid) {
       const id = parseInt(gid)
       if (id > 5000) {
-        let slotsType = parseInt(id/100)
-        let val = parseInt(id%100)
-        return $libShow.GameNames[slotsType] + this.gameNamesSuffix[val] 
+        const slotsType = parseInt(id / 100)
+        const val = parseInt(id % 100)
+        return $libShow.GameNames[slotsType] + this.gameNamesSuffix[val]
       }
       return $libShow.GameNames[id]
     },

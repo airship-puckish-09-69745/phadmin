@@ -164,7 +164,7 @@
         width="100"
       >
         <template slot-scope="scope">
-          <span  :style="{color: scope.row.PayoffAmount >0?'red':'green'}">
+          <span :style="{color: scope.row.PayoffAmount >0?'red':'green'}">
             {{ formatNumber(scope.row.PayoffAmount) }}
           </span>
         </template>
@@ -1871,10 +1871,10 @@ export default {
           $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)
           $this.item.win = $this.item.lose = $this.item.winCount = $this.item.loseCount = $this.item.fee = 0
           let cnt = 0
-          $this.item.pot=0
+          $this.item.pot = 0
           for (const o in objs) {
             const item = objs[o]
-            cnt+= item.MoneyChanged
+            cnt += item.MoneyChanged
             $this.item.pot += item.PotChange
             if (item.PayoffAmount > 0) {
               $this.item.win += item.PayoffAmount
@@ -2448,13 +2448,13 @@ export default {
 
       this.sweeperVisible = true
     },
-    getGamePot(pot){
+    getGamePot(pot) {
       // 有些游戏上报的时候没加pot，有些加了
-      if (this.gid==22){
-        console.log("=====1=====",this.gid,pot)
+      if (this.gid == 22) {
+        console.log('=====1=====', this.gid, pot)
         return pot
       }
-     return 0
+      return 0
     },
     showTowerGame(obj) {
       this.towerData = obj.Tower.Symbol

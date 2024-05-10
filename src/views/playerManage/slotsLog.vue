@@ -1,5 +1,10 @@
 <template>
   <div class="app-container">
+    <el-row style="margin-bottom: 10px;">
+      <el-col :span="24">
+        <el-alert type="success" description="数据根据Uid分表，需要模糊匹配请输入 0-99 数字查询。输赢图表只支持指定有效Uid查询" />
+      </el-col>
+    </el-row>
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
