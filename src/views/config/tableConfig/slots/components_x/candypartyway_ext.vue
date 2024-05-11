@@ -32,6 +32,10 @@
             <el-input v-model="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="购买免费模式中奖倍数分布V2">
+            <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
