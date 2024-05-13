@@ -561,7 +561,7 @@
           <template slot="label">
             牌型：
           </template>
-          {{ blackjackDetail.dealerCardType==0?"爆牌":(blackjackDetail.dealerCardType==1?"点牌":"黑杰克") }}
+          {{ blackjackDetail.dealerCardType===1?"点牌":(blackjackDetail.dealerCardType===2?"BlackJack":"爆牌") }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -581,12 +581,16 @@
         <el-table-column prop="seat" label="座位" />
         <el-table-column prop="moneyBet" label="投注金额">
           <template slot-scope="scope">
-            {{ scope.row.moneyBet/1000 }}
+            <div v-for="(item,index) in scope.row.cardGroups">
+              <hr v-if="index > 0" class="blackJackHr"/>
+               {{item.moneyBet / 1000}}
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="cards" label="手牌">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroups" class="block">
+              <hr v-if="index > 0" class="blackJackHr"/>
               {{ '手牌'+(index+1)+': ' }}
               <div v-for="(card) in item.cards" class="block">
                 <el-image
@@ -599,20 +603,19 @@
 
         </el-table-column>
         <el-table-column label="是否爆牌">
-          <template slot-scope="scope">
-            <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 50%;white-space: pre-wrap;">
-
-              <span style="white-space: pre-wrap;">
-                <br>
-                {{ '手牌'+(index+1)+': '+ (item.cardType==0?"爆牌":( item.cardType==1?"点牌":"黑杰克")) }}
-              </span>
-
-            </div>
-          </template>
+                <template slot-scope="scope">
+                  <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
+                    <hr v-if="index > 0" class="blackJackHr"/>
+                      {{ '手牌'+(index+1)+': '+ (item.cardType==1?"点牌":( item.cardType==2?"BlackJack":"爆牌")) }}
+                  </div>
+                </template>
         </el-table-column>
-        <el-table-column label="输赢" prop="moneyChange">
-          <template slot-scope="scope">
-            {{ scope.row.moneyChange/1000 }}
+        <el-table-column label="输赢">
+            <template slot-scope="scope">
+              <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
+                <hr v-if="index > 0"  class="blackJackHr"/>
+                 {{item.moneyWon}}
+              </div>
           </template>
         </el-table-column>
       </el-table>
@@ -1479,6 +1482,107 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="solitaire详情" :visible.sync="solitaireLog.solitaireVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="4" border>
+        <el-descriptions-item>
+          <template slot="label">
+           赢家：
+          </template>
+          {{ solitaireLog.solitaireDetail.winUid }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            底注：
+          </template>
+          {{ solitaireLog.solitaireDetail.tableMoney }}
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="solitaireLog.solitaireDetail.players" border>
+        <el-table-column prop="uid" label="uid">
+          <template slot-scope="scope">{{ scope.row.uid}}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="输赢">
+          <template slot-scope="scope">{{  scope.row.moneyChange/1000  }}</template>
+        </el-table-column>
+        <el-table-column prop="cards" label="当前金额">
+          <template slot-scope="scope">
+            {{scope.row.moneyTotal/1000}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="翻牌张数">
+          <template slot-scope="scope">{{ scope.row.flopCount }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="积分">
+          <template slot-scope="scope">{{ scope.row.userScore }}</template>
+        </el-table-column>
+        <el-table-column prop="isDealer" label="HitJackpot">
+          <template slot-scope="scope">
+            <div class="solitaireHeight">
+              <el-row>
+                <span>牌堆</span>
+              </el-row>
+            </div>
+            <div class="solitaireHeight">
+              <hr class="blackJackHr"/>
+              <el-row>
+                <span>放牌区</span>
+              </el-row>
+            </div>
+            <div style="height: 200px">
+              <hr class="blackJackHr" style="width: 2000px"/>
+              <el-row>
+                <span>牌叠</span>
+              </el-row>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="isDealer" label="HitJackpot" width="1000px">
+          <template slot-scope="scope">
+            <div class="solitaireHeight">
+              <el-row>
+                     <span v-for="(row,idx) in  scope.row.CardsPile">
+                         <el-image
+                           :style="getCardStyle(idx)"
+                           :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
+                         />
+              </span>
+              </el-row>
+            </div>
+            <div class="solitaireHeight">
+              <hr class="blackJackHr"/>
+              <el-row style="height: 33%">
+                      <span v-for="(row,idx) in  scope.row.resultCards">
+                          <div v-for="(d,i) in row.cards" style="float:left;" >
+                             <el-image
+                               :style="getCardStyle2(i)"
+                               :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
+                             />
+                         <span v-html="'&nbsp;'"> </span>
+                 </div>
+              </span>
+              </el-row>
+            </div>
+            <div style="height: 200px">
+              <hr class="blackJackHr"/>
+              <el-row>
+                         <span v-for="(row,idx) in  scope.row.cardsStacks" >
+                             <div v-for="(d,i) in row.cards" style="float:left;" >
+                                 <el-image
+                                   :style="getCardStyle2(i)"
+                                   :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
+                                 />
+                                <span v-html="'&nbsp;'"> </span>
+                   </div>
+                </span>
+
+              </el-row>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
@@ -1638,7 +1742,6 @@ export default {
         113: '清龙'
       },
       pusoyGroupCardTypes: {
-
       },
       pusoyShootOneShow: false,
 
@@ -1647,6 +1750,11 @@ export default {
         pusoyDosDetailVisible: false,
         pusoyDosShootOneShow: false
       },
+      solitaireLog: {
+        solitaireVisible: false,
+        solitaireDetail: {},
+      },
+      ConversionColorMap:{},
 
       rummyDetailVisible: false,
       rummyDetails: [],
@@ -2005,6 +2113,8 @@ export default {
             $this.showWindropGame(obj)
           } else if (gid === 6) {
             $this.showSevenGame(obj)
+          } else if (gid === 35) {
+            $this.showSolitaire(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -2026,6 +2136,31 @@ export default {
         console.log('无法解析牌局详情，很可能不存在')
       }
     },
+    cardConversionColor(num,meihua,heitao,hongtao,fangkuai){
+      if (num==0){
+        return 2
+        return
+      }
+      if (Object.keys(this.ConversionColorMap).length === 0){
+        var m = meihua.split('-');
+        var hei = heitao.split('-');
+        var hong = hongtao.split('-');
+        var f = fangkuai.split('-');
+        this.ConversionColorMap[m[0]]=m[1]
+        this.ConversionColorMap[hei[0]]=hei[1]
+        this.ConversionColorMap[hong[0]]=hong[1]
+        this.ConversionColorMap[f[0]]=m[1]
+      }
+
+
+      var s = num.toString(16);
+      // 补0
+      if (s.length===1){
+        s = '0'+s[0];
+      }
+      let result ='0x'+ this.ConversionColorMap[s[0]]+s[1]
+      return parseInt(result)
+    },
     showTexasGame(obj) {
       this.actions = obj.logs
       const cards = JSON.parse(obj.cardData)
@@ -2038,6 +2173,11 @@ export default {
       this.publicCards = cards[99]
       this.showPublicCars = true
       this.actionVisible = true
+    },
+    showSolitaire(obj) {
+      this.solitaireLog.solitaireDetail=obj
+      this.solitaireLog.solitaireVisible=true
+      console.log("======",obj)
     },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
@@ -2630,6 +2770,20 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       }
       this.chartData = chartData
     },
+    getCardStyle(idx){
+      if (idx===0){
+        return 'width: 37px; height: 50px;'
+      }
+      return 'width: 37px; height: 50px;margin-left: -20px'
+    },
+    getCardStyle2(idx){
+      if (idx===0){
+        return 'width: 37px; height: 50px;'
+      }
+      let top =idx*15
+      let left =idx+1 * -37
+      return 'width: 37px; height: 50px;margin-left: '+left+'px;margin-top: '+top+'px'
+    },
     getServiceFeeName() {
       if (this.gid == 20) {
         return '下注炸弹数'
@@ -2764,5 +2918,14 @@ ul#sweeperShow li .showStep {
   line-height: 31px;
   padding: 2px;
 }
-
+.blackJackHr{
+   width: 200%;
+  margin-left: -10px;
+  background-color: #dfe6ec;
+  height:1px;
+  border:none;
+}
+.solitaireHeight{
+  height: 80px;
+}
 </style>

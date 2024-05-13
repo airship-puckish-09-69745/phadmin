@@ -887,6 +887,12 @@ export const asyncRoutes = [
         meta: { title: 'Windrop ◐', gid: 103 }
       },
       {
+        path: 'playlog_solitaire',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_solitaire',
+        meta: { title: 'Solitaire ◐', gid: 35 }
+      },
+      {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
