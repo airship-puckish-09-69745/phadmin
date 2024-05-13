@@ -204,6 +204,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log(objs)
           if (objs.length > 0) {
             this.searchDetail(objs)
           }
