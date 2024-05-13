@@ -17,6 +17,18 @@
         </el-col>
 
         <el-col :span="8" :offset="1">
+          <el-form-item prop="NoticeTime" label="下注1时长(s):">
+            <el-input v-model.number="item.Bet1Time" :required="true" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8" :offset="1">
+          <el-form-item label="下注2时长(s):">
+            <el-input v-model.number="item.Bet2Time" :required="true" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8" :offset="1">
           <el-form-item prop="NoticeTime" label="用户长时间未下注提示(s):">
             <el-input v-model.number="item.NoticeTime" :required="true" @input="change($event)" />
           </el-form-item>
@@ -384,6 +396,8 @@ export default {
           { Name: '41-49', MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 }
         ],
         FeeRate: 5,
+        Bet1Time: 10,
+        Bet2Time: 10,
         KicKTime: 10,
         MaxCtrlTimes: 20,
 
