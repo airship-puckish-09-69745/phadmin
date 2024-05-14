@@ -614,7 +614,7 @@
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
                 <hr v-if="index > 0"  class="blackJackHr"/>
-                 {{item.moneyWon}}
+                 {{item.moneyWon / 1000}}
               </div>
           </template>
         </el-table-column>
@@ -1494,7 +1494,7 @@
           <template slot="label">
             底注：
           </template>
-          {{ solitaireLog.solitaireDetail.tableMoney }}
+          {{ solitaireLog.solitaireDetail.tableMoney /1000 }}
         </el-descriptions-item>
       </el-descriptions>
 
@@ -1513,20 +1513,26 @@
         <el-table-column prop="cardScore" label="翻牌张数">
           <template slot-scope="scope">{{ scope.row.flopCount }}</template>
         </el-table-column>
+        <el-table-column prop="cardScore" label="重置次数">
+          <template slot-scope="scope">{{ scope.row.ResetCount }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="撤销次数">
+          <template slot-scope="scope">{{ scope.row.WithdrawCount }}</template>
+        </el-table-column>
         <el-table-column prop="cardScore" label="积分">
           <template slot-scope="scope">{{ scope.row.userScore }}</template>
         </el-table-column>
-        <el-table-column prop="isDealer" label="HitJackpot">
+        <el-table-column prop="isDealer" label="结算">
           <template slot-scope="scope">
-            <div class="solitaireHeight">
+            <div style="height: 200px">
               <el-row>
-                <span>牌堆</span>
+                <span>放牌区</span>
               </el-row>
             </div>
             <div class="solitaireHeight">
               <hr class="blackJackHr"/>
               <el-row>
-                <span>放牌区</span>
+                <span>牌堆</span>
               </el-row>
             </div>
             <div style="height: 200px">
@@ -1537,21 +1543,10 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="isDealer" label="HitJackpot" width="1000px">
+        <el-table-column prop="isDealer" label="结算" width="1000px">
           <template slot-scope="scope">
-            <div class="solitaireHeight">
-              <el-row>
-                     <span v-for="(row,idx) in  scope.row.CardsPile">
-                         <el-image
-                           :style="getCardStyle(idx)"
-                           :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
-                         />
-              </span>
-              </el-row>
-            </div>
-            <div class="solitaireHeight">
-              <hr class="blackJackHr"/>
-              <el-row style="height: 33%">
+            <div style="height: 200px">
+              <el-row >
                       <span v-for="(row,idx) in  scope.row.resultCards">
                           <div v-for="(d,i) in row.cards" style="float:left;" >
                              <el-image
@@ -1560,6 +1555,17 @@
                              />
                          <span v-html="'&nbsp;'"> </span>
                  </div>
+              </span>
+              </el-row>
+            </div>
+            <div class="solitaireHeight">
+              <hr class="blackJackHr"/>
+              <el-row>
+                     <span v-for="(row,idx) in  scope.row.CardsPile">
+                         <el-image
+                           :style="getCardStyle(idx)"
+                           :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
+                         />
               </span>
               </el-row>
             </div>
@@ -2137,6 +2143,7 @@ export default {
       }
     },
     cardConversionColor(num,meihua,heitao,hongtao,fangkuai){
+      // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
       if (num==0){
         return 2
         return
