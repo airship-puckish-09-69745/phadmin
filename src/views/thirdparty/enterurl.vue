@@ -242,8 +242,8 @@ export default {
           val: 'IOS'
         },
         {
-          name: 'AOS',
-          val: 'AOS'
+          name: 'Android',
+          val: 'Android'
         },
         {
           name: 'PC',
@@ -254,16 +254,16 @@ export default {
           val: 'H5'
         },
         {
-          name: 'Glife',
-          val: 'Glife'
+          name: 'GLIFE',
+          val: 'GLIFE'
         },
         {
-          name: 'Maya',
-          val: 'Maya'
+          name: 'MAYA',
+          val: 'MAYA'
         },
         {
-          name: 'Lazada',
-          val: 'Lazada'
+          name: 'LAZADA',
+          val: 'LAZADA'
         }
       ],
       activities: [
