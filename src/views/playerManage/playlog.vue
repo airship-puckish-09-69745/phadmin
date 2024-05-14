@@ -207,7 +207,16 @@
           {{ formatNumber(scope.row.MoneyNow) }}
         </template>
       </el-table-column>
-
+      <el-table-column
+        :v-if="isContainsFriendGame()"
+        prop="IsRobot"
+        label="房间类型"
+        width="120px"
+      >
+        <template slot-scope="scope">
+          {{ showRoomLevel(scope.row.IsPractice) }}
+        </template>
+      </el-table-column>
       <template v-if="gid!==10&&gid!==21">
         <el-table-column
           prop="WinRate"
@@ -2184,7 +2193,6 @@ export default {
     showSolitaire(obj) {
       this.solitaireLog.solitaireDetail=obj
       this.solitaireLog.solitaireVisible=true
-      console.log("======",obj)
     },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
@@ -2595,14 +2603,6 @@ export default {
 
       this.sweeperVisible = true
     },
-    getGamePot(pot) {
-      // 有些游戏上报的时候没加pot，有些加了
-      if (this.gid == 22) {
-        console.log('=====1=====', this.gid, pot)
-        return pot
-      }
-      return 0
-    },
     showTowerGame(obj) {
       this.towerData = obj.Tower.Symbol
       this.towerVisible = true
@@ -2623,6 +2623,12 @@ export default {
     showPusoyDosGame(obj) {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
+    },
+    isContainsFriendGame(){
+      if (this.gid==21){
+        return true
+      }
+      return false
     },
     showPusoyGame(obj) {
       console.log(obj)
@@ -2805,6 +2811,20 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return '结果'
       } else {
         return '是否命中'
+      }
+    },
+    showRoomLevel(level) {
+      switch (level) {
+        case 0:
+          return '普通场'
+        case 1:
+          return '练习场'
+        case 100:
+          return '好友房'
+        case 110:
+          return '比赛场'
+        default:
+          return level <= 7 ? '陪玩机器人' : level
       }
     },
     getMicroCtrlName(val) {
