@@ -1484,12 +1484,12 @@
 
     <el-dialog title="solitaire详情" :visible.sync="solitaireLog.solitaireVisible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="4" border>
-        <el-descriptions-item>
-          <template slot="label">
-           赢家：
-          </template>
-          {{ solitaireLog.solitaireDetail.winUid }}
-        </el-descriptions-item>
+<!--        <el-descriptions-item>-->
+<!--          <template slot="label">-->
+<!--           赢家：-->
+<!--          </template>-->
+<!--          {{ solitaireLog.solitaireDetail.winUid }}-->
+<!--        </el-descriptions-item>-->
         <el-descriptions-item>
           <template slot="label">
             底注：
