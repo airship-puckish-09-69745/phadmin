@@ -33,7 +33,7 @@
           <p v-else>{{ scope.row.ante }}</p>
         </template>
       </el-table-column>
-      <el-table-column prop="RaiseBlindTime" label="升盲" align="center" width="100">
+      <el-table-column prop="RaiseBlindTime" label="升盲(秒)" align="center" width="100">
         <template slot-scope="scope">
           <el-input v-if="isEdit" v-model.number="scope.row.raise_blind_time" />
           <p v-else>{{ scope.row.raise_blind_time }}</p>
