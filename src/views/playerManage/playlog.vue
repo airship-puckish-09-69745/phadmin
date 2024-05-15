@@ -225,7 +225,7 @@
         >
           <template slot-scope="scope">
            <span v-if="gid==20&& scope.row.LuckyVal>0">
-              {{  scope.row.LuckyVal }}
+              {{  scope.row.LuckyVal / 100}}
            </span>
             <span v-else>
                {{ scope.row.WinRate }}
