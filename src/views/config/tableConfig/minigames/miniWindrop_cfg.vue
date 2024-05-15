@@ -344,7 +344,7 @@
           <el-row>
             <el-col :span="7">
               <el-form-item label="Jackpot贡献率：">
-                <el-input v-model.number="cfg.JackpotHight"><template slot="append">‰</template></el-input>
+                <el-input v-model.number="cfg.JackpotHight"><template slot="append">%</template></el-input>
               </el-form-item>
             </el-col>
           </el-row>
