@@ -876,7 +876,14 @@
       width="50%"
     >
       <br>
-      <el-descriptions title="总信息">
+      <el-descriptions
+              class="margin-top"
+              :column="4"
+              size="medium"
+              :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+              border
+            >
+          <el-descriptions-item label="累计贡献值">{{ WindropGameResult.JackpotContributeTotal }}</el-descriptions-item>
         <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
         <el-descriptions-item label="总金币">{{ WindropGameResult.BetAllScore }}</el-descriptions-item>
         <el-descriptions-item label="下注金币">{{ WindropGameResult.BetScore }}</el-descriptions-item>
@@ -1740,7 +1747,8 @@ export default {
         BetScore: 0,
         CurEnergy: 0,
         EnergyNum: 0,
-        SpinCount: 0
+        SpinCount: 0,
+        JackpotContributeTotal: 0
       },
       WindropGameOptions: [],
 
@@ -2342,6 +2350,7 @@ export default {
       this.WindropGameResult.CurEnergy = windropObj.optionData.curEnergy
       this.WindropGameResult.EnergyNum = windropObj.optionData.energyNum
       this.WindropGameResult.SpinCount = windropObj.optionData.spinCount
+      this.WindropGameResult.JackpotContributeTotal = windropObj.JackpotContributeTotal
       this.WindropGameVisible = true
     },
 
