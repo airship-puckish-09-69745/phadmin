@@ -10,7 +10,7 @@
       <div style="display: flex; align-items: center;">
         <div style="flex: 1; height: 2px; background-color: black;" />
         <div style="padding: 0 10px;"> <!-- 文字部分 -->
-          <slot> <span style="color:red;font-size:20px ">中级Jackpot</span></slot>
+          <slot> <span style="color:red;font-size:20px ">High Jackpot</span></slot>
         </div>
         <div style="flex: 1; height: 2px; background-color: black;" />
       </div>
@@ -329,7 +329,7 @@
       <div style="display: flex; align-items: center;">
         <div style="flex: 1; height: 2px; background-color: black;" />
         <div style="padding: 0 10px;"> <!-- 文字部分 -->
-          <slot> <span style="color:red;font-size:20px ">高级JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
+          <slot> <span style="color:red;font-size:20px ">Expert JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
         </div>
         <div style="flex: 1; height: 2px; background-color: black;" />
       </div>

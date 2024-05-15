@@ -53,7 +53,7 @@
         </el-form-item>
 
         <el-form-item label="场次类型：">
-          <el-select v-model="searchForm.level" placeholder="请选择">
+          <el-select v-model="searchForm.level" placeholder="请选择" @click.native="changeLevelConfig">
             <el-option
               v-for="item in levelConfig"
               :key="item.value"
@@ -228,7 +228,6 @@ export default {
       levelConfig: [
         { 'value': 0, 'label': '全部' },
         { 'value': 1, 'label': '普通场次' },
-        { 'value': 2, 'label': '普通场次2' }
       ],
       poolConfig: [
         { 'value': 0, 'label': '全部' },
@@ -310,6 +309,15 @@ export default {
         }
         // loading.close()
       })
+    },
+    changeLevelConfig(){
+      console.log("======",this.searchForm.gameId,  this.LevelConfig)
+      if (this.searchForm.gameId===103){
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': 'EXPERT'},
+          { 'value': 2, 'label': 'HIGH'}]
+        }
     },
     showInfo() {
       const _this = this
