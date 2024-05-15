@@ -222,7 +222,16 @@
           prop="WinRate"
           :label="getWinRateName()"
           width="100"
-        />
+        >
+          <template slot-scope="scope">
+           <span v-if="gid==20&& scope.row.LuckyVal>0">
+              {{  scope.row.LuckyVal }}
+           </span>
+            <span v-else>
+               {{ scope.row.WinRate }}
+            </span>
+          </template>
+        </el-table-column>
       </template>
 
       <el-table-column
