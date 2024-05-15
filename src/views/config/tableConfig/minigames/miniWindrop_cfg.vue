@@ -344,7 +344,7 @@
           <el-row>
             <el-col :span="7">
               <el-form-item label="Jackpot贡献率：">
-                <el-input v-model.number="cfg.JackpotHight"><template slot="append">%</template></el-input>
+                <el-input v-model.number="cfg.JackpotHight"><template slot="append">‰</template></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -376,7 +376,7 @@
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.AwardRate">
-                      <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">‱</template>
+                      <template v-if="scope.row.Type === 4" slot="append">倍下注</template><template v-else slot="append">%</template>
                     </el-input>
                   </template>
                 </el-table-column>
