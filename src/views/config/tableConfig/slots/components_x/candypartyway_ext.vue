@@ -29,7 +29,7 @@
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖左范围概率V2">
-            <el-input v-model="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
+            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数分布V2">

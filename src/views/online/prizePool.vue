@@ -15,7 +15,12 @@
             width="150"
           >
             <template slot-scope="scope">
-              {{ getGameName(scope.row.Gid) }}
+            <span v-if="scope.row.Gid===37">
+                {{ getGameName(scope.row.Gid)+' '+scope.row.Ante+'场' }}
+            </span>
+              <span v-else>
+                {{ getGameName(scope.row.Gid) }}
+            </span>
             </template>
           </el-table-column>
           <el-table-column

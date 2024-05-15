@@ -326,6 +326,10 @@
             </el-row>
             <fieldset style="margin:20px auto;">
               <legend>机器人下注配置</legend>
+              <el-alert
+                  type="success"
+                  description="-1到5分别对应的区域:  -1:(Bet)  | 0:(1x-1.89x) | 1:(1.9x-3.6x) | 2:(3.61x-9x) | 3:(9.01x-36x) | 4:(36.01x-86x) | 5:(86.01x-100x)"
+              />
               <el-row>
                 <el-table
                   ref="filterTable"

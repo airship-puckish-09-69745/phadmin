@@ -10,7 +10,7 @@
       <div style="display: flex; align-items: center;">
         <div style="flex: 1; height: 2px; background-color: black;" />
         <div style="padding: 0 10px;"> <!-- 文字部分 -->
-          <slot> <span style="color:red;font-size:20px ">中级Jackpot</span></slot>
+          <slot> <span style="color:red;font-size:20px ">High Jackpot</span></slot>
         </div>
         <div style="flex: 1; height: 2px; background-color: black;" />
       </div>
@@ -329,7 +329,7 @@
       <div style="display: flex; align-items: center;">
         <div style="flex: 1; height: 2px; background-color: black;" />
         <div style="padding: 0 10px;"> <!-- 文字部分 -->
-          <slot> <span style="color:red;font-size:20px ">高级JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
+          <slot> <span style="color:red;font-size:20px ">Expert JackPot</span></slot> <!-- 这里是插槽，用于放置自定义内容 -->
         </div>
         <div style="flex: 1; height: 2px; background-color: black;" />
       </div>
@@ -344,7 +344,7 @@
           <el-row>
             <el-col :span="7">
               <el-form-item label="Jackpot贡献率：">
-                <el-input v-model.number="cfg.JackpotHight"><template slot="append">‰</template></el-input>
+                <el-input v-model.number="cfg.JackpotHight"><template slot="append">%</template></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -735,7 +735,26 @@
           <!--          </el-row>-->
           <el-row>
             <el-form-item label="赢金币动效(big Win 2-5, MageWin 6-15,Super Win 16">
-              <el-input v-model="cfg.WinType" placeholder="" />
+<!--              <el-input v-model="cfg.WinType" placeholder="" />-->
+              <el-tag
+                :key="tag"
+                v-for="tag in cfg.WinType"
+                closable
+                :disable-transitions="false"
+                @close="handleClose(tag)">
+                {{tag}}
+              </el-tag>
+              <el-input
+                class="input-new-tag"
+                v-if="inputVisible"
+                v-model.number="inputValue"
+                ref="saveTagInput"
+                size="small"
+                @keyup.enter.native="handleInputConfirm"
+                @blur="handleInputConfirm"
+              >
+              </el-input>
+              <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
             </el-form-item>
           </el-row>
           <el-row>
@@ -1072,6 +1091,8 @@ export default {
         jackpotShowOption2: { '2': 14, '3': 12, '4': 8, '5': 6, '6': 5, '7': 5, '8': 4, '9': 4, '10': 3, '11': 3, '12': 2, '13': 2, '14': 2, '15': 2, '16': 2, '17': 2, '18': 2, '19': 1, '20': 1, '21': 1, '22': 1, '23': 1, '24': 1 }
 
       },
+      inputVisible: false,
+      inputValue: '',
       LevelCfg: [],
       dayLimitChange: {
         visible: false,
@@ -2546,8 +2567,26 @@ export default {
           }
         }
       })
-    }
+    },
+        handleClose(tag) {
+          this.cfg.WinType.splice(this.cfg.WinType.indexOf(tag), 1);
+        },
 
+        showInput() {
+          this.inputVisible = true;
+          this.$nextTick(_ => {
+            this.$refs.saveTagInput.$refs.input.focus();
+          });
+        },
+
+        handleInputConfirm() {
+          let inputValue = this.inputValue;
+          if (inputValue) {
+            this.cfg.WinType.push(parseInt(inputValue));
+          }
+          this.inputVisible = false;
+          this.inputValue = '';
+        }
   }
 }
 </script>
