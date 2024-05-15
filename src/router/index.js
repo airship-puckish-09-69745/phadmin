@@ -905,6 +905,12 @@ export const asyncRoutes = [
         meta: { title: 'BlackJack ◐', gid: 37 }
       },
       {
+        path: 'playlog_piggy',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_piggy',
+        meta: { title: 'Piggy 🐽', gid: 106 }
+      },
+      {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
         name: 'playlog_lotterylog',
