@@ -267,6 +267,25 @@
               <el-input v-model.number="edit.item.RebuyMaxTimes" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="rebuy时间(秒):" :required="true" prop="item.RebuyTime" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RebuyTime" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="盲注配置">
+              <el-select v-model="edit.item.BlindType" placeholder="请选择">
+                <el-option v-for="item in BlindTypeName" :key="item.key" :label="item.key" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="机器人数量:" :required="true" prop="item.RobotNum" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RobotNum" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-form-item>
@@ -320,6 +339,9 @@ function newItem() {
     RebuyClassLimit: 0,
     RebuyChipNum: 0,
     RebuyMaxTimes: 0,
+    RebuyTime: 0,
+    BlindType: 1,
+    RobotNum: 0,
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -337,6 +359,10 @@ export default {
       GidTypes: [
         { key: '[0]无限德州', value: 32 },
         { key: '[1]奥马哈德州', value: 36 }
+      ],
+      BlindTypeName: [
+        { key: '[1]快速盲注配置', value: 1 },
+        { key: '[2]常规盲注配置', value: 2 }
       ],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -371,7 +397,10 @@ export default {
         IsSupportRebuy: '是否支持rebuy,0否1是',
         RebuyClassLimit: '可rebuy级别限制',
         RebuyChipNum: 'rebuy后筹码数量',
-        RebuyMaxTimes: 'rebuy次数上限'
+        RebuyMaxTimes: 'rebuy次数上限',
+        RebuyTime: 'rebuy倒计时',
+        BlindType: '盲注类型',
+        RobotNum: '机器人数量'
       }
     }
   },
@@ -629,14 +658,14 @@ export default {
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
       if (postData.RaceType == 2) {
         postData.RaceWeekStr = ''
+        for (var i = 0; i < postData.RaceWeek.length; i++) {
+          postData.RaceWeekStr += postData.RaceWeek[i]
+          if (i < postData.RaceWeek.length - 1) {
+            postData.RaceWeekStr += ','
+          }
+        }
       } else {
         postData.RaceWeekStr = '0'
-      }
-      for (var i = 0; i < postData.RaceWeek.length; i++) {
-        postData.RaceWeekStr += postData.RaceWeek[i]
-        if (i < postData.RaceWeek.length - 1) {
-          postData.RaceWeekStr += ','
-        }
       }
       postData.RaceShowTime *= 60
       postData.RaceIntervalTime *= 60
