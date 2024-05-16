@@ -883,11 +883,12 @@
               :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
               border
             >
-          <el-descriptions-item label="累计贡献值">{{ WindropGameResult.JackpotContributeTotal }}</el-descriptions-item>
+          <el-descriptions-item label="累计贡献值">{{ WindropGameResult.JackpotContributeTotal /1000 }}</el-descriptions-item>
+          <el-descriptions-item label="单次贡献值">{{ WindropGameResult.JackpotContribute  /1000}}</el-descriptions-item>
         <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
-        <el-descriptions-item label="总金币">{{ WindropGameResult.BetAllScore }}</el-descriptions-item>
-        <el-descriptions-item label="下注金币">{{ WindropGameResult.BetScore }}</el-descriptions-item>
-        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy }}</el-descriptions-item>
+        <el-descriptions-item label="总下注金额">{{ WindropGameResult.BetAllScore /1000}}</el-descriptions-item>
+        <el-descriptions-item label="单球下注金币">{{ WindropGameResult.BetScore /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy /1000}}</el-descriptions-item>
         <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000 ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
         <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount }}</el-descriptions-item>
       </el-descriptions>
@@ -1748,7 +1749,8 @@ export default {
         CurEnergy: 0,
         EnergyNum: 0,
         SpinCount: 0,
-        JackpotContributeTotal: 0
+        JackpotContributeTotal: 0,
+        JackpotContribute: 0
       },
       WindropGameOptions: [],
 
@@ -2322,11 +2324,13 @@ export default {
       if (Array.isArray(windropObj.optionData.bouns) && windropObj.optionData.bouns.length > 0) {
         for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
           const tracksPos = []
-          for (const pos of windropObj.optionData.bouns[i].TracksPos) {
-            tracksPos.push({
-              posX: pos.posX,
-              posY: pos.posY
-            })
+          if (windropObj.optionData.bouns[i].TracksPos){
+            for (const pos of windropObj.optionData.bouns[i].TracksPos) {
+              tracksPos.push({
+                posX: pos.posX,
+                posY: pos.posY
+              })
+            }
           }
           const bouns = windropObj.optionData.bouns[i]
           tMap[i] = {
@@ -2351,6 +2355,7 @@ export default {
       this.WindropGameResult.EnergyNum = windropObj.optionData.energyNum
       this.WindropGameResult.SpinCount = windropObj.optionData.spinCount
       this.WindropGameResult.JackpotContributeTotal = windropObj.JackpotContributeTotal
+      this.WindropGameResult.JackpotContribute = windropObj.JackpotContribute
       this.WindropGameVisible = true
     },
 
