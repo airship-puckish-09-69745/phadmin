@@ -132,6 +132,18 @@
 
                 <el-table-column
                   v-if="item.GameId===22"
+                  prop="IsOpenBlackUser"
+                  label="是否开启黑名单调控"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsOpenBlackUser" active-color="#13ce66" inactive-color="#ff4949" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="item.GameId===22"
                   prop="IsOpenRobot"
                   label="是否开启机器人进桌"
                 >
