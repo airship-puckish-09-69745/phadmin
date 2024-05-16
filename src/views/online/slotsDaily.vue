@@ -171,7 +171,7 @@ export default {
       },
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       tempLoading: {},
-      ignoreGame: [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 80, 81, 82, 83]
+      ignoreGame: [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83]
     }
   },
   created() {
@@ -266,7 +266,7 @@ export default {
         case 79:
           return '糖果糖果Mars'
         case 80:
-          return '糖果糖果'
+          return 'CandyCraze'
         case 81:
           return '超级宝石Mars'
         case 82:
