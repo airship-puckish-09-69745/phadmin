@@ -2,13 +2,13 @@
   <div class="app-container">
 
     <el-table
-        ref="filterTable"
-        :data="JackpotRandAwards"
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
+      ref="filterTable"
+      :data="JackpotRandAwards"
+      border
+      :header-cell-style="libShow.DefaultTableHeadClass"
+      :row-style="{height:'10px'}"
+      :cell-style="libShow.DefaultTableCell"
+      style="width: 100%"
     >
       <el-table-column type="index" />
       <el-table-column label="奖励类型" prop="JackpotType">
@@ -50,8 +50,8 @@
             &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
           </div>
           <span v-if="scope.row.JackpotType==4">
-                3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
-              </span>
+            3Bet中奖会判断玩家的个人JP贡献值，中奖额≤贡献值才开，玩家开奖后根据中奖额扣除贡献值
+          </span>
         </template>
 
       </el-table-column>
@@ -76,36 +76,36 @@
           <el-tag v-for="(tag, key) in scope.row.RateArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,tag) }}</el-tag>
         </template>
       </el-table-column>
-<!--      <el-table-column label="操作">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button-->
-<!--              size="mini"-->
-<!--              type="primary"-->
-<!--              @click="addJackpotRandAwards"-->
-<!--          >添加</el-button>-->
-<!--          <el-button type="danger" size="mini" @click="delJackpotRandAwards(scope.$index)">删除</el-button>-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <!--      <el-table-column label="操作">-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <el-button-->
+      <!--              size="mini"-->
+      <!--              type="primary"-->
+      <!--              @click="addJackpotRandAwards"-->
+      <!--          >添加</el-button>-->
+      <!--          <el-button type="danger" size="mini" @click="delJackpotRandAwards(scope.$index)">删除</el-button>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
     </el-table>
 
     <!-- 【dialog】每日限制开出个数 -->
     <el-dialog
-        :title="dayLimitChange.title"
-        :modal="false"
-        :visible.sync="dayLimitChange.visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      :title="dayLimitChange.title"
+      :modal="false"
+      :visible.sync="dayLimitChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addDayLimit">添加</el-button>
       <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveDayLimit">保存</el-button>
       <el-table
-          ref="filterTable"
-          :data="dayLimitChange.data"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
+        ref="filterTable"
+        :data="dayLimitChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column type="index" />
         <el-table-column label="开始小时" prop="StartHours">
@@ -133,22 +133,22 @@
 
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
-        :title="poolNumChange.title"
-        :modal="false"
-        :visible.sync="poolNumChange.visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      :title="poolNumChange.title"
+      :modal="false"
+      :visible.sync="poolNumChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum()">添加</el-button>
       <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum">保存</el-button>
       <el-table
-          ref="filterTable"
-          :data="poolNumChange.data"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
+        ref="filterTable"
+        :data="poolNumChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column label="配置ID" prop="Id">
           <template slot-scope="scope">
@@ -177,23 +177,23 @@
 
 <script>
 
-import {$libShow} from "@/utils/common";
-import {Message} from "element-ui";
+import { $libShow } from '@/utils/common'
+import { Message } from 'element-ui'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'jackpotDayLimit',
+  name: 'JackpotDayLimit',
   components: {},
   props: {
     JackpotRandAwards: {
       type: Array,
-      default: function () {
+      default: function() {
         return []
       }
-    },
+    }
   },
-  data(){
-    return{
+  data() {
+    return {
       libShow: $libShow,
       JackpotTypeCfg: {
         1: '一等奖',
@@ -211,14 +211,14 @@ export default {
         visible: false,
         data: [],
         jackpotType: 0
-      },
+      }
     }
   },
 
   watch: {
     'JackpotRandAwards': {
       deep: true,
-      handler: function (val) {
+      handler: function(val) {
         this.initData(val)
       }
     }
@@ -227,7 +227,7 @@ export default {
     this.initData()
   },
   methods: {
-    initData(){
+    initData() {
     },
     savePoolNum() {
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
@@ -257,13 +257,13 @@ export default {
       this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
     },
     doAdd() {
-      this.piggyCfg.push({Weight:0,Val:0})
+      this.piggyCfg.push({ Weight: 0, Val: 0 })
     },
     // addJackpotRandAwards(){
     //   this.JackpotRandAwards.push({AwardRate:0,AwardType:0,DayLimit:0,DayLimitArr:[],JackpotRate:0,JackpotType})
     // },
-    delJackpotRandAwards(index){
-      if (this.JackpotRandAwards.length<=1){
+    delJackpotRandAwards(index) {
+      if (this.JackpotRandAwards.length <= 1) {
         Message.error('再删就没了')
         return
       }
@@ -334,18 +334,18 @@ export default {
       } else {
         let showStr = ''
         if (data) {
-            showStr += data.Num + '个(' + data.Rate + '%);'
+          showStr += data.Num + '个(' + data.Rate + '%);'
         }
-        return  showStr
+        return showStr
       }
     },
     delRow(index) {
-      if (this.piggyCfg.length<=1){
+      if (this.piggyCfg.length <= 1) {
         Message.error('再删就没了')
         return
       }
       this.piggyCfg.splice(index, 1)
-    },
+    }
   }
 }
 </script>

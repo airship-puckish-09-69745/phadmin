@@ -40,6 +40,12 @@
           </el-form-item>
         </el-col>
 
+        <el-col :span="8" :offset="1">
+          <el-form-item prop="NoticeTime" label="下注时长(s):">
+            <el-input v-model.number="item.BetTime" :required="true" />
+          </el-form-item>
+        </el-col>
+
         <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
             <legend>下注配置</legend>
@@ -442,6 +448,7 @@ export default {
         ],
         FeeRate: 5,
         KicKTime: 10,
+        BetTime: 10,
         MaxCtrlTimes: 20,
         ExTraPayRate: 10,
 

@@ -482,7 +482,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/piggy'),
             name: 'Piggy',
             meta: { title: 'Piggy 🐽' }
-          },
+          }
         ]
       },
 
@@ -893,6 +893,12 @@ export const asyncRoutes = [
         meta: { title: 'Windrop ◐', gid: 103 }
       },
       {
+        path: 'playlog_solitaire',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_solitaire',
+        meta: { title: 'Solitaire ◐', gid: 35 }
+      },
+      {
         path: 'playlog_boding',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_boding',
@@ -903,6 +909,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_blackjack',
         meta: { title: 'BlackJack ◐', gid: 37 }
+      },
+      {
+        path: 'playlog_piggy',
+        component: () => import('@/views/playerManage/playlog'),
+        name: 'playlog_piggy',
+        meta: { title: 'Piggy 🐽', gid: 106 }
       },
       {
         path: 'playlog_lotterylog',
@@ -1052,7 +1064,7 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/microctrlLog'),
         name: 'microctrl_log',
         meta: { title: '扫雷点控日志 ◐' }
-      },
+      }
     ]
   },
   {
@@ -1412,7 +1424,8 @@ export const asyncRoutes = [
             path: 'texasNlhGameDetail',
             component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
             name: 'texasNlhGameDetail',
-            meta: { title: '牌局详情' }
+            meta: { title: '牌局详情' },
+            hidden: true
           },
           {
             path: 'texasNlhGameConsumeSta',

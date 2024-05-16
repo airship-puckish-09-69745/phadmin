@@ -17,6 +17,18 @@
         </el-col>
 
         <el-col :span="8" :offset="1">
+          <el-form-item prop="NoticeTime" label="下注1时长(s):">
+            <el-input v-model.number="item.Bet1Time" :required="true" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8" :offset="1">
+          <el-form-item label="下注2时长(s):">
+            <el-input v-model.number="item.Bet2Time" :required="true" />
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8" :offset="1">
           <el-form-item prop="NoticeTime" label="用户长时间未下注提示(s):">
             <el-input v-model.number="item.NoticeTime" :required="true" @input="change($event)" />
           </el-form-item>
@@ -93,7 +105,7 @@
             <legend>下注区域配置</legend>
             <el-descriptions class="margin-top" border>
               <el-descriptions-item>
-<!--                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>-->
+                <!--                <span style="color:red;"> 说明: 1.倍率不支持小数填写real*100或者real*10 [*10就是只支持1位小数 *100只支持两位小数]，例如*100时期望是2.06 填写206 </span>-->
               </el-descriptions-item>
             </el-descriptions>
             <el-row>
@@ -141,7 +153,7 @@
                   label="赔率(支持2位小数)"
                 >
                   <template slot-scope="scope">
-                    <el-input type="number" v-model.number="scope.row.Odds" size="mini" />
+                    <el-input v-model.number="scope.row.Odds" type="number" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -384,6 +396,8 @@ export default {
           { Name: '41-49', MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 }
         ],
         FeeRate: 5,
+        Bet1Time: 10,
+        Bet2Time: 10,
         KicKTime: 10,
         MaxCtrlTimes: 20,
 
@@ -558,7 +572,7 @@ export default {
         }
       })
     },
-    change(event){
+    change(event) {
       this.$forceUpdate()
     },
     wallpaperInput(val, index) {

@@ -268,7 +268,7 @@ export default {
       gid: 10000,
       summary: {},
       gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
-        76: 'Candy Rush', 77: '糖果传奇Allline', 78: '超级宝石', 79: '糖果糖果Mars', 80: '糖果糖果', 81: '超级宝石Mars', 82: '百万富翁', 83: '百万富翁Mars', // 这行老虎机
+        76: 'Candy Rush', 77: '糖果传奇Allline', 78: '超级宝石', 79: '糖果糖果Mars', 80: 'Candy Craze', 81: '超级宝石Mars', 82: '百万富翁', 83: '百万富翁Mars', // 这行老虎机
         28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Poker', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack',
         105: 'Andar Bahar', 10000: '汇总' },
@@ -340,7 +340,7 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76)
+          this.defaultOrder.push(76, 80)
         } else {
           this.defaultOrder.push(76, 78, 80, 82)
         }
@@ -565,14 +565,14 @@ export default {
 
       for (const i in preObjs) {
         const ob = preObjs[i]
-        if (50 < ob.Gid && ob.Gid< 100) {
+        if (ob.Gid > 50 && ob.Gid < 100) {
           // 老虎机目前没有存 MoneyLose
           healthData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
-          const y = ob.MoneyBet > 0 ? (ob.MoneyBet  - ob.MoneyWon) * 100 / ob.MoneyBet : 0
+          const y = ob.MoneyBet > 0 ? (ob.MoneyBet - ob.MoneyWon) * 100 / ob.MoneyBet : 0
           healthData.yData[0].Data.push(y.toFixed(2))
           const ob2 = objs[i]
           if (ob2) {
-            const y2 = ob2.MoneyBet > 0 ? (ob2.MoneyBet  - ob2.MoneyWon) * 100 / ob2.MoneyBet : 0
+            const y2 = ob2.MoneyBet > 0 ? (ob2.MoneyBet - ob2.MoneyWon) * 100 / ob2.MoneyBet : 0
             healthData.yData[1].Data.push(y2.toFixed(2))
           }
           originData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
@@ -580,7 +580,7 @@ export default {
           originData.yData[1].Data.push(ob.MoneyTax.toFixed(2))
           originData.yData[2].Data.push(ob.MoneyBet.toFixed(2))
           if (ob2) {
-            originData.yData[3].Data.push((ob2.MoneyBet- ob2.MoneyWon).toFixed(2))
+            originData.yData[3].Data.push((ob2.MoneyBet - ob2.MoneyWon).toFixed(2))
             originData.yData[4].Data.push(ob2.MoneyTax.toFixed(2))
             originData.yData[5].Data.push(ob2.MoneyBet.toFixed(2))
           }

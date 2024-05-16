@@ -384,6 +384,15 @@
               <el-input v-model.number="edit.item.PotTaxRates"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+          <el-form-item
+            label="不下注踢起"
+            prop="item.PotTaxRates"
+            :rules="dataRule(true,{type:'n',range:'1'})"
+          >
+            <el-input v-model.number="edit.item.OnlookerTimes"><template slot="append">局</template></el-input>
+          </el-form-item>
+          </el-col>
         </el-row>
 
         <el-row>
@@ -691,7 +700,8 @@ function newItem() {
     MaxBet: 0,
     HideValue: 0,
     RedCardStart: 0,
-    RedCardEnd: 0
+    RedCardEnd: 0,
+    OnlookerTimes: 0
   }
 }
 
@@ -754,7 +764,8 @@ export default {
         DealerMoneyRates: '上庄资产系数',
         InsureSeconds: '投保时长',
         BetMaxRate: '下注最大比例',
-        BetOption: '下注选项列表'
+        BetOption: '下注选项列表',
+        OnlookerTimes: '不下注踢起',
       }
     }
   },

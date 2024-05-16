@@ -7,15 +7,12 @@
             <el-date-picker
               v-model="searchForm.dateTime"
               value-format="timestamp"
-              type="date"
+              type="datetime"
               placeholder="选择时间"
             />
           </el-form-item>
           <el-form-item label="牌局id">
             <el-input v-model.number="searchForm.SrvLogId" size="mini" placeholder="牌局id" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" size="mini" @click="getDetail">查询</el-button>
           </el-form-item>
         </el-form-item>
       </el-form>
@@ -126,7 +123,7 @@ export default {
     return {
       searchForm: {
         SrvLogId: '',
-        dateTime: $libDate.GetDayBegin(new Date().getTime())
+        dateTime: new Date().getTime()
       },
       userInfo: [],
       roundInfo: [],
@@ -158,9 +155,10 @@ export default {
     }
   },
   activated() {
+    console.log(this.$route.query.SrvLogId, this.$route.query.dateTime)
     if (Number(this.$route.query.SrvLogId) > 0 && Number(this.$route.query.dateTime) > 0) {
       this.searchForm.SrvLogId = this.$route.query.SrvLogId
-      this.searchForm.dateTime = $libDate.GetDayBegin(this.$route.query.dateTime * 1000)
+      this.searchForm.dateTime = this.$route.query.dateTime * 1000
       this.getDetail()
     }
   },
@@ -174,6 +172,7 @@ export default {
       this.publishCards = []
       this.pots = []
       const _this = this
+      console.log(Date.parse(new Date(_this.searchForm.dateTime).toString()) / 1000)
       request({
         url: '/dataProxy/info',
         method: 'get',

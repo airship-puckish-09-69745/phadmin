@@ -1,359 +1,357 @@
 <template>
   <div class="app-container">
-  <el-row>
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
-  </el-row>
-<el-row>
-  <el-tabs type="border-card">
-    <el-tab-pane label="基础配置">
-      <el-col :span="16" :offset="3">
-      <el-row>
-          <fieldset style="margin-top:10px">
-          <el-table
-              ref="filterTable"
-              :data="item.BetLevel"
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
-          >
-            <el-table-column
-                type="index"
-            />
-            <el-table-column
-                prop="Low"
-                label="下注列表"
-            >
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.CanBet" size="mini" />
-              </template>
-            </el-table-column>
-
-            <el-table-column label="操作"   >
-              <template slot-scope="scope">
-                <el-button
-                    size="mini"
-                    type="primary"
-                    @click="doAdd"
-                >添加</el-button>
-                <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
-              </template>
-
-            </el-table-column>
-          </el-table>
-          </fieldset>
-
-      </el-row>
-      </el-col>
-    </el-tab-pane>
-    <el-tab-pane label="主玩法配置">
-      <el-col :span="16" :offset="3">
-        <el-row>
-          <fieldset style="margin-top:10px">
-            <!--      第二层  -->
-            <el-tabs type="border-card" stretch>
-              <el-tab-pane label="中奖概率配置">
-                <!--      第三层  -->
-                <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
-                  <el-tab-pane label="阶段增益1">
-                      <el-row style="margin-left: 20px">
-                        <span>连续锤击次数:</span>
-                        <el-input    v-model.number="item.Buff[0].MixTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                        <span style="margin-left: 10px;margin-right: 10px">-</span>
-                        <el-input   v-model.number="item.Buff[0].MaxTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                      </el-row>
-                    <piggy-weight-cfg :piggy-cfg="item.Buff[0].Awards"  title="玩法中奖类型和概率"></piggy-weight-cfg>
-                  </el-tab-pane>
-                  <el-tab-pane label="阶段增益2">
-                    <el-row style="margin-left: 20px">
-                      <span>连续锤击次数:</span>
-                      <el-input    v-model.number="item.Buff[1].MixTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                      <span style="margin-left: 10px;margin-right: 10px">-</span>
-                      <el-input   v-model.number="item.Buff[1].MaxTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                    </el-row>
-                    <piggy-weight-cfg :piggy-cfg="item.Buff[1].Awards"  title="玩法中奖类型和概率"></piggy-weight-cfg>
-                  </el-tab-pane>
-                  <el-tab-pane label="阶段增益3">
-                    <el-row style="margin-left: 20px">
-                      <span>连续锤击次数:</span>
-                      <el-input    v-model.number="item.Buff[2].MixTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                      <span style="margin-left: 10px;margin-right: 10px">-</span>
-                      <el-input   v-model.number="item.Buff[2].MaxTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                    </el-row>
-                    <piggy-weight-cfg :piggy-cfg="item.Buff[2].Awards"  title="玩法中奖类型和概率"></piggy-weight-cfg>
-                  </el-tab-pane>
-                  <el-tab-pane label="阶段增益4">
-                    <el-row  style="margin-left: 20px">
-                      <span>连续锤击次数:</span>
-                      <el-input    v-model.number="item.Buff[3].MixTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                      <span style="margin-left: 10px;margin-right: 10px">-</span>
-                      <el-input   v-model.number="item.Buff[3].MaxTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                    </el-row>
-                    <piggy-weight-cfg :piggy-cfg="item.Buff[3].Awards"  title="玩法中奖类型和概率"></piggy-weight-cfg>
-                  </el-tab-pane>
-                  <el-tab-pane label="阶段增益5">
-                    <el-row  style="margin-left: 20px">
-                      <span>连续锤击次数:</span>
-                      <el-input    v-model.number="item.Buff[4].MixTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                      <span style="margin-left: 10px;margin-right: 10px">-</span>
-                      <el-input   v-model.number="item.Buff[4].MaxTap" :required="true" size="mini" style="width: 150px"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
-                    </el-row>
-                    <piggy-weight-cfg :piggy-cfg="item.Buff[4].Awards"  title="玩法中奖类型和概率">
-                    </piggy-weight-cfg>
-                  </el-tab-pane>
-                </el-tabs>
-              </el-tab-pane>
-              <el-tab-pane label="金币奖励倍数配置">
-                <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds"   weight-name="权重" val-name="中奖配置" ></piggy-weight-cfg>
-              </el-tab-pane>
-            </el-tabs>
-          </fieldset>
-
-        </el-row>
-      </el-col>
-    </el-tab-pane>
-    <el-tab-pane label="FreeGame配置">
-      <el-col :span="16" :offset="3">
-        <el-row>
-          <fieldset style="margin-top:10px">
-            <el-tabs type="border-card" stretch>
-              <el-tab-pane label="正常触发FreeGame">
-                <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
-                  <el-tab-pane label="1*3滚轴配置">
-                  <el-row>
-                    <div v-for="(row,idx) in item.free[0].Spin">
-                      <piggy-weight-cfg :piggy-cfg="row.Choices" :tableTitle="'滚轴'+(idx+1)" weight-name="反奖倍数" val-name="概率"  val-type='1' style="width: 800px"></piggy-weight-cfg>
-                    </div>
-                  </el-row>
-                  </el-tab-pane>
-                  <el-tab-pane label="中奖概率配置">
-                      <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards"   weight-name="中奖类型" val-name="中奖概率" ></piggy-weight-cfg>
-                  </el-tab-pane>
-                  <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds"   weight-name="获得概率" val-name="金币奖励类型" ></piggy-weight-cfg>
-                  </el-tab-pane>
-                </el-tabs>
-              </el-tab-pane>
-              <el-tab-pane label="购买FreeGame">
-                <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
-                  <el-tab-pane label="1*3滚轴配置">
-                    <el-row>
-                      <div v-for="(row,idx) in item.free[1].Spin">
-                        <piggy-weight-cfg :piggy-cfg="row.Choices" :tableTitle="'滚轴'+(idx+1)" weight-name="反奖倍数" val-name="概率" style="width: 800px"></piggy-weight-cfg>
-                      </div>
-                    </el-row>
-                  </el-tab-pane>
-                  <el-tab-pane label="中奖概率配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards"   weight-name="中奖类型" val-name="中奖概率" ></piggy-weight-cfg>
-                  </el-tab-pane>
-                  <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds"   weight-name="中奖概率" val-name="倍数奖励" ></piggy-weight-cfg>
-                  </el-tab-pane>
-                </el-tabs>
-              </el-tab-pane>
-            </el-tabs>
-          </fieldset>
-        </el-row>
-      </el-col>
-    </el-tab-pane>
-    <el-tab-pane label="幸运转盘">
-    <el-col :span="16" :offset="3">
-      <fieldset >
-      <el-form inline >
-        <el-form-item  label="幸运转盘概率"style="margin-left:20px">
-          <el-input  v-model.number="item.Plate.Rate" size="mini"   oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
-        </el-form-item>
-      </el-form>
-        <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds"   weight-name="获得概率" val-name="金币奖励类型" ></piggy-weight-cfg>
-
-      </fieldset>
-    </el-col>
-    </el-tab-pane>
-
-    <el-tab-pane label="JACKPOT">
+    <el-row>
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+    </el-row>
+    <el-row>
       <el-tabs type="border-card">
-        <el-tab-pane label="真实奖池">
-          <el-col el-col :span="16" :offset="3">
-            <fieldset>
-              <el-table
-                  :data="item.Jp"
+        <el-tab-pane label="基础配置">
+          <el-col :span="16" :offset="3">
+            <el-row>
+              <fieldset style="margin-top:10px">
+                <el-table
                   ref="filterTable"
+                  :data="item.BetLevel"
                   border
                   :header-cell-style="libShow.DefaultTableHeadClass"
                   :row-style="{height:'10px'}"
                   :cell-style="libShow.DefaultTableCell"
-                  style="width: 100%">
-                <el-table-column label="JackPot类型" prop="Typ">
-                  <template slot-scope="scope">
-                    {{ JpTypeMap[scope.row.Typ] }}
-                  </template>
-                </el-table-column>
-               <el-table-column label="抽水比例(%)" prop="Typ">
-                 <template  slot-scope="scope">
-                   <el-input v-model.number="scope.row.Fee"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
-                 </template>
-               </el-table-column>
-             </el-table>
-           </fieldset>
-         </el-col>
-        </el-tab-pane>
-        <el-tab-pane label="虚拟奖池">
-          <el-col  :span="16" :offset="3">
-            <fieldset>
-           <div v-for="(data,idx) in item.Jp">
-             <fieldset style="margin-top: 20px;">
-               <legend>{{JpTypeMap[data.Typ]}} </legend>
-             <el-table
-                 ref="filterTable"
-                 :data="data.JackpotRegulation.PoolIncrArr"
-                 border
-                 :header-cell-style="libShow.DefaultTableHeadClass"
-                 :row-style="{height:'10px'}"
-                 :cell-style="libShow.DefaultTableCell"
-                 style="width: 100%"
-             >
-               <el-table-column label="Id" prop="Id" />
-               <el-table-column label="奖池范围">
-                 <template slot-scope="scope">
-                   {{ getJackpotPoolTitle(scope.row) }}
-                 </template>
-               </el-table-column>
-               <el-table-column label="[0,2)点" prop="MinRobotNum">
-                 <template slot-scope="scope">
-                   {{ getJackpotIncrShow(scope.row, 0, 1) }}
-                 </template>
-               </el-table-column>
-               <el-table-column label="[2,7)点" prop="MinRobotNum">
-                 <template slot-scope="scope">
-                   {{ getJackpotIncrShow(scope.row, 2, 6) }}
-                 </template>
-               </el-table-column>
-               <el-table-column label="[7,9)点" prop="MinRobotNum">
-                 <template slot-scope="scope">
-                   {{ getJackpotIncrShow(scope.row, 7, 8) }}
-                 </template>
-               </el-table-column>
-               <el-table-column label="[9,18)点" prop="MinRobotNum">
-                 <template slot-scope="scope">
-                   {{ getJackpotIncrShow(scope.row, 9, 17) }}
-                 </template>
-               </el-table-column>
-               <el-table-column label="[18,24)点" prop="MinRobotNum">
-                 <template slot-scope="scope">
-                   {{ getJackpotIncrShow(scope.row, 18, 23) }}
-                 </template>
-               </el-table-column>
-               <el-table-column label="操作">
-                 <template slot-scope="scope">
-                   <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm(scope.row,idx,scope.$index)">编辑</el-button>
-                 </template>
-               </el-table-column>
-             </el-table>
-            </fieldset>
-           </div>
-            </fieldset>
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    type="index"
+                  />
+                  <el-table-column
+                    prop="Low"
+                    label="下注列表"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.CanBet" size="mini" />
+                    </template>
+                  </el-table-column>
 
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type="primary"
+                        @click="doAdd"
+                      >添加</el-button>
+                      <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
+                    </template>
+
+                  </el-table-column>
+                </el-table>
+              </fieldset>
+
+            </el-row>
           </el-col>
         </el-tab-pane>
-        <el-tab-pane label="中奖条件">
-        <el-row >
-          <fieldset>
-            <el-col  :span="24" :offset="0">
-              <div v-for="(data,idx) in item.Jp">
-                <fieldset style="margin-top: 20px;">
-                  <legend>{{JpTypeMap[data.Typ]}} </legend>
-                <jackpot-day-limit :jackpot-rand-awards="data.JackpotRegulation.RandAwards"></jackpot-day-limit>
-                </fieldset>
-              </div>
-            </el-col>
-          </fieldset>
-        </el-row>
+        <el-tab-pane label="主玩法配置">
+          <el-col :span="16" :offset="3">
+            <el-row>
+              <fieldset style="margin-top:10px">
+                <!--      第二层  -->
+                <el-tabs type="border-card" stretch>
+                  <el-tab-pane label="中奖概率配置">
+                    <!--      第三层  -->
+                    <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
+                      <el-tab-pane label="阶段增益1">
+                        <el-row style="margin-left: 20px">
+                          <span>连续锤击次数:</span>
+                          <el-input v-model.number="item.Buff[0].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <span style="margin-left: 10px;margin-right: 10px">-</span>
+                          <el-input v-model.number="item.Buff[0].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        </el-row>
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[0].Awards" title="玩法中奖类型和概率" />
+                      </el-tab-pane>
+                      <el-tab-pane label="阶段增益2">
+                        <el-row style="margin-left: 20px">
+                          <span>连续锤击次数:</span>
+                          <el-input v-model.number="item.Buff[1].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <span style="margin-left: 10px;margin-right: 10px">-</span>
+                          <el-input v-model.number="item.Buff[1].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        </el-row>
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[1].Awards" title="玩法中奖类型和概率" />
+                      </el-tab-pane>
+                      <el-tab-pane label="阶段增益3">
+                        <el-row style="margin-left: 20px">
+                          <span>连续锤击次数:</span>
+                          <el-input v-model.number="item.Buff[2].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <span style="margin-left: 10px;margin-right: 10px">-</span>
+                          <el-input v-model.number="item.Buff[2].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        </el-row>
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[2].Awards" title="玩法中奖类型和概率" />
+                      </el-tab-pane>
+                      <el-tab-pane label="阶段增益4">
+                        <el-row style="margin-left: 20px">
+                          <span>连续锤击次数:</span>
+                          <el-input v-model.number="item.Buff[3].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <span style="margin-left: 10px;margin-right: 10px">-</span>
+                          <el-input v-model.number="item.Buff[3].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        </el-row>
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[3].Awards" title="玩法中奖类型和概率" />
+                      </el-tab-pane>
+                      <el-tab-pane label="阶段增益5">
+                        <el-row style="margin-left: 20px">
+                          <span>连续锤击次数:</span>
+                          <el-input v-model.number="item.Buff[4].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                          <span style="margin-left: 10px;margin-right: 10px">-</span>
+                          <el-input v-model.number="item.Buff[4].MaxTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        </el-row>
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[4].Awards" title="玩法中奖类型和概率" />
+                      </el-tab-pane>
+                    </el-tabs>
+                  </el-tab-pane>
+                  <el-tab-pane label="金币奖励倍数配置">
+                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="中奖配置" val-type="1" />
+                  </el-tab-pane>
+                </el-tabs>
+              </fieldset>
+
+            </el-row>
+          </el-col>
         </el-tab-pane>
-        <el-tab-pane label="开奖条件">
-          <el-row :span="16" :offset="3">
-            <fieldset style="margin-top:10px">
-              <legend>Jackpot 奖励配置</legend>
-              <el-table
-                  :data="item.Jp"
-                  border
-                  style="width: 100%"
-              >
-                <el-table-column
-                    label="JACKPOT类型"
-                    width="180"
-                >
-                  <template slot-scope="scope">
-                    {{ JpTypeMap[scope.row.Typ] }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                    label="中奖获得奖池金额比例"
-                    width="180"
-                >
-                  <template slot-scope="scope">
-                   <div v-for="(data,idx) in scope.row.JackpotRegulation.RandAwards">
-                     <el-input v-model.number="data.AwardRate">
-                       <template  slot="append">%</template>
-                     </el-input>
-                   </div>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                    label="中奖人数"
-                    width="380"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
-                    </el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                    label="中奖时间(秒)"
-                    width="380"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Time"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
-                      <template  slot="append">S</template>
-                    </el-input>
-                  </template>
-                </el-table-column>
-              </el-table>
+        <el-tab-pane label="FreeGame配置">
+          <el-col :span="16" :offset="3">
+            <el-row>
+              <fieldset style="margin-top:10px">
+                <el-tabs type="border-card" stretch>
+                  <el-tab-pane label="正常触发FreeGame">
+                    <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
+                      <el-tab-pane label="1*3滚轴配置">
+                        <el-row>
+                          <div v-for="(row,idx) in item.free[0].Spin">
+                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="概率" val-type="1" style="width: 800px" />
+                          </div>
+                        </el-row>
+                      </el-tab-pane>
+                      <el-tab-pane label="中奖概率配置">
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="中奖类型" val-name="中奖概率" />
+                      </el-tab-pane>
+                      <el-tab-pane label="金币奖励倍数配置">
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币奖励类型" val-type="1" />
+                      </el-tab-pane>
+                    </el-tabs>
+                  </el-tab-pane>
+                  <el-tab-pane label="购买FreeGame">
+                    <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
+                      <el-tab-pane label="1*3滚轴配置">
+                        <el-row>
+                          <div v-for="(row,idx) in item.free[1].Spin">
+                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="反奖倍数" val-name="概率" val-type="1" style="width: 800px" />
+                          </div>
+                        </el-row>
+                      </el-tab-pane>
+                      <el-tab-pane label="中奖概率配置">
+                        <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
+                      </el-tab-pane>
+                      <el-tab-pane label="金币奖励倍数配置">
+                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="倍数奖励" val-type="1" />
+                      </el-tab-pane>
+                    </el-tabs>
+                  </el-tab-pane>
+                </el-tabs>
+              </fieldset>
+            </el-row>
+          </el-col>
+        </el-tab-pane>
+        <el-tab-pane label="幸运转盘">
+          <el-col :span="16" :offset="3">
+            <fieldset>
+              <el-form inline>
+                <el-form-item label="幸运转盘概率"style="margin-left:20px">
+                  <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+                </el-form-item>
+              </el-form>
+              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="金币奖励类型" val-type="1" />
 
             </fieldset>
-          </el-row>
+          </el-col>
+        </el-tab-pane>
+
+        <el-tab-pane label="JACKPOT">
+          <el-tabs type="border-card">
+            <el-tab-pane label="真实奖池">
+              <el-col el-col :span="16" :offset="3">
+                <fieldset>
+                  <el-table
+                    ref="filterTable"
+                    :data="item.Jp"
+                    border
+                    :header-cell-style="libShow.DefaultTableHeadClass"
+                    :row-style="{height:'10px'}"
+                    :cell-style="libShow.DefaultTableCell"
+                    style="width: 100%"
+                  >
+                    <el-table-column label="JackPot类型" prop="Typ">
+                      <template slot-scope="scope">
+                        {{ JpTypeMap[scope.row.Typ] }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="抽水比例(%)" prop="Typ">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Fee" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </fieldset>
+              </el-col>
+            </el-tab-pane>
+            <el-tab-pane label="虚拟奖池">
+              <el-col :span="16" :offset="3">
+                <fieldset>
+                  <div v-for="(data,idx) in item.Jp">
+                    <fieldset style="margin-top: 20px;">
+                      <legend>{{ JpTypeMap[data.Typ] }} </legend>
+                      <el-table
+                        ref="filterTable"
+                        :data="data.JackpotRegulation.PoolIncrArr"
+                        border
+                        :header-cell-style="libShow.DefaultTableHeadClass"
+                        :row-style="{height:'10px'}"
+                        :cell-style="libShow.DefaultTableCell"
+                        style="width: 100%"
+                      >
+                        <el-table-column label="Id" prop="Id" />
+                        <el-table-column label="奖池范围">
+                          <template slot-scope="scope">
+                            {{ getJackpotPoolTitle(scope.row) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="[0,2)点" prop="MinRobotNum">
+                          <template slot-scope="scope">
+                            {{ getJackpotIncrShow(scope.row, 0, 1) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="[2,7)点" prop="MinRobotNum">
+                          <template slot-scope="scope">
+                            {{ getJackpotIncrShow(scope.row, 2, 6) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="[7,9)点" prop="MinRobotNum">
+                          <template slot-scope="scope">
+                            {{ getJackpotIncrShow(scope.row, 7, 8) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="[9,18)点" prop="MinRobotNum">
+                          <template slot-scope="scope">
+                            {{ getJackpotIncrShow(scope.row, 9, 17) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="[18,24)点" prop="MinRobotNum">
+                          <template slot-scope="scope">
+                            {{ getJackpotIncrShow(scope.row, 18, 23) }}
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="操作">
+                          <template slot-scope="scope">
+                            <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm(scope.row,idx,scope.$index)">编辑</el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </fieldset>
+                  </div>
+                </fieldset>
+
+              </el-col>
+            </el-tab-pane>
+            <el-tab-pane label="中奖条件">
+              <el-row>
+                <fieldset>
+                  <el-col :span="24" :offset="0">
+                    <div v-for="(data,idx) in item.Jp">
+                      <fieldset style="margin-top: 20px;">
+                        <legend>{{ JpTypeMap[data.Level] }} </legend>
+                        <jackpot-day-limit :jackpot-rand-awards="data.JackpotRegulation.RandAwards" />
+                      </fieldset>
+                    </div>
+                  </el-col>
+                </fieldset>
+              </el-row>
+            </el-tab-pane>
+            <el-tab-pane label="开奖条件">
+              <el-row :span="16" :offset="3">
+                <fieldset style="margin-top:10px">
+                  <legend>Jackpot 奖励配置</legend>
+                  <el-table
+                    :data="item.Jp"
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      label="JACKPOT类型"
+                      width="180"
+                    >
+                      <template slot-scope="scope">
+                        {{ JpTypeMap[scope.row.Level] }}
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="中奖获得奖池金额比例"
+                      width="180"
+                    >
+                      <template slot-scope="scope">
+                        <div v-for="(data,idx) in scope.row.JackpotRegulation.RandAwards">
+                          <el-input v-model.number="data.AwardRate">
+                            <template slot="append">%</template>
+                          </el-input>
+                        </div>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="中奖人数"
+                      width="380"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="中奖时间(秒)"
+                      width="380"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Time" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
+                          <template slot="append">S</template>
+                        </el-input>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+
+                </fieldset>
+              </el-row>
+            </el-tab-pane>
+          </el-tabs>
         </el-tab-pane>
       </el-tabs>
-    </el-tab-pane>
-  </el-tabs>
-</el-row>
-  <el-row>
-    <el-button type="primary" @click="setData">保存</el-button>
+    </el-row>
+    <el-row>
+      <el-button type="primary" @click="setData">保存</el-button>
 
-  </el-row>
+    </el-row>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
 
-
     <!-- 【dialog】Jackpot奖池增长 -->
     <el-dialog
-        :title="incrJackpotForm.title"
-        :modal="false"
-        :visible.sync="incrJackpotForm.visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      :title="incrJackpotForm.title"
+      :modal="false"
+      :visible.sync="incrJackpotForm.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-form ref="robotForm" :model="incrJackpotForm.data.TimeArr">
         <el-form-item>
-          {{incrJackpotForm.data}}
+          {{ incrJackpotForm.data }}
           <el-table
-              ref="filterTable"
-              :data="incrJackpotForm.data"
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
+            ref="filterTable"
+            :data="incrJackpotForm.data"
+            border
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'10px'}"
+            :cell-style="libShow.DefaultTableCell"
+            style="width: 100%"
           >
             <el-table-column type="index" />
             <el-table-column label="时间段">
@@ -384,63 +382,62 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
-import PiggyWeightCfg from "@/views/config/tableConfig/piggyWeightCfg.vue";
-import JackpotDayLimit from "@/views/config/components/jackpotDayLimit.vue";
-import JackpotAward from "@/views/playerManage/jackpotAward.vue";
-
+import PiggyWeightCfg from '@/views/config/tableConfig/piggyWeightCfg.vue'
+import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
+import JackpotAward from '@/views/playerManage/jackpotAward.vue'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {JackpotAward, JackpotDayLimit, PiggyWeightCfg,  Compare, Publish, BetAmount },
+  components: { JackpotAward, JackpotDayLimit, PiggyWeightCfg, Compare, Publish, BetAmount },
   data() {
     return {
       subKey: 'piggy_cfg',
       libShow: $libShow,
-      item:{
-        BetLevel:[{ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 }], ////下注配置
-        Buff: [ ////增益
-          {Awards: [{Weight: 1, Val: 0}], MixTap: 0, MaxTap: 0},
-          {Awards: [{Weight: 1, Val: 0}], MixTap: 0, MaxTap: 0},
-          {Awards: [{Weight: 1, Val: 0}], MixTap: 0, MaxTap: 0},
-          {Awards: [{Weight: 1, Val: 0}], MixTap: 0, MaxTap: 0},
-          {Awards: [{Weight: 1, Val: 0}], MixTap: 0, MaxTap: 0}
+      item: {
+        BetLevel: [{ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 }], // //下注配置
+        Buff: [ // //增益
+          { Awards: [{ Weight: 1, Val: 0 }], MixTap: 0, MaxTap: 0 },
+          { Awards: [{ Weight: 1, Val: 0 }], MixTap: 0, MaxTap: 0 },
+          { Awards: [{ Weight: 1, Val: 0 }], MixTap: 0, MaxTap: 0 },
+          { Awards: [{ Weight: 1, Val: 0 }], MixTap: 0, MaxTap: 0 },
+          { Awards: [{ Weight: 1, Val: 0 }], MixTap: 0, MaxTap: 0 }
         ],
-        MoneyOdds:[{Weight: 1, Val: 0},{Weight: 1, Val: 0}], //金币 val=倍数
-        free: [ //free game
+        MoneyOdds: [{ Weight: 1, Val: 0 }, { Weight: 1, Val: 0 }], // 金币 val=倍数
+        free: [ // free game
           {
             TpyIn: 1,
-            Spin: [{Tpy: 4, Choices: [{Weight: 1, Val: 2}]},{Tpy: 4, Choices: [{Weight: 1, Val: 2}, {Weight: 1, Val: 2}]}],
-            MoneyOdds:[{Weight: 1, Val: 2}],
-            Awards:[{Weight: 1, Val: 2}],
+            Spin: [{ Tpy: 4, Choices: [{ Weight: 1, Val: 2 }] }, { Tpy: 5, Choices: [{ Weight: 1, Val: 2 }, { Weight: 1, Val: 2 }] }],
+            MoneyOdds: [{ Weight: 1, Val: 2 }],
+            Awards: [{ Weight: 1, Val: 2 }]
           },
           {
             TpyIn: 2,
-            Spin: [{Tpy: 4, Choices: [{Weight: 1, Val: 2}]}, {Tpy: 4, Choices: [{Weight: 1, Val: 2}, {Weight: 1, Val: 2}]}],
-            MoneyOdds: [{Weight: 1, Val: 2}],
-            Awards: [{Weight: 1, Val: 2}],
+            Spin: [{ Tpy: 4, Choices: [{ Weight: 1, Val: 2 }] }, { Tpy: 4, Choices: [{ Weight: 1, Val: 2 }, { Weight: 1, Val: 2 }] }],
+            MoneyOdds: [{ Weight: 1, Val: 2 }],
+            Awards: [{ Weight: 1, Val: 2 }]
           }],
-        Plate:{Rate:0,PlateOdds:[{Weight: 1, Val: 2}]},//幸运转盘
-        Jp:[// JP
-            {Typ:1,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:22,JackpotRegulation:{RandAwards:[{AwardRate:100}],PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:0,EndHour:1,PerHourIncr:2}]},{Id:0,MinPool:2,MaxPool:7,TimeArr:[{Index:0,StartHour:2,EndHour:6,PerHourIncr:22},{Index:0,StartHour:0,EndHour:1,PerHourIncr:111}]}]}},
-            {Typ:2,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:22,JackpotRegulation:{RandAwards:[{AwardRate:100}],PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:1,EndHour:12,PerHourIncr:22}]}]}},
-            {Typ:3,Fee:1,CTap:30,MinBet:1,MaxBet:1,Time:11,Num:21,JackpotRegulation:{RandAwards:[{AwardRate:100}],PoolIncrArr:[{Id:0,MinPool:2,MaxPool:3,TimeArr:[{Index:0,StartHour:1,EndHour:12,PerHourIncr:22}]}]}},
-        ],
+        Plate: { Rate: 0, PlateOdds: [{ Weight: 1, Val: 2 }] }, // 幸运转盘
+        Jp: [// JP
+          { Level: 1, Fee: 1, CTap: 30, MinBet: 1, MaxBet: 1, Time: 11, Num: 22, JackpotRegulation: { RandAwards: [{ AwardRate: 100 }], PoolIncrArr: [{ Id: 0, MinPool: 2, MaxPool: 3, TimeArr: [{ Index: 0, StartHour: 0, EndHour: 1, PerHourIncr: 2 }] }, { Id: 0, MinPool: 2, MaxPool: 7, TimeArr: [{ Index: 0, StartHour: 2, EndHour: 6, PerHourIncr: 22 }, { Index: 0, StartHour: 0, EndHour: 1, PerHourIncr: 111 }] }] }},
+          { Level: 2, Fee: 1, CTap: 30, MinBet: 1, MaxBet: 1, Time: 11, Num: 22, JackpotRegulation: { RandAwards: [{ AwardRate: 100 }], PoolIncrArr: [{ Id: 0, MinPool: 2, MaxPool: 3, TimeArr: [{ Index: 0, StartHour: 1, EndHour: 12, PerHourIncr: 22 }] }] }},
+          { Level: 3, Fee: 1, CTap: 30, MinBet: 1, MaxBet: 1, Time: 11, Num: 21, JackpotRegulation: { RandAwards: [{ AwardRate: 100 }], PoolIncrArr: [{ Id: 0, MinPool: 2, MaxPool: 3, TimeArr: [{ Index: 0, StartHour: 1, EndHour: 12, PerHourIncr: 22 }] }] }}
+        ]
       },
       incrJackpotForm: {
-        JpIdx:0,
-        dataIdx:0,
+        JpIdx: 0,
+        dataIdx: 0,
         id: 0,
         title: '',
         visible: false,
         data: []
       },
-      JpTypeMap:{
-        1:'Grand' ,
-        2:'Major' ,
-        3:'Minor'
+      JpTypeMap: {
+        1: 'Grand',
+        2: 'Major',
+        3: 'Minor'
       },
       AttrNames: {
-        'Data.MaxPlayers': '最大人数',
+        'Data.MaxPlayers': '最大人数'
       }
     }
   },
@@ -455,14 +452,28 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     transMoneyForShow() {
-
-      console.log('this.item:', this.item)
+      for (const o of this.item.MoneyOdds) {
+        o.Val /= 1000
+      }
+      for (const o of this.item.free) {
+        for (const omo of o.MoneyOdds) {
+          omo.Val /= 1000
+        }
+        for (const sp of o.Spin) {
+          for (const c of sp.Choices) {
+            c.Val /= 1000
+          }
+        }
+      }
+      for (const o of this.item.Plate.PlateOdds) {
+        o.Val /= 1000
+      }
     },
     doAdd() {
       this.item.BetLevel.push({ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
     delRow(index) {
-      if (this.item.BetLevel.length<=1){
+      if (this.item.BetLevel.length <= 1) {
         Message.error('再删就没了')
         return
       }
@@ -471,17 +482,17 @@ export default {
     BuffCfgClick(tab, event) {
     },
     saveIncrJackpotDialog() {
-      this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr= this.incrJackpotForm.data
+      this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr = this.incrJackpotForm.data
 
       for (const o of this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr) {
-        o.PerHourIncr*=1000
+        o.PerHourIncr *= 1000
       }
 
       this.incrJackpotForm.visible = false
     },
-    showIncrJackpotForm(data,idx,index) {
-      this.incrJackpotForm.JpIdx=idx
-      this.incrJackpotForm.dataIdx=index
+    showIncrJackpotForm(data, idx, index) {
+      this.incrJackpotForm.JpIdx = idx
+      this.incrJackpotForm.dataIdx = index
       this.incrJackpotForm.id = data.Id
       this.incrJackpotForm.data = []
       for (const i in data.TimeArr) {
@@ -507,6 +518,14 @@ export default {
       }
       return showNum.toLocaleString()
     },
+    getSpinTitle(val) {
+      if (val === 4) {
+        return '次数'
+      }
+      if (val === 5) {
+        return '倍数'
+      }
+    },
     getJackpotPoolTitle(row) {
       if (row.MaxPool == -1) {
         return Math.floor(row.MinPool / 10000000) + '万以上每小时增长'
@@ -515,7 +534,24 @@ export default {
       }
     },
     getPostData() {
-      return this.item
+      const obj = JSON.parse(JSON.stringify(this.item))
+      for (const o of obj.MoneyOdds) {
+        o.Val = parseInt(o.Val * 1000)
+      }
+      for (const o of obj.free) {
+        for (const omo of o.MoneyOdds) {
+          omo.Val = parseInt(omo.Val * 1000)
+        }
+        for (const sp of o.Spin) {
+          for (const c of sp.Choices) {
+            c.Val = parseInt(c.Val * 1000)
+          }
+        }
+      }
+      for (const o of obj.Plate.PlateOdds) {
+        o.Val = parseInt(o.Val * 1000)
+      }
+      return obj
     },
     getData() {
       request({
@@ -538,7 +574,7 @@ export default {
       })
     },
     setData() {
-      var postData = this.getPostData();
+      var postData = this.getPostData()
       this.form.Data = JSON.stringify(postData)
       const $this = this
       // 设置修改后数据
@@ -559,7 +595,7 @@ export default {
           }
         })
       })
-    },
+    }
   }
 }
 </script>

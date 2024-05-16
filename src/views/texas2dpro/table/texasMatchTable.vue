@@ -14,7 +14,7 @@
     <div style="padding-top: 10px">
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
-        <el-table-column prop="RaceName" label="名称" width="70" />
+        <el-table-column prop="RaceName" label="名称" width="120" />
         <el-table-column prop="GameId" label="玩法" width="100">
           <template slot-scope="scope">
             {{ getGameType(scope.row.GameId) }}
@@ -25,9 +25,34 @@
             {{ getRaceType(scope.row.RaceType) }}
           </template>
         </el-table-column>
+        <el-table-column prop="RaceType" label="开始日期" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceBeginDate, 1) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="结束日期" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceEndDate, 1) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="开始时间" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceBeginTime, 4) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="结束时间" width="100">
+          <template slot-scope="scope">
+            {{ formatTime2(scope.row.RaceEndTime, 4) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="RaceType" label="星期" width="100">
+          <template slot-scope="scope">
+            {{ getWeekName(scope.row.RaceType, scope.row.RaceWeek) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="RaceShowTime" label="显示时间" width="100">
           <template slot-scope="scope">
-            {{ scope.row.RaceShowTime }}
+            {{ getShowTime(scope.row.RaceShowTime) }}
           </template>
         </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
@@ -70,15 +95,15 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="玩法">
-            <el-select v-model="edit.item.GameId" placeholder="请选择">
-              <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
-            </el-select>
-          </el-form-item>
+              <el-select v-model="edit.item.GameId" placeholder="请选择">
+                <el-option v-for="item in GidTypes" :key="item.key" :label="item.key" :value="item.value" />
+              </el-select>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
-           <el-col :span="20">
-             <el-form-item label="比赛类型:" :required="true">
+          <el-col :span="20">
+            <el-form-item label="比赛类型:" :required="true">
               <el-radio-group v-model.number="edit.item.RaceType">
                 <el-radio :label="0">单日赛</el-radio>
                 <el-radio :label="1">每日循环赛</el-radio>
@@ -90,12 +115,12 @@
         <el-row v-if="edit.item.RaceType == 0">
           <el-col :span="11">
             <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
-              <el-date-picker v-model="edit.item.RaceBeginDate" placeholder="比赛开始日期"/>
+              <el-date-picker v-model="edit.item.RaceBeginDate" placeholder="比赛开始日期" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
-              <el-time-picker v-model="edit.item.RaceBeginTime" placeholder="比赛开始时间"/>
+              <el-time-picker v-model="edit.item.RaceBeginTime" placeholder="比赛开始时间" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -103,34 +128,34 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
-                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期"/>
+                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束日期:" :required="true" prop="item.RaceEndDate">
-                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期"/>
+                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
-                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间"/>
+                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束时间:" :required="true" prop="item.RaceEndTime">
-                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间"/>
+                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间" />
               </el-form-item>
             </el-col>
           </el-row>
         </el-row>
-         <el-row v-if="edit.item.RaceType == 2">
+        <el-row v-if="edit.item.RaceType == 2">
           <el-row>
             <el-col :span="20">
               <el-form-item label="星期:" :required="true" prop="item.RaceWeek">
-                <el-checkbox-group v-model="edit.item.RaceWeek" >
-                  <el-checkbox v-for="v, k in weekNames" :key=k :label=k >{{v}}
+                <el-checkbox-group v-model="edit.item.RaceWeek">
+                  <el-checkbox v-for="v, k in weekNames" :key="k" :label="k">{{ v }}
                   </el-checkbox>
                 </el-checkbox-group>
               </el-form-item>
@@ -139,24 +164,24 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始日期:" :required="true" prop="item.RaceBeginDate">
-                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期"/>
+                <el-date-picker v-model="edit.item.RaceBeginDate" type="date" placeholder="比赛开始日期" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束日期:" :required="true" prop="item.RaceEndDate">
-                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期"/>
+                <el-date-picker v-model="edit.item.RaceEndDate" type="date" placeholder="比赛结束日期" />
               </el-form-item>
             </el-col>
           </el-row>
           <el-row>
             <el-col :span="11">
               <el-form-item label="比赛开始时间:" :required="true" prop="item.RaceBeginTime">
-                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间"/>
+                <el-time-picker v-model="edit.item.RaceBeginTime" type="time" placeholder="比赛开始时间" />
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="比赛结束时间:" :required="true" prop="item.RaceEndTime">
-                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间"/>
+                <el-time-picker v-model="edit.item.RaceEndTime" type="time" placeholder="比赛结束时间" />
               </el-form-item>
             </el-col>
           </el-row>
@@ -167,9 +192,9 @@
               <el-input v-model="edit.item.RaceShowTime" placeholder="显示时间" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" v-if="edit.item.RaceType > 0">
+          <el-col v-if="edit.item.RaceType > 0" :span="11">
             <el-form-item label="间隔时间(分钟):" :required="true" prop="item.RaceIntervalTime">
-              <el-input v-model="edit.item.RaceIntervalTime"  placeholder="间隔时间" />
+              <el-input v-model="edit.item.RaceIntervalTime" placeholder="间隔时间" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -242,6 +267,25 @@
               <el-input v-model.number="edit.item.RebuyMaxTimes" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="rebuy时间(秒):" :required="true" prop="item.RebuyTime" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RebuyTime" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="盲注配置">
+              <el-select v-model="edit.item.BlindType" placeholder="请选择">
+                <el-option v-for="item in BlindTypeName" :key="item.key" :label="item.key" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="机器人数量:" :required="true" prop="item.RobotNum" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RobotNum" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <el-form-item>
@@ -277,7 +321,7 @@ function newItem() {
     GameId: 32,
     RaceType: 0,
     RaceWeek: [],
-    sRaceWeek: '',
+    RaceWeekStr: '',
     RaceBeginDate: new Date(),
     RaceEndDate: new Date(),
     RaceBeginTime: new Date(),
@@ -295,6 +339,9 @@ function newItem() {
     RebuyClassLimit: 0,
     RebuyChipNum: 0,
     RebuyMaxTimes: 0,
+    RebuyTime: 0,
+    BlindType: 1,
+    RobotNum: 0,
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -312,6 +359,10 @@ export default {
       GidTypes: [
         { key: '[0]无限德州', value: 32 },
         { key: '[1]奥马哈德州', value: 36 }
+      ],
+      BlindTypeName: [
+        { key: '[1]快速盲注配置', value: 1 },
+        { key: '[2]常规盲注配置', value: 2 }
       ],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -346,7 +397,10 @@ export default {
         IsSupportRebuy: '是否支持rebuy,0否1是',
         RebuyClassLimit: '可rebuy级别限制',
         RebuyChipNum: 'rebuy后筹码数量',
-        RebuyMaxTimes: 'rebuy次数上限'
+        RebuyMaxTimes: 'rebuy次数上限',
+        RebuyTime: 'rebuy倒计时',
+        BlindType: '盲注类型',
+        RobotNum: '机器人数量'
       }
     }
   },
@@ -362,8 +416,29 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    formatTime2(ts) {
-      return $libDate.FormateSecondStr(ts / 1000, 2)
+    formatTime2(date, type) {
+      var result = new Date(date).getTime()
+      return $libDate.FormateMilisecondStrByZone(result, type, '')
+    },
+    getWeekName(type, weeks) {
+      if (type != 2) {
+        return '无'
+      }
+      var weekNames = ''
+      for (var i = 0; i < weeks.length; i++) {
+        weekNames += this.weekNames[weeks[i]]
+        if (i != weeks.length -1) {
+          weekNames += ' , '
+        }
+      }
+      return weekNames
+    },
+    getShowTime(t) {
+      if (t % 60 === 0) {
+        return t/60 + 'h'
+      }
+      return t/60 + 'h' + t%60 + 'm'
+
     },
     getGameType(gid) {
       for (var i = 0; i < this.GidTypes.length; i++) {
@@ -462,6 +537,7 @@ export default {
             }
             objs[o].RaceShowTime /= 60
             objs[o].RaceIntervalTime /= 60
+            objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
@@ -581,15 +657,15 @@ export default {
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
       if (postData.RaceType == 2) {
-        postData.sRaceWeek = ''
-      } else {
-        postData.sRaceWeek = '0,1,2,3,4,5,6'
-      }
-      for (var i = 0; i < postData.RaceWeek.length; i++) {
-        postData.sRaceWeek += postData.RaceWeek[i]
-        if (i < postData.RaceWeek.length - 1) {
-          postData.sRaceWeek += ','
+        postData.RaceWeekStr = ''
+        for (var i = 0; i < postData.RaceWeek.length; i++) {
+          postData.RaceWeekStr += postData.RaceWeek[i]
+          if (i < postData.RaceWeek.length - 1) {
+            postData.RaceWeekStr += ','
+          }
         }
+      } else {
+        postData.RaceWeekStr = '0'
       }
       postData.RaceShowTime *= 60
       postData.RaceIntervalTime *= 60
