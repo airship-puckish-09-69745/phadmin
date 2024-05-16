@@ -104,7 +104,7 @@
                     </el-tabs>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="中奖配置" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数" val-type="1" />
                   </el-tab-pane>
                 </el-tabs>
               </fieldset>
@@ -122,15 +122,15 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="概率" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="收益值" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="中奖类型" val-name="中奖概率" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币奖励类型" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -147,7 +147,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="倍数奖励" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -160,11 +160,11 @@
           <el-col :span="16" :offset="3">
             <fieldset>
               <el-form inline>
-                <el-form-item label="幸运转盘概率"style="margin-left:20px">
+                <el-form-item label="磁体->幸运转盘概率(‰)"style="margin-left:20px">
                   <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
                 </el-form-item>
               </el-form>
-              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="金币奖励类型" val-type="1" />
+              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数" val-type="1" />
 
             </fieldset>
           </el-col>
@@ -189,7 +189,7 @@
                         {{ JpTypeMap[scope.row.Typ] }}
                       </template>
                     </el-table-column>
-                    <el-table-column label="抽水比例(%)" prop="Typ">
+                    <el-table-column label="抽水比例(‰)" prop="Typ">
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.Fee" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
                       </template>
@@ -300,7 +300,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="中奖人数"
+                      label="中奖人数(目前最大30)"
                       width="380"
                     >
                       <template slot-scope="scope">
@@ -308,7 +308,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="中奖时间(秒)"
+                      label="中奖时间(ms)"
                       width="380"
                     >
                       <template slot-scope="scope">
@@ -391,9 +391,13 @@ export default {
   components: { JackpotAward, JackpotDayLimit, PiggyWeightCfg, Compare, Publish, BetAmount },
   data() {
     return {
-      subKey: 'piggy_cfg',
+      subKey: 'miniPiggy_cfg',
       libShow: $libShow,
       item: {
+        KicKTime: 300,
+        NoticeTime: 300,
+        FeeRate: 30,
+        AutoTimes: '25,50,100,200,500,1000,5000,-1',
         BetLevel: [{ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 }], // //下注配置
         Buff: [ // //增益
           { Awards: [{ Weight: 1, Val: 0 }], MixTap: 0, MaxTap: 0 },
@@ -412,7 +416,7 @@ export default {
           },
           {
             TpyIn: 2,
-            Spin: [{ Tpy: 4, Choices: [{ Weight: 1, Val: 2 }] }, { Tpy: 4, Choices: [{ Weight: 1, Val: 2 }, { Weight: 1, Val: 2 }] }],
+            Spin: [{ Tpy: 4, Choices: [{ Weight: 1, Val: 2 }] }, { Tpy: 5, Choices: [{ Weight: 1, Val: 2 }, { Weight: 1, Val: 2 }] }],
             MoneyOdds: [{ Weight: 1, Val: 2 }],
             Awards: [{ Weight: 1, Val: 2 }]
           }],
@@ -421,7 +425,17 @@ export default {
           { Level: 1, Fee: 1, CTap: 30, MinBet: 1, MaxBet: 1, Time: 11, Num: 22, JackpotRegulation: { RandAwards: [{ AwardRate: 100 }], PoolIncrArr: [{ Id: 0, MinPool: 2, MaxPool: 3, TimeArr: [{ Index: 0, StartHour: 0, EndHour: 1, PerHourIncr: 2 }] }, { Id: 0, MinPool: 2, MaxPool: 7, TimeArr: [{ Index: 0, StartHour: 2, EndHour: 6, PerHourIncr: 22 }, { Index: 0, StartHour: 0, EndHour: 1, PerHourIncr: 111 }] }] }},
           { Level: 2, Fee: 1, CTap: 30, MinBet: 1, MaxBet: 1, Time: 11, Num: 22, JackpotRegulation: { RandAwards: [{ AwardRate: 100 }], PoolIncrArr: [{ Id: 0, MinPool: 2, MaxPool: 3, TimeArr: [{ Index: 0, StartHour: 1, EndHour: 12, PerHourIncr: 22 }] }] }},
           { Level: 3, Fee: 1, CTap: 30, MinBet: 1, MaxBet: 1, Time: 11, Num: 21, JackpotRegulation: { RandAwards: [{ AwardRate: 100 }], PoolIncrArr: [{ Id: 0, MinPool: 2, MaxPool: 3, TimeArr: [{ Index: 0, StartHour: 1, EndHour: 12, PerHourIncr: 22 }] }] }}
-        ]
+        ],
+        RobotCfg: {
+          RobotMemberArr: [],
+          MinRobotPlayTimes: 0, // 机器人最小玩牌局数
+          MaxRobotPlayTimes: 0, // 机器人最大玩牌局数
+          MinRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲下限
+          MaxRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲上限
+          MinRobotTapInterval: 0, // 机器人最小敲击间隔
+          MaxRobotTapInterval: 0, // 机器人最大敲击间隔
+          AutoTapRate: 0, // 机器人自动敲击的概率 ‰
+        }
       },
       incrJackpotForm: {
         JpIdx: 0,
