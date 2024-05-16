@@ -122,7 +122,7 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="收益值" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -139,7 +139,7 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="反奖倍数" val-name="概率" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
