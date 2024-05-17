@@ -325,7 +325,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="中奖时间(ms)"
+                      label="中奖时间"
                       width="380"
                     >
                       <template slot-scope="scope">

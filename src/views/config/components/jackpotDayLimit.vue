@@ -25,7 +25,7 @@
       <el-table-column label="奖励占比" prop="JackpotRate">
         <template slot-scope="scope">
           <el-input v-model.number="scope.row.AwardRate" style="width: 150px;" size="mini" :required="true">
-            <template slot="append">‰</template>
+            <template slot="append">%</template>
           </el-input>
         </template>
       </el-table-column>
