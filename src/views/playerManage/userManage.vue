@@ -76,7 +76,7 @@
 
           <el-descriptions-item label="系列：">{{ item.AppID > 100000?'Galaxy':'Android' }}</el-descriptions-item>
           <el-descriptions-item label="AppID：">{{ item.AppID }}</el-descriptions-item>
-          <el-descriptions-item label="来源Appid：">{{ showSourceAppid(item.SourceAppid) }}</el-descriptions-item>
+          <el-descriptions-item label="来源Appid：">{{ item.RegisterChannel }}</el-descriptions-item>
           <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
           <!--
@@ -646,6 +646,7 @@ export default {
         GullakLevel: 0,
         Nick: '',
         RegisterTime: '',
+        RegisterChannel: '',
         LastLoginTime: '',
         Country: '',
         Language: '',

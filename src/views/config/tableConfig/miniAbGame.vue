@@ -633,6 +633,15 @@ export default {
         })
       })
     },
+    saveRobotDialog() {
+      for (var i = 0; i < this.item.RobotCfg.RobotMemberArr.length; i++) {
+        if (this.item.RobotCfg.RobotMemberArr[i].Index == this.robotDialogForm.data.Index) {
+          this.item.RobotCfg.RobotMemberArr[i] = this.robotDialogForm.data
+          break
+        }
+      }
+      this.robotDialogForm.visible = false
+    },
     addOddsList(idx) {
       this.BetOddsList[idx].EOddsCfg.push({})
       // 刷新页面
