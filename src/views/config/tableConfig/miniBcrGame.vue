@@ -176,6 +176,15 @@
                   </template>
                 </el-table-column>
                 <el-table-column
+                  label="下注区Id"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    <!--                    <el-input v-model.number="scope.row.OptionId" disabled size="mini" />-->
+                    {{scope.row.OptionId}}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="Low"
                   label="下注区域名称"
                 >
@@ -183,15 +192,7 @@
                     <el-input v-model.number="BetAreaOptions[scope.row.Id]" disabled  size="mini" />
                   </template>
                 </el-table-column>
-                <el-table-column
-                  label="下注区域Id"
-                 width="80px"
-                >
-                  <template slot-scope="scope">
-<!--                    <el-input v-model.number="scope.row.OptionId" disabled size="mini" />-->
-                    {{scope.row.OptionId}}
-                  </template>
-                </el-table-column>
+
                 <el-table-column
                   label="中奖赔率"
                 >
