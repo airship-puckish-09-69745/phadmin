@@ -227,7 +227,6 @@
             <el-tab-pane label="虚拟奖池">
               <el-col :span="16" :offset="3">
                 <fieldset>
-
                   <div v-for="(data,idx) in item.Jp">
                     <fieldset style="margin-top: 20px;">
                       <legend>{{ JpTypeMap[data.Level] }} </legend>
@@ -348,7 +347,7 @@
                         width="180"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.MinBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+                        <el-input type="number" v-model.number="scope.row.MinBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -356,7 +355,7 @@
                         width="180"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.MaxBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+                        <el-input type="number" v-model.number="scope.row.MaxBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"/>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -472,7 +471,6 @@
     >
       <el-form ref="robotForm" :model="incrJackpotForm.data.TimeArr">
         <el-form-item>
-          {{ incrJackpotForm.data }}
           <el-table
             ref="filterTable"
             :data="incrJackpotForm.data"
@@ -632,6 +630,10 @@ export default {
       for (const o of this.item.MoneyOdds) {
         o.Val /= 1000
       }
+      for (const o of this.item.Jp) {
+        o.MaxBet/= 1000
+        o.MinBet/= 1000
+      }
       for (const o of this.item.free) {
         for (const omo of o.MoneyOdds) {
           omo.Val /= 1000
@@ -757,7 +759,10 @@ export default {
       for (const o of obj.Plate.PlateOdds) {
         o.Val = parseInt(o.Val * 1000)
       }
-
+      for (const o of obj.Jp) {
+        o.MinBet = parseInt(o.MinBet * 1000)
+        o.MaxBet = parseInt(o.MaxBet * 1000)
+      }
 
       for (const o of obj.BetLevel) {
         if ( o.CanBet instanceof Array){
