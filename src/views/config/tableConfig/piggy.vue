@@ -217,8 +217,14 @@
                     </el-table-column>
                     <el-table-column label="抽水比例(‰)" prop="Typ">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Fee" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+                        <el-tooltip class="item" effect="dark" content="千分比,1就是0.001" placement="top-start">
+                          <el-input v-model.number="scope.row.Fee"
+                                    oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};">
+                            <template slot="append">‰</template>
+                          </el-input>
+                        </el-tooltip>
                       </template>
+
                     </el-table-column>
                   </el-table>
                 </fieldset>
@@ -339,7 +345,7 @@
                         width="180"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+                        <el-input  v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -347,7 +353,7 @@
                         width="180"
                     >
                       <template slot-scope="scope">
-                        <el-input type="number" v-model.number="scope.row.MinBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
+                        <el-input type="number" v-model="scope.row.MinBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"/>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -355,7 +361,7 @@
                         width="180"
                     >
                       <template slot-scope="scope">
-                        <el-input type="number" v-model.number="scope.row.MaxBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"/>
+                        <el-input type="number" v-model="scope.row.MaxBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"/>
                       </template>
                     </el-table-column>
                   </el-table>
