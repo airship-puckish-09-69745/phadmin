@@ -227,9 +227,10 @@
             <el-tab-pane label="虚拟奖池">
               <el-col :span="16" :offset="3">
                 <fieldset>
+
                   <div v-for="(data,idx) in item.Jp">
                     <fieldset style="margin-top: 20px;">
-                      <legend>{{ JpTypeMap[data.Typ] }} </legend>
+                      <legend>{{ JpTypeMap[data.Level] }} </legend>
                       <el-table
                         ref="filterTable"
                         :data="data.JackpotRegulation.PoolIncrArr"
@@ -332,6 +333,30 @@
                         <el-input v-model.number="scope.row.Time" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
                           <template slot="append">S</template>
                         </el-input>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                        label="开JP至少点击次数"
+                        width="180"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                        label="开JP最大小注"
+                        width="180"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.MinBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                        label="开JP最大下注"
+                        width="180"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.MaxBet" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
                       </template>
                     </el-table-column>
                   </el-table>
