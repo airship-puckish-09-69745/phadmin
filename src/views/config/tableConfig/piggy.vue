@@ -653,6 +653,14 @@ export default {
       for (const o of this.item.Plate.PlateOdds) {
         o.Val /= 1000
       }
+
+      for (const o of this.item.BetLevel) {
+        if ( o.CanBet instanceof Array){
+          for (let i = 0; i < o.CanBet.length; i++) {
+            o.CanBet[i] /= 1000
+          }
+        }
+      }
     },
     doAdd() {
       this.item.BetLevel.push({ CanBet: [60,100,200,400,600,2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
@@ -771,14 +779,19 @@ export default {
       }
 
       for (const o of obj.BetLevel) {
-        if ( o.CanBet instanceof Array){
-        }else {
-          o.CanBet = o.CanBet.split(",").map(Number)
+        if (o.CanBet instanceof Array) {
+          for (let i = 0; i < o.CanBet.length; i++) {
+            o.CanBet[i] *= 1000
+          }
+        } else {
+            o.CanBet = o.CanBet.split(",").map(Number)
+          for (let i = 0; i < o.CanBet.length; i++) {
+            o.CanBet[i] *= 1000
+          }
         }
       }
-      console.log("===",obj.AutoTimes)
-      if (obj.AutoTimes instanceof Array){
 
+      if (obj.AutoTimes instanceof Array){
       }else {
         obj.AutoTimes= obj.AutoTimes.split(",").map(Number)
       }

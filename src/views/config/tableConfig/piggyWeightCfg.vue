@@ -32,8 +32,8 @@
               <el-select v-model.number="scope.row.Val" placeholder="请选择" size="mini">
                 <el-option label="空" :value="0" />
                 <el-option label="金币" :value="1" />
-                <el-option   v-if="valName!=='中奖类型'" label="磁铁" :value="2" />
-                <el-option  label="闪电" :value="3" />
+                <el-option   label="磁铁" :value="2" />
+                <el-option  v-if="valName!=='中奖类型'" label="闪电" :value="3" />
                 <el-option  v-if="valName!=='中奖配置'" label="F次数" :value="4" />
                 <el-option v-if="valName!=='中奖配置'" label="N倍数" :value="5" />
                 <el-option label="JP" :value="10" />
