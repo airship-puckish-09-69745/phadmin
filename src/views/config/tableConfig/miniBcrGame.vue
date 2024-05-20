@@ -156,6 +156,53 @@
             </el-row>
           </fieldset>
 
+          <fieldset style="margin-top:10px">
+            <legend>下注赔率配置</legend>
+            <el-row>
+              <el-table
+                ref="filterTable"
+                :data="item.BetOptionsRate"
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column
+                  type="index"
+                >
+                  <template slot-scope="scope">
+                   {{scope.row.Id}}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="Low"
+                  label="下注区域名称"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="BetAreaOptions[scope.row.Id]" disabled  size="mini" />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="下注区域Id"
+                 width="80px"
+                >
+                  <template slot-scope="scope">
+<!--                    <el-input v-model.number="scope.row.OptionId" disabled size="mini" />-->
+                    {{scope.row.OptionId}}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="中奖赔率"
+                >
+                  <template slot-scope="scope">
+                    <el-input type="number" v-model.number="scope.row.Val" size="mini" />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-row>
+          </fieldset>
+
           <fieldset v-if="!isHidden" style="margin-top:10px">
             <legend>机器人配置</legend>
             <el-descriptions class="margin-top" border>
@@ -376,8 +423,20 @@ export default {
   components: { Compare, Publish, BetAmount },
   data() {
     return {
+      BetAreaOptions: {
+        0: '闲赢',
+        1: '庄赢，庄家点数非6',
+        2: '庄赢，庄家点数是6',
+        3: '和',
+        4: '闲对',
+        5: '庄对',
+        6: 'LUCKY6，庄家以6点赢且没有博牌',
+        7: 'LUCKY6，庄家以6点赢且有博牌',
+        8: 'BIG 大点，庄家和闲家的牌张数之和是5或者6',
+        9: 'SMALL 小点，庄家和闲家的牌张数之和是4',
+      },
       item: {
-        BetMoneyLevel: [{ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 }],
+        BetMoneyLevel: [{CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10}],
         BetAreaOptions: [
           { Name: '闲赢', MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1, Odds: 2 },
           { Name: '庄赢', MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1, Odds: 2 },
@@ -486,7 +545,9 @@ export default {
       for (const i in this.item.BetAreaOptions) {
         this.item.BetAreaOptions[i].Odds /= 1000
       }
-
+      for (const o of this.item.BetOptionsRate) {
+        o.Val /= 1000
+      }
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
@@ -525,6 +586,7 @@ export default {
       for (const o in ret.BetMoneyList) {
         ret.BetMoneyList[o] *= 1000
       }
+
       ret.BetAreaOptions = []
       for (const o in this.item.BetAreaOptions) {
         const obj = JSON.parse(JSON.stringify(this.item.BetAreaOptions[o]))
@@ -533,7 +595,9 @@ export default {
         obj.Odds *= 1000
         ret.BetAreaOptions.push(obj)
       }
-
+      for (const o of ret.BetOptionsRate) {
+        o.Val *= 1000
+      }
       const items = this.testCards.split(',')
       ret.TestCards = []
       for (const o in items) {
@@ -560,7 +624,6 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             this.testCards = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.testCards
-
             if (this.item.BetAreaOptions.length === 0) {
               this.item.BetAreaOptions = betAreaOptions
             }
