@@ -17,14 +17,18 @@
         </template>
       </el-table-column>
 
-      <!--
-      <el-table-column label="奖励占比(与Jackpot配置中占比一致)">
-        <template v-if="scope.row.AwardType==1" slot-scope="scope">
-          {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%
+<!--      <el-table-column label="奖励占比(与Jackpot配置中占比一致)">-->
+<!--        <template v-if="scope.row.AwardType==1" slot-scope="scope">-->
+<!--          {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column label="奖励占比" prop="JackpotRate">
+        <template slot-scope="scope">
+          <el-input v-model.number="scope.row.AwardRate" style="width: 150px;" size="mini" :required="true">
+            <template slot="append">%</template>
+          </el-input>
         </template>
       </el-table-column>
-      -->
-
       <el-table-column label="中奖概率" prop="JackpotRate">
         <template slot-scope="scope">
           <el-input v-model.number="scope.row.JackpotRate" style="width: 150px;" size="mini" :required="true">

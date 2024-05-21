@@ -453,6 +453,12 @@ export const asyncRoutes = [
             name: 'miniAb_cfg',
             meta: { title: 'miniAB ◐' }
           },
+          {
+            path: 'miniBcr_cfg',
+            component: () => import('@/views/config/tableConfig/miniBcrGame'),
+            name: 'miniBcr_cfg',
+            meta: { title: 'miniBcr ◐' }
+          },
           // {
           //   path: 'windrop_cfg',
           //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
