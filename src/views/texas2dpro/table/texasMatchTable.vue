@@ -651,8 +651,8 @@ export default {
         return 0
       }
       let timestamp = Date.parse(new Date(time).toString())
-      timestamp = (timestamp / 1000) + 8 * 3600
-      return timestamp - (timestamp % (24 * 3600))
+      timestamp = timestamp / 1000
+      return timestamp
     },
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))
