@@ -437,7 +437,11 @@ export default {
       if (t % 60 === 0) {
         return t/60 + 'h'
       }
-      return t/60 + 'h' + t%60 + 'm'
+      var result = ''
+      if (t > 60){
+        result = t/60 + 'h'
+      }
+      return result + t%60 + 'm'
 
     },
     getGameType(gid) {
@@ -648,7 +652,7 @@ export default {
       }
       let timestamp = Date.parse(new Date(time).toString())
       timestamp = timestamp / 1000
-      return timestamp
+      return timestamp - (timestamp % (24 * 3600))
     },
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))

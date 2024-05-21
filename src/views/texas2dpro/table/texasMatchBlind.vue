@@ -41,6 +41,11 @@
              <el-input v-model="edit.item.BlindName" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="升盲时间(秒)">
+             <el-input v-model="edit.item.BlindTime" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-button type="primary" size="mini" @click="addBlindRow">添加盲注</el-button>
@@ -61,11 +66,6 @@
               <el-col :span="11" >
                 <el-form-item label="前注" :required="true">
                   <el-input v-model.number="edit.item.BlindContent[index].ante" size="mini" :required="true"  />
-                </el-form-item>
-              </el-col>
-               <el-col :span="11" >
-                <el-form-item label="升盲时间" :required="true">
-                  <el-input v-model.number="edit.item.BlindContent[index].raise_blind_time" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="2">
@@ -99,6 +99,7 @@ function newItem() {
   return {
     BlindId: 0,
     BlindName: '',
+    BlindTime: 0,
     BlindContent: []
   }
 }
@@ -132,6 +133,7 @@ export default {
         if (this.tableData[i]['blind_id'] === ID) {
           this.edit.item.BlindId = ID
           this.edit.item.BlindName = this.tableData[i]['blind_name']
+          this.edit.item.BlindTime = this.tableData[i]['blind_content'][0]['raise_blind_time']
           this.edit.item.BlindContent = this.tableData[i]['blind_content']
         }
       }
@@ -145,13 +147,14 @@ export default {
           for (var j = 0; j < this.edit.item.BlindContent.length; j++) {
             this.tableData[i]['blind_content'].push(
               {
-                blind_level: this.edit.item.BlindContent[i].blind_level,
-                small_blind: this.edit.item.BlindContent[i].small_blind,
-                ante: this.edit.item.BlindContent[i].ante,
-                raise_blind_time: this.edit.item.BlindContent[i].raise_blind_time
+                blind_level: this.edit.item.BlindContent[j].blind_level,
+                small_blind: this.edit.item.BlindContent[j].small_blind,
+                ante: this.edit.item.BlindContent[j].ante,
+                raise_blind_time: Number(this.edit.item.BlindTime)
               }
             )
           }
+          console.log(this.tableData[i])
         }
       }
     },
