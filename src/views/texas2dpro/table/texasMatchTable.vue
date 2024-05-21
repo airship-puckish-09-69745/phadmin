@@ -437,7 +437,11 @@ export default {
       if (t % 60 === 0) {
         return t/60 + 'h'
       }
-      return t/60 + 'h' + t%60 + 'm'
+      var result = ''
+      if (t > 60){
+        result = t/60 + 'h'
+      }
+      return result + t%60 + 'm'
 
     },
     getGameType(gid) {
