@@ -651,7 +651,7 @@ export default {
         return 0
       }
       let timestamp = Date.parse(new Date(time).toString())
-      timestamp = timestamp / 1000
+      timestamp = (timestamp / 1000) + 8 * 3600
       return timestamp - (timestamp % (24 * 3600))
     },
     getPostData() {
