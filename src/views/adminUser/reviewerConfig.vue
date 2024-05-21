@@ -1,7 +1,8 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row style="padding-top: 5px">
-      <el-col :span="20">
+      <el-form :inline="true">
+        <el-form-item >
         <el-button
           size="mini"
           type="primary"
@@ -9,7 +10,11 @@
           @click="handleCreate()"
         >添加审批项
         </el-button>
-      </el-col>
+        </el-form-item>
+          <el-form-item label="名称查询">
+            <el-input v-model="queryKey" @input="queryKeyInput"></el-input>
+          </el-form-item>
+        </el-form>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
@@ -225,6 +230,7 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
+import qs from "qs";
 
 const filterMap = {
   Type: { 1: '无上级审核', 2: '上级审核', 3: '上两级审核' },
@@ -252,7 +258,7 @@ export default {
         reviewerInput: '',
         users: []
       },
-
+      queryKey: '',
       AttrNames: {
         Name: '名称',
         ConfigKey: '配置项',
@@ -298,6 +304,10 @@ export default {
 
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
+      this.refreshShow()
+    },
+    queryKeyInput(){
+       this.clientDB.Search(this.queryKey,['Name','ConfigKey'])
       this.refreshShow()
     },
     // 操作类函数
