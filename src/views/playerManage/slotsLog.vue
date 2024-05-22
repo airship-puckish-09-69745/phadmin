@@ -169,8 +169,8 @@
             <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率" />
             <!--
             <el-table-column prop="ActLogObj.IsResetAct" :formatter="showBool" label="免费转付费重置" />
-            -->
             <el-table-column prop="ActLogObj.IsEntryPool" :formatter="showBool" label="是否进入水池" />
+            -->
             <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" />
             <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" />
           </el-table-column>
