@@ -132,7 +132,9 @@
             <el-table-column prop="ActLogObj.ActOdds" label="剧本倍率" />
             <el-table-column prop="ActLogObj.TargetOdds" label="目标倍率" />
             <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率" />
+            <!--
             <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70" />
+            -->
             <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100" />
             <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" />
             <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit" />
@@ -165,9 +167,13 @@
             </el-table-column>
             <el-table-column prop="ActLogObj.SwitchScriptBeforeTargetOdds" label="切换前目标倍率" />
             <el-table-column prop="ActLogObj.SwitchScriptBeforeCurrentOdds" label="切换前执行倍率" />
+            <!--
             <el-table-column prop="ActLogObj.SwitchScriptBeforeOverflow" label="切换前溢出值" />
+            -->
             <el-table-column prop="ActLogObj.IsFinishCurrentOdds" :formatter="showBool" label="是否执行完当前目标倍率" />
+            <!--
             <el-table-column prop="ActLogObj.NextOverflow" label="下一个倍率溢出值" />
+            -->
             <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率" />
             <!--
             <el-table-column prop="ActLogObj.IsResetAct" :formatter="showBool" label="免费转付费重置" />
