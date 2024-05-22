@@ -644,9 +644,12 @@ export default {
         for (const omo of o.MoneyOdds) {
           omo.Val /= 1000
         }
-        for (const sp of o.Spin) {
-          for (const c of sp.Choices) {
-            c.Val /= 1000
+        for (let i = 0; i < o.Spin.length; i++) {
+          if (i===0){
+            continue
+          }
+          for (const c of  o.Spin[i].Choices) {
+            c.Val /=1000
           }
         }
       }
@@ -764,10 +767,13 @@ export default {
         for (const omo of o.MoneyOdds) {
           omo.Val = parseInt(omo.Val * 1000)
         }
-        for (const sp of o.Spin) {
-          for (const c of sp.Choices) {
-            c.Val = parseInt(c.Val * 1000)
-          }
+        for (let i = 0; i < o.Spin.length; i++) {
+            if (i===0){
+              continue
+            }
+            for (const c of  o.Spin[i].Choices) {
+              c.Val = parseInt(c.Val * 1000)
+            }
         }
       }
       for (const o of obj.Plate.PlateOdds) {
