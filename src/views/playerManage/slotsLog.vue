@@ -139,9 +139,11 @@
             <el-table-column prop="ActLogObj.Winning" :formatter="toRupee" label="Winning" />
             <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" />
             <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池" />
+            <!--
             <el-table-column prop="ActLogObj.HelpType" :formatter="showHelpType" label="帮助类型" />
             <el-table-column prop="ActLogObj.HelpMoney" :formatter="toRupee" label="帮助金额" />
             <el-table-column prop="ActLogObj.DangerFactor" label="危险系数" />
+            -->
             <el-table-column prop="ActLogObj.DoWinRate" label="执行胜率" />
             <el-table-column prop="ActLogObj.CurrentWinRate" :formatter="showWinRate" label="当前胜率" />
             <el-table-column prop="ActLogObj.ScriptCol" label="剧本坐标">
@@ -165,8 +167,10 @@
             <el-table-column prop="ActLogObj.IsFinishCurrentOdds" :formatter="showBool" label="是否执行完当前目标倍率" />
             <el-table-column prop="ActLogObj.NextOverflow" label="下一个倍率溢出值" />
             <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率" />
+            <!--
             <el-table-column prop="ActLogObj.IsResetAct" :formatter="showBool" label="免费转付费重置" />
             <el-table-column prop="ActLogObj.IsEntryPool" :formatter="showBool" label="是否进入水池" />
+            -->
             <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" />
             <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" />
           </el-table-column>

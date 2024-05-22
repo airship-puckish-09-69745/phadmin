@@ -649,7 +649,9 @@ export default {
           const objs = response.Data || []
           for (const o in objs) {
             objs[o].PrefixChip /= 100 // 100倍
+            console.log(objs[o])
           }
+
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }

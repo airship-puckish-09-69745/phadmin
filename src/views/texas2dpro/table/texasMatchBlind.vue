@@ -53,7 +53,7 @@
         <el-row v-for="(value, index) in edit.item.BlindContent" :key="index">
           <el-col :span="22">
             <el-row>
-              <el-col :span="11">
+              <el-col :span="22">
                 <el-form-item label="等级" :required="true" >
                   <el-input v-model.number="edit.item.BlindContent[index].blind_level" size="mini" :required="true"  />
                 </el-form-item>
