@@ -118,6 +118,15 @@
           width="100"
         />
         <el-table-column
+          prop="RoomLevel"
+          label="房间类型"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ RoomLevelMap[scope.row.RoomLevel] }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="Status"
           label="状态"
           width="70"
@@ -425,7 +434,10 @@ export default {
         item: newItem(),
         isEdit: false
       },
-
+      RoomLevelMap:{
+        0: '普通房',
+        100: '好友房'
+      },
       AttrNames: {
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
