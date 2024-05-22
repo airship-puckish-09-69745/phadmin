@@ -481,7 +481,7 @@ export const asyncRoutes = [
             path: 'Piggy',
             component: () => import('@/views/config/tableConfig/piggy'),
             name: 'Piggy',
-            meta: { title: 'Piggy 🐽' }
+            meta: { title: 'Piggy ◐' }
           }
         ]
       },
@@ -914,7 +914,7 @@ export const asyncRoutes = [
         path: 'playlog_piggy',
         component: () => import('@/views/playerManage/playlog'),
         name: 'playlog_piggy',
-        meta: { title: 'Piggy 🐽', gid: 106 }
+        meta: { title: 'Piggy ◐', gid: 106 }
       },
       {
         path: 'playlog_lotterylog',
