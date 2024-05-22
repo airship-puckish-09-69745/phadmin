@@ -1165,7 +1165,7 @@ export const asyncRoutes = [
         path: 'review',
         component: () => import('@/views/config/review'),
         name: 'review',
-        meta: { title: '审核发布', noCache: true, perm: 'REVIEW_CHECK' }
+        meta: { title: '审核发布', noCache: true }
       },
       {
         path: 'frontProxy',
