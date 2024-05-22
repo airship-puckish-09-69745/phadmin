@@ -287,6 +287,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="赛事权重:" :required="true" prop="item.RaceWeight" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RaceWeight" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
 
         <el-form-item>
           <el-row style="margin-top: 10px;">
@@ -342,6 +349,7 @@ function newItem() {
     RebuyTime: 0,
     BlindType: 1,
     RobotNum: 0,
+    RaceWeight: 0,
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -400,7 +408,8 @@ export default {
         RebuyMaxTimes: 'rebuy次数上限',
         RebuyTime: 'rebuy倒计时',
         BlindType: '盲注类型',
-        RobotNum: '机器人数量'
+        RobotNum: '机器人数量',
+        RaceWeight: '比赛权重'
       }
     }
   },
@@ -421,13 +430,13 @@ export default {
       return $libDate.FormateMilisecondStrByZone(result, type, '')
     },
     getWeekName(type, weeks) {
-      if (type != 2) {
+      if (type !== 2) {
         return '无'
       }
       var weekNames = ''
       for (var i = 0; i < weeks.length; i++) {
         weekNames += this.weekNames[weeks[i]]
-        if (i != weeks.length -1) {
+        if (i !== weeks.length - 1) {
           weekNames += ' , '
         }
       }
@@ -435,14 +444,13 @@ export default {
     },
     getShowTime(t) {
       if (t % 60 === 0) {
-        return t/60 + 'h'
+        return t / 60 + 'h'
       }
       var result = ''
-      if (t > 60){
-        result = t/60 + 'h'
+      if (t > 60) {
+        result = t / 60 + 'h'
       }
-      return result + t%60 + 'm'
-
+      return result + t % 60 + 'm'
     },
     getGameType(gid) {
       for (var i = 0; i < this.GidTypes.length; i++) {
@@ -660,7 +668,7 @@ export default {
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
-      if (postData.RaceType == 2) {
+      if (postData.RaceType === 2) {
         postData.RaceWeekStr = ''
         for (var i = 0; i < postData.RaceWeek.length; i++) {
           postData.RaceWeekStr += postData.RaceWeek[i]
