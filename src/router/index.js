@@ -1056,6 +1056,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/gameKickUserlog'),
             name: 'game_kick_user_log',
             meta: { title: '游戏作弊踢出用户日志 ◐' }
+          },
+          {
+            path: 'tongits_blackuserlog',
+            component: () => import('@/views/playerManage/tongitsBlackUserlog'),
+            name: 'tongits_blackuserlog',
+            meta: { title: '黑名单配桌日志 ◐' }
           }
         ]
       },
