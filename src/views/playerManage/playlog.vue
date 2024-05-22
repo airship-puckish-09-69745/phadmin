@@ -194,7 +194,12 @@
           width="100"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.ServiceFee) }}
+            <span v-if="gid===20 && scope.row.WinRate!==0">
+              {{ formatNumber(scope.row.WinRate *100) }}
+            </span>
+            <span v-else>
+                {{ formatNumber(scope.row.ServiceFee) }}
+            </span>
           </template>
         </el-table-column>
       </template>
@@ -227,7 +232,10 @@
            <span v-if="gid==20&& scope.row.LuckyVal>0">
               {{  scope.row.LuckyVal / 100}}
            </span>
-            <span v-else>
+            <span v-else-if="gid==20&& scope.row.LuckyVal===0">
+              {{ 0 }}
+           </span>
+            <span  v-else>
                {{ scope.row.WinRate }}
             </span>
           </template>

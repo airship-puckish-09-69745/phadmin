@@ -334,7 +334,10 @@ export default {
 
     //* *************添加/修改相关*****************
     canEdit() {
-      return !(this.edit.item.Status !== 1 || this.uname !== this.edit.item.CurrentUserName)
+      var users = this.edit.item.CurrentUserName.split(",");
+      console.log("=========",users,this.uname)
+
+      return !(this.edit.item.Status !== 1 || !users.includes(this.uname) )
     },
     viewDetail() {
       if (this.edit.item.Status === 2) {

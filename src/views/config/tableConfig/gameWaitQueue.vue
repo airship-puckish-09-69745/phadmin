@@ -19,7 +19,7 @@
           <div v-for="item in allCfg.All">
             <fieldset>
               <legend>{{ showGameName(item.GameId) }}</legend>
-              <el-row v-if="item.GameId===22">
+              <el-row v-if="item.GameId===22 && isDevelopment()" >
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">TongitsPot 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">
@@ -31,7 +31,7 @@
                   </span>
                 </div>
               </el-row>
-              <el-row v-if="item.GameId===31">
+              <el-row v-if="item.GameId===31 && isDevelopment()">
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits经典场 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">
@@ -61,7 +61,7 @@
                   </el-table>
                 </div>
               </el-row>
-              <el-row v-if="item.GameId===28">
+              <el-row v-if="item.GameId===28 && isDevelopment()">
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits-Joker 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">
@@ -430,6 +430,12 @@ export default {
           }
         })
       })
+    },
+    isDevelopment(){
+      if (process.env.NODE_ENV==='development'){
+        return true
+      }
+      return false
     },
     formatCfg() {
       for (const i in this.allCfg.All) {

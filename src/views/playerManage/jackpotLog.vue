@@ -311,12 +311,11 @@ export default {
       })
     },
     changeLevelConfig(){
-      console.log("======",this.searchForm.gameId,  this.LevelConfig)
       if (this.searchForm.gameId===103){
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
-          { 'value': 1, 'label': 'EXPERT'},
-          { 'value': 2, 'label': 'HIGH'}]
+          { 'value': 2, 'label': 'EXPERT'},
+          { 'value': 1, 'label': 'HIGH'}]
         }
     },
     showInfo() {

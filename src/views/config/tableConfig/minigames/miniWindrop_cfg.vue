@@ -1945,7 +1945,7 @@ export default {
     }
   },
   created() {
-    console.log('=====', this.envProjectName)
+    console.log('=====', process.env)
     this.getData()
   },
   methods: {
