@@ -136,7 +136,9 @@
             <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100" />
             <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" />
             <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit" />
+            <!--
             <el-table-column prop="ActLogObj.Winning" :formatter="toRupee" label="Winning" />
+            -->
             <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" />
             <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池" />
             <!--
