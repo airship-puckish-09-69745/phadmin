@@ -138,380 +138,12 @@
             <el-button v-if="item.Status == 1" type="success" size="mini" style="margin-left: 10px;" @click="disableUser(0)">解禁</el-button>
             <el-button v-else type="danger" size="mini" style="margin-left: 10px;" @click="disableUser(1)">禁用</el-button>
           </el-descriptions-item>
-          <!--
-          <el-descriptions-item label="用户标签：" :span="3">
-            <el-tag
-              v-for="tag in UserTags"
-              :key="tag.Tag"
-              effect="dark"
-              closable
-              :type="showTagType(tag.Color)"
-              :disable-transitions="false"
-              @click="clickEditTag(tag.ID)"
-              @close="delTag(tag.ID)"
-            >
-              {{ tag.Tag }}
-            </el-tag>
-            <el-button class="button-new-tag" size="small" @click="clickAddTag">+ 新标签</el-button>
-          </el-descriptions-item>
-
-          <el-descriptions-item label="调控结果：">
-            <el-tag :type="paySchemaResultColor">{{ item.PaySchema.ResultName }}</el-tag>
-            <el-button size="mini" type="primary" style="margin-left: 10px" @click="setSchemaResult">修改</el-button>
-          </el-descriptions-item>
-          <el-descriptions-item label="Winnings控制线：">
-            {{ item.PaySchema.WinningsLine | toRupee }}
-          </el-descriptions-item>
-          <el-descriptions-item label="调控轮数：">
-            {{ item.PaySchemaRound }}
-          </el-descriptions-item>
-          <el-descriptions-item label="赢标签：">
-            {{ item.PaySchema.WinTagCnt }}
-          </el-descriptions-item>
-          <el-descriptions-item label="输标签：">
-            {{ item.PaySchema.LoseTagCnt }}
-          </el-descriptions-item>
-          -->
           <el-descriptions-item label="是否设置登录密码：">
             <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
           </el-descriptions-item>
         </el-descriptions>
 
       </el-col>
-    </el-row>
-
-    <!--    修改调控结果-->
-    <el-dialog
-      title="重置付费用户调控"
-      :visible.sync="paySchemaDialog"
-      width="30%"
-      :before-close="paySchemaClose"
-    >
-      <span>
-        <el-form ref="paySchemaEditFrm" :model="paySchemaEdit" label-width="150px">
-          <el-form-item label="调控结果">
-            <el-select v-model="paySchemaEdit.result" placeholder="placeholder">
-              <el-option label="不调控" :value="0" />
-              <el-option label="赢" :value="1" />
-              <el-option label="输" :value="2" />
-              <el-option label="平" :value="3" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="Winnings控制线">
-            <el-input v-model="paySchemaEdit.winnings" placeholder="placeholder" />
-          </el-form-item>
-        </el-form>
-      </span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="paySchemaDialog = false">取 消</el-button>
-        <el-button type="primary" @click="updatePaySchema">确 定</el-button>
-      </span>
-    </el-dialog>
-
-    <el-row style="margin-top: 20px">
-      <el-col :offset="1" :span="22">
-        <el-tabs v-model="tabName" type="border-card" @tab-click="tabClick">
-          <el-tab-pane label="用户IP设备" name="userIpDevice">
-            <el-table
-              :data="UserIpDevice"
-              style="width: 100%"
-            >
-              <el-table-column
-                label="序号"
-                width="80"
-              >
-                <template slot-scope="scope">
-                  {{ scope.$index + 1 }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="uid"
-                label="uid"
-                width="100"
-              />
-              <el-table-column
-                prop="ip"
-                label="ip"
-                width="180"
-              />
-              <el-table-column
-                prop="deviceCode"
-                label="设备码"
-              />
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="同IP" name="sameIp">
-            <el-table
-              :data="SameIp"
-              style="width: 100%"
-            >
-              <el-table-column
-                label="序号"
-                width="80"
-              >
-                <template slot-scope="scope">
-                  {{ scope.$index + 1 }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="uid"
-                label="uid"
-                width="100"
-              />
-              <el-table-column
-                prop="ip"
-                label="ip"
-                width="180"
-              />
-              <el-table-column
-                prop="deviceCode"
-                label="设备码"
-              />
-            </el-table>
-          </el-tab-pane>
-          <el-tab-pane label="同设备" name="sameDevice">
-            <el-table
-              :data="SameDevice"
-              style="width: 100%"
-            >
-              <el-table-column
-                label="序号"
-                width="80"
-              >
-                <template slot-scope="scope">
-                  {{ scope.$index + 1 }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="uid"
-                label="uid"
-                width="100"
-              />
-              <el-table-column
-                prop="ip"
-                label="ip"
-                width="180"
-              />
-              <el-table-column
-                prop="deviceCode"
-                label="设备码"
-              />
-            </el-table>
-          </el-tab-pane>
-        </el-tabs>
-      </el-col>
-    </el-row>
-
-    <el-row>
-      <el-dialog title="玩家场控" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false" width="1000px">
-
-        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-          border
-        >
-          <el-descriptions-item label="金币总数：">{{ formatNumber(item.LimitedMoney + item.FreeMoney) }}</el-descriptions-item>
-          <el-descriptions-item label="基础值：">
-            <el-col :span="20">
-              {{ formatNumber(item.BaseValue) }}
-            </el-col>
-            <el-col :span="4">
-              <el-tooltip class="item" effect="dark" content="充值额度 - 贡献值" placement="right-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-col>
-          </el-descriptions-item>
-          <el-descriptions-item label="贡献值：" span="2">
-            <el-col :span="20">
-              {{ formatNumber(item.ProduceValue) }}
-            </el-col>
-            <el-col :span="4">
-              <el-tooltip class="item" effect="dark" content="有效下注 * 5%" placement="right-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-col>
-          </el-descriptions-item>
-          <template v-if="item.PayValue!==0">
-            <el-descriptions-item label="总控健康度：">
-              <el-col :span="20">
-                <span style="color:red">{{ mainRate + '%' }}</span>
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="系统收益 / 总有效下注（5% 为理想值）" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="理想收益A：">
-              <el-col :span="20">
-                {{ formatNumber(item.MainControls[100]?item.MainControls[100].BetValue * 0.05/1000:0) }}
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="总有效下注 * 5%" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="实际收益B：">
-              <el-col :span="20">
-                {{ formatNumber(item.MainControls[100]?item.MainControls[100].SystemGot/1000:0) }}
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="指定时间段内，玩家输 + 抽水 - 玩家赢" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="有效流水：">{{ formatNumber(item.MainControls[100]?item.MainControls[100].BetValue/1000:0) }}</el-descriptions-item>
-          </template>
-          <el-descriptions-item label="幸运值：">
-            <span style="color:red">{{ luckValue }}</span>
-          </el-descriptions-item>
-          <el-descriptions-item label="公式：" span="3">
-            基础值/金币总数
-          </el-descriptions-item>
-          <el-descriptions-item label="单局赢上限："><span style="color:red">{{ getPlayLimit }}</span></el-descriptions-item>
-          <el-descriptions-item label="上限比例：">{{ item.PlayWinLimit==999?'INF' : item.PlayWinLimit + '%' }}</el-descriptions-item>
-          <el-descriptions-item label="基准值/贡献值：">
-            {{ playWinLimitStd }}
-          </el-descriptions-item>
-        </el-descriptions>
-
-        <el-row>
-          <div style="font-size: 16px;font-weight: bold;margin-top:10px;">
-            TeenPatti:
-          </div>
-        </el-row>
-        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-          border
-        >
-          <template v-if="item.PayValue!==0">
-            <el-descriptions-item label="健康度：">
-              <el-col :span="20">
-                <span style="color:red">{{ (item.MainControls[9]?item.MainControls[9].SystemGot * 100/item.MainControls[9].BetValue : 0).toFixed(2) + '%' }}</span>
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="系统收益 / 总有效下注（5% 为理想值）" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="理想收益A：">
-              <el-col :span="20">
-                {{ formatNumber(item.MainControls[9]?item.MainControls[9].BetValue * 0.05/1000 : 0) }}
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="总有效下注 * 5%" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="实际收益B：">
-              <el-col :span="20">
-                {{ formatNumber(item.MainControls[9]? item.MainControls[9].SystemGot/1000 : 0) }}
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="指定时间段内，玩家输 + 抽水 - 玩家赢" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="有效流水：">{{ formatNumber(item.MainControls[9]?item.MainControls[9].BetValue/1000:0) }}</el-descriptions-item>
-
-            <el-descriptions-item label="" />
-            <el-descriptions-item label="B-A/A：">{{ (item.MainControls[9]? (item.MainControls[9].SystemGot-item.MainControls[9].BetValue*0.05) * 100 /(item.MainControls[9].BetValue*0.05) : 0).toFixed(2) + '%' }}</el-descriptions-item>
-            <el-descriptions-item label="升降级别：" span="2"><span style="color:red">{{ item.MainControls[9]?(item.MainControls[9].AddFlag?'升':'降') + item.MainControls[9].AddLevel + '级' : '' }}</span></el-descriptions-item>
-          </template>
-
-          <el-descriptions-item label="胜率："><span style="color:red">{{ item.LuckToRateValues[9]? item.LuckToRateValues[9].WinRate +'%' : '' }}</span></el-descriptions-item>
-          <el-descriptions-item label="原始级别：">
-            {{ item.LuckToRateValues[9]? item.LuckToRateValues[9].LevelOrigin + 1 : '' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="调整后：">
-            {{ item.LuckToRateValues[9]? item.LuckToRateValues[9].Level + 1 : '' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="是否配牌：">
-            {{ isPei(item.LuckToRateValues[9]? item.LuckToRateValues[9].IsPei:0) }}
-          </el-descriptions-item>
-        </el-descriptions>
-        <el-row>
-          <div style="font-size: 16px;font-weight: bold;margin-top:10px;">
-            拉米:
-          </div>
-        </el-row>
-        <el-descriptions
-          class="margin-top"
-          :column="4"
-          size="medium"
-          :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-          border
-        >
-          <template v-if="item.PayValue!==0">
-            <el-descriptions-item label="健康度：">
-              <el-col :span="20">
-                <span style="color:red">{{ (item.MainControls[1]?item.MainControls[1].SystemGot * 100/item.MainControls[1].BetValue : 0).toFixed(2) + '%' }}</span>
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="系统收益 / 总有效下注（5% 为理想值）" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="理想收益A：">
-              <el-col :span="20">
-                {{ formatNumber(item.MainControls[1]?item.MainControls[1].BetValue * 0.05 /1000: 0) }}
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="总有效下注 * 5%" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="实际收益B：">
-              <el-col :span="20">
-                {{ formatNumber(item.MainControls[1]? item.MainControls[1].SystemGot/1000 : 0) }}
-              </el-col>
-              <el-col :span="4">
-                <el-tooltip class="item" effect="dark" content="指定时间段内，玩家输 + 抽水 - 玩家赢" placement="right-start">
-                  <i class="el-icon-info" />
-                </el-tooltip>
-              </el-col>
-            </el-descriptions-item>
-            <el-descriptions-item label="有效流水：">{{ formatNumber(item.MainControls[1]?item.MainControls[1].BetValue/1000:0) }}</el-descriptions-item>
-
-            <el-descriptions-item label="" />
-            <el-descriptions-item label="B-A/A：">{{ (item.MainControls[1]? (item.MainControls[1].SystemGot-item.MainControls[1].BetValue*0.05) * 100 /(item.MainControls[1].BetValue*0.05) : 0).toFixed(2) + '%' }}</el-descriptions-item>
-            <el-descriptions-item label="升降级别：" span="2"><span style="color:red">{{ item.MainControls[1]?(item.MainControls[1].AddFlag?'升':'降') + item.MainControls[1].AddLevel + '级' : '' }}</span></el-descriptions-item>
-          </template>
-          <el-descriptions-item label="胜率："><span style="color:red">{{ item.LuckToRateValues[1]? item.LuckToRateValues[1].WinRate +'%' : '' }}</span></el-descriptions-item>
-          <el-descriptions-item label="原始级别：">
-            {{ item.LuckToRateValues[1]? item.LuckToRateValues[1].LevelOrigin + 1 : '' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="调整后：">
-            {{ item.LuckToRateValues[1]? item.LuckToRateValues[1].Level + 1 : '' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="是否配牌：">
-            {{ isPei(item.LuckToRateValues[1]? item.LuckToRateValues[1].IsPei:0) }}
-          </el-descriptions-item>
-
-          <el-descriptions-item label="最近开局时间：">
-            {{ item.RummyLatestStartTime? formatTime(item.RummyLatestStartTime) : '无' }}
-          </el-descriptions-item>
-          <el-descriptions-item label="是否命中赢："><span style="color:red">
-            {{ isWin(item.RummyLatestStartTime? item.RummyIsWinnerStatus:-1) }}</span>
-          </el-descriptions-item>
-
-        </el-descriptions>
-        <el-col :offset="20">
-          <el-button size="mini" type="primary" @click="getInfo">刷新</el-button>
-        </el-col>
-      </el-dialog>
     </el-row>
 
     <!--添加标签start-->
@@ -848,18 +480,6 @@ export default {
       }
       return name
     },
-
-    showInviteLevel(lvl) {
-      const levels = {
-        1: '青铜',
-        2: '白银',
-        3: '黄金',
-        4: '铂金',
-        5: '钻石'
-      }
-
-      return levels.hasOwnProperty(lvl) ? levels[lvl] : lvl
-    },
     showGameName(gid) {
       const games = {
         1: 'Rummy',
@@ -875,62 +495,6 @@ export default {
         11: 'TeenPatti百人场'
       }
       return games.hasOwnProperty(gid) ? games[gid] : gid
-    },
-    paySchemaClose(done) {
-      this.paySchemaDialog = false
-      done()
-    },
-    setSchemaResult() {
-      this.paySchemaEdit.result = this.item.PaySchema.Result
-      this.paySchemaEdit.winnings = parseInt(this.item.PaySchema.WinningsLine / 1000)
-      this.paySchemaDialog = true
-    },
-    updatePaySchema() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'POST',
-        data: {
-          Env: this.env,
-          Path: '/user/update/pay/schema',
-          uid: this.item.Uid,
-          result: this.paySchemaEdit.result,
-          winnings: (this.paySchemaEdit.winnings * 1000)
-        }
-      }).then(response => {
-        console.log('pay schema response', response)
-        if (response.RetCode === 0) {
-          $this.showSchemaResult($this.paySchemaEdit.result)
-          $this.item.PaySchema.WinningsLine = $this.paySchemaEdit.winnings * 1000
-          $this.$message.success('修改成功')
-          $this.paySchemaDialog = false
-        } else {
-          $this.$message.error('修改失败' + response.Data)
-        }
-      })
-    },
-    showSchemaResult(result) {
-      switch (result) {
-        case 0:
-          this.item.PaySchema.ResultName = '不调控'
-          this.paySchemaResultColor = 'info'
-          break
-        case 1:
-          this.item.PaySchema.ResultName = '赢'
-          this.paySchemaResultColor = 'danger'
-          break
-        case 2:
-          this.item.PaySchema.ResultName = '输'
-          this.paySchemaResultColor = 'success'
-          break
-        case 3:
-          this.item.PaySchema.ResultName = '平'
-          this.paySchemaResultColor = 'info'
-          break
-        default:
-          this.item.PaySchema.ResultName = result
-          this.paySchemaResultColor = ''
-      }
     },
     showRechargeWithdrawRatio(row) {
       if (row.TotalRecharge <= 0) {
@@ -974,28 +538,6 @@ export default {
         time = t.getTime()
       }
       return parseInt($libDate.SelectTimeToIndiaByZone(time) / 1000)
-    },
-    // 用户设备信息查询
-    getRelationUsers() {
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/user/relation/users',
-          uid: this.item.Uid
-        }
-      }).then(response => {
-        console.log('relation/users response', response)
-        if (response.RetCode === 0 && response.Data) {
-          this.RelationUsers = response.Data
-          this.sameRelation()
-          this.relationSummary()
-        } else {
-          this.RelationUsers = []
-          this.SameRelationUsers = []
-        }
-      })
     },
     sameRelation() {
       // console.log('item ', this.item.AppID)
@@ -1112,11 +654,6 @@ export default {
     tabClick(tab, event) {
       switch (tab.name) {
         case 'sameRelationUser':
-        case 'relationUser':
-          if (this.RelationUsers.length <= 0) {
-            this.getRelationUsers()
-          }
-          break
         case 'userIpDevice':
           if (this.UserIpDevice.length <= 0) {
             this.getIpDevice()
@@ -1180,28 +717,6 @@ export default {
           }).then(response => {
             if (response.RetCode === 0) {
               Message.success('设置成功！')
-            }
-          })
-        })
-        .catch(() => {
-          console.log('取消')
-        })
-    },
-    clearFirstPayFlag() {
-      this.$confirm('确定要清除首充用户？', '提醒')
-        .then(() => {
-          request({
-            url: '/dataProxy/info',
-            method: 'post',
-            data: {
-              Env: this.env,
-              Path: '/user/info',
-              Uid: this.item.Uid,
-              Type: 11
-            }
-          }).then(response => {
-            if (response.RetCode === 0) {
-              Message.success('清除成功！')
             }
           })
         })
@@ -1647,7 +1162,6 @@ export default {
           $this.getTags()
           $this.resetQueryDevice()
           $this.item = $this.libShowMoney.TransForShow(response.Data || $this.item)
-          $this.showSchemaResult($this.item.PaySchema.Result)
           $this.$EventBus.$emit('uid-change', $this.item.Uid)
         }
       })
@@ -1682,7 +1196,6 @@ export default {
           $this.item.AppId = response.Data.AppID || 0
           $this.$EventBus.$emit('uid-change', response.Data.Uid)
           $this.item.Uid = response.Data.Uid || 0
-          $this.showSchemaResult($this.item.PaySchema.Result)
           $this.getTags()
         }
       })
