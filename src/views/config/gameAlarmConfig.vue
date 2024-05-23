@@ -272,7 +272,7 @@ export default {
     },
 
     getFullKey(k) {
-      return 'CustomizeCfg_' + k
+      return  k
     },
     getData() {
       const $this = this
