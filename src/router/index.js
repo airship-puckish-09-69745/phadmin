@@ -1168,6 +1168,12 @@ export const asyncRoutes = [
         meta: { title: '审核发布', noCache: true }
       },
       {
+        path: 'gameAlarm',
+        component: () => import('@/views/config/gameAlarmConfig.vue'),
+        name: 'gameAlarm',
+        meta: { title: '游戏人数告警配置', noCache: true }
+      },
+      {
         path: 'frontProxy',
         component: () => import('@/views/config/frontConfig/menu'),
         redirect: 'noRedirect',
