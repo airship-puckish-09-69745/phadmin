@@ -53,7 +53,7 @@
         </el-form-item>
 
         <el-form-item label="场次类型：">
-          <el-select v-model="searchForm.level" placeholder="请选择">
+          <el-select v-model="searchForm.level" placeholder="请选择" @click.native="changeLevelConfig">
             <el-option
               v-for="item in levelConfig"
               :key="item.value"
@@ -219,7 +219,8 @@ export default {
         { 'value': 100, 'label': 'Tower' },
         // { 'value': 101, 'label': 'Sicbo' },
         { 'value': 102, 'label': 'Hilo' },
-        { 'value': 103, 'label': 'Windrop' }
+        { 'value': 103, 'label': 'Windrop' },
+        { 'value': 106, 'label': '金猪' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
@@ -300,6 +301,22 @@ export default {
         }
         // loading.close()
       })
+    },
+    changeLevelConfig(){
+      if (this.searchForm.gameId===103){
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 2, 'label': 'EXPERT'},
+          { 'value': 1, 'label': 'HIGH'}]
+      }
+      else if (this.searchForm.gameId===106){
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': 'grand'},
+          { 'value': 2, 'label': 'major'},
+          { 'value': 3, 'label': 'minor'}
+        ]
+      }
     },
     showLimit() {
       const _this = this

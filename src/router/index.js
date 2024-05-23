@@ -211,36 +211,36 @@ export const asyncRoutes = [
             name: 'tongitsTable',
             meta: { title: 'Tongits ◐' }
           },
-          {
+         /* {
             path: 'tongitsClassicTable',
             component: () => import('@/views/config/tableConfig/tongitsTableClassic'),
             name: 'tongitsTableClassic',
             meta: { title: 'Tongits-经典 ◐' }
-          },
+          },*/
           {
             path: 'tongitsLaiZiTable',
             component: () => import('@/views/config/tableConfig/tongitsTableLaiZi'),
             name: 'tongitsTableLaiZi',
             meta: { title: 'Tongits-赖子 ◐' }
           },
-          {
+/*          {
             path: 'tongitsTogether',
             component: () => import('@/views/config/tableConfig/tongits_blacklist'),
             name: 'tongitsTogether',
             meta: { title: '同桌黑名单 ◐' }
-          },
+          },*/
           {
             path: 'tongitsTableAI',
             component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
             name: 'tongitsTableAI',
             meta: { title: 'TongitsAI ◐' }
           },
-          {
+/*          {
             path: 'tongitsTableAIClassic',
             component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
             name: 'tongitsClassicTableAI',
             meta: { title: 'Tongits经典-AI ◐' }
-          },
+          },*/
           {
             path: 'tongitsAIList',
             component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),

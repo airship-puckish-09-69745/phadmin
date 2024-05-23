@@ -11,7 +11,7 @@
       style="width: 100%"
     >
       <el-table-column type="index" />
-      <el-table-column label="奖励类型" prop="JackpotType">
+      <el-table-column label="奖励类型(Type)" prop="JackpotType">
         <template slot-scope="scope">
           {{ JackpotTypeCfg[scope.row.JackpotType] }}
         </template>

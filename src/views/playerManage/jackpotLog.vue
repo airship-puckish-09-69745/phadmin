@@ -218,7 +218,8 @@ export default {
         { 'value': 100, 'label': 'Tower' },
         // { 'value': 101, 'label': 'Sicbo' },
         { 'value': 102, 'label': 'Hilo' },
-        { 'value': 103, 'label': 'Windrop' }
+        { 'value': 103, 'label': 'Windrop' },
+        { 'value': 106, 'label': '金猪' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -317,6 +318,14 @@ export default {
           { 'value': 2, 'label': 'EXPERT'},
           { 'value': 1, 'label': 'HIGH'}]
         }
+      else if (this.searchForm.gameId===106){
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': 'grand'},
+          { 'value': 2, 'label': 'major'},
+          { 'value': 3, 'label': 'minor'}
+        ]
+      }
     },
     showInfo() {
       const _this = this
