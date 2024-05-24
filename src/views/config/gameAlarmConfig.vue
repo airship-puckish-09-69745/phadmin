@@ -2,18 +2,18 @@
   <div class="app-container">
 
     <publish
-      primary-key="Volume"
-      :key-id="getFullKey(this.subKey)"
-      :env-empty="false"
-      compare-type="Object"
-      :attr-names="AttrNames"
+        primary-key="Volume"
+        :key-id="getFullKey(this.subKey)"
+        :env-empty="false"
+        compare-type="Object"
+        :attr-names="AttrNames"
     />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="15">
         <el-form inline>
-<!--            <el-form-item>-->
-<!--              <el-button type="primary" size="mini" @click="refresh">查询</el-button>-->
-<!--            </el-form-item>-->
+          <!--            <el-form-item>-->
+          <!--              <el-button type="primary" size="mini" @click="refresh">查询</el-button>-->
+          <!--            </el-form-item>-->
         </el-form>
 
       </el-col>
@@ -29,19 +29,19 @@
         <el-form ref="tableData" v-model="tableData" label-width="150px">
           <el-table
 
-            ref="filterTable"
-            :data="tableData"
-            stripe
-            border
-            :header-cell-style="libShow.DefaultTableHeadClass"
-            :row-style="{height:'10px'}"
-            :cell-style="libShow.DefaultTableCell"
-            style="width: 100%"
+              ref="filterTable"
+              :data="tableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%"
 
           >
             <el-table-column
-              prop="Gid"
-              label="游戏"
+                prop="Gid"
+                label="游戏"
             >
               <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
@@ -51,29 +51,29 @@
             </el-table-column>
 
             <el-table-column
-              prop="OnlineUser"
-              label="最少人数"
+                prop="OnlineUser"
+                label="最少人数"
             />
             <el-table-column
-              prop="OneMinuteRatio"
-              label="低于前一分钟告警%"
+                prop="OneMinuteRatio"
+                label="低于前一分钟告警%"
             />
             <el-table-column
-              prop="FiveMinuteRatio"
-              label="低于前五分钟告警%"
+                prop="FiveMinuteRatio"
+                label="低于前五分钟告警%"
             />
             <el-table-column
-              prop="Ignore"
-              label="是否忽略"
+                prop="Ignore"
+                label="是否忽略"
             >
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.Ignore"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  :active-value="true"
-                  :inactive-value="false"
-                  @change="editIgnore(scope.$index,scope.row)"
+                    v-model="scope.row.Ignore"
+                    active-color="#13ce66"
+                    inactive-color="#ff4949"
+                    :active-value="true"
+                    :inactive-value="false"
+                    @change="editIgnore(scope.$index,scope.row)"
                 />
                 <el-form-item v-model="scope.row.is_return" label-width="0"/>
               </template>
@@ -99,13 +99,13 @@
     <el-col :offset="16" :span="8">
       <div class="block">
         <el-pagination
-          :current-page="clientDB.GetPage().GetCurrentPage()"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="clientDB.GetPage().GetPageNum()"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="clientDB.GetPage().GetTotalCount()"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+            :current-page="clientDB.GetPage().GetCurrentPage()"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
         />
       </div>
     </el-col>
@@ -113,18 +113,18 @@
     <compare ref="compare"/>
 
     <el-dialog
-      title="选择游戏"
-      :visible.sync="selectGameVisible"
-      width="650px"
+        title="选择游戏"
+        :visible.sync="selectGameVisible"
+        width="650px"
     >
       <el-form label-width="150px">
         <el-form-item label="游戏">
           <el-select v-model="item.Gid" placeholder="请选择" size="mini">
             <el-option
-              v-for="item in gameOptions"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key"
+                v-for="item in gameOptions"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key"
             />
           </el-select>
         </el-form-item>
@@ -140,11 +140,11 @@
         </el-form-item>
         <el-form-item label="是否忽略">
           <el-switch
-            v-model="item.Ignore"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            :active-value="1"
-            :inactive-value="0"
+              v-model="item.Ignore"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
 
           />
         </el-form-item>
@@ -222,7 +222,8 @@ export default {
     editIgnore(idx, row) {
       const cfg = {}
       copyObj(row, cfg)
-      this.tableData[idx].Ignore=cfg.Ignore
+      this.tableData[idx].Ignore = cfg.Ignore
+      this.tableData.splice(0, 0)
     },
     refresh() {
       this.tableData = this.clientDB.GetCurrentPageData()
@@ -239,7 +240,7 @@ export default {
         OneMinuteRatio: 0,
         FiveMinuteRatio: 0,
       },
-      this.showBtn = 0
+          this.showBtn = 0
       this.selectGameVisible = true
     },
     addGameItem() {
@@ -261,11 +262,11 @@ export default {
       this.showBtn = 1
       this.selectGameVisible = true
     },
-    delRow(idx,row){
+    delRow(idx, row) {
       this.tableData.splice(idx, 1)
     },
     saveEdit() {
-      if (!this.checkDuplicate(this.item,this.idx)) {
+      if (!this.checkDuplicate(this.item, this.idx)) {
         Message.error('已存在相同游戏！')
         return
       }
@@ -293,7 +294,7 @@ export default {
           $this.postData = response.Data || []
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            console.log('cccc',cfg)
+            console.log('cccc', cfg)
             this.clientDB = new ClientTableData(cfg, 10, filterMap, 'ID', -1)
             this.$refs.compare.SetOldVal(response.Data)
             this.refresh()
@@ -340,14 +341,15 @@ export default {
       for (const i in this.tableData) {
         const item = {}
         copyObj(this.tableData[i], item)
+        item.Ignore = item.Ignore === 0 || item.Ignore === false? false : true
         cfg.push(item)
       }
       return cfg
     },
 
     checkDuplicate(data) {
-      for (let i = 0; i <this.tableData.length ; i++) {
-        if (i===this.idx && this.tableData[i].Gid === data.Gid ){
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (i === this.idx && this.tableData[i].Gid === data.Gid) {
           continue
         }
         if (this.tableData[i].Gid === data.Gid) {
