@@ -40,39 +40,39 @@
 
           >
             <el-table-column
-              prop="gid"
+              prop="Gid"
               label="游戏"
             >
               <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
-                  {{ (scope.row.gid == item.key ? item.label : "") }}
+                  {{ (scope.row.Gid == item.key ? item.label : "") }}
                 </span>
               </template>
             </el-table-column>
 
             <el-table-column
-              prop="onlineUser"
+              prop="OnlineUser"
               label="最少人数"
             />
             <el-table-column
-              prop="oneMinuteRatio"
+              prop="OneMinuteRatio"
               label="低于前一分钟告警%"
             />
             <el-table-column
-              prop="fiveMinuteRatio"
+              prop="FiveMinuteRatio"
               label="低于前五分钟告警%"
             />
             <el-table-column
-              prop="ignore"
+              prop="Ignore"
               label="是否忽略"
             >
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.ignore"
+                  v-model="scope.row.Ignore"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
-                  :active-value="1"
-                  :inactive-value="0"
+                  :active-value="true"
+                  :inactive-value="false"
                   @change="editIgnore(scope.$index,scope.row)"
                 />
                 <el-form-item v-model="scope.row.is_return" label-width="0"/>
@@ -82,6 +82,7 @@
             <el-table-column label="操作">
               <template slot-scope="scope">
                 <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>
+                <el-button type="danger" size="mini" @click="delRow(scope.$index, scope.row)">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -118,7 +119,7 @@
     >
       <el-form label-width="150px">
         <el-form-item label="游戏">
-          <el-select v-model="item.gid" placeholder="请选择" size="mini">
+          <el-select v-model="item.Gid" placeholder="请选择" size="mini">
             <el-option
               v-for="item in gameOptions"
               :key="item.key"
@@ -128,18 +129,18 @@
           </el-select>
         </el-form-item>
         <el-form-item label="人数">
-          <el-input v-model.number="item.onlineUser" size="mini" style="width: 200px;">
+          <el-input v-model.number="item.OnlineUser" size="mini" style="width: 200px;">
           </el-input>
         </el-form-item>
         <el-form-item label="低于前一分钟%警报">
-          <el-input v-model.number="item.oneMinuteRatio" size="mini" style="width: 200px;"></el-input>
+          <el-input v-model.number="item.OneMinuteRatio" size="mini" style="width: 200px;"></el-input>
         </el-form-item>
         <el-form-item label="低于前五分钟%警报">
-          <el-input v-model.number="item.fiveMinuteRatio" size="mini" style="width: 200px;"></el-input>
+          <el-input v-model.number="item.FiveMinuteRatio" size="mini" style="width: 200px;"></el-input>
         </el-form-item>
         <el-form-item label="是否忽略">
           <el-switch
-            v-model="item.ignore"
+            v-model="item.Ignore"
             active-color="#13ce66"
             inactive-color="#ff4949"
             :active-value="1"
@@ -176,7 +177,7 @@ export default {
     return {
       form: {},
       postData: {},
-      subKey: 'GameAlarmConfig',
+      subKey: 'game_alarm_config',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型
@@ -199,11 +200,11 @@ export default {
       idx: 0,
       libShow: $libShow,
       item: {
-        gid: 0,
-        ignore: false,
-        onlineUser: 0,
-        oneMinuteRatio: 0,
-        fiveMinuteRatio: 0,
+        Gid: 0,
+        Ignore: false,
+        OnlineUser: 0,
+        OneMinuteRatio: 0,
+        FiveMinuteRatio: 0,
       },
       gameOptions: [],
       dialogGameOptions: [],
@@ -221,7 +222,7 @@ export default {
     editIgnore(idx, row) {
       const cfg = {}
       copyObj(row, cfg)
-      this.tableData[idx].ignore=cfg.ignore
+      this.tableData[idx].Ignore=cfg.Ignore
     },
     refresh() {
       this.tableData = this.clientDB.GetCurrentPageData()
@@ -232,11 +233,11 @@ export default {
     },
     addOne() {
       this.item = {
-        gid: 0,
-        ignore: false,
-        onlineUser: 0,
-        oneMinuteRatio: 0,
-        fiveMinuteRatio: 0,
+        Gid: 0,
+        Ignore: false,
+        OnlineUser: 0,
+        OneMinuteRatio: 0,
+        FiveMinuteRatio: 0,
       },
       this.showBtn = 0
       this.selectGameVisible = true
@@ -252,13 +253,16 @@ export default {
     },
     editRow(idx, row) {
       this.idx = idx
-      this.item.ignore = row.ignore
-      this.item.onlineUser = row.onlineUser
-      this.item.oneMinuteRatio = row.oneMinuteRatio
-      this.item.fiveMinuteRatio = row.fiveMinuteRatio
-      this.item.gid = row.gid
+      this.item.Ignore = row.Ignore
+      this.item.OnlineUser = row.OnlineUser
+      this.item.OneMinuteRatio = row.OneMinuteRatio
+      this.item.FiveMinuteRatio = row.FiveMinuteRatio
+      this.item.Gid = row.Gid
       this.showBtn = 1
       this.selectGameVisible = true
+    },
+    delRow(idx,row){
+      this.tableData.splice(idx, 1)
     },
     saveEdit() {
       if (!this.checkDuplicate(this.item,this.idx)) {
@@ -343,10 +347,10 @@ export default {
 
     checkDuplicate(data) {
       for (let i = 0; i <this.tableData.length ; i++) {
-        if (i===this.idx && this.tableData[i].gid === data.gid ){
+        if (i===this.idx && this.tableData[i].Gid === data.Gid ){
           continue
         }
-        if (this.tableData[i].gid === data.gid) {
+        if (this.tableData[i].Gid === data.Gid) {
           return false
         }
       }
