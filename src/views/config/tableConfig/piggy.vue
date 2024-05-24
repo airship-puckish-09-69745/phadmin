@@ -295,45 +295,45 @@
                     <div v-for="(data,idx) in item.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
-                        <el-col :span="24">
-                          <el-alert
-                            type="success"
-                            description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"
-                          />
-                          <el-table
-                            ref="filterTable"
-                            :data="data.JackpotCfg"
-                            border
-                            :header-cell-style="libShow.DefaultTableHeadClass"
-                            :row-style="{height:'10px'}"
-                            :cell-style="libShow.DefaultTableCell"
-                            style="width: 80%"
-                          >
-                            <el-table-column
-                              prop="Type"
-                              label="类型">
-                              <template slot-scope="scope">
-                                {{JackpotTypeCfg[scope.row.Type]}}
-                              </template>
-                            </el-table-column>
-                            <el-table-column
-                              prop="AwardRate"
-                              label="奖励占比">
-                              <template slot-scope="scope">
-                                <el-input v-model.number="scope.row.AwardRate"/>
-                              </template>
-                            </el-table-column>
-                            <el-table-column
-                              v-if="envProjectName=='ph_audit'"
-                              label="概率(Jackpot调控开启后此配置无效)"
-                              width="380"
-                            >
-                              <template slot-scope="scope">
-                                <el-input v-model.number="scope.row.Rate"/>
-                              </template>
-                            </el-table-column>
-                          </el-table>
-                        </el-col>
+<!--                        <el-col :span="24">-->
+<!--                          <el-alert-->
+<!--                            type="success"-->
+<!--                            description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"-->
+<!--                          />-->
+<!--                          <el-table-->
+<!--                            ref="filterTable"-->
+<!--                            :data="data.JackpotCfg"-->
+<!--                            border-->
+<!--                            :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--                            :row-style="{height:'10px'}"-->
+<!--                            :cell-style="libShow.DefaultTableCell"-->
+<!--                            style="width: 80%"-->
+<!--                          >-->
+<!--                            <el-table-column-->
+<!--                              prop="Type"-->
+<!--                              label="类型">-->
+<!--                              <template slot-scope="scope">-->
+<!--                                {{JackpotTypeCfg[scope.row.Type]}}-->
+<!--                              </template>-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                              prop="AwardRate"-->
+<!--                              label="奖励占比">-->
+<!--                              <template slot-scope="scope">-->
+<!--                                <el-input v-model.number="scope.row.AwardRate"/>-->
+<!--                              </template>-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                              v-if="envProjectName=='ph_audit'"-->
+<!--                              label="概率(Jackpot调控开启后此配置无效)"-->
+<!--                              width="380"-->
+<!--                            >-->
+<!--                              <template slot-scope="scope">-->
+<!--                                <el-input v-model.number="scope.row.Rate"/>-->
+<!--                              </template>-->
+<!--                            </el-table-column>-->
+<!--                          </el-table>-->
+<!--                        </el-col>-->
 
                       <el-col :span="24">
                         <jackpot-day-limit :jackpot-rand-awards="data.JackpotRegulation.RandAwards" />
@@ -839,6 +839,10 @@ export default {
         o.Val = parseInt(o.Val * 1000)
       }
       for (const o of obj.Jp) {
+        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+          o.JackpotCfg[i].AwardRate=  o.JackpotRegulation.RandAwards[i].AwardRate
+
+        }
         o.MinBet = parseInt(o.MinBet * 1000)
         o.MaxBet = parseInt(o.MaxBet * 1000)
       }
@@ -855,6 +859,7 @@ export default {
           }
         }
       }
+
 
       if (obj.AutoTimes instanceof Array){
       }else {
