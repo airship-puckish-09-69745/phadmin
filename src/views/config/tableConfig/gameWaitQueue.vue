@@ -17,9 +17,9 @@
       <el-col :span="24">
         <el-form ref="allCfg" v-model="allCfg.All" label-width="150px">
           <div v-for="item in allCfg.All">
-            <fieldset>
+            <fieldset v-if="item.GameId!==31">
               <legend>{{ showGameName(item.GameId) }}</legend>
-              <el-row v-if="item.GameId===22 && isDevelopment()" >
+              <el-row v-if="item.GameId===22 " >
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">TongitsPot 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">
@@ -31,7 +31,7 @@
                   </span>
                 </div>
               </el-row>
-              <el-row v-if="item.GameId===31 && isDevelopment()">
+              <el-row v-if="item.GameId===31">
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits经典场 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">
@@ -61,7 +61,7 @@
                   </el-table>
                 </div>
               </el-row>
-              <el-row v-if="item.GameId===28 && isDevelopment()">
+              <el-row v-if="item.GameId===28 ">
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">Tongits-Joker 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">

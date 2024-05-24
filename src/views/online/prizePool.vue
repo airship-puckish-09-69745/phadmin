@@ -16,7 +16,7 @@
           >
             <template slot-scope="scope">
             <span v-if="scope.row.Gid===37">
-                {{ getGameName(scope.row.Gid)+' '+scope.row.Ante+'场' }}
+                {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
             </span>
               <span v-else>
                 {{ getGameName(scope.row.Gid) }}
@@ -144,8 +144,15 @@ export default {
         }
       }).then(response => {
         console.log('list response', response)
+          var ignore =[4,5,7,8,9,13,14,18,19]
         if (response.RetCode === 0) {
-          $this.tableData = response.Data
+            for (let i = 0; i < response.Data.length; i++) {
+                if(ignore.includes(response.Data[i].Gid)){
+                    continue
+                }
+                $this.tableData.push(response.Data[i])
+            }
+            
         } else {
           $this.$message.error(response.Data)
         }
