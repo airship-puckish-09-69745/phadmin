@@ -11,12 +11,12 @@
               <el-row>
                 <el-form>
                   <el-col :span="8" :offset="1">
-                    <el-form-item label="用户长时间未敲击踢出(S)">
+                    <el-form-item label="用户长时间未敲击踢出(s)">
                       <el-input  v-model.number="item.KicKTime" size="mini"/>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8" :offset="1">
-                    <el-form-item label="用户长时间未敲击提示(S)">
+                    <el-form-item label="用户长时间未敲击提示(s)">
                       <el-input v-model.number="item.NoticeTime" size="mini"/>
                     </el-form-item>
                   </el-col>
@@ -28,7 +28,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8" :offset="1">
-                    <el-form-item label="自动敲击次数">
+                    <el-form-item label="自动敲击次数(∞用-1表示)">
                       <el-input v-model="item.AutoTimes" size="mini" />
                     </el-form-item>
                   </el-col>
@@ -49,7 +49,7 @@
                   />
                   <el-table-column
                     prop="Low"
-                    label="下注列表"
+                    label="下注列表(支持2位小数)"
                   >
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.CanBet" size="mini" />
@@ -130,7 +130,7 @@
                     </el-tabs>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
                   </el-tab-pane>
                 </el-tabs>
               </fieldset>
@@ -156,7 +156,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -173,7 +173,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -187,10 +187,10 @@
             <fieldset>
               <el-form inline>
                 <el-form-item label="磁体->幸运转盘概率"style="margin-left:20px">
-                  <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" ><template slot="append">%</template></el-input>
+                  <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" ><template slot="append">‰</template></el-input>
                 </el-form-item>
               </el-form>
-              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数" val-type="1" />
+              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数(支持1位小数)" val-type="1" />
 
             </fieldset>
           </el-col>
@@ -210,7 +210,7 @@
                     :cell-style="libShow.DefaultTableCell"
                     style="width: 100%"
                   >
-                    <el-table-column label="JackPot类型" prop="Level">
+                    <el-table-column label="JackPot类型(Level)" prop="Level">
                       <template slot-scope="scope">
                         {{ JpTypeMap[scope.row.Level] }}
                       </template>
@@ -295,6 +295,46 @@
                     <div v-for="(data,idx) in item.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
+<!--                        <el-col :span="24">-->
+<!--                          <el-alert-->
+<!--                            type="success"-->
+<!--                            description="根据概率比例必然出现一个，玩家获得的JP奖励=JP总额*JP档次对应奖励占比/100"-->
+<!--                          />-->
+<!--                          <el-table-->
+<!--                            ref="filterTable"-->
+<!--                            :data="data.JackpotCfg"-->
+<!--                            border-->
+<!--                            :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--                            :row-style="{height:'10px'}"-->
+<!--                            :cell-style="libShow.DefaultTableCell"-->
+<!--                            style="width: 80%"-->
+<!--                          >-->
+<!--                            <el-table-column-->
+<!--                              prop="Type"-->
+<!--                              label="类型">-->
+<!--                              <template slot-scope="scope">-->
+<!--                                {{JackpotTypeCfg[scope.row.Type]}}-->
+<!--                              </template>-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                              prop="AwardRate"-->
+<!--                              label="奖励占比">-->
+<!--                              <template slot-scope="scope">-->
+<!--                                <el-input v-model.number="scope.row.AwardRate"/>-->
+<!--                              </template>-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                              v-if="envProjectName=='ph_audit'"-->
+<!--                              label="概率(Jackpot调控开启后此配置无效)"-->
+<!--                              width="380"-->
+<!--                            >-->
+<!--                              <template slot-scope="scope">-->
+<!--                                <el-input v-model.number="scope.row.Rate"/>-->
+<!--                              </template>-->
+<!--                            </el-table-column>-->
+<!--                          </el-table>-->
+<!--                        </el-col>-->
+
                       <el-col :span="24">
                         <jackpot-day-limit :jackpot-rand-awards="data.JackpotRegulation.RandAwards" />
                       </el-col>
@@ -314,7 +354,7 @@
                     style="width: 100%"
                   >
                     <el-table-column
-                      label="JACKPOT类型"
+                      label="JACKPOT类型(Level)"
                       width="180"
                     >
                       <template slot-scope="scope">
@@ -323,7 +363,7 @@
                     </el-table-column>
 
                     <el-table-column
-                      label="中奖人数(目前最大30)"
+                      label="中奖人数(最大支持30)"
                       width="380"
                     >
                       <template slot-scope="scope">
@@ -336,12 +376,12 @@
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.Time" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
-                          <template slot="append">S</template>
+                          <template slot="append">ms</template>
                         </el-input>
                       </template>
                     </el-table-column>
                     <el-table-column
-                        label="开JP至少点击次数"
+                        label="开JP最少连击次数"
                         width="180"
                     >
                       <template slot-scope="scope">
@@ -394,12 +434,12 @@
                         [{{ scope.row.StartHour }},{{ scope.row.EndHour }}]
                       </template>
                     </el-table-column>
-                    <el-table-column label="机器人+真人人数下限" prop="MinRobotNum">
+                    <el-table-column label="机器人数下限" prop="MinRobotNum">
                       <template slot-scope="scope">
                         {{ scope.row.MinRobotNum }}
                       </template>
                     </el-table-column>
-                    <el-table-column label="机器人+真人人数上限限" prop="MaxRobotNum">
+                    <el-table-column label="机器人数上限" prop="MaxRobotNum">
                       <template slot-scope="scope">
                         {{ scope.row.MaxRobotNum }}
                       </template>
@@ -413,45 +453,57 @@
                   <el-row>
                     <el-col :span="7" :offset="3">
                       <el-form inline>
-                        <el-form-item label="机器人最小玩牌局数" :rules="dataRule(true,{type:'n',range:'0'})">
+                        <el-form-item label="敲击次数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
                           <el-input v-model.number="item.RobotCfg.MinRobotPlayTimes" size="mini" :required="true"/>
                         </el-form-item>
                       </el-form>
                     </el-col>
                     <el-col :span="7" :offset="3">
                       <el-form inline>
-                        <el-form-item label="机器人最大玩牌局数" :rules="dataRule(true,{type:'n',range:'0'})">
+                        <el-form-item label="敲击次数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
                           <el-input v-model.number="item.RobotCfg.MaxRobotPlayTimes" size="mini" :required="true"/>
+                        </el-form-item>
+                      </el-form>
+                    </el-col>
+
+                    <el-col :span="7" :offset="3">
+                      <el-form inline>
+                        <el-form-item label="敲x次后换个hz敲(min)" :rules="dataRule(true,{type:'n',range:'0'})">
+                          <el-input v-model.number="item.RobotCfg.MinRobotChangeTimes" size="mini" :required="true"/>
                         </el-form-item>
                       </el-form>
                     </el-col>
                     <el-col :span="7" :offset="3">
                       <el-form inline>
-                        <el-form-item label="机器人敲多少次后换频率敲下限" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MinRobotChangeTimes" size="mini" :required="true"/>
-                        </el-form-item>
-                        <el-form-item label="机器人敲多少次后换频率敲上限" :rules="dataRule(true,{type:'n',range:'0'})">
+                        <el-form-item label="敲x次后换个hz敲(max)" :rules="dataRule(true,{type:'n',range:'0'})">
                           <el-input v-model.number="item.RobotCfg.MaxRobotChangeTimes" size="mini" :required="true" />
-                      </el-form-item>
-                    </el-form>
-                  </el-col>
+                        </el-form-item>
+                      </el-form>
+                    </el-col>
+
+                    <el-col :span="20" :offset="3">
+                      <el-form inline>
+                        <el-form-item label="自动敲击概率"  :rules="dataRule(true,{type:'n',range:'0'})">
+                          <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true" > <template slot="append">‰</template></el-input>
+                        </el-form-item>
+                      </el-form>
+                    </el-col>
+
                   <el-col :span="7" :offset="3">
                     <el-form inline>
-                      <el-form-item label="机器人最小敲击间隙"  :rules="dataRule(true,{type:'n',range:'0'})">
-                        <el-input v-model.number="item.RobotCfg.MinRobotTapInterval" size="mini" :required="true" />
-                      </el-form-item>
-                      <el-form-item label="机器人最大敲击间隙"  :rules="dataRule(true,{type:'n',range:'0'})">
-                        <el-input v-model.number="item.RobotCfg.MaxRobotTapInterval" size="mini" :required="true" />
+                      <el-form-item label="敲击间隔(min)"  :rules="dataRule(true,{type:'n',range:'0'})">
+                        <el-input v-model.number="item.RobotCfg.MinRobotTapInterval" size="mini" :required="true" > <template slot="append">ms</template></el-input>
                       </el-form-item>
                     </el-form>
                   </el-col>
-                  <el-col :span="7" :offset="3">
-                    <el-form inline>
-                      <el-form-item label="机器人自动敲击概率"  :rules="dataRule(true,{type:'n',range:'0'})">
-                        <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true" > <template slot="append">‰</template></el-input>
+                    <el-col :span="7" :offset="3">
+                      <el-form inline>
+                      <el-form-item label="敲击间隔(max)"  :rules="dataRule(true,{type:'n',range:'0'})">
+                        <el-input v-model.number="item.RobotCfg.MaxRobotTapInterval" size="mini" :required="true" > <template slot="append">ms</template></el-input>
                       </el-form-item>
                     </el-form>
                   </el-col>
+
                 </el-row>
                 </fieldset>
               </el-row>
@@ -556,6 +608,7 @@ export default {
     return {
       subKey: 'miniPiggy_cfg',
       libShow: $libShow,
+      envProjectName: process.env.VUE_APP_PROJECT,
       item: {
         KicKTime: 300,
         NoticeTime: 300,
@@ -616,6 +669,12 @@ export default {
       robotDialogForm: {
         visible: false,
         data: {}
+      },
+      JackpotTypeCfg: {
+        1: '一等奖',
+        2: '二等奖',
+        3: '三等奖',
+        4: '3Bet中奖'
       },
       AttrNames: {
         'Data.MaxPlayers': '最大人数'
@@ -748,7 +807,7 @@ export default {
         return '次数'
       }
       if (val === 5) {
-        return '倍数'
+        return '倍数(支持1位小数)'
       }
     },
     getJackpotPoolTitle(row) {
@@ -780,6 +839,10 @@ export default {
         o.Val = parseInt(o.Val * 1000)
       }
       for (const o of obj.Jp) {
+        for (let i = 0; i < o.JackpotRegulation.RandAwards.length; i++) {
+          o.JackpotCfg[i].AwardRate=  o.JackpotRegulation.RandAwards[i].AwardRate
+
+        }
         o.MinBet = parseInt(o.MinBet * 1000)
         o.MaxBet = parseInt(o.MaxBet * 1000)
       }
@@ -796,6 +859,7 @@ export default {
           }
         }
       }
+
 
       if (obj.AutoTimes instanceof Array){
       }else {
