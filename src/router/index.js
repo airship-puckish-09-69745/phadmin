@@ -79,7 +79,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/playerManage/systemMoneyChart'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'CFG_MANAGEMENT' }
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
   },
@@ -159,7 +159,354 @@ export const asyncRoutes = [
     path: '/tableConfig',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '场次管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '场次配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'PokersCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Poker 牌类', noCache: true },
+        children: [
+          {
+            path: 'TongitsCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Tongits', noCache: true },
+            children: [
+              {
+                path: 'tongitsTable',
+                component: () => import('@/views/config/tableConfig/tongitsTable'),
+                name: 'tongitsTable',
+                meta: { title: 'Tongits ◐' }
+              },
+              /* {
+                 path: 'tongitsClassicTable',
+                 component: () => import('@/views/config/tableConfig/tongitsTableClassic'),
+                 name: 'tongitsTableClassic',
+                 meta: { title: 'Tongits-经典 ◐' }
+               },*/
+              {
+                path: 'tongitsLaiZiTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableLaiZi'),
+                name: 'tongitsTableLaiZi',
+                meta: { title: 'Tongits-Joker ◐' }
+              },
+              /*          {
+                          path: 'tongitsTogether',
+                          component: () => import('@/views/config/tableConfig/tongits_blacklist'),
+                          name: 'tongitsTogether',
+                          meta: { title: '同桌黑名单 ◐' }
+                        },*/
+              {
+                path: 'tongitsTableAI',
+                component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
+                name: 'tongitsTableAI',
+                meta: { title: 'TongitsAI ◐' }
+              },
+              /*          {
+                          path: 'tongitsTableAIClassic',
+                          component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
+                          name: 'tongitsClassicTableAI',
+                          meta: { title: 'Tongits经典-AI ◐' }
+                        },*/
+              {
+                path: 'tongitsAIList',
+                component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
+                name: 'tongitsAIList',
+                meta: { title: 'TongitsAI-List ◐' }
+              }
+            ]
+          },
+          {
+            path: 'PusoyDosCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'PusoyDos', noCache: true },
+            children: [
+              {
+                path: 'PusoyDosTable',
+                component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
+                name: 'PusoyDosTable',
+                meta: { title: 'PusoyDos ◐' }
+              },
+              {
+                path: 'PusoyDosTogether',
+                component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDos_blacklist'),
+                name: 'PusoyDosTogether',
+                meta: { title: '同桌黑名单 ◐' }
+              }
+            ]
+          },
+          {
+            path: 'Lucky9Cfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Lucky9', noCache: true },
+            children: [
+              {
+                path: 'lucky9Table',
+                component: () => import('@/views/config/tableConfig/lucky9Table'),
+                name: 'lucky9Table',
+                meta: { title: 'Lucky9 ◐' }
+              },
+              {
+                path: 'lucky9RobotSetting',
+                component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
+                name: 'lucky9RobotSetting',
+                meta: { title: 'Lucky9 AI◐' }
+              }
+            ]
+          },
+          {
+            path: 'blackJackTable',
+            component: () => import('@/views/config/tableConfig/blackJackTable'),
+            name: 'blackJackTable',
+            meta: { title: 'BlackJack ◐' }
+          },
+          {
+            path: 'solitaire',
+            component: () => import('@/views/config/tableConfig/solitaire'),
+            name: 'solitaire',
+            meta: { title: 'Solitaire ◐' }
+          },
+          {
+            path: 'pusoyTable',
+            component: () => import('@/views/config/tableConfig/pusoyTable'),
+            name: 'pusoyTable',
+            meta: { title: 'Pusoy ◐' }
+          },
+          {
+            path: 'texasTable',
+            component: () => import('@/views/config/tableConfig/texasTable'),
+            name: 'texasTable',
+            meta: { title: 'Texas - 德州' }
+          },
+          {
+            path: 'gameWaitQueue',
+            component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
+            name: 'gameWaitQueue',
+            meta: { title: '排队入桌配置 ◐' }
+          }
+        ]
+      },
+      {
+        path: 'SmallGameCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Casio 下注类', noCache: true },
+        children: [
+          {
+            path: 'miniAb_cfg',
+            component: () => import('@/views/config/tableConfig/miniAbGame'),
+            name: 'miniAb_cfg',
+            meta: { title: 'Andar Bahar ◐' }
+          },
+          {
+            path: 'miniBcr_cfg',
+            component: () => import('@/views/config/tableConfig/miniBcrGame'),
+            name: 'miniBcr_cfg',
+            meta: { title: 'Baccarat ◐' }
+          },
+          {
+            path: 'color_game',
+            component: () => import('@/views/config/tableConfig/colorGame'),
+            // component: () => import('@/views/config/tableConfig/colorGameMars'),
+            name: 'gameColorCfg',
+            meta: { title: 'Color game ◐' }
+          },
+          {
+            path: 'gameCrash',
+            component: () => import('@/views/config/tableConfig/gameCrash'),
+            name: 'gameCrash',
+            meta: { title: 'Crash - 小火箭 ◐' }
+          },
+          {
+            path: 'miniDvt_cfg',
+            component: () => import('@/views/config/tableConfig/miniDvtGame'),
+            name: 'miniDvt_cfg',
+            meta: { title: 'Drogon&Tiger ◐' }
+          },
+          {
+            path: 'hilo_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/hilo'),
+            name: 'hilo_cfg',
+            meta: { title: 'Hilo ◐' }
+          },
+          {
+            path: 'sweeper',
+            component: () => import('@/views/config/tableConfig/sweeperCfg'),
+            name: 'sweeperCfg',
+            meta: { title: 'Mines - 扫雷 ◐' }
+          },
+          {
+            path: 'Piggy',
+            component: () => import('@/views/config/tableConfig/piggy'),
+            name: 'Piggy',
+            meta: { title: 'Piggy Tap◐' }
+          },
+          {
+            path: 'sicbo_cfg',
+            component: () => import('@/views/config/tableConfig/sicboGame'),
+            name: 'sicbo_cfg',
+            meta: { title: 'Sicbo ◐' }
+          },
+          {
+            path: 'tower_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/tower'),
+            name: 'tower_cfg',
+            meta: { title: 'Tower ◐' }
+          },
+          {
+            path: 'miniWindrop_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
+            name: 'miniWindrop_cfg',
+            meta: { title: 'Windrop ◐' }
+          },
+          {
+            path: 'UpDown',
+            component: () => import('@/views/config/tableConfig/UpDownTable'),
+            name: 'UpDown',
+            meta: { title: '7Up7Down ◐' }
+          }
+        ]
+      },
+
+      {
+        path: 'slotsCfg',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Slots - 老虎机', noCache: true },
+        children: [
+          {
+            path: 'slotsProCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '正式环境', noCache: true },
+            children: [
+              {
+                path: 'candypartyway_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
+                name: 'candypartyway_slots_cfg',
+                meta: { title: 'Candy Rush' }
+              },
+              {
+                path: 'candycandy_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candycandy_slots_cfg'),
+                name: 'candycandy_slots_cfg',
+                meta: { title: 'Candy Crazy' }
+              },
+              {
+                path: 'supergem_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
+                name: 'supergem_slots_cfg',
+                meta: { title: '超级宝石' }
+              },
+              {
+                path: 'millionaire_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
+                name: 'millionaire_slots_cfg',
+                meta: { title: '百万富翁' }
+              },
+              {
+                path: 'beauty_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
+                name: 'beauty_slots_cfg',
+                meta: { title: 'Beauty - 睡美人' }
+              },
+
+              {
+                path: 'phoenix_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
+                name: 'phoenix_slots_cfg',
+                meta: { title: 'Phoenix - 凤凰' }
+              }
+            ]
+          },
+          {
+            path: 'slotsReviewCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '审核环境', noCache: true },
+            children: [
+
+              {
+                path: 'candypartyallline_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
+                name: 'candypartyallline_slots_cfg',
+                meta: { title: 'Candy Rush(审)' }
+              },
+              {
+                path: 'candycandymars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candycandymars_slots_cfg'),
+                name: 'candycandymars_slots_cfg',
+                meta: { title: 'Candy Crazy(审)' }
+              },
+              {
+                path: 'supergemmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemmars_slots_cfg'),
+                name: 'supergemmars_slots_cfg',
+                meta: { title: '超级宝石(审)' }
+              },
+              {
+                path: 'millionairemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
+                name: 'millionairemars_slots_cfg',
+                meta: { title: '百万富翁(审)' }
+              }
+            ]
+          },
+          {
+            path: 'slots_winner_record',
+            component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
+            name: 'slots_winner_record',
+            meta: { title: '大奖记录' }
+          },
+          {
+            path: 'slots_act_configs',
+            component: () => import('@/views/config/tableConfig/slots/slotsActConfig'),
+            name: 'slots_act_configs',
+            meta: { title: '剧本游戏配置' }
+          },
+          {
+            path: 'slots_act_common',
+            component: () => import('@/views/config/tableConfig/slots/slotsActCommon'),
+            name: 'slots_act_common',
+            meta: { title: '剧本通用配置' }
+          },
+          {
+            path: 'slots_rooms',
+            component: () => import('@/views/config/tableConfig/slots_rooms'),
+            name: 'slots_rooms',
+            meta: { title: '老虎机房间列表' }
+          }
+        ]
+      },
+
+      {
+        path: 'prize_pool',
+        component: () => import('@/views/online/prizePool'),
+        name: 'prize_pool',
+        meta: { title: '小游戏奖池配置', perm: 'KEY_DATA_MONITOR'}
+      },
+      {
+        path: 'gambleSchemaCfg',
+        component: () => import('@/views/config/winConfig/gambleSchemaCfg'),
+        name: 'gambleSchemaCfg',
+        meta: { title: '小游戏调控杂项配置 ◐', noCache: true }
+      },
+      {
+        path: 'gameAuditConfig',
+        component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
+        name: 'gameAuditConfig',
+        meta: { title: 'GP审核配置 ◐' }
+      }
+    ]
+  },
+  {
+    path: '/activityConfig',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '活动配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
       {
         path: 'millionPointRaceRuleConfig',
@@ -198,449 +545,6 @@ export const asyncRoutes = [
             meta: { title: '积分赛用户信息' }
           }
         ]
-      },
-      {
-        path: 'TongitsCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'Tongits', noCache: true },
-        children: [
-          {
-            path: 'tongitsTable',
-            component: () => import('@/views/config/tableConfig/tongitsTable'),
-            name: 'tongitsTable',
-            meta: { title: 'Tongits ◐' }
-          },
-         /* {
-            path: 'tongitsClassicTable',
-            component: () => import('@/views/config/tableConfig/tongitsTableClassic'),
-            name: 'tongitsTableClassic',
-            meta: { title: 'Tongits-经典 ◐' }
-          },*/
-          {
-            path: 'tongitsLaiZiTable',
-            component: () => import('@/views/config/tableConfig/tongitsTableLaiZi'),
-            name: 'tongitsTableLaiZi',
-            meta: { title: 'Tongits-赖子 ◐' }
-          },
-/*          {
-            path: 'tongitsTogether',
-            component: () => import('@/views/config/tableConfig/tongits_blacklist'),
-            name: 'tongitsTogether',
-            meta: { title: '同桌黑名单 ◐' }
-          },*/
-          {
-            path: 'tongitsTableAI',
-            component: () => import('@/views/config/tableConfig/tongitsAIConfig'),
-            name: 'tongitsTableAI',
-            meta: { title: 'TongitsAI ◐' }
-          },
-/*          {
-            path: 'tongitsTableAIClassic',
-            component: () => import('@/views/config/tableConfig/tongitsClassicAIConfig'),
-            name: 'tongitsClassicTableAI',
-            meta: { title: 'Tongits经典-AI ◐' }
-          },*/
-          {
-            path: 'tongitsAIList',
-            component: () => import('@/views/config/tableConfig/tongitsAIListConfig'),
-            name: 'tongitsAIList',
-            meta: { title: 'TongitsAI-List ◐' }
-          }
-        ]
-      },
-      {
-        path: 'PusoyDosCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'PusoyDos', noCache: true },
-        children: [
-          {
-            path: 'PusoyDosTable',
-            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDosTable'),
-            name: 'PusoyDosTable',
-            meta: { title: 'PusoyDos ◐' }
-          },
-          {
-            path: 'PusoyDosTogether',
-            component: () => import('@/views/config/tableConfig/pusoyDos/pusoyDos_blacklist'),
-            name: 'PusoyDosTogether',
-            meta: { title: '同桌黑名单 ◐' }
-          }
-        ]
-      },
-      {
-        path: 'Lucky9Cfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'Lucky9', noCache: true },
-        children: [
-          {
-            path: 'lucky9Table',
-            component: () => import('@/views/config/tableConfig/lucky9Table'),
-            name: 'lucky9Table',
-            meta: { title: 'Lucky9 ◐' }
-          },
-          {
-            path: 'lucky9RobotSetting',
-            component: () => import('@/views/config/tableConfig/lucky9RobotSetting'),
-            name: 'lucky9RobotSetting',
-            meta: { title: 'Lucky9 AI◐' }
-          }
-        ]
-      },
-      {
-        path: 'blackJackTable',
-        component: () => import('@/views/config/tableConfig/blackJackTable'),
-        name: 'blackJackTable',
-        meta: { title: 'BlackJack ◐' }
-      },
-      {
-        path: 'solitaire',
-        component: () => import('@/views/config/tableConfig/solitaire'),
-        name: 'solitaire',
-        meta: { title: 'solitaire ◐' }
-      },
-      {
-        path: 'PusoyCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'Pusoy', noCache: true },
-        children: [
-          {
-            path: 'pusoyTable',
-            component: () => import('@/views/config/tableConfig/pusoyTable'),
-            name: 'pusoyTable',
-            meta: { title: 'Pusoy ◐' }
-          },
-          {
-            path: 'pusoyRobotSetting',
-            component: () => import('@/views/config/tableConfig/pusoyRobotSetting'),
-            name: 'pusoyRobotSetting',
-            meta: { title: 'Pusoy AI◐' }
-          },
-          {
-            path: 'pusoyDosTogetherBlackList',
-            component: () => import('@/views/config/tableConfig/psuoyDos_blacklist'),
-            name: 'pusoyDosTogetherBlackList',
-            meta: { title: 'PusoyDos 同桌黑名单' }
-          }
-        ]
-      },
-      {
-        path: 'texasTable',
-        component: () => import('@/views/config/tableConfig/texasTable'),
-        name: 'texasTable',
-        meta: { title: 'Texas - 德州' }
-      },
-      /* {
-        path: 'bodingTable',
-        component: () => import('@/views/config/tableConfig/bodingTable'),
-        name: 'bodingTable',
-        meta: { title: 'Lucky89 - Boding' }
-      },
-      {
-        path: 'bodingCfg',
-        component: () => import('@/views/config/tableConfig/bodingCfg'),
-        name: 'bodingCfg',
-        meta: { title: 'Lucky89 - Boding配置' }
-      },*/
-      /* {
-        path: 'texasNlhTable',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'TexasNlh - 无限德州', noCache: true },
-        children: [
-          {
-            path: 'texasNlhTable',
-            component: () => import('@/views/config/tableConfig/texasNlhTable'),
-            name: 'texasNlhTable',
-            meta: { title: 'TexasNlh 桌子' }
-          },
-          {
-            path: 'texasNlhCfg',
-            component: () => import('@/views/config/tableConfig/texasNlhCfg'),
-            name: 'texasNlhCfg',
-            meta: { title: 'TexasNlh 配置' }
-          }
-        ]
-      },*/
-      /*
-      {
-        path: 'bodingRobotSetting',
-        component: () => import('@/views/config/tableConfig/bodingRobotSetting'),
-        name: 'bodingRobotSetting',
-        meta: { title: 'Lucky89「Boding」 AI◐' }
-      },
-      */
-
-      {
-        path: 'SmallGameCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: '下注类游戏', noCache: true },
-        children: [
-          /* {
-            path: 'abTable',
-            component: () => import('@/views/config/tableConfig/abTable'),
-            name: 'abTable',
-            meta: { title: 'AB - Andar Bahar ◐' }
-          },
-          {
-            path: 'CarRoulette',
-            component: () => import('@/views/config/tableConfig/CarRouletteTable'),
-            name: 'CarRoulette',
-            meta: { title: 'Car - 车标转盘 ◐' }
-          },*/
-          {
-            path: 'color_game',
-            component: () => import('@/views/config/tableConfig/colorGame'),
-            // component: () => import('@/views/config/tableConfig/colorGameMars'),
-            name: 'gameColorCfg',
-            meta: { title: 'color game ◐' }
-          },
-          {
-            path: 'gameCrash',
-            component: () => import('@/views/config/tableConfig/gameCrash'),
-            name: 'gameCrash',
-            meta: { title: 'Crash - 小火箭 ◐' }
-          },
-          /* {
-            path: 'dvtTable',
-            component: () => import('@/views/config/tableConfig/dvtTable'),
-            name: 'dvtTable',
-            meta: { title: 'Dragon - 龙虎 ◐' }
-          },
-          {
-            path: 'bcrTable',
-            component: () => import('@/views/config/tableConfig/bcrTable'),
-            name: 'bcrTable',
-            meta: { title: 'Baccarat - 百家乐 ◐' }
-          },*/
-          {
-            path: 'sweeper',
-            component: () => import('@/views/config/tableConfig/sweeperCfg'),
-            name: 'sweeperCfg',
-            meta: { title: 'Mines - 扫雷 ◐' }
-          },
-          {
-            path: 'tower_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/tower'),
-            name: 'tower_cfg',
-            meta: { title: 'Tower ◐' }
-          },
-          {
-            path: 'hilo_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/hilo'),
-            name: 'hilo_cfg',
-            meta: { title: 'Hilo ◐' }
-          },
-          {
-            path: 'sicbo_cfg',
-            component: () => import('@/views/config/tableConfig/sicboGame'),
-            name: 'sicbo_cfg',
-            meta: { title: 'Sicbo ◐' }
-          },
-          {
-            path: 'miniDvt_cfg',
-            component: () => import('@/views/config/tableConfig/miniDvtGame'),
-            name: 'miniDvt_cfg',
-            meta: { title: 'mini龙虎 ◐' }
-          },
-          {
-            path: 'miniAb_cfg',
-            component: () => import('@/views/config/tableConfig/miniAbGame'),
-            name: 'miniAb_cfg',
-            meta: { title: 'miniAB ◐' }
-          },
-          {
-            path: 'miniBcr_cfg',
-            component: () => import('@/views/config/tableConfig/miniBcrGame'),
-            name: 'miniBcr_cfg',
-            meta: { title: 'miniBcr ◐' }
-          },
-          // {
-          //   path: 'windrop_cfg',
-          //   component: () => import('@/views/config/tableConfig/windrop_cfg'),
-          //   name: 'windrop_cfg',
-          //   meta: { title: 'Windrop ◐' }
-          // },
-          {
-            path: 'miniWindrop_cfg',
-            component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
-            name: 'miniWindrop_cfg',
-            meta: { title: 'MiniWindrop ◐' }
-          },
-          {
-            path: 'UpDown',
-            component: () => import('@/views/config/tableConfig/UpDownTable'),
-            name: 'UpDown',
-            meta: { title: '7Up7Down ◐' }
-          },
-          {
-            path: 'Piggy',
-            component: () => import('@/views/config/tableConfig/piggy'),
-            name: 'Piggy',
-            meta: { title: 'Piggy ◐' }
-          }
-        ]
-      },
-
-      {
-        path: 'slotsCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机配置', noCache: true },
-        children: [
-
-          {
-            path: 'beauty_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
-            name: 'beauty_slots_cfg',
-            meta: { title: 'Beauty - 睡美人' }
-          },
-
-          /* {
-            path: 'gold_miner_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/gold_miner_slots_cfg'),
-            name: 'gold_miner_slots_cfg',
-            meta: { title: 'GoldMiner - 黄金矿工' }
-          },
-          {
-            path: 'gold_train_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/gold_train_slots_cfg'),
-            name: 'gold_train_slots_cfg',
-            meta: { title: 'GoldTrain - 黄金列车' }
-          },
-          {
-            path: 'joker_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/joker_slots_cfg'),
-            name: 'joker_slots_cfg',
-            meta: { title: 'Joker - 小丑' }
-          },*/
-          {
-            path: 'phoenix_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
-            name: 'phoenix_slots_cfg',
-            meta: { title: 'Phoenix - 凤凰' }
-          },
-          /* {
-            path: 'chicago_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/chicago_slots_cfg'),
-            name: 'chicago_slots_cfg',
-            meta: { title: 'Chicago - 芝加哥' }
-          },
-          {
-            path: 'aladdin_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/aladdin_slots_cfg'),
-            name: 'aladdin_slots_cfg',
-            meta: { title: '阿拉丁' }
-          },
-          {
-            path: 'ireland_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/ireland_slots_cfg'),
-            name: 'ireland_slots_cfg',
-            meta: { title: '爱尔兰精灵' }
-          },
-          {
-            path: 'rabbit_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/rabbit_slots_cfg'),
-            name: 'rabbit_slots_cfg',
-            meta: { title: '金钱兔' }
-          },*/
-          {
-            path: 'candypartyway_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
-            name: 'candypartyway_slots_cfg',
-            meta: { title: '糖果传奇Way' }
-          },
-          {
-            path: 'candypartyallline_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candypartyallline_slots_cfg'),
-            name: 'candypartyallline_slots_cfg',
-            meta: { title: '糖果传奇Allline' }
-          },
-          {
-            path: 'supergem_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
-            name: 'supergem_slots_cfg',
-            meta: { title: '超级宝石' }
-          },
-          {
-            path: 'supergemmars_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/supergemmars_slots_cfg'),
-            name: 'supergemmars_slots_cfg',
-            meta: { title: '超级宝石Mars' }
-          },
-          {
-            path: 'candycandy_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candycandy_slots_cfg'),
-            name: 'candycandy_slots_cfg',
-            meta: { title: '糖果糖果' }
-          },
-          {
-            path: 'candycandymars_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/candycandymars_slots_cfg'),
-            name: 'candycandymars_slots_cfg',
-            meta: { title: '糖果糖果Mars' }
-          },
-          {
-            path: 'millionaire_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
-            name: 'millionaire_slots_cfg',
-            meta: { title: '百万富翁' }
-          },
-          {
-            path: 'millionairemars_slots_cfg',
-            component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
-            name: 'millionairemars_slots_cfg',
-            meta: { title: '百万富翁Mars' }
-          },
-          {
-            path: 'slots_winner_record',
-            component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
-            name: 'slots_winner_record',
-            meta: { title: '大奖记录' }
-          },
-          {
-            path: 'slots_act_configs',
-            component: () => import('@/views/config/tableConfig/slots/slotsActConfig'),
-            name: 'slots_act_configs',
-            meta: { title: '剧本游戏配置' }
-          },
-          {
-            path: 'slots_act_common',
-            component: () => import('@/views/config/tableConfig/slots/slotsActCommon'),
-            name: 'slots_act_common',
-            meta: { title: '剧本通用配置' }
-          }
-
-        ]
-      },
-
-      {
-        path: 'level_hide',
-        component: () => import('@/views/config/tableConfig/level_hide'),
-        name: 'level_hide',
-        meta: { title: '场次隐藏配置' }
-      },
-      {
-        path: 'prize_pool',
-        component: () => import('@/views/online/prizePool'),
-        name: 'prize_pool',
-        meta: { title: '小游戏奖池配置' }
-      },
-      {
-        path: 'slots_rooms',
-        component: () => import('@/views/config/tableConfig/slots_rooms'),
-        name: 'slots_rooms',
-        meta: { title: '老虎机房间列表' }
-      },
-      {
-        path: 'gameWaitQueue',
-        component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
-        name: 'gameWaitQueue',
-        meta: { title: '排队入桌配置 ◐' }
       },
       {
         path: 'h5game',
@@ -699,41 +603,7 @@ export const asyncRoutes = [
             meta: { title: '积分奖励配置', noCache: true }
           }
         ]
-      },
-      {
-        path: 'gameAuditConfig',
-        component: () => import('@/views/config/tableConfig/gameAuditConfig.vue'),
-        name: 'gameAuditConfig',
-        meta: { title: 'GP审核配置 ◐' }
       }
-    ]
-  },
-  {
-    path: '/winConfig',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '输赢调控', icon: 'dashboard', noCache: true, perm: 'CORE_CFG' },
-    children: [
-      {
-        path: 'gambleSchemaCfg',
-        component: () => import('@/views/config/winConfig/gambleSchemaCfg'),
-        name: 'gambleSchemaCfg',
-        meta: { title: '小游戏调控杂项配置 ◐', noCache: true }
-      }
-      /*,
-      {
-        path: 'paySchemaCfg',
-        component: () => import('@/views/config/winConfig/paySchema'),
-        name: 'gambleSchemaCfg',
-        meta: { title: '付费用户调控配置 ◐', noCache: true }
-      },
-      {
-        path: 'VUPCfg',
-        component: () => import('@/views/config/winConfig/VUPCfg'),
-        name: 'VUPCfg',
-        meta: { title: '小黑屋数值配置 ◐', noCache: true }
-      }
-      */
     ]
   },
   {
@@ -776,157 +646,148 @@ export const asyncRoutes = [
     meta: { title: '牌局日志 ◐', icon: 'log', perm: 'CFG_MANAGEMENT' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
-      /* {
-        path: 'playlog_car',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_car',
-        meta: { title: 'Car - 车标转盘 ◐', gid: 5 }
-      },*/
       {
-        path: 'playlog_colorgame',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_colorgame',
-        meta: { title: 'ColorGame - ◐', gid: 25 }
+        path: 'PokersLog',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Poker 牌类', noCache: true },
+        children: [
+          {
+            path: 'playlog_lucky9',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_lucky9',
+            meta: { title: 'Lucky9 ◐', gid: 23 }
+          },
+          {
+            path: 'playlog_pusoy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoy',
+            meta: { title: 'Pusoy - ◐', gid: 21 }
+          },
+          {
+            path: 'playlog_pusoyDos',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyDos',
+            meta: { title: 'PusoyDos - ◐', gid: 34 }
+          },
+          {
+            path: 'playlog_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_tongits',
+            meta: { title: 'Tongits - POT ◐', gid: 22 }
+          },
+          /*      {
+                  path: 'playlog_classic_tongits',
+                  component: () => import('@/views/playerManage/tongitsPlaylog'),
+                  name: 'playlog_classic_tongits',
+                  meta: { title: 'Tongits - 经典 ◐', gid: 31 }
+                },*/
+          {
+            path: 'playlog_laizi_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_laizi_tongits',
+            meta: { title: 'Tongits - Joker ◐', gid: 28 }
+          },
+          {
+            path: 'playlog_texas',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_texas',
+            meta: { title: 'Texas - 德州扑克◐', gid: 15 }
+          },
+          {
+            path: 'playlog_solitaire',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_solitaire',
+            meta: { title: 'Solitaire ◐', gid: 35 }
+          },
+          {
+            path: 'playlog_blackjack',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_blackjack',
+            meta: { title: 'BlackJack ◐', gid: 37 }
+          }
+        ]
       },
       {
-        path: 'playlog_crash',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_crash',
-        meta: { title: 'Crash - 小火箭◐', gid: 10 }
-      },
-      {
-        path: 'playlog_lucky9',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_lucky9',
-        meta: { title: 'Lucky9 ◐', gid: 23 }
-      },
-      {
-        path: 'playlog_sweeper',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_sweeper',
-        meta: { title: 'Mines - 扫雷◐', gid: 20 }
-      },
-      {
-        path: 'playlog_pusoy',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_pusoy',
-        meta: { title: 'Pusoy - ◐', gid: 21 }
-      },
-      {
-        path: 'playlog_pusoyDos',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_pusoyDos',
-        meta: { title: 'PusoyDos - ◐', gid: 34 }
-      },
-      {
-        path: 'playlog_texas',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_texas',
-        meta: { title: 'Texas - 德州扑克◐', gid: 15 }
-      },
-      {
-        path: 'playlog_tongits',
-        component: () => import('@/views/playerManage/tongitsPlaylog'),
-        name: 'playlog_tongits',
-        meta: { title: 'Tongits - POT ◐', gid: 22 }
-      },
-      {
-        path: 'playlog_classic_tongits',
-        component: () => import('@/views/playerManage/tongitsPlaylog'),
-        name: 'playlog_classic_tongits',
-        meta: { title: 'Tongits - 经典 ◐', gid: 31 }
-      },
-      {
-        path: 'playlog_laizi_tongits',
-        component: () => import('@/views/playerManage/tongitsPlaylog'),
-        name: 'playlog_laizi_tongits',
-        meta: { title: 'Tongits - 癞子 ◐', gid: 28 }
-      },
+        path: 'CasioLog',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Casio 下注类', noCache: true },
+        children: [
+          {
+            path: 'playlog_colorgame',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_colorgame',
+            meta: { title: 'ColorGame - ◐', gid: 25 }
+          },
+          {
+            path: 'playlog_crash',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_crash',
+            meta: { title: 'Crash - 小火箭◐', gid: 10 }
+          },
 
-      /* {
-        path: 'playlog_ab',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_ab',
-        meta: { title: 'AB - Andar Bahar ◐', gid: 2 }
-      },*/
-
-      {
-        path: 'playlog_tower',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_tower',
-        meta: { title: 'Tower ◐', gid: 100 }
-      },
-      {
-        path: 'playlog_hilo',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_hilo',
-        meta: { title: 'Hilo ◐', gid: 102 }
-      },
-      {
-        path: 'playlog_sicbo',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_sicbo',
-        meta: { title: 'Sicbo ◐', gid: 101 }
-      },
-      {
-        path: 'playlog_dvt',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_dvt',
-        meta: { title: 'mini龙虎 ◐', gid: 104 }
-      },
-      {
-        path: 'playlog_ab',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_ab',
-        meta: { title: 'miniAB ◐', gid: 105 }
-      },
-      {
-        path: 'playlog_seven',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_seven',
-        meta: { title: '7Up7Down ◐', gid: 6 }
-      },
-      {
-        path: 'playlog_windrop',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_windrop',
-        meta: { title: 'Windrop ◐', gid: 103 }
-      },
-      {
-        path: 'playlog_solitaire',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_solitaire',
-        meta: { title: 'Solitaire ◐', gid: 35 }
-      },
-      {
-        path: 'playlog_boding',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_boding',
-        meta: { title: 'Lucky89 - Boding ◐', gid: 30 }
-      },
-      {
-        path: 'playlog_blackjack',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_blackjack',
-        meta: { title: 'BlackJack ◐', gid: 37 }
-      },
-      {
-        path: 'playlog_piggy',
-        component: () => import('@/views/playerManage/playlog'),
-        name: 'playlog_piggy',
-        meta: { title: 'Piggy ◐', gid: 106 }
-      },
-      {
-        path: 'playlog_lotterylog',
-        component: () => import('@/views/playerManage/lotterylog'),
-        name: 'playlog_lotterylog',
-        meta: { title: '小游戏奖池日志 ◐' }
+          {
+            path: 'playlog_sweeper',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_sweeper',
+            meta: { title: 'Mines - 扫雷◐', gid: 20 }
+          },
+          {
+            path: 'playlog_tower',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_tower',
+            meta: { title: 'Tower ◐', gid: 100 }
+          },
+          {
+            path: 'playlog_hilo',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_hilo',
+            meta: { title: 'Hilo ◐', gid: 102 }
+          },
+          {
+            path: 'playlog_sicbo',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_sicbo',
+            meta: { title: 'Sicbo ◐', gid: 101 }
+          },
+          {
+            path: 'playlog_dvt',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_dvt',
+            meta: { title: 'Drogon&Tiger ◐', gid: 104 }
+          },
+          {
+            path: 'playlog_ab',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_ab',
+            meta: { title: 'Andar Bahar ◐', gid: 105 }
+          },
+          {
+            path: 'playlog_seven',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_seven',
+            meta: { title: '7Up7Down ◐', gid: 6 }
+          },
+          {
+            path: 'playlog_windrop',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_windrop',
+            meta: { title: 'Windrop ◐', gid: 103 }
+          },
+          {
+            path: 'playlog_piggy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_piggy',
+            meta: { title: 'Piggy Tap ◐', gid: 106 }
+          }
+        ]
       },
       {
         path: 'slotsLog',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机日志', noCache: true },
+        meta: { title: 'Slots - 老虎机', noCache: true },
         children: [
           {
             path: 'beauty_slots_log',
@@ -934,66 +795,17 @@ export const asyncRoutes = [
             name: 'beauty_slots_log',
             meta: { title: 'beauty - 睡美人', gid: 52 }
           },
-          /* {
-            path: 'joker_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'joker_slots_log',
-            meta: { title: 'joker - 小丑', gid: 53 }
-          },
-          {
-            path: 'gold_train_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gold_train_slots_log',
-            meta: { title: 'goldTrain - 黄金列车', gid: 54 }
-          },*/
           {
             path: 'phoenix_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
           },
-          /*
-          {
-            path: 'gold_miner_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gold_miner_slots_log',
-            meta: { title: 'goldMiner - 黄金矿工', gid: 57 }
-          },
-          {
-            path: 'aladdin_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gold_miner_slots_log',
-            meta: { title: 'aladdin - 阿拉丁', gid: 58 }
-          },
-          {
-            path: 'chicago_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'chicago_slots_log',
-            meta: { title: 'chicago - 芝加哥', gid: 59 }
-          },
-          {
-            path: 'ireland_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'ireland_slots_log',
-            meta: { title: 'Ireland - 爱尔兰精灵', gid: 66 }
-          },
-          {
-            path: 'rabbit_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'rabbit_slots_log',
-            meta: { title: 'Rabbit - 金钱兔', gid: 67 }
-          }*/
           {
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyway_slots_log',
-            meta: { title: '糖果传奇Way', gid: 76 }
-          },
-          {
-            path: 'candypartyallline_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'candypartyallline_slots_log',
-            meta: { title: '糖果传奇Allline', gid: 77 }
+            meta: { title: 'Candy Rush', gid: 76 }
           },
           {
             path: 'supergem_slots_log',
@@ -1001,38 +813,64 @@ export const asyncRoutes = [
             name: 'supergem_slots_log',
             meta: { title: '超级宝石', gid: 78 }
           },
-          {
-            path: 'supergemmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'supergemmars_slots_log',
-            meta: { title: '超级宝石Mars', gid: 81 }
-          },
-          {
-            path: 'candycandymars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'candycandymars_slots_log',
-            meta: { title: '糖果糖果Mars', gid: 79 }
-          },
+
           {
             path: 'candycandy_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandy_slots_log',
-            meta: { title: '糖果糖果', gid: 80 }
+            meta: { title: 'Candy Crazy', gid: 80 }
           },
           {
             path: 'millionaire_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionaire_slots_log',
             meta: { title: '百万富翁', gid: 82 }
+          }
+        ]
+      },
+      {
+        path: 'slotsReviewLog',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Slots-老虎机(审）', noCache: true },
+        children: [
+          {
+            path: 'candypartyallline_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candypartyallline_slots_log',
+            meta: { title: 'Candy Rush(审)', gid: 77 }
           },
+          {
+            path: 'supergemmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemmars_slots_log',
+            meta: { title: '超级宝石(审)', gid: 81 }
+          },
+          {
+            path: 'candycandymars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candycandymars_slots_log',
+            meta: { title: '糖果糖果(审)', gid: 79 }
+          },
+
           {
             path: 'millionairemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionairemars_slots_log',
-            meta: { title: '百万富翁Mars', gid: 83 }
+            meta: { title: '百万富翁(审)', gid: 83 }
           }
         ]
       },
+
+
+
+      {
+        path: 'playlog_lotterylog',
+        component: () => import('@/views/playerManage/lotterylog'),
+        name: 'playlog_lotterylog',
+        meta: { title: '小游戏奖池日志 ◐' }
+      },
+
       {
         path: 'tongitsCheat',
         component: () => import('@/views/empty'),
