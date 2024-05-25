@@ -1623,6 +1623,135 @@
       </el-table>
     </el-dialog>
 
+
+    <el-dialog title="piggy详情" v-if="piggyLog.visible" :visible.sync="piggyLog.visible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="5" border>
+        <el-descriptions-item>
+          <template slot="label">
+            UID：
+          </template>
+          {{ piggyLog.detail.SingleUid }}
+        </el-descriptions-item>
+        <el-descriptions-item >
+          <template slot="label" >
+            总输赢：
+          </template>
+          <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{ piggyLog.detail.TotalAddMoney / 1000 }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            当前金额：
+          </template>
+          {{ piggyLog.detail.CurrentMoney / 1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            开始时间：
+          </template>
+          {{ formatTime(piggyLog.detail.Piggy.startTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            结束时间：
+          </template>
+          {{ formatTime(piggyLog.detail.FinishTime) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总敲击次数：
+          </template>
+          {{ piggyLog.detail.Piggy.tapTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            敲击,购买：
+          </template>
+          {{ piggyLog.detail.Piggy.handTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            台费：
+          </template>
+          {{ piggyLog.detail.Piggy.MoneyFee / 1000}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            免费次数：
+          </template>
+          {{ piggyLog.detail.Piggy.freeTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            下注金额：
+          </template>
+          {{ piggyLog.detail.Piggy.totalBet / 1000}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            累计赢钱：
+          </template>
+          {{ piggyLog.detail.Piggy.totalWon / 1000}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            结算后金额：
+          </template>
+          {{ piggyLog.detail.Piggy.curMoney / 1000}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP贡献：
+          </template>
+          {{ piggyLog.detail.Piggy.JackpotContribute / 1000}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP累计贡献：
+          </template>
+          {{ piggyLog.detail.Piggy.JackpotContributeTotal / 1000}}
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="piggyLog.detail.Piggy.awards" border title="中奖记录"  :row-style="changColor">
+        <el-table-column prop="typ" label="类型">
+          <template slot-scope="scope">{{piggyTypeOptions[ scope.row.typ] }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="消耗金币">
+          <template slot-scope="scope">{{  scope.row.moneyBet/1000  }}</template>
+        </el-table-column>
+        <el-table-column prop="cards" label="敲击时间" width="200px">
+          <template slot-scope="scope"> {{formatTime(scope.row.tapTime/1000)}}  </template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="剩余敲击次数">
+          <template slot-scope="scope">{{ scope.row.timesFree }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="敲击次数收益">
+          <template slot-scope="scope">{{ scope.row.timesIn }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="敲击倍数收益">
+          <template slot-scope="scope">{{ scope.row.oddsIn }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="下注金额">
+          <template slot-scope="scope">{{ scope.row.calcBet /1000}}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="JP等级">
+          <template slot-scope="scope">{{ scope.row.jackpotType }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="赢钱">
+          <template slot-scope="scope">{{ scope.row.moneyWon / 1000}}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="金币倍数">
+          <template slot-scope="scope">{{ scope.row.moneyOdds / 1000}}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="幸运转盘倍数">
+          <template slot-scope="scope">{{ scope.row.plateOdds / 1000}}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="转轴倍数">
+          <template slot-scope="scope">{{ scope.row.spinOdds / 1000}}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
@@ -1795,6 +1924,19 @@ export default {
       solitaireLog: {
         solitaireVisible: false,
         solitaireDetail: {},
+      },
+      piggyLog: {
+        visible: false,
+        detail: {},
+      },
+      piggyTypeOptions: {
+        1: '金币🪙',
+        2: '幸运转盘',
+        3: '转轴',
+        4: 'F次数',
+        5: 'N倍数',
+        10: 'JP',
+        20: '购买free game',
       },
       ConversionColorMap:{},
 
@@ -2157,6 +2299,8 @@ export default {
             $this.showSevenGame(obj)
           } else if (gid === 35) {
             $this.showSolitaire(obj)
+          }  else if (gid === 106) {
+            $this.showPiggy(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -2220,6 +2364,10 @@ export default {
     showSolitaire(obj) {
       this.solitaireLog.solitaireDetail=obj
       this.solitaireLog.solitaireVisible=true
+    },
+    showPiggy(obj){
+      this.piggyLog.detail=obj
+      this.piggyLog.visible=true
     },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
@@ -2842,6 +2990,30 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return '结果'
       } else {
         return '是否命中'
+      }
+    },
+    WinOrLoseColor(row) {
+      if (row > 0) {
+        return {
+          color: "red"
+        }
+      }
+      if (row < 0) {
+        return {
+          color: "green"
+        }
+      }
+    },
+    changColor({row}){
+      if (row.typ == "1") {
+        return {
+          color: "red"
+        }
+      }
+      if (row.typ == "2") {
+        return {
+          color: "#9205a6"
+        }
       }
     },
     showRoomLevel(level) {
