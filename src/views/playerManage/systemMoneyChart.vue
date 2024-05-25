@@ -271,7 +271,7 @@ export default {
         76: 'Candy Rush', 77: '糖果传奇Allline', 78: '超级宝石', 79: '糖果糖果Mars', 80: 'Candy Craze', 81: '超级宝石Mars', 82: '百万富翁', 83: '百万富翁Mars', // 这行老虎机
         28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Poker', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack',
-        105: 'Andar Bahar', 106: '金猪', 10000: '汇总' },
+        105: 'Andar Bahar', 106: 'PIGGY TAP', 10000: '汇总' },
 
       userVisible: false,
       users: [],
