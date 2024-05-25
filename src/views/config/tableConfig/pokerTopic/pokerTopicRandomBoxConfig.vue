@@ -377,6 +377,9 @@ export default {
               o.EndTime *= 1000
               o.MinMoney /= 1000
               o.MaxMoney /= 1000
+              for (const oElement of o.Boxes) {
+                oElement.IssueAmount /= 1000
+              }
             }
             this.$refs.compare.SetOldVal(response.Data.Data)
           }
@@ -421,6 +424,10 @@ export default {
 
         cfg.MinMoney = parseInt(cfg.MinMoney *  1000)
         cfg.MaxMoney = parseInt(cfg.MaxMoney * 1000)
+
+        for (const oElement of cfg.Boxes) {
+          oElement.IssueAmount *= 1000
+        }
       }
       return list
     },
