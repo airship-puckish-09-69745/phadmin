@@ -242,9 +242,7 @@
           </el-form>
         </el-col>
       </fieldset>
-      <el-col :span="24" :offset="4">
-        <el-button type="primary" @click="saveOne()">保存</el-button>
-      </el-col>
+        <el-button style="margin-left: 10%" type="primary" @click="saveOne()">保存</el-button>
     </el-dialog>
     <!--对比组件-->
     <compare ref="compare"/>
