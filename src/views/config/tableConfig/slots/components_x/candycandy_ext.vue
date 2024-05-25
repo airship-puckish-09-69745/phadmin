@@ -12,10 +12,6 @@
             <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容" />
           </el-form-item>
 
-          <el-form-item label="购买免费模式中奖倍数范围">
-            <el-input v-model="cfg.BuyFreeOddsRange" placeholder="请输入内容,如-2000,2000"> <template slot="append">两值用 , 连接</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
           </el-form-item>
