@@ -153,7 +153,7 @@ export default {
                 }
                 $this.tableData.push(response.Data[i])
             }
-
+          $this.tableData.splice(0,0)
         } else {
           $this.$message.error(response.Data)
         }
