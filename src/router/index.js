@@ -818,7 +818,7 @@ export const asyncRoutes = [
             path: 'candycandy_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandy_slots_log',
-            meta: { title: 'Candy Crazy', gid: 80 }
+            meta: { title: 'Candy Craze', gid: 80 }
           },
           {
             path: 'millionaire_slots_log',
