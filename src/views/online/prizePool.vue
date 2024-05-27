@@ -145,6 +145,7 @@ export default {
       }).then(response => {
         console.log('list response', response)
           var ignore =[4,5,7,8,9,13,14,18,19]
+        $this.tableData=[]
         if (response.RetCode === 0) {
             for (let i = 0; i < response.Data.length; i++) {
                 if(ignore.includes(response.Data[i].Gid)){
@@ -152,7 +153,7 @@ export default {
                 }
                 $this.tableData.push(response.Data[i])
             }
-            
+
         } else {
           $this.$message.error(response.Data)
         }
