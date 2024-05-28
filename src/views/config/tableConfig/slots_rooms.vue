@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       tableData: [],
-      slotsType: 51,
+      slotsType: 76,
       stMap: {},
       form: {
         SlotsType: 0,

@@ -27,6 +27,7 @@ export default {
   data() {
     return {
       options: [
+        /*
         { label: '凤凰老虎机', value: 51 },
         { label: '睡美人老虎机', value: 52 },
         { label: '小丑老虎机', value: 53 },
@@ -41,6 +42,7 @@ export default {
         { label: '侏罗纪老虎机', value: 62 },
         { label: '夺宝奇兵老虎机', value: 63 },
         { label: '植物大战僵尸老虎机', value: 64 },
+        */
         { label: '糖果传奇Way', value: 76 },
         { label: '糖果传奇Allline', value: 77 },
         { label: '超级宝石', value: 78 },
