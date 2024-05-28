@@ -948,6 +948,11 @@
                               </div>
                             </template>
                           </el-table-column>
+                          <el-table-column prop="item.Odds" label="未命中概率(-1 为命中 LuckyJP; -2 为命中 SuperJP;-3为命中MiniJP)">
+                            <template slot-scope="scope">
+                              <el-input v-model.number="scope.row.NoJackPotHitRates" type="number" placeholder="" />
+                            </template>
+                          </el-table-column>
                         </el-table>
                       </el-row>
                     </fieldset>
