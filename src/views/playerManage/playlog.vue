@@ -952,7 +952,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.SpinScore" />
+            <span v-html="formatNumber(scope.row.SpinScore /1000)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -961,7 +961,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Score" />
+            <span v-html="formatNumber(scope.row.Score /1000)" />
           </template>
         </el-table-column>
         <el-table-column
