@@ -737,7 +737,7 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-      // this.getRobotMap()
+      this.getRobotMap()
       // this.tableData.slice(0,this.tableData.length)
       // this.$forceUpdate()
     },
