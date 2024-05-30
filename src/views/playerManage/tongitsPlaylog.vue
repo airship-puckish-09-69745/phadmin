@@ -738,8 +738,8 @@ export default {
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
       this.getRobotMap()
-      // this.tableData.slice(0,this.tableData.length)
-      // this.$forceUpdate()
+      this.tableData.slice(0,this.tableData.length)
+      this.$forceUpdate()
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
