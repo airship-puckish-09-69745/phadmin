@@ -1117,6 +1117,26 @@ export const asyncRoutes = [
           }
         ]
       },
+      // {
+      //   path: 'genCode',
+      //   component: () => import('@/views/devTools/devTools'),
+      //   redirect: 'noRedirect',
+      //   meta: { title: '代码生成', icon: 'code' },
+      //   children: [
+      //     {
+      //       path: 'codeGenAdmin',
+      //       component: () => import('@/views/devTools/codeGen'),
+      //       name: 'CodeGenAdmin',
+      //       meta: { title: '生成代码（Admin)' }
+      //     },
+      //     {
+      //       path: 'codeGenRPCSQL',
+      //       component: () => import('@/views/devTools/codeGen'),
+      //       name: 'codeGenRPCSQL',
+      //       meta: { title: '生成代码（RPC_SQL)' }
+      //     }
+      //   ]
+      // },
       {
         path: 'subGameList',
         component: () => import('@/views/devTools/devTools'),
@@ -1137,6 +1157,20 @@ export const asyncRoutes = [
           }
         ]
       },
+      // {
+      //   path: 'gamePkgVersion',
+      //   component: () => import('@/views/devTools/devTools'),
+      //   redirect: 'noRedirect',
+      //   meta: { title: '游戏包版本配置', icon: 'code' },
+      //   children: [
+      //     {
+      //       path: 'game_pkg_versions',
+      //       component: () => import('@/views/config/tableConfig/gamePkgVersions'),
+      //       name: 'game_pkg_versions',
+      //       meta: { title: '包配置列表 ◐', noCache: true }
+      //     }
+      //   ]
+      // },
       {
         path: 'jsonViewer',
         component: () => import('@/views/devTools/jsonViewer'),
