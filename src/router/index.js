@@ -900,6 +900,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsBlackUserlog'),
             name: 'tongits_blackuserlog',
             meta: { title: '黑名单配桌日志 ◐' }
+          },
+          {
+            path: 'tongits_updatemoneylog',
+            component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
+            name: 'tongits_blackuserlog',
+            meta: { title: '机器人资产变更日志 ◐' }
           }
         ]
       },
