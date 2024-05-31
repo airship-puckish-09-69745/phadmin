@@ -102,6 +102,13 @@
         </el-row>
         <el-row>
           <el-col :span="11">
+            <el-form-item label="AppId白名单：" prop="item.AppWhitelist">
+              <el-input v-model="edit.item.AppWhitelist" placeholder="每个AppId以英文逗号相隔" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
             <el-form-item label="活动游戏ID：" :required="true" prop="item.Games">
               <el-select v-model="games" multiple placeholder="请选择" style="width: 400px" @change="onGameOptionsChange">
                 <el-option
@@ -189,7 +196,8 @@ function newItem() {
     ResetCycle: 7,
     Games: '',
     CycleNumber: '',
-    EntryCloseTime: Date.parse(new Date().toString())
+    EntryCloseTime: Date.parse(new Date().toString()),
+    AppWhitelist: ''
   }
 }
 
