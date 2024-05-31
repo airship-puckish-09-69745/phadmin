@@ -102,8 +102,8 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="AppId白名单：" :required="true" prop="item.AppWhitelist">
-              <el-input v-model="edit.item.AppWhitelist" placeholder="请输入" />
+            <el-form-item label="AppId白名单：" prop="item.AppWhitelist">
+              <el-input v-model="edit.item.AppWhitelist" placeholder="每个AppId以英文逗号相隔" />
             </el-form-item>
           </el-col>
         </el-row>
