@@ -165,14 +165,14 @@
           {{ formatNumber(scope.row.MoneyNow) }}
         </template>
       </el-table-column>
-      <el-table-column
-        label="耗时"
-        width="70"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.IsRobot }}
-        </template>
-      </el-table-column>
+<!--      <el-table-column-->
+<!--        label="耗时"-->
+<!--        width="70"-->
+<!--      >-->
+<!--        <template slot-scope="scope">-->
+<!--          {{ scope.row.IsRobot }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <el-table-column
         prop="WinRate"
