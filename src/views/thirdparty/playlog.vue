@@ -223,6 +223,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="real_jp"
+          label="real jackpot"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber((scope.row.real_jp || 0)/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="start_time"
           label="投注（开始）时间"
           width="150"
