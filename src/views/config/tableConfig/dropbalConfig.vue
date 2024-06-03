@@ -89,7 +89,7 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini" disabled/>
+                        <el-input v-model="scope.row.Id" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="中奖倍率">
@@ -174,7 +174,7 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini" disabled/>
+                        <el-input v-model="scope.row.Id" size="mini" />
                       </template>
                     </el-table-column>
 
