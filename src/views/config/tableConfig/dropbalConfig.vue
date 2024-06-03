@@ -89,13 +89,24 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini" />
+                        <el-input v-model="scope.row.Id" size="mini"/>
                       </template>
                     </el-table-column>
                     <el-table-column label="中奖倍率">
-                      <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Val" size="mini"/>
-                      </template>
+                        <el-table-column :label="'一球'">
+                          <template slot-scope="scope">
+                          <el-input v-model="scope.row.Val[0]" size="mini"/>
+                          </template>
+                        </el-table-column>
+                        <el-table-column :label="'两球'">
+                          <template slot-scope="scope">
+                            <el-input v-model="scope.row.Val[1]" size="mini"/>
+                          </template>
+                        </el-table-column>
+                        <el-table-column :label="'三球'">
+                          <template slot-scope="scope">
+                            <el-input v-model="scope.row.Val[2]" size="mini"/>
+                          </template></el-table-column>
                     </el-table-column>
                     <el-table-column label="操作">
                       <template slot-scope="scope">
@@ -174,7 +185,7 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini" />
+                        <el-input v-model="scope.row.Id" size="mini"/>
                       </template>
                     </el-table-column>
 
@@ -345,60 +356,63 @@
               <fieldset style="margin-top:10px">
                 <legend>jackpot奖池分布
                 </legend>
-              <el-table
-                ref="filterTable"
-                :data="JackpotCfg.JackpotCfg"
-                border
-                :header-cell-style="libShow.DefaultTableHeadClass"
-                :row-style="{height:'10px'}"
-                :cell-style="libShow.DefaultTableCell"
-                style="width: 100%"
-              >
-                <el-table-column
-                  type="index"
-                />
-                <el-table-column
-                  prop="TableMoney"
-                  label="类型"
+                <el-table
+                  ref="filterTable"
+                  :data="JackpotCfg.JackpotCfg"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
                 >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.Type" size="mini"/>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="MinMoneyBet"
-                  label="奖励占比"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.AwardRate" size="mini" ><template slot="append">%</template></el-input>
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="MaxMoneyBet"
-                  label="概率"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Rate" size="mini"/>
-                  </template>
-                </el-table-column>
-                <el-table-column label="操作">
-                  <template slot-scope="scope">
-                    <el-button
-                      size="mini"
-                      type="primary"
-                      @click="doAddDropbalJackpotCfgItem"
-                    >添加
-                    </el-button>
-                    <el-button type="danger" size="mini" @click="delDropbalJackpotCfgItem(scope.$index)">删除</el-button>
-                  </template>
+                  <el-table-column
+                    type="index"
+                  />
+                  <el-table-column
+                    prop="TableMoney"
+                    label="类型"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model="scope.row.Type" size="mini"/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="MinMoneyBet"
+                    label="奖励占比"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.AwardRate" size="mini">
+                        <template slot="append">%</template>
+                      </el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="MaxMoneyBet"
+                    label="概率"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.Rate" size="mini"/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button
+                        size="mini"
+                        type="primary"
+                        @click="doAddDropbalJackpotCfgItem"
+                      >添加
+                      </el-button>
+                      <el-button type="danger" size="mini" @click="delDropbalJackpotCfgItem(scope.$index)">删除
+                      </el-button>
+                    </template>
 
-                </el-table-column>
-              </el-table>
+                  </el-table-column>
+                </el-table>
               </fieldset>
             </el-col>
             <fieldset style="margin-top:10px">
-              <legend>jackpot每日限制        </legend>
-            <jackpot-day-limit :jackpot-rand-awards="RandAwards"/>
+              <legend>jackpot每日限制</legend>
+              <jackpot-day-limit :jackpot-rand-awards="RandAwards"/>
             </fieldset>
           </el-tab-pane>
         </el-tabs>
@@ -437,7 +451,7 @@ export default {
       subKey: 'gameDropbal',
       libShow: $libShow,
       showSetResultPage: false,
-      JackpotCfg:{},
+      JackpotCfg: {},
       resultForm: {
         one: 0,
         two: 0,
@@ -463,7 +477,7 @@ export default {
       if (!this.item.BetOptionsRate) {
         this.item.BetOptionsRate = []
       }
-      this.item.BetOptionsRate.push({Id: this.item.BetOptionsRate.length + 1, Val: 0})
+      this.item.BetOptionsRate.push({Id: this.item.BetOptionsRate.length + 1, Val: [0,0,0]})
     },
     delBetOptionsRate(index) {
       this.item.BetOptionsRate.splice(index, 1)
@@ -475,7 +489,9 @@ export default {
       }
 
       for (const j in this.item.BetOptionsRate) {
-        this.item.BetOptionsRate[j].Val /= 1000
+        for (const o in this.item.BetOptionsRate[j].Val) {
+          this.item.BetOptionsRate[j].Val[o] /= 1000
+        }
       }
 
 
@@ -508,7 +524,7 @@ export default {
               item['BetAreaOptions'] = []
               item.BetAreaOptions.push({Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0})
             }
-            this.JackpotCfg= item.JackpotCfg
+            this.JackpotCfg = item.JackpotCfg
             console.log('item', item.JackpotCfg)
             Object.assign(this.item, item)
 
@@ -526,6 +542,8 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
+      console.log("======",ret)
+
       let betItem = {}
       for (const o of this.item.LuckyPachinkoCfg) {
         o.Multiple *= 1000
@@ -534,15 +552,22 @@ export default {
         ret.BetMoneyLevel[i].MaxMoneyBet *= 1000
         ret.BetMoneyLevel[i].MinMoneyBet *= 1000
         betItem = []
-        for (const oElement of this.item.BetMoneyLevel[i].TableMoney.split(',')) {
-          betItem.push(oElement * 1000)
+        if ( this.item.BetMoneyLevel[i].TableMoney instanceof Array){
+          betItem=this.item.BetMoneyLevel[i].TableMoney
+        }else {
+          for (const oElement of this.item.BetMoneyLevel[i].TableMoney.split(',')) {
+            betItem.push(oElement * 1000)
+          }
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
       for (const o of ret.BetOptionsRate) {
-        o.Val *= 1000
+        console.log("==========",o)
+        for (const j in o.Val) {
+          o.Val[j] *= 1000
+        }
       }
-      ret.JackpotCfg=this.JackpotCfg
+      ret.JackpotCfg = this.JackpotCfg
       return ret
     },
 
@@ -602,13 +627,13 @@ export default {
         })
       })
     },
-    doAddDropbalJackpotCfgItem(){
+    doAddDropbalJackpotCfgItem() {
       if (!this.item.JackpotCfg.JackpotCfg) {
         this.item['JackpotCfg.JackpotCfg'] = []
       }
-      this.item.JackpotCfg.JackpotCfg.push({Type:0,AwardRate:0,Rate:0})
+      this.item.JackpotCfg.JackpotCfg.push({Type: 0, AwardRate: 0, Rate: 0})
     },
-    delDropbalJackpotCfgItem(index){
+    delDropbalJackpotCfgItem(index) {
       this.item.JackpotCfg.JackpotCfg.splice(index, 1)
     },
     doAddLuckyPachinkoCfg() {
