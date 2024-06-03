@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-
+    <el-button type="primary" size="mini" @click="addItem"> 添加</el-button>
     <el-table
       ref="filterTable"
       :data="JackpotRandAwards"
@@ -232,6 +232,10 @@ export default {
   },
   methods: {
     initData() {
+    },
+    addItem(){
+      var item = JSON.parse(JSON.stringify(this.JackpotRandAwards[0]))
+      this.JackpotRandAwards.push(item)
     },
     savePoolNum() {
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {

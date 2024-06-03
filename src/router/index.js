@@ -367,6 +367,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/UpDownTable'),
             name: 'UpDown',
             meta: { title: '7Up7Down ◐' }
+          },
+          {
+            path: 'Dropbal_cfg',
+            component: () => import('@/views/config/tableConfig/dropbalConfig'),
+            name: 'Dropbal_cfg',
+            meta: { title: 'Dropbal ◐' }
           }
         ]
       },

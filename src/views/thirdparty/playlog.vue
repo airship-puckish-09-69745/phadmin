@@ -138,7 +138,12 @@
           width="80"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+            <span v-if="scope.row.game_type===2">
+              {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+            </span>
+            <span v-else>
+              {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
