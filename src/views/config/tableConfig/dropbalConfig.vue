@@ -353,66 +353,16 @@
               </el-form>
             </el-col>
             <el-col>
-              <fieldset style="margin-top:10px">
-                <legend>jackpot奖池分布
-                </legend>
-                <el-table
-                  ref="filterTable"
-                  :data="JackpotCfg.JackpotCfg"
-                  border
-                  :header-cell-style="libShow.DefaultTableHeadClass"
-                  :row-style="{height:'10px'}"
-                  :cell-style="libShow.DefaultTableCell"
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    type="index"
-                  />
-                  <el-table-column
-                    prop="TableMoney"
-                    label="类型"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.Type" size="mini"/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="MinMoneyBet"
-                    label="奖励占比"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.AwardRate" size="mini">
-                        <template slot="append">%</template>
-                      </el-input>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    prop="MaxMoneyBet"
-                    label="概率"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Rate" size="mini"/>
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作">
-                    <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type="primary"
-                        @click="doAddDropbalJackpotCfgItem"
-                      >添加
-                      </el-button>
-                      <el-button type="danger" size="mini" @click="delDropbalJackpotCfgItem(scope.$index)">删除
-                      </el-button>
-                    </template>
 
-                  </el-table-column>
-                </el-table>
-              </fieldset>
             </el-col>
             <fieldset style="margin-top:10px">
               <legend>jackpot每日限制</legend>
               <jackpot-day-limit :jackpot-rand-awards="RandAwards"/>
+            </fieldset>
+
+            <fieldset style="margin-top:10px">
+              <legend>jackpot奖池增长</legend>
+              <jackpot-increase :pool-incr-arr="PoolIncrArr"/>
             </fieldset>
           </el-tab-pane>
         </el-tabs>
@@ -439,10 +389,11 @@ import {$libShow, DataRule} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from "@/views/config/components/robotOnlineItems.vue";
 import JackpotDayLimit from "@/views/config/components/jackpotDayLimit.vue";
+import JackpotIncrease from "@/views/config/components/jackpotIncrease.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {JackpotDayLimit, RobotOnlineItems, Compare, Publish, BetAmount},
+  components: {JackpotIncrease, JackpotDayLimit, RobotOnlineItems, Compare, Publish, BetAmount},
   data() {
     return {
       RandAwards: [],
@@ -452,6 +403,7 @@ export default {
       libShow: $libShow,
       showSetResultPage: false,
       JackpotCfg: {},
+        PoolIncrArr:[],
       resultForm: {
         one: 0,
         two: 0,
@@ -525,8 +477,9 @@ export default {
               item.BetAreaOptions.push({Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0})
             }
             this.JackpotCfg = item.JackpotCfg
-            console.log('item', item.JackpotCfg)
+            this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
             Object.assign(this.item, item)
+            console.log('item',  this.PoolIncrArr)
 
             this.transMoneyForShow()
             // 设置修改之前数据
@@ -545,7 +498,7 @@ export default {
       console.log("======",ret)
 
       let betItem = {}
-      for (const o of this.item.LuckyPachinkoCfg) {
+      for (const o of ret.LuckyPachinkoCfg) {
         o.Multiple *= 1000
       }
       for (const i in this.item.BetMoneyLevel) {
