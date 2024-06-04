@@ -619,7 +619,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="cards" label="手牌" width="400px">
+        <el-table-column prop="cards" label="手牌" width="300px">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroups" class="block">
               <hr v-if="index > 0" class="blackJackHr"/>
@@ -634,7 +634,7 @@
           </template>
 
         </el-table-column>
-        <el-table-column label="是否爆牌">
+        <el-table-column label="是否爆牌" width="200px">
                 <template slot-scope="scope">
                   <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
                     <hr v-if="index > 0" class="blackJackHr"/>
