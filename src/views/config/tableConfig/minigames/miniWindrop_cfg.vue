@@ -758,7 +758,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="费率(‰)：">
+            <el-form-item label="保底奖池抽水(‰)：">
               <el-input v-model.number="cfg.FeeRate" placeholder="" />
             </el-form-item>
           </el-row>

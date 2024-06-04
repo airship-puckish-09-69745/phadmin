@@ -786,6 +786,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_piggy',
             meta: { title: 'Piggy Tap ◐', gid: 106 }
+          },
+          {
+            path: 'playlog_baccarat',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_baccarat',
+            meta: { title: 'Baccarat ◐', gid: 107 }
           }
         ]
       },
