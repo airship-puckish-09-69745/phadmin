@@ -1194,7 +1194,7 @@
     </el-dialog>
 
     <el-dialog
-      title="骰宝牌局详情"
+      title="Andar Bahar牌局详情"
       :visible.sync="miniAbGameVisible"
       width="50%"
     >

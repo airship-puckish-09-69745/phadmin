@@ -182,7 +182,7 @@
 
       <el-table-column
         prop="IsRobot"
-        label="机器人类型"
+        label="玩家类型"
         width="120px"
       >
         <template slot-scope="scope">

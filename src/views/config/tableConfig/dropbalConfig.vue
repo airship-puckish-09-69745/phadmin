@@ -515,7 +515,7 @@ export default {
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
       for (const o of ret.BetOptionsRate) {
-        console.log("==========",o)
+        o.Id=parseInt(o.Id)
         for (const j in o.Val) {
           o.Val[j] *= 1000
         }
