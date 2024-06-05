@@ -30,6 +30,8 @@
               <el-option label="糖果糖果" :value="80" />
               <el-option label="百万富翁" :value="82" />
               <el-option label="百万富翁Mars" :value="83" />
+              <el-option label="超级王牌" :value="84" />
+              <el-option label="超级王牌Mars" :value="85" />
             </el-select>
           </el-form-item>
 

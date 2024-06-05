@@ -408,6 +408,13 @@ export const asyncRoutes = [
                 meta: { title: '百万富翁' }
               },
               {
+                path: 'superace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
+                name: 'superace_slots_cfg',
+                meta: { title: '超级王牌' }
+              }
+              /*
+              {
                 path: 'beauty_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
                 name: 'beauty_slots_cfg',
@@ -420,6 +427,7 @@ export const asyncRoutes = [
                 name: 'phoenix_slots_cfg',
                 meta: { title: 'Phoenix - 凤凰' }
               }
+              */
             ]
           },
           {
@@ -452,6 +460,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
                 name: 'millionairemars_slots_cfg',
                 meta: { title: '百万富翁(审)' }
+              },
+              {
+                path: 'superacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
+                name: 'superacemars_slots_cfg',
+                meta: { title: '超级王牌(审)' }
               }
             ]
           },
