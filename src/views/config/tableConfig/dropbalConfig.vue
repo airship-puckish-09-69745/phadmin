@@ -185,7 +185,7 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini"/>
+                        <el-input v-model.number="scope.row.Id" size="mini"/>
                       </template>
                     </el-table-column>
 
