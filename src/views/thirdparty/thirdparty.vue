@@ -284,7 +284,7 @@ export default {
   data() {
     return {
       tableData: [],
-      statNames: { 0: '正常', 2: '上架', 6: '上架', 1: '关闭', 7: '预上架', 8: '预下架' },
+      statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       screenNames: { 'horizontal': '横屏', 'vertical': '竖屏' },
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',

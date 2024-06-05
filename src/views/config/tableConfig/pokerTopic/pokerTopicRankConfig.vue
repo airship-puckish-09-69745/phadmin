@@ -246,30 +246,7 @@ export default {
 
       },
       selectGid: 0,
-      taskOptions: {
-        1: '参与游戏 Tongits',
-        2: '获胜',
-        3: '发起「Fight」并获胜',
-        4: '获胜时持有「A」或「K」',
-        5: '结算时手牌持有「Special Meld」（同花顺、四条）',
-        6: '通过「Tongits」获胜',
-        11: '参与游戏 Pusoy',
-        12: '获胜',
-        13: 'PUSOY其他玩家并获胜',
-        14: '获胜时持有「Straight Flush」或「Four of a Kind」',
-        15: '透过「NATURALS」获胜（Three Straight、Three Flush、6 Pairs、Dragon）',
-        16: '以「全垒打」获胜',
-        21: '参与游戏 Lucky9',
-        22: '获胜',
-        23: '获胜时以3张手牌9点获胜',
-        24: '以「Lucky9 」获胜',
-        31: '参与游戏 Texas',
-        32: '获胜',
-        33: '透过「High Card」获胜',
-        34: '开出「Flush」或「Straight」',
-        35: '开出「Four of a Kind」或「Full House」',
-        36: '开出「Straight Flush」'
-      },
+
       gameOptions: {}
     }
   },
@@ -365,14 +342,15 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            console.log('====', cfg)
             this.OverallRankRewardsCfg = cfg.OverallRankRewards
             this.SubRankRewardsCfg = cfg.SubRankRewards
-            // $this.clientDB = new ClientTableData(cfg, 10, filterMap, "", -1)
-            // $this.clientDBOver = new ClientTableData(OverallRankRewardsCfg, 10, filterMap, "", -1)
-            // $this.clientDBSub = new ClientTableData(SubRankRewardsCfg, 10, filterMap, "", -1)
+            for (const o of this.OverallRankRewardsCfg) {
+                o.Reward /= 1000
+            }
+            for (const o of this.SubRankRewardsCfg) {
+                o.Reward /= 1000
+            }
             this.$refs.compare.SetOldVal(response.Data.Data)
-            console.log('====', response.Data.Data)
             $this.handleCurrentChange(1)
             this.refresh()
           }
@@ -410,9 +388,16 @@ export default {
       })
     },
     getCfg() {
+
       const obj = {
-        OverallRankRewards: this.OverallRankRewardsCfg,
-        SubRankRewards: this.SubRankRewardsCfg
+        OverallRankRewards:JSON.parse(JSON.stringify(this.OverallRankRewardsCfg)) ,
+        SubRankRewards: JSON.parse(JSON.stringify(this.SubRankRewardsCfg))
+      }
+      for (const o of obj.OverallRankRewards) {
+        o.Reward = parseInt(o.Reward*1000)
+      }
+      for (const o of obj.SubRankRewards) {
+        o.Reward = parseInt(o.Reward*1000)
       }
       return obj
     },

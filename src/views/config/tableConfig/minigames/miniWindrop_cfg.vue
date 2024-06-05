@@ -758,7 +758,7 @@
             </el-form-item>
           </el-row>
           <el-row>
-            <el-form-item label="费率(‰)：">
+            <el-form-item label="保底奖池抽水(‰)：">
               <el-input v-model.number="cfg.FeeRate" placeholder="" />
             </el-form-item>
           </el-row>
@@ -946,6 +946,11 @@
                                   <el-input v-model.number="scope.row.HitRates" type="number" placeholder="" />
                                 </el-form-item>
                               </div>
+                            </template>
+                          </el-table-column>
+                          <el-table-column prop="item.Odds" label="命中概率(-1 为命中 LuckyJP; -2 为命中 SuperJP;-3为命中MiniJP)">
+                            <template slot-scope="scope">
+                              <el-input v-model.number="scope.row.NoJackPotHitRates" type="number" placeholder="" />
                             </template>
                           </el-table-column>
                         </el-table>

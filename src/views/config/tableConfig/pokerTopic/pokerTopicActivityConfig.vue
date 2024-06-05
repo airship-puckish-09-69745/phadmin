@@ -15,6 +15,7 @@
       <el-table ref="filterTable" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%" @row-click="clickData" @sort-change="sortChange">
         <el-table-column prop="ID" label="ID" sortable="custom" width="80" />
         <el-table-column prop="TopicName" label="主题名称" width="200" />
+        <el-table-column prop="CycleNumber" label="周期编号" width="100" />
         <el-table-column prop="StartTime" label="开始时间" width="180">
           <template slot-scope="scope">
             {{ formatTime(scope.row.StartTime) }}
@@ -25,7 +26,12 @@
             {{ formatTime(scope.row.EndTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="ResetCycle" label="重置周期（天）" width="130" />
+        <el-table-column prop="EndTime" label="入口关闭时间" sortable="custom" width="180">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.EntryCloseTime) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="ResetCycle" label="周期天数" width="80" />
         <el-table-column prop="UpdateTime" label="最近修改" width="180">
           <template slot-scope="scope">
             {{ formatTime(scope.row.UpdateTime) }}
@@ -45,7 +51,7 @@
             <el-button v-if="scope.row.Status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)">上架 </el-button>
             <el-button v-if="scope.row.Status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
             <el-button v-if="scope.row.Status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)">下架 </el-button>
-            <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="showCyclesDialog(scope.row)">周期 </el-button>
+            <!--<el-button type="primary" size="mini" icon="el-icon-document-copy" @click="showCyclesDialog(scope.row)">周期 </el-button>-->
           </template>
         </el-table-column>
       </el-table>
@@ -74,16 +80,30 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="结束时间：">
-              <el-date-picker v-model="endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
+              <el-date-picker v-model="endTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" @change="onEndTimeChange" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="重置周期：" prop="item.ResetCycle" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.ResetCycle" placeholder="请输入">
+            <el-form-item label="入口关闭时间：">
+              <el-date-picker v-model="entryCloseTime" type="datetime" placeholder="选择关闭时间" value-format="timestamp" size="mini" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="周期天数：" prop="item.ResetCycle" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.ResetCycle" readonly>
                 <template slot="append">天</template>
               </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="AppId白名单：" prop="item.AppWhitelist">
+              <el-input v-model="edit.item.AppWhitelist" placeholder="每个AppId以英文逗号相隔" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -174,7 +194,10 @@ function newItem() {
     StartTime: Date.parse(new Date().toString()),
     EndTime: Date.parse(new Date().toString()),
     ResetCycle: 7,
-    Games: ''
+    Games: '',
+    CycleNumber: '',
+    EntryCloseTime: Date.parse(new Date().toString()),
+    AppWhitelist: ''
   }
 }
 
@@ -230,13 +253,16 @@ export default {
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString()) + 86400 * 7 * 1000,
       games: [15, 21, 22, 23],
+      entryCloseTime: Date.parse(new Date().toString()) + 86400 * 7 * 1000,
 
       AttrNames: {
         TopicName: '专题名称',
         StartTime: '开始时间',
         EndTime: '结束时间',
         ResetCycle: '重置周期',
-        Games: '游戏ID'
+        Games: '游戏ID',
+        CycleNumber: '周期编号',
+        EntryCloseTime: '入口关闭时间'
       },
       CyclesAttrNames: {
         ID: 'ID',
@@ -284,6 +310,19 @@ export default {
     onGameOptionsChange() {
       console.log('selected games', this.games)
       this.edit.item.Games = this.games.join(',')
+    },
+
+    onEndTimeChange(val) {
+      if (val < this.startTime) {
+        this.endTime = this.edit.item.EndTime * 1000
+        this.$alert('结束时间不能小于开始时间：' + new Date(this.startTime).Format('yyyy-MM-dd HH:mm:ss'), '活动周期')
+        return
+      }
+      if (val > this.entryCloseTime) {
+        this.entryCloseTime = val
+      }
+      this.edit.item.ResetCycle = parseInt((this.endTime - this.startTime + 1000) / 1000 / 86400)
+      console.log('onEndTimeChange', val)
     },
 
     sortChange(ob) {
@@ -572,6 +611,7 @@ export default {
           Object.assign(this.edit.item, _data)
           this.startTime = this.edit.item.StartTime * 1000
           this.endTime = this.edit.item.EndTime * 1000
+          this.entryCloseTime = this.edit.item.EntryCloseTime * 1000
           this.games = []
           const games = this.edit.item.Games.split(',')
           for (const i in games) {
@@ -622,6 +662,8 @@ export default {
       const postData = this.libMoney.TransForStore(this.edit.item)
       postData.StartTime = this.startTime / 1000
       postData.EndTime = this.endTime / 1000
+      postData.EntryCloseTime = this.entryCloseTime / 1000
+      postData.CycleNumber = new Date(this.startTime).Format('yyyyMMdd')
       postData.Games = this.games
       console.log('dataToPost ', postData)
       return postData
@@ -639,6 +681,7 @@ export default {
 
       this.edit.item.StartTime = this.startTime / 1000
       this.edit.item.EndTime = this.endTime / 1000
+      this.edit.item.EntryCloseTime = this.entryCloseTime / 1000
       this.edit.item.Games = this.games.join(',')
       if (this.edit.isEdit) {
         // 设置修改后数据

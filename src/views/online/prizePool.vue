@@ -144,7 +144,7 @@ export default {
         }
       }).then(response => {
         console.log('list response', response)
-          var ignore =[4,5,7,8,9,13,14,18,19]
+          var ignore =[3,4,5,7,8,9,13,14,18,19]
         $this.tableData=[]
         if (response.RetCode === 0) {
             for (let i = 0; i < response.Data.length; i++) {

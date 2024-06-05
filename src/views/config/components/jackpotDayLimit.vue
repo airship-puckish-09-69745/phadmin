@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-
+    <el-button type="primary" size="mini" @click="addItem"> 添加</el-button>
     <el-table
       ref="filterTable"
       :data="JackpotRandAwards"
@@ -11,9 +11,10 @@
       style="width: 100%"
     >
       <el-table-column type="index" />
-      <el-table-column label="奖励类型(Type)" prop="JackpotType">
+      <el-table-column label="奖励类型" prop="JackpotType">
         <template slot-scope="scope">
-          {{ JackpotTypeCfg[scope.row.JackpotType] }}
+          <el-input v-model.number="scope.row.JackpotType" style="width: 150px;" size="mini" :required="true" />
+<!--          {{ JackpotTypeCfg[scope.row.JackpotType] }}-->
         </template>
       </el-table-column>
 
@@ -232,6 +233,10 @@ export default {
   },
   methods: {
     initData() {
+    },
+    addItem(){
+      var item = JSON.parse(JSON.stringify(this.JackpotRandAwards[0]))
+      this.JackpotRandAwards.push(item)
     },
     savePoolNum() {
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {

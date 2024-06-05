@@ -367,6 +367,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/UpDownTable'),
             name: 'UpDown',
             meta: { title: '7Up7Down ◐' }
+          },
+          {
+            path: 'Dropbal_cfg',
+            component: () => import('@/views/config/tableConfig/dropbalConfig'),
+            name: 'Dropbal_cfg',
+            meta: { title: 'Dropbal ◐' }
           }
         ]
       },
@@ -794,6 +800,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_piggy',
             meta: { title: 'Piggy Tap ◐', gid: 106 }
+          },
+          {
+            path: 'playlog_baccarat',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_baccarat',
+            meta: { title: 'Baccarat ◐', gid: 107 }
           }
         ]
       },
@@ -914,6 +926,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsBlackUserlog'),
             name: 'tongits_blackuserlog',
             meta: { title: '黑名单配桌日志 ◐' }
+          },
+          {
+            path: 'tongits_updatemoneylog',
+            component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
+            name: 'tongits_blackuserlog',
+            meta: { title: '机器人资产变更日志 ◐' }
           }
         ]
       },
@@ -1125,6 +1143,26 @@ export const asyncRoutes = [
           }
         ]
       },
+      // {
+      //   path: 'genCode',
+      //   component: () => import('@/views/devTools/devTools'),
+      //   redirect: 'noRedirect',
+      //   meta: { title: '代码生成', icon: 'code' },
+      //   children: [
+      //     {
+      //       path: 'codeGenAdmin',
+      //       component: () => import('@/views/devTools/codeGen'),
+      //       name: 'CodeGenAdmin',
+      //       meta: { title: '生成代码（Admin)' }
+      //     },
+      //     {
+      //       path: 'codeGenRPCSQL',
+      //       component: () => import('@/views/devTools/codeGen'),
+      //       name: 'codeGenRPCSQL',
+      //       meta: { title: '生成代码（RPC_SQL)' }
+      //     }
+      //   ]
+      // },
       {
         path: 'subGameList',
         component: () => import('@/views/devTools/devTools'),
@@ -1145,6 +1183,20 @@ export const asyncRoutes = [
           }
         ]
       },
+      // {
+      //   path: 'gamePkgVersion',
+      //   component: () => import('@/views/devTools/devTools'),
+      //   redirect: 'noRedirect',
+      //   meta: { title: '游戏包版本配置', icon: 'code' },
+      //   children: [
+      //     {
+      //       path: 'game_pkg_versions',
+      //       component: () => import('@/views/config/tableConfig/gamePkgVersions'),
+      //       name: 'game_pkg_versions',
+      //       meta: { title: '包配置列表 ◐', noCache: true }
+      //     }
+      //   ]
+      // },
       {
         path: 'jsonViewer',
         component: () => import('@/views/devTools/jsonViewer'),
