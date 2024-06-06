@@ -15,12 +15,12 @@
             width="150"
           >
             <template slot-scope="scope">
-            <span v-if="scope.row.Gid===37">
+              <span v-if="scope.row.Gid===37">
                 {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-            </span>
+              </span>
               <span v-else>
                 {{ getGameName(scope.row.Gid) }}
-            </span>
+              </span>
             </template>
           </el-table-column>
           <el-table-column
@@ -144,16 +144,16 @@ export default {
         }
       }).then(response => {
         console.log('list response', response)
-          var ignore =[3,4,5,7,8,9,13,14,18,19]
-        $this.tableData=[]
+        var ignore = [3, 4, 5, 7, 8, 9, 13, 14, 18, 19]
+        $this.tableData = []
         if (response.RetCode === 0) {
-            for (let i = 0; i < response.Data.length; i++) {
-                if(ignore.includes(response.Data[i].Gid)){
-                    continue
-                }
-                $this.tableData.push(response.Data[i])
+          for (let i = 0; i < response.Data.length; i++) {
+            if (ignore.includes(response.Data[i].Gid)) {
+              continue
             }
-          $this.tableData.splice(0,0)
+            $this.tableData.push(response.Data[i])
+          }
+          $this.tableData.splice(0, 0)
         } else {
           $this.$message.error(response.Data)
         }
