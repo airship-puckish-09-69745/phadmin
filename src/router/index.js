@@ -815,6 +815,7 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: 'Slots - 老虎机', noCache: true },
         children: [
+          /*
           {
             path: 'beauty_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -827,6 +828,7 @@ export const asyncRoutes = [
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
           },
+          */
           {
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -851,6 +853,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionaire_slots_log',
             meta: { title: '百万富翁', gid: 82 }
+          },
+          {
+            path: 'superace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'superace_slots_log',
+            meta: { title: '超级王牌', gid: 82 }
           }
         ]
       },
@@ -878,12 +886,17 @@ export const asyncRoutes = [
             name: 'candycandymars_slots_log',
             meta: { title: '糖果糖果(审)', gid: 79 }
           },
-
           {
             path: 'millionairemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionairemars_slots_log',
             meta: { title: '百万富翁(审)', gid: 83 }
+          },
+          {
+            path: 'superacemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'superacemars_slots_log',
+            meta: { title: '超级王牌(审)', gid: 85 }
           }
         ]
       },
