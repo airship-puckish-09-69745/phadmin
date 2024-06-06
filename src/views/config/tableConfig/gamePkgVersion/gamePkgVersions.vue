@@ -19,11 +19,22 @@
           <el-button
             size="mini"
             type="primary"
+            plain
             icon="el-icon-plus"
-            @click="handleCreateLobby()"
-          >添加大厅版本
+            @click="handleCopyList()"
+          >复制配置列表到新大厅版本
           </el-button>
         </el-form-item>
+        <!--        <el-form-item>-->
+        <!--          <el-button-->
+        <!--            size="mini"-->
+        <!--            type="primary"-->
+        <!--            icon="el-icon-plus"-->
+        <!--            plain-->
+        <!--            @click="handleCreateLobby()"-->
+        <!--          >添加大厅版本-->
+        <!--          </el-button>-->
+        <!--        </el-form-item>-->
       </el-form>
     </el-row>
     <el-row>
@@ -35,16 +46,6 @@
             icon="el-icon-plus"
             @click="handleCreate()"
           >添加配置项
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            icon="el-icon-plus"
-            @click="handleCopyList()"
-          >复制配置列表到新大厅版本
           </el-button>
         </el-form-item>
         <el-form-item>
@@ -69,34 +70,36 @@
           prop="ID"
           label="ID"
           sortable="custom"
-          width="90"
+          width="70"
+        />
+        <el-table-column
+          prop="PkgName"
+          label="包名"
+          sortable="custom"
+          width="150"
         />
         <el-table-column
           prop="BundleKey"
-          label="包名"
+          label="包KEY"
           sortable="custom"
-          width="180"
+          width="150"
         />
         <el-table-column
           prop="GamePkgVersion"
           label="版本号"
           sortable="custom"
-          width="180"
+          width="120"
         />
         <el-table-column
-          prop="IsWhite"
-          label="是否白名单"
-          width="150"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.IsWhite === 1 ? '是' : '否' }}
-          </template>
-        </el-table-column>
+          prop="WhiteVersion"
+          label="白名单版本号"
+          width="120"
+        />
         <el-table-column
           prop="LastModify"
           label="最近修改"
           sortable="custom"
-          width="180"
+          width="160"
         >
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
@@ -119,7 +122,7 @@
         <el-table-column
           label="操作"
           column-key="op"
-          width="250"
+          width="300"
         >
           <template slot-scope="scope">
             <el-button
@@ -150,6 +153,12 @@
               @click="handleOffline(scope.row)"
             >下架
             </el-button>
+            <el-button
+              size="mini"
+              type="success"
+              icon="el-icon-view"
+              @click="viewHistory(scope.row)"
+            >查看历史</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -157,7 +166,7 @@
         <div class="block">
           <el-pagination
             :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 40, 80]"
+            :page-sizes="[40, 60, 80, 100]"
             :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
             :total="clientDB.GetPage().GetTotalCount()"
@@ -176,34 +185,39 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label-width="0" :required="true" :hide-required-asterisk="true" prop="LobbyVersionID">
           <el-col :span="0">
-            <el-input v-model="edit.item.LobbyVersionID" />
+            <el-input v-model="edit.item.LobbyVersionID" :disabled="true" />
           </el-col>
         </el-form-item>
         <el-form-item label-width="0" :required="true" :hide-required-asterisk="true" prop="LobbyVersion">
           <el-col :span="0">
-            <el-input v-model="edit.item.LobbyVersion" />
+            <el-input v-model="edit.item.LobbyVersion" :disabled="true" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="包名：" :required="true" prop="PkgName">
+          <el-col :span="15">
+            <el-input v-model="edit.item.PkgName" />
           </el-col>
         </el-form-item>
         <el-form-item label="包Key：" :required="true" prop="BundleKey">
           <el-col :span="15">
-            <el-input v-model="edit.item.BundleKey" />
+            <el-input v-model="edit.item.BundleKey" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
         <el-form-item label="版本号：" :required="true" prop="GamePkgVersion">
           <el-col :span="15">
-            <el-input v-model="edit.item.GamePkgVersion" />
+            <el-input v-model="edit.item.GamePkgVersion" placeholder="格式： 1.0.0.0" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
-        <el-form-item label="是否需要白名单：" :required="true" prop="IsWhite">
-          <el-col :span="15">
-            <el-select v-model="edit.item.IsWhite" placeholder="请选择" required="true">
-              <el-option
-                v-for="item in isOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
+        <el-form-item label="白名单版本号：">
+          <el-col :span="11">
+            <el-form-item prop="WhiteVersion">
+              <el-input v-model="edit.item.WhiteVersion" placeholder="格式： 1.0.0.0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item>
+              <el-button type="success" size="mini" @click="publishWhiteVersion()">发布</el-button>
+            </el-form-item>
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -251,7 +265,7 @@
         <el-form-item>
           <el-row>
             <el-col>
-              <span style="font-weight: bolder">注意：只复制上架状态的配置；复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上。</span>
+              <span style="font-weight: bolder">注意：只复制上架状态且最新编辑的配置；复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上。</span>
             </el-col>
           </el-row>
           <el-row>
@@ -261,6 +275,93 @@
           </el-row>
         </el-form-item>
       </el-form>
+    </el-dialog>
+    <el-dialog
+      title="版本历史"
+      width="80%"
+      :visible.sync="versionHistoryVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-table
+        ref="filterTable"
+        :data="historyVersions"
+        stripe
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+        @sort-change="sortChange"
+      >
+        <el-table-column
+          prop="ID"
+          label="ID"
+          sortable="custom"
+          width="70"
+        />
+        <el-table-column
+          prop="PkgName"
+          label="包名"
+          sortable="custom"
+          width="150"
+        />
+        <el-table-column
+          prop="BundleKey"
+          label="包KEY"
+          sortable="custom"
+          width="150"
+        />
+        <el-table-column
+          prop="GamePkgVersion"
+          label="版本号"
+          sortable="custom"
+          width="120"
+        />
+        <el-table-column
+          prop="WhiteVersion"
+          label="白名单版本号"
+          width="120"
+        />
+        <el-table-column
+          prop="LastModify"
+          label="最近修改"
+          sortable="custom"
+          width="160"
+        >
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.LastModify) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ModifyUser"
+          label="最后修改人"
+          width="100"
+        />
+        <el-table-column
+          prop="Status"
+          label="状态"
+          width="70"
+        >
+          <template slot-scope="scope">
+            {{ statNames[scope.row.Status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          column-key="op"
+          width="150"
+        >
+          <template slot-scope="scope">
+            <el-button
+              type="primary"
+              size="mini"
+              @click="useThisVersion(scope.row)"
+            >使用该版本
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
@@ -282,6 +383,8 @@ export default {
   data() {
     return {
       tableData: [],
+      historyMap: {},
+      historyVersions: [],
       lobbyVersions: [],
       LobbyVersionID: 0,
       LobbyVersion: '',
@@ -305,6 +408,7 @@ export default {
         copyLobbyItem: this.newCopyLobbyItem()
       },
       isDisabled: false,
+      versionHistoryVisible: false,
       rules: {
         LobbyVersionID: [{ required: true, trigger: 'blur' }],
         GamePkgVersion: [{ required: true, trigger: 'blur' }],
@@ -314,9 +418,10 @@ export default {
       AttrNames: {
         LobbyVersionID: '大厅版本ID',
         LobbyVersion: '大厅版本',
+        PkgName: '包名',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
-        IsWhite: '是否白名单验证'
+        WhiteVersion: '游戏包白名单版本'
       }
     }
   },
@@ -331,7 +436,7 @@ export default {
   },
   methods: {
     newItem() {
-      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', IsWhite: 0, Status: 7 }
+      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', PkgName: '', WhiteVersion: '', Status: 7 }
     },
     newLobbyItem() {
       return { LobbyVersion: '' }
@@ -413,9 +518,11 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          const objs = response.Data || []
-          this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
+          console.log('response.Data:', response.Data)
+          const objs = response.Data.Data || []
+          this.clientDB = new ClientTableData(objs, 40, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
+          this.historyMap = response.Data.HistoryMap || {}
         }
       })
     },
@@ -462,6 +569,51 @@ export default {
         })
       }).catch(() => {
         console.log('取消')
+      })
+    },
+    viewHistory(ob) {
+      const key = ob.LobbyVersion + '##' + ob.BundleKey
+      this.historyVersions = []
+      if (this.historyMap[key] && this.historyMap[key].length > 0) {
+        for (let i = 0; i < this.historyMap[key].length; i++) {
+          const item = this.historyMap[key][i]
+          this.historyVersions.push(item)
+        }
+      }
+      this.versionHistoryVisible = true
+    },
+    useThisVersion(ob) {
+      this.$confirm('该操作将使用版本' + ob.GamePkgVersion + ', 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const _data = {
+          ID: ob.ID,
+          BundleKey: ob.BundleKey,
+          LobbyVersion: ob.LobbyVersion,
+          LobbyVersionID: ob.LobbyVersionID,
+          GamePkgVersion: ob.GamePkgVersion,
+          PkgName: ob.PkgName,
+          Status: ob.Status,
+          WhiteVersion: ob.WhiteVersion
+        }
+        request({
+          url: '/gamepkgversions/update',
+          method: 'post',
+          data: _data
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.versionHistoryVisible = false
+            this.getList()
+            Message.success('保存成功！')
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
       })
     },
     //* * ********************** 修改/添加弹框相关 *****************
@@ -618,6 +770,21 @@ export default {
       } else {
         this.createSave(this.getPostData())
       }
+      this.edit.visible = false
+    },
+    publishWhiteVersion() {
+      if (!this.checkData()) return
+      const _data = this.getPostData()
+      _data.ID = 0
+      _data.GamePkgVersion = _data.WhiteVersion.trim()
+      _data.WhiteVersion = ''
+
+      console.log(_data)
+      if (_data.GamePkgVersion === '') {
+        Message.error('游戏包版本不能为空')
+        return
+      }
+      this.createSave(_data)
       this.edit.visible = false
     },
     saveLobbyVersion() {
