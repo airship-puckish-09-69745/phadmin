@@ -19,10 +19,10 @@
           <el-button
             size="mini"
             type="primary"
-            icon="el-icon-plus"
             plain
-            @click="handleCreateLobby()"
-          >添加大厅版本
+            icon="el-icon-plus"
+            @click="handleCopyList()"
+          >复制配置列表到新大厅版本
           </el-button>
         </el-form-item>
         <!--        <el-form-item>-->
@@ -30,8 +30,9 @@
         <!--            size="mini"-->
         <!--            type="primary"-->
         <!--            icon="el-icon-plus"-->
-        <!--            @click="handleWhiteList()"-->
-        <!--          >添加白名单-->
+        <!--            plain-->
+        <!--            @click="handleCreateLobby()"-->
+        <!--          >添加大厅版本-->
         <!--          </el-button>-->
         <!--        </el-form-item>-->
       </el-form>
@@ -45,16 +46,6 @@
             icon="el-icon-plus"
             @click="handleCreate()"
           >添加配置项
-          </el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            size="mini"
-            type="primary"
-            plain
-            icon="el-icon-plus"
-            @click="handleCopyList()"
-          >复制配置列表到新大厅版本
           </el-button>
         </el-form-item>
         <el-form-item>
