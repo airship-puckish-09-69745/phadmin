@@ -1187,7 +1187,7 @@ export const asyncRoutes = [
         path: 'gamePkgVersion',
         component: () => import('@/views/devTools/devTools'),
         redirect: 'noRedirect',
-        meta: { title: '游戏包版本配置', icon: 'code' },
+        meta: { title: '游戏包版本配置', icon: 'el-icon-files' },
         children: [
           {
             path: 'game_pkg_versions',
