@@ -528,6 +528,7 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput, LineChart, TongitsGameLog },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       tableData: [],
       clientDB: new ClientTableData([], 10, {}),
       libShow: $libShow,
@@ -748,26 +749,27 @@ export default {
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
-      request({
-        url: '/dataProxy/is/robot',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Uids: JSON.stringify(this.uids)
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (const key in response.Data) {
-            this.isRobotMap[key] = response.Data[key]
+      if (this.envProjectName!='ph_audit'){
+        request({
+          url: '/dataProxy/is/robot',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Uids: JSON.stringify(this.uids)
           }
-          for (const o of this.tableData) {
-            if (this.isRobotMap[o.Uid]) {
-              o.IsRobot = -1
+        }).then(response => {
+          if (response.RetCode === 0) {
+            for (const key in response.Data) {
+              this.isRobotMap[key] = response.Data[key]
+            }
+            for (const o of this.tableData) {
+              if (this.isRobotMap[o.Uid]) {
+                o.IsRobot = -1
+              }
             }
           }
-        }
-      })
-
+        })
+      }
     },
 
     sleep(ms) { //sleep延迟方法2
@@ -882,20 +884,22 @@ export default {
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
-      request({
-        url: '/dataProxy/is/robot',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Uids: JSON.stringify(this.uids)
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (const key in response.Data) {
-            this.isRobotMap[key] = response.Data[key]
-          }
-        }
-      })
+      if (this.envProjectName!='ph_audit'){
+       request({
+         url: '/dataProxy/is/robot',
+         method: 'get',
+         data: {
+           Env: this.env,
+           Uids: JSON.stringify(this.uids)
+         }
+       }).then(response => {
+         if (response.RetCode === 0) {
+           for (const key in response.Data) {
+             this.isRobotMap[key] = response.Data[key]
+           }
+         }
+       })
+     }
     },
     getDetail(id, dt) {
       const $this = this
