@@ -185,7 +185,11 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Id" size="mini"/>
+                        <el-image
+                          style="width: 37px;height: 50px"
+                          :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"
+                        />
+                        <el-input v-model.number="scope.row.Id" size="mini" style="width: 80px"/>
                       </template>
                     </el-table-column>
 
@@ -337,24 +341,14 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="中jackpot服务费*bet">
-                    <el-input v-model.number="JackpotCfg.HitJackpotFee" size="mini"/>
-                  </el-form-item>
-                </el-col>
-              </el-form>
-            </el-col>
-            <el-col :span="24" :offset="5">
-              <el-form :inline="true">
-                <el-col :span="8">
                   <el-form-item label="解锁jackpot下注">
                     <el-input v-model.number="JackpotCfg.JackpotBetMin" size="mini"/>
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
-            <el-col>
 
-            </el-col>
+
             <fieldset style="margin-top:10px">
               <legend>jackpot每日限制</legend>
               <jackpot-day-limit :jackpot-rand-awards="RandAwards"/>
@@ -402,6 +396,7 @@ export default {
       subKey: 'gameDropbal',
       libShow: $libShow,
       showSetResultPage: false,
+      ConversionColorMap:{},
       JackpotCfg: {},
         PoolIncrArr:[],
       resultForm: {
@@ -555,6 +550,13 @@ export default {
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)
     },
+    getCardUrl(card) {
+      try {
+        return require('@/assets/poker/' + card + '.png')
+      }catch (e){
+        console.log(e)
+      }
+    },
     setData() {
 
       this.form.Data = JSON.stringify(this.getPostData())
@@ -611,6 +613,31 @@ export default {
 
       this.item.BetMoneyLevel.push({TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10})
 
+    },
+    cardConversionColor(num,meihua,heitao,hongtao,fangkuai){
+      // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
+      if (num==0 || num ==='NaN'){
+        return
+      }
+      if (Object.keys(this.ConversionColorMap).length === 0){
+        var m = meihua.split('-');
+        var hei = heitao.split('-');
+        var hong = hongtao.split('-');
+        var f = fangkuai.split('-');
+        this.ConversionColorMap[m[0]]=m[1]
+        this.ConversionColorMap[hei[0]]=hei[1]
+        this.ConversionColorMap[hong[0]]=hong[1]
+        this.ConversionColorMap[f[0]]=m[1]
+      }
+
+
+      var s = num.toString(16);
+      // 补0
+      if (s.length===1){
+        s = '0'+s[0];
+      }
+      let result ='0x'+ this.ConversionColorMap[s[0]]+s[1]
+      return parseInt(result)
     },
     showRobotNumForm(data) {
       this.robotDialogForm.data = data

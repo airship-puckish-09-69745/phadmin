@@ -217,7 +217,7 @@
             -->
             <el-form-item label="癞子数：" :required="true">
               <el-radio-group v-model.number="edit.item.JokerNum">
-                <el-radio :label="0">0</el-radio>
+<!--                <el-radio :label="0">0</el-radio>-->
                 <el-radio :label="4">4</el-radio>
               </el-radio-group>
             </el-form-item>
@@ -508,7 +508,7 @@ function newItem() {
     CarryUpper: '',
     HideCarry: '',
     TableMoney: '',
-    JokerNum: 0,
+    JokerNum: 4,
     MaxPlayerCount: 3,
     ObjectCount: '',
     FlowRate: '',

@@ -5,7 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-
+import Watermark from '@/utils/watermark'
 /* Router Modules */
 // import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
@@ -1196,20 +1196,26 @@ export const asyncRoutes = [
           }
         ]
       },
-      // {
-      //   path: 'gamePkgVersion',
-      //   component: () => import('@/views/devTools/devTools'),
-      //   redirect: 'noRedirect',
-      //   meta: { title: '游戏包版本配置', icon: 'code' },
-      //   children: [
-      //     {
-      //       path: 'game_pkg_versions',
-      //       component: () => import('@/views/config/tableConfig/gamePkgVersions'),
-      //       name: 'game_pkg_versions',
-      //       meta: { title: '包配置列表 ◐', noCache: true }
-      //     }
-      //   ]
-      // },
+      {
+        path: 'gamePkgVersion',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '游戏包版本配置', icon: 'el-icon-files' },
+        children: [
+          {
+            path: 'game_pkg_versions',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
+            name: 'game_pkg_versions',
+            meta: { title: '游戏包配置列表 ◐', noCache: true }
+          },
+          {
+            path: 'pkgversionsWhiteList',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/pkgversionsWhiteList'),
+            name: 'pkgversionsWhiteList',
+            meta: { title: '游戏包白名单 ◐', noCache: true }
+          }
+        ]
+      },
       {
         path: 'jsonViewer',
         component: () => import('@/views/devTools/jsonViewer'),
@@ -1475,3 +1481,18 @@ export function resetRouter() {
 }
 
 export default router
+
+const outWatermark = (id) => {
+  if (document.getElementById(id) !== null) {
+    const div = document.getElementById(id)
+    div.style.display = 'none'
+  }
+}
+
+router.afterEach((to) => {
+  if ((to.path === '/') || (to.path === '/login')) {
+    Watermark.out() // 清除水印
+  } else {
+    // Watermark.set('未获取到用户名') // 设置水印title
+  }
+})

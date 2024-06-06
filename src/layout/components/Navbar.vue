@@ -5,7 +5,8 @@
     <breadcrumb id="breadcrumb-container" class="breadcrumb-container" />
 
     <div class="right-menu">
-      <div style=" float: left; color:red; font-size: 18px; padding: 0 5px;">{{ getNavName() }}</div>
+      <div style=" float: left; color:red; font-size: 20px;font-weight: bold; padding: 0 5px;" v-if="env=='pro'">{{ getNavName() }}</div>
+      <div style=" float: left;  font-size: 20px; padding: 0 5px;" v-else>{{ getNavName() }}</div>
       <!--      <template>-->
       <!--        <error-log class="errLog-container right-menu-item hover-effect" />-->
       <!--        <el-tooltip content="时区切换" effect="dark" placement="bottom">-->
