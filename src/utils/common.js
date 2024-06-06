@@ -100,7 +100,7 @@ export function LibShow() {
     59: '芝加哥', 60: '糖果派', 61: 'fireKick',
     76: 'Candy Rush', 78: '超级宝石', 80: 'Candy Craze', 82: '百万富翁', // slots
     // 80: 'PLINKO',
-    100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat' }
+    100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 104: 'Dragon Tiger', 105: 'Andar Bahar',106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropbal' }
 
   this.NumMap = {
     1: 'A',

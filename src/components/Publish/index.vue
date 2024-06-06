@@ -312,7 +312,7 @@ export default {
       return this.isMy
     },
     showProBtn() {
-      if (this.isProBtn) {
+      if (this.isProBtn && this.env === 'pro') {
         if (this.envEmpty) {
           return true
         } else if (this.env === 'pro') {

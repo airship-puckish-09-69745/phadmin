@@ -105,6 +105,15 @@
       />
       <el-table-column
         prop="AwardType"
+        label="场次类型"
+        width="100"
+      >
+        <template slot-scope="{row}">
+          {{ getAwardLevelName(row.Level) }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="AwardType"
         label="奖池类型"
         width="100"
       >
@@ -406,6 +415,17 @@ export default {
       for (let i = 0; i < this.awardTypeConfig.length; i++) {
         if (awardType == this.awardTypeConfig[i].value) {
           name = this.awardTypeConfig[i].label
+          break
+        }
+      }
+      return name
+    },
+    // 获取操作类型
+    getAwardLevelName(level) {
+      var name = ''
+      for (let i = 0; i < this.levelConfig.length; i++) {
+        if (level == this.levelConfig[i].value) {
+          name = this.levelConfig[i].label
           break
         }
       }

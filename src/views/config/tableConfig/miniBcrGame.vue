@@ -34,11 +34,11 @@
           </el-form-item>
         </el-col>
 
-        <el-col v-if="envProjectName !== 'ph_audit'" :span="8" :offset="1">
-          <el-form-item label="extra出现概率（%）:">
-            <el-input v-model.number="item.ExTraPayRate" :required="true" />
-          </el-form-item>
-        </el-col>
+<!--        <el-col v-if="envProjectName !== 'ph_audit'" :span="8" :offset="1">-->
+<!--          <el-form-item label="extra出现概率（%）:">-->
+<!--            <el-input v-model.number="item.ExTraPayRate" :required="true" />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
 
         <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
@@ -144,13 +144,13 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  label="赔率(支持2位小数)"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value === '' || value == null){value = 0;}" />
-                  </template>
-                </el-table-column>
+<!--                <el-table-column-->
+<!--                  label="赔率(支持2位小数)"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value === '' || value == null){value = 0;}" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
 
               </el-table>
             </el-row>

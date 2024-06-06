@@ -165,14 +165,14 @@
           {{ formatNumber(scope.row.MoneyNow) }}
         </template>
       </el-table-column>
-      <el-table-column
-        label="耗时"
-        width="70"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.IsRobot }}
-        </template>
-      </el-table-column>
+<!--      <el-table-column-->
+<!--        label="耗时"-->
+<!--        width="70"-->
+<!--      >-->
+<!--        <template slot-scope="scope">-->
+<!--          {{ scope.row.IsRobot }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <el-table-column
         prop="WinRate"
@@ -182,7 +182,7 @@
 
       <el-table-column
         prop="IsRobot"
-        label="机器人类型"
+        label="玩家类型"
         width="120px"
       >
         <template slot-scope="scope">
@@ -269,7 +269,7 @@
         </div>
       </el-col>
     </el-row>
-    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" @closeDialog="closeDialog" />
+    <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap" @closeDialog="closeDialog" />
 
     <el-dialog
       title="玩家列表"
@@ -355,14 +355,14 @@
             {{ formatNumber(scope.row.MoneyNow) }}
           </template>
         </el-table-column>
-        <el-table-column
-          label="耗时"
-          width="70"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.IsRobot }}
-          </template>
-        </el-table-column>
+<!--        <el-table-column-->
+<!--          label="耗时"-->
+<!--          width="70"-->
+<!--        >-->
+<!--          <template slot-scope="scope">-->
+<!--            {{ scope.row.IsRobot }}-->
+<!--          </template>-->
+<!--        </el-table-column>-->
 
         <el-table-column
           prop="WinRate"
@@ -528,6 +528,7 @@ export default {
   components: { DateTimeShow, Compare, Publish, UidInput, LineChart, TongitsGameLog },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       tableData: [],
       clientDB: new ClientTableData([], 10, {}),
       libShow: $libShow,
@@ -617,6 +618,8 @@ export default {
     },
     showRobotLevel(level) {
       switch (level) {
+        case-1 :
+          return '机器人'
         case 0:
           return '真人'
         case 8:
@@ -735,11 +738,43 @@ export default {
       this.refreshShow()
     },
     // 分页处理
-    refreshShow() {
+    async refreshShow() {
+      this.uidMap = {}
       this.tableData = this.clientDB.GetCurrentPageData()
-      this.getRobotMap()
-      this.tableData.slice(0,this.tableData.length)
-      this.$forceUpdate()
+      for (const o in this.tableData) {
+        this.uidMap[this.tableData[o].Uid] = 0
+      }
+
+      this.uids = []
+      for (var key in this.uidMap) {
+        this.uids.push(key)
+      }
+      if (this.envProjectName!='ph_audit'){
+        request({
+          url: '/dataProxy/is/robot',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Uids: JSON.stringify(this.uids)
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            for (const key in response.Data) {
+              this.isRobotMap[key] = response.Data[key]
+            }
+            for (const o of this.tableData) {
+              if (this.isRobotMap[o.Uid]) {
+                o.IsRobot = -1
+              }
+            }
+          }
+        })
+      }
+    },
+
+    sleep(ms) { //sleep延迟方法2
+      var unixtime_ms = new Date().getTime();
+      while(new Date().getTime() < unixtime_ms + ms) {}
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -837,8 +872,10 @@ export default {
     clickData2(row) {
       this.getDetail(row.LogID, row.FinishTime)
     },
-    geg() {
+
+    async getRobotMap() {
       this.uidMap = {}
+      this.tableData = this.clientDB.GetCurrentPageData()
       for (const o in this.tableData) {
         this.uidMap[this.tableData[o].Uid] = 0
       }
@@ -847,23 +884,22 @@ export default {
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
-    },
-    async getRobotMap() {
-      await this.geg()
-      request({
-        url: '/dataProxy/is/robot',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Uids: JSON.stringify(this.uids)
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (const key in response.Data) {
-            this.isRobotMap[key] = response.Data[key]
-          }
-        }
-      })
+      if (this.envProjectName!='ph_audit'){
+       request({
+         url: '/dataProxy/is/robot',
+         method: 'get',
+         data: {
+           Env: this.env,
+           Uids: JSON.stringify(this.uids)
+         }
+       }).then(response => {
+         if (response.RetCode === 0) {
+           for (const key in response.Data) {
+             this.isRobotMap[key] = response.Data[key]
+           }
+         }
+       })
+     }
     },
     getDetail(id, dt) {
       const $this = this

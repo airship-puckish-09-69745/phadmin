@@ -36,7 +36,7 @@
                   header-align="center"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row['reels' + col]" />
+                    <el-input v-model.number="scope.row['reels' + col]" :disabled="scope.row['disabled' + col]" />
                   </template>
                 </el-table-column>
               </template>
@@ -356,6 +356,7 @@ export default {
         for (const k in tmp['Items']) {
           const col = tmp['Items'][k]['Reels']
           const key = 'reels' + (col + 1)
+          const disable = 'disabled' + (col + 1)
 
           if (this.cols.indexOf(col + 1) === -1) {
             continue
@@ -365,6 +366,9 @@ export default {
             for (const x in item) {
               if (item[x]['value'] === tmp['Items'][k]['Symbol'][v]['Symbol']) {
                 item[x][key] = tmp['Items'][k]['Symbol'][v]['Number']
+                if (tmp['Items'][k]['Symbol'][v]['Disabled']) {
+                  item[x][disable] = true
+                }
                 break
               }
             }

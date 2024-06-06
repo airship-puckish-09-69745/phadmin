@@ -138,7 +138,12 @@
           width="80"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+            <span v-if="scope.row.game_type===2">
+              {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+            </span>
+            <span v-else>
+              {{ formatNumber(scope.row.valid_bet_amount/1000) }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column
@@ -220,6 +225,15 @@
         >
           <template slot-scope="scope">
             {{ jackportShow(scope.row.jackpot_amount/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="real_jp"
+          label="real jackpot"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber((scope.row.real_jp || 0)/1000) }}
           </template>
         </el-table-column>
         <el-table-column

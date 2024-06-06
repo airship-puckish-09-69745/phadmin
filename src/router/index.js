@@ -5,7 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-
+import Watermark from '@/utils/watermark'
 /* Router Modules */
 // import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
@@ -367,6 +367,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/UpDownTable'),
             name: 'UpDown',
             meta: { title: '7Up7Down ◐' }
+          },
+          {
+            path: 'Dropbal_cfg',
+            component: () => import('@/views/config/tableConfig/dropbalConfig'),
+            name: 'Dropbal_cfg',
+            meta: { title: 'Dropbal ◐' }
           }
         ]
       },
@@ -408,6 +414,13 @@ export const asyncRoutes = [
                 meta: { title: '百万富翁' }
               },
               {
+                path: 'superace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
+                name: 'superace_slots_cfg',
+                meta: { title: '超级王牌' }
+              }
+              /*
+              {
                 path: 'beauty_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
                 name: 'beauty_slots_cfg',
@@ -420,6 +433,7 @@ export const asyncRoutes = [
                 name: 'phoenix_slots_cfg',
                 meta: { title: 'Phoenix - 凤凰' }
               }
+              */
             ]
           },
           {
@@ -452,6 +466,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
                 name: 'millionairemars_slots_cfg',
                 meta: { title: '百万富翁(审)' }
+              },
+              {
+                path: 'superacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
+                name: 'superacemars_slots_cfg',
+                meta: { title: '超级王牌(审)' }
               }
             ]
           },
@@ -780,6 +800,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_piggy',
             meta: { title: 'Piggy Tap ◐', gid: 106 }
+          },
+          {
+            path: 'playlog_baccarat',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_baccarat',
+            meta: { title: 'Baccarat ◐', gid: 107 }
           }
         ]
       },
@@ -789,6 +815,7 @@ export const asyncRoutes = [
         redirect: 'noRedirect',
         meta: { title: 'Slots - 老虎机', noCache: true },
         children: [
+          /*
           {
             path: 'beauty_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -801,6 +828,7 @@ export const asyncRoutes = [
             name: 'phoenix_slots_log',
             meta: { title: 'phoenix - 凤凰', gid: 51 }
           },
+          */
           {
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
@@ -825,6 +853,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionaire_slots_log',
             meta: { title: '百万富翁', gid: 82 }
+          },
+          {
+            path: 'superace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'superace_slots_log',
+            meta: { title: '超级王牌', gid: 82 }
           }
         ]
       },
@@ -852,12 +886,17 @@ export const asyncRoutes = [
             name: 'candycandymars_slots_log',
             meta: { title: '糖果糖果(审)', gid: 79 }
           },
-
           {
             path: 'millionairemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionairemars_slots_log',
             meta: { title: '百万富翁(审)', gid: 83 }
+          },
+          {
+            path: 'superacemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'superacemars_slots_log',
+            meta: { title: '超级王牌(审)', gid: 85 }
           }
         ]
       },
@@ -900,6 +939,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsBlackUserlog'),
             name: 'tongits_blackuserlog',
             meta: { title: '黑名单配桌日志 ◐' }
+          },
+          {
+            path: 'tongits_updatemoneylog',
+            component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
+            name: 'tongits_blackuserlog',
+            meta: { title: '机器人资产变更日志 ◐' }
           }
         ]
       },
@@ -1111,6 +1156,26 @@ export const asyncRoutes = [
           }
         ]
       },
+      // {
+      //   path: 'genCode',
+      //   component: () => import('@/views/devTools/devTools'),
+      //   redirect: 'noRedirect',
+      //   meta: { title: '代码生成', icon: 'code' },
+      //   children: [
+      //     {
+      //       path: 'codeGenAdmin',
+      //       component: () => import('@/views/devTools/codeGen'),
+      //       name: 'CodeGenAdmin',
+      //       meta: { title: '生成代码（Admin)' }
+      //     },
+      //     {
+      //       path: 'codeGenRPCSQL',
+      //       component: () => import('@/views/devTools/codeGen'),
+      //       name: 'codeGenRPCSQL',
+      //       meta: { title: '生成代码（RPC_SQL)' }
+      //     }
+      //   ]
+      // },
       {
         path: 'subGameList',
         component: () => import('@/views/devTools/devTools'),
@@ -1128,6 +1193,26 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/subgame'),
             name: 'subgame_ios',
             meta: { title: 'IOS ◐', noCache: true, platform: 'ios' }
+          }
+        ]
+      },
+      {
+        path: 'gamePkgVersion',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '游戏包版本配置', icon: 'el-icon-files' },
+        children: [
+          {
+            path: 'game_pkg_versions',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
+            name: 'game_pkg_versions',
+            meta: { title: '游戏包配置列表 ◐', noCache: true }
+          },
+          {
+            path: 'pkgversionsWhiteList',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/pkgversionsWhiteList'),
+            name: 'pkgversionsWhiteList',
+            meta: { title: '游戏包白名单 ◐', noCache: true }
           }
         ]
       },
@@ -1396,3 +1481,18 @@ export function resetRouter() {
 }
 
 export default router
+
+const outWatermark = (id) => {
+  if (document.getElementById(id) !== null) {
+    const div = document.getElementById(id)
+    div.style.display = 'none'
+  }
+}
+
+router.afterEach((to) => {
+  if ((to.path === '/') || (to.path === '/login')) {
+    Watermark.out() // 清除水印
+  } else {
+    // Watermark.set('未获取到用户名') // 设置水印title
+  }
+})
