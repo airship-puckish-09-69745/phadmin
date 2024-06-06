@@ -144,13 +144,13 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column
-                  label="赔率(支持2位小数)"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value === '' || value == null){value = 0;}" />
-                  </template>
-                </el-table-column>
+<!--                <el-table-column-->
+<!--                  label="赔率(支持2位小数)"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value === '' || value == null){value = 0;}" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
 
               </el-table>
             </el-row>
