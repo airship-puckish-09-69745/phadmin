@@ -4,43 +4,53 @@
       <publish primary-key="ID" key-id="GamePkgVersionsConfig" :env-empty="false" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
-      <el-col :span="5">
-        <el-form label-width="80px">
-          <el-form-item label="大厅版本">
-            <el-select v-model="LobbyVersionID" style="min-width: 200px" size="small" @change="getList()">
-              <el-option
-                v-for="item in lobbyVersions"
-                :key="item.key"
-                :label="item.label"
-                :value="item.key"
-              />
-            </el-select>
-          </el-form-item>
-        </el-form>
-      </el-col>
+      <el-form :inline="true">
+        <el-form-item label="大厅版本">
+          <el-select v-model="LobbyVersionID" filterable size="small" @change="getList()">
+            <el-option
+              v-for="item in lobbyVersions"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreateLobby()"
+          >添加大厅版本
+          </el-button>
+        </el-form-item>
+      </el-form>
     </el-row>
     <el-row>
-      <el-col :span="3">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate()"
-        >添加配置项
-        </el-button>
-      </el-col>
-      <el-col :span="3">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCopyList()"
-        >复制配置列表
-        </el-button>
-      </el-col>
-      <el-col :span="3">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
-      </el-col>
+      <el-form :inline="true">
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            icon="el-icon-plus"
+            @click="handleCreate()"
+          >添加配置项
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            type="primary"
+            plain
+            icon="el-icon-plus"
+            @click="handleCopyList()"
+          >复制配置列表到新大厅版本
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+        </el-form-item>
+      </el-form>
     </el-row>
     <div style="padding-top: 10px">
       <el-table
@@ -79,7 +89,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ scope.row.IsWhite === '1' ? '是' : '否' }}
+            {{ scope.row.IsWhite === 1 ? '是' : '否' }}
           </template>
         </el-table-column>
         <el-table-column
@@ -169,6 +179,11 @@
             <el-input v-model="edit.item.LobbyVersionID" />
           </el-col>
         </el-form-item>
+        <el-form-item label-width="0" :required="true" :hide-required-asterisk="true" prop="LobbyVersion">
+          <el-col :span="0">
+            <el-input v-model="edit.item.LobbyVersion" />
+          </el-col>
+        </el-form-item>
         <el-form-item label="包Key：" :required="true" prop="BundleKey">
           <el-col :span="15">
             <el-input v-model="edit.item.BundleKey" />
@@ -200,6 +215,53 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+      :title="getEditTitle()"
+      :visible.sync="edit.lobbyVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit.lobbyItem" :model="edit.lobbyItem" label-width="250px" size="small">
+        <el-form-item label="大厅版本：" :required="true" prop="LobbyVersion">
+          <el-col :span="15">
+            <el-input v-model="edit.lobbyItem.LobbyVersion" />
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="15" :offset="10">
+              <el-button type="primary" size="medium" @click="saveLobbyVersion">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog
+      title="复制此大厅版本配置 到 新大厅版本"
+      :visible.sync="edit.copyLobbyVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit.copyLobbyItem" :model="edit.copyLobbyItem" label-width="250px" size="small">
+        <el-form-item label="新大厅版本号：" :required="true" prop="LobbyVersion">
+          <el-col :span="15">
+            <el-input v-model="edit.copyLobbyItem.LobbyVersion" />
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col>
+              <span style="font-weight: bolder">注意：只复制上架状态的配置；复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上。</span>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="15">
+              <el-button type="primary" size="medium" @click="copyLobbyVersionCfg">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames" />
   </div>
@@ -209,9 +271,9 @@
 import { $libDate, $libShow, ClientTableData, DataRule } from '@/utils/common'
 import store from '@/store'
 import request from '@/utils/request'
-import Compare from '@/components/Compare'
+import Compare from '@/components/Compare/index.vue'
 import { Message } from 'element-ui'
-import Publish from '@/components/Publish'
+import Publish from '@/components/Publish/index.vue'
 
 const filterMap = {}
 
@@ -222,6 +284,7 @@ export default {
       tableData: [],
       lobbyVersions: [],
       LobbyVersionID: 0,
+      LobbyVersion: '',
       statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       isOptions: [
         { value: 0, label: '否' },
@@ -234,7 +297,12 @@ export default {
       edit: {
         visible: false,
         item: this.newItem(),
-        isEdit: false
+        isEdit: false,
+        lobbyVisible: false,
+        lobbyItem: this.newLobbyItem(),
+        isLobbyEdit: false,
+        copyLobbyVisible: false,
+        copyLobbyItem: this.newCopyLobbyItem()
       },
       isDisabled: false,
       rules: {
@@ -244,7 +312,8 @@ export default {
       },
 
       AttrNames: {
-        LobbyVersionID: '大厅版本',
+        LobbyVersionID: '大厅版本ID',
+        LobbyVersion: '大厅版本',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
         IsWhite: '是否白名单验证'
@@ -255,14 +324,20 @@ export default {
     this.env = store.getters.env || this.env
     this.isDisabled = false
     this.getLobbyVersions()
-    // 2s后执行
+    // 300ms后执行
     setTimeout(() => {
       this.getList()
     }, 300)
   },
   methods: {
     newItem() {
-      return { LobbyVersionID: this.LobbyVersionID, GamePkgVersion: '', BundleKey: '', IsWhite: 0 }
+      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', IsWhite: 0, Status: 7 }
+    },
+    newLobbyItem() {
+      return { LobbyVersion: '' }
+    },
+    newCopyLobbyItem() {
+      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: '' }
     },
     formatNumber(n) {
       return n.toLocaleString()
@@ -309,15 +384,27 @@ export default {
       this.edit.isEdit = false
       this.edit.visible = true
     },
+
+    handleCreateLobby() {
+      this.edit.lobbyItem = this.newLobbyItem()
+      this.edit.isLobbyEdit = false
+      this.edit.lobbyVisible = true
+    },
     handleCopy(ob) {
       this.initFormData(false, ob.ID)
       this.edit.visible = true
     },
     handleCopyList() {
-      console.log('handleCopyList')
-      return false
+      this.edit.copyLobbyItem = this.newCopyLobbyItem()
+      this.edit.copyLobbyVisible = true
     },
     getList() {
+      for (let i = 0; i < this.lobbyVersions.length; i++) {
+        if (this.lobbyVersions[i].ID === this.LobbyVersionID) {
+          this.LobbyVersion = this.lobbyVersions[i].Version
+          break
+        }
+      }
       request({
         url: '/gamepkgversions/list/withlobby',
         method: 'get',
@@ -333,18 +420,6 @@ export default {
       })
     },
     configCheck() {
-      if (this.getPostData().GamePkgVersion === '') {
-        this.$alert('游戏包名不能为空')
-        return false
-      }
-      if (this.getPostData().BundleKey === '') {
-        this.$alert('游戏包版本号不能为空')
-        return false
-      }
-      if (this.getPostData().LobbyVersionID === 0) {
-        this.$alert('大厅版本版本不能为空，请刷新重试')
-        return false
-      }
       return true
     },
     handlePreOn(ob) {
@@ -425,6 +500,33 @@ export default {
         }
       })
     },
+    createLobbySave(postData) {
+      const $this = this
+      request({
+        url: '/gamepkgversions/create/lobby',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.edit.lobbyItem.ID = response.Data.ID
+          Message.success('保存成功！')
+          $this.getLobbyVersions()
+        }
+      })
+    },
+    copyLobbySave(postData) {
+      const $this = this
+      request({
+        url: '/gamepkgversions/copy/to/newlobby',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+          $this.getLobbyVersions()
+        }
+      })
+    },
     editSave(postData) {
       request({
         url: '/gamepkgversions/update',
@@ -438,25 +540,62 @@ export default {
         }
       })
     },
+    editLobbySave(postData) {
+      request({
+        url: '/gamepkgversions/update/lobby',
+        method: 'post',
+        data: postData
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+        }
+      })
+    },
     getPostData() {
       return this.edit.item
     },
+    getLobbyPostData() {
+      return this.edit.lobbyItem
+    },
+    getCopyLobbyPostData() {
+      return this.edit.copyLobbyItem
+    },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
-      if (this.getPostData().Account === '') {
-        this.$alert('账户不能为空')
+      if (this.getPostData().LobbyVersionID === 0) {
+        this.$alert('大厅版本ID错误，请刷新重试')
         return false
       }
-      if (this.getPostData().Intro === '') {
-        this.$alert('描述不能为空')
+      if (this.getPostData().LobbyVersion === '') {
+        this.$alert('大厅版本错误，请刷新重试')
         return false
       }
-      if (this.getPostData().GameUri === '') {
-        this.$alert('客户端uri 不能为空')
+      if (this.getPostData().GamePkgVersion === '') {
+        this.$alert('游戏包版本不能为空')
         return false
       }
-      if (this.getPostData().Screen === '') {
-        this.$alert('必须横竖屏选择')
+      if (this.getPostData().BundleKey === '') {
+        this.$alert('游戏包KEY不能为空')
+        return false
+      }
+      return true
+    },
+    checkLobbyData() {
+      this.$refs['edit.lobbyItem'].validate(valid => {})
+      if (this.getLobbyPostData().LobbyVersion === '') {
+        this.$alert('大厅版本不能为空')
+        return false
+      }
+      return true
+    },
+    checkCopyLobbyData() {
+      this.$refs['edit.copyLobbyItem'].validate(valid => {})
+      if (this.getCopyLobbyPostData().LobbyVersionID === 0) {
+        this.$alert('大厅版本ID不能为空，请刷新重试')
+        return false
+      }
+      if (this.getCopyLobbyPostData().LobbyVersion === '') {
+        this.$alert('大厅版本不能为空')
         return false
       }
       return true
@@ -481,6 +620,33 @@ export default {
       }
       this.edit.visible = false
     },
+    saveLobbyVersion() {
+      if (!this.checkLobbyData()) return
+
+      if (this.edit.isLobbyEdit) {
+        // 设置修改后数据
+        this.$refs.compare.SetNewVal(this.edit.lobbyItem)
+        const $this = this
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          } else {
+            $this.editLobbySave($this.getLobbyPostData())
+          }
+        })
+      } else {
+        this.createLobbySave(this.getLobbyPostData())
+      }
+      this.edit.lobbyVisible = false
+      this.getLobbyVersions()
+    },
+    copyLobbyVersionCfg() {
+      if (!this.checkCopyLobbyData()) return
+
+      this.copyLobbySave(this.getCopyLobbyPostData())
+      this.edit.copyLobbyVisible = false
+    },
     getLobbyVersions() {
       request({
         url: '/gamepkgversions/lobbyversions',
@@ -490,6 +656,7 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data.length > 0) {
             this.LobbyVersionID = response.Data[response.Data.length - 1].ID
+            this.LobbyVersion = response.Data[response.Data.length - 1].LobbyVersion
           }
           this.lobbyVersions = []
           for (let i = 0; i < response.Data.length; i++) {
@@ -498,8 +665,6 @@ export default {
               label: response.Data[i].LobbyVersion
             })
           }
-          console.log('this.LobbyVersionID>>>', this.LobbyVersionID)
-          console.log('this.lobbyVersions>>>', this.lobbyVersions)
         }
       })
     }

@@ -50,7 +50,9 @@ export default {
         { label: '糖果糖果Mars', value: 79 },
         { label: '糖果糖果', value: 80 },
         { label: '百万富翁', value: 82 },
-        { label: '百万富翁Mars', value: 83 }
+        { label: '百万富翁Mars', value: 83 },
+        { label: '超级王牌', value: 84 },
+        { label: '超级王牌Mars', value: 85 }
       ]
     }
   },

@@ -414,6 +414,13 @@ export const asyncRoutes = [
                 meta: { title: '百万富翁' }
               },
               {
+                path: 'superace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
+                name: 'superace_slots_cfg',
+                meta: { title: '超级王牌' }
+              }
+              /*
+              {
                 path: 'beauty_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
                 name: 'beauty_slots_cfg',
@@ -426,6 +433,7 @@ export const asyncRoutes = [
                 name: 'phoenix_slots_cfg',
                 meta: { title: 'Phoenix - 凤凰' }
               }
+              */
             ]
           },
           {
@@ -458,6 +466,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
                 name: 'millionairemars_slots_cfg',
                 meta: { title: '百万富翁(审)' }
+              },
+              {
+                path: 'superacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
+                name: 'superacemars_slots_cfg',
+                meta: { title: '超级王牌(审)' }
               }
             ]
           },
@@ -1169,20 +1183,26 @@ export const asyncRoutes = [
           }
         ]
       },
-      // {
-      //   path: 'gamePkgVersion',
-      //   component: () => import('@/views/devTools/devTools'),
-      //   redirect: 'noRedirect',
-      //   meta: { title: '游戏包版本配置', icon: 'code' },
-      //   children: [
-      //     {
-      //       path: 'game_pkg_versions',
-      //       component: () => import('@/views/config/tableConfig/gamePkgVersions'),
-      //       name: 'game_pkg_versions',
-      //       meta: { title: '包配置列表 ◐', noCache: true }
-      //     }
-      //   ]
-      // },
+      {
+        path: 'gamePkgVersion',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '游戏包版本配置', icon: 'code' },
+        children: [
+          {
+            path: 'game_pkg_versions',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
+            name: 'game_pkg_versions',
+            meta: { title: '游戏包配置列表 ◐', noCache: true }
+          },
+          {
+            path: 'pkgversionsWhiteList',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/pkgversionsWhiteList'),
+            name: 'pkgversionsWhiteList',
+            meta: { title: '游戏包白名单 ◐', noCache: true }
+          }
+        ]
+      },
       {
         path: 'jsonViewer',
         component: () => import('@/views/devTools/jsonViewer'),

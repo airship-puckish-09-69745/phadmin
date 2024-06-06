@@ -19,7 +19,7 @@
                 width="100"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row['rate' + col]" />
+                  <el-input v-model.number="scope.row['rate' + col]" disabled />
                 </template>
               </el-table-column>
             </template>
