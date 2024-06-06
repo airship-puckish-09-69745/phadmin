@@ -5,7 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-
+import Watermark from '@/utils/watermark'
 /* Router Modules */
 // import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
@@ -1468,3 +1468,18 @@ export function resetRouter() {
 }
 
 export default router
+
+const outWatermark = (id) => {
+  if (document.getElementById(id) !== null) {
+    const div = document.getElementById(id)
+    div.style.display = 'none'
+  }
+}
+
+router.afterEach((to) => {
+  if ((to.path === '/') || (to.path === '/login')) {
+    Watermark.out() // 清除水印
+  } else {
+    // Watermark.set('未获取到用户名') // 设置水印title
+  }
+})

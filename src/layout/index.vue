@@ -20,6 +20,7 @@ import RightPanel from '@/components/RightPanel'
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import { mapState } from 'vuex'
+import Watermark from '@/utils/watermark'
 
 export default {
   name: 'Layout',
@@ -40,6 +41,13 @@ export default {
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader
     }),
+    env() {
+      const env = this.$store.state.app.env
+      if( env==='pro'){
+        return "正式环境"
+      }
+      return  "测试环境"
+    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,
@@ -48,6 +56,11 @@ export default {
         mobile: this.device === 'mobile'
       }
     }
+  },
+  mounted() {
+    Watermark.setStr(this.env)
+    Watermark.setEnv(this.env)
+    Watermark.set()
   },
   methods: {
     handleClickOutside() {
