@@ -6,7 +6,7 @@
     <el-row style="padding-top: 5px">
       <el-form :inline="true">
         <el-form-item label="大厅版本">
-          <el-select v-model="LobbyVersionID" filterable size="small" @change="getList()">
+          <el-select v-model="LobbyVersionID" filterable size="small" @change="lobbyChange()">
             <el-option
               v-for="item in lobbyVersions"
               :key="item.key"
@@ -18,6 +18,15 @@
         <el-form-item>
           <el-button
             size="mini"
+            :type="LobbyVersionStatus === 0 ? 'success' : 'warning'"
+            :icon="LobbyVersionStatus === 0 ? 'el-icon-upload2' : 'el-icon-download'"
+            @click="updateLobbyVersionStatus()"
+          >{{ LobbyVersionStatus === 0 ? '启用大厅版本' : '停用大厅版本' }}
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
             type="primary"
             plain
             icon="el-icon-plus"
@@ -25,16 +34,6 @@
           >复制配置列表到新大厅版本
           </el-button>
         </el-form-item>
-        <!--        <el-form-item>-->
-        <!--          <el-button-->
-        <!--            size="mini"-->
-        <!--            type="primary"-->
-        <!--            icon="el-icon-plus"-->
-        <!--            plain-->
-        <!--            @click="handleCreateLobby()"-->
-        <!--          >添加大厅版本-->
-        <!--          </el-button>-->
-        <!--        </el-form-item>-->
       </el-form>
     </el-row>
     <el-row>
@@ -56,6 +55,7 @@
     <div style="padding-top: 10px">
       <el-table
         ref="filterTable"
+        v-loading="loadingShow"
         :data="tableData"
         stripe
         border
@@ -382,12 +382,15 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
+      loadingShow: false,
       tableData: [],
       historyMap: {},
       historyVersions: [],
       lobbyVersions: [],
+      orgLobbyVersions: [],
       LobbyVersionID: 0,
       LobbyVersion: '',
+      LobbyVersionStatus: 0,
       statNames: { 0: '正常', 2: '上架', 6: '下架', 1: '关闭', 7: '预上架', 8: '预下架' },
       isOptions: [
         { value: 0, label: '否' },
@@ -503,13 +506,19 @@ export default {
       this.edit.copyLobbyItem = this.newCopyLobbyItem()
       this.edit.copyLobbyVisible = true
     },
-    getList() {
-      for (let i = 0; i < this.lobbyVersions.length; i++) {
-        if (this.lobbyVersions[i].ID === this.LobbyVersionID) {
-          this.LobbyVersion = this.lobbyVersions[i].Version
+    lobbyChange() {
+      for (let i = 0; i < this.orgLobbyVersions.length; i++) {
+        if (this.orgLobbyVersions[i].ID === this.LobbyVersionID) {
+          this.LobbyVersion = this.orgLobbyVersions[i].Version
+          this.LobbyVersionStatus = this.orgLobbyVersions[i].Status
           break
         }
       }
+      this.getList()
+    },
+    getList() {
+      this.loadingShow = true
+      const $this = this
       request({
         url: '/gamepkgversions/list/withlobby',
         method: 'get',
@@ -517,13 +526,50 @@ export default {
           LobbyVersionID: this.LobbyVersionID
         }
       }).then(response => {
+        $this.loadingShow = false
         if (response.RetCode === 0) {
-          console.log('response.Data:', response.Data)
           const objs = response.Data.Data || []
           this.clientDB = new ClientTableData(objs, 40, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
           this.historyMap = response.Data.HistoryMap || {}
         }
+      }).catch(function() {
+        $this.loadingShow = false
+      })
+    },
+    updateLobbyVersionStatus() {
+      var msg = '禁用版本后，该版本下的配置将在线上消失！确定要禁用此版本吗？'
+      if (this.LobbyVersionStatus === 0) {
+        msg = '启用版本后，该版本下的配置将在线上生效！确定要启用此版本吗？'
+      }
+      const targetStatus = this.LobbyVersionStatus === 0 ? 1 : 0
+      const $this = this
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/gamepkgversions/update/lobby/status',
+          method: 'post',
+          data: {
+            ID: $this.LobbyVersionID,
+            Status: targetStatus
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改大厅版本状态成功！')
+            $this.LobbyVersionStatus = targetStatus
+            for (let i = 0; i < $this.lobbyVersions.length; i++) {
+              if ($this.lobbyVersions[i].ID === $this.LobbyVersionID) {
+                $this.lobbyVersions[i].Status = targetStatus
+                break
+              }
+            }
+          }
+        })
+      }).catch(() => {
+        // console.log('取消')
       })
     },
     configCheck() {
@@ -568,7 +614,7 @@ export default {
           }
         })
       }).catch(() => {
-        console.log('取消')
+        // console.log('取消')
       })
     },
     viewHistory(ob) {
@@ -779,7 +825,6 @@ export default {
       _data.GamePkgVersion = _data.WhiteVersion.trim()
       _data.WhiteVersion = ''
 
-      console.log(_data)
       if (_data.GamePkgVersion === '') {
         Message.error('游戏包版本不能为空')
         return
@@ -824,7 +869,9 @@ export default {
           if (response.Data.length > 0) {
             this.LobbyVersionID = response.Data[response.Data.length - 1].ID
             this.LobbyVersion = response.Data[response.Data.length - 1].LobbyVersion
+            this.LobbyVersionStatus = response.Data[response.Data.length - 1].Status
           }
+          this.orgLobbyVersions = response.Data || []
           this.lobbyVersions = []
           for (let i = 0; i < response.Data.length; i++) {
             this.lobbyVersions.push({
