@@ -12,16 +12,16 @@ const setWatermark = (str) => {
   }
 
   const can = document.createElement('canvas')
-  can.width = 200
-  can.height = 100
+  can.width = 350
+  can.height = 250
 
   const cans = can.getContext('2d')
   cans.rotate(-10 * Math.PI / 180)
-  cans.font = '18px Vedana'
+  cans.font = '35px Vedana'
   cans.fillStyle = 'rgba(129,145,143,0.16)'
   if (watermarkEnv=='正式环境'){
-    cans.font = '20px Vedana'
-    cans.fillStyle = 'rgba(252,78,78,0.12)'
+    cans.font = '35px Vedana'
+    cans.fillStyle = 'rgba(252,78,78,0.09)'
   }
   cans.textAlign = 'left'
   cans.textBaseline = 'Middle'
@@ -30,7 +30,7 @@ const setWatermark = (str) => {
   const div = document.createElement('div')
   div.id = id
   div.style.pointerEvents = 'none'
-  div.style.top = '35px'
+  div.style.top = '30px'
   div.style.left = '0px'
   div.style.position = 'fixed'
   div.style.zIndex = '100000'
