@@ -28,6 +28,10 @@
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
+          <el-form-item label="免费模式额外增加免费的概率%" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterPlusRate" :required="true" />
+          </el-form-item>
+
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
           </el-form-item>
