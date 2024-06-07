@@ -138,6 +138,7 @@ export default {
   },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       ComponentsGameLogVisible: false,
       actions: [],
       actionNames: {
@@ -301,6 +302,7 @@ export default {
         })
       }
       var isRobotMap = {}
+      if (this.envProjectName!='ph_audit'){
       request({
         url: '/dataProxy/is/robot',
         method: 'get',
@@ -319,7 +321,7 @@ export default {
           }
         }
       })
-
+      }
       this.actions.push({
         Index: 9999,
         Uid: this.getRealUid(val.winUid),
