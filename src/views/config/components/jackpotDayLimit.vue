@@ -58,7 +58,7 @@
       </el-table-column>
       <el-table-column label="玩家开奖池条件(%)" width="300">
         <template slot-scope="scope">
-          <div v-if="scope.row.AwardType==1">
+          <div v-if="scope.row.AwardType==1&&scope.row.JackpotType!=4">
             虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
             &lt; 真实*<el-input v-model.number="scope.row.RealPoolRate" style="width: 70px;" size="mini" :required="true" />
           </div>
@@ -70,7 +70,7 @@
       </el-table-column>
 
       <el-table-column label="机器人开奖池值" prop="PoolVal">
-        <template v-if="scope.row.AwardType==1" slot-scope="scope">
+        <template v-if="scope.row.JackpotType!=4" slot-scope="scope">
           >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
         </template>
       </el-table-column>
@@ -245,7 +245,7 @@ export default {
     },
     addItem(){
 
-      this.JackpotRandAwards.push({AwardRate:0,AwardType:0,DayLimit:0,DatLimitArr:[],JackpotRate:0,JackpotType:0,RateArr:[]})
+      this.JackpotRandAwards.push({AwardRate:0,AwardType:1,DayLimit:0,DatLimitArr:[],JackpotRate:0,JackpotType:0,RateArr:[]})
     },
     savePoolNum() {
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
