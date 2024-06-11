@@ -44,7 +44,7 @@
             type="primary"
             icon="el-icon-plus"
             @click="handleCreate()"
-          >添加配置项
+          >添加包版本配置项
           </el-button>
         </el-form-item>
         <el-form-item>
