@@ -1647,13 +1647,13 @@
           <template slot="label" >
             总输赢：
           </template>
-          <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{ piggyLog.detail.TotalAddMoney / 1000 }}</span>
+          <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{ formatNumber( piggyLog.detail.TotalAddMoney / 1000) }}</span>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             当前金额：
           </template>
-          {{ piggyLog.detail.CurrentMoney / 1000 }}
+          {{ formatNumber(piggyLog.detail.CurrentMoney / 1000) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -1701,25 +1701,25 @@
           <template slot="label">
             累计赢钱：
           </template>
-          {{ piggyLog.detail.Piggy.totalWon / 1000}}
+          {{formatNumber( piggyLog.detail.Piggy.totalWon / 1000)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             结算后金额：
           </template>
-          {{ piggyLog.detail.Piggy.curMoney / 1000}}
+          {{ formatNumber( piggyLog.detail.Piggy.curMoney / 1000)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             JP贡献：
           </template>
-          {{ piggyLog.detail.Piggy.JackpotContribute / 1000}}
+          {{ formatNumber( piggyLog.detail.Piggy.JackpotContribute / 1000)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             JP累计贡献：
           </template>
-          {{ piggyLog.detail.Piggy.JackpotContributeTotal / 1000}}
+          {{ formatNumber( piggyLog.detail.Piggy.JackpotContributeTotal / 1000)}}
         </el-descriptions-item>
       </el-descriptions>
 
@@ -1740,7 +1740,7 @@
           <template slot-scope="scope">{{ scope.row.moneyWon / 1000}}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="记录后金额" width="150px">
-          <template slot-scope="scope">{{ scope.row.curMoney / 1000}}</template>
+          <template slot-scope="scope">{{ formatNumber( scope.row.curMoney / 1000)}}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="jpLevel">
           <template slot-scope="scope">{{ piggyJackpotLevle[scope.row.jackpotLevel] }}</template>
