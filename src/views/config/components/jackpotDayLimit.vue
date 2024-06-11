@@ -86,7 +86,7 @@
       <el-table-column label="机器人开奖数量概率" prop="RateArr">
         <template slot-scope="scope">
           <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
-          <el-tag v-if="scope.row.JackpotType == 4"   disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,tag) }}</el-tag>
+          <el-tag v-if="scope.row.JackpotType == 4"   disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,"") }}</el-tag>
           <el-tag v-for="(tag, key) in scope.row.RateArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,tag) }}</el-tag>
         </template>
       </el-table-column>
@@ -357,7 +357,14 @@ export default {
         return showStr
       }
     },
-    selectChanged(){
+    selectChanged(row){
+        for (const o of  this.JackpotRandAwards) {
+          if (o.JackpotType==4){
+              o.AwardType=2
+          }else {
+            o.AwardType=1
+          }
+        }
       this.JackpotRandAwards.splice(this.JackpotRandAwards.length,this.JackpotRandAwards.length)
     },
     delRow(index) {
