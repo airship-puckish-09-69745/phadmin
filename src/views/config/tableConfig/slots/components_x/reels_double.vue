@@ -208,11 +208,20 @@ export default {
       for (const x in this.cols) {
         const tmp = []
         const key = 'reels' + this.cols[x]
+        const disable = 'disabled' + this.cols[x]
         for (const k in this.items) {
-          tmp.push({
-            Symbol: this.items[k]['value'],
-            Number: this.items[k][key]
-          })
+          if (this.items[k][disable]) {
+            tmp.push({
+              Symbol: this.items[k]['value'],
+              Number: this.items[k][key],
+              Disabled: true
+            })
+          } else {
+            tmp.push({
+              Symbol: this.items[k]['value'],
+              Number: this.items[k][key]
+            })
+          }
         }
         changeItems.push({
           'Reels': this.cols[x] - 1,

@@ -1647,37 +1647,49 @@
           <template slot="label" >
             总输赢：
           </template>
-          <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{ piggyLog.detail.TotalAddMoney / 1000 }}</span>
+          <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{ formatNumber( piggyLog.detail.TotalAddMoney / 1000) }}</span>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             当前金额：
           </template>
-          {{ piggyLog.detail.CurrentMoney / 1000 }}
+          {{ formatNumber(piggyLog.detail.CurrentMoney / 1000) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            开始时间：
+            记录开始时间：
           </template>
           {{ formatTime(piggyLog.detail.Piggy.startTime) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            结束时间：
+            记录结束时间：
           </template>
           {{ formatTime(piggyLog.detail.FinishTime) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            总敲击次数：
+            操作次数(敲击/购买)
+          </template>
+          {{ piggyLog.detail.Piggy.handTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            敲击次数：
           </template>
           {{ piggyLog.detail.Piggy.tapTimes }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            敲击,购买：
+            免费敲击次数：
           </template>
-          {{ piggyLog.detail.Piggy.handTimes }}
+          {{ piggyLog.detail.Piggy.freeTimes }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            总下注金额：
+          </template>
+          {{ piggyLog.detail.Piggy.totalBet / 1000}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -1687,45 +1699,36 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-            免费次数：
-          </template>
-          {{ piggyLog.detail.Piggy.freeTimes }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
-            下注金额：
-          </template>
-          {{ piggyLog.detail.Piggy.totalBet / 1000}}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template slot="label">
             累计赢钱：
           </template>
-          {{ piggyLog.detail.Piggy.totalWon / 1000}}
+          {{formatNumber( piggyLog.detail.Piggy.totalWon / 1000)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             结算后金额：
           </template>
-          {{ piggyLog.detail.Piggy.curMoney / 1000}}
+          {{ formatNumber( piggyLog.detail.Piggy.curMoney / 1000)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             JP贡献：
           </template>
-          {{ piggyLog.detail.Piggy.JackpotContribute / 1000}}
+          {{ formatNumber( piggyLog.detail.Piggy.JackpotContribute / 1000)}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             JP累计贡献：
           </template>
-          {{ piggyLog.detail.Piggy.JackpotContributeTotal / 1000}}
+          {{ formatNumber( piggyLog.detail.Piggy.JackpotContributeTotal / 1000)}}
         </el-descriptions-item>
       </el-descriptions>
 
       <el-table :data="piggyLog.detail.Piggy.awards" border title="中奖记录"  :row-style="changColor">
-        <el-table-column prop="typ" label="类型">
+        <el-table-column prop="typ" label="奖励类型">
           <template slot-scope="scope">{{piggyTypeOptions[ scope.row.typ] }}</template>
+        </el-table-column>
+        <el-table-column prop="cards" label="敲击时间">
+          <template slot-scope="scope"> {{formatHMSTime(scope.row.tapTime/1000)}}  </template>
         </el-table-column>
         <el-table-column prop="seat" label="消耗金币">
           <template slot-scope="scope">{{  scope.row.moneyBet/1000  }}</template>
@@ -1737,34 +1740,31 @@
           <template slot-scope="scope">{{ scope.row.moneyWon / 1000}}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="记录后金额" width="150px">
-          <template slot-scope="scope">{{ scope.row.curMoney / 1000}}</template>
+          <template slot-scope="scope">{{ formatNumber( scope.row.curMoney / 1000)}}</template>
         </el-table-column>
-        <el-table-column prop="cardScore" label="jackpotLevel">
+        <el-table-column prop="cardScore" label="jpLevel">
           <template slot-scope="scope">{{ piggyJackpotLevle[scope.row.jackpotLevel] }}</template>
         </el-table-column>
-        <el-table-column prop="cards" label="敲击时间" width="200px">
-          <template slot-scope="scope"> {{formatTime(scope.row.tapTime/1000)}}  </template>
-        </el-table-column>
-        <el-table-column prop="cardScore" label="剩余敲击次数">
-          <template slot-scope="scope">{{ scope.row.timesFree }}</template>
-        </el-table-column>
-        <el-table-column prop="cardScore" label="敲击次数收益">
-          <template slot-scope="scope">{{ scope.row.timesIn }}</template>
-        </el-table-column>
-        <el-table-column prop="cardScore" label="敲击倍数收益">
-          <template slot-scope="scope">{{ scope.row.oddsIn }}</template>
-        </el-table-column>
-        <el-table-column prop="cardScore" label="JP等级">
+        <el-table-column prop="cardScore" label="jpTyp">
           <template slot-scope="scope">{{ scope.row.jackpotType }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="金币倍数">
           <template slot-scope="scope">{{ scope.row.moneyOdds / 1000}}</template>
         </el-table-column>
-        <el-table-column prop="cardScore" label="幸运转盘倍数">
+        <el-table-column prop="cardScore" label="转盘倍数">
           <template slot-scope="scope">{{ scope.row.plateOdds / 1000}}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="转轴倍数">
           <template slot-scope="scope">{{ scope.row.spinOdds / 1000}}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="F次数收益">
+          <template slot-scope="scope">{{ scope.row.timesIn }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="N倍数收益">
+          <template slot-scope="scope">{{ scope.row.oddsIn }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="剩余免费次数">
+          <template slot-scope="scope">{{ scope.row.timesFree }}</template>
         </el-table-column>
       </el-table>
     </el-dialog>
@@ -2060,7 +2060,7 @@ export default {
       },
       piggyTypeOptions: {
         0: 'None',
-        1: '金币🪙',
+        1: '金币',
         2: '幸运转盘',
         3: '转轴',
         4: 'F次数',
@@ -2256,6 +2256,9 @@ export default {
     // 显示相关
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    formatHMSTime(ts) {
+      return $libDate.FormateSecondStr(ts, 4)
     },
     formatNumber(n) {
       return n.toLocaleString()
