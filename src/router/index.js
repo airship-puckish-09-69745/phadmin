@@ -858,7 +858,7 @@ export const asyncRoutes = [
             path: 'superace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
-            meta: { title: '超级王牌', gid: 82 }
+            meta: { title: '超级王牌', gid: 84 }
           }
         ]
       },
