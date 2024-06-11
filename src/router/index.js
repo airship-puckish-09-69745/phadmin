@@ -1326,6 +1326,28 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/billiardsVersion',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '台球专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
+    children: [
+      {
+        path: 'billiardsTable',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '台球配桌', noCache: true },
+        children: [
+          {
+            path: 'billiardsTable',
+            component: () => import('@/views/billiards/table/billiardsTable'),
+            name: 'billiardsTable',
+            meta: { title: '台球' }
+          },
+        ]
+      },
+    ]
+  },
+  {
     path: '/texasVersion',
     component: Layout,
     redirect: 'noRedirect',
@@ -1368,7 +1390,6 @@ export const asyncRoutes = [
             name: 'texasNlhGameDetail',
             meta: { title: '每日消耗统计' }
           }
-
         ]
       },
       {
