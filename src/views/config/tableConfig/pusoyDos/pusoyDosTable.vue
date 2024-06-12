@@ -346,7 +346,7 @@
               prop="item.MinPlayMoney"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -367,6 +367,15 @@
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="edit.item.PotScore" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="癞子数量："
+              prop="item.PotScore"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.JokerNum" />
             </el-form-item>
           </el-col>
         </el-row>
