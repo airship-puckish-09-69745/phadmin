@@ -371,7 +371,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item
-              label="癞子数量："
+              label="游戏人数："
               prop="item.PotScore"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
