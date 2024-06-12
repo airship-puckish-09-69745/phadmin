@@ -268,17 +268,14 @@
 
         <el-row>
           <el-col :span="11">
-                        <el-form-item
-                          label="座位数："
-                          :required="true"
-                          prop="item.MaxPlayerCount"
-                          :rules="dataRule(true,{type:'n',range:'2'})"
-                        >
-                          <el-radio-group v-model="edit.item.MaxPlayerCount">
-                            <el-radio :label="4">四人</el-radio>
-                            <el-radio :label="2">二人</el-radio>
-                          </el-radio-group>
-                        </el-form-item>
+                <el-form-item
+                  label="座位数："
+                  :required="true"
+                  prop="item.MaxPlayerCount"
+                  :rules="dataRule(true,{type:'n',range:'2'})"
+                >
+                  <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />
+                </el-form-item>
           </el-col>
           <el-col :span="9">
             <el-form-item
