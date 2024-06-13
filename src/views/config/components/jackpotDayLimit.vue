@@ -13,8 +13,8 @@
       <el-table-column type="index" />
       <el-table-column label="奖励类型" prop="JackpotType">
         <template slot-scope="scope">
-<!--          <el-input v-model.number="scope.row.JackpotType" style="width: 150px;" size="mini" :required="true" />-->
-          <el-select t v-model.number="scope.row.JackpotType" placeholder="请选择" @change="selectChanged">
+          <!--          <el-input v-model.number="scope.row.JackpotType" style="width: 150px;" size="mini" :required="true" />-->
+          <el-select v-model.number="scope.row.JackpotType" t placeholder="请选择" @change="selectChanged">
             <el-option
               v-for="(v,k) in JackpotTypeCfg"
               :key="parseInt(k)"
@@ -25,11 +25,11 @@
         </template>
       </el-table-column>
 
-<!--      <el-table-column label="奖励占比(与Jackpot配置中占比一致)">-->
-<!--        <template v-if="scope.row.AwardType==1" slot-scope="scope">-->
-<!--          {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <!--      <el-table-column label="奖励占比(与Jackpot配置中占比一致)">-->
+      <!--        <template v-if="scope.row.AwardType==1" slot-scope="scope">-->
+      <!--          {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
       <el-table-column label="奖励占比" prop="JackpotRate">
         <template slot-scope="scope">
           <el-input v-model.number="scope.row.AwardRate" style="width: 150px;" size="mini" :required="true">
@@ -86,7 +86,7 @@
       <el-table-column label="机器人开奖数量概率" prop="RateArr">
         <template slot-scope="scope">
           <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
-          <el-tag v-if="scope.row.JackpotType == 4"   disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,"") }}</el-tag>
+          <el-tag v-if="scope.row.JackpotType == 4" disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,"") }}</el-tag>
           <el-tag v-for="(tag, key) in scope.row.RateArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,tag) }}</el-tag>
         </template>
       </el-table-column>
@@ -243,9 +243,8 @@ export default {
   methods: {
     initData() {
     },
-    addItem(){
-
-      this.JackpotRandAwards.push({AwardRate:0,AwardType:1,DayLimit:0,DatLimitArr:[],JackpotRate:0,JackpotType:0,RateArr:[]})
+    addItem() {
+      this.JackpotRandAwards.push({ AwardRate: 0, AwardType: 1, DayLimit: 0, DatLimitArr: [], JackpotRate: 0, JackpotType: 0, RateArr: [] })
     },
     savePoolNum() {
       for (var i = 0; i < this.JackpotRandAwards.length; i++) {
@@ -357,15 +356,15 @@ export default {
         return showStr
       }
     },
-    selectChanged(row){
-        for (const o of  this.JackpotRandAwards) {
-          if (o.JackpotType==4){
-              o.AwardType=2
-          }else {
-            o.AwardType=1
-          }
+    selectChanged(row) {
+      for (const o of this.JackpotRandAwards) {
+        if (o.JackpotType == 4) {
+          o.AwardType = 2
+        } else {
+          o.AwardType = 1
         }
-      this.JackpotRandAwards.splice(this.JackpotRandAwards.length,this.JackpotRandAwards.length)
+      }
+      this.JackpotRandAwards.splice(this.JackpotRandAwards.length, this.JackpotRandAwards.length)
     },
     delRow(index) {
       if (this.piggyCfg.length <= 1) {

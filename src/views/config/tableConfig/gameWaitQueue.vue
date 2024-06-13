@@ -19,7 +19,7 @@
           <div v-for="item in allCfg.All">
             <fieldset v-if="item.GameId!==31">
               <legend>{{ showGameName(item.GameId) }}</legend>
-              <el-row v-if="item.GameId===22 " >
+              <el-row v-if="item.GameId===22 ">
                 <div style="margin-bottom:20px;">
                   <p style="color:rgb(211,8,8, 1.0);font-size:18px;">TongitsPot 发车说明</p>
                   <span style="font-size:14px;font-weight: bolder;">
@@ -91,19 +91,19 @@
                 >
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
-<!--                      <el-tooltip class="item" effect="dark" content="最大值 桌子数量*4" placement="left-start">-->
-<!--                        <i class="el-icon-info" />-->
-<!--                      </el-tooltip>-->
-                      <el-input  v-if="item.GameId===34" v-model.number="scope.row.PlayerNum" type="text" placeholder="发车人数" />
-                      <el-input  v-else v-model.number="scope.row.PlayerNum" type="text" placeholder="发车人数" />
+                      <!--                      <el-tooltip class="item" effect="dark" content="最大值 桌子数量*4" placement="left-start">-->
+                      <!--                        <i class="el-icon-info" />-->
+                      <!--                      </el-tooltip>-->
+                      <el-input v-if="item.GameId===34" v-model.number="scope.row.PlayerNum" type="text" placeholder="发车人数" />
+                      <el-input v-else v-model.number="scope.row.PlayerNum" type="text" placeholder="发车人数" />
                     </el-form-item>
                   </template>
                 </el-table-column>
                 <el-table-column
+                  v-if="item.GameId===34"
                   prop="TableMaxNum"
                   label="桌子数"
                   width="180"
-                  v-if="item.GameId===34"
                 >
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
@@ -337,10 +337,10 @@ export default {
         </div>
       )
     },
-    checkPlayerNum(row){
-      console.log("===",row)
-      if (row.PlayerNum>=row.TableMaxNum*4){
-        return  row.TableMaxNum*4
+    checkPlayerNum(row) {
+      console.log('===', row)
+      if (row.PlayerNum >= row.TableMaxNum * 4) {
+        return row.TableMaxNum * 4
       }
       return row.PlayerNum
     },
@@ -453,8 +453,8 @@ export default {
         })
       })
     },
-    isDevelopment(){
-      if (process.env.NODE_ENV==='development'){
+    isDevelopment() {
+      if (process.env.NODE_ENV === 'development') {
         return true
       }
       return false
@@ -499,8 +499,8 @@ export default {
             Message.error('最低发车人数必须小于发车人数')
             return false
           }
-          if (this.allCfg.All[i].GameId==34){
-            if (this.allCfg.All[i].Config[j].PlayerNum>this.allCfg.All[i].Config[j].TableMaxNum*4){
+          if (this.allCfg.All[i].GameId == 34) {
+            if (this.allCfg.All[i].Config[j].PlayerNum > this.allCfg.All[i].Config[j].TableMaxNum * 4) {
               Message.error('PusoyDos 最大人数不能超过 桌数*4')
               return false
             }

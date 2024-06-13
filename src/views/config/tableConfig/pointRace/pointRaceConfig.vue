@@ -449,7 +449,7 @@ export default {
     addDayRow() {
       const newRow = {
         StartTime: Date.parse(new Date().toString()),
-        EndTime: Date.parse(new Date().toString()),
+        EndTime: Date.parse(new Date().toString())
       }
       this.edit.item.DayArr.push(newRow)
     },

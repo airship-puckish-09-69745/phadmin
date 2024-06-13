@@ -1378,9 +1378,9 @@ export const asyncRoutes = [
             component: () => import('@/views/billiards/table/billiardsTable'),
             name: 'billiardsTable',
             meta: { title: '台球' }
-          },
+          }
         ]
-      },
+      }
     ]
   },
   {

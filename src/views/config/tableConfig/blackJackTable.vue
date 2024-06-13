@@ -385,13 +385,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-          <el-form-item
-            label="不下注踢起"
-            prop="item.PotTaxRates"
-            :rules="dataRule(true,{type:'n',range:'1'})"
-          >
-            <el-input v-model.number="edit.item.OnlookerTimes"><template slot="append">局</template></el-input>
-          </el-form-item>
+            <el-form-item
+              label="不下注踢起"
+              prop="item.PotTaxRates"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.item.OnlookerTimes"><template slot="append">局</template></el-input>
+            </el-form-item>
           </el-col>
         </el-row>
 
@@ -463,23 +463,23 @@
         <!--        </el-row>-->
         <el-row>
           <el-col :span="11">
-              <el-form-item
-                label="隐藏目标值："
-                :required="true"
-                prop="item.HideCarry"
-                :rules="dataRule(true,{type:'n',range:'0'})"
-              >
-                <el-input v-model.number="edit.item.HideCarry" placeholder="请输入" />
-              </el-form-item>
-<!--            <el-form-item-->
-<!--              label="隐藏目标值："-->
-<!--              :required="true"-->
-<!--              prop="item.DefaultWinRate"-->
-<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.HideValue" placeholder="隐藏的目标值" style="width:200px;">-->
-<!--              </el-input>-->
-<!--            </el-form-item>-->
+            <el-form-item
+              label="隐藏目标值："
+              :required="true"
+              prop="item.HideCarry"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.HideCarry" placeholder="请输入" />
+            </el-form-item>
+            <!--            <el-form-item-->
+            <!--              label="隐藏目标值："-->
+            <!--              :required="true"-->
+            <!--              prop="item.DefaultWinRate"-->
+            <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+            <!--            >-->
+            <!--              <el-input v-model.number="edit.item.HideValue" placeholder="隐藏的目标值" style="width:200px;">-->
+            <!--              </el-input>-->
+            <!--            </el-form-item>-->
           </el-col>
           <el-col :span="11">
             <el-form-item
@@ -706,7 +706,7 @@ function newItem() {
     BetOption: [],
     MaxBet: 0,
     HideValue: 0,
-    HideCarry:0,
+    HideCarry: 0,
     RedCardStart: 0,
     RedCardEnd: 0,
     OnlookerTimes: 0
@@ -774,7 +774,7 @@ export default {
         BetMaxRate: '下注最大比例',
         BetOption: '下注选项列表',
         OnlookerTimes: '不下注踢起',
-        HideCarry:'隐藏目标值',
+        HideCarry: '隐藏目标值'
       }
     }
   },
@@ -999,7 +999,7 @@ export default {
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
       console.log(postData)
-       postData.HideValue= postData.HideCarry
+      postData.HideValue = postData.HideCarry
       return postData
     },
     checkData() {

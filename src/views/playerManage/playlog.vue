@@ -198,7 +198,7 @@
               {{ formatNumber(scope.row.WinRate *100) }}
             </span>
             <span v-else>
-                {{ formatNumber(scope.row.ServiceFee) }}
+              {{ formatNumber(scope.row.ServiceFee) }}
             </span>
           </template>
         </el-table-column>
@@ -229,14 +229,14 @@
           width="100"
         >
           <template slot-scope="scope">
-           <span v-if="gid==20&& scope.row.LuckyVal>0">
-              {{  scope.row.LuckyVal / 100}}
-           </span>
+            <span v-if="gid==20&& scope.row.LuckyVal>0">
+              {{ scope.row.LuckyVal / 100 }}
+            </span>
             <span v-else-if="gid==20&& scope.row.LuckyVal===0">
               {{ 0 }}
-           </span>
-            <span  v-else>
-               {{ scope.row.WinRate }}
+            </span>
+            <span v-else>
+              {{ scope.row.WinRate }}
             </span>
           </template>
         </el-table-column>
@@ -608,21 +608,21 @@
         <el-table-column prop="moneyBet" label="投注金额">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroups">
-              <hr v-if="index > 0" class="blackJackHr"/>
-               {{item.moneyBet / 1000}}
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ item.moneyBet / 1000 }}
             </div>
           </template>
         </el-table-column>
         <el-table-column prop="moneyBet" label="投保金额">
           <template slot-scope="scope">
-              {{ scope.row.moneyInsured  / 1000}}
+            {{ scope.row.moneyInsured / 1000 }}
           </template>
         </el-table-column>
 
         <el-table-column prop="cards" label="手牌" width="300px">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroups" class="block">
-              <hr v-if="index > 0" class="blackJackHr"/>
+              <hr v-if="index > 0" class="blackJackHr">
               {{ '手牌'+(index+1)+': ' }}
               <div v-for="(card) in item.cards" class="block">
                 <el-image
@@ -635,24 +635,24 @@
 
         </el-table-column>
         <el-table-column label="是否爆牌" width="200px">
-                <template slot-scope="scope">
-                  <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
-                    <hr v-if="index > 0" class="blackJackHr"/>
-                      {{ '手牌'+(index+1)+': '+ (item.cardType==1?"点牌":( item.cardType==2?"BlackJack":"爆牌")) }}
-                  </div>
-                </template>
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ '手牌'+(index+1)+': '+ (item.cardType==1?"点牌":( item.cardType==2?"BlackJack":"爆牌")) }}
+            </div>
+          </template>
         </el-table-column>
         <el-table-column label="输赢">
-            <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
-                <hr v-if="index > 0"  class="blackJackHr"/>
-                 {{item.moneyWon / 1000}}
-              </div>
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.cardGroups" class="block" style="width: 100%;white-space: pre-wrap;">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ item.moneyWon / 1000 }}
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="moneyBet" label="保险中奖金额">
           <template slot-scope="scope">
-            {{ scope.row.moneyClaims  / 1000}}
+            {{ scope.row.moneyClaims / 1000 }}
           </template>
         </el-table-column>
       </el-table>
@@ -896,18 +896,18 @@
     >
       <br>
       <el-descriptions
-              class="margin-top"
-              :column="4"
-              size="medium"
-              :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
-              border
-            >
-          <el-descriptions-item label="累计贡献值">{{ WindropGameResult.JackpotContributeTotal /1000 }}</el-descriptions-item>
-          <el-descriptions-item label="单次贡献值">{{ WindropGameResult.JackpotContribute  /1000}}</el-descriptions-item>
+        class="margin-top"
+        :column="4"
+        size="medium"
+        :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+        border
+      >
+        <el-descriptions-item label="累计贡献值">{{ WindropGameResult.JackpotContributeTotal /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="单次贡献值">{{ WindropGameResult.JackpotContribute /1000 }}</el-descriptions-item>
         <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
-        <el-descriptions-item label="总下注金额">{{ WindropGameResult.BetAllScore /1000}}</el-descriptions-item>
+        <el-descriptions-item label="总下注金额">{{ WindropGameResult.BetAllScore /1000 }}</el-descriptions-item>
         <el-descriptions-item label="单球下注金币">{{ WindropGameResult.BetScore /1000 }}</el-descriptions-item>
-        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy /1000}}</el-descriptions-item>
+        <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy /1000 }}</el-descriptions-item>
         <el-descriptions-item label="能量奖励">{{ WindropGameResult.EnergyNum <1000 ? WindropGameResult.EnergyNum+' 球' : WindropGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
         <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount }}</el-descriptions-item>
       </el-descriptions>
@@ -1529,12 +1529,12 @@
 
     <el-dialog title="solitaire详情" :visible.sync="solitaireLog.solitaireVisible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="4" border>
-<!--        <el-descriptions-item>-->
-<!--          <template slot="label">-->
-<!--           赢家：-->
-<!--          </template>-->
-<!--          {{ solitaireLog.solitaireDetail.winUid }}-->
-<!--        </el-descriptions-item>-->
+        <!--        <el-descriptions-item>-->
+        <!--          <template slot="label">-->
+        <!--           赢家：-->
+        <!--          </template>-->
+        <!--          {{ solitaireLog.solitaireDetail.winUid }}-->
+        <!--        </el-descriptions-item>-->
         <el-descriptions-item>
           <template slot="label">
             底注：
@@ -1545,14 +1545,14 @@
 
       <el-table :data="solitaireLog.solitaireDetail.players" border>
         <el-table-column prop="uid" label="uid">
-          <template slot-scope="scope">{{ scope.row.uid}}</template>
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
         </el-table-column>
         <el-table-column prop="seat" label="输赢">
-          <template slot-scope="scope">{{  scope.row.moneyChange/1000  }}</template>
+          <template slot-scope="scope">{{ scope.row.moneyChange/1000 }}</template>
         </el-table-column>
         <el-table-column prop="cards" label="当前金额">
           <template slot-scope="scope">
-            {{scope.row.moneyTotal/1000}}
+            {{ scope.row.moneyTotal/1000 }}
           </template>
         </el-table-column>
         <el-table-column prop="cardScore" label="翻牌张数">
@@ -1575,13 +1575,13 @@
               </el-row>
             </div>
             <div class="solitaireHeight">
-              <hr class="blackJackHr"/>
+              <hr class="blackJackHr">
               <el-row>
                 <span>牌堆</span>
               </el-row>
             </div>
             <div style="height: 200px">
-              <hr class="blackJackHr" style="width: 2000px"/>
+              <hr class="blackJackHr" style="width: 2000px">
               <el-row>
                 <span>牌叠</span>
               </el-row>
@@ -1591,40 +1591,40 @@
         <el-table-column prop="isDealer" label="结算" width="1000px">
           <template slot-scope="scope">
             <div style="height: 200px">
-              <el-row >
-                      <span v-for="(row,idx) in  scope.row.resultCards">
-                          <div v-for="(d,i) in row.cards" style="float:left;" >
-                             <el-image
-                               :style="getCardStyle2(i)"
-                               :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
-                             />
-                         <span v-html="'&nbsp;'"> </span>
-                 </div>
-              </span>
+              <el-row>
+                <span v-for="(row,idx) in scope.row.resultCards">
+                  <div v-for="(d,i) in row.cards" style="float:left;">
+                    <el-image
+                      :style="getCardStyle2(i)"
+                      :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
+                    />
+                    <span v-html="'&nbsp;'" />
+                  </div>
+                </span>
               </el-row>
             </div>
             <div class="solitaireHeight">
-              <hr class="blackJackHr"/>
+              <hr class="blackJackHr">
               <el-row>
-                     <span v-for="(row,idx) in  scope.row.CardsPile">
-                         <el-image
-                           :style="getCardStyle(idx)"
-                           :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
-                         />
-              </span>
+                <span v-for="(row,idx) in scope.row.CardsPile">
+                  <el-image
+                    :style="getCardStyle(idx)"
+                    :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
+                  />
+                </span>
               </el-row>
             </div>
             <div style="height: 200px">
-              <hr class="blackJackHr"/>
+              <hr class="blackJackHr">
               <el-row>
-                         <span v-for="(row,idx) in  scope.row.cardsStacks" >
-                             <div v-for="(d,i) in row.cards" style="float:left;" >
-                                 <el-image
-                                   :style="getCardStyle2(i)"
-                                   :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
-                                 />
-                                <span v-html="'&nbsp;'"> </span>
-                   </div>
+                <span v-for="(row,idx) in scope.row.cardsStacks">
+                  <div v-for="(d,i) in row.cards" style="float:left;">
+                    <el-image
+                      :style="getCardStyle2(i)"
+                      :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
+                    />
+                    <span v-html="'&nbsp;'" />
+                  </div>
                 </span>
 
               </el-row>
@@ -1634,8 +1634,7 @@
       </el-table>
     </el-dialog>
 
-
-    <el-dialog title="piggy详情" v-if="piggyLog.visible" :visible.sync="piggyLog.visible" width="1200px">
+    <el-dialog v-if="piggyLog.visible" title="piggy详情" :visible.sync="piggyLog.visible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
           <template slot="label">
@@ -1643,8 +1642,8 @@
           </template>
           {{ piggyLog.detail.SingleUid }}
         </el-descriptions-item>
-        <el-descriptions-item >
-          <template slot="label" >
+        <el-descriptions-item>
+          <template slot="label">
             总输赢：
           </template>
           <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{ formatNumber( piggyLog.detail.TotalAddMoney / 1000) }}</span>
@@ -1689,58 +1688,58 @@
           <template slot="label">
             总下注金额：
           </template>
-          {{ piggyLog.detail.Piggy.totalBet / 1000}}
+          {{ piggyLog.detail.Piggy.totalBet / 1000 }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             台费：
           </template>
-          {{ piggyLog.detail.Piggy.MoneyFee / 1000}}
+          {{ piggyLog.detail.Piggy.MoneyFee / 1000 }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             累计赢钱：
           </template>
-          {{formatNumber( piggyLog.detail.Piggy.totalWon / 1000)}}
+          {{ formatNumber( piggyLog.detail.Piggy.totalWon / 1000) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             结算后金额：
           </template>
-          {{ formatNumber( piggyLog.detail.Piggy.curMoney / 1000)}}
+          {{ formatNumber( piggyLog.detail.Piggy.curMoney / 1000) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             JP贡献：
           </template>
-          {{ formatNumber( piggyLog.detail.Piggy.JackpotContribute / 1000)}}
+          {{ formatNumber( piggyLog.detail.Piggy.JackpotContribute / 1000) }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             JP累计贡献：
           </template>
-          {{ formatNumber( piggyLog.detail.Piggy.JackpotContributeTotal / 1000)}}
+          {{ formatNumber( piggyLog.detail.Piggy.JackpotContributeTotal / 1000) }}
         </el-descriptions-item>
       </el-descriptions>
 
-      <el-table :data="piggyLog.detail.Piggy.awards" border title="中奖记录"  :row-style="changColor">
+      <el-table :data="piggyLog.detail.Piggy.awards" border title="中奖记录" :row-style="changColor">
         <el-table-column prop="typ" label="奖励类型">
-          <template slot-scope="scope">{{piggyTypeOptions[ scope.row.typ] }}</template>
+          <template slot-scope="scope">{{ piggyTypeOptions[ scope.row.typ] }}</template>
         </el-table-column>
         <el-table-column prop="cards" label="敲击时间" width="110px">
-          <template slot-scope="scope"> {{formatHMSTime(scope.row.tapTime/1000)}}.{{scope.row.tapTime%1000}}  </template>
+          <template slot-scope="scope"> {{ formatHMSTime(scope.row.tapTime/1000) }}.{{ scope.row.tapTime%1000 }}  </template>
         </el-table-column>
         <el-table-column prop="seat" label="消耗金币">
-          <template slot-scope="scope">{{  scope.row.moneyBet/1000  }}</template>
+          <template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="下注金额">
-          <template slot-scope="scope">{{ scope.row.calcBet /1000}}</template>
+          <template slot-scope="scope">{{ scope.row.calcBet /1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="赢钱">
-          <template slot-scope="scope">{{ scope.row.moneyWon / 1000}}</template>
+          <template slot-scope="scope">{{ scope.row.moneyWon / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="记录后金额" width="150px">
-          <template slot-scope="scope">{{ formatNumber( scope.row.curMoney / 1000)}}</template>
+          <template slot-scope="scope">{{ formatNumber( scope.row.curMoney / 1000) }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="jpLevel">
           <template slot-scope="scope">{{ piggyJackpotLevle[scope.row.jackpotLevel] }}</template>
@@ -1749,13 +1748,13 @@
           <template slot-scope="scope">{{ scope.row.jackpotType }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="金币倍数">
-          <template slot-scope="scope">{{ scope.row.moneyOdds / 1000}}</template>
+          <template slot-scope="scope">{{ scope.row.moneyOdds / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="转盘倍数">
-          <template slot-scope="scope">{{ scope.row.plateOdds / 1000}}</template>
+          <template slot-scope="scope">{{ scope.row.plateOdds / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="转轴倍数">
-          <template slot-scope="scope">{{ scope.row.spinOdds / 1000}}</template>
+          <template slot-scope="scope">{{ scope.row.spinOdds / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="F次数收益">
           <template slot-scope="scope">{{ scope.row.timesIn }}</template>
@@ -1774,7 +1773,7 @@
 
     <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog" />
 
-    <el-dialog title="Baccarat详情" v-if="gameLogComponent.gid==107" :visible.sync="gameLogComponent.visible" width="1200px">
+    <el-dialog v-if="gameLogComponent.gid==107" title="Baccarat详情" :visible.sync="gameLogComponent.visible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
           <template slot="label">
@@ -1801,41 +1800,41 @@
             庄家手牌：
           </template>
           <span v-for="(k,v) in gameLogComponent.detail.Bcr.dealerCards">
-                   <el-image
-                     style="width: 37px; height: 50px"
-                     :src="getCardUrl(cardConversionColor(k,'2-2','4-4','3-3','1-1'))"
-                   />
-              </span>
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(cardConversionColor(k,'2-2','4-4','3-3','1-1'))"
+            />
+          </span>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
-           玩家手牌：
+            玩家手牌：
           </template>
           <span v-for="(k,v) in gameLogComponent.detail.Bcr.playerCards">
-                   <el-image
-                     style="width: 37px; height: 50px"
-                     :src="getCardUrl(cardConversionColor(k,'2-2','4-4','3-3','1-1'))"
-                   />
-              </span>
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(cardConversionColor(k,'2-2','4-4','3-3','1-1'))"
+            />
+          </span>
         </el-descriptions-item>
       </el-descriptions>
-      <el-table :data="gameLogComponent.detail.Bcr.options" border   :header-cell-style="{'text-align':'center'}" :row-style="getHitStyle">
-        <el-table-column   label="区域ID" >
-          <template slot-scope="scope">{{ scope.row.id  }}</template>
+      <el-table :data="gameLogComponent.detail.Bcr.options" border :header-cell-style="{'text-align':'center'}" :row-style="getHitStyle">
+        <el-table-column label="区域ID">
+          <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
-        <el-table-column   label="命中"  >
-          <template slot-scope="scope">{{ scope.row.isHit  ==0?'否':'是'}}</template>
+        <el-table-column label="命中">
+          <template slot-scope="scope">{{ scope.row.isHit ==0?'否':'是' }}</template>
         </el-table-column>
-        <el-table-column   label="倍率" >
+        <el-table-column label="倍率">
           <template slot-scope="scope">{{ scope.row.odds /1000 }}</template>
         </el-table-column>
-        <el-table-column   label="区域累计下注" >
+        <el-table-column label="区域累计下注">
           <template slot-scope="scope">{{ formatNumber(scope.row.optionBetAll /1000) }}</template>
         </el-table-column>
       </el-table>
-      <el-table :data="gameLogComponent.detail.Bcr.players" border   :header-cell-style="{'text-align':'center'}" >
+      <el-table :data="gameLogComponent.detail.Bcr.players" border :header-cell-style="{'text-align':'center'}">
         <el-table-column prop="uid" label="UID" width="80px">
-          <template slot-scope="scope">{{ scope.row.uid  }}</template>
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
         </el-table-column>
         <el-table-column prop="uid" label="下注金额" width="80px">
           <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
@@ -1844,21 +1843,21 @@
           <template slot-scope="scope">{{ formatNumber(scope.row.moneyEnd /1000) }}</template>
         </el-table-column>
         <el-table-column prop="uid" label="下注前金额" width="100px">
-          <template slot-scope="scope">{{ formatNumber(scope.row.moneyOrigin /1000 )}}</template>
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyOrigin /1000 ) }}</template>
         </el-table-column>
         <el-table-column prop="uid" label="输赢" width="80px">
           <template slot-scope="scope">
             <span v-if="scope.row.moneyWon>0" style="color: red">
-              {{formatNumber( scope.row.moneyWon /1000) }}
+              {{ formatNumber( scope.row.moneyWon /1000) }}
             </span>
             <span v-else style="color: green">
-               {{formatNumber( scope.row.moneyWon /1000) }}
+              {{ formatNumber( scope.row.moneyWon /1000) }}
             </span>
           </template>
         </el-table-column>
         <el-table-column prop="uid" label="下注详情" width="auto">
           <template slot-scope="scope">
-            <el-table :data="scope.row.areaRet" border  :row-style="getHitStyle">
+            <el-table :data="scope.row.areaRet" border :row-style="getHitStyle">
               <el-table-column label="区域ID">
                 <template slot-scope="scope2">{{ scope2.row.id }}</template>
               </el-table-column>
@@ -1869,10 +1868,10 @@
                 <template slot-scope="scope2">{{ scope2.row.isHit==0?'否':'是' }}</template>
               </el-table-column>
               <el-table-column label="区域输赢">
-                <template slot-scope="scope2">{{ formatNumber(scope2.row.moneyWon /1000)}}</template>
+                <template slot-scope="scope2">{{ formatNumber(scope2.row.moneyWon /1000) }}</template>
               </el-table-column>
               <el-table-column label="倍率">
-                <template slot-scope="scope2">{{ scope2.row.odds /1000}}</template>
+                <template slot-scope="scope2">{{ scope2.row.odds /1000 }}</template>
               </el-table-column>
             </el-table>
           </template>
@@ -2049,17 +2048,17 @@ export default {
       },
       solitaireLog: {
         solitaireVisible: false,
-        solitaireDetail: {},
+        solitaireDetail: {}
       },
       piggyLog: {
         visible: false,
-        detail: {},
+        detail: {}
       },
 
       gameLogComponent: {
         visible: false,
         detail: {},
-        gid:0,
+        gid: 0
       },
       piggyTypeOptions: {
         0: 'None',
@@ -2070,15 +2069,15 @@ export default {
         5: 'N倍数',
         10: 'JP触发',
         11: 'JP发奖',
-        20: '购买free game',
+        20: '购买free game'
       },
       piggyJackpotLevle: {
         0: 'None',
         1: 'Grand',
         2: 'Major',
-        3: 'Minor',
+        3: 'Minor'
       },
-      ConversionColorMap:{},
+      ConversionColorMap: {},
 
       rummyDetailVisible: false,
       rummyDetails: [],
@@ -2445,7 +2444,7 @@ export default {
           } else if (gid === 106) {
             $this.showPiggy(obj)
           } else if (gid === 107) {
-            $this.showGameLogComponent(obj,gid)
+            $this.showGameLogComponent(obj, gid)
           } else {
             $this.showSmallGame(obj)
           }
@@ -2467,33 +2466,32 @@ export default {
         console.log('无法解析牌局详情，很可能不存在')
       }
     },
-    cardConversionColor(num,meihua,heitao,hongtao,fangkuai){
+    cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num==0 || num ==='NaN'){
+      if (num == 0 || num === 'NaN') {
         return
       }
-      if (Object.keys(this.ConversionColorMap).length === 0){
-        var m = meihua.split('-');
-        var hei = heitao.split('-');
-        var hong = hongtao.split('-');
-        var f = fangkuai.split('-');
-        this.ConversionColorMap[m[0]]=m[1]
-        this.ConversionColorMap[hei[0]]=hei[1]
-        this.ConversionColorMap[hong[0]]=hong[1]
-        this.ConversionColorMap[f[0]]=m[1]
+      if (Object.keys(this.ConversionColorMap).length === 0) {
+        var m = meihua.split('-')
+        var hei = heitao.split('-')
+        var hong = hongtao.split('-')
+        var f = fangkuai.split('-')
+        this.ConversionColorMap[m[0]] = m[1]
+        this.ConversionColorMap[hei[0]] = hei[1]
+        this.ConversionColorMap[hong[0]] = hong[1]
+        this.ConversionColorMap[f[0]] = m[1]
       }
 
-
-      var s = num.toString(16);
+      var s = num.toString(16)
       // 补0
-      if (s.length===1){
-        s = '0'+s[0];
+      if (s.length === 1) {
+        s = '0' + s[0]
       }
-      let result ='0x'+ this.ConversionColorMap[s[0]]+s[1]
+      const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
       return parseInt(result)
     },
-    showGameLogComponent(obj,gid){
-      console.log("=======",obj)
+    showGameLogComponent(obj, gid) {
+      console.log('=======', obj)
       this.gameLogComponent.detail = obj
       this.gameLogComponent.visible = true
       this.gameLogComponent.gid = gid
@@ -2512,12 +2510,12 @@ export default {
       this.actionVisible = true
     },
     showSolitaire(obj) {
-      this.solitaireLog.solitaireDetail=obj
-      this.solitaireLog.solitaireVisible=true
+      this.solitaireLog.solitaireDetail = obj
+      this.solitaireLog.solitaireVisible = true
     },
-    showPiggy(obj){
-      this.piggyLog.detail=obj
-      this.piggyLog.visible=true
+    showPiggy(obj) {
+      this.piggyLog.detail = obj
+      this.piggyLog.visible = true
     },
     showBaccaratGame(obj) {
       const names = ['Dealer Win', 'Player Win', 'Tie', 'Dealer Pair', 'Player Pair']
@@ -2630,7 +2628,7 @@ export default {
       if (Array.isArray(windropObj.optionData.bouns) && windropObj.optionData.bouns.length > 0) {
         for (let i = 0; i < windropObj.optionData.bouns.length; i++) {
           const tracksPos = []
-          if (windropObj.optionData.bouns[i].TracksPos){
+          if (windropObj.optionData.bouns[i].TracksPos) {
             for (const pos of windropObj.optionData.bouns[i].TracksPos) {
               tracksPos.push({
                 posX: pos.posX,
@@ -2701,9 +2699,9 @@ export default {
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
     },
-    getHitStyle({row}){
-      if (row.isHit){
-        return {color: "red"}
+    getHitStyle({ row }) {
+      if (row.isHit) {
+        return { color: 'red' }
       }
       return {}
     },
@@ -2959,8 +2957,8 @@ export default {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
     },
-    isContainsFriendGame(){
-      if (this.gid==21){
+    isContainsFriendGame() {
+      if (this.gid == 21) {
         return true
       }
       return false
@@ -3118,19 +3116,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       }
       this.chartData = chartData
     },
-    getCardStyle(idx){
-      if (idx===0){
+    getCardStyle(idx) {
+      if (idx === 0) {
         return 'width: 37px; height: 50px;'
       }
       return 'width: 37px; height: 50px;margin-left: -20px'
     },
-    getCardStyle2(idx){
-      if (idx===0){
+    getCardStyle2(idx) {
+      if (idx === 0) {
         return 'width: 37px; height: 50px;'
       }
-      let top =idx*15
-      let left =idx+1 * -37
-      return 'width: 37px; height: 50px;margin-left: '+left+'px;margin-top: '+top+'px'
+      const top = idx * 15
+      const left = idx + 1 * -37
+      return 'width: 37px; height: 50px;margin-left: ' + left + 'px;margin-top: ' + top + 'px'
     },
     getServiceFeeName() {
       if (this.gid == 20) {
@@ -3151,24 +3149,24 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     WinOrLoseColor(row) {
       if (row > 0) {
         return {
-          color: "red"
+          color: 'red'
         }
       }
       if (row < 0) {
         return {
-          color: "green"
+          color: 'green'
         }
       }
     },
-    changColor({row}){
-      if (row.typ == "1") {
+    changColor({ row }) {
+      if (row.typ == '1') {
         return {
-          color: "red"
+          color: 'red'
         }
       }
-      if (row.typ == "2") {
+      if (row.typ == '2') {
         return {
-          color: "#9205a6"
+          color: '#9205a6'
         }
       }
     },

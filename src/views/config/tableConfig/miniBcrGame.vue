@@ -40,11 +40,11 @@
           </el-form-item>
         </el-col>
 
-<!--        <el-col v-if="envProjectName !== 'ph_audit'" :span="8" :offset="1">-->
-<!--          <el-form-item label="extra出现概率（%）:">-->
-<!--            <el-input v-model.number="item.ExTraPayRate" :required="true" />-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <!--        <el-col v-if="envProjectName !== 'ph_audit'" :span="8" :offset="1">-->
+        <!--          <el-form-item label="extra出现概率（%）:">-->
+        <!--            <el-input v-model.number="item.ExTraPayRate" :required="true" />-->
+        <!--          </el-form-item>-->
+        <!--        </el-col>-->
 
         <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
@@ -150,13 +150,13 @@
                   </template>
                 </el-table-column>
 
-<!--                <el-table-column-->
-<!--                  label="赔率(支持2位小数)"-->
-<!--                >-->
-<!--                  <template slot-scope="scope">-->
-<!--                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value === '' || value == null){value = 0;}" />-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
+                <!--                <el-table-column-->
+                <!--                  label="赔率(支持2位小数)"-->
+                <!--                >-->
+                <!--                  <template slot-scope="scope">-->
+                <!--                    <el-input v-model.number="scope.row.Odds" type="number" :step="0.01" size="mini" oninput="if(value < 0 || value === '' || value == null){value = 0;}" />-->
+                <!--                  </template>-->
+                <!--                </el-table-column>-->
 
               </el-table>
             </el-row>
@@ -178,7 +178,7 @@
                   type="index"
                 >
                   <template slot-scope="scope">
-                   {{scope.row.Id}}
+                    {{ scope.row.Id }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -187,7 +187,7 @@
                 >
                   <template slot-scope="scope">
                     <!--                    <el-input v-model.number="scope.row.OptionId" disabled size="mini" />-->
-                    {{scope.row.OptionId}}
+                    {{ scope.row.OptionId }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -195,7 +195,7 @@
                   label="下注区域名称"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="BetAreaOptions[scope.row.Id]" disabled  size="mini" />
+                    <el-input v-model.number="BetAreaOptions[scope.row.Id]" disabled size="mini" />
                   </template>
                 </el-table-column>
 
@@ -203,7 +203,7 @@
                   label="中奖赔率"
                 >
                   <template slot-scope="scope">
-                    <el-input type="number" v-model.number="scope.row.Val" size="mini" />
+                    <el-input v-model.number="scope.row.Val" type="number" size="mini" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -440,10 +440,10 @@ export default {
         6: 'LUCKY6，庄家以6点赢且没有博牌',
         7: 'LUCKY6，庄家以6点赢且有博牌',
         8: 'BIG 大点，庄家和闲家的牌张数之和是5或者6',
-        9: 'SMALL 小点，庄家和闲家的牌张数之和是4',
+        9: 'SMALL 小点，庄家和闲家的牌张数之和是4'
       },
       item: {
-        BetMoneyLevel: [{CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10}],
+        BetMoneyLevel: [{ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 }],
         BetAreaOptions: [
           { Name: '闲赢', MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1, Odds: 2 },
           { Name: '庄赢', MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1, Odds: 2 },

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"/>
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
         <el-tabs type="border-card">
@@ -11,12 +11,12 @@
                   <el-form :inline="true">
                     <el-col :span="8">
                       <el-form-item label="用户离开房间时间(s):">
-                        <el-input v-model.number="item.NoticeTime" size="mini"/>
+                        <el-input v-model.number="item.NoticeTime" size="mini" />
                       </el-form-item>
                     </el-col>
                     <el-col :span="8">
                       <el-form-item label="抽水额度">
-                        <el-input v-model.number="item.FeeRate" size="mini"/>
+                        <el-input v-model.number="item.FeeRate" size="mini" />
                       </el-form-item>
                     </el-col>
                   </el-form>
@@ -41,7 +41,7 @@
                       label="下注列表(支持2位小数)"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.TableMoney" size="mini"/>
+                        <el-input v-model="scope.row.TableMoney" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -49,7 +49,7 @@
                       label="最小下注限制"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.MinMoneyBet" size="mini"/>
+                        <el-input v-model.number="scope.row.MinMoneyBet" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -57,7 +57,7 @@
                       label="最大下注限制"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.MaxMoneyBet" size="mini"/>
+                        <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="操作">
@@ -89,24 +89,24 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini"/>
+                        <el-input v-model="scope.row.Id" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="中奖倍率">
-                        <el-table-column :label="'一球'">
-                          <template slot-scope="scope">
-                          <el-input v-model="scope.row.Val[0]" size="mini"/>
-                          </template>
-                        </el-table-column>
-                        <el-table-column :label="'两球'">
-                          <template slot-scope="scope">
-                            <el-input v-model="scope.row.Val[1]" size="mini"/>
-                          </template>
-                        </el-table-column>
-                        <el-table-column :label="'三球'">
-                          <template slot-scope="scope">
-                            <el-input v-model="scope.row.Val[2]" size="mini"/>
-                          </template></el-table-column>
+                      <el-table-column :label="'一球'">
+                        <template slot-scope="scope">
+                          <el-input v-model="scope.row.Val[0]" size="mini" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column :label="'两球'">
+                        <template slot-scope="scope">
+                          <el-input v-model="scope.row.Val[1]" size="mini" />
+                        </template>
+                      </el-table-column>
+                      <el-table-column :label="'三球'">
+                        <template slot-scope="scope">
+                          <el-input v-model="scope.row.Val[2]" size="mini" />
+                        </template></el-table-column>
                     </el-table-column>
                     <el-table-column label="操作">
                       <template slot-scope="scope">
@@ -132,7 +132,7 @@
                   >
                     <el-table-column label="ID">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Id" size="mini" disabled/>
+                        <el-input v-model="scope.row.Id" size="mini" disabled />
                       </template>
                     </el-table-column>
                     <el-table-column label="是否jackpot">
@@ -148,17 +148,17 @@
                     </el-table-column>
                     <el-table-column label="倍数">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Multiple" size="mini"/>
+                        <el-input v-model.number="scope.row.Multiple" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="中奖概率">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Rate" size="mini"/>
+                        <el-input v-model.number="scope.row.Rate" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="无Jackpot中奖概率">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.OtherRate" size="mini"/>
+                        <el-input v-model.number="scope.row.OtherRate" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="操作">
@@ -189,18 +189,18 @@
                           style="width: 37px;height: 50px"
                           :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"
                         />
-                        <el-input v-model.number="scope.row.Id" size="mini" style="width: 80px"/>
+                        <el-input v-model.number="scope.row.Id" size="mini" style="width: 80px" />
                       </template>
                     </el-table-column>
 
                     <el-table-column label="单个区域最大下注额度">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.MaxMoneyBet" size="mini"/>
+                        <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="机器人次区域下注概率">
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.RobotBetOdds" size="mini"/>
+                        <el-input v-model.number="scope.row.RobotBetOdds" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column label="操作">
@@ -220,12 +220,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="机器人最小玩牌局数:">
-                    <el-input v-model.number="item.MinRobotPlayTimes" size="mini"/>
+                    <el-input v-model.number="item.MinRobotPlayTimes" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="机器人最大玩牌局数">
-                    <el-input v-model.number="item.MaxRobotPlayTimes" size="mini"/>
+                    <el-input v-model.number="item.MaxRobotPlayTimes" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -234,12 +234,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="机器人金币下限:">
-                    <el-input v-model.number="item.MinRobotMoney" size="mini"/>
+                    <el-input v-model.number="item.MinRobotMoney" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="机器人金币上限">
-                    <el-input v-model.number="item.MaxRobotMoney" size="mini"/>
+                    <el-input v-model.number="item.MaxRobotMoney" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -248,12 +248,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="机器人最大赢牌次数下限:">
-                    <el-input v-model.number="item.MinRobotWinTimes" size="mini"/>
+                    <el-input v-model.number="item.MinRobotWinTimes" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="机器人最大赢牌次数上限">
-                    <el-input v-model.number="item.MaxRobotWinTimes" size="mini"/>
+                    <el-input v-model.number="item.MaxRobotWinTimes" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -262,12 +262,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="机器人最大输牌次数下限:">
-                    <el-input v-model.number="item.MinRobotLoseTimes" size="mini"/>
+                    <el-input v-model.number="item.MinRobotLoseTimes" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="机器人最大输牌次数上限">
-                    <el-input v-model.number="item.MaxRobotLoseTimes" size="mini"/>
+                    <el-input v-model.number="item.MaxRobotLoseTimes" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -276,12 +276,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="最器人下注次数下限:">
-                    <el-input v-model.number="item.MinRobotBetTimes" size="mini"/>
+                    <el-input v-model.number="item.MinRobotBetTimes" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="最器人下注次数上限">
-                    <el-input v-model.number="item.MaxRobotBetTimes" size="mini"/>
+                    <el-input v-model.number="item.MaxRobotBetTimes" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -290,12 +290,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="机器人数量安全值:">
-                    <el-input v-model.number="item.RobotUserNumSafeVal" size="mini"/>
+                    <el-input v-model.number="item.RobotUserNumSafeVal" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="真人人数量安全值比率">
-                    <el-input v-model.number="item.RealUserNumSafeVal" size="mini"/>
+                    <el-input v-model.number="item.RealUserNumSafeVal" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -304,12 +304,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="机器人下注上一把真人下注额的最小倍数:">
-                    <el-input v-model.number="item.MinRobotBetLastMemberMultiple" size="mini"/>
+                    <el-input v-model.number="item.MinRobotBetLastMemberMultiple" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="机器人下注上一把真人下注额的最大倍数">
-                    <el-input v-model.number="item.MaxRobotBetLastMemberMultiple" size="mini"/>
+                    <el-input v-model.number="item.MaxRobotBetLastMemberMultiple" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -318,17 +318,17 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="启用调控的最小(真实)玩家数量:">
-                    <el-input v-model.number="item.MinPlayersEnableSchema" size="mini"/>
+                    <el-input v-model.number="item.MinPlayersEnableSchema" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="上一把没有真人下注时，机器人下注在线人数平均值">
-                    <el-input v-model.number="item.RobotAverageBetMoney" size="mini"/>
+                    <el-input v-model.number="item.RobotAverageBetMoney" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
-            <robot-online-items :items="item.RobotMemberArr"></robot-online-items>
+            <robot-online-items :items="item.RobotMemberArr" />
 
           </el-tab-pane>
 
@@ -337,12 +337,12 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="jackpot服务费*bet">
-                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini"/>
+                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label="解锁jackpot下注">
-                    <el-input v-model.number="JackpotCfg.JackpotBetMin" size="mini"/>
+                    <el-input v-model.number="JackpotCfg.JackpotBetMin" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -351,21 +351,20 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="每小时局数">
-                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini"/>
+                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
 
-
             <fieldset style="margin-top:10px">
               <legend>jackpot每日限制</legend>
-              <jackpot-day-limit :jackpot-rand-awards="RandAwards"/>
+              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />
             </fieldset>
 
             <fieldset style="margin-top:10px">
               <legend>jackpot奖池增长</legend>
-              <jackpot-increase :pool-incr-arr="PoolIncrArr"/>
+              <jackpot-increase :pool-incr-arr="PoolIncrArr" />
             </fieldset>
           </el-tab-pane>
         </el-tabs>
@@ -377,26 +376,25 @@
       </el-form>
     </el-row>
 
-
     <!--对比组件-->
-    <compare ref="compare"/>
+    <compare ref="compare" />
   </div>
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import {$libShow, DataRule} from '@/utils/common'
+import { $libShow, DataRule } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
-import RobotOnlineItems from "@/views/config/components/robotOnlineItems.vue";
-import JackpotDayLimit from "@/views/config/components/jackpotDayLimit.vue";
-import JackpotIncrease from "@/views/config/components/jackpotIncrease.vue";
+import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
+import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
+import JackpotIncrease from '@/views/config/components/jackpotIncrease.vue'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {JackpotIncrease, JackpotDayLimit, RobotOnlineItems, Compare, Publish, BetAmount},
+  components: { JackpotIncrease, JackpotDayLimit, RobotOnlineItems, Compare, Publish, BetAmount },
   data() {
     return {
       RandAwards: [],
@@ -405,14 +403,14 @@ export default {
       subKey: 'gameDropball',
       libShow: $libShow,
       showSetResultPage: false,
-      ConversionColorMap:{},
+      ConversionColorMap: {},
       JackpotCfg: {},
-        PoolIncrArr:[],
+      PoolIncrArr: [],
       resultForm: {
         one: 0,
         two: 0,
         three: 0
-      },
+      }
     }
   },
   created() {
@@ -433,13 +431,12 @@ export default {
       if (!this.item.BetOptionsRate) {
         this.item.BetOptionsRate = []
       }
-      this.item.BetOptionsRate.push({Id: this.item.BetOptionsRate.length + 1, Val: [0,0,0]})
+      this.item.BetOptionsRate.push({ Id: this.item.BetOptionsRate.length + 1, Val: [0, 0, 0] })
     },
     delBetOptionsRate(index) {
       this.item.BetOptionsRate.splice(index, 1)
     },
     transMoneyForShow() {
-
       for (const o of this.item.LuckyPachinkoCfg) {
         o.Multiple /= 1000
       }
@@ -450,7 +447,6 @@ export default {
         }
       }
 
-
       for (const j in this.item.BetMoneyLevel) {
         this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
@@ -460,7 +456,6 @@ export default {
         }
         this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
       }
-
     },
     getData() {
       request({
@@ -478,18 +473,18 @@ export default {
             this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
             if (!item.BetAreaOptions) {
               item['BetAreaOptions'] = []
-              item.BetAreaOptions.push({Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0})
+              item.BetAreaOptions.push({ Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
             }
             this.JackpotCfg = item.JackpotCfg
             this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
             Object.assign(this.item, item)
-            console.log('item',  this.PoolIncrArr)
+            console.log('item', this.PoolIncrArr)
 
             this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             if (item.DropballLevelItem) {
-              item["item.DropballLevelItem"] = []
+              item['item.DropballLevelItem'] = []
             }
             this.item = item
             console.log(item)
@@ -507,9 +502,9 @@ export default {
         ret.BetMoneyLevel[i].MaxMoneyBet *= 1000
         ret.BetMoneyLevel[i].MinMoneyBet *= 1000
         betItem = []
-        if ( this.item.BetMoneyLevel[i].TableMoney instanceof Array){
-          betItem=this.item.BetMoneyLevel[i].TableMoney
-        }else {
+        if (this.item.BetMoneyLevel[i].TableMoney instanceof Array) {
+          betItem = this.item.BetMoneyLevel[i].TableMoney
+        } else {
           for (const oElement of this.item.BetMoneyLevel[i].TableMoney.split(',')) {
             betItem.push(oElement * 1000)
           }
@@ -517,7 +512,7 @@ export default {
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
       for (const o of ret.BetOptionsRate) {
-        o.Id=parseInt(o.Id)
+        o.Id = parseInt(o.Id)
         for (const j in o.Val) {
           o.Val[j] *= 1000
         }
@@ -552,7 +547,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.BetAreaOptions.push({Id: maxId + 1, MaxMoneyBet: 0, RobotBetOdds: 0})
+      this.item.BetAreaOptions.push({ Id: maxId + 1, MaxMoneyBet: 0, RobotBetOdds: 0 })
     },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)
@@ -560,19 +555,18 @@ export default {
     getCardUrl(card) {
       try {
         return require('@/assets/poker/' + card + '.png')
-      }catch (e){
+      } catch (e) {
         console.log(e)
       }
     },
     setData() {
-
       this.form.Data = JSON.stringify(this.getPostData())
 
       console.log(this.form)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.Compare(function (isEdit) {
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
@@ -600,7 +594,7 @@ export default {
           maxId = argument.Id
         }
       }
-      this.item.LuckyPachinkoCfg.push({Id: maxId + 1, IsJackpot: false, Multiple: 0, Rate: 0, OtherRate: 0})
+      this.item.LuckyPachinkoCfg.push({ Id: maxId + 1, IsJackpot: false, Multiple: 0, Rate: 0, OtherRate: 0 })
     },
     delLuckyPachinkoCfg(index) {
       this.item.LuckyPachinkoCfg.splice(index, 1)
@@ -610,32 +604,30 @@ export default {
         this.item['BetMoneyLevel'] = []
       }
 
-      this.item.BetMoneyLevel.push({TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10})
-
+      this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
-    cardConversionColor(num,meihua,heitao,hongtao,fangkuai){
+    cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num==0 || num ==='NaN'){
+      if (num == 0 || num === 'NaN') {
         return
       }
-      if (Object.keys(this.ConversionColorMap).length === 0){
-        var m = meihua.split('-');
-        var hei = heitao.split('-');
-        var hong = hongtao.split('-');
-        var f = fangkuai.split('-');
-        this.ConversionColorMap[m[0]]=m[1]
-        this.ConversionColorMap[hei[0]]=hei[1]
-        this.ConversionColorMap[hong[0]]=hong[1]
-        this.ConversionColorMap[f[0]]=m[1]
+      if (Object.keys(this.ConversionColorMap).length === 0) {
+        var m = meihua.split('-')
+        var hei = heitao.split('-')
+        var hong = hongtao.split('-')
+        var f = fangkuai.split('-')
+        this.ConversionColorMap[m[0]] = m[1]
+        this.ConversionColorMap[hei[0]] = hei[1]
+        this.ConversionColorMap[hong[0]] = hong[1]
+        this.ConversionColorMap[f[0]] = m[1]
       }
 
-
-      var s = num.toString(16);
+      var s = num.toString(16)
       // 补0
-      if (s.length===1){
-        s = '0'+s[0];
+      if (s.length === 1) {
+        s = '0' + s[0]
       }
-      let result ='0x'+ this.ConversionColorMap[s[0]]+s[1]
+      const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
       return parseInt(result)
     },
     showRobotNumForm(data) {
