@@ -187,7 +187,7 @@ function newItem() {
       StartTime: Date.parse(new Date().toString()),
       EndTime: Date.parse(new Date().toString()),
       TableMoney: 10,
-      NeedVirtualCoin: 0,
+      NeedVirtualCoin: 1,
       JoinMoney: 88,
       RebuyMoney: 10,
       BuyVirtualCoin: 2000
