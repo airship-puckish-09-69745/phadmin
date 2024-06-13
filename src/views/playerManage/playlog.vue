@@ -1727,8 +1727,8 @@
         <el-table-column prop="typ" label="奖励类型">
           <template slot-scope="scope">{{piggyTypeOptions[ scope.row.typ] }}</template>
         </el-table-column>
-        <el-table-column prop="cards" label="敲击时间">
-          <template slot-scope="scope"> {{formatHMSTime(scope.row.tapTime/1000)}}  </template>
+        <el-table-column prop="cards" label="敲击时间" width="110px">
+          <template slot-scope="scope"> {{formatHMSTime(scope.row.tapTime/1000)}}.{{scope.row.tapTime%1000}}  </template>
         </el-table-column>
         <el-table-column prop="seat" label="消耗金币">
           <template slot-scope="scope">{{  scope.row.moneyBet/1000  }}</template>
@@ -1765,6 +1765,9 @@
         </el-table-column>
         <el-table-column prop="cardScore" label="剩余免费次数">
           <template slot-scope="scope">{{ scope.row.timesFree }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="Progress">
+          <template slot-scope="scope">{{ scope.row.progress }}</template>
         </el-table-column>
       </el-table>
     </el-dialog>

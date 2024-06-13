@@ -369,10 +369,10 @@ export const asyncRoutes = [
             meta: { title: '7Up7Down ◐' }
           },
           {
-            path: 'Dropbal_cfg',
-            component: () => import('@/views/config/tableConfig/dropbalConfig'),
-            name: 'Dropbal_cfg',
-            meta: { title: 'Dropbal ◐' }
+            path: 'Dropball_cfg',
+            component: () => import('@/views/config/tableConfig/dropballConfig'),
+            name: 'Dropball_cfg',
+            meta: { title: 'dropball ◐' }
           }
         ]
       },
@@ -1326,6 +1326,28 @@ export const asyncRoutes = [
     ]
   },
   {
+    path: '/billiardsVersion',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '台球专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
+    children: [
+      {
+        path: 'billiardsTable',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '台球配桌', noCache: true },
+        children: [
+          {
+            path: 'billiardsTable',
+            component: () => import('@/views/billiards/table/billiardsTable'),
+            name: 'billiardsTable',
+            meta: { title: '台球' }
+          },
+        ]
+      },
+    ]
+  },
+  {
     path: '/texasVersion',
     component: Layout,
     redirect: 'noRedirect',
@@ -1368,7 +1390,6 @@ export const asyncRoutes = [
             name: 'texasNlhGameDetail',
             meta: { title: '每日消耗统计' }
           }
-
         ]
       },
       {
