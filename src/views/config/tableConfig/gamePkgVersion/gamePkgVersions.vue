@@ -5,7 +5,7 @@
     </el-row>
     <el-row>
       <template>
-        <el-alert type="success">
+        <el-alert type="error">
           修改了：framework、app/main、proto、resources、app/yy.ts 内容，需要修改链接版本<br>
           其他修改只需要改对应 bundle 版本号<br>
           配置遇到问题请找：宏威
