@@ -369,10 +369,10 @@ export const asyncRoutes = [
             meta: { title: '7Up7Down ◐' }
           },
           {
-            path: 'Dropbal_cfg',
-            component: () => import('@/views/config/tableConfig/dropbalConfig'),
-            name: 'Dropbal_cfg',
-            meta: { title: 'Dropbal ◐' }
+            path: 'Dropball_cfg',
+            component: () => import('@/views/config/tableConfig/dropballConfig'),
+            name: 'Dropball_cfg',
+            meta: { title: 'dropball ◐' }
           }
         ]
       },
