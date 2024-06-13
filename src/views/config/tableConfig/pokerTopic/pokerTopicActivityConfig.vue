@@ -109,6 +109,13 @@
         </el-row>
         <el-row>
           <el-col :span="11">
+            <el-form-item label="SiteId站点：" prop="item.SiteWhitelist">
+              <el-input v-model="edit.item.SiteWhitelist" placeholder="每个SiteId以英文逗号相隔" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
             <el-form-item label="活动游戏ID：" :required="true" prop="item.Games">
               <el-select v-model="games" multiple placeholder="请选择" style="width: 400px" @change="onGameOptionsChange">
                 <el-option
@@ -197,7 +204,8 @@ function newItem() {
     Games: '',
     CycleNumber: '',
     EntryCloseTime: Date.parse(new Date().toString()),
-    AppWhitelist: ''
+    AppWhitelist: '',
+    SiteWhitelist: ''
   }
 }
 
@@ -262,7 +270,9 @@ export default {
         ResetCycle: '重置周期',
         Games: '游戏ID',
         CycleNumber: '周期编号',
-        EntryCloseTime: '入口关闭时间'
+        EntryCloseTime: '入口关闭时间',
+        AppWhitelist: 'AppId白名单',
+        SiteWhitelist: 'SiteId站点'
       },
       CyclesAttrNames: {
         ID: 'ID',

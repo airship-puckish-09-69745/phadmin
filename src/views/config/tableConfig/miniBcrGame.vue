@@ -28,6 +28,12 @@
           </el-form-item>
         </el-col>
 
+        <el-col :span="8" :offset="1">
+          <el-form-item label="下注时长(s):">
+            <el-input v-model.number="item.BetTime" :required="true" />
+          </el-form-item>
+        </el-col>
+
         <el-col v-if="envProjectName !== 'ph_audit'" :span="8" :offset="1">
           <el-form-item label="奖池不够输重新洗牌最大次数:">
             <el-input v-model.number="item.MaxCtrlTimes" :required="true" />
@@ -450,6 +456,7 @@ export default {
         ],
         FeeRate: 5,
         KicKTime: 10,
+        BetTime: 10,
         MaxCtrlTimes: 20,
         ExTraPayRate: 10,
 
