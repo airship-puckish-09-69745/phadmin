@@ -268,14 +268,14 @@
 
         <el-row>
           <el-col :span="11">
-            <!--            <el-form-item-->
-            <!--              label="座位数："-->
-            <!--              :required="true"-->
-            <!--              prop="item.MaxPlayerCount"-->
-            <!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
-            <!--            >-->
-            <!--              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
-            <!--            </el-form-item>-->
+<!--                <el-form-item-->
+<!--                  label="座位数："-->
+<!--                  :required="true"-->
+<!--                  prop="item.MaxPlayerCount"-->
+<!--                  :rules="dataRule(true,{type:'n',range:'0'})"-->
+<!--                >-->
+<!--                  <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
+<!--                </el-form-item>-->
           </el-col>
           <el-col :span="9">
             <el-form-item
@@ -346,7 +346,7 @@
               prop="item.MinPlayMoney"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
+              <el-input v-model.number="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -368,6 +368,15 @@
             >
               <el-input v-model.number="edit.item.PotScore" />
             </el-form-item>
+          </el-col>
+          <el-col :span="11">
+<!--            <el-form-item-->
+<!--              label="游戏人数："-->
+<!--              prop="item.PotScore"-->
+<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.JokerNum" />-->
+<!--            </el-form-item>-->
           </el-col>
         </el-row>
 

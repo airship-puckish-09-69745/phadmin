@@ -347,6 +347,15 @@
                 </el-col>
               </el-form>
             </el-col>
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="每小时局数">
+                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini"/>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
 
 
             <fieldset style="margin-top:10px">
@@ -393,7 +402,7 @@ export default {
       RandAwards: [],
       item: {},
       form: {},
-      subKey: 'gameDropbal',
+      subKey: 'gameDropball',
       libShow: $libShow,
       showSetResultPage: false,
       ConversionColorMap:{},
@@ -479,8 +488,8 @@ export default {
             this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
-            if (item.DropbalLevelItem) {
-              item["item.DropbalLevelItem"] = []
+            if (item.DropballLevelItem) {
+              item["item.DropballLevelItem"] = []
             }
             this.item = item
             console.log(item)
@@ -490,8 +499,6 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
-      console.log("======",ret)
-
       let betItem = {}
       for (const o of ret.LuckyPachinkoCfg) {
         o.Multiple *= 1000
@@ -582,15 +589,7 @@ export default {
         })
       })
     },
-    doAddDropbalJackpotCfgItem() {
-      if (!this.item.JackpotCfg.JackpotCfg) {
-        this.item['JackpotCfg.JackpotCfg'] = []
-      }
-      this.item.JackpotCfg.JackpotCfg.push({Type: 0, AwardRate: 0, Rate: 0})
-    },
-    delDropbalJackpotCfgItem(index) {
-      this.item.JackpotCfg.JackpotCfg.splice(index, 1)
-    },
+
     doAddLuckyPachinkoCfg() {
       if (!this.item.LuckyPachinkoCfg) {
         this.item['LuckyPachinkoCfg'] = []
