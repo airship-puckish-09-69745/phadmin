@@ -43,10 +43,10 @@ export default {
     }),
     env() {
       const env = this.$store.state.app.env
-      if( env==='pro'){
-        return "正式环境"
+      if (env === 'pro') {
+        return '正式环境'
       }
-      return  "测试环境"
+      return '测试环境'
     },
     classObj() {
       return {

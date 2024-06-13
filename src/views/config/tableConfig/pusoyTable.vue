@@ -347,7 +347,7 @@
               <el-input v-model="edit.item.MinPlayMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="11" >
+          <el-col :span="11">
             <el-form-item label="房间类型：" :required="true" prop="item.RoomLevel">
               <el-select v-model.number="edit.item.RoomLevel" placeholder="请选择">
                 <el-option label="普通房" :value="0" />
@@ -434,7 +434,7 @@ export default {
         item: newItem(),
         isEdit: false
       },
-      RoomLevelMap:{
+      RoomLevelMap: {
         0: '普通房',
         100: '好友房'
       },

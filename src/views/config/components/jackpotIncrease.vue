@@ -1,52 +1,52 @@
 <template>
   <div class="app-container">
-<!--    奖池增长  -->
-          <el-table
-            ref="filterTable"
-            :data="PoolIncrArr"
-            border
-            :header-cell-style="libShow.DefaultTableHeadClass"
-            :row-style="{height:'10px'}"
-            :cell-style="libShow.DefaultTableCell"
-            style="width: 100%"
-          >
-            <el-table-column label="Id" prop="Id" />
-            <el-table-column label="奖池范围">
-              <template slot-scope="scope">
-                {{ getJackpotPoolTitle(scope.row) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="[0,2)点" prop="MinRobotNum">
-              <template slot-scope="scope">
-                {{ getJackpotIncrShow(scope.row, 0, 1) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="[2,7)点" prop="MinRobotNum">
-              <template slot-scope="scope">
-                {{ getJackpotIncrShow(scope.row, 2, 6) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="[7,9)点" prop="MinRobotNum">
-              <template slot-scope="scope">
-                {{ getJackpotIncrShow(scope.row, 7, 8) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="[9,18)点" prop="MinRobotNum">
-              <template slot-scope="scope">
-                {{ getJackpotIncrShow(scope.row, 9, 17) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="[18,24)点" prop="MinRobotNum">
-              <template slot-scope="scope">
-                {{ getJackpotIncrShow(scope.row, 18, 23) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm(scope.row,scope.$index)">编辑</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
+    <!--    奖池增长  -->
+    <el-table
+      ref="filterTable"
+      :data="PoolIncrArr"
+      border
+      :header-cell-style="libShow.DefaultTableHeadClass"
+      :row-style="{height:'10px'}"
+      :cell-style="libShow.DefaultTableCell"
+      style="width: 100%"
+    >
+      <el-table-column label="Id" prop="Id" />
+      <el-table-column label="奖池范围">
+        <template slot-scope="scope">
+          {{ getJackpotPoolTitle(scope.row) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="[0,2)点" prop="MinRobotNum">
+        <template slot-scope="scope">
+          {{ getJackpotIncrShow(scope.row, 0, 1) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="[2,7)点" prop="MinRobotNum">
+        <template slot-scope="scope">
+          {{ getJackpotIncrShow(scope.row, 2, 6) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="[7,9)点" prop="MinRobotNum">
+        <template slot-scope="scope">
+          {{ getJackpotIncrShow(scope.row, 7, 8) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="[9,18)点" prop="MinRobotNum">
+        <template slot-scope="scope">
+          {{ getJackpotIncrShow(scope.row, 9, 17) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="[18,24)点" prop="MinRobotNum">
+        <template slot-scope="scope">
+          {{ getJackpotIncrShow(scope.row, 18, 23) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button type="normal" icon="el-icon-edit" size="mini" @click="showIncrJackpotForm(scope.row,scope.$index)">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <!-- 【dialog】Jackpot奖池增长 -->
     <el-dialog
@@ -147,9 +147,9 @@ export default {
   },
   methods: {
     initData() {
-      },
+    },
     saveIncrJackpotDialog() {
-      console.log('THIS',this.incrJackpotForm.dataIdx,this.PoolIncrArr)
+      console.log('THIS', this.incrJackpotForm.dataIdx, this.PoolIncrArr)
       this.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr = this.incrJackpotForm.data
 
       for (const o of this.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr) {
@@ -176,8 +176,8 @@ export default {
         return Math.floor(row.MinPool / 10000000) + '~' + Math.floor(row.MaxPool / 10000000) + '万每小时增长'
       }
     },
-    showIncrJackpotForm(data,  index) {
-      console.log("show====",data,index)
+    showIncrJackpotForm(data, index) {
+      console.log('show====', data, index)
       this.incrJackpotForm.dataIdx = index
       this.incrJackpotForm.id = data.Id
       this.incrJackpotForm.data = []

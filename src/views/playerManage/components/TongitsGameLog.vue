@@ -90,7 +90,7 @@
                 <span>Pot：{{ one.payPot/1000 }}</span><br>
               </template>
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
-<!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
+              <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
               <span>机器人级别：{{ one.isRobot?'机器人':'真人' }}</span><br>
             </div>
           </div>
@@ -116,7 +116,7 @@
 
 <script>
 import { Message } from 'element-ui'
-import request from "@/utils/request";
+import request from '@/utils/request'
 export default {
   // eslint-disable-next-line vue/no-unused-components
   name: 'TongitsGameLog',
@@ -279,7 +279,7 @@ export default {
         this.actions.push(item)
       }
       const finishArray = []
-      let UidArray = []
+      const UidArray = []
 
       for (let j = 0; j < val.players.length; j++) {
         const one = val.players[j]
@@ -298,29 +298,29 @@ export default {
           moneyFee: val.players[j].moneyFee,
           payPot: 0 - val.players[j].payPot,
           Character: val.players[j].character,
-          isRobot:false
+          isRobot: false
         })
       }
       var isRobotMap = {}
-      if (this.envProjectName!='ph_audit'){
-      request({
-        url: '/dataProxy/is/robot',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Uids: JSON.stringify(UidArray)
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          for (const key in response.Data) {
-            isRobotMap[key] = response.Data[key]
+      if (this.envProjectName != 'ph_audit') {
+        request({
+          url: '/dataProxy/is/robot',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Uids: JSON.stringify(UidArray)
           }
-          for (const o of finishArray) {
-            o.isRobot=isRobotMap[o.Uid]
-            console.log(o.Uid,isRobotMap[o.Uid])
+        }).then(response => {
+          if (response.RetCode === 0) {
+            for (const key in response.Data) {
+              isRobotMap[key] = response.Data[key]
+            }
+            for (const o of finishArray) {
+              o.isRobot = isRobotMap[o.Uid]
+              console.log(o.Uid, isRobotMap[o.Uid])
+            }
           }
-        }
-      })
+        })
       }
       this.actions.push({
         Index: 9999,
@@ -331,7 +331,7 @@ export default {
         Contirube: [],
         IsPoint: false,
         FinishArray: finishArray,
-        IsFinished: true,
+        IsFinished: true
       })
     },
     isSecretGroup(group) {

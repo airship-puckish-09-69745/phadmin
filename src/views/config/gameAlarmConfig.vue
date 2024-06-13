@@ -2,11 +2,11 @@
   <div class="app-container">
 
     <publish
-        primary-key="Volume"
-        :key-id="getFullKey(this.subKey)"
-        :env-empty="false"
-        compare-type="Object"
-        :attr-names="AttrNames"
+      primary-key="Volume"
+      :key-id="getFullKey(this.subKey)"
+      :env-empty="false"
+      compare-type="Object"
+      :attr-names="AttrNames"
     />
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="15">
@@ -17,7 +17,7 @@
         </el-form>
 
       </el-col>
-      <el-col :span="15"/>
+      <el-col :span="15" />
       <el-col :span="22">
         <el-button type="primary" size="mini" @click="addOne">添加</el-button>
       </el-col>
@@ -29,19 +29,18 @@
         <el-form ref="tableData" v-model="tableData" label-width="150px">
           <el-table
 
-              ref="filterTable"
-              :data="tableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
-
+            ref="filterTable"
+            :data="tableData"
+            stripe
+            border
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'10px'}"
+            :cell-style="libShow.DefaultTableCell"
+            style="width: 100%"
           >
             <el-table-column
-                prop="Gid"
-                label="游戏"
+              prop="Gid"
+              label="游戏"
             >
               <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
@@ -51,31 +50,31 @@
             </el-table-column>
 
             <el-table-column
-                prop="OnlineUser"
-                label="最少人数"
+              prop="OnlineUser"
+              label="最少人数"
             />
             <el-table-column
-                prop="OneMinuteRatio"
-                label="低于前一分钟告警%"
+              prop="OneMinuteRatio"
+              label="低于前一分钟告警%"
             />
             <el-table-column
-                prop="FiveMinuteRatio"
-                label="低于前五分钟告警%"
+              prop="FiveMinuteRatio"
+              label="低于前五分钟告警%"
             />
             <el-table-column
-                prop="Ignore"
-                label="是否忽略"
+              prop="Ignore"
+              label="是否忽略"
             >
               <template slot-scope="scope">
                 <el-switch
-                    v-model="scope.row.Ignore"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    :active-value="true"
-                    :inactive-value="false"
-                    @change="editIgnore(scope.$index,scope.row)"
+                  v-model="scope.row.Ignore"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  :active-value="true"
+                  :inactive-value="false"
+                  @change="editIgnore(scope.$index,scope.row)"
                 />
-                <el-form-item v-model="scope.row.is_return" label-width="0"/>
+                <el-form-item v-model="scope.row.is_return" label-width="0" />
               </template>
             </el-table-column>
 
@@ -99,53 +98,51 @@
     <el-col :offset="16" :span="8">
       <div class="block">
         <el-pagination
-            :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="clientDB.GetPage().GetPageNum()"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="clientDB.GetPage().GetTotalCount()"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+          :current-page="clientDB.GetPage().GetCurrentPage()"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="clientDB.GetPage().GetPageNum()"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="clientDB.GetPage().GetTotalCount()"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
         />
       </div>
     </el-col>
     <!--对比组件-->
-    <compare ref="compare"/>
+    <compare ref="compare" />
 
     <el-dialog
-        title="选择游戏"
-        :visible.sync="selectGameVisible"
-        width="650px"
+      title="选择游戏"
+      :visible.sync="selectGameVisible"
+      width="650px"
     >
       <el-form label-width="150px">
         <el-form-item label="游戏">
           <el-select v-model="item.Gid" placeholder="请选择" size="mini">
             <el-option
-                v-for="item in gameOptions"
-                :key="item.key"
-                :label="item.label"
-                :value="item.key"
+              v-for="item in gameOptions"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
             />
           </el-select>
         </el-form-item>
         <el-form-item label="人数">
-          <el-input v-model.number="item.OnlineUser" size="mini" style="width: 200px;">
-          </el-input>
+          <el-input v-model.number="item.OnlineUser" size="mini" style="width: 200px;" />
         </el-form-item>
         <el-form-item label="低于前一分钟%警报">
-          <el-input v-model.number="item.OneMinuteRatio" size="mini" style="width: 200px;"></el-input>
+          <el-input v-model.number="item.OneMinuteRatio" size="mini" style="width: 200px;" />
         </el-form-item>
         <el-form-item label="低于前五分钟%警报">
-          <el-input v-model.number="item.FiveMinuteRatio" size="mini" style="width: 200px;"></el-input>
+          <el-input v-model.number="item.FiveMinuteRatio" size="mini" style="width: 200px;" />
         </el-form-item>
         <el-form-item label="是否忽略">
           <el-switch
-              v-model="item.Ignore"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value="1"
-              :inactive-value="0"
-
+            v-model="item.Ignore"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            :active-value="1"
+            :inactive-value="0"
           />
         </el-form-item>
         <el-form-item>
@@ -159,19 +156,19 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {copyObj} from 'codemirror/src/util/misc'
-import {$libShow, ClientTableData} from "@/utils/common";
+import { copyObj } from 'codemirror/src/util/misc'
+import { $libShow, ClientTableData } from '@/utils/common'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
 
   data() {
     return {
@@ -187,15 +184,15 @@ export default {
       clientDB: new ClientTableData([], 1, filterMap),
       channelOptions: [
         // {key: "0", label: '请选择'},
-        {key: 'Dev', label: 'Dev'},
-        {key: 'BP', label: 'BP'},
-        {key: 'AP', label: 'AP'},
-        {key: 'GP', label: 'GP'},
-        {key: 'PG', label: 'PG'}
+        { key: 'Dev', label: 'Dev' },
+        { key: 'BP', label: 'BP' },
+        { key: 'AP', label: 'AP' },
+        { key: 'GP', label: 'GP' },
+        { key: 'PG', label: 'PG' }
       ],
       isReturnOptions: [
-        {key: 0, label: '否'},
-        {key: 1, label: '是'}
+        { key: 0, label: '否' },
+        { key: 1, label: '是' }
       ],
       idx: 0,
       libShow: $libShow,
@@ -204,14 +201,14 @@ export default {
         Ignore: false,
         OnlineUser: 0,
         OneMinuteRatio: 0,
-        FiveMinuteRatio: 0,
+        FiveMinuteRatio: 0
       },
       gameOptions: [],
       dialogGameOptions: [],
       selectGameVisible: false,
       showBtn: 0,
       oldData: {},
-      selectedGid: 0,
+      selectedGid: 0
     }
   },
   created() {
@@ -238,9 +235,9 @@ export default {
         Ignore: false,
         OnlineUser: 0,
         OneMinuteRatio: 0,
-        FiveMinuteRatio: 0,
+        FiveMinuteRatio: 0
       },
-          this.showBtn = 0
+      this.showBtn = 0
       this.selectGameVisible = true
     },
     addGameItem() {
@@ -270,7 +267,7 @@ export default {
         Message.error('已存在相同游戏！')
         return
       }
-      var parse = JSON.parse(JSON.stringify(this.item));
+      var parse = JSON.parse(JSON.stringify(this.item))
       this.tableData[this.idx] = parse
       this.selectGameVisible = false
       this.tableData.splice(0, 0)
@@ -318,7 +315,7 @@ export default {
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.postData)
-      this.$refs.compare.Compare(function (isEdit) {
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
@@ -341,7 +338,7 @@ export default {
       for (const i in this.tableData) {
         const item = {}
         copyObj(this.tableData[i], item)
-        item.Ignore = item.Ignore === 0 || item.Ignore === false? false : true
+        item.Ignore = !(item.Ignore === 0 || item.Ignore === false)
         cfg.push(item)
       }
       return cfg

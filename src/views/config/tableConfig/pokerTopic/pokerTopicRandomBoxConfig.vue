@@ -2,11 +2,11 @@
   <div class="app-container">
 
     <publish
-        primary-key="Volume"
-        :key-id="getFullKey(this.subKey)"
-        :env-empty="false"
-        compare-type="Object"
-        :attr-names="AttrNames"
+      primary-key="Volume"
+      :key-id="getFullKey(this.subKey)"
+      :env-empty="false"
+      compare-type="Object"
+      :attr-names="AttrNames"
     />
     <el-row :gutter="10" style="margin-top: 30px">
 
@@ -15,87 +15,96 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
       <el-table
-          ref="filterTable"
-          :data="tableData"
-          stripe
-          border
-          style="padding:10px;width: 100%"
+        ref="filterTable"
+        :data="tableData"
+        stripe
+        border
+        style="padding:10px;width: 100%"
       >
         <el-table-column
-            prop="BoxType"
-            label="宝箱类型"
+          prop="BoxType"
+          label="宝箱类型"
         >
           <template slot-scope="scope">
             {{ boxTypeOption[scope.row.BoxType] }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="IssueInterval"
-            label="发放间隔"
-            width="200"
+          prop="IssueInterval"
+          label="发放间隔"
+          width="200"
         >
           <template slot-scope="scope">
             {{ scope.row.IssueInterval }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="BoxActiveTime"
-            label="宝箱有效时间(分)"
+          prop="BoxActiveTime"
+          label="宝箱有效时间(分)"
         >
           <template slot-scope="scope">
             {{ scope.row.BoxActiveTime }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="StartTime"
-            label="开始时间"
+          prop="StartTime"
+          label="开始时间"
         >
           <template slot-scope="scope">
             {{ parseTime(scope.row.StartTime, '') }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="EndTime"
-            label="结束时间"
+          prop="EndTime"
+          label="结束时间"
         >
           <template slot-scope="scope">
             {{ parseTime(scope.row.EndTime, '') }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="MinMoney"
-            label="最小金额"
+          prop="MinMoney"
+          label="最小金额"
         >
           <template slot-scope="scope">
-            {{ scope.row.MinMoney  }}
+            {{ scope.row.MinMoney }}
           </template>
         </el-table-column>
         <el-table-column
-            prop="MaxMoney"
-            label="最大金额"
+          prop="MaxMoney"
+          label="最大金额"
         >
           <template slot-scope="scope">
-            {{ scope.row.MaxMoney  }}
+            {{ scope.row.MaxMoney }}
           </template>
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button style="margin-bottom:10px;" type="success" icon="el-icon-delete" size="mini"
-                       @click="editDetail(scope.row,scope.$index)">编辑
+            <el-button
+              style="margin-bottom:10px;"
+              type="success"
+              icon="el-icon-delete"
+              size="mini"
+              @click="editDetail(scope.row,scope.$index)"
+            >编辑
             </el-button>
-            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini"
-                       @click="delOne(scope.$index)">移除
+            <el-button
+              style="margin-bottom:10px;"
+              type="danger"
+              icon="el-icon-delete"
+              size="mini"
+              @click="delOne(scope.$index)"
+            >移除
             </el-button>
           </template>
         </el-table-column>
       </el-table>
 
-
     </el-row>
     <el-dialog
-        title="骰宝牌局详情"
-        :visible.sync="visible"
-        width="50%"
+      title="骰宝牌局详情"
+      :visible.sync="visible"
+      width="50%"
     >
       <fieldset style="width: 80%;   margin: auto;">
         <legend>基础配置</legend>
@@ -103,14 +112,14 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="宝箱类型" required>
-               <el-select v-model="showData.BoxType" size="mini" placeholder="请选择">
-                 <el-option
-                     v-for="(k,v) in boxTypeOption"
-                     :key="v"
-                     :label="k"
-                     :value="parseInt(v)"
-                 ></el-option>
-               </el-select>
+                <el-select v-model="showData.BoxType" size="mini" placeholder="请选择">
+                  <el-option
+                    v-for="(k,v) in boxTypeOption"
+                    :key="v"
+                    :label="k"
+                    :value="parseInt(v)"
+                  />
+                </el-select>
               </el-form-item>
             </el-form>
           </el-col>
@@ -119,18 +128,26 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="开始时间" required>
-                <el-date-picker v-model="showData.StartTime" value-format="timestamp" placeholder="选择开始时间"
-                                type="datetime"
-                                format="yyyy-MM-dd HH:mm"></el-date-picker>
+                <el-date-picker
+                  v-model="showData.StartTime"
+                  value-format="timestamp"
+                  placeholder="选择开始时间"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                />
               </el-form-item>
             </el-form>
           </el-col>
           <el-col :span="12">
             <el-form inline>
               <el-form-item v-model="showData.EndTime" label="结束时间" required>
-                <el-date-picker v-model="showData.EndTime" value-format="timestamp" placeholder="选择结束时间"
-                                type="datetime"
-                                format="yyyy-MM-dd HH:mm"></el-date-picker>
+                <el-date-picker
+                  v-model="showData.EndTime"
+                  value-format="timestamp"
+                  placeholder="选择结束时间"
+                  type="datetime"
+                  format="yyyy-MM-dd HH:mm"
+                />
               </el-form-item>
             </el-form>
           </el-col>
@@ -140,8 +157,10 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="有效时间" required>
-                <el-input v-model.number="showData.BoxActiveTime"
-                          oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}">
+                <el-input
+                  v-model.number="showData.BoxActiveTime"
+                  oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}"
+                >
                   <template slot="append">分钟</template>
                 </el-input>
               </el-form-item>
@@ -150,8 +169,10 @@
           <el-col :span="12">
             <el-form inline>
               <el-form-item label="发放间隔" required>
-                <el-input v-model.number="showData.IssueInterval"
-                          oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}">
+                <el-input
+                  v-model.number="showData.IssueInterval"
+                  oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}"
+                >
                   <template slot="append">分钟</template>
                 </el-input>
               </el-form-item>
@@ -159,25 +180,26 @@
           </el-col>
         </el-row>
 
-
         <el-row>
 
           <el-row>
             <el-col :span="12">
               <el-form inline>
                 <el-form-item label="最小金额" required>
-                  <el-input v-model.number="showData.MinMoney"
-                            oninput=" if(value < 0 || value == '' || value == null)value = 0;">
-                  </el-input>
+                  <el-input
+                    v-model.number="showData.MinMoney"
+                    oninput=" if(value < 0 || value == '' || value == null)value = 0;"
+                  />
                 </el-form-item>
               </el-form>
             </el-col>
             <el-col :span="12">
               <el-form inline>
                 <el-form-item label="最大金额" required>
-                  <el-input v-model.number="showData.MaxMoney"
-                            oninput=" if(value < 0 || value == '' || value == null)value = 0">
-                  </el-input>
+                  <el-input
+                    v-model.number="showData.MaxMoney"
+                    oninput=" if(value < 0 || value == '' || value == null)value = 0"
+                  />
                 </el-form-item>
               </el-form>
             </el-col>
@@ -199,30 +221,36 @@
         <el-col :span="24">
           <el-form ref="showData" v-model="showData.Boxes" label-width="150px">
             <el-table
-                :data="showData.Boxes"
-                style="width: 95%"
-                border
-                :header-cell-style="{textAlign: 'center'}"
-                :row-style="{height:'10px'}"
-                :cell-style="libShow.DefaultTableCell"
+              :data="showData.Boxes"
+              style="width: 95%"
+              border
+              :header-cell-style="{textAlign: 'center'}"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
             >
               <el-table-column
-                  prop="IssueAmount"
-                  label="发放金额"
+                prop="IssueAmount"
+                label="发放金额"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.IssueAmount" type="number"
-                            oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                  <el-input
+                    v-model.number="scope.row.IssueAmount"
+                    type="number"
+                    oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"
+                  />
                 </template>
               </el-table-column>
 
               <el-table-column
-                  prop="IssuePlayers"
-                  label="发放玩家"
+                prop="IssuePlayers"
+                label="发放玩家"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.IssuePlayers" type="number"
-                            oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"/>
+                  <el-input
+                    v-model.number="scope.row.IssuePlayers"
+                    type="number"
+                    oninput="if(value < 0 || value == '' || value == null){value = 0;}else {value = parseInt(value)}"
+                  />
                 </template>
               </el-table-column>
 
@@ -237,34 +265,33 @@
               <!--              </template>-->
               <!--            </el-table-column>-->
             </el-table>
-            <el-form-item>
-            </el-form-item>
+            <el-form-item />
           </el-form>
         </el-col>
       </fieldset>
-        <el-button style="margin-left: 10%" type="primary" @click="saveOne()">保存</el-button>
+      <el-button style="margin-left: 10%" type="primary" @click="saveOne()">保存</el-button>
     </el-dialog>
     <!--对比组件-->
-    <compare ref="compare"/>
+    <compare ref="compare" />
     <el-button type="primary" @click="setData">保存</el-button>
 
   </div>
 </template>
 
 <script>
-import {parseTime} from '../../../../utils'
-import {Message} from 'element-ui'
+import { parseTime } from '../../../../utils'
+import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {$libShow} from '@/utils/common'
+import { $libShow } from '@/utils/common'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
   data() {
     return {
       form: {},
@@ -281,11 +308,11 @@ export default {
       allCfg: [],
       appInfo: [],
       optionType: 0,
-      boxTypeOption:{
-        1:"A",
-        2:"B",
-        3:"C",
-        4:"D",
+      boxTypeOption: {
+        1: 'A',
+        2: 'B',
+        3: 'C',
+        4: 'D'
       },
       item: {
         Boxes: [{
@@ -298,12 +325,12 @@ export default {
         EndTime: new Date().getTime(),
         UpdateTime: new Date().getTime(),
         MinMoney: 0,
-        MaxMoney: 0,
+        MaxMoney: 0
       },
       selectGid: 0,
       libShow: $libShow,
       gameOptions: {},
-      editIdx: -1,
+      editIdx: -1
     }
   },
 
@@ -313,8 +340,8 @@ export default {
   },
   methods: {
     parseTime,
-    delOne(idx){
-      this.tableData.splice(idx,1)
+    delOne(idx) {
+      this.tableData.splice(idx, 1)
     },
     refresh() {
       this.showData = this.allCfg
@@ -344,7 +371,7 @@ export default {
       this.visible = false
     },
     addOne() {
-      this.showData.Boxes.push({IssueAmount: 0, IssuePlayers: 0})
+      this.showData.Boxes.push({ IssueAmount: 0, IssuePlayers: 0 })
     },
     deleteRow(idx, row) {
       this.showData.Boxes.splice(idx, 1)
@@ -368,7 +395,7 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
-            console.log("==========", cfg)
+            console.log('==========', cfg)
             this.tableData = cfg || []
             for (const o of cfg) {
               o.StartTime *= 1000
@@ -396,7 +423,7 @@ export default {
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.SetNewVal($this.postData.Data)
-      this.$refs.compare.Compare(function (isEdit) {
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
@@ -420,7 +447,7 @@ export default {
         cfg.StartTime = parseInt(cfg.StartTime / 1000)
         cfg.EndTime = parseInt(cfg.EndTime / 1000)
 
-        cfg.MinMoney = parseInt(cfg.MinMoney *  1000)
+        cfg.MinMoney = parseInt(cfg.MinMoney * 1000)
         cfg.MaxMoney = parseInt(cfg.MaxMoney * 1000)
 
         for (const oElement of cfg.Boxes) {

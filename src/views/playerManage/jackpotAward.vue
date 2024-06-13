@@ -311,19 +311,18 @@ export default {
         // loading.close()
       })
     },
-    changeLevelConfig(){
-      if (this.searchForm.gameId===103){
+    changeLevelConfig() {
+      if (this.searchForm.gameId === 103) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
-          { 'value': 2, 'label': 'EXPERT'},
-          { 'value': 1, 'label': 'HIGH'}]
-      }
-      else if (this.searchForm.gameId===106){
+          { 'value': 2, 'label': 'EXPERT' },
+          { 'value': 1, 'label': 'HIGH' }]
+      } else if (this.searchForm.gameId === 106) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
-          { 'value': 1, 'label': 'grand'},
-          { 'value': 2, 'label': 'major'},
-          { 'value': 3, 'label': 'minor'}
+          { 'value': 1, 'label': 'grand' },
+          { 'value': 2, 'label': 'major' },
+          { 'value': 3, 'label': 'minor' }
         ]
       }
     },

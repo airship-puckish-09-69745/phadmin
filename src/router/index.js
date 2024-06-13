@@ -506,7 +506,7 @@ export const asyncRoutes = [
         path: 'prize_pool',
         component: () => import('@/views/online/prizePool'),
         name: 'prize_pool',
-        meta: { title: '小游戏奖池配置', perm: 'KEY_DATA_MONITOR'}
+        meta: { title: '小游戏奖池配置', perm: 'KEY_DATA_MONITOR' }
       },
       {
         path: 'gambleSchemaCfg',
@@ -532,19 +532,57 @@ export const asyncRoutes = [
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: '积分赛配置' },
+        meta: { title: '百万积分赛配置' },
         children: [
           {
             path: 'millionPointRaceRuleConfig',
             component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleConfig'),
             name: 'millionPointRaceRuleConfig',
-            meta: { title: '积分赛周期配置 🎶', noCache: true }
+            meta: { title: '百万积分赛周期配置 🎶', noCache: true }
           },
           {
             path: 'millionPointRaceRuleCommonConfig',
             component: () => import('@/views/config/tableConfig/millionPointRaceRule/millionPointRaceRuleCommonConfig'),
             name: 'millionPointRaceRuleCommonConfig',
-            meta: { title: '积分赛公共配置', noCache: true }
+            meta: { title: '百万积分赛公共配置', noCache: true }
+          },
+          {
+            path: 'activityLog',
+            component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
+            name: 'activityLog',
+            meta: { title: '百万积分赛用户日志  🚩️' }
+          },
+          {
+            path: 'pointRaceUserLog',
+            component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
+            name: 'pointRaceUserLog',
+            meta: { title: '百万积分赛排行榜' }
+          },
+          {
+            path: 'UserDetailLog',
+            component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
+            name: 'UserDetailLog',
+            meta: { title: '百万积分赛用户信息' }
+          }
+        ]
+      },
+      {
+        path: 'pointRaceConfig',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: '积分赛配置' },
+        children: [
+          {
+            path: 'pointRaceConfig',
+            component: () => import('@/views/config/tableConfig/pointRace/pointRaceConfig'),
+            name: 'pointRaceConfig',
+            meta: { title: '周期配置', noCache: true }
+          },
+          {
+            path: 'pointRaceCommonConfig',
+            component: () => import('@/views/config/tableConfig/pointRace/pointRaceCommonConfig'),
+            name: 'pointRaceCommonConfig',
+            meta: { title: '公共配置', noCache: true }
           },
           {
             path: 'activityLog',
@@ -900,8 +938,6 @@ export const asyncRoutes = [
           }
         ]
       },
-
-
 
       {
         path: 'playlog_lotterylog',
