@@ -3,6 +3,15 @@
     <el-row>
       <publish primary-key="ID" key-id="GamePkgVersionsConfig" :env-empty="false" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
+    <el-row>
+      <template>
+        <el-alert type="error">
+          修改了：framework、app/main、proto、resources、app/yy.ts 内容，需要修改链接版本<br>
+          其他修改只需要改对应 bundle 版本号<br>
+          配置遇到问题请找：宏威
+        </el-alert>
+      </template>
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-form :inline="true">
         <el-form-item label="大厅版本">
@@ -44,7 +53,7 @@
             type="primary"
             icon="el-icon-plus"
             @click="handleCreate()"
-          >添加配置项
+          >添加包版本配置项
           </el-button>
         </el-form-item>
         <el-form-item>

@@ -51,8 +51,8 @@
           </template>
         </el-table-column>
         <el-table-column prop="RaceShowTime" label="显示时间" width="100">
-          <template slot-scope="scope">
-            {{ getShowTime(scope.row.RaceShowTime) }}
+         <template slot-scope="scope">
+              {{ getShowTime(scope.row.RaceShowTime, scope.row.RaceType) }}
           </template>
         </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
@@ -187,9 +187,20 @@
           </el-row>
         </el-row>
         <el-row>
-          <el-col :span="11">
+          <el-col v-if="edit.item.RaceType > 0" :span="11" >
             <el-form-item label="显示时间(分钟):" :required="true" prop="item.RaceShowTime">
               <el-input v-model="edit.item.RaceShowTime" placeholder="显示时间" />
+            </el-form-item>
+          </el-col>
+           <el-col v-else :span="11">
+            <el-form-item label="显示时间：">
+                <el-date-picker
+                  v-model="edit.item.RaceShowTime"
+                  value-format="timestamp"
+                  type="datetime"
+                  placeholder="显示时间"
+                  size="mini"
+                />
             </el-form-item>
           </el-col>
           <el-col v-if="edit.item.RaceType > 0" :span="11">
@@ -426,6 +437,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formatTime2(date, type) {
+      console.log(date, type)
       var result = new Date(date).getTime()
       return $libDate.FormateMilisecondStrByZone(result, type, '')
     },
@@ -442,7 +454,11 @@ export default {
       }
       return weekNames
     },
-    getShowTime(t) {
+    getShowTime(t, type) {
+      console.log(t, type)
+      if (type <= 0) {
+        return this.formatTime2(t*1000, 2)
+      }
       if (t % 60 === 0) {
         return t / 60 + 'h'
       }
@@ -547,8 +563,10 @@ export default {
               objs[o].RaceEndTime = new Date(objs[o].RaceEndTime * 1000 - 8 * 3600 * 1000)
               console.log(objs[o].RaceEndTime)
             }
-            objs[o].RaceShowTime /= 60
-            objs[o].RaceIntervalTime /= 60
+            if (objs[o].RaceType > 0) {
+              objs[o].RaceShowTime /= 60
+              objs[o].RaceIntervalTime /= 60
+            }
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
@@ -679,8 +697,12 @@ export default {
       } else {
         postData.RaceWeekStr = '0'
       }
-      postData.RaceShowTime *= 60
-      postData.RaceIntervalTime *= 60
+      if (postData.RaceType > 0) {
+        postData.RaceShowTime *= 60
+        postData.RaceIntervalTime *= 60
+      } else {
+        postData.RaceShowTime /= 1000
+      }
       console.log(postData)
       return postData
     },

@@ -90,12 +90,12 @@
         </el-row>
         <el-row>
           <el-col :span="9">
-            <el-form-item label="台费(千分比)：" :required="true" prop="item.TableFee" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="台费：" :required="true" prop="item.TableFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.TableFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="抽5%，则填写50" placement="left-start">
+            <el-tooltip class="item" effect="dark" content="抽1，则填写1000" placement="left-start">
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
