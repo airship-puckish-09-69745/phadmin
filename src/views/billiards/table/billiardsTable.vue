@@ -16,9 +16,9 @@
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
         <el-table-column prop="BallCount" label="玩法(球数)" width="150" />
         <el-table-column prop="Level" label="级别" sortable="custom" width="100" />
-        <el-table-column prop="BaseScore" label="投注额" width="200"></el-table-column>
+        <el-table-column prop="BaseScore" label="投注额" width="200" />
         <el-table-column prop="TableFee" label="台费(千分比)" sortable="custom" width="200" />
-        <el-table-column prop="MatchingPlayerNum" label="匹配池开赛人数" width="200"></el-table-column>
+        <el-table-column prop="MatchingPlayerNum" label="匹配池开赛人数" width="200" />
         <el-table-column prop="LastModify" label="最近修改" width="160">
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
@@ -84,7 +84,7 @@
           </el-col>
           <el-col :span="2">
             <el-tooltip class="item" effect="dark" content="抽5%，则填写50" placement="left-start">
-              <i class="el-icon-info"></i>
+              <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
           <el-col :span="11">
@@ -173,7 +173,7 @@ export default {
       edit: {
         visible: false,
         item: newItem(),
-        isEdit: false,
+        isEdit: false
       },
 
       AttrNames: {
@@ -187,7 +187,7 @@ export default {
         TableFee: '台费',
         InteractDayFreeTimes: '互动道具每日免费次数',
         InteractItemPrice: '互动道具每次价格消耗',
-        BaseScore: '底分',
+        BaseScore: '底分'
       }
     }
   },
@@ -399,7 +399,7 @@ export default {
         Message.error('数据错误')
         return
       }
-    }    
+    }
   }
 }
 </script>

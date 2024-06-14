@@ -345,10 +345,10 @@ export default {
             this.OverallRankRewardsCfg = cfg.OverallRankRewards
             this.SubRankRewardsCfg = cfg.SubRankRewards
             for (const o of this.OverallRankRewardsCfg) {
-                o.Reward /= 1000
+              o.Reward /= 1000
             }
             for (const o of this.SubRankRewardsCfg) {
-                o.Reward /= 1000
+              o.Reward /= 1000
             }
             this.$refs.compare.SetOldVal(response.Data.Data)
             $this.handleCurrentChange(1)
@@ -388,16 +388,15 @@ export default {
       })
     },
     getCfg() {
-
       const obj = {
-        OverallRankRewards:JSON.parse(JSON.stringify(this.OverallRankRewardsCfg)) ,
+        OverallRankRewards: JSON.parse(JSON.stringify(this.OverallRankRewardsCfg)),
         SubRankRewards: JSON.parse(JSON.stringify(this.SubRankRewardsCfg))
       }
       for (const o of obj.OverallRankRewards) {
-        o.Reward = parseInt(o.Reward*1000)
+        o.Reward = parseInt(o.Reward * 1000)
       }
       for (const o of obj.SubRankRewards) {
-        o.Reward = parseInt(o.Reward*1000)
+        o.Reward = parseInt(o.Reward * 1000)
       }
       return obj
     },

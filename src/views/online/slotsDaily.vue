@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row style="margin-top: 50px">
-      <el-tabs tab-position="left"  >
+      <el-tabs tab-position="left">
         <el-tab-pane v-for="value in lists" :label="value.title">
           <el-row>
             <el-col :offset="12" :span="2">
@@ -12,14 +12,14 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-descriptions class="margin-top"  :column="2"   border  style="width: 1100px"  title="小奖池">
+            <el-descriptions class="margin-top" :column="2" border style="width: 1100px" title="小奖池">
 
-              <el-descriptions-item v-for="(v,k) in GamePrizePoolMap"v-if="(k+'').indexOf(value.slotsType)===0"  class="background: #E1F3D8;">
+              <el-descriptions-item v-for="(v,k) in GamePrizePoolMap"v-if="(k+'').indexOf(value.slotsType)===0" class="background: #E1F3D8;">
                 <template slot="label">
-                  <i class="el-icon-user"></i>
-                  {{getGameName(k)}}  
+                  <i class="el-icon-user" />
+                  {{ getGameName(k) }}
                 </template>
-                  <span :style="v/1000>1000000?'color:red':''">{{ Math.floor(v/1000).toLocaleString() }}</span>
+                <span :style="v/1000>1000000?'color:red':''">{{ Math.floor(v/1000).toLocaleString() }}</span>
               </el-descriptions-item>
 
             </el-descriptions>
@@ -186,11 +186,11 @@ export default {
       },
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       tempLoading: {},
-      GamePrizePoolMap:{},
-        gameNamesSuffix: {
-            1: '普通',
-            2: '购买'
-        },
+      GamePrizePoolMap: {},
+      gameNamesSuffix: {
+        1: '普通',
+        2: '购买'
+      },
       ignoreGame: [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77, 78, 79, 81, 82, 83]
     }
   },
@@ -611,25 +611,25 @@ export default {
       }
       return total.toFixed(2)
     },
-    getGamePrizePool(){
-        const $this = this
-        request({
-          url: '/dataProxy/info',
-          method: 'get',
-          data: {
-            Path: '/user/game/prize/pool/list',
-            Env: store.getters.env
+    getGamePrizePool() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/user/game/prize/pool/list',
+          Env: store.getters.env
 
+        }
+      }).then(response => {
+        console.log('list response', response)
+        $this.tableData = []
+        if (response.RetCode === 0) {
+          for (const o of response.Data) {
+            $this.GamePrizePoolMap[o.Gid] = o.PrizePool
           }
-        }).then(response => {
-          console.log('list response', response)
-          $this.tableData=[]
-          if (response.RetCode === 0) {
-            for (const o of response.Data) {
-              $this.GamePrizePoolMap[o.Gid]=o.PrizePool
-            }
-          }
-        })
+        }
+      })
     },
     percentColor(color) {
       if (color == '') {
@@ -1125,15 +1125,15 @@ export default {
         $this.tempLoading.close()
       }, 500)
     },
-      getGameName(gid) {
-          const id = parseInt(gid)
-          if (id > 5000) {
-              const slotsType = parseInt(id / 100)
-              const val = parseInt(id % 100)
-              return $libShow.GameNames[slotsType] + this.gameNamesSuffix[val]
-          }
-          return $libShow.GameNames[id]
-      },
+    getGameName(gid) {
+      const id = parseInt(gid)
+      if (id > 5000) {
+        const slotsType = parseInt(id / 100)
+        const val = parseInt(id % 100)
+        return $libShow.GameNames[slotsType] + this.gameNamesSuffix[val]
+      }
+      return $libShow.GameNames[id]
+    }
   }
 }
 </script>

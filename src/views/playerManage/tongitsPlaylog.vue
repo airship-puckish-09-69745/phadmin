@@ -165,14 +165,14 @@
           {{ formatNumber(scope.row.MoneyNow) }}
         </template>
       </el-table-column>
-<!--      <el-table-column-->
-<!--        label="耗时"-->
-<!--        width="70"-->
-<!--      >-->
-<!--        <template slot-scope="scope">-->
-<!--          {{ scope.row.IsRobot }}-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <!--      <el-table-column-->
+      <!--        label="耗时"-->
+      <!--        width="70"-->
+      <!--      >-->
+      <!--        <template slot-scope="scope">-->
+      <!--          {{ scope.row.IsRobot }}-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
 
       <el-table-column
         prop="WinRate"
@@ -355,14 +355,14 @@
             {{ formatNumber(scope.row.MoneyNow) }}
           </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--          label="耗时"-->
-<!--          width="70"-->
-<!--        >-->
-<!--          <template slot-scope="scope">-->
-<!--            {{ scope.row.IsRobot }}-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <!--        <el-table-column-->
+        <!--          label="耗时"-->
+        <!--          width="70"-->
+        <!--        >-->
+        <!--          <template slot-scope="scope">-->
+        <!--            {{ scope.row.IsRobot }}-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
 
         <el-table-column
           prop="WinRate"
@@ -618,7 +618,7 @@ export default {
     },
     showRobotLevel(level) {
       switch (level) {
-        case-1 :
+        case -1 :
           return '机器人'
         case 0:
           return '真人'
@@ -749,7 +749,7 @@ export default {
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
-      if (this.envProjectName!='ph_audit'){
+      if (this.envProjectName != 'ph_audit') {
         request({
           url: '/dataProxy/is/robot',
           method: 'get',
@@ -772,9 +772,9 @@ export default {
       }
     },
 
-    sleep(ms) { //sleep延迟方法2
-      var unixtime_ms = new Date().getTime();
-      while(new Date().getTime() < unixtime_ms + ms) {}
+    sleep(ms) { // sleep延迟方法2
+      var unixtime_ms = new Date().getTime()
+      while (new Date().getTime() < unixtime_ms + ms) {}
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -884,22 +884,22 @@ export default {
       for (var key in this.uidMap) {
         this.uids.push(key)
       }
-      if (this.envProjectName!='ph_audit'){
-       request({
-         url: '/dataProxy/is/robot',
-         method: 'get',
-         data: {
-           Env: this.env,
-           Uids: JSON.stringify(this.uids)
-         }
-       }).then(response => {
-         if (response.RetCode === 0) {
-           for (const key in response.Data) {
-             this.isRobotMap[key] = response.Data[key]
-           }
-         }
-       })
-     }
+      if (this.envProjectName != 'ph_audit') {
+        request({
+          url: '/dataProxy/is/robot',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Uids: JSON.stringify(this.uids)
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            for (const key in response.Data) {
+              this.isRobotMap[key] = response.Data[key]
+            }
+          }
+        })
+      }
     },
     getDetail(id, dt) {
       const $this = this

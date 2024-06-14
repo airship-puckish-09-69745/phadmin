@@ -93,8 +93,7 @@
           prop="DayTime"
           label="更新日期"
           width="100"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="UpTime"
           label="更新时间"

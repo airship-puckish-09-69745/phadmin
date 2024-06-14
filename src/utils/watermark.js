@@ -19,7 +19,7 @@ const setWatermark = (str) => {
   cans.rotate(-10 * Math.PI / 180)
   cans.font = '35px Vedana'
   cans.fillStyle = 'rgba(129,145,143,0.16)'
-  if (watermarkEnv=='正式环境'){
+  if (watermarkEnv == '正式环境') {
     cans.font = '35px Vedana'
     cans.fillStyle = 'rgba(252,78,78,0.09)'
   }

@@ -268,14 +268,14 @@
 
         <el-row>
           <el-col :span="11">
-<!--                <el-form-item-->
-<!--                  label="座位数："-->
-<!--                  :required="true"-->
-<!--                  prop="item.MaxPlayerCount"-->
-<!--                  :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--                >-->
-<!--                  <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
-<!--                </el-form-item>-->
+            <!--                <el-form-item-->
+            <!--                  label="座位数："-->
+            <!--                  :required="true"-->
+            <!--                  prop="item.MaxPlayerCount"-->
+            <!--                  :rules="dataRule(true,{type:'n',range:'0'})"-->
+            <!--                >-->
+            <!--                  <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />-->
+            <!--                </el-form-item>-->
           </el-col>
           <el-col :span="9">
             <el-form-item
@@ -305,15 +305,15 @@
               <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />
             </el-form-item>
           </el-col>
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="最大围观局数："-->
-<!--              prop="item.WatchTimesMax"-->
-<!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
+          <!--          <el-col :span="11">-->
+          <!--            <el-form-item-->
+          <!--              label="最大围观局数："-->
+          <!--              prop="item.WatchTimesMax"-->
+          <!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
+          <!--            >-->
+          <!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
         </el-row>
 
         <el-row>
@@ -370,13 +370,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-<!--            <el-form-item-->
-<!--              label="游戏人数："-->
-<!--              prop="item.PotScore"-->
-<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.JokerNum" />-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item-->
+            <!--              label="游戏人数："-->
+            <!--              prop="item.PotScore"-->
+            <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+            <!--            >-->
+            <!--              <el-input v-model.number="edit.item.JokerNum" />-->
+            <!--            </el-form-item>-->
           </el-col>
         </el-row>
 

@@ -2,7 +2,7 @@
   <div class="app-container">
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row style="margin-top: 30px">
-       <el-col :span="20">
+      <el-col :span="20">
         <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">添加配置项</el-button>
       </el-col>
       <el-col :span="2">
@@ -10,7 +10,7 @@
       </el-col>
     </el-row>
     <div>
-      <el-table ref="tb" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell"  @row-click="clickData">
+      <el-table ref="tb" :data="tableData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" @row-click="clickData">
         <el-table-column prop="ID" label="ID" sortable="custom" align="center" width="100">
           <template slot-scope="scope">
             {{ scope.row.blind_id }}
@@ -38,12 +38,12 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="盲注名称">
-             <el-input v-model="edit.item.BlindName" placeholder="请输入" />
+              <el-input v-model="edit.item.BlindName" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="升盲时间(秒)">
-             <el-input v-model="edit.item.BlindTime" placeholder="请输入" />
+              <el-input v-model="edit.item.BlindTime" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -54,18 +54,18 @@
           <el-col :span="22">
             <el-row>
               <el-col :span="22">
-                <el-form-item label="等级" :required="true" >
-                  <el-input v-model.number="edit.item.BlindContent[index].blind_level" size="mini" :required="true"  />
+                <el-form-item label="等级" :required="true">
+                  <el-input v-model.number="edit.item.BlindContent[index].blind_level" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
-              <el-col :span="11" >
+              <el-col :span="11">
                 <el-form-item label="小盲" :required="true">
-                  <el-input v-model.number="edit.item.BlindContent[index].small_blind" size="mini" :required="true"  />
+                  <el-input v-model.number="edit.item.BlindContent[index].small_blind" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
-              <el-col :span="11" >
+              <el-col :span="11">
                 <el-form-item label="前注" :required="true">
-                  <el-input v-model.number="edit.item.BlindContent[index].ante" size="mini" :required="true"  />
+                  <el-input v-model.number="edit.item.BlindContent[index].ante" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="2">
@@ -74,7 +74,7 @@
             </el-row>
           </el-col>
         </el-row>
-         <el-form-item>
+        <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
               <el-button type="primary" size="medium" @click="saveData">保存</el-button>
