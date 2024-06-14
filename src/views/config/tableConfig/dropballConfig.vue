@@ -87,13 +87,26 @@
                     :cell-style="libShow.DefaultTableCell"
                     style="width: 100%"
                   >
-                    <el-table-column label="ID">
+                    <el-table-column label="index" width="60px">
+                      <template slot-scope="scope">
+                        {{scope.$index}}
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="Card" width="70px">
+                      <template slot-scope="scope">
+                        <el-image
+                          style="width: 37px;height: 50px"
+                          :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"
+                        />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="ID" width="120px">
                       <template slot-scope="scope">
                         <el-input v-model="scope.row.Id" size="mini"/>
                       </template>
                     </el-table-column>
                     <el-table-column label="中奖倍率">
-                        <el-table-column :label="'一球'">
+                        <el-table-column :label="'一球'" >
                           <template slot-scope="scope">
                           <el-input v-model="scope.row.Val[0]" size="mini"/>
                           </template>
@@ -108,7 +121,17 @@
                             <el-input v-model="scope.row.Val[2]" size="mini"/>
                           </template></el-table-column>
                     </el-table-column>
-                    <el-table-column label="操作">
+                    <el-table-column label="单个区域最大下注额度">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxMoneyBet" size="mini"/>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="机器人次区域下注概率">
+                      <template slot-scope="scope">
+                        <el-input v-model.number="item.BetAreaOptions[scope.$index].RobotBetOdds" size="mini"/>
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作" width="180px">
                       <template slot-scope="scope">
                         <el-button type="primary" size="mini" @click="doAddBetOptionsRate">添加</el-button>
                         <el-button type="danger" size="mini" @click="delBetOptionsRate(scope.$index)">删除</el-button>
@@ -171,47 +194,47 @@
                   </el-table>
                 </fieldset>
 
-                <fieldset style="margin-top:10px">
-                  <legend>投注区域配置
-                  </legend>
-                  <el-table
-                    ref="filterTable"
-                    :data="item.BetAreaOptions"
-                    border
-                    :header-cell-style="libShow.DefaultTableHeadClass"
-                    :row-style="{height:'10px'}"
-                    :cell-style="libShow.DefaultTableCell"
-                    style="width: 100%"
-                  >
-                    <el-table-column label="ID">
-                      <template slot-scope="scope">
-                        <el-image
-                          style="width: 37px;height: 50px"
-                          :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"
-                        />
-                        <el-input v-model.number="scope.row.Id" size="mini" style="width: 80px"/>
-                      </template>
-                    </el-table-column>
+<!--                <fieldset style="margin-top:10px">-->
+<!--                  <legend>投注区域配置-->
+<!--                  </legend>-->
+<!--                  <el-table-->
+<!--                    ref="filterTable"-->
+<!--                    :data="item.BetAreaOptions"-->
+<!--                    border-->
+<!--                    :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--                    :row-style="{height:'10px'}"-->
+<!--                    :cell-style="libShow.DefaultTableCell"-->
+<!--                    style="width: 100%"-->
+<!--                  >-->
+<!--                    <el-table-column label="ID">-->
+<!--                      <template slot-scope="scope">-->
+<!--                        <el-image-->
+<!--                          style="width: 37px;height: 50px"-->
+<!--                          :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"-->
+<!--                        />-->
+<!--                        <el-input v-model.number="scope.row.Id" size="mini" style="width: 80px"/>-->
+<!--                      </template>-->
+<!--                    </el-table-column>-->
 
-                    <el-table-column label="单个区域最大下注额度">
-                      <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.MaxMoneyBet" size="mini"/>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="机器人次区域下注概率">
-                      <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.RobotBetOdds" size="mini"/>
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="操作">
-                      <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="doAddBetAreaOptions">添加</el-button>
-                        <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>
-                      </template>
+<!--                    <el-table-column label="单个区域最大下注额度">-->
+<!--                      <template slot-scope="scope">-->
+<!--                        <el-input v-model.number="scope.row.MaxMoneyBet" size="mini"/>-->
+<!--                      </template>-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column label="机器人次区域下注概率">-->
+<!--                      <template slot-scope="scope">-->
+<!--                        <el-input v-model.number="scope.row.RobotBetOdds" size="mini"/>-->
+<!--                      </template>-->
+<!--                    </el-table-column>-->
+<!--                    <el-table-column label="操作">-->
+<!--                      <template slot-scope="scope">-->
+<!--                        <el-button type="primary" size="mini" @click="doAddBetAreaOptions">添加</el-button>-->
+<!--                        <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>-->
+<!--                      </template>-->
 
-                    </el-table-column>
-                  </el-table>
-                </fieldset>
+<!--                    </el-table-column>-->
+<!--                  </el-table>-->
+<!--                </fieldset>-->
               </el-col>
             </el-col>
           </el-tab-pane>
@@ -434,9 +457,11 @@ export default {
         this.item.BetOptionsRate = []
       }
       this.item.BetOptionsRate.push({Id: this.item.BetOptionsRate.length + 1, Val: [0,0,0]})
+      this.doAddBetAreaOptions()
     },
     delBetOptionsRate(index) {
       this.item.BetOptionsRate.splice(index, 1)
+      this.delBetAreaOptions(index)
     },
     transMoneyForShow() {
 
@@ -516,11 +541,13 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
-      for (const o of ret.BetOptionsRate) {
-        o.Id=parseInt(o.Id)
-        for (const j in o.Val) {
-          o.Val[j] *= 1000
+
+      for (const i in ret.BetOptionsRate) {
+        ret.BetOptionsRate[i].Id=parseInt(ret.BetOptionsRate[i].Id)
+        for (const j in ret.BetOptionsRate[i].Val) {
+          ret.BetOptionsRate[i].Val[j] *= 1000
         }
+        ret.BetAreaOptions[i].Id = ret.BetOptionsRate[i].Id
       }
       ret.JackpotCfg = this.JackpotCfg
       return ret

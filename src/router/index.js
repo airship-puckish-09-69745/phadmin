@@ -286,7 +286,142 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
             name: 'gameWaitQueue',
             meta: { title: '排队入桌配置 ◐' }
-          }
+          },
+          {
+            path: 'texasNlh',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '德州专业版 ', noCache: true },
+            children: [
+              {
+                path: 'texasNlhStat',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '数据中心', noCache: true },
+                children: [
+                  {
+                    path: 'texasNlhInsure',
+                    component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
+                    name: 'texasNlhInsure',
+                    meta: { title: '保险数据' }
+                  },
+                  {
+                    path: 'texasNlhJP',
+                    component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
+                    name: 'texasNlhJP',
+                    meta: { title: 'JP数据' }
+                  },
+                  {
+                    path: 'texasNlhGameLog',
+                    component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
+                    name: 'texasNlhGameLog',
+                    meta: { title: '牌局记录' }
+                  },
+                  {
+                    path: 'texasNlhGameDetail',
+                    component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
+                    name: 'texasNlhGameDetail',
+                    meta: { title: '牌局详情' },
+                    hidden: true
+                  },
+                  {
+                    path: 'texasNlhGameConsumeSta',
+                    component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
+                    name: 'texasNlhGameDetail',
+                    meta: { title: '每日消耗统计' }
+                  }
+                ]
+              },
+              {
+                path: 'texasNlhTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '德州配桌', noCache: true },
+                children: [
+                  {
+                    path: 'texasNlhTable',
+                    component: () => import('@/views/texas2dpro/table/texasNlhTable'),
+                    name: 'texasNlhTable',
+                    meta: { title: '无限德州' }
+                  },
+                  {
+                    path: 'texasOmhTable',
+                    component: () => import('@/views/texas2dpro/table/texasOmhTable'),
+                    name: 'texasNlhTable',
+                    meta: { title: '奥马哈' }
+                  },
+                  {
+                    path: 'texasSdpTable',
+                    component: () => import('@/views/texas2dpro/table/texasSdpTable'),
+                    name: 'texasNlhTable',
+                    meta: { title: '6+短牌' }
+                  },
+                  {
+                    path: 'texasPusoyTable',
+                    component: () => import('@/views/texas2dpro/table/texasPusoyTable'),
+                    name: 'texasPusoyTable',
+                    meta: { title: '大菠萝' }
+                  },
+                  {
+                    path: 'texasAofTable',
+                    component: () => import('@/views/texas2dpro/table/texasAofTable'),
+                    name: 'texasAofTable',
+                    meta: { title: 'AOF场' }
+                  },
+                  {
+                    path: 'texasMttTable',
+                    component: () => import('@/views/texas2dpro/table/texasMatchTable'),
+                    name: 'texasMttTable',
+                    meta: { title: '比赛场' }
+                  },
+                  {
+                    path: 'texasMatchReward',
+                    component: () => import('@/views/texas2dpro/table/texasMatchReward'),
+                    name: 'texasMatchReward',
+                    meta: { title: '比赛奖励' }
+                  },
+                  {
+                    path: 'texasMatchBlind',
+                    component: () => import('@/views/texas2dpro/table/texasMatchBlind'),
+                    name: 'texasMatchBlind',
+                    meta: { title: '比赛盲注' }
+                  },
+                  {
+                    path: 'texasNlhCfg',
+                    component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
+                    name: 'texasNlhCfg',
+                    meta: { title: '公共配置' }
+                  }
+                ]
+              },
+              {
+                path: '/updateCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '更新配置', noCache: true },
+                children: [
+                  {
+                    path: 'packageList',
+                    component: () => import('@/views/texas2dpro/version/packageModule'),
+                    name: 'packageList',
+                    meta: { title: '包管理' }
+                  },
+                  {
+                    path: 'versionList',
+                    component: () => import('@/views/texas2dpro/version/versionModule'),
+                    name: 'versionList',
+                    meta: { title: '版本管理' }
+                  }
+                ]
+              },
+              {
+                path: '/texasProActivityNotice',
+                component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
+                name: 'noticeList',
+                meta: { title: '活动公告' }
+              }
+            ]
+          },
         ]
       },
       {
@@ -372,7 +507,7 @@ export const asyncRoutes = [
             path: 'Dropball_cfg',
             component: () => import('@/views/config/tableConfig/dropballConfig'),
             name: 'Dropball_cfg',
-            meta: { title: 'dropball ◐' }
+            meta: { title: 'Dropball ◐' }
           }
         ]
       },
@@ -725,7 +860,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_blackjack',
             meta: { title: 'BlackJack ◐', gid: 37 }
-          }
+          },
         ]
       },
       {
@@ -806,6 +941,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_baccarat',
             meta: { title: 'Baccarat ◐', gid: 107 }
+          },
+          {
+            path: 'playlog_dropBall',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_dropBall',
+            meta: { title: 'DropBall ◐', gid: 10 }
           }
         ]
       },
@@ -900,7 +1041,6 @@ export const asyncRoutes = [
           }
         ]
       },
-
 
 
       {
@@ -1345,141 +1485,6 @@ export const asyncRoutes = [
           },
         ]
       },
-    ]
-  },
-  {
-    path: '/texasVersion',
-    component: Layout,
-    redirect: 'noRedirect',
-    meta: { title: '德州专业版', icon: 'user', perm: 'ADMINUSER_MANAGEMENT' },
-    children: [
-      {
-        path: 'texasNlhStat',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: '数据中心', noCache: true },
-        children: [
-          {
-            path: 'texasNlhInsure',
-            component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
-            name: 'texasNlhInsure',
-            meta: { title: '保险数据' }
-          },
-          {
-            path: 'texasNlhJP',
-            component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
-            name: 'texasNlhJP',
-            meta: { title: 'JP数据' }
-          },
-          {
-            path: 'texasNlhGameLog',
-            component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
-            name: 'texasNlhGameLog',
-            meta: { title: '牌局记录' }
-          },
-          {
-            path: 'texasNlhGameDetail',
-            component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
-            name: 'texasNlhGameDetail',
-            meta: { title: '牌局详情' },
-            hidden: true
-          },
-          {
-            path: 'texasNlhGameConsumeSta',
-            component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
-            name: 'texasNlhGameDetail',
-            meta: { title: '每日消耗统计' }
-          }
-        ]
-      },
-      {
-        path: 'texasNlhTable',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: '德州配桌', noCache: true },
-        children: [
-          {
-            path: 'texasNlhTable',
-            component: () => import('@/views/texas2dpro/table/texasNlhTable'),
-            name: 'texasNlhTable',
-            meta: { title: '无限德州' }
-          },
-          {
-            path: 'texasOmhTable',
-            component: () => import('@/views/texas2dpro/table/texasOmhTable'),
-            name: 'texasNlhTable',
-            meta: { title: '奥马哈' }
-          },
-          {
-            path: 'texasSdpTable',
-            component: () => import('@/views/texas2dpro/table/texasSdpTable'),
-            name: 'texasNlhTable',
-            meta: { title: '6+短牌' }
-          },
-          {
-            path: 'texasPusoyTable',
-            component: () => import('@/views/texas2dpro/table/texasPusoyTable'),
-            name: 'texasPusoyTable',
-            meta: { title: '大菠萝' }
-          },
-          {
-            path: 'texasAofTable',
-            component: () => import('@/views/texas2dpro/table/texasAofTable'),
-            name: 'texasAofTable',
-            meta: { title: 'AOF场' }
-          },
-          {
-            path: 'texasMttTable',
-            component: () => import('@/views/texas2dpro/table/texasMatchTable'),
-            name: 'texasMttTable',
-            meta: { title: '比赛场' }
-          },
-          {
-            path: 'texasMatchReward',
-            component: () => import('@/views/texas2dpro/table/texasMatchReward'),
-            name: 'texasMatchReward',
-            meta: { title: '比赛奖励' }
-          },
-          {
-            path: 'texasMatchBlind',
-            component: () => import('@/views/texas2dpro/table/texasMatchBlind'),
-            name: 'texasMatchBlind',
-            meta: { title: '比赛盲注' }
-          },
-          {
-            path: 'texasNlhCfg',
-            component: () => import('@/views/texas2dpro/table/texasNlhCfg'),
-            name: 'texasNlhCfg',
-            meta: { title: '公共配置' }
-          }
-        ]
-      },
-      {
-        path: '/updateCfg',
-        component: () => import('@/views/empty'),
-        redirect: 'noRedirect',
-        meta: { title: '更新配置', noCache: true },
-        children: [
-          {
-            path: 'packageList',
-            component: () => import('@/views/texas2dpro/version/packageModule'),
-            name: 'packageList',
-            meta: { title: '包管理' }
-          },
-          {
-            path: 'versionList',
-            component: () => import('@/views/texas2dpro/version/versionModule'),
-            name: 'versionList',
-            meta: { title: '版本管理' }
-          }
-        ]
-      },
-      {
-        path: '/texasProActivityNotice',
-        component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
-        name: 'noticeList',
-        meta: { title: '活动公告' }
-      }
     ]
   },
 
