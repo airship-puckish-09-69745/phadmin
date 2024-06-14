@@ -500,7 +500,7 @@ export default {
             return false
           }
           if (this.allCfg.All[i].GameId == 34) {
-            if (this.allCfg.All[i].Config[j].PlayerNum > this.allCfg.All[i].Config[j].TableMaxNum * 4) {
+            if (this.allCfg.All[i].Config[j].PlayerNum < this.allCfg.All[i].Config[j].TableMaxNum * 4) {
               Message.error('PusoyDos 最大人数不能超过 桌数*4')
               return false
             }
