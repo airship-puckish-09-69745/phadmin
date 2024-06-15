@@ -1141,6 +1141,18 @@ export const asyncRoutes = [
             meta: { title: '黑名单配桌日志 ◐' }
           },
           {
+            path: 'tongits_cheat_related_scorelog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedScorelog'),
+            name: 'tongits_cheat_related_scorelog',
+            meta: { title: '关联计分日志 ◐' }
+          },
+          {
+            path: 'tongits_cheat_related_blacklog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
+            name: 'tongits_cheat_related_blacklog',
+            meta: { title: '关联拉黑日志 ◐' }
+          },
+          {
             path: 'tongits_updatemoneylog',
             component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
             name: 'tongits_blackuserlog',

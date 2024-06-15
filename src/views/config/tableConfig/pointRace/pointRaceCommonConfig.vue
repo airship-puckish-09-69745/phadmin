@@ -19,6 +19,19 @@
             </el-col>
           </el-row>
 
+          <el-row> 
+            <el-col :span="6"> 
+              <el-form-item label="日赛榜单最大名次："> 
+                <el-input v-model.number="item.RankMaxDay" placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6" :offset="1">
+              <el-form-item label="周赛榜单最大名次："> 
+                <el-input v-model.number="item.RankMaxWeek" placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
           <el-row>
             <fieldset style="margin-top:10px">
               <legend>日赛奖励配置</legend>
@@ -118,7 +131,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, $libType } from '@/utils/common'
+import { $libShow, $libType, DataRule } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -126,7 +139,10 @@ export default {
   data() {
     return {
       item: {
-        PrizeList: []
+        RankMaxDay: 0,
+        RankMaxWeek: 0,
+        DayPrizeList: [],
+        WeekPrizeList: []
   	  },
       load: false,
       form: {
@@ -149,9 +165,9 @@ export default {
     console.log(1)
   },
   methods: {
-  	getLabelName(k) {
-  		return this.levelCfg[k]
-  	},
+    dataRule(required, config) {
+      return DataRule(required, config)
+    },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
