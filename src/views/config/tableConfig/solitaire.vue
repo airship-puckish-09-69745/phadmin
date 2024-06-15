@@ -435,7 +435,7 @@ function newItem() {
   return {
     CarryLower: '',
     CarryUpper: '',
-    HideCarry: '',
+    HideCarry: 0,
     TableMoney: '',
     JokerNum: 0,
     MaxPlayerCount: 2,
