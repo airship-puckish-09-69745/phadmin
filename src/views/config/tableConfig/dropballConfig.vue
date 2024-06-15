@@ -628,7 +628,7 @@ export default {
         this.ConversionColorMap[m[0]] = m[1]
         this.ConversionColorMap[hei[0]] = hei[1]
         this.ConversionColorMap[hong[0]] = hong[1]
-        this.ConversionColorMap[f[0]] = m[1]
+        this.ConversionColorMap[f[0]] = f[1]
       }
 
       var s = num.toString(16)

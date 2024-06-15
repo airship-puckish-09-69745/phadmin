@@ -378,28 +378,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item
-              label="推荐倍数："
-              prop="item.FreeWithdrawTimes"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.RecommendTimes" />
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="推荐倍数："-->
+<!--              prop="item.FreeWithdrawTimes"-->
+<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.RecommendTimes" />-->
+<!--            </el-form-item>-->
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="是否防作弊："
-              prop="item.Anticheating"
-            >
-              <el-radio-group v-model.number="edit.item.Anticheating">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
+<!--          <el-col :span="11">-->
+<!--            <el-form-item-->
+<!--              label="是否防作弊："-->
+<!--              prop="item.Anticheating"-->
+<!--            >-->
+<!--              <el-radio-group v-model.number="edit.item.Anticheating">-->
+<!--                <el-radio :label="1">是</el-radio>-->
+<!--                <el-radio :label="0">否</el-radio>-->
+<!--              </el-radio-group>-->
 
-            </el-form-item>
-          </el-col>
+<!--            </el-form-item>-->
+<!--          </el-col>-->
 
         </el-row>
 
@@ -442,7 +442,7 @@ function newItem() {
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
-    WatchTimesMax: '',
+    WatchTimesMax: 0,
     IsPractice: 0,
     Level: 1,
     MatchTime: 0,
@@ -484,7 +484,7 @@ export default {
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         ActionSeconds: '操作时间',
-        // WatchTimesMax: '最大围观局数',
+        WatchTimesMax: '最大围观局数',
         // IsPractice: '是否练习场',
         // DefaultWinRate: '默认胜率',
         // LuckyLevelLimitMax: '限制幸运级别最大值',

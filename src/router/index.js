@@ -1006,7 +1006,7 @@ export const asyncRoutes = [
             path: 'playlog_dropBall',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_dropBall',
-            meta: { title: 'DropBall ◐', gid: 10 }
+            meta: { title: 'DropBall ◐', gid: 108 }
           }
         ]
       },
