@@ -1157,6 +1157,12 @@ export const asyncRoutes = [
             meta: { title: '关联拉黑日志 ◐' }
           },
           {
+            path: 'tongits_black_users',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
+            name: 'tongits_black_users',
+            meta: { title: 'Tongits黑名单 ◐' }
+          },
+          {
             path: 'tongits_updatemoneylog',
             component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
             name: 'tongits_blackuserlog',
