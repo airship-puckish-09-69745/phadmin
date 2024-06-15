@@ -369,6 +369,12 @@ export const asyncRoutes = [
                     meta: { title: 'AOF场' }
                   },
                   {
+                    path: 'texasRushTable',
+                    component: () => import('@/views/texas2dpro/table/texasRushTable'),
+                    name: 'texasRushTable',
+                    meta: { title: 'Rush场' }
+                  },
+                  {
                     path: 'texasMttTable',
                     component: () => import('@/views/texas2dpro/table/texasMatchTable'),
                     name: 'texasMttTable',
@@ -443,7 +449,7 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          },
+          }
         ]
       },
       {
@@ -920,7 +926,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_blackjack',
             meta: { title: 'BlackJack ◐', gid: 37 }
-          },
+          }
         ]
       },
       {
@@ -1101,8 +1107,6 @@ export const asyncRoutes = [
           }
         ]
       },
-
-
       {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
