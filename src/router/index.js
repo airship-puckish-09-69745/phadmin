@@ -369,6 +369,12 @@ export const asyncRoutes = [
                     meta: { title: 'AOF场' }
                   },
                   {
+                    path: 'texasRushTable',
+                    component: () => import('@/views/texas2dpro/table/texasRushTable'),
+                    name: 'texasRushTable',
+                    meta: { title: 'Rush场' }
+                  },
+                  {
                     path: 'texasMttTable',
                     component: () => import('@/views/texas2dpro/table/texasMatchTable'),
                     name: 'texasMttTable',
@@ -443,7 +449,7 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          },
+          }
         ]
       },
       {
@@ -920,7 +926,7 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_blackjack',
             meta: { title: 'BlackJack ◐', gid: 37 }
-          },
+          }
         ]
       },
       {
@@ -1101,8 +1107,6 @@ export const asyncRoutes = [
           }
         ]
       },
-
-
       {
         path: 'playlog_lotterylog',
         component: () => import('@/views/playerManage/lotterylog'),
@@ -1151,6 +1155,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
             name: 'tongits_cheat_related_blacklog',
             meta: { title: '关联拉黑日志 ◐' }
+          },
+          {
+            path: 'tongits_black_users',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
+            name: 'tongits_black_users',
+            meta: { title: 'Tongits黑名单 ◐' }
           },
           {
             path: 'tongits_updatemoneylog',
