@@ -74,6 +74,11 @@
           width="180"
         />
         <el-table-column
+          prop="detail"
+          label="详情"
+          width="200"
+        />
+        <el-table-column
           prop="finishTime"
           label="游戏结束时间"
           width="180"

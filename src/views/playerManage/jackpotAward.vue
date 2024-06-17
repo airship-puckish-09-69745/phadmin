@@ -11,7 +11,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法：">
-          <el-select v-model="searchForm.gameId" placeholder="请选择">
+          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig">
             <el-option
               v-for="item in gameConfig"
               :key="item.value"
@@ -53,7 +53,7 @@
         </el-form-item>
 
         <el-form-item label="场次类型：">
-          <el-select v-model="searchForm.level" placeholder="请选择" @click.native="changeLevelConfig">
+          <el-select v-model="searchForm.level" placeholder="请选择"  >
             <el-option
               v-for="item in levelConfig"
               :key="item.value"
@@ -312,6 +312,7 @@ export default {
       })
     },
     changeLevelConfig() {
+      this.searchForm.level = 0
       if (this.searchForm.gameId === 103) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },

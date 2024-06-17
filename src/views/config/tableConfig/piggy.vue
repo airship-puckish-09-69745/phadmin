@@ -291,6 +291,21 @@
               </el-col>
             </el-tab-pane>
             <el-tab-pane label="中奖条件">
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                  <span style="color:red;">以下配置中 分段限制中的个数&每日限制开出个数 需要是开奖条件对应奖池中奖人数的整数倍 </span>
+                </el-descriptions-item>
+              </el-descriptions>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                <span style="color:red;">如果不是整数倍会导致多开 例如日限是11个 每次开出4个 则会开3次 总共3*4=12个 不会超过12个 </span>
+                </el-descriptions-item>
+              </el-descriptions>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                  <span style="color:red;">分段限制中的区间是左闭右开 如果不连贯会导致中间有一个小时时间是一定开不出jp的 </span>
+                </el-descriptions-item>
+              </el-descriptions>
               <el-row>
                 <fieldset>
                   <el-col :span="24" :offset="0">
