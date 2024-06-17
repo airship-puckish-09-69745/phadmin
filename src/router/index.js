@@ -740,24 +740,24 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pointRace/pointRaceCommonConfig'),
             name: 'pointRaceCommonConfig',
             meta: { title: '公共配置', noCache: true }
-          },
+          }, 
           {
-            path: 'activityLog',
-            component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
-            name: 'activityLog',
-            meta: { title: '积分赛用户日志  🚩️' }
+            path: 'pointRaceUserInfo',
+            component: () => import('@/views/activity/pointRace/userInfo.vue'),
+            name: 'pointRaceUserInfo',
+            meta: { title: '用户信息' }
           },
           {
             path: 'pointRaceUserLog',
-            component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
+            component: () => import('@/views/activity/pointRace/userLog.vue'),
             name: 'pointRaceUserLog',
-            meta: { title: '积分赛排行榜' }
+            meta: { title: '用户日志' }
           },
           {
-            path: 'UserDetailLog',
-            component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
-            name: 'UserDetailLog',
-            meta: { title: '积分赛用户信息' }
+            path: 'pointRaceRank',
+            component: () => import('@/views/activity/pointRace/rankInfo.vue'),
+            name: 'pointRaceRank',
+            meta: { title: '排行榜' }
           }
         ]
       },
