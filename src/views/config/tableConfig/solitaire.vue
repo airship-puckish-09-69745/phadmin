@@ -442,7 +442,7 @@ function newItem() {
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
-    WatchTimesMax: 0,
+    WatchTimesMax: 4,
     IsPractice: 0,
     Level: 1,
     MatchTime: 0,
