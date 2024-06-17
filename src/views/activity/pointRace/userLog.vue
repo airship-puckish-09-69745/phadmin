@@ -7,104 +7,104 @@
           <UidInput @setUid="function(iUid){courseInfo.Uid=iUid}" />
         </el-form-item>
 
-          <el-form-item label="周期">
+        <el-form-item label="周期">
 
-            <el-select v-model="courseInfo.ActId" placeholder="周期" @change="itemLevelOneChanged">
-              <el-option
-                v-for="item in itemOneList"
-                :key="item.Id"
-                :label="item.Title"
-                :value="item.Id"
-              />
-            </el-select>
-
-            <el-select v-model="courseInfo.ItemId" placeholder="请选择赛段" style="width: 280px;">
-              <el-option  
-                v-for="item in itemTwoList"
-                :key="item.Id"
-                :label="item.Title"
-                :value="item.Id"
-              />
-            </el-select>
-
-          </el-form-item>
-
-          <el-form-item label="事件类型">
-            <el-select v-model="courseInfo.EventType" >
-              <el-option
-                v-for="item in EventTypeOption"
-                :key="item.key"
-                :label="item.key"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="日期：">
-            <el-date-picker
-              v-model="courseInfo.Date"
-              value-format="timestamp"
-              type="date"
-              placeholder="选择日期"
+          <el-select v-model="courseInfo.ActId" placeholder="周期" @change="itemLevelOneChanged">
+            <el-option
+              v-for="item in itemOneList"
+              :key="item.Id"
+              :label="item.Title"
+              :value="item.Id"
             />
-          </el-form-item>
+          </el-select>
 
-          <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
-          </el-form-item>
-        </el-form>
+          <el-select v-model="courseInfo.ItemId" placeholder="请选择赛段" style="width: 280px;">
+            <el-option
+              v-for="item in itemTwoList"
+              :key="item.Id"
+              :label="item.Title"
+              :value="item.Id"
+            />
+          </el-select>
+
+        </el-form-item>
+
+        <el-form-item label="事件类型">
+          <el-select v-model="courseInfo.EventType">
+            <el-option
+              v-for="item in EventTypeOption"
+              :key="item.key"
+              :label="item.key"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="日期：">
+          <el-date-picker
+            v-model="courseInfo.Date"
+            value-format="timestamp"
+            type="date"
+            placeholder="选择日期"
+          />
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="success" @click="getData">查询</el-button>
+        </el-form-item>
+      </el-form>
 
     </el-row>
     <el-row>
 
-        <el-form ref="filterTable">
-          <el-table
-            :data="dataList"
-            stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%;margin-top:10px;"
+      <el-form ref="filterTable">
+        <el-table
+          :data="dataList"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%;margin-top:10px;"
+        >
+          <el-table-column prop="Id" label="ID" width="100" />
+          <el-table-column prop="Uid" label="UID" width="100" />
+
+          <el-table-column prop="EventType" label="事件类型" width="100">
+            <template scope="scope">
+              {{ EventTypeOptionMap[scope.row.EventType] }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="Data" label="变化值">
+            <template scope="scope">
+              {{ getChangeVal(scope.row) | toRupee }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="Data" label="当前剩余">
+            <template scope="scope">
+              {{ getLastVal(scope.row) | toRupee }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="Comment" label="备注" />
+
+          <el-table-column
+            prop="UpdateTime"
+            label="更新时间"
+            width="200"
           >
-            <el-table-column prop="Id" label="ID" width="100" />
-            <el-table-column prop="Uid" label="UID" width="100" />
+            <template scope="scope">
+              {{ new Date(scope.row.UpdateTime * 1000).Format("yyyy-MM-dd HH:mm:ss") }}
+            </template>
+          </el-table-column>
 
-            <el-table-column prop="EventType" label="事件类型" width="100">
-              <template scope="scope">
-                {{ EventTypeOptionMap[scope.row.EventType] }}
-              </template>
-            </el-table-column>
+        </el-table>
 
-            <el-table-column prop="Data" label="变化值">
-              <template scope="scope">
-                {{ getChangeVal(scope.row) | toRupee }}
-              </template>
-            </el-table-column>
-
-            <el-table-column prop="Data" label="当前剩余">
-              <template scope="scope">
-                {{ getLastVal(scope.row) | toRupee }}
-              </template>
-            </el-table-column>
-
-            <el-table-column prop="Comment" label="备注" />
-
-            <el-table-column
-              prop="UpdateTime"
-              label="更新时间"
-              width="200"
-            >
-              <template scope="scope">
-                {{ new Date(scope.row.UpdateTime * 1000).Format("yyyy-MM-dd HH:mm:ss") }}
-              </template>
-            </el-table-column>
-
-          </el-table>
-
-        </el-form>
-        <el-row type="flex" justify="end">
-      <el-col :span="12">
+      </el-form>
+      <el-row type="flex" justify="end">
+        <el-col :span="12">
           <div class="block">
             <el-pagination
               :current-page="clientDB.GetPage().GetCurrentPage()"
@@ -116,8 +116,8 @@
               @current-change="handleCurrentChange"
             />
           </div>
-          </el-col>
-        </el-row>
+        </el-col>
+      </el-row>
 
     </el-row>
 
@@ -147,11 +147,11 @@ export default {
       eventType: 1,
       EventTypeOption: [
         { 'key': '虚拟币', 'value': 1 },
-        { 'key': '积分', 'value': 2 },
+        { 'key': '积分', 'value': 2 }
       ],
       EventTypeOptionMap: {
         1: '虚拟币',
-        2: '积分',
+        2: '积分'
       },
       offset: 1,
       limit: 300,
@@ -164,7 +164,7 @@ export default {
         EventType: 1
       },
       itemOneList: [],
-      itemTwoList: [],
+      itemTwoList: []
     }
   },
 
@@ -187,7 +187,7 @@ export default {
       })
     },
     itemLevelOneChanged(value) {
-      for (var i = 0; i < this.itemOneList.length; i ++) {
+      for (var i = 0; i < this.itemOneList.length; i++) {
         var oneitem = this.itemOneList[i]
         if (value === oneitem.Id) {
           this.itemTwoList = oneitem.Child

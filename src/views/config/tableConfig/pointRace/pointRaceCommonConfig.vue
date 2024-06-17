@@ -19,14 +19,14 @@
             </el-col>
           </el-row>
 
-          <el-row> 
-            <el-col :span="6"> 
-              <el-form-item label="日赛榜单最大名次："> 
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="日赛榜单最大名次：">
                 <el-input v-model.number="item.RankMaxDay" placeholder="请输入" />
               </el-form-item>
             </el-col>
             <el-col :span="6" :offset="1">
-              <el-form-item label="周赛榜单最大名次："> 
+              <el-form-item label="周赛榜单最大名次：">
                 <el-input v-model.number="item.RankMaxWeek" placeholder="请输入" />
               </el-form-item>
             </el-col>

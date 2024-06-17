@@ -10,11 +10,11 @@
             <el-option v-for="(v, index) in blackTypes" :key="index" :label="v.label" :value="v.value" />
           </el-select>
         </el-form-item>
-<!--        <el-form-item label="是否标黑：">-->
-<!--          <el-select v-model="item.black" placeholder="请选择" size="mini">-->
-<!--            <el-option v-for="(v, index) in blackOptions" :key="index" :label="v.label" :value="v.value" />-->
-<!--          </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="是否标黑：">-->
+        <!--          <el-select v-model="item.black" placeholder="请选择" size="mini">-->
+        <!--            <el-option v-for="(v, index) in blackOptions" :key="index" :label="v.label" :value="v.value" />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item label="开始时间：">
           <el-date-picker
             v-model="item.start"

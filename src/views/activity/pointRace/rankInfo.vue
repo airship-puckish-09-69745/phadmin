@@ -4,51 +4,51 @@
     <el-row> <el-alert type="error" description="选择周期输入名次范围后查询" /> </el-row>
 
     <el-row :gutter="10" style="margin-top: 10px">
-        <el-form label-width="90px" :inline="true" size="small">
-          <el-form-item label="周期">
+      <el-form label-width="90px" :inline="true" size="small">
+        <el-form-item label="周期">
 
-            <el-select v-model="courseInfo.ActId" placeholder="周期" @change="itemLevelOneChanged" >
-              <el-option
-                v-for="item in itemOneList"
-                :key="item.Id"
-                :label="item.Title"
-                :value="item.Id"
-              />
-            </el-select>
+          <el-select v-model="courseInfo.ActId" placeholder="周期" @change="itemLevelOneChanged">
+            <el-option
+              v-for="item in itemOneList"
+              :key="item.Id"
+              :label="item.Title"
+              :value="item.Id"
+            />
+          </el-select>
 
-            <el-select v-model="courseInfo.ItemId" placeholder="请选择赛段" style="width: 280px;">
-              <el-option  
-                v-for="item in itemTwoList"
-                :key="item.Id"
-                :label="item.Title"
-                :value="item.Id"
-              />
-            </el-select>
+          <el-select v-model="courseInfo.ItemId" placeholder="请选择赛段" style="width: 280px;">
+            <el-option
+              v-for="item in itemTwoList"
+              :key="item.Id"
+              :label="item.Title"
+              :value="item.Id"
+            />
+          </el-select>
 
-          </el-form-item>
-          <el-form-item label="名次开始">
-            <el-input v-model="courseInfo.LastRank" placeholder="开始" />
-          </el-form-item>
-          <el-form-item label="名次结束">
-            <el-input v-model="courseInfo.PageSize" placeholder="结束" />
-          </el-form-item>
-          <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
-          </el-form-item>
-        </el-form>
+        </el-form-item>
+        <el-form-item label="名次开始">
+          <el-input v-model="courseInfo.LastRank" placeholder="开始" />
+        </el-form-item>
+        <el-form-item label="名次结束">
+          <el-input v-model="courseInfo.PageSize" placeholder="结束" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="success" @click="getData">查询</el-button>
+        </el-form-item>
+      </el-form>
 
-        </el-row>
-        <el-row>
+    </el-row>
+    <el-row>
 
       <el-col :span="24">
         <el-form ref="filterTable">
           <el-table
             :data="dataList"
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%;margin-top:10px;"
+            border
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'10px'}"
+            :cell-style="libShow.DefaultTableCell"
+            style="width: 100%;margin-top:10px;"
           >
             <el-table-column prop="Rank" label="排名" />
             <el-table-column prop="UID" label="UID" />
@@ -62,11 +62,11 @@
           </el-table>
         </el-form>
         <el-row type="flex" justify="end">
-      <el-col :span="12">
-          <div class="block">
-            <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-          </div>
-      </el-col>
+          <el-col :span="12">
+            <div class="block">
+              <el-pagination :current-page="clientDB.GetPage().GetCurrentPage()" :page-sizes="[10, 20, 30, 40]" :page-size="clientDB.GetPage().GetPageNum()" layout="total, sizes, prev, pager, next, jumper" :total="clientDB.GetPage().GetTotalCount()" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            </div>
+          </el-col>
         </el-row>
       </el-col>
     </el-row>
@@ -124,7 +124,7 @@ export default {
       })
     },
     itemLevelOneChanged(value) {
-      for (var i = 0; i < this.itemOneList.length; i ++) {
+      for (var i = 0; i < this.itemOneList.length; i++) {
         var oneitem = this.itemOneList[i]
         if (value === oneitem.Id) {
           this.itemTwoList = oneitem.Child
@@ -161,7 +161,6 @@ export default {
       this.refreshShow()
     },
 
-    
     getData() {
       if (this.courseInfo.ActId == '') {
         Message.error('请选择周期')

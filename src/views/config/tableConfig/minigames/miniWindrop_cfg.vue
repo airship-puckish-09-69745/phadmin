@@ -776,22 +776,22 @@
     <el-row v-if="envProjectName!='ph_audit'" style="margin-top: 30px">
       <el-col :span="16" :offset="3">
         <fieldset>
-          <legend> 相邻通道掉落概率 <el-button type="primary"  @click="addChannelRateCfg" size="mini">添加</el-button></legend>
+          <legend> 相邻通道掉落概率 <el-button type="primary" size="mini" @click="addChannelRateCfg">添加</el-button></legend>
           <el-row>
             <el-table :data="cfg.ChannelRateCfg" border style="width: 100%">
-              <el-table-column prop="Id" label="相邻通道数" >
+              <el-table-column prop="Id" label="相邻通道数">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Num"  oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}" />
+                  <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}" />
                 </template>
               </el-table-column>
-              <el-table-column prop="Id" label="概率" >
+              <el-table-column prop="Id" label="概率">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.Rate"  oninput="if (value>1000){value=1000};if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}" ><template slot="append">‰</template></el-input>
+                  <el-input v-model.number="scope.row.Rate" oninput="if (value>1000){value=1000};if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}"><template slot="append">‰</template></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="Id" label="操作" >
+              <el-table-column prop="Id" label="操作">
                 <template slot-scope="scope">
-                  <el-button type="danger"  size="mini" @click="delChannelRateCfg(scope.$index)">删除</el-button>
+                  <el-button type="danger" size="mini" @click="delChannelRateCfg(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -2131,7 +2131,7 @@ export default {
       this.dayLimitChange.visible = true
       this.dayLimitChange.jackpotType = data.JackpotType
     },
-    addChannelRateCfg(){
+    addChannelRateCfg() {
       if (!this.cfg.ChannelRateCfg) {
         this.cfg['ChannelRateCfg'] = []
       }
@@ -2139,7 +2139,7 @@ export default {
         'Num': 0,
         'Rate': 0
       })
-      this.cfg.ChannelRateCfg.splice(0,0)
+      this.cfg.ChannelRateCfg.splice(0, 0)
     },
     delChannelRateCfg(idx) {
       this.$delete(this.cfg.ChannelRateCfg, idx)

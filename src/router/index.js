@@ -746,7 +746,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pointRace/pointRaceCommonConfig'),
             name: 'pointRaceCommonConfig',
             meta: { title: '公共配置', noCache: true }
-          }, 
+          },
           {
             path: 'pointRaceUserInfo',
             component: () => import('@/views/activity/pointRace/userInfo.vue'),

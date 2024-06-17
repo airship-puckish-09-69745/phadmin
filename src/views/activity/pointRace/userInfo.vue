@@ -2,39 +2,39 @@
   <div class="app-container">
 
     <el-row :gutter="10" style="margin-top: 10px">
-        <el-form label-width="90px" :inline="true" size="small">
+      <el-form label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
-            <UidInput @setUid="function(iUid){courseInfo.Uid=iUid}" />
-          </el-form-item>
+          <UidInput @setUid="function(iUid){courseInfo.Uid=iUid}" />
+        </el-form-item>
 
-          <el-form-item label="周期：">
+        <el-form-item label="周期：">
 
-            <el-select v-model="courseInfo.ActId" placeholder="周期" @change="itemLevelOneChanged" >
-              <el-option
-                v-for="item in itemOneList"
-                :key="item.Id"
-                :label="item.Title"
-                :value="item.Id"
-              />
-            </el-select>
+          <el-select v-model="courseInfo.ActId" placeholder="周期" @change="itemLevelOneChanged">
+            <el-option
+              v-for="item in itemOneList"
+              :key="item.Id"
+              :label="item.Title"
+              :value="item.Id"
+            />
+          </el-select>
 
-            <el-select v-model="courseInfo.ItemId" placeholder="请选择赛段" style="width: 280px;">
-              <el-option  
-                v-for="item in itemTwoList"
-                :key="item.Id"
-                :label="item.Title"
-                :value="item.Id"
-              />
-            </el-select>
+          <el-select v-model="courseInfo.ItemId" placeholder="请选择赛段" style="width: 280px;">
+            <el-option
+              v-for="item in itemTwoList"
+              :key="item.Id"
+              :label="item.Title"
+              :value="item.Id"
+            />
+          </el-select>
 
-          </el-form-item>
+        </el-form-item>
 
-          <el-form-item>
-            <el-button type="success" @click="getData">查询</el-button>
-          </el-form-item>
-        </el-form>
-      </el-row>
-      <el-row>
+        <el-form-item>
+          <el-button type="success" @click="getData">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </el-row>
+    <el-row>
       <el-descriptions class="margin-top" :column="1" border>
         <el-descriptions-item>
           <template slot="label">
@@ -113,7 +113,7 @@ export default {
       courseInfo: {
         ItemId: '',
         ActId: '',
-        Uid: '',
+        Uid: ''
       },
       itemOneList: [],
       itemTwoList: []
@@ -138,7 +138,7 @@ export default {
       })
     },
     itemLevelOneChanged(value) {
-      for (var i = 0; i < this.itemOneList.length; i ++) {
+      for (var i = 0; i < this.itemOneList.length; i++) {
         var oneitem = this.itemOneList[i]
         if (value === oneitem.Id) {
           this.itemTwoList = oneitem.Child
