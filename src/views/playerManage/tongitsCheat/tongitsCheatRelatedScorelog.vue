@@ -241,6 +241,7 @@ export default {
           tmp.push(data[i].id)
           tmp.push(data[i].uid)
           tmp.push(data[i].preUid)
+          tmp.push(data[i].numbersScore + data[i].groupScore)
           tmp.push(data[i].numbersScore)
           tmp.push(data[i].numbersDetail)
           tmp.push(data[i].groupScore)
@@ -272,7 +273,7 @@ export default {
         this.isButtonDisabled = false
         const data = this.exportData
         const header = [
-          'ID', 'Uid', '上层Uid', '次数计分', '次数计分快照', '个数计分', '个数计分快照', 'GamelogID', '游戏结束时间'
+          'ID', 'Uid', '上层Uid', '总关联分', '次数计分', '次数计分快照', '个数计分', '个数计分快照', 'GamelogID', '游戏结束时间'
         ]
         excel.export_json_to_excel({
           header: header, // 表头 必填
