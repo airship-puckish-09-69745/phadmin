@@ -496,6 +496,7 @@ export default {
           const objs = response.Data.rows || []
           $this.ret = response.Data.rows
           $this.tableData = objs
+          console.log('objs>>>>>', objs)
           this.totalCount = response.Data.total
           $this.tableData = objs
           $this.item.total_bet_num = response.Data.sumary.total_bet_num || 0
