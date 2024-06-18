@@ -125,6 +125,7 @@
                 <el-table-column
                   prop="FreeSeatNum"
                   label="空座位发车值"
+                  v-if="item.GameId!==34"
                 >
                   <template slot-scope="scope">
                     <el-form-item label-width="0">
