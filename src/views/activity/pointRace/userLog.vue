@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row> <el-alert type="error" description="必须指定用户ID后进行信息查询，切换选项后请重新查询" /> </el-row>
+    <el-row> <el-alert type="success" description="必须指定用户ID后进行信息查询，切换选项后请重新查询，UID支持 0-9 的尾缀模糊匹配" /> </el-row>
     <el-row :gutter="10" style="margin-top: 10px">
       <el-form label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
@@ -143,9 +143,8 @@ export default {
       libShow: $libShow,
       clientDB: new ClientTableData([], 1, filterMap),
       dataList: [],
-      activityMap: {},
-      eventType: 1,
       EventTypeOption: [
+        { 'key': '全部', 'value': 0 },
         { 'key': '虚拟币', 'value': 1 },
         { 'key': '积分', 'value': 2 }
       ],
@@ -161,7 +160,7 @@ export default {
         ActId: '',
         Uid: '',
         Date: $libDate.GetDayBegin(new Date().getTime()),
-        EventType: 1
+        EventType: 0
       },
       itemOneList: [],
       itemTwoList: []
@@ -219,13 +218,13 @@ export default {
       this.refreshShow()
     },
     getChangeVal(data) {
-      if (this.eventType === 1) {
+      if (data.EventType === 1) {
         return data.VirtualCoinChange
       }
       return data.PointChange
     },
     getLastVal(data) {
-      if (this.eventType === 1) {
+      if (data.EventType === 1) {
         return data.VirtualCoinLast
       }
       return data.PointLast
@@ -275,7 +274,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           var parse = JSON.parse(response.Data)
-          this.eventType = this.courseInfo.EventType
           console.log(parse)
           if (parse.RetCode != 0) {
             Message.error('查询失败')
