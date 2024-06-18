@@ -53,7 +53,7 @@
         </el-form-item>
 
         <el-form-item label="场次类型：">
-          <el-select v-model="searchForm.level" placeholder="请选择"  >
+          <el-select v-model="searchForm.level" placeholder="请选择">
             <el-option
               v-for="item in levelConfig"
               :key="item.value"

@@ -257,7 +257,7 @@ export default {
 
 </script>
 <style scoped>
->>> .el-descriptions__body {
+.el-descriptions__body {
   width: 50%;
 }
 </style>
