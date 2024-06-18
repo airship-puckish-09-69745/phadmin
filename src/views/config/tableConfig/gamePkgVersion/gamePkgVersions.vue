@@ -7,14 +7,17 @@
       <template>
         <el-alert type="error">
           修改了：framework、app/main、proto、resources、app/yy.ts 内容，需要修改链接版本<br>
-          其他修改只需要改对应 bundle 版本号<br>
-          配置遇到问题请找：宏威
+          其他 bundle 包含有：lobby、common、solitaire_pokers、游戏公共bundle、游戏bundle<br>
+          <br>
+          如有版本修改后未生效，请刷新界面检查是否为最新链接版本<br>
+          <br>
+          遇到其他问题请找：宏威
         </el-alert>
       </template>
     </el-row>
     <el-row style="padding-top: 5px">
       <el-form :inline="true">
-        <el-form-item label="大厅版本">
+        <el-form-item label="链接版本">
           <el-select v-model="LobbyVersionID" filterable size="small" @change="lobbyChange()">
             <el-option
               v-for="item in lobbyVersions"
@@ -30,7 +33,7 @@
             :type="LobbyVersionStatus === 0 ? 'success' : 'warning'"
             :icon="LobbyVersionStatus === 0 ? 'el-icon-upload2' : 'el-icon-download'"
             @click="updateLobbyVersionStatus()"
-          >{{ LobbyVersionStatus === 0 ? '启用大厅版本' : '停用大厅版本' }}
+          >{{ LobbyVersionStatus === 0 ? '启用链接版本' : '停用链接版本' }}
           </el-button>
         </el-form-item>
         <el-form-item>
@@ -40,7 +43,7 @@
             plain
             icon="el-icon-plus"
             @click="handleCopyList()"
-          >复制配置列表到新大厅版本
+          >复制配置列表到新链接版本
           </el-button>
         </el-form-item>
       </el-form>
@@ -245,7 +248,7 @@
       :close-on-press-escape="false"
     >
       <el-form ref="edit.lobbyItem" :model="edit.lobbyItem" label-width="250px" size="small">
-        <el-form-item label="大厅版本：" :required="true" prop="LobbyVersion">
+        <el-form-item label="链接版本：" :required="true" prop="LobbyVersion">
           <el-col :span="15">
             <el-input v-model="edit.lobbyItem.LobbyVersion" />
           </el-col>
@@ -260,13 +263,13 @@
       </el-form>
     </el-dialog>
     <el-dialog
-      title="复制此大厅版本配置 到 新大厅版本"
+      title="复制此链接版本配置 到 新链接版本"
       :visible.sync="edit.copyLobbyVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
       <el-form ref="edit.copyLobbyItem" :model="edit.copyLobbyItem" label-width="250px" size="small">
-        <el-form-item label="新大厅版本号：" :required="true" prop="LobbyVersion">
+        <el-form-item label="新链接版本号：" :required="true" prop="LobbyVersion">
           <el-col :span="15">
             <el-input v-model="edit.copyLobbyItem.LobbyVersion" />
           </el-col>
@@ -428,8 +431,8 @@ export default {
       },
 
       AttrNames: {
-        LobbyVersionID: '大厅版本ID',
-        LobbyVersion: '大厅版本',
+        LobbyVersionID: '链接版本ID',
+        LobbyVersion: '链接版本',
         PkgName: '包名',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
@@ -567,7 +570,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('修改大厅版本状态成功！')
+            Message.success('修改链接版本状态成功！')
             $this.LobbyVersionStatus = targetStatus
             for (let i = 0; i < $this.lobbyVersions.length; i++) {
               if ($this.lobbyVersions[i].ID === $this.LobbyVersionID) {
@@ -770,11 +773,11 @@ export default {
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
       if (this.getPostData().LobbyVersionID === 0) {
-        this.$alert('大厅版本ID错误，请刷新重试')
+        this.$alert('链接版本ID错误，请刷新重试')
         return false
       }
       if (this.getPostData().LobbyVersion === '') {
-        this.$alert('大厅版本错误，请刷新重试')
+        this.$alert('链接版本错误，请刷新重试')
         return false
       }
       if (this.getPostData().GamePkgVersion === '') {
@@ -790,7 +793,7 @@ export default {
     checkLobbyData() {
       this.$refs['edit.lobbyItem'].validate(valid => {})
       if (this.getLobbyPostData().LobbyVersion === '') {
-        this.$alert('大厅版本不能为空')
+        this.$alert('链接版本不能为空')
         return false
       }
       return true
@@ -798,11 +801,11 @@ export default {
     checkCopyLobbyData() {
       this.$refs['edit.copyLobbyItem'].validate(valid => {})
       if (this.getCopyLobbyPostData().LobbyVersionID === 0) {
-        this.$alert('大厅版本ID不能为空，请刷新重试')
+        this.$alert('链接版本ID不能为空，请刷新重试')
         return false
       }
       if (this.getCopyLobbyPostData().LobbyVersion === '') {
-        this.$alert('大厅版本不能为空')
+        this.$alert('链接版本不能为空')
         return false
       }
       return true
