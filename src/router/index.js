@@ -748,22 +748,22 @@ export const asyncRoutes = [
             meta: { title: '公共配置', noCache: true }
           },
           {
-            path: 'activityLog',
-            component: () => import('@/views/activityMillionPointRaceRule/activityLog.vue'),
-            name: 'activityLog',
-            meta: { title: '积分赛用户日志  🚩️' }
+            path: 'pointRaceUserInfo',
+            component: () => import('@/views/activity/pointRace/userInfo.vue'),
+            name: 'pointRaceUserInfo',
+            meta: { title: '用户信息' }
           },
           {
             path: 'pointRaceUserLog',
-            component: () => import('@/views/activityMillionPointRaceRule/pointRaceUserLog.vue'),
+            component: () => import('@/views/activity/pointRace/userLog.vue'),
             name: 'pointRaceUserLog',
-            meta: { title: '积分赛排行榜' }
+            meta: { title: '用户日志' }
           },
           {
-            path: 'UserDetailLog',
-            component: () => import('@/views/activityMillionPointRaceRule/UserDetail.vue'),
-            name: 'UserDetailLog',
-            meta: { title: '积分赛用户信息' }
+            path: 'pointRaceRank',
+            component: () => import('@/views/activity/pointRace/rankInfo.vue'),
+            name: 'pointRaceRank',
+            meta: { title: '排行榜' }
           }
         ]
       },
@@ -1155,6 +1155,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatRelatedBlacklog'),
             name: 'tongits_cheat_related_blacklog',
             meta: { title: '关联拉黑日志 ◐' }
+          },
+          {
+            path: 'tongits_black_users',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsBlackUsers'),
+            name: 'tongits_black_users',
+            meta: { title: 'Tongits黑名单 ◐' }
           },
           {
             path: 'tongits_updatemoneylog',

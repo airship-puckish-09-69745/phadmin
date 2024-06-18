@@ -378,28 +378,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-<!--            <el-form-item-->
-<!--              label="推荐倍数："-->
-<!--              prop="item.FreeWithdrawTimes"-->
-<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.RecommendTimes" />-->
-<!--            </el-form-item>-->
+            <!--            <el-form-item-->
+            <!--              label="推荐倍数："-->
+            <!--              prop="item.FreeWithdrawTimes"-->
+            <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+            <!--            >-->
+            <!--              <el-input v-model.number="edit.item.RecommendTimes" />-->
+            <!--            </el-form-item>-->
           </el-col>
         </el-row>
         <el-row>
-<!--          <el-col :span="11">-->
-<!--            <el-form-item-->
-<!--              label="是否防作弊："-->
-<!--              prop="item.Anticheating"-->
-<!--            >-->
-<!--              <el-radio-group v-model.number="edit.item.Anticheating">-->
-<!--                <el-radio :label="1">是</el-radio>-->
-<!--                <el-radio :label="0">否</el-radio>-->
-<!--              </el-radio-group>-->
+          <!--          <el-col :span="11">-->
+          <!--            <el-form-item-->
+          <!--              label="是否防作弊："-->
+          <!--              prop="item.Anticheating"-->
+          <!--            >-->
+          <!--              <el-radio-group v-model.number="edit.item.Anticheating">-->
+          <!--                <el-radio :label="1">是</el-radio>-->
+          <!--                <el-radio :label="0">否</el-radio>-->
+          <!--              </el-radio-group>-->
 
-<!--            </el-form-item>-->
-<!--          </el-col>-->
+          <!--            </el-form-item>-->
+          <!--          </el-col>-->
 
         </el-row>
 
@@ -442,7 +442,7 @@ function newItem() {
     ObjectCount: '',
     FlowRate: '',
     ActionSeconds: '',
-    WatchTimesMax: 0,
+    WatchTimesMax: 4,
     IsPractice: 0,
     Level: 1,
     MatchTime: 0,

@@ -298,7 +298,7 @@
               </el-descriptions>
               <el-descriptions class="margin-top" border>
                 <el-descriptions-item>
-                <span style="color:red;">如果不是整数倍会导致多开 例如日限是11个 每次开出4个 则会开3次 总共3*4=12个 不会超过12个 </span>
+                  <span style="color:red;">如果不是整数倍会导致多开 例如日限是11个 每次开出4个 则会开3次 总共3*4=12个 不会超过12个 </span>
                 </el-descriptions-item>
               </el-descriptions>
               <el-descriptions class="margin-top" border>

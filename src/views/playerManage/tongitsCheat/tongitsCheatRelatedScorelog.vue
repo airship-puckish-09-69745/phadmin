@@ -24,7 +24,8 @@
           />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" size="mini" @click="click2getInfo">查询</el-button>
+          <el-button :disabled="isButtonDisabled" type="primary" size="mini" @click="click2getInfo">查询</el-button>
+          <el-button :disabled="isButtonDisabled" type="primary" size="mini" @click="exportExcel">导出</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -136,8 +137,12 @@ export default {
         end: $libDate.GetDayEnd(new Date().getTime()) // Date.parse(new Date()),
       },
       tableData: [],
+      exportData: [],
+      offsetId: 0,
+      isButtonDisabled: false,
       libShow: $libShow,
       totalCount: 0,
+      exportLimit: 100,
       currentPage: 1,
       pageNum: 20
     }
@@ -184,7 +189,7 @@ export default {
     },
     getInfo() {
       const $this = this
-
+      this.isButtonDisabled = true
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -198,6 +203,7 @@ export default {
           Limit: this.pageNum
         }
       }).then(response => {
+        this.isButtonDisabled = false
         if (response.RetCode === 0) {
           const objs = response.Data.Items || []
           $this.ret = response.Data.Items
@@ -209,6 +215,73 @@ export default {
             return
           }
         }
+      }).catch(function() {
+        $this.isButtonDisabled = false
+      })
+    },
+    async getExportData() {
+      const response = await request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/log/tongits/cheat/scorelog/exportlist',
+          Uid: this.item.Uid || 0,
+          StartTime: this.item.start / 1000,
+          EndTime: this.item.end / 1000,
+          OffsetId: this.offsetId,
+          Limit: this.exportLimit
+        }
+      })
+
+      const data = response.Data.Items || []
+      if (response.Data && response.Data.Items) {
+        for (const i in data) {
+          const tmp = []
+          tmp.push(data[i].id)
+          tmp.push(data[i].uid)
+          tmp.push(data[i].preUid)
+          tmp.push(data[i].numbersScore + data[i].groupScore)
+          tmp.push(data[i].numbersScore)
+          tmp.push(data[i].numbersDetail)
+          tmp.push(data[i].groupScore)
+          tmp.push(data[i].groupDetail)
+          tmp.push(data[i].gamelogID)
+          tmp.push($libDate.FormateMilisecondStrByZone(data[i].finishTime * 1000, 2, 'cn'))
+          this.offsetId = data[i].id
+          console.log('tmp: ', tmp)
+          this.exportData.push(tmp)
+        }
+      }
+    },
+    exportExcel() {
+      import('@/vendor/Export2Excel').then(async excel => {
+        if (this.totalCount === 0) {
+          this.$message.error('没有要导出的数据，或者先点击查询')
+          return
+        }
+
+        this.exportData = []
+        this.offsetId = 0
+
+        const max = Math.ceil(this.totalCount / this.exportLimit)
+        console.log('max=', max, 'this.dataTotal=', this.totalCount)
+        this.isButtonDisabled = true
+        for (let i = 1; i <= max; i++) {
+          await this.getExportData()
+        }
+        this.isButtonDisabled = false
+        const data = this.exportData
+        const header = [
+          'ID', 'Uid', '上层Uid', '总关联分', '次数计分', '次数计分快照', '个数计分', '个数计分快照', 'GamelogID', '游戏结束时间'
+        ]
+        excel.export_json_to_excel({
+          header: header, // 表头 必填
+          data, // 具体数据 必填
+          filename: 'tongits作弊关联计分日志', // 非必填
+          autoWidth: true, // 非必填
+          bookType: 'xlsx' // 非必填
+        })
       })
     }
   }
