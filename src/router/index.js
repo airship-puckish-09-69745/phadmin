@@ -264,6 +264,12 @@ export const asyncRoutes = [
             meta: { title: 'BlackJack ◐' }
           },
           {
+            path: 'dominoTable',
+            component: () => import('@/views/config/tableConfig/dominoTable'),
+            name: 'dominoTable',
+            meta: { title: '多米诺 ◐' }
+          },
+          {
             path: 'solitaire',
             component: () => import('@/views/config/tableConfig/solitaire'),
             name: 'solitaire',
@@ -926,6 +932,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_blackjack',
             meta: { title: 'BlackJack ◐', gid: 37 }
+          },
+          {
+            path: 'playlog_domino',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_domino',
+            meta: { title: '多米诺 ◐', gid: 43 }
           }
         ]
       },
