@@ -501,7 +501,7 @@
                     <el-col :span="20" :offset="3">
                       <el-form inline>
                         <el-form-item label="自动敲击概率" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true"> <template slot="append">‰</template></el-input>
+                          <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true"> <template slot="append">％</template></el-input>
                         </el-form-item>
                       </el-form>
                     </el-col>
