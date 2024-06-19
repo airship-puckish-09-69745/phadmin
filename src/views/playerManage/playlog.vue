@@ -2502,7 +2502,7 @@ export default {
             $this.showPiggy(obj)
           } else if (gid === 107) {
             $this.showGameLogComponent(obj, gid)
-          } else if (gid === 43) {
+          } else if (gid === 46) {
             $this.showDominoGame(obj)
           } else {
             $this.showSmallGame(obj)

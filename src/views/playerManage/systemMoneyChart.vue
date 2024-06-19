@@ -270,12 +270,12 @@ export default {
       gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
         76: 'Candy Rush', 77: '糖果传奇Allline', 78: '超级宝石', 79: '糖果糖果Mars', 80: 'Candy Craze', 81: '超级宝石Mars', 82: '百万富翁', 83: '百万富翁Mars', // 这行老虎机
         28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Poker', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
-        35: 'Solitaire', 37: 'BlackJack', 43: '多米诺',
+        35: 'Solitaire', 37: 'BlackJack', 46: '多米诺',
         105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 28, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 6, 32, 35, 37, 107, 108, 43], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [15, 22, 28, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 6, 32, 35, 37, 107, 108, 46], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
