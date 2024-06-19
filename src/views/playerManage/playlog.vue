@@ -2468,8 +2468,8 @@ export default {
     },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num == 0 || num === 'NaN') {
-        return
+      if (num == 0 || num === 'NaN'|| num === 'NaN') {
+        return 2
       }
       if (Object.keys(this.ConversionColorMap).length === 0) {
         var m = meihua.split('-')
@@ -2488,6 +2488,7 @@ export default {
         s = '0' + s[0]
       }
       const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
+
       return parseInt(result)
     },
     showGameLogComponent(obj, gid) {
@@ -3070,6 +3071,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
 
     getCardUrl(card) {
+      console.log("-----",card)
       return require('@/assets/poker/' + card + '.png')
     },
     initData() {
