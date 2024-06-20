@@ -140,7 +140,7 @@
             <el-input
               v-model="search"
               size="mini"
-              placeholder="输入关键字搜索"
+              placeholder="输入关键字搜索(包名，key，版本号)"
             />
           </template>
           <template slot-scope="scope">
