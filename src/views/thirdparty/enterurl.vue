@@ -340,6 +340,12 @@ export default {
         this.$alert('提审环境暂时不能使用')
         return false
       }
+      const loading = this.$loading({
+        lock: true,
+        text: '数据拉取中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -362,6 +368,7 @@ export default {
           activity: this.item.activity
         }
       }).then(response => {
+        loading.close()
         console.log(response)
         if (response.RetCode === 0) {
           console.log(response.Data.Url)
@@ -374,6 +381,8 @@ export default {
         } else {
           this.$alert(response.Data)
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     // 复制链接
