@@ -68,7 +68,7 @@
       <el-table
         ref="filterTable"
         v-loading="loadingShow"
-        :data="tableData.filter(data => !search || (data.BundleKey.toLowerCase().includes(search.toLowerCase()) || data.PkgName.toLowerCase().includes(search.toLowerCase())))"
+        :data="tableData.filter(data => !search || (data.BundleKey.toLowerCase().includes(search.toLowerCase()) || data.PkgName.toLowerCase().includes(search.toLowerCase()) || data.GamePkgVersion.toLowerCase().includes(search.toLowerCase())))"
         stripe
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
