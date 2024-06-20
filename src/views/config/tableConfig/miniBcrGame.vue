@@ -662,8 +662,8 @@ export default {
           return
         }
       }
-
-      if (this.item.RobotCfg.MaxRobotNumber < this.item.RobotCfg.MinRobotNumber) {
+      if (this.envProjectName !== 'ph_audit'){
+        if(this.item.RobotCfg.MaxRobotNumber < this.item.RobotCfg.MinRobotNumber) {
         Message.error('“机器人最大人数”不能小于“机器人最小人数”')
         return
       } else if (this.item.RobotCfg.MaxRobotMoney < this.item.RobotCfg.MinRobotMoney) {
@@ -685,7 +685,7 @@ export default {
         Message.error('“机器人最小下注次数”不能小于1，“机器人最大下注次数”不能大于15')
         return
       }
-
+      }
       this.form.Data = JSON.stringify(this.getPostData())
 
       const $this = this
