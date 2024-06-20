@@ -76,15 +76,15 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="Data" label="变化值">
+          <el-table-column prop="Change" label="变化值">
             <template scope="scope">
-              {{ getChangeVal(scope.row) | toRupee }}
+              {{ scope.row.Change | toRupee }}
             </template>
           </el-table-column>
 
-          <el-table-column prop="Data" label="当前剩余">
+          <el-table-column prop="Balance" label="当前剩余">
             <template scope="scope">
-              {{ getLastVal(scope.row) | toRupee }}
+              {{ scope.row.Balance | toRupee }}
             </template>
           </el-table-column>
 
@@ -146,11 +146,13 @@ export default {
       EventTypeOption: [
         { 'key': '全部', 'value': 0 },
         { 'key': '虚拟币', 'value': 1 },
-        { 'key': '积分', 'value': 2 }
+        { 'key': '积分', 'value': 2 },
+        { 'key': '奖励', 'value': 3 }
       ],
       EventTypeOptionMap: {
         1: '虚拟币',
-        2: '积分'
+        2: '积分',
+        3: '奖励'
       },
       offset: 1,
       limit: 300,

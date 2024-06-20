@@ -663,6 +663,60 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="多米诺牌局详情" :visible.sync="dominoDetailVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="3" border>
+        <el-descriptions-item>
+          <template slot="label">
+            底注：
+          </template>
+          {{ dominoDetail.antes/1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家座位：
+          </template>
+          {{ dominoDetail.dealerSeat }}
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="dominoDetail.players" border>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="seat" label="座位" />
+
+        <el-table-column prop="handCards" label="剩余手牌" width="300px">
+          <template slot-scope="scope">
+            <div v-for="(card,index) in scope.row.handCards" class="block">
+              <hr v-if="index > 0" class="blackJackHr"/>
+              {{ '手牌'+(index+1)+': ' }}
+              <div v-if="card >= 0" class="block">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getDominoCardUrl(card)"
+                />
+              </div>
+            </div>
+          </template>
+
+        </el-table-column>
+        <el-table-column prop="points" label="剩余点数" />
+        <el-table-column prop="moneyWon" label="总输赢">
+          <template slot-scope="scope">
+            {{ scope.row.moneyWon  / 1000}}
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyPass" label="过牌输赢">
+          <template slot-scope="scope">
+            {{ scope.row.moneyPass  / 1000}}
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ dominoDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ dominoDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Pusoy牌局详情" :visible.sync="pusoyDetailVisible" width="1400px">
       <el-table
         :data="pusoyDetail.players"
@@ -2022,6 +2076,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      dominoDetail: {},
+      dominoDetailVisible: false,
+
       bodingDetail: {},
       bodingDetailVisible: false,
 
@@ -2445,6 +2502,8 @@ export default {
             $this.showPiggy(obj)
           } else if (gid === 107) {
             $this.showGameLogComponent(obj, gid)
+          } else if (gid === 46) {
+            $this.showDominoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -2958,6 +3017,11 @@ export default {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
     },
+    showDominoGame(obj) {
+      console.log(obj)
+      this.dominoDetail = obj
+      this.dominoDetailVisible = true
+    },
     isContainsFriendGame() {
       if (this.gid == 21) {
         return true
@@ -3072,6 +3136,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 
     getCardUrl(card) {
       console.log("-----",card)
+      return require('@/assets/poker/' + card + '.png')
+    },
+    getDominoCardUrl(card) {
       return require('@/assets/poker/' + card + '.png')
     },
     initData() {

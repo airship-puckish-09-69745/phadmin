@@ -68,7 +68,7 @@
       <el-table
         ref="filterTable"
         v-loading="loadingShow"
-        :data="tableData"
+        :data="tableData.filter(data => !search || (data.BundleKey.toLowerCase().includes(search.toLowerCase()) || data.PkgName.toLowerCase().includes(search.toLowerCase()) || data.GamePkgVersion.toLowerCase().includes(search.toLowerCase())))"
         stripe
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
@@ -136,6 +136,13 @@
           column-key="op"
           width="300"
         >
+          <template slot="header" slot-scope="scope">
+            <el-input
+              v-model="search"
+              size="mini"
+              placeholder="输入关键字搜索(包名，key，版本号)"
+            />
+          </template>
           <template slot-scope="scope">
             <el-button
               type="primary"
