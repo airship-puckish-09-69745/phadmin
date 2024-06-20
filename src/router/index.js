@@ -1046,7 +1046,7 @@ export const asyncRoutes = [
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
-            meta: { title: '超级宝石', gid: 78 }
+            meta: { title: '超级宝石', gid:  process.env.VUE_APP_PROJECT == 'ph_audit'?81:78 }
           },
 
           {

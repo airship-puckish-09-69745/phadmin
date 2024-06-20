@@ -2468,7 +2468,7 @@ export default {
     },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num == 0 || num === 'NaN'|| num === 'NaN') {
+      if (num == 0 || num === 'NaN'|| num === 'undefined') {
         return 2
       }
       if (Object.keys(this.ConversionColorMap).length === 0) {
@@ -3129,7 +3129,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return 'width: 37px; height: 50px;'
       }
       const top = idx * 15
-      const left = idx + 1 * -37
+      const left =  -37
       return 'width: 37px; height: 50px;margin-left: ' + left + 'px;margin-top: ' + top + 'px'
     },
     getServiceFeeName() {
