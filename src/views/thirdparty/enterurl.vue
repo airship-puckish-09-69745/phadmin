@@ -21,7 +21,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-model="item.directScene" label="进入场景：" :required="true" label-width="100px">
-          <el-select v-model="item.directScene" placeholder="请选择" size="mini">
+          <el-select v-model="item.directScene" filterable placeholder="请选择" size="mini">
             <el-option
               v-for="row in directScenes"
               :label="row.name"
