@@ -377,7 +377,7 @@
           <!--          </el-col>-->
           <el-col :span="11">
             <el-form-item
-              label="Pot抽水比例(百分比)："
+              label="保底奖池抽水比例："
               prop="item.PotTaxRates"
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
