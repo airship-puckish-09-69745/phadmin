@@ -664,7 +664,7 @@
     </el-dialog>
 
     <el-dialog title="多米诺牌局详情" :visible.sync="dominoDetailVisible" width="1200px">
-      <el-descriptions class="margin-top" title="" :column="3" border>
+      <el-descriptions class="margin-top" title="" :column="2" border>
         <el-descriptions-item>
           <template slot="label">
             底注：
@@ -677,21 +677,64 @@
           </template>
           {{ dominoDetail.dealerSeat }}
         </el-descriptions-item>
+
+      </el-descriptions>
+
+      <el-descriptions class="margin-top" title="" :column="2" border>
+        <el-descriptions-item>
+          <template slot="label">
+            牌桌左边的牌：
+          </template>
+          <div v-for="card in dominoDetail.leftCards" class="dominoHr">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getDominoCardUrl(card,0)"
+            />
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getDominoCardUrl(card,1)"
+            />
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌桌右边的牌：
+          </template>
+          <div v-for="card in dominoDetail.rightCards" class="dominoHr">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getDominoCardUrl(card,0)"
+            />
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getDominoCardUrl(card,1)"
+            />
+          </div>
+        </el-descriptions-item>
       </el-descriptions>
 
       <el-table :data="dominoDetail.players" border>
         <el-table-column prop="uid" label="UID" />
         <el-table-column prop="seat" label="座位" />
+        <el-table-column prop="winType" label="结果" >
+          <template slot-scope="scope">
+            {{ getDominoWinType(scope.row.winType)}}
+          </template>
+        </el-table-column>
 
         <el-table-column prop="handCards" label="剩余手牌" width="300px">
           <template slot-scope="scope">
             <div v-for="(card,index) in scope.row.handCards" class="block">
               <hr v-if="index > 0" class="blackJackHr"/>
-              {{ '手牌'+(index+1)+': ' }}
-              <div v-if="card >= 0" class="block">
+              {{ '手牌'+(index+1) }}
+              <div v-if="card >= 0" class="dominoHr" >
                 <el-image
                   style="width: 37px; height: 50px"
-                  :src="getDominoCardUrl(card)"
+                  :src="getDominoCardUrl(card,0)"
+                />
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getDominoCardUrl(card,1)"
                 />
               </div>
             </div>
@@ -3138,8 +3181,25 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       console.log("-----",card)
       return require('@/assets/poker/' + card + '.png')
     },
-    getDominoCardUrl(card) {
-      return require('@/assets/poker/' + card + '.png')
+    getDominoCardUrl(card,num) {
+      card = num === 1 ? card & 0x0f : (card >> 4) & 0x0f;
+      return require('@/assets/domino/' + card + '.png')
+    },
+    getDominoWinType(wintype){
+      switch (wintype) {
+        case 0:
+          return 'LOSE'
+        case 1:
+          return 'END-WIN'
+        case 2:
+          return 'DOUBLE'
+        case 3:
+          return 'TRIPLE'
+        case 4:
+          return 'QUARTET'
+        case 5:
+          return 'QUINTET'
+      }
     },
     initData() {
       this.detailVisible = false
@@ -3305,7 +3365,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 .el-table .success-row {
   background: #f0f9eb;
 }
-
+.dominoHr{
+  display: flex;
+  flex-direction: column;
+}
 ul#sweeperShow {
   width: 601px;
   height: 601px;
