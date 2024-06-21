@@ -685,7 +685,7 @@
           <template slot="label">
             牌桌左边的牌：
           </template>
-          <div v-for="(card,index) in scope.row.leftCards" class="block">
+          <div v-for="(card,index) in dominoDetail.leftCards" class="block">
             <hr v-if="index > 0" class="blackJackHr"/>
             {{ '牌'+(index+1) }}
             <div v-if="card >= 0" class="dominoHr" >
@@ -704,7 +704,7 @@
           <template slot="label">
             牌桌右边的牌：
           </template>
-          <div v-for="(card,index) in scope.row.rightCards" class="block">
+          <div v-for="(card,index) in dominoDetail.rightCards" class="block">
             <hr v-if="index > 0" class="blackJackHr"/>
             {{ '牌'+(index+1) }}
             <div v-if="card >= 0" class="dominoHr" >
