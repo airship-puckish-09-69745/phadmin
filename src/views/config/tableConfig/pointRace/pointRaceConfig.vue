@@ -89,7 +89,7 @@
                   <el-table-column label="操作">
                     <template scope="scope">
                       <el-popconfirm title="确定删除吗？" @confirm="removeDayRow(scope.$index)">
-                        <el-button  slot="reference" size="mini" type="danger">删除</el-button>
+                        <el-button slot="reference" size="mini" type="danger">删除</el-button>
                       </el-popconfirm>
                     </template>
                   </el-table-column>

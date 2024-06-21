@@ -414,7 +414,7 @@ export default {
         NextGameSeconds: '结算后等待时间',
         Level: '等级',
         IsPractice: '是否练习场',
-        Status: '状态',
+        Status: '状态'
       }
     }
   },
@@ -618,7 +618,7 @@ export default {
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
       console.log(postData)
-      postData.HideValue= postData.HideCarry
+      postData.HideValue = postData.HideCarry
       return postData
     },
     checkData() {

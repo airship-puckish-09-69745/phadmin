@@ -63,7 +63,7 @@
                     <el-table-column label="操作">
                       <template scope="scope">
                         <el-popconfirm title="确定删除吗？" @confirm="removeRewardRow(scope.$index, 1)">
-                          <el-button  slot="reference" size="mini" type="danger">删除</el-button>
+                          <el-button slot="reference" size="mini" type="danger">删除</el-button>
                         </el-popconfirm>
                       </template>
                     </el-table-column>
@@ -104,7 +104,7 @@
                     <el-table-column label="操作">
                       <template scope="scope">
                         <el-popconfirm title="确定删除吗？" @confirm="removeRewardRow(scope.$index, 2)">
-                          <el-button  slot="reference" size="mini" type="danger">删除</el-button>
+                          <el-button slot="reference" size="mini" type="danger">删除</el-button>
                         </el-popconfirm>
                       </template>
                     </el-table-column>
@@ -205,13 +205,13 @@ export default {
       })
     },
     getPostData() {
-      const ret = JSON.parse(JSON.stringify(this.item));
+      const ret = JSON.parse(JSON.stringify(this.item))
 
       for (const k in ret.DayPrizeList) {
-        ret.DayPrizeList[k].Reward *= 1000;
+        ret.DayPrizeList[k].Reward *= 1000
       }
       for (const k in ret.WeekPrizeList) {
-        ret.WeekPrizeList[k].Reward *= 1000;
+        ret.WeekPrizeList[k].Reward *= 1000
       }
 
       // console.log(this.item)
