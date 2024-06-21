@@ -685,30 +685,38 @@
           <template slot="label">
             牌桌左边的牌：
           </template>
-          <div v-for="card in dominoDetail.leftCards" class="dominoHr">
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,0)"
-            />
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,1)"
-            />
+          <div v-for="(card,index) in scope.row.leftCards" class="block">
+            <hr v-if="index > 0" class="blackJackHr"/>
+            {{ '牌'+(index+1) }}
+            <div v-if="card >= 0" class="dominoHr" >
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,0)"
+              />
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,1)"
+              />
+            </div>
           </div>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             牌桌右边的牌：
           </template>
-          <div v-for="card in dominoDetail.rightCards" class="dominoHr">
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,0)"
-            />
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,1)"
-            />
+          <div v-for="(card,index) in scope.row.rightCards" class="block">
+            <hr v-if="index > 0" class="blackJackHr"/>
+            {{ '牌'+(index+1) }}
+            <div v-if="card >= 0" class="dominoHr" >
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,0)"
+              />
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,1)"
+              />
+            </div>
           </div>
         </el-descriptions-item>
       </el-descriptions>
