@@ -685,30 +685,38 @@
           <template slot="label">
             牌桌左边的牌：
           </template>
-          <div v-for="card in dominoDetail.leftCards" class="dominoHr">
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,0)"
-            />
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,1)"
-            />
+          <div v-for="(card,index) in dominoDetail.leftCards" class="block">
+            <hr v-if="index > 0" class="blackJackHr">
+            {{ '牌'+(index+1) }}
+            <div v-if="card >= 0" class="dominoHr">
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,0)"
+              />
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,1)"
+              />
+            </div>
           </div>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             牌桌右边的牌：
           </template>
-          <div v-for="card in dominoDetail.rightCards" class="dominoHr">
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,0)"
-            />
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getDominoCardUrl(card,1)"
-            />
+          <div v-for="(card,index) in dominoDetail.rightCards" class="block">
+            <hr v-if="index > 0" class="blackJackHr">
+            {{ '牌'+(index+1) }}
+            <div v-if="card >= 0" class="dominoHr">
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,0)"
+              />
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,1)"
+              />
+            </div>
           </div>
         </el-descriptions-item>
       </el-descriptions>
@@ -716,18 +724,18 @@
       <el-table :data="dominoDetail.players" border>
         <el-table-column prop="uid" label="UID" />
         <el-table-column prop="seat" label="座位" />
-        <el-table-column prop="winType" label="结果" >
+        <el-table-column prop="winType" label="结果">
           <template slot-scope="scope">
-            {{ getDominoWinType(scope.row.winType)}}
+            {{ getDominoWinType(scope.row.winType) }}
           </template>
         </el-table-column>
 
         <el-table-column prop="handCards" label="剩余手牌" width="300px">
           <template slot-scope="scope">
             <div v-for="(card,index) in scope.row.handCards" class="block">
-              <hr v-if="index > 0" class="blackJackHr"/>
+              <hr v-if="index > 0" class="blackJackHr">
               {{ '手牌'+(index+1) }}
-              <div v-if="card >= 0" class="dominoHr" >
+              <div v-if="card >= 0" class="dominoHr">
                 <el-image
                   style="width: 37px; height: 50px"
                   :src="getDominoCardUrl(card,0)"
@@ -744,12 +752,12 @@
         <el-table-column prop="points" label="剩余点数" />
         <el-table-column prop="moneyWon" label="总输赢">
           <template slot-scope="scope">
-            {{ scope.row.moneyWon  / 1000}}
+            {{ scope.row.moneyWon / 1000 }}
           </template>
         </el-table-column>
         <el-table-column prop="moneyPass" label="过牌输赢">
           <template slot-scope="scope">
-            {{ scope.row.moneyPass  / 1000}}
+            {{ scope.row.moneyPass / 1000 }}
           </template>
         </el-table-column>
       </el-table>
@@ -2571,7 +2579,7 @@ export default {
     },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num == 0 || num === 'NaN'|| num === 'undefined') {
+      if (num == 0 || num === 'NaN' || num === 'undefined') {
         return 2
       }
       if (Object.keys(this.ConversionColorMap).length === 0) {
@@ -3181,14 +3189,14 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
 
     getCardUrl(card) {
-      console.log("-----",card)
+      console.log('-----', card)
       return require('@/assets/poker/' + card + '.png')
     },
-    getDominoCardUrl(card,num) {
-      card = num === 1 ? card & 0x0f : (card >> 4) & 0x0f;
+    getDominoCardUrl(card, num) {
+      card = num === 1 ? card & 0x0f : (card >> 4) & 0x0f
       return require('@/assets/domino/' + card + '.png')
     },
-    getDominoWinType(wintype){
+    getDominoWinType(wintype) {
       switch (wintype) {
         case 0:
           return 'LOSE'
@@ -3259,7 +3267,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return 'width: 37px; height: 50px;'
       }
       const top = idx * 15
-      const left =  -37
+      const left = -37
       return 'width: 37px; height: 50px;margin-left: ' + left + 'px;margin-top: ' + top + 'px'
     },
     getServiceFeeName() {
