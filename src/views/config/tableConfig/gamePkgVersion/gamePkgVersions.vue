@@ -46,6 +46,16 @@
           >复制配置列表到新链接版本
           </el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            plain
+            :type="!showDisabledLobbyVersion ? 'success' : 'info'"
+            :icon="!showDisabledLobbyVersion ? 'el-icon-view' : 'el-icon-circle-close'"
+            @click="updateLobbyVersionDisplay()"
+          >{{ !showDisabledLobbyVersion ? '展示停用链接版本' : '隐藏停用链接版本' }}
+          </el-button>
+        </el-form-item>
       </el-form>
     </el-row>
     <el-row>
@@ -406,6 +416,7 @@ export default {
       historyMap: {},
       historyVersions: [],
       lobbyVersions: [],
+      lobbyVersionData: [],
       orgLobbyVersions: [],
       LobbyVersionID: 0,
       LobbyVersion: '',
@@ -415,6 +426,7 @@ export default {
         { value: 0, label: '否' },
         { value: 1, label: '是' }
       ],
+      showDisabledLobbyVersion: false,
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -579,17 +591,24 @@ export default {
           if (response.RetCode === 0) {
             Message.success('修改链接版本状态成功！')
             $this.LobbyVersionStatus = targetStatus
-            for (let i = 0; i < $this.lobbyVersions.length; i++) {
-              if ($this.lobbyVersions[i].ID === $this.LobbyVersionID) {
-                $this.lobbyVersions[i].Status = targetStatus
+            for (let i = 0; i < $this.orgLobbyVersions.length; i++) {
+              if ($this.orgLobbyVersions[i].ID === $this.LobbyVersionID) {
+                $this.orgLobbyVersions[i].Status = targetStatus
                 break
               }
+            }
+            if (!$this.showDisabledLobbyVersion && targetStatus === 0) {
+              $this.handleDisplayLobbyVersions()
             }
           }
         })
       }).catch(() => {
         // console.log('取消')
       })
+    },
+    updateLobbyVersionDisplay() {
+      this.showDisabledLobbyVersion = !this.showDisabledLobbyVersion
+      this.handleDisplayLobbyVersions()
     },
     configCheck() {
       return true
@@ -891,15 +910,30 @@ export default {
             this.LobbyVersionStatus = response.Data[response.Data.length - 1].Status
           }
           this.orgLobbyVersions = response.Data || []
-          this.lobbyVersions = []
-          for (let i = 0; i < response.Data.length; i++) {
-            this.lobbyVersions.push({
-              key: response.Data[i].ID,
-              label: response.Data[i].LobbyVersion
-            })
-          }
+          this.handleDisplayLobbyVersions()
         }
       })
+    },
+    handleDisplayLobbyVersions() {
+      this.lobbyVersions = []
+      let needChangeLobbyVersion = false
+      for (let i = 0; i < this.orgLobbyVersions.length; i++) {
+        if (!this.showDisabledLobbyVersion && this.LobbyVersionID === this.orgLobbyVersions[i].ID && this.LobbyVersionStatus === 0) {
+          needChangeLobbyVersion = true
+        }
+        if (!this.showDisabledLobbyVersion && this.orgLobbyVersions[i].Status === 0) {
+          continue
+        }
+        this.lobbyVersions.push({
+          key: this.orgLobbyVersions[i].ID,
+          label: this.orgLobbyVersions[i].LobbyVersion
+        })
+      }
+      if (needChangeLobbyVersion) {
+        this.LobbyVersionID = this.lobbyVersions[this.lobbyVersions.length - 1].key
+        this.LobbyVersion = this.lobbyVersions[this.lobbyVersions.length - 1].label
+        this.LobbyVersionStatus = 1
+      }
     }
   }
 }
