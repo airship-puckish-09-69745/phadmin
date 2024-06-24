@@ -1425,7 +1425,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate / 1000}}</span>
             <span v-else>0</span>
           </template>
         </el-table-column>
@@ -1465,8 +1465,9 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
-                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+<!--                  这里倍率放大1000倍，金额也放大了1000倍-->
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000000 }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -2780,8 +2781,10 @@ export default {
 
       for (let i = 0; i < rocketObj.players.length; i++) {
         const player = rocketObj.players[i]
-        if (player.UserBetOptions.moneyTotalBet === 0) {
-          continue
+        if (player.UserBetOptions){
+          if (player.UserBetOptions.moneyTotalBet === 0) {
+            continue
+          }
         }
         for (let j = 0; j < player.UserBetOptions.Option.length; j++) {
           const result = player.UserBetOptions.Option[j]

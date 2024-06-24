@@ -369,6 +369,7 @@
                     :data="item.Jp"
                     border
                     style="width: 100%"
+                    :header-cell-style="{textAlign:'center'}"
                   >
                     <el-table-column
                       label="JACKPOT类型(Level)"
@@ -381,7 +382,7 @@
 
                     <el-table-column
                       label="中奖人数(最大支持30)"
-                      width="380"
+                      width="200"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
@@ -389,7 +390,7 @@
                     </el-table-column>
                     <el-table-column
                       label="中奖时间"
-                      width="380"
+                      width="200"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.Time" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)">
@@ -399,26 +400,48 @@
                     </el-table-column>
                     <el-table-column
                       label="开JP最少连击次数"
-                      width="180"
+                      width="200"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="开JP最大小注"
-                      width="180"
+                      :label="'开JP最大小注'"
+                      width="auto"
                     >
+                      <template slot="header">
+                        <p style="text-align: center">  开JP最大小注</p>
+                        <span style="color: red;font-size: 11px">  注意：三个奖池的中奖下注区间必须覆盖基础配置-下注列表内所有的值</span>
+                      </template>
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.MinBet" type="number" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
+                        <el-select v-model="scope.row.MinBet" placeholder="请选择">
+                          <el-option
+                            v-for="(v,idx) in item.BetLevel[0].CanBet"
+                            :key="v"
+                            :label="v"
+                            :value="v"
+                          />
+                        </el-select>
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="开JP最大下注"
-                      width="180"
+                      :label="'开JP最大下注'"
+                      width="auto"
                     >
+                      <template slot="header">
+                        <p style="text-align: center">  开JP最大下注</p>
+                        <span style="color: red;font-size: 11px;line-height: 5px">  注意：三个奖池的中奖下注区间必须覆盖基础配置-下注列表内所有的值</span>
+                      </template>
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.MaxBet" type="number" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;}" />
+                        <el-select v-model="scope.row.MaxBet" placeholder="请选择">
+                          <el-option
+                            v-for="v in item.BetLevel[0].CanBet"
+                            :key="v"
+                            :label="v"
+                            :value="v"
+                          />
+                        </el-select>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -617,8 +640,14 @@ import BetAmount from '@/components/BetAmount'
 import PiggyWeightCfg from '@/views/config/tableConfig/piggyWeightCfg.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
 import JackpotAward from '@/views/playerManage/jackpotAward.vue'
+import {red} from "mockjs/src/mock/random/color_dict";
 
 export default {
+  computed: {
+    red() {
+      return red
+    }
+  },
   // eslint-disable-next-line vue/no-unused-components
   components: { JackpotAward, JackpotDayLimit, PiggyWeightCfg, Compare, Publish, BetAmount },
   data() {
@@ -862,7 +891,6 @@ export default {
         o.MinBet = parseInt(o.MinBet * 1000)
         o.MaxBet = parseInt(o.MaxBet * 1000)
       }
-
       for (const o of obj.BetLevel) {
         if (o.CanBet instanceof Array) {
           for (let i = 0; i < o.CanBet.length; i++) {
@@ -875,14 +903,50 @@ export default {
           }
         }
       }
-
       if (obj.AutoTimes instanceof Array) {
       } else {
         obj.AutoTimes = obj.AutoTimes.split(',').map(Number)
       }
-
       return obj
     },
+
+    checkData(obj) {
+      let map = {}
+      let list = JSON.parse(JSON.stringify(obj.BetLevel[0].CanBet))
+      for (const o of obj.BetLevel) {
+        if (o.CanBet instanceof Array) {
+          for (let i = 0; i < o.CanBet.length; i++) {
+            map[o.CanBet[i]] = i
+          }
+        } else {
+          o.CanBet = o.CanBet.split(',').map(Number)
+          for (let i = 0; i < o.CanBet.length; i++) {
+            map[o.CanBet[i]] = i
+          }
+        }
+      }
+      for (const o of obj.Jp) {
+        if (o.MaxBet - o.MinBet <= 0) {
+          Message.error("JP最大下注不能小于最小下注")
+          return false
+        }
+        for (let i = map[o.MaxBet];  i >= map[o.MinBet]; i--) {
+            list[i]=-1
+        }
+      }
+      let str = ""
+      for (const data of list) {
+        if (data != -1) {
+          str += data / 1000 + ","
+        }
+      }
+      if (str.length > 0) {
+        Message.error("下注配置区间与下注列表不符，无法保存! 未配置值:" + str)
+        return false
+      }
+      return true
+    },
+
     getData() {
       request({
         url: '/customizeconfig/one',
@@ -905,6 +969,9 @@ export default {
     },
     setData() {
       var postData = this.getPostData()
+      if (!this.checkData(postData)){
+        return
+      }
       this.form.Data = JSON.stringify(postData)
       const $this = this
       // 设置修改后数据
@@ -929,3 +996,7 @@ export default {
   }
 }
 </script>
+
+<style>
+
+</style>
