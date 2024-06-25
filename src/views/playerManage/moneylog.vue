@@ -307,7 +307,7 @@ const filterMap = {
     40: 'Lucky9往HitPot投注',
     41: 'Lucky9获得HitPot奖励',
     60: '积分赛奖励',
-    61: '积分赛买入',
+    61: '积分赛买入'
   }
 }
 

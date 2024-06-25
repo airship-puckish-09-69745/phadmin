@@ -489,8 +489,8 @@
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
               <el-col :span="24">
-                开始:<el-input v-model.number="edit.item.RedCardStart" size="min" style="width: 130px" placeholder="红卡开始位置" ><template style="width: 10px" slot="append">%</template></el-input>
-                结束:<el-input v-model.number="edit.item.RedCardEnd" size="min" style="width: 130px" placeholder="红卡结束位置" ><template slot="append">%</template></el-input>
+                开始:<el-input v-model.number="edit.item.RedCardStart" size="min" style="width: 130px" placeholder="红卡开始位置"><template slot="append" style="width: 10px">%</template></el-input>
+                结束:<el-input v-model.number="edit.item.RedCardEnd" size="min" style="width: 130px" placeholder="红卡结束位置"><template slot="append">%</template></el-input>
               </el-col>
             </el-form-item>
           </el-col>

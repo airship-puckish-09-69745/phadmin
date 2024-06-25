@@ -837,12 +837,12 @@ export const asyncRoutes = [
           }
         ]
       },
-          {
-            path: 'activityCommonConfig',
-            component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
-            name: 'activityCommonConfig',
-            meta: { title: '活动公共配置', noCache: true }
-          }
+      {
+        path: 'activityCommonConfig',
+        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
+        name: 'activityCommonConfig',
+        meta: { title: '活动公共配置', noCache: true }
+      }
     ]
   },
   {

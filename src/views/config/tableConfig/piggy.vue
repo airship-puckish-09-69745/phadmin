@@ -51,19 +51,18 @@
                     prop="Low"
                     label="下注列表(支持2位小数)"
                   >
-                      <template slot="header">
-                          <p style="text-align: center">  下注列表(支持2位小数)</p>
-                          <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最小下注 相对应的注释</span>
-                      </template>
+                    <template slot="header">
+                      <p style="text-align: center">  下注列表(支持2位小数)</p>
+                      <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最小下注 相对应的注释</span>
+                    </template>
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.CanBet" size="mini" />
                     </template>
                   </el-table-column>
 
-
                   <el-table-column label="操作">
 
-<!--                    <template slot-scope="scope">
+                    <!--                    <template slot-scope="scope">
                       <el-button
                         size="mini"
                         type="primary"
@@ -87,9 +86,9 @@
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane label="中奖概率配置">
                     <!--      第三层  -->
-                      <el-row style="margin-left: 20px">
-                          <span style="color: red;font-size: 11px">  注: 阶段增益1、2、3、4、5中的连续敲击次数必须连续</span>
-                      </el-row>
+                    <el-row style="margin-left: 20px">
+                      <span style="color: red;font-size: 11px">  注: 阶段增益1、2、3、4、5中的连续敲击次数必须连续</span>
+                    </el-row>
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="阶段增益1">
                         <el-row style="margin-left: 20px">
@@ -128,9 +127,9 @@
                         <piggy-weight-cfg :piggy-cfg="item.Buff[3].Awards" title="玩法中奖类型和概率" />
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益5">
-                          <el-row style="margin-left: 20px">
-                              <span style="color:red; font-size: 11px">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
-                          </el-row>
+                        <el-row style="margin-left: 20px">
+                          <span style="color:red; font-size: 11px">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
+                        </el-row>
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
                           <el-input v-model.number="item.Buff[4].MixTap" :required="true" size="mini" style="width: 150px" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
@@ -158,9 +157,9 @@
                   <el-tab-pane label="正常触发FreeGame">
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
-                          <el-row>
-                              <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
-                          </el-row>
+                        <el-row>
+                          <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
+                        </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
                             <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
@@ -178,9 +177,9 @@
                   <el-tab-pane label="购买FreeGame">
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
-                          <el-row>
-                              <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
-                          </el-row>
+                        <el-row>
+                          <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
+                        </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
                             <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
@@ -392,10 +391,10 @@
                       label="中奖人数(最大支持30)"
                       width="200"
                     >
-                        <template slot="header">
-                            <p style="text-align: center">  中奖人数(最大支持30)</p>
-                            <span style="color: red;font-size: 11px">  注: 见JACKPOT->中奖条件->每日限制 注释</span>
-                        </template>
+                      <template slot="header">
+                        <p style="text-align: center">  中奖人数(最大支持30)</p>
+                        <span style="color: red;font-size: 11px">  注: 见JACKPOT->中奖条件->每日限制 注释</span>
+                      </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
@@ -414,10 +413,10 @@
                       label="开JP最少连击次数"
                       width="200"
                     >
-                        <template slot="header">
-                            <p style="text-align: center">  开JP最少连击次数</p>
-                            <span style="color: red;font-size: 11px">  注: 需要小于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
-                        </template>
+                      <template slot="header">
+                        <p style="text-align: center">  开JP最少连击次数</p>
+                        <span style="color: red;font-size: 11px">  注: 需要小于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
+                      </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
@@ -537,10 +536,9 @@
                       </el-form>
                     </el-col>
 
-                      <el-col :span="7" :offset="3">
-                              <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
-                      </el-col>
-
+                    <el-col :span="7" :offset="3">
+                      <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
+                    </el-col>
 
                     <el-col :span="20" :offset="3">
                       <el-form inline>
@@ -661,14 +659,9 @@ import BetAmount from '@/components/BetAmount'
 import PiggyWeightCfg from '@/views/config/tableConfig/piggyWeightCfg.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
 import JackpotAward from '@/views/playerManage/jackpotAward.vue'
-import {red} from "mockjs/src/mock/random/color_dict";
+import { red } from 'mockjs/src/mock/random/color_dict'
 
 export default {
-  computed: {
-    red() {
-      return red
-    }
-  },
   // eslint-disable-next-line vue/no-unused-components
   components: { JackpotAward, JackpotDayLimit, PiggyWeightCfg, Compare, Publish, BetAmount },
   data() {
@@ -746,6 +739,11 @@ export default {
       AttrNames: {
         'Data.MaxPlayers': '最大人数'
       }
+    }
+  },
+  computed: {
+    red() {
+      return red
     }
   },
   created() {
@@ -932,8 +930,8 @@ export default {
     },
 
     checkData(obj) {
-      let map = {}
-      let list = JSON.parse(JSON.stringify(obj.BetLevel[0].CanBet))
+      const map = {}
+      const list = JSON.parse(JSON.stringify(obj.BetLevel[0].CanBet))
       for (const o of obj.BetLevel) {
         if (o.CanBet instanceof Array) {
           for (let i = 0; i < o.CanBet.length; i++) {
@@ -948,21 +946,21 @@ export default {
       }
       for (const o of obj.Jp) {
         if (o.MaxBet - o.MinBet <= 0) {
-          Message.error("JP最大下注不能小于最小下注")
+          Message.error('JP最大下注不能小于最小下注')
           return false
         }
-        for (let i = map[o.MaxBet];  i >= map[o.MinBet]; i--) {
-            list[i]=-1
+        for (let i = map[o.MaxBet]; i >= map[o.MinBet]; i--) {
+          list[i] = -1
         }
       }
-      let str = ""
+      let str = ''
       for (const data of list) {
         if (data != -1) {
-          str += data / 1000 + ","
+          str += data / 1000 + ','
         }
       }
       if (str.length > 0) {
-        Message.error("下注配置区间与下注列表不符，无法保存! 未配置值:" + str)
+        Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
         return false
       }
       return true
@@ -990,7 +988,7 @@ export default {
     },
     setData() {
       var postData = this.getPostData()
-      if (!this.checkData(postData)){
+      if (!this.checkData(postData)) {
         return
       }
       this.form.Data = JSON.stringify(postData)

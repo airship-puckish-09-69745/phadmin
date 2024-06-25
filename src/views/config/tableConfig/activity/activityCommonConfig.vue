@@ -10,15 +10,15 @@
 
           <el-row>
             <el-col :span="24">
-          <el-form-item label="活动桌子总开关">
-            <el-switch
-              v-model="item.ActivityTableSwitch"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="开"
-              inactive-text="关"
-            />
-          </el-form-item>
+              <el-form-item label="活动桌子总开关">
+                <el-switch
+                  v-model="item.ActivityTableSwitch"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="开"
+                  inactive-text="关"
+                />
+              </el-form-item>
 
             </el-col>
           </el-row>
