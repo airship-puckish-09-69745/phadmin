@@ -264,6 +264,12 @@ export const asyncRoutes = [
             meta: { title: 'BlackJack ◐' }
           },
           {
+            path: 'dominoTable',
+            component: () => import('@/views/config/tableConfig/dominoTable'),
+            name: 'dominoTable',
+            meta: { title: '多米诺 ◐' }
+          },
+          {
             path: 'solitaire',
             component: () => import('@/views/config/tableConfig/solitaire'),
             name: 'solitaire',
@@ -639,6 +645,12 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'slots_act_configs_v2',
+            component: () => import('@/views/config/tableConfig/slots/slotsActConfigV2'),
+            name: 'slots_act_configs_v2',
+            meta: { title: '剧本配置V2' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -824,6 +836,12 @@ export const asyncRoutes = [
             meta: { title: '积分奖励配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'activityCommonConfig',
+        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
+        name: 'activityCommonConfig',
+        meta: { title: '活动公共配置', noCache: true }
       }
     ]
   },
@@ -926,6 +944,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_blackjack',
             meta: { title: 'BlackJack ◐', gid: 37 }
+          },
+          {
+            path: 'playlog_domino',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_domino',
+            meta: { title: '多米诺 ◐', gid: 46 }
           }
         ]
       },
@@ -1046,7 +1070,7 @@ export const asyncRoutes = [
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
-            meta: { title: '超级宝石', gid: 78 }
+            meta: { title: '超级宝石', gid: process.env.VUE_APP_PROJECT == 'ph_audit' ? 81 : 78 }
           },
 
           {

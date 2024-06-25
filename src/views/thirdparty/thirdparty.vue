@@ -78,7 +78,12 @@
         />
         <el-table-column
           prop="GameUri"
-          label="客户端地址"
+          label="菲1客户端地址"
+          width="200"
+        />
+        <el-table-column
+          prop="TexasUri"
+          label="德州客户端地址"
           width="200"
         />
         <el-table-column
@@ -204,17 +209,17 @@
             <el-input v-model="edit.item.Intro" />
           </el-col>
         </el-form-item>
-        <el-form-item label="IP白名单(多个之间用英文逗号分隔)：" prop="Ip">
+        <el-form-item label="菲1IP白名单(多个之间用英文逗号分隔)：" prop="Ip">
           <el-col :span="15">
             <el-input v-model="edit.item.Ip" />
           </el-col>
         </el-form-item>
-        <el-form-item label="客户端版本：" :required="true" prop="Ver">
+        <el-form-item label="菲1客户端版本：" :required="true" prop="Ver">
           <el-col :span="15">
             <el-input v-model="edit.item.Ver" />
           </el-col>
         </el-form-item>
-        <el-form-item label="gamefun版本：" :required="true" prop="Ver">
+        <el-form-item label="菲1gamefun版本：" :required="true" prop="Ver">
           <el-col :span="15">
             <el-input v-model="edit.item.GamefunVer" />
           </el-col>
@@ -224,7 +229,7 @@
             </el-tooltip>
           </el-col>
         </el-form-item>
-        <el-form-item label="客户端uri：" :required="true" prop="GameUri">
+        <el-form-item label="菲1客户端uri：" :required="true" prop="GameUri">
           <el-col :span="15">
             <el-input v-model="edit.item.GameUri" />
           </el-col>
@@ -234,14 +239,19 @@
           <!--            </el-tooltip>-->
           <!--          </el-col>-->
         </el-form-item>
-        <el-form-item label="客户端测试uri：" prop="TestUri">
+        <el-form-item label="菲1客户端测试uri：" prop="TestUri">
           <el-col :span="15">
             <el-input v-model="edit.item.TestUri" />
           </el-col>
         </el-form-item>
-        <el-form-item label="测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
+        <el-form-item label="菲1测试用户白名单（uid，多个用英文逗号分隔）：" prop="TestUids">
           <el-col :span="15">
             <el-input v-model="edit.item.TestUids" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="德州客户端uri：" prop="TexasUri">
+          <el-col :span="15">
+            <el-input v-model="edit.item.TexasUri" />
           </el-col>
         </el-form-item>
         <el-form-item label="横竖屏：" :required="true" prop="Screen">
@@ -276,7 +286,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: '', TestUri: '', TestUids: '' }
+  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '' }
 }
 
 export default {
@@ -316,11 +326,12 @@ export default {
         Secret: '密钥',
         Ip: 'IP白名单',
         Ver: '客户端版本',
-        GamefunVer: 'gamefun版本',
-        GameUri: '客户端uri',
+        GamefunVer: '菲1gamefun版本',
+        GameUri: '菲1客户端uri',
         Screen: '横竖屏',
-        TestUri: '客户端测试uri',
-        TestUids: '测试用户uid白名单'
+        TestUri: '菲1客户端测试uri',
+        TestUids: '菲1测试用户uid白名单',
+        TexasUri: '德州客户端uri'
       }
     }
   },

@@ -267,7 +267,7 @@ export default {
           }
           this.virtualCoin = obj.Data.userData.VirtualCoin
           this.point = obj.Data.userData.Point
-          this.rank = obj.Data.rank.Rank
+          this.rank = obj.Data.rank
         } else {
           Message.error('查询失败')
         }

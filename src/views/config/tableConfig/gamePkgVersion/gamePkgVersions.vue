@@ -7,14 +7,17 @@
       <template>
         <el-alert type="error">
           修改了：framework、app/main、proto、resources、app/yy.ts 内容，需要修改链接版本<br>
-          其他修改只需要改对应 bundle 版本号<br>
-          配置遇到问题请找：宏威
+          其他 bundle 包含有：lobby、common、solitaire_pokers、游戏公共bundle、游戏bundle<br>
+          <br>
+          如有版本修改后未生效，请刷新界面检查是否为最新链接版本<br>
+          <br>
+          遇到其他问题请找：宏威
         </el-alert>
       </template>
     </el-row>
     <el-row style="padding-top: 5px">
       <el-form :inline="true">
-        <el-form-item label="大厅版本">
+        <el-form-item label="链接版本">
           <el-select v-model="LobbyVersionID" filterable size="small" @change="lobbyChange()">
             <el-option
               v-for="item in lobbyVersions"
@@ -30,7 +33,7 @@
             :type="LobbyVersionStatus === 0 ? 'success' : 'warning'"
             :icon="LobbyVersionStatus === 0 ? 'el-icon-upload2' : 'el-icon-download'"
             @click="updateLobbyVersionStatus()"
-          >{{ LobbyVersionStatus === 0 ? '启用大厅版本' : '停用大厅版本' }}
+          >{{ LobbyVersionStatus === 0 ? '启用链接版本' : '停用链接版本' }}
           </el-button>
         </el-form-item>
         <el-form-item>
@@ -40,7 +43,17 @@
             plain
             icon="el-icon-plus"
             @click="handleCopyList()"
-          >复制配置列表到新大厅版本
+          >复制配置列表到新链接版本
+          </el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            size="mini"
+            plain
+            :type="!showDisabledLobbyVersion ? 'success' : 'info'"
+            :icon="!showDisabledLobbyVersion ? 'el-icon-view' : 'el-icon-circle-close'"
+            @click="updateLobbyVersionDisplay()"
+          >{{ !showDisabledLobbyVersion ? '展示停用链接版本' : '隐藏停用链接版本' }}
           </el-button>
         </el-form-item>
       </el-form>
@@ -65,7 +78,7 @@
       <el-table
         ref="filterTable"
         v-loading="loadingShow"
-        :data="tableData"
+        :data="tableData.filter(data => !search || (data.BundleKey.toLowerCase().includes(search.toLowerCase()) || data.PkgName.toLowerCase().includes(search.toLowerCase()) || data.GamePkgVersion.toLowerCase().includes(search.toLowerCase())))"
         stripe
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
@@ -133,6 +146,13 @@
           column-key="op"
           width="300"
         >
+          <template slot="header" slot-scope="scope">
+            <el-input
+              v-model="search"
+              size="mini"
+              placeholder="输入关键字搜索(包名，key，版本号)"
+            />
+          </template>
           <template slot-scope="scope">
             <el-button
               type="primary"
@@ -245,7 +265,7 @@
       :close-on-press-escape="false"
     >
       <el-form ref="edit.lobbyItem" :model="edit.lobbyItem" label-width="250px" size="small">
-        <el-form-item label="大厅版本：" :required="true" prop="LobbyVersion">
+        <el-form-item label="链接版本：" :required="true" prop="LobbyVersion">
           <el-col :span="15">
             <el-input v-model="edit.lobbyItem.LobbyVersion" />
           </el-col>
@@ -260,13 +280,13 @@
       </el-form>
     </el-dialog>
     <el-dialog
-      title="复制此大厅版本配置 到 新大厅版本"
+      title="复制此链接版本配置 到 新链接版本"
       :visible.sync="edit.copyLobbyVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
       <el-form ref="edit.copyLobbyItem" :model="edit.copyLobbyItem" label-width="250px" size="small">
-        <el-form-item label="新大厅版本号：" :required="true" prop="LobbyVersion">
+        <el-form-item label="新链接版本号：" :required="true" prop="LobbyVersion">
           <el-col :span="15">
             <el-input v-model="edit.copyLobbyItem.LobbyVersion" />
           </el-col>
@@ -396,6 +416,7 @@ export default {
       historyMap: {},
       historyVersions: [],
       lobbyVersions: [],
+      lobbyVersionData: [],
       orgLobbyVersions: [],
       LobbyVersionID: 0,
       LobbyVersion: '',
@@ -405,6 +426,7 @@ export default {
         { value: 0, label: '否' },
         { value: 1, label: '是' }
       ],
+      showDisabledLobbyVersion: false,
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -428,8 +450,8 @@ export default {
       },
 
       AttrNames: {
-        LobbyVersionID: '大厅版本ID',
-        LobbyVersion: '大厅版本',
+        LobbyVersionID: '链接版本ID',
+        LobbyVersion: '链接版本',
         PkgName: '包名',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
@@ -567,19 +589,26 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('修改大厅版本状态成功！')
+            Message.success('修改链接版本状态成功！')
             $this.LobbyVersionStatus = targetStatus
-            for (let i = 0; i < $this.lobbyVersions.length; i++) {
-              if ($this.lobbyVersions[i].ID === $this.LobbyVersionID) {
-                $this.lobbyVersions[i].Status = targetStatus
+            for (let i = 0; i < $this.orgLobbyVersions.length; i++) {
+              if ($this.orgLobbyVersions[i].ID === $this.LobbyVersionID) {
+                $this.orgLobbyVersions[i].Status = targetStatus
                 break
               }
+            }
+            if (!$this.showDisabledLobbyVersion && targetStatus === 0) {
+              $this.handleDisplayLobbyVersions()
             }
           }
         })
       }).catch(() => {
         // console.log('取消')
       })
+    },
+    updateLobbyVersionDisplay() {
+      this.showDisabledLobbyVersion = !this.showDisabledLobbyVersion
+      this.handleDisplayLobbyVersions()
     },
     configCheck() {
       return true
@@ -770,11 +799,11 @@ export default {
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
       if (this.getPostData().LobbyVersionID === 0) {
-        this.$alert('大厅版本ID错误，请刷新重试')
+        this.$alert('链接版本ID错误，请刷新重试')
         return false
       }
       if (this.getPostData().LobbyVersion === '') {
-        this.$alert('大厅版本错误，请刷新重试')
+        this.$alert('链接版本错误，请刷新重试')
         return false
       }
       if (this.getPostData().GamePkgVersion === '') {
@@ -790,7 +819,7 @@ export default {
     checkLobbyData() {
       this.$refs['edit.lobbyItem'].validate(valid => {})
       if (this.getLobbyPostData().LobbyVersion === '') {
-        this.$alert('大厅版本不能为空')
+        this.$alert('链接版本不能为空')
         return false
       }
       return true
@@ -798,11 +827,11 @@ export default {
     checkCopyLobbyData() {
       this.$refs['edit.copyLobbyItem'].validate(valid => {})
       if (this.getCopyLobbyPostData().LobbyVersionID === 0) {
-        this.$alert('大厅版本ID不能为空，请刷新重试')
+        this.$alert('链接版本ID不能为空，请刷新重试')
         return false
       }
       if (this.getCopyLobbyPostData().LobbyVersion === '') {
-        this.$alert('大厅版本不能为空')
+        this.$alert('链接版本不能为空')
         return false
       }
       return true
@@ -881,15 +910,30 @@ export default {
             this.LobbyVersionStatus = response.Data[response.Data.length - 1].Status
           }
           this.orgLobbyVersions = response.Data || []
-          this.lobbyVersions = []
-          for (let i = 0; i < response.Data.length; i++) {
-            this.lobbyVersions.push({
-              key: response.Data[i].ID,
-              label: response.Data[i].LobbyVersion
-            })
-          }
+          this.handleDisplayLobbyVersions()
         }
       })
+    },
+    handleDisplayLobbyVersions() {
+      this.lobbyVersions = []
+      let needChangeLobbyVersion = false
+      for (let i = 0; i < this.orgLobbyVersions.length; i++) {
+        if (!this.showDisabledLobbyVersion && this.LobbyVersionID === this.orgLobbyVersions[i].ID && this.LobbyVersionStatus === 0) {
+          needChangeLobbyVersion = true
+        }
+        if (!this.showDisabledLobbyVersion && this.orgLobbyVersions[i].Status === 0) {
+          continue
+        }
+        this.lobbyVersions.push({
+          key: this.orgLobbyVersions[i].ID,
+          label: this.orgLobbyVersions[i].LobbyVersion
+        })
+      }
+      if (needChangeLobbyVersion) {
+        this.LobbyVersionID = this.lobbyVersions[this.lobbyVersions.length - 1].key
+        this.LobbyVersion = this.lobbyVersions[this.lobbyVersions.length - 1].label
+        this.LobbyVersionStatus = 1
+      }
     }
   }
 }

@@ -377,7 +377,7 @@
           <!--          </el-col>-->
           <el-col :span="11">
             <el-form-item
-              label="Pot抽水比例(百分比)："
+              label="保底奖池抽水比例："
               prop="item.PotTaxRates"
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
@@ -481,16 +481,16 @@
             <!--              </el-input>-->
             <!--            </el-form-item>-->
           </el-col>
-          <el-col :span="11">
+          <el-col :span="13">
             <el-form-item
               label="红卡位置："
               :required="true"
               prop="item.PlayingMul"
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
-              <el-col>
-                开始:<el-input v-model.number="edit.item.RedCardStart" size="min" style="width: 50px" placeholder="红卡开始位置" />
-                结束:<el-input v-model.number="edit.item.RedCardEnd" size="min" style="width: 50px" placeholder="红卡结束位置" />
+              <el-col :span="24">
+                开始:<el-input v-model.number="edit.item.RedCardStart" size="min" style="width: 130px" placeholder="红卡开始位置"><template slot="append" style="width: 10px">%</template></el-input>
+                结束:<el-input v-model.number="edit.item.RedCardEnd" size="min" style="width: 130px" placeholder="红卡结束位置"><template slot="append">%</template></el-input>
               </el-col>
             </el-form-item>
           </el-col>

@@ -88,7 +88,9 @@
                   </el-table-column>
                   <el-table-column label="操作">
                     <template scope="scope">
-                      <el-button size="mini" type="danger" @click="removeDayRow(scope.$index)">删除</el-button>
+                      <el-popconfirm title="确定删除吗？" @confirm="removeDayRow(scope.$index)">
+                        <el-button slot="reference" size="mini" type="danger">删除</el-button>
+                      </el-popconfirm>
                     </template>
                   </el-table-column>
                 </el-table>

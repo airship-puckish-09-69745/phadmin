@@ -62,7 +62,9 @@
                     </el-table-column>
                     <el-table-column label="操作">
                       <template scope="scope">
-                        <el-button size="mini" type="danger" @click="removeRewardRow(scope.$index, 1)">删除</el-button>
+                        <el-popconfirm title="确定删除吗？" @confirm="removeRewardRow(scope.$index, 1)">
+                          <el-button slot="reference" size="mini" type="danger">删除</el-button>
+                        </el-popconfirm>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -101,7 +103,9 @@
                     </el-table-column>
                     <el-table-column label="操作">
                       <template scope="scope">
-                        <el-button size="mini" type="danger" @click="removeRewardRow(scope.$index, 2)">删除</el-button>
+                        <el-popconfirm title="确定删除吗？" @confirm="removeRewardRow(scope.$index, 2)">
+                          <el-button slot="reference" size="mini" type="danger">删除</el-button>
+                        </el-popconfirm>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -184,6 +188,13 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
           	const cfg = JSON.parse(response.Data.Data)
+
+            for (const k in cfg.DayPrizeList) {
+              cfg.DayPrizeList[k].Reward /= 1000
+            }
+            for (const k in cfg.WeekPrizeList) {
+              cfg.WeekPrizeList[k].Reward /= 1000
+            }
             this.item = cfg
 
             // 设置修改之前数据
@@ -194,9 +205,16 @@ export default {
       })
     },
     getPostData() {
-      const ret = {}
-      Object.assign(ret, this.item)
+      const ret = JSON.parse(JSON.stringify(this.item))
 
+      for (const k in ret.DayPrizeList) {
+        ret.DayPrizeList[k].Reward *= 1000
+      }
+      for (const k in ret.WeekPrizeList) {
+        ret.WeekPrizeList[k].Reward *= 1000
+      }
+
+      // console.log(this.item)
       return ret
     },
     setData() {

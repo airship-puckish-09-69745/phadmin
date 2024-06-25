@@ -663,6 +663,111 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="多米诺牌局详情" :visible.sync="dominoDetailVisible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="2" border>
+        <el-descriptions-item>
+          <template slot="label">
+            底注：
+          </template>
+          {{ dominoDetail.antes/1000 }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            庄家座位：
+          </template>
+          {{ dominoDetail.dealerSeat }}
+        </el-descriptions-item>
+
+      </el-descriptions>
+
+      <el-descriptions class="margin-top" title="" :column="2" border>
+        <el-descriptions-item>
+          <template slot="label">
+            牌桌左边的牌：
+          </template>
+          <div v-for="(card,index) in dominoDetail.leftCards" class="block">
+            <hr v-if="index > 0" class="blackJackHr">
+            {{ '牌'+(index+1) }}
+            <div v-if="card >= 0" class="dominoHr">
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,0)"
+              />
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,1)"
+              />
+            </div>
+          </div>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌桌右边的牌：
+          </template>
+          <div v-for="(card,index) in dominoDetail.rightCards" class="block">
+            <hr v-if="index > 0" class="blackJackHr">
+            {{ '牌'+(index+1) }}
+            <div v-if="card >= 0" class="dominoHr">
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,0)"
+              />
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getDominoCardUrl(card,1)"
+              />
+            </div>
+          </div>
+        </el-descriptions-item>
+      </el-descriptions>
+
+      <el-table :data="dominoDetail.players" border>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="seat" label="座位" />
+        <el-table-column prop="winType" label="结果">
+          <template slot-scope="scope">
+            {{ getDominoWinType(scope.row.winType) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="handCards" label="剩余手牌" width="300px">
+          <template slot-scope="scope">
+            <div v-for="(card,index) in scope.row.handCards" class="block">
+              <hr v-if="index > 0" class="blackJackHr">
+              {{ '手牌'+(index+1) }}
+              <div v-if="card >= 0" class="dominoHr">
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getDominoCardUrl(card,0)"
+                />
+                <el-image
+                  style="width: 37px; height: 50px"
+                  :src="getDominoCardUrl(card,1)"
+                />
+              </div>
+            </div>
+          </template>
+
+        </el-table-column>
+        <el-table-column prop="points" label="剩余点数" />
+        <el-table-column prop="moneyWon" label="总输赢">
+          <template slot-scope="scope">
+            {{ scope.row.moneyWon / 1000 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyPass" label="过牌输赢">
+          <template slot-scope="scope">
+            {{ scope.row.moneyPass / 1000 }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ dominoDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ dominoDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Pusoy牌局详情" :visible.sync="pusoyDetailVisible" width="1400px">
       <el-table
         :data="pusoyDetail.players"
@@ -1328,7 +1433,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate / 1000 }}</span>
             <span v-else>0</span>
           </template>
         </el-table-column>
@@ -1368,8 +1473,9 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
-                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                  <!--                  这里倍率放大1000倍，金额也放大了1000倍-->
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000000 }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -1409,7 +1515,8 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.Hit" style="color:red">是</span>
+            <span v-if="scope.row.ID==6"> - </span>
+            <span v-else-if="scope.row.Hit" style="color:red">是</span>
             <span v-else>否</span>
           </template>
         </el-table-column>
@@ -1420,7 +1527,8 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-if="scope.row.ID==6"> - </span>
+            <span v-else-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
             <span v-else>0</span>
           </template>
         </el-table-column>
@@ -1462,6 +1570,17 @@
                 <template slot-scope="scope">
                   <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
                   <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                v-if="scope.row.ID==6"
+                prop="stopOdds"
+                label="停止倍数"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <span v-if="parseInt(rocketGameResult) > scope.row.stopOdds / 100" style="color:red">{{ scope.row.stopOdds / 100 }}</span>
+                  <span v-else>{{ scope.row.stopOdds / 100 }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -2022,6 +2141,9 @@ export default {
       blackjackDetail: {},
       blackjackDetailVisible: false,
 
+      dominoDetail: {},
+      dominoDetailVisible: false,
+
       bodingDetail: {},
       bodingDetailVisible: false,
 
@@ -2445,6 +2567,8 @@ export default {
             $this.showPiggy(obj)
           } else if (gid === 107) {
             $this.showGameLogComponent(obj, gid)
+          } else if (gid === 46) {
+            $this.showDominoGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -2468,8 +2592,8 @@ export default {
     },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num == 0 || num === 'NaN') {
-        return
+      if (num == 0 || num === 'NaN' || num === 'undefined') {
+        return 2
       }
       if (Object.keys(this.ConversionColorMap).length === 0) {
         var m = meihua.split('-')
@@ -2488,6 +2612,7 @@ export default {
         s = '0' + s[0]
       }
       const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
+
       return parseInt(result)
     },
     showGameLogComponent(obj, gid) {
@@ -2664,7 +2789,7 @@ export default {
     },
 
     showRocketGame(obj) {
-      const names = ['下注区域0', '下注区域1', '下注区域2', '下注区域3', '下注区域4', '下注区域5']
+      const names = ['下注区域0', '下注区域1', '下注区域2', '下注区域3', '下注区域4', '下注区域5', 'Bet下注区域']
       const tMap = {}
       this.rocketGameOptions = []
       const rocketObj = obj
@@ -2677,8 +2802,10 @@ export default {
 
       for (let i = 0; i < rocketObj.players.length; i++) {
         const player = rocketObj.players[i]
-        if (player.UserBetOptions.moneyTotalBet === 0) {
-          continue
+        if (player.UserBetOptions) {
+          if (player.UserBetOptions.moneyTotalBet === 0) {
+            continue
+          }
         }
         for (let j = 0; j < player.UserBetOptions.Option.length; j++) {
           const result = player.UserBetOptions.Option[j]
@@ -2694,7 +2821,16 @@ export default {
           this.rocketGameOptions.push(tMap[i])
         }
       }
-
+      const betRet = []
+      for (const player of rocketObj.players) {
+        betRet.push({
+          Uid: player.uid,
+          Bet: player.moneyBet - player.UserBetOptions.moneyTotalBet,
+          Won: player.moneyChanged - player.UserBetOptions.moneyTotalWon,
+          stopOdds: player.stopOdds
+        })
+      }
+      this.rocketGameOptions.push({ ID: 6, Name: 'Bet下注区域', Rate: rocketObj.stopOdds / 100, Ret: betRet })
       this.rocketGameResult = rocketObj.stopOdds / 100
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
@@ -2957,6 +3093,11 @@ export default {
       this.pusoyDos.pusoyDosDetail = obj
       this.pusoyDos.pusoyDosDetailVisible = true
     },
+    showDominoGame(obj) {
+      console.log(obj)
+      this.dominoDetail = obj
+      this.dominoDetailVisible = true
+    },
     isContainsFriendGame() {
       if (this.gid == 21) {
         return true
@@ -3070,7 +3211,28 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
 
     getCardUrl(card) {
+      console.log('-----', card)
       return require('@/assets/poker/' + card + '.png')
+    },
+    getDominoCardUrl(card, num) {
+      card = num === 1 ? card & 0x0f : (card >> 4) & 0x0f
+      return require('@/assets/domino/' + card + '.png')
+    },
+    getDominoWinType(wintype) {
+      switch (wintype) {
+        case 0:
+          return 'LOSE'
+        case 1:
+          return 'END-WIN'
+        case 2:
+          return 'DOUBLE'
+        case 3:
+          return 'TRIPLE'
+        case 4:
+          return 'QUARTET'
+        case 5:
+          return 'QUINTET'
+      }
     },
     initData() {
       this.detailVisible = false
@@ -3127,7 +3289,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         return 'width: 37px; height: 50px;'
       }
       const top = idx * 15
-      const left = idx + 1 * -37
+      const left = -37
       return 'width: 37px; height: 50px;margin-left: ' + left + 'px;margin-top: ' + top + 'px'
     },
     getServiceFeeName() {
@@ -3236,7 +3398,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 .el-table .success-row {
   background: #f0f9eb;
 }
-
+.dominoHr{
+  display: flex;
+  flex-direction: column;
+}
 ul#sweeperShow {
   width: 601px;
   height: 601px;
