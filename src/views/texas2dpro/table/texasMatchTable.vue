@@ -437,7 +437,6 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formatTime2(date, type) {
-      console.log(date, type)
       var result = new Date(date).getTime()
       return $libDate.FormateMilisecondStrByZone(result, type, '')
     },
@@ -455,9 +454,8 @@ export default {
       return weekNames
     },
     getShowTime(t, type) {
-      console.log(t, type)
       if (type <= 0) {
-        return this.formatTime2(t * 1000, 2)
+        return $libDate.FormateMilisecondStrByZone(t, 2, '')
       }
       if (t % 60 === 0) {
         return t / 60 + 'h'
@@ -561,11 +559,12 @@ export default {
               objs[o].RaceEndTime = new Date()
             } else {
               objs[o].RaceEndTime = new Date(objs[o].RaceEndTime * 1000 - 8 * 3600 * 1000)
-              console.log(objs[o].RaceEndTime)
             }
             if (objs[o].RaceType > 0) {
               objs[o].RaceShowTime /= 60
               objs[o].RaceIntervalTime /= 60
+            } else {
+              objs[o].RaceShowTime = new Date(objs[o].RaceShowTime * 1000)
             }
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
           }
