@@ -1515,7 +1515,8 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.Hit" style="color:red">是</span>
+            <span v-if="scope.row.ID==6"> - </span>
+            <span  v-else-if="scope.row.Hit" style="color:red">是</span>
             <span v-else>否</span>
           </template>
         </el-table-column>
@@ -1526,7 +1527,8 @@
           width="100"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
+            <span v-if="scope.row.ID==6"> - </span>
+            <span v-else-if="scope.row.Hit" style="color:red">{{ scope.row.Rate }}</span>
             <span v-else>0</span>
           </template>
         </el-table-column>
@@ -1568,6 +1570,17 @@
                 <template slot-scope="scope">
                   <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
                   <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="stopOdds"
+                label="停止倍数"
+                width="200"
+                v-if="scope.row.ID==6"
+              >
+                <template slot-scope="scope">
+                  <span v-if="parseInt(rocketGameResult) > scope.row.stopOdds / 100" style="color:red">{{ scope.row.stopOdds / 100 }}</span>
+                  <span v-else>{{ scope.row.stopOdds / 100 }}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -2776,7 +2789,7 @@ export default {
     },
 
     showRocketGame(obj) {
-      const names = ['下注区域0', '下注区域1', '下注区域2', '下注区域3', '下注区域4', '下注区域5']
+      const names = ['下注区域0', '下注区域1', '下注区域2', '下注区域3', '下注区域4', '下注区域5','Bet下注区域']
       const tMap = {}
       this.rocketGameOptions = []
       const rocketObj = obj
@@ -2808,7 +2821,16 @@ export default {
           this.rocketGameOptions.push(tMap[i])
         }
       }
-
+      let betRet = []
+      for (const player of rocketObj.players) {
+        betRet.push({
+          Uid: player.uid,
+          Bet: player.moneyBet - player.UserBetOptions.moneyTotalBet,
+          Won: player.moneyChanged - player.UserBetOptions.moneyTotalWon,
+          stopOdds: player.stopOdds
+        })
+      }
+      this.rocketGameOptions.push({ID: 6, Name: 'Bet下注区域', Rate:  rocketObj.stopOdds / 100,Ret:betRet})
       this.rocketGameResult = rocketObj.stopOdds / 100
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
