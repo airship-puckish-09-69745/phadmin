@@ -129,7 +129,7 @@
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益5">
                           <el-row style="margin-left: 20px">
-                              <span style="color:red;">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
+                              <span style="color:red; font-size: 11px">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
                           </el-row>
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
@@ -158,6 +158,9 @@
                   <el-tab-pane label="正常触发FreeGame">
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
+                          <el-row>
+                              <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
+                          </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
                             <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
@@ -175,6 +178,9 @@
                   <el-tab-pane label="购买FreeGame">
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
+                          <el-row>
+                              <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
+                          </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
                             <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
