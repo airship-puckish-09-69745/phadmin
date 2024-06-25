@@ -471,7 +471,7 @@
                   <legend>机器人配置</legend>
                   <el-descriptions class="margin-top" border>
                     <el-descriptions-item>
-                      <span style="color:red;">以下配置,在两个时段机器人数目标替换时,缺补:[50,∞)[2,5]; [30,50)[1,3]; [10,30)[1,2]; (0,10)[0.5,1]  多退:[50,∞)[2,3]; [20,50)[1,2]; (0,20)[0.5,1]</span>
+                      <span style="color:red; font-size: 12px">以下配置,在两个时段机器人数目标替换时,缺补:[50,∞)[2,5]; [30,50)[1,3]; [10,30)[1,2]; (0,10)[0.5,1]  多退:[50,∞)[2,3]; [20,50)[1,2]; (0,20)[0.5,1]</span>
                     </el-descriptions-item>
                   </el-descriptions>
                   <el-button type="normal" icon="el-icon-edit" size="mini" @click="addRobotNumForm()">添加</el-button>
@@ -536,6 +536,11 @@
                         </el-form-item>
                       </el-form>
                     </el-col>
+
+                      <el-col :span="7" :offset="3">
+                              <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
+                      </el-col>
+
 
                     <el-col :span="20" :offset="3">
                       <el-form inline>
