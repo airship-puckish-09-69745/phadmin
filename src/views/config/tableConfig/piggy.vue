@@ -52,8 +52,8 @@
                     label="下注列表(支持2位小数)"
                   >
                       <template slot="header">
-                          <p style="text-align: center">  开JP最大小注</p>
-                          <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最大下注 相对应的注释</span>
+                          <p style="text-align: center">  下注列表(支持2位小数)</p>
+                          <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最小下注 相对应的注释</span>
                       </template>
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.CanBet" size="mini" />
@@ -423,11 +423,11 @@
                       </template>
                     </el-table-column>
                     <el-table-column
-                      :label="'开JP最大小注'"
+                      :label="'开JP最小下注'"
                       width="auto"
                     >
                       <template slot="header">
-                        <p style="text-align: center">  开JP最大小注</p>
+                        <p style="text-align: center">  开JP最小下注</p>
                         <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.左右闭合区间  3.确认完全覆盖以后可以点击左上角的发布 4.没有覆盖的下注将不会被抽水入Jp奖池 也不会参与Jp开奖</span>
                       </template>
                       <template slot-scope="scope">
