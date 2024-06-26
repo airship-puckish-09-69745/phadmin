@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item v-model="item.app" label="App：" :required="true" label-width="80px">
-          <el-select v-model="item.app" placeholder="请选择" size="mini">
+          <el-select v-model="item.app" filterable placeholder="请选择" size="mini">
             <el-option
               v-for="row in appInfo"
               :key="row.key"
@@ -13,7 +13,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-model="item.gameId" label="游戏：" :required="true" label-width="80px">
-          <el-select v-model="item.gameId" placeholder="游戏筛选" size="mini">
+          <el-select v-model="item.gameId" filterable placeholder="游戏筛选" size="mini">
             <el-option
               v-for="row in games2"
               :label="row.name"
@@ -234,6 +234,15 @@
         >
           <template slot-scope="scope">
             {{ formatNumber((scope.row.real_jp || 0)/1000) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="insure"
+          label="保险收益（德州）"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber((scope.row.insure || 0)/1000) }}
           </template>
         </el-table-column>
         <el-table-column
