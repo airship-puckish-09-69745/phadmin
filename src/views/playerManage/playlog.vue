@@ -760,9 +760,9 @@
             {{ scope.row.moneyWon / 1000 }}
           </template>
         </el-table-column>
-        <el-table-column prop="MoneyFee" label="结算抽水">
+        <el-table-column prop="moneyFee" label="结算抽水">
           <template slot-scope="scope">
-            {{ scope.row.MoneyFee / 1000 }}
+            {{ scope.row.moneyFee / 1000 }}
           </template>
         </el-table-column>
         <el-table-column prop="moneyPass" label="过牌输赢">
