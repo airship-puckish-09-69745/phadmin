@@ -645,6 +645,12 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'slots_act_configs_v2',
+            component: () => import('@/views/config/tableConfig/slots/slotsActConfigV2'),
+            name: 'slots_act_configs_v2',
+            meta: { title: '剧本配置V2' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -830,6 +836,12 @@ export const asyncRoutes = [
             meta: { title: '积分奖励配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'activityCommonConfig',
+        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
+        name: 'activityCommonConfig',
+        meta: { title: '活动公共配置', noCache: true }
       }
     ]
   },
