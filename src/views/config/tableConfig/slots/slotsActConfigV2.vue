@@ -78,7 +78,6 @@
         <publish primary-key="ID" :key-id="configKey2" :check="configCheck" :env-empty="true" />
       </el-row>
 
-
       <el-form ref="edit" :model="edit" label-width="100px" :inline="true" size="small">
 
         <el-row>
@@ -87,23 +86,23 @@
           </el-col>
         </el-row>
 
-      <el-row>
-        <el-form-item label="剧本名称：">
-          <el-input v-model="edit.item.Name" size="mini" />
-        </el-form-item>
-      </el-row>
+        <el-row>
+          <el-form-item label="剧本名称：">
+            <el-input v-model="edit.item.Name" size="mini" />
+          </el-form-item>
+        </el-row>
 
-      <el-row>
-        <el-form-item>
-          <upload-excel-component :on-success="importSuccess" :before-upload="checkImport" />
-        </el-form-item>
-      </el-row>
+        <el-row>
+          <el-form-item>
+            <upload-excel-component :on-success="importSuccess" :before-upload="checkImport" />
+          </el-form-item>
+        </el-row>
 
-    <el-row> 
+        <el-row>
           <el-col :span="12">
-      <el-alert type="error" description="至少3个剧本，最后两个分别为正数剧本/负数剧本" /> 
-      </el-col>
-    </el-row>
+            <el-alert type="error" description="至少3个剧本，最后两个分别为正数剧本/负数剧本" />
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="12">
             <el-tabs type="border-card">
@@ -385,8 +384,8 @@ export default {
       return {
         ID: this.edit.item.ID,
         Name: this.edit.item.Name,
-        Acts: this.edit.isNewImport ? JSON.stringify(this.edit.item.Acts) : '',
-        SheetNames: JSON.stringify(this.edit.item.SheetNames)
+        Acts: this.edit.isNewImport ? JSON.stringify(this.edit.showActs) : '',
+        SheetNames: JSON.stringify(this.edit.sheetNames)
       }
     },
     save() {
@@ -410,7 +409,7 @@ export default {
       })
       return false
     },
-    importSuccess( results ) {
+    importSuccess(results) {
       console.log('import result', results)
 
       this.edit.sheetNames = results['SheetNames']
@@ -436,36 +435,36 @@ export default {
 
         // 将对象按 key 值排序
         const rows1 = Object.keys(rows).sort().reduce((obj, key) => {
-          obj[key] = rows[key];
-          return obj;
-        }, {});
+          obj[key] = rows[key]
+          return obj
+        }, {})
 
-        let result = [];
-        let currentRow = [];
-        let currentRowLetter = null;
+        const result = []
+        let currentRow = []
+        let currentRowLetter = null
         for (const k in rows1) {
-          let rowLetter = k.charAt(0);
+          const rowLetter = k.charAt(0)
           if (rowLetter !== currentRowLetter) {
             if (currentRow.length > 0) {
-              result.push(currentRow);
+              result.push(currentRow)
             }
-            currentRow = [];
-            currentRowLetter = rowLetter;
+            currentRow = []
+            currentRowLetter = rowLetter
           }
 
-          currentRow.push(rows1[k]);
+          currentRow.push(rows1[k])
         }
         if (currentRow.length > 0) {
-          result.push(currentRow);
+          result.push(currentRow)
         }
 
         rets.push(result)
       }
-      
+
       // console.log(rets)
-          $this.edit.showActs = rets
-          $this.edit.isNewImport = true
-    },
+      $this.edit.showActs = rets
+      $this.edit.isNewImport = true
+    }
   }
 }
 </script>

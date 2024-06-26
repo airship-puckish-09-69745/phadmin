@@ -20,7 +20,7 @@ export default {
   },
   data() {
     return {
-      loading: false,
+      loading: false
     }
   },
   methods: {
@@ -84,7 +84,7 @@ export default {
 
           this.generateData({
             'SheetNames': workbook.SheetNames,
-            'Sheets': workbook.Sheets,
+            'Sheets': workbook.Sheets
           })
           this.loading = false
           resolve()
