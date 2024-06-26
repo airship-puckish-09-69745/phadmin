@@ -750,9 +750,19 @@
 
         </el-table-column>
         <el-table-column prop="points" label="剩余点数" />
-        <el-table-column prop="moneyWon" label="总输赢">
+        <el-table-column prop="moneyChange" label="总输赢">
+          <template slot-scope="scope">
+            {{ scope.row.moneyChange / 1000 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyWon" label="结算输赢">
           <template slot-scope="scope">
             {{ scope.row.moneyWon / 1000 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="moneyTaxed" label="结算抽水">
+          <template slot-scope="scope">
+            {{ scope.row.moneyTaxed / 1000 }}
           </template>
         </el-table-column>
         <el-table-column prop="moneyPass" label="过牌输赢">
