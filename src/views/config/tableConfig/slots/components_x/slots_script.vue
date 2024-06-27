@@ -3,6 +3,18 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="20" :offset="3">
         <el-form ref="scriptFrm" label-width="120px">
+
+          <el-form-item label="指定剧本V2">
+          <el-select v-model="slotsData.ActConfig.ActId" placeholder="剧本ID">
+            <el-option
+              v-for="item in actionsSelectOpt"
+              :key="item.value"
+              :label="item.key"
+              :value="item.value"
+            />
+          </el-select>
+          </el-form-item>
+
           <ratio-input v-model="slotsData.ActConfig.ServiceFee" label="抽水(%)" tips="服务费" />
 
           <ratio-input v-model="slotsData.ActConfig.WinOddsGt0Lose" label="剧本倍率>0输(%)" tips="当赢剧本倍数>0时多少概率会输" />
@@ -156,6 +168,7 @@
 import Compare from '@/components/Compare'
 import RatioInput from '@/components/RatioInput'
 import MoneyInput from '@/components/MoneyInput'
+import request from '@/utils/request'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -181,6 +194,9 @@ export default {
   },
   data() {
     return {
+      actionsSelectOpt: [
+        { 'key': '空「不使用V2」', 'value': 0 },
+      ],
       genWaterPoolVisible: false,
       GenWaterPool: {
         MinMul: 1933, // 最低倍数
@@ -212,9 +228,27 @@ export default {
     }
   },
   created() {
+    this.getActionsSelectOpt()
     this.initWaterPool()
   },
   methods: {
+    getActionsSelectOpt() {
+      request({
+        url: '/slotsActConfigV2/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          for (const i in objs) {
+            this.actionsSelectOpt.push({'key': objs[i].Name, 'value': objs[i].ID})
+          }
+          console.log(objs)
+        } else {
+          Message.error('查询失败')
+        }
+      })
+    },
     // 初始化水池,如果房间列表有变化，水池房间也要变化
     initWaterPool() {
       const waterBetMap = {}
