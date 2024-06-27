@@ -195,7 +195,7 @@ export default {
   data() {
     return {
       actionsSelectOpt: [
-        { 'key': '空', 'value': 0 },
+        { 'key': '空「不使用V2」', 'value': 0 },
       ],
       genWaterPoolVisible: false,
       GenWaterPool: {
