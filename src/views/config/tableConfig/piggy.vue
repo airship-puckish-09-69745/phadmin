@@ -464,110 +464,133 @@
                 </fieldset>
               </el-row>
             </el-tab-pane>
-            <el-tab-pane label="机器人配置">
-              <el-row :span="16" :offset="3">
-                <fieldset style="margin-top:10px">
-                  <legend>机器人配置</legend>
-                  <el-descriptions class="margin-top" border>
-                    <el-descriptions-item>
-                      <span style="color:red; font-size: 12px">以下配置,在两个时段机器人数目标替换时,缺补:[50,∞)[2,5]; [30,50)[1,3]; [10,30)[1,2]; (0,10)[0.5,1]  多退:[50,∞)[2,3]; [20,50)[1,2]; (0,20)[0.5,1]</span>
-                    </el-descriptions-item>
-                  </el-descriptions>
-                  <el-button type="normal" icon="el-icon-edit" size="mini" @click="addRobotNumForm()">添加</el-button>
-                  <el-table
-                    ref="filterTable"
-                    :data="item.RobotCfg.RobotMemberArr"
-                    border
-                    :header-cell-style="libShow.DefaultTableHeadClass"
-                    :row-style="{height:'10px'}"
-                    :cell-style="libShow.DefaultTableCell"
-                    style="width: 100%"
-                  >
-                    <el-table-column type="index" />
-                    <el-table-column label="时间段" prop="TimeTitle">
-                      <template slot-scope="scope">
-                        [{{ scope.row.StartHour }},{{ scope.row.EndHour }}]
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="机器人数下限" prop="MinRobotNum">
-                      <template slot-scope="scope">
-                        {{ scope.row.MinRobotNum }}
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="机器人数上限" prop="MaxRobotNum">
-                      <template slot-scope="scope">
-                        {{ scope.row.MaxRobotNum }}
-                      </template>
-                    </el-table-column>
-                    <el-table-column label="操作">
-                      <template slot-scope="scope">
-                        <el-button type="normal" icon="el-icon-edit" size="mini" @click="showRobotNumForm(scope.row)">编辑</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                  <el-row>
-                    <el-col :span="7" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="敲击次数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MinRobotPlayTimes" size="mini" :required="true" />
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-                    <el-col :span="7" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="敲击次数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MaxRobotPlayTimes" size="mini" :required="true" />
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-
-                    <el-col :span="7" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="敲x次后换个hz敲(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MinRobotChangeTimes" size="mini" :required="true" />
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-                    <el-col :span="7" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="敲x次后换个hz敲(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MaxRobotChangeTimes" size="mini" :required="true" />
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-
-                    <el-col :span="7" :offset="3">
-                      <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
-                    </el-col>
-
-                    <el-col :span="20" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="自动敲击概率" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true"> <template slot="append">％</template></el-input>
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-
-                    <el-col :span="7" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="敲击间隔(min)" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MinRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-                    <el-col :span="7" :offset="3">
-                      <el-form inline>
-                        <el-form-item label="敲击间隔(max)" :rules="dataRule(true,{type:'n',range:'0'})">
-                          <el-input v-model.number="item.RobotCfg.MaxRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
-                        </el-form-item>
-                      </el-form>
-                    </el-col>
-
-                  </el-row>
-                </fieldset>
-              </el-row>
-            </el-tab-pane>
           </el-tabs>
+        </el-tab-pane>
+        <el-tab-pane label="机器人配置">
+          <el-row :span="16" :offset="3">
+            <fieldset style="margin-top:10px">
+              <legend>机器人配置</legend>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                  <span style="color:red; font-size: 12px">以下配置,在两个时段机器人数目标替换时,缺补:[50,∞)[2,5]; [30,50)[1,3]; [10,30)[1,2]; (0,10)[0.5,1]  多退:[50,∞)[2,3]; [20,50)[1,2]; (0,20)[0.5,1]</span>
+                </el-descriptions-item>
+              </el-descriptions>
+              <el-button type="normal" icon="el-icon-edit" size="mini" @click="addRobotNumForm()">添加</el-button>
+              <el-table
+                  ref="filterTable"
+                  :data="item.RobotCfg.RobotMemberArr"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+              >
+                <el-table-column type="index" />
+                <el-table-column label="时间段" prop="TimeTitle">
+                  <template slot-scope="scope">
+                    [{{ scope.row.StartHour }},{{ scope.row.EndHour }}]
+                  </template>
+                </el-table-column>
+                <el-table-column label="机器人数下限" prop="MinRobotNum">
+                  <template slot-scope="scope">
+                    {{ scope.row.MinRobotNum }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="机器人数上限" prop="MaxRobotNum">
+                  <template slot-scope="scope">
+                    {{ scope.row.MaxRobotNum }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button type="normal" icon="el-icon-edit" size="mini" @click="showRobotNumForm(scope.row)">编辑</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-row>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲击次数(min)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MinRobotPlayTimes" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲击次数(max)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MaxRobotPlayTimes" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲x次后换个hz敲(min)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MinRobotChangeTimes" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲x次后换个hz敲(max)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MaxRobotChangeTimes" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="20" :offset="3">
+                  <span style="font-size: 12px">机器的金币中奖权重是正常玩家的1、1.5、2倍 各占1/3的概率</span>
+                </el-col>
+                <el-col :span="15" :offset="3">
+                  <div >
+                    <piggy-weight-cfg :piggy-cfg=" item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
+                  </div>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲x次后换个金币中奖权重(min)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MinRobotWiChangeTimes" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲x次后换个金币中奖权重(max)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MaxRobotWiChangeTimes" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
+                </el-col>
+
+                <el-col :span="20" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="自动敲击概率" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.AutoTapRate" size="mini" :required="true"> <template slot="append">％</template></el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲击间隔(min)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MinRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+                <el-col :span="7" :offset="3">
+                  <el-form inline>
+                    <el-form-item label="敲击间隔(max)" :rules="dataRule(true,{type:'n',range:'0'})">
+                      <el-input v-model.number="item.RobotCfg.MaxRobotTapInterval" size="mini" :required="true"> <template slot="append">ms</template></el-input>
+                    </el-form-item>
+                  </el-form>
+                </el-col>
+
+              </el-row>
+            </fieldset>
+          </el-row>
         </el-tab-pane>
       </el-tabs>
     </el-row>
@@ -708,6 +731,9 @@ export default {
           MaxRobotPlayTimes: 0, // 机器人最大玩牌局数
           MinRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲下限
           MaxRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲上限
+          RobotWiMulti: [{ Weight: 1, Val: 20 }],
+          MinRobotWiChangeTimes: 0, // 机器人敲多少次以后换个金币中奖权重敲下限
+          MaxRobotWiChangeTimes: 0, // 机器人敲多少次以后换个金币中奖权重敲上限
           MinRobotTapInterval: 0, // 机器人最小敲击间隔
           MaxRobotTapInterval: 0, // 机器人最大敲击间隔
           AutoTapRate: 0 // 机器人自动敲击的概率 ‰
