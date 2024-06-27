@@ -540,6 +540,11 @@
                 <el-col :span="20" :offset="3">
                   <span style="font-size: 12px">机器的金币中奖权重是正常玩家的1、1.5、2倍 各占1/3的概率</span>
                 </el-col>
+                <el-col :span="15" :offset="3">
+                  <div >
+                    <piggy-weight-cfg :piggy-cfg=" item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
+                  </div>
+                </el-col>
 
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -726,6 +731,7 @@ export default {
           MaxRobotPlayTimes: 0, // 机器人最大玩牌局数
           MinRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲下限
           MaxRobotChangeTimes: 0, // 机器人敲多少次以后换个频率敲上限
+          RobotWiMulti: [{ Weight: 1, Val: 20 }],
           MinRobotWiChangeTimes: 0, // 机器人敲多少次以后换个金币中奖权重敲下限
           MaxRobotWiChangeTimes: 0, // 机器人敲多少次以后换个金币中奖权重敲上限
           MinRobotTapInterval: 0, // 机器人最小敲击间隔
