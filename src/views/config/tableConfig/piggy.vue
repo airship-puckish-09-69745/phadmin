@@ -56,7 +56,7 @@
                       <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最小下注 相对应的注释</span>
                     </template>
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.CanBet" size="mini" />
+                      <el-input v-model="scope.row.CanBet" size="mini" @change="canbetChange"/>
                     </template>
                   </el-table-column>
 
@@ -432,7 +432,7 @@
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.MinBet" placeholder="请选择">
                           <el-option
-                            v-for="(v,idx) in item.BetLevel[0].CanBet"
+                            v-for="(v,idx) in CanBet"
                             :key="v"
                             :label="v"
                             :value="v"
@@ -451,7 +451,7 @@
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.MaxBet" placeholder="请选择">
                           <el-option
-                            v-for="v in item.BetLevel[0].CanBet"
+                            v-for="v in CanBet"
                             :key="v"
                             :label="v"
                             :value="v"
@@ -739,6 +739,7 @@ export default {
           AutoTapRate: 0 // 机器人自动敲击的概率 ‰
         }
       },
+      CanBet:[],
       incrJackpotForm: {
         JpIdx: 0,
         dataIdx: 0,
@@ -818,6 +819,11 @@ export default {
     doAdd() {
       this.item.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
+      canbetChange(){
+          console.log("====",this.item.BetLevel[0].CanBet)
+          this.CanBet=this.item.BetLevel[0].CanBet.split(',')
+          console.log("====",this.CanBet)
+      },
     delRow(index) {
       if (this.item.BetLevel.length <= 1) {
         Message.error('再删就没了')
