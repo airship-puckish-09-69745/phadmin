@@ -363,7 +363,6 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.edit.item.BaseScore *= 1000    //存db的时候放大1000倍
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
@@ -372,6 +371,7 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
+      postData.BaseScore *= 1000 // 放大100倍
       return postData
     },
     checkData() {
