@@ -542,7 +542,7 @@
                 </el-col>
                 <el-col :span="15" :offset="3">
                   <div >
-                    <piggy-weight-cfg :piggy-cfg=" item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg="item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
                   </div>
                 </el-col>
 
@@ -807,7 +807,9 @@ export default {
       for (const o of this.item.Plate.PlateOdds) {
         o.Val /= 1000
       }
-
+      for (const objElement of  this.item.RobotCfg.RobotWiMulti) {
+        objElement.Val  /=10
+      }
       for (const o of this.item.BetLevel) {
         if (o.CanBet instanceof Array) {
           for (let i = 0; i < o.CanBet.length; i++) {
@@ -820,9 +822,7 @@ export default {
       this.item.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
       canbetChange(){
-          console.log("====",this.item.BetLevel[0].CanBet)
           this.CanBet=this.item.BetLevel[0].CanBet.split(',')
-          console.log("====",this.CanBet)
       },
     delRow(index) {
       if (this.item.BetLevel.length <= 1) {
@@ -958,6 +958,10 @@ export default {
       } else {
         obj.AutoTimes = obj.AutoTimes.split(',').map(Number)
       }
+
+      for (const objElement of  obj.RobotCfg.RobotWiMulti) {
+        objElement.Val  *=10
+      }
       return obj
     },
 
@@ -1010,9 +1014,12 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
+            if (!item.RobotCfg.RobotWiMulti){
+              item.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
+            }
             Object.assign(this.item, item)
+            this.CanBet=this.item.BetLevel[0].CanBet
             this.transMoneyForShow()
-
             this.$refs.compare.SetOldVal(response.Data)
           }
         }

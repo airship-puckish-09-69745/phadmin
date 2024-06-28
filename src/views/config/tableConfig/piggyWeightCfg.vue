@@ -2,6 +2,12 @@
   <div class="app-container">
 
     <p>{{ title }}</p>
+    <el-button
+        size="mini"
+        type="primary"
+        @click="doAdd"
+        v-if="piggyCfg.length<=0"
+    >添加</el-button>
     <el-table
       ref="filterTable"
       :data="piggyCfg"
@@ -103,7 +109,7 @@ export default {
     piggyCfg: {
       type: Array,
       default: function() {
-        return {}
+        return []
       }
     }
   },
@@ -155,9 +161,10 @@ export default {
     this.initData()
   },
   methods: {
-    initData() {
+    initData(val) {
     },
     doAdd() {
+      console.log("================", this.piggyCfg)
       this.piggyCfg.push({ Weight: 0, Val: 0 })
     },
     delRow(index) {
