@@ -253,6 +253,10 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          for (const o in objs) {
+            objs[o].BaseScore /= 1000
+            console.log(objs[o])
+          }
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
@@ -343,6 +347,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
+          this.edit.item.BaseScore *= 1000    //存db的时候放大1000倍
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
