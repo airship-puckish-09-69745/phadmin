@@ -2007,6 +2007,67 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog v-if="gameLogComponent.gid==108" title="DropBall详情" :visible.sync="gameLogComponent.visible" width="1000px">
+      <el-descriptions class="margin-top" title="" :column="5" border>
+        <el-descriptions-item>
+          <template slot="label">
+            前注：
+          </template>
+          {{ formatNumber(gameLogComponent.detail.Bet / 1000) }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-table
+          :data="gameLogComponent.detail.Dropball.options"
+          border
+          :row-style="getHitDropBallStyle"
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :cell-style="libShow.DefaultTableCell"
+      >
+        <el-table-column label="区域ID" width="120px">
+          <template slot-scope="scope">
+            <el-image
+                style="width: 37px; height: 50px"
+                :src="getCardUrl( getDropballImg(scope.row.id))"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="命中" width="120px">
+          <template slot-scope="scope">{{ scope.row.Result == 0 ? '否' : '是' }}</template>
+        </el-table-column>
+        <el-table-column label="倍率" width="120px">
+          <template slot-scope="scope">{{ formatNumber(scope.row.Rate / 1000) }}</template>
+        </el-table-column>
+        <el-table-column label="区域累计下注" width="120px">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
+        </el-table-column>
+        <el-table-column  label="下注结果" style="width: 1000px">
+          <template slot-scope="scope">
+            <el-table
+                :data="scope.row.players"
+                border
+                :header-cell-style="{fontSize:'12px'}"
+                :row-style="getUserWonStyle"
+            >
+              <el-table-column prop="uid" label="uid">
+                <template slot-scope="scope">{{ scope.row.uid }}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="moneyBet" >
+                <template slot-scope="scope">{{formatNumber(scope.row.moneyBet /1000)  }}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="moneyWon" >
+                <template slot-scope="scope">{{formatNumber(scope.row.moneyWon /1000)  }}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="moneyTaxed" >
+                <template slot-scope="scope">{{formatNumber(scope.row.moneyTaxed /1000)  }}</template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
+      </el-table>
+
+
+    </el-dialog>
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -2575,7 +2636,7 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
-          } else if (gid === 107) {
+          } else if (gid === 107 || gid === 108) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
             $this.showDominoGame(obj)
@@ -2626,10 +2687,36 @@ export default {
       return parseInt(result)
     },
     showGameLogComponent(obj, gid) {
-      console.log('=======', obj)
       this.gameLogComponent.detail = obj
       this.gameLogComponent.visible = true
       this.gameLogComponent.gid = gid
+      if (gid==108){
+        this.showDropBall(obj)
+      }
+      console.log('obj', obj)
+    },
+    showDropBall(obj) {
+      let m ={}
+      obj.Dropball.options.forEach(item=>{m[item.id]=[]})
+
+      for (const player of obj.Dropball.players) {
+        for (const o of  player.optionsResult) {
+          o['uid']=player.uid
+          m[o.id].push(o)
+        }
+      }
+      obj.Dropball.options.forEach(item=>{item['players']=m[item.id]})
+    },
+    getDropballImg(id) {
+      let imgMap = {
+        0: 57,
+        1: 74,
+        2: 59,
+        3: 76,
+        4: 61,
+        5: 65,
+      }
+      return imgMap[id]
     },
     showTexasGame(obj) {
       this.actions = obj.logs
@@ -2850,6 +2937,18 @@ export default {
         return { color: 'red' }
       }
       return {}
+    },
+    getHitDropBallStyle(  {row,idx} ) {
+      if (row.Result) {
+        return { color: 'red' , width: '120px'}
+      }
+      return {}
+    },
+    getUserWonStyle(  {row,idx} ) {
+      if (row.moneyWon>0) {
+        return { color: 'red' , width: '120px', textAlign: 'center',fontSize: '12px'}
+      }
+      return {fontSize: '12px'}
     },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',

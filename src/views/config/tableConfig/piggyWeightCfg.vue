@@ -29,6 +29,14 @@
             <el-input v-model.number="scope.row.Weight" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};" />
           </template>
         </el-table-column>
+        <el-table-column v-if="selectType" label="类型">
+          <template slot-scope="scope" >
+          <el-select v-model.number="scope.row.Typ" placeholder="请选择" size="mini">
+            <el-option label="次数" :value="4" />
+            <el-option label="倍数" :value="5" />
+          </el-select>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="Val"
           :label="valName"
@@ -111,6 +119,12 @@ export default {
       default: function() {
         return []
       }
+    },
+    selectType: {
+      type: Boolean,
+      default: function() {
+        return false
+      }
     }
   },
   data() {
@@ -155,7 +169,13 @@ export default {
       handler: function(val) {
         this.initData(val)
       }
-    }
+    },
+    'selectType': {
+      deep: true,
+      handler: function(val) {
+        this.initData(val)
+      }
+    },
   },
   created() {
     this.initData()
@@ -164,7 +184,6 @@ export default {
     initData(val) {
     },
     doAdd() {
-      console.log("================", this.piggyCfg)
       this.piggyCfg.push({ Weight: 0, Val: 0 })
     },
     delRow(index) {

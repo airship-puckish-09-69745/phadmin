@@ -162,7 +162,7 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -182,7 +182,7 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -796,11 +796,8 @@ export default {
           omo.Val /= 1000
         }
         for (let i = 0; i < o.Spin.length; i++) {
-          if (i === 0) {
-            continue
-          }
           for (const c of o.Spin[i].Choices) {
-            c.Val /= 1000
+            c.Val = parseInt(c.Val / 10)
           }
         }
       }
@@ -817,6 +814,7 @@ export default {
           }
         }
       }
+
     },
     doAdd() {
       this.item.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
@@ -924,11 +922,10 @@ export default {
           omo.Val = parseInt(omo.Val * 1000)
         }
         for (let i = 0; i < o.Spin.length; i++) {
-          if (i === 0) {
-            continue
-          }
           for (const c of o.Spin[i].Choices) {
-            c.Val = parseInt(c.Val * 1000)
+            let num = c.Typ ? c.Typ : 0
+            console.log("====",c)
+            c.Val = (c.Val * 10 ) + num
           }
         }
       }
@@ -1017,6 +1014,7 @@ export default {
             if (!item.RobotCfg.RobotWiMulti){
               item.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
             }
+
             Object.assign(this.item, item)
             this.CanBet=this.item.BetLevel[0].CanBet
             this.transMoneyForShow()
