@@ -339,7 +339,7 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    createSave(postData) {
+    createSave(postData) {  //创建
       console.log('createSave', postData)
       request({
         url: '/billiardstable/create',
@@ -355,7 +355,7 @@ export default {
         }
       })
     },
-    editSave(postData) {
+    editSave(postData) {  //修改提交更新
       console.log('editSave', postData)
       request({
         url: 'billiardstable/update',
@@ -363,6 +363,7 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
+          this.edit.item.BaseScore *= 1000    //存db的时候放大1000倍
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
