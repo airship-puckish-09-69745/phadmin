@@ -363,7 +363,6 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.edit.item.BaseScore *= 1000    //存db的时候放大1000倍
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
@@ -386,6 +385,7 @@ export default {
       if (!this.checkData()) return
       if (this.edit.isEdit) {
         // 设置修改后数据
+        this.edit.item.BaseScore *= 1000    //存db的时候放大1000倍
         this.$refs.compare.SetNewVal(this.edit.item)
         const $this = this
         this.$refs.compare.Compare(function(isEdit) {
