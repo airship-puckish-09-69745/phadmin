@@ -371,7 +371,7 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
-      postData.BaseScore *= 1000 // 放大100倍
+      postData.BaseScore *= 1000 //放大100倍
       return postData
     },
     checkData() {
