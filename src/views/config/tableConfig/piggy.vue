@@ -1023,6 +1023,7 @@ export default {
             if (!item.RobotCfg.RobotWiMulti){
               item.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
             }
+
             Object.assign(this.item, item)
             this.CanBet=this.item.BetLevel[0].CanBet
             this.transMoneyForShow()
