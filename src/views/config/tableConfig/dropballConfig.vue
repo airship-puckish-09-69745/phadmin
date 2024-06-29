@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    <el-row>
+      <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
+      <span v-if="item.openTest=='2'">
+         <el-alert
+           title="测试模式已开启,记得关闭"
+           type="error">
+  </el-alert>
+      </span>
+    </el-row>
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
         <el-tabs type="border-card">
@@ -376,9 +385,34 @@
       </el-form>
     </el-row>
 
+    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
+      <el-form  >
+        <el-form-item label="是否开启">
+          <el-radio v-model="item.openTest" label="1" :value="false">否</el-radio>
+          <el-radio v-model="item.openTest" label="2" :value="true">是</el-radio>
+        </el-form-item>
+        <el-form-item label="选择牌组">
+          <span v-for="(k,idx) in item.Dices">
+            <el-select v-model="item.Dices[idx]" placeholder="请选择" size="mini" style="width: 140px">
+            <el-option
+              v-for="(k,v) in imgMap"
+              :label="v"
+              :value="parseInt(v)"
+            >
+            </el-option>
+          </el-select>
+          </span>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
+
 </template>
 
 <script>
@@ -411,6 +445,7 @@ export default {
         two: 0,
         three: 0
       },
+      dialogFormVisible: false,
       imgMap:{
         0:57,
         1:74,
@@ -498,6 +533,11 @@ export default {
             item.MinRobotMoney /=  1000
              item.MaxRobotMoney /= 1000
 
+             if (!item.Dices){
+               item["Dices"] = [0,0,0]
+               item["openTest"] = "1"
+             }
+
             Object.assign(this.item, item)
             console.log('item', this.PoolIncrArr)
 
@@ -532,6 +572,10 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
+      if (!ret.openTest || ret.openTest=="1"){
+        delete ret['Dices']
+      }
+
       for (const o of  ret.BetAreaOptions) {
         o.MaxMoneyBet *= 1000
       }
@@ -545,6 +589,19 @@ export default {
       ret.JackpotCfg = this.JackpotCfg
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
+
+      if (ret.openTest=="2") {
+        this.$alert('测试模式已开启，请测试后关闭', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: ``
+            });
+          }
+        });
+      }
+
       return ret
     },
 
@@ -588,7 +645,6 @@ export default {
     },
     setData() {
       this.form.Data = JSON.stringify(this.getPostData())
-
       console.log(this.form)
       const $this = this
       // 设置修改后数据
