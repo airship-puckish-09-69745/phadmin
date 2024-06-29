@@ -86,24 +86,20 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                  <el-table-column label="index" width="60px">
+                  <el-table-column label="ID" width="50px">
                     <template slot-scope="scope">
-                      {{ scope.$index }}
+                      {{scope.row.Id}}
                     </template>
                   </el-table-column>
                   <el-table-column label="Card" width="70px">
                     <template slot-scope="scope">
                       <el-image
                         style="width: 37px;height: 50px"
-                        :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"
+                        :src="getCardUrl(imgMap[scope.row.Id])"
                       />
                     </template>
                   </el-table-column>
-                  <el-table-column label="ID" width="120px">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.Id" size="mini" />
-                    </template>
-                  </el-table-column>
+
                   <el-table-column label="中奖倍率">
                     <el-table-column :label="'一球'">
                       <template slot-scope="scope">
@@ -414,6 +410,14 @@ export default {
         one: 0,
         two: 0,
         three: 0
+      },
+      imgMap:{
+        0:57,
+        1:74,
+        2:59,
+        3:76,
+        4:61,
+        5:65,
       }
     }
   },
@@ -444,24 +448,31 @@ export default {
       this.delBetAreaOptions(index)
     },
     transMoneyForShow() {
-      for (const o of this.item.LuckyPachinkoCfg) {
+      let that = this
+      that.item.MinRobotMoney /=  1000
+      that.item.MaxRobotMoney /= 1000
+
+      for (const o of that.item.LuckyPachinkoCfg) {
         o.Multiple /= 1000
       }
-
-      for (const j in this.item.BetOptionsRate) {
-        for (const o in this.item.BetOptionsRate[j].Val) {
-          this.item.BetOptionsRate[j].Val[o] /= 1000
+      for (const o of  that.item.BetAreaOptions) {
+        o.MaxMoneyBet /= 1000
+      }
+      for (const j in that.item.BetOptionsRate) {
+        for (const o in that.item.BetOptionsRate[j].Val) {
+          that.item.BetOptionsRate[j].Val[o] /= 1000
         }
       }
 
-      for (const j in this.item.BetMoneyLevel) {
-        this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
-        this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
+      for (const j in that.item.BetMoneyLevel) {
+        that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
+        that.item.BetMoneyLevel[j].MinMoneyBet /= 1000
         const betMoneyList = []
-        for (const o of this.item.BetMoneyLevel[j].TableMoney) {
+        for (const o of that.item.BetMoneyLevel[j].TableMoney) {
           betMoneyList.push(o / 1000)
         }
-        this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
+        that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
+
       }
     },
     getData() {
@@ -484,6 +495,9 @@ export default {
             }
             this.JackpotCfg = item.JackpotCfg
             this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
+            item.MinRobotMoney /=  1000
+             item.MaxRobotMoney /= 1000
+
             Object.assign(this.item, item)
             console.log('item', this.PoolIncrArr)
 
@@ -518,7 +532,9 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
-
+      for (const o of  ret.BetAreaOptions) {
+        o.MaxMoneyBet *= 1000
+      }
       for (const i in ret.BetOptionsRate) {
         ret.BetOptionsRate[i].Id = parseInt(ret.BetOptionsRate[i].Id)
         for (const j in ret.BetOptionsRate[i].Val) {
@@ -527,6 +543,8 @@ export default {
         ret.BetAreaOptions[i].Id = ret.BetOptionsRate[i].Id
       }
       ret.JackpotCfg = this.JackpotCfg
+      ret.MinRobotMoney *= 1000
+      ret.MaxRobotMoney *= 1000
       return ret
     },
 
