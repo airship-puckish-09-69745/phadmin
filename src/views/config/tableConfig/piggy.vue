@@ -158,9 +158,6 @@
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
-                          <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
-                        </el-row>
-                        <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
                             <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
                           </div>
@@ -177,9 +174,6 @@
                   <el-tab-pane label="购买FreeGame">
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
-                        <el-row>
-                          <span style="font-size: 11px">  注: 3个滚轴 1个次数 1个倍数 第3个50%的概率为次数、50%的概率为倍数 (最后打乱3个滚轴的顺序)</span>
-                        </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
                             <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(row.Tpy)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
