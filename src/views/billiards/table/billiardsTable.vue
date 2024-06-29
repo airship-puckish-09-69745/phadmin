@@ -327,6 +327,8 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
+          _data.BaseScore /= 1000
+          this.edit.item.BaseScore /= 1000
           // console.log('initFormData 1 _data:', _data)
           Object.assign(this.edit.item, _data)
           if (bEdit) {
