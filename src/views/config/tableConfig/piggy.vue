@@ -798,7 +798,7 @@ export default {
         for (let i = 0; i < o.Spin.length; i++) {
           for (const c of o.Spin[i].Choices) {
             if (c.Typ ==5){
-              c.Val = parseInt(c.Val / 1000)
+              c.Val = parseInt(c.Val / 10000)
             }else {
               c.Val = parseInt(c.Val / 10)
             }
@@ -929,7 +929,7 @@ export default {
           for (const c of o.Spin[i].Choices) {
             let num = c.Typ ? c.Typ : 0
             if (num==5){
-              c.Val = (c.Val * 1000 ) + num
+              c.Val = (c.Val * 10000 ) + num
 
             }else {
               c.Val = (c.Val * 10 ) + num
