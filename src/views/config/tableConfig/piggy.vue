@@ -797,7 +797,11 @@ export default {
         }
         for (let i = 0; i < o.Spin.length; i++) {
           for (const c of o.Spin[i].Choices) {
-            c.Val = parseInt(c.Val / 10)
+            if (c.Typ ==5){
+              c.Val = parseInt(c.Val / 1000)
+            }else {
+              c.Val = parseInt(c.Val / 10)
+            }
           }
         }
       }
@@ -924,8 +928,13 @@ export default {
         for (let i = 0; i < o.Spin.length; i++) {
           for (const c of o.Spin[i].Choices) {
             let num = c.Typ ? c.Typ : 0
-            console.log("====",c)
-            c.Val = (c.Val * 10 ) + num
+            if (num==5){
+              c.Val = (c.Val * 1000 ) + num
+
+            }else {
+              c.Val = (c.Val * 10 ) + num
+
+            }
           }
         }
       }
@@ -1014,7 +1023,6 @@ export default {
             if (!item.RobotCfg.RobotWiMulti){
               item.RobotCfg["RobotWiMulti"]=[{ Weight: 0, Val: 0 }]
             }
-
             Object.assign(this.item, item)
             this.CanBet=this.item.BetLevel[0].CanBet
             this.transMoneyForShow()
