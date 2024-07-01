@@ -175,7 +175,7 @@
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
-                          <span style="font-size: 11px">  注: </span>
+                          <span style="color: red; font-size: 11px">  注: 如果三个轴次数之和或者倍数之和=0 就不会进入free game模式</span>
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
@@ -535,7 +535,7 @@
                   </el-form>
                 </el-col>
                 <el-col :span="20" :offset="3">
-                  <span style="font-size: 12px">机器的金币中奖权重是正常玩家的1、1.5、2倍 各占1/3的概率</span>
+                  <span style="font-size: 12px">机器的金币中奖权重是正常玩家的x倍 配置如下</span>
                 </el-col>
                 <el-col :span="15" :offset="3">
                   <div >
