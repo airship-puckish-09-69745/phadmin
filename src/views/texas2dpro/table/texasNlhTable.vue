@@ -307,7 +307,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
-              <el-input v-model.number="edit.item.InteractItemPrice" placeholder="请输入" />
+              <el-input v-model="edit.item.InteractItemPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
