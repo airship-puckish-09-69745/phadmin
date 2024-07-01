@@ -418,52 +418,72 @@ export default {
       const $this = this
       const rets = []
 
+      const keys = this.parseKeys()
+
       for (const i in this.edit.sheetNames) {
         const name = this.edit.sheetNames[i]
         const sheet = Sheets[name]
         console.log(name, sheet)
 
-        const rows = []
-        for (const j in sheet) {
-          if (j.startsWith('!')) {
-            continue
-          }
-          // console.log(j, sheet[j]['v'])
-          rows[j] = sheet[j]['v']
-        }
-        // console.log(rows)
-
-        // 将对象按 key 值排序
-        const rows1 = Object.keys(rows).sort().reduce((obj, key) => {
-          obj[key] = rows[key]
-          return obj
-        }, {})
-
         const result = []
-        let currentRow = []
-        let currentRowLetter = null
-        for (const k in rows1) {
-          const rowLetter = k.charAt(0)
-          if (rowLetter !== currentRowLetter) {
-            if (currentRow.length > 0) {
-              result.push(currentRow)
+        for (let j = 0; j < 300; j ++) {
+          const rows = []
+          for (let k = 0; k < keys.length; k ++) {
+            const sheetKey = keys[k]+j
+            if (sheetKey in sheet) {
+              rows.push(sheet[sheetKey]['v'])      
+            } else {
+              break
             }
-            currentRow = []
-            currentRowLetter = rowLetter
           }
 
-          currentRow.push(rows1[k])
-        }
-        if (currentRow.length > 0) {
-          result.push(currentRow)
+          if (rows.length > 0) {
+            result.push(rows)
+          }
         }
 
-        rets.push(result)
+        // console.log('result', result)
+        // console.log(this.transformData(result))
+
+        rets.push(this.transformData(result))
       }
 
       // console.log(rets)
       $this.edit.showActs = rets
       $this.edit.isNewImport = true
+    },
+    parseKeys() {
+      const arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+      let res = []
+      for (let i = 0; i < arr.length; i ++) {
+        res.push(arr[i])
+      }
+      for (let i = 0; i < arr.length; i ++) {
+        for (let j = 0; j < arr.length; j ++) {
+          res.push(arr[i]+arr[j])
+        }
+      }
+      console.log(res)
+      return res;
+    },
+    transformData(data) {
+      const result = {};
+      for (let i = 0; i < data[0].length; i++) {
+        const key = data[0][i];
+        result[key] = [key];
+
+        for (let j = 1; j < data.length; j++) {
+        result[key].push(data[j][i])
+        }
+      }
+
+      // console.log('111111', result)
+      const res = [];
+      for (const i in result) {
+        res.push(result[i])
+      }
+      console.log(res)
+      return res;
     }
   }
 }
