@@ -5,7 +5,7 @@
         <el-form ref="scriptFrm" label-width="120px">
 
           <el-form-item label="指定剧本V2">
-          <el-select v-model="slotsData.ActConfig.ActId" placeholder="剧本ID">
+          <el-select v-model="slotsData.ActConfig.ActId" placeholder="剧本ID" style="width: 30%;">
             <el-option
               v-for="item in actionsSelectOpt"
               :key="item.value"
@@ -13,6 +13,34 @@
               :value="item.value"
             />
           </el-select>
+          </el-form-item>
+
+          <el-form-item label="指定正数剧本">
+            <el-row>
+              <el-col :span="2">
+                  <el-input v-model.number="slotsData.ActConfig.ActWinOddsMin" placeholder="最小倍数"/>
+              </el-col>
+              <el-col :span="1">
+                至
+              </el-col>
+              <el-col :span="2">
+                  <el-input v-model.number="slotsData.ActConfig.ActWinOddsMax" placeholder="最大倍数"/>
+              </el-col>
+            </el-row>
+          </el-form-item>
+
+          <el-form-item label="指定负数剧本">
+            <el-row>
+              <el-col :span="2">
+                  <el-input v-model.number="slotsData.ActConfig.ActLossOddsMin" placeholder="最小倍数"/>
+              </el-col>
+              <el-col :span="1">
+                至
+              </el-col>
+              <el-col :span="2">
+                  <el-input v-model.number="slotsData.ActConfig.ActLossOddsMax" placeholder="最大倍数"/>
+              </el-col>
+            </el-row>
           </el-form-item>
 
           <ratio-input v-model="slotsData.ActConfig.ServiceFee" label="抽水(%)" tips="服务费" />
