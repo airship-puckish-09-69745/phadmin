@@ -534,11 +534,12 @@
                     </el-form-item>
                   </el-form>
                 </el-col>
-                <el-col :span="20" :offset="3">
-                  <span style="font-size: 12px">机器的金币中奖权重是正常玩家的x倍 配置如下</span>
-                </el-col>
+
                 <el-col :span="15" :offset="3">
                   <div >
+                    <el-col :span="20" :offset="0">
+                      <span style="font-size: 12px">机器的金币中奖权重是正常玩家的x倍 配置如下</span>
+                    </el-col>
                     <piggy-weight-cfg :piggy-cfg="item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
                   </div>
                 </el-col>
