@@ -99,12 +99,12 @@
         </el-row>
 
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-alert type="error" description="至少3个剧本，最后两个分别为正数剧本/负数剧本" />
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="12">
+          <el-col :span="24">
             <el-tabs type="border-card">
               <el-tab-pane v-for="(o,idx) in edit.showActs" :key="'tabAct' + idx" :label="edit.sheetNames[idx]">
                 <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
@@ -114,7 +114,10 @@
                         步数 / 剧本
                       </template>
                       <template v-else>
+                        <!--
                         <span @click="showChart(idx, k1)">{{ k1 }}</span>
+                        -->
+                        <span>{{ k1 }}</span>
                       </template>
                     </th>
                   </thead>
@@ -127,11 +130,13 @@
               </el-tab-pane>
             </el-tabs>
           </el-col>
+          <!--
           <el-col :span="12">
             <el-row>
               <line-chart :chart-data="chartData" height="600px" />
             </el-row>
           </el-col>
+          -->
         </el-row>
 
       </el-form>
