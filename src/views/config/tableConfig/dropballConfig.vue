@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    <el-row>
+      <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
+      <span v-if="item.openTest=='2'">
+         <el-alert
+           title="测试模式已开启,记得关闭"
+           type="error">
+  </el-alert>
+      </span>
+    </el-row>
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
         <el-tabs type="border-card">
@@ -86,24 +95,20 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                  <el-table-column label="index" width="60px">
+                  <el-table-column label="ID" width="50px">
                     <template slot-scope="scope">
-                      {{ scope.$index }}
+                      {{scope.row.Id}}
                     </template>
                   </el-table-column>
                   <el-table-column label="Card" width="70px">
                     <template slot-scope="scope">
                       <el-image
                         style="width: 37px;height: 50px"
-                        :src="getCardUrl(cardConversionColor(scope.row.Id,'2-2','4-4','3-3','1-1'))"
+                        :src="getCardUrl(imgMap[scope.row.Id])"
                       />
                     </template>
                   </el-table-column>
-                  <el-table-column label="ID" width="120px">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.Id" size="mini" />
-                    </template>
-                  </el-table-column>
+
                   <el-table-column label="中奖倍率">
                     <el-table-column :label="'一球'">
                       <template slot-scope="scope">
@@ -380,9 +385,34 @@
       </el-form>
     </el-row>
 
+    <el-dialog title="测试配置" :visible.sync="dialogFormVisible"   width="550px">
+      <el-form  >
+        <el-form-item label="是否开启">
+          <el-radio v-model="item.openTest" label="1" :value="false">否</el-radio>
+          <el-radio v-model="item.openTest" label="2" :value="true">是</el-radio>
+        </el-form-item>
+        <el-form-item label="选择牌组">
+          <span v-for="(k,idx) in item.Dices">
+            <el-select v-model="item.Dices[idx]" placeholder="请选择" size="mini" style="width: 140px">
+            <el-option
+              v-for="(k,v) in imgMap"
+              :label="v"
+              :value="parseInt(v)"
+            >
+            </el-option>
+          </el-select>
+          </span>
+        </el-form-item>
+      </el-form>
+
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
+
 </template>
 
 <script>
@@ -414,6 +444,15 @@ export default {
         one: 0,
         two: 0,
         three: 0
+      },
+      dialogFormVisible: false,
+      imgMap:{
+        0:57,
+        1:74,
+        2:59,
+        3:76,
+        4:61,
+        5:65,
       }
     }
   },
@@ -444,24 +483,31 @@ export default {
       this.delBetAreaOptions(index)
     },
     transMoneyForShow() {
-      for (const o of this.item.LuckyPachinkoCfg) {
+      let that = this
+      that.item.MinRobotMoney /=  1000
+      that.item.MaxRobotMoney /= 1000
+
+      for (const o of that.item.LuckyPachinkoCfg) {
         o.Multiple /= 1000
       }
-
-      for (const j in this.item.BetOptionsRate) {
-        for (const o in this.item.BetOptionsRate[j].Val) {
-          this.item.BetOptionsRate[j].Val[o] /= 1000
+      for (const o of  that.item.BetAreaOptions) {
+        o.MaxMoneyBet /= 1000
+      }
+      for (const j in that.item.BetOptionsRate) {
+        for (const o in that.item.BetOptionsRate[j].Val) {
+          that.item.BetOptionsRate[j].Val[o] /= 1000
         }
       }
 
-      for (const j in this.item.BetMoneyLevel) {
-        this.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
-        this.item.BetMoneyLevel[j].MinMoneyBet /= 1000
+      for (const j in that.item.BetMoneyLevel) {
+        that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
+        that.item.BetMoneyLevel[j].MinMoneyBet /= 1000
         const betMoneyList = []
-        for (const o of this.item.BetMoneyLevel[j].TableMoney) {
+        for (const o of that.item.BetMoneyLevel[j].TableMoney) {
           betMoneyList.push(o / 1000)
         }
-        this.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
+        that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
+
       }
     },
     getData() {
@@ -484,6 +530,14 @@ export default {
             }
             this.JackpotCfg = item.JackpotCfg
             this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
+            item.MinRobotMoney /=  1000
+             item.MaxRobotMoney /= 1000
+
+             if (!item.Dices){
+               item["Dices"] = [0,0,0]
+               item["openTest"] = "1"
+             }
+
             Object.assign(this.item, item)
             console.log('item', this.PoolIncrArr)
 
@@ -518,7 +572,13 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
+      if (!ret.openTest || ret.openTest=="1"){
+        delete ret['Dices']
+      }
 
+      for (const o of  ret.BetAreaOptions) {
+        o.MaxMoneyBet *= 1000
+      }
       for (const i in ret.BetOptionsRate) {
         ret.BetOptionsRate[i].Id = parseInt(ret.BetOptionsRate[i].Id)
         for (const j in ret.BetOptionsRate[i].Val) {
@@ -527,6 +587,21 @@ export default {
         ret.BetAreaOptions[i].Id = ret.BetOptionsRate[i].Id
       }
       ret.JackpotCfg = this.JackpotCfg
+      ret.MinRobotMoney *= 1000
+      ret.MaxRobotMoney *= 1000
+
+      if (ret.openTest=="2") {
+        this.$alert('测试模式已开启，请测试后关闭', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            this.$message({
+              type: 'info',
+              message: ``
+            });
+          }
+        });
+      }
+
       return ret
     },
 
@@ -570,7 +645,6 @@ export default {
     },
     setData() {
       this.form.Data = JSON.stringify(this.getPostData())
-
       console.log(this.form)
       const $this = this
       // 设置修改后数据

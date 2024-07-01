@@ -173,7 +173,7 @@ export default {
           ItemId: this.courseInfo.ItemId,
           VirtualCoin: parseInt(this.addVirtualCoin) * 1000,
           Point: 0,
-          Path: '/millonpointrace/update/user'
+          Path: '/pointrace/update/user'
         }
       }).then(response => {
         if (response.RetCode === 0) {

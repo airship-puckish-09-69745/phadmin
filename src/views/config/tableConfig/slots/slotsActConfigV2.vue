@@ -79,32 +79,34 @@
       </el-row>
 
       <el-form ref="edit" :model="edit" label-width="100px" :inline="true" size="small">
-        <el-form-item label="剧本名称：">
-          <el-input v-model="edit.item.Name" size="mini" />
-        </el-form-item>
-        <el-form-item>
-          <el-col :span="4" :offset="6">
 
-            <el-upload
-              class="upload-demo"
-              :action="actionURL"
-              :on-preview="handlePreview"
-              :on-remove="handleRemove"
-              :on-success="handleSuccess"
-              :with-credentials="true"
-              :before-remove="beforeRemove"
-              :limit="1"
-              :on-exceed="handleExceed"
-              :file-list="edit.fileList"
-            >
-              <el-button size="small" type="primary">导入数据</el-button>
-            </el-upload>
-          </el-col>
-        </el-form-item>
         <el-row>
-          <el-col :span="12">
+          <el-col :offset="9">
+            <el-button type="primary" size="mini" @click="save()">保存</el-button>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-form-item label="剧本名称：">
+            <el-input v-model="edit.item.Name" size="mini" />
+          </el-form-item>
+        </el-row>
+
+        <el-row>
+          <el-form-item>
+            <upload-excel-component :on-success="importSuccess" :before-upload="checkImport" />
+          </el-form-item>
+        </el-row>
+
+        <el-row>
+          <el-col :span="24">
+            <el-alert type="error" description="至少3个剧本，最后两个分别为正数剧本/负数剧本" />
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-tabs type="border-card">
-              <el-tab-pane v-for="(o,idx) in edit.showActs" :key="'tabAct' + idx" :label="'' + (idx)*10">
+              <el-tab-pane v-for="(o,idx) in edit.showActs" :key="'tabAct' + idx" :label="edit.sheetNames[idx]">
                 <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
                   <thead>
                     <th v-for="(_,k1) in o[0]">
@@ -112,7 +114,10 @@
                         步数 / 剧本
                       </template>
                       <template v-else>
+                        <!--
                         <span @click="showChart(idx, k1)">{{ k1 }}</span>
+                        -->
+                        <span>{{ k1 }}</span>
                       </template>
                     </th>
                   </thead>
@@ -125,18 +130,15 @@
               </el-tab-pane>
             </el-tabs>
           </el-col>
+          <!--
           <el-col :span="12">
             <el-row>
               <line-chart :chart-data="chartData" height="600px" />
             </el-row>
           </el-col>
+          -->
         </el-row>
 
-        <el-row>
-          <el-col :offset="16">
-            <el-button type="primary" size="mini" @click="save()">保存</el-button>
-          </el-col>
-        </el-row>
       </el-form>
     </el-dialog>
     <!--对比组件-->
@@ -177,6 +179,7 @@ import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import TestMonthCard from '@/views/devTools/testMonthCard'
 import LineChart from '@/views/playerManage/components/LineChart'
+import UploadExcelComponent from '@/components/UploadExcel/slotsAct.vue'
 
 const filterMap = {}
 
@@ -191,14 +194,14 @@ function newChartData() {
 }
 
 export default {
-  components: { TestMonthCard, Compare, Publish, LineChart },
+  components: { TestMonthCard, Compare, Publish, LineChart, UploadExcelComponent },
   data() {
     return {
       tableData: [],
       libShow: $libShow,
       env: 'test',
       game: 15,
-      configKey: 'SlotsActConfigConfig',
+      configKey: 'SlotsActConfigConfigV2',
 
       chartData: newChartData(),
 
@@ -211,18 +214,14 @@ export default {
         item: {
           Name: '',
           ID: 0,
-          Gid: 0,
-          Acts: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+          Acts: [],
+          SheetNames: []
         },
         Configs: {
-          BetListStr: '100, 200, 400, 1000, 2000, 10000, 20000, 40000, 100000',
-          BetList: [100, 200, 400, 1000, 2000, 10000, 20000, 40000, 100000],
-          LineCount: 25,
-          RoomData: {
-          }
         },
         isNewImport: false,
-        showActs: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        showActs: [],
+        sheetNames: []
       }
 
     }
@@ -238,28 +237,12 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    for (let i = 0; i < this.edit.Configs.BetList.length; i++) {
-      this.$set(this.edit.Configs.RoomData, this.edit.Configs.BetList[i], [
-        [1000, 5],
-        [5000, 10],
-        [10000, 20],
-        [20000, 30],
-        [30000, 40],
-        [-1000, -5],
-        [-51000, -10],
-        [-10000, -20],
-        [-20000, -30],
-        [-30000, -40]
-      ])
-    }
-    console.log(1)
   },
   methods: {
     showChart(k1, k2) {
       this.initChartData(this.edit.item.Actions[k1].rows[k2].cols)
     },
     initChartData(objs) {
-      console.log(1)
       const chartData = newChartData()
       var total = 0
       for (let i = 0; i < objs.length; i++) {
@@ -270,16 +253,6 @@ export default {
         chartData.yData[1].Data.push(total)
       }
       this.chartData = chartData
-    },
-    betListChanged() {
-      const items = this.edit.Configs.BetListStr.split(',')
-      this.edit.Configs.BetList = []
-      for (let i = 0; i < items.length; i++) {
-        this.edit.Configs.BetList.push(parseInt(items[i]))
-      }
-    },
-    formatNumber(n) {
-      return n.toLocaleString()
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
@@ -304,7 +277,6 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
@@ -314,34 +286,27 @@ export default {
       this.initFormData(true, ob.ID)
       this.edit.visible = true
     },
-
     handleCreate() {
       this.edit.item = {
-        Gid: '',
         Name: '',
-        Acts: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        Acts: [],
+        SheetNames: []
       }
-      this.edit.showActs = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+      this.edit.showActs = []
       this.edit.isNewImport = false
       this.edit.isEdit = false
       this.edit.visible = true
     },
-    handleCopy(ob) {
-      this.initFormData(false, ob.ID)
-      this.edit.visible = true
-    },
     getList() {
       request({
-        url: '/slotsActConfig/all',
+        url: '/slotsActConfigV2/all',
         method: 'get',
-        data: {
-          Gid: this.Gid
-        }
+        data: {}
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.length > 0) {
-            this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
+            this.clientDB = new ClientTableData(objs, 50, filterMap, 'ID', -1)
             this.handleCurrentChange(1)
           }
         }
@@ -360,7 +325,7 @@ export default {
       this.edit.isEdit = bEdit
       if (ID) {
         request({
-          url: '/slotsActConfig/one',
+          url: '/slotsActConfigV2/one',
           method: 'get',
           data: {
             ID: ID
@@ -368,9 +333,10 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             this.edit.item = response.Data
-            if (this.edit.item.Configs != '') {
-              this.edit.Configs = JSON.parse(this.edit.item.Configs)
+            if (this.edit.item.SheetNames != '') {
+              this.edit.sheetNames = JSON.parse(this.edit.item.SheetNames)
             }
+
             const items = response.Data.Actions
             const rets = []
             for (let i = 0; i < items.length; i++) {
@@ -395,7 +361,7 @@ export default {
     },
     createSave(postData) {
       request({
-        url: '/slotsActConfig/create',
+        url: '/slotsActConfigV2/create',
         method: 'post',
         data: postData
       }).then(response => {
@@ -408,7 +374,7 @@ export default {
     },
     editSave(postData) {
       request({
-        url: 'slotsActConfig/update',
+        url: 'slotsActConfigV2/update',
         method: 'post',
         data: postData
       }).then(response => {
@@ -422,10 +388,9 @@ export default {
     getPostData() {
       return {
         ID: this.edit.item.ID,
-        Gid: this.edit.item.Gid,
         Name: this.edit.item.Name,
-        Cfg: JSON.stringify(this.edit.Configs),
-        Acts: this.edit.isNewImport ? JSON.stringify(this.edit.item.Acts) : ''
+        Acts: this.edit.isNewImport ? JSON.stringify(this.edit.showActs) : '',
+        SheetNames: JSON.stringify(this.edit.sheetNames)
       }
     },
     save() {
@@ -438,74 +403,93 @@ export default {
       this.edit.isNewImport = false
       this.edit.visible = false
     },
-    // excel处理逻辑
-    importData() {
-      if (this.fileName === '') {
-        Message.info('您需要先上传excel文件')
-        return
+    checkImport(file) {
+      const isLt1M = file.size / 1024 / 1024 < 1
+      if (isLt1M) {
+        return true
       }
-      const $this = this
-      request({
-        url: '/slotsActConfig/import/excel',
-        method: 'post',
-        data: {
-          Gid: this.edit.item.Gid,
-          FileName: this.edit.fileName
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const items = response.Data
-          $this.edit.item.Acts = items
-          const rets = []
-          for (let i = 0; i < items.length; i++) {
-            const rows = items[i]
-            const newRow = []
-            for (let j = 0; j < rows[0].length; j++) {
-              const newCols = [j + 1]
-              for (let r = 0; r < rows.length; r++) {
-                newCols.push(rows[r][j])
-              }
-              newRow.push(newCols)
-            }
-            rets.push(newRow)
-          }
-          $this.edit.showActs = rets
-          $this.edit.isNewImport = true
-          Message.success('导入数据成功！')
-        }
+      this.$message({
+        message: 'Please do not upload files larger than 1m in size.',
+        type: 'warning'
       })
+      return false
     },
-    handleSuccess(rsp, file, fileList) {
-      this.edit.fileName = rsp.Data
-      this.importData()
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
-    },
+    importSuccess(results) {
+      console.log('import result', results)
 
-    checkInt(value, min, max) {
-      if (!$libType.IsInt(value) || value < min || value > max) {
-        Message.error('请填写[' + min + ',' + max + ')之间的整数')
-        return false
-      }
-    },
+      this.edit.sheetNames = results['SheetNames']
+      const Sheets = results['Sheets']
 
-    checkFloat(value, min, max) {
-      if (!$libType.IsFloat(value) || value < min || value > max) {
-        Message.error('请填写[' + min + ',' + max + ')之间的数字')
-        return false
+      const $this = this
+      const rets = []
+
+      const keys = this.parseKeys()
+
+      for (const i in this.edit.sheetNames) {
+        const name = this.edit.sheetNames[i]
+        const sheet = Sheets[name]
+        console.log(name, sheet)
+
+        const result = []
+        for (let j = 0; j < 300; j ++) {
+          const rows = []
+          for (let k = 0; k < keys.length; k ++) {
+            const sheetKey = keys[k]+j
+            if (sheetKey in sheet) {
+              rows.push(sheet[sheetKey]['v'])      
+            } else {
+              break
+            }
+          }
+
+          if (rows.length > 0) {
+            result.push(rows)
+          }
+        }
+
+        // console.log('result', result)
+        // console.log(this.transformData(result))
+
+        rets.push(this.transformData(result))
       }
+
+      // console.log(rets)
+      $this.edit.showActs = rets
+      $this.edit.isNewImport = true
+    },
+    parseKeys() {
+      const arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+      let res = []
+      for (let i = 0; i < arr.length; i ++) {
+        res.push(arr[i])
+      }
+      for (let i = 0; i < arr.length; i ++) {
+        for (let j = 0; j < arr.length; j ++) {
+          res.push(arr[i]+arr[j])
+        }
+      }
+      console.log(res)
+      return res;
+    },
+    transformData(data) {
+      const result = {};
+      for (let i = 0; i < data[0].length; i++) {
+        const key = data[0][i];
+        result[key] = [key];
+
+        for (let j = 1; j < data.length; j++) {
+        result[key].push(data[j][i])
+        }
+      }
+
+      // console.log('111111', result)
+      const res = [];
+      for (const i in result) {
+        res.push(result[i])
+      }
+      console.log(res)
+      return res;
     }
-
   }
 }
 </script>

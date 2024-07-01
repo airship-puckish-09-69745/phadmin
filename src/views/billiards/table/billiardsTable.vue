@@ -109,10 +109,11 @@
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-select v-model="edit.item.Level" placeholder="请选择">
-                <el-option label="微级" :value="1" />
-                <el-option label="初级" :value="2" />
-                <el-option label="中级" :value="3" />
-                <el-option label="高级" :value="4" />
+                <el-option label="新手场" :value="1" />
+                <el-option label="中级场" :value="2" />
+                <el-option label="高级场" :value="3" />
+                <el-option label="大师场" :value="4" />
+                <el-option label="职业场" :value="5" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -253,6 +254,10 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          for (const o in objs) {
+            objs[o].BaseScore /= 1000
+            console.log(objs[o])
+          }
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
@@ -334,7 +339,7 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    createSave(postData) {
+    createSave(postData) {  //创建
       console.log('createSave', postData)
       request({
         url: '/billiardstable/create',
@@ -343,13 +348,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
+          this.edit.item.BaseScore *= 1000    //存db的时候放大1000倍
           this.clientDB.AddData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
         }
       })
     },
-    editSave(postData) {
+    editSave(postData) {  //修改提交更新
       console.log('editSave', postData)
       request({
         url: 'billiardstable/update',
@@ -365,6 +371,7 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
+      postData.BaseScore *= 1000 //放大100倍
       return postData
     },
     checkData() {
