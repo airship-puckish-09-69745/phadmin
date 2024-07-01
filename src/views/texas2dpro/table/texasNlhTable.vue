@@ -487,7 +487,7 @@ function newItem() {
   return {
     CarryLower: 0,
     CarryUpper: 0,
-    SmallBlind: 0.1,
+    SmallBlind: 1,
     BigBlind: 0,
     ObjectCount: 0,
     TableMaxPlayerNum: 0,
