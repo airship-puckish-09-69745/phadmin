@@ -2008,8 +2008,19 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog v-if="gameLogComponent.gid==108" title="DropBall详情" :visible.sync="gameLogComponent.visible" width="1000px">
+    <el-dialog v-if="gameLogComponent.gid==108" title="DropBall详情" :visible.sync="gameLogComponent.visible" width="1300px">
       <el-descriptions class="margin-top" title="" :column="5" border>
+        <el-descriptions-item>
+          <template slot="label">
+            牌组：
+          </template>
+          <span v-for="(k,idx) in gameLogComponent.detail.Dropball.cards">
+                      <el-image
+                        style="width: 37px; height: 50px"
+                        :src="getCardUrl( getDropballImg(k))"
+                      />
+          </span>
+        </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
             前注：
@@ -2024,7 +2035,7 @@
           :header-cell-style="libShow.DefaultTableHeadClass"
           :cell-style="libShow.DefaultTableCell"
       >
-        <el-table-column label="区域ID" width="120px">
+        <el-table-column label="区域ID" width="80px">
           <template slot-scope="scope">
             <el-image
                 style="width: 37px; height: 50px"
@@ -2032,13 +2043,13 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="命中" width="120px">
+        <el-table-column label="命中" width="80px">
           <template slot-scope="scope">{{ scope.row.Result == 0 ? '否' : '是' }}</template>
         </el-table-column>
-        <el-table-column label="倍率" width="120px">
+        <el-table-column label="倍率" width="80px">
           <template slot-scope="scope">{{ formatNumber(scope.row.Rate / 1000) }}</template>
         </el-table-column>
-        <el-table-column label="区域累计下注" width="120px">
+        <el-table-column label="区域累计下注" width="80px">
           <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
         </el-table-column>
         <el-table-column  label="下注结果" style="width: 1000px">
@@ -2046,8 +2057,11 @@
             <el-table
                 :data="scope.row.players"
                 border
-                :header-cell-style="{fontSize:'12px'}"
+                size="mini"
+                :header-cell-style="{fontSize:'12px',height:'10px'}"
                 :row-style="getUserWonStyle"
+                :cell-style="{height:'10px'}"
+                style="min-height:50px"
             >
               <el-table-column prop="uid" label="uid">
                 <template slot-scope="scope">{{ scope.row.uid }}</template>
@@ -2060,6 +2074,21 @@
               </el-table-column>
               <el-table-column prop="uid" label="moneyTaxed" >
                 <template slot-scope="scope">{{formatNumber(scope.row.moneyTaxed /1000)  }}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="Id" width="50px" >
+                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Id:''}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="IsJackpot" >
+                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.IsJackpot:''}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="Odds" >
+                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Odds:''}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="JackpotAward" >
+                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotAward:''}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="JackpotType" >
+                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotType:''}}</template>
               </el-table-column>
             </el-table>
           </template>
@@ -2698,14 +2727,15 @@ export default {
     showDropBall(obj) {
       let m ={}
       obj.Dropball.options.forEach(item=>{m[item.id]=[]})
-
       for (const player of obj.Dropball.players) {
         for (const o of  player.optionsResult) {
           o['uid']=player.uid
           m[o.id].push(o)
         }
       }
-      obj.Dropball.options.forEach(item=>{item['players']=m[item.id]})
+      obj.Dropball.options.forEach(item => {
+        item['players'] = m[item.id]
+      })
     },
     getDropballImg(id) {
       let imgMap = {
@@ -2946,9 +2976,9 @@ export default {
     },
     getUserWonStyle(  {row,idx} ) {
       if (row.moneyWon>0) {
-        return { color: 'red' , width: '120px', textAlign: 'center',fontSize: '12px'}
+        return { color: 'red' , width: '120px', textAlign: 'center',fontSize: '12px',height: '20px'}
       }
-      return {fontSize: '12px'}
+      return {fontSize: '12px',height: '20px'}
     },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
@@ -3320,7 +3350,6 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
 
     getCardUrl(card) {
-      console.log('-----', card)
       return require('@/assets/poker/' + card + '.png')
     },
     getDominoCardUrl(card, num) {
