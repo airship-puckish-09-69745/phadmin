@@ -838,6 +838,8 @@ export default {
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
       postData.PrefixChip *= 100 // 放大100倍
+      postData.RabbitPrice *= 1000 
+      postData.InteractItemPrice *= 1000 
       return postData
     },
     checkData() {
