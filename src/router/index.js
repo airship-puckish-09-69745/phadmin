@@ -703,7 +703,6 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '活动配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
-      /*
       {
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
@@ -742,7 +741,6 @@ export const asyncRoutes = [
           }
         ]
       },
-      */
       {
         path: 'pointRaceConfig',
         component: () => import('@/views/empty'),
