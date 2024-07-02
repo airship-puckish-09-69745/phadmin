@@ -1764,7 +1764,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog v-if="piggyLog.visible" title="piggy详情" :visible.sync="piggyLog.visible" width="1200px">
+    <el-dialog v-if="piggyLog.visible" title="piggy详情" :visible.sync="piggyLog.visible" width="1400px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
           <template slot="label">
