@@ -1709,7 +1709,7 @@
                 <span>牌堆</span>
               </el-row>
             </div>
-            <div style="height: 200px">
+            <div style="height: 320px">
               <hr class="blackJackHr" style="width: 2000px">
               <el-row>
                 <span>牌叠</span>
@@ -1721,21 +1721,22 @@
           <template slot-scope="scope">
             <div style="height: 200px">
               <el-row>
-                <span v-for="(row,idx) in scope.row.resultCards">
+                <el-row v-for="(row,idx) in scope.row.resultCards" style="line-height: 5px">
                   <div v-for="(d,i) in row.cards" style="float:left;">
                     <el-image
                       :style="getCardStyle2(i)"
                       :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
                     />
+                    <br>
                     <span v-html="'&nbsp;'" />
                   </div>
-                </span>
+                </el-row>
               </el-row>
             </div>
             <div class="solitaireHeight">
               <hr class="blackJackHr">
               <el-row>
-                <span v-for="(row,idx) in scope.row.CardsPile">
+                <span v-for="(row,idx) in scope.row.CardsPile" style="line-height: 5px">
                   <el-image
                     :style="getCardStyle(idx)"
                     :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
@@ -1743,10 +1744,10 @@
                 </span>
               </el-row>
             </div>
-            <div style="height: 200px">
+            <div style="height: 320px">
               <hr class="blackJackHr">
               <el-row>
-                <span v-for="(row,idx) in scope.row.cardsStacks">
+                <el-col v-for="(row,idx) in scope.row.cardsStacks" style="line-height: 15px">
                   <div v-for="(d,i) in row.cards" style="float:left;">
                     <el-image
                       :style="getCardStyle2(i)"
@@ -1754,7 +1755,7 @@
                     />
                     <span v-html="'&nbsp;'" />
                   </div>
-                </span>
+                </el-col>
 
               </el-row>
             </div>
@@ -3418,17 +3419,17 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
     getCardStyle(idx) {
       if (idx === 0) {
-        return 'width: 37px; height: 50px;'
+        return 'width: 32px; height: 40px;'
       }
-      return 'width: 37px; height: 50px;margin-left: -20px'
+      return 'width: 32px; height: 40px;margin-left: -20px'
     },
     getCardStyle2(idx) {
       if (idx === 0) {
-        return 'width: 37px; height: 50px;'
+        return 'width: 32px; height: 40px;'
       }
-      const top = idx * 15
-      const left = -37
-      return 'width: 37px; height: 50px;margin-left: ' + left + 'px;margin-top: ' + top + 'px'
+      // const top = idx * 15
+      const left = -20
+      return 'width:  32px; height: 40px;margin-left: ' + left + 'px;'
     },
     getServiceFeeName() {
       if (this.gid == 20) {
@@ -3613,6 +3614,6 @@ ul#sweeperShow li .showStep {
   border:none;
 }
 .solitaireHeight{
-  height: 80px;
+  height: 60px;
 }
 </style>
