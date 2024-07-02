@@ -175,7 +175,7 @@
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
-                          <span style="font-size: 11px">  注: </span>
+                          <span style="color: red; font-size: 11px">  注: 如果三个轴次数之和或者倍数之和=0 就不会进入free game模式</span>
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
@@ -424,7 +424,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最小下注</p>
-                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.左右闭合区间  3.确认完全覆盖以后可以点击左上角的发布 4.没有覆盖的下注将不会被抽水入Jp奖池 也不会参与Jp开奖</span>
+                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.三个奖池的范围不要有交集 3.左右闭合区间  4.确认完全覆盖以后可以点击左上角的发布 5.没有覆盖的下注将不会被抽水入Jp奖池 也不会参与Jp开奖</span>
                       </template>
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.MinBet" placeholder="请选择">
@@ -534,11 +534,12 @@
                     </el-form-item>
                   </el-form>
                 </el-col>
-                <el-col :span="20" :offset="3">
-                  <span style="font-size: 12px">机器的金币中奖权重是正常玩家的1、1.5、2倍 各占1/3的概率</span>
-                </el-col>
+
                 <el-col :span="15" :offset="3">
                   <div >
+                    <el-col :span="20" :offset="0">
+                      <span style="font-size: 12px">机器的金币中奖权重是正常玩家的x倍 配置如下</span>
+                    </el-col>
                     <piggy-weight-cfg :piggy-cfg="item.RobotCfg.RobotWiMulti" weight-name="权重" val-name="金币权重*multi(支持1位小数)" val-type="1" />
                   </div>
                 </el-col>

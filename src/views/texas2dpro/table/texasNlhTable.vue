@@ -68,13 +68,13 @@
             <el-form-item label="小盲：" :required="true" prop="item.SmallBlind">
               <el-select v-model="edit.item.SmallBlind" placeholder="请选择">
                 <el-option label="1" :value="1" />
-                <el-option label="2" :value="2" />
+                <el-option label="2.5" :value="2.5" />
                 <el-option label="5" :value="5" />
                 <el-option label="10" :value="10" />
-                <el-option label="20" :value="20" />
+                <el-option label="25" :value="25" />
                 <el-option label="50" :value="50" />
                 <el-option label="100" :value="100" />
-                <el-option label="200" :value="200" />
+                <el-option label="250" :value="250" />
                 <el-option label="500" :value="500" />
                 <el-option label="1000" :value="1000" />
                 <el-option label="2000" :value="2000" />
@@ -307,7 +307,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
-              <el-input v-model.number="edit.item.InteractItemPrice" placeholder="请输入" />
+              <el-input v-model="edit.item.InteractItemPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -487,7 +487,7 @@ function newItem() {
   return {
     CarryLower: 0,
     CarryUpper: 0,
-    SmallBlind: 0.1,
+    SmallBlind: 1,
     BigBlind: 0,
     ObjectCount: 0,
     TableMaxPlayerNum: 0,
@@ -838,6 +838,8 @@ export default {
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
       postData.PrefixChip *= 100 // 放大100倍
+      postData.RabbitPrice *= 1000 
+      postData.InteractItemPrice *= 1000 
       return postData
     },
     checkData() {
