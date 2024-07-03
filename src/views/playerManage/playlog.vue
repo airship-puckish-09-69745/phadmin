@@ -2024,6 +2024,17 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
+            JP牌组条件：
+          </template>
+          <span v-for="(idx) of 3 ">
+                      <el-image
+                        style="width: 37px; height: 50px"
+                        :src="getCardUrl( getDropballImg(gameLogComponent.detail.Dropball.luckyPachinkoCard))"
+                      />
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
             前注：
           </template>
           {{ formatNumber(gameLogComponent.detail.Bet / 1000) }}
@@ -2075,15 +2086,6 @@
               </el-table-column>
               <el-table-column prop="uid" label="moneyTaxed" >
                 <template slot-scope="scope">{{formatNumber(scope.row.moneyTaxed /1000)  }}</template>
-              </el-table-column>
-              <el-table-column prop="uid" label="Id" width="50px" >
-                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Id:''}}</template>
-              </el-table-column>
-              <el-table-column prop="uid" label="IsJackpot" >
-                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.IsJackpot:''}}</template>
-              </el-table-column>
-              <el-table-column prop="uid" label="Odds" >
-                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Odds:''}}</template>
               </el-table-column>
               <el-table-column prop="uid" label="JackpotAward" >
                 <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotAward:''}}</template>
