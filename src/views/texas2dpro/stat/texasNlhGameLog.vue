@@ -204,11 +204,23 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log(objs)
-          if (objs.length > 0) {
-            this.searchDetail(objs)
+          var testData = []
+          for (var i = 0; i < objs.length; i++) {
+            var isExist = false
+            for (var j = 0; j < testData.length; j++) {
+              if (objs[i].LogID === testData[j].LogID) {
+                isExist = true
+                break
+              }
+            }
+            if (!isExist) {
+              testData.push(objs[i])
+            }
           }
-          _this.totalCount = objs.length
+          if (testData.length > 0) {
+            this.searchDetail(testData)
+          }
+          _this.totalCount = testData.length
           _this.selectUid = _this.searchForm.Uid
         } else {
           Message.error(response.Data)
