@@ -206,10 +206,10 @@ export default {
           const objs = response.Data || []
           var testData = []
           for (var i = 0; i < objs.length; i++) {
-            var isExist = false
-            if (testData.length >= 50) {
+            if (testData.length > 50) {
               break
             }
+            var isExist = false
             for (var j = 0; j < testData.length; j++) {
               if (objs[i].LogID === testData[j].LogID) {
                 isExist = true
@@ -231,35 +231,32 @@ export default {
       })
     },
     searchDetail(items) {
-      var selectIds = ''
       for (var i = 0; i < items.length; i++) {
-        selectIds = selectIds + items[i].LogID
-        if (i !== items.length - 1) {
-          selectIds += ','
-        }
-      }
-      const _this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: _this.env,
-          Path: '/texasnlhdata/gamedetail',
-          ID: selectIds,
-          DateTime: Date.parse(new Date(_this.searchForm.BeginDate).toString()) / 1000
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || []
-          for (var i = 0; i < objs.list.length; i++) {
-            _this.tableData.push(objs.list[i])
+        const _this = this
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: _this.env,
+            Path: '/texasnlhdata/gamedetail',
+            ID: items[i].LogID,
+            DateTime: Date.parse(new Date(items[i].FinishTime).toString())
           }
-          _this.tableData.sort(this.sortBy('StartTime', -1))
-          _this.refreshShow()
-        } else {
-          Message.error(response.Data)
-        }
-      })
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const objs = response.Data || []
+
+            console.log(objs)
+            for (var i = 0; i < objs.list.length; i++) {
+              _this.tableData.push(objs.list[i])
+            }
+            _this.tableData.sort(this.sortBy('StartTime', -1))
+            _this.refreshShow()
+          } else {
+            Message.error(response.Data)
+          }
+        })
+      } 
     },
     getRoomLevel(row) {
       var gameInfo = JSON.parse(row.GameInfo)
