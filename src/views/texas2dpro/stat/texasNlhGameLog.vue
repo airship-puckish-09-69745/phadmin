@@ -230,6 +230,9 @@ export default {
     searchDetail(items) {
       var selectIds = ''
       for (var i = 0; i < items.length; i++) {
+        if (i > 100) {
+          break
+        }
         selectIds = selectIds + items[i].LogID
         if (i !== items.length - 1) {
           selectIds += ','
