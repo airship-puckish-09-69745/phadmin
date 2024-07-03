@@ -30,14 +30,14 @@
           </el-form-item>
         </el-form-item>
 
-        <el-form-item label="">
+       <!--  <el-form-item label="">
           <el-form-item label="牌局id">
             <el-input v-model.number="searchForm.LogID" size="mini" placeholder="牌局id" />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="search">查询</el-button>
           </el-form-item>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </el-row>
     <el-table

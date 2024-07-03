@@ -329,13 +329,13 @@ export const asyncRoutes = [
                     name: 'texasNlhGameDetail',
                     meta: { title: '牌局详情' },
                     hidden: true
-                  },
+                  }/*,
                   {
                     path: 'texasNlhGameConsumeSta',
                     component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
                     name: 'texasNlhGameDetail',
                     meta: { title: '每日消耗统计' }
-                  }
+                  }*/
                 ]
               },
               {

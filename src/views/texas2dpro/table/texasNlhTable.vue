@@ -649,6 +649,8 @@ export default {
           const objs = response.Data || []
           for (const o in objs) {
             objs[o].PrefixChip /= 100 // 100倍
+            objs[o].RabbitPrice /= 1000 
+            objs[o].InteractItemPrice /= 1000 
             console.log(objs[o])
           }
 
