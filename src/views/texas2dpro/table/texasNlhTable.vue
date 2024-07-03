@@ -649,6 +649,8 @@ export default {
           const objs = response.Data || []
           for (const o in objs) {
             objs[o].PrefixChip /= 100 // 100倍
+            objs[o].RabbitPrice /= 1000
+            objs[o].InteractItemPrice /= 1000
             console.log(objs[o])
           }
 
@@ -838,6 +840,8 @@ export default {
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
       postData.PrefixChip *= 100 // 放大100倍
+      postData.RabbitPrice *= 1000
+      postData.InteractItemPrice *= 1000
       return postData
     },
     checkData() {

@@ -134,20 +134,20 @@
             <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率" />
             <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70" />
             <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100" />
-            <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" />
+            <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" v-if="!isActV2" />
             <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit" />
             <!--
             <el-table-column prop="ActLogObj.Winning" :formatter="toRupee" label="Winning" />
             -->
-            <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" />
-            <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池" />
+            <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" v-if="!isActV2" />
+            <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池" v-if="!isActV2" />
             <!--
             <el-table-column prop="ActLogObj.HelpType" :formatter="showHelpType" label="帮助类型" />
             <el-table-column prop="ActLogObj.HelpMoney" :formatter="toRupee" label="帮助金额" />
             <el-table-column prop="ActLogObj.DangerFactor" label="危险系数" />
             -->
-            <el-table-column prop="ActLogObj.DoWinRate" label="执行胜率" />
-            <el-table-column prop="ActLogObj.CurrentWinRate" :formatter="showWinRate" label="当前胜率" />
+            <el-table-column prop="ActLogObj.DoWinRate" label="执行胜率" v-if="!isActV2" />
+            <el-table-column prop="ActLogObj.CurrentWinRate" :formatter="showWinRate" label="当前胜率" v-if="!isActV2" />
             <el-table-column prop="ActLogObj.ScriptCol" label="剧本坐标">
               <template slot-scope="scope">
                 {{ showPosition(scope.row) }}
@@ -173,8 +173,8 @@
             <el-table-column prop="ActLogObj.IsResetAct" :formatter="showBool" label="免费转付费重置" />
             <el-table-column prop="ActLogObj.IsEntryPool" :formatter="showBool" label="是否进入水池" />
             -->
-            <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" />
-            <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" />
+            <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" v-if="!isActV2" />
+            <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" v-if="!isActV2" />
           </el-table-column>
         </template>
 
@@ -273,6 +273,9 @@ export default {
     this.gid = this.$route.meta.gid
   },
   methods: {
+    isActV2() {
+      return [80].indexOf(this.gid) >= 0
+    },
     showChart() {
       const $this = this
       request({
@@ -348,7 +351,17 @@ export default {
     showPosition(row) {
       try {
         if (row.hasOwnProperty('ActLogObj') && row.ActLogObj.hasOwnProperty('ScriptRow') && row.ActLogObj.hasOwnProperty('ScriptCol')) {
-          return '(' + (row.ActLogObj.ScriptRow + 1) + ',' + (row.ActLogObj.ScriptCol + 1) + ')'
+          let prefix = ''
+          if (row.ActLogObj.hasOwnProperty('SheetIndex') && row.ActLogObj.hasOwnProperty('ActId') && row.ActLogObj.ActId > 0) {
+            if (row.ActLogObj.SheetIndex === -2) {
+              prefix='指定正数'
+            } else if (row.ActLogObj.SheetIndex === -1) {
+              prefix='指定负数'
+            } else {
+              prefix='常规'+(row.ActLogObj.SheetIndex+1)
+            }
+          }
+          return prefix + '(' + (row.ActLogObj.ScriptRow + 1) + ',' + (row.ActLogObj.ScriptCol + 1) + ')'
         }
       } catch (e) {
         console.log('showPosition', e)

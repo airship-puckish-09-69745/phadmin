@@ -300,45 +300,6 @@ export const asyncRoutes = [
             meta: { title: '德州专业版 ', noCache: true },
             children: [
               {
-                path: 'texasNlhStat',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: '数据中心', noCache: true },
-                children: [
-                  {
-                    path: 'texasNlhInsure',
-                    component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
-                    name: 'texasNlhInsure',
-                    meta: { title: '保险数据' }
-                  },
-                  {
-                    path: 'texasNlhJP',
-                    component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
-                    name: 'texasNlhJP',
-                    meta: { title: 'JP数据' }
-                  },
-                  {
-                    path: 'texasNlhGameLog',
-                    component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
-                    name: 'texasNlhGameLog',
-                    meta: { title: '牌局记录' }
-                  },
-                  {
-                    path: 'texasNlhGameDetail',
-                    component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
-                    name: 'texasNlhGameDetail',
-                    meta: { title: '牌局详情' },
-                    hidden: true
-                  },
-                  {
-                    path: 'texasNlhGameConsumeSta',
-                    component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
-                    name: 'texasNlhGameDetail',
-                    meta: { title: '每日消耗统计' }
-                  }
-                ]
-              },
-              {
                 path: 'texasNlhTable',
                 component: () => import('@/views/empty'),
                 redirect: 'noRedirect',
@@ -709,7 +670,6 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '活动配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
-      /*
       {
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
@@ -748,7 +708,6 @@ export const asyncRoutes = [
           }
         ]
       },
-      */
       {
         path: 'pointRaceConfig',
         component: () => import('@/views/empty'),
@@ -958,7 +917,46 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_domino',
             meta: { title: '多米诺 ◐', gid: 46 }
-          }
+          },
+          {
+            path: 'texasNlhStat',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '德州专业版', noCache: true },
+            children: [
+              {
+                path: 'texasNlhInsure',
+                component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
+                name: 'texasNlhInsure',
+                meta: { title: '保险数据' }
+              },
+              {
+                path: 'texasNlhJP',
+                component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
+                name: 'texasNlhJP',
+                meta: { title: 'JP数据' }
+              },
+              {
+                path: 'texasNlhGameLog',
+                component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
+                name: 'texasNlhGameLog',
+                meta: { title: '牌局记录' }
+              },
+              {
+                path: 'texasNlhGameDetail',
+                component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
+                name: 'texasNlhGameDetail',
+                meta: { title: '牌局详情' },
+                hidden: true
+              }/*,
+              {
+                path: 'texasNlhGameConsumeSta',
+                component: () => import('@/views/texas2dpro/stat/texasNlhGameConsumeSta'),
+                name: 'texasNlhGameDetail',
+                meta: { title: '每日消耗统计' }
+              }*/
+            ]
+          },
         ]
       },
       {

@@ -160,9 +160,9 @@ export default {
     return {
       searchForm: {
         BeginDate: $libDate.GetDayBegin(new Date().getTime()),
-        Uid: '',
+        Uid: 0,
         LogID: '',
-        Gid: ''
+        Gid: 32
       },
       GidTypes: [
         { key: '[0]无限德州', value: 32 },
@@ -179,7 +179,7 @@ export default {
     }
   },
   created() {
-
+    this.searchByUid()
   },
   methods: {
     searchByUid() {
@@ -204,11 +204,26 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log(objs)
-          if (objs.length > 0) {
-            this.searchDetail(objs)
+          var testData = []
+          for (var i = 0; i < objs.length; i++) {
+            var isExist = false
+            if (testData.length >= 50) {
+              break
+            }
+            for (var j = 0; j < testData.length; j++) {
+              if (objs[i].LogID === testData[j].LogID) {
+                isExist = true
+                break
+              }
+            }
+            if (!isExist) {
+              testData.push(objs[i])
+            }
           }
-          _this.totalCount = objs.length
+          if (testData.length > 0) {
+            this.searchDetail(testData)
+          }
+          _this.totalCount = testData.length
           _this.selectUid = _this.searchForm.Uid
         } else {
           Message.error(response.Data)
