@@ -207,6 +207,9 @@ export default {
           var testData = []
           for (var i = 0; i < objs.length; i++) {
             var isExist = false
+            if (testData.length >= 50) {
+              break
+            }
             for (var j = 0; j < testData.length; j++) {
               if (objs[i].LogID === testData[j].LogID) {
                 isExist = true
@@ -230,9 +233,6 @@ export default {
     searchDetail(items) {
       var selectIds = ''
       for (var i = 0; i < items.length; i++) {
-        if (i > 100) {
-          break
-        }
         selectIds = selectIds + items[i].LogID
         if (i !== items.length - 1) {
           selectIds += ','
