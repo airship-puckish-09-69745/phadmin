@@ -205,7 +205,7 @@
             label="获奖金额"
           >
             <template slot-scope="scope">
-              {{ scope.row.Money }}
+              {{ scope.row.Money/1000 }}
             </template>
           </el-table-column>
           <el-table-column
@@ -213,7 +213,7 @@
             label="触发前JP余额"
           >
             <template slot-scope="scope">
-              {{ scope.row.BeforeMoney }}
+              {{ scope.row.BeforeMoney/1000 }}
             </template>
           </el-table-column>
           <el-table-column
@@ -221,7 +221,7 @@
             label="触发后JP余额"
           >
             <template slot-scope="scope">
-              {{ scope.row.AfterMoney }}
+              {{ scope.row.AfterMoney/1000 }}
             </template>
           </el-table-column>
           <el-table-column
