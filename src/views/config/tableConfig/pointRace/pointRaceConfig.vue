@@ -61,7 +61,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="AppId(不限制填0)：" :required="true" prop="item.AppId" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="AppId：" :required="true" prop="item.AppId" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.AppId" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -395,6 +395,11 @@ export default {
       return postData
     },
     checkData() {
+      if (this.edit.item.AppId <= 0) {
+          Message.warning('AppId不能为空')
+          return false
+      }
+
       let lastEndTime = 0
       for (const k in this.edit.item.DayArr) {
         if (this.edit.item.DayArr[k].StartTime > this.edit.item.DayArr[k].EndTime) {
