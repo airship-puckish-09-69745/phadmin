@@ -755,19 +755,19 @@
             {{ scope.row.moneyChange / 1000 }}
           </template>
         </el-table-column>
-        <el-table-column prop="moneyWon" label="结算输赢">
+        <el-table-column prop="moneyWonReal" label="结算输赢">
           <template slot-scope="scope">
-            {{ scope.row.moneyWon / 1000 }}
+            {{ scope.row.moneyWonReal / 1000 }}
           </template>
         </el-table-column>
-        <el-table-column prop="moneyFee" label="结算抽水">
+        <el-table-column prop="moneyFee" label="抽水">
           <template slot-scope="scope">
             {{ scope.row.moneyFee / 1000 }}
           </template>
         </el-table-column>
-        <el-table-column prop="moneyPass" label="过牌输赢">
+        <el-table-column prop="moneyPassReal" label="过牌输赢">
           <template slot-scope="scope">
-            {{ scope.row.moneyPass / 1000 }}
+            {{ scope.row.moneyPassReal / 1000 }}
           </template>
         </el-table-column>
       </el-table>
