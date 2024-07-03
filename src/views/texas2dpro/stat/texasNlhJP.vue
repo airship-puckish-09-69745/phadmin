@@ -205,7 +205,7 @@
             label="获奖金额"
           >
             <template slot-scope="scope">
-              {{ scope.row.Money }}
+              {{ scope.row.Money/1000 }}
             </template>
           </el-table-column>
           <el-table-column
@@ -213,7 +213,7 @@
             label="触发前JP余额"
           >
             <template slot-scope="scope">
-              {{ scope.row.BeforeMoney }}
+              {{ scope.row.BeforeMoney/1000 }}
             </template>
           </el-table-column>
           <el-table-column
@@ -221,7 +221,7 @@
             label="触发后JP余额"
           >
             <template slot-scope="scope">
-              {{ scope.row.AfterMoney }}
+              {{ scope.row.AfterMoney/1000 }}
             </template>
           </el-table-column>
           <el-table-column
@@ -267,8 +267,8 @@ export default {
   data() {
     return {
       searchForm: {
-        Level: '',
-        Gid: ''
+        Level: '所有',
+        Gid: 32
       },
       GidTypes: [
         { key: '[0]无限德州', value: 32 },
@@ -299,6 +299,7 @@ export default {
     }
   },
   created() {
+    this.search()
   },
   methods: {
     search() {
@@ -387,7 +388,7 @@ export default {
           Path: '/texasnlhdata/opjackpot',
           Level: level,
           Gid: Number(_this.searchForm.Gid),
-          Change: change
+          Change: change * 1000
         }
       }).then(response => {
         if (response.RetCode === 0) {

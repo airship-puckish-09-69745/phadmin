@@ -160,9 +160,9 @@ export default {
     return {
       searchForm: {
         BeginDate: $libDate.GetDayBegin(new Date().getTime()),
-        Uid: '',
+        Uid: 0,
         LogID: '',
-        Gid: ''
+        Gid: 32
       },
       GidTypes: [
         { key: '[0]无限德州', value: 32 },
@@ -179,7 +179,7 @@ export default {
     }
   },
   created() {
-
+    this.searchByUid()
   },
   methods: {
     searchByUid() {
