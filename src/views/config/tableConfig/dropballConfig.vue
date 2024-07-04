@@ -146,58 +146,58 @@
                 </el-table>
               </fieldset>
 
-              <fieldset style="margin-top:10px">
-                <legend>LuckyPachinko配置
-                </legend>
-                <el-table
-                  ref="filterTable"
-                  :data="item.LuckyPachinkoCfg"
-                  border
-                  :header-cell-style="libShow.DefaultTableHeadClass"
-                  :row-style="{height:'10px'}"
-                  :cell-style="libShow.DefaultTableCell"
-                  style="width: 100%"
-                >
-                  <el-table-column label="ID">
-                    <template slot-scope="scope">
-                      <el-input v-model="scope.row.Id" size="mini" disabled />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="是否jackpot">
-                    <template slot-scope="scope">
-                      <el-switch
-                        v-model="scope.row.IsJackpot"
-                        active-color="#13ce66"
-                        inactive-color="#ff4949"
-                        active-text="是"
-                        inactive-text="否"
-                      />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="倍数">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Multiple" size="mini" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="中奖概率">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Rate" size="mini" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="无Jackpot中奖概率">
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.OtherRate" size="mini" />
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="操作">
-                    <template slot-scope="scope">
-                      <el-button type="primary" size="mini" @click="doAddLuckyPachinkoCfg">添加</el-button>
-                      <el-button type="danger" size="mini" @click="delLuckyPachinkoCfg(scope.$index)">删除</el-button>
-                    </template>
+<!--              <fieldset style="margin-top:10px">-->
+<!--                <legend>LuckyPachinko配置-->
+<!--                </legend>-->
+<!--                <el-table-->
+<!--                  ref="filterTable"-->
+<!--                  :data="item.LuckyPachinkoCfg"-->
+<!--                  border-->
+<!--                  :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--                  :row-style="{height:'10px'}"-->
+<!--                  :cell-style="libShow.DefaultTableCell"-->
+<!--                  style="width: 100%"-->
+<!--                >-->
+<!--                  <el-table-column label="ID">-->
+<!--                    <template slot-scope="scope">-->
+<!--                      <el-input v-model="scope.row.Id" size="mini" disabled />-->
+<!--                    </template>-->
+<!--                  </el-table-column>-->
+<!--                  <el-table-column label="是否jackpot">-->
+<!--                    <template slot-scope="scope">-->
+<!--                      <el-switch-->
+<!--                        v-model="scope.row.IsJackpot"-->
+<!--                        active-color="#13ce66"-->
+<!--                        inactive-color="#ff4949"-->
+<!--                        active-text="是"-->
+<!--                        inactive-text="否"-->
+<!--                      />-->
+<!--                    </template>-->
+<!--                  </el-table-column>-->
+<!--                  <el-table-column label="倍数">-->
+<!--                    <template slot-scope="scope">-->
+<!--                      <el-input v-model.number="scope.row.Multiple" size="mini" />-->
+<!--                    </template>-->
+<!--                  </el-table-column>-->
+<!--                  <el-table-column label="中奖概率">-->
+<!--                    <template slot-scope="scope">-->
+<!--                      <el-input v-model.number="scope.row.Rate" size="mini" />-->
+<!--                    </template>-->
+<!--                  </el-table-column>-->
+<!--                  <el-table-column label="无Jackpot中奖概率">-->
+<!--                    <template slot-scope="scope">-->
+<!--                      <el-input v-model.number="scope.row.OtherRate" size="mini" />-->
+<!--                    </template>-->
+<!--                  </el-table-column>-->
+<!--                  <el-table-column label="操作">-->
+<!--                    <template slot-scope="scope">-->
+<!--                      <el-button type="primary" size="mini" @click="doAddLuckyPachinkoCfg">添加</el-button>-->
+<!--                      <el-button type="danger" size="mini" @click="delLuckyPachinkoCfg(scope.$index)">删除</el-button>-->
+<!--                    </template>-->
 
-                  </el-table-column>
-                </el-table>
-              </fieldset>
+<!--                  </el-table-column>-->
+<!--                </el-table>-->
+<!--              </fieldset>-->
 
               <!--              <fieldset style="margin-top:10px">-->
               <!--                <legend>投注区域配置-->
