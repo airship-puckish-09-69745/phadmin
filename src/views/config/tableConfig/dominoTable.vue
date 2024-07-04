@@ -320,9 +320,9 @@
               label="抽水费率："
               :required="true"
               prop="item.FlowRate"
-              :rules="dataRule(true,{type:'f',range:'0.1'})"
+              :rules="dataRule(true,{type:'f',range:'0'})"
             >
-              <el-input v-model.number="edit.item.FlowRate" placeholder="抽水费率" />
+              <el-input v-model="edit.item.FlowRate" placeholder="抽水费率" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
