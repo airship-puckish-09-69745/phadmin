@@ -672,10 +672,10 @@
         <el-form-item label="结束时段：">
           <el-input v-model.number="robotDialogForm.data.EndHour" disable style="width: 100px;" size="mini" :required="true" />
         </el-form-item>
-        <el-form-item label="Jp开奖人数(min)：">
+        <el-form-item label="机器人最小人数：">
           <el-input v-model.number="robotDialogForm.data.MinRobotNum" style="width: 100px;" size="mini" :required="true" />
         </el-form-item>
-        <el-form-item label="Jp开奖人数(max)：">
+        <el-form-item label="机器人最大人数：">
           <el-input v-model.number="robotDialogForm.data.MaxRobotNum" style="width: 100px;" size="mini" :required="true" />
         </el-form-item>
         <el-form-item>
@@ -713,12 +713,12 @@
             <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
           </template>
         </el-table-column>
-        <el-table-column label="最小开奖人数" prop="Num">
+        <el-table-column label="Jp开奖人数(min)" prop="Num">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.NumMin" style="width: 100px;" size="mini" :required="true" />
           </template>
         </el-table-column>
-        <el-table-column label="最大开奖人数" prop="Num">
+        <el-table-column label="Jp开奖人数(max)" prop="Num">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.NumMax" style="width: 100px;" size="mini" :required="true" />
           </template>
