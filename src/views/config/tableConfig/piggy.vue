@@ -672,10 +672,10 @@
         <el-form-item label="结束时段：">
           <el-input v-model.number="robotDialogForm.data.EndHour" disable style="width: 100px;" size="mini" :required="true" />
         </el-form-item>
-        <el-form-item label="机器人最小人数：">
+        <el-form-item label="Jp开奖人数(min)：">
           <el-input v-model.number="robotDialogForm.data.MinRobotNum" style="width: 100px;" size="mini" :required="true" />
         </el-form-item>
-        <el-form-item label="机器人最大人数：">
+        <el-form-item label="Jp开奖人数(max)：">
           <el-input v-model.number="robotDialogForm.data.MaxRobotNum" style="width: 100px;" size="mini" :required="true" />
         </el-form-item>
         <el-form-item>
