@@ -1,96 +1,139 @@
 <template>
   <div class="app-container">
 
-    <publish
-      primary-key="Volume"
-      :key-id="getFullKey(this.subKey)"
-      :env-empty="false"
-      compare-type="Object"
-      :attr-names="AttrNames"
-    />
-    <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="15">
-        <el-form inline>
-          <!--            <el-form-item>-->
-          <!--              <el-button type="primary" size="mini" @click="refresh">查询</el-button>-->
-          <!--            </el-form-item>-->
-        </el-form>
-
-      </el-col>
-      <el-col :span="15"/>
-      <el-col :span="22">
-        <el-button type="primary" size="mini" @click="addOne">添加</el-button>
-      </el-col>
-
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
-      </el-col>
-      <el-col :span="24">
-        <el-form ref="tableData" v-model="tableData" label-width="150px">
-          <el-table
-
-            ref="filterTable"
-            :data="tableData"
-            stripe
-            border
-            :header-cell-style="libShow.DefaultTableHeadClass"
-            :row-style="{height:'10px'}"
-            :cell-style="libShow.DefaultTableCell"
-            style="width: 100%"
+    <el-tabs   type="border-card"  @tab-click="handleClick">
+      <el-tab-pane label="统计结果"  >
+        <el-table
+          ref="filterTable"
+          :data="slotsTableData"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="Gid"
+            label="游戏"
           >
-            <el-table-column
-              prop="Gid"
-              label="游戏"
-            >
-              <template slot-scope="scope">
+            <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
                   {{ (scope.row.Gid == item.key ? item.label : "") }}
                 </span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="Gid"
-              label="区间"
-              width="1200"
-            >
-              <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="Gid"
+            label="区间"
+            width="1200"
+          >
+            <template slot-scope="scope">
                 <span v-for="(data,idx) in scope.row.OddsList">
                    <el-tag >{{data.MinOdds+","+ data.MaxOdds}}</el-tag>
                 </span>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>
-                <el-button type="danger" size="mini" @click="delRow(scope.$index, scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <br>
-          <br>
-          <br>
-          <el-form-item>
-            <el-button type="primary" @click="setData">保存</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>
+              <el-button type="danger" size="mini" @click="delRow(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
 
-    <el-col :offset="16" :span="8">
-      <div class="block">
-        <el-pagination
-          :current-page="clientDB.GetPage().GetCurrentPage()"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="clientDB.GetPage().GetPageNum()"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="clientDB.GetPage().GetTotalCount()"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
+      </el-tab-pane>
+      <el-tab-pane label="脚本统计配置"  >
+        <publish
+          primary-key="Volume"
+          :key-id="getFullKey(this.subKey)"
+          :env-empty="false"
+          compare-type="Object"
+          :attr-names="AttrNames"
         />
-      </div>
-    </el-col>
-    <!--对比组件-->
-    <compare ref="compare"/>
+        <el-row :gutter="10" style="margin-top: 30px">
+          <el-col :span="15">
+            <el-form inline>
+              <!--            <el-form-item>-->
+              <!--              <el-button type="primary" size="mini" @click="refresh">查询</el-button>-->
+              <!--            </el-form-item>-->
+            </el-form>
+
+          </el-col>
+          <el-col :span="15"/>
+          <el-col :span="22">
+            <el-button type="primary" size="mini" @click="addOne">添加</el-button>
+          </el-col>
+
+          <el-col :span="2">
+            <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
+          </el-col>
+          <el-col :span="24">
+            <el-form ref="tableData" v-model="tableData" label-width="150px">
+              <el-table
+                ref="filterTable"
+                :data="tableData"
+                stripe
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
+              >
+                <el-table-column
+                  prop="Gid"
+                  label="游戏"
+                >
+                  <template slot-scope="scope">
+                <span v-for="(item, index) in gameOptions" :key="index">
+                  {{ (scope.row.Gid == item.key ? item.label : "") }}
+                </span>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="Gid"
+                  label="区间"
+                  width="1200"
+                >
+                  <template slot-scope="scope">
+                <span v-for="(data,idx) in scope.row.OddsList">
+                   <el-tag >{{data.MinOdds+","+ data.MaxOdds}}</el-tag>
+                </span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>
+                    <el-button type="danger" size="mini" @click="delRow(scope.$index, scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <br>
+              <br>
+              <br>
+              <el-form-item>
+                <el-button type="primary" @click="setData">保存</el-button>
+              </el-form-item>
+            </el-form>
+          </el-col>
+        </el-row>
+        <el-col :offset="16" :span="8">
+          <div class="block">
+            <el-pagination
+              :current-page="clientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetPage().GetTotalCount()"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </el-col>
+        <!--对比组件-->
+        <compare ref="compare"/>
+      </el-tab-pane>
+    </el-tabs>
 
     <el-dialog
       title="选择游戏"
@@ -142,7 +185,6 @@
         </el-col>
       </el-row>
     </el-dialog>
-
   </div>
 </template>
 
@@ -154,6 +196,7 @@ import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {copyObj} from 'codemirror/src/util/misc'
 import {$libShow, ClientTableData} from '@/utils/common'
+import store from "@/store";
 
 const filterMap = {}
 
@@ -165,7 +208,7 @@ export default {
     return {
       form: {},
       postData: {},
-      subKey: 'slotsScriptStatistics',
+      subKey: 'SlotsScriptStatisticsConfig',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型
@@ -182,18 +225,27 @@ export default {
       selectGameVisible: false,
       gameOptions: [],
       dialogGameOptions: [],
+      slotsTableData:[],
     }
   },
   created() {
     this.getGameList()
-    this.getData()
+    this.getSlotsScriptStatistics()
+    // this.getData()
   },
   methods: {
 
     refresh() {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
-
+    handleClick(tab, event){
+      if (parseInt(tab.index) ==0){
+        this.getSlotsScriptStatistics()
+      }
+      if (parseInt(tab.index) ==1){
+        this.getData()
+      }
+    },
     newItem() {
       return this.item
     },
@@ -325,7 +377,21 @@ export default {
       }
       return cfg
     },
+    getSlotsScriptStatistics() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/script/statistics',
+          Env: store.getters.env,
+          queryTime:  parseInt(new Date().getTime() /1000),
+        }
+      }).then(response => {
+        console.log('list response', response)
 
+      })
+    },
     checkDuplicate(data) {
       for (let i = 0; i < this.tableData.length; i++) {
         if (i === this.idx && this.tableData[i].Gid === data.Gid) {

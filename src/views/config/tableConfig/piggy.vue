@@ -385,15 +385,28 @@
                     </el-table-column>
 
                     <el-table-column
-                      label="中奖人数(最大支持30)"
+                      label="同时开jp最小人数"
                       width="200"
                     >
-                      <template slot="header">
-                        <p style="text-align: center">  中奖人数(最大支持30)</p>
-                        <span style="color: red;font-size: 11px">  注: 见JACKPOT->中奖条件->每日限制 注释</span>
-                      </template>
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        <el-input v-model.number="scope.row.NumMin" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="同时开jp最大人数"
+                      width="200"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.NumMax" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="同时开jp时间限制"
+                      width="200"
+                    >
+                      <template slot-scope="scope">
+                        <el-button  type="primary" icon="el-icon-edit" circle size="mini" @click="showJpDayLimitDialog(scope.row,scope.$index)" />
+                        <el-tag v-for="(tag, key) in scope.row.NumHour"   :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -666,6 +679,54 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="同时开JP时间人数限制"
+      :modal="false"
+      :visible.sync="jpDayLimit.JpDayLimitVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addJpDayLimit">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveJpDayLimit()">保存</el-button>
+      <el-table
+        ref="filterTable"
+        :data="jpDayLimit.NumHours"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column type="index" />
+        <el-table-column label="开始小时" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="结束小时(不包含结束时间点)" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="最小开奖人数" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.NumMin" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="最大开奖人数" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.NumMax" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="delJpDayLimit(scope.$index)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
   </div>
 
 </template>
@@ -738,6 +799,11 @@ export default {
         }
       },
       CanBet:[],
+      jpDayLimit:{
+        NumHours:[],
+        JpDayLimitVisible:false,
+        idx:0
+      },
       incrJackpotForm: {
         JpIdx: 0,
         dataIdx: 0,
@@ -781,6 +847,15 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+    addJpDayLimit(){
+      if (!this.jpDayLimit.NumHours){
+        this.jpDayLimit.NumHours=[]
+      }
+      this.jpDayLimit.NumHours.push({StartHours : 0,EndHours:0,NumMin:0,NumMax:0})
+    },
+    delJpDayLimit(idx){
+      this.jpDayLimit.NumHours.splice(idx,1)
+    },
     transMoneyForShow() {
       for (const o of this.item.MoneyOdds) {
         o.Val /= 1000
@@ -818,6 +893,9 @@ export default {
       }
 
     },
+    showOpenDayLimit(data) {
+      return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点,' + data['NumMin'] + '最少,'+ data['NumMin']+'最多'
+    },
     doAdd() {
       this.item.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
@@ -832,6 +910,14 @@ export default {
       this.item.BetLevel.splice(index, 1)
     },
     BuffCfgClick(tab, event) {
+    },
+    saveJpDayLimit(){
+      if (!this.item.Jp[this.jpDayLimit.idx].NumHour){
+        this.item.Jp[this.jpDayLimit.idx]['NumHour']=this.jpDayLimit.NumHours;
+      }else {
+        this.item.Jp[this.jpDayLimit.idx].NumHour=this.jpDayLimit.NumHours;
+      }
+      this.jpDayLimit.JpDayLimitVisible=false
     },
     saveIncrJackpotDialog() {
       this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr = this.incrJackpotForm.data
@@ -909,6 +995,11 @@ export default {
       if (val === 2) {
         return '转轴3'
       }
+    },
+    showJpDayLimitDialog(data,idx){
+        this.jpDayLimit.NumHours = data.NumHour
+        this.jpDayLimit.JpDayLimitVisible = true
+        this.jpDayLimit.idx = idx
     },
     getJackpotPoolTitle(row) {
       if (row.MaxPool == -1) {
