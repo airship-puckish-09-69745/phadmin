@@ -298,10 +298,19 @@ export default {
           for (const key in response.Data["coordinate"]) {
             // SlotsType_目标倍率_当前倍率_剧本_x_y
             var strings1 = key.split('_')
+            let prefix=''
+            if (parseInt(strings1[1]) === -2) {
+              prefix='指定正数'
+            } else if  (parseInt(strings1[1]) === -1) {
+              prefix='指定负数'
+            } else {
+              prefix='常规'+(parseInt(strings1[1])+1)
+            }
+
             coordinateTableData.push({
               gid: strings1[0],
 
-              type: '常规' + strings1[1] + '(' + strings1[2] + ',' + strings1[3] + ')',
+              type:  prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
               sort: parseInt(strings1[1]),
               cnt: response.Data["coordinate"][key]
             })
