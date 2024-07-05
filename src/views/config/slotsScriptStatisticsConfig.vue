@@ -1,106 +1,8 @@
 <template>
   <div class="app-container">
 
-    <el-tabs   type="border-card"  @tab-click="handleClick">
-      <el-tab-pane label="统计结果"  >
- <el-row>
-   <el-col>
-     <el-date-picker
-       v-model="queryTime"
-       type="date"
-       placeholder="选择日期">
-     </el-date-picker>
-     <el-button type="primary" @click="getSlotsScriptStatistics">查询</el-button>
-   </el-col>
- </el-row>
-
-        <el-row>
-          <el-col :span="10">
-            <el-table
-              ref="filterTable"
-              :data="scriptTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 500px"
-
-            >
-              <el-table-column
-                prop="gid"
-                label="游戏"
-              >
-                <template slot-scope="scope">
-                <span v-for="(item, index) in gameOptions" :key="index">
-                  {{ (scope.row.gid == item.key ? item.label : "") }}
-                </span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="idx"
-                label="区间"
-              >
-
-              </el-table-column>
-              <el-table-column
-                prop="cnt"
-                label="次数"
-              >
-              </el-table-column>
-
-            </el-table>
-          </el-col>
-          <el-col  :span="12">
-            <el-table
-              ref="filterTable"
-              :data="coordinateTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 700px"
-
-            >
-              <el-table-column
-                prop="gid"
-                label="游戏"
-              >
-                <template slot-scope="scope">
-                <span v-for="(item, index) in gameOptions" :key="index">
-                  {{ (scope.row.gid == item.key ? item.label : "") }}
-                </span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="target"
-                label="目标倍率"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="current"
-                label="当前倍率"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="type"
-                label="类型"
-                width="120px"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="cnt"
-                label="次数"
-              >
-              </el-table-column>
-
-            </el-table>
-          </el-col>
-        </el-row>
-
-      </el-tab-pane>
-      <el-tab-pane label="脚本统计配置"  >
+    <el-tabs type="border-card" @tab-click="handleClick">
+      <el-tab-pane label="脚本统计配置">
         <publish
           primary-key="Volume"
           :key-id="getFullKey(this.subKey)"
@@ -154,7 +56,7 @@
                 >
                   <template slot-scope="scope">
                 <span v-for="(data,idx) in scope.row.OddsList">
-                   <el-tag >{{data.MinOdds+","+ data.MaxOdds}}</el-tag>
+                   <el-tag>{{ data.MinOdds + "," + data.MaxOdds }}</el-tag>
                 </span>
                   </template>
                 </el-table-column>
@@ -213,7 +115,7 @@
         </el-form-item>
       </el-form>
       <el-row>
-        <el-form label-width="150px"  >
+        <el-form label-width="150px">
         <span v-if="item.OddsList.length>0" v-for="(row,idx) in item.OddsList">
           <el-col :span="10">
            <el-form-item label="区间最小值>">
@@ -236,9 +138,9 @@
         </el-form>
       </el-row>
       <el-row>
-        <el-col :span="18" >
-          <el-button v-if="showBtn==0" type="primary"    @click="addGameItem">确定</el-button>
-          <el-button v-if="showBtn==1" type="primary"   @click="saveEdit">确认修改</el-button>
+        <el-col :span="18">
+          <el-button v-if="showBtn==0" type="primary" @click="addGameItem">确定</el-button>
+          <el-button v-if="showBtn==1" type="primary" @click="saveEdit">确认修改</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -283,28 +185,27 @@ export default {
       gameOptions: [],
       dialogGameOptions: [],
 
-      scriptTableData:[],
-      coordinateTableData:[],
-      queryTime: new Date().getTime()
+      scriptTableData: [],
+      coordinateTableData: [],
+      queryTime: new Date().getTime(),
+      loading:false,
+      cfgMap: {},
     }
   },
   created() {
+    this.getData()
     this.getGameList()
-    this.getSlotsScriptStatistics()
-    // this.getData()
   },
   methods: {
 
     refresh() {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
-    handleClick(tab, event){
-      if (parseInt(tab.index) ==0){
+    handleClick(tab, event) {
+      if (parseInt(tab.index) == 0) {
         this.getSlotsScriptStatistics()
       }
-      if (parseInt(tab.index) ==1){
-        this.getData()
-      }
+
     },
     newItem() {
       return this.item
@@ -316,8 +217,9 @@ export default {
         this.showBtn = 0
       this.selectGameVisible = true
     },
+
     addGameItem() {
-      if (this.item.Gid === 0){
+      if (this.item.Gid === 0) {
         Message.error('请选择游戏！')
         return
       }
@@ -387,6 +289,9 @@ export default {
           $this.postData = response.Data || []
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
+            for (let o of cfg) {
+              this.cfgMap[o.Gid] = o.OddsList
+            }
             this.clientDB = new ClientTableData(cfg, 10, filterMap, 'Gid', -1)
             this.$refs.compare.SetOldVal(response.Data)
             this.refresh()
@@ -437,35 +342,6 @@ export default {
       }
       return cfg
     },
-    getSlotsScriptStatistics() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Path: '/slotsStat/script/statistics',
-          Env: store.getters.env,
-          queryTime: parseInt(this.queryTime /1000),
-        }
-      }).then(response => {
-        // coordinate 返回数据格式，SlotsType_目标倍率_当前倍率_剧本_x_y
-        // script 返回数据格式， slotsType, 配置index
-        console.log('list response', response)
-      if (response.RetCode===0){
-        for (const key in response.Data["coordinate"]) {
-          // SlotsType_目标倍率_当前倍率_剧本_x_y
-          var strings1 = key.split('_')
-          this.coordinateTableData.push({gid: strings1[0],target: strings1[1],current: strings1[2],type: '剧本'+strings1[3]+'('+strings1[4]+','+strings1[5]+')',cnt: response.Data["coordinate"][key]})
-        }
-        this.scriptTableData= []
-        for (const key in response.Data["script"]) {
-          var strings = key.split('_');
-          this.scriptTableData.push({gid: strings[0],idx: strings[1],cnt: response.Data["script"][key]})
-        }
-        console.log("====",this.scriptTableData)
-      }
-      })
-    },
     checkDuplicate(data) {
       for (let i = 0; i < this.tableData.length; i++) {
         if (i === this.idx && this.tableData[i].Gid === data.Gid) {
@@ -488,7 +364,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid<50 || response.Data[i].Gid>100){
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100) {
               continue
             }
             this.gameOptions.push({
