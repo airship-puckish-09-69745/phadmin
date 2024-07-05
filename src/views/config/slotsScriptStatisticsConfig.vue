@@ -3,44 +3,101 @@
 
     <el-tabs   type="border-card"  @tab-click="handleClick">
       <el-tab-pane label="统计结果"  >
-        <el-table
-          ref="filterTable"
-          :data="slotsTableData"
-          stripe
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
-        >
-          <el-table-column
-            prop="Gid"
-            label="游戏"
-          >
-            <template slot-scope="scope">
+ <el-row>
+   <el-col>
+     <el-date-picker
+       v-model="queryTime"
+       type="date"
+       placeholder="选择日期">
+     </el-date-picker>
+     <el-button type="primary" @click="getSlotsScriptStatistics">查询</el-button>
+   </el-col>
+ </el-row>
+
+        <el-row>
+          <el-col :span="10">
+            <el-table
+              ref="filterTable"
+              :data="scriptTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 500px"
+
+            >
+              <el-table-column
+                prop="gid"
+                label="游戏"
+              >
+                <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
-                  {{ (scope.row.Gid == item.key ? item.label : "") }}
+                  {{ (scope.row.gid == item.key ? item.label : "") }}
                 </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="Gid"
-            label="区间"
-            width="1200"
-          >
-            <template slot-scope="scope">
-                <span v-for="(data,idx) in scope.row.OddsList">
-                   <el-tag >{{data.MinOdds+","+ data.MaxOdds}}</el-tag>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="idx"
+                label="区间"
+              >
+
+              </el-table-column>
+              <el-table-column
+                prop="cnt"
+                label="次数"
+              >
+              </el-table-column>
+
+            </el-table>
+          </el-col>
+          <el-col  :span="12">
+            <el-table
+              ref="filterTable"
+              :data="coordinateTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 700px"
+
+            >
+              <el-table-column
+                prop="gid"
+                label="游戏"
+              >
+                <template slot-scope="scope">
+                <span v-for="(item, index) in gameOptions" :key="index">
+                  {{ (scope.row.gid == item.key ? item.label : "") }}
                 </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>
-              <el-button type="danger" size="mini" @click="delRow(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="target"
+                label="目标倍率"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="current"
+                label="当前倍率"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="type"
+                label="类型"
+                width="120px"
+              >
+              </el-table-column>
+              <el-table-column
+                prop="cnt"
+                label="次数"
+              >
+              </el-table-column>
+
+            </el-table>
+          </el-col>
+        </el-row>
 
       </el-tab-pane>
       <el-tab-pane label="脚本统计配置"  >
@@ -225,7 +282,10 @@ export default {
       selectGameVisible: false,
       gameOptions: [],
       dialogGameOptions: [],
-      slotsTableData:[],
+
+      scriptTableData:[],
+      coordinateTableData:[],
+      queryTime: new Date().getTime()
     }
   },
   created() {
@@ -385,11 +445,25 @@ export default {
         data: {
           Path: '/slotsStat/script/statistics',
           Env: store.getters.env,
-          queryTime:  parseInt(new Date().getTime() /1000),
+          queryTime: parseInt(this.queryTime /1000),
         }
       }).then(response => {
+        // coordinate 返回数据格式，SlotsType_目标倍率_当前倍率_剧本_x_y
+        // script 返回数据格式， slotsType, 配置index
         console.log('list response', response)
-
+      if (response.RetCode===0){
+        for (const key in response.Data["coordinate"]) {
+          // SlotsType_目标倍率_当前倍率_剧本_x_y
+          var strings1 = key.split('_')
+          this.coordinateTableData.push({gid: strings1[0],target: strings1[1],current: strings1[2],type: '剧本'+strings1[3]+'('+strings1[4]+','+strings1[5]+')',cnt: response.Data["coordinate"][key]})
+        }
+        this.scriptTableData= []
+        for (const key in response.Data["script"]) {
+          var strings = key.split('_');
+          this.scriptTableData.push({gid: strings[0],idx: strings[1],cnt: response.Data["script"][key]})
+        }
+        console.log("====",this.scriptTableData)
+      }
       })
     },
     checkDuplicate(data) {
