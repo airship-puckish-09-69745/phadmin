@@ -469,6 +469,11 @@ export default {
               this.BetLevelText = this.item.BetLevel.CanBet.join(',')
             }
 
+            // 将TestCards转换成以英文逗号相隔的字符串
+            if (this.item.TestCards && this.item.TestCards.length > 0) {
+              this.TestCardsText = this.item.TestCards.join(',')
+            }
+
             for (const k in this.item.JackpotRegulation.RandAwards) {
               this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
             }
