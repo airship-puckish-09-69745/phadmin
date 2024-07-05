@@ -129,18 +129,18 @@
                   </el-col>
                 </el-row>
                 <el-row>
+                  <!--
                   <el-col :span="11">
                     <el-form-item label="买入需要PHP：" :required="true" prop="item.WeekObj.JoinMoney" :rules="dataRule(true,{type:'n',range:'1'})">
                       <el-input v-model.number="edit.item.WeekObj.JoinMoney" placeholder="请输入" :disabled="true" />
                     </el-form-item>
                   </el-col>
+                  -->
                   <el-col :span="11">
                     <el-form-item label="重复买入需要PHP：" :required="true" prop="item.WeekObj.RebuyMoney" :rules="dataRule(true,{type:'n',range:'1'})">
                       <el-input v-model.number="edit.item.WeekObj.RebuyMoney" placeholder="请输入" :disabled="true" />
                     </el-form-item>
                   </el-col>
-                </el-row>
-                <el-row>
                   <el-col :span="11">
                     <el-form-item label="购买获取虚拟币：" :required="true" prop="item.WeekObj.BuyVirtualCoin" :rules="dataRule(true,{type:'n',range:'1'})">
                       <el-input v-model.number="edit.item.WeekObj.BuyVirtualCoin" placeholder="请输入" :disabled="true" />
@@ -190,7 +190,7 @@ function newItem() {
       EndTime: Date.parse(new Date().toString()),
       TableMoney: 10,
       NeedVirtualCoin: 1,
-      JoinMoney: 88,
+      // JoinMoney: 88,
       RebuyMoney: 10,
       BuyVirtualCoin: 2000
     }

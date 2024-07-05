@@ -376,8 +376,8 @@
                     :header-cell-style="{textAlign:'center'}"
                   >
                     <el-table-column
-                      label="JACKPOT类型(Level)"
-                      width="180"
+                      label="Jp类型(Level)"
+                      width="150"
                     >
                       <template slot-scope="scope">
                         {{ JpTypeMap[scope.row.Level] }}
@@ -385,32 +385,36 @@
                     </el-table-column>
 
                     <el-table-column
-                      label="同时开jp最小人数"
-                      width="200"
+                      label="Jp开奖人数(min)"
+                      width="150"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.NumMin" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="同时开jp最大人数"
-                      width="200"
+                      label="Jp开奖人数(max)"
+                      width="150"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.NumMax" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="同时开jp时间限制"
+                      label="Jp开奖人数(时间段控制)"
                       width="200"
                     >
+                      <template slot="header">
+                        <p style="text-align: center">  Jp开奖人数(时间段控制)</p>
+                        <span style="color: red;font-size: 11px">  注: 没有覆盖的时间段按左边配置走</span>
+                      </template>
                       <template slot-scope="scope">
                         <el-button  type="primary" icon="el-icon-edit" circle size="mini" @click="showJpDayLimitDialog(scope.row,scope.$index)" />
                         <el-tag v-for="(tag, key) in scope.row.NumHour"   :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="中奖时间"
+                      label="JP中奖时间"
                       width="200"
                     >
                       <template slot-scope="scope">
@@ -709,12 +713,12 @@
             <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
           </template>
         </el-table-column>
-        <el-table-column label="最小开奖人数" prop="Num">
+        <el-table-column label="Jp开奖人数(min)" prop="Num">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.NumMin" style="width: 100px;" size="mini" :required="true" />
           </template>
         </el-table-column>
-        <el-table-column label="最大开奖人数" prop="Num">
+        <el-table-column label="Jp开奖人数(max)" prop="Num">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.NumMax" style="width: 100px;" size="mini" :required="true" />
           </template>
