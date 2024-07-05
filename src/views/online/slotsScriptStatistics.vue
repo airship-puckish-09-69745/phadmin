@@ -56,6 +56,14 @@
                 label="次数"
               >
               </el-table-column>
+              <el-table-column
+                prop="cnt"
+                label="占比"
+              >
+                <template slot-scope="scope">
+                  {{ (parseInt(scope.row.cnt) / sumData * 100).toFixed(2) + "%" }}
+                </template>
+              </el-table-column>
             </el-table>
             <el-row>
               <el-col :span="12">
@@ -176,6 +184,7 @@ export default {
       cfgMap: {},
       queryGid: 0,
       gidOptions: {},
+      sumData:0,
     }
   },
   created() {
@@ -309,15 +318,16 @@ export default {
 
             coordinateTableData.push({
               gid: strings1[0],
-
               type:  prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
               sort: parseInt(strings1[1]),
               cnt: response.Data["coordinate"][key]
             })
             $this.gidOptions[strings1[0]] = strings1[0]
           }
+          this.sumData = 0
           for (const key in response.Data["script"]) {
             var strings = key.split('_');
+            this.sumData += parseInt(response.Data["script"][key])
             scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
           }
         }
