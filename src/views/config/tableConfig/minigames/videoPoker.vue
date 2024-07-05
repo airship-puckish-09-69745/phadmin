@@ -42,7 +42,7 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="配牌16进制，5张牌(♠K,♥10): 4d,3a：">
-              <el-input v-model.number="TestCardsText" />
+              <el-input v-model="TestCardsText" />
             </el-form-item>
           </el-col>
         </el-row>
