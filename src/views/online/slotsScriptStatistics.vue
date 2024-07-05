@@ -95,16 +95,7 @@
                 </span>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="target"
-                label="目标倍率"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="current"
-                label="当前倍率"
-              >
-              </el-table-column>
+
               <el-table-column
                 prop="type"
                 label="类型"
@@ -298,7 +289,7 @@ export default {
           queryTime: parseInt(this.queryTime / 1000),
         }
       }).then(response => {
-        // coordinate 返回数据格式，SlotsType_目标倍率_当前倍率_剧本_x_y
+        // coordinate 返回数据格式，SlotsType_剧本_x_y
         // script 返回数据格式， slotsType, 配置index
         console.log('list response', response)
         let coordinateTableData = []
@@ -309,10 +300,9 @@ export default {
             var strings1 = key.split('_')
             coordinateTableData.push({
               gid: strings1[0],
-              target: strings1[1],
-              current: strings1[2],
-              type: '剧本' + strings1[3] + '(' + strings1[4] + ',' + strings1[5] + ')',
-              sort: parseInt(strings1[3]),
+
+              type: '常规' + strings1[1] + '(' + strings1[2] + ',' + strings1[3] + ')',
+              sort: parseInt(strings1[1]),
               cnt: response.Data["coordinate"][key]
             })
             $this.gidOptions[strings1[0]] = strings1[0]
