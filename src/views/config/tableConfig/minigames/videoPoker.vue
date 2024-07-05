@@ -42,7 +42,7 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="配牌16进制，5张牌(♠K,♥10): 4d,3a：">
-              <el-input v-model.number="TestCardsText" />
+              <el-input v-model="TestCardsText" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -467,6 +467,11 @@ export default {
             // 将BetLevel转换成以英文逗号相隔的字符串
             if (this.item.BetLevel.CanBet && this.item.BetLevel.CanBet.length > 0) {
               this.BetLevelText = this.item.BetLevel.CanBet.join(',')
+            }
+
+            // 将TestCards转换成以英文逗号相隔的字符串
+            if (this.item.TestCards && this.item.TestCards.length > 0) {
+              this.TestCardsText = this.item.TestCards.join(',')
             }
 
             for (const k in this.item.JackpotRegulation.RandAwards) {
