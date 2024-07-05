@@ -9,11 +9,13 @@
               size="mini"
               v-model="queryTime"
               type="date"
-              placeholder="选择日期">
+              placeholder="选择日期"
+              @change="updateGid"
+            >
             </el-date-picker>
             <el-select v-model="queryGid" size="mini" @change="queryKeyInput">
-              <el-option label="所有" :value="0" />
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="o" />
+              <el-option label="所有" :value="0"/>
+              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="o"/>
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
           </el-col>
@@ -55,8 +57,8 @@
               >
               </el-table-column>
             </el-table>
-            <el-row >
-              <el-col :span="12" >
+            <el-row>
+              <el-col :span="12">
                 <div class="block">
                   <el-pagination
                     :current-page="scriptClientDB.GetPage().GetCurrentPage()"
@@ -141,12 +143,10 @@
 </template>
 
 <script>
-import {Message} from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {copyObj} from 'codemirror/src/util/misc'
 import {$libShow, ClientTableData} from '@/utils/common'
 import store from "@/store";
 
@@ -181,9 +181,9 @@ export default {
       scriptTableData: [],
       coordinateTableData: [],
       queryTime: new Date().getTime(),
-      loading:false,
+      loading: false,
       cfgMap: {},
-      queryGid:0,
+      queryGid: 0,
       gidOptions: {},
     }
   },
@@ -195,10 +195,10 @@ export default {
   methods: {
 
     refreshScript() {
-      this.scriptTableData = this.scriptClientDB .GetCurrentPageData()
+      this.scriptTableData = this.scriptClientDB.GetCurrentPageData()
     },
     refreshCoordinate() {
-      this.coordinateTableData = this.coordinateClientDB .GetCurrentPageData()
+      this.coordinateTableData = this.coordinateClientDB.GetCurrentPageData()
     },
     handleClick(tab, event) {
       if (parseInt(tab.index) == 0) {
@@ -211,6 +211,9 @@ export default {
     newItem() {
       return this.item
     },
+    updateGid() {
+      this.queryGid = 0
+    },
     addOne() {
       this.item = {
         Gid: 0,
@@ -220,12 +223,12 @@ export default {
     },
     getTitle(gid, idx) {
       if (idx === 0) {
-        return '('+'0 ,'+   this.cfgMap[gid][idx].MaxOdds+']'
+        return '(' + '0 ,' + this.cfgMap[gid][idx].MaxOdds + ']'
       }
-      if (idx ===  this.cfgMap[gid].length-1) {
-        return '('+this.cfgMap[gid][idx].MinOdds+'≥ ∞'+']'
+      if (idx === this.cfgMap[gid].length - 1) {
+        return '(' + this.cfgMap[gid][idx].MinOdds + '≥ ∞' + ']'
       }
-      return '('+this.cfgMap[gid][idx].MinOdds + ',' + this.cfgMap[gid][idx].MaxOdds+']'
+      return '(' + this.cfgMap[gid][idx].MinOdds + ',' + this.cfgMap[gid][idx].MaxOdds + ']'
     },
     getFullKey(k) {
       return 'CustomizeCfg_' + k
@@ -253,7 +256,7 @@ export default {
         }
       })
     },
-    getGameName(gid){
+    getGameName(gid) {
       for (let o of this.gameOptions) {
         if (o.key == parseInt(gid)) {
           return o.label
@@ -298,8 +301,8 @@ export default {
         // coordinate 返回数据格式，SlotsType_目标倍率_当前倍率_剧本_x_y
         // script 返回数据格式， slotsType, 配置index
         console.log('list response', response)
-        let coordinateTableData =[]
-        let scriptTableData =[]
+        let coordinateTableData = []
+        let scriptTableData = []
         if (response.RetCode === 0) {
           for (const key in response.Data["coordinate"]) {
             // SlotsType_目标倍率_当前倍率_剧本_x_y
@@ -309,7 +312,7 @@ export default {
               target: strings1[1],
               current: strings1[2],
               type: '剧本' + strings1[3] + '(' + strings1[4] + ',' + strings1[5] + ')',
-              sort:parseInt( strings1[3]),
+              sort: parseInt(strings1[3]),
               cnt: response.Data["coordinate"][key]
             })
             $this.gidOptions[strings1[0]] = strings1[0]
@@ -324,7 +327,7 @@ export default {
         })
 
         scriptTableData.sort(function (a, b) {
-          return a.idx-b.idx
+          return a.idx - b.idx
         })
 
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
