@@ -288,6 +288,12 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy ◐' }
           },
           {
+            path: 'niuniuTable',
+            component: () => import('@/views/config/tableConfig/niuniuTable'),
+            name: 'niuniuTable',
+            meta: { title: 'NiuNiu ◐' }
+          },
+          {
             path: 'texasTable',
             component: () => import('@/views/config/tableConfig/texasTable'),
             name: 'texasTable',
