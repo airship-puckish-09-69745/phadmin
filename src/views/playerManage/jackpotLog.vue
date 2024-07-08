@@ -219,7 +219,8 @@ export default {
         // { 'value': 101, 'label': 'Sicbo' },
         { 'value': 102, 'label': 'Hilo' },
         { 'value': 103, 'label': 'Windrop' },
-        { 'value': 106, 'label': '金猪' }
+        { 'value': 106, 'label': '金猪' },
+        { 'value': 108, 'label': 'DropBall' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

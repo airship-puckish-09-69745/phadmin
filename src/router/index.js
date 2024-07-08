@@ -129,6 +129,12 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
+      {
+        path: 'slotsScriptStatistics',
+        component: () => import('@/views/online/slotsScriptStatistics.vue'),
+        name: 'slotsScriptStatistics',
+        meta: { title: 'slots剧本监控', noCache: true }
+      },
       /* {
         path: 'play_log_top100',
         component: () => import('@/views/playerManage/PlaylogTop100'),
@@ -280,6 +286,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/pusoyTable'),
             name: 'pusoyTable',
             meta: { title: 'Pusoy ◐' }
+          },
+          {
+            path: 'niuniuTable',
+            component: () => import('@/views/config/tableConfig/niuniuTable'),
+            name: 'niuniuTable',
+            meta: { title: 'NiuNiu ◐' }
           },
           {
             path: 'texasTable',

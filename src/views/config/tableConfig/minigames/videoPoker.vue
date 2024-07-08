@@ -34,7 +34,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="下注额度(示例:1000,2000,3000,4000,5000,6000,7000,8000,9000,10000)">
+            <el-form-item label="下注额度(示例:1,2,3,4,5,6,7,8,9,10,15,20,30,40,50,80,100,200)">
               <el-input v-model="BetLevelText" />
             </el-form-item>
           </el-col>
@@ -42,8 +42,85 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="配牌16进制，5张牌(♠K,♥10): 4d,3a：">
-              <el-input v-model.number="TestCardsText" />
+              <el-input v-model="TestCardsText" />
             </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="12">
+            <fieldset style="margin-top:10px">
+              <legend>Jacks or Better 玩法牌型赔率</legend>
+
+              <el-table
+                :data="JbOddsList"
+                border
+                style="width: 100%"
+              >
+                <el-table-column
+                  label="牌型ID"
+                  width="70"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.CardType }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="牌型"
+                  width="280"
+                >
+                  <template slot-scope="scope">
+                    {{ JbCardTypes[scope.row.CardType] }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="赔率"
+                  width="380"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-if="scope.row.Odds !== undefined" v-model.number="scope.row.Odds" /><el-input v-else disabled />
+                  </template>
+                </el-table-column>
+              </el-table>
+
+            </fieldset>
+          </el-col>
+          <el-col :span="12">
+            <fieldset style="margin-top:10px">
+              <legend>Deuces Wild 玩法牌型赔率</legend>
+
+              <el-table
+                :data="DwOddsList"
+                border
+                style="width: 100%"
+              >
+                <el-table-column
+                  label="牌型ID"
+                  width="70"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.CardType }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="牌型"
+                  width="280"
+                >
+                  <template slot-scope="scope">
+                    {{ DwCardTypes[scope.row.CardType] }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="赔率"
+                  width="380"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Odds" />
+                  </template>
+                </el-table-column>
+              </el-table>
+
+            </fieldset>
           </el-col>
         </el-row>
 
@@ -385,6 +462,7 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libShow } from '@/utils/common'
+import emojPrice from "@/views/config/baseConfig/emojPrice.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -403,11 +481,17 @@ export default {
         SwapSeconds: 30,
         NoticeTime: 30,
         TestCards: [],
+        CardTypeOdds: {
+          JbOddsList: [],
+          DwOddsList: []
+        },
         BetLevel: [{ CanBet: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000], MaxMoneyBet: 2000, MinMoneyBet: 10 }]
       },
       load: false,
       form: {
       },
+      JbOddsList: [],
+      DwOddsList: [],
       TestCardsText: '',
       BetLevelText: '',
       envProjectName: process.env.VUE_APP_PROJECT,
@@ -416,6 +500,29 @@ export default {
         2: '二等奖',
         3: '三等奖',
         4: '3Bet中奖'
+      },
+      JbCardTypes: {
+        1: '皇家同花顺（Royal Flush）',
+        2: '同花顺（Straight Flush）',
+        3: '四条（Four of a Kind）',
+        4: '葫芦（Full House）',
+        5: '同花（Flush）',
+        6: '顺子（Straight）',
+        7: '三条（Three of a Kind）',
+        8: '两对（Two Pair）',
+        9: '杰克更好（Jacks or Better）'
+      },
+      DwCardTypes: {
+        1: '天然皇家同花顺（Natural Royal Flush）',
+        2: '4张2（4 Deuces）',
+        3: '癞子皇家同花顺（Wild Royal Flush）',
+        4: '5条（Five of a Kind）',
+        5: '同花顺（Straight Flush）',
+        6: '四条（Four of a Kind）',
+        7: '葫芦（Full House）',
+        8: '同花（Flush）',
+        9: '顺子（Straight）',
+        10: '三条（Three of a Kind）'
       },
       dayLimitChange: {
         visible: false,
@@ -462,12 +569,16 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             this.item = JSON.parse(response.Data.Data)
 
-            console.log('this.item.BetLevel.CanBet', this.item.BetLevel.CanBet)
-
-            // 将BetLevel转换成以英文逗号相隔的字符串
-            if (this.item.BetLevel.CanBet && this.item.BetLevel.CanBet.length > 0) {
-              this.BetLevelText = this.item.BetLevel.CanBet.join(',')
+            // 将TestCards转换成以英文逗号相隔的字符串
+            if (this.item.TestCards && this.item.TestCards.length > 0) {
+              this.TestCardsText = this.item.TestCards.join(',')
             }
+
+            this.transMoneyForShow()
+
+            this.JbOddsList = this.item.CardTypeOdds.JbOddsList
+            this.JbOddsList.push({})
+            this.DwOddsList = this.item.CardTypeOdds.DwOddsList
 
             for (const k in this.item.JackpotRegulation.RandAwards) {
               this.item.JackpotRegulation.RandAwards[k].PoolVal /= 1000
@@ -484,9 +595,52 @@ export default {
     showOpenDayLimit(data) {
       return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点：' + data['Num'] + '个'
     },
+    updateBetLevelText() {
+      // 将BetLevel转换成以英文逗号相隔的字符串
+      this.BetLevelText = ''
+      if (this.item.BetLevel.CanBet && this.item.BetLevel.CanBet.length > 0) {
+        for (const i in this.item.BetLevel.CanBet) {
+          this.BetLevelText += this.item.BetLevel.CanBet[i] / 1000 + ','
+        }
+        this.BetLevelText = this.BetLevelText.substring(0, this.BetLevelText.length - 1)
+      }
+    },
+    transMoneyForShow() {
+      this.updateBetLevelText()
+
+      for (const i in this.item.CardTypeOdds.JbOddsList) {
+        this.item.CardTypeOdds.JbOddsList[i].Odds /= 1000
+      }
+
+      for (const i in this.item.CardTypeOdds.DwOddsList) {
+        this.item.CardTypeOdds.DwOddsList[i].Odds /= 1000
+      }
+    },
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
+
+      ret.CardTypeOdds.JbOddsList = []
+      for (const i in this.JbOddsList) {
+        if (this.JbOddsList[i].Odds === undefined) {
+          continue
+        }
+        const jbObj = {}
+        Object.assign(jbObj, this.JbOddsList[i])
+        jbObj.Odds *= 1000
+        ret.CardTypeOdds.JbOddsList.push(jbObj)
+      }
+
+      ret.CardTypeOdds.DwOddsList = []
+      for (const i in this.DwOddsList) {
+        if (this.DwOddsList[i].Odds === undefined) {
+          continue
+        }
+        const dwObj = {}
+        Object.assign(dwObj, this.DwOddsList[i])
+        dwObj.Odds *= 1000
+        ret.CardTypeOdds.DwOddsList.push(dwObj)
+      }
 
       const jackpotInfo = {}
       Object.assign(jackpotInfo, this.item.JackpotRegulation)
@@ -507,7 +661,7 @@ export default {
       if (this.BetLevelText.length > 0) {
         const betArr = this.BetLevelText.split(',')
         for (const k in betArr) {
-          const val = parseInt(betArr[k])
+          const val = parseInt((betArr[k] * 1000).toString())
           if (val <= 0) {
             continue
           }
@@ -519,7 +673,7 @@ export default {
         })
         this.item.BetLevel.MinMoneyBet = this.item.BetLevel.CanBet[0]
         this.item.BetLevel.MaxMoneyBet = this.item.BetLevel.CanBet[this.item.BetLevel.CanBet.length - 1]
-        this.BetLevelText = this.item.BetLevel.CanBet.join(',')
+        this.updateBetLevelText()
       }
 
       this.item.TestCards = []
