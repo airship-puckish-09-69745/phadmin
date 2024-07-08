@@ -129,6 +129,12 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
+      {
+        path: 'slotsScriptStatistics',
+        component: () => import('@/views/online/slotsScriptStatistics.vue'),
+        name: 'slotsScriptStatistics',
+        meta: { title: 'slots剧本监控', noCache: true }
+      },
       /* {
         path: 'play_log_top100',
         component: () => import('@/views/playerManage/PlaylogTop100'),
@@ -676,6 +682,7 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '活动配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
+      /*
       {
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
@@ -714,6 +721,7 @@ export const asyncRoutes = [
           }
         ]
       },
+      */
       {
         path: 'pointRaceConfig',
         component: () => import('@/views/empty'),

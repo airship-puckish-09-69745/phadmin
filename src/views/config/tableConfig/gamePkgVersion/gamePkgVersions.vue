@@ -88,6 +88,10 @@
         @row-click="clickData"
         @sort-change="sortChange"
       >
+<!--        <el-table-column-->
+<!--          type="selection"-->
+<!--          width="55"-->
+<!--        />-->
         <el-table-column
           prop="ID"
           label="ID"
@@ -229,12 +233,12 @@
         </el-form-item>
         <el-form-item label="包Key：" :required="true" prop="BundleKey">
           <el-col :span="15">
-            <el-input v-model="edit.item.BundleKey" :disabled="isDisabled" />
+            <el-input v-model="edit.item.BundleKey" :readonly="isDisabled" :class="isDisabled ? 'el-input_no_border' : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="版本号：" :required="true" prop="GamePkgVersion">
           <el-col :span="15">
-            <el-input v-model="edit.item.GamePkgVersion" placeholder="格式： 1.0.0.0" :disabled="isDisabled" />
+            <el-input v-model="edit.item.GamePkgVersion" placeholder="格式： 1.0.0.0" :readonly="isDisabled" :class="isDisabled ? 'el-input_no_border' : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="白名单版本号：">
@@ -246,6 +250,9 @@
           <el-col :span="11">
             <el-form-item>
               <el-button type="success" size="mini" @click="publishWhiteVersion()">发布</el-button>
+              <el-tooltip content="将链接版本复制到白名单版本，保存生效" placement="top">
+                <el-button type="success" size="mini" @click="copyLobbyVersion2WhiteVersion()">复制链接版本</el-button>
+              </el-tooltip>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -441,6 +448,7 @@ export default {
         copyLobbyVisible: false,
         copyLobbyItem: this.newCopyLobbyItem()
       },
+      multipleSelection: [],
       isDisabled: false,
       versionHistoryVisible: false,
       rules: {
@@ -700,7 +708,14 @@ export default {
         })
       })
     },
+    handleSelectionChange(val) {
+      console.log('handleSelectionChange>>>>>', val)
+      this.multipleSelection = val
+    },
     //* * ********************** 修改/添加弹框相关 *****************
+    copyLobbyVersion2WhiteVersion() {
+      this.edit.item.WhiteVersion = this.LobbyVersion
+    },
     getEditTitle() {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改配置' : '新增配置'
@@ -798,7 +813,7 @@ export default {
     },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
-      if (this.getPostData().LobbyVersionID === 0) {
+      if (this.getPostData().LobbyVersionID < 1) {
         this.$alert('链接版本ID错误，请刷新重试')
         return false
       }
@@ -857,15 +872,20 @@ export default {
       this.edit.visible = false
     },
     publishWhiteVersion() {
-      if (!this.checkData()) return
-      const _data = this.getPostData()
+      if (!this.checkData()) {
+        return
+      }
+      var _data = {}
+      for (const key in this.edit.item) {
+        _data[key] = this.edit.item[key]
+      }
       _data.ID = 0
       _data.GamePkgVersion = _data.WhiteVersion.trim()
       _data.WhiteVersion = ''
-
       if (_data.GamePkgVersion === '') {
         Message.error('游戏包版本不能为空')
-        return
+        console.log('postData: ', this.getPostData())
+        return false
       }
       this.createSave(_data)
       this.edit.visible = false
@@ -938,3 +958,8 @@ export default {
   }
 }
 </script>
+<style>
+.el-input_no_border .el-input__inner {
+  border: none;
+}
+</style>
