@@ -222,13 +222,15 @@ export default {
       this.selectGameVisible = true
     },
     getTitle(gid, idx) {
+      let max = parseInt(this.cfgMap[gid][idx].MaxOdds)+100
+      let min = parseInt(this.cfgMap[gid][idx].MinOdds)+100
       if (idx === 0) {
-        return '(' + '0 ,' + this.cfgMap[gid][idx].MaxOdds + ']'
+        return '(' + '0 ,' +max + ']'
       }
       if (idx === this.cfgMap[gid].length - 1) {
-        return '(' + this.cfgMap[gid][idx].MinOdds + '≥ ∞' + ']'
+        return '(' + min + '≥ ∞' + ']'
       }
-      return '(' + this.cfgMap[gid][idx].MinOdds + ',' + this.cfgMap[gid][idx].MaxOdds + ']'
+      return '(' + min + ',' +max + ']'
     },
     getFullKey(k) {
       return 'CustomizeCfg_' + k
