@@ -4,11 +4,11 @@
     <el-tabs type="border-card" @tab-click="handleClick">
       <el-tab-pane label="脚本统计配置">
         <publish
-          primary-key="Volume"
-          :key-id="getFullKey(this.subKey)"
-          :env-empty="false"
-          compare-type="Object"
-          :attr-names="AttrNames"
+            primary-key="Volume"
+            :key-id="getFullKey(this.subKey)"
+            :env-empty="false"
+            compare-type="Object"
+            :attr-names="AttrNames"
         />
         <el-row :gutter="10" style="margin-top: 30px">
           <el-col :span="15">
@@ -30,18 +30,18 @@
           <el-col :span="24">
             <el-form ref="tableData" v-model="tableData" label-width="150px">
               <el-table
-                ref="filterTable"
-                :data="tableData"
-                stripe
-                border
-                :header-cell-style="libShow.DefaultTableHeadClass"
-                :row-style="{height:'10px'}"
-                :cell-style="libShow.DefaultTableCell"
-                style="width: 100%"
+                  ref="filterTable"
+                  :data="tableData"
+                  stripe
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
               >
                 <el-table-column
-                  prop="Gid"
-                  label="游戏"
+                    prop="Gid"
+                    label="游戏"
                 >
                   <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
@@ -50,9 +50,9 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                  prop="Gid"
-                  label="区间"
-                  width="1200"
+                    prop="Gid"
+                    label="区间"
+                    width="1200"
                 >
                   <template slot-scope="scope">
                 <span v-for="(data,idx) in scope.row.OddsList">
@@ -79,13 +79,13 @@
         <el-col :offset="16" :span="8">
           <div class="block">
             <el-pagination
-              :current-page="clientDB.GetPage().GetCurrentPage()"
-              :page-sizes="[10, 20, 30, 40]"
-              :page-size="clientDB.GetPage().GetPageNum()"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="clientDB.GetPage().GetTotalCount()"
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
+                :current-page="clientDB.GetPage().GetCurrentPage()"
+                :page-sizes="[10, 20, 30, 40]"
+                :page-size="clientDB.GetPage().GetPageNum()"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="clientDB.GetPage().GetTotalCount()"
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
             />
           </div>
         </el-col>
@@ -95,18 +95,18 @@
     </el-tabs>
 
     <el-dialog
-      title="选择游戏"
-      :visible.sync="selectGameVisible"
-      width="700px"
+        title="选择游戏"
+        :visible.sync="selectGameVisible"
+        width="700px"
     >
       <el-form label-width="150px" inline>
         <el-form-item label="游戏">
           <el-select v-model="item.Gid" placeholder="请选择" size="mini">
             <el-option
-              v-for="item in gameOptions"
-              :key="item.key"
-              :label="item.label"
-              :value="item.key"
+                v-for="item in gameOptions"
+                :key="item.key"
+                :label="item.label"
+                :value="item.key"
             />
           </el-select>
         </el-form-item>
@@ -155,7 +155,6 @@ import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {copyObj} from 'codemirror/src/util/misc'
 import {$libShow, ClientTableData} from '@/utils/common'
-import store from "@/store";
 
 const filterMap = {}
 
@@ -188,7 +187,7 @@ export default {
       scriptTableData: [],
       coordinateTableData: [],
       queryTime: new Date().getTime(),
-      loading:false,
+      loading: false,
       cfgMap: {},
     }
   },
@@ -214,7 +213,7 @@ export default {
       this.item = {
         Gid: 0,
       },
-        this.showBtn = 0
+          this.showBtn = 0
       this.selectGameVisible = true
     },
 
@@ -290,6 +289,12 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (let o of cfg) {
+              console.log(o.OddsList)
+
+              for (let i = 0; i < o.OddsList.length; i++) {
+                o.OddsList[i].MaxOdds += 100
+                o.OddsList[i].MinOdds += 100
+              }
               this.cfgMap[o.Gid] = o.OddsList
             }
             this.clientDB = new ClientTableData(cfg, 10, filterMap, 'Gid', -1)
@@ -336,9 +341,14 @@ export default {
     getCfg() {
       const cfg = []
       for (const i in this.tableData) {
-        const item = {}
-        copyObj(this.tableData[i], item)
+        const item = JSON.parse(JSON.stringify(this.tableData[i]))
         cfg.push(item)
+      }
+      for (let o of cfg) {
+        for (let i = 0; i < o.OddsList.length; i++) {
+          o.OddsList[i].MaxOdds -= 100
+          o.OddsList[i].MinOdds -= 100
+        }
       }
       return cfg
     },
