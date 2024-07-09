@@ -334,7 +334,7 @@ export default {
           }
         }
         coordinateTableData.sort(function (a, b) {
-          return a.sort - b.sort
+          return a.cnt - b.cnt
         })
 
         scriptTableData.sort(function (a, b) {
