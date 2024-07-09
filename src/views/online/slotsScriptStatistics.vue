@@ -33,38 +33,40 @@
               :cell-style="libShow.DefaultTableCell"
               style="width: 500px"
             >
-              <el-table-column
-                prop="gid"
-                label="游戏"
-                width="120px"
-              >
-                <template slot-scope="scope">
+             <el-table-column label="命中统计">
+               <el-table-column
+                   prop="gid"
+                   label="游戏"
+                   width="120px"
+               >
+                 <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
                   {{ (scope.row.gid == item.key ? item.label : "") }}
                 </span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="idx"
-                label="区间"
-              >
-                <template slot-scope="scope">
-                  {{ getTitle(parseInt(scope.row.gid), parseInt(scope.row.idx)) }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="cnt"
-                label="次数"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="cnt"
-                label="占比"
-              >
-                <template slot-scope="scope">
-                  {{ (parseInt(scope.row.cnt) / sumData * 100).toFixed(2) + "%" }}
-                </template>
-              </el-table-column>
+                 </template>
+               </el-table-column>
+               <el-table-column
+                   prop="idx"
+                   label="区间"
+               >
+                 <template slot-scope="scope">
+                   {{ getTitle(parseInt(scope.row.gid), parseInt(scope.row.idx)) }}
+                 </template>
+               </el-table-column>
+               <el-table-column
+                   prop="cnt"
+                   label="次数"
+               >
+               </el-table-column>
+               <el-table-column
+                   prop="cnt"
+                   label="占比"
+               >
+                 <template slot-scope="scope">
+                   {{ (parseInt(scope.row.cnt) / sumData * 100).toFixed(2) + "%" }}
+                 </template>
+               </el-table-column>
+             </el-table-column>
             </el-table>
             <el-row>
               <el-col :span="12">
