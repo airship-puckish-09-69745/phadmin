@@ -8,6 +8,7 @@
       <el-col :span="14" :offset="3">
         <el-form ref="form" label-position="left">
 
+          <!--
           <template>
             <el-alert type="success" description="多个应用英文逗号(,)分开,开放所有应用留空" />
           </template>
@@ -18,6 +19,7 @@
               </el-form-item>
             </el-col>
           </el-row>
+          -->
 
           <el-row>
             <el-col :span="6">
