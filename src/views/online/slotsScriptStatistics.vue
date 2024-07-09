@@ -22,7 +22,7 @@
         </el-row>
 
         <el-row>
-          <el-col :span="10">
+          <el-col :span="6">
             <el-table
               ref="filterTable"
               :data="scriptTableData"
@@ -81,7 +81,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="5" :offset="1">
             <el-table
               ref="filterTable"
               :data="coordinateTableData"
@@ -124,10 +124,62 @@
                     :current-page="coordinateClientDB.GetPage().GetCurrentPage()"
                     :page-sizes="[10, 20, 30, 40]"
                     :page-size="coordinateClientDB.GetPage().GetPageNum()"
-                    layout="total, sizes, prev, pager, next, jumper"
+                    layout="total, sizes, prev, pager, next"
                     :total="coordinateClientDB.GetPage().GetTotalCount()"
                     @size-change="coordinateHandleSizeChange"
                     @current-change="coordinateHandleCurrentChange"
+                  />
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="5" :offset="1">
+            <el-table
+                ref="filterTable"
+                :data="stepTableData"
+                stripe
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 700px"
+
+            >
+              <el-table-column
+                  prop="gid"
+                  label="游戏"
+              >
+                <template slot-scope="scope">
+                <span v-for="(item, index) in gameOptions" :key="index">
+                  {{ (scope.row.gid == item.key ? item.label : "") }}
+                </span>
+                </template>
+              </el-table-column>
+
+              <el-table-column
+                  prop="type"
+                  label="类型"
+                  width="120px"
+              >
+              </el-table-column>
+              <el-table-column
+                  prop="cnt"
+                  label="次数"
+              >
+              </el-table-column>
+
+            </el-table>
+            <el-row>
+              <el-col :span="5">
+                <div class="block">
+                  <el-pagination
+                      :current-page="stepClientDB.GetPage().GetCurrentPage()"
+                      :page-sizes="[10, 20, 30, 40]"
+                      :page-size="stepClientDB.GetPage().GetPageNum()"
+                      layout="total, sizes, prev, pager, next"
+                      :total="stepClientDB.GetPage().GetTotalCount()"
+                      @size-change="stepHandleSizeChange"
+                      @current-change="stepHandleCurrentChange"
                   />
                 </div>
               </el-col>
@@ -168,6 +220,7 @@ export default {
       tableData: [],
       scriptClientDB: new ClientTableData([], 1, filterMap),
       coordinateClientDB: new ClientTableData([], 1, filterMap),
+      stepClientDB: new ClientTableData([], 1, filterMap),
       showBtn: 0,
       libShow: $libShow,
       item: {
@@ -179,6 +232,8 @@ export default {
 
       scriptTableData: [],
       coordinateTableData: [],
+      stepTableData: [],
+
       queryTime: new Date().getTime(),
       loading: false,
       cfgMap: {},
@@ -193,7 +248,9 @@ export default {
     this.getSlotsScriptStatistics()
   },
   methods: {
-
+    refreshStep() {
+      this.stepTableData = this.stepClientDB.GetCurrentPageData()
+    },
     refreshScript() {
       this.scriptTableData = this.scriptClientDB.GetCurrentPageData()
     },
@@ -287,7 +344,14 @@ export default {
       this.coordinateClientDB.GetPage().SetPageNo(val)
       this.refreshCoordinate()
     },
-
+   stepHandleSizeChange(val) {
+      this.coordinateClientDB.GetPage().SetPageNum(val)
+      this.refreshCoordinate()
+    },
+    stepHandleCurrentChange(val) {
+      this.stepClientDB.GetPage().SetPageNo(val)
+      this.refreshStep()
+    },
     getSlotsScriptStatistics() {
       const $this = this
       $this.loading = true
@@ -305,6 +369,7 @@ export default {
         console.log('list response', response)
         let coordinateTableData = []
         let scriptTableData = []
+        let stepTableData = []
         if (response.RetCode === 0) {
           for (const key in response.Data["coordinate"]) {
             // SlotsType_目标倍率_当前倍率_剧本_x_y
@@ -332,8 +397,33 @@ export default {
             this.sumData += parseInt(response.Data["script"][key])
             scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
           }
+
+          for (const key in response.Data["step"]) {
+            // SlotsType_目标倍率_当前倍率_剧本_x_y
+            var strings1 = key.split('_')
+            let prefix=''
+            if (parseInt(strings1[1]) === -2) {
+              prefix='指定正数'
+            } else if  (parseInt(strings1[1]) === -1) {
+              prefix='指定负数'
+            } else {
+              prefix='常规'+(parseInt(strings1[1])+1)
+            }
+              let step = parseInt(strings1[3])+5
+            stepTableData.push({
+              gid: strings1[0],
+              type:  prefix + '(' + strings1[2] + ',' + step + ')',
+              sort: parseInt(strings1[1]),
+              cnt: response.Data["step"][key]
+            })
+            $this.gidOptions[strings1[0]] = strings1[0]
+          }
         }
         coordinateTableData.sort(function (a, b) {
+          return b.cnt - a.cnt
+        })
+
+        stepTableData.sort(function (a, b) {
           return b.cnt - a.cnt
         })
 
@@ -343,8 +433,10 @@ export default {
 
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
+        this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.refreshCoordinate()
         this.refreshScript()
+        this.refreshStep()
 
         $this.loading = false
       })
