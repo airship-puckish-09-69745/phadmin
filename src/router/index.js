@@ -566,6 +566,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
                 meta: { title: '超级王牌' }
+              },
+              {
+                path: 'supergemii_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
+                name: 'supergemii_slots_cfg',
+                meta: { title: '超级宝石II' }
               }
               /*
               {
@@ -620,6 +626,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
                 meta: { title: '超级王牌(审)' }
+              },
+              {
+                path: 'supergemiimars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
+                name: 'supergemiimars_slots_cfg',
+                meta: { title: '超级宝石II(审)' }
               }
             ]
           },
