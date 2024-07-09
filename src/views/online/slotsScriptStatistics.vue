@@ -81,7 +81,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="5" :offset="1">
+          <el-col :span="6" :offset="1">
             <el-table
               ref="filterTable"
               :data="coordinateTableData"
@@ -93,29 +93,38 @@
               style="width: 700px"
 
             >
-              <el-table-column
-                prop="gid"
-                label="游戏"
-              >
-                <template slot-scope="scope">
+           <el-table-column label="完成50步统计">
+             <el-table-column
+                 prop="gid"
+                 label="游戏"
+                 width="120px"
+             >
+               <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
                   {{ (scope.row.gid == item.key ? item.label : "") }}
                 </span>
-                </template>
-              </el-table-column>
-
-              <el-table-column
-                prop="type"
-                label="类型"
-                width="120px"
-              >
-              </el-table-column>
-              <el-table-column
-                prop="cnt"
-                label="次数"
-              >
-              </el-table-column>
-
+               </template>
+             </el-table-column>
+             <el-table-column
+                 prop="type"
+                 label="类型"
+                 width="120px"
+             >
+             </el-table-column>
+             <el-table-column
+                 prop="cnt"
+                 label="次数"
+             >
+             </el-table-column>
+             <el-table-column
+                 prop="cnt"
+                 label="占比"
+             >
+               <template slot-scope="scope">
+                {{ (parseInt(scope.row.cnt) / coordinateSum * 100).toFixed(2) + "%" }}
+              </template>
+             </el-table-column>
+           </el-table-column>
             </el-table>
             <el-row>
               <el-col :span="5">
@@ -133,7 +142,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="5" :offset="1">
+          <el-col :span="6" :offset="1">
             <el-table
                 ref="filterTable"
                 :data="stepTableData"
@@ -145,9 +154,11 @@
                 style="width: 700px"
 
             >
+            <el-table-column label="步数统计">
               <el-table-column
                   prop="gid"
                   label="游戏"
+                  width="120px"
               >
                 <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
@@ -167,7 +178,15 @@
                   label="次数"
               >
               </el-table-column>
-
+              <el-table-column
+                  prop="cnt"
+                  label="占比"
+              >
+                <template slot-scope="scope">
+                {{ (parseInt(scope.row.cnt) / stepSum * 100).toFixed(2) + "%" }}
+                </template>
+              </el-table-column>
+            </el-table-column>
             </el-table>
             <el-row>
               <el-col :span="5">
@@ -240,6 +259,8 @@ export default {
       queryGid: 0,
       gidOptions: {},
       sumData:0,
+      stepSum:0,
+      coordinateSum:0,
     }
   },
   created() {
@@ -370,9 +391,12 @@ export default {
         let coordinateTableData = []
         let scriptTableData = []
         let stepTableData = []
+        this.sumData = 0
+        this.stepSum = 0
+        this.coordinateSum = 0
         if (response.RetCode === 0) {
           for (const key in response.Data["coordinate"]) {
-            // SlotsType_目标倍率_当前倍率_剧本_x_y
+            // SlotsType__剧本_x_y
             var strings1 = key.split('_')
             let prefix=''
             if (parseInt(strings1[1]) === -2) {
@@ -382,7 +406,7 @@ export default {
             } else {
               prefix='常规'+(parseInt(strings1[1])+1)
             }
-
+            this.coordinateSum+=parseInt(response.Data["coordinate"][key])
             coordinateTableData.push({
               gid: strings1[0],
               type:  prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
@@ -391,7 +415,7 @@ export default {
             })
             $this.gidOptions[strings1[0]] = strings1[0]
           }
-          this.sumData = 0
+
           for (const key in response.Data["script"]) {
             var strings = key.split('_');
             this.sumData += parseInt(response.Data["script"][key])
@@ -410,6 +434,7 @@ export default {
               prefix='常规'+(parseInt(strings1[1])+1)
             }
               let step = parseInt(strings1[3])+5
+            this.stepSum+=parseInt(response.Data["step"][key])
             stepTableData.push({
               gid: strings1[0],
               type:  prefix + '(' + strings1[2] + ',' + step + ')',
