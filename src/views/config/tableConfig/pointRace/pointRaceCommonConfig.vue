@@ -8,18 +8,16 @@
       <el-col :span="14" :offset="3">
         <el-form ref="form" label-position="left">
 
-          <!--
           <template>
-            <el-alert type="success" description="多个应用英文逗号(,)分开,开放所有应用留空" />
+            <el-alert type="success" description="多个应用英文逗号(,)分开" />
           </template>
           <el-row>
             <el-col :span="24">
               <el-form-item label="开放的应用列表">
-                <el-input v-model="item.AppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开,开放所有应用留空" />
+                <el-input v-model="item.AppsStr" type="textarea" :rows="5" placeholder="多个应用英文逗号(,)分开" />
               </el-form-item>
             </el-col>
           </el-row>
-          -->
 
           <el-row>
             <el-col :span="6">
@@ -220,6 +218,10 @@ export default {
       return ret
     },
     setData() {
+      if (this.item.AppsStr == "") {
+        Message.error('请指定开放的App')
+        return
+      }
       if (!this.checkPrizeList(this.item.DayPrizeList)) {
         Message.error('日赛奖励不符合，请检查')
         return
