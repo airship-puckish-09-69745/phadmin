@@ -506,25 +506,12 @@ export default {
       return postData
     },
     checkData() {
-      if (this.edit.item.CarryLower > this.edit.item.CarryUpper ||
-        this.edit.RandomRobotSetting.RobotTriggerMin > this.edit.RandomRobotSetting.RobotTriggerMax ||
-        this.edit.RandomRobotSetting.RobotPlayMin > this.edit.RandomRobotSetting.RobotPlayMax ||
-        this.edit.RandomRobotSetting.RobotMoneyMin > this.edit.RandomRobotSetting.RobotMoneyMax ||
-        this.edit.RandomRobotSetting.RobotMaxPlayTimesStart > this.edit.RandomRobotSetting.RobotMaxPlayTimesEnd ||
-        this.edit.ResidentRobotSetting.RobotMoneyRatioMin > this.edit.ResidentRobotSetting.RobotMoneyRatioMax) {
-        Message.warning('下限不能大于上限，请检查数值正确性！')
-        return false
-      }
-      if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
-        Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
-        return false
-      }
+
       return true
     },
     save() {
       if (!this.checkData()) return
-      this.edit.item.RandomRobotSetting = JSON.stringify(this.libMoneyRobot.TransForStore(this.edit.RandomRobotSetting))
-      this.edit.item.ResidentRobotSetting = JSON.stringify(this.edit.ResidentRobotSetting)
+ 
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
