@@ -287,7 +287,7 @@ export const asyncRoutes = [
             name: 'pusoyTable',
             meta: { title: 'Pusoy ◐' }
           },
-          {
+          { // 牛牛
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
@@ -895,6 +895,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pusoy',
             meta: { title: 'Pusoy - ◐', gid: 21 }
+          },
+          {
+            path: 'playlog_niuniu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_domino',
+            meta: { title: 'NiuNiu ◐', gid: 49 }
           },
           {
             path: 'playlog_pusoyDos',

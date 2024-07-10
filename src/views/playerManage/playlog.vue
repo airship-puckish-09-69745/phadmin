@@ -830,6 +830,40 @@
       </el-descriptions>
     </el-dialog>
 
+
+    <el-dialog title="NiuNiu牌局详情" :visible.sync="niuniuDetailVisible" width="1400px">
+      <el-table
+        :data="niuniuDetail.players"
+        :span-method="niuniuSpanMethods"
+        border
+      >
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
+        <el-table-column label="手牌" width="450" align="center">
+            <template #default="scope">
+              <template v-if="scope.row.cardType > 1">
+                <div v-html="showCard(scope.row.cards)" /><span>({{ niuniuCardTypes[scope.row.cardType] || '' }})</span>
+              </template>
+              <template v-else>
+                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ niuniuGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
+              </template>
+            </template>
+        </el-table-column>
+        <el-table-column prop="cardType" label="牌型" width="100"><template slot-scope="scope">{{ scope.row.cardType }}</template></el-table-column>
+        <el-table-column prop="oddsCard" label="牌型倍数" width="100"><template slot-scope="scope">{{ scope.row.oddsCard }}</template></el-table-column>
+        <el-table-column prop="oddsBet" label="下注倍数" width="100"><template slot-scope="scope">{{ scope.row.oddsBet }}</template></el-table-column>
+        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTaxed" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyTaxed/1000 }}</template></el-table-column>
+        <el-table-column prop="payRake" label="抽水贡献" width="100"><template slot-scope="scope">{{ scope.row.payRake/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyCur" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyCur/1000 }}</template></el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ niuniuDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ niuniuDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Lucky89牌局详情" :visible.sync="bodingDetailVisible" width="1200px">
       <el-table :data="bodingDetail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
