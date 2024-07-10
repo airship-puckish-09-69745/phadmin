@@ -1128,6 +1128,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
             meta: { title: '超级王牌', gid: 84 }
+          },
+          {
+            path: 'supergemii_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemii_slots_log',
+            meta: { title: '超级宝石II', gid: 86 }
           }
         ]
       },
@@ -1166,6 +1172,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
             meta: { title: '超级王牌(审)', gid: 85 }
+          },
+          {
+            path: 'supergemiimars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemiimars_slots_log',
+            meta: { title: '超级宝石II(审)', gid: 87 }
           }
         ]
       },
