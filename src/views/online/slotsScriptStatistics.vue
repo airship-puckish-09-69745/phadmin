@@ -220,11 +220,35 @@
               <thead>
               <th>
                 <template >
+                  总次数：{{timesSum}}
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <span>{{ v}}</span>
+                </template>
+              </th>
+              </thead>
+              <thead>
+              <th>
+                <template >
+                  概率：
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <span>{{ ((parseInt(v)/timesSum)*100).toFixed(2) +'%' }}</span>
+                </template>
+              </th>
+              </thead>
+
+              <thead>
+              <th>
+                <template >
                 步数 / 剧本
               </template>
               </th>
               <th v-for="(v,k) in showData.column">
-
                 <template>
                   <!--
                   <span @click="showChart(idx, k1)">{{ k1 }}</span>
@@ -233,9 +257,9 @@
                 </template>
               </th>
               </thead>
-              <tr v-for=" (v,k) in showData.rows">
+              <tr v-for=" (v,k) in showData.rows"   style="text-align: center">
                 <td>{{ k }}</td>
-                <td v-for="col in v">
+                <td v-for="col in v" style="text-align: center">
                   {{ col }}
                 </td>
               </tr>
@@ -307,6 +331,7 @@ export default {
       detailVisible: false,
       showData: {},
       mapCnt: {},
+      timesSum: 0,
     }
   },
   created() {
@@ -468,8 +493,6 @@ export default {
             scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
           }
           // 步数统计
-
-
           for (const key in response.Data["step"]) {
             // SlotsType_目标倍率_当前倍率_剧本_x_y
             var strings1 = key.split('_')
@@ -482,13 +505,13 @@ export default {
               prefix = '常规' + (parseInt(strings1[1]) + 1)
             }
             if (!scriptMap[prefix]) {
-              scriptMap[prefix] = {gid: strings1[0], rows: {}, column: {}}
+              scriptMap[prefix] = {gid: strings1[0], rows: {}, column: {},sheet:strings1[1]}
             }
-
-            let step = parseInt(strings1[3]) + 5
-            $this.mapCnt[prefix + "_" + strings1[2] + '_' + step] = response.Data["step"][key]
+            let step = parseInt(strings1[3])
+            $this.mapCnt[strings1[0]+"_"+strings1[1] + "_" + strings1[2] + '_' + step] = response.Data["step"][key]
             scriptMap[prefix].rows[step] = []
-            scriptMap[prefix].column[strings1[2]] = 0
+            scriptMap[prefix].column[strings1[2]] = response.Data["times"][strings1[0]+"_"+strings1[1] + "_" + strings1[2] ]
+
           }
 
           for (const key in scriptMap) {
@@ -498,9 +521,10 @@ export default {
               rows: scriptMap[key].rows,
               column: scriptMap[key].column,
               cnt: scriptMap[key].cnt,
+              sheet: scriptMap[key].sheet,
             })
           }
-          console.log("====", stepTableData)
+
         }
         coordinateTableData.sort(function (a, b) {
           return b.cnt - a.cnt
@@ -537,17 +561,21 @@ export default {
     },
     showStepDetail(data) {
       var row = JSON.parse(JSON.stringify(data));
+      this.timesSum = 0
       for (const rowKey in row.rows) {
         for (const columnKey in row.column) {
-          let key = row.title + "_" + columnKey + '_' + rowKey
+          let key = row.gid+"_"+row.sheet + "_" + columnKey + '_' + rowKey
           row.rows[rowKey].push(this.mapCnt[key] || 0)
         }
       }
+
+      for (const columnKey in row.column) {
+        this.timesSum+= parseInt(row.column[columnKey])
+      }
+
       this.detailVisible = true
       this.showData = row
       console.log("====", row)
-      console.log("====", this.mapCnt)
-
     },
     updateDuplicate(newData, oldData) {
 
