@@ -300,6 +300,12 @@ export const asyncRoutes = [
             meta: { title: 'Texas - 德州' }
           },
           {
+            path: 'DominoQiuQiu',
+            component: () => import('@/views/config/tableConfig/qiuqiuTable'),
+            name: 'DominoQiuQiu',
+            meta: { title: 'DominoQiuQiu' }
+          },
+          {
             path: 'gameWaitQueue',
             component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
             name: 'gameWaitQueue',
