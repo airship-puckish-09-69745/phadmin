@@ -1356,7 +1356,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/config/slotsScriptStatisticsConfig'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'slots脚本统计配置', noCache: true }
+        meta: { title: 'slots剧本统计配置', noCache: true }
       },
       {
         path: 'frontProxy',

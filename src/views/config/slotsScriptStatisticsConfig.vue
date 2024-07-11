@@ -60,7 +60,7 @@
                 <el-table-column
                     prop="Gid"
                     label="区间"
-                    width="1200"
+                    width="1100"
                 >
                   <template slot-scope="scope">
                 <span v-for="(data,idx) in scope.row.OddsList">
@@ -248,6 +248,7 @@ export default {
     editRow(idx, row) {
       this.idx = idx
       this.item.Gid = row.Gid
+      this.item.Bet = row.Bet
       this.item.OddsList = row.OddsList
       this.showBtn = 1
       this.selectGameVisible = true

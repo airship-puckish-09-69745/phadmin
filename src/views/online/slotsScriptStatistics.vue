@@ -14,8 +14,8 @@
             >
             </el-date-picker>
             <el-select v-model="queryGid" size="mini" @change="queryKeyInput">
-              <el-option label="所有" :value="0"/>
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="o"/>
+<!--              <el-option label="所有" :value="0"/>-->
+              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)"/>
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
           </el-col>
@@ -237,7 +237,7 @@
               </th>
               <th v-for="(v,k) in showData.column">
                 <template>
-                  <span>{{ ((parseInt(v)/timesSum)*100).toFixed(2) +'%' }}</span>
+                  <span style="font-size: 11px">{{ ((parseInt(v)/timesSum)*100).toFixed(2) +'%' }}</span>
                 </template>
               </th>
               </thead>
@@ -323,7 +323,7 @@ export default {
       queryTime: new Date().getTime(),
       loading: false,
       cfgMap: {},
-      queryGid: 0,
+      queryGid: 80,
       gidOptions: {},
       sumData: 0,
       stepSum: 0,
@@ -338,6 +338,7 @@ export default {
     this.getData()
     this.getGameList()
     this.getSlotsScriptStatistics()
+    this.queryKeyInput()
   },
   methods: {
     refreshStep() {
@@ -361,7 +362,7 @@ export default {
       return this.item
     },
     updateGid() {
-      this.queryGid = 0
+      this.queryGid = 80
     },
     addOne() {
       this.item = {
@@ -371,8 +372,8 @@ export default {
       this.selectGameVisible = true
     },
     getTitle(gid, idx) {
-      let max = parseInt(this.cfgMap[gid][idx].MaxOdds) + 100
-      let min = parseInt(this.cfgMap[gid][idx].MinOdds) + 100
+      let max = parseInt(this.cfgMap[gid].OddsList[idx].MaxOdds) + parseInt(this.cfgMap[gid].Bet)
+      let min = parseInt(this.cfgMap[gid].OddsList[idx].MinOdds) + parseInt(this.cfgMap[gid].Bet)
       if (idx === 0) {
         return '(' + '0 ,' + max + ']'
       }
@@ -400,9 +401,8 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (let o of cfg) {
-              this.cfgMap[o.Gid] = o.OddsList
+              this.cfgMap[o.Gid] = {OddsList:o.OddsList ,Bet: o.Bet}
             }
-
           }
         }
       })
@@ -427,10 +427,13 @@ export default {
       this.refreshCoordinate()
     },
     queryKeyInput() {
+      console.log(this.queryGid)
       this.coordinateClientDB.Search(this.queryGid, ['gid'])
       this.scriptClientDB.Search(this.queryGid, ['gid'])
+      this.stepClientDB.Search(this.queryGid, ['gid'])
       this.refreshScript()
       this.refreshCoordinate()
+      this.refreshStep()
     },
     coordinateHandleCurrentChange(val) {
       this.coordinateClientDB.GetPage().SetPageNo(val)
@@ -491,6 +494,7 @@ export default {
             var strings = key.split('_');
             this.sumData += parseInt(response.Data["script"][key])
             scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
+            $this.gidOptions[strings[0]] = strings[0]
           }
           // 步数统计
           for (const key in response.Data["step"]) {
@@ -511,7 +515,6 @@ export default {
             $this.mapCnt[strings1[0]+"_"+strings1[1] + "_" + strings1[2] + '_' + step] = response.Data["step"][key]
             scriptMap[prefix].rows[step] = []
             scriptMap[prefix].column[strings1[2]] = response.Data["times"][strings1[0]+"_"+strings1[1] + "_" + strings1[2] ]
-
           }
 
           for (const key in scriptMap) {
@@ -541,9 +544,7 @@ export default {
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
-        this.refreshCoordinate()
-        this.refreshScript()
-        this.refreshStep()
+        this.queryKeyInput()
 
         $this.loading = false
       })
