@@ -128,7 +128,7 @@
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益5">
                         <el-row style="margin-left: 20px">
-                          <span style="color:red; font-size: 11px">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
+                          <span style="color:red; font-size: 11px">注: 右值需要大于等于 JACKPOT->开奖条件->开JP最少连击次数</span>
                         </el-row>
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
@@ -429,7 +429,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最少连击次数</p>
-                        <span style="color: red;font-size: 11px">  注: 需要小于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
+                        <span style="color: red;font-size: 11px">  注: 需要小于等于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
                       </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
