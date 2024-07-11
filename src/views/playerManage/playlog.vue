@@ -831,10 +831,9 @@
     </el-dialog>
 
 
-    <el-dialog title="NiuNiu牌局详情" :visible.sync="niuniuDetailVisible" width="1400px">
+    <el-dialog title="NiuNiu牌局详情" v-if="gameLogComponent.gid===49" :visible.sync="gameLogComponent.visible" width="1400px">
       <el-table
-        :data="niuniuDetail.players"
-        :span-method="niuniuSpanMethods"
+        :data="gameLogComponent.detail.players"
         border
       >
         <el-table-column prop="uid" label="UID" width="100" />
@@ -842,10 +841,10 @@
         <el-table-column label="手牌" width="450" align="center">
             <template #default="scope">
               <template v-if="scope.row.cardType > 1">
-                <div v-html="showCard(scope.row.cards)" /><span>({{ niuniuCardTypes[scope.row.cardType] || '' }})</span>
+<!--                <div v-html="showCard(scope.row.cards)" /><span>({{ // niuniuCardTypes[scope.row.cardType] || '' }})</span>-->
               </template>
               <template v-else>
-                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ niuniuGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
+<!--                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ niuniuGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>-->
               </template>
             </template>
         </el-table-column>
@@ -859,8 +858,8 @@
       </el-table>
       <br>
       <el-descriptions title="扩展信息">
-        <el-descriptions-item label="桌子ID">{{ niuniuDetail.tid }}</el-descriptions-item>
-        <el-descriptions-item label="Server日志ID">{{ niuniuDetail.logId }}</el-descriptions-item>
+        <el-descriptions-item label="桌子ID">{{ gameLogComponent.detail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ gameLogComponent.detail.logId }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
 
