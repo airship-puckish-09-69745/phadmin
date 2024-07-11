@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="200px">
+        <el-form ref="frm2" :model="cfg" label-width="230px">
 
           <el-form-item label="普通模式中奖倍数">
             <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">六个值用 , 连接</template> </el-input>
@@ -22,6 +22,18 @@
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
+          </el-form-item>
+
+          <el-form-item label="购买免费模式中奖倍数范围V2">
+            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买免费模式中奖左范围概率V2">
+            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买免费模式中奖倍数分布V2">
+            <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
           </el-form-item>
 
           <el-form-item label="转盘阶段1收集数量" prop="WildCollectNumStage1" :rules="dataRule(true,{type:'n'})">
@@ -46,6 +58,14 @@
 
           <el-form-item label="转盘阶段3倍数">
             <el-input v-model="cfg.WildMultiStrStage3" placeholder="请输入内容,如4,10,20,30,40,60,80,90,100,200,500,1000"> <template slot="append">12个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="抽取正数剧本%" prop="SuckOddsRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.SuckOddsRate" :required="true" />
+          </el-form-item>
+
+          <el-form-item label="抽取达标后图标概率">
+            <el-input v-model="cfg.SuckOddsAchieveRate" placeholder="请输入内容,如1000,50,2500,50,5000,50"> <template slot="append">6个值用 , 连接。如1000,50,2500,50,5000,50</template> </el-input>
           </el-form-item>
 
         </el-form>
