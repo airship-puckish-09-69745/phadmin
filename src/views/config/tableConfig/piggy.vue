@@ -305,11 +305,6 @@
               </el-col>
             </el-tab-pane>
             <el-tab-pane label="中奖条件">
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="">1. 分段限制和每日限制中的个数 需要是 JACKPOT->开奖条件 对应奖池中奖人数的整数倍,如果不是整数倍会导致多开 例如日限是11个 每次开出4个 则会开3次 总共3*4=12个 不会超过12个 </span>
-                </el-descriptions-item>
-              </el-descriptions>
               <el-row>
                 <fieldset>
                   <el-col :span="24" :offset="0">
