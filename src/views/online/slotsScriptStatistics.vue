@@ -508,13 +508,13 @@ export default {
             } else {
               prefix = '常规' + (parseInt(strings1[1]) + 1)
             }
-            if (!scriptMap[prefix]) {
-              scriptMap[prefix] = {gid: strings1[0], rows: {}, column: {},sheet:strings1[1]}
+            if (!scriptMap[strings1[0]+prefix]) {
+              scriptMap[strings1[0]+prefix] = {gid: strings1[0], rows: {}, column: {},sheet:strings1[1]}
             }
             let step = parseInt(strings1[3])
             $this.mapCnt[strings1[0]+"_"+strings1[1] + "_" + strings1[2] + '_' + step] = response.Data["step"][key]
-            scriptMap[prefix].rows[step] = []
-            scriptMap[prefix].column[strings1[2]] = response.Data["times"][strings1[0]+"_"+strings1[1] + "_" + strings1[2] ]
+            scriptMap[strings1[0]+prefix].rows[step] = []
+            scriptMap[strings1[0]+prefix].column[strings1[2]] = response.Data["times"][strings1[0]+"_"+strings1[1] + "_" + strings1[2] ]
           }
 
           for (const key in scriptMap) {
