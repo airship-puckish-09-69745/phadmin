@@ -50,6 +50,14 @@
                   </template>
                 </el-table-column>
                 <el-table-column
+                  prop="Gid"
+                  label="基础投注"
+                >
+                  <template slot-scope="scope">
+                    {{scope.row.Bet}}
+                  </template>
+                </el-table-column>
+                <el-table-column
                     prop="Gid"
                     label="区间"
                     width="1200"
@@ -109,6 +117,9 @@
                 :value="item.key"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="基础投注">
+          <el-input v-model="item.Bet"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addOddsList" size="mini">添加区间</el-button>
@@ -178,7 +189,8 @@ export default {
       libShow: $libShow,
       item: {
         Gid: 0,
-        OddsList: [{MinOdds: 0, MaxOdds: 0}]
+        OddsList: [{MinOdds: 0, MaxOdds: 0}],
+        Bet: 0,
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -292,8 +304,8 @@ export default {
               console.log(o.OddsList)
 
               for (let i = 0; i < o.OddsList.length; i++) {
-                o.OddsList[i].MaxOdds += 100
-                o.OddsList[i].MinOdds += 100
+                o.OddsList[i].MaxOdds += parseInt(o.Bet)
+                o.OddsList[i].MinOdds += parseInt(o.Bet)
               }
               this.cfgMap[o.Gid] = o.OddsList
             }
@@ -346,8 +358,8 @@ export default {
       }
       for (let o of cfg) {
         for (let i = 0; i < o.OddsList.length; i++) {
-          o.OddsList[i].MaxOdds -= 100
-          o.OddsList[i].MinOdds -= 100
+          o.OddsList[i].MaxOdds -= parseInt(o.Bet)
+          o.OddsList[i].MinOdds -= parseInt(o.Bet)
         }
       }
       return cfg
