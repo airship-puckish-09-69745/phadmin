@@ -704,7 +704,7 @@ export default {
     lobbyChange() {
       for (let i = 0; i < this.orgLobbyVersions.length; i++) {
         if (this.orgLobbyVersions[i].ID === this.LobbyVersionID) {
-          this.LobbyVersion = this.orgLobbyVersions[i].Version
+          this.LobbyVersion = this.orgLobbyVersions[i].LobbyVersion
           this.LobbyVersionStatus = this.orgLobbyVersions[i].Status
           break
         }
