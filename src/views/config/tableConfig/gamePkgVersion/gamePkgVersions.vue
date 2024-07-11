@@ -744,6 +744,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '数据处理中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         request({
           url: '/gamepkgversions/update/lobby/status',
           method: 'post',
@@ -752,6 +758,7 @@ export default {
             Status: targetStatus
           }
         }).then(response => {
+          loading.close()
           if (response.RetCode === 0) {
             Message.success('修改链接版本状态成功！')
             $this.LobbyVersionStatus = targetStatus
@@ -765,6 +772,8 @@ export default {
               $this.handleDisplayLobbyVersions()
             }
           }
+        }).catch(function() {
+          loading.close()
         })
       }).catch(() => {
         // console.log('取消')
@@ -802,6 +811,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '数据处理中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         request({
           url: '/gamepkgversions/update/status',
           method: 'post',
@@ -810,10 +825,13 @@ export default {
             status: status
           }
         }).then(response => {
+          loading.close()
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
             $this.clientDB.UpdateData({ ID: id, Status: status })
           }
+        }).catch(function() {
+          loading.close()
         })
       }).catch(() => {
         // console.log('取消')
@@ -846,16 +864,25 @@ export default {
           Status: ob.Status,
           WhiteVersion: ob.WhiteVersion
         }
+        const loading = this.$loading({
+          lock: true,
+          text: '数据处理中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         request({
           url: '/gamepkgversions/update',
           method: 'post',
           data: _data
         }).then(response => {
+          loading.close()
           if (response.RetCode === 0) {
             this.versionHistoryVisible = false
             this.getList()
             Message.success('保存成功！')
           }
+        }).catch(function() {
+          loading.close()
         })
       }).catch(() => {
         this.$message({
@@ -889,11 +916,18 @@ export default {
       return DataRule(required, config)
     },
     createSave(postData) {
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/create',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
@@ -901,57 +935,95 @@ export default {
           this.getList()
           Message.success('保存成功！')
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     createLobbySave(postData) {
       const $this = this
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/create/lobby',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           this.edit.lobbyItem.ID = response.Data.ID
           Message.success('保存成功！')
           $this.getLobbyVersions()
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     copyLobbySave(postData) {
       const $this = this
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/copy/to/newlobby',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           $this.getLobbyVersions()
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     editSave(postData) {
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/update',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     editLobbySave(postData) {
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/update/lobby',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     batchEditWhiteVersionSave() {
@@ -970,6 +1042,12 @@ export default {
         const item = this.selectedRows[i]
         selectedIds.push(item.ID)
       }
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/update/batch/pkgwhiteversion',
         method: 'post',
@@ -979,6 +1057,7 @@ export default {
           LobbyVersionId: $this.LobbyVersionID
         }
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           if (response.Data && response.Data.length > 0) {
@@ -990,6 +1069,8 @@ export default {
           $this.edit.batchEditWhiteVersion = false
           $this.edit.batchWhiteVersion = ''
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     batchPublishWhiteVersionSave() {
@@ -1003,6 +1084,12 @@ export default {
         const item = this.selectedRows[i]
         selectedIds.push(item.ID)
       }
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/publish/batch/pkgwhiteversion',
         method: 'post',
@@ -1011,11 +1098,14 @@ export default {
           LobbyVersionId: $this.LobbyVersionID
         }
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           Message.success('发布成功！')
           this.getList()
           $this.edit.batchPublishWhiteVersion = false
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     getPostData() {
