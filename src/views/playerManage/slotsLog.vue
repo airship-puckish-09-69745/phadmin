@@ -124,7 +124,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84].indexOf(gid) >= 0">
+        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -274,7 +274,7 @@ export default {
   },
   methods: {
     isActV2() {
-      return [80].indexOf(this.gid) >= 0
+      return [78,80,82,86].indexOf(this.gid) >= 0
     },
     showChart() {
       const $this = this

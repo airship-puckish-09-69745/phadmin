@@ -72,6 +72,16 @@
         <el-form-item>
           <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-tooltip content="选中需要【修改/发布】的白名单版本" placement="top">
+            <el-button type="success" size="mini" icon="el-icon-edit-outline" @click="showMultiEditWitheVersion()">批量【修改/添加】白名单</el-button>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item>
+          <el-tooltip content="选中需要发布的白名单版本" placement="top">
+            <el-button type="success" size="mini" icon="el-icon-upload2" @click="showMultiPublishWitheVersion()">批量发布</el-button>
+          </el-tooltip>
+        </el-form-item>
       </el-form>
     </el-row>
     <div style="padding-top: 10px">
@@ -81,13 +91,21 @@
         :data="tableData.filter(data => !search || (data.BundleKey.toLowerCase().includes(search.toLowerCase()) || data.PkgName.toLowerCase().includes(search.toLowerCase()) || data.GamePkgVersion.toLowerCase().includes(search.toLowerCase())))"
         stripe
         border
+        row-key="ID"
         :header-cell-style="libShow.DefaultTableHeadClass"
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
+        @selection-change="handlePkgSelectionChange"
         @row-click="clickData"
         @sort-change="sortChange"
       >
+        <el-table-column
+          label="selectBox"
+          type="selection"
+          :reserve-selection="true"
+          width="55"
+        />
         <el-table-column
           prop="ID"
           label="ID"
@@ -229,12 +247,12 @@
         </el-form-item>
         <el-form-item label="包Key：" :required="true" prop="BundleKey">
           <el-col :span="15">
-            <el-input v-model="edit.item.BundleKey" :disabled="isDisabled" />
+            <el-input v-model="edit.item.BundleKey" :readonly="isDisabled" :class="isDisabled ? 'el-input_no_border' : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="版本号：" :required="true" prop="GamePkgVersion">
           <el-col :span="15">
-            <el-input v-model="edit.item.GamePkgVersion" placeholder="格式： 1.0.0.0" :disabled="isDisabled" />
+            <el-input v-model="edit.item.GamePkgVersion" placeholder="格式： 1.0.0.0" :readonly="isDisabled" :class="isDisabled ? 'el-input_no_border' : ''" />
           </el-col>
         </el-form-item>
         <el-form-item label="白名单版本号：">
@@ -246,6 +264,9 @@
           <el-col :span="11">
             <el-form-item>
               <el-button type="success" size="mini" @click="publishWhiteVersion()">发布</el-button>
+              <el-tooltip content="将链接版本复制到白名单版本，保存生效" placement="top">
+                <el-button type="success" size="mini" @click="copyLobbyVersion2WhiteVersion()">复制链接版本</el-button>
+              </el-tooltip>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -305,6 +326,94 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+      title="批量配置白名单版本号"
+      :visible.sync="edit.batchEditWhiteVersion"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-col>
+          <p style="font-weight: bolder">要修改的包：</p>
+          <el-tag
+            v-for="tag in edit.dynamicTags"
+            :key="tag"
+            :disable-transitions="false"
+          >
+            {{ tag }}
+          </el-tag>
+        </el-col>
+      </el-row>
+      <el-row>
+      </el-row>
+      <el-form label-width="250px" size="small">
+        <el-form-item label="白名单版本号：" :required="true">
+          <el-col :span="15">
+            <el-input v-model="edit.batchWhiteVersion" />
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="15">
+              <el-button type="primary" size="medium" @click="batchEditWhiteVersionSave">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <!--  批量发布start  -->
+    <el-dialog
+      title="批量发布白名单版本"
+      :visible.sync="edit.batchPublishWhiteVersion"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-col>
+          <p style="font-weight: bolder">要发布的包：</p>
+          <el-tag
+            v-for="tag in edit.dynamicTags"
+            :key="tag"
+            :disable-transitions="false"
+          >
+            {{ tag }}
+          </el-tag>
+        </el-col>
+      </el-row>
+      <el-row>
+      </el-row>
+      <el-form label-width="250px" size="small">
+        <el-form-item>
+          <el-row>
+            <el-col :span="15">
+              <el-button type="primary" size="medium" @click="batchPublishWhiteVersionSave">发布</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+    <el-dialog
+      title="选中了还没有设置白名单版本的包"
+      :visible.sync="edit.batchPublishNoWhiteVersion"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-col>
+          <el-tag
+            type="danger"
+            v-for="tag in edit.dynamicNoWhiteversionTags"
+            :key="tag"
+            :disable-transitions="false"
+          >
+            {{ tag }}
+          </el-tag>
+        </el-col>
+      </el-row>
+    </el-dialog>
+    <!--  批量发布 end  -->
+
     <el-dialog
       title="版本历史"
       width="80%"
@@ -439,8 +548,15 @@ export default {
         lobbyItem: this.newLobbyItem(),
         isLobbyEdit: false,
         copyLobbyVisible: false,
-        copyLobbyItem: this.newCopyLobbyItem()
+        batchEditWhiteVersion: false,
+        batchPublishWhiteVersion: false,
+        batchPublishNoWhiteVersion: false,
+        dynamicTags: [],
+        dynamicNoWhiteversionTags: [],
+        copyLobbyItem: this.newCopyLobbyItem(),
+        batchWhiteVersion: ''
       },
+      selectedRows: [],
       isDisabled: false,
       versionHistoryVisible: false,
       rules: {
@@ -511,13 +627,61 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.label === 'ID' || column.label === '包名' || column.label === '操作') {
+      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作') {
         return
       }
       this.initFormData(true, row.ID)
       this.edit.visible = true
     },
-
+    // 展示批量添加白名单
+    showMultiEditWitheVersion() {
+      // console.log('multiWitheVersion: ', this.selectedRows)
+      if (this.selectedRows.length === 0) {
+        this.$alert('请选择要修改的配置')
+        return false
+      }
+      this.edit.dynamicTags = []
+      const hadWhiteVersions = []
+      for (let i = 0; i < this.selectedRows.length; i++) {
+        if (this.selectedRows[i].WhiteVersion !== '') {
+          hadWhiteVersions.push(this.selectedRows[i].PkgName)
+        }
+        this.edit.dynamicTags.push(this.selectedRows[i].PkgName)
+      }
+      // if (hadWhiteVersions.length > 0) {
+      //   // 提示有白名单的包，并返回false
+      //   const msg = '有已设置白名单的包：' + hadWhiteVersions.join(',') + '；请去掉已有白名单的包后再进行操作'
+      //   Message.error(msg)
+      //   return false
+      // }
+      this.edit.batchEditWhiteVersion = true
+    },
+    showMultiPublishWitheVersion() {
+      console.log('showMultiPublishWitheVersion')
+      if (this.selectedRows.length === 0) {
+        this.$alert('请选择要发布的白名单配置')
+        return false
+      }
+      this.edit.dynamicTags = []
+      this.edit.dynamicNoWhiteversionTags = []
+      for (let i = 0; i < this.selectedRows.length; i++) {
+        if (this.selectedRows[i].WhiteVersion === '') {
+          this.edit.dynamicNoWhiteversionTags.push(this.selectedRows[i].PkgName)
+        }
+        this.edit.dynamicTags.push(this.selectedRows[i].PkgName)
+      }
+      if (this.edit.dynamicNoWhiteversionTags.length > 0) {
+        console.log('this.edit.dynamicNoWhiteversionTags: ', this.edit.dynamicNoWhiteversionTags)
+        // 提示有未设置白名单的包，并返回false
+        this.edit.batchPublishNoWhiteVersion = true
+        return
+      }
+      this.edit.batchPublishWhiteVersion = true
+    },
+    handlePkgSelectionChange(rows) {
+      // console.log('handlePkgSelectionChange>>>>>', rows)
+      this.selectedRows = rows
+    },
     handleCreate() {
       this.edit.item = this.newItem()
       this.edit.isEdit = false
@@ -540,7 +704,7 @@ export default {
     lobbyChange() {
       for (let i = 0; i < this.orgLobbyVersions.length; i++) {
         if (this.orgLobbyVersions[i].ID === this.LobbyVersionID) {
-          this.LobbyVersion = this.orgLobbyVersions[i].Version
+          this.LobbyVersion = this.orgLobbyVersions[i].LobbyVersion
           this.LobbyVersionStatus = this.orgLobbyVersions[i].Status
           break
         }
@@ -580,6 +744,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '数据处理中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         request({
           url: '/gamepkgversions/update/lobby/status',
           method: 'post',
@@ -588,6 +758,7 @@ export default {
             Status: targetStatus
           }
         }).then(response => {
+          loading.close()
           if (response.RetCode === 0) {
             Message.success('修改链接版本状态成功！')
             $this.LobbyVersionStatus = targetStatus
@@ -601,6 +772,8 @@ export default {
               $this.handleDisplayLobbyVersions()
             }
           }
+        }).catch(function() {
+          loading.close()
         })
       }).catch(() => {
         // console.log('取消')
@@ -638,6 +811,12 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '数据处理中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         request({
           url: '/gamepkgversions/update/status',
           method: 'post',
@@ -646,10 +825,13 @@ export default {
             status: status
           }
         }).then(response => {
+          loading.close()
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
             $this.clientDB.UpdateData({ ID: id, Status: status })
           }
+        }).catch(function() {
+          loading.close()
         })
       }).catch(() => {
         // console.log('取消')
@@ -682,16 +864,25 @@ export default {
           Status: ob.Status,
           WhiteVersion: ob.WhiteVersion
         }
+        const loading = this.$loading({
+          lock: true,
+          text: '数据处理中，请稍候...',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
         request({
           url: '/gamepkgversions/update',
           method: 'post',
           data: _data
         }).then(response => {
+          loading.close()
           if (response.RetCode === 0) {
             this.versionHistoryVisible = false
             this.getList()
             Message.success('保存成功！')
           }
+        }).catch(function() {
+          loading.close()
         })
       }).catch(() => {
         this.$message({
@@ -701,6 +892,9 @@ export default {
       })
     },
     //* * ********************** 修改/添加弹框相关 *****************
+    copyLobbyVersion2WhiteVersion() {
+      this.edit.item.WhiteVersion = this.LobbyVersion
+    },
     getEditTitle() {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改配置' : '新增配置'
@@ -722,11 +916,18 @@ export default {
       return DataRule(required, config)
     },
     createSave(postData) {
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/create',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.edit.item)
@@ -734,57 +935,177 @@ export default {
           this.getList()
           Message.success('保存成功！')
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     createLobbySave(postData) {
       const $this = this
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/create/lobby',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           this.edit.lobbyItem.ID = response.Data.ID
           Message.success('保存成功！')
           $this.getLobbyVersions()
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     copyLobbySave(postData) {
       const $this = this
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/copy/to/newlobby',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
           $this.getLobbyVersions()
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     editSave(postData) {
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/update',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           this.clientDB.UpdateData(this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
         }
+      }).catch(function() {
+        loading.close()
       })
     },
     editLobbySave(postData) {
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       request({
         url: '/gamepkgversions/update/lobby',
         method: 'post',
         data: postData
       }).then(response => {
+        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
         }
+      }).catch(function() {
+        loading.close()
+      })
+    },
+    batchEditWhiteVersionSave() {
+      const $this = this
+      if (this.selectedRows < 1) {
+        Message.error('没有选中项')
+        return false
+      }
+      const version = this.edit.batchWhiteVersion.trim()
+      if (version === '') {
+        Message.error('请正确输入白名单版本号')
+        return false
+      }
+      const selectedIds = []
+      for (let i = 0; i < this.selectedRows.length; i++) {
+        const item = this.selectedRows[i]
+        selectedIds.push(item.ID)
+      }
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      request({
+        url: '/gamepkgversions/update/batch/pkgwhiteversion',
+        method: 'post',
+        data: {
+          Ids: selectedIds,
+          WhiteVersion: version,
+          LobbyVersionId: $this.LobbyVersionID
+        }
+      }).then(response => {
+        loading.close()
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+          if (response.Data && response.Data.length > 0) {
+            for (let i = 0; i < response.Data.length; i++) {
+              const item = response.Data[i]
+              $this.clientDB.UpdateData2('ID', item)
+            }
+          }
+          $this.edit.batchEditWhiteVersion = false
+          $this.edit.batchWhiteVersion = ''
+        }
+      }).catch(function() {
+        loading.close()
+      })
+    },
+    batchPublishWhiteVersionSave() {
+      const $this = this
+      if (this.selectedRows < 1) {
+        Message.error('没有选中项')
+        return false
+      }
+      const selectedIds = []
+      for (let i = 0; i < this.selectedRows.length; i++) {
+        const item = this.selectedRows[i]
+        selectedIds.push(item.ID)
+      }
+      const loading = this.$loading({
+        lock: true,
+        text: '数据处理中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      request({
+        url: '/gamepkgversions/publish/batch/pkgwhiteversion',
+        method: 'post',
+        data: {
+          Ids: selectedIds,
+          LobbyVersionId: $this.LobbyVersionID
+        }
+      }).then(response => {
+        loading.close()
+        if (response.RetCode === 0) {
+          Message.success('发布成功！')
+          this.getList()
+          $this.edit.batchPublishWhiteVersion = false
+        }
+      }).catch(function() {
+        loading.close()
       })
     },
     getPostData() {
@@ -798,7 +1119,7 @@ export default {
     },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
-      if (this.getPostData().LobbyVersionID === 0) {
+      if (this.getPostData().LobbyVersionID < 1) {
         this.$alert('链接版本ID错误，请刷新重试')
         return false
       }
@@ -857,15 +1178,20 @@ export default {
       this.edit.visible = false
     },
     publishWhiteVersion() {
-      if (!this.checkData()) return
-      const _data = this.getPostData()
+      if (!this.checkData()) {
+        return
+      }
+      var _data = {}
+      for (const key in this.edit.item) {
+        _data[key] = this.edit.item[key]
+      }
       _data.ID = 0
       _data.GamePkgVersion = _data.WhiteVersion.trim()
       _data.WhiteVersion = ''
-
       if (_data.GamePkgVersion === '') {
         Message.error('游戏包版本不能为空')
-        return
+        console.log('postData: ', this.getPostData())
+        return false
       }
       this.createSave(_data)
       this.edit.visible = false
@@ -938,3 +1264,8 @@ export default {
   }
 }
 </script>
+<style>
+.el-input_no_border .el-input__inner {
+  border: none;
+}
+</style>

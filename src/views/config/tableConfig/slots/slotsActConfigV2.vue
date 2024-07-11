@@ -404,12 +404,12 @@ export default {
       this.edit.visible = false
     },
     checkImport(file) {
-      const isLt1M = file.size / 1024 / 1024 < 1
-      if (isLt1M) {
+      const isLt2M = file.size / 1024 / 1024 < 2
+      if (isLt2M) {
         return true
       }
       this.$message({
-        message: 'Please do not upload files larger than 1m in size.',
+        message: 'Please do not upload files larger than 2m in size.',
         type: 'warning'
       })
       return false

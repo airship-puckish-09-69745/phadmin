@@ -129,6 +129,12 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
+      {
+        path: 'slotsScriptStatistics',
+        component: () => import('@/views/online/slotsScriptStatistics.vue'),
+        name: 'slotsScriptStatistics',
+        meta: { title: 'slots剧本监控', noCache: true }
+      },
       /* {
         path: 'play_log_top100',
         component: () => import('@/views/playerManage/PlaylogTop100'),
@@ -282,10 +288,22 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy ◐' }
           },
           {
+            path: 'niuniuTable',
+            component: () => import('@/views/config/tableConfig/niuniuTable'),
+            name: 'niuniuTable',
+            meta: { title: 'NiuNiu ◐' }
+          },
+          {
             path: 'texasTable',
             component: () => import('@/views/config/tableConfig/texasTable'),
             name: 'texasTable',
             meta: { title: 'Texas - 德州' }
+          },
+          {
+            path: 'DominoQiuQiu',
+            component: () => import('@/views/config/tableConfig/qiuqiuTable'),
+            name: 'DominoQiuQiu',
+            meta: { title: 'DominoQiuQiu' }
           },
           {
             path: 'gameWaitQueue',
@@ -554,6 +572,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
                 meta: { title: '超级王牌' }
+              },
+              {
+                path: 'supergemii_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
+                name: 'supergemii_slots_cfg',
+                meta: { title: '超级宝石II' }
               }
               /*
               {
@@ -608,6 +632,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
                 meta: { title: '超级王牌(审)' }
+              },
+              {
+                path: 'supergemiimars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
+                name: 'supergemiimars_slots_cfg',
+                meta: { title: '超级宝石II(审)' }
               }
             ]
           },
@@ -670,6 +700,7 @@ export const asyncRoutes = [
     redirect: 'noRedirect',
     meta: { title: '活动配置', icon: 'example', perm: 'CFG_MANAGEMENT' },
     children: [
+      /*
       {
         path: 'millionPointRaceRuleConfig',
         component: () => import('@/views/empty'),
@@ -708,6 +739,7 @@ export const asyncRoutes = [
           }
         ]
       },
+      */
       {
         path: 'pointRaceConfig',
         component: () => import('@/views/empty'),
@@ -1076,7 +1108,7 @@ export const asyncRoutes = [
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
-            meta: { title: '超级宝石', gid: process.env.VUE_APP_PROJECT == 'ph_audit' ? 81 : 78 }
+            meta: { title: '超级宝石', gid:  78 }
           },
 
           {
@@ -1096,6 +1128,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
             meta: { title: '超级王牌', gid: 84 }
+          },
+          {
+            path: 'supergemii_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemii_slots_log',
+            meta: { title: '超级宝石II', gid: 86 }
           }
         ]
       },
@@ -1134,6 +1172,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
             meta: { title: '超级王牌(审)', gid: 85 }
+          },
+          {
+            path: 'supergemiimars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemiimars_slots_log',
+            meta: { title: '超级宝石II(审)', gid: 87 }
           }
         ]
       },
@@ -1307,6 +1351,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/gameAlarmConfig.vue'),
         name: 'gameAlarm',
         meta: { title: '游戏人数告警配置', noCache: true }
+      },
+      {
+        path: 'slotsScriptStatistics',
+        component: () => import('@/views/config/slotsScriptStatisticsConfig'),
+        name: 'slotsScriptStatistics',
+        meta: { title: 'slots剧本统计配置', noCache: true }
       },
       {
         path: 'frontProxy',

@@ -128,7 +128,7 @@
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益5">
                         <el-row style="margin-left: 20px">
-                          <span style="color:red; font-size: 11px">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
+                          <span style="color:red; font-size: 11px">注: 右值需要大于等于 JACKPOT->开奖条件->开JP最少连击次数</span>
                         </el-row>
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
@@ -305,11 +305,6 @@
               </el-col>
             </el-tab-pane>
             <el-tab-pane label="中奖条件">
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="">1. 分段限制和每日限制中的个数 需要是 JACKPOT->开奖条件 对应奖池中奖人数的整数倍,如果不是整数倍会导致多开 例如日限是11个 每次开出4个 则会开3次 总共3*4=12个 不会超过12个 </span>
-                </el-descriptions-item>
-              </el-descriptions>
               <el-row>
                 <fieldset>
                   <el-col :span="24" :offset="0">
@@ -376,8 +371,8 @@
                     :header-cell-style="{textAlign:'center'}"
                   >
                     <el-table-column
-                      label="JACKPOT类型(Level)"
-                      width="180"
+                      label="Jp类型(Level)"
+                      width="150"
                     >
                       <template slot-scope="scope">
                         {{ JpTypeMap[scope.row.Level] }}
@@ -385,19 +380,36 @@
                     </el-table-column>
 
                     <el-table-column
-                      label="中奖人数(最大支持30)"
-                      width="200"
+                      label="Jp开奖人数(min)"
+                      width="150"
                     >
-                      <template slot="header">
-                        <p style="text-align: center">  中奖人数(最大支持30)</p>
-                        <span style="color: red;font-size: 11px">  注: 见JACKPOT->中奖条件->每日限制 注释</span>
-                      </template>
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Num" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                        <el-input v-model.number="scope.row.NumMin" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
                     </el-table-column>
                     <el-table-column
-                      label="中奖时间"
+                      label="Jp开奖人数(max)"
+                      width="150"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.NumMax" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="Jp开奖人数(时间段控制)"
+                      width="200"
+                    >
+                      <template slot="header">
+                        <p style="text-align: center">  Jp开奖人数(时间段控制)</p>
+                        <span style="color: red;font-size: 11px">  注: 没有覆盖的时间段按左边配置走</span>
+                      </template>
+                      <template slot-scope="scope">
+                        <el-button  type="primary" icon="el-icon-edit" circle size="mini" @click="showJpDayLimitDialog(scope.row,scope.$index)" />
+                        <el-tag v-for="(tag, key) in scope.row.NumHour"   :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="JP中奖时间"
                       width="200"
                     >
                       <template slot-scope="scope">
@@ -412,7 +424,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最少连击次数</p>
-                        <span style="color: red;font-size: 11px">  注: 需要小于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
+                        <span style="color: red;font-size: 11px">  注: 需要小于等于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
                       </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
@@ -559,7 +571,7 @@
                   </el-form>
                 </el-col>
 
-                <el-col :span="7" :offset="3">
+                <el-col :span="20" :offset="3">
                   <span style="font-size: 12px">机器人有x%的概率自动敲击, 不是自动敲击的机器人敲击hz由敲击间隔控制 </span>
                 </el-col>
 
@@ -571,6 +583,9 @@
                   </el-form>
                 </el-col>
 
+                <el-col :span="20" :offset="3">
+                  <span style="font-size: 12px">真人敲击频率限制是190ms敲击一次 2次敲击的间隔在190ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
+                </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
                     <el-form-item label="敲击间隔(min)" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -666,6 +681,54 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="同时开JP时间人数限制"
+      :modal="false"
+      :visible.sync="jpDayLimit.JpDayLimitVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addJpDayLimit">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="saveJpDayLimit()">保存</el-button>
+      <el-table
+        ref="filterTable"
+        :data="jpDayLimit.NumHours"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column type="index" />
+        <el-table-column label="开始小时" prop="StartHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.StartHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="结束小时(不包含结束时间点)" prop="EndHours">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.EndHours" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="Jp开奖人数(min)" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.NumMin" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="Jp开奖人数(max)" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.NumMax" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="delJpDayLimit(scope.$index)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
   </div>
 
 </template>
@@ -738,6 +801,11 @@ export default {
         }
       },
       CanBet:[],
+      jpDayLimit:{
+        NumHours:[],
+        JpDayLimitVisible:false,
+        idx:0
+      },
       incrJackpotForm: {
         JpIdx: 0,
         dataIdx: 0,
@@ -781,6 +849,15 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+    addJpDayLimit(){
+      if (!this.jpDayLimit.NumHours){
+        this.jpDayLimit.NumHours=[]
+      }
+      this.jpDayLimit.NumHours.push({StartHours : 0,EndHours:0,NumMin:0,NumMax:0})
+    },
+    delJpDayLimit(idx){
+      this.jpDayLimit.NumHours.splice(idx,1)
+    },
     transMoneyForShow() {
       for (const o of this.item.MoneyOdds) {
         o.Val /= 1000
@@ -818,6 +895,9 @@ export default {
       }
 
     },
+    showOpenDayLimit(data) {
+      return '[' + data['StartHours'] + ',' + data['EndHours'] + ')点,' + data['NumMin'] + '最少,'+ data['NumMin']+'最多'
+    },
     doAdd() {
       this.item.BetLevel.push({ CanBet: [60, 100, 200, 400, 600, 2000], MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
@@ -832,6 +912,14 @@ export default {
       this.item.BetLevel.splice(index, 1)
     },
     BuffCfgClick(tab, event) {
+    },
+    saveJpDayLimit(){
+      if (!this.item.Jp[this.jpDayLimit.idx].NumHour){
+        this.item.Jp[this.jpDayLimit.idx]['NumHour']=this.jpDayLimit.NumHours;
+      }else {
+        this.item.Jp[this.jpDayLimit.idx].NumHour=this.jpDayLimit.NumHours;
+      }
+      this.jpDayLimit.JpDayLimitVisible=false
     },
     saveIncrJackpotDialog() {
       this.item.Jp[this.incrJackpotForm.JpIdx].JackpotRegulation.PoolIncrArr[this.incrJackpotForm.dataIdx].TimeArr = this.incrJackpotForm.data
@@ -909,6 +997,11 @@ export default {
       if (val === 2) {
         return '转轴3'
       }
+    },
+    showJpDayLimitDialog(data,idx){
+        this.jpDayLimit.NumHours = data.NumHour
+        this.jpDayLimit.JpDayLimitVisible = true
+        this.jpDayLimit.idx = idx
     },
     getJackpotPoolTitle(row) {
       if (row.MaxPool == -1) {

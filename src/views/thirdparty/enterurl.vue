@@ -113,10 +113,11 @@
         <el-table-column
           label="操作"
           column-key="op"
-          width="100"
+          width="200"
         >
           <template slot-scope="scope">
-            <el-button class="ewm-copy-content" type="text" size="mini" :data-clipboard-text="scope.row.EnterUrl" @click="copyClick(scope.row)">复制链接</el-button>
+            <el-button class="ewm-copy-content" type="success" size="mini" :data-clipboard-text="scope.row.EnterUrl" @click="copyClick(scope.row)" round>复制链接</el-button> ｜
+            <el-link :href="scope.row.EnterUrl" type="success" target="_blank">打开链接</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -215,7 +216,7 @@ export default {
           val: 'vertical'
         }
       ],
-      channels: ['Dev', 'BP', 'GP'],
+      channels: ['Dev', 'BP', 'GP', 'AP', 'PG'],
       directScenes: [
         {
           name: '大厅',
