@@ -508,19 +508,19 @@ export default {
             } else {
               prefix = '常规' + (parseInt(strings1[1]) + 1)
             }
-            if (!scriptMap[strings1[0]+prefix]) {
-              scriptMap[strings1[0]+prefix] = {gid: strings1[0], rows: {}, column: {},sheet:strings1[1]}
+            if (!scriptMap[strings1[0]+'_'+prefix]) {
+              scriptMap[strings1[0]+'_'+prefix] = {gid: strings1[0], rows: {}, column: {},sheet:strings1[1]}
             }
             let step = parseInt(strings1[3])
             $this.mapCnt[strings1[0]+"_"+strings1[1] + "_" + strings1[2] + '_' + step] = response.Data["step"][key]
-            scriptMap[strings1[0]+prefix].rows[step] = []
-            scriptMap[strings1[0]+prefix].column[strings1[2]] = response.Data["times"][strings1[0]+"_"+strings1[1] + "_" + strings1[2] ]
+            scriptMap[strings1[0]+'_'+prefix].rows[step] = []
+            scriptMap[strings1[0]+'_'+prefix].column[strings1[2]] = response.Data["times"][strings1[0]+"_"+strings1[1] + "_" + strings1[2] ]
           }
 
           for (const key in scriptMap) {
             stepTableData.push({
               gid: scriptMap[key].gid,
-              title: key,
+              title: key.split("_")[1],
               rows: scriptMap[key].rows,
               column: scriptMap[key].column,
               cnt: scriptMap[key].cnt,
@@ -573,9 +573,9 @@ export default {
       for (const columnKey in row.column) {
         this.timesSum+= parseInt(row.column[columnKey])
       }
-
       this.detailVisible = true
       this.showData = row
+
       console.log("====", row)
     },
     updateDuplicate(newData, oldData) {
