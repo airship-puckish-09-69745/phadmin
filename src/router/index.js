@@ -938,9 +938,9 @@ export const asyncRoutes = [
               },
               {
                 path: 'texasNlhGameLog',
-                component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
-                name: 'texasNlhGameLog',
-                meta: { title: '牌局记录' }
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_texasnlh',
+                meta: { title: '无限德州', gid: 32 }
               },
               {
                 path: 'texasNlhGameDetail',
