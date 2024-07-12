@@ -25,7 +25,7 @@
 
       <el-table-column label="Account">
         <template v-if="isShowFunc(scope.row.StepType)" slot-scope="scope">
-          {{ UserMap[scope.row.Uid] }}
+          {{ scope.row.Uid }}
         </template>
       </el-table-column>
       <!--      <el-table-column label="StepType">-->
@@ -168,6 +168,7 @@ export default {
           JpServiceFee: item.JpServiceFee
         }
       })
+      this.tableData=[]
       val.detail.StepInfo.forEach(item => {
         this.tableData.push({
           Uid: item.Uid,
