@@ -1588,10 +1588,10 @@ export const asyncRoutes = [
         meta: { title: '游戏自定义配置' }
       },
       {
-        path: 'timeoutGameLog',
-        component: () => import('@/views/devTools/timeoutGameLog'),
-        name: 'timeout_game_log',
-        meta: { title: '游戏超时记录' }
+        path: 'walletFailLog',
+        component: () => import('@/views/devTools/walletFailLog'),
+        name: 'wallet_fail_log',
+        meta: { title: '钱包失败记录' }
       }
     ]
   },
