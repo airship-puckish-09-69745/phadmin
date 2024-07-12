@@ -8,6 +8,7 @@
         </el-form-item>
         <el-form-item>
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="timeRange"
             type="datetimerange"
             value-format="timestamp"
@@ -388,6 +389,7 @@ export default {
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
     },
+
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
         this.clientDB.ShowData = this.clientDB.TotalData.filter(
@@ -447,6 +449,10 @@ export default {
       if (this.timeRange) {
         bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
         eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
+      }
+      if (eTime-bTime>86400){
+        Message.error('不支持跨天查询')
+        return;
       }
       const loading = this.$loading({
         lock: true,
