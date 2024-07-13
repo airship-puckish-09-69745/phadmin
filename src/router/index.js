@@ -1588,11 +1588,19 @@ export const asyncRoutes = [
         meta: { title: '游戏自定义配置' }
       },
       {
-        path: 'walletFailLog',
-        component: () => import('@/views/devTools/walletFailLog'),
-        name: 'wallet_fail_log',
-        meta: { title: '钱包失败记录' }
-      }
+        path: 'wallet',
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'wallet',
+        meta: { title: '单一钱包', icon: 'code' },
+        children: [
+          {
+            path: 'walletFailLog',
+            component: () => import('@/views/devTools/walletFailLog'),
+            name: 'wallet_fail_log',
+            meta: { title: '钱包失败记录' }
+          },
+        ]
+      },
     ]
   },
   {

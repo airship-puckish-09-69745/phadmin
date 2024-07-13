@@ -2,7 +2,7 @@
   <div class="app-container">
 
     <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="15">
+      <el-col :span="24">
         <el-form inline label-width="90px" :inline="true" size="small">
           <el-form-item label="日期：">
             <el-date-picker
@@ -18,13 +18,19 @@
               size="mini"
             />
           </el-form-item>
+          <el-form-item label="Uid">
+            <el-input v-model.number="item.uid" placeholder="Uid" size="mini" oninput="if(value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+          </el-form-item>
+          <el-form-item label="交易id">
+            <el-input v-model="item.txId" placeholder="交易id" size="mini" style="width: 225px"/>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
           </el-form-item>
         </el-form>
 
       </el-col>
-      <el-col :span="15" />
+      <el-col :span="15"/>
       <el-col>
         <el-table
           :data="tableData"
@@ -37,63 +43,63 @@
         >
           <el-table-column label="操作时间" width="160px">
             <template slot-scope="scope">
-              {{formatTime(scope.row.OpTime)}}
+              {{ formatTime(scope.row.OpTime) }}
             </template>
           </el-table-column>
           <el-table-column label="游戏">
             <template slot-scope="scope">
-              {{gameMap[scope.row.GameId]}}
+              {{ gameMap[scope.row.GameId] }}
             </template>
           </el-table-column>
           <el-table-column label="应用id">
             <template slot-scope="scope">
-              {{scope.row.App}}
+              {{ scope.row.App }}
             </template>
           </el-table-column>
           <el-table-column label="Uid">
             <template slot-scope="scope">
-              {{scope.row.Uid}}
+              {{ scope.row.Uid }}
             </template>
           </el-table-column>
           <el-table-column label="交易id" width="220px">
             <template slot-scope="scope">
-              {{scope.row.TxId}}
+              {{ scope.row.TxId }}
             </template>
           </el-table-column>
           <el-table-column label="回合id" width="220px">
             <template slot-scope="scope">
-              {{scope.row.RoundId}}
+              {{ scope.row.RoundId }}
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
             <template slot-scope="scope">
-              {{scope.row.ActType}}
+              {{ scope.row.ActType }}
             </template>
           </el-table-column>
           <el-table-column label="失败类型">
             <template slot-scope="scope">
-              {{scope.row.FailType}}
+              {{ failTypeMap[scope.row.FailType] }}
             </template>
           </el-table-column>
           <el-table-column label="状态">
             <template slot-scope="scope">
-              {{scope.row.Status}}
+              {{ statusMap[scope.row.Status] }}
             </template>
           </el-table-column>
 
           <el-table-column label="下次重试时间" width="160px">
             <template slot-scope="scope">
-              {{formatTime(scope.row.NextTryTime)}}
+              {{ formatTime(scope.row.NextTryTime) }}
             </template>
           </el-table-column>
           <el-table-column label="总计重试次数">
             <template slot-scope="scope">
-              {{scope.row.ReTryNum}}
+              {{ scope.row.ReTryNum }}
             </template>
           </el-table-column>
           <el-table-column label="扩展数据">
             <template slot-scope="scope">
-              {{scope.row.ExtData}}
+              {{ scope.row.ExtData }}
             </template>
           </el-table-column>
         </el-table>
@@ -109,25 +115,32 @@ import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
 import {$libDate, $libShow} from "@/utils/common";
+import {Message} from "element-ui";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: {Compare, Publish, MoneyInput},
   data() {
     return {
-      timeRange: [$libDate.GetDayBegin(new Date()-86400000*3), $libDate.GetDayEnd(new Date())],
+      timeRange: [$libDate.GetDayBegin(new Date() - 86400000 * 3), $libDate.GetDayEnd(new Date())],
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
-      item:{
-        limit:20,
-        offset:1,
-        uid:0,
-        gid:0,
-        app:0,
-        txId:'',
+      item: {
+        limit: 20,
+        offset: 1,
+        uid: 0,
+        gid: 0,
+        app: 0,
+        txId: '',
       },
-      tableData:[],
-      gameMap:{}
+      tableData: [],
+      gameMap: {},
+      failTypeMap: {
+        1: '派彩失败', 2: '游戏结算失败', 3: '转回失败', 4: '下注失败',
+      },
+      statusMap: {
+        1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
+      }
     }
   },
   created() {
@@ -146,6 +159,9 @@ export default {
         bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
         eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
       }
+      if ($this.item.uid === '') {
+        $this.item.uid = 0
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -162,11 +178,15 @@ export default {
           TxId: $this.item.txId,
         }
       }).then(response => {
-        $this.tableData=[]
-        if (response.RetCode===0){
-          $this.tableData=response.Data
+        $this.tableData = []
+        if (response.RetCode === 0) {
+          if (response.Data == 'no Data') {
+            Message.error('no Data')
+            return
+          }
+          $this.tableData = response.Data
         }
-  console.log(response)
+        console.log(response)
       })
     },
 
@@ -194,7 +214,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            this.gameMap[response.Data[i].Gid]=response.Data[i].Name
+            this.gameMap[response.Data[i].Gid] = response.Data[i].Name
           }
         }
       })
