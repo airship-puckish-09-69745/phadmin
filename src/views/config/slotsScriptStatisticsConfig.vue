@@ -307,8 +307,8 @@ export default {
                 bet = o.bet || 100
               }
               for (let i = 0; i < o.OddsList.length; i++) {
-                o.OddsList[i].MaxOdds += parseInt(o.Bet || 0)
-                o.OddsList[i].MinOdds += parseInt(o.Bet || 0)
+                o.OddsList[i].MaxOdds += parseInt(bet)
+                o.OddsList[i].MinOdds += parseInt(bet)
               }
               this.cfgMap[o.Gid] = o.OddsList
             }
