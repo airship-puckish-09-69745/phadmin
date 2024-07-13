@@ -1089,16 +1089,16 @@ export default {
           list[i] = -1
         }
       }
-      let str = ''
-      for (const data of list) {
-        if (data != -1) {
-          str += data / 1000 + ','
-        }
-      }
-      if (str.length > 0) {
-        Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
-        return false
-      }
+      // let str = ''
+      // for (const data of list) {
+      //   if (data != -1) {
+      //     str += data / 1000 + ','
+      //   }
+      // }
+      // if (str.length > 0) {
+      //   Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
+      //   return false
+      // }
       return true
     },
 
