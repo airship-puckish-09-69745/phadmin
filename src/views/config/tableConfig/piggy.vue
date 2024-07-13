@@ -584,7 +584,7 @@
                 </el-col>
 
                 <el-col :span="20" :offset="3">
-                  <span style="font-size: 12px">真人敲击频率限制是190ms敲击一次 2次敲击的间隔在190ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
+                  <span style="font-size: 12px">真人敲击频率限制是120ms敲击一次 2次敲击的间隔在120ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
