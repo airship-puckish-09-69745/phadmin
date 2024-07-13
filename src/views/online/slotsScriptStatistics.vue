@@ -372,8 +372,12 @@ export default {
       this.selectGameVisible = true
     },
     getTitle(gid, idx) {
-      let max = parseInt(this.cfgMap[gid].OddsList[idx].MaxOdds) + parseInt(this.cfgMap[gid].Bet || 0)
-      let min = parseInt(this.cfgMap[gid].OddsList[idx].MinOdds) + parseInt(this.cfgMap[gid].Bet || 0)
+    let bet =   this.cfgMap[gid].Bet || 0
+      if (80){
+        bet = this.cfgMap[gid].Bet || 100
+      }
+      let max = parseInt(this.cfgMap[gid].OddsList[idx].MaxOdds) + parseInt(bet)
+      let min = parseInt(this.cfgMap[gid].OddsList[idx].MinOdds) + parseInt(bet)
       if (idx === 0) {
         return '(' + '0 ,' + max + ']'
       }
