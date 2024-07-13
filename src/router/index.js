@@ -1589,9 +1589,10 @@ export const asyncRoutes = [
       },
       {
         path: 'wallet',
+        alwaysShow: true,
         component: () => import('@/views/devTools/devTools'),
         redirect: 'wallet',
-        meta: { title: '单一钱包', icon: 'code' },
+        meta: { title: '单一钱包', icon: 'el-icon-copy-document' },
         children: [
           {
             path: 'walletFailLog',
