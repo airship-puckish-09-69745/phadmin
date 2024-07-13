@@ -14,8 +14,8 @@
           </el-col>
           <el-col :span="4">
             <el-form-item>
-              <el-button type="danger" size="mini" @click="cleanRoundStatus">清除下注状态</el-button>
-              <el-button type="warning" size="mini" @click="cleanPlayStatus">清除玩牌异常状态</el-button>
+              <el-button type="danger" size="mini" @click="open('是否清除下注状态',1)">清除下注状态</el-button>
+              <el-button type="warning" size="mini" @click="open('是否清除下注状态',2)">清除玩牌异常状态</el-button>
             </el-form-item>
           </el-col>
         </el-form>
@@ -25,12 +25,12 @@
           <el-descriptions-item   label="Uid">{{ walletInfo.Uid }}</el-descriptions-item>
           <el-descriptions-item label="账号">{{ walletInfo.Account }}</el-descriptions-item>
           <el-descriptions-item label="App">{{ walletInfo.App }}</el-descriptions-item>
-          <el-descriptions-item label="刷新时间">{{ walletInfo.RefreshTime }}</el-descriptions-item>
+          <el-descriptions-item label="刷新时间">{{ formatTime(walletInfo.RefreshTime) }}</el-descriptions-item>
 
-          <el-descriptions-item label="当前资产">{{ walletInfo.Money }}</el-descriptions-item>
-          <el-descriptions-item label="原始转出金额">{{ walletInfo.RawRolloutMoney }}</el-descriptions-item>
-          <el-descriptions-item label="当前下注金额">{{ walletInfo.BetAmount }}</el-descriptions-item>
-          <el-descriptions-item label="当前转出资产">{{ walletInfo.RolloutMoney }}</el-descriptions-item>
+          <el-descriptions-item label="当前资产">{{ formatNumber(walletInfo.Money/1000) }}</el-descriptions-item>
+          <el-descriptions-item label="原始转出金额">{{ formatNumber(walletInfo.RawRolloutMoney/1000) }}</el-descriptions-item>
+          <el-descriptions-item label="当前下注金额">{{ formatNumber(walletInfo.BetAmount/1000) }}</el-descriptions-item>
+          <el-descriptions-item label="当前转出资产">{{ formatNumber(walletInfo.RolloutMoney/1000) }}</el-descriptions-item>
           <el-descriptions-item label="阶段">{{stageMap[walletInfo.Stage] }}</el-descriptions-item>
 
           <el-descriptions-item label="上次交易id">{{ walletInfo.TxId }}</el-descriptions-item>
@@ -154,6 +154,27 @@ export default {
         }
       })
     },
+      formatNumber(n) {
+          return n.toLocaleString()
+      },
+    open(context,type) {
+      this.$confirm(context, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (type==1){
+          this.cleanRoundStatus()
+        }else if (type==2){
+            this.cleanPlayStatus()
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消操作'
+        });
+      });
+    }
   }
 }
 </script>
