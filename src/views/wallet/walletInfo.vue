@@ -112,7 +112,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           $this.walletInfo = response.Data
-          console.log("=========",$this.walletInfo)
         }
       })
     },
