@@ -436,7 +436,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最小下注</p>
-                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.三个奖池的范围不要有交集 3.左右闭合区间  4.确认完全覆盖以后可以点击左上角的发布 5.没有覆盖的下注将不会被抽水入Jp奖池 也不会参与Jp开奖</span>
+                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.三个奖池的范围不要有交集 3.左右闭合区间  4.确认完全覆盖以后可以点击左上角的发布 5.没有覆盖的下注将会被抽水入Jp奖池 不会参与Jp开奖</span>
                       </template>
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.MinBet" placeholder="请选择">
