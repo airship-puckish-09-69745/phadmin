@@ -48,6 +48,7 @@
                 <el-table-column
                   prop="idx"
                   label="区间"
+                  width="130px"
                 >
                   <template slot-scope="scope">
                     {{ getTitle(parseInt(scope.row.gid), parseInt(scope.row.idx)) }}

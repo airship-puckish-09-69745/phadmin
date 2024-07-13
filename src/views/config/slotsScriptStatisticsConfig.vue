@@ -303,10 +303,13 @@ export default {
             const cfg = JSON.parse(response.Data.Data)
             for (let o of cfg) {
               console.log(o.OddsList)
-
+              let bet = o.bet||0
+              if (o.Gid=80){
+                bet =o.bet||100
+              }
               for (let i = 0; i < o.OddsList.length; i++) {
-                o.OddsList[i].MaxOdds += parseInt(o.Bet)
-                o.OddsList[i].MinOdds += parseInt(o.Bet)
+                o.OddsList[i].MaxOdds += parseInt(o.Bet||0)
+                o.OddsList[i].MinOdds += parseInt(o.Bet||0)
               }
               this.cfgMap[o.Gid] = o.OddsList
             }
