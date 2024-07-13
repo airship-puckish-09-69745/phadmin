@@ -302,10 +302,11 @@ export default {
             const cfg = JSON.parse(response.Data.Data)
             for (let o of cfg) {
               console.log(o.OddsList)
-              let bet = o.bet || 0
+              let bet = o.Bet || 0
               if (o.Gid === 80) {
-                bet = o.bet || 100
+                bet = o.Bet || 100
               }
+              console.log("======",o.Gid,bet)
               for (let i = 0; i < o.OddsList.length; i++) {
                 o.OddsList[i].MaxOdds += parseInt(bet)
                 o.OddsList[i].MinOdds += parseInt(bet)
@@ -360,9 +361,13 @@ export default {
         cfg.push(item)
       }
       for (let o of cfg) {
+        let bet =  o.Bet || 0
+        if (o.Gid === 80) {
+          bet = o.Bet || 100
+        }
         for (let i = 0; i < o.OddsList.length; i++) {
-          o.OddsList[i].MaxOdds -= parseInt(o.Bet)
-          o.OddsList[i].MinOdds -= parseInt(o.Bet)
+          o.OddsList[i].MaxOdds -= parseInt(bet)
+          o.OddsList[i].MinOdds -= parseInt(bet)
         }
       }
       return cfg
