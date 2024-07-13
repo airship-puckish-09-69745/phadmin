@@ -105,7 +105,22 @@
         </el-table>
       </el-col>
     </el-row>
-
+    <el-row type="flex" justify="end">
+      <el-col :span="12">
+        <div class="block">
+          <el-pagination
+              background
+              :current-page="item.currPage"
+              :page-sizes="[20]"
+              :page-size="item.limit"
+              layout=" prev, next"
+              :total="totalCount"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+          />
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -140,7 +155,8 @@ export default {
       },
       statusMap: {
         1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
-      }
+      },
+      totalCount: 2,
     }
   },
   created() {
@@ -185,6 +201,9 @@ export default {
             return
           }
           $this.tableData = response.Data
+          if (response.Data.length >= $this.item.limit){
+            $this.total = response.Data.length+1
+          }
         }
         console.log(response)
       })
@@ -218,7 +237,16 @@ export default {
           }
         }
       })
-    }
+    },
+    // 分页处理
+    handleSizeChange(val) {
+      this.item.limit = val
+      this.getData()
+    },
+    handleCurrentChange(val) {
+      this.item.offset= val
+      this.getData()
+    },
 
   }
 }
