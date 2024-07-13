@@ -124,7 +124,7 @@ export default {
       }
       request({
         url: '/dataProxy/info',
-        method: 'get',
+        method: 'post',
         data: {
           Path: '/wallet/clean/round/status',
           Uid: $this.item.uid,
@@ -132,8 +132,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success("清除下注状态成功！")
-        }else {
-          Message.success(response.Data)
         }
       })
     },
@@ -145,7 +143,7 @@ export default {
       }
       request({
         url: '/dataProxy/info',
-        method: 'get',
+        method: 'post',
         data: {
           Path: '/wallet/clean/play/status',
           Uid: $this.item.uid,
@@ -153,8 +151,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success("清除玩牌异常成功！")
-        }else {
-          Message.success(response.Data)
         }
       })
     },
