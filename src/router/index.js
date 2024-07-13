@@ -1587,20 +1587,26 @@ export const asyncRoutes = [
         name: 'game_custom_config',
         meta: { title: '游戏自定义配置' }
       },
+    ]
+  },
+  {
+    path: '/wallet',
+    component: Layout,
+    alwaysShow: true,
+    redirect: 'noRedirect',
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    children: [
       {
-        path: 'wallet',
-        alwaysShow: true,
-        component: () => import('@/views/devTools/devTools'),
-        redirect: 'wallet',
-        meta: { title: '单一钱包', icon: 'el-icon-copy-document' },
-        children: [
-          {
-            path: 'walletFailLog',
-            component: () => import('@/views/devTools/walletFailLog'),
-            name: 'wallet_fail_log',
-            meta: { title: '钱包失败记录' }
-          },
-        ]
+        path: 'failWallet',
+        component: () => import('@/views/wallet/walletFailLog.vue'),
+        name: 'failWallet',
+        meta: { title: '钱包失败列表' }
+      },
+      {
+        path: 'walletInfo',
+        component: () => import('@/views/wallet/walletInfo.vue'),
+        name: 'walletInfo',
+        meta: { title: '钱包信息' }
       },
     ]
   },

@@ -167,7 +167,7 @@ export default {
         method: 'get',
         data: {
           Env: $this.env,
-          Path: '/walletfaillog/log',
+          Path: '/wallet/fail/log',
           StartTime: bTime,
           EndTime: eTime,
           Offset: ($this.item.offset - 1) * $this.item.limit,
