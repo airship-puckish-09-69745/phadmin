@@ -175,6 +175,11 @@
             -->
             <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" v-if="!isActV2" />
             <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" v-if="!isActV2" />
+
+            <el-table-column prop="ActLogObj.CollectOddsAdd" label="收集倍率增加" v-if="isActCollect" />
+            <el-table-column prop="ActLogObj.CollectOddsSub" label="收集倍率扣减" v-if="isActCollect" />
+            <el-table-column prop="ActLogObj.CollectOddsTotal" label="累计收集倍率" v-if="isActCollect" />
+
           </el-table-column>
         </template>
 
@@ -275,6 +280,9 @@ export default {
   methods: {
     isActV2() {
       return [78,80,82,86].indexOf(this.gid) >= 0
+    },
+    isActCollect() {
+      return [86].indexOf(this.gid) >= 0
     },
     showChart() {
       const $this = this
