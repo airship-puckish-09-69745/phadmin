@@ -168,7 +168,7 @@
             <el-table-column prop="ActLogObj.CollectOddsSub" label="收集倍率扣减" v-if="isActCollect(gid)" />
             <el-table-column prop="ActLogObj.CollectOddsTotal" label="累计收集倍率" v-if="isActCollect(gid)" />
 
-            <el-table-column prop="ActLogObj.IsLotteryLimit" label="保底限制">
+            <el-table-column prop="ActLogObj.IsLotteryLimit" label="保底限制" v-if="isActV2(gid)">
               <template slot-scope="scope">
                 <span v-if="scope.row.ActLogObj.IsLotteryLimit" style="color:red">是</span>
                 <span v-else>否</span>
