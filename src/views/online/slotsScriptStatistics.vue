@@ -125,7 +125,7 @@
                   label="占比"
                 >
                   <template slot-scope="scope">
-                    {{ (parseInt(scope.row.cnt) / coordinateSum * 100).toFixed(2) + "%" }}
+                    {{ (parseInt(scope.row.cnt) / coordinateSum[scope.row.gid] * 100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -327,8 +327,8 @@ export default {
       queryGid: 80,
       gidOptions: {},
       sumData: {},
-      stepSum: 0,
-      coordinateSum: 0,
+      stepSum: {},
+      coordinateSum: {},
       detailVisible: false,
       showData: {},
       mapCnt: {},
@@ -471,8 +471,8 @@ export default {
         let scriptTableData = []
         let stepTableData = []
 
-        this.stepSum = 0
-        this.coordinateSum = 0
+        this.stepSum = {}
+
         if (response.RetCode === 0) {
           for (const key in response.Data["coordinate"]) {
             // SlotsType__剧本_x_y
@@ -485,7 +485,7 @@ export default {
             } else {
               prefix = '常规' + (parseInt(strings1[1]) + 1)
             }
-            this.coordinateSum += parseInt(response.Data["coordinate"][key])
+            this.coordinateSum[strings1[0]]  = parseInt(response.Data["coordinate"][key]) +(this.coordinateSum[strings1[0]]||0)
             coordinateTableData.push({
               gid: strings1[0],
               type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
