@@ -472,6 +472,8 @@ export default {
         let stepTableData = []
 
         this.stepSum = {}
+        this.sumData = {}
+        this.coordinateSum = {}
 
         if (response.RetCode === 0) {
           for (const key in response.Data["coordinate"]) {
