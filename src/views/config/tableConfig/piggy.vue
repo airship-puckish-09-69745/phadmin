@@ -254,7 +254,7 @@
                       <legend>{{ JpTypeMap[data.Level] }} </legend>
                       <el-descriptions>
                         <el-descriptions-item>
-                          <span style="font-size: 12px;">通过当前Jp奖池值和时间点可以确定增长速度val/h, 代码里面是每10秒钟增长一次, 一个增长val/3600s*10s*[90%,110%]</span>
+                          <span style="font-size: 12px;">通过当前Jp奖池值和时间点可以确定增长速度val/h, 代码里面是每10秒钟增长一次, 每次增长val/3600s*10s*[90%,110%]</span>
                         </el-descriptions-item>
                       </el-descriptions>
                       <el-table
