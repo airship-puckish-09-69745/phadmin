@@ -41,7 +41,7 @@
           :row-style="{height:'10px'}"
           :cell-style="libShow.TableCell(0)"
         >
-          <el-table-column label="操作时间" width="160px">
+          <el-table-column label="失败时间" width="160px">
             <template slot-scope="scope">
               {{ formatTime(scope.row.OpTime) }}
             </template>
