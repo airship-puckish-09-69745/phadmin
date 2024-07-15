@@ -557,7 +557,7 @@ export default {
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid===37 || o.Gid===37){
-              this.blackJackContext += '场次:'+ this.formatNumber(o.RecountRate / 1000) +' 奖池:'+ this.formatNumber(o.PrizePool /1000)+'<br/>'
+              this.blackJackContext += '场次:'+ this.formatNumber(o.Ante / 1000) +' 奖池:'+ this.formatNumber(o.PrizePool /1000)+'<br/>'
             }
           }
           $this.tableData.splice(0, 0)
