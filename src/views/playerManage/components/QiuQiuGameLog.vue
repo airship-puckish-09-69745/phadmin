@@ -64,11 +64,11 @@
             :data="scope.row.infos"
             border
           >
-            <el-table-column label="座位">
-              <template slot-scope="scope">{{ scope.row.seatId }}</template>
-            </el-table-column>
             <el-table-column label="uid">
               <template slot-scope="scope">{{ scope.row.uid }}</template>
+            </el-table-column>
+            <el-table-column label="座位">
+              <template slot-scope="scope">{{ scope.row.seatId }}</template>
             </el-table-column>
             <el-table-column label="操作类型">
               <template slot-scope="scope">{{ cardType[scope.row.type] }}</template>
