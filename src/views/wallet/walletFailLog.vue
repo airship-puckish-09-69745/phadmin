@@ -104,7 +104,7 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope" style="width: 100px;">
-              <el-button type="primary" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>
+              <el-button type="text" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -245,13 +245,16 @@ export default {
     },
     retry(txid){
       request({
-        url: '/wallet/retry/faillog',
-        method: 'post',
-        data: {TxId: txid}
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/wallet/retry/faillog',
+          TxId: txid,
+        }
       }).then(response => {
         console.log("=====", response)
         if (response.RetCode === 0) {
-         Message.success("重试成功！")
+          Message.success("重试成功！")
         }else {
           Message.error("重试失败！",response.Data)
         }
