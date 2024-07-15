@@ -103,7 +103,7 @@
             </template>
           </el-table-column>
           <el-table-column label="操作">
-            <template slot-scope="scope">
+            <template slot-scope="scope" style="width: 100px;">
               <el-button type="primary" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>
             </template>
           </el-table-column>
