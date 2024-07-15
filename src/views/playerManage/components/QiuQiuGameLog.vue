@@ -6,8 +6,12 @@
         {{ formatNumber(GameLog.detail.antes / 1000) }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">台费：</template>
+        <template slot="label">总台费：</template>
         {{ formatNumber(GameLog.detail.totalTableFee / 1000) }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">台费比例：</template>
+        {{ formatNumber(GameLog.detail.FlowRate / 1000) }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">开始时间：</template>
@@ -33,13 +37,13 @@
           <template slot-scope="scope">{{scope.row.isDealer?'庄家':'闲家' }}</template>
         </el-table-column>
         <el-table-column label="总下注">
-          <template slot-scope="scope">{{scope.row.moneyBet }}</template>
+          <template slot-scope="scope">{{formatNumber(scope.row.moneyBet/ 1000) }}</template>
         </el-table-column>
         <el-table-column label="总输赢">
-          <template slot-scope="scope">{{scope.row.moneyWon }}</template>
+          <template slot-scope="scope">{{formatNumber((scope.row.moneyChange )/1000) }}</template>
         </el-table-column>
-        <el-table-column label="总输赢">
-          <template slot-scope="scope">{{scope.row.moneyWon }}</template>
+        <el-table-column label="玩家台费">
+          <template slot-scope="scope">{{formatNumber((scope.row.moneyTaxed )/1000) }}</template>
         </el-table-column>
       </el-table>
     <el-table
