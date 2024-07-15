@@ -102,6 +102,11 @@
               {{ scope.row.ExtData }}
             </template>
           </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -235,6 +240,20 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameMap[response.Data[i].Gid] = response.Data[i].Name
           }
+        }
+      })
+    },
+    retry(txid){
+      request({
+        url: '/wallet/retry/faillog',
+        method: 'post',
+        data: {TxId: txid}
+      }).then(response => {
+        console.log("=====", response)
+        if (response.RetCode === 0) {
+         Message.success("重试成功！")
+        }else {
+          Message.error("重试失败！",response.Data)
         }
       })
     },
