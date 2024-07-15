@@ -155,7 +155,7 @@ export default {
         3: '奖励'
       },
       offset: 1,
-      limit: 300,
+      limit: 100,
       courseInfo: {
         Uid: '',
         ItemId: '',
