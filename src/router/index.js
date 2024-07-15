@@ -951,6 +951,12 @@ export const asyncRoutes = [
             meta: { title: '多米诺 ◐', gid: 46 }
           },
           {
+            path: 'playlog_qiuqiu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_qiuqiu',
+            meta: { title: 'qiuqiu ◐', gid: 111 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
