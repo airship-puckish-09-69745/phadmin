@@ -64,7 +64,7 @@
                   label="占比"
                 >
                   <template slot-scope="scope">
-                    {{ (parseInt(scope.row.cnt) / sumData * 100).toFixed(2) + "%" }}
+                    {{ (parseInt(scope.row.cnt) / sumData[scope.row.gid] * 100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -326,7 +326,7 @@ export default {
       cfgMap: {},
       queryGid: 80,
       gidOptions: {},
-      sumData: 0,
+      sumData: {},
       stepSum: 0,
       coordinateSum: 0,
       detailVisible: false,
@@ -470,7 +470,7 @@ export default {
         let coordinateTableData = []
         let scriptTableData = []
         let stepTableData = []
-        this.sumData = 0
+
         this.stepSum = 0
         this.coordinateSum = 0
         if (response.RetCode === 0) {
@@ -497,7 +497,8 @@ export default {
           let scriptMap = {}
           for (const key in response.Data["script"]) {
             var strings = key.split('_');
-            this.sumData += parseInt(response.Data["script"][key])
+            this.sumData[strings[0]] = parseInt(response.Data["script"][key])+(this.sumData[parseInt(strings[0])]||0)
+
             scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
             $this.gidOptions[strings[0]] = strings[0]
           }

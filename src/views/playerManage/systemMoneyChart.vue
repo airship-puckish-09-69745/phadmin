@@ -553,19 +553,18 @@ export default {
         console.log('list response', response)
         this.blackJackContext = ''
         var ignore = [3, 4, 5, 7, 8, 9, 13, 14, 18, 19]
-       let data = []
+       let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
-            if (o.Gid===37  ){
-              data.push(o)
+            if (o.Gid=== 37){
+              datas.push(o)
             }
           }
-          $this.tableData.splice(0, 0)
         }
-        data.sort(function(a, b) {
+        datas.sort(function(a, b) {
           return a.Ante-b.Ante
         })
-        for (const o of data) {
+        for (const o of datas) {
           this.blackJackContext += '场次:'+ this.formatNumber(o.Ante / 1000) +'    奖池:'+ this.formatNumber(o.PrizePool /1000)+'<br/>'
         }
       })
