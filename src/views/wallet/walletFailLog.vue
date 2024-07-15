@@ -246,7 +246,7 @@ export default {
     retry(txid){
       request({
         url: '/dataProxy/info',
-        method: 'get',
+        method: 'post',
         data: {
           Path: '/wallet/retry/faillog',
           TxId: txid,
