@@ -348,8 +348,11 @@
       </el-row>
       <el-form label-width="250px" size="small">
         <el-form-item label="白名单版本号：" :required="true">
-          <el-col :span="15">
+          <el-col :span="11">
             <el-input v-model="edit.batchWhiteVersion" />
+            <el-tooltip content="将链接版本复制到白名单版本，保存生效" placement="right">
+              <el-button type="success" size="mini" @click="copyLobbyVersion2BatchWhiteVersion()">复制链接版本</el-button>
+            </el-tooltip>
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -654,6 +657,7 @@ export default {
       //   Message.error(msg)
       //   return false
       // }
+      this.edit.batchWhiteVersion = ''
       this.edit.batchEditWhiteVersion = true
     },
     showMultiPublishWitheVersion() {
@@ -894,6 +898,9 @@ export default {
     //* * ********************** 修改/添加弹框相关 *****************
     copyLobbyVersion2WhiteVersion() {
       this.edit.item.WhiteVersion = this.LobbyVersion
+    },
+    copyLobbyVersion2BatchWhiteVersion() {
+      this.edit.batchWhiteVersion = this.LobbyVersion
     },
     getEditTitle() {
       this.isDisabled = this.edit.isEdit

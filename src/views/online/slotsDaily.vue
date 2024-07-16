@@ -221,6 +221,8 @@ export default {
             }
             this.lists.push(this.calcData(obj[key]))
           }
+          console.log("=========",this.lists)
+
         } else {
           $this.$message.error(response.Data)
         }
@@ -441,6 +443,7 @@ export default {
         case 81:
         case 82:
         case 83:
+        case 84:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
@@ -456,6 +459,8 @@ export default {
           break
         }
       }
+      console.log("========",one.SlotsType,lists)
+
       return lists
     },
     getPercent(num, deno) {

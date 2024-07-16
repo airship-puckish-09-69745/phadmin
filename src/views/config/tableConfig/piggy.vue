@@ -252,6 +252,11 @@
                   <div v-for="(data,idx) in item.Jp">
                     <fieldset style="margin-top: 20px;">
                       <legend>{{ JpTypeMap[data.Level] }} </legend>
+                      <el-descriptions>
+                        <el-descriptions-item>
+                          <span style="font-size: 12px;">通过当前Jp奖池值和时间点可以确定增长速度val/h, 代码里面是每10秒钟增长一次, 每次增长val/3600s*10s*[90%,110%]</span>
+                        </el-descriptions-item>
+                      </el-descriptions>
                       <el-table
                         ref="filterTable"
                         :data="data.JackpotRegulation.PoolIncrArr"
@@ -436,7 +441,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最小下注</p>
-                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.三个奖池的范围不要有交集 3.左右闭合区间  4.确认完全覆盖以后可以点击左上角的发布 5.没有覆盖的下注将不会被抽水入Jp奖池 也不会参与Jp开奖</span>
+                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间需完全覆盖 基础配置->下注列表内所有下注值, 没有被覆盖的下注会被抽水入Jp奖池 不会参与Jp开奖 2.三个奖池的范围不要有交集(在交集区域的下注会随机一个配置生效) 3.左右闭合区间 </span>
                       </template>
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.MinBet" placeholder="请选择">
@@ -584,7 +589,7 @@
                 </el-col>
 
                 <el-col :span="20" :offset="3">
-                  <span style="font-size: 12px">真人敲击频率限制是190ms敲击一次 2次敲击的间隔在190ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
+                  <span style="font-size: 12px">真人敲击频率限制是120ms敲击一次 2次敲击的间隔在120ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -1089,16 +1094,16 @@ export default {
           list[i] = -1
         }
       }
-      let str = ''
-      for (const data of list) {
-        if (data != -1) {
-          str += data / 1000 + ','
-        }
-      }
-      if (str.length > 0) {
-        Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
-        return false
-      }
+      // let str = ''
+      // for (const data of list) {
+      //   if (data != -1) {
+      //     str += data / 1000 + ','
+      //   }
+      // }
+      // if (str.length > 0) {
+      //   Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
+      //   return false
+      // }
       return true
     },
 

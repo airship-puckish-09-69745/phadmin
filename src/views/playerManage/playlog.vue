@@ -2097,11 +2097,12 @@
           </template>
         </el-table-column>
       </el-table>
-
-
     </el-dialog>
+
+    <texas-n-l-h-detail-log v-if="gameLogComponent.gid==32" :game-log="gameLogComponent" @closeDialog="closeDialog"></texas-n-l-h-detail-log>
+    <qiu-qiu-game-log v-if="gameLogComponent.gid==111" :game-log="gameLogComponent" @closeDialog="closeDialog"></qiu-qiu-game-log>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
   </div>
 </template>
@@ -2119,6 +2120,8 @@ import DateTimeShow from '@/components/DatetimeShow'
 import PusoyDosTable from '@/views/config/tableConfig/pusoyDos/pusoyDosTable.vue'
 import PusoyDosDetailLog from '@/views/playerManage/components/PusoyDosDeatilLog.vue'
 import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
+import TexasNLHDetailLog from "@/views/playerManage/components/TexasNLHGameLog.vue";
+import QiuQiuGameLog from "@/views/playerManage/components/QiuQiuGameLog.vue";
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -2136,7 +2139,9 @@ function newChartData() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
+  components: {
+    QiuQiuGameLog,
+    TexasNLHDetailLog, TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
   data() {
     return {
       tableData: [],
@@ -2668,7 +2673,7 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
-          } else if (gid === 107 || gid === 108) {
+          } else if (gid === 107 || gid === 108 || gid==32 || gid == 111) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
             $this.showDominoGame(obj)
@@ -2731,7 +2736,7 @@ export default {
       if (gid==108){
         this.showDropBall(obj)
       }
-      console.log('obj', obj)
+      console.log('obj=>',  this.gameLogComponent)
     },
     showDropBall(obj) {
       let m ={}

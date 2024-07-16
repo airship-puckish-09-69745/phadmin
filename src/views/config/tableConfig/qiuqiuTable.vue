@@ -379,6 +379,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          for (const o of objs) {
+            o.Ante /=1000
+          }
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
@@ -503,6 +506,7 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
+      postData.Ante =parseInt(postData.Ante*1000)
       return postData
     },
     checkData() {
@@ -511,7 +515,7 @@ export default {
     },
     save() {
       if (!this.checkData()) return
- 
+
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)

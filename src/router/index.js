@@ -951,6 +951,12 @@ export const asyncRoutes = [
             meta: { title: '多米诺 ◐', gid: 46 }
           },
           {
+            path: 'playlog_qiuqiu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_qiuqiu',
+            meta: { title: 'DominoQiuQiu ◐', gid: 111 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -1587,12 +1593,27 @@ export const asyncRoutes = [
         name: 'game_custom_config',
         meta: { title: '游戏自定义配置' }
       },
+    ]
+  },
+  {
+    path: '/wallet',
+    component: Layout,
+    alwaysShow: true,
+    redirect: 'noRedirect',
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    children: [
       {
-        path: 'timeoutGameLog',
-        component: () => import('@/views/devTools/timeoutGameLog'),
-        name: 'timeout_game_log',
-        meta: { title: '游戏超时记录' }
-      }
+        path: 'failWallet',
+        component: () => import('@/views/wallet/walletFailLog.vue'),
+        name: 'failWallet',
+        meta: { title: '钱包失败列表' }
+      },
+      {
+        path: 'walletInfo',
+        component: () => import('@/views/wallet/walletInfo.vue'),
+        name: 'walletInfo',
+        meta: { title: '钱包信息' }
+      },
     ]
   },
   {

@@ -98,8 +98,7 @@ export function LibShow() {
     34: 'Pusoy-Dos', 37: 'BlackJack', 46: '多米诺',
     51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
     59: '芝加哥', 60: '糖果派', 61: 'fireKick',
-    76: 'Candy Rush', 78: '超级宝石', 80: 'Candy Craze', 82: '百万富翁', // slots
-    // 80: 'PLINKO',
+    76: 'Candy Rush', 78: '超级宝石', 80: 'Candy Craze', 82: '百万富翁', 84: '超级王牌', 86: '超级宝石II', // slots
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker' }
 
   this.NumMap = {

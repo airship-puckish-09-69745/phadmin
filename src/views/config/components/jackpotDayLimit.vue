@@ -90,7 +90,7 @@
       <el-table-column label="机器人开奖数量概率" prop="RateArr">
         <template slot="header">
           <p style="text-align: center">  机器人开奖数量概率</p>
-          <span style="font-size: 11px">  注: 个数配置不生效 >0就ok 具体数值由具体游戏决定</span>
+          <span style="font-size: 11px">  注: 个数配置不生效 >0就ok 具体开奖个数由具体游戏决定</span>
         </template>
         <template slot-scope="scope">
           <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
