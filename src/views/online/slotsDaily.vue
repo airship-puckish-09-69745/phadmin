@@ -116,6 +116,7 @@
       </el-tabs>
     </el-row>
 
+    <!--
     <el-dialog
       title="图表信息"
       :visible.sync="dialogVisible"
@@ -147,6 +148,7 @@
         <slots-line-chart :chart-data="chartData" height="600px" />
       </el-row>
     </el-dialog>
+    -->
   </div>
 </template>
 
@@ -241,24 +243,14 @@ export default {
       switch (sType) {
         case 76:
           return 'CandyRush'
-        case 77:
-          return '糖果传奇Allline'
         case 78:
           return 'SuperGems'
-        case 79:
-          return '糖果糖果Mars'
         case 80:
           return 'CandyCraze'
-        case 81:
-          return '超级宝石Mars'
         case 82:
           return 'Millionaire'
-        case 83:
-          return '百万富翁Mars'
         case 84:
           return 'SuperAce+'
-        case 85:
-          return '超级王牌Mars'
         case 86:
           return 'SuperGemsII'
       }
@@ -281,13 +273,9 @@ export default {
           break
         }
         case 76:
-        case 77:
         case 78:
-        case 79:
         case 80:
-        case 81:
         case 82:
-        case 83:
         case 84:
         {
           // 混有购买免费数据
@@ -495,8 +483,9 @@ export default {
     doShowChart(slotsType) {
       this.slotsType = slotsType
       this.dialogVisible = true
-      this.getChartInfo()
+      // this.getChartInfo()
     },
+    /*
     getChartInfo() {
       const querySts = this.transTime(this.queryItem.queryTime[0])
       const queryEts = this.transTime(this.queryItem.queryTime[1])
@@ -523,74 +512,15 @@ export default {
           this.chartData = {}
           this.chartData.xDate = []
           switch (this.slotsType) {
-            case 51:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Wild返奖', 'WildRTP', 'Scatter返奖', 'ScatterRTP', 'ScatterIcon返奖', 'ScatterIconRTP', '总RTP', '正常中奖率', 'Wild中奖率', 'Scatter中奖率']
-              break
-            }
-            case 52:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Jackpot返奖', 'JackpotRTP', 'Bonus返奖', 'BonusRTP', '总RTP', '正常中奖率', 'Jackpot中奖率', 'Bonus中奖率']
-              break
-            }
-            case 53:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', '火小丑返奖', '火小丑RTP', '冰小丑返奖', '冰小丑RTP', '轮盘返奖', '轮盘RTP', '总RTP', '正常中奖率', '火小丑中奖率', '冰小丑中奖率', '轮盘中奖率']
-              break
-            }
-            case 54:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', 'Bonus返奖', 'BonusRTP', '总RTP', '正常中奖率', 'Scatter中奖率', 'Bonus中奖率']
-              break
-            }
-            case 55:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', 'Bonus返奖', 'BonusRTP', '总RTP', '正常中奖率', 'Scatter中奖率', 'Bonus中奖率']
-              break
-            }
-            case 56:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
-              break
-            }
-            case 57:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '矿工游戏返奖', '矿工游戏RTP', '总RTP', '正常中奖率', 'Scatter中奖率', '矿工游戏中奖率']
-              break
-            }
-            case 58:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', '金币游戏返奖', '金币游戏RTP', 'Scatter返奖', 'ScatterRTP', '总RTP', '正常中奖率', '金币游戏中奖率', 'Scatter中奖率']
-              break
-            }
-            case 59:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', 'Bonus返奖', 'BonusRTP', '下落返奖', '下落RTP', '总RTP', '正常中奖率', 'Scatter中奖率', 'Bonus中奖率', '下落中奖率']
-              break
-            }
-            case 61:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', '主游戏掉落返奖', '主游戏掉落RTP', 'Scatter返奖', 'ScatterRTP', 'Scatter掉落返奖', 'Scatter掉落RTP', '总RTP', '正常中奖率', '主游戏掉落中奖率', 'Scatter中奖率', 'Scatter掉落中奖率']
-              break
-            }
-            case 62:
-            {
-              this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', 'Jackpot返奖', 'JackpotRTP', '掉落返奖', '掉落RTP', '总RTP', '正常中奖率', 'Scatter中奖率', 'Jackpot中奖率', '掉落中奖率']
-              break
-            }
             case 63:
             {
               this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', 'Bonus返奖', 'BonusRTP', '总RTP', '正常中奖率', 'Scatter中奖率', 'Bonus中奖率']
               break
             }
             case 76:
-            case 77:
             case 78:
-            case 79:
             case 80:
-            case 81:
             case 82:
-            case 83:
             {
               this.chartData.yNames = ['玩牌次数', '总下注', '正常返奖', '正常RTP', 'Scatter返奖', 'ScatterRTP', '购买Scatter返奖', '购买ScatterRTP', '总RTP', '正常中奖率', 'Scatter中奖率']
               break
@@ -939,6 +869,8 @@ export default {
         this.loadingClose()
       })
     },
+    */
+   /*
     createSeries(name, data) {
       return {
         name: name,
@@ -947,6 +879,8 @@ export default {
         data: data
       }
     },
+    */
+   /*
     transTime(t) {
       if (!t) {
         return 0
@@ -957,6 +891,8 @@ export default {
       }
       return parseInt($libDate.SelectTimeToIndiaByZone(time) / 1000)
     },
+    */
+   /*
     getPercentTimes(num, deno) {
       if (num == 0 || deno == 0) {
         return 0.00
@@ -965,6 +901,8 @@ export default {
         return p
       }
     },
+    */
+   /*
     loading() {
       this.tempLoading = this.$loading({
         lock: true,
@@ -973,12 +911,15 @@ export default {
         background: 'rgba(0, 0, 0, 0.7)'
       })
     },
+    */
+   /*
     loadingClose() {
       const $this = this
       setTimeout(function() {
         $this.tempLoading.close()
       }, 500)
     },
+    */
     getGameName(gid) {
       const id = parseInt(gid)
       if (id > 5000) {
