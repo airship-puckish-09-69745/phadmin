@@ -326,14 +326,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item
-              label="等级："
-              :required="true"
-              prop="item.Level"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.Level" placeholder="等级" />
-            </el-form-item>
+            <game-level v-model="edit.item.Level" />
           </el-col>
         </el-row>
         <el-form-item>
