@@ -4,10 +4,12 @@
       <el-tabs tab-position="left">
         <el-tab-pane v-for="value in lists" :label="value.title">
           <el-row>
+            <!--
             <el-col :offset="12" :span="2">
               <el-button type="text" @click="doShowChart(value.slotsType)">图表</el-button>
             </el-col>
-            <el-col :span="2">
+            -->
+            <el-col :offset="12" :span="2">
               <el-button size="mini" @click="getData()">刷新</el-button>
             </el-col>
           </el-row>
@@ -191,7 +193,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 77,  79, 81,  83,85]
+      ignoreGame: [77, 79, 81, 83, 85, 87]
     }
   },
   created() {
@@ -237,56 +239,12 @@ export default {
     },
     getSlotsName(sType) {
       switch (sType) {
-        case 51:
-          return '凤凰'
-        case 52:
-          return '睡美人'
-        case 53:
-          return '小丑'
-        case 54:
-          return '黄金列车'
-        case 55:
-          return '澳洲'
-        case 56:
-          return '象鼻神'
-        case 57:
-          return '黄金矿工'
-        case 58:
-          return '阿拉丁'
-        case 59:
-          return '芝加哥'
-        case 60:
-          return '粮果派对'
-        case 61:
-          return 'FireKick'
-        case 62:
-          return '侏罗纪'
-        case 63:
-          return '夺宝奇兵'
-        case 67:
-          return '金钱兔'
-        case 68:
-          return '十倍金牛'
-        case 69:
-          return '虎虎生财'
-        case 70:
-          return '鼠鼠福福'
-        case 71:
-          return '嘻哈熊猫'
-        case 72:
-          return '象财神'
-        case 73:
-          return '忍者武士'
-        case 74:
-          return '亡灵大盗'
-        case 75:
-          return '小红帽'
         case 76:
           return 'CandyRush'
         case 77:
           return '糖果传奇Allline'
         case 78:
-          return '超级宝石'
+          return 'SuperGems'
         case 79:
           return '糖果糖果Mars'
         case 80:
@@ -294,13 +252,15 @@ export default {
         case 81:
           return '超级宝石Mars'
         case 82:
-          return '百万富翁'
+          return 'Millionaire'
         case 83:
           return '百万富翁Mars'
         case 84:
-          return '超级王牌'
+          return 'SuperAce+'
         case 85:
           return '超级王牌Mars'
+        case 86:
+          return 'SuperGemsII'
       }
       return '未知老虎机-' + sType
     },
@@ -310,121 +270,6 @@ export default {
       one.Day7 = this.libMoney.TransForShow(one.Day7)
       const lists = []
       switch (one.SlotsType) {
-        case 51:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Wild返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItem('ScatterIcon返奖', 'SlotsReturn4', one))
-          lists.push(this.calcItem('Jackpot返奖', 'Jackpot1', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 52:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Jackpot返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Bonus返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 53:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('火小丑返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('冰小丑返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItem('轮盘返奖', 'SlotsReturn4', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 54:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Bonus返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 55:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Bonus返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 56:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 57:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('矿工游戏返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 58:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('金币游戏返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 59:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Bonus返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItem('下落返奖', 'SlotsReturn4', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 61:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('主游戏掉落返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItem('Scatter掉落返奖', 'SlotsReturn4', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
-        case 62:
-        {
-          lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
-          lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
-          lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItem('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItem('Jackpot返奖', 'SlotsReturn3', one))
-          lists.push(this.calcItem('掉落返奖', 'SlotsReturn4', one))
-          lists.push(this.calcItemTotal('总计', one))
-          break
-        }
         case 63:
         {
           lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
@@ -508,7 +353,7 @@ export default {
       const one = this.getObjRow(name)
       one.today.number = data.Today['PlayTimes'] - data.Today['SlotsReturn4Times'] // SlotsReturn4Times购买免费次数
       one.yesterday.number = data.Yesterday['PlayTimes'] - data.Yesterday['SlotsReturn4Times']
-      one.day7.number = data.Day7['PlayTimes'] - -data.Day7['SlotsReturn4Times']
+      one.day7.number = data.Day7['PlayTimes'] - data.Day7['SlotsReturn4Times']
       return one
     },
     calcTotalBet(data) {
@@ -516,7 +361,7 @@ export default {
       const one = this.getObjRow(name)
       one.today.number = data.Today['TotalBet'] - data.Today['SlotsReturn4'] // SlotsReturn4购买免费下注
       one.yesterday.number = data.Yesterday['TotalBet'] - data.Yesterday['SlotsReturn4']
-      one.day7.number = data.Day7['TotalBet'] - -data.Day7['SlotsReturn4']
+      one.day7.number = data.Day7['TotalBet'] - data.Day7['SlotsReturn4']
       return one
     },
     calcItemNormal(name, key, data) {
