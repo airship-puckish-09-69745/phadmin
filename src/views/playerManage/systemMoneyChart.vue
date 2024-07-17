@@ -556,6 +556,7 @@ export default {
       }).then(response => {
         console.log('list response', response)
         this.blackJackContext = ''
+        $this.blackJackSum = 0
        let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
