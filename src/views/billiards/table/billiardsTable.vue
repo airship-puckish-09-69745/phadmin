@@ -118,6 +118,23 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <fieldset>
+          <legend>时间配置</legend>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="击球时间：" :required="true" prop="TimeConfig.OpTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.OpTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="离线超时时间：" :required="true" prop="TimeConfig.OfflineTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.TimeConfig.OfflineTimeout" placeholder="" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </fieldset>
+
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -143,6 +160,12 @@ import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 
 const filterMap = {}
+function NewTimeConfig() {
+  return {
+    OpTimeout: 0,
+    OfflineTimeout: 0
+  }
+}
 
 function newItem() {
   return {
@@ -154,7 +177,8 @@ function newItem() {
     TableMaxPlayerNum: 2,
     MatchingPlayerNum: 8,
     TableFee: 10,
-    Level: 1
+    Level: 1,
+    TimeConfig: {}
   }
 }
 
@@ -174,6 +198,7 @@ export default {
       edit: {
         visible: false,
         item: newItem(),
+        TimeConfig: NewTimeConfig(),
         isEdit: false
       },
 
@@ -327,7 +352,11 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
-          // console.log('initFormData 1 _data:', _data)
+          try {
+            this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
+          } catch (e) {
+            console.log('initFormData error 2 e:', e)
+          }
           Object.assign(this.edit.item, _data)
           if (bEdit) {
             // 设置修改之前数据
