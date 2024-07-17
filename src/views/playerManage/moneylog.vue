@@ -342,7 +342,7 @@ export default {
       search: '',
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
-      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61],
+      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,2000,2001,2002,2003],
 
       item: {
         Uid: 0
