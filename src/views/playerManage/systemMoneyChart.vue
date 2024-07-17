@@ -87,7 +87,10 @@
               <div>
                 在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
               </div>
-              <div>
+              <div v-if="o==37">
+                奖池：  {{formatNumber(blackJackSum/ 1000)}}
+              </div>
+              <div v-else>
                 奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
               </div>
             </div>
@@ -261,6 +264,7 @@ export default {
       item: {
         date: new Date()
       },
+      blackJackSum:0,
       blackJackContext:'',
       logData: [],
       preData: [],
@@ -541,7 +545,6 @@ export default {
       return this.blackJackContext
     },
     getPoolList() {
-      console.log("======",this.summary)
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -553,12 +556,11 @@ export default {
       }).then(response => {
         console.log('list response', response)
         this.blackJackContext = ''
-        var ignore = [3, 4, 5, 7, 8, 9, 13, 14, 18, 19]
        let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid=== 37){
-              $this.summary[37].PrizePool += o.PrizePool
+              $this.blackJackSum += o.PrizePool
               datas.push(o)
             }
           }
