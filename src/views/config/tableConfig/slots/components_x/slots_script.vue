@@ -43,9 +43,9 @@
             </el-row>
           </el-form-item>
 
-          <ratio-input v-model="slotsData.ActConfig.LotteryMaxRateAct" label="小奖池累计金额上限（剧本）‰" tips="最近七天平均每天下注‰" />
-          <ratio-input v-model="slotsData.ActConfig.LotteryMaxRateBuy" label="小奖池累计金额上限（购买）‰" tips="最近七天平均每天下注‰" />
-          <ratio-input v-model="slotsData.ActConfig.LotteryMaxBase" label="小奖池累计金额上限初始值" tips="当最近七天平均每天下注<初始值时，不削减小奖池" />
+          <ratio-input v-model="slotsData.ActConfig.LotteryMaxRateAct" label="保底奖池累计金额上限（剧本）‰" tips="最近七天平均每天下注‰" />
+          <ratio-input v-model="slotsData.ActConfig.LotteryMaxRateBuy" label="保底奖池累计金额上限（购买）‰" tips="最近七天平均每天下注‰" />
+          <ratio-input v-model="slotsData.ActConfig.LotteryMaxBase" label="保底奖池累计金额上限初始值" tips="当最近七天平均每天下注<初始值时，不削减保底奖池" />
 
           <ratio-input v-model="slotsData.ActConfig.ServiceFee" label="抽水(%)" tips="服务费" />
 

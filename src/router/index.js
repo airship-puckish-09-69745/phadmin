@@ -638,6 +638,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
                 name: 'supergemiimars_slots_cfg',
                 meta: { title: '超级宝石II(审)' }
+              },
+              {
+                path: 'crazy777mars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
+                name: 'crazy777mars_slots_cfg',
+                meta: { title: '疯狂777(审)' }
               }
             ]
           },
