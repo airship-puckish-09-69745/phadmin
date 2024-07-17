@@ -541,6 +541,7 @@ export default {
       return this.blackJackContext
     },
     getPoolList() {
+      console.log("======",this.summary)
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -557,6 +558,7 @@ export default {
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid=== 37){
+              $this.summary[37].PrizePool += o.PrizePool
               datas.push(o)
             }
           }
