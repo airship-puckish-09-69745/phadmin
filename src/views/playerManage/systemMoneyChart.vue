@@ -87,7 +87,10 @@
               <div>
                 在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
               </div>
-              <div>
+              <div v-if="o==37">
+                奖池：  {{formatNumber(blackJackSum/ 1000)}}
+              </div>
+              <div v-else>
                 奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
               </div>
             </div>
@@ -261,6 +264,7 @@ export default {
       item: {
         date: new Date()
       },
+      blackJackSum:0,
       blackJackContext:'',
       logData: [],
       preData: [],
@@ -276,7 +280,7 @@ export default {
         82: 'Millionaire', 83: '百万富翁Mars', 84: 'SuperAce+', 85: '超级王牌', 86: 'SuperGems2', 87: '超级宝宝石II Mars', // 这行老虎机
         28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack', 46: 'Domino',47:'Billiard 8 Balls',48:'Billiard 9 Balls',
-        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball',111: 'QiuQiu', 10000: '汇总' },
+        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball',111: 'QiuQiu',113: 'PusoySwap', 10000: '汇总' },
 
       userVisible: false,
       users: [],
@@ -552,11 +556,12 @@ export default {
       }).then(response => {
         console.log('list response', response)
         this.blackJackContext = ''
-        var ignore = [3, 4, 5, 7, 8, 9, 13, 14, 18, 19]
+        $this.blackJackSum = 0
        let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid=== 37){
+              $this.blackJackSum += o.PrizePool
               datas.push(o)
             }
           }

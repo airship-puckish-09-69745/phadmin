@@ -321,7 +321,7 @@
             <el-form-item label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
               <el-input v-model="edit.item.IconInner" placeholder="开发提供" />
             </el-form-item>
-            <el-form-item label="代码路径：" :required="true">
+            <el-form-item label="是否支持单一钱包：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.CodePath" placeholder="开发提供" />
               </el-col>
