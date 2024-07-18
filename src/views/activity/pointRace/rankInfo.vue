@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
 
-    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询" /> </el-row>
+    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询。导出请先输入对应的名次开始和结束值，避免过多使用这个功能。" /> </el-row>
 
     <el-row :gutter="10" style="margin-top: 10px">
       <el-form label-width="90px" :inline="true" size="small">
