@@ -356,6 +356,7 @@ export default {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
           } catch (e) {
             console.log('initFormData error 2 e:', e)
+            this.edit.TimeConfig = NewTimeConfig()
           }
           Object.assign(this.edit.item, _data)
           if (bEdit) {
@@ -413,6 +414,7 @@ export default {
     },
     save() {
       if (!this.checkData()) return
+      this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
