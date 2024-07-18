@@ -32,6 +32,10 @@
             <el-input v-model="cfg.WildMultiStrStage1" placeholder="请输入内容,如1,3,5,8,10,15,20,30,50,80,100,200"> <template slot="append">12个值用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="转盘阶段1倍数权重">
+            <el-input v-model="cfg.WildMultiStrStage1Weight" placeholder="请输入内容,如1,3,5,8,10,15,20,30,50,80,100,200"> <template slot="append">12个值用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="转盘阶段2收集数量" prop="WildCollectNumStage2" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.WildCollectNumStage2" :required="true" />
           </el-form-item>
@@ -40,12 +44,20 @@
             <el-input v-model="cfg.WildMultiStrStage2" placeholder="请输入内容,如2,6,10,16,20,30,40,60,80,100,200,500"> <template slot="append">12个值用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="转盘阶段2倍数权重">
+            <el-input v-model="cfg.WildMultiStrStage2Weight" placeholder="请输入内容,如1,3,5,8,10,15,20,30,50,80,100,200"> <template slot="append">12个值用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="转盘阶段3收集数量" prop="WildCollectNumStage3" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.WildCollectNumStage3" :required="true" />
           </el-form-item>
 
           <el-form-item label="转盘阶段3倍数">
             <el-input v-model="cfg.WildMultiStrStage3" placeholder="请输入内容,如4,10,20,30,40,60,80,90,100,200,500,1000"> <template slot="append">12个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="转盘阶段3倍数权重">
+            <el-input v-model="cfg.WildMultiStrStage3Weight" placeholder="请输入内容,如1,3,5,8,10,15,20,30,50,80,100,200"> <template slot="append">12个值用 , 连接</template> </el-input>
           </el-form-item>
 
         </el-form>

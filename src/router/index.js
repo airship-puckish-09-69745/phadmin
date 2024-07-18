@@ -276,6 +276,12 @@ export const asyncRoutes = [
             meta: { title: '多米诺 ◐' }
           },
           {
+            path: 'PusoySwapTable',
+            component: () => import('@/views/config/tableConfig/pusoySwapTable'),
+            name: 'dominoTable',
+            meta: { title: 'pusoy换牌 ◐' }
+          },
+          {
             path: 'solitaire',
             component: () => import('@/views/config/tableConfig/solitaire'),
             name: 'solitaire',
@@ -963,6 +969,12 @@ export const asyncRoutes = [
             meta: { title: 'DominoQiuQiu ◐', gid: 111 }
           },
           {
+            path: 'playlog_pusoySwap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoySwap',
+            meta: { title: 'pusoy换牌 ◐', gid: 113 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -1146,6 +1158,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemii_slots_log',
             meta: { title: '超级宝石II', gid: 86 }
+          },
+          {
+            path: 'crazy777_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'crazy777_slots_log',
+            meta: { title: '疯狂777', gid: 88 }
           }
         ]
       },
@@ -1190,6 +1208,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiimars_slots_log',
             meta: { title: '超级宝石II(审)', gid: 87 }
+          },
+          {
+            path: 'crazy777mars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'crazy777mars_slots_log',
+            meta: { title: '疯狂777(审)', gid: 89 }
           }
         ]
       },

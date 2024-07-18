@@ -34,6 +34,8 @@
               <el-option label="超级王牌Mars" :value="85" />
               <el-option label="超级宝石II" :value="86" />
               <el-option label="超级宝石IIMars" :value="87" />
+              <el-option label="疯狂777" :value="88" />
+              <el-option label="疯狂777Mars" :value="89" />
             </el-select>
           </el-form-item>
 
