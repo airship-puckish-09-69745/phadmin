@@ -194,6 +194,7 @@ export default {
       libShow: $libShow,
       env: 'test',
       libMoney: new MoneyShow(['CarryLower', 'CarryUpper']),
+      libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {
         visible: false,
