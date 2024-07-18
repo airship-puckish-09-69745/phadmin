@@ -24,6 +24,14 @@
           <el-form-item label="交易id">
             <el-input v-model="item.txId" placeholder="交易id" size="mini" style="width: 225px"/>
           </el-form-item>
+          <el-form-item label="状态">
+          <el-select v-model.number="item.status" placeholder="请选择" size="mini">
+            <el-option label="所有" :value="0" />
+            <el-option label="等待尝试" :value="1" />
+            <el-option label="正在尝试" :value="2" />
+            <el-option label="尝试成功" :value="3" />
+          </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
           </el-form-item>
@@ -152,6 +160,7 @@ export default {
         gid: 0,
         app: 0,
         txId: '',
+        status: 0,
       },
       tableData: [],
       gameMap: {},
@@ -197,6 +206,7 @@ export default {
           Gid: $this.item.gid,
           App: $this.item.app,
           TxId: $this.item.txId,
+          Status: $this.item.status,
         }
       }).then(response => {
         $this.tableData = []
