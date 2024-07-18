@@ -18,6 +18,7 @@
               <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)"/>
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
+            <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
           </el-col>
         </el-row>
 
@@ -287,6 +288,8 @@ import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
 import {$libShow, ClientTableData} from '@/utils/common'
 import store from "@/store";
+import XLSX from "xlsx";
+import {Message} from "element-ui";
 
 const filterMap = {}
 
@@ -373,8 +376,8 @@ export default {
       this.selectGameVisible = true
     },
     getTitle(gid, idx) {
-    let bet =   this.cfgMap[gid].Bet || 0
-      if (80){
+      let bet = this.cfgMap[gid].Bet || 0
+      if (80) {
         bet = this.cfgMap[gid].Bet || 100
       }
       let max = parseInt(this.cfgMap[gid].OddsList[idx].MaxOdds) + parseInt(bet)
@@ -487,7 +490,7 @@ export default {
             } else {
               prefix = '常规' + (parseInt(strings1[1]) + 1)
             }
-            this.coordinateSum[strings1[0]]  = parseInt(response.Data["coordinate"][key]) +(this.coordinateSum[strings1[0]]||0)
+            this.coordinateSum[strings1[0]] = parseInt(response.Data["coordinate"][key]) + (this.coordinateSum[strings1[0]] || 0)
             coordinateTableData.push({
               gid: strings1[0],
               type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
@@ -499,7 +502,7 @@ export default {
           let scriptMap = {}
           for (const key in response.Data["script"]) {
             var strings = key.split('_');
-            this.sumData[strings[0]] = parseInt(response.Data["script"][key])+(this.sumData[parseInt(strings[0])]||0)
+            this.sumData[strings[0]] = parseInt(response.Data["script"][key]) + (this.sumData[parseInt(strings[0])] || 0)
 
             scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
             $this.gidOptions[strings[0]] = strings[0]
@@ -583,12 +586,60 @@ export default {
       }
       this.detailVisible = true
       this.showData = row
-
-      console.log("====", row)
     },
-    updateDuplicate(newData, oldData) {
+    exportExcel() {
+      if (this.stepTableData.length<=0){
+        Message.error("没有要导出的数据")
+        return
+      }
 
+      let scriptMap = {1:1, 2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,11:11,12:12,13:13,14:14,15:15,16:16,17:17,18:18,19:19,20:20}
+      let stepMap = { 2:5, 3:10, 4:15, 5:20, 6:25, 7:30, 8:35, 9:40, 10:45, 11:50}
+      this.$confirm("是否确认导出当前游戏统计数据?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then((response) => {
+        let result = [["剧本","剧本/步数",  "5","10", "15", "20", "25", "30", "35", "40", "45", "50"] ]// 表格表头
+        for (const key in this.stepTableData) {
+          // 索引占位
+          for (const scriptKey in scriptMap) {
+            let dat = []
+            dat.push(this.stepTableData[key].title)
+            dat.push(scriptKey)
+            for (const stepKey in stepMap) {
+              if (stepKey==0|| stepKey==1){
+                continue
+              }
+
+              let keyStr = this.stepTableData[key].gid + "_" + this.stepTableData[key].sheet + "_" +  scriptKey  + '_' + stepMap[stepKey]
+              console.log(keyStr)
+              dat[stepKey] = this.mapCnt[keyStr] || 0
+            }
+            result.push(dat)
+          }
+        }
+
+
+        let workSheet = XLSX.utils.aoa_to_sheet(result);
+        let bookNew = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(bookNew, workSheet, 'step') // 工作簿名称
+        let name = this.getGameName(parseInt(this.stepTableData[0].gid)) +'_'+  this.timestampToTime(this.queryTime)+'_step.xlsx'
+        XLSX.writeFile(bookNew, name) // 保存的文件名
+      })
     },
+    timestampToTime(timestamp) {
+      timestamp = timestamp ? timestamp : null;
+      let date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + '-';
+      let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+      let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+      let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+      let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      return Y + M + D + h + m + s;
+    },
+
     getGameList() {
       request({
         url: '/thirdpartygames/all',
