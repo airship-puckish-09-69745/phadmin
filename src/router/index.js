@@ -1630,7 +1630,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'DEV_TOOL' },
     children: [
       {
         path: 'failWallet',
