@@ -86,7 +86,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="6" :offset="1">
+          <el-col :span="8" :offset="1">
             <el-table
               ref="filterTable"
               :data="coordinateTableData"
@@ -127,6 +127,11 @@
                 >
                   <template slot-scope="scope">
                     {{ (parseInt(scope.row.cnt) / coordinateSum[scope.row.gid] * 100).toFixed(2) + "%" }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="总倍率">
+                  <template slot-scope="scope">
+                    {{parseInt(Actions[scope.row.orgKey])/cfgMap[parseInt(scope.row.gid)].Bet}}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -301,6 +306,7 @@ export default {
     return {
       form: {},
       postData: {},
+      gameScene : {},
       subKey: 'SlotsScriptStatisticsConfig',
       AttrNames: {
         types: {
@@ -336,6 +342,9 @@ export default {
       showData: {},
       mapCnt: {},
       timesSum: 0,
+
+      Actions:{},
+      ActionOdds:1,
     }
   },
   created() {
@@ -343,6 +352,7 @@ export default {
     this.getGameList()
     this.getSlotsScriptStatistics()
     this.queryKeyInput()
+
   },
   methods: {
     refreshStep() {
@@ -377,9 +387,7 @@ export default {
     },
     getTitle(gid, idx) {
       let bet = this.cfgMap[gid].Bet || 0
-      if (80) {
-        bet = this.cfgMap[gid].Bet || 100
-      }
+
       let max = parseInt(this.cfgMap[gid].OddsList[idx].MaxOdds) + parseInt(bet)
       let min = parseInt(this.cfgMap[gid].OddsList[idx].MinOdds) + parseInt(bet)
       if (idx === 0) {
@@ -434,14 +442,18 @@ export default {
       this.coordinateClientDB.GetPage().SetPageNum(val)
       this.refreshCoordinate()
     },
-    queryKeyInput() {
-      console.log(this.queryGid)
+
+    async queryKeyInput() {
+      await this.queryRule(this.queryGid)
+
       this.coordinateClientDB.Search(this.queryGid, ['gid'])
       this.scriptClientDB.Search(this.queryGid, ['gid'])
       this.stepClientDB.Search(this.queryGid, ['gid'])
       this.refreshScript()
       this.refreshCoordinate()
       this.refreshStep()
+
+
     },
     coordinateHandleCurrentChange(val) {
       this.coordinateClientDB.GetPage().SetPageNo(val)
@@ -469,7 +481,6 @@ export default {
       }).then(response => {
         // coordinate 返回数据格式，SlotsType_剧本_x_y
         // script 返回数据格式， slotsType, 配置index
-        console.log('list response', response)
         let coordinateTableData = []
         let scriptTableData = []
         let stepTableData = []
@@ -495,7 +506,8 @@ export default {
               gid: strings1[0],
               type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
               sort: parseInt(strings1[1]),
-              cnt: response.Data["coordinate"][key]
+              cnt: response.Data["coordinate"][key],
+              orgKey:strings1[1]+'_'+strings1[2]
             })
             $this.gidOptions[strings1[0]] = strings1[0]
           }
@@ -560,17 +572,50 @@ export default {
         $this.loading = false
       })
     },
-    checkDuplicate(data) {
-      for (let i = 0; i < this.tableData.length; i++) {
-        if (i === this.idx && this.tableData[i].Gid === data.Gid) {
-          continue
-        }
-        if (this.tableData[i].Gid === data.Gid) {
-          return false
-        }
+
+    queryRule(gid) { // 加载规则配置
+      if (this.gameScene[gid]==undefined || this.gameScene[gid]=='undefined'){
+        return
       }
-      return true
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey:  this.gameScene[gid]+"_slots_rule"
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.ruleForm = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            let ruleCfg = JSON.parse(response.Data.Data)
+            request({
+              url: '/slotsActConfigV2/one',
+              method: 'get',
+              data: {ID:  ruleCfg.ActConfig.ActId, Env: 'test'}
+            }).then(response => {
+              this.Actions={}
+              if (response.RetCode === 0) {
+                for (const key in response.Data.Actions) {
+                  for (const key2 in response.Data.Actions[key].rows) {
+                    let count = 0
+                    for (const o of response.Data.Actions[key].rows[key2].cols) {
+                      count += o
+                    }
+                    let ScriptRow =  parseInt(key2)+1
+                    this.Actions[key+'_'+ScriptRow] = count
+                  }
+                }
+                console.log( this.Actions)
+              }
+            })
+          }
+        }
+      })
     },
+    getSlotsActConfig(ActId) {
+
+    },
+
     showStepDetail(data) {
       var row = JSON.parse(JSON.stringify(data));
       this.timesSum = 0
@@ -613,7 +658,6 @@ export default {
               }
 
               let keyStr = this.stepTableData[key].gid + "_" + this.stepTableData[key].sheet + "_" +  scriptKey  + '_' + stepMap[stepKey]
-              console.log(keyStr)
               dat[stepKey] = this.mapCnt[keyStr] || 0
             }
             result.push(dat)
@@ -651,10 +695,12 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100) {
               continue
             }
+
             this.gameOptions.push({
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
+            this.gameScene[response.Data[i].Gid]=response.Data[i].Scene
           }
         }
       })
