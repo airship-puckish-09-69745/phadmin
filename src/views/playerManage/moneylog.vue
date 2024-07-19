@@ -8,6 +8,7 @@
         </el-form-item>
         <el-form-item>
           <el-date-picker
+            :default-time="['00:00:00', '23:59:59']"
             v-model="timeRange"
             type="datetimerange"
             value-format="timestamp"
@@ -140,7 +141,11 @@
         prop="ActMsg"
         label="操作说明"
         min-width="300"
-      />
+       >
+        <template slot-scope="scope">
+          {{getActName(scope.row.ActType,scope.row.ActMsg)}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="ExtInfo"
         label="备注"
@@ -307,7 +312,14 @@ const filterMap = {
     40: 'Lucky9往HitPot投注',
     41: 'Lucky9获得HitPot奖励',
     60: '积分赛奖励',
-    61: '积分赛买入'
+    61: '积分赛买入',
+    70: 'MTT报名费',
+    71: 'MTT报名费返还',
+    72: 'MTT比赛奖励',
+    2000:'下注',
+    2001:'登录',
+    2002:'刷新',
+    2003:'结算',
   }
 }
 
@@ -334,7 +346,7 @@ export default {
       search: '',
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
-      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61],
+      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,2000,2001,2002,2003],
 
       item: {
         Uid: 0
@@ -387,6 +399,13 @@ export default {
       )
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
+    },
+    getActName(type, msg) {
+      // 单一钱包类型
+      if (type == 2000 || type == 2001 || type == 2002 || type == 2003) {
+        return this.libShow.GameNames[msg]
+      }
+      return msg
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
@@ -447,6 +466,10 @@ export default {
       if (this.timeRange) {
         bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
         eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
+      }
+      if (eTime-bTime>86400){
+        Message.error('不支持跨天查询')
+        return;
       }
       const loading = this.$loading({
         lock: true,

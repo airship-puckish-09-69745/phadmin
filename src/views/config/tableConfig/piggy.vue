@@ -52,7 +52,7 @@
                     label="下注列表(支持2位小数)"
                   >
                     <template slot="header">
-                      <p style="text-align: center">  下注列表(支持2位小数)</p>
+                      <p style="text-align: center">  下注列表 (注:只支持1位小数)</p>
                       <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最小下注 相对应的注释</span>
                     </template>
                     <template slot-scope="scope">
@@ -128,7 +128,7 @@
                       </el-tab-pane>
                       <el-tab-pane label="阶段增益5">
                         <el-row style="margin-left: 20px">
-                          <span style="color:red; font-size: 11px">注: 右值需要大于 JACKPOT->开奖条件->开JP最少连击次数</span>
+                          <span style="color:red; font-size: 11px">注: 右值需要大于等于 JACKPOT->开奖条件->开JP最少连击次数</span>
                         </el-row>
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
@@ -141,7 +141,7 @@
                     </el-tabs>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                   </el-tab-pane>
                 </el-tabs>
               </fieldset>
@@ -159,7 +159,7 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -167,7 +167,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -179,7 +179,7 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -187,7 +187,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -204,7 +204,7 @@
                   <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"><template slot="append">‰</template></el-input>
                 </el-form-item>
               </el-form>
-              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数(支持1位小数)" val-type="1" />
+              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数 (注:不支持小数)" val-type="1" />
 
             </fieldset>
           </el-col>
@@ -229,7 +229,7 @@
                         {{ JpTypeMap[scope.row.Level] }}
                       </template>
                     </el-table-column>
-                    <el-table-column label="抽水比例(‰)" prop="Typ">
+                    <el-table-column label="抽水比例 (‰) (注:不支持小数)" prop="Typ">
                       <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" content="千分比,1就是0.001" placement="top-start">
                           <el-input
@@ -252,6 +252,11 @@
                   <div v-for="(data,idx) in item.Jp">
                     <fieldset style="margin-top: 20px;">
                       <legend>{{ JpTypeMap[data.Level] }} </legend>
+                      <el-descriptions>
+                        <el-descriptions-item>
+                          <span style="font-size: 12px;">通过当前Jp奖池值和时间点可以确定增长速度val/h, 代码里面是每10秒钟增长一次, 每次增长val/3600s*10s*[90%,110%]</span>
+                        </el-descriptions-item>
+                      </el-descriptions>
                       <el-table
                         ref="filterTable"
                         :data="data.JackpotRegulation.PoolIncrArr"
@@ -305,11 +310,6 @@
               </el-col>
             </el-tab-pane>
             <el-tab-pane label="中奖条件">
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="">1. 分段限制和每日限制中的个数 需要是 JACKPOT->开奖条件 对应奖池中奖人数的整数倍,如果不是整数倍会导致多开 例如日限是11个 每次开出4个 则会开3次 总共3*4=12个 不会超过12个 </span>
-                </el-descriptions-item>
-              </el-descriptions>
               <el-row>
                 <fieldset>
                   <el-col :span="24" :offset="0">
@@ -429,7 +429,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最少连击次数</p>
-                        <span style="color: red;font-size: 11px">  注: 需要小于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
+                        <span style="color: red;font-size: 11px">  注: 需要小于等于 主玩法配置->中奖概率配置->阶段增益5 中的右值</span>
                       </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.CTap" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
@@ -441,7 +441,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  开JP最小下注</p>
-                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间必须完全覆盖 基础配置->下注列表内所有下注值 2.三个奖池的范围不要有交集 3.左右闭合区间  4.确认完全覆盖以后可以点击左上角的发布 5.没有覆盖的下注将不会被抽水入Jp奖池 也不会参与Jp开奖</span>
+                        <span style="color: red;font-size: 11px">  注: 1.三个奖池的中奖下注区间需完全覆盖 基础配置->下注列表内所有下注值, 没有被覆盖的下注会被抽水入Jp奖池 不会参与Jp开奖 2.三个奖池的范围不要有交集(在交集区域的下注会随机一个配置生效) 3.左右闭合区间 </span>
                       </template>
                       <template slot-scope="scope">
                         <el-select v-model="scope.row.MinBet" placeholder="请选择">
@@ -589,7 +589,7 @@
                 </el-col>
 
                 <el-col :span="20" :offset="3">
-                  <span style="font-size: 12px">真人敲击频率限制是190ms敲击一次 2次敲击的间隔在190ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
+                  <span style="font-size: 12px">真人敲击频率限制是120ms敲击一次 2次敲击的间隔在120ms内则第二次敲击不生效 机器人没有做限制 配置时需要注意机器人敲击频率的真实性</span>
                 </el-col>
                 <el-col :span="7" :offset="3">
                   <el-form inline>
@@ -1094,16 +1094,16 @@ export default {
           list[i] = -1
         }
       }
-      let str = ''
-      for (const data of list) {
-        if (data != -1) {
-          str += data / 1000 + ','
-        }
-      }
-      if (str.length > 0) {
-        Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
-        return false
-      }
+      // let str = ''
+      // for (const data of list) {
+      //   if (data != -1) {
+      //     str += data / 1000 + ','
+      //   }
+      // }
+      // if (str.length > 0) {
+      //   Message.error('下注配置区间与下注列表不符，无法保存! 未配置值:' + str)
+      //   return false
+      // }
       return true
     },
 

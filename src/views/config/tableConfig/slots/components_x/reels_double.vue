@@ -147,9 +147,11 @@ export default {
     initSymbolMap() {
       this.symbolMap = {}
       for (const i in this.SymbolList) {
+        /*
         if (this.SymbolList[i]['Type'] === 3) {
           continue
         }
+        */
         const value = this.SymbolList[i]['Value']
         this.symbolMap[value] = this.SymbolList[i]['Name']
       }

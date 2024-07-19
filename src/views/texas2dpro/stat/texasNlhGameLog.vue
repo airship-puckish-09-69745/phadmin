@@ -41,8 +41,8 @@
         label="玩家ID"
         width="100%"
       >
-        <template>
-          {{ selectUid }}
+        <template slot-scope="scope">
+          {{ scope.row.Uid }}
         </template>
       </el-table-column>
       <el-table-column
@@ -51,71 +51,7 @@
         width="160%"
       >
         <template slot-scope="scope">
-          {{ formateDate(scope.row.StartTime , 2) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="LogID"
-        label="级别"
-        width="100%"
-      >
-        <template slot-scope="scope">
-          {{ getRoomLevel(scope.row) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="LogID"
-        label="玩家昵称"
-        width="160%"
-      >
-        <template slot-scope="scope">
-          {{ getNickByUid(scope.row, selectUid) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="InsureChange"
-        label="玩家手牌"
-        :width="getHdCardWidth()"
-      >
-        <template slot-scope="scope">
-          <el-image v-for="(item, index) in getHdCardByUid(scope.row, selectUid)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="Uid"
-        label="公共牌"
-        width="200%"
-      >
-        <template slot-scope="scope">
-          <el-image v-for="(item, index) in showCards(scope.row.AllPublishCards)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="Insure"
-        label="有效底池"
-        sortable="custom"
-        width="120%"
-      >
-        <template slot-scope="scope">
-          {{ getPool(scope.row) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="Outs"
-        label="获胜玩家&昵称"
-        width="200%"
-      >
-        <template slot-scope="scope">
-          {{ getMaxWinPlayer(scope.row) }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="InsureChange"
-        label="获胜玩家手牌"
-        :width="getHdCardWidth()"
-      >
-        <template slot-scope="scope">
-          <el-image v-for="(item, index) in getMaxWinPlayerHdCard(scope.row)" :key="index" :src="item" :preview-src-list="[item]" style="width: 32px; height: 48px" />
+          {{ formateDate(scope.row.FinishTime , 2) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -124,8 +60,8 @@
         width="160%"
       >
         <template slot-scope="scope">
-          <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.StartTime }}" style="color: blue" @click.native="recordShow = false">
-            {{ scope.row.LogId }}
+          <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogID, dateTime: scope.row.FinishTime }}" style="color: blue" @click.native="recordShow = false">
+            {{ scope.row.LogID }}
           </router-link>
         </template>
       </el-table-column>
@@ -206,9 +142,6 @@ export default {
           const objs = response.Data || []
           var testData = []
           for (var i = 0; i < objs.length; i++) {
-            if (testData.length > 50) {
-              break
-            }
             var isExist = false
             for (var j = 0; j < testData.length; j++) {
               if (objs[i].LogID === testData[j].LogID) {
@@ -221,10 +154,13 @@ export default {
             }
           }
           if (testData.length > 0) {
-            this.searchDetail(testData)
+            _this.tableData = testData
+            //this.searchDetail(testData)
+            console.log(_this.tableData)
           }
           _this.totalCount = testData.length
           _this.selectUid = _this.searchForm.Uid
+          _this.refreshShow()
         } else {
           Message.error(response.Data)
         }
@@ -256,7 +192,7 @@ export default {
             Message.error(response.Data)
           }
         })
-      } 
+      }
     },
     getRoomLevel(row) {
       var gameInfo = JSON.parse(row.GameInfo)

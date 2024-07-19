@@ -133,7 +133,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'slots剧本监控', noCache: true }
+        meta: { title: 'Slots剧本监控', noCache: true }
       },
       /* {
         path: 'play_log_top100',
@@ -276,6 +276,12 @@ export const asyncRoutes = [
             meta: { title: '多米诺 ◐' }
           },
           {
+            path: 'PusoySwapTable',
+            component: () => import('@/views/config/tableConfig/pusoySwapTable'),
+            name: 'dominoTable',
+            meta: { title: 'pusoy换牌 ◐' }
+          },
+          {
             path: 'solitaire',
             component: () => import('@/views/config/tableConfig/solitaire'),
             name: 'solitaire',
@@ -298,6 +304,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/texasTable'),
             name: 'texasTable',
             meta: { title: 'Texas - 德州' }
+          },
+          {
+            path: 'DominoQiuQiu',
+            component: () => import('@/views/config/tableConfig/qiuqiuTable'),
+            name: 'DominoQiuQiu',
+            meta: { title: 'DominoQiuQiu' }
           },
           {
             path: 'gameWaitQueue',
@@ -572,6 +584,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
                 meta: { title: '超级王牌' }
+              },
+              {
+                path: 'supergemii_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
+                name: 'supergemii_slots_cfg',
+                meta: { title: '超级宝石II' }
+              },
+              {
+                path: 'moneycoming_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
+                name: 'moneycoming_slots_cfg',
+                meta: { title: '钱来也' }
               }
               /*
               {
@@ -626,6 +650,24 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
                 meta: { title: '超级王牌(审)' }
+              },
+              {
+                path: 'supergemiimars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
+                name: 'supergemiimars_slots_cfg',
+                meta: { title: '超级宝石II(审)' }
+              },
+              {
+                path: 'crazy777mars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
+                name: 'crazy777mars_slots_cfg',
+                meta: { title: '疯狂777(审)' }
+              },
+              {
+                path: 'moneycomingmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
+                name: 'moneycomingmars_slots_cfg',
+                meta: { title: '钱来也(审)' }
               }
             ]
           },
@@ -939,6 +981,18 @@ export const asyncRoutes = [
             meta: { title: '多米诺 ◐', gid: 46 }
           },
           {
+            path: 'playlog_qiuqiu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_qiuqiu',
+            meta: { title: 'DominoQiuQiu ◐', gid: 111 }
+          },
+          {
+            path: 'playlog_pusoySwap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoySwap',
+            meta: { title: 'pusoy换牌 ◐', gid: 113 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -958,9 +1012,9 @@ export const asyncRoutes = [
               },
               {
                 path: 'texasNlhGameLog',
-                component: () => import('@/views/texas2dpro/stat/texasNlhGameLog'),
-                name: 'texasNlhGameLog',
-                meta: { title: '牌局记录' }
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_texasnlh',
+                meta: { title: '无限德州', gid: 32 }
               },
               {
                 path: 'texasNlhGameDetail',
@@ -1116,6 +1170,24 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
             meta: { title: '超级王牌', gid: 84 }
+          },
+          {
+            path: 'supergemii_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemii_slots_log',
+            meta: { title: '超级宝石II', gid: 86 }
+          },
+          {
+            path: 'crazy777_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'crazy777_slots_log',
+            meta: { title: '疯狂777', gid: 88 }
+          },
+          {
+            path: 'moneycoming_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'moneycoming_slots_log',
+            meta: { title: '钱来也', gid: 90 }
           }
         ]
       },
@@ -1154,6 +1226,24 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
             meta: { title: '超级王牌(审)', gid: 85 }
+          },
+          {
+            path: 'supergemiimars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemiimars_slots_log',
+            meta: { title: '超级宝石II(审)', gid: 87 }
+          },
+          {
+            path: 'crazy777mars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'crazy777mars_slots_log',
+            meta: { title: '疯狂777(审)', gid: 89 }
+          },
+          {
+            path: 'moneycomingmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'moneycomingmars_slots_log',
+            meta: { title: '钱来也(审)', gid: 91 }
           }
         ]
       },
@@ -1332,7 +1422,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/config/slotsScriptStatisticsConfig'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'slots脚本统计配置', noCache: true }
+        meta: { title: 'slots剧本统计配置', noCache: true }
       },
       {
         path: 'frontProxy',
@@ -1563,12 +1653,27 @@ export const asyncRoutes = [
         name: 'game_custom_config',
         meta: { title: '游戏自定义配置' }
       },
+    ]
+  },
+  {
+    path: '/wallet',
+    component: Layout,
+    alwaysShow: true,
+    redirect: 'noRedirect',
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'DEV_TOOL' },
+    children: [
       {
-        path: 'timeoutGameLog',
-        component: () => import('@/views/devTools/timeoutGameLog'),
-        name: 'timeout_game_log',
-        meta: { title: '游戏超时记录' }
-      }
+        path: 'failWallet',
+        component: () => import('@/views/wallet/walletFailLog.vue'),
+        name: 'failWallet',
+        meta: { title: '钱包失败列表' }
+      },
+      {
+        path: 'walletInfo',
+        component: () => import('@/views/wallet/walletInfo.vue'),
+        name: 'walletInfo',
+        meta: { title: '钱包信息' }
+      },
     ]
   },
   {

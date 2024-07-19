@@ -45,10 +45,6 @@
         </template>
       </el-table-column>
       <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
-        <template slot="header">
-          <p style="text-align: center">  每日限制开出个数(0为不限)</p>
-          <span style="color: red;font-size: 11px">  注: 需要是JACKPOT->开奖条件->中奖人数 对应奖池的整数倍(详解见上黑字)</span>
-        </template>
         <template slot-scope="scope">
           <el-input v-if="scope.row.JackpotType!==4" v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
           <el-input v-else v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true" disabled><template slot="append">个</template></el-input>
@@ -57,7 +53,7 @@
       <el-table-column label="分段限制" prop="DayLimitArr">
         <template slot="header">
           <p style="text-align: center">  分段限制</p>
-          <span style="color: red;font-size: 11px">  注: 1.个数同左 2.24小时没有被覆盖的时间一定开不出jp</span>
+          <span style="color: red;font-size: 11px">  注: 24小时没有被覆盖的时间一定开不出jp</span>
         </template>
         <template slot-scope="scope">
           <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showDayLimitDialog(scope.row)" />
@@ -92,6 +88,10 @@
       -->
 
       <el-table-column label="机器人开奖数量概率" prop="RateArr">
+        <template slot="header">
+          <p style="text-align: center">  机器人开奖数量概率</p>
+          <span style="font-size: 11px">  注: 个数配置不生效 >0就ok 具体开奖个数由具体游戏决定</span>
+        </template>
         <template slot-scope="scope">
           <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
           <el-tag v-if="scope.row.JackpotType == 4" disable-transitions>{{ showOpenPoolRate(scope.row.JackpotType,"") }}</el-tag>

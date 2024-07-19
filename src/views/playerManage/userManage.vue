@@ -77,7 +77,8 @@
           <el-descriptions-item label="系列：">{{ item.AppID > 100000?'Galaxy':'Android' }}</el-descriptions-item>
           <el-descriptions-item label="AppID：">{{ item.AppID }}</el-descriptions-item>
           <el-descriptions-item label="来源Appid：">{{ item.RegisterChannel }}</el-descriptions-item>
-            <el-descriptions-item label="单一钱包：" :span="4">{{ formatNumber(item.WalletMoney) }}</el-descriptions-item>
+          <el-descriptions-item label="单一钱包：" :span="1">{{ formatNumber(item.WalletMoney / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
           <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
           <!--

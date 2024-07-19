@@ -830,6 +830,63 @@
       </el-descriptions>
     </el-dialog>
 
+    <el-dialog title="Pusoy换牌牌局详情" :visible.sync="pusoySwapDetailVisible" width="1400px">
+      <el-table
+        :data="pusoySwapDetail.players"
+        :span-method="pusoySpanMethods"
+        border
+      >
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
+        <el-table-column prop="swappedCard" label="交换的手牌" width="100">
+          <template #default="scope">
+            <div v-html="showCard(scope.row.swappedCard)" />
+          </template>
+        </el-table-column>
+        <el-table-column label="手牌" width="450" align="center">
+          <el-table-column prop="cards" label="后手牌" width="150">
+            <template #default="scope">
+              <template v-if="scope.row.cardType > 1">
+                <div v-html="showCard(scope.row.cards)" /><span>({{ pusoyCardTypes[scope.row.cardType] || '' }})</span>
+              </template>
+              <template v-else>
+                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
+              </template>
+            </template>
+          </el-table-column>
+          <el-table-column prop="cards" label="中手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupMiddle.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template></el-table-column>
+          <el-table-column prop="cards" label="前手牌" width="150"><template slot-scope="scope"><div v-html="showCard(scope.row.groupTop.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template></el-table-column>
+        </el-table-column>
+        <el-table-column prop="cardType" label="牌型" width="90">
+          <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{ pusoyShowShootAll(scope.row) }} {{ pusoyShowGroupExtra(scope.row) }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="点数" width="100" />
+        <el-table-column prop="moneyBet" label="下注" width="100"><template slot-scope="scope">{{ scope.row.moneyBet/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyFee" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyFee/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTotal" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyTotal/1000 }}</template></el-table-column>
+      </el-table>
+      <br>
+      <el-table
+        title="打枪："
+        :visible.sync="pusoyShootOneShow"
+        :data="pusoySwapDetail.shootOne"
+        width="100%"
+        border
+      >
+        <el-table-column label="Pusoy List：">
+          <el-table-column prop="SourcePlayer.uid" label="打枪"><template slot-scope="scope">{{ scope.row.SourcePlayer.uid }}</template></el-table-column>
+          <el-table-column prop="TargetPlayer.uid" label="Pusoy"><template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template></el-table-column>
+          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
+        </el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ pusoySwapDetail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ pusoySwapDetail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Lucky89牌局详情" :visible.sync="bodingDetailVisible" width="1200px">
       <el-table :data="bodingDetail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
@@ -1724,8 +1781,8 @@
                 <el-row v-for="(row,idx) in scope.row.resultCards" style="line-height: 5px">
                   <div v-for="(d,i) in row.cards" style="float:left;">
                     <el-image
-                      :style="getCardStyle2(i)"
-                      :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
+                      :style="getCardStyle(i,d)"
+                      :src="getCardUrl(cardConversionColor(solitaireCard(d),'0-2','1-4','2-3','3-1'))"
                     />
                     <br>
                     <span v-html="'&nbsp;'" />
@@ -1738,8 +1795,8 @@
               <el-row>
                 <span v-for="(row,idx) in scope.row.CardsPile" style="line-height: 5px">
                   <el-image
-                    :style="getCardStyle(idx)"
-                    :src="getCardUrl(cardConversionColor(row,'0-2','1-4','2-3','3-1'))"
+                    :style="getCardStyle(idx,row)"
+                    :src="getCardUrl(cardConversionColor(solitaireCard(row),'0-2','1-4','2-3','3-1'))"
                   />
                 </span>
               </el-row>
@@ -1750,8 +1807,8 @@
                 <el-col v-for="(row,idx) in scope.row.cardsStacks" style="line-height: 15px">
                   <div v-for="(d,i) in row.cards" style="float:left;">
                     <el-image
-                      :style="getCardStyle2(i)"
-                      :src="getCardUrl(cardConversionColor(d,'0-2','1-4','2-3','3-1'))"
+                      :style="getCardStyle(i,d)"
+                      :src="getCardUrl(cardConversionColor(solitaireCard(d),'0-2','1-4','2-3','3-1'))"
                     />
                     <span v-html="'&nbsp;'" />
                   </div>
@@ -2097,11 +2154,12 @@
           </template>
         </el-table-column>
       </el-table>
-
-
     </el-dialog>
+
+    <texas-n-l-h-detail-log v-if="gameLogComponent.gid==32" :game-log="gameLogComponent" @closeDialog="closeDialog"></texas-n-l-h-detail-log>
+    <qiu-qiu-game-log v-if="gameLogComponent.gid==111" :game-log="gameLogComponent" @closeDialog="closeDialog"></qiu-qiu-game-log>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
   </div>
 </template>
@@ -2119,6 +2177,8 @@ import DateTimeShow from '@/components/DatetimeShow'
 import PusoyDosTable from '@/views/config/tableConfig/pusoyDos/pusoyDosTable.vue'
 import PusoyDosDetailLog from '@/views/playerManage/components/PusoyDosDeatilLog.vue'
 import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
+import TexasNLHDetailLog from "@/views/playerManage/components/TexasNLHGameLog.vue";
+import QiuQiuGameLog from "@/views/playerManage/components/QiuQiuGameLog.vue";
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -2136,7 +2196,9 @@ function newChartData() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
+  components: {
+    QiuQiuGameLog,
+    TexasNLHDetailLog, TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
   data() {
     return {
       tableData: [],
@@ -2279,6 +2341,9 @@ export default {
         visible: false,
         detail: {}
       },
+      pusoySwapDetail: {},
+      pusoySwapDetailVisible: false,
+      pusoySwapShootOneShow: false,
 
       gameLogComponent: {
         visible: false,
@@ -2668,10 +2733,12 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
-          } else if (gid === 107 || gid === 108) {
+          } else if (gid === 107 || gid === 108 || gid==32 || gid == 111) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
             $this.showDominoGame(obj)
+          }else if (gid === 113) {
+            $this.showPusoySwapGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -2693,9 +2760,16 @@ export default {
         console.log('无法解析牌局详情，很可能不存在')
       }
     },
+    solitaireCard(num){
+      if (num>=256){
+        let s = num.toString(16);
+        return parseInt('0x'+s[1]+s[2])
+      }
+      return num
+    },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
-      if (num == 0 || num === 'NaN' || num === 'undefined') {
+      if (num == 0 || num === 'NaN' || num === 'undefined' || num === undefined) {
         return 2
       }
       if (Object.keys(this.ConversionColorMap).length === 0) {
@@ -2708,7 +2782,6 @@ export default {
         this.ConversionColorMap[hong[0]] = hong[1]
         this.ConversionColorMap[f[0]] = f[1]
       }
-
       var s = num.toString(16)
       // 补0
       if (s.length === 1) {
@@ -2725,7 +2798,7 @@ export default {
       if (gid==108){
         this.showDropBall(obj)
       }
-      console.log('obj', obj)
+      console.log('obj=>',  this.gameLogComponent)
     },
     showDropBall(obj) {
       let m ={}
@@ -3240,6 +3313,35 @@ export default {
       this.dominoDetail = obj
       this.dominoDetailVisible = true
     },
+    showPusoySwapGame(obj) {
+      console.log(obj)
+      this.pusoySwapShootOneShow = false
+      for (const k in obj.players) {
+        for (const i in obj.groupTop) {
+          if (obj.groupTop[i].uid === obj.players[k].uid) {
+            obj.players[k].groupTop = obj.groupTop[i]
+            break
+          }
+        }
+        for (const i in obj.groupMiddle) {
+          if (obj.groupMiddle[i].uid === obj.players[k].uid) {
+            obj.players[k].groupMiddle = obj.groupMiddle[i]
+            break
+          }
+        }
+        for (const i in obj.groupBottom) {
+          if (obj.groupBottom[i].uid === obj.players[k].uid) {
+            obj.players[k].groupBottom = obj.groupBottom[i]
+            break
+          }
+        }
+      }
+      if (obj.shootOne) {
+        this.pusoySwapShootOneShow = true
+      }
+      this.pusoySwapDetail = obj
+      this.pusoySwapDetailVisible = true
+    },
     isContainsFriendGame() {
       if (this.gid == 21) {
         return true
@@ -3419,20 +3521,19 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       }
       this.chartData = chartData
     },
-    getCardStyle(idx) {
-      if (idx === 0) {
-        return 'width: 32px; height: 40px;'
+    getCardStyle(idx,num) {
+      let styleStr =""
+      if (num>=256){
+        styleStr+='border: 0.5px solid red ;'
       }
-      return 'width: 32px; height: 40px;margin-left: -20px'
-    },
-    getCardStyle2(idx) {
       if (idx === 0) {
-        return 'width: 32px; height: 40px;'
+        styleStr+='width: 32px; height: 40px;'
+      }else {
+        styleStr+='width: 32px; height: 40px;margin-left: -20px;'
       }
-      // const top = idx * 15
-      const left = -20
-      return 'width:  32px; height: 40px;margin-left: ' + left + 'px;'
+      return styleStr
     },
+
     getServiceFeeName() {
       if (this.gid == 20) {
         return '下注炸弹数'

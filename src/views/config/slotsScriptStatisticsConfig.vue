@@ -4,11 +4,11 @@
     <el-tabs type="border-card" @tab-click="handleClick">
       <el-tab-pane label="脚本统计配置">
         <publish
-            primary-key="Volume"
-            :key-id="getFullKey(this.subKey)"
-            :env-empty="false"
-            compare-type="Object"
-            :attr-names="AttrNames"
+          primary-key="Volume"
+          :key-id="getFullKey(this.subKey)"
+          :env-empty="false"
+          compare-type="Object"
+          :attr-names="AttrNames"
         />
         <el-row :gutter="10" style="margin-top: 30px">
           <el-col :span="15">
@@ -30,18 +30,18 @@
           <el-col :span="24">
             <el-form ref="tableData" v-model="tableData" label-width="150px">
               <el-table
-                  ref="filterTable"
-                  :data="tableData"
-                  stripe
-                  border
-                  :header-cell-style="libShow.DefaultTableHeadClass"
-                  :row-style="{height:'10px'}"
-                  :cell-style="libShow.DefaultTableCell"
-                  style="width: 100%"
+                ref="filterTable"
+                :data="tableData"
+                stripe
+                border
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                style="width: 100%"
               >
                 <el-table-column
-                    prop="Gid"
-                    label="游戏"
+                  prop="Gid"
+                  label="游戏"
                 >
                   <template slot-scope="scope">
                 <span v-for="(item, index) in gameOptions" :key="index">
@@ -50,9 +50,17 @@
                   </template>
                 </el-table-column>
                 <el-table-column
-                    prop="Gid"
-                    label="区间"
-                    width="1200"
+                  prop="Gid"
+                  label="基础投注"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.Bet }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="Gid"
+                  label="区间"
+                  width="1100"
                 >
                   <template slot-scope="scope">
                 <span v-for="(data,idx) in scope.row.OddsList">
@@ -79,13 +87,13 @@
         <el-col :offset="16" :span="8">
           <div class="block">
             <el-pagination
-                :current-page="clientDB.GetPage().GetCurrentPage()"
-                :page-sizes="[10, 20, 30, 40]"
-                :page-size="clientDB.GetPage().GetPageNum()"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="clientDB.GetPage().GetTotalCount()"
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
+              :current-page="clientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetPage().GetTotalCount()"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
             />
           </div>
         </el-col>
@@ -95,20 +103,33 @@
     </el-tabs>
 
     <el-dialog
-        title="选择游戏"
-        :visible.sync="selectGameVisible"
-        width="700px"
+      title="选择游戏"
+      :visible.sync="selectGameVisible"
+      width="700px"
     >
       <el-form label-width="150px" inline>
         <el-form-item label="游戏">
           <el-select v-model="item.Gid" placeholder="请选择" size="mini">
             <el-option
-                v-for="item in gameOptions"
-                :key="item.key"
-                :label="item.label"
-                :value="item.key"
+              v-for="item in gameOptions"
+              :key="item.key"
+              :label="item.label"
+              :value="item.key"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="基础投注">
+          <el-input v-model="item.Bet"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-switch
+            style="display: block"
+            v-model="item.openStatisticsBet"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-text="按月付费"
+            inactive-text="按年付费">
+          </el-switch>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addOddsList" size="mini">添加区间</el-button>
@@ -153,7 +174,6 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput'
-import {copyObj} from 'codemirror/src/util/misc'
 import {$libShow, ClientTableData} from '@/utils/common'
 
 const filterMap = {}
@@ -178,7 +198,9 @@ export default {
       libShow: $libShow,
       item: {
         Gid: 0,
-        OddsList: [{MinOdds: 0, MaxOdds: 0}]
+        OddsList: [{MinOdds: 0, MaxOdds: 0}],
+        Bet: 0,
+        openStatisticsBet:false,
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -213,7 +235,7 @@ export default {
       this.item = {
         Gid: 0,
       },
-          this.showBtn = 0
+        this.showBtn = 0
       this.selectGameVisible = true
     },
 
@@ -236,6 +258,7 @@ export default {
     editRow(idx, row) {
       this.idx = idx
       this.item.Gid = row.Gid
+      this.item.Bet = row.Bet
       this.item.OddsList = row.OddsList
       this.showBtn = 1
       this.selectGameVisible = true
@@ -290,10 +313,11 @@ export default {
             const cfg = JSON.parse(response.Data.Data)
             for (let o of cfg) {
               console.log(o.OddsList)
-
+              let bet = o.Bet
+              console.log("======",o.Gid,bet)
               for (let i = 0; i < o.OddsList.length; i++) {
-                o.OddsList[i].MaxOdds += 100
-                o.OddsList[i].MinOdds += 100
+                o.OddsList[i].MaxOdds += parseInt(bet)
+                o.OddsList[i].MinOdds += parseInt(bet)
               }
               this.cfgMap[o.Gid] = o.OddsList
             }
@@ -345,9 +369,11 @@ export default {
         cfg.push(item)
       }
       for (let o of cfg) {
+        let bet =  o.Bet
+
         for (let i = 0; i < o.OddsList.length; i++) {
-          o.OddsList[i].MaxOdds -= 100
-          o.OddsList[i].MinOdds -= 100
+          o.OddsList[i].MaxOdds -= parseInt(bet)
+          o.OddsList[i].MinOdds -= parseInt(bet)
         }
       }
       return cfg
@@ -379,7 +405,7 @@ export default {
             }
             this.gameOptions.push({
               key: response.Data[i].Gid,
-              label: response.Data[i].Scene
+              label: response.Data[i].Name
             })
           }
         }

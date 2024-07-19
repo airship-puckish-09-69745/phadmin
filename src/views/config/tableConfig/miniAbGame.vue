@@ -133,10 +133,20 @@
                 <el-table-column
                   v-if="envProjectName != 'ph_audit'"
                   prop="RobotBetRate"
-                  label="机器人下注权重"
+                  label="机器人下注权重1"
                 >
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.RobotBetRate" size="mini" />
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  v-if="envProjectName != 'ph_audit'"
+                  prop="RobotBetRate2"
+                  label="机器人下注权重2"
+                >
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.RobotBetRate2" size="mini" />
                   </template>
                 </el-table-column>
 
@@ -384,16 +394,16 @@ export default {
       item: {
         BetMoneyLevel: [{ CanBet: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 }],
         BetAreaOptions: [
-          { Name: 'A', MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1 },
-          { Name: 'B', MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1 },
-          { Name: '1-5', MaxMoneyBet: 2000, Id: 2, RobotBetRate: 1 },
-          { Name: '6-10', MaxMoneyBet: 2000, Id: 3, RobotBetRate: 1 },
-          { Name: '11-15', MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1 },
-          { Name: '16-24', MaxMoneyBet: 2000, Id: 5, RobotBetRate: 1 },
-          { Name: '25-30', MaxMoneyBet: 2000, Id: 6, RobotBetRate: 1 },
-          { Name: '31-35', MaxMoneyBet: 2000, Id: 7, RobotBetRate: 1 },
-          { Name: '36-40', MaxMoneyBet: 2000, Id: 8, RobotBetRate: 1 },
-          { Name: '41-49', MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 }
+          { Name: 'A', MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: 'B', MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '1-5', MaxMoneyBet: 2000, Id: 2, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '6-10', MaxMoneyBet: 2000, Id: 3, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '11-15', MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '16-24', MaxMoneyBet: 2000, Id: 5, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '25-30', MaxMoneyBet: 2000, Id: 6, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '31-35', MaxMoneyBet: 2000, Id: 7, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '36-40', MaxMoneyBet: 2000, Id: 8, RobotBetRate: 1, RobotBetRate2: 1 },
+          { Name: '41-49', MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1, RobotBetRate2: 1 }
         ],
         FeeRate: 5,
         Bet1Time: 10,
