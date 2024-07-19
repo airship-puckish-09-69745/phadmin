@@ -129,7 +129,7 @@
                     {{ (parseInt(scope.row.cnt) / coordinateSum[scope.row.gid] * 100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
-                <el-table-column label="总倍率">
+                <el-table-column label="最终输赢">
                   <template slot-scope="scope">
                     {{parseInt(Actions[scope.row.orgKey])/cfgMap[parseInt(scope.row.gid)].Bet}}
                   </template>
