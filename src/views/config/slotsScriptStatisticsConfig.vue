@@ -121,6 +121,16 @@
         <el-form-item label="基础投注">
           <el-input v-model="item.Bet"></el-input>
         </el-form-item>
+        <el-form-item label="">
+          <el-switch
+            style="display: block"
+            v-model="item.openStatisticsBet"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            active-text="按月付费"
+            inactive-text="按年付费">
+          </el-switch>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="addOddsList" size="mini">添加区间</el-button>
         </el-form-item>
@@ -190,6 +200,7 @@ export default {
         Gid: 0,
         OddsList: [{MinOdds: 0, MaxOdds: 0}],
         Bet: 0,
+        openStatisticsBet:false,
       },
       selectGameVisible: false,
       gameOptions: [],

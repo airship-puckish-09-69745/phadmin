@@ -681,8 +681,8 @@ export default {
     },
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))
-      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
-      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
+      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate) - this.timeToTimestamp(postData.RaceBeginDate) % (24 * 3600)
+      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate) - this.timeToTimestamp(postData.RaceEndDate) % (24 * 3600)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
       if (postData.RaceType === 2) {
@@ -700,7 +700,7 @@ export default {
         postData.RaceShowTime *= 60
         postData.RaceIntervalTime *= 60
       } else {
-        postData.RaceShowTime /= 1000
+        postData.RaceShowTime = this.timeToTimestamp(postData.RaceShowTime)
       }
       console.log(postData)
       return postData

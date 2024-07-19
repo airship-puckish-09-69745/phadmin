@@ -141,7 +141,11 @@
         prop="ActMsg"
         label="操作说明"
         min-width="300"
-      />
+       >
+        <template slot-scope="scope">
+          {{getActName(scope.row.ActType,scope.row.ActMsg)}}
+        </template>
+      </el-table-column>
       <el-table-column
         prop="ExtInfo"
         label="备注"
@@ -315,7 +319,7 @@ const filterMap = {
     2000:'下注',
     2001:'登录',
     2002:'刷新',
-    2003:'回合结束',
+    2003:'结算',
   }
 }
 
@@ -396,7 +400,13 @@ export default {
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
     },
-
+    getActName(type, msg) {
+      // 单一钱包类型
+      if (type == 2000 || type == 2001 || type == 2002 || type == 2003) {
+        return this.libShow.GameNames[msg]
+      }
+      return msg
+    },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
         this.clientDB.ShowData = this.clientDB.TotalData.filter(

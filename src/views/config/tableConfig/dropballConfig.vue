@@ -131,7 +131,7 @@
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxMoneyBet" size="mini" />
                     </template>
                   </el-table-column>
-                  <el-table-column label="机器人次区域下注概率">
+                  <el-table-column label="机器人次区域下注权重">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].RobotBetOdds" size="mini" />
                     </template>
@@ -487,6 +487,8 @@ export default {
       that.item.MinRobotMoney /=  1000
       that.item.MaxRobotMoney /= 1000
 
+
+
       for (const o of that.item.LuckyPachinkoCfg) {
         o.Multiple /= 1000
       }
@@ -498,7 +500,7 @@ export default {
           that.item.BetOptionsRate[j].Val[o] /= 1000
         }
       }
-
+      that.item.JackpotCfg.JackpotBetMin /=1000
       for (const j in that.item.BetMoneyLevel) {
         that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
         that.item.BetMoneyLevel[j].MinMoneyBet /= 1000
@@ -537,7 +539,7 @@ export default {
                item["Dices"] = [0,0,0]
                item["openTest"] = "1"
              }
-
+            item.RobotAverageBetMoney /= 1000
             Object.assign(this.item, item)
             console.log('item', this.PoolIncrArr)
 
@@ -555,6 +557,7 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
+      console.log("=========1",ret)
       let betItem = {}
       for (const o of ret.LuckyPachinkoCfg) {
         o.Multiple *= 1000
@@ -586,10 +589,12 @@ export default {
         }
         ret.BetAreaOptions[i].Id = ret.BetOptionsRate[i].Id
       }
-      ret.JackpotCfg = this.JackpotCfg
+      ret.JackpotCfg = JSON.parse(JSON.stringify(this.JackpotCfg))
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
-
+      ret.JackpotCfg.JackpotBetMin *=1000
+      console.log("====",ret)
+      ret.RobotAverageBetMoney *=1000
       if (ret.openTest=="2") {
         this.$alert('测试模式已开启，请测试后关闭', '提示', {
           confirmButtonText: '确定',

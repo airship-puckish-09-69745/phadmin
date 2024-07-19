@@ -133,7 +133,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'slots剧本监控', noCache: true }
+        meta: { title: 'Slots剧本监控', noCache: true }
       },
       /* {
         path: 'play_log_top100',
@@ -274,6 +274,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/dominoTable'),
             name: 'dominoTable',
             meta: { title: '多米诺 ◐' }
+          },
+          {
+            path: 'PusoySwapTable',
+            component: () => import('@/views/config/tableConfig/pusoySwapTable'),
+            name: 'dominoTable',
+            meta: { title: 'pusoy换牌 ◐' }
           },
           {
             path: 'solitaire',
@@ -527,6 +533,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'VideoPoker ◐' }
+          },
+          {
+            path: 'WingoLottery_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/wingoLottery.vue'),
+            name: 'WingoLottery_cfg',
+            meta: { title: 'WingoLottery ◐' }
           }
         ]
       },
@@ -578,6 +590,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',
                 meta: { title: '超级宝石II' }
+              },
+              {
+                path: 'moneycoming_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
+                name: 'moneycoming_slots_cfg',
+                meta: { title: '钱来也' }
               }
               /*
               {
@@ -644,6 +662,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
                 name: 'crazy777mars_slots_cfg',
                 meta: { title: '疯狂777(审)' }
+              },
+              {
+                path: 'moneycomingmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
+                name: 'moneycomingmars_slots_cfg',
+                meta: { title: '钱来也(审)' }
               }
             ]
           },
@@ -963,6 +987,12 @@ export const asyncRoutes = [
             meta: { title: 'DominoQiuQiu ◐', gid: 111 }
           },
           {
+            path: 'playlog_pusoySwap',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoySwap',
+            meta: { title: 'pusoy换牌 ◐', gid: 113 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -1152,6 +1182,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
             meta: { title: '疯狂777', gid: 88 }
+          },
+          {
+            path: 'moneycoming_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'moneycoming_slots_log',
+            meta: { title: '钱来也', gid: 90 }
           }
         ]
       },
@@ -1202,6 +1238,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777mars_slots_log',
             meta: { title: '疯狂777(审)', gid: 89 }
+          },
+          {
+            path: 'moneycomingmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'moneycomingmars_slots_log',
+            meta: { title: '钱来也(审)', gid: 91 }
           }
         ]
       },
@@ -1618,7 +1660,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'DEV_TOOL' },
     children: [
       {
         path: 'failWallet',
