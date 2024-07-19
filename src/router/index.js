@@ -521,6 +521,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'VideoPoker ◐' }
+          },
+          {
+            path: 'WingoLottery_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/wingoLottery.vue'),
+            name: 'WingoLottery_cfg',
+            meta: { title: 'WingoLottery ◐' }
           }
         ]
       },

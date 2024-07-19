@@ -502,27 +502,27 @@ export default {
         4: '3Bet中奖'
       },
       JbCardTypes: {
-        1: '皇家同花顺（Royal Flush）',
-        2: '同花顺（Straight Flush）',
-        3: '四条（Four of a Kind）',
-        4: '葫芦（Full House）',
-        5: '同花（Flush）',
-        6: '顺子（Straight）',
-        7: '三条（Three of a Kind）',
-        8: '两对（Two Pair）',
-        9: '杰克更好（Jacks or Better）'
+        0: '皇家同花顺（Royal Flush）',
+        1: '同花顺（Straight Flush）',
+        2: '四条（Four of a Kind）',
+        3: '葫芦（Full House）',
+        4: '同花（Flush）',
+        5: '顺子（Straight）',
+        6: '三条（Three of a Kind）',
+        7: '两对（Two Pair）',
+        8: '杰克更好（Jacks or Better）'
       },
       DwCardTypes: {
-        1: '天然皇家同花顺（Natural Royal Flush）',
-        2: '4张2（4 Deuces）',
-        3: '癞子皇家同花顺（Wild Royal Flush）',
-        4: '5条（Five of a Kind）',
-        5: '同花顺（Straight Flush）',
-        6: '四条（Four of a Kind）',
-        7: '葫芦（Full House）',
-        8: '同花（Flush）',
-        9: '顺子（Straight）',
-        10: '三条（Three of a Kind）'
+        0: '天然皇家同花顺（Natural Royal Flush）',
+        1: '4张2（4 Deuces）',
+        2: '癞子皇家同花顺（Wild Royal Flush）',
+        3: '5条（Five of a Kind）',
+        4: '同花顺（Straight Flush）',
+        5: '四条（Four of a Kind）',
+        6: '葫芦（Full House）',
+        7: '同花（Flush）',
+        8: '顺子（Straight）',
+        9: '三条（Three of a Kind）'
       },
       dayLimitChange: {
         visible: false,
