@@ -361,8 +361,8 @@ function newItem() {
     RaceType: 0,
     RaceWeek: [],
     RaceWeekStr: '',
-    RaceBeginDate: new Date('2021/07/14'),
-    RaceEndDate: new Date('2021/07/14'),
+    RaceBeginDate: new Date('2021/07/14').toLocaleString(),
+    RaceEndDate: new Date('2021/07/14').toLocaleString(),
     RaceBeginTime: new Date().toLocaleString(),
     RaceEndTime: new Date().toLocaleString(),
     RaceShowTime: 0,
@@ -711,8 +711,8 @@ export default {
     },
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))
-      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate) - 8 * 3600
-      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate) - 8 * 3600
+      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
+      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600)
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600)
       if (postData.RaceType === 2) {
