@@ -304,7 +304,24 @@
               <el-input v-model.number="edit.item.RaceWeight" placeholder="请输入" />
             </el-form-item>
           </el-col>
+           <el-col :span="11">
+            <el-form-item label="是否立即开赛:" :required="true">
+              <el-radio-group v-model.number="edit.item.IsStartNow">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
+        
+         <el-row>
+          <el-col :span="20">
+            <el-form-item label="白名单:" prop="item.RaceWhiteList" >
+              <el-input type="textarea" v-model="edit.item.RaceWhiteList"  :autosize="{ minRows: 2, maxRows: 8}" placeholder="玩家id，用英文逗号分割" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
 
         <el-form-item>
           <el-row style="margin-top: 10px;">
@@ -361,6 +378,8 @@ function newItem() {
     BlindType: 1,
     RobotNum: 0,
     RaceWeight: 0,
+    IsStartNow: 0,
+    RaceWhiteList:'',
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -420,7 +439,9 @@ export default {
         RebuyTime: 'rebuy倒计时',
         BlindType: '盲注类型',
         RobotNum: '机器人数量',
-        RaceWeight: '比赛权重'
+        RaceWeight: '比赛权重',
+        IsStartNow: '比赛是否理解开始',
+        RaceWhiteList: '白名单'
       }
     }
   },
