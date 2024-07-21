@@ -209,6 +209,13 @@
             </el-form-item>
           </el-col>
         </el-row>
+          <el-col v-if="edit.item.RaceType > 0" :span="11">
+            <el-form-item label="开赛前可进入(分钟):" :required="true" prop="item.PreMatchBeginTime">
+              <el-input v-model="edit.item.PreMatchBeginTime" placeholder="进入时间" />
+            </el-form-item>
+          </el-col>
+        <el-row>
+        </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -377,6 +384,7 @@ function newItem() {
     RaceWeight: 0,
     IsStartNow: 0,
     RaceWhiteList: '',
+    PreMatchBeginTime: 10,
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -438,7 +446,8 @@ export default {
         RobotNum: '机器人数量',
         RaceWeight: '比赛权重',
         IsStartNow: '比赛是否理解开始',
-        RaceWhiteList: '白名单'
+        RaceWhiteList: '白名单',
+        PreMatchBeginTime: '提前可进入时间'
       }
     }
   },
@@ -584,6 +593,7 @@ export default {
             } else {
               objs[o].RaceShowTime = new Date(objs[o].RaceShowTime * 1000)
             }
+            objs[o].PreMatchBeginTime /= 60
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
@@ -699,8 +709,8 @@ export default {
     },
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))
-      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate) - this.timeToTimestamp(postData.RaceBeginDate) % (24 * 3600)
-      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate) - this.timeToTimestamp(postData.RaceEndDate) % (24 * 3600)
+      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
+      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
       if (postData.RaceType === 2) {
@@ -723,6 +733,7 @@ export default {
       if (postData.RaceWhiteList === '') {
         postData.RaceWhiteList = ' '
       }
+      postData.PreMatchBeginTime *= 60
       console.log(postData)
       return postData
     },
