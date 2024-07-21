@@ -22,6 +22,7 @@
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('crazy777mars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
+            <slots-pay-table-ext v-if="baseCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" />
           </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
@@ -51,6 +52,7 @@ import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
+import SlotsPayTableExt from './components_x/pay_table_rate_ext'
 import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsCrazy777marsExt from './components_x/crazy777mars_ext'
 import slotsBigWinnerCfg from './components_x/big_winner_cfg'
@@ -58,9 +60,10 @@ import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
 
+
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsCrazy777marsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, SlotsPayTableExt, slotsReelsIcon, slotsCrazy777marsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

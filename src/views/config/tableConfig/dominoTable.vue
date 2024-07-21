@@ -297,7 +297,7 @@
               label="继续匹配超时(秒)："
               :required="true"
               prop="item.NextMatchSeconds"
-              :rules="dataRule(true,{type:'n',range:'5'})"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="edit.item.NextMatchSeconds" placeholder="继续匹配超时" />
             </el-form-item>
@@ -307,7 +307,7 @@
               label="结算等待时间(秒)："
               :required="true"
               prop="item.NextGameSeconds"
-              :rules="dataRule(true,{type:'n',range:'5'})"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="edit.item.NextGameSeconds" placeholder="结算后等待时间" />
             </el-form-item>

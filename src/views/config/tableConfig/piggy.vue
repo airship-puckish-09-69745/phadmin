@@ -52,7 +52,7 @@
                     label="下注列表(支持2位小数)"
                   >
                     <template slot="header">
-                      <p style="text-align: center">  下注列表(支持2位小数)</p>
+                      <p style="text-align: center">  下注列表 (注:只支持1位小数)</p>
                       <span style="color: red;font-size: 11px">  注: 修改此配置先看 JACKPOT->开奖条件->开JP最小下注 相对应的注释</span>
                     </template>
                     <template slot-scope="scope">
@@ -141,7 +141,7 @@
                     </el-tabs>
                   </el-tab-pane>
                   <el-tab-pane label="金币奖励倍数配置">
-                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
+                    <piggy-weight-cfg :piggy-cfg=" item.MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                   </el-tab-pane>
                 </el-tabs>
               </fieldset>
@@ -159,7 +159,7 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -167,7 +167,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -179,7 +179,7 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -187,7 +187,7 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数(支持1位小数)" val-type="1" />
+                        <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
                   </el-tab-pane>
@@ -204,7 +204,7 @@
                   <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"><template slot="append">‰</template></el-input>
                 </el-form-item>
               </el-form>
-              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数(支持1位小数)" val-type="1" />
+              <piggy-weight-cfg :piggy-cfg=" item.Plate.PlateOdds" weight-name="权重" val-name="转盘倍数 (注:不支持小数)" val-type="1" />
 
             </fieldset>
           </el-col>
@@ -229,7 +229,7 @@
                         {{ JpTypeMap[scope.row.Level] }}
                       </template>
                     </el-table-column>
-                    <el-table-column label="抽水比例(‰)" prop="Typ">
+                    <el-table-column label="抽水比例 (‰) (注:不支持小数)" prop="Typ">
                       <template slot-scope="scope">
                         <el-tooltip class="item" effect="dark" content="千分比,1就是0.001" placement="top-start">
                           <el-input

@@ -533,6 +533,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'VideoPoker ◐' }
+          },
+          {
+            path: 'WingoLottery_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/wingoLottery.vue'),
+            name: 'WingoLottery_cfg',
+            meta: { title: 'WingoLottery ◐' }
           }
         ]
       },
@@ -584,6 +590,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',
                 meta: { title: '超级宝石II' }
+              },
+              {
+                path: 'moneycoming_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
+                name: 'moneycoming_slots_cfg',
+                meta: { title: '钱来也' }
               }
               /*
               {
@@ -650,6 +662,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
                 name: 'crazy777mars_slots_cfg',
                 meta: { title: '疯狂777(审)' }
+              },
+              {
+                path: 'moneycomingmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
+                name: 'moneycomingmars_slots_cfg',
+                meta: { title: '钱来也(审)' }
               }
             ]
           },
@@ -1164,6 +1182,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
             meta: { title: '疯狂777', gid: 88 }
+          },
+          {
+            path: 'moneycoming_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'moneycoming_slots_log',
+            meta: { title: '钱来也', gid: 90 }
           }
         ]
       },
@@ -1214,6 +1238,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777mars_slots_log',
             meta: { title: '疯狂777(审)', gid: 89 }
+          },
+          {
+            path: 'moneycomingmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'moneycomingmars_slots_log',
+            meta: { title: '钱来也(审)', gid: 91 }
           }
         ]
       },

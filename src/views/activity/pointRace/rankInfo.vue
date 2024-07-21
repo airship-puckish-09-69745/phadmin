@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
 
-    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询" /> </el-row>
+    <el-row> <el-alert type="error" description="选择周期输入名次范围后查询。导出请先输入对应的名次开始和结束值，避免过多使用这个功能。" /> </el-row>
 
     <el-row :gutter="10" style="margin-top: 10px">
       <el-form label-width="90px" :inline="true" size="small">
@@ -33,7 +33,8 @@
           <el-input v-model="courseInfo.PageSize" placeholder="结束" />
         </el-form-item>
         <el-form-item>
-          <el-button type="success" @click="getData">查询</el-button>
+          <el-button :disabled="isButtonDisabled" type="success" @click="getData">查询</el-button>
+          <el-button :disabled="isButtonDisabled" type="default" @click="exportExcel">导出</el-button>
         </el-form-item>
       </el-form>
 
@@ -102,7 +103,10 @@ export default {
         PageSize: 100
       },
       itemOneList: [],
-      itemTwoList: []
+      itemTwoList: [],
+      exportData: [],
+      exportPageSize: 100,
+      isButtonDisabled: false
     }
   },
   created() {
@@ -155,12 +159,10 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
-
     getData() {
       if (this.courseInfo.ActId == '') {
         Message.error('请选择周期')
@@ -205,6 +207,76 @@ export default {
         } else {
           Message.error('无数据')
         }
+      })
+    },
+    async getExportData() {
+      const response = await request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/pointrace/rank/exportlist',
+          ActId: this.courseInfo.ActId,
+          ItemId: this.courseInfo.ItemId,
+          LastRank: this.offset,
+          PageSize: this.exportPageSize,
+        }
+      })
+
+      const data = response.Data || []
+      if (response.Data) {
+        for (const i in data) {
+          const tmp = []
+          tmp.push(data[i].Rank)
+          tmp.push(data[i].UID)
+          tmp.push(data[i].Account)
+          tmp.push(toRupee(data[i].Point))
+
+          this.exportData.push(tmp)
+        }
+        this.offset += this.exportPageSize
+      }
+      return response.Data?.length || 0
+    },
+    exportExcel() {
+      if (this.courseInfo.ActId == '') {
+        Message.error('请选择周期')
+      }
+      if (this.courseInfo.ItemId == '') {
+        Message.error('请选择赛段')
+        return
+      }
+      if (this.courseInfo.PageSize > 10000) {
+        Message.error('最大不允许超出10000')
+        return
+      }
+
+      import('@/vendor/Export2Excel').then(async excel => {
+        this.exportData = []
+        this.offset = this.courseInfo.LastRank - 1
+
+        const max = Math.ceil((this.courseInfo.PageSize-this.courseInfo.LastRank) / this.exportPageSize)
+
+        this.isButtonDisabled = true
+        for (let i = 1; i <= max; i++) {
+          const cnt = await this.getExportData()
+          console.log('getExportData cnt', i, cnt)
+          if (cnt == 0) {
+            break
+          }
+        }
+        this.isButtonDisabled = false
+        const data = this.exportData
+        const header = [
+          '排名', 'Uid', '账号', '积分'
+        ]
+        excel.export_json_to_excel({
+          header: header, // 表头 必填
+          data, // 具体数据 必填
+          filename: '积分赛排行榜', // 非必填
+          autoWidth: true, // 非必填
+          bookType: 'xlsx' // 非必填
+        })
       })
     }
   }

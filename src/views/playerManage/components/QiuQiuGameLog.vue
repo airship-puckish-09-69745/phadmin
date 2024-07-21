@@ -74,7 +74,7 @@
               <template slot-scope="scope">{{ cardType[scope.row.type] }}</template>
             </el-table-column>
             <el-table-column label="筹码值">
-              <template slot-scope="scope">{{ scope.row.chip }}</template>
+              <template slot-scope="scope">{{ formatNumber(scope.row.chip /1000) }}</template>
             </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="scope">{{ scope.row.attitude == 0 ? '主动操作' : '被动操作' }}</template>
