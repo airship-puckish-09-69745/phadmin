@@ -209,12 +209,12 @@
             </el-form-item>
           </el-col>
         </el-row>
-          <el-col v-if="edit.item.RaceType > 0" :span="11">
+        <el-row>
+          <el-col :span="11">
             <el-form-item label="开赛前可进入(分钟):" :required="true" prop="item.PreMatchBeginTime">
               <el-input v-model="edit.item.PreMatchBeginTime" placeholder="进入时间" />
             </el-form-item>
           </el-col>
-        <el-row>
         </el-row>
         <el-row>
           <el-col :span="11">
@@ -593,7 +593,9 @@ export default {
             } else {
               objs[o].RaceShowTime = new Date(objs[o].RaceShowTime * 1000)
             }
-            objs[o].PreMatchBeginTime /= 60
+            if (objs[o].PreMatchBeginTime) {
+              objs[o].PreMatchBeginTime /= 60
+            }
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
