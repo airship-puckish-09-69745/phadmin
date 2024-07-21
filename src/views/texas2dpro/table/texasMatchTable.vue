@@ -313,16 +313,13 @@
             </el-form-item>
           </el-col>
         </el-row>
-        
-         <el-row>
+        <el-row>
           <el-col :span="20">
             <el-form-item label="白名单:" prop="item.RaceWhiteList" >
               <el-input type="textarea" v-model="edit.item.RaceWhiteList"  :autosize="{ minRows: 2, maxRows: 8}" placeholder="玩家id，用英文逗号分割" />
             </el-form-item>
           </el-col>
         </el-row>
-
-
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -379,7 +376,7 @@ function newItem() {
     RobotNum: 0,
     RaceWeight: 0,
     IsStartNow: 0,
-    RaceWhiteList:'',
+    RaceWhiteList: '',
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -722,6 +719,9 @@ export default {
         postData.RaceIntervalTime *= 60
       } else {
         postData.RaceShowTime = this.timeToTimestamp(postData.RaceShowTime)
+      }
+      if (postData.RaceWhiteList === '') {
+        postData.RaceWhiteList = ' '
       }
       console.log(postData)
       return postData
