@@ -22,7 +22,7 @@
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('crazy777mars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
-            <slots-pay-table-ext v-if="baseCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" />
+            <slots-pay-table-ext v-if="baseCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveRuleCfg"/>
           </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
