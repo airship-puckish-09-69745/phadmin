@@ -21,7 +21,11 @@
         </el-form>
       </el-col>
     </el-row>
-
+    <el-row style="margin-top: 30px">
+      <el-col :offset="3">
+        <el-button type="success" @click="submitFrm">保存</el-button>
+      </el-col>
+    </el-row>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
