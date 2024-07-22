@@ -3,7 +3,7 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="200px">
-          <el-form-item label="普通模式中bouns倍数">
+          <!--<el-form-item label="普通模式中bouns倍数">
             <el-input v-model="cfg.BounsMultiStr" placeholder="请输入内容,如5,10,15,50"> <template slot="append">八个值用 , 连接</template> </el-input>
           </el-form-item>
           <el-form-item label="普通模式中bouns倍数权重">
@@ -15,7 +15,7 @@
           </el-form-item>
           <el-form-item label="普通模式中big bouns倍数权重">
             <el-input v-model="cfg.BigBounsMultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">八个值用 , 连接</template> </el-input>
-          </el-form-item>
+          </el-form-item>-->
 
           <el-form-item label="免费模式下注额5倍数">
             <el-input v-model="cfg.Free5MultiStr" placeholder="请输入内容,如5,10,15,50"> <template slot="append">八个值用 , 连接</template> </el-input>
@@ -57,8 +57,6 @@
           <el-form-item label="免费模式下注额100购买倍数">
             <el-input type="number" v-model.number="cfg.BuyFreeOdds100" placeholder="请输入数字内容" />
           </el-form-item>
-
-
         </el-form>
       </el-col>
     </el-row>

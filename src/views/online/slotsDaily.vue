@@ -253,6 +253,10 @@ export default {
           return 'SuperAce+'
         case 86:
           return 'SuperGemsII'
+        case 90:
+          return 'MoneyComing'
+        case 91:
+          return 'MoneyComingMars'
       }
       return '未知老虎机-' + sType
     },
