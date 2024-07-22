@@ -284,7 +284,7 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 28, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106,111, 6, 32, 35, 37, 107, 108, 46,47,48], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [15, 22, 28, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106,111, 6, 32, 35, 37, 107, 108, 46,47,48,113], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT

@@ -211,6 +211,13 @@
         </el-row>
         <el-row>
           <el-col :span="11">
+            <el-form-item label="开赛前可进入(分钟):" :required="true" prop="item.PreMatchBeginTime">
+              <el-input v-model="edit.item.PreMatchBeginTime" placeholder="进入时间" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
             <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.SignupFee" placeholder="请输入" />
             </el-form-item>
@@ -304,8 +311,22 @@
               <el-input v-model.number="edit.item.RaceWeight" placeholder="请输入" />
             </el-form-item>
           </el-col>
+           <el-col :span="11">
+            <el-form-item label="是否立即开赛:" :required="true">
+              <el-radio-group v-model.number="edit.item.IsStartNow">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
-
+        <el-row>
+          <el-col :span="20">
+            <el-form-item label="白名单:" prop="item.RaceWhiteList" >
+              <el-input type="textarea" v-model="edit.item.RaceWhiteList"  :autosize="{ minRows: 2, maxRows: 8}" placeholder="玩家id，用英文逗号分割" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -340,10 +361,10 @@ function newItem() {
     RaceType: 0,
     RaceWeek: [],
     RaceWeekStr: '',
-    RaceBeginDate: new Date(),
-    RaceEndDate: new Date(),
-    RaceBeginTime: new Date(),
-    RaceEndTime: new Date(),
+    RaceBeginDate: new Date('2021/07/14').toLocaleString(),
+    RaceEndDate: new Date('2021/07/14').toLocaleString(),
+    RaceBeginTime: new Date().toLocaleString(),
+    RaceEndTime: new Date().toLocaleString(),
     RaceShowTime: 0,
     RaceIntervalTime: 0,
     SignupFee: 0,
@@ -361,6 +382,9 @@ function newItem() {
     BlindType: 1,
     RobotNum: 0,
     RaceWeight: 0,
+    IsStartNow: 0,
+    RaceWhiteList: '',
+    PreMatchBeginTime: 10,
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -420,7 +444,10 @@ export default {
         RebuyTime: 'rebuy倒计时',
         BlindType: '盲注类型',
         RobotNum: '机器人数量',
-        RaceWeight: '比赛权重'
+        RaceWeight: '比赛权重',
+        IsStartNow: '比赛是否理解开始',
+        RaceWhiteList: '白名单',
+        PreMatchBeginTime: '提前可进入时间'
       }
     }
   },
@@ -566,7 +593,10 @@ export default {
             } else {
               objs[o].RaceShowTime = new Date(objs[o].RaceShowTime * 1000)
             }
+            objs[o].PreMatchBeginTime = objs[o].RaceCanEnterTime / 60
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
+
+            console.log(objs[o])
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
@@ -681,8 +711,8 @@ export default {
     },
     getPostData() {
       const postData = JSON.parse(JSON.stringify(this.edit.item))
-      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate) - this.timeToTimestamp(postData.RaceBeginDate) % (24 * 3600)
-      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate) - this.timeToTimestamp(postData.RaceEndDate) % (24 * 3600)
+      postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
+      postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
       if (postData.RaceType === 2) {
@@ -702,6 +732,10 @@ export default {
       } else {
         postData.RaceShowTime = this.timeToTimestamp(postData.RaceShowTime)
       }
+      if (postData.RaceWhiteList === '') {
+        postData.RaceWhiteList = ' '
+      }
+      postData.PreMatchBeginTime *= 60
       console.log(postData)
       return postData
     },
