@@ -29,6 +29,20 @@
                   </el-col>
                 </el-form>
               </el-col>
+              <el-col :span="24" :offset="5">
+                <el-form :inline="true">
+                  <el-col :span="8">
+                    <el-form-item label="下注操作时长(s):">
+                      <el-input v-model.number="item.ActionSeconds" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="赢钱榜展示数量">
+                      <el-input v-model.number="item.WinMoneyShowNum" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                </el-form>
+              </el-col>
 
               <fieldset style="margin-top:10px">
                 <legend>下注配置</legend>
