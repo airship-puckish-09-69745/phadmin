@@ -278,7 +278,7 @@ export const asyncRoutes = [
           {
             path: 'PusoySwapTable',
             component: () => import('@/views/config/tableConfig/pusoySwapTable'),
-            name: 'dominoTable',
+            name: 'pusoySwapTable',
             meta: { title: 'pusoy换牌 ◐' }
           },
           {
