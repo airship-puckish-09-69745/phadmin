@@ -5,11 +5,13 @@
         <el-form ref="frm2" :model="cfg" label-width="200px">
 
           <el-form-item label="普通模式中奖图标">
-            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7" size="50"> <template slot="append">七个值。1=10倍奖金，2=5倍，3=2倍速，4=35倍bet,5=3.5倍bet，6=免费1-5次spin，7=空图标</template> </el-input>
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7" size="50"> <template slot="append">七个值。用,符隔开</template> </el-input>
+            <br>
+            <p>1=10倍奖金，2=5倍奖金，3=2倍奖金，4=35倍bet,5=3.5倍bet，6=免费1-5次spin，7=空图标</p>
           </el-form-item>
 
           <el-form-item label="普通模式中奖图标权重">
-            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">七个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">七个值。用,符隔开</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
