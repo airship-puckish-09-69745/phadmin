@@ -14,7 +14,7 @@
       </el-col>
     </el-row>
     <el-row class="panel-group" :gutter="10">
-      <el-col :span="4" class="card-panel-col">
+      <el-col :span="4" class="card-panel-col"   v-if="queryUserPermissions()">
         <div :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(10000,2)">
           <div class="card-panel-description">
             <div class="card-panel-text">
@@ -32,8 +32,9 @@
           </div>
         </div>
       </el-col>
-      <el-col v-for="(o,k) in sortOrder" :key="k" :span="4" class="card-panel-col">
-        <div v-if="!isPopType(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
+      <el-col  v-for="(o,k) in sortOrder" :key="k" :span="4" class="card-panel-col">
+
+        <div v-if="!isPopType(o) " :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
           <div class="card-panel-description">
             <div class="card-panel-text">
               {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
@@ -230,6 +231,7 @@ import { $libDate, $libShow, MoneyShow } from '@/utils/common'
 import { IsMars, IsProd } from '@/utils/env'
 import store from '@/store'
 import { Message } from 'element-ui'
+import {mapGetters} from "vuex";
 
 function newHealthData() {
   return {
@@ -275,6 +277,13 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
+      viewPermissions:{
+        "howard":[-1],
+        "shenggang":[-1],
+        "zhourui":[32],
+        "zhouzheng":[106],
+        "chenzhenjiang":[50,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],
+      },
       gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
         76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: '糖果糖果Mars', 80: 'Candy Craze', 81: '超级宝石Mars', // 这行老虎机
         82: 'Millionaire', 83: '百万富翁Mars', 84: 'Mega Ace', 85: '超级王牌', 86: 'SuperGems2', 87: '超级宝宝石II Mars', // 这行老虎机
@@ -292,11 +301,17 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'name',
+      'avatar',
+      'roles'
+    ])
   },
   // mixins: [IsMars],
   created() {
     this.env = store.getters.env || this.env
-    this.sortOrder = this.defaultOrder
+
+    // this.sortOrder = this.defaultOrder
     // if (this.isIN())  {
     //   this.sortOrder = this.defaultOrder
     // } else {
@@ -304,8 +319,10 @@ export default {
     // }
     this.addGameNames()
     this.getInfo(this.gid)
-    console.log(1)
+    this.getData()
+    console.log("===========",this.name,this.env)
   },
+
   methods: {
     changeOrder(iType) {
       console.log('summary===>', this.summary)
@@ -344,6 +361,7 @@ export default {
         }
         this.sortOrder = retSort
       }
+      this.setUserPermissionsGames()
     },
     addGameNames() {
       if (IsMars()) { // 审核
@@ -406,6 +424,40 @@ export default {
 
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
+    },
+  async getData() {
+    if (this.env==='test'){
+      this.sortOrder = this.defaultOrder
+      return
+    }
+    await  request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: "systemMoneyConfig"
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.form = response.Data || {}
+          const item = JSON.parse(response.Data.Data)
+          this.viewPermissions =item
+          this.sortOrder = this.defaultOrder
+          let  games =[]
+          if (!this.viewPermissions[this.name]){
+            this.sortOrder = games
+          }
+          if (this.viewPermissions[this.name][0]==-1){
+            return
+          }
+          for (const gid of this.sortOrder) {
+            if (this.viewPermissions[this.name].includes(gid)){
+              games.push(gid)
+            }
+          }
+          this.sortOrder = games
+
+        }
+      })
     },
     getSummaryClass(ob) {
       if (ob && ob.Bet !== 0) {
@@ -492,6 +544,30 @@ export default {
           $this.userVisible = true
         }
       })
+    },
+    queryUserPermissions(){
+      if (!this.viewPermissions[this.name]){
+        return false
+      }
+      if (this.viewPermissions[this.name][0]==-1){
+        return true
+      }
+      return false
+    },
+    setUserPermissionsGames(){
+      let  games =[]
+      if (!this.viewPermissions[this.name]){
+        this.sortOrder = games
+      }
+      if (this.viewPermissions[this.name][0]==-1){
+        return
+      }
+      for (const gid of this.sortOrder) {
+        if (this.viewPermissions[this.name].includes(gid)){
+            games.push(gid)
+        }
+      }
+      this.sortOrder = games
     },
     getInfo(gid, iType) {
       this.gid = gid

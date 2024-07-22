@@ -1701,6 +1701,12 @@ export const asyncRoutes = [
         meta: { title: '审核权限管理' }
       },
       {
+        path: 'systemMoneyConfig',
+        component: () => import('@/views/adminUser/systemMoneyConfig.vue'),
+        name: 'systemMoneyConfig',
+        meta: { title: '健康度权限管理' }
+      },
+      {
         path: 'operateLog',
         component: () => import('@/views/adminUser/operateLog'),
         name: 'operateLog',
