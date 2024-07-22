@@ -22,12 +22,6 @@
       </el-col>
     </el-row>
 
-    <el-row style="margin: 30px 0">
-      <el-col :offset="3">
-        <el-button type="success" @click="submitFrm">保存</el-button>
-      </el-col>
-    </el-row>
-
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -78,7 +72,7 @@ export default {
     }
   },
   watch: {
-    'SymbolList': {
+    'slotsData': {
       deep: true,
       handler: function(val) {
         this.initData()
@@ -147,7 +141,7 @@ export default {
         const arr = str.split(',')
         if (arr.length > 0) {
           for (let y = 0; y < arr.length; y++) {
-            name += this.symbolMap[arr[y]] + ','
+            name += this.SymbolList[arr[y]-1].Name + ','
           }
         }
         if (!name) {
