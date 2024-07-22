@@ -593,10 +593,10 @@ export default {
             } else {
               objs[o].RaceShowTime = new Date(objs[o].RaceShowTime * 1000)
             }
-            if (objs[o].PreMatchBeginTime) {
-              objs[o].PreMatchBeginTime /= 60
-            }
+            objs[o].PreMatchBeginTime = objs[o].RaceCanEnterTime / 60
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
+
+            console.log(objs[o])
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
