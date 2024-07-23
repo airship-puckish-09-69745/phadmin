@@ -203,6 +203,12 @@ export const asyncRoutes = [
                 name: 'tongitsTableLaiZi',
                 meta: { title: 'Tongits-Joker ◐' }
               },
+              {
+                path: 'tongitsQuickTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableQuick'),
+                name: 'tongitsTableQuick',
+                meta: { title: 'Tongits-Quick ◐' }
+              },
               /*          {
                           path: 'tongitsTogether',
                           component: () => import('@/views/config/tableConfig/tongits_blacklist'),
