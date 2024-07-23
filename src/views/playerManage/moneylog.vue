@@ -366,7 +366,7 @@ export default {
 
       gameNames: ['TeenPatti', 'DragonVsTiger', 'Rummy', 'AndarBahar', 'CarRoulette', 'JHandiMunda', 'AK47', '7Up7Down', 'RedVsBlack', 'TeenPatti100',
         '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha',
-        '糖果传奇Way', '糖果传奇Allline', '糖果糖果Mars', '糖果糖果', '超级宝石', '超级宝石Mars', '百万富翁', '百万富翁Mars', // 别加后面，这行老虎机的
+        '糖果传奇Way', '糖果传奇Allline', 'CandyCrazeMars', 'CandyCraze', 'SuperGems', 'SuperGemsMars', 'Millionaire', 'MillionaireMars', // 别加后面，这行老虎机的
         'sicbo', 'Hilo'],
       libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll'])
     }

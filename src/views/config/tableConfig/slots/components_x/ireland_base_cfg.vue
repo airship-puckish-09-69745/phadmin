@@ -24,16 +24,16 @@
               <el-option label="十倍金牛" :value="68" />
               <el-option label="糖果传奇Way" :value="76" />
               <el-option label="糖果传奇Allline" :value="77" />
-              <el-option label="超级宝石" :value="78" />
-              <el-option label="超级宝石Mars" :value="81" />
-              <el-option label="糖果糖果Mars" :value="79" />
-              <el-option label="糖果糖果" :value="80" />
-              <el-option label="百万富翁" :value="82" />
-              <el-option label="百万富翁Mars" :value="83" />
+              <el-option label="SuperGems" :value="78" />
+              <el-option label="SuperGemsMars" :value="81" />
+              <el-option label="CandyCrazeMars" :value="79" />
+              <el-option label="CandyCraze" :value="80" />
+              <el-option label="Millionaire" :value="82" />
+              <el-option label="MillionaireMars" :value="83" />
               <el-option label="MegaAce" :value="84" />
               <el-option label="MegaAceMars" :value="85" />
-              <el-option label="超级宝石II" :value="86" />
-              <el-option label="超级宝石IIMars" :value="87" />
+              <el-option label="SuperGemsII" :value="86" />
+              <el-option label="SuperGemsIIMars" :value="87" />
               <el-option label="疯狂777" :value="88" />
               <el-option label="疯狂777Mars" :value="89" />
             </el-select>
