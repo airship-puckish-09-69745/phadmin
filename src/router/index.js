@@ -80,7 +80,8 @@ export const constantRoutes = [
         component: () => import('@/views/playerManage/systemMoneyChart'),
         name: 'dashboard',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      }
+      },
+
     ]
   },
   {
@@ -1667,6 +1668,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletFailLog.vue'),
         name: 'failWallet',
         meta: { title: '钱包失败列表' }
+      },
+      {
+        path: 'sucWallet',
+        component: () => import('@/views/wallet/walletSucLog.vue'),
+        name: 'sucWallet',
+        meta: { title: '钱包成功列表' }
       },
       {
         path: 'walletInfo',
