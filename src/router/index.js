@@ -598,6 +598,12 @@ export const asyncRoutes = [
                 meta: { title: 'SuperGemsII' }
               },
               {
+                path: 'crazy777_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazy777_slots_cfg'),
+                name: 'crazy777_slots_cfg',
+                meta: { title: 'Crazy777' }
+              },
+              {
                 path: 'moneycoming_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
                 name: 'moneycoming_slots_cfg',
