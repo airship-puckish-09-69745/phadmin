@@ -14,6 +14,14 @@
             <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">七个值。用,符隔开</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="额外图标命中免费次数">
+            <el-input v-model="cfg.FreeTimesStr" placeholder="请输入内容,如1,2,3,4,5" size="50"> <template slot="append">五个值。用,符隔开</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="额外命中免费次数权重">
+            <el-input v-model="cfg.FreeTimesStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">五个值。用,符隔开</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
