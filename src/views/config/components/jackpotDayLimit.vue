@@ -33,7 +33,7 @@
       <el-table-column label="奖励占比" prop="JackpotRate" >
         <template slot-scope="scope">
           <el-input v-model.number="scope.row.AwardRate" style="width: 150px;" size="mini" :required="true">
-            <template v-if="scope.row.JackpotType==4" slot="append">倍数</template>
+            <template v-if="scope.row.JackpotType==4" slot="append">倍下注</template>
             <template v-else slot="append">%</template>
           </el-input>
         </template>
