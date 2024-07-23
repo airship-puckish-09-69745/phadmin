@@ -46,7 +46,7 @@ import { DataRule, ValidateVueItem } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'SlotsSuperAceMarsExt',
+  name: 'SlotsMegaAceMarsExt',
   components: { RatioInput, Compare },
   model: {
     prop: 'slotsData',

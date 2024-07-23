@@ -1715,12 +1715,7 @@
 
     <el-dialog title="solitaire详情" :visible.sync="solitaireLog.solitaireVisible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="4" border>
-        <!--        <el-descriptions-item>-->
-        <!--          <template slot="label">-->
-        <!--           赢家：-->
-        <!--          </template>-->
-        <!--          {{ solitaireLog.solitaireDetail.winUid }}-->
-        <!--        </el-descriptions-item>-->
+
         <el-descriptions-item>
           <template slot="label">
             底注：
@@ -1730,8 +1725,12 @@
       </el-descriptions>
 
       <el-table :data="solitaireLog.solitaireDetail.players" border>
-        <el-table-column prop="uid" label="uid">
-          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        <el-table-column prop="uid" label="uid" width="125px">
+          <template slot-scope="scope">
+            <span>{{scope.row.uid}}</span>
+            <br/>
+            <span>{{ '('+ (solitaireLog.solitaireDetail.winUid==0?'平局':(solitaireLog.solitaireDetail.winUid==scope.row.uid?'赢':'输'))+'_'+  solitaireLogStopMap[solitaireLog.solitaireDetail.StopFlag] +')'  }}</span>
+          </template>
         </el-table-column>
         <el-table-column prop="seat" label="输赢">
           <template slot-scope="scope">{{ scope.row.moneyChange/1000 }}</template>
@@ -1752,6 +1751,9 @@
         </el-table-column>
         <el-table-column prop="cardScore" label="积分">
           <template slot-scope="scope">{{ scope.row.userScore }}</template>
+        </el-table-column>
+        <el-table-column prop="cardScore" label="剩余时间">
+          <template slot-scope="scope">{{ scope.row.overTime+'s' }}</template>
         </el-table-column>
         <el-table-column prop="isDealer" label="结算">
           <template slot-scope="scope">
@@ -2144,11 +2146,17 @@
               <el-table-column prop="uid" label="moneyTaxed" >
                 <template slot-scope="scope">{{formatNumber(scope.row.moneyTaxed /1000)  }}</template>
               </el-table-column>
+              <el-table-column prop="uid" label="Jackpot贡献" >
+                <template slot-scope="scope2">{{scope2.row.playerData.JackpotContribute /1000}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="Jackpot总贡献" >
+                <template slot-scope="scope2">{{scope2.row.playerData.JackpotContributeTotal/ 1000}}</template>
+              </el-table-column>
               <el-table-column prop="uid" label="JackpotAward" >
-                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotAward:''}}</template>
+                <template slot-scope="scope2">{{scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotAward / 1000:''}}</template>
               </el-table-column>
               <el-table-column prop="uid" label="JackpotType" >
-                <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotType:''}}</template>
+                <template slot-scope="scope2">{{jackpotType[scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotType:-1]}}</template>
               </el-table-column>
             </el-table>
           </template>
@@ -2337,6 +2345,11 @@ export default {
         solitaireVisible: false,
         solitaireDetail: {}
       },
+      solitaireLogStopMap: {
+        1: '正常结束',
+        2: '时间用完',
+        3: '认输',
+      },
       piggyLog: {
         visible: false,
         detail: {}
@@ -2383,7 +2396,12 @@ export default {
 
       chartData: newChartData(),
       dataArr: [],
-
+      jackpotType: {
+        0: 'GRAND',
+        1: 'MAJOR',
+        2: 'MINOR',
+        3: 'MINI',
+      },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange'])
     }
   },
@@ -2806,6 +2824,8 @@ export default {
       for (const player of obj.Dropball.players) {
         for (const o of  player.optionsResult) {
           o['uid']=player.uid
+          o['playerData']= JSON.parse(JSON.stringify(player))
+          console.log('o=>', o)
           m[o.id].push(o)
         }
       }

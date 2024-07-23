@@ -74,26 +74,26 @@
           <div v-if="!isSlots(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
             <el-tooltip class="item" effect="dark"   placement="top" :disabled="o!=37">
               <div v-html="getBlackJackTitle()" slot="content" style="white-space: pre-line;font-size: 14px" ></div>
-            <div class="card-panel-description">
-              <div class="card-panel-text">
-                {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+              <div class="card-panel-description">
+                <div class="card-panel-text">
+                  {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+                </div>
+                <div>
+                  收益：{{ getSystemGot(summary[o]) }}
+                </div>
+                <div>
+                  流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
+                </div>
+                <div>
+                  在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
+                </div>
+                <div v-if="o==37">
+                  奖池：  {{formatNumber(blackJackSum/ 1000)}}
+                </div>
+                <div v-else>
+                  奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
+                </div>
               </div>
-              <div>
-                收益：{{ getSystemGot(summary[o]) }}
-              </div>
-              <div>
-                流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
-              </div>
-              <div>
-                在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
-              </div>
-              <div v-if="o==37">
-                奖池：  {{formatNumber(blackJackSum/ 1000)}}
-              </div>
-              <div v-else>
-                奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
-              </div>
-            </div>
             </el-tooltip>
           </div>
           <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
@@ -276,8 +276,8 @@ export default {
       gid: 10000,
       summary: {},
       gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
-        76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: '糖果糖果Mars', 80: 'Candy Craze', 81: '超级宝石Mars', // 这行老虎机
-        82: 'Millionaire', 83: '百万富翁Mars', 84: 'SuperAce+', 85: '超级王牌', 86: 'SuperGems2', 87: '超级宝宝石II Mars', // 这行老虎机
+        76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: 'CandyCrazeMars', 80: 'Candy Craze', 81: 'SuperGemsMars', // 这行老虎机
+        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Mega Ace', 85: 'MegaAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', // 这行老虎机
         28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack', 46: 'Domino',47:'Billiard 8 Balls',48:'Billiard 9 Balls',
         105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball',111: 'QiuQiu',113: 'PusoySwap', 10000: '汇总' },
@@ -557,7 +557,7 @@ export default {
         console.log('list response', response)
         this.blackJackContext = ''
         $this.blackJackSum = 0
-       let datas = []
+        let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid=== 37){
@@ -658,78 +658,78 @@ export default {
 </script>
 <style>
 .el-table .warning-row {
-background: oldlace;
+  background: oldlace;
 }
 
 .el-table .fail-row {
-background: #999999;
+  background: #999999;
 }
 
 .el-table .success-row {
-background: #f0f9eb;
+  background: #f0f9eb;
 }
 </style>
 <style lang="scss" scoped>
 .panel-group {
   margin-top: 10px;
 
-.card-panel-col {
-  margin-bottom: 10px;
-  &:hover {
-    .card-panel{
-      background: #90EE90;
+  .card-panel-col {
+    margin-bottom: 10px;
+    &:hover {
+      .card-panel{
+        background: #90EE90;
+      }
     }
   }
-}
 
-.card-panel_selected {
-  background: #90EE90;
-}
+  .card-panel_selected {
+    background: #90EE90;
+  }
 
-.card-panel_selected_not {
-  background: #fff;
-}
+  .card-panel_selected_not {
+    background: #fff;
+  }
 
-.card-panel {
-  height: 108px;
-  cursor: pointer;
-  font-size: 12px;
-  position: relative;
-  overflow: hidden;
-  color: #666;
-  box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-  border-color: rgba(0, 0, 0, .05);
+  .card-panel {
+    height: 108px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+    border-color: rgba(0, 0, 0, .05);
 
-.card-panel-description {
-  float: left;
-  padding-left: 5px;
-  font-weight: bold;
-  margin: 18px 26px 26px 26px;
-  margin-left: 0px;
+    .card-panel-description {
+      float: left;
+      padding-left: 5px;
+      font-weight: bold;
+      margin: 18px 26px 26px 26px;
+      margin-left: 0px;
 
-.card-panel-text {
-  line-height: 18px;
-  font-size: 18px;
-  margin-bottom: 12px;
-}
+      .card-panel-text {
+        line-height: 18px;
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
 
-.card-panel-normal{
-  color: rgba(0, 0, 0, 0.45);
-}
+      .card-panel-normal{
+        color: rgba(0, 0, 0, 0.45);
+      }
 
-.card-panel-OK{
-  color: #409167;
-}
+      .card-panel-OK{
+        color: #409167;
+      }
 
-.card-panel-Danger{
-  color: #ff4949;
-}
+      .card-panel-Danger{
+        color: #ff4949;
+      }
 
-.card-panel-num {
-  font-size: 20px;
-}
-}
-}
+      .card-panel-num {
+        font-size: 20px;
+      }
+    }
+  }
 }
 
 </style>

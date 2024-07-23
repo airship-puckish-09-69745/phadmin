@@ -45,14 +45,14 @@ export default {
         */
         { label: '糖果传奇Way', value: 76 },
         { label: '糖果传奇Allline', value: 77 },
-        { label: '超级宝石', value: 78 },
-        { label: '超级宝石Mars', value: 81 },
-        { label: '糖果糖果Mars', value: 79 },
-        { label: '糖果糖果', value: 80 },
-        { label: '百万富翁', value: 82 },
-        { label: '百万富翁Mars', value: 83 },
-        { label: '超级王牌', value: 84 },
-        { label: '超级王牌Mars', value: 85 }
+        { label: 'SuperGems', value: 78 },
+        { label: 'SuperGemsMars', value: 81 },
+        { label: 'CandyCrazeMars', value: 79 },
+        { label: 'CandyCraze', value: 80 },
+        { label: 'Millionaire', value: 82 },
+        { label: 'MillionaireMars', value: 83 },
+        { label: 'MegaAce', value: 84 },
+        { label: 'MegaAceMars', value: 85 }
       ]
     }
   },
