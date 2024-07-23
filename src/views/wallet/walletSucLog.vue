@@ -89,22 +89,22 @@
 
           <el-table-column label="下注金额" width="160px">
             <template slot-scope="scope">
-              {{ formatTime(scope.row.BetAmount) }}
+              {{ formatTime(scope.row.BetAmount /1000) }}
             </template>
           </el-table-column>
           <el-table-column label="下注前余额">
             <template slot-scope="scope">
-              {{ scope.row.BeforeBalance }}
+              {{ formatNumber(scope.row.BeforeBalance /1000) }}
             </template>
           </el-table-column>
           <el-table-column label="下注后余额">
             <template slot-scope="scope">
-              {{ scope.row.Balance }}
+              {{formatNumber( scope.row.Balance  /1000)}}
             </template>
           </el-table-column>
           <el-table-column label="返奖">
             <template slot-scope="scope">
-              {{ scope.row.TotalPayoffAmount }}
+              {{ formatNumber(scope.row.TotalPayoffAmount / 1000) }}
             </template>
           </el-table-column>
           <el-table-column label="重试次数">
@@ -117,11 +117,11 @@
               {{ scope.row.ExtData }}
             </template>
           </el-table-column>
-          <el-table-column label="操作">
-            <template slot-scope="scope" style="width: 100px;">
-              <el-button type="text" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>
-            </template>
-          </el-table-column>
+<!--          <el-table-column label="操作">-->
+<!--            <template slot-scope="scope" style="width: 100px;">-->
+<!--              <el-button type="text" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
         </el-table>
       </el-col>
     </el-row>
@@ -193,6 +193,9 @@ export default {
   methods: {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    formatNumber(n) {
+      return n.toLocaleString()
     },
     getData() {
       const $this = this
