@@ -577,25 +577,25 @@ export const asyncRoutes = [
                 path: 'supergem_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergem_slots_cfg'),
                 name: 'supergem_slots_cfg',
-                meta: { title: '超级宝石' }
+                meta: { title: 'SuperGems' }
               },
               {
                 path: 'millionaire_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/millionaire_slots_cfg'),
                 name: 'millionaire_slots_cfg',
-                meta: { title: '百万富翁' }
+                meta: { title: 'Millionaire' }
               },
               {
                 path: 'superace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
-                meta: { title: '超级王牌' }
+                meta: { title: 'MegaAce' }
               },
               {
                 path: 'supergemii_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',
-                meta: { title: '超级宝石II' }
+                meta: { title: 'SuperGemsII' }
               },
               {
                 path: 'moneycoming_slots_cfg',
@@ -643,25 +643,25 @@ export const asyncRoutes = [
                 path: 'supergemmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergemmars_slots_cfg'),
                 name: 'supergemmars_slots_cfg',
-                meta: { title: '超级宝石(审)' }
+                meta: { title: 'SuperGems(审)' }
               },
               {
                 path: 'millionairemars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/millionairemars_slots_cfg'),
                 name: 'millionairemars_slots_cfg',
-                meta: { title: '百万富翁(审)' }
+                meta: { title: 'Millionaire(审)' }
               },
               {
                 path: 'superacemars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
-                meta: { title: '超级王牌(审)' }
+                meta: { title: 'MegaAce(审)' }
               },
               {
                 path: 'supergemiimars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
                 name: 'supergemiimars_slots_cfg',
-                meta: { title: '超级宝石II(审)' }
+                meta: { title: 'SuperGemsII(审)' }
               },
               {
                 path: 'crazy777mars_slots_cfg',
@@ -1156,7 +1156,7 @@ export const asyncRoutes = [
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
-            meta: { title: '超级宝石', gid:  78 }
+            meta: { title: 'SuperGems', gid:  78 }
           },
 
           {
@@ -1169,19 +1169,19 @@ export const asyncRoutes = [
             path: 'millionaire_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionaire_slots_log',
-            meta: { title: '百万富翁', gid: 82 }
+            meta: { title: 'Millionaire', gid: 82 }
           },
           {
             path: 'superace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
-            meta: { title: '超级王牌', gid: 84 }
+            meta: { title: 'MegaAce', gid: 84 }
           },
           {
             path: 'supergemii_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemii_slots_log',
-            meta: { title: '超级宝石II', gid: 86 }
+            meta: { title: 'SuperGemsII', gid: 86 }
           },
           {
             path: 'crazy777_slots_log',
@@ -1213,31 +1213,31 @@ export const asyncRoutes = [
             path: 'supergemmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemmars_slots_log',
-            meta: { title: '超级宝石(审)', gid: 81 }
+            meta: { title: 'SuperGems(审)', gid: 81 }
           },
           {
             path: 'candycandymars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candycandymars_slots_log',
-            meta: { title: '糖果糖果(审)', gid: 79 }
+            meta: { title: 'CandyCraze(审)', gid: 79 }
           },
           {
             path: 'millionairemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'millionairemars_slots_log',
-            meta: { title: '百万富翁(审)', gid: 83 }
+            meta: { title: 'Millionaire(审)', gid: 83 }
           },
           {
             path: 'superacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
-            meta: { title: '超级王牌(审)', gid: 85 }
+            meta: { title: 'MegaAce(审)', gid: 85 }
           },
           {
             path: 'supergemiimars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiimars_slots_log',
-            meta: { title: '超级宝石II(审)', gid: 87 }
+            meta: { title: 'SuperGemsII(审)', gid: 87 }
           },
           {
             path: 'crazy777mars_slots_log',

@@ -280,7 +280,7 @@ export default {
       return [86].indexOf(gid) >= 0
     },
     getTypeName(row) {
-      // 超级宝石2
+      // SuperGems2
       if (this.gid === 86 && row.ActType === 1) {
         return '转盘'
       }

@@ -250,7 +250,7 @@ export default {
         case 82:
           return 'Millionaire'
         case 84:
-          return 'SuperAce+'
+          return 'MegaAce'
         case 86:
           return 'SuperGemsII'
         case 90:
