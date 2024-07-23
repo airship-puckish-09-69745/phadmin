@@ -89,7 +89,7 @@
 
           <el-table-column label="下注金额" width="160px">
             <template slot-scope="scope">
-              {{ formatTime(scope.row.BetAmount /1000) }}
+              {{ formatNumber(scope.row.BetAmount /1000) }}
             </template>
           </el-table-column>
           <el-table-column label="下注前余额">
