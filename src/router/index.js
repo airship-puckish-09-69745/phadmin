@@ -203,6 +203,12 @@ export const asyncRoutes = [
                 name: 'tongitsTableLaiZi',
                 meta: { title: 'Tongits-Joker ◐' }
               },
+              {
+                path: 'tongitsQuickTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableQuick'),
+                name: 'tongitsTableQuick',
+                meta: { title: 'Tongits-Quick ◐' }
+              },
               /*          {
                           path: 'tongitsTogether',
                           component: () => import('@/views/config/tableConfig/tongits_blacklist'),
@@ -596,6 +602,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',
                 meta: { title: 'SuperGemsII' }
+              },
+              {
+                path: 'crazy777_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazy777_slots_cfg'),
+                name: 'crazy777_slots_cfg',
+                meta: { title: 'Crazy777' }
               },
               {
                 path: 'moneycoming_slots_cfg',

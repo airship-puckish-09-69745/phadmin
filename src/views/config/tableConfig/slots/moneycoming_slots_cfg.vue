@@ -13,17 +13,7 @@
             <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
-          <el-tab-pane label="支付线配置" name="pay_line">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_rule')" :env-empty="false" compare-type="Object" />
-            <slots-pay-line v-if="ruleCfgBool" v-model="ruleCfg" :rows="baseCfg.Rows" :cols="baseCfg.Clos" @saveData="saveRuleCfg" />
-          </el-tab-pane>
-          <el-tab-pane label="赔付线配置" name="pay_table">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_base')" :env-empty="false" compare-type="Object" />
-            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
-          </el-tab-pane>
-          <el-tab-pane label="2套轴图标" name="reels_double">
+          <el-tab-pane label="5套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
             <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
@@ -32,11 +22,6 @@
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_ext')" :env-empty="false" compare-type="Object" />
             <slots-moneycoming-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
-          </el-tab-pane>
-          <el-tab-pane label="剧本" name="script">
-            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_rule')" :env-empty="false" compare-type="Object" />
-            <slots-script v-if="ruleCfgBool" v-model="ruleCfg" :bets="baseCfg.BetListAct" @saveData="saveRuleCfg" />
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -57,7 +42,7 @@ import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
 import slotsReelsIcon from './components_x/aladdin_reels_icon'
-import slotsMoneycomingExt from './components_x/moneycoming_ext'
+import slotsMoneycomingExt from './components_x/moneycoming_ext.vue'
 import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
