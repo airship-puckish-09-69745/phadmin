@@ -360,7 +360,7 @@
               <el-form :inline="true">
                 <el-col :span="8">
                   <el-form-item label="jackpot服务费*bet">
-                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" />
+                    <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" ><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">

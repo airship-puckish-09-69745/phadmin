@@ -30,10 +30,11 @@
       <!--          {{ item.JackpotCfg[scope.row.JackpotType-1].AwardRate }}%-->
       <!--        </template>-->
       <!--      </el-table-column>-->
-      <el-table-column label="奖励占比" prop="JackpotRate">
+      <el-table-column label="奖励占比" prop="JackpotRate" >
         <template slot-scope="scope">
           <el-input v-model.number="scope.row.AwardRate" style="width: 150px;" size="mini" :required="true">
-            <template slot="append">%</template>
+            <template v-if="scope.row.JackpotType==4" slot="append">倍数</template>
+            <template v-else slot="append">%</template>
           </el-input>
         </template>
       </el-table-column>

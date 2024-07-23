@@ -2146,17 +2146,17 @@
               <el-table-column prop="uid" label="moneyTaxed" >
                 <template slot-scope="scope">{{formatNumber(scope.row.moneyTaxed /1000)  }}</template>
               </el-table-column>
-              <el-table-column prop="uid" label="JackpotAward" >
-                <template slot-scope="scope2">{{scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotAward / 1000:''}}</template>
-              </el-table-column>
-              <el-table-column prop="uid" label="JackpotType" >
-                <template slot-scope="scope2">{{scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotType:''}}</template>
-              </el-table-column>
               <el-table-column prop="uid" label="Jackpot贡献" >
                 <template slot-scope="scope2">{{scope2.row.playerData.JackpotContribute /1000}}</template>
               </el-table-column>
               <el-table-column prop="uid" label="Jackpot总贡献" >
                 <template slot-scope="scope2">{{scope2.row.playerData.JackpotContributeTotal/ 1000}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="JackpotAward" >
+                <template slot-scope="scope2">{{scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotAward / 1000:''}}</template>
+              </el-table-column>
+              <el-table-column prop="uid" label="JackpotType" >
+                <template slot-scope="scope2">{{jackpotType[scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotType:-1]}}</template>
               </el-table-column>
             </el-table>
           </template>
@@ -2396,7 +2396,12 @@ export default {
 
       chartData: newChartData(),
       dataArr: [],
-
+      jackpotType: {
+        0: 'GRAND',
+        1: 'MAJOR',
+        2: 'MINOR',
+        3: 'MINI',
+      },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange'])
     }
   },
