@@ -589,7 +589,7 @@ export const asyncRoutes = [
                 path: 'superace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
-                meta: { title: '超级王牌' }
+                meta: { title: 'MegaAce' }
               },
               {
                 path: 'supergemii_slots_cfg',
@@ -655,7 +655,7 @@ export const asyncRoutes = [
                 path: 'superacemars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
-                meta: { title: '超级王牌(审)' }
+                meta: { title: 'MegaAce(审)' }
               },
               {
                 path: 'supergemiimars_slots_cfg',
@@ -1175,7 +1175,7 @@ export const asyncRoutes = [
             path: 'superace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
-            meta: { title: '超级王牌', gid: 84 }
+            meta: { title: 'MegaAce', gid: 84 }
           },
           {
             path: 'supergemii_slots_log',
@@ -1231,7 +1231,7 @@ export const asyncRoutes = [
             path: 'superacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
-            meta: { title: '超级王牌(审)', gid: 85 }
+            meta: { title: 'MegaAce(审)', gid: 85 }
           },
           {
             path: 'supergemiimars_slots_log',
