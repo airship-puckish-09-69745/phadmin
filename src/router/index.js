@@ -81,12 +81,12 @@ export const constantRoutes = [
         name: 'dashboard',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       },
-      {
-        path: 'dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChart'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      }
+      // {
+      //   path: 'dashboard',
+      //   component: () => import('@/views/playerManage/systemMoneyChart'),
+      //   name: 'dashboard',
+      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      // }
     ]
   },
   {
