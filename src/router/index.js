@@ -203,6 +203,12 @@ export const asyncRoutes = [
                 name: 'tongitsTableLaiZi',
                 meta: { title: 'Tongits-Joker ◐' }
               },
+              {
+                path: 'tongitsQuickTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableQuick'),
+                name: 'tongitsTableQuick',
+                meta: { title: 'Tongits-Quick ◐' }
+              },
               /*          {
                           path: 'tongitsTogether',
                           component: () => import('@/views/config/tableConfig/tongits_blacklist'),
@@ -381,7 +387,13 @@ export const asyncRoutes = [
                     path: 'texasMatchReward',
                     component: () => import('@/views/texas2dpro/table/texasMatchReward'),
                     name: 'texasMatchReward',
-                    meta: { title: '比赛奖励' }
+                    meta: { title: '比赛动态奖励' }
+                  },
+                  {
+                    path: 'texasMatchReward2',
+                    component: () => import('@/views/texas2dpro/table/texasMatchReward2'),
+                    name: 'texasMatchReward2',
+                    meta: { title: '比赛固定奖励' }
                   },
                   {
                     path: 'texasMatchBlind',
@@ -589,13 +601,19 @@ export const asyncRoutes = [
                 path: 'superace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
-                meta: { title: 'MegaAce' }
+                meta: { title: 'FortuneAce' }
               },
               {
                 path: 'supergemii_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',
                 meta: { title: 'SuperGemsII' }
+              },
+              {
+                path: 'crazy777_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazy777_slots_cfg'),
+                name: 'crazy777_slots_cfg',
+                meta: { title: 'Crazy777' }
               },
               {
                 path: 'moneycoming_slots_cfg',
@@ -655,7 +673,7 @@ export const asyncRoutes = [
                 path: 'superacemars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
-                meta: { title: 'MegaAce(审)' }
+                meta: { title: 'FortuneAce(审)' }
               },
               {
                 path: 'supergemiimars_slots_cfg',
@@ -1175,7 +1193,7 @@ export const asyncRoutes = [
             path: 'superace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
-            meta: { title: 'MegaAce', gid: 84 }
+            meta: { title: 'FortuneAce', gid: 84 }
           },
           {
             path: 'supergemii_slots_log',
@@ -1231,7 +1249,7 @@ export const asyncRoutes = [
             path: 'superacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
-            meta: { title: 'MegaAce(审)', gid: 85 }
+            meta: { title: 'FortuneAce(审)', gid: 85 }
           },
           {
             path: 'supergemiimars_slots_log',

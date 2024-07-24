@@ -235,8 +235,9 @@ export default {
           }
           $this.tableData = response.Data
           if (response.Data.length >= $this.item.limit){
-            $this.total = response.Data.length+1
+            $this.totalCount = response.Data.length+1
           }
+          console.log($this.totalCount)
         }
         console.log(response)
       })

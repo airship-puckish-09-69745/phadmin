@@ -114,7 +114,7 @@
         />
         <el-table-column
           prop="PkgName"
-          label="包名"
+          label="中文名"
           sortable="custom"
           width="150"
         />
@@ -168,7 +168,7 @@
             <el-input
               v-model="search"
               size="mini"
-              placeholder="输入关键字搜索(包名，key，版本号)"
+              placeholder="输入关键字搜索(中文名，key，版本号)"
             />
           </template>
           <template slot-scope="scope">
@@ -240,7 +240,7 @@
             <el-input v-model="edit.item.LobbyVersion" :disabled="true" />
           </el-col>
         </el-form-item>
-        <el-form-item label="包名：" :required="true" prop="PkgName">
+        <el-form-item label="中文名：" :required="true" prop="PkgName">
           <el-col :span="15">
             <el-input v-model="edit.item.PkgName" />
           </el-col>
@@ -443,7 +443,7 @@
         />
         <el-table-column
           prop="PkgName"
-          label="包名"
+          label="中文名"
           sortable="custom"
           width="150"
         />
@@ -571,7 +571,7 @@ export default {
       AttrNames: {
         LobbyVersionID: '链接版本ID',
         LobbyVersion: '链接版本',
-        PkgName: '包名',
+        PkgName: '中文名',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
         WhiteVersion: '游戏包白名单版本'

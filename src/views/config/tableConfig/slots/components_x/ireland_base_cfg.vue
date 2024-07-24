@@ -30,8 +30,8 @@
               <el-option label="CandyCraze" :value="80" />
               <el-option label="Millionaire" :value="82" />
               <el-option label="MillionaireMars" :value="83" />
-              <el-option label="MegaAce" :value="84" />
-              <el-option label="MegaAceMars" :value="85" />
+              <el-option label="FortuneAce" :value="84" />
+              <el-option label="FortuneAceMars" :value="85" />
               <el-option label="SuperGemsII" :value="86" />
               <el-option label="SuperGemsIIMars" :value="87" />
               <el-option label="疯狂777" :value="88" />

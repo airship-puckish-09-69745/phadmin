@@ -79,6 +79,12 @@
               {{ scope.row.RoundId }}
             </template>
           </el-table-column>
+          <el-table-column label="失败金额">
+            <template slot-scope="scope">
+              <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
+              <span  v-else >{{parseInt(scope.row.EndRoundParamsFail.Data[0].Ggr) / 1000}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="操作类型">
             <template slot-scope="scope">
               {{ scope.row.ActType }}
@@ -112,7 +118,7 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope" style="width: 100px;">
-              <el-button type="text" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>
+              <el-button type="text" size="mini" @click="retry(scope.row.TxId)">重试</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -170,7 +176,7 @@ export default {
       statusMap: {
         1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
       },
-      totalCount: 2,
+      totalCount: 0,
     }
   },
   created() {
@@ -217,7 +223,7 @@ export default {
           }
           $this.tableData = response.Data
           if (response.Data.length >= $this.item.limit){
-            $this.total = response.Data.length+1
+            $this.totalCount = response.Data.length+1
           }
         }
         console.log(response)
@@ -265,8 +271,6 @@ export default {
         console.log("=====", response)
         if (response.RetCode === 0) {
           Message.success("重试成功！")
-        }else {
-          Message.error("重试失败！",response.Data)
         }
       })
     },
