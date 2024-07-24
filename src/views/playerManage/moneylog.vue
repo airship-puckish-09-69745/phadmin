@@ -155,6 +155,9 @@
           <span v-if="scope.row.MoneyType==5 && scope.row.ActType==38">
             {{ libShow.GameNames[scope.row.ExtData] }}
           </span>
+          <span v-if="scope.row.ActType>=2000">
+            {{ libShow.GameNames[scope.row.ExtData] }}
+          </span>
         </template>
       </el-table-column>
     </el-table>
