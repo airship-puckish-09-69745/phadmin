@@ -302,7 +302,6 @@ export default {
     // } else {
     //   this.sortOrder = this.BROrder
     // }
-    console.log("start:=")
     this.addGameNames()
     this.getInfo(this.gid)
     console.log(1)
@@ -351,7 +350,7 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80,78,82)
+          this.defaultOrder.push(76, 80,78,82,84)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86)
         }
