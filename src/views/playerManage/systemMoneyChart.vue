@@ -302,6 +302,7 @@ export default {
     // } else {
     //   this.sortOrder = this.BROrder
     // }
+    console.log("start:=")
     this.addGameNames()
     this.getInfo(this.gid)
     console.log(1)
