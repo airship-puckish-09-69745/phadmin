@@ -130,7 +130,9 @@
           </el-popover>
           </el-descriptions-item>
           <el-descriptions-item label="昵称：">{{ item.Nick }}
+            <!--
             <el-button v-if="hasCustomerPerm" size="mini" @click="customerRedhot">客服红点</el-button>
+            -->
           </el-descriptions-item>
           <el-descriptions-item label="语言："> {{ item.Language=='en'?'英文':'印地' }}</el-descriptions-item>
 

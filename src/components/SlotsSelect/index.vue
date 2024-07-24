@@ -51,8 +51,8 @@ export default {
         { label: 'CandyCraze', value: 80 },
         { label: 'Millionaire', value: 82 },
         { label: 'MillionaireMars', value: 83 },
-        { label: 'MegaAce', value: 84 },
-        { label: 'MegaAceMars', value: 85 }
+        { label: 'FortuneAce', value: 84 },
+        { label: 'FortuneAceMars', value: 85 }
       ]
     }
   },
