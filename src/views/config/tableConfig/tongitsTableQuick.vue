@@ -506,7 +506,7 @@ function newItem() {
     playMode: 3, // 标准玩法
     CarryLower: '',
     CarryUpper: '',
-    HideCarry: '',
+    HideCarry: 0,
     TableMoney: '',
     JokerNum: 4,
     MaxPlayerCount: 3,
