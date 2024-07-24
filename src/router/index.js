@@ -619,7 +619,7 @@ export const asyncRoutes = [
                 path: 'moneycoming_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
                 name: 'moneycoming_slots_cfg',
-                meta: { title: '钱来也' }
+                meta: { title: 'MoneyComing' }
               }
               /*
               {
