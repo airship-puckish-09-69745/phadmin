@@ -155,8 +155,10 @@ export default {
             )
           }
           console.log(this.tableData[i])
+          return
         }
       }
+      this.tableData.push(this.edit.item)
     },
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
