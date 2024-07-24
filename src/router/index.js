@@ -387,7 +387,13 @@ export const asyncRoutes = [
                     path: 'texasMatchReward',
                     component: () => import('@/views/texas2dpro/table/texasMatchReward'),
                     name: 'texasMatchReward',
-                    meta: { title: '比赛奖励' }
+                    meta: { title: '比赛动态奖励' }
+                  },
+                  {
+                    path: 'texasMatchReward2',
+                    component: () => import('@/views/texas2dpro/table/texasMatchReward2'),
+                    name: 'texasMatchReward2',
+                    meta: { title: '比赛固定奖励' }
                   },
                   {
                     path: 'texasMatchBlind',
@@ -595,7 +601,7 @@ export const asyncRoutes = [
                 path: 'superace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superace_slots_cfg'),
                 name: 'superace_slots_cfg',
-                meta: { title: 'MegaAce' }
+                meta: { title: 'FortuneAce' }
               },
               {
                 path: 'supergemii_slots_cfg',
@@ -667,7 +673,7 @@ export const asyncRoutes = [
                 path: 'superacemars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/superacemars_slots_cfg'),
                 name: 'superacemars_slots_cfg',
-                meta: { title: 'MegaAce(审)' }
+                meta: { title: 'FortuneAce(审)' }
               },
               {
                 path: 'supergemiimars_slots_cfg',
@@ -1187,7 +1193,7 @@ export const asyncRoutes = [
             path: 'superace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superace_slots_log',
-            meta: { title: 'MegaAce', gid: 84 }
+            meta: { title: 'FortuneAce', gid: 84 }
           },
           {
             path: 'supergemii_slots_log',
@@ -1243,7 +1249,7 @@ export const asyncRoutes = [
             path: 'superacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'superacemars_slots_log',
-            meta: { title: 'MegaAce(审)', gid: 85 }
+            meta: { title: 'FortuneAce(审)', gid: 85 }
           },
           {
             path: 'supergemiimars_slots_log',
