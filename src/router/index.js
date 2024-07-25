@@ -1274,6 +1274,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycomingmars_slots_log',
             meta: { title: '钱来也(审)', gid: 91 }
+          },
+          {
+            path: 'fortuneacegomars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortuneacegomars_slots_log',
+            meta: { title: 'SuperAceGo(审)', gid: 93 }
           }
         ]
       },
