@@ -692,6 +692,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
                 name: 'moneycomingmars_slots_cfg',
                 meta: { title: '钱来也(审)' }
+              },
+              {
+                path: 'fortuneacegomars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortuneacegomars_slots_cfg'),
+                name: 'fortuneacegomars_slots_cfg',
+                meta: { title: 'SuperAceGo(审)' }
               }
             ]
           },

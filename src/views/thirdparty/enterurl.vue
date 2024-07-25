@@ -156,7 +156,12 @@ export default {
         {
           id: 1000003,
           agentId: 'testaccount',
-          desc: 'BP 提审、测试账号[1000003]'
+          desc: 'BP UAT账号[1000003]'
+        },
+        {
+          id: 1000008,
+          agentId: 'gli',
+          desc: 'BP gli 提审账号[1000008]'
         }
         // ,{
         //   id: 1000005,

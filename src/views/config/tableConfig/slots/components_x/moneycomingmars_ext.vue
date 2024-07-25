@@ -46,16 +46,16 @@
           </el-form-item>
 
           <el-form-item label="免费模式下注额5购买倍数">
-            <el-input type="number" v-model.number="cfg.BuyFreeOdds5" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds5" placeholder="请输入数字内容" />
           </el-form-item>
           <el-form-item label="免费模式下注额10购买倍数">
-            <el-input type="number" v-model.number="cfg.BuyFreeOdds10" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds10" placeholder="请输入数字内容" />
           </el-form-item>
           <el-form-item label="免费模式下注额50购买倍数">
-            <el-input type="number" v-model.number="cfg.BuyFreeOdds50" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds50" placeholder="请输入数字内容" />
           </el-form-item>
           <el-form-item label="免费模式下注额100购买倍数">
-            <el-input type="number" v-model.number="cfg.BuyFreeOdds100" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds100" placeholder="请输入数字内容" />
           </el-form-item>
         </el-form>
       </el-col>
