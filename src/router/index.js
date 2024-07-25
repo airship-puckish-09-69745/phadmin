@@ -441,7 +441,7 @@ export const asyncRoutes = [
             path: '/billiardsVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: '台球专业版', perm: 'ADMINUSER_MANAGEMENT' },
+            meta: { title: '台球专业版' },
             children: [
               {
                 path: 'billiardsTable',
