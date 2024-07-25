@@ -141,6 +141,12 @@ export const asyncRoutes = [
         name: 'slotsScriptStatistics',
         meta: { title: 'Slots剧本监控', noCache: true }
       },
+      {
+        path: 'piggyStatistics',
+        component: () => import('@/views/online/piggyStatistics.vue'),
+        name: 'piggyStatistics',
+        meta: { title: '金猪大奖统计', noCache: true }
+      },
       /* {
         path: 'play_log_top100',
         component: () => import('@/views/playerManage/PlaylogTop100'),
