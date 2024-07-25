@@ -678,7 +678,7 @@ export default {
       if (this.TestCardsText.length > 0) {
         const testCards = this.TestCardsText.split(',')
         for (const k in testCards) {
-          const val = parseInt(testCards[k], 10)
+          const val = parseInt(testCards[k], 16)
           if (val <= 0) {
             continue
           }
