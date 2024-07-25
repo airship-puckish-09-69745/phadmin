@@ -36,6 +36,8 @@
               <el-option label="SuperGemsIIMars" :value="87" />
               <el-option label="疯狂777" :value="88" />
               <el-option label="疯狂777Mars" :value="89" />
+              <el-option label="SuperAceGo" :value="92" />
+              <el-option label="SuperAceGoMars" :value="93" />
             </el-select>
           </el-form-item>
 
