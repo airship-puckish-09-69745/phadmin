@@ -569,10 +569,8 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             this.item = JSON.parse(response.Data.Data)
 
-            // 将TestCards转换成以英文逗号相隔的字符串
-            if (this.item.TestCards && this.item.TestCards.length > 0) {
-              this.TestCardsText = this.item.TestCards.join(',')
-            }
+            // 将TestCards转换成以英文逗号相隔的16进制字符串
+            this.TestCardsText = this.item.TestCards ? this.item.TestCards.map(card => Number(card).toString(16)).join(',') : this.TestCardsText
 
             this.transMoneyForShow()
 
@@ -680,7 +678,7 @@ export default {
       if (this.TestCardsText.length > 0) {
         const testCards = this.TestCardsText.split(',')
         for (const k in testCards) {
-          const val = parseInt(testCards[k])
+          const val = parseInt(testCards[k], 16)
           if (val <= 0) {
             continue
           }

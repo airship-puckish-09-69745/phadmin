@@ -97,14 +97,14 @@
               {{ formatNumber(scope.row.BeforeBalance /1000) }}
             </template>
           </el-table-column>
-          <el-table-column label="下注后余额">
-            <template slot-scope="scope">
-              {{formatNumber( scope.row.Balance  /1000)}}
-            </template>
-          </el-table-column>
           <el-table-column label="返奖">
             <template slot-scope="scope">
               {{ formatNumber(scope.row.TotalPayoffAmount / 1000) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="下注后余额">
+            <template slot-scope="scope">
+              {{formatNumber( scope.row.Balance  /1000)}}
             </template>
           </el-table-column>
           <el-table-column label="重试次数">
