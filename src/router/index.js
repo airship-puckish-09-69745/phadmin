@@ -387,7 +387,13 @@ export const asyncRoutes = [
                     path: 'texasMatchReward',
                     component: () => import('@/views/texas2dpro/table/texasMatchReward'),
                     name: 'texasMatchReward',
-                    meta: { title: '比赛奖励' }
+                    meta: { title: '比赛动态奖励' }
+                  },
+                  {
+                    path: 'texasMatchReward2',
+                    component: () => import('@/views/texas2dpro/table/texasMatchReward2'),
+                    name: 'texasMatchReward2',
+                    meta: { title: '比赛固定奖励' }
                   },
                   {
                     path: 'texasMatchBlind',
@@ -435,7 +441,7 @@ export const asyncRoutes = [
             path: '/billiardsVersion',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
-            meta: { title: '台球专业版', perm: 'ADMINUSER_MANAGEMENT' },
+            meta: { title: '台球专业版' },
             children: [
               {
                 path: 'billiardsTable',
@@ -613,7 +619,7 @@ export const asyncRoutes = [
                 path: 'moneycoming_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
                 name: 'moneycoming_slots_cfg',
-                meta: { title: '钱来也' }
+                meta: { title: 'MoneyComing' }
               }
               /*
               {

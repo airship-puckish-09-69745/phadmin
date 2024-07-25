@@ -307,6 +307,20 @@
         </el-row>
         <el-row>
           <el-col :span="11">
+            <el-form-item label="奖励配置">
+              <el-select v-model="edit.item.RewardId" placeholder="请选择">
+                <el-option v-for="item in RewardConfig" :key="item.key" :label="item.key" :value="item.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="初始奖池:" :required="true" prop="item.RewardPool" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.RewardPool" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
             <el-form-item label="赛事权重:" :required="true" prop="item.RaceWeight" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.RaceWeight" placeholder="请输入" />
             </el-form-item>
@@ -385,6 +399,8 @@ function newItem() {
     IsStartNow: 0,
     RaceWhiteList: '',
     PreMatchBeginTime: 10,
+    RewardId: 0,
+    RewardPool: 0,
     LastModify: 0,
     ModifyUser: '',
     Status: 0
@@ -406,6 +422,11 @@ export default {
       BlindTypeName: [
         { key: '[1]快速盲注配置', value: 1 },
         { key: '[2]常规盲注配置', value: 2 }
+      ],
+      RewardConfig: [
+        { key: '[0]动态奖励', value: 0 },
+        { key: '[1]固定奖励1', value: 1 },
+        { key: '[2]固定奖励2', value: 2 }
       ],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -445,9 +466,11 @@ export default {
         BlindType: '盲注类型',
         RobotNum: '机器人数量',
         RaceWeight: '比赛权重',
-        IsStartNow: '比赛是否理解开始',
+        IsStartNow: '比赛是否立即开始',
         RaceWhiteList: '白名单',
-        PreMatchBeginTime: '提前可进入时间'
+        PreMatchBeginTime: '提前可进入时间',
+        RewardId: '奖励ID',
+        RewardPool: '初始奖池',
       }
     }
   },

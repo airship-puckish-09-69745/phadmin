@@ -155,6 +155,9 @@
           <span v-if="scope.row.MoneyType==5 && scope.row.ActType==38">
             {{ libShow.GameNames[scope.row.ExtData] }}
           </span>
+          <span v-if="scope.row.ActType>=2000">
+            {{ scope.row.ExtData }}
+          </span>
         </template>
       </el-table-column>
     </el-table>
@@ -402,7 +405,7 @@ export default {
     },
     getActName(type, msg) {
       // 单一钱包类型
-      if (type == 2000 || type == 2001 || type == 2002 || type == 2003) {
+      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006) {
         return this.libShow.GameNames[msg]
       }
       return msg
