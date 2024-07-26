@@ -286,7 +286,7 @@ export default {
       }).then(response => {
         console.log("=====", response)
         if (response.RetCode === 0) {
-          Message.success("更新成功！")
+          Message.success(response.Data)
           this.getData()
         }
       })
