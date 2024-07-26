@@ -133,7 +133,7 @@ export default {
         if (this.tableData[i]['blind_id'] === ID) {
           this.edit.item.blind_id = ID
           this.edit.item.blind_name = this.tableData[i]['blind_name']
-          this.edit.item.blind_time = this.tableData[i]['raise_blind_time']
+          this.edit.item.blind_time = this.tableData[i]['blind_content'][0]['raise_blind_time']
           this.edit.item.blind_content = this.tableData[i]['blind_content']
         }
       }
@@ -150,7 +150,7 @@ export default {
                 blind_level: this.edit.item.blind_content[j].blind_level,
                 small_blind: this.edit.item.blind_content[j].small_blind,
                 ante: this.edit.item.blind_content[j].ante,
-                raise_blind_time: Number(this.edit.item.BlindTime)
+                raise_blind_time: Number(this.edit.item.blind_time)
               }
             )
           }
@@ -158,7 +158,6 @@ export default {
           return
         }
       }
-      this.tableData.push(this.edit.item)
     },
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
