@@ -11,7 +11,7 @@
       style="width: 100%"
     >
       <el-table-column type="index" />
-      <el-table-column label="奖励类型" prop="JackpotType" v-if="envProjectName == 'ph_audit'">
+      <el-table-column label="奖励类型" prop="JackpotType" v-if="envProjectName != 'ph_audit'">
         <template slot-scope="scope">
           <!--          <el-input v-model.number="scope.row.JackpotType" style="width: 150px;" size="mini" :required="true" />-->
           <el-select v-model.number="scope.row.JackpotType" t placeholder="请选择" @change="selectChanged">
@@ -45,13 +45,13 @@
           </el-input>
         </template>
       </el-table-column>
-      <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit" v-if="envProjectName == 'ph_audit'">
+      <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit" v-if="envProjectName != 'ph_audit'">
         <template slot-scope="scope">
           <el-input v-if="scope.row.JackpotType!==4" v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
           <el-input v-else v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true" disabled><template slot="append">个</template></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="分段限制" prop="DayLimitArr" v-if="envProjectName == 'ph_audit'">
+      <el-table-column label="分段限制" prop="DayLimitArr" v-if="envProjectName != 'ph_audit'">
         <template slot="header">
           <p style="text-align: center">  分段限制</p>
           <span style="color: red;font-size: 11px">  注: 24小时没有被覆盖的时间一定开不出jp</span>
@@ -61,7 +61,7 @@
           <el-tag v-for="(tag, key) in scope.row.DayLimitArr" v-if="scope.row.AwardType == 1" :key="key" disable-transitions>{{ showOpenDayLimit(tag) }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="玩家开奖池条件(%)" width="300" v-if="envProjectName == 'ph_audit'">
+      <el-table-column label="玩家开奖池条件(%)" width="300" v-if="envProjectName != 'ph_audit'">
         <template slot-scope="scope">
           <div v-if="scope.row.AwardType==1&&scope.row.JackpotType!=4">
             虚拟*<el-input v-model.number="scope.row.VrPoolRate" style="width: 70px;" size="mini" :required="true" />
@@ -74,7 +74,7 @@
 
       </el-table-column>
 
-      <el-table-column label="机器人开奖池值" prop="PoolVal" v-if="envProjectName == 'ph_audit'">
+      <el-table-column label="机器人开奖池值" prop="PoolVal" v-if="envProjectName != 'ph_audit'">
         <template v-if="scope.row.JackpotType!=4" slot-scope="scope">
           >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
         </template>
@@ -88,7 +88,7 @@
       </el-table-column>
       -->
 
-      <el-table-column label="机器人开奖数量概率" prop="RateArr" v-if="envProjectName == 'ph_audit'">
+      <el-table-column label="机器人开奖数量概率" prop="RateArr" v-if="envProjectName != 'ph_audit'">
         <template slot="header">
           <p style="text-align: center">  机器人开奖数量概率</p>
           <span style="font-size: 11px">  注: 个数配置不生效 >0就ok 具体开奖个数由具体游戏决定</span>
