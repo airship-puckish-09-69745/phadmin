@@ -873,8 +873,10 @@ export default {
     showData(idx){
       console.log(idx)
       if (idx>=2){
-        if (this.envProjectName=='ph_audit'){
+        if (this.envProjectName!=='ph'){
           return false
+        }else {
+          return true
         }
       }
       return true
