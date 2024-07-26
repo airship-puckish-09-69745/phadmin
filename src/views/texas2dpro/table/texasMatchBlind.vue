@@ -6,7 +6,7 @@
         <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">添加配置项</el-button>
       </el-col>
       <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
     </el-row>
     <div>
