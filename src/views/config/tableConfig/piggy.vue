@@ -159,10 +159,10 @@
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane label="正常触发FreeGame">
                     <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
-                      <el-tab-pane label="1*3滚轴配置1">
+                      <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg  v-if="idx=>2?(envProjectName !== 'ph_audit'):true" :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  v-if="idx=>2?(envProjectName == 'ph_audit'):true" :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
