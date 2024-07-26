@@ -34,6 +34,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
+            <el-button type="success" size="mini" @click="retryTimeFailLog">更新派彩时间</el-button>
           </el-form-item>
         </el-form>
 
@@ -271,6 +272,22 @@ export default {
         console.log("=====", response)
         if (response.RetCode === 0) {
           Message.success("重试成功！")
+        }
+      })
+    },
+    retryTimeFailLog(){
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/wallet/retry/time/faillog',
+          retryTime: parseInt(new Date().getTime() / 1000),
+        }
+      }).then(response => {
+        console.log("=====", response)
+        if (response.RetCode === 0) {
+          Message.success("更新成功！")
+          this.getData()
         }
       })
     },
