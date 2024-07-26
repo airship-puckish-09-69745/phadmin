@@ -426,7 +426,8 @@ export default {
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
         { key: '[1]固定奖励1', value: 1 },
-        { key: '[2]固定奖励2', value: 2 }
+        { key: '[2]固定奖励2', value: 2 },
+        { key: '[3]固定奖励3', value: 3 }
       ],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',

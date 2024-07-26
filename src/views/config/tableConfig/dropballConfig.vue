@@ -1,14 +1,24 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+   <el-row>
+     <el-col :span="18">
+       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+     </el-col>
+     <el-col :span="2">
+       <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
+
+     </el-col>
+   </el-row>
     <el-row>
-      <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
-      <span v-if="item.openTest=='2'">
+     <el-col :span="24">
+        <span v-if="item.openTest=='2'">
          <el-alert
            title="测试模式已开启,记得关闭"
            type="error">
-  </el-alert>
+          </el-alert>
       </span>
+     </el-col>
+
     </el-row>
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">

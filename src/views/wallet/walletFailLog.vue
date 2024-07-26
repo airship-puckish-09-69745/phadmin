@@ -34,6 +34,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="mini" @click="getData">查询</el-button>
+            <el-button type="success" size="mini" @click="retryTimeFailLog">更新派彩时间</el-button>
           </el-form-item>
         </el-form>
 
@@ -69,16 +70,17 @@
               {{ scope.row.Uid }}
             </template>
           </el-table-column>
-          <el-table-column label="交易id" width="220px">
-            <template slot-scope="scope">
-              {{ scope.row.TxId }}
-            </template>
-          </el-table-column>
-          <el-table-column label="回合id" width="220px">
-            <template slot-scope="scope">
-              {{ scope.row.RoundId }}
-            </template>
-          </el-table-column>
+
+<!--          <el-table-column label="交易id" width="220px">-->
+<!--            <template slot-scope="scope">-->
+<!--              {{ scope.row.TxId }}-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+<!--          <el-table-column label="回合id" width="220px">-->
+<!--            <template slot-scope="scope">-->
+<!--              {{ scope.row.RoundId }}-->
+<!--            </template>-->
+<!--          </el-table-column>-->
           <el-table-column label="失败金额">
             <template slot-scope="scope">
               <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
@@ -116,6 +118,11 @@
               {{ scope.row.ExtData }}
             </template>
           </el-table-column>
+          <el-table-column label="查看id" >
+            <template slot-scope="scope">
+              <el-button  @click="showTxId(scope.row)"> 查看id</el-button>
+            </template>
+          </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope" style="width: 100px;">
               <el-button type="text" size="mini" @click="retry(scope.row.TxId)">重试</el-button>
@@ -140,6 +147,13 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-dialog   :visible.sync="visibleID" >
+      <el-descriptions border column="1">
+        <el-descriptions-item label="交易id">{{ showRow.TxId}}</el-descriptions-item>
+        <el-descriptions-item label="回合id">{{ showRow.RoundId}}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
@@ -148,9 +162,11 @@ import Compare from '@/components/Compare/index.vue'
 import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
-import {$libDate, $libShow} from "@/utils/common";
+import {$libDate, $libShow, ClientTableData} from "@/utils/common";
 import {Message} from "element-ui";
+const filterMap = {
 
+}
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {Compare, Publish, MoneyInput},
@@ -158,6 +174,7 @@ export default {
     return {
       timeRange: [$libDate.GetDayBegin(new Date() - 86400000 * 3), $libDate.GetDayEnd(new Date())],
       libShow: $libShow,
+      clientDB: new ClientTableData([], 1, filterMap),
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       item: {
         limit: 20,
@@ -168,6 +185,8 @@ export default {
         txId: '',
         status: 0,
       },
+      showRow:{},
+      visibleID:false,
       tableData: [],
       gameMap: {},
       failTypeMap: {
@@ -246,6 +265,10 @@ export default {
         }
       })
     },
+    showTxId(row){
+      this.showRow = row
+      this.visibleID =true
+    },
     getGameList() {
       request({
         url: '/thirdpartygames/all',
@@ -271,6 +294,22 @@ export default {
         console.log("=====", response)
         if (response.RetCode === 0) {
           Message.success("重试成功！")
+        }
+      })
+    },
+    retryTimeFailLog(){
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/wallet/retry/time/faillog',
+          retryTime: parseInt(new Date().getTime() / 1000),
+        }
+      }).then(response => {
+        console.log("=====", response)
+        if (response.RetCode === 0) {
+          Message.success(response.Data)
+          this.getData()
         }
       })
     },
