@@ -19,7 +19,6 @@
                 <el-select v-model="queryType" size="mini">
                   <el-option label="转盘" :value="1"/>
                   <el-option label="金币转轴" :value="2"/>
-                  <el-option label="购买金币转轴" :value="3"/>
                 </el-select>
               </el-form-item>
               <el-form-item>
@@ -46,41 +45,49 @@
           <el-table-column
               prop="CalcBet"
               label="计算下注金额"
-           >
-          <template slot-scope="scope">{{ scope.row.CalcBet /1000}}</template>
+          >
+            <template slot-scope="scope">{{ scope.row.CalcBet / 1000 }}</template>
           </el-table-column>
           <el-table-column
               prop="MoneyBet"
               label="消耗金币"
           >
-          <template slot-scope="scope">{{ scope.row.MoneyBet /1000}}</template>
+            <template slot-scope="scope">{{ scope.row.MoneyBet / 1000 }}</template>
           </el-table-column>
           <el-table-column
               prop="MoneyWon"
               label="赢的金币"
-         >
-          <template slot-scope="scope">{{ scope.row.MoneyWon /1000}}</template>
+          >
+            <template slot-scope="scope">{{ scope.row.MoneyWon / 1000 }}</template>
           </el-table-column>
           <el-table-column
               prop="MoneyOdds"
               label="金币倍数"
-         >
-          <template slot-scope="scope">{{ scope.row.MoneyOdds /1000}}</template>
+          >
+            <template slot-scope="scope">{{ scope.row.MoneyOdds / 1000 }}</template>
           </el-table-column>
           <el-table-column
               prop="SpinOdds"
               label="转轴倍数"
-           >
-            <template slot-scope="scope">{{ scope.row.SpinOdds /1000}}</template>
+          >
+            <template slot-scope="scope">{{ scope.row.SpinOdds / 1000 }}</template>
           </el-table-column>
           <el-table-column
               prop="PlateOdds"
               label="幸运转盘倍数"
-           >
-            <template slot-scope="scope">{{ scope.row.PlateOdds /1000}}</template>
+          >
+            <template slot-scope="scope">{{ scope.row.PlateOdds / 1000 }}</template>
           </el-table-column>
         </el-table>
-
+        <el-pagination
+            :current-page="currentPage"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="pageNum"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+        />
       </el-tab-pane>
     </el-tabs>
 
@@ -126,6 +133,9 @@ export default {
       selectGameVisible: false,
       gameOptions: [],
 
+      pageNum: 10,
+      currentPage: 1,
+      total: 0,
 
       queryTime: new Date().getTime(),
       loading: false,
@@ -154,12 +164,12 @@ export default {
 
 
     handleSizeChange(val) {
-      this.clientDB.GetPage().SetPageNum(val)
-      this.refreshScript()
+      this.pageNum = val
+      this.getData()
     },
     handleCurrentChange(val) {
-      this.clientDB.GetPage().SetPageNo(val)
-      this.refreshScript()
+      this.currentPage = val
+      this.getData()
     },
 
 
@@ -174,19 +184,28 @@ export default {
           Env: store.getters.env,
           queryTime: parseInt(this.queryTime / 1000),
           type: $this.queryType,
-          limit: 10,
-          offset: 0,
+          limit: ($this.pageNum*$this.currentPage)-1,
+          offset: ($this.currentPage - 1) * $this.pageNum,
         }
       }).then(response => {
         console.log("===", response)
-        if (response.RetCode === 0){
-          $this.tableData=[]
+        if (response.RetCode === 0) {
+          $this.tableData = []
 
           for (let i = 0; i < response.Data.data.length; i++) {
-            let arr  = response.Data.data[i].split('_')
-            let obj ={Uid:arr[0],CalcBet:arr[1],MoneyBet:arr[2],MoneyWon:arr[3],MoneyOdds:arr[4],SpinOdds:arr[5],PlateOdds:arr[6]}
-            $this.tableData.push(obj )
+            let arr = response.Data.data[i].split('_')
+            let obj = {
+              Uid: arr[0],
+              CalcBet: arr[1],
+              MoneyBet: arr[2],
+              MoneyWon: arr[3],
+              MoneyOdds: arr[4],
+              SpinOdds: arr[5],
+              PlateOdds: arr[6]
+            }
+            $this.tableData.push(obj)
           }
+          $this.total = response.Data.count
         }
         $this.loading = false
       })
