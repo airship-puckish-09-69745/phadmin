@@ -1159,6 +1159,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_dropBall',
             meta: { title: 'DropBall ◐', gid: 108 }
+          },
+          {
+            path: 'playlog_videopoker',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_videoPoker',
+            meta: { title: 'VideoPoker ◐', gid: 110 }
           }
         ]
       },
