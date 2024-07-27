@@ -383,16 +383,86 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="每小时局数">
-                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
-                  </el-form-item>
+<!--                  <el-form-item label="每小时局数">-->
+<!--                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />-->
+<!--                  </el-form-item>-->
                 </el-col>
               </el-form>
             </el-col>
 
+<!--            <fieldset style="margin-top:10px">-->
+<!--              <legend>jackpot每日限制</legend>-->
+<!--              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />-->
+<!--            </fieldset>-->
+
             <fieldset style="margin-top:10px">
-              <legend>jackpot每日限制</legend>
-              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />
+              <legend>jackpot配置</legend>
+              <el-row>
+                <el-table
+                    ref="filterTable"
+                    :data="RandAwards"
+                    border
+                    :header-cell-style="libShow.DefaultTableHeadClass"
+                    :row-style="{height:'10px'}"
+                    :cell-style="libShow.DefaultTableCell"
+                    style="width: 100%"
+                >
+                  <el-table-column type="index" />
+                  <el-table-column label="奖励类型" prop="JackpotType">
+                    <template slot-scope="scope">
+                      <el-select v-model="scope.row.JackpotType">
+                        <el-option
+                            v-for="typeItem in JackpotTypes"
+                            :key="typeItem.value"
+                            :label="typeItem.label"
+                            :value="typeItem.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="奖励发放类型" prop="AwardType">
+                    <template slot-scope="scope">
+                      <el-select v-model="scope.row.AwardType">
+                        <el-option
+                            v-for="typeItem in AwardTypes"
+                            :key="typeItem.Type"
+                            :label="typeItem.Name"
+                            :value="typeItem.Type"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="开出的奖池值" prop="PoolVal">
+                    <template slot-scope="scope">
+                      >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="发放数量" prop="Value">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.Value" style="width: 200px;" size="mini" :required="true">
+                        <template v-if="scope.row.AwardType==1" slot="append">%</template>
+                        <template v-if="scope.row.AwardType==2" slot="append">倍</template>
+                      </el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="开奖数量概率" prop="RateArr">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
+                      {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-row>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                  <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
+                </el-descriptions-item>
+              </el-descriptions>
             </fieldset>
 
             <fieldset style="margin-top:10px">
@@ -469,6 +539,16 @@ export default {
         two: 0,
         three: 0
       },
+      JackpotTypes: [
+        { 'label': '一等奖', 'value': 1 },
+        { 'label': '二等奖', 'value': 2 },
+        { 'label': '三等奖', 'value': 3 },
+        { 'label': '阳光普照奖', 'value': 4 }
+      ],
+      AwardTypes: [
+        { 'Type': 1, 'Name': '奖池百分比' },
+        { 'Type': 2, 'Name': '下注额倍数' }
+      ],
       dialogFormVisible: false,
       imgMap:{
         0:57,
@@ -662,6 +742,14 @@ export default {
       }
       this.item.BetAreaOptions.push({ Id: maxId + 1, MaxMoneyBet: 0, RobotBetOdds: 0 })
     },
+    getBaoziName(colorId) {
+      const showArr = []
+      for (let i = 0; i < 3; i++) {
+        var name = this.getColorName(colorId)
+        showArr.push(name)
+      }
+      return '【' + showArr.join('-') + '】'
+    },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)
     },
@@ -696,27 +784,33 @@ export default {
       })
     },
 
-    doAddLuckyPachinkoCfg() {
-      if (!this.item.LuckyPachinkoCfg) {
-        this.item['LuckyPachinkoCfg'] = []
+    checkShowDayLimit(awardType) {
+      if (awardType == 2) {
+        return true
+      } else {
+        return false
       }
-      var maxId = 0
-      for (const argument of this.item.LuckyPachinkoCfg) {
-        if (argument.Id > maxId) {
-          maxId = argument.Id
-        }
-      }
-      this.item.LuckyPachinkoCfg.push({ Id: maxId + 1, IsJackpot: false, Multiple: 0, Rate: 0, OtherRate: 0 })
     },
-    delLuckyPachinkoCfg(index) {
-      this.item.LuckyPachinkoCfg.splice(index, 1)
-    },
+
     doAddBetMoneyLevel() {
       if (!this.item.BetMoneyLevel) {
         this.item['BetMoneyLevel'] = []
       }
 
       this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
+    },
+    showOpenPoolRate(jpType, data) {
+      if (jpType == 4) {
+        return '不限制'
+      } else {
+        let showStr = ''
+        if (data.length > 0) {
+          for (var i = 0; i < data.length; i++) {
+            showStr += data[i].Num + '个(' + data[i].Rate + '%);'
+          }
+        }
+        return showStr
+      }
     },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
