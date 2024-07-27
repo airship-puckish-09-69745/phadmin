@@ -315,7 +315,7 @@
             <el-tab-pane label="中奖条件">
               <el-row>
                 <fieldset>
-                  <el-col :span="24" :offset="0">
+                  <el-col  :offset="0" >
                     <div v-for="(data,idx) in item.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
