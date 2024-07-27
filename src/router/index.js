@@ -73,7 +73,7 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboardddd2',
+    redirect: '/dashboard',
     meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
       {
@@ -83,9 +83,9 @@ export const constantRoutes = [
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       },
       {
-        path: 'dashboardddd2',
+        path: '/dashboardV2',
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
-        name: 'dashboardddd2',
+        name: 'dashboardV2',
         meta: { title: '系统健康监测 2◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
