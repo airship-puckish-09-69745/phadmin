@@ -162,7 +162,7 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg   v-if="showData(idx)" :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -182,7 +182,7 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  v-if="showData(idx)"  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -315,7 +315,7 @@
             <el-tab-pane label="中奖条件">
               <el-row>
                 <fieldset>
-                  <el-col :span="24" :offset="0">
+                  <el-col  :offset="0" >
                     <div v-for="(data,idx) in item.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
@@ -869,6 +869,17 @@ export default {
     },
     delJpDayLimit(idx){
       this.jpDayLimit.NumHours.splice(idx,1)
+    },
+    showData(idx){
+      console.log(idx)
+      if (idx>=2){
+        if (this.envProjectName!=='ph'){
+          return false
+        }else {
+          return true
+        }
+      }
+      return true
     },
     transMoneyForShow() {
       for (const o of this.item.MoneyOdds) {

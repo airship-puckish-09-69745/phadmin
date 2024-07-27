@@ -993,6 +993,12 @@ export const asyncRoutes = [
             meta: { title: 'Tongits - Joker ◐', gid: 28 }
           },
           {
+            path: 'playlog_quick_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_tongits',
+            meta: { title: 'Tongits-Quick ', gid: 29 }
+          },
+          {
             path: 'playlog_texas',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_texas',
