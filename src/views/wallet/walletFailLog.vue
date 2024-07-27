@@ -84,7 +84,7 @@
           <el-table-column label="失败金额">
             <template slot-scope="scope">
               <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-              <span  v-else >{{parseInt(scope.row.EndRoundParamsFail.Data[0].Ggr) / 1000}}</span>
+              <span  v-else >{{parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
