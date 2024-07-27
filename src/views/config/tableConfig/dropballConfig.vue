@@ -503,6 +503,48 @@
         <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
       </div>
     </el-dialog>
+
+    <!-- 【dialog】jackpot开出奖励 -->
+    <el-dialog
+        :title="poolNumChange.title"
+        :modal="false"
+        :visible.sync="poolNumChange.visible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+    >
+      <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum()">添加</el-button>
+      <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum">保存</el-button>
+      <el-table
+          ref="filterTable"
+          :data="poolNumChange.data"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+      >
+        <el-table-column label="配置ID" prop="Id">
+          <template slot-scope="scope">
+            {{ scope.row.Id }}
+          </template>
+        </el-table-column>
+        <el-table-column label="开出数量" prop="Num">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Num" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="开出概率(%)" prop="Rate">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Rate" style="width: 100px;" size="mini" :required="true" />
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button style="margin-bottom:10px;" type="danger" icon="el-icon-delete" size="mini" @click="removePoolNum(scope.row.Id)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -538,6 +580,11 @@ export default {
         one: 0,
         two: 0,
         three: 0
+      },
+      poolNumChange: {
+        visible: false,
+        data: [],
+        jackpotType: 0
       },
       JackpotTypes: [
         { 'label': '一等奖', 'value': 1 },
@@ -812,6 +859,50 @@ export default {
         return showStr
       }
     },
+    showPoolNumDialog(data) {
+      if (data.JackpotType == 4) {
+        return
+      }
+      let jpTypeName = ''
+      for (var i = 0; i < this.JackpotTypes.length; i++) {
+        if (this.JackpotTypes[i].value == data.JackpotType) {
+          jpTypeName = this.JackpotTypes[i].label
+          break
+        }
+      }
+      this.poolNumChange.title = jpTypeName + '(开奖数量概率)'
+      this.poolNumChange.data = data.RateArr
+      this.poolNumChange.visible = true
+      this.poolNumChange.jackpotType = data.JackpotType
+    },
+    removePoolNum(id) {
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id == id) {
+          this.poolNumChange.data.splice(i, 1)
+          break
+        }
+      }
+    },
+    savePoolNum() {
+      for (var i = 0; i < this.RandAwards.length; i++) {
+        if (this.RandAwards.jackpotType == this.RandAwards[i].JackpotType) {
+          this.RandAwards[i].RateArr = this.poolNumChange.data
+          break
+        }
+      }
+      this.poolNumChange.visible = false
+    },
+    addPoolNum() {
+      let maxId = 0
+      for (var i = 0; i < this.poolNumChange.data.length; i++) {
+        if (this.poolNumChange.data[i].Id > maxId) {
+          maxId = this.poolNumChange.data[i].Id
+        }
+      }
+      maxId++
+      this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
+    },
+
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
       if (num == 0 || num === 'NaN') {
