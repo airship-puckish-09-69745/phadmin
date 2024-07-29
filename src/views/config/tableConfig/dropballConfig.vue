@@ -383,9 +383,14 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-<!--                  <el-form-item label="每小时局数">-->
-<!--                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />-->
-<!--                  </el-form-item>-->
+                  <el-form-item label="每小时局数">
+                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="开奖最高开出显示奖池(%)：">
+                    <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
@@ -458,11 +463,11 @@
                   </el-table-column>
                 </el-table>
               </el-row>
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
-                </el-descriptions-item>
-              </el-descriptions>
+<!--              <el-descriptions class="margin-top" border>-->
+<!--                <el-descriptions-item>-->
+<!--                  <span style="color:red;">以下为显示jackpot奖池增长配置。</span>-->
+<!--                </el-descriptions-item>-->
+<!--              </el-descriptions>-->
             </fieldset>
 
             <fieldset style="margin-top:10px">
