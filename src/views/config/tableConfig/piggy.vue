@@ -85,11 +85,14 @@
                 <!--      第二层  -->
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane label="中奖概率配置">
+                    <el-tabs v-if="envProjectName == 'ph_audit'" type="border-card" stretch @tab-click="BuffCfgClick">
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[0].Awards" title="玩法中奖类型和概率" />
+                    </el-tabs>
                     <!--      第三层  -->
-                    <el-row style="margin-left: 20px">
+                    <el-row v-if="envProjectName != 'ph_audit'" style="margin-left: 20px">
                       <span style="color: red;font-size: 11px">  注: 阶段增益1、2、3、4、5中的连续敲击次数必须连续</span>
                     </el-row>
-                    <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
+                    <el-tabs v-if="envProjectName != 'ph_audit'" type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="阶段增益1">
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
@@ -159,7 +162,7 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg   v-if="showData(idx)" :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -179,7 +182,7 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  v-if="showData(idx)"  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
@@ -200,7 +203,7 @@
           <el-col :span="16" :offset="3">
             <fieldset>
               <el-form inline>
-                <el-form-item label="磁体->幸运转盘概率"style="margin-left:20px">
+                <el-form-item v-if="envProjectName != 'ph_audit'" label="磁体->幸运转盘概率"style="margin-left:20px">
                   <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"><template slot="append">‰</template></el-input>
                 </el-form-item>
               </el-form>
@@ -246,7 +249,7 @@
                 </fieldset>
               </el-col>
             </el-tab-pane>
-            <el-tab-pane label="虚拟奖池">
+            <el-tab-pane v-if="envProjectName != 'ph_audit'" label="虚拟奖池">
               <el-col :span="16" :offset="3">
                 <fieldset>
                   <div v-for="(data,idx) in item.Jp">
@@ -312,7 +315,7 @@
             <el-tab-pane label="中奖条件">
               <el-row>
                 <fieldset>
-                  <el-col :span="24" :offset="0">
+                  <el-col  :offset="0" >
                     <div v-for="(data,idx) in item.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
@@ -385,6 +388,7 @@
                     </el-table-column>
 
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(min)"
                       width="150"
                     >
@@ -393,6 +397,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(max)"
                       width="150"
                     >
@@ -401,6 +406,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(时间段控制)"
                       width="200"
                     >
@@ -424,6 +430,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="开JP最少连击次数"
                       width="200"
                     >
@@ -480,7 +487,7 @@
             </el-tab-pane>
           </el-tabs>
         </el-tab-pane>
-        <el-tab-pane label="机器人配置">
+        <el-tab-pane v-if="envProjectName != 'ph_audit'" label="机器人配置">
           <el-row :span="16" :offset="3">
             <fieldset style="margin-top:10px">
               <legend>机器人配置</legend>
@@ -862,6 +869,17 @@ export default {
     },
     delJpDayLimit(idx){
       this.jpDayLimit.NumHours.splice(idx,1)
+    },
+    showData(idx){
+      console.log(idx)
+      if (idx>=2){
+        if (this.envProjectName!=='ph'){
+          return false
+        }else {
+          return true
+        }
+      }
+      return true
     },
     transMoneyForShow() {
       for (const o of this.item.MoneyOdds) {

@@ -79,14 +79,15 @@
             <template slot-scope="scope">{{ scope.row.PlateOdds / 1000 }}</template>
           </el-table-column>
         </el-table>
+
         <el-pagination
-            :current-page="currentPage"
-            :page-sizes="[10, 20, 30, 40]"
-            :page-size="pageNum"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+          :current-page="clientDB.GetPage().GetCurrentPage()"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="clientDB.GetPage().GetPageNum()"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="clientDB.GetPage().GetTotalCount()"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
         />
       </el-tab-pane>
     </el-tabs>
@@ -158,18 +159,17 @@ export default {
     this.getData()
   },
   methods: {
+
+    handleCurrentChange(val) {
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refresh()
+    },
+    handleSizeChange(val) {
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refresh()
+    },
     refresh() {
       this.tableData = this.clientDB.GetCurrentPageData()
-    },
-
-
-    handleSizeChange(val) {
-      this.pageNum = val
-      this.getData()
-    },
-    handleCurrentChange(val) {
-      this.currentPage = val
-      this.getData()
     },
 
 
@@ -190,8 +190,7 @@ export default {
       }).then(response => {
         console.log("===", response)
         if (response.RetCode === 0) {
-          $this.tableData = []
-
+          let dataArr =[]
           for (let i = 0; i < response.Data.data.length; i++) {
             let arr = response.Data.data[i].split('_')
             let obj = {
@@ -203,9 +202,10 @@ export default {
               SpinOdds: arr[5],
               PlateOdds: arr[6]
             }
-            $this.tableData.push(obj)
+            dataArr.push(obj)
           }
-          $this.total = response.Data.count
+          this.clientDB = new ClientTableData(dataArr, 10, filterMap, 'ID', -1)
+          $this.refresh()
         }
         $this.loading = false
       })

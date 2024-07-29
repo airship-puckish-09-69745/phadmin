@@ -48,7 +48,7 @@
         </el-row>
 
         <el-row>
-          <el-col :span="12">
+          <el-col :span="isHiddenWild ? 24 : 12">
             <fieldset style="margin-top:10px">
               <legend>Jacks or Better 玩法牌型赔率</legend>
 
@@ -85,7 +85,7 @@
 
             </fieldset>
           </el-col>
-          <el-col :span="12">
+          <el-col v-if="!isHiddenWild" :span="12">
             <fieldset style="margin-top:10px">
               <legend>Deuces Wild 玩法牌型赔率</legend>
 
@@ -488,6 +488,7 @@ export default {
         BetLevel: [{ CanBet: [1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000], MaxMoneyBet: 2000, MinMoneyBet: 10 }]
       },
       load: false,
+      isHiddenWild: true,
       form: {
       },
       JbOddsList: [],
@@ -548,6 +549,10 @@ export default {
   },
 
   created() {
+    console.log(process.env.VUE_APP_PROJECT_NAME)
+    if (process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
+      this.isHiddenWild = false
+    }
     this.getData()
     console.log(1)
   },

@@ -74,19 +74,20 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChart'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      },
       // {
       //   path: 'dashboard',
       //   component: () => import('@/views/playerManage/systemMoneyChart'),
       //   name: 'dashboard',
       //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // }
+      // },
+      {
+        path: '/dashboard',
+        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        name: 'dashboard',
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      }
     ]
   },
   {
@@ -993,6 +994,12 @@ export const asyncRoutes = [
             meta: { title: 'Tongits - Joker ◐', gid: 28 }
           },
           {
+            path: 'playlog_quick_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_tongits',
+            meta: { title: 'Tongits-Quick ', gid: 29 }
+          },
+          {
             path: 'playlog_texas',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_texas',
@@ -1153,6 +1160,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_dropBall',
             meta: { title: 'DropBall ◐', gid: 108 }
+          },
+          {
+            path: 'playlog_videopoker',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_videoPoker',
+            meta: { title: 'VideoPoker ◐', gid: 110 }
           }
         ]
       },
