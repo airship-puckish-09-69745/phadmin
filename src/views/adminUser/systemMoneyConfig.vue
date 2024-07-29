@@ -2,9 +2,9 @@
   <div class="app-container">
 
     <el-row>
-      <el-col :span="24">
-        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
-      </el-col>
+<!--      <el-col :span="24">-->
+<!--        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />-->
+<!--      </el-col>-->
       <el-col :span="24">
         <el-button type="primary" @click="add" size="mini">添加</el-button>
       </el-col>
