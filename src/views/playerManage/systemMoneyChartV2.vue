@@ -286,7 +286,7 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 113], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [10000,15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 113], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -317,11 +317,19 @@ export default {
   },
   methods: {
     HasACC(){
-     if ( this.authorityCfg[this.name]){
-       if ( this.authorityCfg[this.name].includes(10000)){
-         return true
-       }
-     }
+      if (this.$store.state.user.pers['USER_MANAGEMENT']){
+        console.log("==1==")
+        if ( this.authorityCfg[this.name]){
+          if ( this.authorityCfg[this.name].includes(10000)){
+            console.log("==2==")
+            return true
+          }else {
+            return  false
+          }
+        }
+        return true
+      }
+      console.log("==3==")
       return false
     },
     changeOrder(iType) {
