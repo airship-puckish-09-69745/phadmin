@@ -167,7 +167,7 @@
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
-                        <el-col :span="24" :offset="1">
+                        <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
                           <el-form inline>
                             <el-form-item label="转轴倍数上限(0,max]">
                               <el-input v-model.number="item.free[0].SpinOddsMax" size="mini" />
@@ -182,7 +182,7 @@
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
                         <br>
-                        <el-col offset="1">
+                        <el-col v-if="envProjectName != 'ph_audit'" offset="1">
                           <el-form inline>
                             <el-form-item label="金币*转轴倍数上限(0,max)">
                               <el-input v-model.number="item.free[0].WonOddsMax" size="mini"/>
@@ -206,7 +206,7 @@
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
-                        <el-col :span="24" :offset="1">
+                        <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
                           <el-form inline>
                             <el-form-item label="转轴倍数上限(0,max]">
                               <el-input v-model.number="item.free[1].SpinOddsMax" size="mini" />
@@ -221,7 +221,7 @@
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
                         <br>
-                        <el-col offset="1">
+                        <el-col v-if="envProjectName != 'ph_audit'" offset="1">
                           <el-form inline>
                             <el-form-item label="金币*转轴倍数上限(0,max)">
                               <el-input v-model.number="item.free[1].WonOddsMax" size="mini"/>
