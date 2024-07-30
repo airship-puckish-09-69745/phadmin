@@ -1728,6 +1728,12 @@ export const asyncRoutes = [
         name: 'walletInfo',
         meta: { title: '钱包信息' }
       },
+      {
+        path: 'walletApiStat',
+        component: () => import('@/views/wallet/walletApiTimesStat.vue'),
+        name: 'walletApiStat',
+        meta: { title: '钱包API请求统计' }
+      }
     ]
   },
   {
