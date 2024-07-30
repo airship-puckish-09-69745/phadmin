@@ -692,13 +692,13 @@ export const asyncRoutes = [
                 path: 'crazy777mars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
                 name: 'crazy777mars_slots_cfg',
-                meta: { title: '疯狂777(审)' }
+                meta: { title: '幸运777(审)' }
               },
               {
                 path: 'moneycomingmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
                 name: 'moneycomingmars_slots_cfg',
-                meta: { title: '钱来也(审)' }
+                meta: { title: 'MoneyComing(审)' }
               },
               {
                 path: 'fortuneacegomars_slots_cfg',
@@ -1236,13 +1236,13 @@ export const asyncRoutes = [
             path: 'crazy777_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
-            meta: { title: '疯狂777', gid: 88 }
+            meta: { title: '幸运777', gid: 88 }
           },
           {
             path: 'moneycoming_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycoming_slots_log',
-            meta: { title: '钱来也', gid: 90 }
+            meta: { title: 'MoneyComing', gid: 90 }
           }
         ]
       },
@@ -1292,13 +1292,13 @@ export const asyncRoutes = [
             path: 'crazy777mars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777mars_slots_log',
-            meta: { title: '疯狂777(审)', gid: 89 }
+            meta: { title: '幸运777(审)', gid: 89 }
           },
           {
             path: 'moneycomingmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycomingmars_slots_log',
-            meta: { title: '钱来也(审)', gid: 91 }
+            meta: { title: 'MoneyComing(审)', gid: 91 }
           },
           {
             path: 'fortuneacegomars_slots_log',
