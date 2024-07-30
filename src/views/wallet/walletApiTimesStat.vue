@@ -26,7 +26,7 @@
               <el-option label="结算" :value="4" />
               <el-option label="转出" :value="5" />
               <el-option label="转回" :value="6" />
-              <el-option label="退款下注" :value="8" />
+              <el-option label="下注退款" :value="8" />
               <el-option label="增值业务" :value="9" />
             </el-select>
           </el-form-item>
