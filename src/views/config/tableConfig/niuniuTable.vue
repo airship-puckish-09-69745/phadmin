@@ -287,14 +287,14 @@
 
         <el-row>
           <el-col :span="11">
-            <el-form-item
-              label="下注时长(秒)："
-              :required="true"
-              prop="item.ActionSeconds"
-              :rules="dataRule(true,{type:'n',range:'5'})"
-            >
-              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="下注时长(秒)："-->
+<!--              :required="true"-->
+<!--              prop="item.ActionSeconds"-->
+<!--              :rules="dataRule(true,{type:'n',range:'5'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />-->
+<!--            </el-form-item>-->
           </el-col>
           <el-col :span="11">
             <el-form-item
@@ -342,6 +342,26 @@
           <el-col :span="11">
             <el-form-item label="房间类型：" :required="true" prop="item.RoomLevel">
               <el-select v-model.number="edit.item.RoomLevel" placeholder="请选择">
+                <el-option label="普通房" :value="0" />
+                <el-option label="好友房" :value="100" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="最小下注倍数："
+              :required="true"
+              prop="item.MinPlayMoney"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.OddsBetMin" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="最大下注倍数：" :required="true" prop="item.RoomLevel">
+              <el-select v-model.number="edit.item.OddsBetMax" placeholder="请选择">
                 <el-option label="普通房" :value="0" />
                 <el-option label="好友房" :value="100" />
               </el-select>
@@ -401,7 +421,9 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    RoomLevel: 0
+    RoomLevel: 0,
+    OddsBetMin:0,
+    OddsBetMax:0,
   }
 }
 
