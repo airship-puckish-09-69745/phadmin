@@ -167,9 +167,26 @@
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
+                        <el-col :span="24" :offset="4">
+                          <el-form inline>
+                            <el-form-item label="转轴倍数一定<=(填写)">
+                              <el-input v-model.number="item.free[0].SpinOddsMax" size="mini" />
+                            </el-form-item>
+                            <el-form-item label="F中奖次数一定<=(填写)">
+                              <el-input v-model.number="item.free[0].FTimesMax" size="mini" />
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
+                        <el-col offset="1">
+                          <el-form inline>
+                            <el-form-item label="金币*转轴倍数一定<填写值">
+                              <el-input v-model.number="item.free[0].WonOddsMax" size="mini"/>
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
@@ -187,9 +204,26 @@
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
+                        <el-col :span="24" :offset="4">
+                          <el-form inline>
+                            <el-form-item label="转轴倍数一定<=(填写)">
+                              <el-input v-model.number="item.free[1].SpinOddsMax" size="mini" />
+                            </el-form-item>
+                            <el-form-item label="F中奖次数一定<=(填写)">
+                              <el-input v-model.number="item.free[1].FTimesMax" size="mini" />
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
+                        <el-col offset="1">
+                          <el-form inline>
+                            <el-form-item label="金币*转轴倍数一定<填写值">
+                              <el-input v-model.number="item.free[1].WonOddsMax" size="mini"/>
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
@@ -790,7 +824,10 @@ export default {
             TpyIn: 2,
             Spin: [{ Tpy: 4, Choices: [{ Weight: 1, Val: 2 }] }, { Tpy: 5, Choices: [{ Weight: 1, Val: 2 }, { Weight: 1, Val: 2 }] }],
             MoneyOdds: [{ Weight: 1, Val: 2 }],
-            Awards: [{ Weight: 1, Val: 2 }]
+            Awards: [{Weight: 1, Val: 2}],
+            WonOddsMax: 0,
+            SpinOddsMax: 0,
+            FTimesMax: 0,
           }],
         Plate: { Rate: 0, PlateOdds: [{ Weight: 1, Val: 2 }] }, // 幸运转盘
         Jp: [// JP
@@ -890,6 +927,8 @@ export default {
         o.MinBet /= 1000
       }
       for (const o of this.item.free) {
+        o.WonOddsMax /= 1000
+        o.SpinOddsMax /= 1000
         for (const omo of o.MoneyOdds) {
           omo.Val /= 1000
         }
@@ -1039,6 +1078,8 @@ export default {
         o.Val = parseInt(o.Val * 1000)
       }
       for (const o of obj.free) {
+        o.WonOddsMax=parseInt(o.WonOddsMax * 1000)
+        o.SpinOddsMax =parseInt(o.SpinOddsMax * 1000)
         for (const omo of o.MoneyOdds) {
           omo.Val = parseInt(omo.Val * 1000)
         }
