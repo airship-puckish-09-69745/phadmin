@@ -698,7 +698,7 @@ export const asyncRoutes = [
                 path: 'moneycomingmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
                 name: 'moneycomingmars_slots_cfg',
-                meta: { title: '钱来也(审)' }
+                meta: { title: 'MoneyComing(审)' }
               },
               {
                 path: 'fortuneacegomars_slots_cfg',
@@ -1242,7 +1242,7 @@ export const asyncRoutes = [
             path: 'moneycoming_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycoming_slots_log',
-            meta: { title: '钱来也', gid: 90 }
+            meta: { title: 'MoneyComing', gid: 90 }
           }
         ]
       },
@@ -1298,7 +1298,7 @@ export const asyncRoutes = [
             path: 'moneycomingmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycomingmars_slots_log',
-            meta: { title: '钱来也(审)', gid: 91 }
+            meta: { title: 'MoneyComing(审)', gid: 91 }
           },
           {
             path: 'fortuneacegomars_slots_log',
