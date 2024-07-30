@@ -887,6 +887,39 @@
       </el-descriptions>
     </el-dialog>
 
+
+    <el-dialog title="NiuNiu牌局详情" v-if="gameLogComponent.gid===49" :visible.sync="gameLogComponent.visible" width="1400px">
+      <el-table
+        :data="gameLogComponent.detail.players"
+        border
+      >
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
+        <el-table-column label="手牌" width="450" align="center">
+            <template #default="scope">
+              <template v-if="scope.row.cardType > 1">
+<!--                <div v-html="showCard(scope.row.cards)" /><span>({{ // niuniuCardTypes[scope.row.cardType] || '' }})</span>-->
+              </template>
+              <template v-else>
+<!--                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ niuniuGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>-->
+              </template>
+            </template>
+        </el-table-column>
+        <el-table-column prop="cardType" label="牌型" width="100"><template slot-scope="scope">{{ scope.row.cardType }}</template></el-table-column>
+        <el-table-column prop="oddsCard" label="牌型倍数" width="100"><template slot-scope="scope">{{ scope.row.oddsCard }}</template></el-table-column>
+        <el-table-column prop="oddsBet" label="下注倍数" width="100"><template slot-scope="scope">{{ scope.row.oddsBet }}</template></el-table-column>
+        <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyTaxed" label="抽水" width="100"><template slot-scope="scope">{{ scope.row.moneyTaxed/1000 }}</template></el-table-column>
+        <el-table-column prop="payRake" label="抽水贡献" width="100"><template slot-scope="scope">{{ scope.row.payRake/1000 }}</template></el-table-column>
+        <el-table-column prop="moneyCur" label="最终资产" width="100"><template slot-scope="scope">{{ scope.row.moneyCur/1000 }}</template></el-table-column>
+      </el-table>
+      <br>
+      <el-descriptions title="扩展信息">
+        <el-descriptions-item label="桌子ID">{{ gameLogComponent.detail.tid }}</el-descriptions-item>
+        <el-descriptions-item label="Server日志ID">{{ gameLogComponent.detail.logId }}</el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog title="Lucky89牌局详情" :visible.sync="bodingDetailVisible" width="1200px">
       <el-table :data="bodingDetail.players" border>
         <el-table-column prop="uid" label="UID" width="100" />
@@ -1962,6 +1995,93 @@
 
     <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible" :gid="34" @closeDialog="closeDialog" />
 
+    <el-dialog v-if="gameLogComponent.gid === 110" title="VideoPoker详情" :visible.sync="gameLogComponent.visible" width="1200px">
+      <el-descriptions class="margin-top" title="" :column="3" border>
+        <el-descriptions-item>
+          <template slot="label">
+            前注：
+          </template>
+          {{ formatNumber(gameLogComponent.detail.Bet / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            开始时间：
+          </template>
+          {{ formatTime(gameLogComponent.detail.StartTime ) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            结束时间：
+          </template>
+          {{ formatTime(gameLogComponent.detail.FinishTime ) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            输赢：
+          </template>
+          {{ formatNumber(gameLogComponent.detail.VideoPoker.moneyWon / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            首发牌：
+          </template>
+          <span v-for="(k,v) in gameLogComponent.detail.VideoPoker.cardsDeal">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(cardConversionColor(k,'2-2','4-4','3-3','1-1'))"
+            />
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            最终牌：
+          </template>
+          <span v-for="(k,v) in gameLogComponent.detail.VideoPoker.cardsFinal">
+            <el-image
+              style="width: 37px; height: 50px"
+              :src="getCardUrl(cardConversionColor(k,'2-2','4-4','3-3','1-1'))"
+            />
+          </span>
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP贡献：
+          </template>
+          {{ formatNumber( gameLogComponent.detail.VideoPoker.jackpotContribute / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP累计贡献：
+          </template>
+          {{ formatNumber( gameLogComponent.detail.VideoPoker.jackpotContributeTotal / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            JP奖励：
+          </template>
+          {{ formatNumber( gameLogComponent.detail.VideoPoker.jackpotAward / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            玩法模式：
+          </template>
+          {{ gameLogComponent.detail.VideoPoker.gameMode === 1 ? 'Jacks or Better' : 'Deuces Wild' }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            最终牌型：
+          </template>
+          {{ gameLogComponent.detail.VideoPoker.cardType >=0 ? videoPokerCardTypes[gameLogComponent.detail.VideoPoker.gameMode][gameLogComponent.detail.VideoPoker.cardType] : '无' }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template slot="label">
+            牌型赔率：
+          </template>
+          {{ gameLogComponent.detail.VideoPoker.cardTypeOdds / 1000 }}
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+
     <el-dialog v-if="gameLogComponent.gid==107" title="Baccarat详情" :visible.sync="gameLogComponent.visible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
@@ -2146,12 +2266,12 @@
               <el-table-column prop="uid" label="moneyTaxed" >
                 <template slot-scope="scope">{{formatNumber(scope.row.moneyTaxed /1000)  }}</template>
               </el-table-column>
-              <el-table-column prop="uid" label="Jackpot贡献" >
-                <template slot-scope="scope2">{{scope2.row.playerData.JackpotContribute /1000}}</template>
-              </el-table-column>
-              <el-table-column prop="uid" label="Jackpot总贡献" >
-                <template slot-scope="scope2">{{scope2.row.playerData.JackpotContributeTotal/ 1000}}</template>
-              </el-table-column>
+<!--              <el-table-column prop="uid" label="Jackpot贡献" >-->
+<!--                <template slot-scope="scope2">{{scope2.row.playerData.JackpotContribute /1000}}</template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column prop="uid" label="Jackpot总贡献" >-->
+<!--                <template slot-scope="scope2">{{scope2.row.playerData.JackpotContributeTotal/ 1000}}</template>-->
+<!--              </el-table-column>-->
               <el-table-column prop="uid" label="JackpotAward" >
                 <template slot-scope="scope2">{{scope2.row.playerData.LuckyPachinko?scope2.row.playerData.LuckyPachinko.Jackpot.JackpotAward / 1000:''}}</template>
               </el-table-column>
@@ -2379,6 +2499,31 @@ export default {
         1: 'Grand',
         2: 'Major',
         3: 'Minor'
+      },
+      videoPokerCardTypes: {
+        1: {
+          0: '皇家同花顺',
+          1: '同花顺',
+          2: '四条',
+          3: '葫芦',
+          4: '同花',
+          5: '顺子',
+          6: '三条',
+          7: '两对',
+          8: '杰克更好'
+        },
+        2: {
+          0: '天然皇家同花顺',
+          1: '4张2',
+          2: '癞子皇家同花顺',
+          3: '5条',
+          4: '同花顺',
+          5: '四条',
+          6: '葫芦',
+          7: '同花',
+          8: '顺子',
+          9: '三条'
+        }
       },
       ConversionColorMap: {},
 
@@ -2751,11 +2896,11 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
-          } else if (gid === 107 || gid === 108 || gid==32 || gid == 111) {
+          } else if (gid === 107 || gid === 108 || gid === 32 || gid === 111 || gid === 110) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
             $this.showDominoGame(obj)
-          }else if (gid === 113) {
+          } else if (gid === 113) {
             $this.showPusoySwapGame(obj)
           } else {
             $this.showSmallGame(obj)

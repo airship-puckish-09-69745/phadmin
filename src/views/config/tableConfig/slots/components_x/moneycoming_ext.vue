@@ -46,16 +46,16 @@
           </el-form-item>
 
           <el-form-item label="免费模式下注额5购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds5" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds5" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
           </el-form-item>
           <el-form-item label="免费模式下注额10购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds10" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds10" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
           </el-form-item>
           <el-form-item label="免费模式下注额50购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds50" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds50" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
           </el-form-item>
           <el-form-item label="免费模式下注额100购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds100" placeholder="请输入数字内容" />
+            <el-input v-model.number="cfg.BuyFreeOdds100" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
           </el-form-item>
 
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
