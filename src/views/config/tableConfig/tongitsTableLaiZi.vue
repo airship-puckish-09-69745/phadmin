@@ -499,7 +499,7 @@ function NewRobotConfig() {
 
 function newItem() {
   return {
-    playMode: 1, // 标准玩法
+    playMode: 2, // 癞子玩法
     CarryLower: '',
     CarryUpper: '',
     HideCarry: '',

@@ -499,7 +499,7 @@ function NewRobotConfig() {
 
 function newItem() {
   return {
-    playMode: 3, // 标准玩法
+    playMode: 3, // 短牌玩法
     CarryLower: '',
     CarryUpper: '',
     HideCarry: 0,
