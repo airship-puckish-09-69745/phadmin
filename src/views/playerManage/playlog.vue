@@ -1976,16 +1976,16 @@
           <template slot-scope="scope">{{ scope.row.plateOdds / 1000 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="转轴倍数">
-          <template slot-scope="scope">{{ scope.row.spinOdds / 1000 }}</template>
+          <template slot-scope="scope">{{ showPigData(scope.row.typ, scope.row.moneyBet)?(scope.row.spinOdds / 1000 ) : 0}}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="F次数收益">
-          <template slot-scope="scope">{{ scope.row.timesIn }}</template>
+          <template slot-scope="scope">{{ showPigData(scope.row.typ, scope.row.moneyBet)?scope.row.timesIn:0 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="N倍数收益">
-          <template slot-scope="scope">{{ scope.row.oddsIn }}</template>
+          <template slot-scope="scope">{{ showPigData(scope.row.typ, scope.row.moneyBet)?(scope.row.oddsIn / 1000):0}}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="剩余免费次数">
-          <template slot-scope="scope">{{ scope.row.timesFree }}</template>
+          <template slot-scope="scope">{{ showPigData(scope.row.typ, scope.row.moneyBet)?scope.row.timesFree:0 }}</template>
         </el-table-column>
         <el-table-column prop="cardScore" label="Progress">
           <template slot-scope="scope">{{ scope.row.progress }}</template>
@@ -3247,7 +3247,17 @@ export default {
       if (row.moneyWon>0) {
         return { color: 'red' , width: '120px', textAlign: 'center',fontSize: '12px',height: '20px'}
       }
-      return {fontSize: '12px',height: '20px'}
+      return {fontSize: '12px', height: '20px'}
+    },
+    showPigData(typ, bet) {
+      if (typ == 2) {
+        return true
+      } else {
+        if (bet == 0) {
+          return true
+        }
+      }
+      return false
     },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',
