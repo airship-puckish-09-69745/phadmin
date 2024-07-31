@@ -167,12 +167,13 @@
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
-                        <el-col :span="24" :offset="4">
+                        <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
                           <el-form inline>
-                            <el-form-item label="转轴倍数一定<=(填写)">
+                            <el-form-item label="转轴倍数上限(0,max]">
                               <el-input v-model.number="item.free[0].SpinOddsMax" size="mini" />
                             </el-form-item>
-                            <el-form-item label="F中奖次数一定<=(填写)">
+                            <br>
+                            <el-form-item label="F中奖次数上限(0,max]">
                               <el-input v-model.number="item.free[0].FTimesMax" size="mini" />
                             </el-form-item>
                           </el-form>
@@ -180,9 +181,10 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <el-col offset="1">
+                        <br>
+                        <el-col v-if="envProjectName != 'ph_audit'" offset="1">
                           <el-form inline>
-                            <el-form-item label="金币*转轴倍数一定<填写值">
+                            <el-form-item label="金币*转轴倍数上限(0,max)">
                               <el-input v-model.number="item.free[0].WonOddsMax" size="mini"/>
                             </el-form-item>
                           </el-form>
@@ -204,12 +206,13 @@
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
-                        <el-col :span="24" :offset="4">
+                        <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
                           <el-form inline>
-                            <el-form-item label="转轴倍数一定<=(填写)">
+                            <el-form-item label="转轴倍数上限(0,max]">
                               <el-input v-model.number="item.free[1].SpinOddsMax" size="mini" />
                             </el-form-item>
-                            <el-form-item label="F中奖次数一定<=(填写)">
+                            <br>
+                            <el-form-item label="F中奖次数上限(0,max]">
                               <el-input v-model.number="item.free[1].FTimesMax" size="mini" />
                             </el-form-item>
                           </el-form>
@@ -217,9 +220,10 @@
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
-                        <el-col offset="1">
+                        <br>
+                        <el-col v-if="envProjectName != 'ph_audit'" offset="1">
                           <el-form inline>
-                            <el-form-item label="金币*转轴倍数一定<填写值">
+                            <el-form-item label="金币*转轴倍数上限(0,max)">
                               <el-input v-model.number="item.free[1].WonOddsMax" size="mini"/>
                             </el-form-item>
                           </el-form>

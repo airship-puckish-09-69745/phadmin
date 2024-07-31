@@ -349,6 +349,33 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <!--
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="默认胜率："
+              :required="true"
+              prop="item.DefaultWinRate"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.DefaultWinRate" placeholder="默认胜率" style="width:200px;">
+                <template slot="append">%</template>
+              </el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="在玩人数倍数："
+              :required="true"
+              prop="item.PlayingMul"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+        -->
+        <!--
         <el-row>
           <el-col :span="11">
             <el-form-item
@@ -372,30 +399,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <!--          <el-col :span="11">
-            <el-form-item
-              label="默认胜率："
-              :required="true"
-              prop="item.DefaultWinRate"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.DefaultWinRate" placeholder="默认胜率" style="width:200px;">
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>-->
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数倍数："
-              :required="true"
-              prop="item.PlayingMul"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
+        -->
         <!--
         <el-row>
           <el-col :span="11">
@@ -499,7 +503,7 @@ function NewRobotConfig() {
 
 function newItem() {
   return {
-    playMode: 2, // 癞子玩法
+    playMode: 1, // 标准玩法
     CarryLower: '',
     CarryUpper: '',
     HideCarry: '',
