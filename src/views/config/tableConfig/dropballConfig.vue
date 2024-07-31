@@ -682,6 +682,9 @@ export default {
             const item = JSON.parse(response.Data.Data)
 
             this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
+            for (const o of this.RandAwards) {
+                o.PoolVal /= 1000
+            }
             if (!item.BetAreaOptions) {
               item['BetAreaOptions'] = []
               item.BetAreaOptions.push({ Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
@@ -713,7 +716,8 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
-      console.log("=========1",ret)
+      console.log("====",ret)
+
       let betItem = {}
       for (const o of ret.LuckyPachinkoCfg) {
         o.Multiple *= 1000
@@ -749,20 +753,12 @@ export default {
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
       ret.JackpotCfg.JackpotBetMin *=1000
-      console.log("====",ret)
-      ret.RobotAverageBetMoney *=1000
-      if (ret.openTest=="2") {
-        this.$alert('测试模式已开启，请测试后关闭', '提示', {
-          confirmButtonText: '确定',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: ``
-            });
-          }
-        });
-      }
 
+      ret.RobotAverageBetMoney *=1000
+
+      for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
+        o.PoolVal = parseInt(o.PoolVal * 1000)
+      }
       return ret
     },
 
@@ -813,7 +809,8 @@ export default {
       }
     },
     setData() {
-      this.form.Data = JSON.stringify(this.getPostData())
+      var postData = this.getPostData();
+      this.form.Data = JSON.stringify(postData)
       console.log(this.form)
       const $this = this
       // 设置修改后数据
@@ -822,6 +819,17 @@ export default {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
+        }
+        if (postData.openTest=="2") {
+          this.$alert('测试模式已开启，请测试后关闭', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: ``
+              });
+            }
+          });
         }
         request({
           url: 'customizeconfig/update',
