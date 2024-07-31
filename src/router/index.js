@@ -1080,6 +1080,26 @@ export const asyncRoutes = [
               }*/
             ]
           },
+          {
+            path: '/billiardsVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '台球专业版' },
+            children: [
+              {
+                path: 'playlog_8Ball',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_8Ball',
+                meta: { title: '8Ball ◐', gid: 47 }
+              },
+              {
+                path: 'playlog_9Ball',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_9Ball',
+                meta: { title: '9Ball ◐', gid: 48 }
+              },
+            ]
+          }
         ]
       },
       {
