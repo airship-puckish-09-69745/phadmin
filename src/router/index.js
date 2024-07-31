@@ -1455,18 +1455,24 @@ export const asyncRoutes = [
             name: 'emojPrice',
             meta: { title: '道具价格 ◐', noCache: true }
           },
+          // {
+          //   path: 'onlineCnt',
+          //   component: () => import('@/views/config/baseConfig/online_cnt'),
+          //   name: 'onlineCnt',
+          //   meta: { title: '在线人数配置', noCache: true }
+          // },
           {
-            path: 'onlineCnt',
-            component: () => import('@/views/config/baseConfig/online_cnt'),
-            name: 'onlineCnt',
-            meta: { title: '在线人数配置', noCache: true }
-          },
-          {
-            path: 'smsWhite',
-            component: () => import('@/views/config/baseConfig/sms_white'),
-            name: 'smsWhite',
-            meta: { title: '白名单发短信配置', noCache: true }
+            path: 'gameOnlineCountCfg',
+            component: () => import('@/views/config/tableConfig/gameOnlineCountCfg'),
+            name: 'gameOnlineCountCfg',
+            meta: { title: '游戏在线人数配置 ◐' }
           }
+          // ,{
+          //   path: 'smsWhite',
+          //   component: () => import('@/views/config/baseConfig/sms_white'),
+          //   name: 'smsWhite',
+          //   meta: { title: '白名单发短信配置', noCache: true }
+          // }
         ]
       },
       {
