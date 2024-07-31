@@ -3250,7 +3250,6 @@ export default {
       return {fontSize: '12px', height: '20px'}
     },
     showPigData(typ, bet) {
-      return true
       if (typ == 3) {
         return true
       } else {
