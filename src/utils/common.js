@@ -216,7 +216,6 @@ export function LibShow() {
 export const $libDate = new LibDate()
 export const $libUrl = new LibURL()
 export const $libShow = new LibShow()
-export const $libEnv = new LibEnv()
 
 Date.prototype.Format = function(fmt) { // author: meizz
   var o = {
@@ -233,12 +232,6 @@ Date.prototype.Format = function(fmt) { // author: meizz
     if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)))
   }
   return fmt
-}
-export function LibEnv() {
-  this.IsPHAuditEnv = function () {
-    console.log("env:",process.env.VUE_APP_PROJECT)
-    return process.env.VUE_APP_PROJECT == "ph_audit"
-  }
 }
 export function LibDate() {
   /* 根据毫秒数返回当前时间的格式化表示

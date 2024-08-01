@@ -383,12 +383,12 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="每小时局数" v-if="!libEnv.IsPHAuditEnv">
+                  <el-form-item label="每小时局数" v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!libEnv.IsPHAuditEnv">
+                  <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
                   </el-form-item>
                 </el-col>
@@ -425,7 +425,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!libEnv.IsPHAuditEnv">
+                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.AwardType">
                         <el-option
@@ -437,7 +437,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!libEnv.IsPHAuditEnv">
+                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
@@ -450,17 +450,17 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!libEnv.IsPHAuditEnv">
+                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="libEnv.IsPHAuditEnv">
+                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!libEnv.IsPHAuditEnv">
+                  <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -475,9 +475,47 @@
 <!--              </el-descriptions>-->
             </fieldset>
 
-            <fieldset style="margin-top:10px"   v-if="!libEnv.IsPHAuditEnv">
+            <fieldset style="margin-top:10px"   v-if="!IsPHAuditEnv()">
               <legend>jackpot奖池增长</legend>
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
+            </fieldset>
+
+            <fieldset  v-if="!IsPHAuditEnv()">
+              <legend>奖池触发重摇</legend>
+              <el-row>
+                <el-col :span="11" :offset="1">
+                  <el-form-item label="奖池低于某值此时系统输：">
+                    <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="重摇概率：">
+                    <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                  <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                </el-descriptions-item>
+              </el-descriptions>
+              <el-row>
+                <el-col :span="11" :offset="1">
+                  <el-form-item label="奖池大于某值此时系统赢：">
+                    <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="重摇概率：">
+                    <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-descriptions class="margin-top" border>
+                <el-descriptions-item>
+                  <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                </el-descriptions-item>
+              </el-descriptions>
             </fieldset>
           </el-tab-pane>
         </el-tabs>
@@ -566,7 +604,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import {$libShow, DataRule, $libEnv} from '@/utils/common'
+import {$libShow, DataRule} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
@@ -582,7 +620,6 @@ export default {
       form: {},
       subKey: 'gameDropball',
       libShow: $libShow,
-      libEnv: $libEnv,
       showSetResultPage: false,
       ConversionColorMap: {},
       JackpotCfg: {},
@@ -597,6 +634,7 @@ export default {
         data: [],
         jackpotType: 0
       },
+      env:process.env.VUE_APP_PROJECT,
       JackpotTypes: [
         { 'label': '一等奖', 'value': 1 },
         { 'label': '二等奖', 'value': 2 },
@@ -619,7 +657,7 @@ export default {
     }
   },
   created() {
-    console.log(process.env.VUE_APP_PROJECT_NAME)
+    console.log(process.env.VUE_APP_PROJECT)
     if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
       this.isHidden = false
     }
@@ -903,6 +941,9 @@ export default {
         }
       }
     },
+    IsPHAuditEnv(){
+      return this.env == 'ph_audit'
+    },
     savePoolNum() {
       for (var i = 0; i < this.RandAwards.length; i++) {
         if (this.RandAwards.jackpotType == this.RandAwards[i].JackpotType) {
@@ -947,6 +988,7 @@ export default {
       const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
       return parseInt(result)
     },
+
     showRobotNumForm(data) {
       this.robotDialogForm.data = data
       this.robotDialogForm.visible = true
