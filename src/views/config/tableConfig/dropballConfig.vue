@@ -169,6 +169,43 @@
                   </el-table-column>
                 </el-table>
               </fieldset>
+              <fieldset  v-if="!IsPHAuditEnv()">
+                <legend>奖池触发重摇</legend>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池低于某值此时系统输：">
+                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                  </el-descriptions-item>
+                </el-descriptions>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池大于某值此时系统赢：">
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                  </el-descriptions-item>
+                </el-descriptions>
+              </fieldset>
 
 <!--              <fieldset style="margin-top:10px">-->
 <!--                <legend>LuckyPachinko配置-->
@@ -480,43 +517,6 @@
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
             </fieldset>
 
-            <fieldset  v-if="!IsPHAuditEnv()">
-              <legend>奖池触发重摇</legend>
-              <el-row>
-                <el-col :span="11" :offset="1">
-                  <el-form-item label="奖池低于某值此时系统输：">
-                    <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="11">
-                  <el-form-item label="重摇概率：">
-                    <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
-                </el-descriptions-item>
-              </el-descriptions>
-              <el-row>
-                <el-col :span="11" :offset="1">
-                  <el-form-item label="奖池大于某值此时系统赢：">
-                    <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="11">
-                  <el-form-item label="重摇概率：">
-                    <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
-                </el-descriptions-item>
-              </el-descriptions>
-            </fieldset>
           </el-tab-pane>
         </el-tabs>
         <el-col style="margin-top:16px;" :offset="8" :span="8">
