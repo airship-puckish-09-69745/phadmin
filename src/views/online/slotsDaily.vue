@@ -304,7 +304,7 @@ export default {
           lists.push(this.calcTotalBet(one))
           lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItemNormal('Wild返奖', 'SlotsReturn5', one))
+          lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
           lists.push(this.calcItemTotalNormal('正常合计', one))
           lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
           lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
