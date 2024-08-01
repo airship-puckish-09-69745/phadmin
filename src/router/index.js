@@ -632,7 +632,7 @@ export const asyncRoutes = [
                 path: 'fortuneacego_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fortuneacego_slots_cfg'),
                 name: 'fortuneacego_slots_cfg',
-                meta: { title: 'SuperAceGo' }
+                meta: { title: 'UltraAce' }
               }
             ]
           },
@@ -695,7 +695,7 @@ export const asyncRoutes = [
                 path: 'fortuneacegomars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fortuneacegomars_slots_cfg'),
                 name: 'fortuneacegomars_slots_cfg',
-                meta: { title: 'SuperAceGo(审)' }
+                meta: { title: 'UltraAce(审)' }
               }
             ]
           },
@@ -1259,7 +1259,7 @@ export const asyncRoutes = [
             path: 'fortuneacego_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneacego_slots_log',
-            meta: { title: 'SuperAceGo', gid: 92 }
+            meta: { title: 'UltraAce', gid: 92 }
           }
         ]
       },
@@ -1321,7 +1321,7 @@ export const asyncRoutes = [
             path: 'fortuneacegomars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneacegomars_slots_log',
-            meta: { title: 'SuperAceGo(审)', gid: 93 }
+            meta: { title: 'UltraAce(审)', gid: 93 }
           }
         ]
       },

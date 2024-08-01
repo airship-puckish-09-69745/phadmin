@@ -350,7 +350,7 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80,78,82,84)
+          this.defaultOrder.push(76, 80,78,82,84,86,92)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86)
         }
