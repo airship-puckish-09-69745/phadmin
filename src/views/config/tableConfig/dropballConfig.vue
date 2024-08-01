@@ -425,7 +425,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="奖励发放类型" prop="AwardType">
+                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.AwardType">
                         <el-option
@@ -437,7 +437,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal">
+                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
@@ -450,12 +450,17 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开奖数量概率" prop="RateArr">
+                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="libEnv.IsPHAuditEnv">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -470,7 +475,7 @@
 <!--              </el-descriptions>-->
             </fieldset>
 
-            <fieldset style="margin-top:10px">
+            <fieldset style="margin-top:10px"   v-if="!libEnv.IsPHAuditEnv">
               <legend>jackpot奖池增长</legend>
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
             </fieldset>
