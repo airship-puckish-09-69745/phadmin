@@ -253,6 +253,8 @@ export default {
           return 'FortuneAce'
         case 86:
           return 'SuperGemsII'
+        case 88:
+          return 'Crazy777'
         case 90:
           return 'MoneyComing'
         case 92:
@@ -281,6 +283,7 @@ export default {
         case 80:
         case 82:
         case 84:
+        case 88:
         case 90:
         case 92:
         {
