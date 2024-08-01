@@ -383,12 +383,12 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="每小时局数">
+                  <el-form-item label="每小时局数" v-if="!libEnv.IsPHAuditEnv">
                     <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="开奖最高开出显示奖池(%)：">
+                  <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!libEnv.IsPHAuditEnv">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
                   </el-form-item>
                 </el-col>
@@ -425,7 +425,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="奖励发放类型" prop="AwardType">
+                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.AwardType">
                         <el-option
@@ -437,7 +437,7 @@
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal">
+                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
@@ -450,12 +450,17 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开奖数量概率" prop="RateArr">
+                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="libEnv.IsPHAuditEnv">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!libEnv.IsPHAuditEnv">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -470,7 +475,7 @@
 <!--              </el-descriptions>-->
             </fieldset>
 
-            <fieldset style="margin-top:10px">
+            <fieldset style="margin-top:10px"   v-if="!libEnv.IsPHAuditEnv">
               <legend>jackpot奖池增长</legend>
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
             </fieldset>
@@ -561,7 +566,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, DataRule } from '@/utils/common'
+import {$libShow, DataRule, $libEnv} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
@@ -577,6 +582,7 @@ export default {
       form: {},
       subKey: 'gameDropball',
       libShow: $libShow,
+      libEnv: $libEnv,
       showSetResultPage: false,
       ConversionColorMap: {},
       JackpotCfg: {},
@@ -620,6 +626,7 @@ export default {
     this.getData()
   },
   methods: {
+
     dataRule(required, config) {
       return DataRule(required, config)
     },
