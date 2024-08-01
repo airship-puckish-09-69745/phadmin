@@ -170,7 +170,7 @@
                 </el-table>
               </fieldset>
               <fieldset  v-if="!IsPHAuditEnv()">
-                <legend>奖池触发重摇</legend>
+                <legend>小奖池触发重摇</legend>
                 <el-row>
                   <el-col :span="11" :offset="1">
                     <el-form-item label="奖池低于某值此时系统输：">
