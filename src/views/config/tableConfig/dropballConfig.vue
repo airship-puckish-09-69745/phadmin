@@ -383,12 +383,12 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="每小时局数">
+                  <el-form-item label="每小时局数" v-if="libEnv.IsPHAuditEnv">
                     <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="开奖最高开出显示奖池(%)：">
+                  <el-form-item label="开奖最高开出显示奖池(%)："  v-if="libEnv.IsPHAuditEnv">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
                   </el-form-item>
                 </el-col>
@@ -561,7 +561,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, DataRule } from '@/utils/common'
+import {$libShow, DataRule, $libEnv} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
@@ -577,6 +577,7 @@ export default {
       form: {},
       subKey: 'gameDropball',
       libShow: $libShow,
+      libEnv: $libEnv,
       showSetResultPage: false,
       ConversionColorMap: {},
       JackpotCfg: {},
@@ -620,6 +621,7 @@ export default {
     this.getData()
   },
   methods: {
+
     dataRule(required, config) {
       return DataRule(required, config)
     },

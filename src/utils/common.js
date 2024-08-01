@@ -216,6 +216,7 @@ export function LibShow() {
 export const $libDate = new LibDate()
 export const $libUrl = new LibURL()
 export const $libShow = new LibShow()
+export const $libEnv = new LibEnv()
 
 Date.prototype.Format = function(fmt) { // author: meizz
   var o = {
@@ -233,7 +234,11 @@ Date.prototype.Format = function(fmt) { // author: meizz
   }
   return fmt
 }
-
+export function LibEnv() {
+  this.IsPHAuditEnv = function () {
+    return process.env.VUE_APP_PROJECT == "ph_audit"
+  }
+}
 export function LibDate() {
   /* 根据毫秒数返回当前时间的格式化表示
    * iType:1 返回格式 1990-01-02
@@ -313,6 +318,7 @@ export function LibDate() {
     var pattern = /^([01]?\d|2[0-3]):[0-5]?\d$/
     return pattern.test(str)
   }
+
 }
 
 export function Pagination(_totalCount, _pageNum) {
