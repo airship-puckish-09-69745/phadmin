@@ -455,7 +455,7 @@
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="!IsPHAuditEnv()">
+                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
                     </template>
@@ -485,12 +485,12 @@
               <el-row>
                 <el-col :span="11" :offset="1">
                   <el-form-item label="奖池低于某值此时系统输：">
-                    <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                    <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
                   <el-form-item label="重摇概率：">
-                    <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -502,12 +502,12 @@
               <el-row>
                 <el-col :span="11" :offset="1">
                   <el-form-item label="奖池大于某值此时系统赢：">
-                    <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                    <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
                   <el-form-item label="重摇概率：">
-                    <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -616,7 +616,9 @@ export default {
   data() {
     return {
       RandAwards: [],
-      item: {},
+      item: {
+        ReChoiceCfg:{}
+      },
       form: {},
       subKey: 'gameDropball',
       libShow: $libShow,
@@ -712,6 +714,10 @@ export default {
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
 
       }
+      that.item.ReChoiceCfg.LowLotteryPoolReChoiceRate  /= 1000
+      that.item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+      that.item.ReChoiceCfg.HighLotteryPoolReChoiceRate /= 1000
+      that.item.ReChoiceCfg.HighLotteryPoolReChoice/= 1000
     },
     getData() {
       request({
@@ -725,6 +731,7 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
+            console.log("==========",item)
 
             this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
             for (const o of this.RandAwards) {
@@ -743,9 +750,10 @@ export default {
                item["Dices"] = [0,0,0]
                item["openTest"] = "1"
              }
+
             item.RobotAverageBetMoney /= 1000
             Object.assign(this.item, item)
-            console.log('item', this.PoolIncrArr)
+            console.log('item', this.item)
 
             this.transMoneyForShow()
             // 设置修改之前数据
@@ -800,6 +808,11 @@ export default {
       ret.JackpotCfg.JackpotBetMin *=1000
 
       ret.RobotAverageBetMoney *=1000
+
+      ret.ReChoiceCfg.LowLotteryPoolReChoiceRate *= 1000
+      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      ret.ReChoiceCfg.HighLotteryPoolReChoiceRate *= 1000
+      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
       for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
         o.PoolVal = parseInt(o.PoolVal * 1000)
