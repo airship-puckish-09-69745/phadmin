@@ -279,7 +279,7 @@ export default {
       summary: {},
       gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
         76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: 'CandyCrazeMars', 80: 'Candy Craze', 81: 'SuperGemsMars', // 这行老虎机
-        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', 90: 'MoneyComing', // 这行老虎机
+        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', 90: 'MoneyComing', 92: 'Ultra Ace', // 这行老虎机
         28: 'Tongits Joker', 29: 'Tongits Quick', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack', 46: 'Domino', 47: '8 Ball Plus', 48: '9 Ball Plus',
         105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 10000: '汇总' },
@@ -377,7 +377,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 90)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 90, 92)
         }
       }
     },
