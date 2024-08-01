@@ -633,6 +633,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/fortuneacego_slots_cfg'),
                 name: 'fortuneacego_slots_cfg',
                 meta: { title: 'SuperAceGo' }
+              },
+              {
+                path: 'chargebison_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/chargebison_slots_cfg'),
+                name: 'chargebison_slots_cfg',
+                meta: { title: '冲锋野牛' }
               }
             ]
           },
@@ -696,6 +702,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/fortuneacegomars_slots_cfg'),
                 name: 'fortuneacegomars_slots_cfg',
                 meta: { title: 'SuperAceGo(审)' }
+              },
+              {
+                path: 'chargebisonmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/chargebisonmars_slots_cfg'),
+                name: 'chargebisonmars_slots_cfg',
+                meta: { title: '冲锋野牛(审)' }
               }
             ]
           },
@@ -1260,6 +1272,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneacego_slots_log',
             meta: { title: 'SuperAceGo', gid: 92 }
+          },
+          {
+            path: 'chargebison_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'chargebison_slots_log',
+            meta: { title: '冲锋野牛', gid: 94 }
           }
         ]
       },
@@ -1322,6 +1340,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneacegomars_slots_log',
             meta: { title: 'SuperAceGo(审)', gid: 93 }
+          },
+          {
+            path: 'chargebison_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'chargebison_slots_log',
+            meta: { title: '冲锋野牛(审)', gid: 95 }
           }
         ]
       },
