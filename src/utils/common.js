@@ -236,6 +236,7 @@ Date.prototype.Format = function(fmt) { // author: meizz
 }
 export function LibEnv() {
   this.IsPHAuditEnv = function () {
+    console.log("env:",process.env.VUE_APP_PROJECT)
     return process.env.VUE_APP_PROJECT == "ph_audit"
   }
 }
