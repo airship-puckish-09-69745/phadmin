@@ -627,22 +627,13 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
                 name: 'moneycoming_slots_cfg',
                 meta: { title: 'MoneyComing' }
-              }
-              /*
-              {
-                path: 'beauty_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
-                name: 'beauty_slots_cfg',
-                meta: { title: 'Beauty - 睡美人' }
               },
-
               {
-                path: 'phoenix_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
-                name: 'phoenix_slots_cfg',
-                meta: { title: 'Phoenix - 凤凰' }
+                path: 'fortuneacego_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortuneacego_slots_cfg'),
+                name: 'fortuneacego_slots_cfg',
+                meta: { title: 'SuperAceGo' }
               }
-              */
             ]
           },
           {
@@ -1263,6 +1254,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycoming_slots_log',
             meta: { title: 'MoneyComing', gid: 90 }
+          },
+          {
+            path: 'fortuneacego_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortuneacego_slots_log',
+            meta: { title: 'SuperAceGo', gid: 92 }
           }
         ]
       },
@@ -1455,18 +1452,24 @@ export const asyncRoutes = [
             name: 'emojPrice',
             meta: { title: '道具价格 ◐', noCache: true }
           },
+          // {
+          //   path: 'onlineCnt',
+          //   component: () => import('@/views/config/baseConfig/online_cnt'),
+          //   name: 'onlineCnt',
+          //   meta: { title: '在线人数配置', noCache: true }
+          // },
           {
-            path: 'onlineCnt',
-            component: () => import('@/views/config/baseConfig/online_cnt'),
-            name: 'onlineCnt',
-            meta: { title: '在线人数配置', noCache: true }
-          },
-          {
-            path: 'smsWhite',
-            component: () => import('@/views/config/baseConfig/sms_white'),
-            name: 'smsWhite',
-            meta: { title: '白名单发短信配置', noCache: true }
+            path: 'gameOnlineCountCfg',
+            component: () => import('@/views/config/tableConfig/gameOnlineCountCfg'),
+            name: 'gameOnlineCountCfg',
+            meta: { title: '游戏在线人数配置 ◐' }
           }
+          // ,{
+          //   path: 'smsWhite',
+          //   component: () => import('@/views/config/baseConfig/sms_white'),
+          //   name: 'smsWhite',
+          //   meta: { title: '白名单发短信配置', noCache: true }
+          // }
         ]
       },
       {
