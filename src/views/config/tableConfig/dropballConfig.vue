@@ -687,10 +687,6 @@ export default {
     },
     transMoneyForShow() {
       let that = this
-      that.item.MinRobotMoney /=  1000
-      that.item.MaxRobotMoney /= 1000
-
-
 
       for (const o of that.item.LuckyPachinkoCfg) {
         o.Multiple /= 1000
