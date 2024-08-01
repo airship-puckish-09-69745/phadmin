@@ -195,7 +195,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93]
     }
   },
   created() {
@@ -257,6 +257,8 @@ export default {
           return 'Crazy777'
         case 90:
           return 'MoneyComing'
+        case 92:
+          return 'UltraAce'
       }
       return '未知老虎机-' + sType
     },
@@ -283,12 +285,29 @@ export default {
         case 84:
         case 88:
         case 90:
+        case 92:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
           lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
+          lists.push(this.calcItemTotalNormal('正常合计', one))
+          lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
+          lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
+          lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
+          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
+          lists.push(this.calcItemTotalSum('所有返奖总计', one))
+          break
+        }
+        case 86:
+        {
+          // 混有购买免费数据
+          lists.push(this.calcPlayTimes(one))
+          lists.push(this.calcTotalBet(one))
+          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
+          lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
           lists.push(this.calcItemTotalNormal('正常合计', one))
           lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
           lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
