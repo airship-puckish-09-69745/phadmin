@@ -85,11 +85,14 @@
                 <!--      第二层  -->
                 <el-tabs type="border-card" stretch>
                   <el-tab-pane label="中奖概率配置">
+                    <el-tabs v-if="envProjectName == 'ph_audit'" type="border-card" stretch @tab-click="BuffCfgClick">
+                        <piggy-weight-cfg :piggy-cfg="item.Buff[0].Awards" title="玩法中奖类型和概率" />
+                    </el-tabs>
                     <!--      第三层  -->
-                    <el-row style="margin-left: 20px">
+                    <el-row v-if="envProjectName != 'ph_audit'" style="margin-left: 20px">
                       <span style="color: red;font-size: 11px">  注: 阶段增益1、2、3、4、5中的连续敲击次数必须连续</span>
                     </el-row>
-                    <el-tabs type="border-card" stretch @tab-click="BuffCfgClick">
+                    <el-tabs v-if="envProjectName != 'ph_audit'" type="border-card" stretch @tab-click="BuffCfgClick">
                       <el-tab-pane label="阶段增益1">
                         <el-row style="margin-left: 20px">
                           <span>连续锤击次数[左右闭合区间]:</span>
@@ -159,14 +162,33 @@
                       <el-tab-pane label="1*3滚轴配置">
                         <el-row>
                           <div v-for="(row,idx) in item.free[0].Spin">
-                            <piggy-weight-cfg :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg   v-if="showData(idx)" :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
+                        <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
+                          <el-form inline>
+                            <el-form-item label="转轴倍数上限(0,max]">
+                              <el-input v-model.number="item.free[0].SpinOddsMax" size="mini" />
+                            </el-form-item>
+                            <br>
+                            <el-form-item label="F中奖次数上限(0,max]">
+                              <el-input v-model.number="item.free[0].FTimesMax" size="mini" />
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
+                        <br>
+                        <el-col v-if="envProjectName != 'ph_audit'" offset="1">
+                          <el-form inline>
+                            <el-form-item label="金币*转轴倍数上限(0,max)">
+                              <el-input v-model.number="item.free[0].WonOddsMax" size="mini"/>
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[0].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
@@ -179,14 +201,33 @@
                         </el-row>
                         <el-row>
                           <div v-for="(row,idx) in item.free[1].Spin">
-                            <piggy-weight-cfg  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
+                            <piggy-weight-cfg  v-if="showData(idx)"  :select-type="true" :piggy-cfg="row.Choices" :table-title="getSpinTitle(idx)" weight-name="权重" val-name="val (注:不支持小数)" val-type="1" style="width: 800px" />
                           </div>
                         </el-row>
                       </el-tab-pane>
                       <el-tab-pane label="中奖概率配置">
+                        <el-col v-if="envProjectName != 'ph_audit'" :span="24" :offset="1">
+                          <el-form inline>
+                            <el-form-item label="转轴倍数上限(0,max]">
+                              <el-input v-model.number="item.free[1].SpinOddsMax" size="mini" />
+                            </el-form-item>
+                            <br>
+                            <el-form-item label="F中奖次数上限(0,max]">
+                              <el-input v-model.number="item.free[1].FTimesMax" size="mini" />
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].Awards" weight-name="权重" val-name="中奖类型" />
                       </el-tab-pane>
                       <el-tab-pane label="金币奖励倍数配置">
+                        <br>
+                        <el-col v-if="envProjectName != 'ph_audit'" offset="1">
+                          <el-form inline>
+                            <el-form-item label="金币*转轴倍数上限(0,max)">
+                              <el-input v-model.number="item.free[1].WonOddsMax" size="mini"/>
+                            </el-form-item>
+                          </el-form>
+                        </el-col>
                         <piggy-weight-cfg :piggy-cfg=" item.free[1].MoneyOdds" weight-name="权重" val-name="金币倍数 (注:不支持小数)" val-type="1" />
                       </el-tab-pane>
                     </el-tabs>
@@ -200,7 +241,7 @@
           <el-col :span="16" :offset="3">
             <fieldset>
               <el-form inline>
-                <el-form-item label="磁体->幸运转盘概率"style="margin-left:20px">
+                <el-form-item v-if="envProjectName != 'ph_audit'" label="磁体->幸运转盘概率"style="margin-left:20px">
                   <el-input v-model.number="item.Plate.Rate" size="mini" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};"><template slot="append">‰</template></el-input>
                 </el-form-item>
               </el-form>
@@ -246,7 +287,7 @@
                 </fieldset>
               </el-col>
             </el-tab-pane>
-            <el-tab-pane label="虚拟奖池">
+            <el-tab-pane v-if="envProjectName != 'ph_audit'" label="虚拟奖池">
               <el-col :span="16" :offset="3">
                 <fieldset>
                   <div v-for="(data,idx) in item.Jp">
@@ -312,7 +353,7 @@
             <el-tab-pane label="中奖条件">
               <el-row>
                 <fieldset>
-                  <el-col :span="24" :offset="0">
+                  <el-col  :offset="0" >
                     <div v-for="(data,idx) in item.Jp">
                       <fieldset style="margin-top: 20px;">
                         <legend>{{ JpTypeMap[data.Level] }} </legend>
@@ -385,6 +426,7 @@
                     </el-table-column>
 
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(min)"
                       width="150"
                     >
@@ -393,6 +435,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(max)"
                       width="150"
                     >
@@ -401,6 +444,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(时间段控制)"
                       width="200"
                     >
@@ -424,6 +468,7 @@
                       </template>
                     </el-table-column>
                     <el-table-column
+                      v-if="envProjectName != 'ph_audit'"
                       label="开JP最少连击次数"
                       width="200"
                     >
@@ -480,7 +525,7 @@
             </el-tab-pane>
           </el-tabs>
         </el-tab-pane>
-        <el-tab-pane label="机器人配置">
+        <el-tab-pane v-if="envProjectName != 'ph_audit'" label="机器人配置">
           <el-row :span="16" :offset="3">
             <fieldset style="margin-top:10px">
               <legend>机器人配置</legend>
@@ -783,7 +828,10 @@ export default {
             TpyIn: 2,
             Spin: [{ Tpy: 4, Choices: [{ Weight: 1, Val: 2 }] }, { Tpy: 5, Choices: [{ Weight: 1, Val: 2 }, { Weight: 1, Val: 2 }] }],
             MoneyOdds: [{ Weight: 1, Val: 2 }],
-            Awards: [{ Weight: 1, Val: 2 }]
+            Awards: [{Weight: 1, Val: 2}],
+            WonOddsMax: 0,
+            SpinOddsMax: 0,
+            FTimesMax: 0,
           }],
         Plate: { Rate: 0, PlateOdds: [{ Weight: 1, Val: 2 }] }, // 幸运转盘
         Jp: [// JP
@@ -863,6 +911,17 @@ export default {
     delJpDayLimit(idx){
       this.jpDayLimit.NumHours.splice(idx,1)
     },
+    showData(idx){
+      console.log(idx)
+      if (idx>=2){
+        if (this.envProjectName!=='ph'){
+          return false
+        }else {
+          return true
+        }
+      }
+      return true
+    },
     transMoneyForShow() {
       for (const o of this.item.MoneyOdds) {
         o.Val /= 1000
@@ -872,6 +931,8 @@ export default {
         o.MinBet /= 1000
       }
       for (const o of this.item.free) {
+        o.WonOddsMax /= 1000
+        o.SpinOddsMax /= 1000
         for (const omo of o.MoneyOdds) {
           omo.Val /= 1000
         }
@@ -1021,6 +1082,8 @@ export default {
         o.Val = parseInt(o.Val * 1000)
       }
       for (const o of obj.free) {
+        o.WonOddsMax=parseInt(o.WonOddsMax * 1000)
+        o.SpinOddsMax =parseInt(o.SpinOddsMax * 1000)
         for (const omo of o.MoneyOdds) {
           omo.Val = parseInt(omo.Val * 1000)
         }

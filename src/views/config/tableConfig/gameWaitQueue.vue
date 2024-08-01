@@ -299,7 +299,9 @@ export default {
         31: 'Tongits-Classic',
         28: 'Tongits-Joker',
         29: 'Tongits-Quick',
-        34: 'PusoyDos'
+        34: 'PusoyDos',
+        47: 'Billiard-8ball  ',
+        48: 'Billiard-9ball  '
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },

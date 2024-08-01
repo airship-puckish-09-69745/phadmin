@@ -6,7 +6,7 @@
         <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">添加配置项</el-button>
       </el-col>
       <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
     </el-row>
     <div>
@@ -16,12 +16,12 @@
             {{ scope.row.blind_id }}
           </template>
         </el-table-column>
-        <el-table-column prop="BlindName" label="盲注名称" align="center" width="200">
+        <el-table-column prop="blind_name" label="盲注名称" align="center" width="200">
           <template slot-scope="scope">
             {{ scope.row.blind_name }}
           </template>
         </el-table-column>
-        <el-table-column prop="BlindContent" label="等级条数" align="center" width="100">
+        <el-table-column prop="blind_content" label="等级条数" align="center" width="100">
           <template slot-scope="scope">
             {{ scope.row.blind_content.length }}
           </template>
@@ -33,39 +33,39 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="盲注ID:" :required="true">
-              <el-input v-model="edit.item.BlindId" placeholder="请输入" />
+              <el-input v-model.number="edit.item.blind_id" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="盲注名称">
-              <el-input v-model="edit.item.BlindName" placeholder="请输入" />
+              <el-input v-model="edit.item.blind_name" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item label="升盲时间(秒)">
-              <el-input v-model="edit.item.BlindTime" placeholder="请输入" />
+              <el-input v-model.number="edit.item.blind_time" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-button type="primary" size="mini" @click="addBlindRow">添加盲注</el-button>
         </el-row>
-        <el-row v-for="(value, index) in edit.item.BlindContent" :key="index">
+        <el-row v-for="(value, index) in edit.item.blind_content" :key="index">
           <el-col :span="22">
             <el-row>
               <el-col :span="22">
                 <el-form-item label="等级" :required="true">
-                  <el-input v-model.number="edit.item.BlindContent[index].blind_level" size="mini" :required="true" />
+                  <el-input v-model.number="edit.item.blind_content[index].blind_level" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="11">
                 <el-form-item label="小盲" :required="true">
-                  <el-input v-model.number="edit.item.BlindContent[index].small_blind" size="mini" :required="true" />
+                  <el-input v-model.number="edit.item.blind_content[index].small_blind" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="11">
                 <el-form-item label="前注" :required="true">
-                  <el-input v-model.number="edit.item.BlindContent[index].ante" size="mini" :required="true" />
+                  <el-input v-model.number="edit.item.blind_content[index].ante" size="mini" :required="true" />
                 </el-form-item>
               </el-col>
               <el-col :span="2">
@@ -97,10 +97,10 @@ import request from '@/utils/request'
 
 function newItem() {
   return {
-    BlindId: 0,
-    BlindName: '',
-    BlindTime: 0,
-    BlindContent: []
+    blind_id: 0,
+    blind_name: '',
+    blind_time: 0,
+    blind_content: []
   }
 }
 
@@ -131,26 +131,26 @@ export default {
       this.edit.isEdit = bEdit
       for (var i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i]['blind_id'] === ID) {
-          this.edit.item.BlindId = ID
-          this.edit.item.BlindName = this.tableData[i]['blind_name']
-          this.edit.item.BlindTime = this.tableData[i]['blind_content'][0]['raise_blind_time']
-          this.edit.item.BlindContent = this.tableData[i]['blind_content']
+          this.edit.item.blind_id = ID
+          this.edit.item.blind_name = this.tableData[i]['blind_name']
+          this.edit.item.blind_time = this.tableData[i]['blind_content'][0]['raise_blind_time']
+          this.edit.item.blind_content = this.tableData[i]['blind_content']
         }
       }
     },
     initTableData() {
       for (var i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i]['blind_id'] === this.edit.item.BlindId) {
-          this.tableData[i]['blind_name'] = this.edit.item.BlindName
+        if (this.tableData[i]['blind_id'] === this.edit.item.blind_id) {
+          this.tableData[i]['blind_name'] = this.edit.item.blind_name
           this.tableData[i]['blind_content'] = []
 
-          for (var j = 0; j < this.edit.item.BlindContent.length; j++) {
+          for (var j = 0; j < this.edit.item.blind_content.length; j++) {
             this.tableData[i]['blind_content'].push(
               {
-                blind_level: this.edit.item.BlindContent[j].blind_level,
-                small_blind: this.edit.item.BlindContent[j].small_blind,
-                ante: this.edit.item.BlindContent[j].ante,
-                raise_blind_time: Number(this.edit.item.BlindTime)
+                blind_level: this.edit.item.blind_content[j].blind_level,
+                small_blind: this.edit.item.blind_content[j].small_blind,
+                ante: this.edit.item.blind_content[j].ante,
+                raise_blind_time: Number(this.edit.item.blind_time)
               }
             )
           }
@@ -158,7 +158,29 @@ export default {
           return
         }
       }
-      this.tableData.push(this.edit.item)
+
+      var item={
+        blind_id: this.edit.item.blind_id,
+        blind_name: this.edit.item.blind_name,
+        blind_content: []
+      }
+      for (var j = 0; j < this.edit.item.blind_content.length; j++) {
+        var sub={
+            blind_level: this.edit.item.blind_content[j].blind_level,
+            small_blind: this.edit.item.blind_content[j].small_blind,
+            ante: this.edit.item.blind_content[j].ante,
+            raise_blind_time: Number(this.edit.item.blind_time)
+        }
+        item.blind_content.push(
+          {
+            blind_level: this.edit.item.blind_content[j].blind_level,
+            small_blind: this.edit.item.blind_content[j].small_blind,
+            ante: this.edit.item.blind_content[j].ante,
+            raise_blind_time: Number(this.edit.item.blind_time)
+          }
+        )
+      }
+      this.tableData.push(item)
     },
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
@@ -176,8 +198,8 @@ export default {
       this.edit.visible = true
     },
     addBlindRow() {
-      var blind_level = this.edit.item.BlindContent.length + 1
-      this.edit.item.BlindContent.push(
+      var blind_level = this.edit.item.blind_content.length + 1
+      this.edit.item.blind_content.push(
         {
           blind_level: blind_level,
           small_blind: 0,
@@ -187,7 +209,7 @@ export default {
       )
     },
     delBlindRow(index) {
-      this.edit.item.BlindContent.splice(index, 1)
+      this.edit.item.blind_content.splice(index, 1)
     },
     checkRow() {
       var newData = []
@@ -214,9 +236,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || { Data: '{}' }
-          console.log(response.Data)
           const v = JSON.parse($this.form.Data)
           this.tableData = v
+          console.log(this.tableData)
         }
       })
     },

@@ -3,18 +3,11 @@
 
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
-        <el-form inline label-width="90px" :inline="true" size="small">
+        <el-form inline   :inline="true" size="small">
           <el-form-item label="日期：">
             <el-date-picker
-              :default-time="['00:00:00', '23:59:59']"
-              v-model="timeRange"
-              type="datetimerange"
-              value-format="timestamp"
-              :picker-options="pickerOptions"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              align="right"
+              v-model="queryTime"
+              type="date"
               size="mini"
             />
           </el-form-item>
@@ -66,16 +59,12 @@
               {{ scope.row.Uid }}
             </template>
           </el-table-column>
-          <el-table-column label="交易id" width="220px">
-            <template slot-scope="scope">
-              {{ scope.row.TxId }}
-            </template>
-          </el-table-column>
-          <el-table-column label="回合id" width="220px">
-            <template slot-scope="scope">
-              {{ scope.row.RoundId }}
-            </template>
-          </el-table-column>
+
+<!--          <el-table-column label="回合id" width="220px">-->
+<!--            <template slot-scope="scope">-->
+<!--              {{ scope.row.RoundId }}-->
+<!--            </template>-->
+<!--          </el-table-column>-->
           <el-table-column label="操作类型">
             <template slot-scope="scope">
               {{ actTypeMap[scope.row.ActType ]}}
@@ -117,6 +106,11 @@
               {{ scope.row.ExtData }}
             </template>
           </el-table-column>
+          <el-table-column label="查看id" >
+            <template slot-scope="scope">
+              <el-button  @click="showTxId(scope.row)"> 查看id</el-button>
+            </template>
+          </el-table-column>
 <!--          <el-table-column label="操作">-->
 <!--            <template slot-scope="scope" style="width: 100px;">-->
 <!--              <el-button type="text" size="mini" @click="retry(scope.row.TxId)">手动重试</el-button>-->
@@ -141,6 +135,12 @@
         </div>
       </el-col>
     </el-row>
+    <el-dialog   :visible.sync="visibleID" >
+       <el-descriptions border column="1">
+         <el-descriptions-item label="交易id">{{ showRow.TxId}}</el-descriptions-item>
+         <el-descriptions-item label="回合id">{{ showRow.RoundId}}</el-descriptions-item>
+       </el-descriptions>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,7 +157,7 @@ export default {
   components: {Compare, Publish, MoneyInput},
   data() {
     return {
-      timeRange: [$libDate.GetDayBegin(new Date() - 86400000 * 3), $libDate.GetDayEnd(new Date())],
+      queryTime: $libDate.GetDayBegin(new Date()),
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       item: {
@@ -170,6 +170,8 @@ export default {
         status: 0,
         actType:0,
       },
+      showRow:{},
+      visibleID:false,
       tableData: [],
       gameMap: {},
       failTypeMap: {
@@ -197,14 +199,15 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
+    showTxId(row){
+      this.showRow = row
+      this.visibleID =true
+    },
     getData() {
       const $this = this
-      let bTime = 0
-      let eTime = 0
-      if (this.timeRange) {
-        bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
-        eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
-      }
+      let startTime = $this.queryTime / 1000
+      let endTime = startTime + 86399
+      console.log(endTime)
       if ($this.item.uid === '') {
         $this.item.uid = 0
       }
@@ -214,8 +217,8 @@ export default {
         data: {
           Env: $this.env,
           Path: '/wallet/suc/log',
-          StartTime: bTime,
-          EndTime: eTime,
+          StartTime: startTime,
+          EndTime: endTime,
           Offset: ($this.item.offset - 1) * $this.item.limit,
           Limit: $this.item.limit,
           Uid: $this.item.uid,

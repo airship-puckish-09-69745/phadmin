@@ -74,19 +74,20 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
+    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChart'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      },
       // {
       //   path: 'dashboard',
       //   component: () => import('@/views/playerManage/systemMoneyChart'),
       //   name: 'dashboard',
       //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      // }
+      // },
+      {
+        path: '/dashboard',
+        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
+        name: 'dashboard',
+        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      }
     ]
   },
   {
@@ -140,6 +141,12 @@ export const asyncRoutes = [
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
         meta: { title: 'Slots剧本监控', noCache: true }
+      },
+      {
+        path: 'piggyStatistics',
+        component: () => import('@/views/online/piggyStatistics.vue'),
+        name: 'piggyStatistics',
+        meta: { title: '金猪大奖统计', noCache: true }
       },
       /* {
         path: 'play_log_top100',
@@ -305,7 +312,7 @@ export const asyncRoutes = [
             name: 'pusoyTable',
             meta: { title: 'Pusoy ◐' }
           },
-          {
+          { // 牛牛
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
@@ -676,13 +683,13 @@ export const asyncRoutes = [
                 path: 'crazy777mars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
                 name: 'crazy777mars_slots_cfg',
-                meta: { title: '疯狂777(审)' }
+                meta: { title: '幸运777(审)' }
               },
               {
                 path: 'moneycomingmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
                 name: 'moneycomingmars_slots_cfg',
-                meta: { title: '钱来也(审)' }
+                meta: { title: 'MoneyComing(审)' }
               },
               {
                 path: 'fortuneacegomars_slots_cfg',
@@ -954,6 +961,12 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy - ◐', gid: 21 }
           },
           {
+            path: 'playlog_niuniu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_domino',
+            meta: { title: 'NiuNiu ◐', gid: 49 }
+          },
+          {
             path: 'playlog_pusoyDos',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pusoyDos',
@@ -976,6 +989,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsPlaylog'),
             name: 'playlog_laizi_tongits',
             meta: { title: 'Tongits - Joker ◐', gid: 28 }
+          },
+          {
+            path: 'playlog_quick_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_tongits',
+            meta: { title: 'Tongits-Quick ', gid: 29 }
           },
           {
             path: 'playlog_texas',
@@ -1052,6 +1071,26 @@ export const asyncRoutes = [
               }*/
             ]
           },
+          {
+            path: '/billiardsVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '台球专业版' },
+            children: [
+              {
+                path: 'playlog_8Ball',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_8Ball',
+                meta: { title: '8Ball ◐', gid: 47 }
+              },
+              {
+                path: 'playlog_9Ball',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_9Ball',
+                meta: { title: '9Ball ◐', gid: 48 }
+              },
+            ]
+          }
         ]
       },
       {
@@ -1138,6 +1177,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_dropBall',
             meta: { title: 'DropBall ◐', gid: 108 }
+          },
+          {
+            path: 'playlog_videopoker',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_videoPoker',
+            meta: { title: 'VideoPoker ◐', gid: 110 }
           }
         ]
       },
@@ -1202,13 +1247,13 @@ export const asyncRoutes = [
             path: 'crazy777_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
-            meta: { title: '疯狂777', gid: 88 }
+            meta: { title: '幸运777', gid: 88 }
           },
           {
             path: 'moneycoming_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycoming_slots_log',
-            meta: { title: '钱来也', gid: 90 }
+            meta: { title: 'MoneyComing', gid: 90 }
           },
           {
             path: 'fortuneacego_slots_log',
@@ -1264,13 +1309,13 @@ export const asyncRoutes = [
             path: 'crazy777mars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777mars_slots_log',
-            meta: { title: '疯狂777(审)', gid: 89 }
+            meta: { title: '幸运777(审)', gid: 89 }
           },
           {
             path: 'moneycomingmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycomingmars_slots_log',
-            meta: { title: '钱来也(审)', gid: 91 }
+            meta: { title: 'MoneyComing(审)', gid: 91 }
           },
           {
             path: 'fortuneacegomars_slots_log',
@@ -1407,18 +1452,24 @@ export const asyncRoutes = [
             name: 'emojPrice',
             meta: { title: '道具价格 ◐', noCache: true }
           },
+          // {
+          //   path: 'onlineCnt',
+          //   component: () => import('@/views/config/baseConfig/online_cnt'),
+          //   name: 'onlineCnt',
+          //   meta: { title: '在线人数配置', noCache: true }
+          // },
           {
-            path: 'onlineCnt',
-            component: () => import('@/views/config/baseConfig/online_cnt'),
-            name: 'onlineCnt',
-            meta: { title: '在线人数配置', noCache: true }
-          },
-          {
-            path: 'smsWhite',
-            component: () => import('@/views/config/baseConfig/sms_white'),
-            name: 'smsWhite',
-            meta: { title: '白名单发短信配置', noCache: true }
+            path: 'gameOnlineCountCfg',
+            component: () => import('@/views/config/tableConfig/gameOnlineCountCfg'),
+            name: 'gameOnlineCountCfg',
+            meta: { title: '游戏在线人数配置 ◐' }
           }
+          // ,{
+          //   path: 'smsWhite',
+          //   component: () => import('@/views/config/baseConfig/sms_white'),
+          //   name: 'smsWhite',
+          //   meta: { title: '白名单发短信配置', noCache: true }
+          // }
         ]
       },
       {
@@ -1713,6 +1764,12 @@ export const asyncRoutes = [
         name: 'walletInfo',
         meta: { title: '钱包信息' }
       },
+      {
+        path: 'walletApiStat',
+        component: () => import('@/views/wallet/walletApiTimesStat.vue'),
+        name: 'walletApiStat',
+        meta: { title: '钱包API请求统计' }
+      }
     ]
   },
   {

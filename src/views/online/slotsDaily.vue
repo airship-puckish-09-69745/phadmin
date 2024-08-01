@@ -255,8 +255,6 @@ export default {
           return 'SuperGemsII'
         case 90:
           return 'MoneyComing'
-        case 91:
-          return 'MoneyComingMars'
       }
       return '未知老虎机-' + sType
     },
@@ -281,6 +279,7 @@ export default {
         case 80:
         case 82:
         case 84:
+        case 90:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
