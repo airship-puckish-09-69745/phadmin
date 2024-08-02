@@ -3,8 +3,7 @@
     <publish primary-key="Volume" :key-id="getFullKey(this.subKey)" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
     <el-row :gutter="10" style="margin-top: 30px">
       <div style="color: yellowgreen;font-weight: bolder;">
-        显示人数计算公式：场次真实在线人数 * 在线倍数 + 随机人数。（随机人数：【随机最小人数】与【随机最大人数】之间的随机值；
-        如果两配置的差值为0，则不随机
+        <p>显示人数计算公式：场次真实在线人数 * 在线倍数% + 随机人数。（随机人数：【随机最小人数】与【随机最大人数】之间的随机值； 如果两个随机配置的差值为0，则不随机）</p>
       </div>
       <br>
       <el-col :span="22">
