@@ -316,6 +316,24 @@
 
         <el-row>
           <el-col :span="11">
+            <el-form-item label="强制换桌：" :rules="dataRule(true,{type:'n',range:'0-1'})">
+              <el-switch v-model="edit.item.ForceTick" :active-value="1" :inactive-value="0" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="强制换桌的局数："
+              :required="true"
+              prop="item.ForceCount"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model.number="edit.item.ForceCount" placeholder="强制换桌的局数" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
             <el-form-item
               label="抽水费率："
               :required="true"
@@ -365,6 +383,8 @@ function newItem() {
     MinPlayerCount: 2,
     ObjectCount: '',
     FlowRate: 0.1,
+    ForceTick: 0,
+    ForceCount: 0,
     NextMatchSeconds: '',
     ActionSeconds: '',
     NextGameSeconds: '',
@@ -407,7 +427,9 @@ export default {
         NextGameSeconds: '结算后等待时间',
         Level: '等级',
         IsPractice: '是否练习场',
-        Status: '状态'
+        Status: '状态',
+        ForceTick: '强制换桌',
+        ForceCount: '强制换桌的局数'
       }
     }
   },
@@ -625,8 +647,16 @@ export default {
       }
       return true
     },
+    checkForce() {
+      if (this.edit.item.ForceTick === 1 && this.edit.item.ForceCount === 0) {
+        Message.warning('防作弊强制换桌开启，强制换桌的局数为0，请检查！！！')
+        return false
+      }
+      return true
+    },
     save() {
       if (!this.checkData()) return
+      if (!this.checkForce()) return
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)

@@ -8,16 +8,8 @@
             <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="普通模式中奖倍数权重">
-            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="免费模式中奖倍数">
             <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="免费模式中奖倍数权重">
-            <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">

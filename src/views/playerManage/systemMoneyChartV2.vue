@@ -14,7 +14,7 @@
       </el-col>
     </el-row>
     <el-row class="panel-group" :gutter="10">
-      <el-col :span="4" class="card-panel-col"   v-if="queryUserPermissions()">
+      <el-col :span="4" class="card-panel-col" v-if="HasACC()">
         <div :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(10000,2)">
           <div class="card-panel-description">
             <div class="card-panel-text">
@@ -32,9 +32,8 @@
           </div>
         </div>
       </el-col>
-      <el-col  v-for="(o,k) in sortOrder" :key="k" :span="4" class="card-panel-col">
-
-        <div v-if="!isPopType(o) " :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
+      <el-col v-for="(o,k) in sortOrder" :key="k" :span="4" class="card-panel-col" v-if="o!=10000">
+        <div v-if="!isPopType(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
           <div class="card-panel-description">
             <div class="card-panel-text">
               {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
@@ -75,26 +74,26 @@
           <div v-if="!isSlots(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
             <el-tooltip class="item" effect="dark"   placement="top" :disabled="o!=37">
               <div v-html="getBlackJackTitle()" slot="content" style="white-space: pre-line;font-size: 14px" ></div>
-            <div class="card-panel-description">
-              <div class="card-panel-text">
-                {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+              <div class="card-panel-description">
+                <div class="card-panel-text">
+                  {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+                </div>
+                <div>
+                  收益：{{ getSystemGot(summary[o]) }}
+                </div>
+                <div>
+                  流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
+                </div>
+                <div>
+                  在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
+                </div>
+                <div v-if="o==37">
+                  奖池：  {{formatNumber(blackJackSum/ 1000)}}
+                </div>
+                <div v-else>
+                  奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
+                </div>
               </div>
-              <div>
-                收益：{{ getSystemGot(summary[o]) }}
-              </div>
-              <div>
-                流水：{{ summary[o]?formatNumber(Math.floor(summary[o].Bet/1000)):0 }}
-              </div>
-              <div>
-                在玩：{{ summary[o]?summary[o].OnlineCount:0 }}({{ summary[o]?summary[o].RecentFive:0 }})
-              </div>
-              <div v-if="o==37">
-                奖池：  {{formatNumber(blackJackSum/ 1000)}}
-              </div>
-              <div v-else>
-                奖池：{{ summary[o]?formatNumber(summary[o].PrizePool/ 1000):0 }}
-              </div>
-            </div>
             </el-tooltip>
           </div>
           <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="getInfo(o,2)">
@@ -129,10 +128,10 @@
         <el-form v-if="gid!=10000" :model="item" label-width="150px" size="small" :inline="true">
           <el-form-item label="日期：">
             <el-date-picker
-              v-model="item.date"
-              value-format="timestamp"
-              type="date"
-              placeholder="选择日期"
+                v-model="item.date"
+                value-format="timestamp"
+                type="date"
+                placeholder="选择日期"
             />
           </el-form-item>
           <el-form-item>
@@ -149,58 +148,58 @@
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
     <el-dialog
-      title="在线用户详情"
-      :visible.sync="userVisible"
-      width="50%"
+        title="在线用户详情"
+        :visible.sync="userVisible"
+        width="50%"
     >
       <el-table
-        ref="filterTable"
-        :data="users"
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-class-name="tableRowClassName"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-        @sort-change="sortChange"
+          ref="filterTable"
+          :data="users"
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-class-name="tableRowClassName"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+          @sort-change="sortChange"
       >
         <el-table-column
-          type="index"
-          width="70"
+            type="index"
+            width="70"
         />
         <el-table-column
-          prop="Uid"
-          label="Uid"
-          width="120"
+            prop="Uid"
+            label="Uid"
+            width="120"
         />
         <el-table-column
-          label="是否付费"
-          width="100"
+            label="是否付费"
+            width="100"
         >
           <template slot-scope="scope">
             {{ scope.row.IsPay?"是":"否" }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="MoneyChanged"
-          label="输赢"
-          sortable
-          width="150"
+            prop="MoneyChanged"
+            label="输赢"
+            sortable
+            width="150"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.MoneyChanged/1000) }}
           </template>
         </el-table-column>
         <el-table-column
-          prop="Count"
-          label="次数"
-          sortable
-          width="100"
+            prop="Count"
+            label="次数"
+            sortable
+            width="100"
         />
         <el-table-column
-          prop="MoneyNow"
-          label="资产"
-          sortable
-          width="200"
+            prop="MoneyNow"
+            label="资产"
+            sortable
+            width="200"
         >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.MoneyNow/1000) }}
@@ -208,10 +207,10 @@
         </el-table-column>
 
         <el-table-column
-          prop="FinishTime"
-          label="时间"
-          width="150"
-          sortable
+            prop="FinishTime"
+            label="时间"
+            width="150"
+            sortable
         >
           <template slot-scope="scope">
             {{ formatTime(scope.row.FinishTime) }}
@@ -266,6 +265,7 @@ export default {
       item: {
         date: new Date()
       },
+      authorityCfg:{},
       blackJackSum:0,
       blackJackContext:'',
       logData: [],
@@ -277,23 +277,16 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
-      viewPermissions:{
-        "howard":[-1],
-        "shenggang":[-1],
-        "zhourui":[32],
-        "zhouzheng":[106],
-        "chenzhenjiang":[50,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],
-      },
       gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
-        76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: '糖果糖果Mars', 80: 'Candy Craze', 81: '超级宝石Mars', // 这行老虎机
-        82: 'Millionaire', 83: '百万富翁Mars', 84: 'Mega Ace', 85: '超级王牌', 86: 'SuperGems2', 87: '超级宝宝石II Mars', // 这行老虎机
-        28: 'Tongits Joker', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
-        35: 'Solitaire', 37: 'BlackJack', 46: 'Domino',47:'Billiard 8 Balls',48:'Billiard 9 Balls',
-        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball',111: 'QiuQiu',113: 'PusoySwap', 10000: '汇总' },
+        76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: 'CandyCrazeMars', 80: 'Candy Craze', 81: 'SuperGemsMars', // 这行老虎机
+        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', 88: 'Crazy777', 90: 'MoneyComing', 92: 'Ultra Ace', // 这行老虎机
+        28: 'Tongits Joker', 29: 'Tongits Quick', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
+        35: 'Solitaire', 37: 'BlackJack', 46: 'Domino', 47: '8 Ball Plus', 48: '9 Ball Plus',
+        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [15, 22, 28, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106,111, 6, 32, 35, 37, 107, 108, 46,47,48,113], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [10000,15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 113], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -310,8 +303,8 @@ export default {
   // mixins: [IsMars],
   created() {
     this.env = store.getters.env || this.env
-
     // this.sortOrder = this.defaultOrder
+
     // if (this.isIN())  {
     //   this.sortOrder = this.defaultOrder
     // } else {
@@ -319,11 +312,26 @@ export default {
     // }
     this.addGameNames()
     this.getInfo(this.gid)
-    this.getData()
-    console.log("===========",this.name,this.env)
+    this.getAuthorityData()
+    console.log(this.$store.state.user.pers['USER_MANAGEMENT'])
   },
-
   methods: {
+    HasACC(){
+      if (this.$store.state.user.pers['USER_MANAGEMENT']){
+        console.log("==1==")
+        if ( this.authorityCfg[this.name]){
+          if ( this.authorityCfg[this.name].includes(10000)){
+            console.log("==2==")
+            return true
+          }else {
+            return  false
+          }
+        }
+        return true
+      }
+      console.log("==3==")
+      return false
+    },
     changeOrder(iType) {
       console.log('summary===>', this.summary)
       if (iType === 1) {
@@ -361,21 +369,20 @@ export default {
         }
         this.sortOrder = retSort
       }
-      this.setUserPermissionsGames()
     },
     addGameNames() {
       if (IsMars()) { // 审核
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80,78,82)
+          this.defaultOrder.push(76, 80, 78, 82, 84)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92)
         }
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 23 || o === 28 || o === 31 || o === 34 || o === 46 || o === 47 || o === 48) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 29 || o === 23 || o === 28 || o === 31 || o === 34 || o === 46 || o === 47 || o === 48) {
         return false
       } else {
         return true
@@ -424,40 +431,6 @@ export default {
 
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
-    },
-  async getData() {
-    if (this.env==='test'){
-      this.sortOrder = this.defaultOrder
-      return
-    }
-    await  request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: "systemMoneyConfig"
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.form = response.Data || {}
-          const item = JSON.parse(response.Data.Data)
-          this.viewPermissions =item
-          this.sortOrder = this.defaultOrder
-          let  games =[]
-          if (!this.viewPermissions[this.name]){
-            this.sortOrder = games
-          }
-          if (this.viewPermissions[this.name][0]==-1){
-            return
-          }
-          for (const gid of this.sortOrder) {
-            if (this.viewPermissions[this.name].includes(gid)){
-              games.push(gid)
-            }
-          }
-          this.sortOrder = games
-
-        }
-      })
     },
     getSummaryClass(ob) {
       if (ob && ob.Bet !== 0) {
@@ -545,30 +518,6 @@ export default {
         }
       })
     },
-    queryUserPermissions(){
-      if (!this.viewPermissions[this.name]){
-        return false
-      }
-      if (this.viewPermissions[this.name][0]==-1){
-        return true
-      }
-      return false
-    },
-    setUserPermissionsGames(){
-      let  games =[]
-      if (!this.viewPermissions[this.name]){
-        this.sortOrder = games
-      }
-      if (this.viewPermissions[this.name][0]==-1){
-        return
-      }
-      for (const gid of this.sortOrder) {
-        if (this.viewPermissions[this.name].includes(gid)){
-            games.push(gid)
-        }
-      }
-      this.sortOrder = games
-    },
     getInfo(gid, iType) {
       this.gid = gid
       if (!iType) {
@@ -633,7 +582,7 @@ export default {
         console.log('list response', response)
         this.blackJackContext = ''
         $this.blackJackSum = 0
-       let datas = []
+        let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid=== 37){
@@ -647,6 +596,39 @@ export default {
         })
         for (const o of datas) {
           this.blackJackContext += '场次:'+ this.formatNumber(o.Ante / 1000) +'    奖池:'+ this.formatNumber(o.PrizePool /1000)+'<br/>'
+        }
+      })
+    },
+    getAuthorityData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: "systemMoneyConfig"
+        }
+      }).then(response => {
+
+        if (response.RetCode === 0) {
+          if (response.Data && response.Data.Data !== '') {
+            this.authorityCfg = JSON.parse(response.Data.Data)
+            if (this.$store.state.user.pers['USER_MANAGEMENT']) {
+              if (this.authorityCfg[this.name]) {
+                // 有权限而且有限制
+                this.defaultOrder= []
+                for (const o of this.authorityCfg[this.name]) {
+                  if (this.gameNames[o]) {
+                    this.defaultOrder.push(o)
+                  }
+                }
+              }else {
+                this.sortOrder = this.defaultOrder
+                return
+              }
+            } else {
+              this.defaultOrder = []
+            }
+            this.sortOrder = this.defaultOrder
+          }
         }
       })
     },
@@ -734,78 +716,78 @@ export default {
 </script>
 <style>
 .el-table .warning-row {
-background: oldlace;
+  background: oldlace;
 }
 
 .el-table .fail-row {
-background: #999999;
+  background: #999999;
 }
 
 .el-table .success-row {
-background: #f0f9eb;
+  background: #f0f9eb;
 }
 </style>
 <style lang="scss" scoped>
 .panel-group {
   margin-top: 10px;
 
-.card-panel-col {
-  margin-bottom: 10px;
-  &:hover {
-    .card-panel{
-      background: #90EE90;
+  .card-panel-col {
+    margin-bottom: 10px;
+    &:hover {
+      .card-panel{
+        background: #90EE90;
+      }
     }
   }
-}
 
-.card-panel_selected {
-  background: #90EE90;
-}
+  .card-panel_selected {
+    background: #90EE90;
+  }
 
-.card-panel_selected_not {
-  background: #fff;
-}
+  .card-panel_selected_not {
+    background: #fff;
+  }
 
-.card-panel {
-  height: 108px;
-  cursor: pointer;
-  font-size: 12px;
-  position: relative;
-  overflow: hidden;
-  color: #666;
-  box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
-  border-color: rgba(0, 0, 0, .05);
+  .card-panel {
+    height: 108px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+    border-color: rgba(0, 0, 0, .05);
 
-.card-panel-description {
-  float: left;
-  padding-left: 5px;
-  font-weight: bold;
-  margin: 18px 26px 26px 26px;
-  margin-left: 0px;
+    .card-panel-description {
+      float: left;
+      padding-left: 5px;
+      font-weight: bold;
+      margin: 18px 26px 26px 26px;
+      margin-left: 0px;
 
-.card-panel-text {
-  line-height: 18px;
-  font-size: 18px;
-  margin-bottom: 12px;
-}
+      .card-panel-text {
+        line-height: 18px;
+        font-size: 18px;
+        margin-bottom: 12px;
+      }
 
-.card-panel-normal{
-  color: rgba(0, 0, 0, 0.45);
-}
+      .card-panel-normal{
+        color: rgba(0, 0, 0, 0.45);
+      }
 
-.card-panel-OK{
-  color: #409167;
-}
+      .card-panel-OK{
+        color: #409167;
+      }
 
-.card-panel-Danger{
-  color: #ff4949;
-}
+      .card-panel-Danger{
+        color: #ff4949;
+      }
 
-.card-panel-num {
-  font-size: 20px;
-}
-}
-}
+      .card-panel-num {
+        font-size: 20px;
+      }
+    }
+  }
 }
 
 </style>

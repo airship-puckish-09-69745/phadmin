@@ -76,16 +76,16 @@ export const constantRoutes = [
     redirect: '/dashboard',
     meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
+      // {
+      //   path: 'dashboard',
+      //   component: () => import('@/views/playerManage/systemMoneyChart'),
+      //   name: 'dashboard',
+      //   meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
+      // },
       {
-        path: 'dashboard',
-        component: () => import('@/views/playerManage/systemMoneyChart'),
+        path: '/dashboard',
+        component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
         name: 'dashboard',
-        meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      },
-      {
-        path: 'dashboard2',
-        component: () => import('@/views/playerManage/systemMoneyChartV2'),
-        name: 'dashboard2',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
@@ -312,7 +312,7 @@ export const asyncRoutes = [
             name: 'pusoyTable',
             meta: { title: 'Pusoy ◐' }
           },
-          {
+          { // 牛牛
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
@@ -627,22 +627,19 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/moneycoming_slots_cfg'),
                 name: 'moneycoming_slots_cfg',
                 meta: { title: 'MoneyComing' }
-              }
-              /*
-              {
-                path: 'beauty_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/beauty_slots_cfg'),
-                name: 'beauty_slots_cfg',
-                meta: { title: 'Beauty - 睡美人' }
               },
-
               {
-                path: 'phoenix_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/phoenix_slots_cfg'),
-                name: 'phoenix_slots_cfg',
-                meta: { title: 'Phoenix - 凤凰' }
+                path: 'fortuneacego_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortuneacego_slots_cfg'),
+                name: 'fortuneacego_slots_cfg',
+                meta: { title: 'SuperAceGo' }
+              },
+              {
+                path: 'chargebison_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/chargebison_slots_cfg'),
+                name: 'chargebison_slots_cfg',
+                meta: { title: '冲锋野牛' }
               }
-              */
             ]
           },
           {
@@ -692,19 +689,25 @@ export const asyncRoutes = [
                 path: 'crazy777mars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
                 name: 'crazy777mars_slots_cfg',
-                meta: { title: '疯狂777(审)' }
+                meta: { title: '幸运777(审)' }
               },
               {
                 path: 'moneycomingmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/moneycomingmars_slots_cfg'),
                 name: 'moneycomingmars_slots_cfg',
-                meta: { title: '钱来也(审)' }
+                meta: { title: 'MoneyComing(审)' }
               },
               {
                 path: 'fortuneacegomars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fortuneacegomars_slots_cfg'),
                 name: 'fortuneacegomars_slots_cfg',
-                meta: { title: 'SuperAceGo(审)' }
+                meta: { title: 'UltraAce(审)' }
+              },
+              {
+                path: 'chargebisonmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/chargebisonmars_slots_cfg'),
+                name: 'chargebisonmars_slots_cfg',
+                meta: { title: '冲锋野牛(审)' }
               }
             ]
           },
@@ -970,6 +973,12 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy - ◐', gid: 21 }
           },
           {
+            path: 'playlog_niuniu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_domino',
+            meta: { title: 'NiuNiu ◐', gid: 49 }
+          },
+          {
             path: 'playlog_pusoyDos',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pusoyDos',
@@ -1074,6 +1083,26 @@ export const asyncRoutes = [
               }*/
             ]
           },
+          {
+            path: '/billiardsVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '台球专业版' },
+            children: [
+              {
+                path: 'playlog_8Ball',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_8Ball',
+                meta: { title: '8Ball ◐', gid: 47 }
+              },
+              {
+                path: 'playlog_9Ball',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_9Ball',
+                meta: { title: '9Ball ◐', gid: 48 }
+              },
+            ]
+          }
         ]
       },
       {
@@ -1230,13 +1259,25 @@ export const asyncRoutes = [
             path: 'crazy777_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
-            meta: { title: '疯狂777', gid: 88 }
+            meta: { title: '幸运777', gid: 88 }
           },
           {
             path: 'moneycoming_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycoming_slots_log',
-            meta: { title: '钱来也', gid: 90 }
+            meta: { title: 'MoneyComing', gid: 90 }
+          },
+          {
+            path: 'fortuneacego_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortuneacego_slots_log',
+            meta: { title: 'UltraAce', gid: 92 }
+          },
+          {
+            path: 'chargebison_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'chargebison_slots_log',
+            meta: { title: '冲锋野牛', gid: 94 }
           }
         ]
       },
@@ -1286,19 +1327,25 @@ export const asyncRoutes = [
             path: 'crazy777mars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777mars_slots_log',
-            meta: { title: '疯狂777(审)', gid: 89 }
+            meta: { title: '幸运777(审)', gid: 89 }
           },
           {
             path: 'moneycomingmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'moneycomingmars_slots_log',
-            meta: { title: '钱来也(审)', gid: 91 }
+            meta: { title: 'MoneyComing(审)', gid: 91 }
           },
           {
             path: 'fortuneacegomars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneacegomars_slots_log',
-            meta: { title: 'SuperAceGo(审)', gid: 93 }
+            meta: { title: 'UltraAce(审)', gid: 93 }
+          },
+          {
+            path: 'chargebison_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'chargebison_slots_log',
+            meta: { title: '冲锋野牛(审)', gid: 95 }
           }
         ]
       },
@@ -1429,18 +1476,24 @@ export const asyncRoutes = [
             name: 'emojPrice',
             meta: { title: '道具价格 ◐', noCache: true }
           },
+          // {
+          //   path: 'onlineCnt',
+          //   component: () => import('@/views/config/baseConfig/online_cnt'),
+          //   name: 'onlineCnt',
+          //   meta: { title: '在线人数配置', noCache: true }
+          // },
           {
-            path: 'onlineCnt',
-            component: () => import('@/views/config/baseConfig/online_cnt'),
-            name: 'onlineCnt',
-            meta: { title: '在线人数配置', noCache: true }
-          },
-          {
-            path: 'smsWhite',
-            component: () => import('@/views/config/baseConfig/sms_white'),
-            name: 'smsWhite',
-            meta: { title: '白名单发短信配置', noCache: true }
+            path: 'gameOnlineCountCfg',
+            component: () => import('@/views/config/tableConfig/gameOnlineCountCfg'),
+            name: 'gameOnlineCountCfg',
+            meta: { title: '游戏在线人数配置 ◐' }
           }
+          // ,{
+          //   path: 'smsWhite',
+          //   component: () => import('@/views/config/baseConfig/sms_white'),
+          //   name: 'smsWhite',
+          //   meta: { title: '白名单发短信配置', noCache: true }
+          // }
         ]
       },
       {
@@ -1735,6 +1788,12 @@ export const asyncRoutes = [
         name: 'walletInfo',
         meta: { title: '钱包信息' }
       },
+      {
+        path: 'walletApiStat',
+        component: () => import('@/views/wallet/walletApiTimesStat.vue'),
+        name: 'walletApiStat',
+        meta: { title: '钱包API请求统计' }
+      }
     ]
   },
   {

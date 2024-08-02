@@ -33,7 +33,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item label="盲注ID:" :required="true">
-              <el-input v-model="edit.item.blind_id" placeholder="请输入" />
+              <el-input v-model.number="edit.item.blind_id" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -43,7 +43,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="升盲时间(秒)">
-              <el-input v-model="edit.item.blind_time" placeholder="请输入" />
+              <el-input v-model.number="edit.item.blind_time" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -140,8 +140,8 @@ export default {
     },
     initTableData() {
       for (var i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i]['blind_id'] === this.edit.item.BlindId) {
-          this.tableData[i]['blind_name'] = this.edit.item.BlindName
+        if (this.tableData[i]['blind_id'] === this.edit.item.blind_id) {
+          this.tableData[i]['blind_name'] = this.edit.item.blind_name
           this.tableData[i]['blind_content'] = []
 
           for (var j = 0; j < this.edit.item.blind_content.length; j++) {
@@ -158,6 +158,29 @@ export default {
           return
         }
       }
+
+      var item={
+        blind_id: this.edit.item.blind_id,
+        blind_name: this.edit.item.blind_name,
+        blind_content: []
+      }
+      for (var j = 0; j < this.edit.item.blind_content.length; j++) {
+        var sub={
+            blind_level: this.edit.item.blind_content[j].blind_level,
+            small_blind: this.edit.item.blind_content[j].small_blind,
+            ante: this.edit.item.blind_content[j].ante,
+            raise_blind_time: Number(this.edit.item.blind_time)
+        }
+        item.blind_content.push(
+          {
+            blind_level: this.edit.item.blind_content[j].blind_level,
+            small_blind: this.edit.item.blind_content[j].small_blind,
+            ante: this.edit.item.blind_content[j].ante,
+            raise_blind_time: Number(this.edit.item.blind_time)
+          }
+        )
+      }
+      this.tableData.push(item)
     },
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'

@@ -1,23 +1,23 @@
 <template>
   <div class="app-container">
-   <el-row>
-     <el-col :span="18">
-       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
-     </el-col>
-     <el-col :span="2">
-       <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
-
-     </el-col>
-   </el-row>
     <el-row>
-     <el-col :span="24">
+      <el-col :span="18">
+        <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      </el-col>
+      <el-col :span="2">
+        <el-button type="primary" @click="dialogFormVisible= true" size="mini" > 测试配置</el-button>
+
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
         <span v-if="item.openTest=='2'">
          <el-alert
            title="测试模式已开启,记得关闭"
            type="error">
           </el-alert>
       </span>
-     </el-col>
+      </el-col>
 
     </el-row>
     <el-row :gutter="5" style="margin-top: 30px">
@@ -169,59 +169,95 @@
                   </el-table-column>
                 </el-table>
               </fieldset>
+              <fieldset  v-if="!IsPHAuditEnv()">
+                <legend>小奖池触发重摇</legend>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池低于某值此时系统输：">
+                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                  </el-descriptions-item>
+                </el-descriptions>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池大于某值此时系统赢：">
+                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                  </el-descriptions-item>
+                </el-descriptions>
+              </fieldset>
+              <!--              <fieldset style="margin-top:10px">-->
+              <!--                <legend>LuckyPachinko配置-->
+              <!--                </legend>-->
+              <!--                <el-table-->
+              <!--                  ref="filterTable"-->
+              <!--                  :data="item.LuckyPachinkoCfg"-->
+              <!--                  border-->
+              <!--                  :header-cell-style="libShow.DefaultTableHeadClass"-->
+              <!--                  :row-style="{height:'10px'}"-->
+              <!--                  :cell-style="libShow.DefaultTableCell"-->
+              <!--                  style="width: 100%"-->
+              <!--                >-->
+              <!--                  <el-table-column label="ID">-->
+              <!--                    <template slot-scope="scope">-->
+              <!--                      <el-input v-model="scope.row.Id" size="mini" disabled />-->
+              <!--                    </template>-->
+              <!--                  </el-table-column>-->
+              <!--                  <el-table-column label="是否jackpot">-->
+              <!--                    <template slot-scope="scope">-->
+              <!--                      <el-switch-->
+              <!--                        v-model="scope.row.IsJackpot"-->
+              <!--                        active-color="#13ce66"-->
+              <!--                        inactive-color="#ff4949"-->
+              <!--                        active-text="是"-->
+              <!--                        inactive-text="否"-->
+              <!--                      />-->
+              <!--                    </template>-->
+              <!--                  </el-table-column>-->
+              <!--                  <el-table-column label="倍数">-->
+              <!--                    <template slot-scope="scope">-->
+              <!--                      <el-input v-model.number="scope.row.Multiple" size="mini" />-->
+              <!--                    </template>-->
+              <!--                  </el-table-column>-->
+              <!--                  <el-table-column label="中奖概率">-->
+              <!--                    <template slot-scope="scope">-->
+              <!--                      <el-input v-model.number="scope.row.Rate" size="mini" />-->
+              <!--                    </template>-->
+              <!--                  </el-table-column>-->
+              <!--                  <el-table-column label="无Jackpot中奖概率">-->
+              <!--                    <template slot-scope="scope">-->
+              <!--                      <el-input v-model.number="scope.row.OtherRate" size="mini" />-->
+              <!--                    </template>-->
+              <!--                  </el-table-column>-->
+              <!--                  <el-table-column label="操作">-->
+              <!--                    <template slot-scope="scope">-->
+              <!--                      <el-button type="primary" size="mini" @click="doAddLuckyPachinkoCfg">添加</el-button>-->
+              <!--                      <el-button type="danger" size="mini" @click="delLuckyPachinkoCfg(scope.$index)">删除</el-button>-->
+              <!--                    </template>-->
 
-<!--              <fieldset style="margin-top:10px">-->
-<!--                <legend>LuckyPachinko配置-->
-<!--                </legend>-->
-<!--                <el-table-->
-<!--                  ref="filterTable"-->
-<!--                  :data="item.LuckyPachinkoCfg"-->
-<!--                  border-->
-<!--                  :header-cell-style="libShow.DefaultTableHeadClass"-->
-<!--                  :row-style="{height:'10px'}"-->
-<!--                  :cell-style="libShow.DefaultTableCell"-->
-<!--                  style="width: 100%"-->
-<!--                >-->
-<!--                  <el-table-column label="ID">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-input v-model="scope.row.Id" size="mini" disabled />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="是否jackpot">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-switch-->
-<!--                        v-model="scope.row.IsJackpot"-->
-<!--                        active-color="#13ce66"-->
-<!--                        inactive-color="#ff4949"-->
-<!--                        active-text="是"-->
-<!--                        inactive-text="否"-->
-<!--                      />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="倍数">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-input v-model.number="scope.row.Multiple" size="mini" />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="中奖概率">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-input v-model.number="scope.row.Rate" size="mini" />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="无Jackpot中奖概率">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-input v-model.number="scope.row.OtherRate" size="mini" />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="操作">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-button type="primary" size="mini" @click="doAddLuckyPachinkoCfg">添加</el-button>-->
-<!--                      <el-button type="danger" size="mini" @click="delLuckyPachinkoCfg(scope.$index)">删除</el-button>-->
-<!--                    </template>-->
-
-<!--                  </el-table-column>-->
-<!--                </el-table>-->
-<!--              </fieldset>-->
+              <!--                  </el-table-column>-->
+              <!--                </el-table>-->
+              <!--              </fieldset>-->
 
               <!--              <fieldset style="margin-top:10px">-->
               <!--                <legend>投注区域配置-->
@@ -383,56 +419,61 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-<!--                  <el-form-item label="每小时局数">-->
-<!--                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />-->
-<!--                  </el-form-item>-->
+                  <el-form-item label="每小时局数" v-if="!IsPHAuditEnv()">
+                    <el-input v-model.number="JackpotCfg.PerHourRound" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
+                    <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
 
-<!--            <fieldset style="margin-top:10px">-->
-<!--              <legend>jackpot每日限制</legend>-->
-<!--              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />-->
-<!--            </fieldset>-->
+            <!--            <fieldset style="margin-top:10px">-->
+            <!--              <legend>jackpot每日限制</legend>-->
+            <!--              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />-->
+            <!--            </fieldset>-->
 
             <fieldset style="margin-top:10px">
               <legend>jackpot配置</legend>
               <el-row>
                 <el-table
-                    ref="filterTable"
-                    :data="RandAwards"
-                    border
-                    :header-cell-style="libShow.DefaultTableHeadClass"
-                    :row-style="{height:'10px'}"
-                    :cell-style="libShow.DefaultTableCell"
-                    style="width: 100%"
+                  ref="filterTable"
+                  :data="RandAwards"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
                 >
                   <el-table-column type="index" />
                   <el-table-column label="奖励类型" prop="JackpotType">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.JackpotType">
                         <el-option
-                            v-for="typeItem in JackpotTypes"
-                            :key="typeItem.value"
-                            :label="typeItem.label"
-                            :value="typeItem.value"
+                          v-for="typeItem in JackpotTypes"
+                          :key="typeItem.value"
+                          :label="typeItem.label"
+                          :value="typeItem.value"
                         />
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="奖励发放类型" prop="AwardType">
+                  <el-table-column label="奖励发放类型" prop="AwardType"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-select v-model="scope.row.AwardType">
                         <el-option
-                            v-for="typeItem in AwardTypes"
-                            :key="typeItem.Type"
-                            :label="typeItem.Name"
-                            :value="typeItem.Type"
+                          v-for="typeItem in AwardTypes"
+                          :key="typeItem.Type"
+                          :label="typeItem.Name"
+                          :value="typeItem.Type"
                         />
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开出的奖池值" prop="PoolVal">
+                  <el-table-column label="开出的奖池值" prop="PoolVal"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       >=<el-input v-model.number="scope.row.PoolVal" style="width: 120px;" size="mini" :required="true" />
                     </template>
@@ -445,12 +486,17 @@
                       </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit">
+                  <el-table-column label="每日限制开出个数(0为不限)" prop="DayLimit"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.DayLimit" :disabled="checkShowDayLimit(scope.row.AwardType)" style="width: 120px;" size="mini" :required="true"><template slot="append">个</template></el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column label="开奖数量概率" prop="RateArr">
+                  <el-table-column label="中奖概率" prop="DayLimit"   v-if="IsPHAuditEnv()">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.JackpotRate" ><template slot="append">‰</template></el-input>
+                    </template>
+                  </el-table-column>
+                  <el-table-column label="开奖数量概率" prop="RateArr"   v-if="!IsPHAuditEnv()">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.AwardType == 1" type="primary" icon="el-icon-edit" circle size="mini" @click="showPoolNumDialog(scope.row)" />
                       {{ showOpenPoolRate(scope.row.JackpotType, scope.row.RateArr) }}
@@ -458,14 +504,14 @@
                   </el-table-column>
                 </el-table>
               </el-row>
-              <el-descriptions class="margin-top" border>
-                <el-descriptions-item>
-                  <span style="color:red;">以下为显示jackpot奖池增长配置。</span>
-                </el-descriptions-item>
-              </el-descriptions>
+              <!--              <el-descriptions class="margin-top" border>-->
+              <!--                <el-descriptions-item>-->
+              <!--                  <span style="color:red;">以下为显示jackpot奖池增长配置。</span>-->
+              <!--                </el-descriptions-item>-->
+              <!--              </el-descriptions>-->
             </fieldset>
 
-            <fieldset style="margin-top:10px">
+            <fieldset style="margin-top:10px"   v-if="!IsPHAuditEnv()">
               <legend>jackpot奖池增长</legend>
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
             </fieldset>
@@ -506,22 +552,22 @@
 
     <!-- 【dialog】jackpot开出奖励 -->
     <el-dialog
-        :title="poolNumChange.title"
-        :modal="false"
-        :visible.sync="poolNumChange.visible"
-        :close-on-click-modal="false"
-        :close-on-press-escape="false"
+      :title="poolNumChange.title"
+      :modal="false"
+      :visible.sync="poolNumChange.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
       <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="addPoolNum()">添加</el-button>
       <el-button style="margin-bottom:10px; float:right" type="primary" size="mini" @click="savePoolNum">保存</el-button>
       <el-table
-          ref="filterTable"
-          :data="poolNumChange.data"
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px'}"
-          :cell-style="libShow.DefaultTableCell"
-          style="width: 100%"
+        ref="filterTable"
+        :data="poolNumChange.data"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column label="配置ID" prop="Id">
           <template slot-scope="scope">
@@ -556,7 +602,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, DataRule } from '@/utils/common'
+import {$libShow, DataRule} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import RobotOnlineItems from '@/views/config/components/robotOnlineItems.vue'
 import JackpotDayLimit from '@/views/config/components/jackpotDayLimit.vue'
@@ -568,7 +614,9 @@ export default {
   data() {
     return {
       RandAwards: [],
-      item: {},
+      item: {
+        ReChoiceCfg:{}
+      },
       form: {},
       subKey: 'gameDropball',
       libShow: $libShow,
@@ -586,6 +634,7 @@ export default {
         data: [],
         jackpotType: 0
       },
+      env:process.env.VUE_APP_PROJECT,
       JackpotTypes: [
         { 'label': '一等奖', 'value': 1 },
         { 'label': '二等奖', 'value': 2 },
@@ -608,13 +657,14 @@ export default {
     }
   },
   created() {
-    console.log(process.env.VUE_APP_PROJECT_NAME)
+    console.log(process.env.VUE_APP_PROJECT)
     if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
       this.isHidden = false
     }
     this.getData()
   },
   methods: {
+
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -635,10 +685,6 @@ export default {
     },
     transMoneyForShow() {
       let that = this
-      that.item.MinRobotMoney /=  1000
-      that.item.MaxRobotMoney /= 1000
-
-
 
       for (const o of that.item.LuckyPachinkoCfg) {
         o.Multiple /= 1000
@@ -662,6 +708,10 @@ export default {
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
 
       }
+      that.item.ReChoiceCfg.LowLotteryPoolReChoiceRate  /= 10000
+      that.item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
+      that.item.ReChoiceCfg.HighLotteryPoolReChoiceRate /= 10000
+      that.item.ReChoiceCfg.HighLotteryPoolReChoice/= 1000
     },
     getData() {
       request({
@@ -675,8 +725,12 @@ export default {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
+            console.log("==========",item)
 
             this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
+            for (const o of this.RandAwards) {
+              o.PoolVal /= 1000
+            }
             if (!item.BetAreaOptions) {
               item['BetAreaOptions'] = []
               item.BetAreaOptions.push({ Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
@@ -684,15 +738,16 @@ export default {
             this.JackpotCfg = item.JackpotCfg
             this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
             item.MinRobotMoney /=  1000
-             item.MaxRobotMoney /= 1000
+            item.MaxRobotMoney /= 1000
 
-             if (!item.Dices){
-               item["Dices"] = [0,0,0]
-               item["openTest"] = "1"
-             }
+            if (!item.Dices){
+              item["Dices"] = [0,0,0]
+              item["openTest"] = "1"
+            }
+
             item.RobotAverageBetMoney /= 1000
             Object.assign(this.item, item)
-            console.log('item', this.PoolIncrArr)
+            console.log('item', this.item)
 
             this.transMoneyForShow()
             // 设置修改之前数据
@@ -708,7 +763,8 @@ export default {
     },
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
-      console.log("=========1",ret)
+      console.log("====",ret)
+
       let betItem = {}
       for (const o of ret.LuckyPachinkoCfg) {
         o.Multiple *= 1000
@@ -744,20 +800,17 @@ export default {
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
       ret.JackpotCfg.JackpotBetMin *=1000
-      console.log("====",ret)
-      ret.RobotAverageBetMoney *=1000
-      if (ret.openTest=="2") {
-        this.$alert('测试模式已开启，请测试后关闭', '提示', {
-          confirmButtonText: '确定',
-          callback: action => {
-            this.$message({
-              type: 'info',
-              message: ``
-            });
-          }
-        });
-      }
 
+      ret.RobotAverageBetMoney *=1000
+
+      ret.ReChoiceCfg.LowLotteryPoolReChoiceRate *= 10000
+      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      ret.ReChoiceCfg.HighLotteryPoolReChoiceRate *= 10000
+      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+
+      for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
+        o.PoolVal = parseInt(o.PoolVal * 1000)
+      }
       return ret
     },
 
@@ -808,7 +861,8 @@ export default {
       }
     },
     setData() {
-      this.form.Data = JSON.stringify(this.getPostData())
+      var postData = this.getPostData();
+      this.form.Data = JSON.stringify(postData)
       console.log(this.form)
       const $this = this
       // 设置修改后数据
@@ -817,6 +871,17 @@ export default {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
+        }
+        if (postData.openTest=="2") {
+          this.$alert('测试模式已开启，请测试后关闭', '提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+              this.$message({
+                type: 'info',
+                message: ``
+              });
+            }
+          });
         }
         request({
           url: 'customizeconfig/update',
@@ -883,6 +948,9 @@ export default {
         }
       }
     },
+    IsPHAuditEnv(){
+      return this.env == 'ph_audit'
+    },
     savePoolNum() {
       for (var i = 0; i < this.RandAwards.length; i++) {
         if (this.RandAwards.jackpotType == this.RandAwards[i].JackpotType) {
@@ -927,6 +995,7 @@ export default {
       const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
       return parseInt(result)
     },
+
     showRobotNumForm(data) {
       this.robotDialogForm.data = data
       this.robotDialogForm.visible = true
