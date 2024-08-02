@@ -21,6 +21,8 @@
               <el-option label="幸运777Mars" :value="89" />
               <el-option label="SuperAceGo" :value="92" />
               <el-option label="SuperAceGoMars" :value="93" />
+              <el-option label="冲锋野牛" :value="94" />
+              <el-option label="冲锋野牛Mars" :value="95" />
             </el-select>
           </el-form-item>
 
