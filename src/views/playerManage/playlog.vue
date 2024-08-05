@@ -2070,7 +2070,7 @@
           <template slot="label">
             最终牌型：
           </template>
-          {{ gameLogComponent.detail.VideoPoker.cardType >=0 ? videoPokerCardTypes[gameLogComponent.detail.VideoPoker.gameMode][gameLogComponent.detail.VideoPoker.cardType] : '无' }}
+          {{ getVideoPokerCardType() }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -3682,6 +3682,11 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         case 5:
           return 'QUINTET'
       }
+    },
+    getVideoPokerCardType() {
+      const gameMode = this.gameLogComponent.detail.VideoPoker.gameMode ? this.gameLogComponent.detail.VideoPoker.gameMode : 2
+      const cardType = this.gameLogComponent.detail.VideoPoker.cardType
+      return cardType >= 0 ? this.videoPokerCardTypes[gameMode] ? this.videoPokerCardTypes[gameMode][cardType] : '无' : '无'
     },
     initData() {
       this.detailVisible = false
