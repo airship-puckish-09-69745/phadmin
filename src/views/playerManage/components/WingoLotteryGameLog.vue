@@ -49,6 +49,9 @@
       <el-table-column label="区域ID">
         <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
+      <el-table-column label="区域名称">
+        <template slot-scope="scope">{{ getOptionName(scope.row.id) }}</template>
+      </el-table-column>
       <el-table-column label="命中">
         <template slot-scope="scope">{{ scope.row.isHit ==0?'否':'是' }}</template>
       </el-table-column>
@@ -87,6 +90,9 @@
           <el-table :data="scope.row.options" border :row-style="getHitStyle">
             <el-table-column label="区域ID">
               <template slot-scope="scope2">{{ scope2.row.id }}</template>
+            </el-table-column>
+            <el-table-column label="区域名称">
+              <template slot-scope="scope2">{{ getOptionName(scope2.row.id) }}</template>
             </el-table-column>
             <el-table-column label="区域下注金额">
               <template slot-scope="scope2">{{ formatNumber(scope2.row.moneyBet /1000) }}</template>
@@ -145,7 +151,22 @@ export default {
         7: '绿',
         8: '红',
         9: '绿'
-      }
+      },
+      BetOptions: [
+        { Name: '下注绿', MaxMoneyBet: 2000, Id: 0, RobotBetRate: 1 },
+        { Name: '下注紫', MaxMoneyBet: 2000, Id: 1, RobotBetRate: 1 },
+        { Name: '下注红', MaxMoneyBet: 2000, Id: 2, RobotBetRate: 1 },
+        { Name: '数字0', MaxMoneyBet: 2000, Id: 3, RobotBetRate: 1 },
+        { Name: '数字1', MaxMoneyBet: 2000, Id: 4, RobotBetRate: 1 },
+        { Name: '数字2', MaxMoneyBet: 2000, Id: 5, RobotBetRate: 1 },
+        { Name: '数字3', MaxMoneyBet: 2000, Id: 6, RobotBetRate: 1 },
+        { Name: '数字4', MaxMoneyBet: 2000, Id: 7, RobotBetRate: 1 },
+        { Name: '数字5', MaxMoneyBet: 2000, Id: 8, RobotBetRate: 1 },
+        { Name: '数字6', MaxMoneyBet: 2000, Id: 9, RobotBetRate: 1 },
+        { Name: '数字7', MaxMoneyBet: 2000, Id: 10, RobotBetRate: 1 },
+        { Name: '数字8', MaxMoneyBet: 2000, Id: 11, RobotBetRate: 1 },
+        { Name: '数字9', MaxMoneyBet: 2000, Id: 12, RobotBetRate: 1 }
+      ]
     }
   },
   watch: {
@@ -178,6 +199,14 @@ export default {
         return { color: 'red' }
       }
       return {}
+    },
+    getOptionName(optionId) {
+      for (let i = 0; i < this.BetOptions.length; i++) {
+        if (this.BetOptions[i].Id === optionId) {
+          return this.BetOptions[i].Name
+        }
+      }
+      return ''
     },
     formatNumber(n) {
       return n.toLocaleString()
