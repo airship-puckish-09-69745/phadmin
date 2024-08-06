@@ -19,6 +19,7 @@
         <el-table-column prop="BaseScore" label="投注额" width="200" />
         <el-table-column prop="TableFee" label="台费(千分比)" sortable="custom" width="200" />
         <el-table-column prop="MatchingPlayerNum" label="匹配池开赛人数" width="200" />
+        <el-table-column prop="HideCarry" label="隐藏目标值" width="200" />
         <el-table-column prop="LastModify" label="最近修改" width="160">
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
@@ -117,6 +118,11 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="隐藏目标值：" :required="true" prop="item.HideCarry" :rules="dataRule(true,{type:'n',range:'1'})">
+              <el-input v-model.number="edit.item.HideCarry" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
         </el-row>
 
         <fieldset>
@@ -178,6 +184,7 @@ function newItem() {
     MatchingPlayerNum: 8,
     TableFee: 10,
     Level: 1,
+    HideCarry: 0,
     TimeConfig: {}
   }
 }
@@ -193,7 +200,7 @@ export default {
       search: '',
       libShow: $libShow,
       env: 'test',
-      libMoney: new MoneyShow(['CarryLower', 'CarryUpper']),
+      libMoney: new MoneyShow(['CarryLower', 'CarryUpper', 'HideCarry']),
       libMoneyRobot: new MoneyShow(['RobotMoneyMin', 'RobotMoneyMax']),
 
       edit: {
@@ -214,7 +221,8 @@ export default {
         TableFee: '台费',
         InteractDayFreeTimes: '互动道具每日免费次数',
         InteractItemPrice: '互动道具每次价格消耗',
-        BaseScore: '底分'
+        BaseScore: '底分',
+        HideCarry: '隐藏目标值'
       }
     }
   },
