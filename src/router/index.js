@@ -1214,6 +1214,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_videoPoker',
             meta: { title: 'VideoPoker ◐', gid: 110 }
+          },
+          {
+            path: 'playlog_wingolottery',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_wingolottery',
+            meta: { title: 'WingoLottery ◐', gid: 112 }
           }
         ]
       },

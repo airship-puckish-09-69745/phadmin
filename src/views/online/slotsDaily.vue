@@ -195,7 +195,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95]
     }
   },
   created() {
@@ -259,6 +259,8 @@ export default {
           return 'MoneyComing'
         case 92:
           return 'UltraAce'
+        case 94:
+          return '冲锋野牛'
       }
       return '未知老虎机-' + sType
     },
@@ -286,6 +288,7 @@ export default {
         case 88:
         case 90:
         case 92:
+        case 94:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
