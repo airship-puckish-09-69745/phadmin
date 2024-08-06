@@ -210,7 +210,7 @@ export default {
         isEdit: false
       },
 
-      AttrNames: {
+      AttrNames: { 
         CarryLower: '最小携带',
         CarryUpper: '最大携带',
         BallCount: '球数',
