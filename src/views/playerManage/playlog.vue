@@ -899,7 +899,7 @@
             <span v-for="(row,idx) in scope.row.cards" >
               <el-image
                 style="width: 37px; height: 50px"
-                :src="getCardUrl(cardConversionColor(solitaireCard(row),'3-2','1-4','4-3','2-1'))"
+                :src="getCardUrl(cardConversionColor(row,'3-2','1-4','4-3','2-1'))"
               />
             </span>
           </template>
