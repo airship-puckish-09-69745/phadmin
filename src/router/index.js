@@ -639,6 +639,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/chargebison_slots_cfg'),
                 name: 'chargebison_slots_cfg',
                 meta: { title: '冲锋野牛' }
+              },
+              {
+                path: 'romanarena_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/romanarena_slots_cfg'),
+                name: 'romanarena_slots_cfg',
+                meta: { title: 'roman arena' }
               }
             ]
           },
@@ -708,6 +714,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/chargebisonmars_slots_cfg'),
                 name: 'chargebisonmars_slots_cfg',
                 meta: { title: '冲锋野牛(审)' }
+              },
+              {
+                path: 'romanarenamars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/romanarenamars_slots_cfg'),
+                name: 'romanarenamars_slots_cfg',
+                meta: { title: 'roman arena(审)' }
               }
             ]
           },
@@ -946,7 +958,26 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/match',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'matchConfig',
+        component: () => import('@/views/matchManage/matchConfig'),
+        name: 'matchConfig',
+        meta: { title: '赛事管理', noCache: true }
+      },
+      {
+        path: 'matchRule',
+        component: () => import('@/views/matchManage/matchRule'),
+        name: 'matchRule',
+        meta: { title: '赛制管理', noCache: true }
+      }
+    ]
+  },
   {
     path: '/playlog',
     component: Layout,
@@ -1284,6 +1315,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'chargebison_slots_log',
             meta: { title: '冲锋野牛', gid: 94 }
+          },
+          {
+            path: 'romanarena_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'romanarena_slots_log',
+            meta: { title: 'roman arena', gid: 96 }
           }
         ]
       },
@@ -1352,6 +1389,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'chargebison_slots_log',
             meta: { title: '冲锋野牛(审)', gid: 95 }
+          },
+          {
+            path: 'romanarenamars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'romanarenamars_slots_log',
+            meta: { title: 'roman arena(审)', gid: 97 }
           }
         ]
       },
