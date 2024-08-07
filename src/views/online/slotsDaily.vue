@@ -259,6 +259,8 @@ export default {
           return 'MoneyComing'
         case 92:
           return 'UltraAce'
+        case 96:
+          return 'RomanArena'
       }
       return '未知老虎机-' + sType
     },
@@ -286,6 +288,7 @@ export default {
         case 88:
         case 90:
         case 92:
+        case 96:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
