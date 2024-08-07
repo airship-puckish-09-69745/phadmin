@@ -958,7 +958,26 @@ export const asyncRoutes = [
       }
     ]
   },
-
+  {
+    path: '/match',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '比赛管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    children: [
+      {
+        path: 'matchConfig',
+        component: () => import('@/views/matchManage/matchConfig'),
+        name: 'matchConfig',
+        meta: { title: '赛事管理', noCache: true }
+      },
+      {
+        path: 'matchRule',
+        component: () => import('@/views/matchManage/matchRule'),
+        name: 'matchRule',
+        meta: { title: '赛制管理', noCache: true }
+      }
+    ]
+  },
   {
     path: '/playlog',
     component: Layout,
@@ -1207,6 +1226,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_videoPoker',
             meta: { title: 'VideoPoker ◐', gid: 110 }
+          },
+          {
+            path: 'playlog_wingolottery',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_wingolottery',
+            meta: { title: 'WingoLottery ◐', gid: 112 }
           }
         ]
       },
