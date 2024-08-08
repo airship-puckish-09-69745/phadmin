@@ -196,7 +196,7 @@
                   </el-col>
                   <el-col :span="11">
                     <el-form-item label="重摇概率：">
-                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
