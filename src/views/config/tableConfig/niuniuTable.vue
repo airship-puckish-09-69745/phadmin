@@ -287,14 +287,14 @@
 
         <el-row>
           <el-col :span="11">
-<!--            <el-form-item-->
-<!--              label="下注时长(秒)："-->
-<!--              :required="true"-->
-<!--              prop="item.ActionSeconds"-->
-<!--              :rules="dataRule(true,{type:'n',range:'5'})"-->
-<!--            >-->
-<!--              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />-->
-<!--            </el-form-item>-->
+            <el-form-item
+              label="下注时长(秒)："
+              :required="true"
+              prop="item.ActionSeconds"
+              :rules="dataRule(true,{type:'n',range:'5'})"
+            >
+              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />
+            </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item
