@@ -288,7 +288,7 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="下注时长(秒)："
+              label="下注时长(s) [5,20]默认8："
               :required="true"
               prop="item.ActionSeconds"
               :rules="dataRule(true,{type:'n',range:'5'})"
