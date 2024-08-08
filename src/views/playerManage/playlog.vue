@@ -895,16 +895,16 @@
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column label="手牌" width="450" align="center">
-          <template #default="scope">
-            <template v-if="scope.row.cardType > 1">
-              <!--                <div v-html="showCard(scope.row.cards)" /><span>({{ // niuniuCardTypes[scope.row.cardType] || '' }})</span>-->
-            </template>
-            <template v-else>
-              <!--                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ niuniuGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>-->
-            </template>
+          <template slot-scope="scope">
+            <span v-for="(row,idx) in scope.row.cards" >
+              <el-image
+                style="width: 37px; height: 50px"
+                :src="getCardUrl(cardConversionColor(row,'3-2','1-4','4-3','2-1'))"
+              />
+            </span>
           </template>
         </el-table-column>
-        <el-table-column prop="cardType" label="牌型" width="100"><template slot-scope="scope">{{ scope.row.cardType }}</template></el-table-column>
+        <el-table-column prop="cardType" label="牌型" width="100"><template slot-scope="scope">{{ niuniuTypeMap[scope.row.cardType] }}</template></el-table-column>
         <el-table-column prop="oddsCard" label="牌型倍数" width="100"><template slot-scope="scope">{{ scope.row.oddsCard }}</template></el-table-column>
         <el-table-column prop="oddsBet" label="下注倍数" width="100"><template slot-scope="scope">{{ scope.row.oddsBet }}</template></el-table-column>
         <el-table-column prop="moneyWon" label="输赢" width="100"><template slot-scope="scope">{{ scope.row.moneyWon/1000 }}</template></el-table-column>
@@ -2070,7 +2070,7 @@
           <template slot="label">
             最终牌型：
           </template>
-          {{ gameLogComponent.detail.VideoPoker.cardType >=0 ? videoPokerCardTypes[gameLogComponent.detail.VideoPoker.gameMode][gameLogComponent.detail.VideoPoker.cardType] : '无' }}
+          {{ getVideoPokerCardType() }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -2568,7 +2568,23 @@ export default {
         6: 'declare',
         7: '其他玩家都drop了'
       },
-
+      niuniuTypeMap:{
+        100 : '高牌',
+        101 : '牛1',
+        102 : '牛2',
+        103 : '牛3',
+        104 : '牛4',
+        105 : '牛5',
+        106 : '牛6',
+        107 : '牛7',
+        108 : '牛8',
+        109 : '牛9',
+        110 : '牛牛',
+        111 : '四花',
+        112 : '五花',
+        113 : '四条',
+        114 : '五小',
+      },
       chartData: newChartData(),
       dataArr: [],
       jackpotType: {
@@ -3682,6 +3698,11 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         case 5:
           return 'QUINTET'
       }
+    },
+    getVideoPokerCardType() {
+      const gameMode = this.gameLogComponent.detail.VideoPoker.gameMode ? this.gameLogComponent.detail.VideoPoker.gameMode : 2
+      const cardType = this.gameLogComponent.detail.VideoPoker.cardType
+      return cardType >= 0 ? this.videoPokerCardTypes[gameMode] ? this.videoPokerCardTypes[gameMode][cardType] : '无' : '无'
     },
     initData() {
       this.detailVisible = false

@@ -230,7 +230,8 @@ export default {
         { 'value': 102, 'label': 'Hilo' },
         { 'value': 103, 'label': 'Windrop' },
         { 'value': 106, 'label': '金猪' },
-        { 'value': 108, 'label': 'DropBall' }
+        { 'value': 108, 'label': 'DropBall' },
+        { 'value': 110, 'label': 'Video Poker' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
