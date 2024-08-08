@@ -292,13 +292,13 @@ export const asyncRoutes = [
             path: 'dominoTable',
             component: () => import('@/views/config/tableConfig/dominoTable'),
             name: 'dominoTable',
-            meta: { title: '多米诺 ◐' }
+            meta: { title: 'Domino ◐' }
           },
           {
             path: 'PusoySwapTable',
             component: () => import('@/views/config/tableConfig/pusoySwapTable'),
             name: 'pusoySwapTable',
-            meta: { title: 'pusoy换牌 ◐' }
+            meta: { title: 'Pusoy Swap  ◐' }
           },
           {
             path: 'solitaire',
@@ -1061,7 +1061,7 @@ export const asyncRoutes = [
             path: 'playlog_domino',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_domino',
-            meta: { title: '多米诺 ◐', gid: 46 }
+            meta: { title: 'Domino ◐', gid: 46 }
           },
           {
             path: 'playlog_qiuqiu',
@@ -1073,7 +1073,7 @@ export const asyncRoutes = [
             path: 'playlog_pusoySwap',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pusoySwap',
-            meta: { title: 'pusoy换牌 ◐', gid: 113 }
+            meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
             path: 'texasNlhStat',
