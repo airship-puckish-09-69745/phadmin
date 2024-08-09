@@ -578,8 +578,15 @@ export default {
       if (this.gameScene[gid]==undefined || this.gameScene[gid]=='undefined'){
         return
       }
+
     try {
-      axios.request({
+      const proxy = axios.create({
+        baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
+        withCredentials: true, // send cookies when cross-domain requests
+        timeout: 5000 // request timeout
+        // withCredentials: true,
+      })
+      proxy.request({
         async: false,
         url: '/customizeconfig/one',
         method: 'get',
@@ -592,7 +599,7 @@ export default {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             let ruleCfg = JSON.parse(response.Data.Data)
-            axios.request({
+            proxy.request({
               async: false,
               url: '/slotsActConfigV2/one',
               method: 'get',
