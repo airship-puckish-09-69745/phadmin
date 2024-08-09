@@ -577,6 +577,7 @@ export default {
       if (this.gameScene[gid]==undefined || this.gameScene[gid]=='undefined'){
         return
       }
+    try {
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -611,6 +612,9 @@ export default {
           }
         }
       })
+    }catch (e){
+        console.log(e)
+    }
     },
     getSlotsActConfig(ActId) {
 
