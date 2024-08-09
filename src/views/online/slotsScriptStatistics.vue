@@ -295,6 +295,7 @@ import {$libShow, ClientTableData} from '@/utils/common'
 import store from "@/store";
 import XLSX from "xlsx";
 import {Message} from "element-ui";
+import axios from "axios";
 
 const filterMap = {}
 
@@ -578,10 +579,12 @@ export default {
         return
       }
     try {
-      request({
+      axios.request({
+        async: false,
         url: '/customizeconfig/one',
         method: 'get',
-        data: {
+        params: {
+          Env : store.getters.env,
           SubKey:  this.gameScene[gid]+"_slots_rule"
         }
       }).then(response => {
@@ -589,10 +592,11 @@ export default {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             let ruleCfg = JSON.parse(response.Data.Data)
-            request({
+            axios.request({
+              async: false,
               url: '/slotsActConfigV2/one',
               method: 'get',
-              data: {ID:  ruleCfg.ActConfig.ActId, Env: 'test'}
+              params: {ID:  ruleCfg.ActConfig.ActId, Env : store.getters.env,}
             }).then(response => {
               this.Actions={}
               if (response.RetCode === 0) {
