@@ -295,7 +295,6 @@ import {$libShow, ClientTableData} from '@/utils/common'
 import store from "@/store";
 import XLSX from "xlsx";
 import {Message} from "element-ui";
-import axios from "axios";
 
 const filterMap = {}
 
@@ -578,19 +577,11 @@ export default {
       if (this.gameScene[gid]==undefined || this.gameScene[gid]=='undefined'){
         return
       }
-
     try {
-      const proxy = axios.create({
-        baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-        withCredentials: true, // send cookies when cross-domain requests
-        timeout: 5000 // request timeout
-        // withCredentials: true,
-      })
-      proxy.request({
+      request({
         url: '/customizeconfig/one',
         method: 'get',
-        params: {
-          Env : store.getters.env,
+        data: {
           SubKey:  this.gameScene[gid]+"_slots_rule"
         }
       }).then(response => {
@@ -598,10 +589,10 @@ export default {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             let ruleCfg = JSON.parse(response.Data.Data)
-            proxy.request({
+            request({
               url: '/slotsActConfigV2/one',
               method: 'get',
-              params: {ID:  ruleCfg.ActConfig.ActId, Env : store.getters.env,}
+              data: {ID:  ruleCfg.ActConfig.ActId, Env: 'test'}
             }).then(response => {
               this.Actions={}
               if (response.RetCode === 0) {
