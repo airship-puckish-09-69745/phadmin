@@ -599,7 +599,6 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             let ruleCfg = JSON.parse(response.Data.Data)
             proxy.request({
-              async: false,
               url: '/slotsActConfigV2/one',
               method: 'get',
               params: {ID:  ruleCfg.ActConfig.ActId, Env : store.getters.env,}
