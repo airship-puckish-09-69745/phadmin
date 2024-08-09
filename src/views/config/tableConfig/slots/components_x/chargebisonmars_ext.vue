@@ -7,12 +7,6 @@
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
-          <el-form-item label="免费模式wild额外倍数">
-            <el-input v-model="cfg.FreeWildOdds" placeholder="请输入内容,如2,3,5" />
-          </el-form-item>
-          <el-form-item label="免费模式wild额外倍数权重">
-            <el-input v-model="cfg.FreeWildOddsWeight" placeholder="请输入内容,如10,10,10" />
-          </el-form-item>
 
         </el-form>
       </el-col>
