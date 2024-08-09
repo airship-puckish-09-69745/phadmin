@@ -587,7 +587,6 @@ export default {
         // withCredentials: true,
       })
       proxy.request({
-        async: false,
         url: '/customizeconfig/one',
         method: 'get',
         params: {
