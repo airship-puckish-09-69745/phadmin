@@ -28,6 +28,10 @@
             <el-input v-model.number="slotsData.GoldRate" ><template slot="append">%</template></el-input>
           </el-form-item>
 
+          <el-form-item label="免费模式再中scatter概率">
+            <el-input v-model.number="slotsData.ReHitScatterRate" ><template slot="append">‰</template></el-input>
+          </el-form-item>
+
 
         </el-form>
       </el-col>

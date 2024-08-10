@@ -644,7 +644,7 @@ export const asyncRoutes = [
                 path: 'romanarena_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/romanarena_slots_cfg'),
                 name: 'romanarena_slots_cfg',
-                meta: { title: 'roman arena' }
+                meta: { title: 'Roman Arena' }
               }
             ]
           },
@@ -719,7 +719,7 @@ export const asyncRoutes = [
                 path: 'romanarenamars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/romanarenamars_slots_cfg'),
                 name: 'romanarenamars_slots_cfg',
-                meta: { title: 'roman arena(审)' }
+                meta: { title: 'Roman Arena(审)' }
               }
             ]
           },
