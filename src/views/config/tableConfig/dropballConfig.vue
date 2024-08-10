@@ -33,8 +33,8 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="抽水额度">
-                      <el-input v-model.number="item.FeeRate" size="mini" />
+                    <el-form-item label="保底奖池抽水">
+                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>

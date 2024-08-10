@@ -290,6 +290,7 @@
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
+import request2 from '@/utils/request2'
 import MoneyInput from '@/components/MoneyInput'
 import {$libShow, ClientTableData} from '@/utils/common'
 import store from "@/store";
@@ -578,7 +579,7 @@ export default {
         return
       }
     try {
-      request({
+      request2({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
@@ -589,11 +590,11 @@ export default {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             let ruleCfg = JSON.parse(response.Data.Data)
-            request({
+            request2({
               url: '/slotsActConfigV2/one',
               method: 'get',
               data: {ID:  ruleCfg.ActConfig.ActId, Env: 'test'}
-            }).then(response => {
+            },false).then(response => {
               this.Actions={}
               if (response.RetCode === 0) {
                 for (const key in response.Data.Actions) {
