@@ -123,7 +123,7 @@ export default {
       allCfg: {},
       listData: [],
       games: {
-        0: '应用在线',
+        // 0: '应用在线',
         // 2: 'Andar Bahar',
         // 3: 'Dragon VS Tiger',
         // 5: 'Car Roulette',
@@ -138,9 +138,10 @@ export default {
         31: 'Tongits-Classic',
         28: 'Tongits-Joker',
         29: 'Tongits-Quick',
-        34: 'PusoyDos'
+        34: 'PusoyDos',
         // 47: 'Billiard-8ball',
         // 48: 'Billiard-9ball'
+        113: 'Pusoy-Swap'
       },
 
       selectedGid: -1,
