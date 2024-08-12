@@ -277,16 +277,16 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
-      gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 100: 'Tower',
+      gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 49:'Niu Niu',100: 'Tower',
         76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: 'CandyCrazeMars', 80: 'Candy Craze', 81: 'SuperGemsMars', // 这行老虎机
-        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', 88: 'Crazy777', 90: 'MoneyComing', 92: 'Ultra Ace', // 这行老虎机
+        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', 88: 'Crazy777', 90: 'MoneyComing', 92: 'Ultra Ace', 96: 'Roman Arena', // 这行老虎机
         28: 'Tongits Joker', 29: 'Tongits Quick', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack', 46: 'Domino', 47: '8 Ball Plus', 48: '9 Ball Plus',
         105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 10000: '汇总' },
 
       userVisible: false,
       users: [],
-      defaultOrder: [10000,15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 113], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [10000,15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 49,113], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -375,9 +375,9 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 96)
         }
       }
     },
