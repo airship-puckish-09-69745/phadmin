@@ -709,7 +709,7 @@ export default {
       }
       let xLine = []
       const stamp1 = new Date(new Date().setHours(0, 0, 0, 0)).getTime()/1000
-      console.log("========",stamp1)
+      console.log("====？====",stamp1)
       for (let i = 0; i < 1440; i++) {
        let time=  stamp1 + i * 60
         xLine.push($libDate.FormateSecondStr(time, 6))
