@@ -714,7 +714,7 @@ export default {
       }
       let xLineArr = []
       for (const i in xLine) {
-        xLineArr.push(i)
+        xLineArr.push($libDate.FormateSecondStr(ob.TimeKey, 6))
       }
       healthData.xData = xLineArr
       originData.xData = xLineArr
