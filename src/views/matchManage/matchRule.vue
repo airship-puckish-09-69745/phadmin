@@ -35,6 +35,7 @@
     </el-row>
     <el-row>
       <div style="float: right; margin-bottom: 10px;">
+        <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
         <el-button size="mini" @click="showForm(0)" icon="el-icon-plus">添加赛制</el-button>
       </div>
       <el-table
@@ -54,16 +55,14 @@
           label="赛制名称"
         />
         <el-table-column
-          prop="process"
-          label="阶段简介"
-        />
-        <el-table-column
           prop="modifier"
           label="修改人"
+          v-if="showDevTool"
         />
         <el-table-column
           prop="update_time"
           label="修改时间"
+          v-if="showDevTool"
         >
           <template slot-scope="scope">
             {{ formatTime(scope.row.update_time) }}
@@ -72,6 +71,7 @@
         <el-table-column
           prop="status"
           label="开关"
+          v-if="showDevTool"
         >
           <template slot-scope="scope">
             <el-switch
@@ -91,12 +91,18 @@
         >
         <template slot-scope="scope">
           <el-button
-              v-if="scope.row.Status!=2"
+              size="mini"
+              icon="el-icon-zoom-in"
+              @click="checkForm(scope.row.id)"
+            >查看</el-button>
+          <el-button
+              v-if="showDevTool"
               size="mini"
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
             <el-button
+              v-if="showDevTool"
               type="success"
               size="mini"
               icon="el-icon-document-copy"
@@ -146,7 +152,7 @@
         <el-form-item label="赛制名称：" :required="true">
           <el-input style="width: 200px;" v-model="editForm.data.name" placeholder="请填写赛制名称" />
         </el-form-item>
-        <el-form-item label="支持玩法：" :required="true">
+        <el-form-item label="支持游戏：" :required="true">
           <el-checkbox-group v-model="editForm.data.game_id">
             <el-checkbox v-for="item in gameCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
           </el-checkbox-group>
@@ -154,13 +160,10 @@
         <el-form-item label="初始积分：" :required="true">
           <el-input style="width: 200px;" v-model.number="editForm.data.init_score" placeholder="请填写初始积分，默认0" />
         </el-form-item>
-        <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;">
-          <legend>第{{ stageItem.stage_index }}阶段 <el-button size="mini" @click="removeStage(stageItem.stage_index)" type="danger" icon="">移除</el-button></legend>
-          <el-form-item label="阶段名称：" :required="true">
-            <el-input style="width: 200px;" v-model.number="stageItem.stage_name" placeholder="请填写比赛阶段名称" />
-          </el-form-item>
+        <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;max-height: max-content;min-width: inherit;">
+          <legend>比赛{{ stageItem.stage_index }}阶段</legend>
           <el-form-item label="赛制类型：" :required="true">
-            <el-select v-model="stageItem.system_type" placeholder="请选择" size="mini">
+            <el-select v-model="stageItem.system_type" :disabled="true" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in systemTypeCfgs"
                 :key="item.value"
@@ -243,8 +246,8 @@
               <el-form-item v-if="stageItem.system_strike_out.promotion_rule.score_brought_in.score_method==1" label="开方加倍数：" :required="true">
                 <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.promotion_rule.score_brought_in.score_multiple" placeholder="请填写开方加倍数" />倍
               </el-form-item>
-              <el-form-item v-if="stageItem.system_strike_out.promotion_rule.score_brought_in.score_method==2" label="固定比列：" :required="true">
-                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.promotion_rule.score_brought_in.score_rate" placeholder="请填写固定比列" />%
+              <el-form-item v-if="stageItem.system_strike_out.promotion_rule.score_brought_in.score_method==2" label="固定比例：" :required="true">
+                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.promotion_rule.score_brought_in.score_rate" placeholder="请填写固定比例" />%
               </el-form-item>
             </fieldset>
           </div>
@@ -262,14 +265,13 @@
             <el-form-item label="阶段轮数：" :required="true">
               <el-input-number v-model="stageItem.system_reach_out.round_total" @change="changeRoundTotal($event, stageItem.stage_index)" :min="1" :max="10"></el-input-number>
             </el-form-item>
-            <el-form-item >
+            <el-form-item label="阶段配置：" :required="true">
               <el-table
               :data="stageItem.system_reach_out.round_config"
-              border
               stripe
               :header-cell-style="libShow.DefaultTableHeadClass"
               :cell-style="libShow.TableCell(10)"
-              style="width: 100%"
+              style="width: 100%;"
             >
               <el-table-column
                 prop="index"
@@ -321,7 +323,6 @@
               <el-table-column
                 prop="bottom_score_open"
                 label="本轮底分"
-                width="300px"
                 v-if="stageItem.system_reach_out.bottom_score_open==1"
               >
                 <template slot-scope="scope">
@@ -332,8 +333,6 @@
             </el-form-item>
           </div>
         </fieldset>
-        <el-button size="mini" @click="addStage()"  icon="el-icon-plus">比赛阶段</el-button>
-        <el-divider></el-divider>
         <el-form-item>
           <el-button @click="saveStage()" size="medium" type="primary" icon="el-icon-s-order">保存赛制配置</el-button>
         </el-form-item>
@@ -378,7 +377,7 @@ export default {
       ],
       enableCfgs: [
         {"value":1,"label":"开启"},
-        {"value":0,"label":"关闭"},
+        //{"value":0,"label":"关闭"},
       ],
       growthCfgs: [
         {"value":3,"label":"定值增长"},
@@ -414,7 +413,8 @@ export default {
         gid: "支持的游戏id",
         initScore: "初始积分",
         stages: "比赛阶段配置",
-      }
+      },
+      showDevTool: false
     }
   },
   computed: {
@@ -517,20 +517,41 @@ export default {
         }
       })
     },
+    checkForm(id) {
+      this.editForm.title = "赛制配置"
+      this.editForm.isAdd = false
+      for (let i=0;i<this.tableData.length;i++) {
+          if (this.tableData[i].id == id) {
+
+            //Message.info("测试111：" + JSON.stringify([this.tableData[i].game_id]))
+
+            this.editForm.data = this.tableData[i]
+
+            let gameId = parseInt(this.tableData[i].game_id, 10);
+
+            this.editForm.data.game_id = [gameId]
+            this.tableData[i].game_id = [gameId]
+
+            break
+        }
+      }
+      this.editForm.visable = true
+    },
     showForm(id) {
       if (id == 0) {
         this.editForm.title = "新增赛制配置"
         this.editForm.data = {
           "id": 0,
-          "name": "",
+          "name": "mtt赛制配置",
           "game_id": [31],
-          "init_score": 0,
+          "init_score": 1000,
           "stage_detail": [],
           "status": 0,
           "modifier": "",
           "update_time": 0,
         }
         this.editForm.isAdd = true
+        this.addStage()
       } else {
         this.editForm.title = "编辑赛制配置"
         this.editForm.isAdd = false
@@ -581,30 +602,69 @@ export default {
         }
       }
     },
-    removeStage(stageIndex) {
-      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
-        if (this.editForm.data.stage_detail[i].stage_index == stageIndex) {
-          this.editForm.data.stage_detail.splice(i, 1)
-        }
-      }
-    },
     addStage() {
-      let maxIndex = 0
-      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
-        if (this.editForm.data.stage_detail[i].stage_index > maxIndex) {
-          maxIndex = this.editForm.data.stage_detail[i].stage_index
-        }
-      }
       this.editForm.data.stage_detail.push({
-        "stage_index": maxIndex+1,       //阶段序号
-        "stage_name": "新阶段", //阶段名称
+        "stage_index": 1,       //阶段序号
         "system_type": 1,       //赛制类型：1打立出局，2定局积分
         "alloc_type": 1,    //配桌方式:1随机配桌,2无重复队友
         "system_reach_out": {   //定局积分
             "round_total": 1,   //总轮数
             "score_sort_type": 1,   //晋级排名规则：1按总排名，2按桌内排名
             "score_method": 2,  //带分方式：1开方加倍,2固定比列
-            "bottom_score_open": 0, //开启本轮底分0:开启，1关闭
+            "bottom_score_open": 1, //开启本轮底分0:开启，1关闭
+            "round_config": [
+                {
+                    "index": 1,                 //第几轮
+                    "play_round": 4,            //玩牌局数
+                    "promotion_user": 3,        //晋级人数
+                    "init_score_growth":10,     //本轮初始积分增量
+                    "score_multiple": 1,   //开方加倍数，带分方式为1有值
+                    "score_rate": 50,   //固定比列(%)，带分方式为2有值
+                    "bottom_score": 100, //本轮底分(开启本轮底分才有)
+                }
+            ]
+        },
+        "system_strike_out": {
+          "bottom_score_growth": {    //底分增长配置
+            "open": 1,              //是否开启：0开启，1关闭
+            "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
+            "init_score": 100,      //初始底分
+            "interval": 80,         //增长间隔(秒),类型为2才有
+            "value": 3,             //增长值,类型为2是倍数，类型为3是固定值
+          },
+          "disuse_score_growth": {    //淘汰分
+              "open": 1,              //是否开启：0开启，1关闭
+              "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
+              "init_score": 100,      //初始底分
+              "interval": 80,         //增长间隔(秒),类型为2才有
+              "value": 3,             //增长值,类型为2是倍数，类型为3是固定值
+          },
+          "end_rule": {               //结束规则
+              "end_method": 3, //结束方式：1时间截止，2人数截止，3:时间+人数截止
+              "lave_user_number": 10, //剩余人数
+              "match_minute": 100,    //开赛多少分钟
+          },
+          "promotion_rule": {         //晋级规则
+              "score_sort_type": 1,   //晋级排名规则：1按总排名，2按桌内排名，打立默认是1
+              "user_number": 10,      //晋级人数
+              "score_brought_in": {   //积分带入情况
+                  "max_score": 1000,  //带分上限
+                  "score_method": 2,  //带分方式：1开方加倍,2固定比列
+                  "score_multiple": 1,   //开方加倍数，带分方式为1有值
+                  "score_rate": 50,   //固定比列(%)，带分方式为2有值
+              }
+          }
+        }
+      })
+      this.editForm.data.stage_detail.push({
+        "stage_index": 2,       //阶段序号
+        "system_type": 2,       //赛制类型：1打立出局，2定局积分
+        "alloc_type": 1,    //配桌方式:1随机配桌,2无重复队友
+        "system_reach_out": {   //定局积分
+            "round_total": 1,   //总轮数
+            "score_sort_type": 1,   //晋级排名规则：1按总排名，2按桌内排名
+            "score_method": 2,  //带分方式：1开方加倍,2固定比列
+            "bottom_score_open": 1, //开启本轮底分0:开启，1关闭
             "round_config": [
                 {
                     "index": 1,                 //第几轮
@@ -655,7 +715,7 @@ export default {
       let gameId = parseInt(this.editForm.data.game_id, 10);
       let origin = this.editForm.data.game_id
 
-      Message.info("gameId:" + gameId + " origin:" + origin)
+      //Message.info("gameId:" + gameId + " origin:" + origin)
 
       if (!this.configCheck()) {
         return
@@ -716,6 +776,12 @@ export default {
           .catch(() => {
             console.log('取消')
           })
+    },
+    handleShowDevTools() {
+      // 浏览器设置ShowDev=1才可以看到开发工具
+      if (window.ShowDev == 1) {
+        this.showDevTool = !this.showDevTool
+      }
     },
     errmsg(txt) {
       this.$alert(txt,'',{
