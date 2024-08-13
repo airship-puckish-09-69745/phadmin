@@ -665,9 +665,7 @@ export default {
           return 0
         })
       }
-      let xLine = {}
       for (const i in preObjs) {
-
         const ob = preObjs[i]
         if (ob.Gid > 50 && ob.Gid < 100) {
           // 老虎机目前没有存 MoneyLose
@@ -709,6 +707,15 @@ export default {
           }
         }
       }
+      let xLine = []
+      const stamp1 = new Date(new Date().setHours(0, 0, 0, 0)).getTime()/1000
+      console.log("========",stamp1)
+      for (let i = 0; i < 1440; i++) {
+       let time=  stamp1 + i * 60
+        xLine.push($libDate.FormateSecondStr(time, 6))
+      }
+      this.healthData.xData = xLine
+      this.originData.xData = xLine
       this.healthData = healthData
       this.originData = originData
     }
