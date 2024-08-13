@@ -644,7 +644,13 @@ export const asyncRoutes = [
                 path: 'romanarena_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/romanarena_slots_cfg'),
                 name: 'romanarena_slots_cfg',
-                meta: { title: 'roman arena' }
+                meta: { title: 'Roman Arena' }
+              },
+              {
+                path: 'supertongit_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supertongit_slots_cfg'),
+                name: 'supertongit_slots_cfg',
+                meta: { title: 'SuperTongit' }
               }
             ]
           },
@@ -719,7 +725,13 @@ export const asyncRoutes = [
                 path: 'romanarenamars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/romanarenamars_slots_cfg'),
                 name: 'romanarenamars_slots_cfg',
-                meta: { title: 'roman arena(审)' }
+                meta: { title: 'Roman Arena(审)' }
+              },
+              {
+                path: 'supertongitmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supertongitmars_slots_cfg'),
+                name: 'supertongitmars_slots_cfg',
+                meta: { title: 'SuperTongit(审)' }
               }
             ]
           },
@@ -1321,6 +1333,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'romanarena_slots_log',
             meta: { title: 'roman arena', gid: 96 }
+          },
+          {
+            path: 'supertongit_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supertongit_slots_log',
+            meta: { title: 'superTongit', gid: 98 }
           }
         ]
       },
@@ -1395,6 +1413,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'romanarenamars_slots_log',
             meta: { title: 'roman arena(审)', gid: 97 }
+          },
+          {
+            path: 'supertongitmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supertongitmars_slots_log',
+            meta: { title: 'superTongit(审)', gid: 99 }
           }
         ]
       },

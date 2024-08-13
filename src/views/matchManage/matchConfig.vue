@@ -61,19 +61,15 @@
       </div>
       <el-table
         :data="tableData"
-        border
         stripe
         :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)"
         style="width: 100%"
       >
         <el-table-column
-          prop="appid"
-          label="APPID"
-        />
-        <el-table-column
-          prop="channel_id"
-          label="渠道ID"
+          prop="show_appinfo"
+          label="APP信息"
+          show-overflow-tooltip
         />
         <el-table-column
           prop="id"
@@ -85,7 +81,7 @@
         />
         <el-table-column
           prop="game_id"
-          label="玩法名称"
+          label="游戏名称"
         >
           <template slot-scope="scope">
             {{ getGameName(scope.row.game_id) }}
@@ -193,19 +189,62 @@
         <el-form-item v-if="editForm.data.id > 0" label="赛事ID：">
         {{ editForm.data.id }}
         </el-form-item>
-        <el-form-item label="APPID：" :required="true">
-          <el-input style="width: 200px;" v-model="editForm.data.appId" placeholder="请填写APPID" />
-        </el-form-item>
-        <el-form-item label="渠道ID：" :required="true">
-          <el-select v-model="editForm.data.channelId" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in channelIdCfgs"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
+        <fieldset>
+          <legend>APP信息</legend>
+          <el-button style="margin-bottom: 10px;" @click="addAppInfo()" type="normal" size="mini">添加</el-button>
+            <el-table
+              :data="editForm.appInfo"
+              border
+              stripe
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'35px'}"
+              :cell-style="libShow.TableCell(0)"
+              style="width: 100%;line-height:35px;"
+            >
+              <el-table-column
+                prop="index"
+                label="序号"
+                width="50"
+              />
+              <el-table-column
+                prop="appId"
+                label="AppID"
+                width="400"
+              >
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.appId" placeholder="请选择" size="mini">
+                <el-option
+                  v-for="item in appidInfoCfgs"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+                </el-select>
+              </template>
+              </el-table-column>
+              <el-table-column
+                prop="channelId"
+                label="渠道ID"
+                width="400"
+              >
+              <template slot-scope="scope">
+                <el-checkbox-group v-model="scope.row.channelId">
+                <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                </el-checkbox-group>
+              </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+                width="100"
+              >
+                <template slot-scope="scope">
+                  <el-button  @click="removeAppInfo(scope.$index)" type="danger" size="mini">移除</el-button>
+                </template>
+              </el-table-column>
+          </el-table>
+        </fieldset>
+      <fieldset>
+        <legend>赛事信息</legend>
         <el-form-item label="赛事名称：" :required="true">
           <el-input style="width: 200px;" v-model="editForm.data.name" placeholder="请填写赛事名称" />
         </el-form-item>
@@ -239,13 +278,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item v-if="editForm.data.opentMatchType==1" label="满x人开赛：" :required="true">
-          <el-input style="width: 200px;" v-model="editForm.data.opentMatchMember" placeholder="请填写开赛人数" />
-        </el-form-item>
         <el-form-item v-if="editForm.data.opentMatchType==2" label="最低开赛人数：" :required="true">
           <el-input style="width: 200px;" v-model="editForm.data.opentMatchMember" placeholder="请填写开赛人数" />
         </el-form-item>
-
+      </fieldset>
         <fieldset>
           <legend>开赛时间</legend>
           <el-form-item label="比赛类型：" :required="true">
@@ -294,6 +330,9 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item v-if="editForm.data.signUpType == 0" label="报名费：" :required="true">
+            <el-input style="width: 200px;" size="mini" v-model.number="editForm.data.signUpNum" placeholder="请填写金币数量" />
+          </el-form-item>
         </fieldset>
 
         <fieldset>
@@ -315,7 +354,7 @@
               />
               <el-table-column
                 prop="rewardItems"
-                label="奖励列表"
+                label="奖励"
                 width="400"
               >
                 <template slot-scope="scope">
@@ -332,8 +371,6 @@
                       <el-input style="width: 80px;" v-model.number="gItem.getNum" size="mini" placeholder="请填写获得数量" />
                     </li>
                   </ul>
-                  <el-divider></el-divider>
-                  <el-button style="margin-bottom: 10px;" @click="addRewards(scope.$index)" type="normal" size="mini">添加奖励</el-button>
                 </template>
               </el-table-column>
               <el-table-column
@@ -374,6 +411,8 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow} from '@/utils/common'
+import AppInfo from '../devTools/appInfo.vue'
+import { log } from 'console'
 
 export default {
   name: 'MatchConfig',
@@ -389,6 +428,15 @@ export default {
         csId: -1,
         repeatType: -1,
       },
+      appidInfoCfgs:[
+        {"value": 1000002, "label":"dayusenlin"},
+        {"value": 1000003, "label":"testaccount"},
+        {"value": 1000004, "label":"testkey"},
+        {"value": 1000005, "label":"BingoPlusTongits"},
+        {"value": 1000006, "label":"BingoPlusTest"},
+        {"value": 1000007, "label":"br"},
+        {"value": 1100000, "label":"xworld"},
+      ],
       gameCfgs: [
         {"value": 31, "label":"tongits"},
         // {"value": 15, "label":"德州"}
@@ -408,9 +456,10 @@ export default {
         {"value":0,"label":"单场"},
       ],
       openMatchTypeCfgs: [
-        {"value":1,"label":"人满开赛"},
+        {"value":2,"label":"定时开赛"},
       ],
       signUpTypeCfgs: [
+        {"value":0,"label":"付费报名"},
         {"value":1,"label":"免费报名"},
       ],
       getTypeCfgs: [
@@ -428,8 +477,6 @@ export default {
         isAdd: false,
         data: {
           id: 0,
-          appId: 0,
-          channelId: "",
           name: "",
           gameId: 0,
           csId: 0,
@@ -438,6 +485,7 @@ export default {
           repeatType: 0,
           repeatDetail: "",
           signUpType:0,
+          signUpNum:0,
           preShowSeconds: 0,
           preEnterSeconds: 0,
           delayEnterSeconds: 0,
@@ -462,14 +510,20 @@ export default {
             ]
           }
         ],
+        appInfo:[
+          {
+            index:1,
+            appId:1000002,
+            channelId:[]
+          },
+        ],
         whileList: {
           type: 0,
           data: []
         }
       },
       AttrNames: {
-        appId:"appid",
-        channelId:"渠道id",
+        appInfo: "APP信息",
         matchCfgId: "赛事id",
         title: "赛事名称",
         gid: "游戏id",
@@ -483,8 +537,7 @@ export default {
         preEnterSeconds: "提前进入比赛(秒)",
         delayEnterSeconds: "延迟进入比赛(秒)",
         signType: "报名方式",
-        signItemType: "报名费类型",
-        signItemNum: "报名费数量",
+        signNum: "报名费数量",
         status: "状态",
         rewardsCfg: "名次奖励"
       }
@@ -557,6 +610,22 @@ export default {
                 } else {
                   this.tableData[i].openShow = false
                 }
+
+                let show_appinfo = ""
+                let appInfoTemp = JSON.parse(this.tableData[i].app_info_cfg)
+
+                for (let i=0;i<appInfoTemp.length;i++) {
+
+                  if (i == 0) {
+                    show_appinfo += appInfoTemp[i].appId + " "
+                  }else {
+                    show_appinfo += "  " + appInfoTemp[i].appId + " "
+                  }
+                  
+                  show_appinfo += appInfoTemp[i].channelId
+                }
+
+                this.tableData[i].show_appinfo = show_appinfo
               }
             }
           } else {
@@ -632,25 +701,22 @@ export default {
         ]
       })
     },
-    addRewards(index) {
-      var rIndex = 0
-      var rewards = this.editForm.rankRewards[index].rewardItems
-      if (rewards.length > 0) {
-        rIndex = rewards.length
-      }
-      rIndex++
-      if (rIndex > 3) {
-        Message.error("单名次奖励的奖品不能超过三个！")
-        return
-      }
-      this.editForm.rankRewards[index].rewardItems.push(
-        {
-          index: rIndex,
-          getType: 0,
-          getPid: 0,
-          getNum: 0
+    addAppInfo(index) {
+      var index = this.editForm.appInfo.length
+      index++
+      this.editForm.appInfo.push({
+        index: index,
+        appId: 1000002,
+        channelId: [],
+      })
+    },
+    removeAppInfo(index) {
+      this.editForm.appInfo.splice(index, 1)
+      if (this.editForm.appInfo.length > 0) {
+        for (var i=0;i<this.editForm.appInfo.length;i++) {
+          this.editForm.appInfo[i].index = i+1
         }
-      )
+      }
     },
     removeRewardItme(index) {
       this.editForm.rankRewards.splice(index, 1)
@@ -660,7 +726,6 @@ export default {
         }
       }
     },
-
     formatNum(n) {
       return n.toLocaleString()
     },
@@ -709,16 +774,15 @@ export default {
         this.editForm.title = "新增比赛配置"
         this.editForm.data = {
           id: 0,
-          appId: 0,
-          channelId: "",
           name: "",
           gameId: 0,
           csId: 0,
-          opentMatchType: 0,
+          opentMatchType: 2,
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: "",
           signUpType:0,
+          signUpNum:0,
           preShowSeconds: 0,
           preEnterSeconds: 0,
           delayEnterSeconds: 0,
@@ -729,6 +793,13 @@ export default {
           //只有一场
           onceTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
         }
+        this.editForm.appInfo = [
+          {
+            index: 1,
+            appId: 1000002,
+            channelId: []
+          }
+        ]
         this.editForm.rankRewards = [
           {
             index: 1,
@@ -766,8 +837,6 @@ export default {
         }
         this.editForm.data = {
           id: editData.id,
-          appId: editData.appid,
-          channelId: editData.channel_id,
           name: editData.name,
           gameId: editData.game_id,
           csId: editData.cs_id,
@@ -776,6 +845,7 @@ export default {
           repeatType: editData.repeat_type,
           repeatDetail: editData.repeat_detail,
           signUpType: editData.sign_up_type,
+          signUpNum: editData.sign_up_num,
           preShowSeconds: editData.pre_show_seconds,
           preEnterSeconds: editData.pre_enter_seconds,
           delayEnterSeconds: editData.delay_enter_seconds,
@@ -786,6 +856,7 @@ export default {
         if (editData.repeat_type == 0) {
           this.editForm.loopDetail.onceTime = [new Date(editData.start_time*1000),new Date(editData.end_time*1000)]
         }
+        this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
         this.showCsCfgs = []
         //循环遍历是否存在gameId
         if(this.csCfgs.length > 0) {
@@ -824,8 +895,7 @@ export default {
         data: {
           Env: this.env,
           Id: this.editForm.data.id,
-          AppId: this.editForm.data.appId,
-          ChannelId: this.editForm.data.channelId,
+          AppInfo: JSON.stringify(this.editForm.appInfo),
           Name: this.editForm.data.name,
           Status: this.editForm.data.status,
           GameId: this.editForm.data.gameId,
@@ -833,6 +903,7 @@ export default {
           OpenMatchType: this.editForm.data.opentMatchType,
           OpenMatchMember: this.editForm.data.opentMatchMember,
           SignUpType: this.editForm.data.signUpType,
+          SignUpNum: this.editForm.data.signUpNum,
           Rewards: rankReward,
           RepeatType: this.editForm.data.repeatType,
           RepeatDetail: repeatDetail,
@@ -902,6 +973,9 @@ export default {
         return false
       } else if ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
+        return false
+      } else if (this.editForm.data.signUpNum < 0) {
+        this.errmsg('报名费数值不能小于零')
         return false
       } 
       return true

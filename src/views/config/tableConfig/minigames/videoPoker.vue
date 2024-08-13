@@ -8,16 +8,16 @@
         <el-row>
           <el-col :span="7">
             <el-form-item label="保底奖池抽水：">
-              <el-input v-model.number="item.FeeRate"><template slot="append">‰</template></el-input>
+              <el-input v-model.number="item.FeeRate"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
             <el-form-item label="Jackpot贡献率：">
-              <el-input v-model.number="item.JackpotContributeRate"><template slot="append">‰</template></el-input>
+              <el-input v-model.number="item.JackpotContributeRate"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="7" :offset="1">
-            <el-form-item label="解锁Jackpot最小下注(放大1000倍)：">
+            <el-form-item label="解锁Jackpot最小下注：">
               <el-input v-model.number="item.JackpotBetMin" />
             </el-form-item>
           </el-col>
@@ -610,6 +610,7 @@ export default {
     },
     transMoneyForShow() {
       this.updateBetLevelText()
+      this.item.JackpotBetMin /= 1000
 
       for (const i in this.item.CardTypeOdds.JbOddsList) {
         this.item.CardTypeOdds.JbOddsList[i].Odds /= 1000
@@ -623,6 +624,7 @@ export default {
       const ret = {}
       Object.assign(ret, this.item)
 
+      ret.JackpotBetMin *= 1000
       ret.CardTypeOdds.JbOddsList = []
       for (const i in this.JbOddsList) {
         if (this.JbOddsList[i].Odds === undefined) {
