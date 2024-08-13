@@ -714,8 +714,8 @@ export default {
        let time=  stamp1 + i * 60
         xLine.push($libDate.FormateSecondStr(time, 6))
       }
-      this.healthData.xData = xLine
-      this.originData.xData = xLine
+      healthData.xData = xLine
+      originData.xData = xLine
       this.healthData = healthData
       this.originData = originData
     }
