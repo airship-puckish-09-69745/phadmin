@@ -23,6 +23,10 @@
               <el-option label="SuperAceGoMars" :value="93" />
               <el-option label="冲锋野牛" :value="94" />
               <el-option label="冲锋野牛Mars" :value="95" />
+              <el-option label="RomanArena" :value="96" />
+              <el-option label="RomanArenaMars" :value="97" />
+              <el-option label="SuperTongit" :value="98" />
+              <el-option label="SuperTongitMars" :value="99" />
             </el-select>
           </el-form-item>
 
