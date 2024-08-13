@@ -666,14 +666,11 @@ export default {
         })
       }
       let xLine = {}
-      for (const i in objs) {
-        xLine[objs[i].TimeKey ] = 0
-      }
       for (const i in preObjs) {
+
         const ob = preObjs[i]
         if (ob.Gid > 50 && ob.Gid < 100) {
-          xLine[ob[i].TimeKey ] = 0
-            // 老虎机目前没有存 MoneyLose
+          // 老虎机目前没有存 MoneyLose
           healthData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
           const y = ob.MoneyBet > 0 ? (ob.MoneyBet - ob.MoneyWon) * 100 / ob.MoneyBet : 0
           healthData.yData[0].Data.push(y.toFixed(2))
@@ -712,12 +709,6 @@ export default {
           }
         }
       }
-      let xLineArr = []
-      for (const i in xLine) {
-        xLineArr.push($libDate.FormateSecondStr(i, 6))
-      }
-      healthData.xData = xLineArr
-      originData.xData = xLineArr
       this.healthData = healthData
       this.originData = originData
     }
