@@ -305,6 +305,7 @@ export default {
         88: 'Crazy777',
         90: 'MoneyComing',
         92: 'Ultra Ace',
+        94: 'Charge Bison',
         96: 'Roman Arena', // 这行老虎机
         28: 'Tongits Joker',
         29: 'Tongits Quick',
@@ -424,7 +425,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 96)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96)
         }
       }
     },

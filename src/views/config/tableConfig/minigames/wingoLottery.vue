@@ -628,7 +628,7 @@ export default {
         o.Val *= 1000
       }
 
-      ret.TestCard = this.testCard ? parseInt(this.testCard, 10) : ''
+      ret.TestCard = this.testCard ? parseInt(this.testCard, 10).toString() : ''
 
       return ret
     },
