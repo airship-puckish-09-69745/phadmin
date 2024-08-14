@@ -84,7 +84,7 @@
           <el-table-column label="失败金额">
             <template slot-scope="scope">
               <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-              <span  v-else >{{parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000}}</span>
+              <span  v-else >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
@@ -235,6 +235,7 @@ export default {
         }
       }).then(response => {
         $this.tableData = []
+        console.log("===========",response.Data)
         if (response.RetCode === 0) {
           if (response.Data == 'no Data') {
             Message.error('no Data')
@@ -245,7 +246,7 @@ export default {
             $this.totalCount = response.Data.length+1
           }
         }
-        console.log(response)
+        console.log("========",response)
       })
     },
 
