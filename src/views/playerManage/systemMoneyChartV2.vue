@@ -277,16 +277,63 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
-      gameNames: { 10: 'Crash', 15: 'Texas Poker', 51: '凤凰', 52: '睡美人', 21: 'Pusoy', 22: 'Tongits-Pot', 23: 'Lucky 9', 25: 'Color', 20: 'MINES', 34: 'Pusoy-Dos', 49:'Niu Niu',100: 'Tower',
-        76: 'Candy Rush', 77: '糖果传奇Allline', 78: 'SuperGems', 79: 'CandyCrazeMars', 80: 'Candy Craze', 81: 'SuperGemsMars', // 这行老虎机
-        82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', 88: 'Crazy777', 90: 'MoneyComing', 92: 'Ultra Ace', 94: 'ChargeBison', 96: 'Roman Arena', // 这行老虎机
-        28: 'Tongits Joker', 29: 'Tongits Quick', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
-        35: 'Solitaire', 37: 'BlackJack', 46: 'Domino', 47: '8 Ball Plus', 48: '9 Ball Plus',
-        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 10000: '汇总' },
+      gameNames: {
+        10: 'Crash',
+        15: 'Texas Poker',
+        51: '凤凰',
+        52: '睡美人',
+        21: 'Pusoy',
+        22: 'Tongits-Pot',
+        23: 'Lucky 9',
+        25: 'Color',
+        20: 'MINES',
+        34: 'Pusoy-Dos',
+        49: 'Niu Niu',
+        100: 'Tower',
+        76: 'Candy Rush',
+        77: '糖果传奇Allline',
+        78: 'SuperGems',
+        79: 'CandyCrazeMars',
+        80: 'Candy Craze',
+        81: 'SuperGemsMars', // 这行老虎机
+        82: 'Millionaire',
+        83: 'MillionaireMars',
+        84: 'Fortune Ace',
+        85: 'FortuneAce',
+        86: 'SuperGems2',
+        87: '超级宝宝石II Mars',
+        88: 'Crazy777',
+        90: 'MoneyComing',
+        92: 'Ultra Ace',
+        96: 'Roman Arena', // 这行老虎机
+        28: 'Tongits Joker',
+        29: 'Tongits Quick',
+        31: 'Tongits-经典',
+        32: 'Texas Plus',
+        101: 'Sicbo',
+        102: 'Hilo',
+        103: 'Windrop',
+        6: '7Up7Down',
+        104: 'Dragon Tiger',
+        35: 'Solitaire',
+        37: 'BlackJack',
+        46: 'Domino',
+        47: '8 Ball Plus',
+        48: '9 Ball Plus',
+        105: 'Andar Bahar',
+        106: 'PIGGY TAP',
+        107: 'Baccarat',
+        108: 'Dropball',
+        110: 'VideoPoker',
+        111: 'QiuQiu',
+        112: 'WingoLottery',
+        113: 'PusoySwap',
+        10000: '汇总'
+      },
 
       userVisible: false,
       users: [],
-      defaultOrder: [10000,15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 49,113], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 49, 113], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -316,15 +363,15 @@ export default {
     console.log(this.$store.state.user.pers['USER_MANAGEMENT'])
   },
   methods: {
-    HasACC(){
-      if (this.$store.state.user.pers['USER_MANAGEMENT']){
+    HasACC() {
+      if (this.$store.state.user.pers['USER_MANAGEMENT']) {
         console.log("==1==")
-        if ( this.authorityCfg[this.name]){
-          if ( this.authorityCfg[this.name].includes(10000)){
+        if (this.authorityCfg[this.name]) {
+          if (this.authorityCfg[this.name].includes(10000)) {
             console.log("==2==")
             return true
-          }else {
-            return  false
+          } else {
+            return false
           }
         }
         return true
@@ -344,7 +391,7 @@ export default {
             const ob = this.summary[gid]
             if (ob) {
               const got = ob.Lose + ob.Tax - ob.Won
-              objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
+              objs.push({Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0})
             }
           } else {
             objs.push({
@@ -355,11 +402,11 @@ export default {
           }
         }
         if (iType === 2) {
-          objs = objs.sort(function(a, b) {
+          objs = objs.sort(function (a, b) {
             return b.Got - a.Got
           })
         } else {
-          objs = objs.sort(function(a, b) {
+          objs = objs.sort(function (a, b) {
             return b.Sum - a.Sum
           })
         }
@@ -377,7 +424,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 96)
         }
       }
     },
@@ -413,7 +460,7 @@ export default {
         SortOrder = ob.order === 'ascending' ? 1 : -1
       }
 
-      const compare = function(a, b) {
+      const compare = function (a, b) {
         const val1 = a[SortName]
         const val2 = b[SortName]
         if (val1 < val2) {
@@ -496,7 +543,7 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
-    tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({row, rowIndex}) {
       if (row.IsPay) {
         return 'success-row'
       }
@@ -585,17 +632,17 @@ export default {
         let datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
-            if (o.Gid=== 37){
+            if (o.Gid === 37) {
               $this.blackJackSum += o.PrizePool
               datas.push(o)
             }
           }
         }
-        datas.sort(function(a, b) {
-          return a.Ante-b.Ante
+        datas.sort(function (a, b) {
+          return a.Ante - b.Ante
         })
         for (const o of datas) {
-          this.blackJackContext += '场次:'+ this.formatNumber(o.Ante / 1000) +'    奖池:'+ this.formatNumber(o.PrizePool /1000)+'<br/>'
+          this.blackJackContext += '场次:' + this.formatNumber(o.Ante / 1000) + '    奖池:' + this.formatNumber(o.PrizePool / 1000) + '<br/>'
         }
       })
     },
@@ -614,13 +661,13 @@ export default {
             if (this.$store.state.user.pers['USER_MANAGEMENT']) {
               if (this.authorityCfg[this.name]) {
                 // 有权限而且有限制
-                this.defaultOrder= []
+                this.defaultOrder = []
                 for (const o of this.authorityCfg[this.name]) {
                   if (this.gameNames[o]) {
                     this.defaultOrder.push(o)
                   }
                 }
-              }else {
+              } else {
                 this.sortOrder = this.defaultOrder
                 return
               }
@@ -643,7 +690,7 @@ export default {
         preObjs = objs
       }
       if (preObjs.length > 0) {
-        preObjs.sort(function(a, b) {
+        preObjs.sort(function (a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }
@@ -652,10 +699,10 @@ export default {
           }
           return 0
         })
-        console.log(preObjs)
+        // console.log(preObjs)
       }
       if (objs.length > 0) {
-        objs.sort(function(a, b) {
+        objs.sort(function (a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }
@@ -665,6 +712,15 @@ export default {
           return 0
         })
       }
+      let xLine = []
+      let xLines = []
+      const stamp1 = new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000
+      for (let i = 0; i < 1440; i++) {
+        let time = stamp1 + i * 60
+        xLines.push($libDate.FormateSecondStr(time, 6))
+        xLine.push({Time:time})
+      }
+
 
       for (const i in preObjs) {
         const ob = preObjs[i]
@@ -708,9 +764,24 @@ export default {
           }
         }
       }
+      //
+      // healthData.xData = xLines
+      // originData.xData = xLines
       this.healthData = healthData
       this.originData = originData
-    }
+    },
+    checkDate(ob, time) {
+      if (ob){
+        console.log("===",ob.TimeKey , time,ob.TimeKey ==time)
+
+        if (ob.TimeKey == time){
+          return true
+        }
+      }else {
+        return false
+      }
+      return false
+    },
   }
 }
 </script>
@@ -733,8 +804,9 @@ export default {
 
   .card-panel-col {
     margin-bottom: 10px;
+
     &:hover {
-      .card-panel{
+      .card-panel {
         background: #90EE90;
       }
     }
@@ -771,15 +843,15 @@ export default {
         margin-bottom: 12px;
       }
 
-      .card-panel-normal{
+      .card-panel-normal {
         color: rgba(0, 0, 0, 0.45);
       }
 
-      .card-panel-OK{
+      .card-panel-OK {
         color: #409167;
       }
 
-      .card-panel-Danger{
+      .card-panel-Danger {
         color: #ff4949;
       }
 

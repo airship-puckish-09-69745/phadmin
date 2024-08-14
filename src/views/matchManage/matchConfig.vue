@@ -354,7 +354,7 @@
               />
               <el-table-column
                 prop="rewardItems"
-                label="奖励列表"
+                label="奖励"
                 width="400"
               >
                 <template slot-scope="scope">
@@ -371,8 +371,6 @@
                       <el-input style="width: 80px;" v-model.number="gItem.getNum" size="mini" placeholder="请填写获得数量" />
                     </li>
                   </ul>
-                  <el-divider></el-divider>
-                  <el-button style="margin-bottom: 10px;" @click="addRewards(scope.$index)" type="normal" size="mini">添加奖励</el-button>
                 </template>
               </el-table-column>
               <el-table-column
@@ -525,6 +523,7 @@ export default {
         }
       },
       AttrNames: {
+        appInfo: "APP信息",
         matchCfgId: "赛事id",
         title: "赛事名称",
         gid: "游戏id",
@@ -538,8 +537,7 @@ export default {
         preEnterSeconds: "提前进入比赛(秒)",
         delayEnterSeconds: "延迟进入比赛(秒)",
         signType: "报名方式",
-        signItemType: "报名费类型",
-        signItemNum: "报名费数量",
+        signNum: "报名费数量",
         status: "状态",
         rewardsCfg: "名次奖励"
       }
@@ -719,26 +717,6 @@ export default {
           this.editForm.appInfo[i].index = i+1
         }
       }
-    },
-    addRewards(index) {
-      var rIndex = 0
-      var rewards = this.editForm.rankRewards[index].rewardItems
-      if (rewards.length > 0) {
-        rIndex = rewards.length
-      }
-      rIndex++
-      if (rIndex > 3) {
-        Message.error("单名次奖励的奖品不能超过三个！")
-        return
-      }
-      this.editForm.rankRewards[index].rewardItems.push(
-        {
-          index: rIndex,
-          getType: 0,
-          getPid: 0,
-          getNum: 0
-        }
-      )
     },
     removeRewardItme(index) {
       this.editForm.rankRewards.splice(index, 1)
