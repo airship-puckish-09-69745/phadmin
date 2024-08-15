@@ -833,7 +833,7 @@ export default {
             originData.yData[2].Data.push(ob.MoneyBet.toFixed(2))
           }
           if (type == 2) {
-            const y2 = ob.MoneyBet > 0 ? (ob.MoneyLose + ob2.MoneyTax - ob.MoneyWon) * 100 / ob.MoneyBet : 0
+            const y2 = ob.MoneyBet > 0 ? (ob.MoneyLose + ob.MoneyTax - ob.MoneyWon) * 100 / ob.MoneyBet : 0
             healthData.yData[1].Data.push(y2.toFixed(2))
             originData.yData[3].Data.push((ob.MoneyLose - ob.MoneyWon).toFixed(2))
             originData.yData[4].Data.push(ob.MoneyTax.toFixed(2))
