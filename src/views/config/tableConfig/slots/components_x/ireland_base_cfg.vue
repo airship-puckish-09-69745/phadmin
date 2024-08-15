@@ -27,6 +27,8 @@
               <el-option label="RomanArenaMars" :value="97" />
               <el-option label="SuperTongit" :value="98" />
               <el-option label="SuperTongitMars" :value="99" />
+              <el-option label="阿拉丁神灯" :value="152" />
+              <el-option label="阿拉丁神灯Mars" :value="153" />
             </el-select>
           </el-form-item>
 
