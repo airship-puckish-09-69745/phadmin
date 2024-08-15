@@ -748,60 +748,12 @@ export default {
         healthData.xData.push(xLines[i])
         originData.xData.push(xLines[i])
         let ob = timeData[xLines[i]]['pre']
-        console.log(timeData[xLines[i]])
 
         let ob2 = timeData[xLines[i]]['curr']
         this.checkDate(ob, 1, originData, healthData)
         this.checkDate(ob2, 2, originData, healthData)
       }
 
-      if (1 != 1) {
-        for (const i in preObjs) {
-          const ob = preObjs[i]
-          if (ob.Gid > 50 && ob.Gid < 100) {
-            // 老虎机目前没有存 MoneyLose
-            healthData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
-            const y = ob.MoneyBet > 0 ? (ob.MoneyBet - ob.MoneyWon) * 100 / ob.MoneyBet : 0
-            healthData.yData[0].Data.push(y.toFixed(2))
-            const ob2 = objs[i]
-            if (ob2) {
-              const y2 = ob2.MoneyBet > 0 ? (ob2.MoneyBet - ob2.MoneyWon) * 100 / ob2.MoneyBet : 0
-              healthData.yData[1].Data.push(y2.toFixed(2))
-            }
-            originData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
-            originData.yData[0].Data.push((ob.MoneyBet - ob.MoneyWon).toFixed(2))
-            originData.yData[1].Data.push(ob.MoneyTax.toFixed(2))
-            originData.yData[2].Data.push(ob.MoneyBet.toFixed(2))
-            if (ob2) {
-              originData.yData[3].Data.push((ob2.MoneyBet - ob2.MoneyWon).toFixed(2))
-              originData.yData[4].Data.push(ob2.MoneyTax.toFixed(2))
-              originData.yData[5].Data.push(ob2.MoneyBet.toFixed(2))
-            }
-          } else {
-            healthData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
-            const y = ob.MoneyBet > 0 ? (ob.MoneyLose + ob.MoneyTax - ob.MoneyWon) * 100 / ob.MoneyBet : 0
-            healthData.yData[0].Data.push(y.toFixed(2))
-            const ob2 = objs[i]
-            if (ob2) {
-              const y2 = ob2.MoneyBet > 0 ? (ob2.MoneyLose + ob2.MoneyTax - ob2.MoneyWon) * 100 / ob2.MoneyBet : 0
-              healthData.yData[1].Data.push(y2.toFixed(2))
-            }
-
-            originData.xData.push($libDate.FormateSecondStr(ob.TimeKey, 6))
-            originData.yData[0].Data.push((ob.MoneyLose - ob.MoneyWon).toFixed(2))
-            originData.yData[1].Data.push(ob.MoneyTax.toFixed(2))
-            originData.yData[2].Data.push(ob.MoneyBet.toFixed(2))
-            if (ob2) {
-              originData.yData[3].Data.push((ob2.MoneyLose - ob2.MoneyWon).toFixed(2))
-              originData.yData[4].Data.push(ob2.MoneyTax.toFixed(2))
-              originData.yData[5].Data.push(ob2.MoneyBet.toFixed(2))
-            }
-          }
-        }
-      }
-
-      // healthData.xData = xLines
-      // originData.xData = xLines
       this.healthData = healthData
       this.originData = originData
     },
