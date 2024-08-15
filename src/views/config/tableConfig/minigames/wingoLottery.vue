@@ -649,7 +649,7 @@ export default {
             this.transMoneyForShow()
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
-            this.testCards = this.item.TestCard ? parseInt(this.item.TestCard, 10) : this.testCards
+            this.testCard = this.item.TestCard ? parseInt(this.item.TestCard, 10) : this.testCards
             if (this.item.BetOptions.length === 0) {
               this.item.BetOptions = betOptions
             }
