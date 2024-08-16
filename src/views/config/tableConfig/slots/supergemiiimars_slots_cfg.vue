@@ -5,33 +5,33 @@
         <el-tabs type="border-card" value="base" @tab-click="onShowTab">
           <el-tab-pane label="基础配置" name="base">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('supergemmars_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('supergemiiimars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-base-cfg v-if="baseCfgBool" v-model="baseCfg" :odds-str="false" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="符号表配置" name="symbol">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('supergemmars_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('supergemiiimars_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
           <el-tab-pane label="支付线配置" name="pay_line">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('supergemmars_slots_rule')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('supergemiiimars_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-pay-line v-if="ruleCfgBool" v-model="ruleCfg" :rows="baseCfg.Rows" :cols="baseCfg.Clos" @saveData="saveRuleCfg" />
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('supergemmars_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('supergemiiimars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('supergemmars_slots_base')" :env-empty="false" compare-type="Object" />
+            <publish primary-key="ID" :key-id="getFullKey('supergemiiimars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
-            <publish primary-key="ID" :key-id="getFullKey('supergemmars_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-supergemmars-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <publish primary-key="ID" :key-id="getFullKey('supergemiiimars_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-supergemiiimars-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -52,7 +52,7 @@ import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
 import slotsReelsIcon from './components_x/aladdin_reels_icon'
-import slotsSupergemmarsExt from './components_x/supergemmars_ext'
+import slotssupergemiiimarsExt from './components_x/supergemiiimars_ext'
 import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
@@ -60,7 +60,7 @@ import slotsScript from './components_x/slots_script'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSupergemmarsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotssupergemiiimarsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
@@ -74,7 +74,7 @@ export default {
       ruleForm: {},
       extForm: {},
       txt: '',
-      subKey: 'supergemmars_slots_base',
+      subKey: 'supergemiiimars_slots_base',
       inc: 0
     }
   },
@@ -129,7 +129,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'supergemmars_slots_rule'
+          SubKey: 'supergemiiimars_slots_rule'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -148,7 +148,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'supergemmars_slots_ext'
+          SubKey: 'supergemiiimars_slots_ext'
         }
       }).then(response => {
         if (response.RetCode === 0) {
