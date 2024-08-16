@@ -52,7 +52,7 @@ import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
 import slotsReelsIcon from './components_x/aladdin_reels_icon'
-import slotssupergemiiimarsExt from './components_x/supergemiiimars_ext'
+import slotsSupergemiiimarsExt from './components_x/supergemiiimars_ext'
 import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
@@ -60,7 +60,7 @@ import slotsScript from './components_x/slots_script'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotssupergemiiimarsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSupergemiiimarsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
