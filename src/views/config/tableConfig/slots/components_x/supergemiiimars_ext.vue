@@ -5,7 +5,7 @@
         <el-form ref="frm2" :model="cfg" label-width="200px">
 
           <el-form-item label="普通模式中奖倍数">
-            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7,-1(bonus)"> <template slot="append">六个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7,-1(bonus)"> <template slot="append">七个值用 , 连接。注:-1(bonus)</template> </el-input>
           </el-form-item>
 
           <el-form-item label="普通模式中奖倍数权重">
