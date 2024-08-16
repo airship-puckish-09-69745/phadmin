@@ -5,7 +5,7 @@
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
           <el-form-item label="普通模式中奖倍数">
-            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">六个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7,,-1(bonus)"> <template slot="append">六个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="普通模式中奖倍数权重">
@@ -18,6 +18,14 @@
 
           <el-form-item label="免费模式中奖倍数权重">
             <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">六个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus模式中奖倍数">
+            <el-input v-model="cfg.BonusMultiStr" placeholder="请输入内容,如3、6、9、15、20"> <template slot="append">十二个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus模式中奖倍数权重">
+            <el-input v-model="cfg.BonusMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">十二个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
