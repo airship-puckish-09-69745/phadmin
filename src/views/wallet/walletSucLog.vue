@@ -178,7 +178,7 @@ export default {
         1: '派彩失败', 2: '游戏结算失败', 3: '转回失败', 4: '下注失败',
       },
       statusMap: {
-        1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
+        1: '等待重试', 2: '正在重试', 3: '重试成功',
       },
       actTypeMap:{
         0: '查询所有',
@@ -262,6 +262,7 @@ export default {
         }
       })
     },
+
     getGameList() {
       request({
         url: '/thirdpartygames/all',

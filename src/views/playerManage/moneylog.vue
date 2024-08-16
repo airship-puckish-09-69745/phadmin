@@ -361,7 +361,7 @@ export default {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       chartData: newChartData(),
       env: 'test',
-
+      gameMap:{},
       drawer: {
         visible: false,
         lines: []
@@ -378,6 +378,7 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
+    this.getGameList()
     console.log(1)
   },
   methods: {
@@ -406,7 +407,7 @@ export default {
     getActName(type, msg) {
       // 单一钱包类型
       if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006) {
-        return this.libShow.GameNames[msg]
+        return this.gameMap[msg]
       }
       return msg
     },
@@ -864,6 +865,19 @@ export default {
     },
     showChart() {
       this.initChartData()
+    },
+    getGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            this.gameMap[response.Data[i].Gid] = response.Data[i].Name
+          }
+        }
+      })
     },
     initChartData() {
       const objs = this.moneyData.reverse()
