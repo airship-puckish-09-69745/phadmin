@@ -27,9 +27,9 @@
           <el-form-item label="状态">
           <el-select v-model.number="item.status" placeholder="请选择" size="mini">
             <el-option label="所有" :value="0" />
-            <el-option label="等待尝试" :value="1" />
-            <el-option label="正在尝试" :value="2" />
-            <el-option label="尝试成功" :value="3" />
+            <el-option label="等待重试" :value="1" />
+            <el-option label="正在重试" :value="2" />
+            <el-option label="重试成功" :value="3" />
           </el-select>
           </el-form-item>
           <el-form-item>
@@ -190,10 +190,10 @@ export default {
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转回失败', 4: '下注失败',
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',
       },
       statusMap: {
-        1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
+        1: '等待重试', 2: '正在重试', 3: '重试成功',
       },
       totalCount: 0,
     }
