@@ -72,6 +72,10 @@
             <el-input v-model="cfg.SuckOddsAchieveRate" placeholder="请输入内容,如1000,50,2500,50,5000,50"> <template slot="append">6个值用 , 连接。如1000,50,2500,50,5000,50</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="转盘奖励比例%">
+            <el-input v-model="cfg.WildRewardRate" placeholder="请输入内容,如120,20,110,30,100,50"> <template slot="append">两个值为一组, 连接。如120,20,110,30,100,50</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>

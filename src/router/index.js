@@ -657,6 +657,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/aladdinlamp_slots_cfg'),
                 name: 'aladdinlamp_slots_cfg',
                 meta: { title: '阿拉丁神灯' }
+              },
+              {
+                path: 'supergemiii_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemiii_slots_cfg'),
+                name: 'supergemiii_slots_cfg',
+                meta: { title: 'SuperGemsIII' }
               }
             ]
           },
@@ -744,6 +750,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/aladdinlampmars_slots_cfg'),
                 name: 'aladdinlampmars_slots_cfg',
                 meta: { title: '阿拉丁神灯(审)' }
+              },
+              {
+                path: 'supergemiiimars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/supergemiiimars_slots_cfg'),
+                name: 'supergemiiimars_slots_cfg',
+                meta: { title: 'SuperGemsIII(审)' }
               }
             ]
           },
@@ -1351,12 +1363,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supertongit_slots_log',
             meta: { title: 'superTongit', gid: 98 }
-          },
-          {
-            path: 'aladdinlamp_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'aladdinlamp_slots_log',
-            meta: { title: '阿拉丁神灯', gid: 152 }
           }
         ]
       },
@@ -1437,12 +1443,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supertongitmars_slots_log',
             meta: { title: 'superTongit(审)', gid: 99 }
-          },
-          {
-            path: 'aladdinlamp_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'aladdinlamp_slots_log',
-            meta: { title: '阿拉丁神灯(审)', gid: 153 }
           }
         ]
       },
