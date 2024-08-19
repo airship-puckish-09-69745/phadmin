@@ -2,6 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
       <el-col :span="18" :offset="3">
+        <p>额外赔付图标</p>
         <el-form ref="frm1" :inline="true" label-width="80px">
           <el-table
             :data="tableData"
@@ -10,13 +11,22 @@
             <el-table-column
               prop="name"
               label=""
-              width="200"
+              width="100"
             />
-            <el-table-column
-              prop="value"
-              label=""
-              width="200"
-            />
+<!--            <el-table-column-->
+<!--              prop="value"-->
+<!--              label=""-->
+<!--              width="200"-->
+<!--            />-->
+              <el-table-column
+                prop="value"
+                width="100"
+              >
+                <template slot-scope="scope">
+                <el-input v-model.number="scope.row.value" disabled />
+                </template>
+              </el-table-column>
+
           </el-table>
         </el-form>
       </el-col>
