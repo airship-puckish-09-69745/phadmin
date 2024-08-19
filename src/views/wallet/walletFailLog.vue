@@ -27,9 +27,9 @@
           <el-form-item label="状态">
           <el-select v-model.number="item.status" placeholder="请选择" size="mini">
             <el-option label="所有" :value="0" />
-            <el-option label="等待尝试" :value="1" />
-            <el-option label="正在尝试" :value="2" />
-            <el-option label="尝试成功" :value="3" />
+            <el-option label="等待重试" :value="1" />
+            <el-option label="正在重试" :value="2" />
+            <el-option label="重试成功" :value="3" />
           </el-select>
           </el-form-item>
           <el-form-item>
@@ -84,7 +84,7 @@
           <el-table-column label="失败金额">
             <template slot-scope="scope">
               <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-              <span  v-else >{{parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000}}</span>
+              <span  v-else >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
@@ -190,10 +190,10 @@ export default {
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转回失败', 4: '下注失败',
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',
       },
       statusMap: {
-        1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
+        1: '等待重试', 2: '正在重试', 3: '重试成功',
       },
       totalCount: 0,
     }
@@ -235,6 +235,7 @@ export default {
         }
       }).then(response => {
         $this.tableData = []
+        console.log("===========",response.Data)
         if (response.RetCode === 0) {
           if (response.Data == 'no Data') {
             Message.error('no Data')
@@ -245,7 +246,7 @@ export default {
             $this.totalCount = response.Data.length+1
           }
         }
-        console.log(response)
+        console.log("========",response)
       })
     },
 

@@ -263,6 +263,8 @@ export default {
           return '冲锋野牛'
         case 96:
           return 'RomanArena'
+        case 152:
+          return '阿拉丁神灯'
       }
       return '未知老虎机-' + sType
     },
@@ -292,6 +294,7 @@ export default {
         case 92:
         case 94:
         case 96:
+        case 152:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
