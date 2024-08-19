@@ -124,7 +124,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96].indexOf(gid) >= 0">
+        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -274,7 +274,7 @@ export default {
   },
   methods: {
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150].indexOf(gid) >= 0
     },
     isActCollect(gid) {
       return [86].indexOf(gid) >= 0

@@ -12,6 +12,20 @@
             <el-input v-model="cfg.DecorWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="普通模式字母A、K倍率">
+            <el-input v-model="cfg.AKOdds" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
+          </el-form-item>
+          <el-form-item label="普通模式字母A、K权重">
+            <el-input v-model="cfg.AKOddsWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式字母A、K倍率">
+            <el-input v-model="cfg.FreeAKOdds" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
+          </el-form-item>
+          <el-form-item label="免费模式字母A、K权重">
+            <el-input v-model="cfg.FreeAKOddsWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>

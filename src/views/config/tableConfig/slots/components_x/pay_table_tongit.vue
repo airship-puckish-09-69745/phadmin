@@ -155,6 +155,8 @@ export default {
         const hittype = this.slotsData.PayTable[i]['HitType']
         const value = this.slotsData.PayTable[i]['Value']
         const name = this.slotsData.PayTable[i]['Name']
+        const sortid = this.slotsData.PayTable[i]['SortId']
+
         if (!name) {
           continue
         }
@@ -162,7 +164,8 @@ export default {
         const row = {
           name: name,
           value: value,
-          hitType: hittype
+          hitType: hittype,
+          sortId: sortid
         }
 
         for (const k in this.slotsData.PayTable[i]['Rates']) {
@@ -184,6 +187,7 @@ export default {
           Value: this.tableData[i]['value'],
           HitType: this.tableData[i]['hitType'],
           Name: this.tableData[i]['name'],
+          SortId: this.tableData[i]['sortId'],
           Rates: []
         }
         for (const x in this.cols) {

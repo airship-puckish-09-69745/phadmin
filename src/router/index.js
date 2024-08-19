@@ -1363,6 +1363,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supertongit_slots_log',
             meta: { title: 'superTongit', gid: 98 }
+          },
+          {
+            path: 'supergemiii_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemiii_slots_log',
+            meta: { title: 'SuperGemsIII', gid:  150 }
           }
         ]
       },
@@ -1443,6 +1449,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supertongitmars_slots_log',
             meta: { title: 'superTongit(审)', gid: 99 }
+          },
+          {
+            path: 'supergemiiimars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'supergemiiimars_slots_log',
+            meta: { title: 'SuperGemsIII(审)', gid: 151 }
           }
         ]
       },
