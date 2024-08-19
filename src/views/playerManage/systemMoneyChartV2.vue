@@ -319,8 +319,8 @@ export default {
         85: 'FortuneAce',
         86: 'SuperGems2',
         87: '超级宝宝石II Mars',
-        88: 'Crazy777',
-        90: 'MoneyComing',
+        88: 'Lucky777',
+        90: 'Fortune Coming',
         92: 'Ultra Ace',
         94: 'Charge Bison',
         96: 'Roman Arena', // 这行老虎机
@@ -344,7 +344,7 @@ export default {
         108: 'Dropball',
         110: 'VideoPoker',
         111: 'QiuQiu',
-        112: 'WingoLottery',
+        112: 'Wingo',
         113: 'PusoySwap',
         152: 'AladdinLamp',
         10000: '汇总'
