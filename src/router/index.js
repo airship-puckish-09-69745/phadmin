@@ -713,7 +713,7 @@ export const asyncRoutes = [
                 path: 'crazy777mars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777mars_slots_cfg'),
                 name: 'crazy777mars_slots_cfg',
-                meta: { title: '幸运777(审)' }
+                meta: { title: 'Lucky777(审)' }
               },
               {
                 path: 'moneycomingmars_slots_cfg',
@@ -1332,7 +1332,7 @@ export const asyncRoutes = [
             path: 'crazy777_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
-            meta: { title: '幸运777', gid: 88 }
+            meta: { title: 'Lucky777', gid: 88 }
           },
           {
             path: 'moneycoming_slots_log',
@@ -1418,7 +1418,7 @@ export const asyncRoutes = [
             path: 'crazy777mars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777mars_slots_log',
-            meta: { title: '幸运777(审)', gid: 89 }
+            meta: { title: 'Lucky777(审)', gid: 89 }
           },
           {
             path: 'moneycomingmars_slots_log',

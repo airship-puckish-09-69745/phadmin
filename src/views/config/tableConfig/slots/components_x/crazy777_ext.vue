@@ -30,7 +30,7 @@
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="最小赔率进入免费模式概率(0-100%)" prop="ScatterRate" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="最小赔率进入免费概率(0-100%)" prop="ScatterRate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterRate" :required="true" />
           </el-form-item>
 
