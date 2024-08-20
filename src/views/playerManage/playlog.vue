@@ -2498,7 +2498,8 @@ export default {
       solitaireLogStopMap: {
         1: '正常结束',
         2: '时间用完',
-        3: '认输'
+        3: '认输',
+        4: '求和'
       },
       piggyLog: {
         visible: false,
