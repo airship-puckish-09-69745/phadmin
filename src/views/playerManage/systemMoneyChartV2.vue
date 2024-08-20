@@ -347,6 +347,7 @@ export default {
         112: 'Wingo',
         113: 'PusoySwap',
         152: 'AladdinLamp',
+        150: 'SuperGems3',
         10000: '汇总'
       },
 
@@ -440,7 +441,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 152)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 150, 152)
         }
       }
     },
@@ -452,7 +453,7 @@ export default {
       }
     },
     isSlots(o) {
-      if (o > 50 && o < 100) {
+      if (o > 50 && o < 100 || o > 99 && o < 200) {
         return true
       } else {
         return false
