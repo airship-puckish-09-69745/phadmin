@@ -320,7 +320,7 @@ export default {
         86: 'SuperGems2',
         87: '超级宝宝石II Mars',
         88: 'Crazy777',
-        90: 'MoneyComing',
+        90: 'FortuneComing',
         92: 'Ultra Ace',
         94: 'Charge Bison',
         96: 'Roman Arena', // 这行老虎机
