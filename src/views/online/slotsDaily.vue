@@ -312,6 +312,7 @@ export default {
           break
         }
         case 86:
+        case 150:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
