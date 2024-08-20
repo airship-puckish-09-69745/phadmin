@@ -263,6 +263,8 @@ export default {
           return '冲锋野牛'
         case 96:
           return 'RomanArena'
+        case 150:
+          return 'SuperGemsIII'
         case 152:
           return '阿拉丁神灯'
       }
