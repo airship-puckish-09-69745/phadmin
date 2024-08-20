@@ -620,7 +620,7 @@ export const asyncRoutes = [
                 path: 'crazy777_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777_slots_cfg'),
                 name: 'crazy777_slots_cfg',
-                meta: { title: 'Crazy777' }
+                meta: { title: 'Lucky777' }
               },
               {
                 path: 'moneycoming_slots_cfg',
