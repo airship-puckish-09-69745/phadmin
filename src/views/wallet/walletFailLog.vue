@@ -84,12 +84,17 @@
           <el-table-column label="失败金额">
             <template slot-scope="scope">
               <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-              <span  v-else >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
+              <span   v-if="scope.row.EndRoundParamsFail" >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
+              <span   v-if="scope.row.BetParamsFail" >{{scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0}}</span>
+              <span   v-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
+              <span   v-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
+              <span   v-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
+              <span   v-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParams.Amount) / 1000:0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
             <template slot-scope="scope">
-              {{ scope.row.ActType }}
+              {{ actTypeMap[scope.row.ActType] }}
             </template>
           </el-table-column>
           <el-table-column label="失败类型">
@@ -190,10 +195,22 @@ export default {
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',5:'转出失败',6'增值业务失败',
       },
       statusMap: {
         1: '等待重试', 2: '正在重试', 3: '重试成功',
+      },
+      actTypeMap:{
+        0: '查询所有',
+        2000 :'下注',
+        2001 :'登录',
+        2002 :'刷新',
+        2003 :'回合结束',
+        2004 :'回退',
+        2005 :'增值',
+        2006 :'转出',
+        2007 :'内部结算',
+        2008 :'游戏结算',
       },
       totalCount: 0,
     }

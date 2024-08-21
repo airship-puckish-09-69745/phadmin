@@ -72,7 +72,7 @@
           </el-table-column>
           <el-table-column label="日志类型">
             <template slot-scope="scope">
-              {{ actTypeMap[scope.row.LogType ]}}
+              {{ logTypeMap[scope.row.LogType ]}}
             </template>
           </el-table-column>
 
@@ -182,8 +182,27 @@ export default {
       },
       actTypeMap:{
         0: '查询所有',
-        2000: '下注',
-        2003: '结算',
+        2000 :'下注',
+        2001 :'登录',
+        2002 :'刷新',
+        2003 :'回合结束',
+        2004 :'回退',
+        2005 :'增值',
+        2006 :'转出',
+        2007 :'内部结算',
+        2008 :'游戏结算',
+      },
+      logTypeMap:{
+        1: '登录日志',
+        2 :'刷新日志',
+        3 :'下注日志',
+        4 :'slots/miniGame结算',
+        5 :'转出',
+        6 :'回退',
+        7 :'增值业务',
+        8 :'内部结算',
+        9 :'游戏结算',
+        10 :'转入',
       },
       totalCount: 2,
     }
