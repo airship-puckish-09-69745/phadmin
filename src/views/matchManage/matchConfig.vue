@@ -191,7 +191,6 @@
         </el-form-item>
         <fieldset>
           <legend>APP信息</legend>
-          <el-button style="margin-bottom: 10px;" @click="addAppInfo()" type="normal" size="mini">添加</el-button>
             <el-table
               :data="editForm.appInfo"
               border
@@ -209,7 +208,7 @@
               <el-table-column
                 prop="appId"
                 label="AppID"
-                width="400"
+                width="450"
               >
               <template slot-scope="scope">
                 <el-select v-model="scope.row.appId" placeholder="请选择" size="mini">
@@ -225,21 +224,13 @@
               <el-table-column
                 prop="channelId"
                 label="渠道ID"
-                width="400"
+                width="450"
               >
               <template slot-scope="scope">
                 <el-checkbox-group v-model="scope.row.channelId">
                 <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
                 </el-checkbox-group>
               </template>
-              </el-table-column>
-              <el-table-column
-                label="操作"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <el-button  @click="removeAppInfo(scope.$index)" type="danger" size="mini">移除</el-button>
-                </template>
               </el-table-column>
           </el-table>
         </fieldset>
@@ -438,7 +429,7 @@ export default {
         {"value": 1100000, "label":"xworld"},
       ],
       gameCfgs: [
-        {"value": 31, "label":"tongits"},
+        {"value": 1000, "label":"tongits"},
         // {"value": 15, "label":"德州"}
       ],
       channelIdCfgs: [
