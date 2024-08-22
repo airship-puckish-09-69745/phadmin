@@ -271,6 +271,9 @@ export default {
     console.log(1)
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    if (this.gid === 150) {
+      this.typeNames[1] = 'bonus'
+    }
   },
   methods: {
     isActV2(gid) {
@@ -283,9 +286,8 @@ export default {
       // SuperGems2
       if (this.gid === 86 && row.ActType === 1) {
         return '转盘'
-      } else if (this.gid === 150 && row.ActType === 1) {
-        return 'bonus'
       }
+
       return this.typeNames[row.ActType]
     },
     showChart() {
