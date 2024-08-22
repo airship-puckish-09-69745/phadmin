@@ -564,6 +564,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/wingoLottery.vue'),
             name: 'WingoLottery_cfg',
             meta: { title: 'WingoLottery ◐' }
+          },
+          {
+            path: 'HandredNiuNiu_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
+            name: 'HandredNiuNiu_cfg',
+            meta: { title: 'HandredNiuNiu ◐' }
           }
         ]
       },
