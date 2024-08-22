@@ -189,7 +189,7 @@
         <el-form-item v-if="editForm.data.id > 0" label="赛事ID：">
         {{ editForm.data.id }}
         </el-form-item>
-        <fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>APP信息</legend>
             <el-table
               :data="editForm.appInfo"
@@ -326,7 +326,7 @@
           </el-form-item>
         </fieldset>
 
-        <fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
           <el-button style="margin-bottom: 10px;" @click="addRankRewards()" type="normal" size="mini">添加</el-button>
             <el-table
