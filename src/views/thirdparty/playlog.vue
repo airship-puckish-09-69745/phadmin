@@ -237,6 +237,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="wallet"
+          label="钱包类型"
+          width="100"
+        >
+          <template slot-scope="scope">
+            {{ showWalletType(scope.row.wallet || 0) }}
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="insure"
           label="保险收益（德州）"
           width="100"
@@ -419,6 +428,9 @@ export default {
     handleCurrentChange(val) {
       this.currentPage = val
       this.getInfo()
+    },
+    showWalletType(n) {
+      return n === 0 ? '转账' : '单一'
     },
     formatNumber(n) {
       return n.toLocaleString()

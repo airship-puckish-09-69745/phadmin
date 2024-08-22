@@ -7,7 +7,7 @@
           <el-form-item label="普通模式中奖图标">
             <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7" size="50"> <template slot="append">七个值。用,符隔开</template> </el-input>
             <br>
-            <p>1=10倍奖金，2=5倍奖金，3=2倍奖金，4=35倍bet,5=3.5倍bet，6=免费1-5次spin，7=空图标</p>
+            <p>1=10倍奖金，2=5倍奖金，3=2倍奖金，4=35倍bet，5=3.5倍bet，6=免费1-5次spin，7=空图标</p>
           </el-form-item>
 
           <el-form-item label="普通模式中奖图标权重">
@@ -28,6 +28,10 @@
 
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
+          </el-form-item>
+
+          <el-form-item label="最小赔率进入免费概率(0-100%)" prop="ScatterRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterRate" :required="true" />
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">

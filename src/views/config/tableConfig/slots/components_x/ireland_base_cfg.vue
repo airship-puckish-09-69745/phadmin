@@ -17,12 +17,20 @@
               <el-option label="FortuneAceMars" :value="85" />
               <el-option label="SuperGemsII" :value="86" />
               <el-option label="SuperGemsIIMars" :value="87" />
-              <el-option label="幸运777" :value="88" />
-              <el-option label="幸运777Mars" :value="89" />
+              <el-option label="Lucky777" :value="88" />
+              <el-option label="Lucky777Mars" :value="89" />
               <el-option label="SuperAceGo" :value="92" />
               <el-option label="SuperAceGoMars" :value="93" />
               <el-option label="冲锋野牛" :value="94" />
               <el-option label="冲锋野牛Mars" :value="95" />
+              <el-option label="RomanArena" :value="96" />
+              <el-option label="RomanArenaMars" :value="97" />
+              <el-option label="SuperTongit" :value="98" />
+              <el-option label="SuperTongitMars" :value="99" />
+              <el-option label="SuperGemsIII" :value="150" />
+              <el-option label="SuperGemsIIIMars" :value="151" />
+              <el-option label="阿拉丁神灯" :value="152" />
+              <el-option label="阿拉丁神灯Mars" :value="153" />
             </el-select>
           </el-form-item>
 

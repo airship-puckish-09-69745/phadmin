@@ -8,20 +8,19 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
+          <el-form-item label="免费模式wild额外倍数">
+            <el-input v-model="cfg.FreeWildOdds" placeholder="请输入内容,如2,3,5" />
+          </el-form-item>
+          <el-form-item label="免费模式wild额外倍数权重">
+            <el-input v-model="cfg.FreeWildOddsWeight" placeholder="请输入内容,如10,10,10" />
+          </el-form-item>
+
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
           <el-form-item label="免费模式额外增加免费的概率%" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterPlusRate" :required="true" />
-          </el-form-item>
-
-          <el-form-item label="黄金符号的概率%" prop="GoldenRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.GoldenRate" :required="true" />
-          </el-form-item>
-
-          <el-form-item label="大Wild的概率%" prop="BigWildRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BigWildRate" :required="true" />
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">

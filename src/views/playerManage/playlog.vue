@@ -899,7 +899,7 @@
             <span v-for="(row,idx) in scope.row.cards" >
               <el-image
                 style="width: 37px; height: 50px"
-                :src="getCardUrl(cardConversionColor(solitaireCard(row),'3-2','1-4','4-3','2-1'))"
+                :src="getCardUrl(cardConversionColor(row,'3-2','1-4','4-3','2-1'))"
               />
             </span>
           </template>
@@ -2498,7 +2498,8 @@ export default {
       solitaireLogStopMap: {
         1: '正常结束',
         2: '时间用完',
-        3: '认输'
+        3: '认输',
+        4: '求和'
       },
       piggyLog: {
         visible: false,

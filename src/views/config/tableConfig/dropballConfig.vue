@@ -33,8 +33,8 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-form-item label="抽水额度">
-                      <el-input v-model.number="item.FeeRate" size="mini" />
+                    <el-form-item label="保底奖池抽水">
+                      <el-input v-model.number="item.FeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
@@ -179,7 +179,7 @@
                   </el-col>
                   <el-col :span="11">
                     <el-form-item label="重摇概率：">
-                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -196,7 +196,7 @@
                   </el-col>
                   <el-col :span="11">
                     <el-form-item label="重摇概率：">
-                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -708,9 +708,9 @@ export default {
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
 
       }
-      that.item.ReChoiceCfg.LowLotteryPoolReChoiceRate  /= 10000
+      // that.item.ReChoiceCfg.LowLotteryPoolReChoiceRate  /= 10000
       that.item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
-      that.item.ReChoiceCfg.HighLotteryPoolReChoiceRate /= 10000
+      // that.item.ReChoiceCfg.HighLotteryPoolReChoiceRate /= 10000
       that.item.ReChoiceCfg.HighLotteryPoolReChoice/= 1000
     },
     getData() {
@@ -803,9 +803,9 @@ export default {
 
       ret.RobotAverageBetMoney *=1000
 
-      ret.ReChoiceCfg.LowLotteryPoolReChoiceRate *= 10000
+      // ret.ReChoiceCfg.LowLotteryPoolReChoiceRate *= 10000
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
-      ret.ReChoiceCfg.HighLotteryPoolReChoiceRate *= 10000
+      // ret.ReChoiceCfg.HighLotteryPoolReChoiceRate *= 10000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
       for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {

@@ -254,13 +254,19 @@ export default {
         case 86:
           return 'SuperGemsII'
         case 88:
-          return 'Crazy777'
+          return 'Lucky777'
         case 90:
           return 'MoneyComing'
         case 92:
           return 'UltraAce'
         case 94:
           return '冲锋野牛'
+        case 96:
+          return 'RomanArena'
+        case 150:
+          return 'SuperGemsIII'
+        case 152:
+          return '阿拉丁神灯'
       }
       return '未知老虎机-' + sType
     },
@@ -289,6 +295,8 @@ export default {
         case 90:
         case 92:
         case 94:
+        case 96:
+        case 152:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
@@ -304,6 +312,7 @@ export default {
           break
         }
         case 86:
+        case 150:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
