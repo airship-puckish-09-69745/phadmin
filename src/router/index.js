@@ -1369,7 +1369,14 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiii_slots_log',
             meta: { title: 'SuperGemsIII', gid:  150 }
+          },
+          {
+            path: 'aladdinlamp_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'aladdinlamp_slots_log',
+            meta: { title: '阿拉丁神灯', gid:  152 }
           }
+
         ]
       },
       {
@@ -1455,6 +1462,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiiimars_slots_log',
             meta: { title: 'SuperGemsIII(审)', gid: 151 }
+          },
+          {
+            path: 'aladdinlamp_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'aladdinlamp_slots_log',
+            meta: { title: '阿拉丁神灯', gid:  153 }
           }
         ]
       },
