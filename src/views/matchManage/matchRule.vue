@@ -178,7 +178,7 @@
           <!-- 此处是专配置打立出局相关配置 -->
           <div v-if="stageItem.system_type == 1">
             <!-- 底分增长配置 -->
-            <fieldset>
+            <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>底分增长配置</legend>
               <el-form-item label="开关：" :required="true">
                 <el-radio v-for="enableItem in enableCfgs" :key="enableItem.value" v-model="stageItem.system_strike_out.bottom_score_growth.open" :label=enableItem.value>{{ enableItem.label }}</el-radio>
@@ -222,7 +222,7 @@
               </el-form-item>
             </fieldset>
             <!-- 淘汰分增长配置 -->
-            <fieldset>
+            <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>淘汰分增长配置</legend>
               <el-form-item label="开关：" :required="true">
                 <el-radio v-for="enableItem in enableCfgs" :key="enableItem.value" v-model="stageItem.system_strike_out.disuse_score_growth.open" :label=enableItem.value>{{ enableItem.label }}</el-radio>
