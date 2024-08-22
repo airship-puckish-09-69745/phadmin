@@ -83,13 +83,14 @@
 <!--          </el-table-column>-->
           <el-table-column label="失败金额">
             <template slot-scope="scope">
-              <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-              <span   v-if="scope.row.EndRoundParamsFail" >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
-              <span   v-if="scope.row.BetParamsFail" >{{scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0}}</span>
-              <span   v-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
-              <span   v-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
-              <span   v-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
-              <span   v-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParams.Amount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.EndRoundParamsFail" >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.BetParamsFail" >{{scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
+              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParams.Amount) / 1000:0}}</span>
+              <span  v-else>{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
+
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
