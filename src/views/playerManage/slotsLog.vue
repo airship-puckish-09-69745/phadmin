@@ -283,6 +283,8 @@ export default {
       // SuperGems2
       if (this.gid === 86 && row.ActType === 1) {
         return '转盘'
+      } else if (this.gid === 150 && row.ActType === 1) {
+        return 'bonus'
       }
       return this.typeNames[row.ActType]
     },
