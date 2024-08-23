@@ -23,10 +23,11 @@
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="mini" @click="getData">查询</el-button>
+                <el-button type="success" size="mini" @click="exportExcel">导出当前数据</el-button>
+
               </el-form-item>
             </el-form>
 
-            <!--            <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>-->
           </el-col>
         </el-row>
         <el-table
@@ -212,63 +213,38 @@ export default {
     },
 
     exportExcel() {
-      if (this.stepTableData.length <= 0) {
+      console.log(this.queryType)
+      console.log(this.clientDB.TotalData)
+      if ( this.clientDB.TotalData.length <= 0) {
         Message.error("没有要导出的数据")
         return
       }
 
-      let scriptMap = {
-        1: 1,
-        2: 2,
-        3: 3,
-        4: 4,
-        5: 5,
-        6: 6,
-        7: 7,
-        8: 8,
-        9: 9,
-        10: 10,
-        11: 11,
-        12: 12,
-        13: 13,
-        14: 14,
-        15: 15,
-        16: 16,
-        17: 17,
-        18: 18,
-        19: 19,
-        20: 20
-      }
-      let stepMap = {2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50}
       this.$confirm("是否确认导出当前游戏统计数据?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then((response) => {
-        let result = [["剧本", "剧本/步数", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50"]]// 表格表头
-        for (const key in this.stepTableData) {
-          // 索引占位
-          for (const scriptKey in scriptMap) {
-            let dat = []
-            dat.push(this.stepTableData[key].title)
-            dat.push(scriptKey)
-            for (const stepKey in stepMap) {
-              if (stepKey == 0 || stepKey == 1) {
-                continue
-              }
-
-              let keyStr = this.stepTableData[key].gid + "_" + this.stepTableData[key].sheet + "_" + scriptKey + '_' + stepMap[stepKey]
-              dat[stepKey] = this.mapCnt[keyStr] || 0
-            }
+        let result = [["Uid", "下注金额", "消耗金币", "赢金", "金币倍数","转轴倍数","幸运转盘倍数"]]// 表格表头
+        for (const o of this.clientDB.TotalData) {
+            let dat =[]
+          dat.push(o.Uid)
+            dat.push(o.CalcBet / 1000)
+            dat.push(o.MoneyBet/ 1000 )
+            dat.push(o.MoneyWon/ 1000)
+            dat.push(o.MoneyOdds/ 1000)
+            dat.push(o.SpinOdds/ 1000)
+            dat.push(o.PlateOdds/ 1000)
             result.push(dat)
           }
-        }
+
 
 
         let workSheet = XLSX.utils.aoa_to_sheet(result);
         let bookNew = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(bookNew, workSheet, 'step') // 工作簿名称
-        let name = this.getGameName(parseInt(this.stepTableData[0].gid)) + '_' + this.timestampToTime(this.queryTime) + '_step.xlsx'
+        var string = this.queryType=="1"?"转盘":"金币转轴";
+        let name =  "金猪大奖统计-"+string+".xlsx"
         XLSX.writeFile(bookNew, name) // 保存的文件名
       })
     },

@@ -288,12 +288,12 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="下注时长(秒)："
+              label="下注时长："
               :required="true"
               prop="item.ActionSeconds"
               :rules="dataRule(true,{type:'n',range:'5'})"
             >
-              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />
+              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" ><template slot="append">[5,20]秒 默认8秒</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -345,6 +345,29 @@
                 <el-option label="普通房" :value="0" />
                 <el-option label="好友房" :value="100" />
               </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="最小下注倍数："
+              :required="true"
+              prop="item.OddsBetMin"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.OddsBetMin" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="最大下注倍数："
+              :required="true"
+              prop="item.OddsBetMax"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.OddsBetMax" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -401,7 +424,9 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    RoomLevel: 0
+    RoomLevel: 0,
+    OddsBetMin: 1,
+    OddsBetMax: 5
   }
 }
 
@@ -449,7 +474,9 @@ export default {
         TotalPay: '总充值大于',
         MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次',
-        RoomLevel: '房间类型'
+        RoomLevel: '房间类型',
+        OddsBetMin: '最小下注倍数',
+        OddsBetMax: '最大下注倍数'
       }
     }
   },
@@ -631,6 +658,10 @@ export default {
       }
       if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
+        return false
+      }
+      if (this.edit.item.OddsBetMax < this.edit.item.OddsBetMin) {
+        Message.error('【最小下注倍数】必须小于等于【最大下注倍数】，请检查数值正确性！')
         return false
       }
       return true

@@ -5,23 +5,6 @@
         <el-form ref="frm1" :model="slotsData" label-width="200px">
           <el-form-item label="老虎机类型">
             <el-select v-model.number="slotsData.SlotsType" disabled>
-              <el-option label="凤凰老虎机" :value="51" />
-              <el-option label="睡美人老虎机" :value="52" />
-              <el-option label="小丑老虎机" :value="53" />
-              <el-option label="黄金列车老虎机" :value="54" />
-              <el-option label="澳洲老虎机" :value="55" />
-              <el-option label="象鼻神老虎机" :value="56" />
-              <el-option label="黄金矿工老虎机" :value="57" />
-              <el-option label="阿拉丁老虎机" :value="58" />
-              <el-option label="芝加哥黑手党老虎机" :value="59" />
-              <el-option label="粮果派对老虎机" :value="60" />
-              <el-option label="FireKick老虎机" :value="61" />
-              <el-option label="侏罗纪老虎机" :value="62" />
-              <el-option label="夺宝奇兵老虎机" :value="63" />
-              <el-option label="植物大战僵尸老虎机" :value="64" />
-              <el-option label="爱尔兰精灵" :value="66" />
-              <el-option label="金钱兔" :value="67" />
-              <el-option label="十倍金牛" :value="68" />
               <el-option label="糖果传奇Way" :value="76" />
               <el-option label="糖果传奇Allline" :value="77" />
               <el-option label="SuperGems" :value="78" />
@@ -34,10 +17,20 @@
               <el-option label="FortuneAceMars" :value="85" />
               <el-option label="SuperGemsII" :value="86" />
               <el-option label="SuperGemsIIMars" :value="87" />
-              <el-option label="疯狂777" :value="88" />
-              <el-option label="疯狂777Mars" :value="89" />
+              <el-option label="Lucky777" :value="88" />
+              <el-option label="Lucky777Mars" :value="89" />
               <el-option label="SuperAceGo" :value="92" />
               <el-option label="SuperAceGoMars" :value="93" />
+              <el-option label="冲锋野牛" :value="94" />
+              <el-option label="冲锋野牛Mars" :value="95" />
+              <el-option label="RomanArena" :value="96" />
+              <el-option label="RomanArenaMars" :value="97" />
+              <el-option label="SuperTongit" :value="98" />
+              <el-option label="SuperTongitMars" :value="99" />
+              <el-option label="SuperGemsIII" :value="150" />
+              <el-option label="SuperGemsIIIMars" :value="151" />
+              <el-option label="阿拉丁神灯" :value="152" />
+              <el-option label="阿拉丁神灯Mars" :value="153" />
             </el-select>
           </el-form-item>
 

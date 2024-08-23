@@ -72,13 +72,15 @@
           </el-table-column>
           <el-table-column label="日志类型">
             <template slot-scope="scope">
-              {{ actTypeMap[scope.row.LogType ]}}
+              {{ logTypeMap[scope.row.LogType ]}}
             </template>
           </el-table-column>
 
           <el-table-column label="下注金额" width="160px">
             <template slot-scope="scope">
-              {{ formatNumber(scope.row.BetAmount /1000) }}
+              <span v-if="scope.row.BetAmount> 0"> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
+              <span v-else-if="scope.row.RollMoney> 0"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
+              <span v-else>{{0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="下注前余额">
@@ -175,15 +177,35 @@ export default {
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转回失败', 4: '下注失败',
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',
       },
       statusMap: {
-        1: '等待尝试', 2: '正在尝试', 3: '尝试成功',
+        1: '等待重试', 2: '正在重试', 3: '重试成功',
       },
       actTypeMap:{
         0: '查询所有',
-        2000: '下注',
-        2003: '结算',
+        2000 :'下注',
+        2001 :'登录',
+        2002 :'刷新',
+        2003 :'回合结束',
+        2004 :'回退',
+        2005 :'增值',
+        2006 :'转出',
+        2007 :'内部结算',
+        2008 :'游戏结算',
+        2009 :'转出',
+      },
+      logTypeMap:{
+        1: '登录日志',
+        2 :'刷新日志',
+        3 :'下注日志',
+        4 :'slots/小游戏结算',
+        5 :'转出',
+        6 :'回退',
+        7 :'增值业务',
+        8 :'内部结算',
+        9 :'游戏结算',
+        10 :'转入',
       },
       totalCount: 2,
     }
@@ -262,6 +284,7 @@ export default {
         }
       })
     },
+
     getGameList() {
       request({
         url: '/thirdpartygames/all',

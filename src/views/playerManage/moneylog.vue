@@ -322,7 +322,12 @@ const filterMap = {
     2000:'下注',
     2001:'登录',
     2002:'刷新',
-    2003:'结算',
+    2003:'回合结束',
+    2004: '回退',
+    2005: '增值',
+    2006: '转出',
+    2007: '内部结算',
+    2008: '游戏结算'
   }
 }
 
@@ -349,7 +354,7 @@ export default {
       search: '',
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
-      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,2000,2001,2002,2003],
+      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,2000,2001,2002,2003,2004,2005,2006,2007,2008],
 
       item: {
         Uid: 0
@@ -361,7 +366,7 @@ export default {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       chartData: newChartData(),
       env: 'test',
-
+      gameMap:{},
       drawer: {
         visible: false,
         lines: []
@@ -378,6 +383,7 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
+    this.getGameList()
     console.log(1)
   },
   methods: {
@@ -405,8 +411,8 @@ export default {
     },
     getActName(type, msg) {
       // 单一钱包类型
-      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006) {
-        return this.libShow.GameNames[msg]
+      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006 || type == 2007 || type == 2008) {
+        return this.gameMap[msg]
       }
       return msg
     },
@@ -864,6 +870,19 @@ export default {
     },
     showChart() {
       this.initChartData()
+    },
+    getGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            this.gameMap[response.Data[i].Gid] = response.Data[i].Name
+          }
+        }
+      })
     },
     initChartData() {
       const objs = this.moneyData.reverse()
