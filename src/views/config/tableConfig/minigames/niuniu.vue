@@ -568,7 +568,7 @@ export default {
           { CardType: 14, Odds: 3000 }
         ],
         Jackpot: {
-          BetMin: 30,
+          BetMin: 30000,
           ContributeRate: 1,
           AwardItems: [
             { Type: 1, AwardRate: 50 },
@@ -709,6 +709,10 @@ export default {
         this.item.BetTargets[i].BetMin /= 1000
         this.item.BetTargets[i].BetMax /= 1000
       }
+
+      if (this.item.Jackpot !== undefined && this.item.Jackpot.BetMin !== undefined) {
+        this.item.Jackpot.BetMin /= 1000
+      }
     },
     convertTextToHexadecimalArray(text) {
       const ret = []
@@ -777,6 +781,10 @@ export default {
       for (const i in this.item.BetTargets) {
         ret.BetTargets[i].BetMin *= 1000
         ret.BetTargets[i].BetMax *= 1000
+      }
+
+      if (ret.Jackpot !== undefined && ret.Jackpot.BetMin !== undefined) {
+        ret.Jackpot.BetMin *= 1000
       }
 
       return ret
