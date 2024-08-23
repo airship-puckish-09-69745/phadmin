@@ -2496,7 +2496,7 @@ export default {
         solitaireDetail: {}
       },
       solitaireLogStopMap: {
-        1: '正常结束',
+        1: '有玩家完成',
         2: '时间用完',
         3: '认输',
         4: '求和'
