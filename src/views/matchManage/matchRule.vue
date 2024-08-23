@@ -178,7 +178,7 @@
           <!-- 此处是专配置打立出局相关配置 -->
           <div v-if="stageItem.system_type == 1">
             <!-- 底分增长配置 -->
-            <fieldset>
+            <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>底分增长配置</legend>
               <el-form-item label="开关：" :required="true">
                 <el-radio v-for="enableItem in enableCfgs" :key="enableItem.value" v-model="stageItem.system_strike_out.bottom_score_growth.open" :label=enableItem.value>{{ enableItem.label }}</el-radio>
@@ -186,18 +186,43 @@
               <el-form-item label="增长类型：" :required="true">
                 <el-radio v-for="growthItem in growthCfgs" :key="growthItem.value" v-model="stageItem.system_strike_out.bottom_score_growth.type" :label=growthItem.value>{{ growthItem.label }}</el-radio>
               </el-form-item>
-              <el-form-item label="初始底分：" :required="true">
-                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.bottom_score_growth.init_score" placeholder="请填写底分增长初始底分" />
+              <el-form-item label="阶段数：" :required="true">
+              <el-input-number v-model="stageItem.system_strike_out.bottom_score_growth.grow_total" @change="changeGrowTotal($event, stageItem.stage_index)" :min="1" :max="10"></el-input-number>
               </el-form-item>
-              <el-form-item v-if="stageItem.system_strike_out.bottom_score_growth.type > 1" label="增长间隔(秒)：" :required="true">
-                <el-input style="width: 200px;"  v-model.number="stageItem.system_strike_out.bottom_score_growth.interval" placeholder="请填写底分增长间隔,单位为秒" />
-              </el-form-item>
-              <el-form-item v-if="stageItem.system_strike_out.bottom_score_growth.type == 3" label="增长值：" :required="true">
-                <el-input style="width: 200px;"  v-model.number="stageItem.system_strike_out.bottom_score_growth.value" placeholder="请填写底分增长值" />
+              <el-form-item label="增长配置：" :required="true">
+              <el-table
+              :data="stageItem.system_strike_out.bottom_score_growth.init_score_grow_detail"
+              stripe
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :cell-style="libShow.TableCell(10)"
+              style="width: 100%;"
+              >
+              <el-table-column
+                prop="index"
+                label="阶段"
+                width="50px"
+              />
+              <el-table-column
+                prop="duration"
+                label="时长"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.duration"/>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="init_score"
+                label="底分"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.init_score"/>
+                </template>
+              </el-table-column>
+              </el-table>
               </el-form-item>
             </fieldset>
             <!-- 淘汰分增长配置 -->
-            <fieldset>
+            <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>淘汰分增长配置</legend>
               <el-form-item label="开关：" :required="true">
                 <el-radio v-for="enableItem in enableCfgs" :key="enableItem.value" v-model="stageItem.system_strike_out.disuse_score_growth.open" :label=enableItem.value>{{ enableItem.label }}</el-radio>
@@ -205,14 +230,39 @@
               <el-form-item label="增长类型：" :required="true">
                 <el-radio v-for="growthItem in growthCfgs" :key="growthItem.value" v-model="stageItem.system_strike_out.disuse_score_growth.type" :label=growthItem.value>{{ growthItem.label }}</el-radio>
               </el-form-item>
-              <el-form-item label="初始底分：" :required="true">
-                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.disuse_score_growth.init_score" placeholder="请填写淘汰分增长初始底分" />
+              <el-form-item label="阶段数：" :required="true">
+              <el-input-number v-model="stageItem.system_strike_out.disuse_score_growth.grow_total" @change="changeDisuseGrowTotal($event, stageItem.stage_index)" :min="1" :max="10"></el-input-number>
               </el-form-item>
-              <el-form-item v-if="stageItem.system_strike_out.disuse_score_growth.type > 1" label="增长间隔(秒)：" :required="true">
-                <el-input style="width: 200px;"  v-model.number="stageItem.system_strike_out.disuse_score_growth.interval" placeholder="请填写淘汰分增长间隔,单位为秒" />
-              </el-form-item>
-              <el-form-item v-if="stageItem.system_strike_out.disuse_score_growth.type == 3" label="增长值：" :required="true">
-                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.disuse_score_growth.value" placeholder="请填写淘汰分增长值" />
+              <el-form-item label="增长配置：" :required="true">
+              <el-table
+              :data="stageItem.system_strike_out.disuse_score_growth.disuse_score_grow_detail"
+              stripe
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :cell-style="libShow.TableCell(10)"
+              style="width: 100%;"
+              >
+              <el-table-column
+                prop="index"
+                label="阶段"
+                width="50px"
+              />
+              <el-table-column
+                prop="duration"
+                label="时长"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.duration"/>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="disuse_score"
+                label="淘汰分"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.disuse_score"/>
+                </template>
+              </el-table-column>
+              </el-table>
               </el-form-item>
             </fieldset>
             <!-- 结束规则 -->
@@ -295,29 +345,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="init_score_growth"
-                label="轮初始积分增量"
-              >
-                <template slot-scope="scope">
-                  <el-input style="width: 80px;" v-model.number="scope.row.init_score_growth"/>
-                </template>
-              </el-table-column>
-              <el-table-column
                 v-if="stageItem.system_reach_out.score_method==1"
                 prop="score_multiple"
                 label="开方加倍数"
               >
                 <template slot-scope="scope">
                   <el-input style="width: 80px;" v-model.number="scope.row.score_multiple"/>倍
-                </template>
-              </el-table-column>
-              <el-table-column
-                v-if="stageItem.system_reach_out.score_method==2"
-                prop="score_rate"
-                label="固定比列(%)"
-              >
-                <template slot-scope="scope">
-                  <el-input style="width: 80px;" v-model.number="scope.row.score_rate"/>%
                 </template>
               </el-table-column>
               <el-table-column
@@ -360,7 +393,7 @@ export default {
         status: -1,
       },
       gameCfgs: [
-        {"value": 31, "label":"tongits"},
+        {"value": 1000, "label":"tongits"},
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -380,7 +413,7 @@ export default {
         //{"value":0,"label":"关闭"},
       ],
       growthCfgs: [
-        {"value":3,"label":"定值增长"},
+        {"value":3,"label":"按阶段增长"},
       ],
       endMethodCfgs: [
         //{"value":1,"label":"人数截至"},
@@ -543,7 +576,7 @@ export default {
         this.editForm.data = {
           "id": 0,
           "name": "mtt赛制配置",
-          "game_id": [31],
+          "game_id": [1000],
           "init_score": 1000,
           "stage_detail": [],
           "status": 0,
@@ -592,9 +625,57 @@ export default {
                 "promotion_user": 0,        //晋级人数
                 "init_score_growth":0,     //本轮初始积分增量
                 "score_multiple": 0,   //开方加倍数，带分方式为1有值
-                "score_rate": 0,   //固定比列(%)，带分方式为2有值
+                "score_rate": 100,   //固定比列(%)，带分方式为2有值
                 "bottom_score_open": 1, //开启本轮底分0:开启，1关闭
                 "bottom_score": 0, //本轮底分
+              })
+            }
+          }
+          break
+        }
+      }
+    },
+    changeGrowTotal(val, stageIndex) {
+      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
+        if (this.editForm.data.stage_detail[i].stage_index == stageIndex) {
+          let oldLen = this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.init_score_grow_detail.length
+          if (oldLen > val) {
+            for (let j=0; j<oldLen;j++) {
+              if (j == val) {
+                this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.init_score_grow_detail.splice(val, oldLen-val)
+              }
+            }
+          } else {
+            let diffNum = val - oldLen
+            for (let j=0;j<diffNum;j++) {
+              this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.init_score_grow_detail.push({
+                "index": oldLen+1+j,                 //第几轮
+                "duration": 80,            //时长
+                "init_score": 100,          //底分
+              })
+            }
+          }
+          break
+        }
+      }
+    },
+    changeDisuseGrowTotal(val, stageIndex) {
+      for(let i=0;i<this.editForm.data.stage_detail.length;i++) {
+        if (this.editForm.data.stage_detail[i].stage_index == stageIndex) {
+          let oldLen = this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.length
+          if (oldLen > val) {
+            for (let j=0; j<oldLen;j++) {
+              if (j == val) {
+                this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.splice(val, oldLen-val)
+              }
+            }
+          } else {
+            let diffNum = val - oldLen
+            for (let j=0;j<diffNum;j++) {
+              this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.disuse_score_grow_detail.push({
+                "index": oldLen+1+j,                 //第几轮
+                "duration": 80,            //时长
+                "disuse_score": 100,          //淘汰分
               })
             }
           }
@@ -613,31 +694,32 @@ export default {
             "score_method": 2,  //带分方式：1开方加倍,2固定比列
             "bottom_score_open": 1, //开启本轮底分0:开启，1关闭
             "round_config": [
-                {
-                    "index": 1,                 //第几轮
-                    "play_round": 4,            //玩牌局数
-                    "promotion_user": 3,        //晋级人数
-                    "init_score_growth":10,     //本轮初始积分增量
-                    "score_multiple": 1,   //开方加倍数，带分方式为1有值
-                    "score_rate": 50,   //固定比列(%)，带分方式为2有值
-                    "bottom_score": 100, //本轮底分(开启本轮底分才有)
-                }
             ]
         },
         "system_strike_out": {
           "bottom_score_growth": {    //底分增长配置
             "open": 1,              //是否开启：0开启，1关闭
             "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
-            "init_score": 100,      //初始底分
-            "interval": 80,         //增长间隔(秒),类型为2才有
-            "value": 3,             //增长值,类型为2是倍数，类型为3是固定值
+            "grow_total": 1,        //细节数量
+            "init_score_grow_detail": [  //底分增长细节
+              { 
+                "index": 1,                //阶段
+                "duration": 80,            //时长
+                "init_score": 100,          //底分
+              }
+            ]
           },
           "disuse_score_growth": {    //淘汰分
               "open": 1,              //是否开启：0开启，1关闭
               "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
-              "init_score": 100,      //初始底分
-              "interval": 80,         //增长间隔(秒),类型为2才有
-              "value": 3,             //增长值,类型为2是倍数，类型为3是固定值
+              "grow_total": 1,        //细节数量
+              "disuse_score_grow_detail": [  //底分增长细节
+              { 
+                "index": 1,                //阶段
+                "duration": 80,            //时长
+                "disuse_score": 100,       //淘汰分
+              }
+            ]
           },
           "end_rule": {               //结束规则
               "end_method": 3, //结束方式：1时间截止，2人数截止，3:时间+人数截止
@@ -651,7 +733,7 @@ export default {
                   "max_score": 1000,  //带分上限
                   "score_method": 2,  //带分方式：1开方加倍,2固定比列
                   "score_multiple": 1,   //开方加倍数，带分方式为1有值
-                  "score_rate": 50,   //固定比列(%)，带分方式为2有值
+                  "score_rate": 100,   //固定比列(%)，带分方式为2有值
               }
           }
         }
@@ -672,7 +754,7 @@ export default {
                     "promotion_user": 3,        //晋级人数
                     "init_score_growth":10,     //本轮初始积分增量
                     "score_multiple": 1,   //开方加倍数，带分方式为1有值
-                    "score_rate": 50,   //固定比列(%)，带分方式为2有值
+                    "score_rate": 100,   //固定比列(%)，带分方式为2有值
                     "bottom_score": 100, //本轮底分(开启本轮底分才有)
                 }
             ]
@@ -681,16 +763,16 @@ export default {
           "bottom_score_growth": {    //底分增长配置
             "open": 0,              //是否开启：0开启，1关闭
             "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
-            "init_score": 100,      //初始底分
-            "interval": 80,         //增长间隔(秒),类型为2才有
-            "value": 3,             //增长值,类型为2是倍数，类型为3是固定值
+            "grow_total": 1,
+            "init_score_grow_detail": [  //底分增长细节
+            ]
           },
           "disuse_score_growth": {    //淘汰分
               "open": 0,              //是否开启：0开启，1关闭
               "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
-              "init_score": 100,      //初始底分
-              "interval": 80,         //增长间隔(秒),类型为2才有
-              "value": 3,             //增长值,类型为2是倍数，类型为3是固定值
+              "grow_total": 1,        //细节数量
+              "disuse_score_grow_detail": [  //底分增长细节
+            ]
           },
           "end_rule": {               //结束规则
               "end_method": 3, //结束方式：1时间截止，2人数截止，3:时间+人数截止
@@ -704,7 +786,7 @@ export default {
                   "max_score": 1000,  //带分上限
                   "score_method": 2,  //带分方式：1开方加倍,2固定比列
                   "score_multiple": 1,   //开方加倍数，带分方式为1有值
-                  "score_rate": 50,   //固定比列(%)，带分方式为2有值
+                  "score_rate": 100,   //固定比列(%)，带分方式为2有值
               }
           }
         }
@@ -814,36 +896,34 @@ export default {
           //底分检查
           if (strikeOutStage.system_strike_out.bottom_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.open = 1
-            if (strikeOutStage.system_strike_out.bottom_score_growth.init_score >= this.editForm.data.init_score) {
-              this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
-              return false
-            }
-            if (strikeOutStage.system_strike_out.bottom_score_growth.type == 3) {
-              if (strikeOutStage.system_strike_out.bottom_score_growth.interval <= 0) {
-                this.errmsg('打立出局阶段的底分增长间隔无效！')
+            for (let j=0; j < strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length; j++) {
+              if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].init_score >= this.editForm.data.init_score) {
+                this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
                 return false
               }
-              if (strikeOutStage.system_strike_out.bottom_score_growth.value <= 0) {
-                this.errmsg('打立出局阶段的底分增长值无效！')
-                return false
+
+              if (strikeOutStage.system_strike_out.bottom_score_growth.type == 3) {
+                if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].duration <= 0) {
+                  this.errmsg('打立出局阶段的底分时长无效！')
+                  return false
+                }
               }
             }
           }
           //淘汰分检查
           if (strikeOutStage.system_strike_out.disuse_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.open = 1
-            if (strikeOutStage.system_strike_out.disuse_score_growth.init_score >= this.editForm.data.init_score) {
-              this.errmsg('打立出局阶段的淘汰分初始值必须小于用户初始积分！')
-              return false
-            }
-            if (strikeOutStage.system_strike_out.disuse_score_growth.type == 3) {
-              if (strikeOutStage.system_strike_out.bottom_score_growth.interval <= 0) {
-                this.errmsg('打立出局阶段的淘汰分增长间隔无效！')
+
+            for (let j=0; j < strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length; j++) {
+              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score >= this.editForm.data.init_score) {
+                this.errmsg('打立出局阶段的淘汰分初始值必须小于用户初始积分！')
                 return false
               }
-              if (strikeOutStage.system_strike_out.disuse_score_growth.value <= 0) {
-                this.errmsg('打立出局阶段的淘汰分增长值无效！')
-                return false
+              if (strikeOutStage.system_strike_out.disuse_score_growth.type == 3) {
+                if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].duration <= 0) {
+                  this.errmsg('打立出局阶段的淘汰分增长间隔无效！')
+                  return false
+                }
               }
             }
           }

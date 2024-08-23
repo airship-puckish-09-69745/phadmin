@@ -78,7 +78,9 @@
 
           <el-table-column label="下注金额" width="160px">
             <template slot-scope="scope">
-              {{ formatNumber(scope.row.BetAmount /1000) }}
+              <span v-if="scope.row.BetAmount> 0"> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
+              <span v-else-if="scope.row.RollMoney> 0"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
+              <span v-else>{{0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="下注前余额">
@@ -191,6 +193,7 @@ export default {
         2006 :'转出',
         2007 :'内部结算',
         2008 :'游戏结算',
+        2009 :'转出',
       },
       logTypeMap:{
         1: '登录日志',
