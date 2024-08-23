@@ -97,53 +97,23 @@
         </template>
       </el-table-column>
       <el-table-column
-        prop="Insure"
-        label="投保金额"
-        sortable="custom"
-        width="120%"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.Insure / 1000 }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="Outs"
-        label="OUTS数量"
-        width="120%"
-      >
-        <template slot-scope="scope">
-          {{ scope.row.Outs }}
-        </template>
-      </el-table-column>
-      <el-table-column
         prop="InsureRatio"
-        label="赔率"
+        label="胜率"
         width="80%"
       >
         <template slot-scope="scope">
           {{ scope.row.InsureRatio / 1000 }}
         </template>
       </el-table-column>
-      <el-table-column
-        prop="LogID"
-        label="牌局ID"
-        width="200%"
-      >
-        <template slot-scope="scope">
-          <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.logid, dateTime: scope.row.InsureTime }}" style="color: blue" @click.native="recordShow = false">
-            {{ scope.row.logid }}
-          </router-link>
-        </template>
-      </el-table-column>
     </el-table>
     <br>
     <el-row type="flex" justify="center">
-      <el_col :span="6">
+      <el-col :span="16">
         <div> 汇总： {{ totalInsure.toFixed(2) }} </div>
-      </el_col>
+      </el-col>
     </el-row>
     <el-row type="flex" justify="end">
-      <el-col :span="6">
+      <el-col :span="16">
         <div class="block">
           <el-pagination
             :current-page="currentPage"
@@ -202,6 +172,7 @@ export default {
           endTime: Date.parse(new Date(_this.searchForm.EndDate).toString()) / 1000 + 86400
         }
       }).then(response => {
+        console.log(response)
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.length === 0 || objs === 'no Data') {

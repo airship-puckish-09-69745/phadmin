@@ -114,16 +114,7 @@
                 <el-input v-model.number="searchRecordForm.Uid" size="mini" placeholder="玩家id" />
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" size="mini" @click="searchCurrRecord(1)">查询</el-button>
-              </el-form-item>
-            </el-form-item>
-
-            <el-form-item label="">
-              <el-form-item label="牌局id">
-                <el-input v-model.number="searchRecordForm.LogID" size="mini" placeholder="牌局id" />
-              </el-form-item>
-              <el-form-item>
-                <el-button type="primary" size="mini" @click="searchCurrRecord(2)">查询</el-button>
+                <el-button type="primary" size="mini" @click="searchCurrRecord(1)">筛选</el-button>
               </el-form-item>
             </el-form-item>
           </el-form>
@@ -222,17 +213,6 @@
           >
             <template slot-scope="scope">
               {{ scope.row.AfterMoney/1000 }}
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="LogId"
-            label="牌局ID"
-            width="180%"
-          >
-            <template slot-scope="scope">
-              <router-link :to="{name: 'texasNlhGameDetail', query: { SrvLogId: scope.row.LogId, dateTime: scope.row.Time }}" style="color: blue" @click.native="recordShow = false">
-                {{ scope.row.LogId }}
-              </router-link>
             </template>
           </el-table-column>
         </el-table>
@@ -368,7 +348,7 @@ export default {
             _this.totalRecordCount = objs.total
             _this.tableRecordData = objs.list
             _this.currentRecordPage = 1
-            _this.refreshRecordShow()
+            _this.refreshRecordShow(_this.currentRecordPage)
           } else {
             _this.totalRecordCount = 0
             _this.tableRecordData = []
@@ -399,23 +379,29 @@ export default {
         }
       })
     },
-    searchCurrRecord(type) {
-      console.log(type, this.tableRecordData)
-      if (this.searchRecordForm.Uid !== '' || this.searchRecordForm.LogID !== '') {
-        this.currentRecordData = []
-      } else {
-        this.searchRecord()
-      }
+    searchCurrRecord(page) {
+      this.currentRecordData = []
       for (var i = 0; i < this.tableRecordData.length; i++) {
-        if (type === 1 && this.searchRecordForm.Uid === this.tableRecordData[i].Uid) {
-          this.currentRecordData.push(this.tableRecordData[i])
+        if (this.searchRecordForm.Uid > 0 && this.searchRecordForm.Uid !== this.tableRecordData[i].Uid) {
+          continue
         }
-        if (type === 2 && this.searchRecordForm.LogID === this.tableRecordData[i].LogId) {
-          this.currentRecordData.push(this.tableRecordData[i])
+        console.log(this.searchRecordForm)
+        console.log(this.tableRecordData[i])
+        if (this.searchRecordForm.BeginDate > 0 && this.searchRecordForm.EndDate > 0 && (this.tableRecordData[i].Time < (this.searchRecordForm.BeginDate / 1000) || this.tableRecordData[i].Time > (this.searchRecordForm.EndDate / 1000 + 86400))) {
+          continue
         }
+        this.currentRecordData.push(this.tableRecordData[i])
       }
+
       this.totalRecordCount = this.currentRecordData.length
-      this.currentRecordPage = 1
+      this.currentRecordPage = page
+
+      var startIndex = (this.currentRecordPage - 1) * this.pageNum
+      var endIndex = this.currentRecordPage * this.pageNum
+      if (endIndex > this.currentRecordData.length) {
+        endIndex = this.currentRecordData.length
+      }
+      this.currentRecordData = this.currentRecordData.slice(startIndex, endIndex)
     },
     getTitle() {
       return this.editShow ? this.showLevel(this.currLevel) + ' 级别JP实时奖池' : 'JackPot当前级别中奖明细查询'
@@ -484,7 +470,7 @@ export default {
         this.currentData.push(this.tableData[i])
       }
     },
-    refreshRecordShow(ob) {
+    refreshRecordShow(page) {
       this.currentRecordData = []
       for (var i = (this.currentRecordPage - 1) * this.pageNum; i < this.tableRecordData.length; i++) {
         if (this.currentRecordData.length === this.pageNum) {
@@ -492,6 +478,7 @@ export default {
         }
         this.currentRecordData.push(this.tableRecordData[i])
       }
+      this.searchCurrRecord(page)
     },
     handJackPotRecord(ob) {
       this.currLevel = ob.SmallBlind / 1000
@@ -514,12 +501,12 @@ export default {
     },
     handleSizeRecordChange(val) {
       this.pageNum = val
-      this.refreshRecordShow()
+      this.refreshRecordShow(this.currentRecordPage)
     },
     handleCurrentRecordChange(val) {
       console.log(val)
       this.currentRecordPage = val
-      this.refreshRecordShow()
+      this.refreshRecordShow(this.currentRecordPage)
     },
     confirmDelete() {
       this.editShow = false

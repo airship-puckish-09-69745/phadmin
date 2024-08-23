@@ -1060,11 +1060,10 @@ export const asyncRoutes = [
                 meta: { title: '无限德州', gid: 32 }
               },
               {
-                path: 'texasNlhGameDetail',
-                component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
-                name: 'texasNlhGameDetail',
-                meta: { title: '牌局详情' },
-                hidden: true
+                path: 'texasMttGameLog',
+                component: () => import('@/views/texas2dpro/stat/texasMttGameLog'),
+                name: 'texasMttGameLog',
+                meta: { title: 'MTT比赛场' }
               }/*,
               {
                 path: 'texasNlhGameConsumeSta',
