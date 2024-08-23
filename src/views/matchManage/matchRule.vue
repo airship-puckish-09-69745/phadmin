@@ -393,7 +393,7 @@ export default {
         status: -1,
       },
       gameCfgs: [
-        {"value": 1000, "label":"tongits"},
+        {"value": 2031, "label":"tongits"},
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -576,7 +576,7 @@ export default {
         this.editForm.data = {
           "id": 0,
           "name": "mtt赛制配置",
-          "game_id": [1000],
+          "game_id": [2031],
           "init_score": 1000,
           "stage_detail": [],
           "status": 0,
