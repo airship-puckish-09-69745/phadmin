@@ -271,6 +271,9 @@ export default {
     console.log(1)
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
+    if (this.gid === 150) {
+      this.typeNames[1] = 'bonus'
+    }
   },
   methods: {
     isActV2(gid) {
@@ -284,6 +287,7 @@ export default {
       if (this.gid === 86 && row.ActType === 1) {
         return '转盘'
       }
+
       return this.typeNames[row.ActType]
     },
     showChart() {

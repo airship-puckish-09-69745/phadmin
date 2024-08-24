@@ -393,7 +393,7 @@ export default {
         status: -1,
       },
       gameCfgs: [
-        {"value": 1000, "label":"tongits"},
+        {"value": 2031, "label":"tongits"},
         // {"value": 15, "label":"德州"}
       ],
       statusCfgs: [
@@ -576,7 +576,7 @@ export default {
         this.editForm.data = {
           "id": 0,
           "name": "mtt赛制配置",
-          "game_id": [1000],
+          "game_id": [2031],
           "init_score": 1000,
           "stage_detail": [],
           "status": 0,
@@ -694,15 +694,6 @@ export default {
             "score_method": 2,  //带分方式：1开方加倍,2固定比列
             "bottom_score_open": 1, //开启本轮底分0:开启，1关闭
             "round_config": [
-                {
-                    "index": 1,                 //第几轮
-                    "play_round": 4,            //玩牌局数
-                    "promotion_user": 3,        //晋级人数
-                    "init_score_growth":10,     //本轮初始积分增量
-                    "score_multiple": 1,   //开方加倍数，带分方式为1有值
-                    "score_rate": 100,   //固定比列(%)，带分方式为2有值
-                    "bottom_score": 100, //本轮底分(开启本轮底分才有)
-                }
             ]
         },
         "system_strike_out": {
@@ -774,11 +765,6 @@ export default {
             "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
             "grow_total": 1,
             "init_score_grow_detail": [  //底分增长细节
-              { 
-                "index": 1,                //阶段
-                "duration": 80,            //时长
-                "init_score": 100,          //底分
-              }
             ]
           },
           "disuse_score_growth": {    //淘汰分
@@ -786,11 +772,6 @@ export default {
               "type": 3,              //增长类型:1固定，2倍数增长,3定值增长
               "grow_total": 1,        //细节数量
               "disuse_score_grow_detail": [  //底分增长细节
-              { 
-                "index": 1,                //阶段
-                "duration": 80,            //时长
-                "disuse_score": 100,       //淘汰分
-              }
             ]
           },
           "end_rule": {               //结束规则

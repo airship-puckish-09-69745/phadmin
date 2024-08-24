@@ -318,6 +318,12 @@ export const asyncRoutes = [
             name: 'niuniuTable',
             meta: { title: 'NiuNiu ◐' }
           },
+          { // 金拉米
+            path: 'ginrummyTable',
+            component: () => import('@/views/config/tableConfig/ginrummyTable'),
+            name: 'ginrummyTable',
+            meta: { title: 'GinRummy ◐' }
+          },
           {
             path: 'texasTable',
             component: () => import('@/views/config/tableConfig/texasTable'),
@@ -564,6 +570,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/wingoLottery.vue'),
             name: 'WingoLottery_cfg',
             meta: { title: 'WingoLottery ◐' }
+          },
+          {
+            path: 'HandredNiuNiu_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
+            name: 'HandredNiuNiu_cfg',
+            meta: { title: 'HandredNiuNiu ◐' }
           }
         ]
       },
@@ -1136,11 +1148,10 @@ export const asyncRoutes = [
                 meta: { title: '无限德州', gid: 32 }
               },
               {
-                path: 'texasNlhGameDetail',
-                component: () => import('@/views/texas2dpro/stat/texasNlhGameDetail'),
-                name: 'texasNlhGameDetail',
-                meta: { title: '牌局详情' },
-                hidden: true
+                path: 'texasMttGameLog',
+                component: () => import('@/views/texas2dpro/stat/texasMttGameLog'),
+                name: 'texasMttGameLog',
+                meta: { title: 'MTT比赛场' }
               }/*,
               {
                 path: 'texasNlhGameConsumeSta',
@@ -1369,7 +1380,14 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiii_slots_log',
             meta: { title: 'SuperGemsIII', gid:  150 }
+          },
+          {
+            path: 'aladdinlamp_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'aladdinlamp_slots_log',
+            meta: { title: '阿拉丁神灯', gid:  152 }
           }
+
         ]
       },
       {
@@ -1455,6 +1473,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiiimars_slots_log',
             meta: { title: 'SuperGemsIII(审)', gid: 151 }
+          },
+          {
+            path: 'aladdinlamp_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'aladdinlamp_slots_log',
+            meta: { title: '阿拉丁神灯', gid:  153 }
           }
         ]
       },
