@@ -429,7 +429,7 @@ export default {
         {"value": 1100000, "label":"xworld"},
       ],
       gameCfgs: [
-        {"value": 1000, "label":"tongits"},
+        {"value": 2031, "label":"tongits"},
         // {"value": 15, "label":"德州"}
       ],
       channelIdCfgs: [
