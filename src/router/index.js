@@ -318,6 +318,12 @@ export const asyncRoutes = [
             name: 'niuniuTable',
             meta: { title: 'NiuNiu ◐' }
           },
+          { // 金拉米
+            path: 'ginrummyTable',
+            component: () => import('@/views/config/tableConfig/ginrummyTable'),
+            name: 'ginrummyTable',
+            meta: { title: 'GinRummy ◐' }
+          },
           {
             path: 'texasTable',
             component: () => import('@/views/config/tableConfig/texasTable'),
