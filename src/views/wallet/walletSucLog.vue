@@ -78,15 +78,14 @@
 
           <el-table-column label="下注金额" width="160px">
             <template slot-scope="scope">
-              <span v-if="scope.row.BetAmount> 0"> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
-              <span v-else-if="scope.row.RollMoney> 0"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
+              <span v-if="scope.row.BetAmount> 0 && scope.row.LogType !== 4 "> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
+              <span v-else-if="scope.row.RollMoney>  0 && scope.row.LogType !== 4"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
               <span v-else>{{0}}</span>
             </template>
           </el-table-column>
           <el-table-column label="下注前余额">
             <template slot-scope="scope">
-              <span v-if="scope.row.LogType==4">{{}}</span>
-              <span>{{ formatNumber(scope.row.BeforeBalance /1000) }}</span>
+              {{ formatNumber(scope.row.BeforeBalance /1000) }}
             </template>
           </el-table-column>
           <el-table-column label="返奖">
