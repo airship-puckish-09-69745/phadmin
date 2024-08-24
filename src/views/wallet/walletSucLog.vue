@@ -85,7 +85,8 @@
           </el-table-column>
           <el-table-column label="下注前余额">
             <template slot-scope="scope">
-              {{ formatNumber(scope.row.BeforeBalance /1000) }}
+              <span v-if="scope.row.LogType==4">{{}}</span>
+              <span>{{ formatNumber(scope.row.BeforeBalance /1000) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="返奖">
