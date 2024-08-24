@@ -404,12 +404,12 @@ export default {
       this.edit.visible = false
     },
     checkImport(file) {
-      const isLt2M = file.size / 1024 / 1024 < 2
-      if (isLt2M) {
+      const isLt4M = file.size / 1024 / 1024 < 4
+      if (isLt4M) {
         return true
       }
       this.$message({
-        message: 'Please do not upload files larger than 2m in size.',
+        message: 'Please do not upload files larger than 4m in size.',
         type: 'warning'
       })
       return false
@@ -436,7 +436,7 @@ export default {
           for (let k = 0; k < keys.length; k ++) {
             const sheetKey = keys[k]+j
             if (sheetKey in sheet) {
-              rows.push(sheet[sheetKey]['v'])      
+              rows.push(sheet[sheetKey]['v'])
             } else {
               break
             }
