@@ -539,10 +539,10 @@ export default {
   data() {
     return {
       BetAreaNames: {
-        1: 'Luzon',
-        2: 'Mindanao',
-        3: 'Samar',
-        4: 'Negros'
+        0: 'Luzon',
+        1: 'Mindanao',
+        2: 'Samar',
+        3: 'Negros'
       },
       JackpotTypeCfg: {
         1: '一等奖',
@@ -569,10 +569,10 @@ export default {
       item: {
         BetLevel: { CanBet: '30,50,100,200,400,600', MaxMoneyBet: 1000, MinMoneyBet: 1 },
         BetAreas: [
-          { Name: 'Luzon', MaxMoneyBet: 1000000, Id: 1, RobotBetRate: 10 },
-          { Name: 'Mindanao', MaxMoneyBet: 1000000, Id: 2, RobotBetRate: 10 },
-          { Name: 'Samar', MaxMoneyBet: 1000000, Id: 3, RobotBetRate: 10 },
-          { Name: 'Negros', MaxMoneyBet: 1000000, Id: 4, RobotBetRate: 10 }
+          { Name: 'Luzon', MaxMoneyBet: 1000000, Id: 0, RobotBetRate: 10 },
+          { Name: 'Mindanao', MaxMoneyBet: 1000000, Id: 1, RobotBetRate: 10 },
+          { Name: 'Samar', MaxMoneyBet: 1000000, Id: 2, RobotBetRate: 10 },
+          { Name: 'Negros', MaxMoneyBet: 1000000, Id: 3, RobotBetRate: 10 }
         ],
         BetTargets: [
           { StartHour: 0, EndHour: 4, BetMin: 10000, BetMax: 20000 },
@@ -613,12 +613,12 @@ export default {
         BetTime: 13,
         NoticeTime: 300,
         TestCards: {
-          BankerCards: { Cards: [], AreaId: 0 },
+          BankerCards: { Cards: [], AreaId: -1 },
           PlayerCards: [
+            { Cards: [], AreaId: 0 },
             { Cards: [], AreaId: 1 },
             { Cards: [], AreaId: 2 },
-            { Cards: [], AreaId: 3 },
-            { Cards: [], AreaId: 4 }
+            { Cards: [], AreaId: 3 }
           ]
         },
 
@@ -645,12 +645,12 @@ export default {
         }
       },
       TestCards: {
-        BankerCards: { CardText: '', AreaId: 0 },
+        BankerCards: { CardText: '', AreaId: -1 },
         PlayerCards: [
+          { CardText: '', AreaId: 0 },
           { CardText: '', AreaId: 1 },
           { CardText: '', AreaId: 2 },
-          { CardText: '', AreaId: 3 },
-          { CardText: '', AreaId: 4 }
+          { CardText: '', AreaId: 3 }
         ]
       },
       isHidden: true, // 默认隐藏
@@ -807,7 +807,7 @@ export default {
       }
 
       ret.TestCards.BankerCards = {}
-      ret.TestCards.BankerCards.AreaId = 0
+      ret.TestCards.BankerCards.AreaId = -1
       ret.TestCards.BankerCards.Cards = this.convertTextToHexadecimalArray(this.TestCards.BankerCards.CardText)
 
       ret.TestCards.PlayerCards = []
