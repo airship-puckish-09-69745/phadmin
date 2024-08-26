@@ -572,10 +572,10 @@ export const asyncRoutes = [
             meta: { title: 'WingoLottery ◐' }
           },
           {
-            path: 'HandredNiuNiu_cfg',
+            path: 'MultiPlayerNiuNiu_cfg',
             component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
-            name: 'HandredNiuNiu_cfg',
-            meta: { title: 'HandredNiuNiu ◐' }
+            name: 'MultiPlayerNiuNiu_cfg',
+            meta: { title: 'MultiPlayerNiuNiu ◐' }
           }
         ]
       },
