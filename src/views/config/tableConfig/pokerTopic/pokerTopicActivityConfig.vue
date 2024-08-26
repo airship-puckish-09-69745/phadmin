@@ -244,11 +244,11 @@ export default {
         value: 21,
         label: 'PUSOY'
       }, {
-        value: 22,
-        label: 'LUCKY9'
-      }, {
         value: 23,
         label: 'TONGITS'
+      }, {
+        value: 28,
+        label: 'TONGITS JOKER'
       }],
 
       edit: {
