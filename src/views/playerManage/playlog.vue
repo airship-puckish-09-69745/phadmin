@@ -2358,7 +2358,6 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
     MultiPlayerNiuNiuDetailLog,
-    HundredNiuNiuDetailLog,
     WingoLotteryDetailLog,
     QiuQiuGameLog,
     TexasNLHDetailLog, TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
