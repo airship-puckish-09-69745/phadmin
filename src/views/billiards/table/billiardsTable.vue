@@ -125,7 +125,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="球运动算法版本：" :required="true" prop="item.MotionAlgorithmsVersion">
+            <el-form-item label="球运动算法版本：" :required="true" prop="item.MotionAlgorithmsVersion" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.MotionAlgorithmsVersion" placeholder="请输入" />
             </el-form-item>
           </el-col>          
@@ -191,7 +191,7 @@ function newItem() {
     TableFee: 10,
     Level: 1,
     HideCarry: 0,
-    MotionAlgorithmsVersion:'',
+    MotionAlgorithmsVersion:0,
     TimeConfig: {}
   }
 }
