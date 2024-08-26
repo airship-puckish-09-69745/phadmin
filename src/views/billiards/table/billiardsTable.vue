@@ -20,6 +20,7 @@
         <el-table-column prop="TableFee" label="台费(千分比)" sortable="custom" width="200" />
         <el-table-column prop="MatchingPlayerNum" label="匹配池开赛人数" width="200" />
         <el-table-column prop="HideCarry" label="隐藏目标值" width="200" />
+        <el-table-column prop="MotionAlgorithmsVersion" label="球运动算法版本" width="200" />
         <el-table-column prop="LastModify" label="最近修改" width="160">
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
@@ -123,6 +124,11 @@
               <el-input v-model.number="edit.item.HideCarry" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="11">
+            <el-form-item label="球运动算法版本：" :required="true" prop="item.MotionAlgorithmsVersion">
+              <el-input v-model.number="edit.item.MotionAlgorithmsVersion" placeholder="请输入" />
+            </el-form-item>
+          </el-col>          
         </el-row>
 
         <fieldset>
@@ -185,6 +191,7 @@ function newItem() {
     TableFee: 10,
     Level: 1,
     HideCarry: 0,
+    MotionAlgorithmsVersion:'',
     TimeConfig: {}
   }
 }
@@ -222,7 +229,8 @@ export default {
         InteractDayFreeTimes: '互动道具每日免费次数',
         InteractItemPrice: '互动道具每次价格消耗',
         BaseScore: '底分',
-        HideCarry: '隐藏目标值'
+        HideCarry: '隐藏目标值',
+        MotionAlgorithmsVersion: '球运动算法版本'
       }
     }
   },
