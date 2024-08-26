@@ -222,7 +222,7 @@ export default {
         { 'value': 106, 'label': '金猪' },
         { 'value': 108, 'label': 'DropBall' },
         { 'value': 110, 'label': 'VideoPoker' },
-        { 'value': 115, 'label': '百人牛牛' }
+        { 'value': 115, 'label': 'MultiPlayer NiuNiu' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

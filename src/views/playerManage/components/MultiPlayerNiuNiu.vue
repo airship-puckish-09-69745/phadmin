@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    title="HundredNiuNiu详情"
+    title="MultiPlayerNiuNiu详情"
     :visible.sync="ComponentsGameLogVisible"
     :before-close="closeView"
     :close-on-click-modal="false"
@@ -138,7 +138,7 @@
 import { $libDate } from '@/utils/common'
 
 export default {
-  name: 'HundredNiuNiuDetailLog',
+  name: 'MultiPlayerNiuNiuDetailLog',
   components: {},
   props: {
     GameLog: {

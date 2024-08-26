@@ -1281,10 +1281,10 @@ export const asyncRoutes = [
             meta: { title: 'WingoLottery ◐', gid: 112 }
           },
           {
-            path: 'playlog_hundredniuniu',
+            path: 'playlog_multiplayeriuniu',
             component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_hundredniuniu',
-            meta: { title: 'HundredNiuNiu ◐', gid: 115 }
+            name: 'playlog_multiplayerniuniu',
+            meta: { title: 'MultiPlayerNiuNiu ◐', gid: 115 }
           }
         ]
       },

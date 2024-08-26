@@ -347,7 +347,7 @@ export default {
         111: 'QiuQiu',
         112: 'Wingo',
         113: 'PusoySwap',
-        115: '百人Niu Niu',
+        115: 'MultiPlayer NiuNiu',
         152: 'AladdinLamp',
         150: 'SuperGems3',
         10000: '汇总'

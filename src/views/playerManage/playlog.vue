@@ -2288,7 +2288,7 @@
 
     <wingo-lottery-detail-log v-if="gameLogComponent.gid === 112" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="112" @closeDialog="closeDialog" />
 
-    <hundred-niu-niu-detail-log v-if="gameLogComponent.gid === 115" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="115" @closeDialog="closeDialog" />
+    <multi-player-niu-niu-detail-log v-if="gameLogComponent.gid === 115" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="115" @closeDialog="closeDialog" />
 
     <el-dialog v-if="gameLogComponent.gid === 47||gameLogComponent.gid === 48" title="台球详情" :visible.sync="gameLogComponent.visible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="5" border>
@@ -2338,7 +2338,7 @@ import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
 import TexasNLHDetailLog from '@/views/playerManage/components/TexasNLHGameLog.vue'
 import QiuQiuGameLog from '@/views/playerManage/components/QiuQiuGameLog.vue'
 import WingoLotteryDetailLog from '@/views/playerManage/components/WingoLotteryGameLog.vue'
-import HundredNiuNiuDetailLog from '@/views/playerManage/components/HundredNiuNiu.vue'
+import MultiPlayerNiuNiuDetailLog from '@/views/playerManage/components/MultiPlayerNiuNiu.vue'
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -2357,6 +2357,7 @@ function newChartData() {
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    MultiPlayerNiuNiuDetailLog,
     HundredNiuNiuDetailLog,
     WingoLotteryDetailLog,
     QiuQiuGameLog,
