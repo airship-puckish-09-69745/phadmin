@@ -838,7 +838,12 @@
       >
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column prop="swappedCard" label="交换的手牌" width="100">
+        <el-table-column prop="swapCard" label="选择交换的手牌" width="100">
+          <template #default="scope">
+            <div v-html="showCard(scope.row.playerSwapCard)" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="swappedCard" label="换回的手牌" width="100">
           <template #default="scope">
             <div v-html="showCard(scope.row.swappedCard)" />
           </template>
