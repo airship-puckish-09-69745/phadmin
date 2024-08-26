@@ -260,7 +260,7 @@ export default {
       },
       startTime: Date.parse(new Date().toString()),
       endTime: Date.parse(new Date().toString()) + 86400 * 7 * 1000,
-      games: [15, 21, 22, 23],
+      games: [15, 21, 23, 28],
       entryCloseTime: Date.parse(new Date().toString()) + 86400 * 7 * 1000,
 
       AttrNames: {
