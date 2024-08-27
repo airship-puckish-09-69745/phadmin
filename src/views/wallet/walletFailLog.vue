@@ -158,6 +158,7 @@
       <el-descriptions border column="1">
         <el-descriptions-item label="交易id">{{ showRow.TxId}}</el-descriptions-item>
         <el-descriptions-item label="回合id">{{ showRow.RoundId}}</el-descriptions-item>
+        <el-descriptions-item  v-if="showRow.Status == 3" label="下注状态" >{{ showRow.Valid}}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
@@ -202,7 +203,8 @@ export default {
         1: '等待重试', 2: '正在重试', 3: '重试成功',
       },
       actTypeMap:{
-
+        1000 :'玩牌赢',
+        1001 :'玩牌输',
         2000 :'下注',
         2001 :'登录',
         2002 :'刷新',
