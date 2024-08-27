@@ -572,10 +572,10 @@ export const asyncRoutes = [
             meta: { title: 'WingoLottery ◐' }
           },
           {
-            path: 'HandredNiuNiu_cfg',
+            path: 'MultiPlayerNiuNiu_cfg',
             component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
-            name: 'HandredNiuNiu_cfg',
-            meta: { title: 'HandredNiuNiu ◐' }
+            name: 'MultiPlayerNiuNiu_cfg',
+            meta: { title: 'MultiPlayerNiuNiu ◐' }
           }
         ]
       },
@@ -1279,6 +1279,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_wingolottery',
             meta: { title: 'WingoLottery ◐', gid: 112 }
+          },
+          {
+            path: 'playlog_multiplayeriuniu',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_multiplayerniuniu',
+            meta: { title: 'MultiPlayerNiuNiu ◐', gid: 115 }
           }
         ]
       },

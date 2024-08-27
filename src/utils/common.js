@@ -100,7 +100,7 @@ export function LibShow() {
     59: '芝加哥', 60: '糖果派', 61: 'fireKick',
     76: 'Candy Rush', 78: 'SuperGems', 80: 'Candy Craze', 82: 'Millionaire', 84: 'FortuneAce', 86: 'SuperGemsII', 88: 'Lucky777', 90: 'FortuneComing', 92: 'UltraAce', 94: 'ChargeBison', 96: 'RomanArena', 98: 'SuperTongit',// slots
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
-    112: 'Wingo Lottery', 150: 'SuperGemsIII',
+    112: 'Wingo Lottery', 150: 'SuperGemsIII', 115: 'MultiPlayer NiuNiu',
     152: '阿拉丁神灯'
   }
 

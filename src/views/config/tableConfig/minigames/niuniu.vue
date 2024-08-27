@@ -46,15 +46,47 @@
                 </el-input>
               </el-form-item>
             </el-col>
-
-            <el-col :span="7" :offset="3">
-              <el-form-item label="下注额度(示例:1,2,3,5,10,20,30,40,50,100,200,500,1000)">
-                <el-input v-model="BetLevelText" />
-              </el-form-item>
-            </el-col>
           </el-tab-pane>
           <el-tab-pane label="玩法配置">
             <el-col :span="16" :offset="3">
+              <fieldset style="margin-top:10px">
+                <legend>下注配置</legend>
+                <el-row>
+                  <el-table
+                    ref="filterTable"
+                    :data="item.BetLevels"
+                    border
+                    :header-cell-style="libShow.DefaultTableHeadClass"
+                    :row-style="{height:'10px'}"
+                    :cell-style="libShow.DefaultTableCell"
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      type="index"
+                    />
+                    <el-table-column
+                      prop="Low"
+                      label="下注列表"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model="scope.row.CanBet" size="mini" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                      <template slot-scope="scope">
+                        <el-button
+                          size="mini"
+                          type="primary"
+                          @click="doAdd"
+                        >添加</el-button>
+                        <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
+                      </template>
+
+                    </el-table-column>
+                  </el-table>
+                </el-row>
+              </fieldset>
+
               <fieldset style="margin-top:10px">
                 <legend>下注区域配置</legend>
 
@@ -507,10 +539,10 @@ export default {
   data() {
     return {
       BetAreaNames: {
-        1: 'Luzon',
-        2: 'Mindanao',
-        3: 'Samar',
-        4: 'Negros'
+        0: 'Luzon',
+        1: 'Mindanao',
+        2: 'Samar',
+        3: 'Negros'
       },
       JackpotTypeCfg: {
         1: '一等奖',
@@ -535,12 +567,12 @@ export default {
         14: '五小'
       },
       item: {
-        BetLevel: { CanBet: [1000, 2000, 3000, 5000, 10000, 20000, 30000, 40000, 50000, 100000, 200000, 500000, 1000000], MaxMoneyBet: 1000, MinMoneyBet: 1 },
+        BetLevel: { CanBet: '30,50,100,200,400,600', MaxMoneyBet: 1000, MinMoneyBet: 1 },
         BetAreas: [
-          { Name: 'Luzon', MaxMoneyBet: 1000000, Id: 1, RobotBetRate: 10 },
-          { Name: 'Mindanao', MaxMoneyBet: 1000000, Id: 2, RobotBetRate: 10 },
-          { Name: 'Samar', MaxMoneyBet: 1000000, Id: 3, RobotBetRate: 10 },
-          { Name: 'Negros', MaxMoneyBet: 1000000, Id: 4, RobotBetRate: 10 }
+          { Name: 'Luzon', MaxMoneyBet: 1000000, Id: 0, RobotBetRate: 10 },
+          { Name: 'Mindanao', MaxMoneyBet: 1000000, Id: 1, RobotBetRate: 10 },
+          { Name: 'Samar', MaxMoneyBet: 1000000, Id: 2, RobotBetRate: 10 },
+          { Name: 'Negros', MaxMoneyBet: 1000000, Id: 3, RobotBetRate: 10 }
         ],
         BetTargets: [
           { StartHour: 0, EndHour: 4, BetMin: 10000, BetMax: 20000 },
@@ -581,12 +613,12 @@ export default {
         BetTime: 13,
         NoticeTime: 300,
         TestCards: {
-          BankerCards: { Cards: [], AreaId: 0 },
+          BankerCards: { Cards: [], AreaId: -1 },
           PlayerCards: [
+            { Cards: [], AreaId: 0 },
             { Cards: [], AreaId: 1 },
             { Cards: [], AreaId: 2 },
-            { Cards: [], AreaId: 3 },
-            { Cards: [], AreaId: 4 }
+            { Cards: [], AreaId: 3 }
           ]
         },
 
@@ -612,14 +644,13 @@ export default {
           RealUserNumSafeVal: 0
         }
       },
-      BetLevelText: '1000,200,3000,5000,10000,20000,30000,40000,50000,100000,200000,500000,1000000',
       TestCards: {
-        BankerCards: { CardText: '', AreaId: 0 },
+        BankerCards: { CardText: '', AreaId: -1 },
         PlayerCards: [
+          { CardText: '', AreaId: 0 },
           { CardText: '', AreaId: 1 },
           { CardText: '', AreaId: 2 },
-          { CardText: '', AreaId: 3 },
-          { CardText: '', AreaId: 4 }
+          { CardText: '', AreaId: 3 }
         ]
       },
       isHidden: true, // 默认隐藏
@@ -693,16 +724,15 @@ export default {
         o.Odds /= 1000
       }
 
-      const betMoneyList = []
-      for (const j in this.item.BetLevel.CanBet) {
-        this.item.BetLevel.CanBet[j] /= 1000
-        betMoneyList.push(this.item.BetLevel.CanBet[j])
-      }
-
-      this.item.BetLevel.MinMoneyBet /= 1000
-      this.item.BetLevel.MaxMoneyBet /= 1000
-      if (betMoneyList.length > 0) {
-        this.BetLevelText = betMoneyList.join(',')
+      for (const j in this.item.BetLevels) {
+        this.item.BetLevels[j].MaxMoneyBet /= 1000
+        this.item.BetLevels[j].MinMoneyBet /= 1000
+        const betMoneyList = []
+        const items = this.item.BetLevels[j].CanBet
+        for (const i in this.item.BetLevels[j].CanBet) {
+          betMoneyList.push(parseInt(items[i]) / 1000)
+        }
+        this.item.BetLevels[j].CanBet = betMoneyList.join(',')
       }
 
       for (const i in this.item.BetTargets) {
@@ -743,19 +773,27 @@ export default {
       ret.RobotCfg.MaxRobotMoney *= 1000
       ret.RobotCfg.RobotAverageBetMoney *= 1000
 
-      ret.BetLevel.CanBet = []
-      const items = this.BetLevelText.split(',')
-      for (const i in items) {
-        ret.BetLevel.CanBet.push(parseInt(items[i]) * 1000)
+      ret.BetLevels = []
+      for (const o in this.item.BetLevels) {
+        const betMoneyList = []
+        console.log('CanBet', this.item.BetLevels[o].CanBet)
+        const items = this.item.BetLevels[o].CanBet.split(',')
+        for (const i in items) {
+          betMoneyList.push(parseInt(items[i]) * 1000)
+        }
+
+        // 将betMoneyList按从小到大排序
+        betMoneyList.sort(function(a, b) {
+          return a - b
+        })
+
+        const obj = {}
+        Object.assign(obj, this.item.BetLevels[o])
+        obj.MaxMoneyBet = betMoneyList.length > 0 ? betMoneyList[betMoneyList.length - 1] : 0
+        obj.MinMoneyBet = betMoneyList.length > 0 ? betMoneyList[0] : 0
+        obj.CanBet = betMoneyList
+        ret.BetLevels.push(obj)
       }
-
-      // 按从小到大排序
-      ret.BetLevel.CanBet.sort(function(a, b) {
-        return a - b
-      })
-
-      ret.BetLevel.MinMoneyBet = ret.BetLevel.CanBet.length > 0 ? ret.BetLevel.CanBet[0] : 0
-      ret.BetLevel.MaxMoneyBet = ret.BetLevel.CanBet.length > 0 ? ret.BetLevel.CanBet[ret.BetLevel.CanBet.length - 1] : 0
 
       ret.BetAreas = []
       for (const o in this.item.BetAreas) {
@@ -769,7 +807,7 @@ export default {
       }
 
       ret.TestCards.BankerCards = {}
-      ret.TestCards.BankerCards.AreaId = 0
+      ret.TestCards.BankerCards.AreaId = -1
       ret.TestCards.BankerCards.Cards = this.convertTextToHexadecimalArray(this.TestCards.BankerCards.CardText)
 
       ret.TestCards.PlayerCards = []
@@ -880,6 +918,9 @@ export default {
     showRobotNumForm(data) {
       this.robotDialogForm.data = data
       this.robotDialogForm.visible = true
+    },
+    doAdd() {
+      this.item.BetLevels.push({ CanBet: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 60 })
     },
     delRow(index) {
       this.item.BetLevels.splice(index, 1)

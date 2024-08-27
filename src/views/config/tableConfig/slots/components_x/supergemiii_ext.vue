@@ -21,19 +21,23 @@
           </el-form-item>
 
           <el-form-item label="Bonus模式中奖倍数">
-            <el-input v-model="cfg.BonusMultiStr" placeholder="请输入内容,如3、6、9、15、20"> <template slot="append">十二个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.BonusMultiStr" placeholder="请输入内容,如3、6、9、15、20"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="Bonus模式中奖倍数权重">
-            <el-input v-model="cfg.BonusMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">十二个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.BonusMultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterOdds" :required="true" />
+          <el-form-item label="进入免费模式的赔率">
+            <el-input v-model="cfg.ScatterOdds" placeholder="请输入内容,如10,10"> <template slot="append">两个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="进入bonus模式的赔率" prop="BonusOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BonusOdds" :required="true" />
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">

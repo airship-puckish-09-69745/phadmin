@@ -232,7 +232,7 @@ export default {
         { 'value': 106, 'label': '金猪' },
         { 'value': 108, 'label': 'DropBall' },
         { 'value': 110, 'label': 'Video Poker' },
-        { 'value': 115, 'label': '百人牛牛' }
+        { 'value': 115, 'label': 'MultiPlayer NiuNiu' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
