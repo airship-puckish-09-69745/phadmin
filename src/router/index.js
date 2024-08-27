@@ -675,6 +675,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemiii_slots_cfg'),
                 name: 'supergemiii_slots_cfg',
                 meta: { title: 'SuperGemsIII' }
+              },
+              {
+                path: 'grandace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/grandace_slots_cfg'),
+                name: 'grandace_slots_cfg',
+                meta: { title: 'GrandAce' }
               }
             ]
           },
@@ -768,6 +774,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemiiimars_slots_cfg'),
                 name: 'supergemiiimars_slots_cfg',
                 meta: { title: 'SuperGemsIII(审)' }
+              },
+              {
+                path: 'grandacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
+                name: 'grandacemars_slots_cfg',
+                meta: { title: 'GrandAce(审)' }
               }
             ]
           },
@@ -1392,8 +1404,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlamp_slots_log',
             meta: { title: '阿拉丁神灯', gid:  152 }
+          },
+          {
+            path: 'grandace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'grandace_slots_log',
+            meta: { title: 'GrandAce', gid:  154 }
           }
-
         ]
       },
       {
@@ -1485,6 +1502,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlamp_slots_log',
             meta: { title: '阿拉丁神灯', gid:  153 }
+          },
+          {
+            path: 'grandacemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'grandacemars_slots_log',
+            meta: { title: 'GrandAce(审)', gid:  155 }
           }
         ]
       },

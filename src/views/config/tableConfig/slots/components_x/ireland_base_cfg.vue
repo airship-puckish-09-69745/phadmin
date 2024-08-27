@@ -31,6 +31,8 @@
               <el-option label="SuperGemsIIIMars" :value="151" />
               <el-option label="阿拉丁神灯" :value="152" />
               <el-option label="阿拉丁神灯Mars" :value="153" />
+              <el-option label="GrandAce" :value="154" />
+              <el-option label="GrandAceMars" :value="155" />
             </el-select>
           </el-form-item>
 
@@ -58,7 +60,9 @@
             <el-input v-model.number="slotsData.BaseBet" disabled />
           </el-form-item>
 
+          <!--
           <ratio-input v-model="slotsData.MoneyConfig.WinMoneyTransferRate" label="赢钱转化比例(%)" />
+          -->
 
           <el-form-item label="输最大倍率的概率%">
             <el-input v-model.number="slotsData.LoseMaxOddsRate" />
