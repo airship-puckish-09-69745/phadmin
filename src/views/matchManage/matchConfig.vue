@@ -437,7 +437,7 @@ export default {
         {"value": "AP", "label":"AP"},
         {"value": "GP", "label":"GP"},
         {"value": "PG", "label":"PG"},
-        {"value": "DEV", "label":"DEV"},
+        {"value": "Dev", "label":"Dev"},
       ],
       statusCfgs: [
         {"value":0,"label":"启用"},
