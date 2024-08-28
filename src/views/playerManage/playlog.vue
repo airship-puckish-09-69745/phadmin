@@ -830,7 +830,7 @@
       </el-descriptions>
     </el-dialog>
 
-    <el-dialog title="Pusoy换牌牌局详情" :visible.sync="pusoySwapDetailVisible" width="1400px">
+    <el-dialog title="Pusoy换牌牌局详情" :visible.sync="pusoySwapDetailVisible" width="1600px">
       <el-table
         :data="pusoySwapDetail.players"
         :span-method="pusoySpanMethods"
