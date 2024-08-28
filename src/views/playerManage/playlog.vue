@@ -839,23 +839,23 @@
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column prop="playerSwapCard" label="选择交换的手牌" width="100">
-          <template #default="scope">
-            <div v-html="showCard(scope.row.playerSwapCard)" />
+          <template #default="scopeP">
+            <div v-html="showCard(scopeP.row.playerSwapCard)" />
           </template>
         </el-table-column>
         <el-table-column prop="swappedCard" label="换回的手牌" width="100">
-          <template #default="scope">
-            <div v-html="showCard(scope.row.swappedCard)" />
+          <template #default="scopeS">
+            <div v-html="showCard(scopeS.row.swappedCard)" />
           </template>
         </el-table-column>
         <el-table-column label="手牌" width="450" align="center">
           <el-table-column prop="cards" label="后手牌" width="150">
-            <template #default="scope">
-              <template v-if="scope.row.cardType > 1">
-                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
+            <template #default="scopeB">
+              <template v-if="scopeB.row.cardType > 1">
+                <div v-html="showCard(scopeB.row.cards)" /><span>({{ pusoyCardTypes[scopeB.row.cardType] || '' }})</span>
               </template>
               <template v-else>
-                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
+                <div v-html="showCard(scopeB.row.groupBottom.cards)" /><span>({{ pusoyGroupCardTypes[scopeB.row.groupBottom.cardType] || '' }})</span>
               </template>
             </template>
           </el-table-column>
@@ -2664,9 +2664,7 @@ export default {
         return ''
       }
     },
-
     showCard(cards) {
-      console.log('cards: ', cards)
       if (cards == null || cards == undefined) {
         return ''
       }
@@ -2674,8 +2672,6 @@ export default {
       for (let i = 0; i < cards.length; i++) {
         ret += $libShow.CardShow(cards[i])
       }
-
-      console.log('ret: ', ret)
       return ret
     },
     isBingo(valA, valB) {
