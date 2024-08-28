@@ -852,7 +852,7 @@
           <el-table-column prop="cards" label="后手牌" width="150">
             <template #default="scope">
               <template v-if="scope.row.cardType > 1">
-                <div v-html="showCard(scope.row.cards)" /><span>({{ pusoyCardTypes[scope.row.cardType] || '' }})</span>
+                <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
               </template>
               <template v-else>
                 <div v-html="showCard(scope.row.groupBottom.cards)" /><span>({{ pusoyGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
