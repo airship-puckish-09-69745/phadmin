@@ -830,7 +830,7 @@
       </el-descriptions>
     </el-dialog>
 
-    <el-dialog title="Pusoy换牌牌局详情" :visible.sync="pusoySwapDetailVisible" width="1400px">
+    <el-dialog title="Pusoy换牌牌局详情" :visible.sync="pusoySwapDetailVisible" width="1600px">
       <el-table
         :data="pusoySwapDetail.players"
         :span-method="pusoySpanMethods"
@@ -838,7 +838,7 @@
       >
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column prop="swapCard" label="选择交换的手牌" width="100">
+        <el-table-column prop="playerSwapCard" label="选择交换的手牌" width="100">
           <template #default="scope">
             <div v-html="showCard(scope.row.playerSwapCard)" />
           </template>
