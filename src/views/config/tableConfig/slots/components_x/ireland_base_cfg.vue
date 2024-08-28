@@ -19,8 +19,8 @@
               <el-option label="SuperGemsIIMars" :value="87" />
               <el-option label="Lucky777" :value="88" />
               <el-option label="Lucky777Mars" :value="89" />
-              <el-option label="SuperAceGo" :value="92" />
-              <el-option label="SuperAceGoMars" :value="93" />
+              <el-option label="UltraAce" :value="92" />
+              <el-option label="UltraAceMars" :value="93" />
               <el-option label="冲锋野牛" :value="94" />
               <el-option label="冲锋野牛Mars" :value="95" />
               <el-option label="RomanArena" :value="96" />
