@@ -195,7 +195,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99]
     }
   },
   created() {
@@ -263,6 +263,8 @@ export default {
           return '冲锋野牛'
         case 96:
           return 'RomanArena'
+        case 98:
+          return 'SuperTongit'
         case 150:
           return 'SuperGemsIII'
         case 152:
@@ -298,6 +300,7 @@ export default {
         case 92:
         case 94:
         case 96:
+        case 98:
         case 152:
         {
           // 混有购买免费数据
