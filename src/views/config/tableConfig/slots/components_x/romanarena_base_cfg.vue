@@ -32,10 +32,6 @@
             <el-input v-model.number="slotsData.Clos" disabled />
           </el-form-item>
 
-          <el-form-item label="横轴">
-            <el-input v-model.number="slotsData.HeadRows" disabled />
-          </el-form-item>
-
           <el-form-item label="最低版本">
             <el-input v-model.number="slotsData.MinVersion" />
           </el-form-item>
