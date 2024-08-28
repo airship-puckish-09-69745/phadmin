@@ -838,7 +838,12 @@
       >
         <el-table-column prop="uid" label="UID" width="100" />
         <el-table-column prop="seat" label="座位" width="100" />
-        <el-table-column prop="swappedCard" label="交换的手牌" width="100">
+        <el-table-column prop="swapCard" label="选择交换的手牌" width="100">
+          <template #default="scope">
+            <div v-html="showCard(scope.row.playerSwapCard)" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="swappedCard" label="换回的手牌" width="100">
           <template #default="scope">
             <div v-html="showCard(scope.row.swappedCard)" />
           </template>
@@ -2288,6 +2293,8 @@
 
     <wingo-lottery-detail-log v-if="gameLogComponent.gid === 112" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="112" @closeDialog="closeDialog" />
 
+    <multi-player-niu-niu-detail-log v-if="gameLogComponent.gid === 115" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="115" @closeDialog="closeDialog" />
+
     <el-dialog v-if="gameLogComponent.gid === 47||gameLogComponent.gid === 48" title="台球详情" :visible.sync="gameLogComponent.visible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item><template slot="label">前注：</template>{{ gameLogComponent.detail.antes /1000 }}</el-descriptions-item>
@@ -2336,6 +2343,7 @@ import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
 import TexasNLHDetailLog from '@/views/playerManage/components/TexasNLHGameLog.vue'
 import QiuQiuGameLog from '@/views/playerManage/components/QiuQiuGameLog.vue'
 import WingoLotteryDetailLog from '@/views/playerManage/components/WingoLotteryGameLog.vue'
+import MultiPlayerNiuNiuDetailLog from '@/views/playerManage/components/MultiPlayerNiuNiu.vue'
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -2354,6 +2362,7 @@ function newChartData() {
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: {
+    MultiPlayerNiuNiuDetailLog,
     WingoLotteryDetailLog,
     QiuQiuGameLog,
     TexasNLHDetailLog, TongitsGameLog, PusoyDosDetailLog, PusoyDosTable, DateTimeShow, Compare, Publish, UidInput, LineChart },
@@ -2496,9 +2505,10 @@ export default {
         solitaireDetail: {}
       },
       solitaireLogStopMap: {
-        1: '正常结束',
+        1: '有玩家完成',
         2: '时间用完',
-        3: '认输'
+        3: '认输',
+        4: '求和'
       },
       piggyLog: {
         visible: false,
@@ -2593,7 +2603,8 @@ export default {
         3: 'MINOR',
         4: 'MINI'
       },
-      libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange'])
+      libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112]
     }
   },
   computed: {},
@@ -2942,7 +2953,7 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
-          } else if (gid === 107 || gid === 108 || gid === 32 || gid === 111 || gid === 110 || gid === 49 || gid === 47 || gid === 48 || gid === 112) {
+          } else if ($this.LogComponentGameIds.indexOf(gid) !== -1 || gid === 115) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
             $this.showDominoGame(obj)

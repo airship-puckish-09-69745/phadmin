@@ -329,6 +329,7 @@ export default {
         29: 'Tongits Quick',
         31: 'Tongits-经典',
         32: 'Texas Plus',
+        38: 'Texas MTT',
         101: 'Sicbo',
         102: 'Hilo',
         103: 'Windrop',
@@ -347,13 +348,15 @@ export default {
         111: 'QiuQiu',
         112: 'Wingo',
         113: 'PusoySwap',
+        115: 'MultiPlayer NiuNiu',
         152: 'AladdinLamp',
+        150: 'SuperGems3',
         10000: '汇总'
       },
 
       userVisible: false,
       users: [],
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 35, 37, 107, 108, 110, 112, 46, 47, 48, 49, 113], // 糖果传奇调用addGameName特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113], // 糖果传奇调用addGameName特殊处理
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -441,19 +444,19 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 152)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152)
         }
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 29 || o === 23 || o === 28 || o === 31 || o === 34 || o === 46 || o === 47 || o === 48) {
+      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 29 || o === 23 || o === 28 || o === 31 || o === 34 || o === 38 ||o === 46 || o === 47 || o === 48) {
         return false
       } else {
         return true
       }
     },
     isSlots(o) {
-      if (o > 50 && o < 100) {
+      if (o > 50 && o < 100 || o > 149 && o < 200) {
         return true
       } else {
         return false

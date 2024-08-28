@@ -213,7 +213,8 @@ export default {
         22: 'TONGITS',
         21: 'PUSOY',
         23: 'LUCKY9',
-        15: 'TEXAS POKER'
+        15: 'TEXAS POKER',
+        28: 'TONGITS JOKER'
       }
     }
   },

@@ -350,21 +350,20 @@
         <!--          </el-col>-->
         <!--        </el-row>-->
 
-        <!--        <el-row>-->
-        <!--          <el-col :span="11">-->
-        <!--            <game-level v-model="edit.item.Level" />-->
-        <!--          </el-col>-->
-        <!--          <el-col :span="11">-->
-        <!--            <el-form-item-->
-        <!--              label="Lucky9赔率："-->
-        <!--              prop="item.Lucky9Rate"-->
-        <!--              :rules="dataRule(true,{type:'n',range:'1'})"-->
-        <!--            >-->
-        <!--              <el-input v-model.number="edit.item.Lucky9Rate" />-->
-        <!--            </el-form-item>-->
-        <!--          </el-col>-->
-        <!--        </el-row>-->
-
+                <el-row>
+                  <el-col :span="11">
+                    <game-level v-model="edit.item.Level" />
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item
+                      label="Lucky9赔率："
+                      prop="item.Lucky9Rate"
+                      :rules="dataRule(true,{type:'n',range:'1'})"
+                    >
+                      <el-input v-model.number="edit.item.Lucky9Rate" />
+                    </el-form-item>
+                  </el-col>
+                </el-row>
         <el-row>
           <!--          <el-col :span="11">-->
           <!--            <el-form-item-->

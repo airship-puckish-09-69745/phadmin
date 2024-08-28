@@ -17,8 +17,8 @@
               <el-option label="FortuneAceMars" :value="85" />
               <el-option label="SuperGemsII" :value="86" />
               <el-option label="SuperGemsIIMars" :value="87" />
-              <el-option label="幸运777" :value="88" />
-              <el-option label="幸运777Mars" :value="89" />
+              <el-option label="Lucky777" :value="88" />
+              <el-option label="Lucky777Mars" :value="89" />
               <el-option label="SuperAceGo" :value="92" />
               <el-option label="SuperAceGoMars" :value="93" />
             </el-select>

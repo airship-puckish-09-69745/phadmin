@@ -83,13 +83,19 @@
 <!--          </el-table-column>-->
           <el-table-column label="失败金额">
             <template slot-scope="scope">
-              <span v-if="scope.row.ActType===2000">{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-              <span  v-else >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
+              <span    v-if="scope.row.EndRoundParamsFail" >{{scope.row.EndRoundParamsFail?parseInt(scope.row.EndRoundParamsFail.Data[0].PayoffAmount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.BetParamsFail" >{{scope.row.BetParamsFail?parseInt(scope.row.BetParamsFail.BetAmount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
+              <span    v-else-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
+              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParams.Amount) / 1000:0}}</span>
+              <span  v-else>{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
+
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
             <template slot-scope="scope">
-              {{ scope.row.ActType }}
+              {{ actTypeMap[scope.row.ActType] }}
             </template>
           </el-table-column>
           <el-table-column label="失败类型">
@@ -152,6 +158,7 @@
       <el-descriptions border column="1">
         <el-descriptions-item label="交易id">{{ showRow.TxId}}</el-descriptions-item>
         <el-descriptions-item label="回合id">{{ showRow.RoundId}}</el-descriptions-item>
+        <el-descriptions-item  v-if="showRow.Status == 3" label="下注状态" >{{ showRow.Valid}}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
   </div>
@@ -190,10 +197,23 @@ export default {
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',5:'转出失败',6:'增值业务失败',
       },
       statusMap: {
         1: '等待重试', 2: '正在重试', 3: '重试成功',
+      },
+      actTypeMap:{
+        1000 :'玩牌赢',
+        1001 :'玩牌输',
+        2000 :'下注',
+        2001 :'登录',
+        2002 :'刷新',
+        2003 :'回合结束',
+        2004 :'回退',
+        2005 :'增值',
+        2006 :'转出',
+        2007 :'内部结算',
+        2008 :'游戏结算',
       },
       totalCount: 0,
     }

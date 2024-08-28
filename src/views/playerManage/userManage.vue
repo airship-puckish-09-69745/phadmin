@@ -66,7 +66,7 @@
               </el-select>
             </el-col>
             <el-col :span="8">
-              <el-row v-if="money!=0"><span>{{ formatNumber(money) }}</span></el-row>
+<!--              <el-row v-if="money!=0"><span>{{ formatNumber(money) }}</span></el-row>-->
               <el-input v-model="money" size="mini" />
             </el-col>
             <el-col :span="6" :offset="1">
