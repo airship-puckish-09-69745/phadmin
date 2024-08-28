@@ -644,7 +644,7 @@ export const asyncRoutes = [
                 path: 'fortuneacego_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fortuneacego_slots_cfg'),
                 name: 'fortuneacego_slots_cfg',
-                meta: { title: 'SuperAceGo' }
+                meta: { title: 'UltraAce' }
               },
               {
                 path: 'chargebison_slots_cfg',
