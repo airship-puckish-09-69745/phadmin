@@ -269,6 +269,8 @@ export default {
           return 'SuperGemsIII'
         case 152:
           return '阿拉丁神灯'
+        case 154:
+          return 'GrandAce'
       }
       return '未知老虎机-' + sType
     },

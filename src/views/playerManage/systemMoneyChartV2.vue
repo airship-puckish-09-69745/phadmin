@@ -312,11 +312,12 @@ export default {
         78: 'SuperGems',
         79: 'CandyCrazeMars',
         80: 'Candy Craze',
-        81: 'SuperGemsMars', // 这行老虎机
+        81: 'SuperGemsMars', 
         82: 'Millionaire',
         83: 'MillionaireMars',
         84: 'Fortune Ace',
         85: 'FortuneAce',
+        154: 'GrandAce',
         86: 'SuperGems2',
         87: '超级宝宝石II Mars',
         88: 'Lucky777',
@@ -324,7 +325,7 @@ export default {
         92: 'Ultra Ace',
         94: 'Charge Bison',
         96: 'Roman Arena',
-        98: 'Super Tongit', // 这行老虎机
+        98: 'Super Tongit', 
         28: 'Tongits Joker',
         29: 'Tongits Quick',
         31: 'Tongits-经典',
@@ -444,7 +445,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154)
         }
       }
     },
