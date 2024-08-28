@@ -2666,6 +2666,7 @@ export default {
     },
 
     showCard(cards) {
+      console.log('cards: ', cards)
       if (cards == null || cards == undefined) {
         return ''
       }
@@ -2673,6 +2674,8 @@ export default {
       for (let i = 0; i < cards.length; i++) {
         ret += $libShow.CardShow(cards[i])
       }
+
+      console.log('ret: ', ret)
       return ret
     },
     isBingo(valA, valB) {
