@@ -13,7 +13,12 @@
             <publish primary-key="ID" :key-id="getFullKey('supertongitmars_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
-          <el-tab-pane label="5套轴图标" name="reels_double">
+          <el-tab-pane label="赔付线配置" name="pay_table">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('supertongitmars_slots_base')" :env-empty="false" compare-type="Object" />
+            <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :start-col="3" @saveData="saveBaseCfg" />
+          </el-tab-pane>
+          <el-tab-pane label="2套轴图标" name="reels_double">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
             <publish primary-key="ID" :key-id="getFullKey('supertongitmars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />

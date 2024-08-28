@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 10px">
-      <el-col :span="18" :offset="3">
+      <el-col :span="20" :offset="3">
         <el-form ref="frm1" :inline="true" label-width="80px">
           <el-table
             :data="tableData"
@@ -10,13 +10,13 @@
             <el-table-column
               prop="name"
               label=""
-              width="100"
+              width="120"
             />
             <template v-for="col in cols">
               <el-table-column
                 :prop="getKey(col)"
                 :label="getLabel(col)"
-                width="100"
+                width="120"
               >
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row['rate' + col]" disabled />
@@ -147,7 +147,7 @@ export default {
       this.initSymbolMap()
 
       this.slotsData.PayTable.sort(function(a, b) {
-        return a.Value - b.Value
+        return a.SortId - b.SortId
       })
 
       this.tableData = []

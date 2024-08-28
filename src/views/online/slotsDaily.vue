@@ -256,7 +256,7 @@ export default {
         case 88:
           return 'Crazy777'
         case 90:
-          return 'MoneyComing'
+          return 'FortuneComing'
         case 92:
           return 'UltraAce'
         case 94:
