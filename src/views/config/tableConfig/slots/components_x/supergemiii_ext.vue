@@ -32,12 +32,20 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入免费模式的赔率">
-            <el-input v-model="cfg.ScatterOdds" placeholder="请输入内容,如10,10"> <template slot="append">两个值用 , 连接</template> </el-input>
+          <el-form-item label="进入免费\bonus模式的赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入bonus模式的赔率" prop="BonusOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BonusOdds" :required="true" />
+          <el-form-item label="进入免费\bonus模式的权重">
+            <el-input v-model="cfg.ScatterStrWeight" placeholder="请输入内容,如10,10"> <template slot="append">两个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="JP抽水比例">
+            <el-input v-model.number="cfg.JPFeeRate" placeholder="请输入内容,如2"><template slot="append">%</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="JP分配权重">
+            <el-input v-model="cfg.JPFeeStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
