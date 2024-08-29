@@ -163,6 +163,45 @@
       </el-col>
     </el-row>
     <el-dialog
+      v-if="searchForm.gameId === 150 && searchForm.level === 0"
+      title="奖池信息"
+      :modal="false"
+      :visible.sync="prizeVisible"
+    >
+
+      <!-- 表格显示奖池信息 -->
+      <el-table :data="prizeInfo" style="width: 100%; margin-top: 10px;">
+        <!-- 场次类型列 -->
+        <el-table-column label="场次类型">
+          <template slot-scope="scope">
+            {{ getLevelLabel(scope.row.Level) }}
+          </template>
+        </el-table-column>
+
+        <!-- 用户奖池列 -->
+        <el-table-column label="用户奖池">
+          <template slot-scope="scope">
+            {{ toRupee(scope.row.UserPool) }}
+          </template>
+        </el-table-column>
+
+        <!-- 展示奖池列 -->
+        <el-table-column label="展示奖池" v-if="envProjectName === 'ph'">
+          <template slot-scope="scope">
+            {{ toRupee(scope.row.ShowPool) }}
+          </template>
+        </el-table-column>
+
+        <!-- 最后更新时间列 -->
+        <el-table-column label="最后更新时间">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.UpdateTime) }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+    <el-dialog
+      v-else
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -222,7 +261,8 @@ export default {
         { 'value': 106, 'label': '金猪' },
         { 'value': 108, 'label': 'DropBall' },
         { 'value': 110, 'label': 'VideoPoker' },
-        { 'value': 115, 'label': 'MultiPlayer NiuNiu' }
+        { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
+        { 'value': 150, 'label': 'SuperGemIII' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -328,34 +368,103 @@ export default {
           { 'value': 2, 'label': 'major' },
           { 'value': 3, 'label': 'minor' }
         ]
+      } else if (this.searchForm.gameId === 150) {
+        // 调用 getData() 获取 BetList 数组
+        this.getData().then(cfg => {
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+
+          if (cfg && cfg.BetList && cfg.BetList.length > 0) {
+            const betConfig = cfg.BetList.map(bet => {
+              const baseBetFactor = bet / 1000 * cfg.BaseBet
+              return [
+                { 'value': bet * 10 + 1, 'label': 'MINI-' + baseBetFactor },
+                { 'value': bet * 10 + 2, 'label': 'MINOR-' + baseBetFactor },
+                { 'value': bet * 10 + 3, 'label': 'MAJOR-' + baseBetFactor },
+                { 'value': bet * 10 + 4, 'label': 'GRAND-' + baseBetFactor }
+              ]
+            }).flat()
+
+            this.levelConfig = this.levelConfig.concat(betConfig)
+          }
+        }).catch(error => {
+          console.error("Error processing BetList:", error)
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+        })
+      } else {
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': '普通场次' }
+        ]
       }
     },
     showInfo() {
       const _this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: _this.env,
-          Path: '/jackpot/info',
-          GameId: _this.searchForm.gameId,
-          App: _this.searchForm.app,
-          Level: _this.searchForm.level
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || []
-          if (objs.length === 0 || objs == 'no Data') {
+      // 检查是否 gameId 为 150 且 level 为 0
+      if (this.searchForm.gameId === 150 && this.searchForm.level === 0) {
+        // 循环所有 levelConfig 值（除 value === 0）
+        const promises = this.levelConfig
+          .filter(config => config.value !== 0) // 过滤掉 value 为 0 的选项
+          .map(config => {
+            return request({
+              url: '/dataProxy/info',
+              method: 'get',
+              data: {
+                Env: _this.env,
+                Path: '/jackpot/info',
+                GameId: _this.searchForm.gameId,
+                App: _this.searchForm.app,
+                Level: config.value // 使用当前循环的 level 值
+              }
+            })
+          })
+
+        // 使用 Promise.all 来处理所有请求
+        Promise.all(promises).then(results => {
+          let combinedData = []
+          results.forEach(response => {
+            if (response.RetCode === 0 && response.Data && response.Data !== 'no Data') {
+              combinedData = combinedData.concat(response.Data)
+            }
+          })
+
+          if (combinedData.length > 0) {
+            _this.prizeInfo = combinedData
+            console.log('_this.prizeInfo:', _this.prizeInfo)
+          } else {
             Message.success('查询结果为空')
-            // loading.close()
-            return
           }
-          _this.prizeInfo = objs
-        } else {
-          Message.error(response.Data)
-        }
-        // loading.close()
-      })
+          // loading.close()
+        }).catch(error => {
+          console.error('Error fetching data:', error)
+          Message.error('数据获取失败')
+          // loading.close()
+        })
+      } else {
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: _this.env,
+            Path: '/jackpot/info',
+            GameId: _this.searchForm.gameId,
+            App: _this.searchForm.app,
+            Level: _this.searchForm.level
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const objs = response.Data || []
+            if (objs.length === 0 || objs == 'no Data') {
+              Message.success('查询结果为空')
+              // loading.close()
+              return
+            }
+            _this.prizeInfo = objs
+          } else {
+            Message.error(response.Data)
+          }
+          // loading.close()
+        })
+      }
       this.prizeVisible = true
     },
     changePrizePool(isRobot) {
@@ -400,6 +509,9 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
+      if (this.searchForm.gameId === 150) {
+        return parseInt(amount) / 10000
+      }
       return parseInt(amount) / 1000
     },
     // 获取游戏名称
@@ -436,6 +548,29 @@ export default {
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    getData() {
+      return request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'supergemiii_slots_base'
+        }
+      }).then(response => {
+        if (response.RetCode === 0 && response.Data && response.Data.Data !== '') {
+          const cfg = JSON.parse(response.Data.Data)
+          return cfg
+        } else {
+          return null
+        }
+      }).catch(error => {
+        console.error("Error fetching data:", error)
+        return []
+      })
+    },
+    getLevelLabel(level) {
+      const config = this.levelConfig.find(config => config.value === level)
+      return config ? config.label : `Level ${level}`
     }
   }
 }
