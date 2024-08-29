@@ -155,7 +155,11 @@
               </template>
             </el-table-column>
             <el-table-column prop="JackpotLogObj.MultiOdds" label="中奖倍数" />
-            <el-table-column prop="JackpotLogObj.AddMoney" label="中奖数额" />
+            <el-table-column label="中奖数额">
+              <template  slot-scope="scope">
+                {{ scope.row.JackpotLogObj.AddMoney ? scope.row.JackpotLogObj.AddMoney / 1000 : null }}
+              </template>
+            </el-table-column>
           </el-table-column>
         </template>
         <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,154].indexOf(gid) >= 0">
@@ -577,7 +581,7 @@ export default {
       }
       for (const i in JackpotLogObj.JackpotFee) {
         if (JackpotLogObj.JackpotFee[i].Type === type) {
-          return JackpotLogObj.JackpotFee[i].AddMoney
+          return JackpotLogObj.JackpotFee[i].AddMoney / 10000
         }
       }
       return null
