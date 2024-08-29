@@ -7,20 +7,20 @@
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
-
-          <el-form-item label="免费模式wild额外倍数">
-            <el-input v-model="cfg.FreeWildOdds" placeholder="请输入内容,如2,3,5" />
-          </el-form-item>
-          <el-form-item label="免费模式wild额外倍数权重">
-            <el-input v-model="cfg.FreeWildOddsWeight" placeholder="请输入内容,如10,10,10" />
-          </el-form-item>
-
-          <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="进入免费模式最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
-
-          <el-form-item label="免费模式额外增加免费的概率%" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterPlusRate" :required="true" />
+          <el-form-item label="进入Bonus模式概率" prop="BonusWeight" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BonusWeight" :required="true" />
+            <template slot="append">达到【免费模式最小赔率】，但进入Bonus模式的权重</template>
+          </el-form-item>
+          <el-form-item label="Bonus图标的倍率配置" prop="BonusOdds">
+            <el-input v-model="cfg.BonusOdds" placeholder="例如：25,30,35,40" />
+            <template slot="append">Bonus图标的倍率【浮动10倍 x 10】</template>
+          </el-form-item>
+          <el-form-item label="普通Bonus倍率权重" prop="bonusOddsWeight">
+            <el-input v-model="cfg.bonusOddsWeight" placeholder="用,符隔开，值个数上面配置一样" />
+            <template slot="append">在普通模式中Bonus图案的倍率权重</template>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
