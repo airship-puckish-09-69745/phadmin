@@ -37,6 +37,7 @@
       v-model="visible"
       :path="value"
       v-bind="$attrs"
+      v-on="$listeners"
       @pick="handlePick"
     />
   </div>
