@@ -539,10 +539,10 @@ export default {
   data() {
     return {
       BetAreaNames: {
-        0: 'Luzon',
-        1: 'Mindanao',
-        2: 'Samar',
-        3: 'Negros'
+        0: 'West',
+        1: 'North',
+        2: 'South',
+        3: 'East'
       },
       JackpotTypeCfg: {
         1: '一等奖',
@@ -569,10 +569,10 @@ export default {
       item: {
         BetLevel: { CanBet: '30,50,100,200,400,600', MaxMoneyBet: 1000, MinMoneyBet: 1 },
         BetAreas: [
-          { Name: 'Luzon', MaxMoneyBet: 1000000, Id: 0, RobotBetRate: 10 },
-          { Name: 'Mindanao', MaxMoneyBet: 1000000, Id: 1, RobotBetRate: 10 },
-          { Name: 'Samar', MaxMoneyBet: 1000000, Id: 2, RobotBetRate: 10 },
-          { Name: 'Negros', MaxMoneyBet: 1000000, Id: 3, RobotBetRate: 10 }
+          { Name: 'West', MaxMoneyBet: 1000000, Id: 0, RobotBetRate: 10 },
+          { Name: 'North', MaxMoneyBet: 1000000, Id: 1, RobotBetRate: 10 },
+          { Name: 'South', MaxMoneyBet: 1000000, Id: 2, RobotBetRate: 10 },
+          { Name: 'East', MaxMoneyBet: 1000000, Id: 3, RobotBetRate: 10 }
         ],
         BetTargets: [
           { StartHour: 0, EndHour: 4, BetMin: 10000, BetMax: 20000 },
