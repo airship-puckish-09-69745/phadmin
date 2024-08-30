@@ -239,6 +239,9 @@
                   prop="bet"
                   label="下注值"
                 >
+                  <template slot-scope="scope">
+                    {{ scope.row.bet / 1000 }}
+                  </template>
                 </el-table-column>
 
                 <el-table-column
@@ -254,6 +257,9 @@
                   prop="fee"
                   label="收集金额"
                 >
+                  <template slot-scope="scope">
+                    {{ scope.row.fee / 10000 }}
+                  </template>
                 </el-table-column>
 
                 <el-table-column
@@ -665,7 +671,7 @@ export default {
               // } else {
               //   prefix = 'GRAND'
               // }
-              jackpotMap[strings1[1] + '_' + strings1[3]].bet = parseInt(strings1[1])
+              jackpotMap[strings1[1] + '_' + strings1[3]] = { bet: parseInt(strings1[1]), fee: 0, count: 0, winmoney: 0 }
               if (strings1[4] === 'fee') {
                 jackpotMap[strings1[1] + '_' + strings1[3]].fee = parseInt(response.Data['jackpot'][key])
               } else if (strings1[4] === 'count') {
@@ -676,6 +682,7 @@ export default {
             }
           }
 
+          console.log('jackpotMap:', jackpotMap)
           for (const key in jackpotMap) {
             jackpotTableData.push({
               gid: '150',
