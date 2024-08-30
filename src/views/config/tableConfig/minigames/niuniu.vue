@@ -965,11 +965,6 @@ export default {
         this.item.BetLevels[j].CanBet = betMoneyList.join(',')
       }
 
-      for (const i in this.item.BetTargets) {
-        this.item.BetTargets[i].BetMin /= 1000
-        this.item.BetTargets[i].BetMax /= 1000
-      }
-
       if (this.item.Jackpot !== undefined && this.item.Jackpot.BetMin !== undefined) {
         this.item.Jackpot.BetMin /= 1000
       }
@@ -1064,13 +1059,13 @@ export default {
       jackpotInfo.RandAwards = []
       for (const o in this.JackpotRandAwards) {
         const raObj = {}
-        this.JackpotRandAwards[o].AwardRate = this.item.JackpotCfg[o].AwardRate // 同步奖励占比
+        this.JackpotRandAwards[o].AwardRate = this.item.Jackpot.AwardItems[o].AwardRate // 同步奖励占比
         Object.assign(raObj, this.JackpotRandAwards[o])
         raObj.PoolVal *= 1000
         jackpotInfo.RandAwards.push(raObj)
       }
       ret.JackpotRegulation = jackpotInfo
-      console.log(ret.JackpotRegulation)
+      console.log('JackpotRegulation', ret.JackpotRegulation)
 
       return ret
     },
