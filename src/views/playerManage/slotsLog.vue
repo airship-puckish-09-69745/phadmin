@@ -151,13 +151,13 @@
             </el-table-column>
             <el-table-column label="中奖类型">
               <template  slot-scope="scope">
-                {{ getJPLabel(scope.row.JackpotLogObj.JackpotInfo.Type) }}
+                {{ scope.row.JackpotLogObj.JackpotInfo ? getJPLabel(scope.row.JackpotLogObj.JackpotInfo.Type) : null }}
               </template>
             </el-table-column>
             <el-table-column prop="JackpotLogObj.JackpotInfo.MultiOdds" label="中奖倍数" />
             <el-table-column label="中奖数额">
               <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo.AddMoney ? scope.row.JackpotLogObj.JackpotInfo.AddMoney / 1000 : null }}
+                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo.AddMoney / 1000 : null }}
               </template>
             </el-table-column>
           </el-table-column>
