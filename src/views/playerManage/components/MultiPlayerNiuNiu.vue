@@ -176,10 +176,10 @@ export default {
         14: '五小'
       },
       BetOptions: [
-        { Id: 0, Name: 'Luzon' },
-        { Id: 1, Name: 'Mindanao' },
-        { Id: 2, Name: 'Samar' },
-        { Id: 3, Name: 'Negros' }
+        { Id: 0, Name: 'West' },
+        { Id: 1, Name: 'North' },
+        { Id: 2, Name: 'South' },
+        { Id: 3, Name: 'East' }
       ],
       ConversionColorMap: {}
     }
