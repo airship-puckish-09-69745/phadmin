@@ -1,7 +1,7 @@
 <!--
   File: src\components\GameImagePicker\GameImagePicker.vue
   Date: 2024-08-29 14:39:58
-  Description: --
+  Description: 赛事图片选择器
 -->
 <template>
   <div
@@ -9,7 +9,7 @@
     :style="{ width: `${width}px`, height: `${height}px` }"
   >
     <div
-      v-if="!pickImage.Img"
+      v-if="!value"
       class="game-image-picker__trigger"
       @click="handleTrigger"
     >
@@ -19,10 +19,9 @@
         </div>
       </slot>
     </div>
-
-    <slot v-else name="image" v-bind="{ image: pickImage, cdnUrl, serverRoot }">
+    <slot v-else name="image" v-bind="{ path: value, cdnUrl, serverRoot }">
       <div class="game-image-picker__image">
-        <el-image :src="`${cdnUrl}/${pickImage.Img}`" />
+        <el-image :src="`${GameImagePickerVar.cdnUrl}${value}`" />
         <div class="game-image-picker__image__mask">
           <span class="game-image-picker__image__option">
             <i
@@ -36,6 +35,7 @@
 
     <GameImagePickerDialog
       v-model="visible"
+      :path="value"
       v-bind="$attrs"
       @pick="handlePick"
     />
@@ -43,7 +43,9 @@
 </template>
 
 <script>
+import request from "@/utils/request";
 import GameImagePickerDialog from "./GameImagePickerDialog";
+import { GameImagePickerVar } from "./GameImagePickerVar";
 
 export default {
   name: "GameImagePicker",
@@ -51,6 +53,12 @@ export default {
     GameImagePickerDialog,
   },
   props: {
+    // 图片路径 (v-model)
+    value: {
+      type: String,
+      default: "",
+    },
+
     // 图片宽度
     width: {
       type: Number,
@@ -69,20 +77,78 @@ export default {
       // 弹框是否显示
       visible: false,
 
-      pickImage: {
-        type: Object,
-        default: () => ({
-          Img: "",
-          Remark: "",
-          GoodsId: "",
-        }),
-      },
-
       cdnUrl: "", // 图片 CDN 地址
       serverRoot: "", // 图片目录
+
+      GameImagePickerVar,
     };
   },
+  mounted() {
+    this.mountComponent();
+    this.fetchConfig();
+  },
+  beforeDestroy() {
+    this.destroyComponent();
+  },
   methods: {
+    /**
+     * @description 挂载组件
+     */
+    mountComponent() {
+      GameImagePickerVar.callTimes++;
+    },
+
+    /**
+     * @description 销毁组件
+     */
+    destroyComponent() {
+      // 每次组件销毁时，数量减 1
+      GameImagePickerVar.callTimes--;
+
+      // 页面上没有组件时，销毁全局变量
+      if (GameImagePickerVar.callTimes <= 0) {
+        GameImagePickerVar.cdnUrl = "";
+      }
+    },
+
+    /**
+     * @description 获取配置信息，如图片 CDN 地址等
+     */
+    fetchConfig() {
+      if (
+        // 不允许重复请求
+        GameImagePickerVar.loading ||
+        // 图片 CDN 地址不为空时，不请求接口
+        GameImagePickerVar.cdnUrl
+      ) {
+        return;
+      }
+
+      GameImagePickerVar.loading = true;
+
+      return request({
+        url: `/dataProxy/info`,
+        method: "get",
+        data: {
+          Path: `/other/img/url`,
+        },
+      })
+        .then((response) => {
+          if (response && response.RetCode === 0) {
+            const { Data } = response || {};
+            const { url, root } = Data || {};
+
+            this.cdnUrl = url;
+            this.serverRoot = root;
+            GameImagePickerVar.cdnUrl = url;
+          } else {
+            this.$message.error(response.Data);
+          }
+        })
+        .finally(() => {
+          GameImagePickerVar.loading = false;
+        });
+    },
     /**
      * @description 切换弹框的显示
      * @param {boolean} visible
@@ -107,14 +173,19 @@ export default {
 
     /**
      * @description 处理图片选中事件
-     * @param {object} image 图片信息
-     * @param {object} config 额外配置
+     * @param {object} image 图片路径
+     * @prop {string} image.path 图片路径
+     * @prop {string} image.cdnUrl 图片 CDN 地址
+     * @prop {string} image.serverRoot 图片目录
      */
-    handlePick(image, config) {
-      this.pickImage = image;
-      this.cdnUrl = config.cdnUrl;
-      this.serverRoot = config.serverRoot;
-      this.$emit("pick", image);
+    handlePick(image) {
+      const { path, cdnUrl, serverRoot } = image || {};
+
+      this.cdnUrl = cdnUrl;
+      this.serverRoot = serverRoot;
+      GameImagePickerVar.cdnUrl = cdnUrl;
+      this.$emit("input", path);
+      this.$emit("change", path);
     },
 
     /**
@@ -165,6 +236,11 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
+
+    ::v-deep .el-image {
+      width: 100%;
+      height: 100%;
+    }
 
     &:hover &__mask {
       opacity: 1;

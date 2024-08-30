@@ -1,7 +1,7 @@
 <!--
   File: src\components\GameImagePicker\GameImagePickerDialog.vue
   Date: 2024-08-29 15:11:24
-  Description: --
+  Description: 赛事图片选择弹框
 -->
 <template>
   <el-dialog
@@ -42,25 +42,33 @@
       >
         <div
           v-for="item in list"
-          :key="item.Img"
+          :key="item.path"
           :class="[
             'game-image-picker-dialog__list-item',
             {
               'game-image-picker-dialog__list-item--active':
-                item.Img === active.Img,
+                item.path === active,
             },
           ]"
           @click="handleSelect(item)"
         >
           <el-image
-            :src="`${cdnUrl}/${item.Img}`"
+            :src="`${cdnUrl}/${item.path}`"
             fit="cover"
             class="game-image-picker-dialog__list-item__image"
             style="width: 150px; height: 218px"
           />
           <div class="game-image-picker-dialog__list-item__name">
-            {{ item.Img }}
+            {{ item.path }}
           </div>
+          <span
+            v-if="item.path === active"
+            class="game-image-picker-dialog__list-item__selected"
+          >
+            <i
+              class="el-icon-upload-success el-icon-check game-image-picker-dialog__list-item__selected-icon"
+            />
+          </span>
         </div>
       </div>
       <el-empty v-else />
@@ -84,37 +92,17 @@ export default {
       default: false,
     },
 
-    // 图片信息
-    image: {
-      type: Object,
-      default: () => ({
-        Img: "",
-        Remark: "",
-        GoodsId: "",
-      }),
-    },
-
-    // 图片类型
-    type: {
-      type: Number,
-      default: 1,
-    },
-
-    // 扩展信息
-    ext: {
+    // 图片路径
+    path: {
       type: String,
       default: "",
     },
   },
   data() {
     return {
+      active: "", // 当前选中的图片
       cdnUrl: "", // 图片 CDN 地址
       serverRoot: "", // 图片目录
-
-      active: {
-        Img: "",
-      },
-
       list: [],
       loading: false,
     };
@@ -142,20 +130,18 @@ export default {
      * @description 重置数据
      */
     reset() {
+      this.active = "";
       this.serverRoot = "";
       this.cdnUrl = "";
       this.list = [];
-      this.active = {
-        Img: "",
-      };
     },
 
     /**
      * @description 处理弹框打开事件
      */
     handleOpen() {
-      this.active = Object.assign({}, this.image);
-      this.fetchList({ type: this.type });
+      this.active = this.path;
+      this.fetchList();
     },
 
     /**
@@ -169,7 +155,7 @@ export default {
         url: `/dataProxy/info`,
         method: "get",
         data: {
-          Path: `/other/img/url?type=${params.type}`,
+          Path: `/other/img/url`,
         },
       })
         .then((response) => {
@@ -195,7 +181,7 @@ export default {
       const ret = [];
 
       Object.keys(data || {}).forEach((key) => {
-        ret.push({ Img: key });
+        ret.push({ path: key });
       });
 
       return ret;
@@ -213,7 +199,11 @@ export default {
      * @param {object} image 图片对象
      */
     handleSelect(image) {
-      this.active = image || {};
+      if (image.path === this.active) {
+        return;
+      }
+
+      this.active = image.path;
     },
 
     /**
@@ -228,19 +218,16 @@ export default {
      * @description 确定
      */
     handleConfirm() {
-      if (!this.active.Img) {
+      if (!this.active) {
         this.$message.error("请选择图片");
         return;
       }
 
-      this.$emit(
-        "pick",
-        Object.assign({}, this.active, { Type: this.type, Ext: this.ext }),
-        {
-          cdnUrl: this.cdnUrl,
-          serverRoot: this.serverRoot,
-        }
-      );
+      this.$emit("pick", {
+        path: this.active,
+        cdnUrl: this.cdnUrl,
+        serverRoot: this.serverRoot,
+      });
       this.toggleVisible(false);
     },
   },
@@ -284,6 +271,8 @@ export default {
       margin-bottom: 12px;
       transition: transform 0.2s ease-in-out;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
 
       &:hover {
         transform: scale(1.05);
@@ -293,8 +282,26 @@ export default {
       }
 
       &--active {
-        border-color: #409eff;
         cursor: default;
+      }
+
+      &__selected {
+        position: absolute;
+        right: -17px;
+        top: -7px;
+        width: 46px;
+        height: 26px;
+        background: #13ce66;
+        text-align: center;
+        transform: rotate(45deg);
+        box-shadow: 0 1px 1px #ccc;
+
+        &-icon {
+          color: #ffffff;
+          font-size: 12px;
+          margin-top: 12px;
+          transform: rotate(-45deg);
+        }
       }
 
       &__img {
