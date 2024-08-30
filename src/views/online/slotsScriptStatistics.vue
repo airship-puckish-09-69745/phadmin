@@ -22,7 +22,7 @@
           </el-col>
         </el-row>
 
-        <el-row>
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
           <el-col :span="6">
             <el-table
               ref="filterTable"
@@ -210,6 +210,87 @@
               </el-col>
             </el-row>
           </el-col>
+          <el-col :span="9" :offset="1" v-if="queryGid === 150">
+            <el-table
+              ref="filterTable"
+              :data="jackpotTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 700px"
+
+            >
+              <el-table-column label="Jackpot统计">
+                <el-table-column
+                  prop="gid"
+                  label="游戏"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    <span v-for="(item, index) in gameOptions" :key="index">
+                      {{ (scope.row.gid == item.key ? item.label : "") }}
+                    </span>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="bet"
+                  label="下注值"
+                >
+                </el-table-column>
+
+                <el-table-column
+                  prop="type"
+                  label="Jackpot类型"
+                >
+                  <template slot-scope="scope">
+                    {{ getJPLabel(scope.row.type) }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="fee"
+                  label="收集金额"
+                >
+                </el-table-column>
+
+                <el-table-column
+                  prop="count"
+                  label="发放次数"
+                >
+                </el-table-column>
+
+                <el-table-column
+                  prop="winmoney"
+                  label="发放金额"
+                >
+                </el-table-column>
+
+                <el-table-column
+                  prop="countpro"
+                  label="发放概率"
+                >
+                </el-table-column>
+              </el-table-column>
+            </el-table>
+            <el-row>
+              <el-col :span="5">
+                <div class="block">
+                  <el-pagination
+                    :current-page="jackpotClientDB.GetPage().GetCurrentPage()"
+                    :page-sizes="[10, 20, 30, 40]"
+                    :page-size="jackpotClientDB.GetPage().GetPageNum()"
+                    layout="total, sizes, prev, pager, next"
+                    :total="jackpotClientDB.GetPage().GetTotalCount()"
+                    @size-change="jackpotHandleSizeChange"
+                    @current-change="jackpotHandleCurrentChange"
+                  />
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
         </el-row>
 
       </el-tab-pane>
@@ -318,6 +399,7 @@ export default {
       scriptClientDB: new ClientTableData([], 1, filterMap),
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
+      jackpotClientDB: new ClientTableData([], 1, filterMap),
       showBtn: 0,
       libShow: $libShow,
       item: {
@@ -330,6 +412,7 @@ export default {
       scriptTableData: [],
       coordinateTableData: [],
       stepTableData: [],
+      jackpotTableData: [],
 
       queryTime: new Date().getTime(),
       loading: false,
@@ -364,6 +447,9 @@ export default {
     },
     refreshCoordinate() {
       this.coordinateTableData = this.coordinateClientDB.GetCurrentPageData()
+    },
+    refreshJackpot() {
+      this.jackpotTableData = this.jackpotClientDB.GetCurrentPageData()
     },
     handleClick(tab, event) {
       if (parseInt(tab.index) == 0) {
@@ -450,10 +536,11 @@ export default {
       this.coordinateClientDB.Search(this.queryGid, ['gid'])
       this.scriptClientDB.Search(this.queryGid, ['gid'])
       this.stepClientDB.Search(this.queryGid, ['gid'])
+      this.jackpotClientDB.Search(this.queryGid, ['gid'])
       this.refreshScript()
       this.refreshCoordinate()
       this.refreshStep()
-
+      this.refreshJackpot()
 
     },
     coordinateHandleCurrentChange(val) {
@@ -467,6 +554,14 @@ export default {
     stepHandleCurrentChange(val) {
       this.stepClientDB.GetPage().SetPageNo(val)
       this.refreshStep()
+    },
+    jackpotHandleSizeChange(val) {
+      this.jackpotClientDB.GetPage().SetPageNum(val)
+      this.refreshJackpot()
+    },
+    jackpotHandleCurrentChange(val) {
+      this.jackpotClientDB.GetPage().SetPageNo(val)
+      this.refreshJackpot()
     },
     getSlotsScriptStatistics() {
       const $this = this
@@ -485,6 +580,7 @@ export default {
         let coordinateTableData = []
         let scriptTableData = []
         let stepTableData = []
+        let jackpotTableData = []
 
         this.stepSum = {}
         this.sumData = {}
@@ -552,6 +648,46 @@ export default {
             })
           }
 
+          let jackpotMap = {}
+          let betCountMap = {}
+          for (const key in response.Data['jackpot']) {
+            var strings1 = key.split('_')
+            if (strings1[2] === 'count') {
+              betCountMap[parseInt(strings1[1])] = parseInt(response.Data['jackpot'][key])
+            } else {
+              // let prefix = ''
+              // if (parseInt(strings1[3]) === 1) {
+              //   prefix = 'MINI'
+              // } else if (parseInt(strings1[3]) === 2) {
+              //   prefix = 'MINOR'
+              // } else if (parseInt(strings1[3]) === 3) {
+              //   prefix = 'MAJOR'
+              // } else {
+              //   prefix = 'GRAND'
+              // }
+              jackpotMap[strings1[1] + '_' + strings1[3]].bet = parseInt(strings1[1])
+              if (strings1[4] === 'fee') {
+                jackpotMap[strings1[1] + '_' + strings1[3]].fee = parseInt(response.Data['jackpot'][key])
+              } else if (strings1[4] === 'count') {
+                jackpotMap[strings1[1] + '_' + strings1[3]].count = parseInt(response.Data['jackpot'][key])
+              } else if (strings1[4] === 'winmoney') {
+                jackpotMap[strings1[1] + '_' + strings1[3]].winmoney = parseInt(response.Data['jackpot'][key])
+              }
+            }
+          }
+
+          for (const key in jackpotMap) {
+            jackpotTableData.push({
+              gid: '150',
+              bet: jackpotMap[key].bet,
+              type: parseInt(key.split('_')[1]),
+              fee: jackpotMap[key].fee,
+              count: jackpotMap[key].count,
+              winmoney: jackpotMap[key].winmoney,
+              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].bet] * 100
+            })
+            $this.gidOptions['150'] = '150'
+          }
         }
         coordinateTableData.sort(function (a, b) {
           return b.cnt - a.cnt
@@ -565,9 +701,17 @@ export default {
           return a.idx - b.idx
         })
 
+        jackpotTableData.sort(function (a, b) {
+          if (a.bet === b.bet) {
+            return a.type - b.type
+          }
+          return a.idx - b.idx
+        })
+
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
+        this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
         this.queryKeyInput()
 
         $this.loading = false
@@ -709,6 +853,23 @@ export default {
           }
         }
       })
+    },
+    getJPLabel(type) {
+      if (type === null || type === undefined) {
+        return null
+      }
+      switch (type) {
+        case 1:
+          return 'MINI'
+        case 2:
+          return 'MINOR'
+        case 3:
+          return 'MAJOR'
+        case 4:
+          return 'GRAND'
+        default:
+          return '无'
+      }
     }
   }
 }
