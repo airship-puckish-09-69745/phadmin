@@ -53,7 +53,7 @@
           @click="handleSelect(item)"
         >
           <el-image
-            :src="`${cdnUrl}/${item.path}`"
+            :src="`${cdnUrl}${item.path}`"
             fit="cover"
             class="game-image-picker-dialog__list-item__image"
             style="width: 150px; height: 218px"
