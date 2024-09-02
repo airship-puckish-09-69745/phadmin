@@ -100,6 +100,7 @@ export default {
                 { "value": 3, "label": "已开始" },
                 { "value": 4, "label": "已结束" },
                 { "value": 5, "label": "已隐藏" },
+                { "value": 6, "label": "已下架" },
             ],
             repeatCfgs: [
                 { "value": 0, "label": "单场" },
