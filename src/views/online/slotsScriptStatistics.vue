@@ -226,7 +226,6 @@
                 <el-table-column
                   prop="gid"
                   label="游戏"
-                  width="120px"
                 >
                   <template slot-scope="scope">
                     <span v-for="(item, index) in gameOptions" :key="index">
@@ -272,12 +271,19 @@
                   prop="winmoney"
                   label="发放金额"
                 >
+                  <template slot-scope="scope">
+                    {{ scope.row.winmoney / 1000 }}
+                  </template>
                 </el-table-column>
 
                 <el-table-column
                   prop="countpro"
                   label="发放概率"
+                  width="110px"
                 >
+                  <template slot-scope="scope">
+                    {{ (scope.row.countpro).toFixed(7) }}%
+                  </template>
                 </el-table-column>
               </el-table-column>
             </el-table>
@@ -671,7 +677,9 @@ export default {
               // } else {
               //   prefix = 'GRAND'
               // }
-              jackpotMap[strings1[1] + '_' + strings1[3]] = { bet: parseInt(strings1[1]), fee: 0, count: 0, winmoney: 0 }
+              if (jackpotMap[strings1[1] + '_' + strings1[3]] == null) {
+                jackpotMap[strings1[1] + '_' + strings1[3]] = { bet: parseInt(strings1[1]), fee: 0, count: 0, winmoney: 0 }
+              }
               if (strings1[4] === 'fee') {
                 jackpotMap[strings1[1] + '_' + strings1[3]].fee = parseInt(response.Data['jackpot'][key])
               } else if (strings1[4] === 'count') {
