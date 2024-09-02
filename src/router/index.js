@@ -1035,6 +1035,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchRule'),
         name: 'matchRule',
         meta: { title: '赛制管理', noCache: true }
+      },
+      {
+        path: 'matchMonitor',
+        component: () => import('@/views/matchManage/matchMonitor'),
+        name: 'matchMonitor',
+        meta: { title: '赛事监控', noCache: true }
       }
     ]
   },
