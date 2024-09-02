@@ -848,7 +848,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 199) {
               continue
             }
 
