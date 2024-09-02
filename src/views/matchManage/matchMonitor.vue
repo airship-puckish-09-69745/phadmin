@@ -99,6 +99,7 @@ export default {
                 { "value": 2, "label": "入场中" },
                 { "value": 3, "label": "已开始" },
                 { "value": 4, "label": "已结束" },
+                { "value": 5, "label": "已隐藏" },
             ],
             repeatCfgs: [
                 { "value": 0, "label": "单场" },
@@ -182,6 +183,8 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('下架比赛成功！')
+                    }else {
+                        Message.error('下架比赛失败！')
                     }
                 })
             }).catch(() => {
@@ -204,6 +207,8 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('隐藏比赛成功！')
+                    }else {
+                        Message.error('隐藏比赛失败！')
                     }
                 })
             }).catch(() => {
