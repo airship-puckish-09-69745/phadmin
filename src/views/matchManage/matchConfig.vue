@@ -272,6 +272,10 @@
         <el-form-item v-if="editForm.data.opentMatchType==2" label="最低开赛人数：" :required="true">
           <el-input style="width: 200px;" v-model="editForm.data.opentMatchMember" placeholder="请填写开赛人数" />
         </el-form-item>
+        <el-form-item label="封面图片URL：" :required="true">
+          <GameImagePicker v-model="editForm.data.imagePath" @pick="handlePick">
+          </GameImagePicker>
+        </el-form-item>
       </fieldset>
         <fieldset>
           <legend>开赛时间</legend>
@@ -404,15 +408,17 @@ import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow} from '@/utils/common'
 import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
+import GameImagePicker from "@/components/GameImagePicker/GameImagePicker.vue";
 
 export default {
   name: 'MatchConfig',
-  components: { Compare, Publish, DateTimeShow },
+  components: { Compare, Publish, DateTimeShow, GameImagePicker },
   data() {
     return {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
+      imagePickerVisible: false,
       form: {
         gameId: -1,
         status: -1,
@@ -480,7 +486,8 @@ export default {
           preShowSeconds: 0,
           preEnterSeconds: 0,
           delayEnterSeconds: 0,
-          rankRewardsDetail: ""
+          rankRewardsDetail: "",
+          imagePath: "",
         },
         loopDetail: {
           //只有一场
@@ -530,7 +537,8 @@ export default {
         signType: "报名方式",
         signNum: "报名费数量",
         status: "状态",
-        rewardsCfg: "名次奖励"
+        rewardsCfg: "名次奖励",
+        imagePath: "封面图片"
       }
     }
   },
@@ -633,6 +641,9 @@ export default {
     handleCurrentChange(val) {
       this.page = val
       this.getList()
+    },
+    handlePick(image) {
+      console.log("测试选择" + image.path + " cdn:" + image.cdnUrl + " full url:" + image.cdnUrl + image.path)
     },
     getGameName(gameId) {
       var gameName = ""
@@ -778,7 +789,8 @@ export default {
           preEnterSeconds: 0,
           delayEnterSeconds: 0,
           rankRewardsDetail: "",
-          status: 0
+          status: 0,
+          imagePath: ""
         }
         this.editForm.loopDetail = {
           //只有一场
@@ -841,7 +853,8 @@ export default {
           preEnterSeconds: editData.pre_enter_seconds,
           delayEnterSeconds: editData.delay_enter_seconds,
           rankRewardsDetail: editData.rewards,
-          status: editData.status
+          status: editData.status,
+          imagePath: editData.image_path
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.repeat_type == 0) {
@@ -898,6 +911,7 @@ export default {
           Rewards: rankReward,
           RepeatType: this.editForm.data.repeatType,
           RepeatDetail: repeatDetail,
+          ImagePath: this.editForm.data.imagePath,
           WhileList: whileDetail,
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
