@@ -316,7 +316,7 @@ export const asyncRoutes = [
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
-            meta: { title: 'NiuNiu ◐' }
+            meta: { title: 'Multi NiuNiu ◐' }
           },
           { // 金拉米
             path: 'ginrummyTable',
@@ -1073,7 +1073,7 @@ export const asyncRoutes = [
             path: 'playlog_niuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_domino',
-            meta: { title: 'NiuNiu ◐', gid: 49 }
+            meta: { title: 'Multi NiuNiu ◐', gid: 49 }
           },
           {
             path: 'playlog_pusoyDos',
