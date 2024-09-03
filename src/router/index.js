@@ -1927,8 +1927,14 @@ export const asyncRoutes = [
         path: 'gameCustomConfig',
         component: () => import('@/views/config/gameCustomConfig'),
         name: 'game_custom_config',
-        meta: { title: '游戏自定义配置' }
+        meta: { title: '游戏显示返回大厅按钮配置' }
       },
+      {
+        path: 'gameLogoReturnConfig',
+        component: () => import('@/views/config/gameLogoReturnConfig'),
+        name: 'game_logo_return_config',
+        meta: { title: '游戏点击Logo返回大厅配置' }
+      }
     ]
   },
   {

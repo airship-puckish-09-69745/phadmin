@@ -83,7 +83,7 @@
               @click="handleView(scope.row)"
             >查看</el-button>
             <el-button
-              v-if="scope.row.Status!=2 && scope.row.Status!=3"
+              v-if="scope.row.Status!=2 && scope.row.Status!=3 && scope.row.Status!=4"
               size="mini"
               type="danger"
               @click="handleDelete(scope.row)"
@@ -264,7 +264,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     getStatusShow(status) {
-      const names = { 1: '审核中', 2: '已通过', 3: '已拒绝' }
+      const names = { 1: '审核中', 2: '已通过', 3: '已拒绝' ,4:'已取消'}
       return names[status]
     },
     handleSizeChange(val) {
