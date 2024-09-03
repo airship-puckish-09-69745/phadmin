@@ -120,15 +120,8 @@
           label="开关"
         >
           <template slot-scope="scope">
-            <el-switch
-              @change="updateStatus(scope.row.id, $event)"
-              v-model="scope.row.openShow"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              active-text="启用"
-              inactive-text="禁用"
-            >
-            </el-switch>
+            <el-button v-if="scope.row.openShow==false" size="mini" type="success" @click="updateStatus(scope.row.id, true)">上架</el-button>
+            <el-button v-if="scope.row.openShow==true" size="mini" type="danger" @click="updateStatus(scope.row.id, false)">下架</el-button>
           </template>
         </el-table-column>
         <el-table-column fixed="right"
@@ -464,6 +457,7 @@ export default {
       ],
       csCfgs: [],
       showCsCfgs: [],
+      endMinuteCfgs: new Map(), //打立阶段最大时长 用于配置检查
       tableData: [],
       limit: 10,
       total: 0,
@@ -578,6 +572,15 @@ export default {
                 "value": objs.list[i].id,
                 "gameId": [parseInt(objs.list[i].game_id, 10)]
               })
+
+              let stage_detail = JSON.parse(objs.list[i].stage_detail)
+              for (var j=0;j<stage_detail.length;j++) {
+                if (stage_detail[j].system_type == 1) { // 打立出局
+                  //console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
+                  // 存储打立出局的最大时长配置 用于配置检查
+                  this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                }
+              }
             }
           }
         }
@@ -734,42 +737,86 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
+    handleOn(id, val) {
+        this.$confirm("您确定要将该比赛配置上架吗？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // 启用配置
+                let status = 0
+                request({
+                  url: '/matchconfig/match/config/status',
+                  method: 'post',
+                  data: {
+                    Env: this.env,
+                    Id: id,
+                    Status: status,
+                  }
+              }).then(response => {
+                if (response.RetCode === 0) {
+                  let showMsg = "启用赛事配置成功！"
+                  for (let i=0;i<this.tableData.length;i++) {
+                    if (this.tableData[i].id == id) {
+                      this.tableData[i].openShow = val
+                      this.tableData[i].status = 0
+                      status = this.tableData[i].status
+                      break
+                    }
+                  }
+                  Message.success(showMsg)
+                  this.getList()
+                } else {
+                  Message.error('更新状态失败：'+response.Data)
+                }
+                })
+            }).catch(() => {
+                console.log('取消')
+            })
+    },
+    handleOff(id, val) {
+        this.$confirm("您确定要将该比赛配置下架吗？下架的比赛将自动取消", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                // 禁用配置
+                let status = 1
+                request({
+                  url: '/matchconfig/match/config/status',
+                  method: 'post',
+                  data: {
+                    Env: this.env,
+                    Id: id,
+                    Status: status,
+                  }
+              }).then(response => {
+                if (response.RetCode === 0) {
+                  let showMsg = "禁用赛事配置成功！"
+                  for (let i=0;i<this.tableData.length;i++) {
+                    if (this.tableData[i].id == id) {
+                      this.tableData[i].openShow = val
+                      this.tableData[i].status = 1
+                      status = this.tableData[i].status
+                      break
+                    }
+                  }
+                  Message.success(showMsg)
+                  this.getList()
+                } else {
+                  Message.error('更新状态失败：'+response.Data)
+                }
+                })
+            }).catch(() => {
+                console.log('取消')
+            })
+    },
     updateStatus(id, val) {
-      let status = 0
-      for (let i=0;i<this.tableData.length;i++) {
-        if (this.tableData[i].id == id) {
-          this.tableData[i].openShow = val
-          if (val) {
-            this.tableData[i].status = 0
-          } else {
-            this.tableData[i].status = 1
-          }
-          status = this.tableData[i].status
-          break
-        }
+      if (val) {
+        this.handleOn(id, val)
+      }else {
+        this.handleOff(id, val)
       }
-      request({
-        url: '/matchconfig/match/config/status',
-        method: 'post',
-        data: {
-          Env: this.env,
-          Id: id,
-          Status: status,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          let showMsg = "启用赛事配置成功！"
-          if (status == 1) {
-            showMsg = "禁用赛事配置成功！"
-          }
-          Message.success(showMsg)
-          this.getList()
-          return
-        } else {
-          Message.error('更新状态失败：'+response.Data)
-          return
-        }
-      })
     },
     showForm(id) {
       if (id == 0) {
@@ -982,7 +1029,20 @@ export default {
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
-      } 
+      } else if (this.editForm.data.csId <= 0) {
+        this.errmsg('赛制选择不能为空')
+        return false
+      } else {
+        
+          // 获取打立阶段最大时长
+          let endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
+          if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin))
+          {
+            this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
+            return false
+          }
+
+      }
       return true
     }
   }
