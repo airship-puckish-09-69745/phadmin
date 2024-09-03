@@ -76,7 +76,7 @@
               {{ actTypeMap[scope.row.ActType ]}}
             </template>
           </el-table-column>
-          <el-table-column label="日志类型">
+          <el-table-column label="日志类型" width="120px">
             <template slot-scope="scope">
               {{ logTypeMap[scope.row.LogType ]}}
             </template>
