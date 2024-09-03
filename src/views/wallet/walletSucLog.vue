@@ -39,9 +39,15 @@
           :row-style="{height:'10px'}"
           :cell-style="libShow.TableCell(0)"
         >
-          <el-table-column label="成功时间" width="160px">
+          <el-table-column label="成功时间" width="150px">
             <template slot-scope="scope">
               {{ formatTime(scope.row.OpTime) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="结束时间" width="150px" align="center">
+            <template slot-scope="scope">
+             <span v-if="scope.row.EndTime>0"> {{ formatTime(scope.row.EndTime) }}</span>
+             <span v-else> - </span>
             </template>
           </el-table-column>
           <el-table-column label="游戏">
@@ -70,7 +76,7 @@
               {{ actTypeMap[scope.row.ActType ]}}
             </template>
           </el-table-column>
-          <el-table-column label="日志类型">
+          <el-table-column label="日志类型" width="120px">
             <template slot-scope="scope">
               {{ logTypeMap[scope.row.LogType ]}}
             </template>
