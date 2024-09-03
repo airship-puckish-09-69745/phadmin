@@ -75,19 +75,19 @@
             />
 
             <el-table-column
-              prop="is_return"
+              prop="is_display"
               label="是否需要返回"
             >
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.is_return"
+                  v-model="scope.row.is_display"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   :active-value="1"
                   :inactive-value="0"
                   @change="editIsReturn(scope.$index,scope.row)"
                 />
-                <el-form-item v-model="scope.row.is_return" label-width="0" />
+                <el-form-item v-model="scope.row.is_display" label-width="0" />
               </template>
             </el-table-column>
 
@@ -148,7 +148,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="是否需要返回">
-          <el-select v-model="item.is_return" placeholder="请选择" size="mini">
+          <el-select v-model="item.is_display" placeholder="请选择" size="mini">
             <el-option
               v-for="item in isReturnOptions"
               :key="item.key"
@@ -182,7 +182,7 @@ export default {
     return {
       form: {},
       postData: {},
-      subKey: 'GameLogoReturnConfig',
+      subKey: 'GameLogoDisplayConfig',
       AttrNames: {
         types: {
           Data: 'jsonString' // 整个数据项的类型
@@ -211,7 +211,7 @@ export default {
         app_id: 1000002,
         channel: 'Dev',
         game_id: 0,
-        is_return: 0
+        is_display: 0
       },
       gameOptions: [
 
@@ -233,15 +233,15 @@ export default {
     editIsReturn(idx, row) {
       const cfg = {}
       copyObj(row, cfg)
-      if (row.is_return == 1) {
-        cfg.is_return = 0
+      if (row.is_display == 1) {
+        cfg.is_display = 0
       } else {
-        cfg.is_return = 1
+        cfg.is_display = 1
       }
 
       for (let i = 0; i < this.allCfg.length; i++) {
         // 确定哪一行是一样的
-        if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel && cfg.is_return == this.allCfg[i].is_return) {
+        if (row.game_id == this.allCfg[i].game_id && row.app_id == this.allCfg[i].app_id && row.channel == this.allCfg[i].channel && cfg.is_display == this.allCfg[i].is_display) {
           this.allCfg.splice(i, 1, row)
           this.selectGameVisible = false
           this.refresh()
@@ -306,7 +306,7 @@ export default {
       this.item.game_id = row.game_id
       this.item.channel = row.channel
       this.item.app_id = row.app_id
-      this.item.is_return = row.is_return
+      this.item.is_display = row.is_display
       this.selectGameVisible = true
     },
     saveEdit() {
@@ -330,7 +330,7 @@ export default {
 
       for (let i = 0; i < this.allCfg.length; i++) {
         // 确定哪一行是一样的
-        if (this.oldData.game_id == this.allCfg[i].game_id && this.oldData.app_id == this.allCfg[i].app_id && this.oldData.channel == this.allCfg[i].channel && this.oldData.is_return == this.allCfg[i].is_return) {
+        if (this.oldData.game_id == this.allCfg[i].game_id && this.oldData.app_id == this.allCfg[i].app_id && this.oldData.channel == this.allCfg[i].channel && this.oldData.is_display == this.allCfg[i].is_display) {
           const cfg = {}
           copyObj(this.newItem(), cfg)
           this.allCfg.splice(i, 1, cfg)
