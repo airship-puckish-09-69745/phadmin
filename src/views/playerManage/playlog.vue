@@ -2292,7 +2292,7 @@
 
     <wingo-lottery-detail-log v-if="gameLogComponent.gid === 112" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="112" @closeDialog="closeDialog" />
 
-    <multi-player-niu-niu-detail-log v-if="gameLogComponent.gid === 115" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="115" @closeDialog="closeDialog" />
+    <multi-player-niu-niu-detail-log v-if="gameLogComponent.gid === 115" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="115" :uid="clickRowUid" @closeDialog="closeDialog" />
 
     <el-dialog v-if="gameLogComponent.gid === 47||gameLogComponent.gid === 48" title="台球详情" :visible.sync="gameLogComponent.visible" width="1200px">
       <el-descriptions class="margin-top" title="" :column="5" border>
@@ -2381,6 +2381,7 @@ export default {
         loseCount: 0,
         fee: 0
       },
+      clickRowUid: 0,
 
       detailVisible: false,
       detailData: [],
@@ -2891,6 +2892,7 @@ export default {
     },
     setRowUid(uid) {
       this.sweeperRowUid = uid
+      this.clickRowUid = uid
     },
     getDetail(id, dt) {
       const $this = this
@@ -3009,10 +3011,11 @@ export default {
 
       return parseInt(result)
     },
-    showGameLogComponent(obj, gid) {
+    showGameLogComponent(obj, gid, uid) {
       this.gameLogComponent.detail = obj
       this.gameLogComponent.visible = true
       this.gameLogComponent.gid = gid
+      this.gameLogComponent.uid = uid
       if (gid == 108) {
         this.showDropBall(obj)
       }

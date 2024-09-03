@@ -153,6 +153,12 @@ export default {
         return 0
       }
     },
+    Uid: {
+      type: Number,
+      default: function() {
+        return 0
+      }
+    },
     GameLogVisible: Boolean
   },
   data() {
@@ -230,9 +236,12 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     getMoneyWon() {
+      console.log('MultiNiuNiu detail uid:', this.Uid)
       let moneyWon = 0
       this.GameLog.NiuNiu.players.map((item) => {
-        moneyWon += item.moneyWon
+        if (item.uid === this.Uid) {
+          moneyWon += item.moneyWon + item.jackpotAward
+        }
       })
       return moneyWon
     },
