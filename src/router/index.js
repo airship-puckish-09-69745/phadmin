@@ -1930,10 +1930,10 @@ export const asyncRoutes = [
         meta: { title: '游戏显示返回大厅按钮配置' }
       },
       {
-        path: 'gameLogoReturnConfig',
-        component: () => import('@/views/config/gameLogoReturnConfig'),
-        name: 'game_logo_return_config',
-        meta: { title: '游戏点击Logo返回大厅配置' }
+        path: 'gameLogoDisplayConfig',
+        component: () => import('@/views/config/gameLogoDisplayConfig'),
+        name: 'game_logo_display_config',
+        meta: { title: '游戏场次Logo显示配置' }
       }
     ]
   },
