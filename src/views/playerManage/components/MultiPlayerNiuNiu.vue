@@ -125,7 +125,7 @@
               <template slot-scope="scope2">{{ scope2.row.cardInfo.odds /1000 }}</template>
             </el-table-column>
             <el-table-column label="Jackpot">
-              <template slot-scope="scope2">{{ scope2.row.cardInfo.jackpot ? scope2.row.cardInfo.jackpot.award : 0 }}</template>
+              <template slot-scope="scope2">{{ scope2.row.jackpot ? scope2.row.jackpot.award / 1000 : 0 }}</template>
             </el-table-column>
           </el-table>
         </template>
