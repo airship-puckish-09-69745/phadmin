@@ -464,6 +464,7 @@ export default {
       ],
       csCfgs: [],
       showCsCfgs: [],
+      endMinuteCfgs: new Map(), //打立阶段最大时长 用于配置检查
       tableData: [],
       limit: 10,
       total: 0,
@@ -578,6 +579,15 @@ export default {
                 "value": objs.list[i].id,
                 "gameId": [parseInt(objs.list[i].game_id, 10)]
               })
+
+              let stage_detail = JSON.parse(objs.list[i].stage_detail)
+              for (var j=0;j<stage_detail.length;j++) {
+                if (stage_detail[j].system_type == 1) { // 打立出局
+                  //console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
+                  // 存储打立出局的最大时长配置 用于配置检查
+                  this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                }
+              }
             }
           }
         }
@@ -982,7 +992,20 @@ export default {
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
-      } 
+      } else if (this.editForm.data.csId <= 0) {
+        this.errmsg('赛制选择不能为空')
+        return false
+      } else {
+        
+          // 获取打立阶段最大时长
+          let endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
+          if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin))
+          {
+            this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
+            return false
+          }
+
+      }
       return true
     }
   }
