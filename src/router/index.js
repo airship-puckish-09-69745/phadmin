@@ -316,7 +316,7 @@ export const asyncRoutes = [
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
-            meta: { title: 'NiuNiu ◐' }
+            meta: { title: 'Multi NiuNiu ◐' }
           },
           { // 金拉米
             path: 'ginrummyTable',
@@ -1035,6 +1035,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchRule'),
         name: 'matchRule',
         meta: { title: '赛制管理', noCache: true }
+      },
+      {
+        path: 'matchMonitor',
+        component: () => import('@/views/matchManage/matchMonitor'),
+        name: 'matchMonitor',
+        meta: { title: '赛事监控', noCache: true }
       }
     ]
   },
@@ -1067,7 +1073,7 @@ export const asyncRoutes = [
             path: 'playlog_niuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_domino',
-            meta: { title: 'NiuNiu ◐', gid: 49 }
+            meta: { title: 'Multi NiuNiu ◐', gid: 49 }
           },
           {
             path: 'playlog_pusoyDos',

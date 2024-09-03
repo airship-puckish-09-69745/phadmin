@@ -33,13 +33,7 @@
       </div>
     </slot>
 
-    <GameImagePickerDialog
-      v-model="visible"
-      :path="value"
-      v-bind="$attrs"
-      v-on="$listeners"
-      @pick="handlePick"
-    />
+    <GameImagePickerDialog v-model="visible" :path="value" @pick="handlePick" />
   </div>
 </template>
 
