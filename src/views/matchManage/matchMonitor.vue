@@ -169,7 +169,6 @@ export default {
             return statusName
         },
         handleOff(listId) {
-            const $this = this
             this.$confirm("您确定要将该比赛下架吗？下架的比赛将自动取消", '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -193,7 +192,6 @@ export default {
             })
         },
         handleHide() {
-            const $this = this
             this.$confirm("您确定要将该比赛隐藏吗？客户端将无法获取被隐藏的比赛", '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
