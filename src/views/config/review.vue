@@ -264,7 +264,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     getStatusShow(status) {
-      const names = { 1: '审核中', 2: '已通过', 3: '已拒绝' }
+      const names = { 1: '审核中', 2: '已通过', 3: '已拒绝' ,4:'已取消'}
       return names[status]
     },
     handleSizeChange(val) {
