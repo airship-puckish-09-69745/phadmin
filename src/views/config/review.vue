@@ -83,7 +83,7 @@
               @click="handleView(scope.row)"
             >查看</el-button>
             <el-button
-              v-if="scope.row.Status!=2 && scope.row.Status!=3"
+              v-if="scope.row.Status!=2 && scope.row.Status!=3 && scope.row.Status!=4"
               size="mini"
               type="danger"
               @click="handleDelete(scope.row)"
