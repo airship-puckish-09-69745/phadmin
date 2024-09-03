@@ -130,6 +130,41 @@
         />
       </div>
     </el-col>
+
+    <el-dialog title="添加" :visible.sync="showAdd" width="30%">
+      <el-form label-width="80px">
+        <el-form-item label="选择游戏">
+          <el-select v-model="item.Gid" placeholder="请选择" size="mini">
+            <el-option
+              v-for="(value, k) in gameOptions"
+              :key="parseInt(k)"
+              :label="value"
+              :value="parseInt(k)"
+            />
+          </el-select>
+        </el-form-item>
+
+          <el-form-item label="任务类型">
+            <el-select v-model="item.Type" placeholder="请选择" size="mini">
+              <el-option
+                v-for="(value, k) in taskOptions"
+                :key="parseInt(k)"
+                :label="value"
+                :value="parseInt(k)"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="积分">
+            <el-input v-model.number="item.Score" oninput=" if(value < 0 || value == '' || value == null){value = 0;}else {value=parseInt(value)}" size="mini" style="width: 200px"/>
+          </el-form-item>
+          <el-form-item label="描述">
+            <el-input v-model="item.Description" size="mini" style="width: 200px" />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="saveOne">添加</el-button>
+          </el-form-item>
+      </el-form>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
 
@@ -152,7 +187,7 @@ export default {
   components: { Compare, Publish, MoneyInput },
   data() {
     return {
-      clientDB: new ClientTableData([], 1, filterMap),
+      clientDB: new ClientTableData([], 10, filterMap),
       form: {},
       postData: {},
       subKey: 'poker_topic_score_tasks',
@@ -176,8 +211,8 @@ export default {
         { key: 0, label: '否' },
         { key: 1, label: '是' }
       ],
-
       showData: [],
+      showAdd: false,
       item: {
         Gid: 0,
         Type: 0,
@@ -261,10 +296,25 @@ export default {
       return JSON.parse(JSON.stringify(this.item))
     },
     addOne() {
-      this.showData.push(this.newItem())
+      this.showAdd = true
+      // this.showData.push(this.newItem())
+    },
+    saveOne() {
+      console.log(this.clientDB.TotalData,this.clientDB.GetPage().GetPageNum())
+      this.clientDB.TotalData.push(JSON.parse(JSON.stringify(this.item)))
+      this.clientDB = new ClientTableData(this.clientDB.TotalData, this.clientDB.GetPage().GetPageNum(), filterMap, 'Gid', -1)
+      this.refreshShow()
+      this.showAdd=false
     },
     deleteRow(idx, row) {
       this.showData.splice(idx, 1)
+      for (let i = 0; i < this.clientDB.TotalData.length; i++) {
+        var o = this.clientDB.TotalData[i]
+
+        if (o.Description == row.Description && o.Type == row.Type && o.Score== row.Score && o.Gid == row.Gid) {
+           this.clientDB.TotalData.splice(i, 1)
+        }
+      }
     },
     queryData() {
       const gid = this.selectGid
@@ -310,7 +360,7 @@ export default {
             this.$refs.compare.SetOldVal(response.Data.Data)
             $this.handleCurrentChange(1)
 
-            this.refresh()
+            this.refreshShow()
           }
         }
       })
