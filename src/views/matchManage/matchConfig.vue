@@ -530,7 +530,7 @@ export default {
         delayEnterSeconds: "延迟进入比赛(秒)",
         signType: "报名方式",
         signNum: "报名费数量",
-        status: "状态",
+        status: "配置状态(0:启用 1:禁用)",
         rewardsCfg: "名次奖励",
         imagePath: "封面图片"
       }
