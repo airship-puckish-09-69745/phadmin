@@ -19,9 +19,9 @@
         </div>
       </slot>
     </div>
-    <slot v-else name="image" v-bind="{ path: value, cdnUrl, serverRoot }">
+    <slot v-else name="image" v-bind="{ url: value, path: innerPath, cdnUrl, serverRoot }">
       <div class="game-image-picker__image">
-        <el-image :src="`${GameImagePickerVar.cdnUrl}${value}`" />
+        <el-image :src="value" />
         <div class="game-image-picker__image__mask">
           <span class="game-image-picker__image__option">
             <i
@@ -33,38 +33,44 @@
       </div>
     </slot>
 
-    <GameImagePickerDialog v-model="visible" :path="value" @pick="handlePick" />
+    <GameImagePickerDialog v-model="visible" :url="value" :path="path" @pick="handlePick" />
   </div>
 </template>
 
 <script>
-import request from "@/utils/request";
-import GameImagePickerDialog from "./GameImagePickerDialog";
-import { GameImagePickerVar } from "./GameImagePickerVar";
+import request from '@/utils/request'
+import GameImagePickerDialog from './GameImagePickerDialog'
+import { GameImagePickerVar } from './GameImagePickerVar'
 
 export default {
-  name: "GameImagePicker",
+  name: 'GameImagePicker',
   components: {
-    GameImagePickerDialog,
+    GameImagePickerDialog
   },
   props: {
-    // 图片路径 (v-model)
+    // 图片 URL (v-model)
     value: {
       type: String,
-      default: "",
+      default: ''
+    },
+
+    // 图片路径 (.sync)
+    path: {
+      type: String,
+      default: ''
     },
 
     // 图片宽度
     width: {
       type: Number,
-      default: 109,
+      default: 109
     },
 
     // 图片高度
     height: {
       type: Number,
-      default: 159,
-    },
+      default: 159
+    }
   },
 
   data() {
@@ -72,25 +78,29 @@ export default {
       // 弹框是否显示
       visible: false,
 
-      cdnUrl: "", // 图片 CDN 地址
-      serverRoot: "", // 图片目录
+      innerPath: '', // 图片路径
+      cdnUrl: '', // 图片 CDN 地址
+      serverRoot: '' // 图片目录
 
-      GameImagePickerVar,
-    };
+      // GameImagePickerVar,
+    }
   },
-  mounted() {
-    this.mountComponent();
-    this.fetchConfig();
-  },
-  beforeDestroy() {
-    this.destroyComponent();
-  },
+
+  // mounted() {
+  //   this.mountComponent();
+  //   this.fetchConfig();
+  // },
+
+  // beforeDestroy() {
+  //   // this.destroyComponent();
+  // },
+
   methods: {
     /**
      * @description 挂载组件
      */
     mountComponent() {
-      GameImagePickerVar.callTimes++;
+      GameImagePickerVar.callTimes++
     },
 
     /**
@@ -98,11 +108,11 @@ export default {
      */
     destroyComponent() {
       // 每次组件销毁时，数量减 1
-      GameImagePickerVar.callTimes--;
+      GameImagePickerVar.callTimes--
 
       // 页面上没有组件时，销毁全局变量
       if (GameImagePickerVar.callTimes <= 0) {
-        GameImagePickerVar.cdnUrl = "";
+        GameImagePickerVar.cdnUrl = ''
       }
     },
 
@@ -116,54 +126,55 @@ export default {
         // 图片 CDN 地址不为空时，不请求接口
         GameImagePickerVar.cdnUrl
       ) {
-        return;
+        return
       }
 
-      GameImagePickerVar.loading = true;
+      GameImagePickerVar.loading = true
 
       return request({
         url: `/dataProxy/info`,
-        method: "get",
+        method: 'get',
         data: {
-          Path: `/other/img/url`,
-        },
+          Path: `/other/img/url`
+        }
       })
         .then((response) => {
           if (response && response.RetCode === 0) {
-            const { Data } = response || {};
-            const { url, root } = Data || {};
+            const { Data } = response || {}
+            const { url, root } = Data || {}
 
-            this.cdnUrl = url;
-            this.serverRoot = root;
-            GameImagePickerVar.cdnUrl = url;
+            this.cdnUrl = url
+            this.serverRoot = root
+            GameImagePickerVar.cdnUrl = url
           } else {
-            this.$message.error(response.Data);
+            this.$message.error(response.Data)
           }
         })
         .finally(() => {
-          GameImagePickerVar.loading = false;
-        });
+          GameImagePickerVar.loading = false
+        })
     },
+
     /**
      * @description 切换弹框的显示
      * @param {boolean} visible
      */
     toggleDialogVisible(visible) {
-      this.visible = visible;
+      this.visible = visible
     },
 
     /**
      * @description 选择图片
      */
     handleTrigger() {
-      this.trigger();
+      this.trigger()
     },
 
     /**
      * @description 编辑图片
      */
     handleEdit() {
-      this.toggleDialogVisible(true);
+      this.toggleDialogVisible(true)
     },
 
     /**
@@ -174,13 +185,21 @@ export default {
      * @prop {string} image.serverRoot 图片目录
      */
     handlePick(image) {
-      const { path, cdnUrl, serverRoot } = image || {};
+      const { url, path, cdnUrl, serverRoot } = image || {}
 
-      this.cdnUrl = cdnUrl;
-      this.serverRoot = serverRoot;
-      GameImagePickerVar.cdnUrl = cdnUrl;
-      this.$emit("input", path);
-      this.$emit("change", path);
+      // this.cdnUrl = cdnUrl
+      // this.serverRoot = serverRoot
+      // GameImagePickerVar.cdnUrl = cdnUrl
+      // this.$emit('input', path)
+      // this.$emit('change', path)
+
+      this.innerPath = path
+      this.cdnUrl = cdnUrl
+      this.serverRoot = serverRoot
+
+      this.$emit('input', url)
+      this.$emit('change', url)
+      this.$emit('update:path', path)
     },
 
     /**
@@ -188,10 +207,10 @@ export default {
      * @description 触发图片选择弹框
      */
     trigger() {
-      this.toggleDialogVisible(true);
-    },
-  },
-};
+      this.toggleDialogVisible(true)
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">

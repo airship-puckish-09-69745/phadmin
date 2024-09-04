@@ -47,7 +47,7 @@
             'game-image-picker-dialog__list-item',
             {
               'game-image-picker-dialog__list-item--active':
-                item.path === active,
+                `${cdnUrl}${item.path}` === active,
             },
           ]"
           @click="handleSelect(item)"
@@ -62,7 +62,7 @@
             {{ item.path }}
           </div>
           <span
-            v-if="item.path === active"
+            v-if="`${cdnUrl}${item.path}` === active"
             class="game-image-picker-dialog__list-item__selected"
           >
             <i
@@ -81,41 +81,48 @@
 </template>
 
 <script>
-import request from "@/utils/request";
+import request from '@/utils/request'
 
 export default {
-  name: "GameImagePickerDialog",
+  name: 'GameImagePickerDialog',
   props: {
     // 弹框是否显示
     value: {
       type: Boolean,
-      default: false,
+      default: false
+    },
+
+    // 图片 URL
+    url: {
+      type: String,
+      default: ''
     },
 
     // 图片路径
     path: {
       type: String,
-      default: "",
-    },
+      default: ''
+    }
   },
   data() {
     return {
-      active: "", // 当前选中的图片
-      cdnUrl: "", // 图片 CDN 地址
-      serverRoot: "", // 图片目录
+      active: '', // 当前选中的图片
+      innerPath: '', // 图片路径
+      cdnUrl: '', // 图片 CDN 地址
+      serverRoot: '', // 图片目录
       list: [],
-      loading: false,
-    };
+      loading: false
+    }
   },
   computed: {
     show: {
       get() {
-        return this.value;
+        return this.value
       },
       set(val) {
-        this.$emit("input", val);
-      },
-    },
+        this.$emit('input', val)
+      }
+    }
   },
   methods: {
     /**
@@ -123,25 +130,27 @@ export default {
      * @param {boolean} visible 弹框是否显示
      */
     toggleVisible(visible) {
-      this.show = visible;
+      this.show = visible
     },
 
     /**
      * @description 重置数据
      */
     reset() {
-      this.active = "";
-      this.serverRoot = "";
-      this.cdnUrl = "";
-      this.list = [];
+      this.active = ''
+      this.innerPath = ''
+      this.serverRoot = ''
+      this.cdnUrl = ''
+      this.list = []
     },
 
     /**
      * @description 处理弹框打开事件
      */
     handleOpen() {
-      this.active = this.path;
-      this.fetchList();
+      this.active = this.url
+      this.innerPath = this.path
+      this.fetchList()
     },
 
     /**
@@ -149,27 +158,27 @@ export default {
      * @param {object} params 请求参数
      */
     fetchList(params) {
-      this.loading = true;
+      this.loading = true
 
       return request({
         url: `/dataProxy/info`,
-        method: "get",
+        method: 'get',
         data: {
-          Path: `/other/img/url`,
-        },
+          Path: `/other/img/url`
+        }
       })
         .then((response) => {
           if (response && response.RetCode === 0) {
-            this.list = this.handleList(response.Data?.list);
-            this.cdnUrl = response.Data?.url;
-            this.serverRoot = response.Data?.root;
+            this.list = this.handleList(response.Data?.list)
+            this.cdnUrl = response.Data?.url
+            this.serverRoot = response.Data?.root
           } else {
-            this.$message.error(response.Data);
+            this.$message.error(response.Data)
           }
         })
         .finally(() => {
-          this.loading = false;
-        });
+          this.loading = false
+        })
     },
 
     /**
@@ -178,20 +187,20 @@ export default {
      * @returns {object[]} 返回处理后的图片列表数据
      */
     handleList(data) {
-      const ret = [];
+      const ret = []
 
       Object.keys(data || {}).forEach((key) => {
-        ret.push({ path: key });
-      });
+        ret.push({ path: key })
+      })
 
-      return ret;
+      return ret
     },
 
     /**
      * @description 处理弹框关闭事件
      */
     handleClosed() {
-      this.reset();
+      this.reset()
     },
 
     /**
@@ -199,39 +208,44 @@ export default {
      * @param {object} image 图片对象
      */
     handleSelect(image) {
-      if (image.path === this.active) {
-        return;
+      if (`${this.cdnUrl}${image.path}` === this.active) {
+        return
       }
 
-      this.active = image.path;
+      this.active = `${this.cdnUrl}${image.path}`
+      this.innerPath = image.path
     },
 
     /**
      * @description 取消
      */
     handleCancel() {
-      this.$emit("cancel");
-      this.toggleVisible(false);
+      this.$emit('cancel')
+      this.toggleVisible(false)
     },
 
     /**
      * @description 确定
      */
     handleConfirm() {
-      if (!this.active) {
-        this.$message.error("请选择图片");
-        return;
+      const { active, innerPath, cdnUrl, serverRoot } = this
+
+      if (!active) {
+        this.$message.error('请选择图片')
+        return
       }
 
-      this.$emit("pick", {
-        path: this.active,
-        cdnUrl: this.cdnUrl,
-        serverRoot: this.serverRoot,
-      });
-      this.toggleVisible(false);
-    },
-  },
-};
+      this.$emit('pick', {
+        url: active,
+        path: innerPath,
+        cdnUrl: cdnUrl,
+        serverRoot: serverRoot
+      })
+
+      this.toggleVisible(false)
+    }
+  }
+}
 </script>
 
 <style scoped lang="scss">
