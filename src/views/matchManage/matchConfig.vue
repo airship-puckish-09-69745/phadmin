@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
