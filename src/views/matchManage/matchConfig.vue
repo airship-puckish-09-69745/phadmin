@@ -528,7 +528,7 @@ export default {
         preShowSeconds: "提前展示比赛(秒)",
         preEnterSeconds: "提前进入比赛(秒)",
         delayEnterSeconds: "延迟进入比赛(秒)",
-        signType: "报名方式",
+        signType: "报名方式(0:付费报名 1:免费报名)",
         signNum: "报名费数量",
         status: "配置状态(0:启用 1:禁用)",
         rewardsCfg: "名次奖励",
@@ -1017,6 +1017,12 @@ export default {
       });
     },
     configCheck() {
+
+      if (this.editForm.data.signUpType == 1) {
+        // 如果是免费报名，重置报名费数量为0
+        this.editForm.data.signUpNum = 0
+      }
+
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false
