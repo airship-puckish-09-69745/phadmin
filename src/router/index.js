@@ -780,6 +780,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
+              },
+              {
+                path: 'crazyacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazyacemars_slots_cfg'),
+                name: 'crazyacemars_slots_cfg',
+                meta: { title: 'CrazyAce(审)' }
               }
             ]
           },
