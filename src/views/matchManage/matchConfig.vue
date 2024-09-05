@@ -285,6 +285,8 @@
           <el-form-item v-if="editForm.data.repeatType == 0" label="比赛时间：" :required="true">
               <el-date-picker
                 v-model="editForm.loopDetail.onceTime"
+                format="yyyy-MM-dd HH:mm:00"
+                value-format="yyyy-MM-dd HH:mm:00"
                 size="mini"
                 type="datetimerange"
                 :picker-options="pickerOptions"
