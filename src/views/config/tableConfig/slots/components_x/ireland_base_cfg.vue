@@ -33,6 +33,8 @@
               <el-option label="阿拉丁神灯Mars" :value="153" />
               <el-option label="GrandAce" :value="154" />
               <el-option label="GrandAceMars" :value="155" />
+              <el-option label="CrazyAce" :value="156" />
+              <el-option label="CrazyAceMars" :value="157" />
             </el-select>
           </el-form-item>
 
