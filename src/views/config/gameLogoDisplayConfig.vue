@@ -117,7 +117,7 @@
     >
       <el-form label-width="150px">
         <el-form-item label="游戏">
-          <el-select v-model="item.game_id" placeholder="请选择" size="mini">
+          <el-select v-model="item.game_id" filterable placeholder="请选择" size="mini">
             <el-option
               v-for="item in gameOptions"
               :key="item.key"
