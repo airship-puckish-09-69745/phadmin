@@ -306,7 +306,19 @@
             <el-input style="width: 200px;" v-model.number="editForm.data.delayEnterSeconds" placeholder="暂不支持" />
           </el-form-item>
         </fieldset>
-
+        <fieldset>
+          <legend>显示控制</legend>
+          <el-form-item label="消失时间点：" :required="true">
+            <el-select v-model="editForm.data.disappearType" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in disappearCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </fieldset>
         <fieldset>
           <legend>报名条件</legend>
           <el-form-item label="报名条件：" :required="true">
@@ -446,6 +458,10 @@ export default {
       repeatCfgs: [
         {"value":0,"label":"单场"},
       ],
+      disappearCfgs: [
+        {"value":0,"label":"结束后"},
+        {"value":1,"label":"开赛后"},
+      ],
       openMatchTypeCfgs: [
         {"value":2,"label":"定时开赛"},
       ],
@@ -476,6 +492,7 @@ export default {
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: "",
+          disappearType: 0,
           signUpType:0,
           signUpNum:0,
           preShowSeconds: 0,
@@ -524,6 +541,7 @@ export default {
         startType: "开赛方式",
         startUserNum: "开赛人数",
         repeatType: "循环类型",
+        disappearType: "消失时间点",
         startDateTime: "开始日期",
         finishDateTime: "结束日期",
         preShowSeconds: "提前展示比赛(秒)",
@@ -664,6 +682,16 @@ export default {
       for (var i=0;i<this.repeatCfgs.length;i++) {
         if (this.repeatCfgs[i].value == repeatType) {
           show = this.repeatCfgs[i].label
+          break
+        }
+      }
+      return show
+    },
+    getDisappearTypeShow(disappearType) {
+      var show = ""
+      for (var i=0;i<this.disappearCfgs.length;i++) {
+        if (this.disappearCfgs[i].value == disappearType) {
+          show = this.disappearCfgs[i].label
           break
         }
       }
@@ -831,6 +859,7 @@ export default {
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: "",
+          disappearType: 0,
           signUpType:0,
           signUpNum:0,
           preShowSeconds: 0,
@@ -895,6 +924,7 @@ export default {
           opentMatchMember: editData.open_match_member,
           repeatType: editData.repeat_type,
           repeatDetail: editData.repeat_detail,
+          disappearType: editData.disappear_type,
           signUpType: editData.sign_up_type,
           signUpNum: editData.sign_up_num,
           preShowSeconds: editData.pre_show_seconds,
@@ -960,6 +990,7 @@ export default {
           SignUpNum: this.editForm.data.signUpNum,
           Rewards: rankReward,
           RepeatType: this.editForm.data.repeatType,
+          DisappearType: this.editForm.data.disappearType,
           RepeatDetail: repeatDetail,
           ImagePath: this.editForm.data.imagePath,
           WhileList: whileDetail,
