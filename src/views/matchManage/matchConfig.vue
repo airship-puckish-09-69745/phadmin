@@ -285,8 +285,7 @@
           <el-form-item v-if="editForm.data.repeatType == 0" label="比赛时间：" :required="true">
               <el-date-picker
                 v-model="editForm.loopDetail.onceTime"
-                format="yyyy-MM-dd HH:mm:00"
-                value-format="yyyy-MM-dd HH:mm:00"
+                format="yyyy-MM-dd HH:mm"
                 size="mini"
                 type="datetimerange"
                 :picker-options="pickerOptions"
@@ -412,7 +411,7 @@ export default {
     return {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
-      selectTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
+      selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
       form: {
         gameId: -1,
@@ -487,7 +486,7 @@ export default {
         },
         loopDetail: {
           //只有一场
-          onceTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
+          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))]
         },
         rankRewards: [
           {
@@ -843,7 +842,7 @@ export default {
         }
         this.editForm.loopDetail = {
           //只有一场
-          onceTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
+          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))]
         }
         this.editForm.appInfo = [
           {
@@ -938,6 +937,8 @@ export default {
       }
       let rankReward = JSON.stringify(this.editForm.rankRewards)
       let whileDetail = JSON.stringify(this.editForm.whileList)
+      this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
+      this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
       let bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
       let eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
       let duration = eTime - bTime
