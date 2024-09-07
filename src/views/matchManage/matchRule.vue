@@ -919,6 +919,10 @@ export default {
                 this.errmsg('打立出局阶段的淘汰分初始值必须小于用户初始积分！')
                 return false
               }
+              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score == 0) {
+                this.errmsg('打立出局阶段的淘汰分不能为0！')
+                return false
+              }
               if (strikeOutStage.system_strike_out.disuse_score_growth.type == 3) {
                 if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].duration <= 0) {
                   this.errmsg('打立出局阶段的淘汰分增长间隔无效！')

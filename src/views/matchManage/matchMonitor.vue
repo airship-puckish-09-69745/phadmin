@@ -191,7 +191,7 @@ export default {
                 console.log('取消')
             })
         },
-        handleHide() {
+        handleHide(listId) {
             this.$confirm("您确定要将该比赛隐藏吗？客户端将无法获取被隐藏的比赛", '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',

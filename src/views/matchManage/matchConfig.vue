@@ -1,4 +1,4 @@
-<template>
+隐藏<template>
   <div class="app-container">
     <el-row>
       <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
@@ -270,7 +270,7 @@
           </GameImagePicker>
         </el-form-item>
       </fieldset>
-        <fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
           <el-form-item label="比赛类型：" :required="true">
             <el-select v-model="editForm.data.repeatType" placeholder="请选择" size="mini">
@@ -295,15 +295,105 @@
                 align="right"
               />
           </el-form-item>
-
+          <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
+              <el-date-picker
+                v-model="editForm.loopDetail.loopStartDate"
+                size="mini"
+                type="date"
+                placeholder="选择开始日期"
+              />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
+              <el-date-picker
+                v-model="editForm.loopDetail.loopEndDate"
+                size="mini"
+                type="date"
+                placeholder="选择结束日期"
+              />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数：" :required="true">
+            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数" />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
+            <el-time-picker
+              arrow-control
+              v-model="editForm.loopDetail.single.stime"
+              value-format="HH:mm:ss"
+              placeholder="开始时间">
+            </el-time-picker>
+            <el-time-picker
+              arrow-control
+              v-model="editForm.loopDetail.single.etime"
+              value-format="HH:mm:ss"
+              placeholder="结束时间">
+            </el-time-picker>
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType == 2" label="循环时间段：" :required="true">
+            <el-button @click="addLoopItem()" type="normal" size="mini">添加时段</el-button>
+            <el-table
+              :data="editForm.loopDetail.loopData"
+              border
+              stripe
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'35px'}"
+              :cell-style="libShow.TableCell(0)"
+              style="width: 100%;line-height:35px;"
+            >
+              <el-table-column
+                prop="index"
+                label="第X段"
+              />
+              <el-table-column
+                prop="stime"
+                label="开始时间"
+              >
+                <template slot-scope="scope">
+                  <el-time-picker
+                    arrow-control
+                    value-format="HH:mm:ss"
+                    v-model="scope.row.stime"
+                    placeholder="开始时间">
+                  </el-time-picker>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="stime"
+                label="结束时间"
+              >
+                <template slot-scope="scope">
+                  <el-time-picker
+                    arrow-control
+                    v-model="scope.row.etime"
+                    value-format="HH:mm:ss"
+                    placeholder="结束时间">
+                  </el-time-picker>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="intervalSeconds"
+                label="间隔时间(秒)"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.intervalSeconds" placeholder="请填写间隔时间" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+              >
+                <template slot-scope="scope">
+                  <el-button @click="removeLoopItem(scope.$index)" type="danger" size="mini">移除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
           <el-form-item label="提前显示时间(秒)：" :required="true">
             <el-input style="width: 200px;" v-model.number="editForm.data.preShowSeconds" placeholder="请填写提前显示时间" />
           </el-form-item>
           <el-form-item label="提前进入时间(秒)：" :required="true">
             <el-input style="width: 200px;" v-model.number="editForm.data.preEnterSeconds" placeholder="请填写提前进入时间" />
           </el-form-item>
-          <el-form-item label="延迟进入时间(秒)：" :required="true" disabled="true">
-            <el-input style="width: 200px;" v-model.number="editForm.data.delayEnterSeconds" placeholder="暂不支持" />
+          <el-form-item label="延迟进入时间(秒)：" :required="true">
+            <el-input style="width: 200px;" v-model.number="editForm.data.delayEnterSeconds" placeholder="请填写延迟进入时间" />
           </el-form-item>
         </fieldset>
         <fieldset>
@@ -457,6 +547,8 @@ export default {
       ],
       repeatCfgs: [
         {"value":0,"label":"单场"},
+        {"value":1,"label":"单天单场循环"},
+        {"value":2,"label":"单天多场循环"},
       ],
       disappearCfgs: [
         {"value":0,"label":"结束后"},
@@ -503,7 +595,24 @@ export default {
         },
         loopDetail: {
           //只有一场
-          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))]
+          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
+          //循环多场
+          loopStartDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          loopEndDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          intervalDay: 0,
+          //单场开始
+          single: {
+            stime: '',
+            etime: '',
+          },
+          loopData: [
+            {
+              index: 1,
+              stime: '',
+              etime: '',
+              intervalSeconds: 0
+            }
+          ]
         },
         rankRewards: [
           {
@@ -708,6 +817,27 @@ export default {
         }
       }
     },
+    addLoopItem() {
+      var index = 0
+      if (this.editForm.loopDetail.loopData.length > 0) {
+        index = this.editForm.loopDetail.loopData.length
+      }
+      index++
+      this.editForm.loopDetail.loopData.push({
+        index: index,
+        stime: '',
+        etime: '',
+        intervalSeconds: 0
+      })
+    },
+    removeLoopItem(index) {
+      this.editForm.loopDetail.loopData.splice(index, 1)
+      if (this.editForm.loopDetail.loopData.length > 0) {
+        for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+          this.editForm.loopDetail.loopData[i].index = i+1
+        }
+      }
+    },
     addRankRewards() {
       var index = 0
       var maxRank = 0
@@ -871,7 +1001,24 @@ export default {
         }
         this.editForm.loopDetail = {
           //只有一场
-          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))]
+          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
+          //循环多场
+          loopStartDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          loopEndDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          intervalDay: 0,
+          //单场开始
+          single: {
+            stime: '',
+            etime: '',
+          },
+          loopData: [
+            {
+              index: 1,
+              stime: '',
+              etime: '',
+              intervalSeconds: 0
+            }
+          ]
         }
         this.editForm.appInfo = [
           {
