@@ -30,40 +30,40 @@
             </div>
             <el-table :data="tableData" stripe :header-cell-style="libShow.DefaultTableHeadClass"
                 :cell-style="libShow.TableCell(10)" style="width: 100%">
-                <el-table-column prop="listId" label="比赛列表ID" />
-                <el-table-column prop="matchId" label="比赛ID" />
-                <el-table-column prop="gid" label="游戏名称">
+                <el-table-column prop="listId" label="比赛列表ID" sortable/>
+                <el-table-column prop="matchId" label="比赛ID" sortable/>
+                <el-table-column prop="gid" label="游戏名称" sortable>
                     <template slot-scope="scope">
                         {{ getGameName(scope.row.gid) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="matchCfgId" label="比赛配置ID" />
-                <el-table-column prop="showTime" label="显示时间">
+                <el-table-column prop="matchCfgId" label="比赛配置ID" sortable/>
+                <el-table-column prop="showTime" label="显示时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.showTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="openTime" label="入场时间">
+                <el-table-column prop="openTime" label="入场时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.openTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="startTime" label="开始时间">
+                <el-table-column prop="startTime" label="开始时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.startTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="DelayEnterEndTime" label="延迟进入结束时间">
+                <el-table-column prop="DelayEnterEndTime" label="延迟进入结束时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.DelayEnterEndTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="finishTime" label="结束时间">
+                <el-table-column prop="finishTime" label="结束时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.finishTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="比赛状态">
+                <el-table-column prop="status" label="比赛状态" sortable>
                     <template slot-scope="scope">
                         {{ getStatusName(scope.row.status) }}
                     </template>
