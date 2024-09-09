@@ -1510,9 +1510,9 @@ export const asyncRoutes = [
             meta: { title: 'SuperGemsIII(审)', gid: 151 }
           },
           {
-            path: 'aladdinlamp_slots_log',
+            path: 'aladdinlampmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'aladdinlamp_slots_log',
+            name: 'aladdinlampmars_slots_log',
             meta: { title: '阿拉丁神灯', gid:  153 }
           },
           {
