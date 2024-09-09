@@ -192,6 +192,7 @@ export default {
                     url: '/matchmonitor/off',
                     method: 'post',
                     data: {
+                        Env: this.env,
                         ListId: listId,
                     }
                 }).then(response => {
@@ -215,6 +216,7 @@ export default {
                     url: '/matchmonitor/hide',
                     method: 'post',
                     data: {
+                        Env: this.env,
                         ListId: listId,
                     }
                 }).then(response => {
@@ -239,6 +241,7 @@ export default {
                     url: '/matchmonitor/delete',
                     method: 'post',
                     data: {
+                        Env: this.env,
                         ListId: listId,
                     }
                 }).then(response => {
