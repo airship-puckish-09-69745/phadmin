@@ -109,13 +109,7 @@
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-document-copy"
-              @click="handleCopy(scope.row)"
-            >查看引用
-            </el-button> -->
+            <el-button v-if="showDevTool" type="danger" size="mini" @click="handleDelete(scope.row.listId)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -864,6 +858,29 @@ export default {
       if (window.ShowDev == 1) {
         this.showDevTool = !this.showDevTool
       }
+    },
+    handleDelete(listId) {
+      this.$confirm("您确定要将该赛制删除吗？请确认无使用该赛制的配置再删除", '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            request({
+              url: '/matchconfig/match/rule/delete',
+              method: 'post',
+              data: {
+                ListId: listId,
+              }
+              }).then(response => {
+                if (response.RetCode === 0) {
+                  Message.success('删除赛制成功！')
+                } else {
+                  Message.error('删除赛制失败！')
+                }
+              })
+        }).catch(() => {
+          console.log('取消')
+        })
     },
     errmsg(txt) {
       this.$alert(txt,'',{

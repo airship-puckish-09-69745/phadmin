@@ -25,6 +25,9 @@
             </el-form>
         </el-row>
         <el-row>
+            <div style="float: right; margin-bottom: 10px;">
+                <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
+            </div>
             <el-table :data="tableData" stripe :header-cell-style="libShow.DefaultTableHeadClass"
                 :cell-style="libShow.TableCell(10)" style="width: 100%">
                 <el-table-column prop="listId" label="比赛列表ID" />
@@ -65,9 +68,12 @@
                         {{ getStatusName(scope.row.status) }}
                     </template>
                 </el-table-column>
-                <el-table-column fixed="right" label="操作" width="200px">
+                <el-table-column fixed="right" label="操作">
                     <template slot-scope="scope">
-                        <el-button type="danger" size="mini" @click="handleOff(scope.row.listId)">下架</el-button>
+                        <el-button v-if="showDevTool && (scope.row.status >= 5)" type="danger" size="mini"
+                            @click="handleDelete(scope.row.listId)">删除</el-button>
+                        <el-button v-else="showDevTool" type="danger" size="mini"
+                            @click="handleOff(scope.row.listId)">下架</el-button>
                         <el-button type="warning" size="mini" @click="handleHide(scope.row.listId)">隐藏</el-button>
                     </template>
                 </el-table-column>
@@ -108,6 +114,7 @@ export default {
             ],
             csCfgs: [],
             tableData: [],
+            showDevTool: false,
         }
     },
     created() {
@@ -144,7 +151,7 @@ export default {
                         this.total = 0;
                         this.tableData = [];
                     }
-                }else {
+                } else {
                     console.log("获取列表 失败")
                 }
             })
@@ -169,6 +176,12 @@ export default {
             }
             return statusName
         },
+        handleShowDevTools() {
+            // 浏览器设置ShowDev=1才可以看到开发工具
+            if (window.ShowDev == 1) {
+                this.showDevTool = !this.showDevTool
+            }
+        },
         handleOff(listId) {
             this.$confirm("您确定要将该比赛下架吗？下架的比赛将自动取消", '提示', {
                 confirmButtonText: '确定',
@@ -184,7 +197,7 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('下架比赛成功！')
-                    }else {
+                    } else {
                         Message.error('下架比赛失败！')
                     }
                 })
@@ -207,8 +220,32 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('隐藏比赛成功！')
-                    }else {
+                    } else {
                         Message.error('隐藏比赛失败！')
+                    }
+                })
+            }).catch(() => {
+                console.log('取消')
+            })
+        },
+        handleDelete(listId) {
+            // 在v-if处已限制，只有已隐藏或者已下架的比赛可以删除
+            this.$confirm("您确定要将该比赛删除吗？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                request({
+                    url: '/matchmonitor/delete',
+                    method: 'post',
+                    data: {
+                        ListId: listId,
+                    }
+                }).then(response => {
+                    if (response.RetCode === 0) {
+                        Message.success('删除比赛成功！')
+                    } else {
+                        Message.error('删除比赛失败！')
                     }
                 })
             }).catch(() => {
