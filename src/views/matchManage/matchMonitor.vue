@@ -68,7 +68,7 @@
                         {{ getStatusName(scope.row.status) }}
                     </template>
                 </el-table-column>
-                <el-table-column fixed="right" label="操作">
+                <el-table-column fixed="right" label="操作" width="200px">
                     <template slot-scope="scope">
                         <el-button v-if="showDevTool && (scope.row.status >= 5)" type="danger" size="mini"
                             @click="handleDelete(scope.row.listId)">删除</el-button>
