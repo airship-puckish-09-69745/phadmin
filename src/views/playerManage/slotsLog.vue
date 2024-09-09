@@ -129,14 +129,9 @@
             header-align="center"
             label="Jackpot"
           >
-            <el-table-column :label="getJPLabel(1) + '收集'">
+            <el-table-column :label="getJPLabel(4) + '收集'">
               <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 1) }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="getJPLabel(2) + '收集'">
-              <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 2) }}
+                {{ getJPFee(scope.row.JackpotLogObj, 4) }}
               </template>
             </el-table-column>
             <el-table-column :label="getJPLabel(3) + '收集'">
@@ -144,9 +139,14 @@
                 {{ getJPFee(scope.row.JackpotLogObj, 3) }}
               </template>
             </el-table-column>
-            <el-table-column :label="getJPLabel(4) + '收集'">
+            <el-table-column :label="getJPLabel(2) + '收集'">
               <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 4) }}
+                {{ getJPFee(scope.row.JackpotLogObj, 2) }}
+              </template>
+            </el-table-column>
+            <el-table-column :label="getJPLabel(1) + '收集'">
+              <template  slot-scope="scope">
+                {{ getJPFee(scope.row.JackpotLogObj, 1) }}
               </template>
             </el-table-column>
             <el-table-column label="中奖类型">
@@ -567,13 +567,13 @@ export default {
         return null
       }
       switch (type) {
-        case 1:
-          return 'MINI'
-        case 2:
-          return 'MINOR'
-        case 3:
-          return 'MAJOR'
         case 4:
+          return 'MINI'
+        case 3:
+          return 'MINOR'
+        case 2:
+          return 'MAJOR'
+        case 1:
           return 'GRAND'
         default:
           return '无'
