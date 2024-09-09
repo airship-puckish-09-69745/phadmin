@@ -109,7 +109,7 @@
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            <el-button v-if="showDevTool" type="danger" size="mini" @click="handleDelete(scope.row.listId)">删除</el-button>
+            <el-button v-if="showDevTool" type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -859,7 +859,7 @@ export default {
         this.showDevTool = !this.showDevTool
       }
     },
-    handleDelete(listId) {
+    handleDelete(id) {
       this.$confirm("您确定要将该赛制删除吗？请确认无使用该赛制的配置再删除", '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -869,7 +869,8 @@ export default {
               url: '/matchconfig/match/rule/delete',
               method: 'post',
               data: {
-                ListId: listId,
+                Env: this.env,
+                Id: id,
               }
               }).then(response => {
                 if (response.RetCode === 0) {

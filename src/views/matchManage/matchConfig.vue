@@ -136,7 +136,7 @@
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
-            <el-button v-if="showDevTool&&(scope.row.openShow==false)" type="danger" size="mini" @click="handleDelete(scope.row.listId)">删除</el-button>
+            <el-button v-if="showDevTool&&(scope.row.openShow==false)" type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
             <el-button
               v-else="showDevTool"
               type="success"
@@ -1188,7 +1188,7 @@ export default {
             console.log('取消')
           })
     },
-    handleDelete(listId) {
+    handleDelete(id) {
       // 在v-if处已限制，只有已下架的比赛可以删除
       this.$confirm("您确定要将该比赛配置删除吗？", '提示', {
           confirmButtonText: '确定',
@@ -1199,7 +1199,8 @@ export default {
               url: '/matchconfig/match/config/delete',
               method: 'post',
               data: {
-                ListId: listId,
+                Env: this.env,
+                Id: id,
               }
               }).then(response => {
                 if (response.RetCode === 0) {
