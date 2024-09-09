@@ -57,6 +57,7 @@
     </el-row>
     <el-row>
       <div style="float: right; margin-bottom: 10px;">
+        <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
         <el-button size="mini" @click="showForm(0)" icon="el-icon-plus">添加比赛</el-button>
       </div>
       <el-table
@@ -135,20 +136,16 @@
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
+            <el-button v-if="showDevTool&&(scope.row.openShow==false)" type="danger" size="mini" @click="handleDelete(scope.row.listId)">删除</el-button>
             <el-button
+              v-else="showDevTool"
               type="success"
               size="mini"
               icon="el-icon-document-copy"
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-document-copy"
-              @click="handleCopy(scope.row)"
-            >查看引用
-            </el-button> -->
+            
           </template>
         </el-table-column>
       </el-table>
@@ -639,7 +636,7 @@ export default {
         whileList: {
           type: 0,
           data: []
-        }
+        },
       },
       AttrNames: {
         appInfo: "APP信息",
@@ -661,7 +658,8 @@ export default {
         status: "配置状态(0:启用 1:禁用)",
         rewardsCfg: "名次奖励",
         imagePath: "封面图片"
-      }
+      },
+      showDevTool: false,
     }
   },
   computed: {
@@ -1190,12 +1188,42 @@ export default {
             console.log('取消')
           })
     },
+    handleDelete(listId) {
+      // 在v-if处已限制，只有已下架的比赛可以删除
+      this.$confirm("您确定要将该比赛配置删除吗？", '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            request({
+              url: '/matchconfig/match/config/delete',
+              method: 'post',
+              data: {
+                ListId: listId,
+              }
+              }).then(response => {
+                if (response.RetCode === 0) {
+                  Message.success('删除比赛配置成功！')
+                } else {
+                  Message.error('删除比赛配置失败！')
+                }
+              })
+        }).catch(() => {
+          console.log('取消')
+        })
+    },
     errmsg(txt) {
       this.$alert(txt,'',{
         type: 'error',
         center: true,
         showConfirmButton: false,
       });
+    },
+    handleShowDevTools() {
+      // 浏览器设置ShowDev=1才可以看到开发工具
+      if (window.ShowDev == 1) {
+        this.showDevTool = !this.showDevTool
+      }
     },
     configCheck() {
 
