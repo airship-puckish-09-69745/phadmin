@@ -320,7 +320,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150,152,154].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
