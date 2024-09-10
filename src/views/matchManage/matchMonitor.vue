@@ -131,10 +131,11 @@ export default {
         },
         getList() {
             request({
-                url: 'matchmonitor/list',
+                url: '/dataProxy/info',
                 method: 'get',
                 data: {
                     Env: this.env,
+                    Path:'/match/list',
                     GameId: this.form.gameId,
                 }
             }).then(response => {
@@ -144,9 +145,6 @@ export default {
                         this.total = objs.total;
                         this.tableData = objs.list;
                         console.log(this.tableData)
-                        if (this.tableData.length > 0) {
-
-                        }
                     } else {
                         this.total = 0;
                         this.tableData = [];
@@ -189,10 +187,11 @@ export default {
                 type: 'warning'
             }).then(() => {
                 request({
-                    url: '/matchmonitor/off',
+                    url: '/dataProxy/info',
                     method: 'post',
                     data: {
                         Env: this.env,
+                        Path: '/match/off',
                         ListId: listId,
                     }
                 }).then(response => {
@@ -214,10 +213,11 @@ export default {
                 type: 'warning'
             }).then(() => {
                 request({
-                    url: '/matchmonitor/hide',
+                    url: '/dataProxy/info',
                     method: 'post',
                     data: {
                         Env: this.env,
+                        Path: '/match/hide',
                         ListId: listId,
                     }
                 }).then(response => {
@@ -240,10 +240,11 @@ export default {
                 type: 'warning'
             }).then(() => {
                 request({
-                    url: '/matchmonitor/delete',
+                    url: '/dataProxy/info',
                     method: 'post',
                     data: {
                         Env: this.env,
+                        Path: '/match/delete',
                         ListId: listId,
                     }
                 }).then(response => {
