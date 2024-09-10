@@ -681,6 +681,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandace_slots_cfg'),
                 name: 'grandace_slots_cfg',
                 meta: { title: 'GrandAce' }
+              },
+              {
+                path: 'crazyace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/crazyace_slots_cfg'),
+                name: 'crazyace_slots_cfg',
+                meta: { title: 'CrazyAce' }
               }
             ]
           },
@@ -1422,6 +1428,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandace_slots_log',
             meta: { title: 'GrandAce', gid:  154 }
+          },
+          {
+            path: 'crazyace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'crazyace_slots_log',
+            meta: { title: 'CrazyAce', gid:  156 }
           }
         ]
       },
