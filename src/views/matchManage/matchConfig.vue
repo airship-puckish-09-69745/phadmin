@@ -1120,11 +1120,10 @@ export default {
       let duration = eTime - bTime
       let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
       request({
-        url: '/dataProxy/info',
+        url: '/matchconfig/match/config/create',
         method: 'post',
         data: {
           Env: this.env,
-          Path: '/match/create',
           Id: this.editForm.data.id,
           AppInfo: JSON.stringify(this.editForm.appInfo),
           Name: this.editForm.data.name,
