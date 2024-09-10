@@ -131,7 +131,7 @@
         >
         <template slot-scope="scope">
           <el-button
-              v-if="scope.row.Status!=2"
+              v-if="showDevTool&&(scope.row.Status!=2)"
               size="mini"
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
