@@ -1111,8 +1111,6 @@ export default {
         return
       }
 
-      // todo:先查询下比赛是否创建 并且结束了吗
-
       let rankReward = JSON.stringify(this.editForm.rankRewards)
       let whileDetail = JSON.stringify(this.editForm.whileList)
       this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
