@@ -198,6 +198,7 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('下架比赛成功！')
+                        this.getList()
                     } else {
                         Message.error('下架比赛失败！')
                     }
@@ -222,6 +223,7 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('隐藏比赛成功！')
+                        this.getList()
                     } else {
                         Message.error('隐藏比赛失败！')
                     }
@@ -247,6 +249,7 @@ export default {
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('删除比赛成功！')
+                        this.getList()
                     } else {
                         Message.error('删除比赛失败！')
                     }

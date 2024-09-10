@@ -875,6 +875,7 @@ export default {
               }).then(response => {
                 if (response.RetCode === 0) {
                   Message.success('删除赛制成功！')
+                  this.getList()
                 } else {
                   Message.error('删除赛制失败！')
                 }

@@ -131,7 +131,7 @@
         >
         <template slot-scope="scope">
           <el-button
-              v-if="showDevTool&&(scope.row.Status!=2)"
+              v-if="scope.row.Status!=2"
               size="mini"
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
@@ -1110,6 +1110,9 @@ export default {
       if (!this.configCheck()) {
         return
       }
+
+      // todo:先查询下比赛是否创建 并且结束了吗
+
       let rankReward = JSON.stringify(this.editForm.rankRewards)
       let whileDetail = JSON.stringify(this.editForm.whileList)
       this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
@@ -1205,6 +1208,7 @@ export default {
               }).then(response => {
                 if (response.RetCode === 0) {
                   Message.success('删除比赛配置成功！')
+                  this.getList()
                 } else {
                   Message.error('删除比赛配置失败！')
                 }
