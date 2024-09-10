@@ -665,6 +665,7 @@ export default {
   computed: {
   },
   created() {
+    this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
   },
