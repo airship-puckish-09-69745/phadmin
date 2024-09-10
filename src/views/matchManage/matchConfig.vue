@@ -1119,11 +1119,13 @@ export default {
       let eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
       let duration = eTime - bTime
       let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+      //console.log("测试：" + this.$store.getters.name)
       request({
-        url: '/matchconfig/match/config/create',
-        method: 'post',
+        url: '/dataProxy/info',
+        method: 'POST',
         data: {
           Env: this.env,
+          Path: '/match/create',
           Id: this.editForm.data.id,
           AppInfo: JSON.stringify(this.editForm.appInfo),
           Name: this.editForm.data.name,
@@ -1139,10 +1141,12 @@ export default {
           DisappearType: this.editForm.data.disappearType,
           RepeatDetail: repeatDetail,
           ImagePath: this.editForm.data.imagePath,
+          Modifier: this.$store.getters.name,
           WhileList: whileDetail,
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds
+
         }
       }).then(response => {
         if (response.RetCode === 0) {
