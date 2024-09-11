@@ -718,9 +718,9 @@ export default {
 
         jackpotTableData.sort(function (a, b) {
           if (a.bet === b.bet) {
-            return a.type - b.type
+            return b.type - a.type
           }
-          return a.idx - b.idx
+          return a.bet - b.bet
         })
 
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
@@ -874,13 +874,13 @@ export default {
         return null
       }
       switch (type) {
-        case 1:
-          return 'MINI'
-        case 2:
-          return 'MINOR'
-        case 3:
-          return 'MAJOR'
         case 4:
+          return 'MINI'
+        case 3:
+          return 'MINOR'
+        case 2:
+          return 'MAJOR'
+        case 1:
           return 'GRAND'
         default:
           return '无'

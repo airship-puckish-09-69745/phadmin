@@ -352,6 +352,7 @@ export default {
         115: 'Multi NiuNiu',
         152: 'AladdinLamp',
         150: 'SuperGems3',
+        156: 'Crazy Ace',
         10000: '汇总'
       },
 
@@ -445,7 +446,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156)
         }
       }
     },

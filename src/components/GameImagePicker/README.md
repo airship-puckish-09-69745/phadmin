@@ -66,7 +66,8 @@ export default {
       <template>
         <el-button type="primary">选择图片</el-button>
       </template>
-      <template v-slot:image="{ path, cdnUrl, serverRoot }">
+      <template v-slot:image="{ url, path, cdnUrl, serverRoot }">
+        <div>url: {{ url }}</div>
         <div>path: {{ path }}</div>
         <div>cdnUrl: {{ cdnUrl }}</div>
         <div>serverRoot: {{ serverRoot }}</div>
@@ -101,7 +102,8 @@ export default {
 
 | 参数名称        | 说明           | 类型     | 可选值 | 默认值 |
 | --------------- | -------------- | -------- | ------ | ------ |
-| value (v-model) | 图片路径       | `string` | -      | -      |
+| value (v-model) | 图片 URL       | `string` | -      | -      |
+| path (.sync) | 图片路径       | `string` | -      | -      |
 | width           | 可选，图片宽度 | `number` | -      | `109`  |
 | height          | 可选，图片高度 | `number` | -      | `159`  |
 
@@ -127,8 +129,11 @@ export default {
 
 ## 类型定义
 
+### ImageData
+
 | 属性名称   | 说明          | 类型     |
 | ---------- | ------------- | -------- |
+| url       | 图片 URL      | `string` |
 | path       | 图片路径      | `string` |
 | cdnUrl     | 图片 CDN 地址 | `string` |
 | serverRoot | 图片目录      | `string` |
@@ -187,6 +192,7 @@ export default {
 | 参数名称        | 说明           | 类型      | 可选值 | 默认值  |
 | --------------- | -------------- | --------- | ------ | ------- |
 | value (v-model) | 弹框是否显示   | `boolean` | -      | `false` |
+| url            | 可选，图片 URL | `string`  | -      | -       |
 | path            | 可选，图片路径 | `string`  | -      | -       |
 
 ### Events

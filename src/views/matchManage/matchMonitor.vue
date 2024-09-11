@@ -25,49 +25,55 @@
             </el-form>
         </el-row>
         <el-row>
+            <div style="float: right; margin-bottom: 10px;">
+                <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
+            </div>
             <el-table :data="tableData" stripe :header-cell-style="libShow.DefaultTableHeadClass"
                 :cell-style="libShow.TableCell(10)" style="width: 100%">
-                <el-table-column prop="listId" label="比赛列表ID" />
-                <el-table-column prop="matchId" label="比赛ID" />
-                <el-table-column prop="gid" label="游戏名称">
+                <el-table-column prop="listId" label="比赛列表ID" sortable/>
+                <el-table-column prop="matchId" label="比赛ID" sortable/>
+                <el-table-column prop="gid" label="游戏名称" sortable>
                     <template slot-scope="scope">
                         {{ getGameName(scope.row.gid) }}
                     </template>
                 </el-table-column>
-                <el-table-column prop="matchCfgId" label="比赛配置ID" />
-                <el-table-column prop="showTime" label="显示时间">
+                <el-table-column prop="matchCfgId" label="比赛配置ID" sortable/>
+                <el-table-column prop="showTime" label="显示时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.showTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="openTime" label="入场时间">
+                <el-table-column prop="openTime" label="入场时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.openTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="startTime" label="开始时间">
+                <el-table-column prop="startTime" label="开始时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.startTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="DelayEnterEndTime" label="延迟进入结束时间">
+                <el-table-column prop="DelayEnterEndTime" label="延迟进入结束时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.DelayEnterEndTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="finishTime" label="结束时间">
+                <el-table-column prop="finishTime" label="结束时间" sortable>
                     <template slot-scope="{row}">
                         <DateTimeShow :show-type="2" :timestamp="row.finishTime" />
                     </template>
                 </el-table-column>
-                <el-table-column prop="status" label="比赛状态">
+                <el-table-column prop="status" label="比赛状态" sortable>
                     <template slot-scope="scope">
                         {{ getStatusName(scope.row.status) }}
                     </template>
                 </el-table-column>
                 <el-table-column fixed="right" label="操作" width="200px">
                     <template slot-scope="scope">
-                        <el-button type="danger" size="mini" @click="handleOff(scope.row.listId)">下架</el-button>
+                        <el-button v-if="showDevTool && (scope.row.status >= 5)" type="danger" size="mini"
+                            @click="handleDelete(scope.row.listId)">删除</el-button>
+                        <el-button v-else="showDevTool" type="danger" size="mini"
+                            @click="handleOff(scope.row.listId)">下架</el-button>
                         <el-button type="warning" size="mini" @click="handleHide(scope.row.listId)">隐藏</el-button>
                     </template>
                 </el-table-column>
@@ -78,6 +84,7 @@
 <script>
 import store from '@/store'
 import request from '@/utils/request'
+import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libShow } from '@/utils/common'
 export default {
@@ -107,6 +114,7 @@ export default {
             ],
             csCfgs: [],
             tableData: [],
+            showDevTool: false,
         }
     },
     created() {
@@ -123,10 +131,11 @@ export default {
         },
         getList() {
             request({
-                url: 'matchmonitor/list',
+                url: '/dataProxy/info',
                 method: 'get',
                 data: {
                     Env: this.env,
+                    Path:'/match/list',
                     GameId: this.form.gameId,
                 }
             }).then(response => {
@@ -136,14 +145,11 @@ export default {
                         this.total = objs.total;
                         this.tableData = objs.list;
                         console.log(this.tableData)
-                        if (this.tableData.length > 0) {
-
-                        }
                     } else {
                         this.total = 0;
                         this.tableData = [];
                     }
-                }else {
+                } else {
                     console.log("获取列表 失败")
                 }
             })
@@ -168,6 +174,12 @@ export default {
             }
             return statusName
         },
+        handleShowDevTools() {
+            // 浏览器设置ShowDev=1才可以看到开发工具
+            if (window.ShowDev == 1) {
+                this.showDevTool = !this.showDevTool
+            }
+        },
         handleOff(listId) {
             this.$confirm("您确定要将该比赛下架吗？下架的比赛将自动取消", '提示', {
                 confirmButtonText: '确定',
@@ -175,15 +187,18 @@ export default {
                 type: 'warning'
             }).then(() => {
                 request({
-                    url: '/matchmonitor/off',
+                    url: '/dataProxy/info',
                     method: 'post',
                     data: {
+                        Env: this.env,
+                        Path: '/match/off',
                         ListId: listId,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('下架比赛成功！')
-                    }else {
+                        this.getList()
+                    } else {
                         Message.error('下架比赛失败！')
                     }
                 })
@@ -191,23 +206,53 @@ export default {
                 console.log('取消')
             })
         },
-        handleHide() {
+        handleHide(listId) {
             this.$confirm("您确定要将该比赛隐藏吗？客户端将无法获取被隐藏的比赛", '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
                 request({
-                    url: '/matchmonitor/hide',
+                    url: '/dataProxy/info',
                     method: 'post',
                     data: {
+                        Env: this.env,
+                        Path: '/match/hide',
                         ListId: listId,
                     }
                 }).then(response => {
                     if (response.RetCode === 0) {
                         Message.success('隐藏比赛成功！')
-                    }else {
+                        this.getList()
+                    } else {
                         Message.error('隐藏比赛失败！')
+                    }
+                })
+            }).catch(() => {
+                console.log('取消')
+            })
+        },
+        handleDelete(listId) {
+            // 在v-if处已限制，只有已隐藏或者已下架的比赛可以删除
+            this.$confirm("您确定要将该比赛删除吗？", '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                request({
+                    url: '/dataProxy/info',
+                    method: 'post',
+                    data: {
+                        Env: this.env,
+                        Path: '/match/delete',
+                        ListId: listId,
+                    }
+                }).then(response => {
+                    if (response.RetCode === 0) {
+                        Message.success('删除比赛成功！')
+                        this.getList()
+                    } else {
+                        Message.error('删除比赛失败！')
                     }
                 })
             }).catch(() => {

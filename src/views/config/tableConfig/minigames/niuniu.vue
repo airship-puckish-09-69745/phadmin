@@ -771,7 +771,8 @@ export default {
       JackpotTypeCfg: {
         1: '一等奖',
         2: '二等奖',
-        3: '三等奖'
+        3: '三等奖',
+        4: '3Bet中奖'
       },
       CardTypeNames: {
         0: '无牛',

@@ -129,14 +129,9 @@
             header-align="center"
             label="Jackpot"
           >
-            <el-table-column :label="getJPLabel(1) + '收集'">
+            <el-table-column :label="getJPLabel(4) + '收集'">
               <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 1) }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="getJPLabel(2) + '收集'">
-              <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 2) }}
+                {{ getJPFee(scope.row.JackpotLogObj, 4) }}
               </template>
             </el-table-column>
             <el-table-column :label="getJPLabel(3) + '收集'">
@@ -144,25 +139,34 @@
                 {{ getJPFee(scope.row.JackpotLogObj, 3) }}
               </template>
             </el-table-column>
-            <el-table-column :label="getJPLabel(4) + '收集'">
+            <el-table-column :label="getJPLabel(2) + '收集'">
               <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 4) }}
+                {{ getJPFee(scope.row.JackpotLogObj, 2) }}
+              </template>
+            </el-table-column>
+            <el-table-column :label="getJPLabel(1) + '收集'">
+              <template  slot-scope="scope">
+                {{ getJPFee(scope.row.JackpotLogObj, 1) }}
               </template>
             </el-table-column>
             <el-table-column label="中奖类型">
               <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? getJPLabel(scope.row.JackpotLogObj.JackpotInfo.Type) : null }}
+                {{ scope.row.JackpotLogObj.JackpotInfo ? getJPLabel(scope.row.JackpotLogObj.JackpotInfo[0].Type) : null }}
               </template>
             </el-table-column>
-            <el-table-column prop="JackpotLogObj.JackpotInfo.MultiOdds" label="中奖倍数" />
+            <el-table-column label="中奖倍数">
+              <template  slot-scope="scope">
+                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].MultiOdds : null }}
+              </template>
+            </el-table-column>
             <el-table-column label="中奖数额">
               <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo.AddMoney / 1000 : null }}
+                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null }}
               </template>
             </el-table-column>
           </el-table-column>
         </template>
-        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,154].indexOf(gid) >= 0">
+        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -316,7 +320,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -563,13 +567,13 @@ export default {
         return null
       }
       switch (type) {
-        case 1:
-          return 'MINI'
-        case 2:
-          return 'MINOR'
-        case 3:
-          return 'MAJOR'
         case 4:
+          return 'MINI'
+        case 3:
+          return 'MINOR'
+        case 2:
+          return 'MAJOR'
+        case 1:
           return 'GRAND'
         default:
           return '无'

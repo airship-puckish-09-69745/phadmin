@@ -109,13 +109,7 @@
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-document-copy"
-              @click="handleCopy(scope.row)"
-            >查看引用
-            </el-button> -->
+            <el-button v-if="showDevTool" type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -865,6 +859,31 @@ export default {
         this.showDevTool = !this.showDevTool
       }
     },
+    handleDelete(id) {
+      this.$confirm("您确定要将该赛制删除吗？请确认无使用该赛制的配置再删除", '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            request({
+              url: '/matchconfig/match/rule/delete',
+              method: 'post',
+              data: {
+                Env: this.env,
+                Id: id,
+              }
+              }).then(response => {
+                if (response.RetCode === 0) {
+                  Message.success('删除赛制成功！')
+                  this.getList()
+                } else {
+                  Message.error('删除赛制失败！')
+                }
+              })
+        }).catch(() => {
+          console.log('取消')
+        })
+    },
     errmsg(txt) {
       this.$alert(txt,'',{
         type: 'error',
@@ -896,6 +915,14 @@ export default {
           //底分检查
           if (strikeOutStage.system_strike_out.bottom_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.bottom_score_growth.open = 1
+
+            if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length > 0) {
+              if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[0].init_score >= this.editForm.data.init_score) {
+                this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
+                return false
+              }
+            }
+
             for (let j=0; j < strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length; j++) {
               if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].init_score >= this.editForm.data.init_score) {
                 this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
@@ -914,9 +941,16 @@ export default {
           if (strikeOutStage.system_strike_out.disuse_score_growth.type > 1) {
             this.editForm.data.stage_detail[i].system_strike_out.disuse_score_growth.open = 1
 
-            for (let j=0; j < strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length; j++) {
-              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score >= this.editForm.data.init_score) {
+            if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length > 0) {
+              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[0].disuse_score >= this.editForm.data.init_score) {
                 this.errmsg('打立出局阶段的淘汰分初始值必须小于用户初始积分！')
+                return false
+              }
+            }
+
+            for (let j=0; j < strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail.length; j++) {
+              if (strikeOutStage.system_strike_out.disuse_score_growth.disuse_score_grow_detail[j].disuse_score == 0) {
+                this.errmsg('打立出局阶段的淘汰分不能为0！')
                 return false
               }
               if (strikeOutStage.system_strike_out.disuse_score_growth.type == 3) {

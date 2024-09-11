@@ -1,7 +1,7 @@
-<template>
+隐藏<template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -57,6 +57,7 @@
     </el-row>
     <el-row>
       <div style="float: right; margin-bottom: 10px;">
+        <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
         <el-button size="mini" @click="showForm(0)" icon="el-icon-plus">添加比赛</el-button>
       </div>
       <el-table
@@ -135,20 +136,16 @@
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
+            <el-button v-if="showDevTool&&(scope.row.openShow==false)" type="danger" size="mini" @click="handleDelete(scope.row.id)">删除</el-button>
             <el-button
+              v-else="showDevTool"
               type="success"
               size="mini"
               icon="el-icon-document-copy"
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            <!-- <el-button
-              type="success"
-              size="mini"
-              icon="el-icon-document-copy"
-              @click="handleCopy(scope.row)"
-            >查看引用
-            </el-button> -->
+            
           </template>
         </el-table-column>
       </el-table>
@@ -270,7 +267,7 @@
           </GameImagePicker>
         </el-form-item>
       </fieldset>
-        <fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
           <el-form-item label="比赛类型：" :required="true">
             <el-select v-model="editForm.data.repeatType" placeholder="请选择" size="mini">
@@ -285,6 +282,7 @@
           <el-form-item v-if="editForm.data.repeatType == 0" label="比赛时间：" :required="true">
               <el-date-picker
                 v-model="editForm.loopDetail.onceTime"
+                format="yyyy-MM-dd HH:mm"
                 size="mini"
                 type="datetimerange"
                 :picker-options="pickerOptions"
@@ -294,18 +292,120 @@
                 align="right"
               />
           </el-form-item>
-
+          <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
+              <el-date-picker
+                v-model="editForm.loopDetail.loopStartDate"
+                size="mini"
+                type="date"
+                placeholder="选择开始日期"
+              />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
+              <el-date-picker
+                v-model="editForm.loopDetail.loopEndDate"
+                size="mini"
+                type="date"
+                placeholder="选择结束日期"
+              />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数：" :required="true">
+            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数" />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
+            <el-time-picker
+              arrow-control
+              v-model="editForm.loopDetail.single.stime"
+              value-format="HH:mm:ss"
+              placeholder="开始时间">
+            </el-time-picker>
+            <el-time-picker
+              arrow-control
+              v-model="editForm.loopDetail.single.etime"
+              value-format="HH:mm:ss"
+              placeholder="结束时间">
+            </el-time-picker>
+          </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType == 2" label="循环时间段：" :required="true">
+            <el-button @click="addLoopItem()" type="normal" size="mini">添加时段</el-button>
+            <el-table
+              :data="editForm.loopDetail.loopData"
+              border
+              stripe
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'35px'}"
+              :cell-style="libShow.TableCell(0)"
+              style="width: 100%;line-height:35px;"
+            >
+              <el-table-column
+                prop="index"
+                label="第X段"
+              />
+              <el-table-column
+                prop="stime"
+                label="开始时间"
+              >
+                <template slot-scope="scope">
+                  <el-time-picker
+                    arrow-control
+                    value-format="HH:mm:ss"
+                    v-model="scope.row.stime"
+                    placeholder="开始时间">
+                  </el-time-picker>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="stime"
+                label="结束时间"
+              >
+                <template slot-scope="scope">
+                  <el-time-picker
+                    arrow-control
+                    v-model="scope.row.etime"
+                    value-format="HH:mm:ss"
+                    placeholder="结束时间">
+                  </el-time-picker>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="intervalSeconds"
+                label="间隔时间(秒)"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.intervalSeconds" placeholder="请填写间隔时间" />
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="操作"
+              >
+                <template slot-scope="scope">
+                  <el-button @click="removeLoopItem(scope.$index)" type="danger" size="mini">移除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
           <el-form-item label="提前显示时间(秒)：" :required="true">
             <el-input style="width: 200px;" v-model.number="editForm.data.preShowSeconds" placeholder="请填写提前显示时间" />
           </el-form-item>
           <el-form-item label="提前进入时间(秒)：" :required="true">
             <el-input style="width: 200px;" v-model.number="editForm.data.preEnterSeconds" placeholder="请填写提前进入时间" />
           </el-form-item>
-          <el-form-item label="延迟进入时间(秒)：" :required="true" disabled="true">
-            <el-input style="width: 200px;" v-model.number="editForm.data.delayEnterSeconds" placeholder="暂不支持" />
+          <el-form-item label="延迟进入时间(秒)：" :required="true">
+            <el-input style="width: 200px;" v-model.number="editForm.data.delayEnterSeconds" placeholder="请填写延迟进入时间" />
           </el-form-item>
         </fieldset>
-
+        <fieldset>
+          <legend>显示控制</legend>
+          <el-form-item label="消失时间点：" :required="true">
+            <el-select v-model="editForm.data.disappearType" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in disappearCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </fieldset>
         <fieldset>
           <legend>报名条件</legend>
           <el-form-item label="报名条件：" :required="true">
@@ -410,7 +510,7 @@ export default {
     return {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
-      selectTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
+      selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
       form: {
         gameId: -1,
@@ -444,6 +544,12 @@ export default {
       ],
       repeatCfgs: [
         {"value":0,"label":"单场"},
+        {"value":1,"label":"单天单场循环"},
+        {"value":2,"label":"单天多场循环"},
+      ],
+      disappearCfgs: [
+        {"value":0,"label":"结束后"},
+        {"value":1,"label":"开赛后"},
       ],
       openMatchTypeCfgs: [
         {"value":2,"label":"定时开赛"},
@@ -475,6 +581,7 @@ export default {
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: "",
+          disappearType: 0,
           signUpType:0,
           signUpNum:0,
           preShowSeconds: 0,
@@ -485,7 +592,24 @@ export default {
         },
         loopDetail: {
           //只有一场
-          onceTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
+          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
+          //循环多场
+          loopStartDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          loopEndDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          intervalDay: 0,
+          //单场开始
+          single: {
+            stime: '',
+            etime: '',
+          },
+          loopData: [
+            {
+              index: 1,
+              stime: '',
+              etime: '',
+              intervalSeconds: 0
+            }
+          ]
         },
         rankRewards: [
           {
@@ -512,7 +636,7 @@ export default {
         whileList: {
           type: 0,
           data: []
-        }
+        },
       },
       AttrNames: {
         appInfo: "APP信息",
@@ -523,22 +647,25 @@ export default {
         startType: "开赛方式",
         startUserNum: "开赛人数",
         repeatType: "循环类型",
+        disappearType: "消失时间点",
         startDateTime: "开始日期",
         finishDateTime: "结束日期",
         preShowSeconds: "提前展示比赛(秒)",
         preEnterSeconds: "提前进入比赛(秒)",
         delayEnterSeconds: "延迟进入比赛(秒)",
-        signType: "报名方式",
+        signType: "报名方式(0:付费报名 1:免费报名)",
         signNum: "报名费数量",
-        status: "状态",
+        status: "配置状态(0:启用 1:禁用)",
         rewardsCfg: "名次奖励",
         imagePath: "封面图片"
-      }
+      },
+      showDevTool: false,
     }
   },
   computed: {
   },
   created() {
+    this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
   },
@@ -668,6 +795,16 @@ export default {
       }
       return show
     },
+    getDisappearTypeShow(disappearType) {
+      var show = ""
+      for (var i=0;i<this.disappearCfgs.length;i++) {
+        if (this.disappearCfgs[i].value == disappearType) {
+          show = this.disappearCfgs[i].label
+          break
+        }
+      }
+      return show
+    },
     selectMatchGame() {
       this.showCsCfgs = []
       //循环遍历是否存在gameId
@@ -676,6 +813,27 @@ export default {
           if (this.checkHaveGame(this.editForm.data.gameId, this.csCfgs[i].gameId)) {
             this.showCsCfgs.push(this.csCfgs[i])
           }
+        }
+      }
+    },
+    addLoopItem() {
+      var index = 0
+      if (this.editForm.loopDetail.loopData.length > 0) {
+        index = this.editForm.loopDetail.loopData.length
+      }
+      index++
+      this.editForm.loopDetail.loopData.push({
+        index: index,
+        stime: '',
+        etime: '',
+        intervalSeconds: 0
+      })
+    },
+    removeLoopItem(index) {
+      this.editForm.loopDetail.loopData.splice(index, 1)
+      if (this.editForm.loopDetail.loopData.length > 0) {
+        for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+          this.editForm.loopDetail.loopData[i].index = i+1
         }
       }
     },
@@ -830,6 +988,7 @@ export default {
           opentMatchMember: 0,
           repeatType: 0,
           repeatDetail: "",
+          disappearType: 0,
           signUpType:0,
           signUpNum:0,
           preShowSeconds: 0,
@@ -841,7 +1000,24 @@ export default {
         }
         this.editForm.loopDetail = {
           //只有一场
-          onceTime: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())]
+          onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
+          //循环多场
+          loopStartDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          loopEndDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
+          intervalDay: 0,
+          //单场开始
+          single: {
+            stime: '',
+            etime: '',
+          },
+          loopData: [
+            {
+              index: 1,
+              stime: '',
+              etime: '',
+              intervalSeconds: 0
+            }
+          ]
         }
         this.editForm.appInfo = [
           {
@@ -894,6 +1070,7 @@ export default {
           opentMatchMember: editData.open_match_member,
           repeatType: editData.repeat_type,
           repeatDetail: editData.repeat_detail,
+          disappearType: editData.disappear_type,
           signUpType: editData.sign_up_type,
           signUpNum: editData.sign_up_num,
           preShowSeconds: editData.pre_show_seconds,
@@ -934,17 +1111,22 @@ export default {
       if (!this.configCheck()) {
         return
       }
+
       let rankReward = JSON.stringify(this.editForm.rankRewards)
       let whileDetail = JSON.stringify(this.editForm.whileList)
+      this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
+      this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
       let bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
       let eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
       let duration = eTime - bTime
       let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+      //console.log("测试：" + this.$store.getters.name)
       request({
-        url: '/matchconfig/match/config/create',
-        method: 'post',
+        url: '/dataProxy/info',
+        method: 'POST',
         data: {
           Env: this.env,
+          Path: '/match/create',
           Id: this.editForm.data.id,
           AppInfo: JSON.stringify(this.editForm.appInfo),
           Name: this.editForm.data.name,
@@ -957,12 +1139,15 @@ export default {
           SignUpNum: this.editForm.data.signUpNum,
           Rewards: rankReward,
           RepeatType: this.editForm.data.repeatType,
+          DisappearType: this.editForm.data.disappearType,
           RepeatDetail: repeatDetail,
           ImagePath: this.editForm.data.imagePath,
+          Modifier: this.$store.getters.name,
           WhileList: whileDetail,
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds
+
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1009,6 +1194,32 @@ export default {
             console.log('取消')
           })
     },
+    handleDelete(id) {
+      // 在v-if处已限制，只有已下架的比赛可以删除
+      this.$confirm("您确定要将该比赛配置删除吗？", '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+            request({
+              url: '/matchconfig/match/config/delete',
+              method: 'post',
+              data: {
+                Env: this.env,
+                Id: id,
+              }
+              }).then(response => {
+                if (response.RetCode === 0) {
+                  Message.success('删除比赛配置成功！')
+                  this.getList()
+                } else {
+                  Message.error('删除比赛配置失败！')
+                }
+              })
+        }).catch(() => {
+          console.log('取消')
+        })
+    },
     errmsg(txt) {
       this.$alert(txt,'',{
         type: 'error',
@@ -1016,7 +1227,19 @@ export default {
         showConfirmButton: false,
       });
     },
+    handleShowDevTools() {
+      // 浏览器设置ShowDev=1才可以看到开发工具
+      if (window.ShowDev == 1) {
+        this.showDevTool = !this.showDevTool
+      }
+    },
     configCheck() {
+
+      if (this.editForm.data.signUpType == 1) {
+        // 如果是免费报名，重置报名费数量为0
+        this.editForm.data.signUpNum = 0
+      }
+
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false

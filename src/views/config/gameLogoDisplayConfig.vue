@@ -91,11 +91,11 @@
               </template>
             </el-table-column>
 
-            <el-table-column label="操作">
-              <template slot-scope="scope">
-                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>
-              </template>
-            </el-table-column>
+<!--            <el-table-column label="操作">-->
+<!--              <template slot-scope="scope">-->
+<!--                <el-button type="success" size="mini" @click="editRow(scope.$index, scope.row)">修改</el-button>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
           </el-table>
           <br>
           <br>
@@ -117,7 +117,7 @@
     >
       <el-form label-width="150px">
         <el-form-item label="游戏">
-          <el-select v-model="item.game_id" placeholder="请选择" size="mini">
+          <el-select v-model="item.game_id" filterable placeholder="请选择" size="mini">
             <el-option
               v-for="item in gameOptions"
               :key="item.key"
@@ -272,6 +272,8 @@ export default {
     addOne() {
       this.selectedGid = 0
       this.showBtn = 0
+      this.item.channel = this.channel
+      this.item.app_id = this.appId
       this.selectGameVisible = true
     },
     addGameItem() {
@@ -362,9 +364,10 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
+            $this.DuplicateData = []
             $this.allCfg = cfg
             for (let i = 0; i < $this.allCfg.length; i++) {
-              $this.DuplicateData.push($this.allCfg[i].channel + $this.allCfg[i].game_id + $this.allCfg[i].app_id)
+              $this.DuplicateData.push($this.allCfg[i].channel + '_' + $this.allCfg[i].game_id + '_' + $this.allCfg[i].app_id)
             }
             this.refresh()
           }
@@ -422,15 +425,15 @@ export default {
     },
     checkDuplicate(data) {
       console.log(this.DuplicateData)
-      console.log(data.channel + '' + data.game_id + '' + data.app_id)
-      if (this.DuplicateData.includes(data.channel + '' + data.game_id + '' + data.app_id)) {
+      console.log(data.channel + '_' + data.game_id + '_' + data.app_id)
+      if (this.DuplicateData.includes(data.channel + '_' + data.game_id + '_' + data.app_id)) {
         return false
       }
       return true
     },
     updateDuplicate(newData, oldData) {
-      var newKey = newData.channel + '' + newData.game_id + '' + newData.app_id
-      var oldKey = oldData.channel + '' + oldData.game_id + '' + oldData.app_id
+      var newKey = newData.channel + '_' + newData.game_id + '_' + newData.app_id
+      var oldKey = oldData.channel + '_' + oldData.game_id + '_' + oldData.app_id
       for (let i = 0; i < this.DuplicateData.length; i++) {
         if (this.DuplicateData[i] == oldKey) {
           this.DuplicateData.splice(i, 1, newKey)
