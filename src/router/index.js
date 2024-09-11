@@ -681,7 +681,13 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandace_slots_cfg'),
                 name: 'grandace_slots_cfg',
                 meta: { title: 'GrandAce' }
-              }
+              },
+              {
+                path: 'sharkkingdom_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/sharkkingdom_slots_cfg'),
+                name: 'sharkkingdom_slots_cfg',
+                meta: { title: 'Shark Kingdom' }
+              },
             ]
           },
           {
@@ -780,7 +786,13 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
-              }
+              },
+              {
+                path: 'sharkkingdommars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/sharkkingdommars_slots_cfg'),
+                name: 'sharkkingdommars_slots_cfg',
+                meta: { title: 'SharkKingdom(审)' }
+              },
             ]
           },
           {
@@ -1416,6 +1428,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandace_slots_log',
             meta: { title: 'GrandAce', gid:  154 }
+          },
+          {
+            path: 'grandace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'grandace_slots_log',
+            meta: { title: 'GrandAce', gid:  158 }
           }
         ]
       },
