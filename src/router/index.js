@@ -576,6 +576,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
             name: 'MultiPlayerNiuNiu_cfg',
             meta: { title: 'MultiPlayerNiuNiu ◐' }
+          },
+          {
+            path: 'carracing_cfg',
+            component: () => import('@/views/config/tableConfig/carracingConfig'),
+            name: 'carracing_cfg',
+            meta: { title: 'carracing ◐' }
           }
         ]
       },
@@ -1321,6 +1327,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_multiplayerniuniu',
             meta: { title: 'MultiPlayerNiuNiu ◐', gid: 115 }
+          },
+          {
+            path: 'playlog_carracing',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_carracing',
+            meta: { title: 'carracing ◐', gid: 118 }
           }
         ]
       },
