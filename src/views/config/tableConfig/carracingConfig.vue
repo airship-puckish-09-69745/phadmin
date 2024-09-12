@@ -54,6 +54,7 @@
                 </el-form>
               </el-col>
 
+              <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetMoneyLevel()">添加</el-button>
               <fieldset style="margin-top:10px">
                 <legend>下注配置</legend>
                 <el-table
@@ -94,12 +95,6 @@
                   </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type="primary"
-                        @click="doAddBetMoneyLevel"
-                      >添加
-                      </el-button>
                       <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(scope.$index)">删除</el-button>
                     </template>
 
@@ -107,6 +102,7 @@
                 </el-table>
               </fieldset>
 
+              <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetAreaOptions()">添加</el-button>
               <fieldset style="margin-top:10px">
                 <legend>中奖倍率配置
                 </legend>
@@ -184,7 +180,6 @@
 
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                      <el-button type="primary" size="mini" @click="doAddBetAreaOptions">添加</el-button>
                       <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>
                     </template>
 
@@ -658,9 +653,6 @@ export default {
             this.item = item
             console.log(item)
           }
-        }else{
-          this.doAddBetMoneyLevel()
-          this.doAddBetAreaOptions()
         }
       })
     },
