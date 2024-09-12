@@ -1,4 +1,4 @@
-隐藏<template>
+<template>
   <div class="app-container">
     <el-row>
       <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
@@ -164,7 +164,7 @@
           @current-change="handleCurrentChange"
         >
           <span class="pageSizeInput" style="padding-right: 10px">
-            当前页：{{ page }}/{{ Math.floor((total+limit)/limit) }}
+            当前页：{{ page }}/{{ Math.floor(total/limit) }}
           </span>
         </el-pagination>
       </div>
@@ -265,6 +265,12 @@
         <el-form-item label="封面图片URL：" :required="true">
           <GameImagePicker v-model="editForm.data.imagePath" @pick="handlePick">
           </GameImagePicker>
+        </el-form-item>
+        <el-form-item label="白名单开关：" :required="true">
+            <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.whileList.type" :label=item.value>{{ item.label }}</el-radio>
+        </el-form-item>
+        <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
+          <el-input style="width: 400px;" v-model="editForm.whileList.data" placeholder="多个uid用,分开" />
         </el-form-item>
       </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -466,8 +472,8 @@
                 label="名次区间"
               >
                 <template slot-scope="scope">
-                  <el-input style="width: 40px;" v-model.number="scope.row.startRank" size="mini" placeholder="开始名次" />至
-                  <el-input style="width: 40px;" v-model.number="scope.row.endRank" size="mini" placeholder="结束名次" />
+                  <el-input style="width: 80px;" v-model.number="scope.row.startRank" size="mini" placeholder="开始名次" />至
+                  <el-input style="width: 80px;" v-model.number="scope.row.endRank" size="mini" placeholder="结束名次" />
                 </template>
               </el-table-column>
               <el-table-column
@@ -561,6 +567,10 @@ export default {
       getTypeCfgs: [
         {"value":1,"label":"金币"},
       ],
+      whileListCfgs: [
+        {"value":0,"label":"无白名单"},
+        {"value":1,"label":"有白名单"},
+      ],
       csCfgs: [],
       showCsCfgs: [],
       endMinuteCfgs: new Map(), //打立阶段最大时长 用于配置检查
@@ -635,7 +645,7 @@ export default {
         ],
         whileList: {
           type: 0,
-          data: []
+          data: ""
         },
       },
       AttrNames: {
@@ -657,7 +667,8 @@ export default {
         signNum: "报名费数量",
         status: "配置状态(0:启用 1:禁用)",
         rewardsCfg: "名次奖励",
-        imagePath: "封面图片"
+        imagePath: "封面图片",
+        whileList: "白名单"
       },
       showDevTool: false,
     }
@@ -1043,7 +1054,7 @@ export default {
         ]
         this.editForm.whileList = {
           type: 0,
-          data: []
+          data: ""
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -1238,6 +1249,14 @@ export default {
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
+      }
+
+      if (this.editForm.whileList.type == 1) {
+        // 如果开启白名单，则白名单不可为空
+        if (this.editForm.whileList.data = 0) {
+          this.errMsg('白名单不可为空！')
+          return false
+        }
       }
 
       if (this.editForm.data.opentMatchMember <= 0) {
