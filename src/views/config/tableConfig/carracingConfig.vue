@@ -134,32 +134,48 @@
                   </el-table-column>
 
                   <el-table-column label="中奖倍率">
-                    <el-table-column :label="'一球'">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.BetAreaOptions[scope.$index].Odds" size="mini" />
+                    </template>                    
+                  </el-table-column>
+
+                  <el-table-column label="图标个数">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.BetAreaOptions[scope.$index].Count" size="mini" />
+                    </template>                    
+                  </el-table-column>
+
+                  <el-table-column label="概率">
+                    <el-table-column :label="'一轮'">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Val[0]" size="mini" />
+                        <el-input v-model="item.BetAreaOptions[scope.$index].Rate[0]" size="mini" />
                       </template>
                     </el-table-column>
-                    <el-table-column :label="'两球'">
+                    <el-table-column :label="'二轮'">
                       <template slot-scope="scope">
-                        <el-input v-model="scope.row.Val[1]" size="mini" />
-                      </template>
-                    </el-table-column>
-                    <el-table-column :label="'三球'">
-                      <template slot-scope="scope">
-                        <el-input v-model="scope.row.Val[2]" size="mini" />
+                        <el-input v-model="item.BetAreaOptions[scope.$index].Rate[1]" size="mini" />
                       </template>
                     </el-table-column>
                   </el-table-column>
+                  
+                  <el-table-column label="单个区域单个玩家最大下注额度">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxUserMoneyBet" size="mini" />
+                    </template>
+                  </el-table-column>
+
                   <el-table-column label="单个区域最大下注额度">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxMoneyBet" size="mini" />
                     </template>
                   </el-table-column>
+
                   <el-table-column label="机器人次区域下注权重">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].RobotBetOdds" size="mini" />
                     </template>
                   </el-table-column>
+
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                       <el-button type="primary" size="mini" @click="doAddBetOptionsRate">添加</el-button>
@@ -168,43 +184,6 @@
 
                   </el-table-column>
                 </el-table>
-              </fieldset>
-              <fieldset  v-if="!IsPHAuditEnv()">
-                <legend>小奖池触发重摇</legend>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="奖池低于某值此时系统输：">
-                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="重摇概率：">
-                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-descriptions class="margin-top" border>
-                  <el-descriptions-item>
-                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
-                  </el-descriptions-item>
-                </el-descriptions>
-                <el-row>
-                  <el-col :span="11" :offset="1">
-                    <el-form-item label="奖池大于某值此时系统赢：">
-                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="11">
-                    <el-form-item label="重摇概率：">
-                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-descriptions class="margin-top" border>
-                  <el-descriptions-item>
-                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
-                  </el-descriptions-item>
-                </el-descriptions>
               </fieldset>
             </el-col>
           </el-tab-pane>
