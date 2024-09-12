@@ -576,9 +576,6 @@ export default {
     transMoneyForShow() {
       let that = this
 
-      for (const o of that.item.LuckyPachinkoCfg) {
-        o.Multiple /= 1000
-      }
       for (const o of  that.item.BetAreaOptions) {
         o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
@@ -615,18 +612,10 @@ export default {
             const item = JSON.parse(response.Data.Data)
             console.log("==========",item)
 
-            this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
-            for (const o of this.RandAwards) {
-              o.PoolVal /= 1000
-            }
             if (!item.BetAreaOptions) {
               item['BetAreaOptions'] = []
               item.BetAreaOptions.push({ Id: 0, Odds: 1, Count: 0, Rate: [0, 0], JackPotRate: 0, MaxUserMoneyBet: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
             }
-            this.JackpotCfg = item.JackpotCfg
-            this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
-            item.MinRobotMoney /=  1000
-            item.MaxRobotMoney /= 1000
 
             if (!item.Cars){
               item["Cars"] = [0,0]
