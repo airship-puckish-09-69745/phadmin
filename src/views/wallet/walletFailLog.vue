@@ -263,7 +263,7 @@ export default {
           }
           $this.tableData = response.Data
           if (response.Data.length >= $this.item.limit){
-            $this.totalCount = response.Data.length+1
+            $this.totalCount = ($this.item.offset - 1) * $this.item.limit +$this.item.limit +1
           }
         }
         console.log("========",response)
