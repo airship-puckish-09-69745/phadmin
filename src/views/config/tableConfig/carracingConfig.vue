@@ -54,8 +54,10 @@
                 </el-form>
               </el-col>
 
-              <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetMoneyLevel()">添加</el-button>
               <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetMoneyLevel()">添加</el-button>
+                </el-col>
                 <legend>下注配置</legend>
                 <el-table
                   ref="filterTable"
@@ -102,8 +104,10 @@
                 </el-table>
               </fieldset>
 
-              <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetAreaOptions()">添加</el-button>
               <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetAreaOptions()">添加</el-button>
+                </el-col>
                 <legend>中奖倍率配置
                 </legend>
                 <el-table
@@ -724,6 +728,7 @@ export default {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     doAddBetAreaOptions() {
+      console.log("==========> doAddBetAreaOptions()")
       if (!this.item.BetAreaOptions) {
         this.item['BetAreaOptions'] = []
       }
@@ -790,6 +795,7 @@ export default {
     },
 
     doAddBetMoneyLevel() {
+      console.log("==========> doAddBetMoneyLevel()")
       if (!this.item.BetMoneyLevel) {
         this.item['BetMoneyLevel'] = []
       }
