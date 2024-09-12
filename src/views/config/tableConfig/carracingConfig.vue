@@ -124,7 +124,7 @@
                       {{scope.row.Id}}
                     </template>
                   </el-table-column>
-                  <el-table-column label="Card" width="70px">
+                  <el-table-column label="Car" width="70px">
                     <template slot-scope="scope">
                       <el-image
                         style="width: 37px;height: 50px"
@@ -157,6 +157,12 @@
                       </template>
                     </el-table-column>
                   </el-table-column>
+
+                  <el-table-column label="jackpot概率">
+                    <template slot-scope="scope">
+                      <el-input v-model.number="item.BetAreaOptions[scope.$index].JackPotRate" size="mini" />
+                    </template>                    
+                  </el-table-column>
                   
                   <el-table-column label="单个区域单个玩家最大下注额度">
                     <template slot-scope="scope">
@@ -178,8 +184,8 @@
 
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                      <el-button type="primary" size="mini" @click="doAddBetOptionsRate">添加</el-button>
-                      <el-button type="danger" size="mini" @click="delBetOptionsRate(scope.$index)">删除</el-button>
+                      <el-button type="primary" size="mini" @click="doAddBetAreaOptions">添加</el-button>
+                      <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>
                     </template>
 
                   </el-table-column>
@@ -577,18 +583,6 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
-    doAddBetOptionsRate() {
-      if (!this.item.BetOptionsRate) {
-        this.item.BetOptionsRate = []
-      }
-      this.item.BetOptionsRate.push({ Id: this.item.BetOptionsRate.length + 1, Val: [0, 0, 0] })
-      this.item.BetOptionsRate.push({ Id: this.item.BetOptionsRate.length + 1, Val: [0, 0, 0] })
-      this.doAddBetAreaOptions()
-    },
-    delBetOptionsRate(index) {
-      this.item.BetOptionsRate.splice(index, 1)
-      this.delBetAreaOptions(index)
-    },
     transMoneyForShow() {
       let that = this
 
@@ -744,7 +738,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.BetAreaOptions.push({ Id: maxId + 1, MaxMoneyBet: 0, RobotBetOdds: 0 })
+      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], JackPotRate: 0, MaxUserMoneyBet: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
     },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)
