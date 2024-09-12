@@ -671,15 +671,17 @@ export default {
       ret.JackpotCfg = JSON.parse(JSON.stringify(this.JackpotCfg))
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
-      ret.JackpotCfg.JackpotBetMin *=1000
 
       ret.RobotAverageBetMoney *=1000
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
-      for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
-        o.PoolVal = parseInt(o.PoolVal * 1000)
+      if (ret.JackpotCfg)
+        ret.JackpotCfg.JackpotBetMin *=1000
+        for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
+          o.PoolVal = parseInt(o.PoolVal * 1000)
+        }
       }
       return ret
     },
