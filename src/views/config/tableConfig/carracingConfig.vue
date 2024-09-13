@@ -55,6 +55,9 @@
               </el-col>
 
               <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetMoneyLevel()">添加</el-button>
+                </el-col>
                 <legend>下注配置</legend>
                 <el-table
                   ref="filterTable"
@@ -94,12 +97,6 @@
                   </el-table-column>
                   <el-table-column label="操作">
                     <template slot-scope="scope">
-                      <el-button
-                        size="mini"
-                        type="primary"
-                        @click="doAddBetMoneyLevel"
-                      >添加
-                      </el-button>
                       <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(scope.$index)">删除</el-button>
                     </template>
 
@@ -108,11 +105,14 @@
               </fieldset>
 
               <fieldset style="margin-top:10px">
+                <el-col :span="20">
+                  <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetAreaOptions()">添加</el-button>
+                </el-col>
                 <legend>中奖倍率配置
                 </legend>
                 <el-table
                   ref="filterTable"
-                  :data="item.BetOptionsRate"
+                  :data="item.BetAreaOptions"
                   border
                   :header-cell-style="libShow.DefaultTableHeadClass"
                   :row-style="{height:'10px'}"
@@ -184,7 +184,6 @@
 
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
-                      <el-button type="primary" size="mini" @click="doAddBetAreaOptions">添加</el-button>
                       <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>
                     </template>
 
@@ -590,13 +589,13 @@ export default {
         o.Multiple /= 1000
       }
       for (const o of  that.item.BetAreaOptions) {
+        o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
       }
-      for (const j in that.item.BetOptionsRate) {
-        for (const o in that.item.BetOptionsRate[j].Val) {
-          that.item.BetOptionsRate[j].Val[o] /= 1000
-        }
+      for (const j in that.item.Rate) {
+          that.item.Rate[j] /= 1000
       }
+      that.item.JackPotRate /= 1000 //JackPot概率
       that.item.JackpotCfg.JackpotBetMin /=1000
       for (const j in that.item.BetMoneyLevel) {
         that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -608,9 +607,7 @@ export default {
         that.item.BetMoneyLevel[j].TableMoney = betMoneyList.join(',')
 
       }
-      // that.item.ReChoiceCfg.LowLotteryPoolReChoiceRate  /= 10000
       that.item.ReChoiceCfg.LowLotteryPoolReChoice /= 1000
-      // that.item.ReChoiceCfg.HighLotteryPoolReChoiceRate /= 10000
       that.item.ReChoiceCfg.HighLotteryPoolReChoice/= 1000
     },
     getData() {
@@ -658,9 +655,6 @@ export default {
             this.item = item
             console.log(item)
           }
-        }else{
-          this.doAddBetMoneyLevel()
-          this.doAddBetAreaOptions()
         }
       })
     },
@@ -690,14 +684,11 @@ export default {
       }
 
       for (const o of  ret.BetAreaOptions) {
+        o.MaxUserMoneyBet *= 1000
         o.MaxMoneyBet *= 1000
       }
-      for (const i in ret.BetOptionsRate) {
-        ret.BetOptionsRate[i].Id = parseInt(ret.BetOptionsRate[i].Id)
-        for (const j in ret.BetOptionsRate[i].Val) {
-          ret.BetOptionsRate[i].Val[j] *= 1000
-        }
-        ret.BetAreaOptions[i].Id = ret.BetOptionsRate[i].Id
+      for (const i in ret.Rate) {
+          ret.Rate[i] *= 1000
       }
       ret.JackpotCfg = JSON.parse(JSON.stringify(this.JackpotCfg))
       ret.MinRobotMoney *= 1000
@@ -732,6 +723,7 @@ export default {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     doAddBetAreaOptions() {
+      console.log("==========> doAddBetAreaOptions()")
       if (!this.item.BetAreaOptions) {
         this.item['BetAreaOptions'] = []
       }
@@ -798,6 +790,7 @@ export default {
     },
 
     doAddBetMoneyLevel() {
+      console.log("==========> doAddBetMoneyLevel()")
       if (!this.item.BetMoneyLevel) {
         this.item['BetMoneyLevel'] = []
       }
