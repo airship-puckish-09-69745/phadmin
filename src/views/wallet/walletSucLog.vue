@@ -238,10 +238,6 @@ export default {
       let startTime = $this.queryTime / 1000
       let endTime = startTime + 86399
       console.log(endTime)
-      if ($this.item.uid === '') {
-        $this.item.uid = 0
-      }
-
       let uid = 0
       if ($this.item.uid === '') {
         uid = 0
