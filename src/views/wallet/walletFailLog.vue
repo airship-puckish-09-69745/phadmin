@@ -88,9 +88,8 @@
               <span    v-else-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
               <span    v-else-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
               <span    v-else-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
-              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParams.Amount) / 1000:0}}</span>
+              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParamsFail.Amount) / 1000:0}}</span>
               <span  v-else>{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
