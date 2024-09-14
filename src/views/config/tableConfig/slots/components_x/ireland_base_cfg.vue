@@ -37,6 +37,8 @@
               <el-option label="GrandAceMars" :value="155" />
               <el-option label="SharkKingdom" :value="158" />
               <el-option label="SharkKingdomMars" :value="159" />
+              <el-option label="GigaAce" :value="160" />
+              <el-option label="GigaAceMars" :value="161" />
             </el-select>
           </el-form-item>
 

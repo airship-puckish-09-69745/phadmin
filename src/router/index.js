@@ -811,6 +811,12 @@ export const asyncRoutes = [
                 name: 'sharkkingdommars_slots_cfg',
                 meta: { title: 'SharkKingdom(审)' }
               },
+              {
+                path: 'gigaacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/gigaacemars_slots_cfg'),
+                name: 'gigaacemars_slots_cfg',
+                meta: { title: 'GigaAce(审)' }
+              },
             ]
           },
           {
@@ -1568,6 +1574,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyacemars_slots_log',
             meta: { title: 'CrazyAce(审)', gid:  157 }
+          },
+          {
+            path: 'gigaacemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gigaacemars_slots_log',
+            meta: { title: 'GigaAce(审)', gid:  161 }
           }
         ]
       },
