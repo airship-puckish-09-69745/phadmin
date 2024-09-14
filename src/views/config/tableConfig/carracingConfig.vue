@@ -110,6 +110,15 @@
                 </el-col>
                 <legend>中奖倍率配置
                 </legend>
+                <el-table
+                  ref="filterTable"
+                  :data="item.BetAreaOptions"
+                  border
+                  :header-cell-style="libShow.DefaultTableHeadClass"
+                  :row-style="{height:'10px'}"
+                  :cell-style="libShow.DefaultTableCell"
+                  style="width: 100%"
+                >
                   <el-table-column label="ID" width="50px">
                     <template slot-scope="scope">
                       {{scope.row.Id}}
@@ -576,6 +585,9 @@ export default {
     transMoneyForShow() {
       let that = this
 
+      for (const o of that.item.LuckyPachinkoCfg) {
+        o.Multiple /= 1000
+      }
       for (const o of  that.item.BetAreaOptions) {
         o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
@@ -583,6 +595,7 @@ export default {
       for (const j in that.item.Rate) {
           that.item.Rate[j] /= 1000
       }
+      that.item.JackPotRate /= 1000 //JackPot概率
       that.item.JackpotCfg.JackpotBetMin /=1000
       for (const j in that.item.BetMoneyLevel) {
         that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -605,17 +618,24 @@ export default {
           SubKey: this.subKey
         }
       }).then(response => {
-        console.log("response.RetCode==========>",response.RetCode)
         if (response.RetCode === 0) {
           this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
             console.log("==========",item)
 
+            this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
+            for (const o of this.RandAwards) {
+              o.PoolVal /= 1000
+            }
             if (!item.BetAreaOptions) {
               item['BetAreaOptions'] = []
-              item.BetAreaOptions.push({ Id: 0, Odds: 1, Count: 0, Rate: [0, 0], JackPotRate: 0, MaxUserMoneyBet: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
+              item.BetAreaOptions.push({ Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
             }
+            this.JackpotCfg = item.JackpotCfg
+            this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
+            item.MinRobotMoney /=  1000
+            item.MaxRobotMoney /= 1000
 
             if (!item.Cars){
               item["Cars"] = [0,0]
@@ -667,21 +687,22 @@ export default {
         o.MaxUserMoneyBet *= 1000
         o.MaxMoneyBet *= 1000
       }
-      
+      for (const i in ret.Rate) {
+          ret.Rate[i] *= 1000
+      }
       ret.JackpotCfg = JSON.parse(JSON.stringify(this.JackpotCfg))
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
+      ret.JackpotCfg.JackpotBetMin *=1000
 
       ret.RobotAverageBetMoney *=1000
 
       ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
       ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
 
-        ret.JackpotCfg.JackpotBetMin *=1000
-        for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
-          o.PoolVal = parseInt(o.PoolVal * 1000)
-        }
-        
+      for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
+        o.PoolVal = parseInt(o.PoolVal * 1000)
+      }
       return ret
     },
 

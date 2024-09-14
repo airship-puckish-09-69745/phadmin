@@ -164,7 +164,7 @@
           @current-change="handleCurrentChange"
         >
           <span class="pageSizeInput" style="padding-right: 10px">
-            当前页：{{ page }}/{{ Math.floor(total/limit) }}
+            当前页：{{ page }}/{{ Math.ceil(total/limit) }}
           </span>
         </el-pagination>
       </div>

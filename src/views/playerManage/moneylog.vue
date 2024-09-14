@@ -286,7 +286,7 @@ import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 
 const filterMap = {
-  MoneyType: { 1: 'Deposited', 2: 'Winning', 3: '基础值', 5: 'Bonus', 10: '只看金流' }, // 4: '贡献值',
+  MoneyType: { 1: 'Deposited', 2: 'Winning',  10: '只看金流' }, // 4: '贡献值',
   ActType: {
     1000: '玩牌赢',
     1001: '玩牌输',
@@ -320,7 +320,7 @@ const filterMap = {
     71: 'MTT报名费返还',
     72: 'MTT比赛奖励',
     2000:'下注',
-    2001:'登录',
+    2001:'单一钱包登录',
     2002:'刷新',
     2003:'回合结束',
     2004: '回退',

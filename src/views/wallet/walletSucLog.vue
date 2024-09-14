@@ -12,7 +12,7 @@
             />
           </el-form-item>
           <el-form-item label="Uid">
-            <el-input v-model.number="item.uid" placeholder="Uid" size="mini" oninput="if(value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+            <el-input v-model="item.uid" placeholder="Uid" size="mini" />
           </el-form-item>
           <el-form-item label="交易id">
             <el-input v-model="item.txId" placeholder="交易id" size="mini" style="width: 225px"/>
@@ -171,7 +171,7 @@ export default {
       item: {
         limit: 20,
         offset: 1,
-        uid: 0,
+        uid: '',
         gid: 0,
         app: 0,
         txId: '',
@@ -238,9 +238,19 @@ export default {
       let startTime = $this.queryTime / 1000
       let endTime = startTime + 86399
       console.log(endTime)
+      let uid = 0
       if ($this.item.uid === '') {
-        $this.item.uid = 0
+        uid = 0
+      }else {
+        let exp = /^[0-9]*$/;
+        console.log("=====",$this.item.uid,exp.test($this.item.uid))
+        if (!exp.test($this.item.uid)) {
+          Message.error('请输入正确的uid')
+          return
+        }
+        uid = $this.item.uid
       }
+
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -251,7 +261,7 @@ export default {
           EndTime: endTime,
           Offset: ($this.item.offset - 1) * $this.item.limit,
           Limit: $this.item.limit,
-          Uid: $this.item.uid,
+          Uid: uid,
           Gid: $this.item.gid,
           App: $this.item.app,
           TxId: $this.item.txId,

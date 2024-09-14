@@ -1721,6 +1721,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameOnlineCountCfg'),
             name: 'gameOnlineCountCfg',
             meta: { title: '游戏在线人数配置 ◐' }
+          },
+          {
+            path: 'gameHealthCheckCfg',
+            component: () => import('@/views/config/tableConfig/gameHealthCheckCfg'),
+            name: 'gameHealthCheckCfg',
+            meta: { title: '游戏健康度检查配置 ◐' }
           }
           // ,{
           //   path: 'smsWhite',

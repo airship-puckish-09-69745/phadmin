@@ -19,7 +19,7 @@
             />
           </el-form-item>
           <el-form-item label="Uid">
-            <el-input v-model.number="item.uid" placeholder="Uid" size="mini" oninput="if(value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)"/>
+            <el-input v-model.number="item.uid" placeholder="Uid" size="mini" />
           </el-form-item>
           <el-form-item label="交易id">
             <el-input v-model="item.txId" placeholder="交易id" size="mini" style="width: 225px"/>
@@ -88,9 +88,8 @@
               <span    v-else-if="scope.row.RolloutParamsFail" >{{scope.row.RolloutParamsFail?parseInt(scope.row.RolloutParamsFail.Amount) / 1000:0}}</span>
               <span    v-else-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
               <span    v-else-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
-              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParams.Amount) / 1000:0}}</span>
+              <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParamsFail.Amount) / 1000:0}}</span>
               <span  v-else>{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
-
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
@@ -186,7 +185,7 @@ export default {
       item: {
         limit: 20,
         offset: 1,
-        uid: 0,
+        uid: '',
         gid: 0,
         app: 0,
         txId: '',
@@ -234,9 +233,18 @@ export default {
         bTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[0]) / 1000)
         eTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
       }
+      let uid = 0
       if ($this.item.uid === '') {
-        $this.item.uid = 0
+        uid = 0
+      }else {
+        let exp = /^[0-9]*$/;
+        if (!exp.test($this.item.uid)) {
+          Message.error('请输入正确的uid')
+          return
+        }
+        uid = $this.item.uid
       }
+
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -247,7 +255,7 @@ export default {
           EndTime: eTime,
           Offset: ($this.item.offset - 1) * $this.item.limit,
           Limit: $this.item.limit,
-          Uid: $this.item.uid,
+          Uid: uid,
           Gid: $this.item.gid,
           App: $this.item.app,
           TxId: $this.item.txId,
