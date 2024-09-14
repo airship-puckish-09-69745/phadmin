@@ -34,7 +34,7 @@
                         <el-input v-model.number="item.Minodds" style="width: 150px;" size="mini" :required="true"></el-input>
                         <= 剧本倍率 <
                       <el-input v-model.number="item.Maxodds" style="width: 150px;" size="mini" :required="true"></el-input>
-                       中奖概率：<el-input v-model.number="item.Winrate" style="width: 150px;" size="mini" :required="true"><template slot="append">%</template></el-input>
+                       中奖概率：<el-input v-model.number="item.Winrate" style="width: 150px;" size="mini" :required="true"><template slot="append">‰</template></el-input>
                       <br>
                     </template>
 
