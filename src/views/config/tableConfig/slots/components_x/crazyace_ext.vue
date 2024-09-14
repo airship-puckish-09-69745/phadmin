@@ -16,6 +16,18 @@
             </el-input>
           </el-form-item>
 
+          <el-form-item label="JP期望中奖金额">
+            <el-input v-model="tempJackpotHopeStr" placeholder="请输入内容,如2,4,6,10">
+              <template slot="append">四个值用 , 连接</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="JP中奖限制">
+            <el-input v-model="tempJackpotLimitStr" placeholder="请输入内容,如2,4,6,10">
+              <template slot="append">四个值用 , 连接</template>
+            </el-input>
+          </el-form-item>
+
           <el-form-item label="发放JP中奖比例">
             <el-input v-model="cfg.JackpotMultiStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
@@ -90,7 +102,9 @@ export default {
       },
       // 临时变量
       tempGoldSymbolStr: '',
-      tempJackpotSymbolStr: ''
+      tempJackpotSymbolStr: '',
+      tempJackpotHopeStr: '',
+      tempJackpotLimitStr: ''
     }
   },
   created() {
@@ -109,6 +123,8 @@ export default {
       // 放大1000倍并保存到cfg
       this.cfg.GoldSymbolStr = this.scaleUp(this.tempGoldSymbolStr)
       this.cfg.JackpotSymbolStr = this.scaleUp(this.tempJackpotSymbolStr)
+      this.cfg.JackpotHopeStr = this.scaleUp(this.tempJackpotHopeStr)
+      this.cfg.JackpotLimitStr = this.scaleUp(this.tempJackpotLimitStr)
 
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
@@ -133,8 +149,10 @@ export default {
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
         // 初始化临时变量为缩小后的值
-        this.tempGoldSymbolStr = this.scaleDown(this.cfg.GoldSymbolStr);
-        this.tempJackpotSymbolStr = this.scaleDown(this.cfg.JackpotSymbolStr);
+        this.tempGoldSymbolStr = this.scaleDown(this.cfg.GoldSymbolStr)
+        this.tempJackpotSymbolStr = this.scaleDown(this.cfg.JackpotSymbolStr)
+        this.tempJackpotHopeStr = this.scaleDown(this.cfg.JackpotHopeStr)
+        this.tempJackpotLimitStr = this.scaleDown(this.cfg.JackpotLimitStr)
       }
     },
     // 缩小1000倍的方法
