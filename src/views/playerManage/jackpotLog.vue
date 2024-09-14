@@ -20,6 +20,7 @@
             />
           </el-select>
         </el-form-item>
+
         <el-form-item label="奖池类型：">
           <el-select v-model="searchForm.poolType" placeholder="请选择">
             <el-option
@@ -98,6 +99,15 @@
         </template>
       </el-table-column>
       <el-table-column
+        v-if="searchForm.gameId==90"
+        prop="Level"
+        label="奖池level"
+      >
+        <template slot-scope="{row}">
+         {{ row.Level }}
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="envProjectName=='ph'"
         prop="PoolType"
         label="奖池类型"
@@ -162,6 +172,8 @@
         </div>
       </el-col>
     </el-row>
+
+
     <el-dialog
       v-if="searchForm.gameId === 150 && searchForm.level === 0"
       title="奖池信息"
@@ -200,6 +212,86 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog
+      v-else-if="searchForm.gameId === 90 && searchForm.level === 0"
+      title="奖池信息"
+      :modal="false"
+      :visible.sync="prizeVisible"
+    >
+
+      <!-- 表格显示奖池信息 -->
+      <el-table :data="prizeInfo" style="width: 100%; margin-top: 10px;">
+        <!-- 场次类型列 -->
+        <el-table-column label="场次类型">
+          <template slot-scope="scope">
+            {{ getLevelLabel(scope.row.Level) }}
+          </template>
+        </el-table-column>
+
+        <!-- 用户奖池列 -->
+        <el-table-column label="用户奖池">
+          <template slot-scope="scope">
+            {{ toRupee(scope.row.UserPool) }}
+          </template>
+        </el-table-column>
+
+        <!-- 展示奖池列 -->
+        <el-table-column label="展示奖池1" v-if="envProjectName === 'ph'">
+          <template slot-scope="scope">
+            {{ toRupee(scope.row.ShowPool) }}
+          </template>
+        </el-table-column>
+
+        <!-- 最后更新时间列 -->
+        <el-table-column label="最后更新时间">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.UpdateTime) }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-form :model="prizeForm" style="margin-top: 10px;">
+        <el-form-item label="手动修改玩家奖池数量：">
+          <el-col :span="8">
+            <el-input v-model="prizeForm.ChangeNum" size="mini" />
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+          <el-select v-model="prizeForm.Level" placeholder="请选择" @change="changeLevelConfig">
+            <el-option
+              v-for="item in fCLevelConfig"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          </el-col>
+          <el-col :span="4">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePrizePool(false)">保存</el-button>
+          </el-col>
+
+        </el-form-item>
+        <el-form-item label="手动修改展示奖池数量：">
+          <el-col :span="8">
+            <el-input v-model="prizeForm.ChangeRobotNum" size="mini" />
+          </el-col>
+          <el-col :span="4" style="margin-left: 10px;">
+            <el-select v-model="prizeForm.Level" placeholder="请选择" @change="changeLevelConfig">
+              <el-option
+                v-for="item in fCLevelConfig"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePrizePool(true)">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item />
+      </el-form>
+    </el-dialog>
+
     <el-dialog
       v-else
       title="奖池信息"
@@ -262,7 +354,8 @@ export default {
         { 'value': 108, 'label': 'DropBall' },
         { 'value': 110, 'label': 'VideoPoker' },
         { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
-        { 'value': 150, 'label': 'SuperGemIII' }
+        { 'value': 150, 'label': 'SuperGemIII' },
+        { 'value': 90, 'label': 'FortuneComing' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -284,6 +377,16 @@ export default {
         { 'value': 2, 'label': 'jackpot返奖' },
         { 'value': 3, 'label': '后台调整用户奖池' },
         { 'value': 4, 'label': '后台调整展示奖池' }
+      ],
+      fCLevelConfig : [
+        { 'value': 5002, 'label': '下注额5中奖200倍' },
+        { 'value': 10002, 'label': '下注额10中奖200倍' },
+        { 'value': 50002, 'label': '下注额50中奖200倍' },
+        { 'value': 50005, 'label': '下注额50中奖500倍' },
+        { 'value': 50010, 'label': '下注额50中奖1000倍' },
+        { 'value': 100002, 'label': '下注额100中奖200倍' },
+        { 'value': 100005, 'label': '下注额100中奖500倍' },
+        { 'value': 100010, 'label': '下注额100中奖1000倍' }
       ],
       tableData: [],
       totalCount: 0,
@@ -368,6 +471,35 @@ export default {
           { 'value': 2, 'label': 'major' },
           { 'value': 3, 'label': 'minor' }
         ]
+      } else if (this.searchForm.gameId === 90) {
+        // 调用 getData() 获取 BetList 数组
+        this.getFortuneComingData().then(cfg => {
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+
+          if (cfg && cfg.BetList && cfg.BetList.length > 0) {
+            const betConfig = cfg.BetList.map(bet => {
+              if (bet == 10) {
+                return []
+              }
+              const baseBetFactor = bet / 1000 * cfg.BaseBet
+              if (bet == 50 || bet == 100) {
+                return [
+                  { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet/10, '中将200倍'].join('') }
+                ]
+              }
+              return [
+                { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet/10, '中将200倍'].join('') },
+                { 'value': baseBetFactor * 1000 + 5, 'label': ['下注额', bet/10, '中将500倍'].join('') },
+                { 'value': baseBetFactor * 1000 + 10, 'label': ['下注额', bet/10, '中将1000倍'].join('') }
+              ]
+            }).flat()
+
+            this.levelConfig = this.levelConfig.concat(betConfig)
+          }
+        }).catch(error => {
+          console.error("Error processing BetList:", error)
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+        })
       } else if (this.searchForm.gameId === 150) {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
@@ -400,7 +532,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      if (this.searchForm.gameId === 150 && this.searchForm.level === 0) {
+      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
           .filter(config => config.value !== 0) // 过滤掉 value 为 0 的选项
@@ -484,7 +616,7 @@ export default {
           GameId: _this.searchForm.gameId,
           ChangeNum: changeNum * 1000,
           App: _this.searchForm.app,
-          Level: _this.searchForm.level,
+          Level: _this.searchForm.gameId === 90 ? _this.prizeForm.Level : _this.searchForm.level,
           IsRobot: robotFlag
         }
       }).then(response => {
@@ -555,6 +687,25 @@ export default {
         method: 'get',
         data: {
           SubKey: 'supergemiii_slots_base'
+        }
+      }).then(response => {
+        if (response.RetCode === 0 && response.Data && response.Data.Data !== '') {
+          const cfg = JSON.parse(response.Data.Data)
+          return cfg
+        } else {
+          return null
+        }
+      }).catch(error => {
+        console.error("Error fetching data:", error)
+        return []
+      })
+    },
+    getFortuneComingData() {
+      return request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'moneycoming_slots_base'
         }
       }).then(response => {
         if (response.RetCode === 0 && response.Data && response.Data.Data !== '') {

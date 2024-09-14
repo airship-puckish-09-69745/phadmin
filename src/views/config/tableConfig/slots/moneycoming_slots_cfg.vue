@@ -23,6 +23,11 @@
             <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_ext')" :env-empty="false" compare-type="Object" />
             <slots-moneycoming-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
           </el-tab-pane>
+          <el-tab-pane label="bonus配置" name="bonus">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-moneycoming-bonus-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+          </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('moneycoming_slots_rule')" :env-empty="false" compare-type="Object" />
@@ -48,6 +53,7 @@ import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
 import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsMoneycomingExt from './components_x/moneycoming_ext.vue'
+import SlotsMoneycomingBonusExt from './components_x/moneycoming_bonus_ext.vue'
 import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
@@ -55,7 +61,7 @@ import slotsScript from './components_x/slots_script'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMoneycomingExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsMoneycomingExt, SlotsMoneycomingBonusExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

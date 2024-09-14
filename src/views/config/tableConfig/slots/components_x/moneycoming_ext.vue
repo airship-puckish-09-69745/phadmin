@@ -2,52 +2,54 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="200px">
+        <el-form ref="frm2" :model="cfg" label-width="260px">
 
-          <el-form-item label="Bouns模式下注额5倍数">
-            <el-input v-model="cfg.Free5MultiStr" placeholder="请输入内容,如5,10,15,50"> <template slot="append">八个值用 , 连接</template> </el-input>
+          <el-form-item label="jackport下注额5中奖倍数">
+            <el-input v-model="cfg.JackpotOdds5" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="Bouns模式下注额5权重">
-            <el-input v-model="cfg.Free5MultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">八个值用 , 连接</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="Bouns模式下注额10倍数">
-            <el-input v-model="cfg.Free10MultiStr" placeholder="请输入内容,如5,10,15,50"> <template slot="append">八个值用 , 连接</template> </el-input>
-          </el-form-item>
-          <el-form-item label="Bouns模式下注额10权重">
-            <el-input v-model="cfg.Free10MultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">八个值用 , 连接</template> </el-input>
+          <el-form-item label="jackport下注额5中奖倍数对应权重">
+            <el-input v-model="cfg.JackpotWeight5" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="Bouns模式下注额50倍数">
-            <el-input v-model="cfg.Free50MultiStr" placeholder="请输入内容,如5,10,15,50"> <template slot="append">八个值用 , 连接</template> </el-input>
+          <el-form-item label="jackport下注额10中奖倍数">
+            <el-input v-model="cfg.JackpotOdds10" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="Bouns模式下注额50权重">
-            <el-input v-model="cfg.Free50MultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">八个值用 , 连接</template> </el-input>
+          <el-form-item label="jackport下注额10中奖倍数对应权重">
+            <el-input v-model="cfg.JackpotWeight10" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
-
-          <el-form-item label="Bouns模式下注额100倍数">
-            <el-input v-model="cfg.Free100MultiStr" placeholder="请输入内容,如5,10,15,50"> <template slot="append">八个值用 , 连接</template> </el-input>
+          <el-form-item label="jackport下注额50中奖倍数">
+            <el-input v-model="cfg.JackpotOdds50" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="Bouns模式下注额100权重">
-            <el-input v-model="cfg.Free100MultiStrWeight" placeholder="请输入内容,如10,10,10,10"> <template slot="append">八个值用 , 连接</template> </el-input>
+          <el-form-item label="jackport下注额50中奖倍数对应权重">
+            <el-input v-model="cfg.JackpotWeight50" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
-
-          <el-form-item label="Bouns模式下注额5购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds5" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
+          <el-form-item label="jackport下注额10中奖倍数">
+            <el-input v-model="cfg.JackpotOdds100" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="Bouns模式下注额10购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds10" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
-          </el-form-item>
-          <el-form-item label="Bouns模式下注额50购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds50" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
-          </el-form-item>
-          <el-form-item label="Bouns模式下注额100购买倍数">
-            <el-input v-model.number="cfg.BuyFreeOdds100" placeholder="请输入数字内容"> <template slot="append">实际倍数放大100倍,如需2.1倍则填210</template> </el-input>
+          <el-form-item label="jackport下注额10中奖倍数对应权重">
+            <el-input v-model="cfg.JackpotWeight100" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="进入Bouns模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="下注额5对应jp抽水权重">
+            <el-input v-model="cfg.JackpotFeeWeight5" placeholder="请输入内容,如10,10,10,10"> <template slot="append">多个用,号隔开</template> </el-input>
+          </el-form-item>
+          <el-form-item label="下注额10对应jp抽水权重">
+            <el-input v-model="cfg.JackpotFeeWeight10" placeholder="请输入内容,如10,10,10,10"> <template slot="append">多个用,号隔开</template> </el-input>
+          </el-form-item>
+          <el-form-item label="下注额50对应jp抽水权重">
+            <el-input v-model="cfg.JackpotFeeWeight50" placeholder="请输入内容,如10,10,10,10"> <template slot="append">多个用,号隔开</template> </el-input>
+          </el-form-item>
+          <el-form-item label="下注额100对应jp抽水权重">
+            <el-input v-model="cfg.JackpotFeeWeight100" placeholder="请输入内容,如10,10,10,10"> <template slot="append">多个用,号隔开</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="JP抽水比例">
+            <el-input v-model.number="cfg.JackpotFee" placeholder="请输入数字内容"> <template slot="append">%</template> </el-input>
+          </el-form-item>
+
+          <!--<el-form-item label="进入Bouns模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
-          </el-form-item>
+          </el-form-item>-->
 
 
         </el-form>
