@@ -33,7 +33,7 @@
           </el-form-item>
 
           <el-form-item label="JP抽水比例" prop="JackpotFeeRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JackpotFeeRate" placeholder="请输入内容,如2"><template slot="append">%</template> </el-input>
+            <el-input v-model.number="cfg.JackpotFeeRate" placeholder="请输入内容,如2"><template slot="append">‰</template> </el-input>
           </el-form-item>
 
           <el-form-item label="JP抽水权重">
