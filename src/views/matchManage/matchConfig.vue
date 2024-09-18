@@ -574,6 +574,8 @@ export default {
       csCfgs: [],
       showCsCfgs: [],
       endMinuteCfgs: new Map(), //打立阶段最大时长 用于配置检查
+      endNumCfgs: new Map(), //打立阶段结束规则剩余人数 用于配置检查
+      promoteNumCfgs: new Map(), //打立阶段晋级规则晋级人数 用于配置检查
       tableData: [],
       limit: 10,
       total: 0,
@@ -717,6 +719,8 @@ export default {
                   //console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
                   // 存储打立出局的最大时长配置 用于配置检查
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
+                  this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
+                  this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
                 }
               }
             }
@@ -1281,6 +1285,21 @@ export default {
           if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin))
           {
             this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
+            return false
+          }
+
+          let endNum = this.endNumCfgs.get(this.editForm.data.csId)
+          let promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
+
+          if (this.editForm.data.opentMatchMember < endNum)
+          {
+            this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
+            return false
+          }
+
+          if (this.editForm.data.opentMatchMember < promoteNum)
+          {
+            this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
             return false
           }
 
