@@ -55,10 +55,10 @@
           <ratio-input v-model="slotsData.ActConfig.LoseOddsLt0Lose" label="剧本倍率<0赢(%)" tips="当输剧本倍数<0时多少概率会赢" />
           <ratio-input v-model="slotsData.ActConfig.LoseOddsLt0LoseRange" label="输时赢范围(%)" tips="最大输倍率到0倍率之间占多少输区间，例40%,即0到25取值为：0~10取值" />
 
-          <el-form-item label-width="0">
+          <el-form-item label-width="0" v-if="slotsData.ActConfig.ActId === 0">
             <el-link type="primary" @click="genWaterPoolVisible=true">自动生成水池配置</el-link>
           </el-form-item>
-          <el-table :data="slotsData.ActConfig.WaterPool" border>
+          <el-table :data="slotsData.ActConfig.WaterPool" border  v-if="slotsData.ActConfig.ActId === 0">
             <el-table-column label="房间(底分)" min-width="40px">
               <template scope="scope">
                 {{ scope.row.Bet/1000 }}
