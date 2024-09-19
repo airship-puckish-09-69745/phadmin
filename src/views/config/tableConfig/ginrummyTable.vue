@@ -323,9 +323,25 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
+
           <el-col :span="11">
-            <game-level v-model="edit.item.Level" />
+            <el-form-item
+              label="pot抽水费率："
+              :required="true"
+              prop="item.FlowRatePot"
+              :rules="dataRule(true,{type:'f',range:'0'})"
+            >
+              <el-input v-model="edit.item.FlowRatePot" placeholder="请输入" />
+            </el-form-item>
           </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="抽3%，则填写0.03" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+<!--          <el-col :span="11">-->
+<!--            <game-level v-model="edit.item.Level" />-->
+<!--          </el-col>-->
         </el-row>
 
         <el-row>
@@ -444,6 +460,7 @@ function newItem() {
     MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
+    FlowRatePot: '',
     ActionSeconds: '',
     WatchTimesMax: '',
     Level: 1,
@@ -498,6 +515,7 @@ export default {
         MaxPlayerCount: 4,
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
+        FlowRatePot: 'pot抽水率',
         ActionSeconds: '操作时长',
         WatchTimesMax: '最大围观局数',
         Level: '等级',
