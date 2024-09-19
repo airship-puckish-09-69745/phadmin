@@ -26,6 +26,14 @@
           </el-form-item>
           -->
 
+          <el-form-item label="Wild乘数随机出现数量">
+            <el-input v-model="cfg.WildOddsNumRand" placeholder="请输入内容"> <template slot="append">三个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Wild乘数随机出现数量权重">
+            <el-input v-model="cfg.WildOddsNumRandWeight" placeholder="请输入内容"> <template slot="append">三个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="普通模式Wild乘数">
             <el-input v-model="cfg.NormalWildOdds" placeholder="请输入内容"> <template slot="append">六个值用 , 连接。</template> </el-input>
           </el-form-item>
