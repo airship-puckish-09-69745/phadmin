@@ -924,11 +924,12 @@ export default {
             }
 
             for (let j=0; j < strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail.length; j++) {
+              /*
               if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].init_score >= this.editForm.data.init_score) {
                 this.errmsg('打立出局阶段的底分初始值必须小于用户初始积分！')
                 return false
               }
-
+              */
               if (strikeOutStage.system_strike_out.bottom_score_growth.type == 3) {
                 if (strikeOutStage.system_strike_out.bottom_score_growth.init_score_grow_detail[j].duration <= 0) {
                   this.errmsg('打立出局阶段的底分时长无效！')
