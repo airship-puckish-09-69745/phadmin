@@ -181,7 +181,7 @@
                 <el-radio v-for="growthItem in growthCfgs" :key="growthItem.value" v-model="stageItem.system_strike_out.bottom_score_growth.type" :label=growthItem.value>{{ growthItem.label }}</el-radio>
               </el-form-item>
               <el-form-item label="阶段数：" :required="true">
-              <el-input-number v-model="stageItem.system_strike_out.bottom_score_growth.grow_total" @change="changeGrowTotal($event, stageItem.stage_index)" :min="1" :max="10"></el-input-number>
+              <el-input-number v-model="stageItem.system_strike_out.bottom_score_growth.grow_total" @change="changeGrowTotal($event, stageItem.stage_index)" :min="1" :max="50"></el-input-number>
               </el-form-item>
               <el-form-item label="增长配置：" :required="true">
               <el-table
@@ -225,7 +225,7 @@
                 <el-radio v-for="growthItem in growthCfgs" :key="growthItem.value" v-model="stageItem.system_strike_out.disuse_score_growth.type" :label=growthItem.value>{{ growthItem.label }}</el-radio>
               </el-form-item>
               <el-form-item label="阶段数：" :required="true">
-              <el-input-number v-model="stageItem.system_strike_out.disuse_score_growth.grow_total" @change="changeDisuseGrowTotal($event, stageItem.stage_index)" :min="1" :max="10"></el-input-number>
+              <el-input-number v-model="stageItem.system_strike_out.disuse_score_growth.grow_total" @change="changeDisuseGrowTotal($event, stageItem.stage_index)" :min="1" :max="50"></el-input-number>
               </el-form-item>
               <el-form-item label="增长配置：" :required="true">
               <el-table
