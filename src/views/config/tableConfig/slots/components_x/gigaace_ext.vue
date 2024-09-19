@@ -26,6 +26,30 @@
           </el-form-item>
           -->
 
+          <el-form-item label="普通模式Wild乘数">
+            <el-input v-model="cfg.NormalWildOdds" placeholder="请输入内容"> <template slot="append">六个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="普通模式Wild乘数权重">
+            <el-input v-model="cfg.NormalWildOddsWeight" placeholder="请输入内容"> <template slot="append">六个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式Wild乘数">
+            <el-input v-model="cfg.FreeWildOdds" placeholder="请输入内容"> <template slot="append">七个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式Wild乘数权重">
+            <el-input v-model="cfg.FreeWildOddsWeight" placeholder="请输入内容"> <template slot="append">七个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus产生乘数数量">
+            <el-input v-model="cfg.BonusOddsNum" placeholder="请输入内容"> <template slot="append">两个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus产生乘数数量权重">
+            <el-input v-model="cfg.BonusOddsNumWeight" placeholder="请输入内容"> <template slot="append">两个值用 , 连接。</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
