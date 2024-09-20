@@ -257,7 +257,7 @@
                   label="收集金额"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.fee / 10000 }}
+                    {{ scope.row.fee / 100000 }}
                   </template>
                 </el-table-column>
 

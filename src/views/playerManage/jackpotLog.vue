@@ -509,10 +509,10 @@ export default {
             const betConfig = cfg.BetList.map(bet => {
               const baseBetFactor = bet / 1000 * cfg.BaseBet
               return [
-                { 'value': bet * 10 + 1, 'label': 'MINI-' + baseBetFactor },
-                { 'value': bet * 10 + 2, 'label': 'MINOR-' + baseBetFactor },
-                { 'value': bet * 10 + 3, 'label': 'MAJOR-' + baseBetFactor },
-                { 'value': bet * 10 + 4, 'label': 'GRAND-' + baseBetFactor }
+                { 'value': bet * 10 + 4, 'label': 'MINI-' + baseBetFactor },
+                { 'value': bet * 10 + 3, 'label': 'MINOR-' + baseBetFactor },
+                { 'value': bet * 10 + 2, 'label': 'MAJOR-' + baseBetFactor },
+                { 'value': bet * 10 + 1, 'label': 'GRAND-' + baseBetFactor }
               ]
             }).flat()
 
@@ -642,7 +642,7 @@ export default {
     // 转行卢比
     toRupee(amount) {
       if (this.searchForm.gameId === 150) {
-        return parseInt(amount) / 10000
+        return parseInt(amount) / 100000
       }
       return parseInt(amount) / 1000
     },

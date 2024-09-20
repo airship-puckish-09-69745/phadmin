@@ -857,7 +857,6 @@ export const asyncRoutes = [
           }
         ]
       },
-
       {
         path: 'prize_pool',
         component: () => import('@/views/online/prizePool'),
