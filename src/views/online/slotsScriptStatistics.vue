@@ -235,6 +235,15 @@
                 </el-table-column>
 
                 <el-table-column
+                  prop="app"
+                  label="app"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.app }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column
                   prop="bet"
                   label="下注值"
                 >
@@ -664,28 +673,18 @@ export default {
           let betCountMap = {}
           for (const key in response.Data['jackpot']) {
             var strings1 = key.split('_')
-            if (strings1[2] === 'count') {
-              betCountMap[parseInt(strings1[1])] = parseInt(response.Data['jackpot'][key])
+            if (strings1[4] === 'count') {
+              betCountMap[strings1[1] + '_' + strings1[3]] = parseInt(response.Data['jackpot'][key])
             } else {
-              // let prefix = ''
-              // if (parseInt(strings1[3]) === 1) {
-              //   prefix = 'MINI'
-              // } else if (parseInt(strings1[3]) === 2) {
-              //   prefix = 'MINOR'
-              // } else if (parseInt(strings1[3]) === 3) {
-              //   prefix = 'MAJOR'
-              // } else {
-              //   prefix = 'GRAND'
-              // }
-              if (jackpotMap[strings1[1] + '_' + strings1[3]] == null) {
-                jackpotMap[strings1[1] + '_' + strings1[3]] = { bet: parseInt(strings1[1]), fee: 0, count: 0, winmoney: 0 }
+              if (jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]] == null) {
+                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]] = { app: parseInt(strings1[1]), bet: parseInt(strings1[3]), fee: 0, count: 0, winmoney: 0 }
               }
-              if (strings1[4] === 'fee') {
-                jackpotMap[strings1[1] + '_' + strings1[3]].fee = parseInt(response.Data['jackpot'][key])
-              } else if (strings1[4] === 'count') {
-                jackpotMap[strings1[1] + '_' + strings1[3]].count = parseInt(response.Data['jackpot'][key])
-              } else if (strings1[4] === 'winmoney') {
-                jackpotMap[strings1[1] + '_' + strings1[3]].winmoney = parseInt(response.Data['jackpot'][key])
+              if (strings1[6] === 'fee') {
+                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].fee = parseInt(response.Data['jackpot'][key])
+              } else if (strings1[6] === 'count') {
+                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].count = parseInt(response.Data['jackpot'][key])
+              } else if (strings1[6] === 'winmoney') {
+                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].winmoney = parseInt(response.Data['jackpot'][key])
               }
             }
           }
@@ -694,12 +693,13 @@ export default {
           for (const key in jackpotMap) {
             jackpotTableData.push({
               gid: '150',
+              app: jackpotMap[key].app,
               bet: jackpotMap[key].bet,
-              type: parseInt(key.split('_')[1]),
+              type: parseInt(key.split('_')[2]),
               fee: jackpotMap[key].fee,
               count: jackpotMap[key].count,
               winmoney: jackpotMap[key].winmoney,
-              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].bet] * 100
+              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].app + '_' + jackpotMap[key].bet] * 100
             })
             $this.gidOptions['150'] = '150'
           }
@@ -717,10 +717,13 @@ export default {
         })
 
         jackpotTableData.sort(function (a, b) {
-          if (a.bet === b.bet) {
-            return b.type - a.type
+          if (a.app === b.app) {
+            if (a.bet === b.bet) {
+              return b.type - a.type
+            }
+            return a.bet - b.bet
           }
-          return a.bet - b.bet
+          return a.app - b.app
         })
 
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
