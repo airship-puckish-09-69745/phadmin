@@ -316,7 +316,7 @@ export const asyncRoutes = [
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
-            meta: { title: 'Multi NiuNiu ◐' }
+            meta: { title: 'NiuNiu ◐' }
           },
           { // 金拉米
             path: 'ginrummyTable',
@@ -575,7 +575,7 @@ export const asyncRoutes = [
             path: 'MultiPlayerNiuNiu_cfg',
             component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
             name: 'MultiPlayerNiuNiu_cfg',
-            meta: { title: 'MultiPlayerNiuNiu ◐' }
+            meta: { title: 'Multi NiuNiu ◐' }
           },
           {
             path: 'carracing_cfg',
@@ -1115,7 +1115,7 @@ export const asyncRoutes = [
             path: 'playlog_niuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_domino',
-            meta: { title: 'Multi NiuNiu ◐', gid: 49 }
+            meta: { title: 'NiuNiu ◐', gid: 49 }
           },
           {
             path: 'playlog_pusoyDos',
@@ -1344,7 +1344,7 @@ export const asyncRoutes = [
             path: 'playlog_multiplayeriuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_multiplayerniuniu',
-            meta: { title: 'MultiPlayerNiuNiu ◐', gid: 115 }
+            meta: { title: 'Multi NiuNiu ◐', gid: 115 }
           },
           {
             path: 'playlog_carracing',
@@ -1482,6 +1482,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaace_slots_log',
             meta: { title: 'GigaAce', gid:  160 }
+          },
+          {
+            path: 'sharkkingdom_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'sharkkingdom_slots_log',
+            meta: { title: 'SharkKingdom', gid:  158 }
           }
         ]
       },
@@ -1592,6 +1598,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaacemars_slots_log',
             meta: { title: 'GigaAce(审)', gid:  161 }
+          },
+          {
+            path: 'sharkkingdommars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'sharkkingdommars_slots_log',
+            meta: { title: 'SharkKingdom(审)', gid:  159 }
           }
         ]
       },

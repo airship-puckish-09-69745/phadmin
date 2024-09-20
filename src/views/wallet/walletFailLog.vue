@@ -178,7 +178,7 @@ export default {
   components: {Compare, Publish, MoneyInput},
   data() {
     return {
-      timeRange: [$libDate.GetDayBegin(new Date() - 86400000 * 3), $libDate.GetDayEnd(new Date())],
+      timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
       libShow: $libShow,
       clientDB: new ClientTableData([], 1, filterMap),
       pickerOptions: $libShow.DefaultDatePickerOptions(),
