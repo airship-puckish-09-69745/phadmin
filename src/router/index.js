@@ -1115,7 +1115,7 @@ export const asyncRoutes = [
             path: 'playlog_niuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_domino',
-            meta: { title: 'Multi NiuNiu ◐', gid: 49 }
+            meta: { title: 'NiuNiu ◐', gid: 49 }
           },
           {
             path: 'playlog_pusoyDos',
