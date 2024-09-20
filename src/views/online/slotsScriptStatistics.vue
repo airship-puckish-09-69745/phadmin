@@ -210,7 +210,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="9" :offset="1" v-if="queryGid === 150">
+          <el-col :span="13" :offset="1" v-if="queryGid === 150">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -226,6 +226,7 @@
                 <el-table-column
                   prop="gid"
                   label="游戏"
+                  width="90px"
                 >
                   <template slot-scope="scope">
                     <span v-for="(item, index) in gameOptions" :key="index">
