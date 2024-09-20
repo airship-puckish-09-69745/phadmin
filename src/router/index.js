@@ -316,7 +316,7 @@ export const asyncRoutes = [
             path: 'niuniuTable',
             component: () => import('@/views/config/tableConfig/niuniuTable'),
             name: 'niuniuTable',
-            meta: { title: 'Multi NiuNiu ◐' }
+            meta: { title: 'NiuNiu ◐' }
           },
           { // 金拉米
             path: 'ginrummyTable',
@@ -575,7 +575,7 @@ export const asyncRoutes = [
             path: 'MultiPlayerNiuNiu_cfg',
             component: () => import('@/views/config/tableConfig/minigames/niuniu.vue'),
             name: 'MultiPlayerNiuNiu_cfg',
-            meta: { title: 'MultiPlayerNiuNiu ◐' }
+            meta: { title: 'Multi NiuNiu ◐' }
           },
           {
             path: 'carracing_cfg',
@@ -1344,7 +1344,7 @@ export const asyncRoutes = [
             path: 'playlog_multiplayeriuniu',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_multiplayerniuniu',
-            meta: { title: 'MultiPlayerNiuNiu ◐', gid: 115 }
+            meta: { title: 'Multi NiuNiu ◐', gid: 115 }
           },
           {
             path: 'playlog_carracing',
