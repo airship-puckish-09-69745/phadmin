@@ -138,7 +138,7 @@ export const asyncRoutes = [
       },
       {
         path: 'slotsScriptStatistics',
-        component: () => import('@/views/online/slotsScriptStatistics.vue'),
+        component: () => import('@/views/online/slotsScriptStatistics_old.vue'),
         name: 'slotsScriptStatistics',
         meta: { title: 'Slots剧本监控', noCache: true }
       },
@@ -1483,12 +1483,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
             meta: { title: 'CrazyAce', gid:  156 }
-          },
-          {
-            path: 'grandace_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'grandace_slots_log',
-            meta: { title: 'GrandAce', gid:  158 }
           },
           {
             path: 'gigaace_slots_log',

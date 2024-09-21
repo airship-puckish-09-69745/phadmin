@@ -25,16 +25,6 @@
             <template slot="append">普通模式中Bonus图案的倍率权重</template>
             </el-input>
           </el-form-item>
-          <el-form-item label="Bonus模式Bonus倍率权重" prop="BonusOddsWeight2" :rules="dataRule(true,{type:'s'})">
-            <el-input v-model="cfg.BonusOddsWeight2" placeholder="用,符隔开，值个数上面配置一样" >
-              <template slot="append">Bonus模式中Bonus图案的倍率权重</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="Bonus图标概率" prop="BonusIconRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BonusIconRate" :required="true" >
-              <template slot="append">转出Bonus图标概率</template>
-            </el-input>
-          </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
