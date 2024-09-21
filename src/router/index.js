@@ -581,7 +581,7 @@ export const asyncRoutes = [
             path: 'carracing_cfg',
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
-            meta: { title: 'carracing ◐' }
+            meta: { title: 'Carracing ◐' }
           }
         ]
       },
@@ -857,7 +857,6 @@ export const asyncRoutes = [
           }
         ]
       },
-
       {
         path: 'prize_pool',
         component: () => import('@/views/online/prizePool'),

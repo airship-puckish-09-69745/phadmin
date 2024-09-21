@@ -124,7 +124,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150].indexOf(gid) >= 0">
+        <template v-if="[150,156].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
@@ -537,7 +537,7 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150) {
+            if ($this.gid === 150 || $this.gid === 156) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -585,7 +585,7 @@ export default {
       }
       for (const i in JackpotLogObj.JackpotFee) {
         if (JackpotLogObj.JackpotFee[i].Type === type) {
-          return JackpotLogObj.JackpotFee[i].AddMoney / 10000
+          return JackpotLogObj.JackpotFee[i].AddMoney / 100000
         }
       }
       return null

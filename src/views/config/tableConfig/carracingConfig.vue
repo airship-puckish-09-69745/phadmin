@@ -145,15 +145,21 @@
                     </template>                    
                   </el-table-column>
 
+                  <el-table-column label="轨道ID">
+                    <template slot-scope="scope">
+                      <el-input v-model="item.BetAreaOptions[scope.$index].Orbit" size="mini" />
+                    </template>                    
+                  </el-table-column>
+
                   <el-table-column label="概率">
                     <el-table-column :label="'一轮'">
                       <template slot-scope="scope">
-                        <el-input v-model="item.BetAreaOptions[scope.$index].Rate[0]" size="mini" />
+                        <el-input v-model.number="item.BetAreaOptions[scope.$index].Rate[0]" size="mini" />
                       </template>
                     </el-table-column>
                     <el-table-column :label="'二轮'">
                       <template slot-scope="scope">
-                        <el-input v-model="item.BetAreaOptions[scope.$index].Rate[1]" size="mini" />
+                        <el-input v-model.number="item.BetAreaOptions[scope.$index].Rate[1]" size="mini" />
                       </template>
                     </el-table-column>
                   </el-table-column>
@@ -163,13 +169,13 @@
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].JackPotRate" size="mini" />
                     </template>                    
                   </el-table-column>
-                  
+                  <!--
                   <el-table-column label="单个区域单个玩家最大下注额度">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxUserMoneyBet" size="mini" />
                     </template>
                   </el-table-column>
-
+-->
                   <el-table-column label="单个区域最大下注额度">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxMoneyBet" size="mini" />
@@ -189,6 +195,44 @@
 
                   </el-table-column>
                 </el-table>
+              </fieldset>
+
+              <fieldset  v-if="!IsPHAuditEnv()">
+                <legend>小奖池触发重摇</legend>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池低于某值此时系统输：">
+                      <el-input v-model="item.ReChoiceCfg.LowLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.LowLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池低于某值此时系统输：当奖池低于X时，玩家赢钱有X%的概率重新摇</span>
+                  </el-descriptions-item>
+                </el-descriptions>
+                <el-row>
+                  <el-col :span="11" :offset="1">
+                    <el-form-item label="奖池大于某值此时系统赢：">
+                      <el-input v-model="item.ReChoiceCfg.HighLotteryPoolReChoice" size="mini" :required="true" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="11">
+                    <el-form-item label="重摇概率：">
+                      <el-input v-model.number="item.ReChoiceCfg.HighLotteryPoolReChoiceRate" size="mini"><template slot="append">‱</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-descriptions class="margin-top" border>
+                  <el-descriptions-item>
+                    <span style="color:red;">奖池大于某值此时系统赢：1.当奖池的钱>X.玩家输钱时有X%的概率重新摇 </span>
+                  </el-descriptions-item>
+                </el-descriptions>
               </fieldset>
             </el-col>
           </el-tab-pane>
@@ -252,12 +296,12 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="最器人下注次数下限:">
+                  <el-form-item label="机器人下注次数下限:">
                     <el-input v-model.number="item.MinRobotBetTimes" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
-                  <el-form-item label="最器人下注次数上限">
+                  <el-form-item label="机器人下注次数上限">
                     <el-input v-model.number="item.MaxRobotBetTimes" size="mini" />
                   </el-form-item>
                 </el-col>
@@ -305,7 +349,9 @@
                 </el-col>
               </el-form>
             </el-col>
+            
             <robot-online-items :items="item.RobotMemberArr" />
+            
 
           </el-tab-pane>
 
@@ -313,7 +359,7 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="jackpot服务费*bet">
+                  <el-form-item label="jackpot服务费*bet(抽水比例)">
                     <el-input v-model.number="JackpotCfg.JackpotFee" size="mini" ><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
@@ -343,7 +389,12 @@
             <!--              <legend>jackpot每日限制</legend>-->
             <!--              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />-->
             <!--            </fieldset>-->
-
+            
+            <!--
+            <el-col :span="20">
+              <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddRandAwards()">添加</el-button>
+            </el-col>
+            -->
             <fieldset style="margin-top:10px">
               <legend>jackpot配置</legend>
               <el-row>
@@ -356,6 +407,7 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
+                
                   <el-table-column type="index" />
                   <el-table-column label="奖励类型" prop="JackpotType">
                     <template slot-scope="scope">
@@ -418,7 +470,11 @@
               <!--                </el-descriptions-item>-->
               <!--              </el-descriptions>-->
             </fieldset>
-
+            <!--
+            <el-col :span="20">
+              <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddPool()">添加</el-button>
+            </el-col>
+            -->
             <fieldset style="margin-top:10px"   v-if="!IsPHAuditEnv()">
               <legend>jackpot奖池增长</legend>
               <jackpot-increase :pool-incr-arr="PoolIncrArr" />
@@ -450,6 +506,16 @@
             </el-option>
           </el-select>
           </span>
+        </el-form-item>
+        <el-form-item label="jackpot">
+          <el-select v-model="item.JackpotLogo" placeholder="请选择" size="mini" style="width: 140px">
+            <el-option
+              v-for="(k,v) in imgMap"
+              :label="v"
+              :value="parseInt(v)"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
       </el-form>
 
@@ -523,10 +589,12 @@ export default {
     return {
       RandAwards: [],
       item: {
-        ReChoiceCfg:{}
+        ReChoiceCfg:{HighLotteryPoolReChoice: 0, LowLotteryPoolReChoice: 0},
+        BetMoneyLevel:[],
+        BetAreaOptions:[],
       },
       form: {},
-      subKey: 'gameCarracing',
+      subKey: 'carracing_cfg',
       libShow: $libShow,
       showSetResultPage: false,
       ConversionColorMap: {},
@@ -555,15 +623,15 @@ export default {
       ],
       dialogFormVisible: false,
       imgMap:{
-        0:57,
-        1:74,
-        2:59,
-        3:76,
-        4:61,
-        5:65,
-        6:65,
-        7:65,
-        8:65,
+        0:57, //兰博基尼
+        1:74, //法拉利
+        2:59, //宝马
+        3:76, //奔驰
+        4:61, //丰田
+        5:65, //三菱
+        6:65, //马自达
+        7:65, //本田
+        8:65, //Gratis "重转"
       }
     }
   },
@@ -584,13 +652,20 @@ export default {
     },
     transMoneyForShow() {
       let that = this
-
-      for (const o of that.item.LuckyPachinkoCfg) {
-        o.Multiple /= 1000
+      if (that.item.LuckyPachinkoCfg){
+        for (const o of that.item.LuckyPachinkoCfg) {
+          o.Multiple /= 1000
+        }
       }
       for (const o of  that.item.BetAreaOptions) {
         o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
+        o.Odds /= 1000
+        const orbitList = []
+        for (const j of o.Orbit) {
+          orbitList.push(j)
+        }
+        o.Orbit = orbitList.join(',')
       }
       for (const j in that.item.Rate) {
           that.item.Rate[j] /= 1000
@@ -624,22 +699,31 @@ export default {
             const item = JSON.parse(response.Data.Data)
             console.log("==========",item)
 
-            this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
-            for (const o of this.RandAwards) {
-              o.PoolVal /= 1000
+            if (item.JackpotCfg.JackpotRegulation) {
+              if (item.JackpotCfg.JackpotRegulation.RandAwards) {
+                this.RandAwards = item.JackpotCfg.JackpotRegulation.RandAwards
+                for (const o of this.RandAwards) {
+                  o.PoolVal /= 1000
+                }
+              }
             }
             if (!item.BetAreaOptions) {
               item['BetAreaOptions'] = []
               item.BetAreaOptions.push({ Id: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
             }
             this.JackpotCfg = item.JackpotCfg
-            this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
+            if (item.JackpotCfg.JackpotRegulation) {
+              if (item.JackpotCfg.JackpotRegulation.PoolIncrArr) {
+                this.PoolIncrArr = item.JackpotCfg.JackpotRegulation.PoolIncrArr
+              }
+            }
             item.MinRobotMoney /=  1000
             item.MaxRobotMoney /= 1000
 
             if (!item.Cars){
               item["Cars"] = [0,0]
               item["openTest"] = "1"
+              item.JackpotLogo = 0
             }
 
             item.RobotAverageBetMoney /= 1000
@@ -659,12 +743,16 @@ export default {
       })
     },
     getPostData() {
+      console.log("orbit => ", this.item.BetAreaOptions[0].Orbit)
       const ret = JSON.parse(JSON.stringify(this.item))
-      console.log("====",ret)
-
+      console.log("上传====>",ret)
+      
+      //下注配置
       let betItem = {}
-      for (const o of ret.LuckyPachinkoCfg) {
-        o.Multiple *= 1000
+      if (ret.LuckyPachinkoCfg) {
+        for (const o of ret.LuckyPachinkoCfg) {
+          o.Multiple *= 1000
+        }
       }
       for (const i in this.item.BetMoneyLevel) {
         ret.BetMoneyLevel[i].MaxMoneyBet *= 1000
@@ -679,17 +767,34 @@ export default {
         }
         ret.BetMoneyLevel[i].TableMoney = (betItem)
       }
+
+      //测试
       if (!ret.openTest || ret.openTest=="1"){
         delete ret['Cars']
+        delete ret['JackpotLogo']
       }
 
-      for (const o of  ret.BetAreaOptions) {
+      //赔率配置
+      let orbitItem = {}
+      for (const o of ret.BetAreaOptions) {
         o.MaxUserMoneyBet *= 1000
         o.MaxMoneyBet *= 1000
+        o.Odds *= 1000
+        orbitItem = []
+        if (o.Orbit instanceof Array) {
+          orbitItem = o.Orbit
+        } else {
+          for (const oElement of o.Orbit.split(',')) {
+            orbitItem.push(parseInt(oElement))
+          }
+        }
+        console.log("-------------------------", orbitItem)
+        o.Orbit = (orbitItem)
       }
-      for (const i in ret.Rate) {
+      for (const i in this.item.Rate) {
           ret.Rate[i] *= 1000
       }
+      //jackpot奖池
       ret.JackpotCfg = JSON.parse(JSON.stringify(this.JackpotCfg))
       ret.MinRobotMoney *= 1000
       ret.MaxRobotMoney *= 1000
@@ -697,11 +802,16 @@ export default {
 
       ret.RobotAverageBetMoney *=1000
 
-      ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
-      ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
-
-      for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
-        o.PoolVal = parseInt(o.PoolVal * 1000)
+      if (ret.ReChoiceCfg.LowLotteryPoolReChoice){
+        ret.ReChoiceCfg.LowLotteryPoolReChoice *= 1000
+      }
+      if (ret.ReChoiceCfg.HighLotteryPoolReChoice) {
+        ret.ReChoiceCfg.HighLotteryPoolReChoice *= 1000
+      }
+      if (ret.JackpotCfg.JackpotRegulation){
+        for (const o of ret.JackpotCfg.JackpotRegulation.RandAwards) {
+          o.PoolVal = parseInt(o.PoolVal * 1000)
+        }
       }
       return ret
     },
@@ -723,7 +833,6 @@ export default {
       this.BetOddsList = this.BetOddsList.slice(0, this.BetOddsList.length)
     },
     doAddBetAreaOptions() {
-      console.log("==========> doAddBetAreaOptions()")
       if (!this.item.BetAreaOptions) {
         this.item['BetAreaOptions'] = []
       }
@@ -733,10 +842,22 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], JackPotRate: 0, MaxUserMoneyBet: 0, MaxMoneyBet: 0, RobotBetOdds: 0 })
+      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], Orbit:[0], JackPotRate: 10, MaxUserMoneyBet: 0, MaxMoneyBet: 100000, RobotBetOdds: 100 })
     },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)
+    },
+    doAddRandAwards(){
+      this.RandAwards.push({ID:1, JackpotType:1, AwardTypes:1, PoolVal: 0, AwardRate: 0, DayLimit:0, RateArr:[{Num:1, Rate:10}]})
+    },
+    doAddPool(){
+      let maxId = 0
+      for (const o of this.PoolIncrArr) {
+        if (o.Id > maxId) {
+          maxId = o.Id
+        }
+      }
+      this.PoolIncrArr.push({Id:maxId+1,MaxPool:200000000,MinPool:0,TimeArr:[{EndHour:1,Index:1,StartHour:0,PerHourIncr:111000},{EndHour:6,Index:2,StartHour:2,PerHourIncr:20000000},{EndHour:8,Index:3,StartHour:7,PerHourIncr:60000000},{EndHour:17,Index:4,StartHour:9,PerHourIncr:60000000},{EndHour:23,Index:5,StartHour:18,PerHourIncr:60000000}]})
     },
     getCardUrl(car) {
       try {
@@ -798,6 +919,7 @@ export default {
       this.item.BetMoneyLevel.push({ TableMoney: '60,100,200,400,600,2000', MaxMoneyBet: 2000, MinMoneyBet: 10 })
     },
     showOpenPoolRate(jpType, data) {
+      console.log('jpType:', jpType, ' data:', data)
       if (jpType == 4) {
         return '不限制'
       } else {
@@ -856,7 +978,7 @@ export default {
       maxId++
       this.poolNumChange.data.push({ 'Id': maxId, 'Num': 0, 'Rate': 0 })
     },
-
+    /*
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
       if (num == 0 || num === 'NaN') {
@@ -881,7 +1003,7 @@ export default {
       const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
       return parseInt(result)
     },
-
+*/
     showRobotNumForm(data) {
       this.robotDialogForm.data = data
       this.robotDialogForm.visible = true
