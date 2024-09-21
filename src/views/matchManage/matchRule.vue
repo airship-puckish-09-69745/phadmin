@@ -171,10 +171,10 @@
           </el-form-item>
           <div v-if="stageItem.system_type == 1">
             <el-form-item label="发车人数：" :required="true">
-              <el-input style="width: 200px;" v-model.number="stageItem.wait_queue.player_num" placeholder="发车人数" />
+              <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.player_num" placeholder="发车人数" />
             </el-form-item>
             <el-form-item label="发车时间：" :required="true">
-              <el-input style="width: 200px;" v-model.number="stageItem.wait_queue.wait_time" placeholder="发车人数" >
+              <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.wait_time" placeholder="发车人数" >
                 <template slot="append">秒</template>
               </el-input>
             </el-form-item>
