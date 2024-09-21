@@ -1472,12 +1472,6 @@ export const asyncRoutes = [
             meta: { title: 'CrazyAce', gid:  156 }
           },
           {
-            path: 'grandace_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'grandace_slots_log',
-            meta: { title: 'GrandAce', gid:  158 }
-          },
-          {
             path: 'gigaace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaace_slots_log',
