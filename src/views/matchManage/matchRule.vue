@@ -497,8 +497,8 @@ export default {
                 let one = JSON.parse(this.tableData[i].stage_detail)
                 for (let step = 0; step < one.length; step++) {
                   const element = one[step];
-                  if(element.system_type == 1 && !element.hasOwnProperty("wait_queue")) {
-                    one[step].wait_queue = {
+                  if(element.system_type == 1 && !element.system_strike_out.hasOwnProperty("wait_queue")) {
+                    one[step].system_strike_out.wait_queue = {
                       "player_num":0, //发车人数
                       "wait_time":0, //等待时间
                     }
@@ -703,10 +703,6 @@ export default {
         "stage_index": 1,       //阶段序号
         "system_type": 1,       //赛制类型：1打立出局，2定局积分
         "alloc_type": 1,    //配桌方式:1随机配桌,2无重复队友
-        "wait_queue":{ //班车配置
-          "player_num":3, //发车人数
-          "wait_time":9, //等待时间
-        },
         "system_reach_out": {   //定局积分
             "round_total": 1,   //总轮数
             "score_sort_type": 1,   //晋级排名规则：1按总排名，2按桌内排名
@@ -754,7 +750,11 @@ export default {
                   "score_multiple": 1,   //开方加倍数，带分方式为1有值
                   "score_rate": 100,   //固定比列(%)，带分方式为2有值
               }
-          }
+          },
+          "wait_queue":{ //班车配置
+            "player_num":3, //发车人数
+            "wait_time":9, //等待时间
+          },
         }
       })
       this.editForm.data.stage_detail.push({
