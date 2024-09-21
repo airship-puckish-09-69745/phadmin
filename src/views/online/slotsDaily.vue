@@ -195,7 +195,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161]
     }
   },
   created() {
@@ -305,6 +305,7 @@ export default {
         case 98:
         case 152:
         case 154:
+        case 160:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
