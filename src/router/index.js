@@ -313,10 +313,24 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy ◐' }
           },
           { // 牛牛
-            path: 'niuniuTable',
-            component: () => import('@/views/config/tableConfig/niuniuTable'),
+            path: 'niuniuCfg',
+            component: () => import('@/views/empty'),
             name: 'niuniuTable',
-            meta: { title: 'NiuNiu ◐' }
+            meta: { title: 'NiuNiu ◐', noCache: true },
+            children: [
+              {
+                path: 'niuniuTable',
+                component: () => import('@/views/config/tableConfig/niuniuTable'),
+                name: 'niuniuTable',
+                meta: { title: 'NiuNiu ◐' }
+              },
+              {
+                path: 'niuniuRobotSetting',
+                component: () => import('@/views/config/tableConfig/niuniuRobotSetting'),
+                name: 'niuniuRobotSetting',
+                meta: { title: 'NiuNiu AI ◐' }
+              }
+            ]
           },
           { // 金拉米
             path: 'ginrummyTable',
