@@ -581,7 +581,7 @@ export const asyncRoutes = [
             path: 'carracing_cfg',
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
-            meta: { title: 'carracing ◐' }
+            meta: { title: 'Carracing ◐' }
           }
         ]
       },
