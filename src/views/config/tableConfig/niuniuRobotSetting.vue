@@ -192,22 +192,31 @@ export default {
         if (response.RetCode === 0) {
           console.log('robotSetting', response.Data)
           $this.form = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
+            const old = JSON.parse(response.Data.Data)
+            $this.item.EnterDelayMin /= 1000
+            $this.item.EnterDelayMax /= 1000
+            $this.item.ExitDelayMin /= 1000
+            $this.item.ExitDelayMax /= 1000
+            $this.BetCfg = []
+
             for (let i = 0; i < $this.item.BetCfg.length; i++) {
               const one = $this.item.BetCfg[i]
               if ($this.BetCfg[one.CardType] === undefined) {
-                $this.BetCfg.push({
+                $this.BetCfg[one.CardType] = {
                   CardType: one.CardType,
                   Odds1: 0,
                   Odds2: 0,
                   Odds3: 0,
                   Odds4: 0
-                })
+                }
               }
 
               $this.BetCfg[one.CardType]['Odds' + one.OddsBet] = one.Probability
             }
+            // 设置修改之前数据
+            $this.$refs.compare.SetOldVal(old)
           }
         }
       })
@@ -222,8 +231,8 @@ export default {
       cpy.BetCfg = []
 
       for (const o in this.BetCfg) {
-        const obj = {}
         for (let i = 1; i <= 4; i++) {
+          const obj = {}
           obj.Probability = this.BetCfg[o]['Odds' + i]
           obj.CardType = this.BetCfg[o].CardType
           obj.OddsBet = i
