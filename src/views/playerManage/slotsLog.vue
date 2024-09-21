@@ -537,7 +537,7 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150) {
+            if ($this.gid === 150 || $this.gid === 156) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
