@@ -138,7 +138,7 @@ export const asyncRoutes = [
       },
       {
         path: 'slotsScriptStatistics',
-        component: () => import('@/views/online/slotsScriptStatistics.vue'),
+        component: () => import('@/views/online/slotsScriptStatistics_old.vue'),
         name: 'slotsScriptStatistics',
         meta: { title: 'Slots剧本监控', noCache: true }
       },
