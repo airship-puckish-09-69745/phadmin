@@ -318,6 +318,7 @@ export default {
         84: 'Fortune Ace',
         85: 'FortuneAce',
         154: 'GrandAce',
+        160: 'GigaAce',
         86: 'SuperGems2',
         87: '超级宝宝石II Mars',
         88: 'Lucky777',
@@ -446,7 +447,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160)
         }
       }
     },

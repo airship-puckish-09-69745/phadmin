@@ -271,6 +271,8 @@ export default {
           return '阿拉丁神灯'
         case 154:
           return 'GrandAce'
+        case 160:
+          return 'GigaAce'
       }
       return '未知老虎机-' + sType
     },
