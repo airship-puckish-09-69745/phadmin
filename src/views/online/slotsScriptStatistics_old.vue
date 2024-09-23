@@ -258,7 +258,7 @@
                   label="Jackpot类型"
                 >
                   <template slot-scope="scope">
-                    {{ getJPLabel(scope.row.type) }}
+                    {{ getJPLabel(scope.row.type, queryGid) }}
                   </template>
                 </el-table-column>
 
@@ -920,9 +920,23 @@ export default {
         }
       })
     },
-    getJPLabel(type) {
+    getJPLabel(type, gid) {
       if (type === null || type === undefined) {
         return null
+      }
+      if (gid == 90) {
+        switch (type) {
+          case 4:
+            return '其他'
+          case 3:
+            return '200倍'
+          case 2:
+            return '500倍'
+          case 1:
+            return '1000倍'
+          default:
+            return '无'
+        }
       }
       switch (type) {
         case 4:
