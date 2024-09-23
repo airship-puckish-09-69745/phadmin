@@ -937,7 +937,7 @@ export default {
             this.errmsg('打立出局阶段的配桌方式暂不支持，请选择【随机配桌】！')
             return false
           }
-          if(strikeOutStage.wait_queue.wait_time <=0 || strikeOutStage.wait_queue.player_num<=0){
+          if(strikeOutStage.system_strike_out.wait_queue.wait_time <=0 || strikeOutStage.system_strike_out.wait_queue.player_num<=0){
             this.errmsg('班车配置错误')
             return false
           }
