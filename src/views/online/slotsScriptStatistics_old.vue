@@ -210,7 +210,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="13" :offset="1" v-if="queryGid === 150">
+          <el-col :span="13" :offset="1" v-if="queryGid === 150 || queryGid === 90 ">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -688,6 +688,53 @@ export default {
                 jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].winmoney = parseInt(response.Data['jackpot'][key])
               }
             }
+          }
+
+          console.log('slotsJP:', response.Data['slotsJP'])
+          let slotsJPMap = {}
+          let slotsBetCountJPMap = {}
+          for (const gid in response.Data['slotsJP']) {
+            slotsJPMap[gid] = {}
+            slotsBetCountJPMap[gid] = {}
+            for (const key in response.Data['slotsJP'][gid]) {
+              var strings1 = key.split('_')
+              if (strings1[4] === 'count') {
+                slotsBetCountJPMap[gid][strings1[1] + '_' + strings1[3]] = parseInt(response.Data['slotsJP'][gid][key])
+              } else {
+                if (slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]] == null) {
+                  slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]] = {
+                    app: parseInt(strings1[1]),
+                    bet: parseInt(strings1[3]),
+                    fee: 0,
+                    count: 0,
+                    winmoney: 0
+                  }
+                }
+                if (strings1[6] === 'fee') {
+                  slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].fee = parseInt(response.Data['slotsJP'][gid][key])
+                } else if (strings1[6] === 'count') {
+                  slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].count = parseInt(response.Data['slotsJP'][gid][key])
+                } else if (strings1[6] === 'winmoney') {
+                  slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].winmoney = parseInt(response.Data['slotsJP'][gid][key])
+                }
+              }
+            }
+          }
+          console.log('slotsJPMap:', slotsJPMap)
+          for (const gid in slotsJPMap) {
+            for (const key in slotsJPMap[gid]) {
+              jackpotTableData.push({
+                gid: gid,
+                app: slotsJPMap[gid][key].app,
+                bet: slotsJPMap[gid][key].bet,
+                type: parseInt(key.split('_')[2]),
+                fee: slotsJPMap[gid][key].fee,
+                count: slotsJPMap[gid][key].count,
+                winmoney: slotsJPMap[gid][key].winmoney,
+                countpro: slotsJPMap[gid][key].count / slotsBetCountJPMap[gid][slotsJPMap[gid][key].app + '_' + slotsJPMap[gid][key].bet] * 100
+              })
+            }
+            $this.gidOptions[gid] = gid
           }
 
           console.log('jackpotMap:', jackpotMap)
