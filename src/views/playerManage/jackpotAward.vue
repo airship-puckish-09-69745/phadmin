@@ -229,6 +229,7 @@ export default {
         // { 'value': 101, 'label': 'Sicbo' },
         { 'value': 102, 'label': 'Hilo' },
         { 'value': 103, 'label': 'Windrop' },
+        { 'value': 119, 'label': 'Windropc积分' },
         { 'value': 106, 'label': '金猪' },
         { 'value': 108, 'label': 'DropBall' },
         { 'value': 110, 'label': 'Video Poker' },

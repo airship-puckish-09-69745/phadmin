@@ -335,6 +335,7 @@ export default {
         101: 'Sicbo',
         102: 'Hilo',
         103: 'Windrop',
+        119: 'Windropc积分',
         6: '7Up7Down',
         104: 'Dragon Tiger',
         35: 'Solitaire',
