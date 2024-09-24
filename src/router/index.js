@@ -548,6 +548,12 @@ export const asyncRoutes = [
             meta: { title: 'Windrop ◐' }
           },
           {
+            path: 'miniWindropc_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/miniWindropc'),
+            name: 'miniWindropc_cfg',
+            meta: { title: 'Windrop积分 ◐' }
+          },
+          {
             path: 'UpDown',
             component: () => import('@/views/config/tableConfig/UpDownTable'),
             name: 'UpDown',
