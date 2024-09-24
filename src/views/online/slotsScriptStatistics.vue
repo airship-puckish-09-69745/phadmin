@@ -458,7 +458,6 @@ export default {
     this.getGameList()
     this.getSlotsScriptStatistics()
     this.queryKeyInput()
-
   },
   methods: {
     refreshStep() {
@@ -592,9 +591,10 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path: '/slotsStat/script/statistics',
+          Path: '/slotsStat/statistics',
           Env: store.getters.env,
           queryTime: parseInt(this.queryTime / 1000),
+          gameID: this.queryGid
         }
       }).then(response => {
         // coordinate 返回数据格式，SlotsType_剧本_x_y
@@ -609,56 +609,76 @@ export default {
         this.coordinateSum = {}
 
         if (response.RetCode === 0) {
-          for (const key in response.Data["coordinate"]) {
-            // SlotsType__剧本_x_y
-            var strings1 = key.split('_')
-            let prefix = ''
-            if (parseInt(strings1[1]) === -2) {
-              prefix = '指定正数'
-            } else if (parseInt(strings1[1]) === -1) {
-              prefix = '指定负数'
-            } else {
-              prefix = '常规' + (parseInt(strings1[1]) + 1)
-            }
-            this.coordinateSum[strings1[0]] = parseInt(response.Data["coordinate"][key]) + (this.coordinateSum[strings1[0]] || 0)
-            coordinateTableData.push({
-              gid: strings1[0],
-              type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
-              sort: parseInt(strings1[1]),
-              cnt: response.Data["coordinate"][key],
-              orgKey:strings1[1]+'_'+strings1[2]
-            })
-            $this.gidOptions[strings1[0]] = strings1[0]
-          }
           let scriptMap = {}
+          let jackpotMap = {}
+          let betCountMap = {}
           for (const key in response.Data["script"]) {
-            var strings = key.split('_');
-            this.sumData[strings[0]] = parseInt(response.Data["script"][key]) + (this.sumData[parseInt(strings[0])] || 0)
-
-            scriptTableData.push({gid: strings[0], idx: strings[1], cnt: response.Data["script"][key]})
-            $this.gidOptions[strings[0]] = strings[0]
-          }
-          // 步数统计
-          for (const key in response.Data["step"]) {
-            // SlotsType_目标倍率_当前倍率_剧本_x_y
             var strings1 = key.split('_')
-            let prefix = ''
-            if (parseInt(strings1[1]) === -2) {
-              prefix = '指定正数'
-            } else if (parseInt(strings1[1]) === -1) {
-              prefix = '指定负数'
-            } else {
-              prefix = '常规' + (parseInt(strings1[1]) + 1)
+            if (strings1[0] === 'script') {
+              if (strings1[1] === 'step') {
+                  // 步数统计
+                  // SlotsType_目标倍率_当前倍率_剧本_x_y
+                  var strings1 = key.split('_')
+                  let prefix = ''
+                  if (parseInt(strings1[2]) === -2) {
+                    prefix = '指定正数'
+                  } else if (parseInt(strings1[2]) === -1) {
+                    prefix = '指定负数'
+                  } else {
+                    prefix = '常规' + (parseInt(strings1[2]) + 1)
+                  }
+                  if (!scriptMap[this.queryGid + '_' + prefix]) {
+                    scriptMap[this.queryGid + '_' + prefix] = {gid: this.queryGid, rows: {}, column: {}, sheet: strings1[2]}
+                  }
+                  let step = parseInt(strings1[4])
+                  $this.mapCnt[this.queryGid + "_" + strings1[2] + "_" + strings1[3] + '_' + step] = response.Data["script"][key]
+                  scriptMap[this.queryGid + '_' + prefix].rows[step] = []
+                  scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data["script"]["script_times_" + strings1[2] + "_" + strings1[3]]
+              } else if (strings1[1] === 'times') {
+
+              } else if (strings1[1] === 'count') {
+                var strings = key.split('_');
+                this.sumData[this.queryGid] = parseInt(response.Data["script"][key]) + (this.sumData[this.queryGid] || 0)
+
+                scriptTableData.push({gid: this.queryGid, idx: strings[2], cnt: response.Data["script"][key]})
+              } else {
+                let prefix = ''
+                if (parseInt(strings1[1]) === -2) {
+                  prefix = '指定正数'
+                } else if (parseInt(strings1[1]) === -1) {
+                  prefix = '指定负数'
+                } else {
+                  prefix = '常规' + (parseInt(strings1[1]) + 1)
+                }
+                this.coordinateSum[this.queryGid] = parseInt(response.Data["script"][key]) + (this.coordinateSum[this.queryGid] || 0)
+                coordinateTableData.push({
+                  gid: this.queryGid,
+                  type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
+                  sort: parseInt(strings1[1]),
+                  cnt: response.Data["script"][key],
+                  orgKey:strings1[1]+'_'+strings1[2]
+                })
+              }
+            } else if (strings1[0] === 'jackpot') {
+              var strings1 = key.split('_')
+              if (strings1[5] === 'count') {
+                betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['jackpot'][key])
+              } else {
+                if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0 }
+                }
+                if (strings1[7] === 'fee') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['jackpot'][key])
+                } else if (strings1[7] === 'count') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['jackpot'][key])
+                } else if (strings1[7] === 'winmoney') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['jackpot'][key])
+                }
+              }
             }
-            if (!scriptMap[strings1[0] + '_' + prefix]) {
-              scriptMap[strings1[0] + '_' + prefix] = {gid: strings1[0], rows: {}, column: {}, sheet: strings1[1]}
-            }
-            let step = parseInt(strings1[3])
-            $this.mapCnt[strings1[0] + "_" + strings1[1] + "_" + strings1[2] + '_' + step] = response.Data["step"][key]
-            scriptMap[strings1[0] + '_' + prefix].rows[step] = []
-            scriptMap[strings1[0] + '_' + prefix].column[strings1[2]] = response.Data["times"][strings1[0] + "_" + strings1[1] + "_" + strings1[2]]
           }
 
+          console.log(scriptMap)
           for (const key in scriptMap) {
             stepTableData.push({
               gid: scriptMap[key].gid,
@@ -670,30 +690,9 @@ export default {
             })
           }
 
-          let jackpotMap = {}
-          let betCountMap = {}
-          for (const key in response.Data['jackpot']) {
-            var strings1 = key.split('_')
-            if (strings1[4] === 'count') {
-              betCountMap[strings1[1] + '_' + strings1[3]] = parseInt(response.Data['jackpot'][key])
-            } else {
-              if (jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]] == null) {
-                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]] = { app: parseInt(strings1[1]), bet: parseInt(strings1[3]), fee: 0, count: 0, winmoney: 0 }
-              }
-              if (strings1[6] === 'fee') {
-                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].fee = parseInt(response.Data['jackpot'][key])
-              } else if (strings1[6] === 'count') {
-                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].count = parseInt(response.Data['jackpot'][key])
-              } else if (strings1[6] === 'winmoney') {
-                jackpotMap[strings1[1] + '_' + strings1[3] + '_' + strings1[5]].winmoney = parseInt(response.Data['jackpot'][key])
-              }
-            }
-          }
-
-          console.log('jackpotMap:', jackpotMap)
           for (const key in jackpotMap) {
             jackpotTableData.push({
-              gid: '150',
+              gid: this.queryGid,
               app: jackpotMap[key].app,
               bet: jackpotMap[key].bet,
               type: parseInt(key.split('_')[2]),
@@ -702,7 +701,6 @@ export default {
               winmoney: jackpotMap[key].winmoney,
               countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].app + '_' + jackpotMap[key].bet] * 100
             })
-            $this.gidOptions['150'] = '150'
           }
         }
         coordinateTableData.sort(function (a, b) {
@@ -868,7 +866,8 @@ export default {
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
-            this.gameScene[response.Data[i].Gid]=response.Data[i].Scene
+            this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
+            this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
         }
       })

@@ -507,6 +507,16 @@
           </el-select>
           </span>
         </el-form-item>
+        <el-form-item label="jackpot">
+          <el-select v-model="item.JackpotLogo" placeholder="请选择" size="mini" style="width: 140px">
+            <el-option
+              v-for="(k,v) in imgMap"
+              :label="v"
+              :value="parseInt(v)"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
 
       <div slot="footer" class="dialog-footer">
@@ -613,16 +623,15 @@ export default {
       ],
       dialogFormVisible: false,
       imgMap:{
-        0:57,
-        1:74,
-        2:59,
-        3:76,
-        4:61,
-        5:65,
-        6:65,
-        7:65,
-        8:65,
-        9:65,
+        0:57, //兰博基尼
+        1:74, //法拉利
+        2:59, //宝马
+        3:76, //奔驰
+        4:61, //丰田
+        5:65, //三菱
+        6:65, //马自达
+        7:65, //本田
+        8:65, //Gratis "重转"
       }
     }
   },
@@ -714,6 +723,7 @@ export default {
             if (!item.Cars){
               item["Cars"] = [0,0]
               item["openTest"] = "1"
+              item.JackpotLogo = 0
             }
 
             item.RobotAverageBetMoney /= 1000
@@ -761,6 +771,7 @@ export default {
       //测试
       if (!ret.openTest || ret.openTest=="1"){
         delete ret['Cars']
+        delete ret['JackpotLogo']
       }
 
       //赔率配置

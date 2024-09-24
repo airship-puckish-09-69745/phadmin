@@ -169,6 +169,17 @@
           <el-form-item label="配桌方式：" :required="true">
             <el-radio v-for="allocItem in allocTypeCfgs" :key="allocItem.value" v-model="stageItem.alloc_type" :label=allocItem.value>{{ allocItem.label }}</el-radio>
           </el-form-item>
+          <div v-if="stageItem.system_type == 1">
+            <el-form-item label="发车人数：" :required="true">
+              <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.player_num" placeholder="发车人数" />
+            </el-form-item>
+            <el-form-item label="发车时间：" :required="true">
+              <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.wait_time" placeholder="发车人数" >
+                <template slot="append">秒</template>
+              </el-input>
+            </el-form-item>
+          </div>
+         
           <!-- 此处是专配置打立出局相关配置 -->
           <div v-if="stageItem.system_type == 1">
             <!-- 底分增长配置 -->
@@ -483,7 +494,17 @@ export default {
                 //Message.info("测试:" + this.tableData[i].game_id)
 
                 this.tableData[i].game_id = this.tableData[i].game_id
-                this.tableData[i].stage_detail = JSON.parse(this.tableData[i].stage_detail)
+                let one = JSON.parse(this.tableData[i].stage_detail)
+                for (let step = 0; step < one.length; step++) {
+                  const element = one[step];
+                  if(element.system_type == 1 && !element.system_strike_out.hasOwnProperty("wait_queue")) {
+                    one[step].system_strike_out.wait_queue = {
+                      "player_num":0, //发车人数
+                      "wait_time":0, //等待时间
+                    }
+                  }
+                }
+                this.tableData[i].stage_detail = one
               }
             }
           } else {
@@ -729,7 +750,11 @@ export default {
                   "score_multiple": 1,   //开方加倍数，带分方式为1有值
                   "score_rate": 100,   //固定比列(%)，带分方式为2有值
               }
-          }
+          },
+          "wait_queue":{ //班车配置
+            "player_num":3, //发车人数
+            "wait_time":9, //等待时间
+          },
         }
       })
       this.editForm.data.stage_detail.push({
@@ -791,7 +816,7 @@ export default {
       let gameId = parseInt(this.editForm.data.game_id, 10);
       let origin = this.editForm.data.game_id
 
-      //Message.info("gameId:" + gameId + " origin:" + origin)
+      // Message.info("gameId:" + gameId + " origin:" + origin)
 
       if (!this.configCheck()) {
         return
@@ -910,6 +935,10 @@ export default {
           const strikeOutStage = this.editForm.data.stage_detail[i]
           if (strikeOutStage.alloc_type != 1) {
             this.errmsg('打立出局阶段的配桌方式暂不支持，请选择【随机配桌】！')
+            return false
+          }
+          if(strikeOutStage.system_strike_out.wait_queue.wait_time <=0 || strikeOutStage.system_strike_out.wait_queue.player_num<=0){
+            this.errmsg('班车配置错误')
             return false
           }
           //底分检查
