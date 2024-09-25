@@ -147,6 +147,33 @@
           </el-row>
         </fieldset>
 
+        <fieldset>
+          <legend>余球倍数配置（最小携带 = 最大倍数 * 投注额）</legend>
+          <el-row style="margin-top:10px">
+            <el-button type="primary" size="mini" @click="doAddItem">添加</el-button>
+          </el-row>
+          <el-row v-for="(value, index) in edit.RemainBallRatio" :key="index">
+            <el-col :span="20">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="剩余未击打球数 >=">
+                    <el-input v-model.number="edit.RemainBallRatio[index].BallNum" size="mini" :required="true" type="number" min="1" max="15"/>
+                  </el-form-item>
+                </el-col>
+
+                <el-col :span="12">
+                  <el-form-item label="倍数">
+                    <el-input v-model.number="edit.RemainBallRatio[index].Ratio" size="mini" :required="true" type="number" min="1" max="10000"/>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-col>
+            <el-col :span="2" :offset="2">
+              <el-button type="danger" size="mini" @click="removeItemRow(index)">删除</el-button>
+            </el-col>
+          </el-row>
+        </fieldset>
+
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -178,7 +205,15 @@ function NewTimeConfig() {
     OfflineTimeout: 0
   }
 }
-
+function NewBallRatio() {
+  return []
+  //return [
+  //  {
+  //    BallNum: 5,
+  //    Ratio: 2
+  //  }
+  //]
+}
 function newItem() {
   return {
     CarryLower: 0,
@@ -192,7 +227,8 @@ function newItem() {
     Level: 1,
     HideCarry: 0,
     MotionAlgorithmsVersion:0,
-    TimeConfig: {}
+    TimeConfig: {},
+    RemainBallRatio:[],
   }
 }
 
@@ -214,6 +250,8 @@ export default {
         visible: false,
         item: newItem(),
         TimeConfig: NewTimeConfig(),
+        RemainBallRatio: NewBallRatio(),
+        BetAreaOptions:[],
         isEdit: false
       },
 
@@ -277,6 +315,13 @@ export default {
         this.initFormData(true, row.ID)
         this.edit.visible = true
       }
+    },
+
+    doAddItem() {
+      this.edit.RemainBallRatio.push({ BallNum: 1, Ratio: 1 })
+    },
+    removeItemRow(index) {
+      this.edit.RemainBallRatio.splice(index, 1)
     },
 
     handleCreate() {
@@ -371,9 +416,15 @@ export default {
         if (_data) {
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
+            if (_data.RemainBallRatio) {
+              this.edit.RemainBallRatio = this.libMoneyRobot.TransForShow(JSON.parse(_data.RemainBallRatio))
+            }else{
+              this.edit.RemainBallRatio = NewBallRatio()
+            }
           } catch (e) {
             console.log('initFormData error 2 e:', e)
             this.edit.TimeConfig = NewTimeConfig()
+            this.edit.RemainBallRatio = NewBallRatio()
           }
           Object.assign(this.edit.item, _data)
           if (bEdit) {
@@ -423,8 +474,24 @@ export default {
     },
     checkData() {
       if (this.edit.item.CarryLower > this.edit.item.CarryUpper) {
-        Message.warning('下限不能大于上限，请检查数值正确性！')
+        Message.warning('最小携带不能大于最大携带，请检查数值正确性！')
         return false
+      }
+      if (this.edit.item.CarryLower < this.edit.item.BaseScore) {
+        Message.warning('最小携带不能小于投注额，请检查数值正确性！')
+        return false
+      }
+      if (this.edit.RemainBallRatio){
+        let maxRatio = 1
+        for (const o of  this.edit.RemainBallRatio) {
+          if (o.Ratio > maxRatio){
+            maxRatio = o.Ratio
+          }
+        }
+        if (this.edit.item.CarryLower < maxRatio * this.edit.item.BaseScore){
+          Message.warning('最小携带需>=最大赔付，请检查数值正确性！')
+          return false
+        }
       }
       // TODO 完善
       return true
@@ -432,6 +499,7 @@ export default {
     save() {
       if (!this.checkData()) return
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
+      this.edit.item.RemainBallRatio = JSON.stringify(this.edit.RemainBallRatio)
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
