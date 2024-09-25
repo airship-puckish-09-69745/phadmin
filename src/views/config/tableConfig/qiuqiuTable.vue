@@ -114,7 +114,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="抽3%，则填写0.03" placement="left-start">
+            <el-tooltip class="item" effect="dark" content="抽3‰，则填写3" placement="left-start">
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
