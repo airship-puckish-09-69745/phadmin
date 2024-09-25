@@ -280,7 +280,8 @@ export default {
         82: 'Millionaire', 83: 'MillionaireMars', 84: 'Fortune Ace', 85: 'FortuneAce', 86: 'SuperGems2', 87: '超级宝宝石II Mars', // 这行老虎机
         28: 'Tongits Joker', 29: 'Tongits Quick', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack', 46: 'Domino', 47: '8 Ball Plus', 48: '9 Ball Plus',
-        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 118: 'Carracing', 10000: '汇总' },
+        105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 118: 'Carracing',
+        119: 'windropc积分', 10000: '汇总' },
 
       userVisible: false,
       users: [],
