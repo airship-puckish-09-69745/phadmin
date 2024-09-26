@@ -49,6 +49,18 @@
         </template>
         {{ CardTypeNames[GameLog.NiuNiu.bankerCardInfo.cardType] }} （倍率：{{ GameLog.NiuNiu.bankerCardInfo.odds /1000 }}）
       </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          本局奖池贡献：
+        </template>
+        {{ getJpContribute(GameLog.NiuNiu.players) }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">
+          累计奖池贡献：
+        </template>
+        {{ getJpContributeTotal(GameLog.NiuNiu.players) }}
+      </el-descriptions-item>
     </el-descriptions>
     <el-table :data="GameLog.NiuNiu.areas" border :header-cell-style="{'text-align':'center'}" :row-style="getHitStyle">
       <el-table-column label="区域ID">
@@ -244,6 +256,24 @@ export default {
         }
       })
       return moneyWon
+    },
+    getJpContribute() {
+      let jpContribute = 0
+      this.GameLog.NiuNiu.players.map((item) => {
+        if (item.uid === this.Uid) {
+          jpContribute = item.jackpotContribute
+        }
+      })
+      return jpContribute
+    },
+    getJpContributeTotal() {
+      let jpContribute = 0
+      this.GameLog.NiuNiu.players.map((item) => {
+        if (item.uid === this.Uid) {
+          jpContribute = item.jackpotContributeTotal
+        }
+      })
+      return jpContribute
     },
     closeView(done) {
       this.$emit('closeDialog')
