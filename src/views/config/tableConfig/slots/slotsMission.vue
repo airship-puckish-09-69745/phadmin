@@ -1,0 +1,295 @@
+<template>
+  <div class="app-container">
+    <el-row>
+      <publish primary-key="ID" :key-id="'CustomizeCfg_' + subKey" :env-empty="false" compare-type="Object"
+        :attr-names="AttrNames" />
+    </el-row>
+    <el-col :span="21" :offset="1">
+      <el-row>
+        <el-divider content-position="left">新手配置</el-divider>
+        <el-descriptions class="margin-top" :column="4" size="medium"
+          :label-style="{ 'text-align': 'right', 'font-weight': 'bold', 'padding': '5px' }" border>
+          <el-descriptions-item label="总下注额(放大1000倍)">
+            <el-input v-model.number="cfgData.Newbie.TotalBet" size="mini" />
+          </el-descriptions-item>
+          <el-descriptions-item label="任务一占比">
+            <el-input v-model.number="cfgData.Newbie.Mission1Rate" size="mini">
+              <template slot="append">%</template>
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="任务二占比">
+            <el-input v-model.number="cfgData.Newbie.Mission2Rate" size="mini">
+              <template slot="append">%</template>
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="任务三占比">
+            <el-input v-model.number="cfgData.Newbie.Mission3Rate" size="mini">
+              <template slot="append">%</template>
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="难度系数(放大100倍)">
+            <el-input v-model.number="cfgData.Newbie.Degree" size="mini" />
+          </el-descriptions-item>
+
+        </el-descriptions>
+      </el-row>
+
+      <el-divider content-position="left">老用户配置</el-divider>
+      <el-row>
+        <el-descriptions class="margin-top" :column="4" size="medium"
+          :label-style="{ 'text-align': 'right', 'font-weight': 'bold', 'padding': '5px' }" border>
+
+          <el-descriptions-item label="总下注额(放大1000倍)">
+            <el-input v-model.number="cfgData.Normal.TotalBet" size="mini" />
+          </el-descriptions-item>
+          <el-descriptions-item label="任务一占比">
+            <el-input v-model.number="cfgData.Normal.Mission1Rate" size="mini">
+              <template slot="append">%</template>
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="任务二占比">
+            <el-input v-model.number="cfgData.Normal.Mission2Rate" size="mini">
+              <template slot="append">%</template>
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="任务三占比">
+            <el-input v-model.number="cfgData.Normal.Mission3Rate" size="mini">
+              <template slot="append">%</template>
+            </el-input>
+          </el-descriptions-item>
+          <el-descriptions-item label="任务二最小下注(放大1000倍) >=">
+            <el-input v-model.number="cfgData.Normal.Mission2BetMin" size="mini" />
+          </el-descriptions-item>
+          <el-descriptions-item label="任务三最小下注(放大1000倍) >=">
+            <el-input v-model.number="cfgData.Normal.Mission3BetMin" size="mini" />
+          </el-descriptions-item>
+          <el-descriptions-item label="增长保底系数(放大100倍)">
+            <el-input v-model.number="cfgData.Normal.RiseRateMin" size="mini" />
+          </el-descriptions-item>
+          <el-descriptions-item label="增长上限系数(放大100倍)">
+            <el-input v-model.number="cfgData.Normal.RiseRateMax" size="mini" />
+          </el-descriptions-item>
+          <el-descriptions-item label="难度系数(放大100倍)">
+            <el-input v-model.number="cfgData.Normal.Degree" size="mini" />
+          </el-descriptions-item>
+
+        </el-descriptions>
+      </el-row>
+
+      <el-row>
+        <el-divider content-position="left">富裕卡配置</el-divider>
+        <el-table ref="filterTable" :data="cfgData.RichCardList" stripe border
+          :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '10px' }"
+          :cell-style="libShow.DefaultTableCell" style="width: 100%">
+          <el-table-column prop="RichCardLevel" label="星级" width="80" />
+          <el-table-column prop="BetMin" label="最小下注(放大1000倍)" width="200">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.BetMin" size="mini" />
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="BetMax" label="最大下注(放大1000倍)" width="200">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.BetMax" size="mini" />
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="BetList" label="下注列表,例如 0.5,1,2,5">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.BetList" size="mini" />
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="RtpRate" label="返奖RTP" width="200">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.RtpRate" size="mini" >
+              <template slot="append">‱</template>
+                </el-input>
+            </template>
+          </el-table-column>
+
+        </el-table>
+      </el-row>
+
+      <el-row>
+        <el-divider content-position="left">游戏配置</el-divider>
+        <el-table ref="filterTable" :data="cfgData.BuyFreeList" stripe border
+          :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '10px' }"
+          :cell-style="libShow.DefaultTableCell" style="width: 100%">
+
+          <el-table-column prop="SlotsType" label="游戏ID" width="80" />
+          <el-table-column prop="GameNames" label="游戏名称" width="180" >
+            <template slot-scope="scope">
+              {{ gameName(scope.row.SlotsType) }}
+              </template>
+
+            </el-table-column>
+          <el-table-column prop="Open" label="开启" width="80" >
+            <template slot-scope="scope">
+              <el-checkbox v-model="scope.row.Open"></el-checkbox>
+            </template>
+            </el-table-column>
+
+          <el-table-column prop="BuyFreeRtpRate" label="购买免费旋转RTP" width="200">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.BuyFreeRtpRate" size="mini" >
+              <template slot="append">‱</template>
+                </el-input>
+            </template>
+          </el-table-column>
+
+
+          </el-table>
+          </el-row>
+
+    </el-col>
+
+    <el-col :offset="1" :span="8" style="margin-top: 10px;">
+      <el-button type="primary" @click="setData">保存</el-button>
+    </el-col>
+    <!--对比组件-->
+    <compare ref="compare" :attr-names="AttrNames" />
+
+  </div>
+</template>
+
+<script>
+import { Message } from 'element-ui'
+import Compare from '@/components/Compare'
+import Publish from '@/components/Publish'
+import request from '@/utils/request'
+import { $libShow, $libType } from '@/utils/common'
+
+export default {
+  // eslint-disable-next-line vue/no-unused-components
+  components: { Compare, Publish },
+  data() {
+    return {
+      games: [76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160], // TODO 新slots加上
+      options: [],
+      cfgData: {
+        Newbie: {
+          TotalBet: 0,
+          Mission1Rate: 0,
+          Mission2Rate: 0,
+          Mission3Rate: 0,
+          Degree: 0
+        },
+        Normal: {
+          TotalBet: 0,
+          Mission1Rate: 0,
+          Mission2Rate: 0,
+          Mission3Rate: 0,
+          Degree: 0
+        },
+        RichCardList: [
+        ]
+      },
+      form: {},
+      libShow: $libShow,
+      subKey: 'slotsmission',
+
+      AttrNames: {
+        'Data': '索引',
+        types: {
+          Data: 'jsonString' // 整个数据项的类型
+        }
+      }
+    }
+  },
+  created() {
+    console.log(1)
+    for (const k in this.games) {
+      this.options.push({ 'label': $libShow.GameNames[this.games[k]], 'value': this.games[k] })
+    }
+    // console.log(this.options)
+
+    this.getData()
+  },
+  methods: {
+    gameName(slotsType) {
+      return $libShow.GameNames[slotsType]
+    },
+    getData() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log('sign reward', response)
+          $this.form = response.Data || { Data: '{}' }
+          // console.log($this.form)
+          const o = JSON.parse(this.form.Data)
+
+          for (const k in o.RichCardList) {
+            const betList = []
+            for (const i in o.RichCardList[k].Bets) {
+              betList[i] = o.RichCardList[k].Bets[i] / 1000
+            }
+            o.RichCardList[k].BetList = betList.join(',')
+          }
+
+          const buyFreeMap = {}
+          const openGames = {}
+          for (const k in o.BuyFreeList) {
+              buyFreeMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BuyFreeRtpRate
+              openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
+          }
+          // console.log(buyFreeMap)
+          o.BuyFreeList = []
+          // const buyFreeList = [];
+          for (const k in this.games) {
+            let rate = 0
+            if (buyFreeMap[this.games[k]] !== undefined) {
+              rate = buyFreeMap[this.games[k]]
+            }
+            o.BuyFreeList.push({"SlotsType": this.games[k], "Open": openGames[this.games[k]], "BuyFreeRtpRate": rate})
+          }
+
+          this.cfgData = o
+
+          // 设置修改之前数据
+          this.$refs.compare.SetOldVal(this.form)
+        }
+      })
+    },
+    setData() {
+      const postData = $libType.DeepCopy(this.cfgData)
+
+      for (const k in postData.RichCardList) {
+        const bets = postData.RichCardList[k].BetList.split(',')
+        postData.RichCardList[k].Bets = []
+        for (const i in bets) {
+          postData.RichCardList[k].Bets.push(parseFloat(bets[i]) * 1000)
+        }
+      }
+
+      // console.log('postData', postData)
+
+      this.form.Data = JSON.stringify(postData)
+      const $this = this
+      // 设置修改后数据
+      this.$refs.compare.SetNewVal(this.form)
+      this.$refs.compare.Compare(function (isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: $this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+      })
+    }
+  }
+}
+</script>

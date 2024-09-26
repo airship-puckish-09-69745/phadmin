@@ -832,6 +832,12 @@ export const asyncRoutes = [
             meta: { title: '剧本配置V2' }
           },
           {
+            path: 'slots_mission',
+            component: () => import('@/views/config/tableConfig/slots/slotsMission'),
+            name: 'slots_mission',
+            meta: { title: 'Slots任务配置' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -1469,12 +1475,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
             meta: { title: 'CrazyAce', gid:  156 }
-          },
-          {
-            path: 'grandace_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'grandace_slots_log',
-            meta: { title: 'GrandAce', gid:  158 }
           },
           {
             path: 'gigaace_slots_log',
