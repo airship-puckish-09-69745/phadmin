@@ -9,7 +9,7 @@
           </el-form-item>
 
           <el-form-item label="普通模式中奖倍数权重">
-            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">六个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.MultiStrWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">七个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式中奖倍数">
