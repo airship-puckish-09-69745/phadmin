@@ -441,6 +441,7 @@ export default {
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             if (_data.WalletConfig) {
+              console.log(ID, "=>", _data.WalletConfig)
               this.edit.WalletConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.WalletConfig))
             }else{
               this.edit.WalletConfig = NewWalletConfig()
