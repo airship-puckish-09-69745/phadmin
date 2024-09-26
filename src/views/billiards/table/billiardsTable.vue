@@ -146,6 +146,22 @@
             </el-col>
           </el-row>
         </fieldset>
+        
+        <fieldset>
+          <legend>钱包转出配置 (N = 配置 * 投注额)</legend>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="SuitableRollOutMoney:" :required="true" prop="WalletConfig.SuitableRollOutMoney" :rules="dataRule(true,{type:'n',range:'0'})" >
+                <el-input v-model.number="edit.WalletConfig.SuitableRollOutMoney" placeholder="" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="MaxRollOutMoney:" :required="true" prop="WalletConfig.MaxRollOutMoney" :rules="dataRule(true,{type:'n',range:'0'})" >
+                <el-input v-model.number="edit.WalletConfig.MaxRollOutMoney" placeholder="" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </fieldset>
 
         <fieldset>
           <legend>余球倍数配置（最小携带 = 最大倍数 * 投注额）</legend>
@@ -205,6 +221,12 @@ function NewTimeConfig() {
     OfflineTimeout: 0
   }
 }
+function NewWalletConfig(){
+  return {
+    SuitableRollOutMoney: 5,
+    MaxRollOutMoney: 10
+  }
+}
 function NewBallRatio() {
   return []
   //return [
@@ -228,6 +250,7 @@ function newItem() {
     HideCarry: 0,
     MotionAlgorithmsVersion:0,
     TimeConfig: {},
+    WalletConfig:{},
     RemainBallRatio:[],
   }
 }
@@ -250,6 +273,7 @@ export default {
         visible: false,
         item: newItem(),
         TimeConfig: NewTimeConfig(),
+        WalletConfig: NewWalletConfig(),
         RemainBallRatio: NewBallRatio(),
         BetAreaOptions:[],
         isEdit: false
@@ -416,6 +440,11 @@ export default {
         if (_data) {
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
+            if (_data.WalletConfig) {
+              this.edit.WalletConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.WalletConfig))
+            }else{
+              this.edit.WalletConfig = NewWalletConfig()
+            }
             if (_data.RemainBallRatio) {
               this.edit.RemainBallRatio = this.libMoneyRobot.TransForShow(JSON.parse(_data.RemainBallRatio))
             }else{
@@ -424,6 +453,7 @@ export default {
           } catch (e) {
             console.log('initFormData error 2 e:', e)
             this.edit.TimeConfig = NewTimeConfig()
+            this.edit.WalletConfig = NewWalletConfig()
             this.edit.RemainBallRatio = NewBallRatio()
           }
           Object.assign(this.edit.item, _data)
@@ -481,8 +511,8 @@ export default {
         Message.warning('最小携带不能小于投注额，请检查数值正确性！')
         return false
       }
+      let maxRatio = 1
       if (this.edit.RemainBallRatio){
-        let maxRatio = 1
         for (const o of  this.edit.RemainBallRatio) {
           if (o.Ratio > maxRatio){
             maxRatio = o.Ratio
@@ -492,6 +522,20 @@ export default {
           Message.warning('最小携带需>=最大赔付，请检查数值正确性！')
           return false
         }
+      }      
+      if (this.edit.WalletConfig) {
+        if (this.edit.WalletConfig.SuitableRollOutMoney*this.edit.item.BaseScore < this.edit.item.CarryLower){
+          Message.warning('最小携带>=(SuitableRollOutMoney*BaseScore)，请检查数值正确性！')
+          return false
+        }
+        if (this.edit.WalletConfig.SuitableRollOutMoney < maxRatio){
+          Message.warning('SuitableRollOutMoney<最小赔付倍率，请检查数值正确性！')
+          return false
+        }
+        if (this.edit.WalletConfig.MaxRollOutMoney < this.edit.WalletConfig.SuitableRollOutMoney){
+          Message.warning('MaxRollOutMoney < SuitableRollOutMoney，请检查数值正确性！')
+          return false
+        }
       }
       // TODO 完善
       return true
@@ -499,6 +543,7 @@ export default {
     save() {
       if (!this.checkData()) return
       this.edit.item.TimeConfig = JSON.stringify(this.edit.TimeConfig)
+      this.edit.item.WalletConfig = JSON.stringify(this.edit.WalletConfig)
       this.edit.item.RemainBallRatio = JSON.stringify(this.edit.RemainBallRatio)
       if (this.edit.isEdit) {
         // 设置修改后数据
