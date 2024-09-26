@@ -95,19 +95,21 @@
                     <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
                   </template>
                   </el-table-column>
+
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(scope.$index)">删除</el-button>
                     </template>
-
                   </el-table-column>
                 </el-table>
               </fieldset>
 
               <fieldset style="margin-top:10px">
+                <!--
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetAreaOptions()">添加</el-button>
                 </el-col>
+                -->
                 <legend>中奖倍率配置
                 </legend>
                 <el-table
@@ -126,11 +128,16 @@
                   </el-table-column>
                   <el-table-column label="Car" width="70px">
                     <template slot-scope="scope">
+                      {{nameMap[scope.row.Id]}}
+                    </template>
+                    <!--
+                    <template slot-scope="scope">
                       <el-image
                         style="width: 37px;height: 50px"
                         :src="getCardUrl(imgMap[scope.row.Id])"
                       />
                     </template>
+                  -->
                   </el-table-column>
 
                   <el-table-column label="中奖倍率">
@@ -187,13 +194,13 @@
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].RobotBetOdds" size="mini" />
                     </template>
                   </el-table-column>
-
+                  <!--
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>
                     </template>
-
                   </el-table-column>
+                  -->
                 </el-table>
               </fieldset>
 
@@ -632,6 +639,17 @@ export default {
         6:65, //马自达
         7:65, //本田
         8:65, //Gratis "重转"
+      },
+      nameMap:{
+        0:"兰博基尼",
+        1:"法拉利",
+        2:"宝马",
+        3:"奔驰",
+        4:"丰田",
+        5:"三菱",
+        6:"马自达",
+        7:"本田",
+        8:"Gratis",
       }
     }
   },
@@ -643,7 +661,7 @@ export default {
     this.getData()
   },
   methods: {
-
+    
     dataRule(required, config) {
       return DataRule(required, config)
     },

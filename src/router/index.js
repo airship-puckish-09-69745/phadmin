@@ -852,6 +852,12 @@ export const asyncRoutes = [
             meta: { title: '剧本配置V2' }
           },
           {
+            path: 'slots_mission',
+            component: () => import('@/views/config/tableConfig/slots/slotsMission'),
+            name: 'slots_mission',
+            meta: { title: 'Slots任务配置' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
