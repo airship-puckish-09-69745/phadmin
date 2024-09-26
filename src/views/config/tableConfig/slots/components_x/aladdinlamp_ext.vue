@@ -17,22 +17,12 @@
           </el-form-item>
           <el-form-item label="Bonus图标的倍率配置" prop="BonusOdds" :rules="dataRule(true,{type:'s'})">
             <el-input v-model="cfg.BonusOdds" placeholder="例如：2,5,8,10,12,15,20,40" >
-            <template slot="append">向上浮动10倍</template>
+            <template slot="append">向上浮动100倍</template>
             </el-input>
           </el-form-item>
           <el-form-item label="普通模式Bonus倍率权重" prop="BonusOddsWeight" :rules="dataRule(true,{type:'s'})">
             <el-input v-model="cfg.BonusOddsWeight" placeholder="用,符隔开，值个数上面配置一样" >
             <template slot="append">普通模式中Bonus图案的倍率权重</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="Bonus模式Bonus倍率权重" prop="BonusOddsWeight2" :rules="dataRule(true,{type:'s'})">
-            <el-input v-model="cfg.BonusOddsWeight2" placeholder="用,符隔开，值个数上面配置一样" >
-              <template slot="append">Bonus模式中Bonus图案的倍率权重</template>
-            </el-input>
-          </el-form-item>
-          <el-form-item label="Bonus图标概率" prop="BonusIconRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BonusIconRate" :required="true" >
-              <template slot="append">转出Bonus图标概率</template>
             </el-input>
           </el-form-item>
 

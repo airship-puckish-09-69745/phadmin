@@ -138,7 +138,7 @@ export const asyncRoutes = [
       },
       {
         path: 'slotsScriptStatistics',
-        component: () => import('@/views/online/slotsScriptStatistics.vue'),
+        component: () => import('@/views/online/slotsScriptStatistics_old.vue'),
         name: 'slotsScriptStatistics',
         meta: { title: 'Slots剧本监控', noCache: true }
       },
@@ -313,10 +313,24 @@ export const asyncRoutes = [
             meta: { title: 'Pusoy ◐' }
           },
           { // 牛牛
-            path: 'niuniuTable',
-            component: () => import('@/views/config/tableConfig/niuniuTable'),
+            path: 'niuniuCfg',
+            component: () => import('@/views/empty'),
             name: 'niuniuTable',
-            meta: { title: 'NiuNiu ◐' }
+            meta: { title: 'NiuNiu ◐', noCache: true },
+            children: [
+              {
+                path: 'niuniuTable',
+                component: () => import('@/views/config/tableConfig/niuniuTable'),
+                name: 'niuniuTable',
+                meta: { title: 'NiuNiu ◐' }
+              },
+              {
+                path: 'niuniuRobotSetting',
+                component: () => import('@/views/config/tableConfig/niuniuRobotSetting'),
+                name: 'niuniuRobotSetting',
+                meta: { title: 'NiuNiu AI ◐' }
+              }
+            ]
           },
           { // 金拉米
             path: 'ginrummyTable',
@@ -546,6 +560,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/miniWindrop_cfg'),
             name: 'miniWindrop_cfg',
             meta: { title: 'Windrop ◐' }
+          },
+          {
+            path: 'miniWindropc_cfg',
+            component: () => import('@/views/config/tableConfig/minigames/miniWindropc'),
+            name: 'miniWindropc_cfg',
+            meta: { title: 'Windrop积分 ◐' }
           },
           {
             path: 'UpDown',
