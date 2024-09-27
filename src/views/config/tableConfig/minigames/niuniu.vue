@@ -21,7 +21,7 @@
 
             <el-col :span="7" :offset="3">
               <el-form-item label="Jackpot贡献率:">
-                <el-input v-model="item.Jackpot.ContributeRate" :required="true" />
+                <el-input v-model="item.Jackpot.ContributeRate" :required="true"><template slot="append">%</template></el-input>
               </el-form-item>
             </el-col>
 
