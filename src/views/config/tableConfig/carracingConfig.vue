@@ -151,13 +151,7 @@
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].Count" size="mini" />
                     </template>                    
                   </el-table-column>
-                  <!--
-                  <el-table-column label="轨道ID">
-                    <template slot-scope="scope">
-                      <el-input v-model="item.BetAreaOptions[scope.$index].Orbit" size="mini" />
-                    </template>                    
-                  </el-table-column>
-                  -->
+
                   <el-table-column label="概率">
                     <el-table-column :label="'一轮'">
                       <template slot-scope="scope">
@@ -679,13 +673,6 @@ export default {
         o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
         o.Odds /= 1000
-        /*
-        const orbitList = []
-        for (const j of o.Orbit) {
-          orbitList.push(j)
-        }
-        o.Orbit = orbitList.join(',')
-        */
       }
       for (const j in that.item.Rate) {
           that.item.Rate[j] /= 1000
@@ -763,7 +750,6 @@ export default {
       })
     },
     getPostData() {
-      //console.log("orbit => ", this.item.BetAreaOptions[0].Orbit)
       const ret = JSON.parse(JSON.stringify(this.item))
       console.log("上传====>",ret)
       
@@ -795,23 +781,10 @@ export default {
       }
 
       //赔率配置
-      //let orbitItem = {}
       for (const o of ret.BetAreaOptions) {
         o.MaxUserMoneyBet *= 1000
         o.MaxMoneyBet *= 1000
         o.Odds *= 1000
-        /*
-        orbitItem = []
-        if (o.Orbit instanceof Array) {
-          orbitItem = o.Orbit
-        } else {
-          for (const oElement of o.Orbit.split(',')) {
-            orbitItem.push(parseInt(oElement))
-          }
-        }
-        console.log("-------------------------", orbitItem)
-        o.Orbit = (orbitItem)
-        */
       }
       for (const i in this.item.Rate) {
           ret.Rate[i] *= 1000
@@ -864,7 +837,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], /*Orbit:[0], */JackPotRate: 10, MaxUserMoneyBet: 0, MaxMoneyBet: 100000, RobotBetOdds: 100 })
+      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], JackPotRate: 10, MaxUserMoneyBet: 0, MaxMoneyBet: 100000, RobotBetOdds: 100 })
     },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)

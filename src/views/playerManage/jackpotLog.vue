@@ -356,7 +356,8 @@ export default {
         { 'value': 110, 'label': 'VideoPoker' },
         { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
         { 'value': 150, 'label': 'SuperGemIII' },
-        { 'value': 90, 'label': 'FortuneComing' }
+        { 'value': 90, 'label': 'FortuneComing' },
+        { 'value': 118, 'label': 'CarRacing' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

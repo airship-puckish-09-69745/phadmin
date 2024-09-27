@@ -1381,7 +1381,7 @@ export const asyncRoutes = [
             path: 'playlog_carracing',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_carracing',
-            meta: { title: 'carracing ◐', gid: 118 }
+            meta: { title: 'Carracing ◐', gid: 118 }
           }
         ]
       },
