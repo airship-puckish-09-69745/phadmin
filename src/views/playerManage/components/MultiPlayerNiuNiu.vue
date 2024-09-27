@@ -264,7 +264,7 @@ export default {
           jpContribute = item.jackpotContribute
         }
       })
-      return jpContribute
+      return jpContribute / 1000
     },
     getJpContributeTotal() {
       let jpContribute = 0
@@ -273,7 +273,7 @@ export default {
           jpContribute = item.jackpotContributeTotal
         }
       })
-      return jpContribute
+      return jpContribute / 1000
     },
     closeView(done) {
       this.$emit('closeDialog')
