@@ -14,7 +14,7 @@
             <el-col :span="7" :offset="1">
               <el-form-item label="玩家台费抽水：">
                 <el-input v-model.number="item.TableFeeFate" :required="true">
-                  <template slot="append">局</template>
+                  <template slot="append">%</template>
                 </el-input>
               </el-form-item>
             </el-col>
