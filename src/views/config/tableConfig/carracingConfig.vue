@@ -670,9 +670,9 @@ export default {
         }
       }
       for (const o of  that.item.BetAreaOptions) {
-        o.MaxUserMoneyBet /= 1000
+        //o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
-        o.Odds /= 1000
+        //o.Odds /= 1000
       }
       for (const j in that.item.Rate) {
           that.item.Rate[j] /= 1000
@@ -782,9 +782,9 @@ export default {
 
       //赔率配置
       for (const o of ret.BetAreaOptions) {
-        o.MaxUserMoneyBet *= 1000
+        //o.MaxUserMoneyBet *= 1000
         o.MaxMoneyBet *= 1000
-        o.Odds *= 1000
+        //o.Odds *= 1000
       }
       for (const i in this.item.Rate) {
           ret.Rate[i] *= 1000
