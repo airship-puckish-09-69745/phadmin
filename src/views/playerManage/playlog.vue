@@ -1195,6 +1195,126 @@
       </el-table>
     </el-dialog>
 
+
+    <el-dialog
+      title="Windropc详情"
+      :visible.sync="WindropcGameVisible"
+      width="60%"
+    >
+      <br>
+      <el-descriptions
+        class="margin-top"
+        :column="4"
+        size="medium"
+        :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px'}"
+        border
+      >
+        <el-descriptions-item label="累计贡献值">{{ WindropcGameResult.JackpotContributeTotal /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="单次贡献值">{{ WindropcGameResult.JackpotContribute /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="总球数">{{ WindropcGameResult.BallNum }}</el-descriptions-item>
+        <el-descriptions-item label="总下注金额">{{ WindropcGameResult.BetAllScore /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="单球下注金币">{{ WindropcGameResult.BetScore /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="当前能量">{{ WindropcGameResult.CurEnergy /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="能量奖励">{{ WindropcGameResult.EnergyNum <1000 ? WindropcGameResult.EnergyNum+' 球' : WindropcGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
+        <el-descriptions-item label="Spin总次数">{{ WindropcGameResult.SpinCount }}</el-descriptions-item>
+      </el-descriptions>
+      <br>
+      <el-table
+        ref="filterTable"
+        :data="WindropcGameOptions"
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="ID"
+          label="ID"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.ID" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="ODDS"
+          label="倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-if="scope.row.ODDS<0" style="color:red">spin</span>
+            <span v-else>{{ scope.row.ODDS }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="BallTimes"
+          label="翻倍次数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.BallTimes" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinOdd"
+          label="spin中奖倍数"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.SpinOdd" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="SpinScore"
+          label="spin中奖金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="formatNumber(scope.row.SpinScore /1000)" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Score"
+          label="金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="formatNumber(scope.row.Score /1000)" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Score"
+          label="JpType"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="formatNumber(scope.row.JpType)" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Score"
+          label="Jp金币"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="formatNumber(scope.row.Jackpot /1000)" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="TracksPos"
+          label="路径"
+          width="620"
+        >
+          <template slot-scope="scope">
+            <span v-html="scope.row.TracksPos" />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <el-dialog
       title="骰宝牌局详情"
       :visible.sync="sicboGameVisible"
@@ -2467,6 +2587,19 @@ export default {
       },
       WindropGameOptions: [],
 
+      WindropcGameVisible: false,
+      WindropcGameResult: {
+        BallNum: 0,
+        BetAllScore: 0,
+        BetScore: 0,
+        CurEnergy: 0,
+        EnergyNum: 0,
+        SpinCount: 0,
+        JackpotContributeTotal: 0,
+        JackpotContribute: 0
+      },
+      WindropcGameOptions: [],
+
       lucky9Detail: {},
       lucky9DetailVisible: false,
 
@@ -2947,6 +3080,8 @@ export default {
             $this.showHiloGame(obj)
           } else if (gid === 103) {
             $this.showWindropGame(obj)
+          } else if (gid === 119) {
+            $this.showWindropcGame(obj)
           } else if (gid === 6) {
             $this.showSevenGame(obj)
           } else if (gid === 35) {
@@ -3212,6 +3347,50 @@ export default {
       this.WindropGameResult.JackpotContributeTotal = windropObj.JackpotContributeTotal
       this.WindropGameResult.JackpotContribute = windropObj.JackpotContribute
       this.WindropGameVisible = true
+    },
+
+    showWindropcGame(obj) {
+      const tMap = {}
+      this.WindropcGameOptions = []
+      const windropcObj = obj.Windropc
+      if (Array.isArray(windropcObj.optionData.bouns) && windropcObj.optionData.bouns.length > 0) {
+        for (let i = 0; i < windropcObj.optionData.bouns.length; i++) {
+          const tracksPos = []
+          if (windropcObj.optionData.bouns[i].TracksPos) {
+            for (const pos of windropcObj.optionData.bouns[i].TracksPos) {
+              tracksPos.push({
+                posX: pos.posX,
+                posY: pos.posY
+              })
+            }
+          }
+          const bouns = windropcObj.optionData.bouns[i]
+          tMap[i] = {
+            ID: i,
+            ODDS: bouns.odds,
+            BallTimes: bouns.ballTimes,
+            SpinOdd: bouns.spinOdd,
+            SpinScore: bouns.spinScore,
+            Score: bouns.score,
+            JpType: bouns.jpType,
+            Jackpot: bouns.jackpot,
+            TracksPos: tracksPos
+          }
+        }
+        for (let i = 0; i < windropcObj.optionData.bouns.length; i++) {
+          this.WindropcGameOptions.push(tMap[i])
+        }
+      }
+      console.log(this.windropcGameOptions)
+      this.WindropcGameResult.BallNum = windropcObj.optionData.ballNum
+      this.WindropcGameResult.BetAllScore = windropcObj.optionData.betAllScore
+      this.WindropcGameResult.BetScore = windropcObj.optionData.betScore
+      this.WindropcGameResult.CurEnergy = windropcObj.optionData.curEnergy
+      this.WindropcGameResult.EnergyNum = windropcObj.optionData.energyNum
+      this.WindropcGameResult.SpinCount = windropcObj.optionData.spinCount
+      this.WindropcGameResult.JackpotContributeTotal = windropcObj.JackpotContributeTotal
+      this.WindropcGameResult.JackpotContribute = windropcObj.JackpotContribute
+      this.WindropcGameVisible = true
     },
 
     showRocketGame(obj) {

@@ -1336,6 +1336,12 @@ export const asyncRoutes = [
             meta: { title: 'Windrop ◐', gid: 103 }
           },
           {
+            path: 'playlog_windropc',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_windropc',
+            meta: { title: 'Windrop积分 ◐', gid: 119 }
+          },
+          {
             path: 'playlog_piggy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_piggy',
