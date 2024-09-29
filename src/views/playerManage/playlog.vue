@@ -1134,7 +1134,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.ID" />
+            <span v-html="scope.row.ID+1" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1233,7 +1233,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.ID" />
+            <span v-html="scope.row.ID+1" />
           </template>
         </el-table-column>
         <el-table-column
@@ -3459,14 +3459,15 @@ export default {
       return { fontSize: '12px', height: '20px' }
     },
     showPigData(typ, bet) {
-      if (typ == 3) {
-        return true
-      } else {
-        if (bet == 0) {
-          return true
-        }
-      }
-      return false
+      return true
+      // if (typ == 3) {
+      //   return true
+      // } else {
+      //   if (bet == 0) {
+      //     return true
+      //   }
+      // }
+      // return false
     },
     showSicboGame(obj) {
       const names = ['SMALL_小点', 'BIG_大点', '骰子单点数_1', '骰子单点数_2', '骰子单点数_3', '骰子单点数_4', '骰子单点数_5', '骰子单点数_6', '骰子双点数_1', '骰子双点数_2',

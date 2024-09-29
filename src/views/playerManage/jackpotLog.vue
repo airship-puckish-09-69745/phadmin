@@ -466,6 +466,11 @@ export default {
           { 'value': 0, 'label': '全部' },
           { 'value': 2, 'label': 'EXPERT' },
           { 'value': 1, 'label': 'HIGH' }]
+      } else if (this.searchForm.gameId === 119) {
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': 'HIGH' }
+        ]
       } else if (this.searchForm.gameId === 106) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
