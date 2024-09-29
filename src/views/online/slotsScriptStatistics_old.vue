@@ -305,7 +305,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.pool/1000 }}
+                    {{ scope.row.pool/100000 }}
                   </template>
                 </el-table-column>
               </el-table-column>

@@ -643,7 +643,7 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
-      if (this.searchForm.gameId === 150) {
+      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90) {
         return parseInt(amount) / 100000
       }
       return parseInt(amount) / 1000
