@@ -126,7 +126,7 @@
                       {{scope.row.Id}}
                     </template>
                   </el-table-column>
-                  <el-table-column label="Car" width="70px">
+                  <el-table-column label="Car" width="90px">
                     <template slot-scope="scope">
                       {{nameMap[scope.row.Id]}}
                     </template>
@@ -164,13 +164,13 @@
                       </template>
                     </el-table-column>
                   </el-table-column>
-
+<!--
                   <el-table-column label="jackpot概率">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].JackPotRate" size="mini" />
                     </template>                    
                   </el-table-column>
-                  <!--
+                  
                   <el-table-column label="单个区域单个玩家最大下注额度">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxUserMoneyBet" size="mini" />
@@ -381,6 +381,15 @@
                 <el-col :span="8">
                   <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="jackpot中奖概率">
+                    <el-input v-model.number="JackpotCfg.JackPotRate" size="mini" ><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -677,7 +686,7 @@ export default {
       for (const j in that.item.Rate) {
           that.item.Rate[j] /= 1000
       }
-      that.item.JackPotRate /= 1000 //JackPot概率
+      //that.item.JackPotRate /= 1000 //JackPot概率
       that.item.JackpotCfg.JackpotBetMin /=1000
       for (const j in that.item.BetMoneyLevel) {
         that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -837,7 +846,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], JackPotRate: 10, MaxUserMoneyBet: 0, MaxMoneyBet: 100000, RobotBetOdds: 100 })
+      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], /*JackPotRate: 10, MaxUserMoneyBet: 0,*/ MaxMoneyBet: 100000, RobotBetOdds: 100 })
     },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)
