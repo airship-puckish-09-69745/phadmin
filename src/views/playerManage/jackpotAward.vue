@@ -234,7 +234,8 @@ export default {
         { 'value': 108, 'label': 'DropBall' },
         { 'value': 110, 'label': 'Video Poker' },
         { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
-        { 'value': 90, 'label': 'FortuneComing' }
+        { 'value': 90, 'label': 'FortuneComing' },
+        { 'value': 118, 'label': 'CarRacing' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
