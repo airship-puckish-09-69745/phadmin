@@ -175,7 +175,7 @@
 
 
     <el-dialog
-      v-if="searchForm.gameId === 150 && searchForm.level === 0"
+      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -357,7 +357,8 @@ export default {
         { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 90, 'label': 'FortuneComing' },
-        { 'value': 118, 'label': 'CarRacing' }
+        { 'value': 118, 'label': 'CarRacing' },
+        { 'value': 156, 'label': 'CrazyAce' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -529,6 +530,15 @@ export default {
           console.error("Error processing BetList:", error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
+      } else if (this.searchForm.gameId === 156) {
+        // 调用 getData() 获取 BetList 数组
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': 'GRAND' },
+          { 'value': 2, 'label': 'MAJOR' },
+          { 'value': 3, 'label': 'MINOR' },
+          { 'value': 4, 'label': 'MINI' }
+        ]
       } else {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
@@ -539,7 +549,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90) && this.searchForm.level === 0) {
+      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
           .filter(config => config.value !== 0) // 过滤掉 value 为 0 的选项
