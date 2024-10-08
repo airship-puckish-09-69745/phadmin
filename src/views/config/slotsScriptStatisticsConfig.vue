@@ -62,7 +62,7 @@
                   label="统计步数"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.Bet }}
+                    {{ scope.row.StepCfg }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -203,8 +203,8 @@ export default {
         Gid: 0,
         OddsList: [{MinOdds: 0, MaxOdds: 0}],
         Bet: 0,
-        openStatisticsBet: false,
-        StepCfg: 0,
+        openStatisticsBet:false,
+        StepCfg:0,
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -318,7 +318,7 @@ export default {
             for (let o of cfg) {
               console.log(o.OddsList)
               let bet = o.Bet
-              console.log("======", o.Gid, bet)
+              console.log("======",o.Gid,bet)
               for (let i = 0; i < o.OddsList.length; i++) {
                 o.OddsList[i].MaxOdds += parseInt(bet)
                 o.OddsList[i].MinOdds += parseInt(bet)
@@ -373,7 +373,7 @@ export default {
         cfg.push(item)
       }
       for (let o of cfg) {
-        let bet = o.Bet
+        let bet =  o.Bet
 
         for (let i = 0; i < o.OddsList.length; i++) {
           o.OddsList[i].MaxOdds -= parseInt(bet)
