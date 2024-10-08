@@ -80,7 +80,8 @@
           </el-select>
         </template>
         <template slot-scope="scope">
-          {{ clientDB.GetShowValue('MoneyType', scope.row.MoneyType) }}
+          <span v-if="isWalletType(scope.row.ActType)">/</span>
+          <span v-else> {{ clientDB.GetShowValue('MoneyType', scope.row.MoneyType) }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -416,6 +417,13 @@ export default {
         return this.gameMap[msg]
       }
       return msg
+    },
+    isWalletType(type) {
+      // 单一钱包类型
+      if (type === 2000 || type === 2001 || type === 2002 || type === 2003 || type === 2004 || type === 2005 || type === 2006 || type === 2007 || type === 2008 || type === 2009) {
+        return true
+      }
+      return false
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
