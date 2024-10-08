@@ -1257,7 +1257,7 @@ export default {
 
       if (this.editForm.whileList.type == 1) {
         // 如果开启白名单，则白名单不可为空
-        if (this.editForm.whileList.data = 0) {
+        if (this.editForm.whileList.data == "") {
           this.errMsg('白名单不可为空！')
           return false
         }

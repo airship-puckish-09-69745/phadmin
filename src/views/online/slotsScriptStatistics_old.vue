@@ -219,14 +219,14 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-              style="width: 700px"
+              style="width: 1000px"
 
             >
               <el-table-column label="Jackpot统计">
                 <el-table-column
                   prop="gid"
                   label="游戏"
-                  width="90px"
+                  width="140px"
                 >
                   <template slot-scope="scope">
                     <span v-for="(item, index) in gameOptions" :key="index">
@@ -238,6 +238,7 @@
                 <el-table-column
                   prop="app"
                   label="app"
+                  width="70px"
                 >
                   <template slot-scope="scope">
                     {{ scope.row.app }}
@@ -247,6 +248,7 @@
                 <el-table-column
                   prop="bet"
                   label="下注值"
+                  width="70px"
                 >
                   <template slot-scope="scope">
                     {{ scope.row.bet / 1000 }}
@@ -274,6 +276,7 @@
                 <el-table-column
                   prop="count"
                   label="发放次数"
+                  width="90px"
                 >
                 </el-table-column>
 
@@ -293,6 +296,16 @@
                 >
                   <template slot-scope="scope">
                     {{ (scope.row.countpro).toFixed(7) }}%
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="bet"
+                  label="当前奖池金额"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.pool/100000 }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -707,7 +720,8 @@ export default {
                     bet: parseInt(strings1[3]),
                     fee: 0,
                     count: 0,
-                    winmoney: 0
+                    winmoney: 0,
+                    pool: 0
                   }
                 }
                 if (strings1[6] === 'fee') {
@@ -716,6 +730,8 @@ export default {
                   slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].count = parseInt(response.Data['slotsJP'][gid][key])
                 } else if (strings1[6] === 'winmoney') {
                   slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].winmoney = parseInt(response.Data['slotsJP'][gid][key])
+                } else if (strings1[6] === 'pool') {
+                  slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].pool = parseInt(response.Data['slotsJP'][gid][key])
                 }
               }
             }
@@ -729,6 +745,7 @@ export default {
                 bet: slotsJPMap[gid][key].bet,
                 type: parseInt(key.split('_')[2]),
                 fee: slotsJPMap[gid][key].fee,
+                pool: slotsJPMap[gid][key].pool,
                 count: slotsJPMap[gid][key].count,
                 winmoney: slotsJPMap[gid][key].winmoney,
                 countpro: slotsJPMap[gid][key].count / slotsBetCountJPMap[gid][slotsJPMap[gid][key].app + '_' + slotsJPMap[gid][key].bet] * 100

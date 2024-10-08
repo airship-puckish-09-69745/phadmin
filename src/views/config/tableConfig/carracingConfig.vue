@@ -95,19 +95,21 @@
                     <el-input v-model.number="scope.row.MaxMoneyBet" size="mini" />
                   </template>
                   </el-table-column>
+
                   <el-table-column label="操作">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delRowBetMoneyLevel(scope.$index)">删除</el-button>
                     </template>
-
                   </el-table-column>
                 </el-table>
               </fieldset>
 
               <fieldset style="margin-top:10px">
+                <!--
                 <el-col :span="20">
                   <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddBetAreaOptions()">添加</el-button>
                 </el-col>
+                -->
                 <legend>中奖倍率配置
                 </legend>
                 <el-table
@@ -124,13 +126,18 @@
                       {{scope.row.Id}}
                     </template>
                   </el-table-column>
-                  <el-table-column label="Car" width="70px">
+                  <el-table-column label="Car" width="90px">
+                    <template slot-scope="scope">
+                      {{nameMap[scope.row.Id]}}
+                    </template>
+                    <!--
                     <template slot-scope="scope">
                       <el-image
                         style="width: 37px;height: 50px"
                         :src="getCardUrl(imgMap[scope.row.Id])"
                       />
                     </template>
+                  -->
                   </el-table-column>
 
                   <el-table-column label="中奖倍率">
@@ -142,12 +149,6 @@
                   <el-table-column label="图标个数">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].Count" size="mini" />
-                    </template>                    
-                  </el-table-column>
-
-                  <el-table-column label="轨道ID">
-                    <template slot-scope="scope">
-                      <el-input v-model="item.BetAreaOptions[scope.$index].Orbit" size="mini" />
                     </template>                    
                   </el-table-column>
 
@@ -163,13 +164,13 @@
                       </template>
                     </el-table-column>
                   </el-table-column>
-
+<!--
                   <el-table-column label="jackpot概率">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].JackPotRate" size="mini" />
                     </template>                    
                   </el-table-column>
-                  <!--
+                  
                   <el-table-column label="单个区域单个玩家最大下注额度">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxUserMoneyBet" size="mini" />
@@ -187,13 +188,13 @@
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].RobotBetOdds" size="mini" />
                     </template>
                   </el-table-column>
-
+                  <!--
                   <el-table-column label="操作" width="180px">
                     <template slot-scope="scope">
                       <el-button type="danger" size="mini" @click="delBetAreaOptions(scope.$index)">删除</el-button>
                     </template>
-
                   </el-table-column>
+                  -->
                 </el-table>
               </fieldset>
 
@@ -380,6 +381,15 @@
                 <el-col :span="8">
                   <el-form-item label="开奖最高开出显示奖池(%)："  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.ShowPoolLimitRate" size="mini" />
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+            <el-col :span="24" :offset="5">
+              <el-form :inline="true">
+                <el-col :span="8">
+                  <el-form-item label="jackpot中奖概率">
+                    <el-input v-model.number="JackpotCfg.JackPotRate" size="mini" ><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -632,6 +642,17 @@ export default {
         6:65, //马自达
         7:65, //本田
         8:65, //Gratis "重转"
+      },
+      nameMap:{
+        0:"兰博基尼",
+        1:"法拉利",
+        2:"宝马",
+        3:"奔驰",
+        4:"丰田",
+        5:"三菱",
+        6:"马自达",
+        7:"本田",
+        8:"Gratis",
       }
     }
   },
@@ -643,7 +664,7 @@ export default {
     this.getData()
   },
   methods: {
-
+    
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -658,19 +679,14 @@ export default {
         }
       }
       for (const o of  that.item.BetAreaOptions) {
-        o.MaxUserMoneyBet /= 1000
+        //o.MaxUserMoneyBet /= 1000
         o.MaxMoneyBet /= 1000
-        o.Odds /= 1000
-        const orbitList = []
-        for (const j of o.Orbit) {
-          orbitList.push(j)
-        }
-        o.Orbit = orbitList.join(',')
+        //o.Odds /= 1000
       }
       for (const j in that.item.Rate) {
           that.item.Rate[j] /= 1000
       }
-      that.item.JackPotRate /= 1000 //JackPot概率
+      //that.item.JackPotRate /= 1000 //JackPot概率
       that.item.JackpotCfg.JackpotBetMin /=1000
       for (const j in that.item.BetMoneyLevel) {
         that.item.BetMoneyLevel[j].MaxMoneyBet /= 1000
@@ -743,7 +759,6 @@ export default {
       })
     },
     getPostData() {
-      console.log("orbit => ", this.item.BetAreaOptions[0].Orbit)
       const ret = JSON.parse(JSON.stringify(this.item))
       console.log("上传====>",ret)
       
@@ -775,21 +790,10 @@ export default {
       }
 
       //赔率配置
-      let orbitItem = {}
       for (const o of ret.BetAreaOptions) {
-        o.MaxUserMoneyBet *= 1000
+        //o.MaxUserMoneyBet *= 1000
         o.MaxMoneyBet *= 1000
-        o.Odds *= 1000
-        orbitItem = []
-        if (o.Orbit instanceof Array) {
-          orbitItem = o.Orbit
-        } else {
-          for (const oElement of o.Orbit.split(',')) {
-            orbitItem.push(parseInt(oElement))
-          }
-        }
-        console.log("-------------------------", orbitItem)
-        o.Orbit = (orbitItem)
+        //o.Odds *= 1000
       }
       for (const i in this.item.Rate) {
           ret.Rate[i] *= 1000
@@ -842,7 +846,7 @@ export default {
           maxId = o.Id
         }
       }
-      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], Orbit:[0], JackPotRate: 10, MaxUserMoneyBet: 0, MaxMoneyBet: 100000, RobotBetOdds: 100 })
+      this.item.BetAreaOptions.push({ Id: maxId + 1, Odds: 1, Count: 0, Rate: [0, 0], /*JackPotRate: 10, MaxUserMoneyBet: 0,*/ MaxMoneyBet: 100000, RobotBetOdds: 100 })
     },
     delBetAreaOptions(index) {
       this.item.BetAreaOptions.splice(index, 1)

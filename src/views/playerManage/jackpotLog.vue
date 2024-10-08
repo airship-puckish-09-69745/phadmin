@@ -356,7 +356,8 @@ export default {
         { 'value': 110, 'label': 'VideoPoker' },
         { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
         { 'value': 150, 'label': 'SuperGemIII' },
-        { 'value': 90, 'label': 'FortuneComing' }
+        { 'value': 90, 'label': 'FortuneComing' },
+        { 'value': 118, 'label': 'CarRacing' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -465,6 +466,11 @@ export default {
           { 'value': 0, 'label': '全部' },
           { 'value': 2, 'label': 'EXPERT' },
           { 'value': 1, 'label': 'HIGH' }]
+      } else if (this.searchForm.gameId === 119) {
+        this.levelConfig = [
+          { 'value': 0, 'label': '全部' },
+          { 'value': 1, 'label': 'HIGH' }
+        ]
       } else if (this.searchForm.gameId === 106) {
         this.levelConfig = [
           { 'value': 0, 'label': '全部' },
@@ -642,7 +648,7 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
-      if (this.searchForm.gameId === 150) {
+      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90) {
         return parseInt(amount) / 100000
       }
       return parseInt(amount) / 1000

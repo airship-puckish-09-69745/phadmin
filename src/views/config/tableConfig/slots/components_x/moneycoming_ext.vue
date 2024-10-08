@@ -4,29 +4,29 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="260px">
 
-          <el-form-item label="jackport下注额5中奖倍数">
+          <el-form-item label="下注额5中奖Jackpot的概率">
             <el-input v-model="cfg.JackpotOdds5" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="jackport下注额5中奖倍数对应权重">
+          <el-form-item label="下注额5中奖Jackpot的概率对应权重">
             <el-input v-model="cfg.JackpotWeight5" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="jackport下注额10中奖倍数">
+          <el-form-item label="下注额10中奖Jackpot的概率">
             <el-input v-model="cfg.JackpotOdds10" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="jackport下注额10中奖倍数对应权重">
+          <el-form-item label="下注额10中奖Jackpot的概率对应权重">
             <el-input v-model="cfg.JackpotWeight10" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="jackport下注额50中奖倍数">
+          <el-form-item label="下注额50中奖Jackpot的概率">
             <el-input v-model="cfg.JackpotOdds50" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="jackport下注额50中奖倍数对应权重">
+          <el-form-item label="下注额50中奖Jackpot的概率对应权重">
             <el-input v-model="cfg.JackpotWeight50" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="jackport下注额10中奖倍数">
+          <el-form-item label="下注额100中奖Jackpot的概率">
             <el-input v-model="cfg.JackpotOdds100" placeholder="请输入内容,如5,10,15,50"> <template slot="append">多个用,号隔开</template> </el-input>
           </el-form-item>
-          <el-form-item label="jackport下注额10中奖倍数对应权重">
+          <el-form-item label="下注额100中奖Jackpot的概率对应权重">
             <el-input v-model="cfg.JackpotWeight100" placeholder="请输入内容,如10,10,10,10"> <template slot="append">如0.00040%填40，多个用,号隔开</template> </el-input>
           </el-form-item>
 

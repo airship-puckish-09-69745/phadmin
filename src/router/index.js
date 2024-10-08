@@ -852,6 +852,12 @@ export const asyncRoutes = [
             meta: { title: '剧本配置V2' }
           },
           {
+            path: 'slots_mission',
+            component: () => import('@/views/config/tableConfig/slots/slotsMission'),
+            name: 'slots_mission',
+            meta: { title: 'Slots任务配置' }
+          },
+          {
             path: 'slots_winner_record',
             component: () => import('@/views/config/tableConfig/slots/slots_winner_record'),
             name: 'slots_winner_record',
@@ -1330,6 +1336,12 @@ export const asyncRoutes = [
             meta: { title: 'Windrop ◐', gid: 103 }
           },
           {
+            path: 'playlog_windropc',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_windropc',
+            meta: { title: 'Windrop积分 ◐', gid: 119 }
+          },
+          {
             path: 'playlog_piggy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_piggy',
@@ -1369,7 +1381,7 @@ export const asyncRoutes = [
             path: 'playlog_carracing',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_carracing',
-            meta: { title: 'carracing ◐', gid: 118 }
+            meta: { title: 'Carracing ◐', gid: 118 }
           }
         ]
       },
