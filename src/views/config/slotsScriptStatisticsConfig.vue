@@ -58,6 +58,14 @@
                   </template>
                 </el-table-column>
                 <el-table-column
+                  prop="StepCfg"
+                  label="统计步数"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.Bet }}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="Gid"
                   label="区间"
                   width="1100"
@@ -120,6 +128,9 @@
         </el-form-item>
         <el-form-item label="基础投注">
           <el-input v-model="item.Bet"></el-input>
+        </el-form-item>
+        <el-form-item label="统计步数">
+          <el-input v-model="item.StepCfg"></el-input>
         </el-form-item>
         <el-form-item label="">
         </el-form-item>
@@ -192,7 +203,8 @@ export default {
         Gid: 0,
         OddsList: [{MinOdds: 0, MaxOdds: 0}],
         Bet: 0,
-        openStatisticsBet:false,
+        openStatisticsBet: false,
+        StepCfg: 0,
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -306,7 +318,7 @@ export default {
             for (let o of cfg) {
               console.log(o.OddsList)
               let bet = o.Bet
-              console.log("======",o.Gid,bet)
+              console.log("======", o.Gid, bet)
               for (let i = 0; i < o.OddsList.length; i++) {
                 o.OddsList[i].MaxOdds += parseInt(bet)
                 o.OddsList[i].MinOdds += parseInt(bet)
@@ -361,7 +373,7 @@ export default {
         cfg.push(item)
       }
       for (let o of cfg) {
-        let bet =  o.Bet
+        let bet = o.Bet
 
         for (let i = 0; i < o.OddsList.length; i++) {
           o.OddsList[i].MaxOdds -= parseInt(bet)
