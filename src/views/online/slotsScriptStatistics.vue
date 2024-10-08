@@ -660,7 +660,6 @@ export default {
                 })
               }
             } else if (strings1[0] === 'jackpot') {
-              var strings1 = key.split('_')
               if (strings1[5] === 'count') {
                 betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['jackpot'][key])
               } else {
