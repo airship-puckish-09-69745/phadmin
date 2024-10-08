@@ -137,8 +137,14 @@ export const asyncRoutes = [
         meta: { title: 'Crash - 概率监控 ◐' }
       },
       {
-        path: 'slotsScriptStatistics',
+        path: 'slotsScriptStatistics_old',
         component: () => import('@/views/online/slotsScriptStatistics_old.vue'),
+        name: 'slotsScriptStatistics_old',
+        meta: { title: 'Slots剧本监控(旧)', noCache: true }
+      },
+      {
+        path: 'slotsScriptStatistics',
+        component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
         meta: { title: 'Slots剧本监控', noCache: true }
       },
