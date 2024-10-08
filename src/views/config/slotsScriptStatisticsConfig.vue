@@ -130,7 +130,7 @@
           <el-input v-model="item.Bet"></el-input>
         </el-form-item>
         <el-form-item label="统计步数">
-          <el-input v-model="item.StepCfg"></el-input>
+          <el-input v-model.number="item.StepCfg"></el-input>
         </el-form-item>
         <el-form-item label="">
         </el-form-item>
@@ -203,7 +203,6 @@ export default {
         Gid: 0,
         OddsList: [{MinOdds: 0, MaxOdds: 0}],
         Bet: 0,
-        openStatisticsBet:false,
         StepCfg:0,
       },
       selectGameVisible: false,
