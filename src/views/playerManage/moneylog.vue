@@ -80,7 +80,8 @@
           </el-select>
         </template>
         <template slot-scope="scope">
-          {{ clientDB.GetShowValue('MoneyType', scope.row.MoneyType) }}
+          <span v-if="isWalletType(scope.row.ActType)">/</span>
+          <span v-else> {{ clientDB.GetShowValue('MoneyType', scope.row.MoneyType) }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -321,13 +322,14 @@ const filterMap = {
     72: 'MTT比赛奖励',
     2000:'下注',
     2001:'单一钱包登录',
-    2002:'刷新',
-    2003:'回合结束',
-    2004: '回退',
-    2005: '增值',
-    2006: '转出',
+    2002:'刷新金额',
+    2003:'派奖',
+    2004: '回退订单',
+    2005: '增值业务',
+    2006: '从平台转出',
     2007: '内部结算',
-    2008: '游戏结算'
+    2008: '平台结算汇总+刷新金额',
+    2009: '转入平台'
   }
 }
 
@@ -411,10 +413,17 @@ export default {
     },
     getActName(type, msg) {
       // 单一钱包类型
-      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006 || type == 2007 || type == 2008) {
+      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006 || type == 2007 || type == 2008 || type == 2009) {
         return this.gameMap[msg]
       }
       return msg
+    },
+    isWalletType(type) {
+      // 单一钱包类型
+      if (type === 2000 || type === 2001 || type === 2002 || type === 2003 || type === 2004 || type === 2005 || type === 2006 || type === 2007 || type === 2008 || type === 2009) {
+        return true
+      }
+      return false
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {

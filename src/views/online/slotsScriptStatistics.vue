@@ -660,25 +660,23 @@ export default {
                 })
               }
             } else if (strings1[0] === 'jackpot') {
-              var strings1 = key.split('_')
               if (strings1[5] === 'count') {
-                betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['jackpot'][key])
+                betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['script'][key])
               } else {
                 if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0 }
                 }
                 if (strings1[7] === 'fee') {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['jackpot'][key])
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['script'][key])
                 } else if (strings1[7] === 'count') {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['jackpot'][key])
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['script'][key])
                 } else if (strings1[7] === 'winmoney') {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['jackpot'][key])
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['script'][key])
                 }
               }
             }
           }
 
-          console.log(scriptMap)
           for (const key in scriptMap) {
             stepTableData.push({
               gid: scriptMap[key].gid,
