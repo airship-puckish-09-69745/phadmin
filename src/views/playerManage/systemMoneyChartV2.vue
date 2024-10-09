@@ -348,7 +348,7 @@ export default {
         107: 'Baccarat',
         108: 'Dropball',
         110: 'VideoPoker',
-        111: 'QiuQiu',
+        111: 'Domino QiuQiu',
         112: 'Wingo',
         113: 'PusoySwap',
         115: 'Multi NiuNiu',
