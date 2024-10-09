@@ -210,7 +210,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="13" :offset="1" v-if="queryGid === 150">
+          <el-col :span="13" :offset="1" v-if="queryGid === 150  || queryGid === 90">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"

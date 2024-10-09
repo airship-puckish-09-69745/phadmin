@@ -41,53 +41,60 @@
         </el-tab-pane>
 
         <el-tab-pane label="下注倍数配置">
-          <el-table
-            :data="BetCfg"
-            border
-            style="width: 100%"
-          >
-            <el-table-column
-              label="牌型"
-              prop="CardType"
-              width="200"
+          <el-form ref="BetCfg" v-model="BetCfg" label-width="150px">
+            <el-table
+              :data="BetCfg"
+              border
+              style="width: 100%"
+              :cell-style="libShow.DefaultTableCell"
             >
-              <template slot-scope="scope">
-                {{ CardTypeNames[scope.row.CardType] }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="倍率1"
-              width="200"
-            >
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.Odds1" size="mini"><template slot="append">‰</template></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="倍率2"
-              width="200"
-            >
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.Odds2" size="mini"><template slot="append">‰</template></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="倍率3"
-              width="200"
-            >
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.Odds3" size="mini"><template slot="append">‰</template></el-input>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="倍率4"
-              width="200"
-            >
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.Odds4" size="mini"><template slot="append">‰</template></el-input>
-              </template>
-            </el-table-column>
-          </el-table>
+              <el-table-column
+                prop="CardType"
+                label="牌型"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  {{ CardTypeNames[scope.row.CardType] }}
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Odds1"
+                label="倍率1"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Odds1" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">‰</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Odds2"
+                label="倍率2"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Odds2" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">‰</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Odds3"
+                label="倍率3"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Odds3" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">‰</template></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="Odds4"
+                label="倍率4"
+                width="200"
+              >
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.Odds4" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">‰</template></el-input>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
         </el-tab-pane>
       </el-tabs>
     </el-row>
@@ -108,7 +115,7 @@ import Publish from '@/components/Publish/index.vue'
 import request from '@/utils/request'
 import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
-import { DataRule } from '@/utils/common'
+import {$libShow, DataRule} from '@/utils/common'
 
 export default {
   components: { Compare, Publish },
@@ -118,6 +125,7 @@ export default {
       form: {
         Data: {}
       },
+      libShow: $libShow,
 
       item: {
         EnableRobot: 0,
@@ -200,11 +208,12 @@ export default {
             $this.item.ExitDelayMin /= 1000
             $this.item.ExitDelayMax /= 1000
             $this.BetCfg = []
+            let betCfg = []
 
             for (let i = 0; i < $this.item.BetCfg.length; i++) {
               const one = $this.item.BetCfg[i]
-              if ($this.BetCfg[one.CardType] === undefined) {
-                $this.BetCfg[one.CardType] = {
+              if (betCfg[one.CardType] === undefined) {
+                betCfg[one.CardType] = {
                   CardType: one.CardType,
                   Odds1: 0,
                   Odds2: 0,
@@ -213,8 +222,14 @@ export default {
                 }
               }
 
-              $this.BetCfg[one.CardType]['Odds' + one.OddsBet] = one.Probability
+              betCfg[one.CardType]['Odds' + one.OddsBet] = one.Probability
             }
+
+            for (const o in betCfg) {
+              $this.BetCfg.push(betCfg[o])
+            }
+
+            console.log('BetCfg:', $this.BetCfg)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
           }
