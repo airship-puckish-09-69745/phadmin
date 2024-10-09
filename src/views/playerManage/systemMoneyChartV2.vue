@@ -447,7 +447,7 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160)
         }
