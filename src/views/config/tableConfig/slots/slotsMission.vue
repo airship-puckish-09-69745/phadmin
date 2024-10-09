@@ -27,6 +27,9 @@
               <template slot="append">%</template>
             </el-input>
           </el-descriptions-item>
+          <el-descriptions-item label="增长保底系数(放大100倍)">
+            <el-input v-model.number="cfgData.Newbie.RiseRateMin" size="mini" />
+          </el-descriptions-item>
           <el-descriptions-item label="难度系数(放大100倍)">
             <el-input v-model.number="cfgData.Newbie.Degree" size="mini" />
           </el-descriptions-item>
