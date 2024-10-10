@@ -824,7 +824,11 @@
                       </el-select>
                     </el-form-item>
                   </el-row>
-
+                  <el-row >
+                    <el-form-item label="每x个小球开一次手机：">
+                      <el-input v-model.number="item.ItemFullProgress" placeholder="" />
+                    </el-form-item>
+                  </el-row>
                   <el-row v-if="envProjectName!='ph_audit'">
                     <el-form-item label="转盘小游戏能量转化率：">
                       <el-input v-model.number="item.EnergyTransferRate" placeholder="" />‱（万分比）
@@ -1247,6 +1251,7 @@ export default {
             LuckyJPInitMoney: 0,
             LuckyJPOdds: 0,
             EnergyNum: 0,
+            ItemFullProgress: 0,
             EnergyTransferRate: 0,
             LuckyJPTransferRate: 0,
             LuckyJPKey: '',
@@ -1489,6 +1494,7 @@ export default {
           },
           {
             Level: 2,
+            ItemFullProgress: 0,
             LuckyJPInitMoney: 100000,
             LuckyJPOdds: 50,
             LuckyJPTransferRate: 3,
@@ -1730,6 +1736,7 @@ export default {
           },
           {
             Level: 3,
+            ItemFullProgress: 0,
             LuckyJPInitMoney: 100000,
             LuckyJPOdds: 50,
             LuckyJPTransferRate: 3,

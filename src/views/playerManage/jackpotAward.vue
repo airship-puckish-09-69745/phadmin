@@ -105,7 +105,7 @@
       />
       <el-table-column
         prop="AwardType"
-        label="场次类型"
+        label="JpLevel"
         width="100"
       >
         <template slot-scope="{row}">
@@ -114,7 +114,7 @@
       </el-table-column>
       <el-table-column
         prop="AwardType"
-        label="奖池类型"
+        label="JpType"
         width="100"
       >
         <template slot-scope="{row}">
@@ -142,11 +142,12 @@
       </el-table-column>
       <el-table-column
         prop="AwardNum"
-        label="奖励金额"
+        label="奖励数额"
         width="100"
       >
         <template slot-scope="{row}">
-          {{ toRupee(row.AwardNum) }}
+          <div v-if="row.AwardType>10000">{{ row.AwardNum }}</div>
+          <div v-else>{{ toRupee(row.AwardNum) }}</div>
         </template>
       </el-table-column>
       <el-table-column
@@ -249,7 +250,8 @@ export default {
         { 'value': 1, 'label': '一等奖' },
         { 'value': 2, 'label': '二等奖' },
         { 'value': 3, 'label': '三等奖' },
-        { 'value': 4, 'label': '阳光普照' }
+        { 'value': 4, 'label': '阳光普照' },
+        { 'value': 10001, 'label': '实物手机' }
       ],
       tableData: [],
       totalCount: 0,
@@ -419,7 +421,7 @@ export default {
     },
     // 获取操作类型
     getAwardTypeName(awardType) {
-      var name = ''
+      var name = awardType
       for (let i = 0; i < this.awardTypeConfig.length; i++) {
         if (awardType == this.awardTypeConfig[i].value) {
           name = this.awardTypeConfig[i].label
