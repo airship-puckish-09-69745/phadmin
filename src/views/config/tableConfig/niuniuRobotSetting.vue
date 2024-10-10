@@ -8,33 +8,69 @@
       <br>
       <el-tabs type="border-card">
         <el-tab-pane label="基础配置">
-          <el-row>
-            <el-col :span="8">
+          <el-row :gutter="5">
+            <el-col :span="16">
               <el-form ref="item" label-width="220px">
-                <el-form-item label="机器人开关：" :rules="dataRule(true,{type:'n',range:'0'})">
-                  <el-switch v-model="item.EnableRobot" :active-value="1" :inactive-value="0" />
-                </el-form-item>
-                <el-form-item label="最多机器人数">
-                  <el-input v-model.number="item.MaxRobotUserNum" size="mini"><template slot="append">人</template></el-input>
-                </el-form-item>
-                <el-form-item label="最小玩牌局数">
-                  <el-input v-model.number="item.PlayTimesMin" size="mini"><template slot="append">局</template></el-input>
-                </el-form-item>
-                <el-form-item label="最大玩牌局数">
-                  <el-input v-model.number="item.PlayTimesMax" size="mini"><template slot="append">局</template></el-input>
-                </el-form-item>
-                <el-form-item label="最小延迟进桌">
-                  <el-input v-model.number="item.EnterDelayMin" size="mini"><template slot="append">秒</template></el-input>
-                </el-form-item>
-                <el-form-item label="最大延迟进桌">
-                  <el-input v-model.number="item.EnterDelayMax" size="mini"><template slot="append">秒</template></el-input>
-                </el-form-item>
-                <el-form-item label="最小延迟退桌">
-                  <el-input v-model.number="item.ExitDelayMin" size="mini"><template slot="append">秒</template></el-input>
-                </el-form-item>
-                <el-form-item label="最大延迟退桌">
-                  <el-input v-model.number="item.ExitDelayMax" size="mini"><template slot="append">秒</template></el-input>
-                </el-form-item>
+                <el-row>
+                  <el-form-item label="机器人开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-switch v-model="item.EnableRobot" :active-value="1" :inactive-value="0" />
+                  </el-form-item>
+                  <el-col :span="12">
+                    <el-form-item label="最多机器人数">
+                      <el-input v-model.number="item.MaxRobotUserNum" size="mini"><template slot="append">人</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-col :span="12">
+                  <el-form-item label="有3真人时最少多玩局数">
+                    <el-input v-model.number="item.IncrPlayTimesMin" size="mini"><template slot="append">局</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="有3真人时最多多玩局数">
+                    <el-input v-model.number="item.IncrPlayTimesMax" size="mini"><template slot="append">局</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最小玩牌局数">
+                    <el-input v-model.number="item.PlayTimesMin" size="mini"><template slot="append">局</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最大玩牌局数">
+                    <el-input v-model.number="item.PlayTimesMax" size="mini"><template slot="append">局</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最小延迟进桌">
+                    <el-input v-model.number="item.EnterDelayMin" size="mini"><template slot="append">秒</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最大延迟进桌">
+                    <el-input v-model.number="item.EnterDelayMax" size="mini"><template slot="append">秒</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最小延迟退桌">
+                    <el-input v-model.number="item.ExitDelayMin" size="mini"><template slot="append">秒</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最大延迟退桌">
+                    <el-input v-model.number="item.ExitDelayMax" size="mini"><template slot="append">秒</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最少增加余额">
+                    <el-input v-model.number="item.IncrMoneyRateMin" size="mini"><template slot="append">％</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最多增加余额">
+                    <el-input v-model.number="item.IncrMoneyRateMax" size="mini"><template slot="append">％</template></el-input>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -132,10 +168,14 @@ export default {
         MaxRobotUserNum: 1,
         PlayTimesMin: 0,
         PlayTimesMax: 0,
+        IncrPlayTimesMin: 0,
+        IncrPlayTimesMax: 0,
         EnterDelayMin: 2,
         EnterDelayMax: 8,
         ExitDelayMin: 6,
         ExitDelayMax: 10,
+        IncrMoneyRateMin: 0,
+        IncrMoneyRateMax: 0,
         BetCfg: [
           { CardType: 100, OddsBet: 1, Probability: 0 },
           { CardType: 100, OddsBet: 2, Probability: 0 },

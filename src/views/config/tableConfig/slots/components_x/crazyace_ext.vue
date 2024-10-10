@@ -29,7 +29,7 @@
           </el-form-item>
 
           <el-form-item label="发放JP中奖比例">
-            <el-input v-model="cfg.JackpotMultiStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.JackpotMultiStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接单位%</template> </el-input>
           </el-form-item>
 
           <el-form-item label="JP抽水比例" prop="JackpotFeeRate" :rules="dataRule(true,{type:'n'})">
@@ -38,6 +38,10 @@
 
           <el-form-item label="JP抽水权重">
             <el-input v-model="cfg.JackpotFeeWeightStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="JP奖池滚动比例" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.JackpotShowPoolRate" placeholder="请输入内容,如2"><template slot="append">%</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
