@@ -335,6 +335,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/niuniuRobotSetting'),
                 name: 'niuniuRobotSetting',
                 meta: { title: 'NiuNiu AI ◐' }
+              },
+              {
+                path: 'niuniuAIList',
+                component: () => import('@/views/config/tableConfig/niuniuAIListConfig'),
+                name: 'niuniuAIList',
+                meta: { title: 'NiuNiuAI-List ◐' }
               }
             ]
           },
