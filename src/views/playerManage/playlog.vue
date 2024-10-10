@@ -1285,6 +1285,16 @@
 
         <el-table-column
           prop="Score"
+          label="JpLevel"
+          width="120"
+        >
+          <template slot-scope="scope">
+            <span v-html="formatNumber(scope.row.JpLevel)" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="Score"
           label="JpType"
           width="120"
         >
@@ -1295,7 +1305,7 @@
 
         <el-table-column
           prop="Score"
-          label="Jp金币"
+          label="Jp数额"
           width="120"
         >
           <template slot-scope="scope">
@@ -3372,6 +3382,7 @@ export default {
             SpinOdd: bouns.spinOdd,
             SpinScore: bouns.spinScore,
             Score: bouns.score,
+            JpLevel: bouns.jpLevel,
             JpType: bouns.jpType,
             Jackpot: bouns.jackpot,
             TracksPos: tracksPos
