@@ -1309,7 +1309,11 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.Jackpot /1000)" />
+            <span v-if="scope.row.JpType>10000">
+              {{formatNumber(scope.row.Jackpot)}}
+            </span>
+            <span v-else v-html="formatNumber(scope.row.Jackpot /1000)" />
+
           </template>
         </el-table-column>
 
