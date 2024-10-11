@@ -86,6 +86,8 @@
             <template slot-scope="scope">
               <span v-if="scope.row.BetAmount> 0 && scope.row.LogType !== 4 "> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
               <span v-else-if="scope.row.RollMoney>  0 && scope.row.LogType !== 4"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
+              <span v-else-if="scope.row.TotalPayoffAmount>  0 && scope.row.LogType == 11"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
+              <span v-else-if="scope.row.TotalPayoffAmount>  0 && scope.row.LogType == 12"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
               <span v-else>{{0}}</span>
             </template>
           </el-table-column>
@@ -202,6 +204,8 @@ export default {
         2007 :'内部结算',
         2008 :'游戏结算',
         2009 :'转入',
+        2010 :'比赛报名',
+        2011 :'比赛结束',
       },
       logTypeMap:{
         1: '登录日志',
@@ -214,6 +218,8 @@ export default {
         8 :'内部结算',
         9 :'游戏结算',
         10 :'转入',
+        11 :'比赛报名',
+        12 :'比赛结束',
       },
       totalCount: 2,
     }
@@ -313,6 +319,8 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameMap[response.Data[i].Gid] = response.Data[i].Name
           }
+		  //todo 临时添加比赛 -- chb
+		  this.gameMap[2031] = 'Tongits-Mtt'
         }
       })
     },
