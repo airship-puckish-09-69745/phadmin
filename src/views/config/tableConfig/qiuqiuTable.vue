@@ -150,7 +150,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="自动买入比例(%)：" :required="true" prop="item.AutoBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="自动买入倍率（×前注）：" :required="true" prop="item.AutoBuyRatio" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.AutoBuyRatio" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -159,7 +159,7 @@
         <el-row>
 
           <el-col :span="11">
-            <el-form-item label="默认买入倍率：" prop="item.WatchTimesMax" :rules="dataRule(true,{type:'n',range:'2'})">
+            <el-form-item label="默认买入倍率（×前注）：" prop="item.WatchTimesMax" :rules="dataRule(true,{type:'n',range:'2'})">
               <el-input v-model.number="edit.item.RecommendBuyRatio" placeholder="请输入" />
             </el-form-item>
           </el-col>
