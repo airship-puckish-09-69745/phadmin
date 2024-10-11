@@ -28,7 +28,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8" :offset="1">
-                    <el-form-item label="用户长时间未敲击提示 提示10s后未选择服务器会踢出玩家">
+                    <el-form-item label="用户长时间未敲击提示(提示10s后未选择服务器会踢出玩家)">
                       <el-input v-model.number="item.NoticeTime" size="mini" >
                       <template slot="append">s</template>
                       </el-input>
