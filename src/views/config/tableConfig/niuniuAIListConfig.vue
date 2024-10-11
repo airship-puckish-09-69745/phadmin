@@ -22,7 +22,7 @@
       </el-col> -->
     </el-row>
     <div style="padding-top: 10px">
-      <el-col span="16">
+      <el-col :span="16">
         <el-descriptions
           class="margin-top"
           :column="4"
@@ -141,12 +141,6 @@
             </span>
           </template>
         </el-table-column>
-
-        <el-table-column
-          prop="currentGame"
-          label="游戏"
-          width="80"
-        />
 
         <el-table-column
           prop="allowTableMoney"
@@ -600,47 +594,6 @@ export default {
           Message.success('添加成功！')
         }
       })
-    },
-    // excel处理逻辑
-    importData() {
-      if (this.fileName === '') {
-        Message.info('您需要先上传excel文件')
-        return
-      }
-      const $this = this
-      request({
-        url: '/slotsActConfig/import/excel',
-        method: 'post',
-        data: {
-          Gid: this.edit.item.Gid,
-          FileName: this.edit.fileName
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const items = response.Data
-          $this.edit.item.Acts = items
-          const rets = []
-          for (let i = 0; i < items.length; i++) {
-            const rows = items[i]
-            const newRow = []
-            for (let j = 0; j < rows[0].length; j++) {
-              const newCols = [j + 1]
-              for (let r = 0; r < rows.length; r++) {
-                newCols.push(rows[r][j])
-              }
-              newRow.push(newCols)
-            }
-            rets.push(newRow)
-          }
-          $this.edit.showActs = rets
-          $this.edit.isNewImport = true
-          Message.success('导入数据成功！')
-        }
-      })
-    },
-    handleSuccess(rsp, file, fileList) {
-      this.edit.fileName = rsp.Data
-      this.importData()
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
