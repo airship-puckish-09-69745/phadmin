@@ -1199,7 +1199,7 @@
     <el-dialog
       title="Windropc详情"
       :visible.sync="WindropcGameVisible"
-      width="60%"
+      width="65%"
     >
       <br>
       <el-descriptions
@@ -1217,6 +1217,8 @@
         <el-descriptions-item label="当前能量">{{ WindropcGameResult.CurEnergy /1000 }}</el-descriptions-item>
         <el-descriptions-item label="能量奖励">{{ WindropcGameResult.EnergyNum <1000 ? WindropcGameResult.EnergyNum+' 球' : WindropcGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
         <el-descriptions-item label="Spin总次数">{{ WindropcGameResult.SpinCount }}</el-descriptions-item>
+        <el-descriptions-item label="开始时间">{{ formatTime(WindropcGameResult.StartTime) }}</el-descriptions-item>
+        <el-descriptions-item label="结束时间">{{ formatTime(WindropcGameResult.FinishTime) }}</el-descriptions-item>
       </el-descriptions>
       <br>
       <el-table
@@ -1315,6 +1317,10 @@
             <span v-else v-html="formatNumber(scope.row.Jackpot /1000)" />
 
           </template>
+        </el-table-column>
+
+        <el-table-column prop="cards" label="下注时间" width="110px">
+          <template slot-scope="scope"> {{ formatHMSTime(scope.row.BallTime/1000) }}.{{ scope.row.BallTime%1000 }}  </template>
         </el-table-column>
 
         <el-table-column
@@ -3389,6 +3395,7 @@ export default {
             JpLevel: bouns.jpLevel,
             JpType: bouns.jpType,
             Jackpot: bouns.jackpot,
+            BallTime: bouns.ballTime,
             TracksPos: tracksPos
           }
         }
