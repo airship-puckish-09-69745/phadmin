@@ -422,7 +422,8 @@ export default {
     },
     isWalletType(type) {
       // 单一钱包类型
-      if (type === 2000 || type === 2001 || type === 2002 || type === 2003 || type === 2004 || type === 2005 || type === 2006 || type === 2007 || type === 2008 || type === 2009) {
+      if (type === 2000 || type === 2001 || type === 2002 || type === 2003 || type === 2004 || type === 2005 || type === 2006 || 
+      type === 2007 || type === 2008 || type === 2009 || type === 2010 || type == 2011) {
         return true
       }
       return false
@@ -892,6 +893,8 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameMap[response.Data[i].Gid] = response.Data[i].Name
           }
+          //todo 比赛游戏临时添加
+          this.gameMap[2031] = "TongitsMtt"
         }
       })
     },
