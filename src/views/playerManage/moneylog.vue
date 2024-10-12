@@ -332,7 +332,21 @@ const filterMap = {
     2009: '转入平台',
     2010: '比赛报名',
     2011: '比赛结束',
-  }
+  },
+  walletType:[ //钱包金流类型
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+  ],
 }
 
 function newChartData() {
@@ -358,7 +372,8 @@ export default {
       search: '',
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
-      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,2000,2001,2002,2003,2004,2005,2006,2007,2008],
+      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,
+      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011],
 
       item: {
         Uid: 0
@@ -415,18 +430,14 @@ export default {
     },
     getActName(type, msg) {
       // 单一钱包类型
-      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006 || type == 2007 || type == 2008 || type == 2009) {
+      if ( this.isWalletType(type) ) {
         return this.gameMap[msg]
       }
       return msg
     },
     isWalletType(type) {
       // 单一钱包类型
-      if (type === 2000 || type === 2001 || type === 2002 || type === 2003 || type === 2004 || type === 2005 || type === 2006 || 
-      type === 2007 || type === 2008 || type === 2009 || type === 2010 || type == 2011) {
-        return true
-      }
-      return false
+      return this.walletType.indexOf(type) >= 0;
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
