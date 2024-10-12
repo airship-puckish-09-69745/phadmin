@@ -249,9 +249,11 @@ export default {
 
           const buyFreeMap = {}
           const openGames = {}
+          const betRequiredMap = {}
           for (const k in o.BuyFreeList) {
             buyFreeMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BuyFreeRtpRate
             openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
+            betRequiredMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BetRequiredOdds
           }
           // console.log(buyFreeMap)
           o.BuyFreeList = []
@@ -261,7 +263,7 @@ export default {
             if (buyFreeMap[this.games[k]] !== undefined) {
               rate = buyFreeMap[this.games[k]]
             }
-            o.BuyFreeList.push({ "SlotsType": this.games[k], "Open": openGames[this.games[k]], "BuyFreeRtpRate": rate })
+            o.BuyFreeList.push({ "SlotsType": this.games[k], "Open": openGames[this.games[k]], "BuyFreeRtpRate": rate, "BetRequiredOdds": betRequiredMap[this.games[k]] })
           }
 
           this.cfgData = o
