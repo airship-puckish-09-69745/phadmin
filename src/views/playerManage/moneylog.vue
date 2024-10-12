@@ -332,21 +332,7 @@ const filterMap = {
     2009: '转入平台',
     2010: '比赛报名',
     2011: '比赛结束',
-  },
-  walletType:[ //钱包金流类型
-    2000,
-    2001,
-    2002,
-    2003,
-    2004,
-    2005,
-    2006,
-    2007,
-    2008,
-    2009,
-    2010,
-    2011,
-  ],
+  }
 }
 
 function newChartData() {
@@ -395,7 +381,21 @@ export default {
         '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha',
         '糖果传奇Way', '糖果传奇Allline', 'CandyCrazeMars', 'CandyCraze', 'SuperGems', 'SuperGemsMars', 'Millionaire', 'MillionaireMars', // 别加后面，这行老虎机的
         'sicbo', 'Hilo'],
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll'])
+      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll']),
+      walletType:[ //钱包金流类型
+        2000,
+        2001,
+        2002,
+        2003,
+        2004,
+        2005,
+        2006,
+        2007,
+        2008,
+        2009,
+        2010,
+        2011,
+      ],
     }
   },
   computed: {
