@@ -271,6 +271,8 @@ export default {
           return '阿拉丁神灯'
         case 154:
           return 'GrandAce'
+        case 156:
+          return 'CrazyAce'
         case 160:
           return 'GigaAce'
       }
