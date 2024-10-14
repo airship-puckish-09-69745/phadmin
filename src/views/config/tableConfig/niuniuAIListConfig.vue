@@ -366,6 +366,31 @@ export default {
     refresh() {
       this.getList()
     },
+    getData() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log('sign reward', response)
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            $this.item = JSON.parse(response.Data.Data)
+            $this.showData = []
+            for (const i in this.item.TableMoneyList) {
+              this.item.TableMoneyList[i] /= 1000
+            }
+            this.betMoneyList = this.item.TableMoneyList ? this.item.TableMoneyList.join(',') : this.betMoneyList
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(response.Data.Data)
+          }
+        }
+      })
+    },
     getPostData() {
       const ret = {}
       const items = this.betMoneyList.split(',')
