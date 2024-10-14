@@ -296,6 +296,16 @@
                   </template>
                 </el-table-column>
               </el-table-column>
+
+              <el-table-column
+                prop="bet"
+                label="当前奖池金额"
+                width="120px"
+              >
+                <template slot-scope="scope">
+                  {{ scope.row.pool/100000 }}
+                </template>
+              </el-table-column>
             </el-table>
             <el-row>
               <el-col :span="5">
@@ -664,7 +674,7 @@ export default {
                 betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['script'][key])
               } else {
                 if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0 }
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0, pool: 0 }
                 }
                 if (strings1[7] === 'fee') {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['script'][key])
@@ -672,6 +682,8 @@ export default {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['script'][key])
                 } else if (strings1[7] === 'winmoney') {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'pool') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].pool = parseInt(response.Data['script'][key])
                 }
               }
             }
@@ -697,7 +709,8 @@ export default {
               fee: jackpotMap[key].fee,
               count: jackpotMap[key].count,
               winmoney: jackpotMap[key].winmoney,
-              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].app + '_' + jackpotMap[key].bet] * 100
+              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].app + '_' + jackpotMap[key].bet] * 100,
+              pool: jackpotMap[key].pool
             })
           }
         }
