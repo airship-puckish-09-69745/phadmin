@@ -210,7 +210,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="13" :offset="1" v-if="queryGid === 150  || queryGid === 90">
+          <el-col :span="13" :offset="1" v-if="queryGid === 150 || queryGid === 90 || queryGid === 156">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -295,16 +295,16 @@
                     {{ (scope.row.countpro).toFixed(7) }}%
                   </template>
                 </el-table-column>
-              </el-table-column>
 
-              <el-table-column
-                prop="bet"
-                label="当前奖池金额"
-                width="120px"
-              >
-                <template slot-scope="scope">
-                  {{ scope.row.pool/100000 }}
-                </template>
+                <el-table-column
+                  prop="bet"
+                  label="当前奖池金额"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.pool/100000 }}
+                  </template>
+                </el-table-column>
               </el-table-column>
             </el-table>
             <el-row>
