@@ -355,6 +355,7 @@ export default {
     }
   },
   created() {
+    this.getData()
     this.getList()
     this.isDisabled = false
     console.log(1)
