@@ -360,6 +360,9 @@ export default {
     console.log(1)
   },
   methods: {
+    getFullKey() {
+      return 'CustomizeCfg_' + this.subKey
+    },
     refresh() {
       this.getList()
     },
