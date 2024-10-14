@@ -1,5 +1,22 @@
 <template>
   <div class="app-container" style="padding: 10px">
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    <el-row :gutter="10" style="margin-top: 30px">
+      <el-col :offset="3" :span="16">
+        <el-button size="mini" type="primary" @click="setData">保存</el-button>
+        <el-form ref="form" :model="item" label-position="left" style="margin-top: 30px">
+          <el-row>
+            <el-col>
+              <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" :required="true">
+                <el-col>
+                  <el-input v-model="betMoneyList" size="mini" :required="true" />
+                </el-col>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-col>
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
         添加机器人
@@ -328,6 +345,7 @@ export default {
       },
       statItem: { money: 0, initMoney: 0 },
       txt: '',
+      subKey: 'niuniu_ai_list_cfg'
     }
   },
 
@@ -354,6 +372,28 @@ export default {
       }
       Object.assign(ret, this.item)
       return ret
+    },
+    setData() {
+      this.form.Data = JSON.stringify(this.getPostData())
+      const $this = this
+      // 设置修改后数据
+      this.$refs.compare.SetNewVal(this.form.Data)
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: $this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('sign reward save', response)
+            Message.success('保存成功')
+          }
+        })
+      })
     },
     handlePreOn(ob) {
       console.log(ob.uid)
