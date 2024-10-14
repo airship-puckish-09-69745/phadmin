@@ -226,7 +226,7 @@
                 <el-table-column
                   prop="gid"
                   label="游戏"
-                  width="90px"
+                  width="140px"
                 >
                   <template slot-scope="scope">
                     <span v-for="(item, index) in gameOptions" :key="index">
