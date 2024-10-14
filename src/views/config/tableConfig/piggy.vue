@@ -10,16 +10,11 @@
             <el-row>
               <el-row>
                 <el-form>
-                  <el-col :span="8" :offset="1">
-                    <el-form-item label="用户长时间未敲击踢出(s)">
-                      <el-input v-model.number="item.KicKTime" size="mini" />
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8" :offset="1">
-                    <el-form-item label="用户长时间未敲击提示(s)">
-                      <el-input v-model.number="item.NoticeTime" size="mini" />
-                    </el-form-item>
-                  </el-col>
+<!--                  <el-col :span="8" :offset="1">-->
+<!--                    <el-form-item label="用户长时间未敲击踢出(s)">-->
+<!--                      <el-input v-model.number="item.KicKTime" size="mini" />-->
+<!--                    </el-form-item>-->
+<!--                  </el-col>-->
                   <el-col :span="8" :offset="1">
                     <el-form-item label="保底奖池抽水">
                       <el-input v-model.number="item.FeeRate" size="mini">
@@ -30,6 +25,13 @@
                   <el-col :span="8" :offset="1">
                     <el-form-item label="自动敲击次数(∞用-1表示)">
                       <el-input v-model="item.AutoTimes" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8" :offset="1">
+                    <el-form-item label="用户长时间未敲击提示(提示10s后未选择服务器会踢出玩家)">
+                      <el-input v-model.number="item.NoticeTime" size="mini" >
+                      <template slot="append">s</template>
+                      </el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>

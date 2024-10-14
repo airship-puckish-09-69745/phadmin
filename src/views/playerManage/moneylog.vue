@@ -358,7 +358,8 @@ export default {
       search: '',
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
-      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,2000,2001,2002,2003,2004,2005,2006,2007,2008],
+      actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,
+      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011],
 
       item: {
         Uid: 0
@@ -380,7 +381,21 @@ export default {
         '凤凰', '睡美人', '小丑', '黄金列车', '澳洲', '印度Ganesha', '黄金矿工', '芝加哥', 'Sweeper', 'Wingo', 'Baccarat', '阿拉丁', '印度Ganesha',
         '糖果传奇Way', '糖果传奇Allline', 'CandyCrazeMars', 'CandyCraze', 'SuperGems', 'SuperGemsMars', 'Millionaire', 'MillionaireMars', // 别加后面，这行老虎机的
         'sicbo', 'Hilo'],
-      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll'])
+      libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll']),
+      walletType:[ //钱包金流类型
+        2000,
+        2001,
+        2002,
+        2003,
+        2004,
+        2005,
+        2006,
+        2007,
+        2008,
+        2009,
+        2010,
+        2011,
+      ],
     }
   },
   computed: {
@@ -415,17 +430,14 @@ export default {
     },
     getActName(type, msg) {
       // 单一钱包类型
-      if (type == 2000 || type == 2001 || type == 2002 || type == 2003 || type == 2004 || type == 2005 || type == 2006 || type == 2007 || type == 2008 || type == 2009) {
+      if ( this.isWalletType(type) ) {
         return this.gameMap[msg]
       }
       return msg
     },
     isWalletType(type) {
       // 单一钱包类型
-      if (type === 2000 || type === 2001 || type === 2002 || type === 2003 || type === 2004 || type === 2005 || type === 2006 || type === 2007 || type === 2008 || type === 2009) {
-        return true
-      }
-      return false
+      return this.walletType.indexOf(type) >= 0;
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
@@ -892,6 +904,8 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameMap[response.Data[i].Gid] = response.Data[i].Name
           }
+          //todo 比赛游戏临时添加
+          this.gameMap[2031] = "TongitsMtt"
         }
       })
     },

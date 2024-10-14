@@ -1137,11 +1137,10 @@ export default {
       let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
       //console.log("测试：" + this.$store.getters.name)
       request({
-        url: '/dataProxy/info',
+        url: '/matchconfig/match/config/create',
         method: 'POST',
         data: {
           Env: this.env,
-          Path: '/match/create',
           Id: this.editForm.data.id,
           AppInfo: JSON.stringify(this.editForm.appInfo),
           Name: this.editForm.data.name,
@@ -1162,7 +1161,6 @@ export default {
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds
-
         }
       }).then(response => {
         if (response.RetCode === 0) {
