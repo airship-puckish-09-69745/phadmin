@@ -305,7 +305,7 @@
                   width="110px"
                 >
                   <template slot-scope="scope">
-                    {{ (scope.row.probability/100000).toFixed(5) }}%
+                    {{ scope.row.probability }}%
                   </template>
                 </el-table-column>
 
@@ -698,7 +698,7 @@ export default {
                 } else if (strings1[7] === 'pool') {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].pool = parseInt(response.Data['script'][key])
                 } else if (strings1[7] === 'probability') {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].pool = parseInt(response.Data['script'][key])
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].probability = parseFloat(response.Data['script'][key])
                 }
               }
             }
