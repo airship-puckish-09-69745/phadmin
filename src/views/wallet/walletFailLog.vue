@@ -355,7 +355,7 @@ export default {
         let sub  = JSON.parse(data.CommonFailParamsJsonString)
         console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
         if(sub.MatchStatus == 1) {
-          return sub.Amount
+          return sub.Amount / 1000
         }else{
           return "退费："+(sub.Amount/1000)
         }
