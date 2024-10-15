@@ -1247,7 +1247,7 @@ export default {
       }
     },
     configCheck() {
-
+      return true //临时保证永远为真
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
