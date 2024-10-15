@@ -89,7 +89,7 @@
               <span    v-else-if="scope.row.RollinParamsFail" >{{scope.row.RollinParamsFail?parseInt(scope.row.RollinParamsFail.Amount) / 1000:0}}</span>
               <span    v-else-if="scope.row.GameSettleParamsFail" >{{scope.row.GameSettleParamsFail?parseInt(scope.row.GameSettleParamsFail.TotalPayoffAmount) / 1000:0}}</span>
               <span   v-else-if="scope.row.VasCostParamsFail" >{{scope.row.VasCostParamsFail?parseInt(scope.row.VasCostParamsFail.Amount) / 1000:0}}</span>
-              <span  v-else>{{scope.row.BetParamsFail.BetAmount / 1000}}</span>
+              <span  v-else>{{ getAmount(scope.row) }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作类型">
@@ -170,6 +170,7 @@ import request from '@/utils/request'
 import MoneyInput from '@/components/MoneyInput/index.vue'
 import {$libDate, $libShow, ClientTableData} from "@/utils/common";
 import {Message} from "element-ui";
+import { base64 } from 'jszip/lib/support';
 const filterMap = {
 
 }
@@ -196,7 +197,7 @@ export default {
       tableData: [],
       gameMap: {},
       failTypeMap: {
-        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',5:'转出失败',6:'增值业务失败',
+        1: '派彩失败', 2: '游戏结算失败', 3: '转入失败', 4: '下注失败',5:'转出失败',6:'增值业务失败',7:'比赛报名',8:'比赛结束'
       },
       statusMap: {
         1: '等待重试', 2: '正在重试', 3: '重试成功',
@@ -210,9 +211,12 @@ export default {
         2003 :'回合结束',
         2004 :'回退',
         2005 :'增值',
-        2006 :'转出',
+        2006 :'从平台转出',
         2007 :'内部结算',
         2008 :'游戏结算',
+        2009:'转入平台',
+        2010:'比赛报名',
+        2011:'比赛结束',
       },
       totalCount: 0,
     }
@@ -341,6 +345,26 @@ export default {
           this.getData()
         }
       })
+    },
+    getAmount(data){
+      if (data.FailType == 7) {
+        let sub  = JSON.parse(data.CommonFailParamsJsonString)
+        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+        return sub.EntryFee/1000
+      }else if (data.FailType == 8) {
+        let sub  = JSON.parse(data.CommonFailParamsJsonString)
+        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+        if(sub.MatchStatus == 1) {
+          return sub.Amount / 1000
+        }else{
+          return "退费："+(sub.Amount/1000)
+        }
+      }else{
+        if (data.hasOwnProperty("BetParams")) {
+          return data.BetParamsFail.BetAmount / 1000
+        }
+        return 0
+      }
     },
     // 分页处理
     handleSizeChange(val) {

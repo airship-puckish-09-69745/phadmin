@@ -280,6 +280,10 @@ export default {
         {
           name: '扑克乐园',
           val: 'playgamelandactivity'
+        },
+        {
+          name: '比赛场景',
+          val: 'tournament'
         }
       ],
       appInfo: [],
