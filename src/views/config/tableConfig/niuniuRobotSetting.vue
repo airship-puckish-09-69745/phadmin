@@ -466,6 +466,20 @@ export default {
             }
 
             console.log('BetCfg:', $this.BetCfg)
+
+            if ($this.item.ProtectCfg) {
+              $this.ProtectCfg = []
+            }
+            for (const o in $this.item.ProtectCfg) {
+              const one = Object.assign({}, $this.item.ProtectCfg[o])
+              one.TableMoney /= 1000
+              one.CarryLower /= 1000
+              one.CarryUpper /= 1000
+              one.LossMoneyMax /= 1000
+              one.WinMoneyMax /= 1000
+              $this.ProtectCfg.push(one)
+            }
+
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
           }
@@ -483,11 +497,15 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           // console.log('sign reward', response)
-          this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
+            $this.TableMoneyList = []
             $this.tableMoneyItem = JSON.parse(response.Data.Data)
             for (const i in $this.tableMoneyItem.TableMoneyList) {
               $this.tableMoneyItem.TableMoneyList[i] /= 1000
+              $this.TableMoneyList.push({
+                value: $this.tableMoneyItem.TableMoneyList[i],
+                label: $this.tableMoneyItem.TableMoneyList[i]
+              })
             }
           }
           console.log('tableMoneyItem', $this.tableMoneyItem)
