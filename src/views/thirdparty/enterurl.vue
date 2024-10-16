@@ -80,6 +80,9 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
+          <el-input v-model="item.live_id" />
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>
         </el-form-item>
@@ -303,7 +306,8 @@ export default {
         cashier: 'http://baidu.com',
         path: '1',
         source: 'H5',
-        activity: ''
+        activity: '',
+        live_id: ''
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -375,7 +379,8 @@ export default {
           cashier: this.item.cashier,
           path: this.item.path,
           source: this.item.source,
-          activity: this.item.activity
+          activity: this.item.activity,
+          live_id: this.item.live_id
         }
       }).then(response => {
         loading.close()
