@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+    <el-row>
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+    </el-row>
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-position="left">
         <el-tabs type="border-card">
@@ -762,8 +764,6 @@ export default {
   components: { Compare, Publish, BetAmount },
   data() {
     return {
-      AttrNames: {
-      },
       BetAreaNames: {
         0: 'West',
         1: 'North',
