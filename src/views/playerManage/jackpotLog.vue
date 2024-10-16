@@ -98,7 +98,7 @@
           {{ getGameName(row.GameId) }}
         </template>
       </el-table-column>
-      <el-table-column
+      <!--<el-table-column
         v-if="searchForm.gameId==90"
         prop="Level"
         label="奖池level"
@@ -106,7 +106,7 @@
         <template slot-scope="{row}">
          {{ row.Level }}
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
         v-if="envProjectName=='ph'"
         prop="PoolType"

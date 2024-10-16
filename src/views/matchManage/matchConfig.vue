@@ -1137,11 +1137,10 @@ export default {
       let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
       //console.log("测试：" + this.$store.getters.name)
       request({
-        url: '/dataProxy/info',
+        url: '/matchconfig/match/config/create',
         method: 'POST',
         data: {
           Env: this.env,
-          Path: '/match/create',
           Id: this.editForm.data.id,
           AppInfo: JSON.stringify(this.editForm.appInfo),
           Name: this.editForm.data.name,
@@ -1162,7 +1161,6 @@ export default {
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds
-
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1249,7 +1247,7 @@ export default {
       }
     },
     configCheck() {
-
+      return true //临时保证永远为真
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0

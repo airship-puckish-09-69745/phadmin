@@ -210,7 +210,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="13" :offset="1" v-if="queryGid === 150  || queryGid === 90">
+          <el-col :span="13" :offset="1" v-if="queryGid === 150 || queryGid === 90 || queryGid === 156">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -226,7 +226,7 @@
                 <el-table-column
                   prop="gid"
                   label="游戏"
-                  width="90px"
+                  width="140px"
                 >
                   <template slot-scope="scope">
                     <span v-for="(item, index) in gameOptions" :key="index">
@@ -238,6 +238,7 @@
                 <el-table-column
                   prop="app"
                   label="app"
+                  width="70px"
                 >
                   <template slot-scope="scope">
                     {{ scope.row.app }}
@@ -247,6 +248,7 @@
                 <el-table-column
                   prop="bet"
                   label="下注值"
+                  width="70px"
                 >
                   <template slot-scope="scope">
                     {{ scope.row.bet / 1000 }}
@@ -274,6 +276,7 @@
                 <el-table-column
                   prop="count"
                   label="发放次数"
+                  width="90px"
                 >
                 </el-table-column>
 
@@ -293,6 +296,26 @@
                 >
                   <template slot-scope="scope">
                     {{ (scope.row.countpro).toFixed(7) }}%
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="confgrant"
+                  label="配置发放概率"
+                  width="110px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.probability }}%
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="bet"
+                  label="当前奖池金额"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.pool/100000 }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -664,7 +687,7 @@ export default {
                 betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['script'][key])
               } else {
                 if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0 }
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0, probability: 0, pool: 0 }
                 }
                 if (strings1[7] === 'fee') {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['script'][key])
@@ -672,6 +695,10 @@ export default {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['script'][key])
                 } else if (strings1[7] === 'winmoney') {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'pool') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].pool = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'probability') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].probability = parseFloat(response.Data['script'][key])
                 }
               }
             }
@@ -697,7 +724,9 @@ export default {
               fee: jackpotMap[key].fee,
               count: jackpotMap[key].count,
               winmoney: jackpotMap[key].winmoney,
-              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].app + '_' + jackpotMap[key].bet] * 100
+              countpro: jackpotMap[key].count / betCountMap[jackpotMap[key].app + '_' + jackpotMap[key].bet] * 100,
+              probability: jackpotMap[key].probability,
+              pool: jackpotMap[key].pool
             })
           }
         }

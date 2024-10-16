@@ -152,6 +152,7 @@ export default {
       userInfo: {},
       ConversionColorMap: {},
       roundMap: {
+        1: '前注',
         2: '第一轮发牌',
         3: '第二轮发牌',
         4: '确认牌型',
@@ -160,6 +161,7 @@ export default {
       cardType: {
         1: '弃牌',
         2: 'Check',
+        8: 'Call',
         9: 'Call',
         10: 'Raise',
         11: 'All In',

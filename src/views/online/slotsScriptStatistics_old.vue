@@ -300,6 +300,17 @@
                 </el-table-column>
 
                 <el-table-column
+                  v-if="queryGid === 90 "
+                  prop="confgrant"
+                  label="配置发放概率"
+                  width="110px"
+                >
+                  <template slot-scope="scope">
+                    {{ (scope.row.grantconf/100000).toFixed(5) }}%
+                  </template>
+                </el-table-column>
+
+                <el-table-column
                   prop="bet"
                   label="当前奖池金额"
                   width="120px"
@@ -721,7 +732,8 @@ export default {
                     fee: 0,
                     count: 0,
                     winmoney: 0,
-                    pool: 0
+                    pool: 0,
+                    grantconf: 0
                   }
                 }
                 if (strings1[6] === 'fee') {
@@ -732,6 +744,8 @@ export default {
                   slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].winmoney = parseInt(response.Data['slotsJP'][gid][key])
                 } else if (strings1[6] === 'pool') {
                   slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].pool = parseInt(response.Data['slotsJP'][gid][key])
+                } else if (strings1[6] === 'grantconf') {
+                  slotsJPMap[gid][strings1[1] + '_' + strings1[3] + '_' + strings1[5]].grantconf = parseInt(response.Data['slotsJP'][gid][key])
                 }
               }
             }
@@ -748,7 +762,8 @@ export default {
                 pool: slotsJPMap[gid][key].pool,
                 count: slotsJPMap[gid][key].count,
                 winmoney: slotsJPMap[gid][key].winmoney,
-                countpro: slotsJPMap[gid][key].count / slotsBetCountJPMap[gid][slotsJPMap[gid][key].app + '_' + slotsJPMap[gid][key].bet] * 100
+                countpro: slotsJPMap[gid][key].count / slotsBetCountJPMap[gid][slotsJPMap[gid][key].app + '_' + slotsJPMap[gid][key].bet] * 100,
+                grantconf: slotsJPMap[gid][key].grantconf
               })
             }
             $this.gidOptions[gid] = gid

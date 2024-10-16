@@ -111,9 +111,9 @@
 
           <el-table-column prop="RtpRate" label="返奖RTP" width="200">
             <template slot-scope="scope">
-              <el-input v-model.number="scope.row.RtpRate" size="mini" >
-              <template slot="append">‱</template>
-                </el-input>
+              <el-input v-model.number="scope.row.RtpRate" size="mini">
+                <template slot="append">‱</template>
+              </el-input>
             </template>
           </el-table-column>
 
@@ -127,29 +127,34 @@
           :cell-style="libShow.DefaultTableCell" style="width: 100%">
 
           <el-table-column prop="SlotsType" label="游戏ID" width="80" />
-          <el-table-column prop="GameNames" label="游戏名称" width="180" >
+          <el-table-column prop="GameNames" label="游戏名称" width="180">
             <template slot-scope="scope">
               {{ gameName(scope.row.SlotsType) }}
-              </template>
-
-            </el-table-column>
-          <el-table-column prop="Open" label="开启" width="80" >
-            <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.Open"></el-checkbox>
-            </template>
-            </el-table-column>
-
-          <el-table-column prop="BuyFreeRtpRate" label="购买免费旋转RTP" width="200">
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.BuyFreeRtpRate" size="mini" >
-              <template slot="append">‱</template>
-                </el-input>
             </template>
           </el-table-column>
 
+          <el-table-column prop="Open" label="开启" width="80">
+            <template slot-scope="scope">
+              <el-checkbox v-model="scope.row.Open"></el-checkbox>
+            </template>
+          </el-table-column>
 
-          </el-table>
-          </el-row>
+          <el-table-column prop="BuyFreeRtpRate" label="购买免费旋转RTP" width="200">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.BuyFreeRtpRate" size="mini">
+                <template slot="append">‱</template>
+              </el-input>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="BetRequiredOdds" label="余额需要Bet倍数" width="180">
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.BetRequiredOdds" size="mini"/>
+            </template>
+          </el-table-column>
+
+        </el-table>
+      </el-row>
 
     </el-col>
 
@@ -244,9 +249,11 @@ export default {
 
           const buyFreeMap = {}
           const openGames = {}
+          const betRequiredMap = {}
           for (const k in o.BuyFreeList) {
-              buyFreeMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BuyFreeRtpRate
-              openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
+            buyFreeMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BuyFreeRtpRate
+            openGames[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].Open
+            betRequiredMap[o.BuyFreeList[k].SlotsType] = o.BuyFreeList[k].BetRequiredOdds
           }
           // console.log(buyFreeMap)
           o.BuyFreeList = []
@@ -256,7 +263,7 @@ export default {
             if (buyFreeMap[this.games[k]] !== undefined) {
               rate = buyFreeMap[this.games[k]]
             }
-            o.BuyFreeList.push({"SlotsType": this.games[k], "Open": openGames[this.games[k]], "BuyFreeRtpRate": rate})
+            o.BuyFreeList.push({ "SlotsType": this.games[k], "Open": openGames[this.games[k]], "BuyFreeRtpRate": rate, "BetRequiredOdds": betRequiredMap[this.games[k]] })
           }
 
           this.cfgData = o

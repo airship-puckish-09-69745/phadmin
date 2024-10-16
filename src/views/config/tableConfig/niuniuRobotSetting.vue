@@ -61,16 +61,6 @@
                     <el-input v-model.number="item.ExitDelayMax" size="mini"><template slot="append">秒</template></el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
-                  <el-form-item label="最少增加余额">
-                    <el-input v-model.number="item.IncrMoneyRateMin" size="mini"><template slot="append">％</template></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="最多增加余额">
-                    <el-input v-model.number="item.IncrMoneyRateMax" size="mini"><template slot="append">％</template></el-input>
-                  </el-form-item>
-                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -132,6 +122,67 @@
             </el-table>
           </el-form>
         </el-tab-pane>
+
+        <el-tab-pane label="携带和保底配置">
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
+            添加配置
+          </el-button>
+          <el-form ref="ProtectCfg" v-model="ProtectCfg" label-width="150px" style="margin-top: 10px">
+            <el-table
+              :data="ProtectCfg"
+              border
+              style="width: 100%"
+              :cell-style="libShow.DefaultTableCell"
+              @row-click="clickData"
+            >
+              <el-table-column
+                prop="TableMoney"
+                label="场次"
+                width="200"
+              />
+              <el-table-column
+                prop="CarryLower"
+                label="最低携带"
+                width="200"
+              />
+              <el-table-column
+                prop="CarryUpper"
+                label="最高携带"
+                width="200"
+              />
+              <el-table-column
+                prop="LossMoneyMax"
+                label="最多输金额"
+                width="200"
+              />
+              <el-table-column
+                prop="WinMoneyMax"
+                label="最多赢金额"
+                width="200"
+              />
+              <el-table-column
+                label="操作"
+                column-key="op"
+                width="250"
+              >
+                <template slot-scope="scope">
+                  <el-button
+                    type="primary"
+                    size="mini"
+                    @click="handleEdit(scope.row)"
+                  >编辑
+                  </el-button>
+                  <el-button
+                    size="mini"
+                    type="warning"
+                    @click="handleDelete(scope.row)"
+                  >删除
+                  </el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
     </el-row>
 
@@ -139,6 +190,57 @@
       <br>
       <el-button type="primary" @click="setData">保存</el-button>
     </el-row>
+
+    <el-dialog
+      :title="getEditTitle()"
+      :visible.sync="edit.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
+        <el-form-item label="场次：" :required="true" prop="TableMoney">
+          <el-col :span="15">
+            <el-select v-model="edit.item.TableMoney" size="mini">
+              <el-option
+                v-for="item in TableMoneyList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="最小携带：" :required="true" prop="CarryLower">
+          <el-col :span="15">
+            <el-input v-model="edit.item.CarryLower" />
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="最大携带：" :required="true" prop="CarryUpper">
+          <el-col :span="15">
+            <el-input v-model="edit.item.CarryUpper" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="最多输金额：" :required="true" prop="LossMoneyMax">
+          <el-col :span="15">
+            <el-input v-model="edit.item.LossMoneyMax" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="最多赢金额：" :required="true" prop="WinMoneyMax">
+          <el-col :span="15">
+            <el-input v-model="edit.item.WinMoneyMax" />
+          </el-col>
+        </el-form-item>
+
+        <el-form-item>
+          <el-row>
+            <el-col :span="10" :offset="6">
+              <el-button type="primary" size="medium" @click="save">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
 
     <!--对比组件-->
     <compare ref="compare" />
@@ -152,6 +254,10 @@ import request from '@/utils/request'
 import { Message } from 'element-ui'
 import Compare from '@/components/Compare/index.vue'
 import {$libShow, DataRule} from '@/utils/common'
+
+function newItem() {
+  return { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100 }
+}
 
 export default {
   components: { Compare, Publish },
@@ -183,6 +289,15 @@ export default {
           { CardType: 100, OddsBet: 4, Probability: 0 }
         ]
       },
+
+      tableMoneyItem: {
+        TableMoneyList: [],
+      },
+      TableMoneyList: [
+        { value: 1, label: '1' },
+        { value: 5, label: '5' },
+      ],
+
       BetCfg: [
         { CardType: 100, Odds1: 800, Odds2: 150, Odds3: 40, Odds4: 10 },
         { CardType: 101, Odds1: 150, Odds2: 250, Odds3: 250, Odds4: 350 },
@@ -199,6 +314,10 @@ export default {
         { CardType: 113, Odds1: 5, Odds2: 5, Odds3: 90, Odds4: 900 },
         { CardType: 114, Odds1: 450, Odds2: 5, Odds3: 5, Odds4: 45 }
       ],
+      ProtectCfg: [
+        { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100 },
+        { TableMoney: 5, CarryLower: 1000, CarryUpper: 2500, LossMoneyMax: 500, WinMoneyMax: 500 },
+      ],
       CardTypeNames: {
         100: '无牛',
         101: '牛一',
@@ -214,11 +333,19 @@ export default {
         111: '四花',
         113: '四条',
         114: '四小'
-      }
+      },
+      isDisabled: false,
+      edit: {
+        visible: false,
+        item: newItem(),
+        isEdit: false
+      },
     }
   },
   created() {
     this.getData()
+    this.getTableMoneyList()
+    this.isDisabled = false
     console.log(1)
   },
   methods: {
@@ -227,6 +354,75 @@ export default {
     },
     dataRule(required, config) {
       return DataRule(required, config)
+    },
+    // 操作类函数
+    clickData(row, column, event) {
+      if (row.status === 2) {
+        return null
+      }
+      if (column.columnKey !== 'op') {
+        this.initFormData(true, row.TableMoney)
+        this.edit.visible = true
+      }
+    },
+    initFormData(bEdit, tableMoney) {
+      this.edit.isEdit = bEdit
+      if (tableMoney) {
+        const _data = this.getDataByTableMoney(tableMoney)
+        if (_data) {
+          Object.assign(this.edit.item, _data)
+        }
+      }
+    },
+    handleEdit(ob) {
+      this.initFormData(true, ob.TableMoney)
+      this.edit.visible = true
+    },
+    handleDelete(ob) {
+      let $this = this
+      this.$confirm('是否确认删除此项配置?', '提示', {type:'warning'}).then(() => {
+        const delIndex = $this.ProtectCfg.findIndex(item => item.TableMoney === ob.TableMoney)
+        this.ProtectCfg.splice(delIndex, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    getDataByTableMoney(tableMoney) {
+      for (let i = 0; i < this.ProtectCfg.length; i++) {
+        const data = this.ProtectCfg[i]
+        if (data.TableMoney === tableMoney) {
+          return data
+        }
+      }
+      return null
+    },
+    save() {
+      // if (!this.checkData()) return
+      const index = this.ProtectCfg.findIndex(item => item.TableMoney === this.edit.item.TableMoney)
+      if (this.edit.isEdit) {
+        this.ProtectCfg.splice(index, 1, this.edit.item)
+      } else {
+        if (index >= 0) {
+          this.$alert('场次已存在，不能重复添加', '提示', {type:'warning'})
+          return
+        }
+        // 新增
+        this.ProtectCfg.push(this.edit.item)
+        // 按场次金额排序
+        this.ProtectCfg.sort((a, b) => {
+          return a.TableMoney - b.TableMoney
+        })
+      }
+      this.edit.visible = false
+    },
+    handleCreate() {
+      this.edit.item = newItem()
+      this.edit.isEdit = false
+      this.edit.visible = true
+    },
+    getEditTitle() {
+      this.isDisabled = this.edit.isEdit
+      return this.edit.isEdit ? '修改配置' : '新增配置'
     },
     getData() {
       const $this = this
@@ -270,9 +466,49 @@ export default {
             }
 
             console.log('BetCfg:', $this.BetCfg)
+
+            if ($this.item.ProtectCfg) {
+              $this.ProtectCfg = []
+            }
+            for (const o in $this.item.ProtectCfg) {
+              const one = Object.assign({}, $this.item.ProtectCfg[o])
+              one.TableMoney /= 1000
+              one.CarryLower /= 1000
+              one.CarryUpper /= 1000
+              one.LossMoneyMax /= 1000
+              one.WinMoneyMax /= 1000
+              $this.ProtectCfg.push(one)
+            }
+
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
           }
+        }
+      })
+    },
+    getTableMoneyList() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'niuniu_ai_list_cfg'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log('sign reward', response)
+          if (response.Data && response.Data.Data !== '') {
+            $this.TableMoneyList = []
+            $this.tableMoneyItem = JSON.parse(response.Data.Data)
+            for (const i in $this.tableMoneyItem.TableMoneyList) {
+              $this.tableMoneyItem.TableMoneyList[i] /= 1000
+              $this.TableMoneyList.push({
+                value: $this.tableMoneyItem.TableMoneyList[i],
+                label: $this.tableMoneyItem.TableMoneyList[i]
+              })
+            }
+          }
+          console.log('tableMoneyItem', $this.tableMoneyItem)
         }
       })
     },
@@ -284,6 +520,7 @@ export default {
       cpy.ExitDelayMin *= 1000
       cpy.ExitDelayMax *= 1000
       cpy.BetCfg = []
+      cpy.ProtectCfg = []
 
       for (const o in this.BetCfg) {
         for (let i = 1; i <= 4; i++) {
@@ -293,6 +530,16 @@ export default {
           obj.OddsBet = i
           cpy.BetCfg.push(obj)
         }
+      }
+
+      for (const o in this.ProtectCfg) {
+        const obj = {}
+        obj.TableMoney = parseInt(this.ProtectCfg[o].TableMoney) * 1000
+        obj.CarryLower = parseInt(this.ProtectCfg[o].CarryLower) * 1000
+        obj.CarryUpper = parseInt(this.ProtectCfg[o].CarryUpper) * 1000
+        obj.LossMoneyMax = parseInt(this.ProtectCfg[o].LossMoneyMax) * 1000
+        obj.WinMoneyMax = parseInt(this.ProtectCfg[o].WinMoneyMax) * 1000
+        cpy.ProtectCfg.push(obj)
       }
       return JSON.stringify(cpy)
     },

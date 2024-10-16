@@ -1,5 +1,22 @@
 <template>
   <div class="app-container" style="padding: 10px">
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+    <el-row :gutter="10" style="margin-top: 30px">
+      <el-col :offset="3" :span="16">
+        <el-button size="mini" type="primary" @click="setData">保存</el-button>
+        <el-form ref="form" :model="item" label-position="left" style="margin-top: 30px">
+          <el-row>
+            <el-col>
+              <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" :required="true">
+                <el-col>
+                  <el-input v-model="betMoneyList" size="mini" :required="true" />
+                </el-col>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-col>
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
         添加机器人
@@ -22,7 +39,7 @@
       </el-col> -->
     </el-row>
     <div style="padding-top: 10px">
-      <el-col span="16">
+      <el-col :span="16">
         <el-descriptions
           class="margin-top"
           :column="4"
@@ -141,12 +158,6 @@
             </span>
           </template>
         </el-table-column>
-
-        <el-table-column
-          prop="currentGame"
-          label="游戏"
-          width="80"
-        />
 
         <el-table-column
           prop="allowTableMoney"
@@ -334,6 +345,7 @@ export default {
       },
       statItem: { money: 0, initMoney: 0 },
       txt: '',
+      subKey: 'niuniu_ai_list_cfg'
     }
   },
 
@@ -343,13 +355,42 @@ export default {
     }
   },
   created() {
+    this.getData()
     this.getList()
     this.isDisabled = false
     console.log(1)
   },
   methods: {
+    getFullKey() {
+      return 'CustomizeCfg_' + this.subKey
+    },
     refresh() {
       this.getList()
+    },
+    getData() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // console.log('sign reward', response)
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            $this.item = JSON.parse(response.Data.Data)
+            $this.showData = []
+            for (const i in this.item.TableMoneyList) {
+              this.item.TableMoneyList[i] /= 1000
+            }
+            this.betMoneyList = this.item.TableMoneyList ? this.item.TableMoneyList.join(',') : this.betMoneyList
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(response.Data.Data)
+          }
+        }
+      })
     },
     getPostData() {
       const ret = {}
@@ -360,6 +401,28 @@ export default {
       }
       Object.assign(ret, this.item)
       return ret
+    },
+    setData() {
+      this.form.Data = JSON.stringify(this.getPostData())
+      const $this = this
+      // 设置修改后数据
+      this.$refs.compare.SetNewVal(this.form.Data)
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: $this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('sign reward save', response)
+            Message.success('保存成功')
+          }
+        })
+      })
     },
     handlePreOn(ob) {
       console.log(ob.uid)
@@ -600,47 +663,6 @@ export default {
           Message.success('添加成功！')
         }
       })
-    },
-    // excel处理逻辑
-    importData() {
-      if (this.fileName === '') {
-        Message.info('您需要先上传excel文件')
-        return
-      }
-      const $this = this
-      request({
-        url: '/slotsActConfig/import/excel',
-        method: 'post',
-        data: {
-          Gid: this.edit.item.Gid,
-          FileName: this.edit.fileName
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const items = response.Data
-          $this.edit.item.Acts = items
-          const rets = []
-          for (let i = 0; i < items.length; i++) {
-            const rows = items[i]
-            const newRow = []
-            for (let j = 0; j < rows[0].length; j++) {
-              const newCols = [j + 1]
-              for (let r = 0; r < rows.length; r++) {
-                newCols.push(rows[r][j])
-              }
-              newRow.push(newCols)
-            }
-            rets.push(newRow)
-          }
-          $this.edit.showActs = rets
-          $this.edit.isNewImport = true
-          Message.success('导入数据成功！')
-        }
-      })
-    },
-    handleSuccess(rsp, file, fileList) {
-      this.edit.fileName = rsp.Data
-      this.importData()
     },
     handleRemove(file, fileList) {
       console.log(file, fileList)
