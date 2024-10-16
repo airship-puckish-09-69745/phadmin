@@ -982,10 +982,11 @@ export default {
         method: 'post',
         data: postData
       }).then(response => {
-        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
-          $this.getLobbyVersions()
+          $this.getLobbyVersions(loading)
+        } else {
+          loading.close()
         }
       }).catch(function() {
         loading.close()
@@ -1230,7 +1231,8 @@ export default {
       this.copyLobbySave(this.getCopyLobbyPostData())
       this.edit.copyLobbyVisible = false
     },
-    getLobbyVersions() {
+    getLobbyVersions(loading=undefined) {
+      console.log("getLobbyVersions", loading === undefined)
       request({
         url: '/gamepkgversions/lobbyversions',
         method: 'get',
@@ -1245,6 +1247,9 @@ export default {
           this.orgLobbyVersions = response.Data || []
           this.handleDisplayLobbyVersions()
         }
+        loading && loading.close()
+      }).catch(function() {
+        loading && loading.close()
       })
     },
     handleDisplayLobbyVersions() {
