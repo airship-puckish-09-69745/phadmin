@@ -87,6 +87,11 @@
           width="200"
         />
         <el-table-column
+          prop="LiveUri"
+          label="直播客户端地址"
+          width="200"
+        />
+        <el-table-column
           prop="Screen"
           label="横竖屏"
           width="90"
@@ -254,6 +259,11 @@
             <el-input v-model="edit.item.TexasUri" />
           </el-col>
         </el-form-item>
+        <el-form-item label="直播客户端uri：" prop="LiveUri">
+          <el-col :span="15">
+            <el-input v-model="edit.item.LiveUri" />
+          </el-col>
+        </el-form-item>
         <el-form-item label="横竖屏：" :required="true" prop="Screen">
           <el-col :span="15">
             <el-select v-model="edit.item.Screen" placeholder="请选择" required="true">
@@ -286,7 +296,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '' }
+  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '', LiveUri: '' }
 }
 
 export default {
@@ -331,7 +341,8 @@ export default {
         Screen: '横竖屏',
         TestUri: '菲1客户端测试uri',
         TestUids: '菲1测试用户uid白名单',
-        TexasUri: '德州客户端uri'
+        TexasUri: '德州客户端uri',
+        LiveUri: '直播客户端uri'
       }
     }
   },
