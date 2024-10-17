@@ -59,6 +59,12 @@
       </el-form>
     </el-row>
     <el-row>
+      <template>
+        <el-alert style="font-size: 24px" type="error" :closable=false :title="getLobbyVersionAlert()">
+        </el-alert>
+      </template>
+    </el-row>
+    <el-row>
       <el-form :inline="true">
         <el-form-item>
           <el-button
@@ -1272,6 +1278,9 @@ export default {
         this.LobbyVersion = this.lobbyVersions[this.lobbyVersions.length - 1].label
         this.LobbyVersionStatus = 1
       }
+    },
+    getLobbyVersionAlert() {
+      return "       "+ this.LobbyVersion+" 版本必须是整包！包含所有 bundle！"
     }
   }
 }
