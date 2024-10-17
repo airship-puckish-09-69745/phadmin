@@ -510,7 +510,7 @@ export default {
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 38, 46, 47, 48, 35]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 38, 46, 47, 48, 35,49]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
@@ -519,7 +519,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49,46,35]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true
