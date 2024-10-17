@@ -318,6 +318,12 @@ export const asyncRoutes = [
             name: 'pusoyTable',
             meta: { title: 'Pusoy ◐' }
           },
+          {
+            path: 'pusoyPresetCards',
+            component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
+            name: 'pusoyPresetCards',
+            meta: { title: 'Pusoy用户配牌控制 ◐' }
+          },
           { // 牛牛
             path: 'niuniuCfg',
             component: () => import('@/views/empty'),
