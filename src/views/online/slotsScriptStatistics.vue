@@ -783,7 +783,7 @@ export default {
         const realKey = {150: "supergemiii", 88: "crazy777"}
         let key = this.gameScene[gid] + "_slots_rule"
         if (gid === 88 || gid === 150) {
-          key = realKey[gid]
+          key = realKey[gid]+ "_slots_rule"
         }
         request2({
           url: '/customizeconfig/one',
