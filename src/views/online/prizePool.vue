@@ -5,43 +5,89 @@
         <el-button type="success" size="mini" @click="getData">刷新</el-button>
       </el-col>
       <el-col :span="22" :offset="1">
-        <el-table
-          :data="tableData"
-          border
-        >
-          <el-table-column
-            prop="Gid"
-            label="子游戏"
-            width="150"
+        <el-tabs active-name="first">
+          <el-tab-pane label="下注类" name="first"><el-table
+            :data="casioData"
+            border
           >
-            <template slot-scope="scope">
-              <span v-if="scope.row.Gid===37">
-                {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
-              </span>
-              <span v-else>
-                {{ getGameName(scope.row.Gid) }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="PrizePool"
-            label="奖池"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+            <el-table-column
+              prop="Gid"
+              label="子游戏"
+              width="150"
+            >
+              <template slot-scope="scope">
+                <span v-if="scope.row.Gid===37">
+                  {{ getGameName(scope.row.Gid)+' '+scope.row.Ante/1000+'场' }}
+                </span>
+                <span v-else>
+                  {{ getGameName(scope.row.Gid) }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="PrizePool"
+              label="奖池"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
 
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="RecountRate"
-            label="操作"
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="RecountRate"
+              label="操作"
+            >
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+              </template>
+            </el-table-column>
+          </el-table></el-tab-pane>
+          <el-tab-pane label="Slots" name="second"><el-table
+            :data="slotsData"
+            :span-method="objectSpanMethod"
+            border
           >
-            <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+            <el-table-column
+              prop="Gid"
+              label="子游戏"
+
+              width="150"
+            >
+              <template slot-scope="scope">
+                  {{ getSlotsName(scope.row.Gid) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="Gid"
+              label="类型"
+              width="150"
+            >
+              <template slot-scope="scope">
+                {{ getSlotsfSuffix(scope.row.Gid) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="PrizePool"
+              label="奖池"
+              width="200"
+            >
+              <template slot-scope="scope">
+                <span :style="scope.row.PrizePool/1000>1000000?'color:red':''">{{ Math.floor(scope.row.PrizePool/1000).toLocaleString() }}</span>
+
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="RecountRate"
+              label="操作"
+            >
+              <template slot-scope="scope">
+                <el-button type="primary" size="mini" @click="edit(scope.row)">编辑</el-button>
+              </template>
+            </el-table-column>
+          </el-table></el-tab-pane>
+        </el-tabs>
+
       </el-col>
 
     </el-row>
@@ -89,6 +135,8 @@ export default {
   data() {
     return {
       tableData: [],
+      slotsData: [],
+      casioData: [],
       form: {
         Gid: 1,
         PrizePool: 0,
@@ -125,6 +173,28 @@ export default {
       this.dialogVisible = true
       console.log(row.Gid, this.form.Gid)
     },
+    objectSpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (columnIndex === 0) {
+        if (rowIndex % 2 === 0) {
+          return {
+            rowspan: 2,
+            colspan: 1
+          };
+        } else {
+          return {
+            rowspan: 0,
+            colspan: 0
+          };
+        }
+      }
+    },
+/*    isSlots(o) {
+      if (o > 50 && o < 100 || o > 149 && o < 200) {
+        return true
+      } else {
+        return false
+      }
+    },*/
     handleClose(done) {
       this.dialogVisible = false
       done()
@@ -144,16 +214,23 @@ export default {
         }
       }).then(response => {
         console.log('list response', response)
-        var ignore = [2,3, 4, 5, 7, 8, 9, 13, 14, 16,17,18, 19]
-        $this.tableData = []
+        const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
+        // $this.tableData = []
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (ignore.includes(response.Data[i].Gid)) {
+            const item = response.Data[i]
+            if (ignore.includes(item.Gid)) {
               continue
             }
-            $this.tableData.push(response.Data[i])
+
+            if (item.Gid > 5000) {
+              $this.slotsData.push(item)
+            } else {
+              $this.casioData.push(item)
+            }
+            // $this.tableData.push(response.Data[i])
           }
-          $this.tableData.splice(0, 0)
+          // $this.tableData.splice(0, 0)
         } else {
           $this.$message.error(response.Data)
         }
@@ -162,11 +239,15 @@ export default {
     getGameName(gid) {
       const id = parseInt(gid)
       if (id > 5000) {
-        const slotsType = parseInt(id / 100)
-        const val = parseInt(id % 100)
-        return $libShow.GameNames[slotsType] + this.gameNamesSuffix[val]
+        return this.getSlotsName(gid) + this.getSlotsfSuffix(gid)
       }
       return $libShow.GameNames[id]
+    },
+    getSlotsName(gid){
+      return $libShow.GameNames[parseInt(gid / 100)]
+    },
+    getSlotsfSuffix(gid){
+      return this.gameNamesSuffix[parseInt(gid % 100)]
     },
     writeLog() {
       const op = this.form.PrizePool > 0 ? '累加' : '累减'
