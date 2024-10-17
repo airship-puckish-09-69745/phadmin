@@ -272,6 +272,12 @@
         <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
           <el-input style="width: 400px;" v-model="editForm.whileList.data" placeholder="多个uid用,分开" />
         </el-form-item>
+        <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制(1限制0不限制)：" :required="true">
+          <el-input style="width: 200px;" v-model="editForm.data.openDaysLimit" placeholder="1限制0不限制" />
+        </el-form-item>
+        <el-form-item v-if="editForm.data.opentMatchType==2" label="排序值：" :required="true">
+          <el-input style="width: 200px;" v-model="editForm.data.sort" placeholder="值越高排序越在前" />
+        </el-form-item>
       </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
@@ -601,6 +607,8 @@ export default {
           delayEnterSeconds: 0,
           rankRewardsDetail: "",
           imagePath: "",
+          openDaysLimit:0,
+          sort:0,
         },
         loopDetail: {
           //只有一场
@@ -670,7 +678,9 @@ export default {
         status: "配置状态(0:启用 1:禁用)",
         rewardsCfg: "名次奖励",
         imagePath: "封面图片",
-        whileList: "白名单"
+        whileList: "白名单",
+        openDaysLimit:"每日限制",
+        sort:"排序"
       },
       showDevTool: false,
     }
@@ -768,7 +778,12 @@ export default {
                   
                   show_appinfo += appInfoTemp[i].channelId
                 }
-
+                if(!this.tableData[i].hasOwnProperty("open_days_limit")){
+                  this.tableData[i].open_days_limit = 0
+                }
+                if(!this.tableData[i].hasOwnProperty("sort")){
+                  this.tableData[i].sort = 0
+                }
                 this.tableData[i].show_appinfo = show_appinfo
               }
             }
@@ -1011,7 +1026,9 @@ export default {
           delayEnterSeconds: 0,
           rankRewardsDetail: "",
           status: 0,
-          imagePath: ""
+          imagePath: "",
+          openDaysLimit:0,
+          sort:0,
         }
         this.editForm.loopDetail = {
           //只有一场
@@ -1093,7 +1110,9 @@ export default {
           delayEnterSeconds: editData.delay_enter_seconds,
           rankRewardsDetail: editData.rewards,
           status: editData.status,
-          imagePath: editData.image_path
+          imagePath: editData.image_path,
+          openDaysLimit:editData.open_days_limit,
+          sort:editData.sort,
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.repeat_type == 0) {
@@ -1160,7 +1179,9 @@ export default {
           WhileList: whileDetail,
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
-          DelayEnterSeconds: this.editForm.data.delayEnterSeconds
+          DelayEnterSeconds: this.editForm.data.delayEnterSeconds,
+          OpenDaysLimit:this.editForm.data.openDaysLimit,
+          Sort:this.editForm.data.sort,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1247,7 +1268,6 @@ export default {
       }
     },
     configCheck() {
-      return true //临时保证永远为真
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
