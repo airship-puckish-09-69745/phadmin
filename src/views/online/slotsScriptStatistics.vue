@@ -131,7 +131,7 @@
                 </el-table-column>
                 <el-table-column label="最终输赢">
                   <template slot-scope="scope">
-                    {{parseInt(Actions[scope.row.orgKey])/cfgMap[parseInt(scope.row.gid)].Bet}}
+                    {{ parseInt(Actions[scope.row.orgKey]) / cfgMap[parseInt(scope.row.gid)].Bet }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -315,7 +315,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.pool/100000 }}
+                    {{ scope.row.pool / 100000 }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -433,7 +433,7 @@ export default {
     return {
       form: {},
       postData: {},
-      gameScene : {},
+      gameScene: {},
       subKey: 'SlotsScriptStatisticsConfig',
       AttrNames: {
         types: {
@@ -472,8 +472,8 @@ export default {
       mapCnt: {},
       timesSum: 0,
 
-      Actions:{},
-      ActionOdds:1,
+      Actions: {},
+      ActionOdds: 1,
     }
   },
   created() {
@@ -639,24 +639,29 @@ export default {
             var strings1 = key.split('_')
             if (strings1[0] === 'script') {
               if (strings1[1] === 'step') {
-                  // 步数统计
-                  // SlotsType_目标倍率_当前倍率_剧本_x_y
-                  var strings1 = key.split('_')
-                  let prefix = ''
-                  if (parseInt(strings1[2]) === -2) {
-                    prefix = '指定正数'
-                  } else if (parseInt(strings1[2]) === -1) {
-                    prefix = '指定负数'
-                  } else {
-                    prefix = '常规' + (parseInt(strings1[2]) + 1)
+                // 步数统计
+                // SlotsType_目标倍率_当前倍率_剧本_x_y
+                var strings1 = key.split('_')
+                let prefix = ''
+                if (parseInt(strings1[2]) === -2) {
+                  prefix = '指定正数'
+                } else if (parseInt(strings1[2]) === -1) {
+                  prefix = '指定负数'
+                } else {
+                  prefix = '常规' + (parseInt(strings1[2]) + 1)
+                }
+                if (!scriptMap[this.queryGid + '_' + prefix]) {
+                  scriptMap[this.queryGid + '_' + prefix] = {
+                    gid: this.queryGid,
+                    rows: {},
+                    column: {},
+                    sheet: strings1[2]
                   }
-                  if (!scriptMap[this.queryGid + '_' + prefix]) {
-                    scriptMap[this.queryGid + '_' + prefix] = {gid: this.queryGid, rows: {}, column: {}, sheet: strings1[2]}
-                  }
-                  let step = parseInt(strings1[4])
-                  $this.mapCnt[this.queryGid + "_" + strings1[2] + "_" + strings1[3] + '_' + step] = response.Data["script"][key]
-                  scriptMap[this.queryGid + '_' + prefix].rows[step] = []
-                  scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data["script"]["script_times_" + strings1[2] + "_" + strings1[3]]
+                }
+                let step = parseInt(strings1[4])
+                $this.mapCnt[this.queryGid + "_" + strings1[2] + "_" + strings1[3] + '_' + step] = response.Data["script"][key]
+                scriptMap[this.queryGid + '_' + prefix].rows[step] = []
+                scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data["script"]["script_times_" + strings1[2] + "_" + strings1[3]]
               } else if (strings1[1] === 'times') {
 
               } else if (strings1[1] === 'count') {
@@ -679,7 +684,7 @@ export default {
                   type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
                   sort: parseInt(strings1[1]),
                   cnt: response.Data["script"][key],
-                  orgKey:strings1[1]+'_'+strings1[2]
+                  orgKey: strings1[1] + '_' + strings1[2]
                 })
               }
             } else if (strings1[0] === 'jackpot') {
@@ -687,7 +692,15 @@ export default {
                 betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['script'][key])
               } else {
                 if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
-                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = { app: parseInt(strings1[2]), bet: parseInt(strings1[4]), fee: 0, count: 0, winmoney: 0, probability: 0, pool: 0 }
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = {
+                    app: parseInt(strings1[2]),
+                    bet: parseInt(strings1[4]),
+                    fee: 0,
+                    count: 0,
+                    winmoney: 0,
+                    probability: 0,
+                    pool: 0
+                  }
                 }
                 if (strings1[7] === 'fee') {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['script'][key])
@@ -763,47 +776,52 @@ export default {
     },
 
     queryRule(gid) { // 加载规则配置
-      if (this.gameScene[gid]==undefined || this.gameScene[gid]=='undefined'){
+      if (this.gameScene[gid] == undefined || this.gameScene[gid] == 'undefined') {
         return
       }
-    try {
-      request2({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey:  this.gameScene[gid]+"_slots_rule"
+      try {
+        const realKey = {150: "supergemiii", 88: "crazy777"}
+        let key = this.gameScene[gid] + "_slots_rule"
+        if (gid === 88 || gid === 150) {
+          key = realKey[gid]
         }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.ruleForm = response.Data || {}
-          if (response.Data && response.Data.Data !== '') {
-            let ruleCfg = JSON.parse(response.Data.Data)
-            request2({
-              url: '/slotsActConfigV2/one',
-              method: 'get',
-              data: {ID:  ruleCfg.ActConfig.ActId, Env: 'test'}
-            },false).then(response => {
-              this.Actions={}
-              if (response.RetCode === 0) {
-                for (const key in response.Data.Actions) {
-                  for (const key2 in response.Data.Actions[key].rows) {
-                    let count = 0
-                    for (const o of response.Data.Actions[key].rows[key2].cols) {
-                      count += o
-                    }
-                    let ScriptRow =  parseInt(key2)+1
-                    this.Actions[key+'_'+ScriptRow] = count
-                  }
-                }
-                console.log( this.Actions)
-              }
-            })
+        request2({
+          url: '/customizeconfig/one',
+          method: 'get',
+          data: {
+            SubKey: key
           }
-        }
-      })
-    }catch (e){
+        }).then(response => {
+          if (response.RetCode === 0) {
+            this.ruleForm = response.Data || {}
+            if (response.Data && response.Data.Data !== '') {
+              let ruleCfg = JSON.parse(response.Data.Data)
+              request2({
+                url: '/slotsActConfigV2/one',
+                method: 'get',
+                data: {ID: ruleCfg.ActConfig.ActId, Env: 'test'}
+              }, false).then(response => {
+                this.Actions = {}
+                if (response.RetCode === 0) {
+                  for (const key in response.Data.Actions) {
+                    for (const key2 in response.Data.Actions[key].rows) {
+                      let count = 0
+                      for (const o of response.Data.Actions[key].rows[key2].cols) {
+                        count += o
+                      }
+                      let ScriptRow = parseInt(key2) + 1
+                      this.Actions[key + '_' + ScriptRow] = count
+                    }
+                  }
+                  console.log(this.Actions)
+                }
+              })
+            }
+          }
+        })
+      } catch (e) {
         console.log(e)
-    }
+      }
     },
     getSlotsActConfig(ActId) {
 
@@ -826,19 +844,40 @@ export default {
       this.showData = row
     },
     exportExcel() {
-      if (this.stepTableData.length<=0){
+      if (this.stepTableData.length <= 0) {
         Message.error("没有要导出的数据")
         return
       }
 
-      let scriptMap = {1:1, 2:2,3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,11:11,12:12,13:13,14:14,15:15,16:16,17:17,18:18,19:19,20:20}
-      let stepMap = { 2:5, 3:10, 4:15, 5:20, 6:25, 7:30, 8:35, 9:40, 10:45, 11:50}
+      let scriptMap = {
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 4,
+        5: 5,
+        6: 6,
+        7: 7,
+        8: 8,
+        9: 9,
+        10: 10,
+        11: 11,
+        12: 12,
+        13: 13,
+        14: 14,
+        15: 15,
+        16: 16,
+        17: 17,
+        18: 18,
+        19: 19,
+        20: 20
+      }
+      let stepMap = {2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50}
       this.$confirm("是否确认导出当前游戏统计数据?", "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       }).then((response) => {
-        let result = [["剧本","剧本/步数",  "5","10", "15", "20", "25", "30", "35", "40", "45", "50"] ]// 表格表头
+        let result = [["剧本", "剧本/步数", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50"]]// 表格表头
         for (const key in this.stepTableData) {
           // 索引占位
           for (const scriptKey in scriptMap) {
@@ -846,11 +885,11 @@ export default {
             dat.push(this.stepTableData[key].title)
             dat.push(scriptKey)
             for (const stepKey in stepMap) {
-              if (stepKey==0|| stepKey==1){
+              if (stepKey == 0 || stepKey == 1) {
                 continue
               }
 
-              let keyStr = this.stepTableData[key].gid + "_" + this.stepTableData[key].sheet + "_" +  scriptKey  + '_' + stepMap[stepKey]
+              let keyStr = this.stepTableData[key].gid + "_" + this.stepTableData[key].sheet + "_" + scriptKey + '_' + stepMap[stepKey]
               dat[stepKey] = this.mapCnt[keyStr] || 0
             }
             result.push(dat)
@@ -861,7 +900,7 @@ export default {
         let workSheet = XLSX.utils.aoa_to_sheet(result);
         let bookNew = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(bookNew, workSheet, 'step') // 工作簿名称
-        let name = this.getGameName(parseInt(this.stepTableData[0].gid)) +'_'+  this.timestampToTime(this.queryTime)+'_step.xlsx'
+        let name = this.getGameName(parseInt(this.stepTableData[0].gid)) + '_' + this.timestampToTime(this.queryTime) + '_step.xlsx'
         XLSX.writeFile(bookNew, name) // 保存的文件名
       })
     },
@@ -874,7 +913,7 @@ export default {
       // let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
       // let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
       // let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
-      return Y + M + D ;
+      return Y + M + D;
     },
 
     getGameList() {
