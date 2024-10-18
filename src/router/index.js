@@ -702,7 +702,7 @@ export const asyncRoutes = [
                 path: 'chargebison_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/chargebison_slots_cfg'),
                 name: 'chargebison_slots_cfg',
-                meta: { title: '冲锋野牛' }
+                meta: { title: 'Wild Buffalo' }
               },
               {
                 path: 'romanarena_slots_cfg',
@@ -720,7 +720,7 @@ export const asyncRoutes = [
                 path: 'aladdinlamp_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/aladdinlamp_slots_cfg'),
                 name: 'aladdinlamp_slots_cfg',
-                meta: { title: '阿拉丁神灯' }
+                meta: { title: 'Aladdin\'s Lamp' }
               },
               {
                 path: 'supergemiii_slots_cfg',
@@ -819,7 +819,7 @@ export const asyncRoutes = [
                 path: 'chargebisonmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/chargebisonmars_slots_cfg'),
                 name: 'chargebisonmars_slots_cfg',
-                meta: { title: '冲锋野牛(审)' }
+                meta: { title: 'Wild Buffalo(审)' }
               },
               {
                 path: 'romanarenamars_slots_cfg',
@@ -837,7 +837,7 @@ export const asyncRoutes = [
                 path: 'aladdinlampmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/aladdinlampmars_slots_cfg'),
                 name: 'aladdinlampmars_slots_cfg',
-                meta: { title: '阿拉丁神灯(审)' }
+                meta: { title: 'Aladdin\'s Lamp(审)' }
               },
               {
                 path: 'supergemiiimars_slots_cfg',
@@ -1496,7 +1496,7 @@ export const asyncRoutes = [
             path: 'chargebison_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'chargebison_slots_log',
-            meta: { title: '冲锋野牛', gid: 94 }
+            meta: { title: 'Wild Buffalo', gid: 94 }
           },
           {
             path: 'romanarena_slots_log',
@@ -1520,7 +1520,7 @@ export const asyncRoutes = [
             path: 'aladdinlamp_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlamp_slots_log',
-            meta: { title: '阿拉丁神灯', gid:  152 }
+            meta: { title: 'Aladdin\'s Lamp', gid:  152 }
           },
           {
             path: 'grandace_slots_log',
@@ -1612,7 +1612,7 @@ export const asyncRoutes = [
             path: 'chargebison_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'chargebison_slots_log',
-            meta: { title: '冲锋野牛(审)', gid: 95 }
+            meta: { title: 'Wild Buffalo(审)', gid: 95 }
           },
           {
             path: 'romanarenamars_slots_log',
@@ -1636,7 +1636,7 @@ export const asyncRoutes = [
             path: 'aladdinlampmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlampmars_slots_log',
-            meta: { title: '阿拉丁神灯', gid:  153 }
+            meta: { title: 'Aladdin\'s Lamp', gid:  153 }
           },
           {
             path: 'grandacemars_slots_log',

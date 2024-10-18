@@ -215,7 +215,8 @@ export default {
       }).then(response => {
         console.log('list response', response)
         const ignore = [2, 3, 4, 5, 7, 8, 9, 13, 14, 16, 17, 18, 19]
-        // $this.tableData = []
+         $this.slotsData = []
+         $this.casioData = []
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
             const item = response.Data[i]
