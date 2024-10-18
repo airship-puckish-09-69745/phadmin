@@ -68,6 +68,11 @@
                         {{ getStatusName(scope.row.status) }}
                     </template>
                 </el-table-column>
+                <el-table-column prop="repeatType" label="循环类型" sortable>
+                    <template slot-scope="scope">
+                        {{ getRepeatTypeName(scope.row.repeatType) }}
+                    </template>
+                </el-table-column>
                 <el-table-column fixed="right" label="操作" width="200px">
                     <template slot-scope="scope">
                         <el-button v-if="showDevTool && (scope.row.status >= 5)" type="danger" size="mini"
@@ -111,6 +116,8 @@ export default {
             ],
             repeatCfgs: [
                 { "value": 0, "label": "单场" },
+                { "value": 1, "label": "单天单场" },
+                { "value": 2, "label": "单天多场" },
             ],
             csCfgs: [],
             tableData: [],
@@ -173,6 +180,16 @@ export default {
                 }
             }
             return statusName
+        },
+        getRepeatTypeName(repeatType) {
+            var rpeatTypeName = ""
+            for (var i = 0; i < this.repeatCfgs.length; i++) {
+                if (this.repeatCfgs[i].value == repeatType) {
+                    rpeatTypeName = this.repeatCfgs[i].label
+                    break
+                }
+            }
+            return rpeatTypeName
         },
         handleShowDevTools() {
             // 浏览器设置ShowDev=1才可以看到开发工具
