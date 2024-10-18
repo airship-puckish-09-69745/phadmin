@@ -820,12 +820,17 @@ export default {
       if (this.gameScene[gid]==undefined || this.gameScene[gid]=='undefined'){
         return
       }
+      const realKey = {150: "supergemiii", 88: "crazy777"}
+      let key = this.gameScene[gid] + "_slots_rule"
+      if (gid === 88 || gid === 150) {
+        key = realKey[gid]+ "_slots_rule"
+      }
     try {
       request2({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey:  this.gameScene[gid]+"_slots_rule"
+          SubKey:  key
         }
       }).then(response => {
         if (response.RetCode === 0) {

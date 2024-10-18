@@ -21,16 +21,16 @@
               <el-option label="Lucky777Mars" :value="89" />
               <el-option label="UltraAce" :value="92" />
               <el-option label="UltraAceMars" :value="93" />
-              <el-option label="冲锋野牛" :value="94" />
-              <el-option label="冲锋野牛Mars" :value="95" />
+              <el-option label="WildBuffalo" :value="94" />
+              <el-option label="WildBuffaloMars" :value="95" />
               <el-option label="RomanArena" :value="96" />
               <el-option label="RomanArenaMars" :value="97" />
               <el-option label="SuperTongit" :value="98" />
               <el-option label="SuperTongitMars" :value="99" />
               <el-option label="SuperGemsIII" :value="150" />
               <el-option label="SuperGemsIIIMars" :value="151" />
-              <el-option label="阿拉丁神灯" :value="152" />
-              <el-option label="阿拉丁神灯Mars" :value="153" />
+              <el-option label="AladdinsLamp" :value="152" />
+              <el-option label="AladdinsLampMars" :value="153" />
               <el-option label="GrandAce" :value="154" />
               <el-option label="GrandAceMars" :value="155" />
               <el-option label="GrandAce" :value="154" />
