@@ -1160,20 +1160,22 @@ export default {
 
       let rankReward = JSON.stringify(this.editForm.rankRewards)
       let whileDetail = JSON.stringify(this.editForm.whileList)
-      this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
-      this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
       let repeatDetail = ""
       let bTime = 0
       let eTime = 0
       if (this.editForm.data.repeatType == 0) {
         //单场
         if (this.editForm.loopDetail.onceTime) {
+          this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
+        this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
           repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
         }
       }  else {
         //循环
+        this.editForm.loopDetail.loopStartDate.setSeconds(0) // 去除秒数
+        this.editForm.loopDetail.loopEndDate.setSeconds(0) // 去除秒数
         bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
         eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
         let intervalDay = this.editForm.loopDetail.intervalDay
@@ -1316,7 +1318,10 @@ export default {
       } else if (this.editForm.data.opentMatchMember % 3 != 0) {
         this.errmsg('开赛人数值必须是3的倍数！')
         return false
-      } else if ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600) {
+      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
+        this.errmsg('比赛开始结束间隔要大于10分钟！')
+        return false
+      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
