@@ -1321,14 +1321,17 @@ export default {
         }
       }
 
-      if (this.editForm.loopDetail.loopData.length > 0) {
+      if (this.editForm.data.repeatType != 0) {
+        if (this.editForm.loopDetail.loopData.length > 0) {
         for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
           if (this.editForm.loopDetail.loopData[i].intervalSeconds < 3600) {
             this.errmsg('循环赛间隔时间至少大于3600秒（一小时）！')
             return false
           }
         }
-      }
+        }
+      } 
+
 
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
