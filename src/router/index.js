@@ -249,6 +249,32 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'PusoyCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Pusoy', noCache: true },
+            children: [
+              {
+                path: 'pusoyTable',
+                component: () => import('@/views/config/tableConfig/pusoyTable'),
+                name: 'pusoyTable',
+                meta: { title: 'Pusoy ◐' }
+              },
+              {
+                path: 'PusoySwapTable',
+                component: () => import('@/views/config/tableConfig/pusoySwapTable'),
+                name: 'pusoySwapTable',
+                meta: { title: 'Pusoy Swap  ◐' }
+              },
+              {
+                path: 'pusoyPresetCards',
+                component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
+                name: 'pusoyPresetCards',
+                meta: { title: 'Pusoy用户配牌控制 ◐' }
+              }
+            ]
+          },
+          {
             path: 'PusoyDosCfg',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -301,28 +327,10 @@ export const asyncRoutes = [
             meta: { title: 'Domino ◐' }
           },
           {
-            path: 'PusoySwapTable',
-            component: () => import('@/views/config/tableConfig/pusoySwapTable'),
-            name: 'pusoySwapTable',
-            meta: { title: 'Pusoy Swap  ◐' }
-          },
-          {
             path: 'solitaire',
             component: () => import('@/views/config/tableConfig/solitaire'),
             name: 'solitaire',
             meta: { title: 'Solitaire ◐' }
-          },
-          {
-            path: 'pusoyTable',
-            component: () => import('@/views/config/tableConfig/pusoyTable'),
-            name: 'pusoyTable',
-            meta: { title: 'Pusoy ◐' }
-          },
-          {
-            path: 'pusoyPresetCards',
-            component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
-            name: 'pusoyPresetCards',
-            meta: { title: 'Pusoy用户配牌控制 ◐' }
           },
           { // 牛牛
             path: 'niuniuCfg',
