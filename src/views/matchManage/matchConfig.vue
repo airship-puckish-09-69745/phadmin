@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -1303,7 +1303,6 @@ export default {
       }
     },
     configCheck() {
-      return true
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
