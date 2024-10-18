@@ -2078,9 +2078,23 @@ export const asyncRoutes = [
       },
       {
         path: 'gameCustomConfig',
-        component: () => import('@/views/config/gameCustomConfig'),
-        name: 'game_custom_config',
-        meta: { title: '游戏显示返回大厅按钮配置' }
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '返回大厅按钮配置', icon: 'el-icon-files' },
+        children: [
+          {
+            path: 'gameReturnConfig',
+            component: () => import('@/views/config/gameCustomConfig/gameReturnConfig'),
+            name: 'gameReturnConfig',
+            meta: { title: '返回大厅按钮配置 ◐', noCache: true }
+          },
+          {
+            path: 'gameReturnWhiteList',
+            component: () => import('@/views/config/gameCustomConfig/gameReturnWhiteList'),
+            name: 'gameReturnWhiteList',
+            meta: { title: '返回大厅白名单 ◐', noCache: true }
+          }
+        ]
       },
       {
         path: 'gameLogoDisplayConfig',

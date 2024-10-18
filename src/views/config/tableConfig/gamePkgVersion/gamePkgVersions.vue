@@ -591,7 +591,7 @@ export default {
     // 300ms后执行
     setTimeout(() => {
       this.getList()
-    }, 300)
+    }, 500)
   },
   methods: {
     newItem() {
