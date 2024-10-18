@@ -46,15 +46,11 @@ export default {
   data() {
     return {
       imageTypes: [
-        { value: 'image', label: '图片' },
-        { value: 'gif', label: 'GIF' },
-        { value: 'long-image', label: '长图' },
-        { value: 'screenshot', label: '截图' },
-        { value: 'wallpaper', label: '壁纸' }
+        { value: 'match', label: '比赛' }
       ],
 
       condition: {
-        type: 'image'
+        type: 'match'
       },
 
       list: []

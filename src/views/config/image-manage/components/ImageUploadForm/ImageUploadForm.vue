@@ -5,10 +5,17 @@
 -->
 <template>
   <div class="image-upload-form">
-    <el-form ref="formRef" :model="formData" :rules="formRules">
+    <el-form
+      ref="formRef"
+      v-loading="loading"
+      element-loading-text="图片上传中..."
+      element-loading-spinner="el-icon-loading"
+      :model="formData"
+      :rules="formRules"
+    >
       <el-form-item label="图片" prop="dataUrl" class="image-upload-form__item-image">
         <div
-          v-show="!selectedFile.file"
+          v-show="!formData.file"
           class="image-upload-form__upload"
         >
           <div
@@ -32,11 +39,11 @@
           <div class="image-upload-form__tip">只能上传jpg/jpeg/png文件，且不超过 1M</div>
         </div>
         <div
-          v-show="selectedFile.file"
+          v-show="formData.file"
           class="image-upload-form__preview"
         >
           <el-image
-            :src="selectedFile.dataUrl"
+            :src="formData.dataUrl"
             fit="contain"
             class="image-upload-form__preview__image"
           />
@@ -46,7 +53,8 @@
               <i class="el-icon-delete image-upload-form__preview__actions__icon" @click="removeSelectedFile" />
             </div>
           </div>
-        </div></el-form-item>
+        </div>
+      </el-form-item>
       <el-form-item label="分类" prop="type">
         <el-select v-model="formData.type" placeholder="请选择" style="width: 100%">
           <el-option
@@ -63,6 +71,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'ImageUploadForm',
   props: {
@@ -74,9 +84,11 @@ export default {
   data() {
     return {
       formData: {
+        file: null,
         dataUrl: '',
         type: ''
       },
+
       formRules: {
         dataUrl: [{ required: true, message: '请选择图片' }],
         type: [{ required: true, message: '请选择类型' }]
@@ -86,11 +98,7 @@ export default {
 
       isDragging: false,
 
-      // 选中的文件
-      selectedFile: {
-        file: null,
-        dataUrl: ''
-      }
+      loading: false
     }
   },
   methods: {
@@ -109,7 +117,7 @@ export default {
     handleDrop(e) {
       this.isDragging = false
       const files = e.dataTransfer.files
-      if (files && files.length) {
+      if (files && files.length > 0) {
         this.handleFiles(files)
       }
     },
@@ -134,7 +142,7 @@ export default {
      */
     handleFileSelected(e) {
       const files = e.target.files
-      if (files && files.length) {
+      if (files && files.length > 0) {
         this.handleFiles(files)
       }
       this.clearFile()
@@ -223,11 +231,10 @@ export default {
       if (file) {
         const reader = new FileReader()
         reader.onload = (e) => {
-          this.selectedFile = {
-            file,
-            dataUrl: e.target.result
-          }
-          this.formData.dataUrl = e.target.result
+          const formData = this.formData
+
+          formData.file = file
+          formData.dataUrl = e.target.result
         }
         reader.readAsDataURL(file)
       }
@@ -237,11 +244,10 @@ export default {
      * @description 移除所选文件
      */
     removeSelectedFile() {
-      this.selectedFile = {
-        file: null,
-        dataUrl: ''
-      }
-      this.formData.dataUrl = ''
+      const formData = this.formData
+
+      formData.file = null
+      formData.dataUrl = ''
     },
 
     /**
@@ -251,9 +257,50 @@ export default {
       this.$refs.formRef.validate((valid) => {
         // 校验通过
         if (valid) {
-          // TODO
+          this.uploadFile()
         }
       })
+    },
+
+    /**
+     * @description 设置 loading
+     * @param {boolean} value
+     */
+    setLoading(value) {
+      this.loading = value
+    },
+
+    /**
+     * @description 上传文件
+     */
+    uploadFile() {
+      const formData = new FormData()
+      formData.append('Env', this.$store.getters.env)
+      formData.append('category', this.formData.type)
+      formData.append('file', this.formData.file)
+
+      const url = process.env.VUE_APP_BASE_API + '/file/upload'
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+
+      this.setLoading(true)
+      axios.post(url, formData, config).then(res => {
+        const { status, data } = res || {}
+        const { RetCode, Data } = data || {}
+
+        // 上传成功
+        if (status === 200 && RetCode === 0) {
+          this.$message.success('图片上传成功')
+          this.formData.file = null
+          this.formData.dataUrl = ''
+          this.$emit('success')
+        } else {
+          this.$message.error(Data)
+        }
+      }).finally(() => this.setLoading(false))
     }
   }
 }
