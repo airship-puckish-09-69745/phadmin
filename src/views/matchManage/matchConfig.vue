@@ -327,12 +327,14 @@
             <el-time-picker
               arrow-control
               v-model="editForm.loopDetail.single.stime"
+              format="HH:mm"
               value-format="HH:mm:ss"
               placeholder="开始时间">
             </el-time-picker>
             <el-time-picker
               arrow-control
               v-model="editForm.loopDetail.single.etime"
+              format="HH:mm"
               value-format="HH:mm:ss"
               placeholder="结束时间">
             </el-time-picker>
@@ -1169,21 +1171,32 @@ export default {
         //单场
         if (this.editForm.loopDetail.onceTime) {
           this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
-        this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
+          this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
           repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
         }
       }  else {
         //循环
-        this.editForm.loopDetail.loopStartDate.setSeconds(0) // 去除秒数
-        this.editForm.loopDetail.loopEndDate.setSeconds(0) // 去除秒数
         bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
         eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
         let intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
+
+          this.editForm.loopDetail.single.stime.setSeconds(0) // 去除秒数
+          this.editForm.loopDetail.single.etime.setSeconds(0) // 去除秒数
+
           repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime})
         } else {
+
+          if (this.editForm.loopDetail.loopData.length > 0) {
+            for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+              this.editForm.loopDetail.loopData[i].stime.setSeconds(0) // 去除秒数
+              this.editForm.loopDetail.loopData[i].etime.setSeconds(0) // 去除秒数
+            }
+          }
+
+
           repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData})
         }
       }
