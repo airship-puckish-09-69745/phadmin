@@ -1121,6 +1121,9 @@ export default {
           sort:editData.sort,
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
+        if (editData.while_list != "") {
+          this.editForm.data.whileList.data = editData.while_list
+        }
         if (editData.repeat_type == 0) {
           this.editForm.loopDetail.onceTime = [new Date(editData.start_time*1000),new Date(editData.end_time*1000)]
         } else {
