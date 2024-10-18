@@ -1117,6 +1117,18 @@ export default {
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.repeat_type == 0) {
           this.editForm.loopDetail.onceTime = [new Date(editData.start_time*1000),new Date(editData.end_time*1000)]
+        } else {
+          let repeatDetail = JSON.parse(editData.repeat_detail)
+          this.editForm.loopDetail.loopStartDate = $libDate.GetDayBegin(editData.start_time*1000)
+          this.editForm.loopDetail.loopEndDate = $libDate.GetDayBegin(editData.end_time*1000)
+          this.editForm.loopDetail.intervalDay = repeatDetail.intervalDay
+          if (editData.repeat_type == 1) {
+            //单天单场
+            this.editForm.loopDetail.single.stime = repeatDetail.msTime
+            this.editForm.loopDetail.single.etime = repeatDetail.meTime
+          } else {
+            this.editForm.loopDetail.loopData = repeatDetail.loopData
+          }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
         this.showCsCfgs = []
@@ -1150,10 +1162,27 @@ export default {
       let whileDetail = JSON.stringify(this.editForm.whileList)
       this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
       this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
-      let bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
-      let eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-      let duration = eTime - bTime
-      let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+      let repeatDetail = ""
+      let bTime = 0
+      let eTime = 0
+      if (this.editForm.data.repeatType == 0) {
+        //单场
+        if (this.editForm.loopDetail.onceTime) {
+          bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
+          eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
+          repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+        }
+      }  else {
+        //循环
+        bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
+        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
+        let intervalDay = this.editForm.loopDetail.intervalDay
+        if (this.editForm.data.repeatType == 1) {
+          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime})
+        } else {
+          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData})
+        }
+      }
       //console.log("测试：" + this.$store.getters.name)
       request({
         url: '/matchconfig/match/config/create',
