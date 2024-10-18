@@ -860,7 +860,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/gigaacemars_slots_cfg'),
                 name: 'gigaacemars_slots_cfg',
                 meta: { title: 'GigaAce(审)' }
-              },
+              }
             ]
           },
           {
@@ -1287,7 +1287,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/playerManage/playlog'),
                 name: 'playlog_9Ball',
                 meta: { title: '9Ball ◐', gid: 48 }
-              },
+              }
             ]
           }
         ]
@@ -1439,7 +1439,7 @@ export const asyncRoutes = [
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
-            meta: { title: 'SuperGems', gid:  78 }
+            meta: { title: 'SuperGems', gid: 78 }
           },
 
           {
@@ -1506,37 +1506,37 @@ export const asyncRoutes = [
             path: 'supergemiii_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiii_slots_log',
-            meta: { title: 'SuperGemsIII', gid:  150 }
+            meta: { title: 'SuperGemsIII', gid: 150 }
           },
           {
             path: 'aladdinlamp_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlamp_slots_log',
-            meta: { title: '阿拉丁神灯', gid:  152 }
+            meta: { title: '阿拉丁神灯', gid: 152 }
           },
           {
             path: 'grandace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandace_slots_log',
-            meta: { title: 'GrandAce', gid:  154 }
+            meta: { title: 'GrandAce', gid: 154 }
           },
           {
             path: 'crazyace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
-            meta: { title: 'CrazyAce', gid:  156 }
+            meta: { title: 'CrazyAce', gid: 156 }
           },
           {
             path: 'gigaace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaace_slots_log',
-            meta: { title: 'GigaAce', gid:  160 }
+            meta: { title: 'GigaAce', gid: 160 }
           },
           {
             path: 'sharkkingdom_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdom_slots_log',
-            meta: { title: 'SharkKingdom', gid:  158 }
+            meta: { title: 'SharkKingdom', gid: 158 }
           }
         ]
       },
@@ -1628,31 +1628,31 @@ export const asyncRoutes = [
             path: 'aladdinlampmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlampmars_slots_log',
-            meta: { title: '阿拉丁神灯', gid:  153 }
+            meta: { title: '阿拉丁神灯', gid: 153 }
           },
           {
             path: 'grandacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
-            meta: { title: 'GrandAce(审)', gid:  155 }
+            meta: { title: 'GrandAce(审)', gid: 155 }
           },
           {
             path: 'crazyacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyacemars_slots_log',
-            meta: { title: 'CrazyAce(审)', gid:  157 }
+            meta: { title: 'CrazyAce(审)', gid: 157 }
           },
           {
             path: 'gigaacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaacemars_slots_log',
-            meta: { title: 'GigaAce(审)', gid:  161 }
+            meta: { title: 'GigaAce(审)', gid: 161 }
           },
           {
             path: 'sharkkingdommars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdommars_slots_log',
-            meta: { title: 'SharkKingdom(审)', gid:  159 }
+            meta: { title: 'SharkKingdom(审)', gid: 159 }
           }
         ]
       },
@@ -1896,6 +1896,12 @@ export const asyncRoutes = [
             meta: { title: '3-代理服务分派', noCache: true }
           }
         ]
+      },
+      {
+        path: 'image-manage',
+        component: () => import('@/views/config/image-manage'),
+        name: 'ImageManage',
+        meta: { title: '图片管理', noCache: true }
       }
     ]
   },
