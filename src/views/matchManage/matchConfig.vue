@@ -680,7 +680,9 @@ export default {
         imagePath: "封面图片",
         whileList: "白名单",
         openDaysLimit:"每日限制",
-        sort:"排序"
+        sort:"排序",
+        repeatDelayDays: "间隔天数",
+        daySections: "每日时段",
       },
       showDevTool: false,
     }
