@@ -260,7 +260,7 @@ export default {
         case 92:
           return 'UltraAce'
         case 94:
-          return '冲锋野牛'
+          return 'Wild Buffalo'
         case 96:
           return 'RomanArena'
         case 98:
@@ -268,7 +268,7 @@ export default {
         case 150:
           return 'SuperGemsIII'
         case 152:
-          return '阿拉丁神灯'
+          return 'Aladdin\'s Lamp'
         case 154:
           return 'GrandAce'
         case 156:
