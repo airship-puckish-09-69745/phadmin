@@ -320,8 +320,8 @@
                 placeholder="选择结束日期"
               />
           </el-form-item>
-          <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数：" :required="true">
-            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数" />
+          <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
+            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数，0为每天创建" />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
             <el-time-picker
@@ -1321,17 +1321,33 @@ export default {
         }
       }
 
+      if (this.editForm.data.repeatType == 1) {
+        if ((Math.floor(this.editForm.loopDetail.single.etime / 1000) - Math.floor(this.editForm.loopDetail.single.stime / 1000)) < 600) {
+          this.errmsg('比赛开始结束间隔要大于10分钟！')
+          return false
+        }
+      }
+
       if (this.editForm.data.repeatType != 0) {
         if (this.editForm.loopDetail.loopData.length > 0) {
-        for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
-          if (this.editForm.loopDetail.loopData[i].intervalSeconds < 3600) {
-            this.errmsg('循环赛间隔时间至少大于3600秒（一小时）！')
-            return false
+          for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+            if ((Math.floor(this.editForm.loopDetail.loopData[i].etime / 1000) - Math.floor(this.editForm.loopDetail.loopData[i].stime / 1000)) < 600) {
+              this.errmsg('比赛开始结束间隔要大于10分钟！')
+              return false
+            }
+
+            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 3600) {
+              this.errmsg('循环赛间隔时间至少大于3600秒（一小时）！')
+              return false
+            }
           }
         }
+
+        if (this.editForm.loopDetail.intervalDay < 0) {
+          this.errmsg('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
+          return false
         }
       } 
-
 
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
