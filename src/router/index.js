@@ -363,6 +363,26 @@ export const asyncRoutes = [
             meta: { title: 'DominoQiuQiu' }
           },
           {
+            path: 'Uno',
+            component: () => import('@/views/empty'),//import('@/views/config/tableConfig/uno/unoTable'),
+            redirect: 'noRedirect',
+            meta: { title: 'Uno', noCache: true },
+            children: [
+              {
+                path: 'unoTable',
+                component: () => import('@/views/config/tableConfig/uno/unoTable'),
+                name: 'unoTable',
+                meta: { title: 'Uno ◐' }
+              },
+              {
+                path: 'unoTableTeam',
+                component: () => import('@/views/config/tableConfig/uno/unoTeamTable'),
+                name: 'unoTableTeam',
+                meta: { title: 'Uno-Team ◐' }
+              }
+            ]
+          },
+          {
             path: 'gameWaitQueue',
             component: () => import('@/views/config/tableConfig/gameWaitQueue.vue'),
             name: 'gameWaitQueue',

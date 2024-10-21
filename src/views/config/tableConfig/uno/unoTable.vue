@@ -288,12 +288,12 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="下注时长："
+              label="回合时长："
               :required="true"
-              prop="item.ActionSeconds"
-              :rules="dataRule(true,{type:'n',range:'5'})"
+              prop="item.RoundSeconds"
+              :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" ><template slot="append">[5,20]秒 默认8秒</template></el-input>
+              <el-input v-model.number="edit.item.RoundSeconds" placeholder="操作时长" ><template slot="append">秒</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -352,22 +352,45 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="最小下注倍数："
+              label="托管超时触发次数："
               :required="true"
-              prop="item.OddsBetMin"
+              prop="item.AutoHoldTimeoutRounds"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.OddsBetMin" placeholder="请输入" />
+              <el-input v-model="edit.item.AutoHoldTimeoutRounds" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
             <el-form-item
-              label="最大下注倍数："
+              label="游戏时长："
               :required="true"
-              prop="item.OddsBetMax"
+              prop="item.GameSeconds"
               :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model="edit.item.OddsBetMax" placeholder="请输入" />
+              <el-input v-model="edit.item.GameSeconds" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <el-row>
+          <el-col :span="11">
+            <el-form-item
+              label="未uno警告时间："
+              :required="true"
+              prop="item.UnoWarnSeconds"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.UnoWarnSeconds" placeholder="请输入" ><template slot="append">秒</template></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item
+              label="考虑是否质疑时间："
+              :required="true"
+              prop="item.DoubtSeconds"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-input v-model="edit.item.DoubtSeconds" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -408,7 +431,6 @@ function newItem() {
     MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
-    ActionSeconds: '',
     WatchTimesMax: '',
     Level: 1,
     IsPractice: 0,
@@ -425,8 +447,12 @@ function newItem() {
     HideLevel: 0,
     MinPlayMoney: 0,
     RoomLevel: 0,
-    OddsBetMin: 1,
-    OddsBetMax: 5
+    PlayMode: 1,
+    RoundSeconds: 9,
+    GameSeconds: 180,
+    UnoWarnSeconds: 2,
+    DoubtSeconds: 5,
+    AutoHoldTimeoutRounds: 2
   }
 }
 
@@ -434,6 +460,7 @@ export default {
   components: { Compare, Publish, SelectGoods, GameLevel, MoneyInput },
   data() {
     return {
+      playMode: 1,
       tableData: [],
       statNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       clientDB: new ClientTableData([], 1, filterMap),
@@ -459,7 +486,6 @@ export default {
         MaxPlayerCount: 4,
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
-        ActionSeconds: '操作时长',
         WatchTimesMax: '最大围观局数',
         Level: '等级',
         IsPractice: '是否练习场',
@@ -475,8 +501,12 @@ export default {
         MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次',
         RoomLevel: '房间类型',
-        OddsBetMin: '最小下注倍数',
-        OddsBetMax: '最大下注倍数'
+        PlayMode: '玩法模式',
+        RoundSeconds: '回合时长',
+        GameSeconds: '游戏时长',
+        UnoWarnSeconds: '未uno警告的时间限制',
+        DoubtSeconds: '考虑是否质疑时间',
+        AutoHoldTimeoutRounds: '托管的超时触发次数'
       }
     }
   },
@@ -537,7 +567,9 @@ export default {
       request({
         url: '/unotable/all',
         method: 'get',
-        data: {}
+        data: {
+          PlayMode: this.playMode
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
@@ -658,10 +690,6 @@ export default {
       }
       if (this.edit.item.MinPlayMoney > this.edit.item.CarryLower) {
         Message.error('【最小玩牌金额】必须小于等于【最小携带】，请检查数值正确性！')
-        return false
-      }
-      if (this.edit.item.OddsBetMax < this.edit.item.OddsBetMin) {
-        Message.error('【最小下注倍数】必须小于等于【最大下注倍数】，请检查数值正确性！')
         return false
       }
       return true
