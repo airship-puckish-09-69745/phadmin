@@ -6,28 +6,57 @@
 <template>
   <div class="image-manage">
     <div class="image-manage-operation">
-      <ImageUploadForm :options="imageTypes" class="image-manage-form" />
-      <ImageTypeMenu v-model="condition.type" class="image-manage-menu" :options="imageTypes" />
+      <ImageUploadForm
+        class="image-manage-form"
+        :options="imageCategories"
+        :default-category="condition.category"
+        @success="handleUploadSuccess"
+      />
+      <ImageCategoryMenu
+        v-model="condition.category"
+        class="image-manage-menu"
+        :options="imageCategories"
+        @select="handleCategorySelect"
+      />
     </div>
     <div class="image-manage-container">
       <div class="image-manage__header">
         <div class="image-manage__header__title">{{ title }}</div>
         <i class="el-icon-refresh image-manage__header__refresh" />
       </div>
-      <div class="image-manage-content">
-        <div
-          v-if="Array.isArray(list) && list.length > 0"
-          class="image-manage-list"
+      <div
+        v-loading="loading"
+        element-loading-text="拼命加载中"
+        element-loading-spinner="el-icon-loading"
+        class="image-manage-content"
+      >
+        <template
+          v-if="Array.isArray(filteredList) && filteredList.length > 0"
         >
-          <div v-for="item in list" :key="item.id" class="image-manage-item">
-            <el-image
-              :src="item.url"
-              :preview-src-list="previewSrcList"
-              fit="contain"
-              class="image-manage-item__image"
-            />
+          <div
+            class="image-manage-list"
+          >
+            <div v-for="item in filteredList" :key="item.url" class="image-manage-item">
+              <el-image
+                :src="item.url"
+                fit="contain"
+                class="image-manage-item__image"
+              />
+              <div class="image-manage-item__text">{{ item.file_name }}</div>
+            </div>
           </div>
-        </div>
+          <el-pagination
+            class="image-manage-pagination"
+            :page-sizes="[10, 20, 50, 100]"
+            :current-page="condition.current"
+            :page-size="condition.pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total"
+            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange"
+          />
+        </template>
+
         <el-empty v-else :image-size="200" />
       </div>
     </div>
@@ -35,82 +64,113 @@
 </template>
 
 <script>
+import request from '@/utils/request'
 import ImageUploadForm from './components/ImageUploadForm/ImageUploadForm.vue'
-import ImageTypeMenu from './components/ImageTypeMenu/ImageTypeMenu.vue'
+import ImageCategoryMenu from './components/ImageCategoryMenu/ImageCategoryMenu.vue'
 
 export default {
   components: {
     ImageUploadForm,
-    ImageTypeMenu
+    ImageCategoryMenu
   },
   data() {
     return {
-      imageTypes: [
-        { value: 'match', label: '比赛' }
+      imageCategories: [
+        { value: 'match', label: '比赛' },
+        { value: 'act', label: '活动' },
+        { value: 'mission', label: '任务' },
+        { value: 'other', label: '其他' }
       ],
 
       condition: {
-        type: 'match'
+        category: 'match',
+        current: 1,
+        pageSize: 10
       },
+      total: 0,
 
-      list: []
+      list: [],
+      filteredList: [],
+
+      loading: false
     }
   },
+
   computed: {
     title() {
-      return this.imageTypes.find((item) => item.value === this.condition.type)?.label
-    },
-
-    previewSrcList() {
-      return this.list.map((item) => item.url)
+      return this.imageCategories.find((item) => item.value === this.condition.category)?.label
     }
   },
+
   created() {
-    this.fetchList().then((data) => this.setList(data))
+    this.fetchList({ category: this.condition.category }).then((data) => {
+      this.setList(data)
+      this.getFilterList(this.condition)
+    })
   },
+
   methods: {
     /**
-     * @description 获取列表数据
-     * @param {object} params 参数
-     * @prop {string} params.type 图片类型
+     * @description 处理图片上传成功事件
      */
-    fetchList(params) {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          const data = [
-            {
-              id: '1',
-              url: 'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'
-            },
-            {
-              id: '2',
-              url: 'https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg'
-            },
-            {
-              id: '3',
-              url: 'https://fuss10.elemecdn.com/0/6f/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg'
-            },
-            {
-              id: '4',
-              url: 'https://fuss10.elemecdn.com/9/bb/e27858e973f5d7d3904835f46abbdjpeg.jpeg'
-            },
-            {
-              id: '5',
-              url: 'https://fuss10.elemecdn.com/d/e6/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg'
-            },
-            {
-              id: '6',
-              url: 'https://fuss10.elemecdn.com/3/28/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg'
-            },
-            {
-              id: '7',
-              url: 'https://fuss10.elemecdn.com/2/11/6535bcfb26e4c79b48ddde44f4b6fjpeg.jpeg'
-            }
-          ]
-
-          resolve(data)
-        }, 200)
+    handleUploadSuccess() {
+      this.setCondition({ ...this.condition, current: 1 })
+      this.fetchList({ category: this.condition.category }).then((data) => {
+        this.setList(data)
+        this.getFilterList(this.condition)
       })
+    },
+
+    /**
+     * @description 处理图片分类选中事件
+     * @param {object} selectedValue 选中值
+     * @param {string} selectedValue.value 选中值
+     * @param {string} selectedValue.label 选中名称
+     */
+    handleCategorySelect(selectedValue) {
+      this.setCondition({ category: selectedValue.value, current: 1, pageSize: 10 })
+
+      this.fetchList({ category: selectedValue.value }).then((data) => {
+        this.setList(data)
+        this.getFilterList(this.condition)
+      })
+    },
+
+    /**
+     * @description 设置查询条件
+     * @param {object} value 查询条件
+     */
+    setCondition(value) {
+      this.condition = value
+    },
+
+    /**
+     * @description 设置加载状态
+     * @param {boolean} value 是否加载中
+     */
+    setLoading(value) {
+      this.loading = value
+    },
+
+    /**
+     * @description 获取列表数据
+     * @param {object} data 参数
+     * @prop {string} data.category 图片类型
+     */
+    fetchList(data) {
+      this.setLoading(true)
+
+      return request({
+        url: '/file/list',
+        method: 'get',
+        data
+      }).then(res => {
+        if (res.RetCode === 0) {
+          return res.Data
+        }
+
+        return Promise.reject(res)
+      }).finally(() => this.setLoading(false))
     },
 
     /**
@@ -120,6 +180,92 @@ export default {
       if (Array.isArray(value)) {
         this.list = value
       }
+    },
+
+    /**
+     * @description 过滤列表数据
+     * @param {Array} list 整个数组
+     * @param {Object} query 查询条件
+     * @param {string} query.category 类型
+     * @param {number} query.current 当前页码
+     * @param {number} query.pageSize 每页记录数
+     * @returns {Object} 返回分页结果
+     */
+    filterList(list, query) {
+      const { category, current, pageSize } = query
+
+      // 1. 根据 category 过滤数组
+      // TODO: DEV
+      const filteredList = list
+      // if (category) {
+      //   filteredList = list.filter(item => item.category === category)
+      // }
+
+      // 2. 计算总数
+      const total = filteredList.length
+
+      // 3. 计算分页
+      const startIndex = (current - 1) * pageSize
+      const endIndex = startIndex + pageSize
+      const paginatedList = filteredList.slice(startIndex, endIndex)
+
+      // 4. 返回结果
+      return {
+        list: paginatedList,
+        total: total
+      }
+    },
+
+    /**
+     * @description 获取过滤列表数据
+     * @param {Object} query 查询条件
+     * @param {string} query.category 类型
+     * @param {number} query.current 当前页码
+     * @param {number} query.pageSize 每页记录数
+     * @returns {Object} 返回分页结果
+     */
+    getFilterList(query) {
+      const data = this.filterList(this.list, query)
+      const { list, total } = data
+
+      this.setFilteredList(list)
+      this.setTotal(total)
+    },
+
+    /**
+     * @description 设置过滤后的列表数据
+     * @param {Array} value 过滤后的数组
+     */
+    setFilteredList(value) {
+      if (Array.isArray(value)) {
+        this.filteredList = value
+      }
+    },
+
+    /**
+     * @description 设置总数
+     * @param {number} value 总数
+     */
+    setTotal(value) {
+      this.total = value
+    },
+
+    /**
+     * @description 处理页码改变事件
+     * @param {number} current 当前页码
+     */
+    handleCurrentChange(current) {
+      this.setCondition({ ...this.condition, current })
+      this.getFilterList(this.condition)
+    },
+
+    /**
+     * @description 处理每页记录数改变事件
+     * @param {number} pageSize 每页记录数
+     */
+    handleSizeChange(pageSize) {
+      this.setCondition({ ...this.condition, current: 1, pageSize })
+      this.getFilterList(this.condition)
     }
   }
 }
@@ -140,6 +286,7 @@ export default {
   }
 
   &-menu {
+    padding-top: 12px;
     overflow: auto;
     border-top: 1px solid #DCDFE6;
   }
@@ -175,27 +322,38 @@ export default {
   &-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 12px;
     margin-top: 16px;
   }
 
   &-item {
-    width: 360px;
-    height: 180px;
+    width: 240px;
     border-radius: 4px;
     border: 1px solid #E4E7ED;
-    background: #f9fafc;
     transition: all .3s ease;
-
-    &:hover {
-      border-color: #409eff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-    }
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     &__image {
-      width: 100%;
-      height: 100%;
+      width: 200px;
+      height: 291px;
     }
+
+    &__text {
+      width: 100%;
+      margin-top: 8px;
+      color: #303133;
+      text-align: center;
+      word-wrap: break-word;
+    }
+  }
+
+  &-pagination {
+    margin-top: 12px;
+    text-align: right;
   }
 }
 </style>

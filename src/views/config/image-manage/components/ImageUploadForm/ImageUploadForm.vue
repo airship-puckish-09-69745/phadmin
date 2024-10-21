@@ -36,7 +36,7 @@
               @change="handleFileSelected"
             >
           </div>
-          <div class="image-upload-form__tip">只能上传jpg/jpeg/png文件，且不超过 1M</div>
+          <div class="image-upload-form__tip">只能上传 jpg/jpeg/png 格式的图片，且大小不超过 1M</div>
         </div>
         <div
           v-show="formData.file"
@@ -55,8 +55,8 @@
           </div>
         </div>
       </el-form-item>
-      <el-form-item label="分类" prop="type">
-        <el-select v-model="formData.type" placeholder="请选择" style="width: 100%">
+      <el-form-item label="分类" prop="category">
+        <el-select v-model="formData.category" placeholder="请选择" style="width: 100%">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -73,12 +73,34 @@
 <script>
 import axios from 'axios'
 
+/**
+ * @description 创建文件校验器工厂函数
+ * @param {Function[]} fns 校验规则数组
+ */
+function createFileValidatorFactory(fns) {
+  return (file) => {
+    for (const fn of fns) {
+      const result = fn(file)
+      if (!result.success) {
+        return result
+      }
+    }
+
+    return { success: true, message: '' }
+  }
+}
+
 export default {
   name: 'ImageUploadForm',
   props: {
     options: {
       type: Array,
       default: () => []
+    },
+
+    defaultCategory: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -86,12 +108,12 @@ export default {
       formData: {
         file: null,
         dataUrl: '',
-        type: ''
+        category: ''
       },
 
       formRules: {
         dataUrl: [{ required: true, message: '请选择图片' }],
-        type: [{ required: true, message: '请选择类型' }]
+        category: [{ required: true, message: '请选择类型' }]
       },
 
       imageAccept: 'image/png, image/jpeg',
@@ -101,7 +123,16 @@ export default {
       loading: false
     }
   },
+  created() {
+    this.setDefaultCategory(this.defaultCategory)
+  },
   methods: {
+    setDefaultCategory(category) {
+      if (category) {
+        this.formData.category = category
+      }
+    },
+
     handleDragOver() {
       this.isDragging = true
     },
@@ -149,6 +180,18 @@ export default {
     },
 
     /**
+     * @description 创建文件校验器
+     * @returns {Function} 文件校验器函数
+     */
+    createFileValidator() {
+      return createFileValidatorFactory([
+        this.validateFileName,
+        (file) => this.validateFileType(file, this.imageAccept),
+        this.validateFileSize
+      ])
+    },
+
+    /**
      * @description 处理文件
      * @param {File[]} files
      */
@@ -156,17 +199,10 @@ export default {
       const file = files[0]
 
       if (file) {
-        // 校验文件格式
-        const formatValidRes = this.validateFileFormat(file, this.imageAccept)
-        if (!formatValidRes.success) {
-          this.$message.error(formatValidRes.message)
-          return
-        }
-
-        // 校验文件大小
-        const sizeValidRes = this.validateFileSize(file)
-        if (!sizeValidRes.success) {
-          this.$message.error(sizeValidRes.message)
+        const fileValidator = this.createFileValidator()
+        const validationResult = fileValidator(file)
+        if (!validationResult.success) {
+          this.$message.error(validationResult.message)
           return
         }
 
@@ -175,19 +211,15 @@ export default {
     },
 
     /**
-     * @description 校验文件大小
+     * @description 校验文件名称
      * @param {File} file 文件对象
-     * @param {number} [maxSize] 可选，文件大小上限，单位 byte，默认 1MB
      * @returns {{ success: true, message: '' }} 返回校验结果，`success=true` 表示校验通过，反之，则不通过；`message` 的值为错误消息
      */
-    validateFileSize(file, maxSize = 1 * 1024 * 1024) {
-      if (file.size > maxSize) {
-        const sizeInMB = maxSize / (1024 * 1024)
-        const fileSizeInMB = file.size / (1024 * 1024)
-
+    validateFileName(file) {
+      if (file && !file.name.match(/^[A-Za-z0-9_\-\.]+$/)) {
         return {
           success: false,
-          message: `文件大小不能超过 ${sizeInMB.toFixed(2)}MB。当前文件大小：${fileSizeInMB.toFixed(2)}MB`
+          message: '文件名只能包含：「字母、数字、_、-、.」'
         }
       }
 
@@ -203,7 +235,7 @@ export default {
      * @param {string} format 允许的文件格式
      * @returns {{ success: true, message: '' }} 返回校验结果，`success=true` 表示校验通过，反之，则不通过；`message` 的值为错误消息
      */
-    validateFileFormat(file, format) {
+    validateFileType(file, format) {
       const allowedFormats = format.split(',').map(format => format.trim())
 
       if (!allowedFormats.includes(file.type)) {
@@ -214,6 +246,37 @@ export default {
         return {
           success: false,
           message: `请上传 ${formattedFormats} 格式的图片`
+        }
+      }
+
+      return {
+        success: true,
+        message: ''
+      }
+    },
+
+    /**
+   * @description 校验文件大小
+   * @param {File} file 文件对象
+   * @param {number} [maxSize] 可选，文件大小上限，单位 byte，默认 1MB
+   * @returns {{ success: true, message: '' }} 返回校验结果，`success=true` 表示校验通过，反之，则不通过；`message` 的值为错误消息
+   */
+    validateFileSize(file, maxSize = 1 * 1024 * 1024) {
+      let unit = 'MB' // 默认单位是 MB
+      let maxSizeFormatted = (maxSize / (1024 * 1024)).toFixed(2) // 默认以 MB 格式化 maxSize
+      let fileSizeFormatted = (file.size / (1024 * 1024)).toFixed(2) // 默认以 MB 格式化 file.size
+
+      if (maxSize < 1 * 1024 * 1024) {
+        // 如果 maxSize 小于 1MB，则使用 KB 作为单位
+        unit = 'KB'
+        maxSizeFormatted = (maxSize / 1024).toFixed(2) // 以 KB 格式化 maxSize
+        fileSizeFormatted = (file.size / 1024).toFixed(2) // 以 KB 格式化 file.size
+      }
+
+      if (file.size > maxSize) {
+        return {
+          success: false,
+          message: `文件大小不能超过 ${maxSizeFormatted}${unit}。当前文件大小：${fileSizeFormatted}${unit}`
         }
       }
 
@@ -276,7 +339,7 @@ export default {
     uploadFile() {
       const formData = new FormData()
       formData.append('Env', this.$store.getters.env)
-      formData.append('category', this.formData.type)
+      formData.append('category', this.formData.category)
       formData.append('file', this.formData.file)
 
       const url = process.env.VUE_APP_BASE_API + '/file/upload'
@@ -299,6 +362,7 @@ export default {
           this.$emit('success')
         } else {
           this.$message.error(Data)
+          this.$emit('error', res)
         }
       }).finally(() => this.setLoading(false))
     }

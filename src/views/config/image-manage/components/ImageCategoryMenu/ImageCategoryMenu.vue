@@ -1,27 +1,27 @@
 <template>
-  <div class="image-type-menu">
+  <div class="image-category-menu">
     <div
       v-for="option in options"
       :key="option.value"
       :class="[
-        'image-type-menu__option',
+        'image-category-menu__option',
         {
-          'image-type-menu__option--selected': isSelected(option.value),
+          'image-category-menu__option--selected': isSelected(option.value),
         }
       ]"
       @click="selectOption(option)"
     >
-      <div v-if="option.icon" class="image-type-menu__option-icon">
+      <div v-if="option.icon" class="image-category-menu__option-icon">
         <i :class="option.icon" />
       </div>
-      <div class="image-type-menu__option-label">{{ option.label }}</div>
+      <div class="image-category-menu__option-label">{{ option.label }}</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'ImageTypeMenu',
+  name: 'ImageCategoryMenu',
   props: {
     value: {
       type: String,
@@ -59,7 +59,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.image-type-menu {
+.image-category-menu {
   width: 100%;
 
   &__option {
@@ -67,14 +67,11 @@ export default {
     align-items: center;
     padding: 12px 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
     color: #303133;
     border-left: 4px solid transparent;
 
-    &:hover {
-      background-color: rgb(217, 236, 255);
-    }
-
+    &:hover,
     &--selected {
       background-color: rgb(217, 236, 255);
       color: #409eff;
