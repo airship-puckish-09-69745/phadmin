@@ -9,8 +9,7 @@
                 </el-form-item>
                 <el-form-item label="类型：" :required="true">
                     <el-select v-model="form.repeatType" placeholder="请选择" size="mini">
-                        <el-option v-for="item in repeatCfgs" :key="item.value" :label="item.label"
-                            :value="item.value" />
+                        <el-option label="全部" :value=-1></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态：" :required="true">
@@ -101,7 +100,7 @@ export default {
             form: {
                 gameId: 2031,
                 status: -1,
-                repeatType: 0,
+                repeatType: -1,
             },
             gameCfgs: [
                 { "value": 2031, "label": "tongits" },
@@ -134,7 +133,7 @@ export default {
         resetSearch() {
             this.form.gameId = 2031
             this.form.status = -1
-            this.form.repeatType = 0
+            this.form.repeatType = -1
         },
         getList() {
             request({

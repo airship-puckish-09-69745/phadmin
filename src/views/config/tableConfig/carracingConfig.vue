@@ -158,7 +158,7 @@
                         <el-input v-model.number="item.BetAreaOptions[scope.$index].Rate[0]" size="mini" />
                       </template>
                     </el-table-column>
-                    <el-table-column :label="'二轮'">
+                    <el-table-column :label="'二轮'" v-if="!IsPHAuditEnv()">
                       <template slot-scope="scope">
                         <el-input v-model.number="item.BetAreaOptions[scope.$index].Rate[1]" size="mini" />
                       </template>
@@ -388,7 +388,7 @@
             <el-col :span="24" :offset="5">
               <el-form :inline="true">
                 <el-col :span="8">
-                  <el-form-item label="jackpot中奖概率">
+                  <el-form-item label="jackpot中奖概率"  v-if="!IsPHAuditEnv()">
                     <el-input v-model.number="JackpotCfg.JackPotRate" size="mini" ><template slot="append">‰</template></el-input>
                   </el-form-item>
                 </el-col>
