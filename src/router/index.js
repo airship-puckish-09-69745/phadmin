@@ -1126,12 +1126,6 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchMonitor'),
         name: 'matchMonitor',
         meta: { title: '赛事监控', noCache: true }
-      },
-      {
-        path: 'matchLog',
-        component: () => import('@/views/matchManage/matchLog'),
-        name: 'matchLog',
-        meta: { title: '赛事记录', noCache: true }
       }
     ]
   },
