@@ -204,7 +204,6 @@
         >
           <template slot-scope="scope">
             <el-button
-              v-if="scope.row.Status!=2"
               size="mini"
               type="success"
               icon="el-icon-check"
