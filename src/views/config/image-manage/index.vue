@@ -22,7 +22,7 @@
     <div class="image-manage-container">
       <div class="image-manage__header">
         <div class="image-manage__header__title">{{ title }}</div>
-        <i class="el-icon-refresh image-manage__header__refresh" />
+        <i :class="['el-icon-refresh image-manage__header__refresh', { 'is-rotating': loading }]" @click="handleRefresh" />
       </div>
       <div
         v-loading="loading"
@@ -40,6 +40,7 @@
               <el-image
                 :src="item.url"
                 fit="contain"
+                :preview-src-list="[item.url]"
                 class="image-manage-item__image"
               />
               <div class="image-manage-item__text">{{ item.file_name }}</div>
@@ -128,9 +129,25 @@ export default {
      * @param {string} selectedValue.label 选中名称
      */
     handleCategorySelect(selectedValue) {
-      this.setCondition({ category: selectedValue.value, current: 1, pageSize: 10 })
+      this.setCondition({ category: selectedValue.value, current: 1 })
 
       this.fetchList({ category: selectedValue.value }).then((data) => {
+        this.setList(data)
+        this.getFilterList(this.condition)
+      })
+    },
+
+    /**
+     * @description 刷新
+     */
+    handleRefresh() {
+      if (this.loading) {
+        return
+      }
+
+      this.setCondition({ ...this.condition, current: 1 })
+
+      this.fetchList({ category: this.condition.category }).then((data) => {
         this.setList(data)
         this.getFilterList(this.condition)
       })
@@ -192,24 +209,27 @@ export default {
      * @returns {Object} 返回分页结果
      */
     filterList(list, query) {
-      const { category, current, pageSize } = query
+      // 判空
+      if (!Array.isArray(list)) {
+        return {
+          list: [],
+          total: 0
+        }
+      }
 
-      // 1. 根据 category 过滤数组
-      // TODO: DEV
+      const { current = 1, pageSize = 10 } = query || {}
+
       const filteredList = list
-      // if (category) {
-      //   filteredList = list.filter(item => item.category === category)
-      // }
 
-      // 2. 计算总数
+      // 计算总数
       const total = filteredList.length
 
-      // 3. 计算分页
+      // 计算分页
       const startIndex = (current - 1) * pageSize
       const endIndex = startIndex + pageSize
       const paginatedList = filteredList.slice(startIndex, endIndex)
 
-      // 4. 返回结果
+      // 返回结果
       return {
         list: paginatedList,
         total: total
@@ -312,6 +332,20 @@ export default {
       color: #606266;
       margin-left: 8px;
       cursor: pointer;
+
+      &.is-rotating {
+        cursor: default;
+        animation: spin .3s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
     }
   }
 
@@ -327,12 +361,11 @@ export default {
   }
 
   &-item {
-    width: 240px;
+    width: 200px;
     border-radius: 4px;
     border: 1px solid #E4E7ED;
     transition: all .3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-    padding: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -343,8 +376,8 @@ export default {
     }
 
     &__text {
+      padding: 8px 12px;
       width: 100%;
-      margin-top: 8px;
       color: #303133;
       text-align: center;
       word-wrap: break-word;
