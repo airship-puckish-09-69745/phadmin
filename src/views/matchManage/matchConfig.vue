@@ -1336,8 +1336,8 @@ export default {
               return false
             }
 
-            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 600) {
-              this.errmsg('循环赛间隔时间至少大于600秒（十分钟）！')
+            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 300) {
+              this.errmsg('循环赛间隔时间至少大于300秒（五分钟）！')
               return false
             }
           }
