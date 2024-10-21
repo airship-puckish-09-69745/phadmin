@@ -1,8 +1,7 @@
 <template>
   <div class="app-container">
-
     <publish
-      primary-key="Volume"
+      primary-key="ID"
       :key-id="getFullKey(this.subKey)"
       :env-empty="false"
       compare-type="Object"
@@ -37,11 +36,10 @@
         </el-form>
 
       </el-col>
-      <el-col :span="15" />
-      <el-col :span="22">
+      <el-col :span="24" />
+      <el-col :span="3">
         <el-button type="primary" size="mini" @click="addOne">添加游戏返回配置项</el-button>
       </el-col>
-
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getData()">刷新</el-button>
       </el-col>
@@ -364,6 +362,7 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
+            this.$refs.compare.SetOldVal(response.Data.Data)
             $this.allCfg = cfg
             $this.DuplicateData = []
             for (let i = 0; i < $this.allCfg.length; i++) {
@@ -386,7 +385,7 @@ export default {
       const $this = this
       // 设置修改后数据
       // this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.SetNewVal(this.postData)
+      this.$refs.compare.SetNewVal(this.postData.Data)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
