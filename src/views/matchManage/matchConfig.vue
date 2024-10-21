@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -320,19 +320,21 @@
                 placeholder="选择结束日期"
               />
           </el-form-item>
-          <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数：" :required="true">
-            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数" />
+          <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
+            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数，0为每天创建" />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
             <el-time-picker
               arrow-control
               v-model="editForm.loopDetail.single.stime"
+              format="HH:mm"
               value-format="HH:mm:ss"
               placeholder="开始时间">
             </el-time-picker>
             <el-time-picker
               arrow-control
               v-model="editForm.loopDetail.single.etime"
+              format="HH:mm"
               value-format="HH:mm:ss"
               placeholder="结束时间">
             </el-time-picker>
@@ -359,6 +361,7 @@
                 <template slot-scope="scope">
                   <el-time-picker
                     arrow-control
+                    format="HH:mm"
                     value-format="HH:mm:ss"
                     v-model="scope.row.stime"
                     placeholder="开始时间">
@@ -373,6 +376,7 @@
                   <el-time-picker
                     arrow-control
                     v-model="scope.row.etime"
+                    format="HH:mm"
                     value-format="HH:mm:ss"
                     placeholder="结束时间">
                   </el-time-picker>
@@ -680,7 +684,9 @@ export default {
         imagePath: "封面图片",
         whileList: "白名单",
         openDaysLimit:"每日限制",
-        sort:"排序"
+        sort:"排序",
+        repeatDelayDays: "间隔天数",
+        daySections: "每日时段",
       },
       showDevTool: false,
     }
@@ -1115,8 +1121,25 @@ export default {
           sort:editData.sort,
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
+        if (editData.while_list != "") {
+          let whileList = JSON.parse(editData.while_list)
+          this.editForm.whileList.type = whileList.type
+          this.editForm.whileList.data = whileList.data
+        }
         if (editData.repeat_type == 0) {
           this.editForm.loopDetail.onceTime = [new Date(editData.start_time*1000),new Date(editData.end_time*1000)]
+        } else {
+          let repeatDetail = JSON.parse(editData.repeat_detail)
+          this.editForm.loopDetail.loopStartDate = $libDate.GetDayBegin(editData.start_time*1000)
+          this.editForm.loopDetail.loopEndDate = $libDate.GetDayBegin(editData.end_time*1000)
+          this.editForm.loopDetail.intervalDay = repeatDetail.intervalDay
+          if (editData.repeat_type == 1) {
+            //单天单场
+            this.editForm.loopDetail.single.stime = repeatDetail.msTime
+            this.editForm.loopDetail.single.etime = repeatDetail.meTime
+          } else {
+            this.editForm.loopDetail.loopData = repeatDetail.loopData
+          }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
         this.showCsCfgs = []
@@ -1148,12 +1171,29 @@ export default {
 
       let rankReward = JSON.stringify(this.editForm.rankRewards)
       let whileDetail = JSON.stringify(this.editForm.whileList)
-      this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
-      this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
-      let bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
-      let eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-      let duration = eTime - bTime
-      let repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+      let repeatDetail = ""
+      let bTime = 0
+      let eTime = 0
+      if (this.editForm.data.repeatType == 0) {
+        //单场
+        if (this.editForm.loopDetail.onceTime) {
+          this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
+          this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
+          bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
+          eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
+          repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+        }
+      }  else {
+        //循环
+        bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
+        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
+        let intervalDay = this.editForm.loopDetail.intervalDay
+        if (this.editForm.data.repeatType == 1) {
+          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime})
+        } else {
+          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData})
+        }
+      }
       //console.log("测试：" + this.$store.getters.name)
       request({
         url: '/matchconfig/match/config/create',
@@ -1281,13 +1321,44 @@ export default {
         }
       }
 
+      if (this.editForm.data.repeatType == 1) {
+        if ((Math.floor(this.editForm.loopDetail.single.etime / 1000) - Math.floor(this.editForm.loopDetail.single.stime / 1000)) < 600) {
+          this.errmsg('比赛开始结束间隔要大于10分钟！')
+          return false
+        }
+      }
+
+      if (this.editForm.data.repeatType != 0) {
+        if (this.editForm.loopDetail.loopData.length > 0) {
+          for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+            if ((Math.floor(this.editForm.loopDetail.loopData[i].etime / 1000) - Math.floor(this.editForm.loopDetail.loopData[i].stime / 1000)) < 600) {
+              this.errmsg('比赛开始结束间隔要大于10分钟！')
+              return false
+            }
+
+            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 1800) {
+              this.errmsg('循环赛间隔时间至少大于1800秒（半小时）！')
+              return false
+            }
+          }
+        }
+
+        if (this.editForm.loopDetail.intervalDay < 0) {
+          this.errmsg('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
+          return false
+        }
+      } 
+
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false
       } else if (this.editForm.data.opentMatchMember % 3 != 0) {
         this.errmsg('开赛人数值必须是3的倍数！')
         return false
-      } else if ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600) {
+      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
+        this.errmsg('比赛开始结束间隔要大于10分钟！')
+        return false
+      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
