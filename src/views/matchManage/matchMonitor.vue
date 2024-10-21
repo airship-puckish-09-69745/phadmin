@@ -100,7 +100,7 @@ export default {
             form: {
                 gameId: 2031,
                 status: -1,
-                repeatType: 0,
+                repeatType: -1,
             },
             gameCfgs: [
                 { "value": 2031, "label": "tongits" },
@@ -133,7 +133,7 @@ export default {
         resetSearch() {
             this.form.gameId = 2031
             this.form.status = -1
-            this.form.repeatType = 0
+            this.form.repeatType = -1
         },
         getList() {
             request({
