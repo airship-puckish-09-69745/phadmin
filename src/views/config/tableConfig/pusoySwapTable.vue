@@ -369,6 +369,17 @@
           </el-col>
         </el-row>
 
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="是否启用配牌：" :required="true" prop="item.EnablePresetCards">
+              <el-select v-model.number="edit.item.EnablePresetCards" placeholder="请选择">
+                <el-option label="关闭" :value="0" />
+                <el-option label="启用" :value="1" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -426,7 +437,8 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    RoomLevel: 0
+    RoomLevel: 0,
+    EnablePresetCards: 0
   }
 }
 
@@ -479,7 +491,8 @@ export default {
         TotalPay: '总充值大于',
         MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次',
-        RoomLevel: '房间类型'
+        RoomLevel: '房间类型',
+        EnablePresetCards: '启用配牌'
       }
     }
   },

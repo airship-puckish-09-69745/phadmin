@@ -136,12 +136,12 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
-      {
-        path: 'slotsScriptStatistics_old',
-        component: () => import('@/views/online/slotsScriptStatistics_old.vue'),
-        name: 'slotsScriptStatistics_old',
-        meta: { title: 'Slots剧本监控(旧)', noCache: true }
-      },
+      // {
+      //   path: 'slotsScriptStatistics_old',
+      //   component: () => import('@/views/online/slotsScriptStatistics_old.vue'),
+      //   name: 'slotsScriptStatistics_old',
+      //   meta: { title: 'Slots剧本监控(旧)', noCache: true }
+      // },
       {
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
@@ -249,6 +249,32 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'PusoyCfg',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Pusoy', noCache: true },
+            children: [
+              {
+                path: 'pusoyTable',
+                component: () => import('@/views/config/tableConfig/pusoyTable'),
+                name: 'pusoyTable',
+                meta: { title: 'Pusoy ◐' }
+              },
+              {
+                path: 'PusoySwapTable',
+                component: () => import('@/views/config/tableConfig/pusoySwapTable'),
+                name: 'pusoySwapTable',
+                meta: { title: 'Pusoy Swap  ◐' }
+              },
+              {
+                path: 'pusoyPresetCards',
+                component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
+                name: 'pusoyPresetCards',
+                meta: { title: 'Pusoy用户配牌控制 ◐' }
+              }
+            ]
+          },
+          {
             path: 'PusoyDosCfg',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -301,22 +327,10 @@ export const asyncRoutes = [
             meta: { title: 'Domino ◐' }
           },
           {
-            path: 'PusoySwapTable',
-            component: () => import('@/views/config/tableConfig/pusoySwapTable'),
-            name: 'pusoySwapTable',
-            meta: { title: 'Pusoy Swap  ◐' }
-          },
-          {
             path: 'solitaire',
             component: () => import('@/views/config/tableConfig/solitaire'),
             name: 'solitaire',
             meta: { title: 'Solitaire ◐' }
-          },
-          {
-            path: 'pusoyTable',
-            component: () => import('@/views/config/tableConfig/pusoyTable'),
-            name: 'pusoyTable',
-            meta: { title: 'Pusoy ◐' }
           },
           { // 牛牛
             path: 'niuniuCfg',
@@ -708,7 +722,7 @@ export const asyncRoutes = [
                 path: 'chargebison_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/chargebison_slots_cfg'),
                 name: 'chargebison_slots_cfg',
-                meta: { title: '冲锋野牛' }
+                meta: { title: 'Wild Buffalo' }
               },
               {
                 path: 'romanarena_slots_cfg',
@@ -726,7 +740,7 @@ export const asyncRoutes = [
                 path: 'aladdinlamp_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/aladdinlamp_slots_cfg'),
                 name: 'aladdinlamp_slots_cfg',
-                meta: { title: '阿拉丁神灯' }
+                meta: { title: 'Aladdin\'s Lamp' }
               },
               {
                 path: 'supergemiii_slots_cfg',
@@ -825,7 +839,7 @@ export const asyncRoutes = [
                 path: 'chargebisonmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/chargebisonmars_slots_cfg'),
                 name: 'chargebisonmars_slots_cfg',
-                meta: { title: '冲锋野牛(审)' }
+                meta: { title: 'Wild Buffalo(审)' }
               },
               {
                 path: 'romanarenamars_slots_cfg',
@@ -843,7 +857,7 @@ export const asyncRoutes = [
                 path: 'aladdinlampmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/aladdinlampmars_slots_cfg'),
                 name: 'aladdinlampmars_slots_cfg',
-                meta: { title: '阿拉丁神灯(审)' }
+                meta: { title: 'Aladdin\'s Lamp(审)' }
               },
               {
                 path: 'supergemiiimars_slots_cfg',
@@ -874,7 +888,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/gigaacemars_slots_cfg'),
                 name: 'gigaacemars_slots_cfg',
                 meta: { title: 'GigaAce(审)' }
-              },
+              }
             ]
           },
           {
@@ -1295,7 +1309,7 @@ export const asyncRoutes = [
                 component: () => import('@/views/playerManage/playlog'),
                 name: 'playlog_9Ball',
                 meta: { title: '9Ball ◐', gid: 48 }
-              },
+              }
             ]
           }
         ]
@@ -1447,7 +1461,7 @@ export const asyncRoutes = [
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
-            meta: { title: 'SuperGems', gid:  78 }
+            meta: { title: 'SuperGems', gid: 78 }
           },
 
           {
@@ -1496,7 +1510,7 @@ export const asyncRoutes = [
             path: 'chargebison_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'chargebison_slots_log',
-            meta: { title: '冲锋野牛', gid: 94 }
+            meta: { title: 'Wild Buffalo', gid: 94 }
           },
           {
             path: 'romanarena_slots_log',
@@ -1514,37 +1528,37 @@ export const asyncRoutes = [
             path: 'supergemiii_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergemiii_slots_log',
-            meta: { title: 'SuperGemsIII', gid:  150 }
+            meta: { title: 'SuperGemsIII', gid: 150 }
           },
           {
             path: 'aladdinlamp_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlamp_slots_log',
-            meta: { title: '阿拉丁神灯', gid:  152 }
+            meta: { title: 'Aladdin\'s Lamp', gid: 152 }
           },
           {
             path: 'grandace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandace_slots_log',
-            meta: { title: 'GrandAce', gid:  154 }
+            meta: { title: 'GrandAce', gid: 154 }
           },
           {
             path: 'crazyace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
-            meta: { title: 'CrazyAce', gid:  156 }
+            meta: { title: 'CrazyAce', gid: 156 }
           },
           {
             path: 'gigaace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaace_slots_log',
-            meta: { title: 'GigaAce', gid:  160 }
+            meta: { title: 'GigaAce', gid: 160 }
           },
           {
             path: 'sharkkingdom_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdom_slots_log',
-            meta: { title: 'SharkKingdom', gid:  158 }
+            meta: { title: 'SharkKingdom', gid: 158 }
           }
         ]
       },
@@ -1612,7 +1626,7 @@ export const asyncRoutes = [
             path: 'chargebison_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'chargebison_slots_log',
-            meta: { title: '冲锋野牛(审)', gid: 95 }
+            meta: { title: 'Wild Buffalo(审)', gid: 95 }
           },
           {
             path: 'romanarenamars_slots_log',
@@ -1636,31 +1650,31 @@ export const asyncRoutes = [
             path: 'aladdinlampmars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'aladdinlampmars_slots_log',
-            meta: { title: '阿拉丁神灯', gid:  153 }
+            meta: { title: 'Aladdin\'s Lamp', gid: 153 }
           },
           {
             path: 'grandacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
-            meta: { title: 'GrandAce(审)', gid:  155 }
+            meta: { title: 'GrandAce(审)', gid: 155 }
           },
           {
             path: 'crazyacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyacemars_slots_log',
-            meta: { title: 'CrazyAce(审)', gid:  157 }
+            meta: { title: 'CrazyAce(审)', gid: 157 }
           },
           {
             path: 'gigaacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'gigaacemars_slots_log',
-            meta: { title: 'GigaAce(审)', gid:  161 }
+            meta: { title: 'GigaAce(审)', gid: 161 }
           },
           {
             path: 'sharkkingdommars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdommars_slots_log',
-            meta: { title: 'SharkKingdom(审)', gid:  159 }
+            meta: { title: 'SharkKingdom(审)', gid: 159 }
           }
         ]
       },
@@ -1904,6 +1918,12 @@ export const asyncRoutes = [
             meta: { title: '3-代理服务分派', noCache: true }
           }
         ]
+      },
+      {
+        path: 'image-manage',
+        component: () => import('@/views/config/image-manage'),
+        name: 'ImageManage',
+        meta: { title: '图片管理', noCache: true }
       }
     ]
   },
@@ -2078,9 +2098,23 @@ export const asyncRoutes = [
       },
       {
         path: 'gameCustomConfig',
-        component: () => import('@/views/config/gameCustomConfig'),
-        name: 'game_custom_config',
-        meta: { title: '游戏显示返回大厅按钮配置' }
+        component: () => import('@/views/devTools/devTools'),
+        redirect: 'noRedirect',
+        meta: { title: '返回大厅按钮配置', icon: 'el-icon-files' },
+        children: [
+          {
+            path: 'gameReturnConfig',
+            component: () => import('@/views/config/gameCustomConfig/gameReturnConfig'),
+            name: 'gameReturnConfig',
+            meta: { title: '返回大厅按钮配置 ◐', noCache: true }
+          },
+          {
+            path: 'gameReturnWhiteList',
+            component: () => import('@/views/config/gameCustomConfig/gameReturnWhiteList'),
+            name: 'gameReturnWhiteList',
+            meta: { title: '返回大厅白名单 ◐', noCache: true }
+          }
+        ]
       },
       {
         path: 'gameLogoDisplayConfig',

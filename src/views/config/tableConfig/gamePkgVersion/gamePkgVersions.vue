@@ -59,6 +59,12 @@
       </el-form>
     </el-row>
     <el-row>
+      <template>
+        <el-alert style="font-size: 24px" type="error" :closable=false :title="getLobbyVersionAlert()">
+        </el-alert>
+      </template>
+    </el-row>
+    <el-row>
       <el-form :inline="true">
         <el-form-item>
           <el-button
@@ -585,7 +591,7 @@ export default {
     // 300ms后执行
     setTimeout(() => {
       this.getList()
-    }, 300)
+    }, 500)
   },
   methods: {
     newItem() {
@@ -982,10 +988,11 @@ export default {
         method: 'post',
         data: postData
       }).then(response => {
-        loading.close()
         if (response.RetCode === 0) {
           Message.success('保存成功！')
-          $this.getLobbyVersions()
+          $this.getLobbyVersions(loading)
+        } else {
+          loading.close()
         }
       }).catch(function() {
         loading.close()
@@ -1230,7 +1237,8 @@ export default {
       this.copyLobbySave(this.getCopyLobbyPostData())
       this.edit.copyLobbyVisible = false
     },
-    getLobbyVersions() {
+    getLobbyVersions(loading=undefined) {
+      console.log("getLobbyVersions", loading === undefined)
       request({
         url: '/gamepkgversions/lobbyversions',
         method: 'get',
@@ -1245,6 +1253,9 @@ export default {
           this.orgLobbyVersions = response.Data || []
           this.handleDisplayLobbyVersions()
         }
+        loading && loading.close()
+      }).catch(function() {
+        loading && loading.close()
       })
     },
     handleDisplayLobbyVersions() {
@@ -1267,6 +1278,9 @@ export default {
         this.LobbyVersion = this.lobbyVersions[this.lobbyVersions.length - 1].label
         this.LobbyVersionStatus = 1
       }
+    },
+    getLobbyVersionAlert() {
+      return "       "+ this.LobbyVersion+" 版本必须是整包！包含所有 bundle！"
     }
   }
 }

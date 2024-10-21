@@ -1,8 +1,17 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="app-container">
     <el-row>
-      <el-col :offset="16" :span="2">
+      <el-col :offset="8" :span="2">
         <el-button size="mini" @click="getInfo(10000, 1)">刷新</el-button>
+      </el-col>
+      <el-col :span="6">
+        筛选：
+        <el-button-group>
+          <el-button type="success" size="mini" @click="changeType(1)">默认</el-button>
+          <el-button type="success" size="mini" @click="changeType(2)">Poker</el-button>
+          <el-button type="success" size="mini" @click="changeType(3)">Slots</el-button>
+          <el-button type="success" size="mini" @click="changeType(4)">其他</el-button>
+        </el-button-group>
       </el-col>
       <el-col :span="6">
         排序：
@@ -14,9 +23,11 @@
       </el-col>
     </el-row>
     <el-row class="panel-group" :gutter="10">
-      <el-col :span="4" class="card-panel-col" v-if="HasACC()">
-        <div :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
-             @click="getInfo(10000,2)">
+      <el-col v-if="HasACC()" :span="4" class="card-panel-col">
+        <div
+          :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
+          @click="getInfo(10000,2)"
+        >
           <div class="card-panel-description">
             <div class="card-panel-text">
               汇总：<span :class="getSummaryClass(summary[10000])"> {{
@@ -37,9 +48,12 @@
           </div>
         </div>
       </el-col>
-      <el-col v-for="(o,k) in sortOrder" :key="k" :span="4" class="card-panel-col" v-if="o!=10000">
-        <div v-if="!isPopType(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
-             @click="getInfo(o,2)">
+      <el-col v-for="(o,k) in sortOrder" v-if="o!=10000" :key="k" :span="4" class="card-panel-col">
+        <div
+          v-if="!isPopType(o)"
+          :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
+          @click="getInfo(o,2)"
+        >
           <div class="card-panel-description">
             <div class="card-panel-text">
               {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{
@@ -58,9 +72,11 @@
           </div>
         </div>
 
-        <div v-else-if="isTexasMaster(o)"
-             :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
-             @click="getInfo(o,2)">
+        <div
+          v-else-if="isTexasMaster(o)"
+          :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
+          @click="getInfo(o,2)"
+        >
           <div class="card-panel-description">
             <div class="card-panel-text">
               {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{
@@ -83,14 +99,18 @@
         </div>
 
         <div v-else>
-          <div v-if="!isSlots(o)" :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
-               @click="getInfo(o,2)">
+          <div
+            v-if="!isSlots(o)"
+            :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
+            @click="getInfo(o,2)"
+          >
             <el-tooltip class="item" effect="dark" placement="top" :disabled="o!=37">
-              <div v-html="getBlackJackTitle()" slot="content" style="white-space: pre-line;font-size: 14px"></div>
+              <div slot="content" style="white-space: pre-line;font-size: 14px" v-html="getBlackJackTitle()" />
               <div class="card-panel-description">
                 <div class="card-panel-text">
                   {{ gameNames[o] }}：<span
-                  :class="getSummaryClass(summary[o])"> {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+                    :class="getSummaryClass(summary[o])"
+                  > {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
                 </div>
                 <div>
                   收益：{{ getSystemGot(summary[o]) }}
@@ -110,8 +130,11 @@
               </div>
             </el-tooltip>
           </div>
-          <div v-else :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
-               @click="getInfo(o,2)">
+          <div
+            v-else
+            :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
+            @click="getInfo(o,2)"
+          >
             <div class="card-panel-description">
               <div class="card-panel-text">
                 {{ gameNames[o] }}：<span :class="getSummaryRtpClass(summary[o])"> {{
@@ -162,7 +185,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px"/>
+      <line-chart :chart-data="chartData" height="600px" />
     </el-row>
     <el-dialog
       title="在线用户详情"
@@ -243,18 +266,18 @@ import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import LineChart from './components/LineChart'
-import {$libDate, $libShow, MoneyShow} from '@/utils/common'
-import {IsMars, IsProd} from '@/utils/env'
+import { $libDate, $libShow, MoneyShow } from '@/utils/common'
+import { IsMars, IsProd } from '@/utils/env'
 import store from '@/store'
-import {Message} from 'element-ui'
-import {mapGetters} from "vuex";
+import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 
 function newHealthData() {
   return {
     xData: [],
     yData: [
-      {Name: '昨日收益', Data: []},
-      {Name: '今日收益', Data: []}
+      { Name: '昨日收益', Data: [] },
+      { Name: '今日收益', Data: [] }
     ]
   }
 }
@@ -263,12 +286,12 @@ function newOriginData() {
   return {
     xData: [],
     yData: [
-      {Name: '昨日系统赢', Data: []},
-      {Name: '昨日台费', Data: []},
-      {Name: '昨日有效流水', Data: []},
-      {Name: '今日系统赢', Data: []},
-      {Name: '今日台费', Data: []},
-      {Name: '今日有效流水', Data: []}
+      { Name: '昨日系统赢', Data: [] },
+      { Name: '昨日台费', Data: [] },
+      { Name: '昨日有效流水', Data: [] },
+      { Name: '今日系统赢', Data: [] },
+      { Name: '今日台费', Data: [] },
+      { Name: '今日有效流水', Data: [] }
     ]
   }
 }
@@ -276,7 +299,7 @@ function newOriginData() {
 export default {
   name: 'SystemMoney',
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, UidInput, LineChart},
+  components: { Compare, Publish, UidInput, LineChart },
   data() {
     return {
       item: {
@@ -324,7 +347,7 @@ export default {
         88: 'Lucky777',
         90: 'Fortune Coming',
         92: 'Ultra Ace',
-        94: 'Charge Bison',
+        94: 'Wild Buffalo',
         96: 'Roman Arena',
         98: 'Super Tongit',
         28: 'Tongits Joker',
@@ -352,7 +375,7 @@ export default {
         112: 'Wingo',
         113: 'PusoySwap',
         115: 'Multi NiuNiu',
-        152: 'AladdinLamp',
+        152: 'Aladdin\'s Lamp',
         150: 'SuperGems3',
         156: 'Crazy Ace',
         118: 'Car Racing',
@@ -362,6 +385,9 @@ export default {
       userVisible: false,
       users: [],
       defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118], // 糖果传奇调用addGameName特殊处理
+      selectType: 1,
+
+      selectOrder: 1,
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT
@@ -404,11 +430,41 @@ export default {
       }
       return false
     },
+    changeType(iType) {
+      this.selectType = iType
+      this._changeOrder()
+    },
     changeOrder(iType) {
-      console.log('summary===>', this.summary)
-      if (iType === 1) {
+      this.selectOrder = iType
+      this._changeOrder()
+    },
+    _changeOrder() {
+      if (this.selectType === 1) {
         this.sortOrder = this.defaultOrder
       } else {
+        const pokers = []
+        const slots = []
+        const others = []
+
+        for (let i = 0; i < this.defaultOrder.length; i++) {
+          if (this.isPoker(this.defaultOrder[i])) {
+            pokers.push(this.defaultOrder[i])
+          } else if (this.isSlots(this.defaultOrder[i])) {
+            slots.push(this.defaultOrder[i])
+          } else {
+            others.push(this.defaultOrder[i])
+          }
+        }
+        if (this.selectType === 2) {
+          this.sortOrder = pokers
+        } else if (this.selectType === 3) {
+          this.sortOrder = slots
+        } else {
+          this.sortOrder = others
+        }
+      }
+
+      if (this.selectOrder != 1){
         let objs = []
         for (let i = 0; i < this.sortOrder.length; i++) {
           const gid = this.sortOrder[i]
@@ -416,7 +472,7 @@ export default {
             const ob = this.summary[gid]
             if (ob) {
               const got = ob.Lose + ob.Tax - ob.Won
-              objs.push({Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0})
+              objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
             }
           } else {
             objs.push({
@@ -426,12 +482,12 @@ export default {
             })
           }
         }
-        if (iType === 2) {
-          objs = objs.sort(function (a, b) {
+        if (this.selectOrder === 2) {
+          objs = objs.sort(function(a, b) {
             return b.Got - a.Got
           })
         } else {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Sum - a.Sum
           })
         }
@@ -454,11 +510,22 @@ export default {
       }
     },
     isPopType(o) {
-      if (o === 1 || o === 9 || o === 8 || o === 14 || o === 15 || o === 21 || o === 22 || o === 29 || o === 23 || o === 28 || o === 31 || o === 34 || o === 38 ||o === 46 || o === 47 || o === 48) {
-        return false
-      } else {
-        return true
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 38, 46, 47, 48, 35,49,113]
+      for (let i = 0; i < popTypes.length; i++) {
+        if (popTypes[i] === o) {
+          return false
+        }
       }
+      return true
+    },
+    isPoker(o) {
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49,46,35,113]
+      for (let i = 0; i < pokerTypes.length; i++) {
+        if (pokerTypes[i] === o) {
+          return true
+        }
+      }
+      return false
     },
     isSlots(o) {
       if (o > 50 && o < 100 || o > 149 && o < 200) {
@@ -485,7 +552,7 @@ export default {
         SortOrder = ob.order === 'ascending' ? 1 : -1
       }
 
-      const compare = function (a, b) {
+      const compare = function(a, b) {
         const val1 = a[SortName]
         const val2 = b[SortName]
         if (val1 < val2) {
@@ -568,7 +635,7 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
-    tableRowClassName({row, rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.IsPay) {
         return 'success-row'
       }
@@ -627,7 +694,6 @@ export default {
           }
           $this.initChartData()
           $this.showHealth()
-
         }
       })
       $this.getPoolList()
@@ -654,7 +720,7 @@ export default {
         console.log('list response', response)
         this.blackJackContext = ''
         $this.blackJackSum = 0
-        let datas = []
+        const datas = []
         if (response.RetCode === 0) {
           for (const o of response.Data) {
             if (o.Gid === 37) {
@@ -663,7 +729,7 @@ export default {
             }
           }
         }
-        datas.sort(function (a, b) {
+        datas.sort(function(a, b) {
           return a.Ante - b.Ante
         })
         for (const o of datas) {
@@ -676,10 +742,9 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: "systemMoneyConfig"
+          SubKey: 'systemMoneyConfig'
         }
       }).then(response => {
-
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
@@ -715,7 +780,7 @@ export default {
         preObjs = objs
       }
       if (preObjs.length > 0) {
-        preObjs.sort(function (a, b) {
+        preObjs.sort(function(a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }
@@ -726,7 +791,7 @@ export default {
         })
       }
       if (objs.length > 0) {
-        objs.sort(function (a, b) {
+        objs.sort(function(a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }
@@ -736,29 +801,29 @@ export default {
           return 0
         })
       }
-      let timeData = {}
-      let xLines = []
+      const timeData = {}
+      const xLines = []
       const stamp1 = new Date(new Date().setHours(0, 0, 0, 0)).getTime() / 1000
       for (let i = 0; i < 1440; i++) {
-        let time = stamp1 + i * 60
-        let hm = $libDate.FormateSecondStr(time, 5);
+        const time = stamp1 + i * 60
+        const hm = $libDate.FormateSecondStr(time, 5)
         timeData[hm] = {}
         xLines.push(hm)
       }
       for (const o of preObjs) {
-        let hm = $libDate.FormateSecondStr(o.TimeKey, 5);
+        const hm = $libDate.FormateSecondStr(o.TimeKey, 5)
         timeData[hm]['pre'] = o
       }
       for (const o of objs) {
-        let hm = $libDate.FormateSecondStr(o.TimeKey, 5);
+        const hm = $libDate.FormateSecondStr(o.TimeKey, 5)
         timeData[hm]['curr'] = o
       }
       for (let i = 0; i < xLines.length; i++) {
         healthData.xData.push(xLines[i])
         originData.xData.push(xLines[i])
-        let ob = timeData[xLines[i]]['pre']
+        const ob = timeData[xLines[i]]['pre']
 
-        let ob2 = timeData[xLines[i]]['curr']
+        const ob2 = timeData[xLines[i]]['curr']
         this.checkDate(ob, 1, originData, healthData)
         this.checkDate(ob2, 2, originData, healthData)
       }
@@ -770,7 +835,7 @@ export default {
       if (ob) {
         if (ob.Gid > 50 && ob.Gid < 100) {
           // 老虎机目前没有存 MoneyLose
-          if (type ==1 ){
+          if (type == 1) {
             // 老虎机目前没有存 MoneyLose
             const y = ob.MoneyBet > 0 ? (ob.MoneyBet - ob.MoneyWon) * 100 / ob.MoneyBet : 0
             healthData.yData[0].Data.push(y.toFixed(2))
@@ -785,8 +850,8 @@ export default {
             originData.yData[4].Data.push(ob.MoneyTax.toFixed(2))
             originData.yData[5].Data.push(ob.MoneyBet.toFixed(2))
           }
-        }else {
-          if (type ==1 ){
+        } else {
+          if (type == 1) {
             const y = ob.MoneyBet > 0 ? (ob.MoneyLose + ob.MoneyTax - ob.MoneyWon) * 100 / ob.MoneyBet : 0
             healthData.yData[0].Data.push(y.toFixed(2))
             originData.yData[0].Data.push((ob.MoneyLose - ob.MoneyWon).toFixed(2))
@@ -800,7 +865,6 @@ export default {
             originData.yData[4].Data.push(ob.MoneyTax.toFixed(2))
             originData.yData[5].Data.push(ob.MoneyBet.toFixed(2))
           }
-
         }
       } else {
         if (type == 1) {
@@ -816,7 +880,7 @@ export default {
           healthData.yData[1].Data.push(undefined)
         }
       }
-    },
+    }
   }
 }
 </script>
