@@ -1,6 +1,6 @@
-# ImagePicker 赛事图片选择器
+# ImagePicker 图片选择器
 
-选择赛事图片，并回显。
+选择图片，并回显。
 
 ## 基础用法
 
@@ -122,9 +122,9 @@ export default {
 | -------- | ---------------- | ------------ |
 | trigger  | 触发图片选择弹框 | `() => void` |
 
-## ImagePickerDialog 赛事图片选择弹框
+## ImagePickerDialog 图片选择弹框
 
-用于选择赛事图片。
+用于选择图片。
 
 ### 基础用法
 
