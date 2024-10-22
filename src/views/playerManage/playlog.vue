@@ -2430,27 +2430,27 @@
     <el-dialog title="Carracing详情" :visible.sync="carracingDetailVisible" width="1300px">
       <el-descriptions class="margin-top" title="">
         <el-descriptions-item>
+          <template slot="label">
+            开奖logo
+          </template>
           {{getCarracingCarLogoName()}}
         </el-descriptions-item>
       </el-descriptions>
 
-      <fieldset style="margin-top:10px">
-        <el-table ref="filterTable" :data="carracingData.players" border>
+      <el-table ref="filterTable" :data="carracingData.players" border>
           <el-table-column prop="uid" label="uid">
             <template slot-scope="scope">{{ scope.row.uid }}</template>
           </el-table-column>
-
           <el-table-column prop="uid" label="Target">
             <template slot-scope="scope">
               <div v-for="(item,index) in scope.row.optionsResult" class="block">
                 <hr v-if="index > 0" >
                   <el-divider direction="vertical"></el-divider>
                 </hr>
-                {{getCarracingLogoName(item.id)}}
+                {{getCarracingLogoName(item.id) + '(' + item.moneyBet/1000 + ')'}}
               </div>
           </template>
           </el-table-column>
-          
           <el-table-column prop="uid" label="Bet">
             <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
           </el-table-column>
@@ -2460,10 +2460,7 @@
           <el-table-column prop="uid" label="win">
             <template slot-scope="scope">{{ formatNumber(scope.row.moneyWin/1000) }}</template>
           </el-table-column>
-        
-        </el-table>
-      </fieldset>
-    
+      </el-table>
     </el-dialog>
 
     <texas-n-l-h-detail-log v-if="gameLogComponent.gid==32" :game-log="gameLogComponent" @closeDialog="closeDialog" />
