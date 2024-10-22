@@ -59,6 +59,8 @@
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
         <el-button size="mini" @click="showForm(0)" icon="el-icon-plus">添加比赛</el-button>
+        <el-button size="mini" @click="copyAll" icon="el-icon-copy">复制整日</el-button>
+        <el-button size="mini" @click="expireAll" icon="el-icon-delete">下架过往</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -145,7 +147,7 @@
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            
+
           </template>
         </el-table-column>
       </el-table>
@@ -694,6 +696,7 @@ export default {
   },
   mounted() {
     this.getList()
+    console.log("1")
   },
   methods: {
     resetSearch() {
@@ -775,7 +778,7 @@ export default {
                   }else {
                     show_appinfo += "  " + appInfoTemp[i].appId + " "
                   }
-                  
+
                   show_appinfo += appInfoTemp[i].channelId
                 }
                 if(!this.tableData[i].hasOwnProperty("open_days_limit")){
@@ -1228,6 +1231,49 @@ export default {
             console.log('取消')
           })
     },
+    copyAll() {
+      this.$confirm('确定要复制所有今天的比赛到明天吗？', '提醒')
+        .then(() => {
+          request({
+            url: '/matchconfig/match/config/copy/today',
+            method: 'post',
+            data: {}
+          }).then(response => {
+            if (response.RetCode === 0) {
+              Message.success("复制所有今天比赛到明天成功！")
+              return
+            } else {
+              Message.error('复制比赛配置失败：'+response.Data)
+              return
+            }
+          })
+        })
+        .catch(() => {
+          console.log('取消')
+        })
+    },
+    expireAll() {
+      // 在v-if处已限制，只有已下架的比赛可以删除
+      this.$confirm("您确定要将今天之前的比赛下架吗？", '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/matchconfig/match/config/status/all',
+          method: 'post',
+          data: {}
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('下架今天之前比赛配置成功！')
+          } else {
+            Message.error('下架今天之前比赛配置失败！')
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
     handleDelete(id) {
       // 在v-if处已限制，只有已下架的比赛可以删除
       this.$confirm("您确定要将该比赛配置删除吗？", '提示', {
@@ -1297,7 +1343,7 @@ export default {
         this.errmsg('赛制选择不能为空')
         return false
       } else {
-        
+
           // 获取打立阶段最大时长
           let endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
           if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin))
