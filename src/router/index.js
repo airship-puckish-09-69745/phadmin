@@ -222,6 +222,12 @@ export const asyncRoutes = [
                 name: 'tongitsTableQuick',
                 meta: { title: 'Tongits-Quick ◐' }
               },
+              {
+                path: 'tongitsswapTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableSwap'),
+                name: 'tongitsSwapTable',
+                meta: { title: 'Tongits-Quick ◐' }
+              },
               /*          {
                           path: 'tongitsTogether',
                           component: () => import('@/views/config/tableConfig/tongits_blacklist'),
@@ -1217,6 +1223,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsPlaylog'),
             name: 'playlog_tongits',
             meta: { title: 'Tongits-Quick ', gid: 29 }
+          },
+          {
+            path: 'playlog_swap_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_tongits',
+            meta: { title: 'Tongits - Swap ◐', gid: 120 }
           },
           {
             path: 'playlog_texas',
