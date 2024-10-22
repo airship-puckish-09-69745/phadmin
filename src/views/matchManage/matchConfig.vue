@@ -1388,8 +1388,6 @@ export default {
       if (this.editForm.data.repeatType != 0) {
         if (this.editForm.loopDetail.loopData.length > 0) {
           for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
-            console.log("测试11 " + Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)))
-            console.log("测试22 " + Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime)))
             if ((Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime))) < 600) {
               this.errmsg('比赛开始结束间隔要大于10分钟！')
               return false
