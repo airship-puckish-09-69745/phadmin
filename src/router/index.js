@@ -226,7 +226,7 @@ export const asyncRoutes = [
                 path: 'tongitsswapTable',
                 component: () => import('@/views/config/tableConfig/tongitsTableSwap'),
                 name: 'tongitsSwapTable',
-                meta: { title: 'Tongits-Quick ◐' }
+                meta: { title: 'Tongits-Swap ◐' }
               },
               /*          {
                           path: 'tongitsTogether',
