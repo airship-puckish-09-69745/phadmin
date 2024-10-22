@@ -1353,6 +1353,17 @@ export default {
         this.showDevTool = !this.showDevTool
       }
     },
+    timeToSec(time) {
+      var s = '';
+ 
+      var hour = time.split(':')[0];
+      var min = time.split(':')[1];
+      var sec = time.split(':')[2];
+
+      s = Number(hour*3600) + Number(min*60) + Number(sec);
+
+      return s;
+    },
     configCheck() {
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
@@ -1368,7 +1379,7 @@ export default {
       }
 
       if (this.editForm.data.repeatType == 1) {
-        if ((Math.floor(this.editForm.loopDetail.single.etime / 1000) - Math.floor(this.editForm.loopDetail.single.stime / 1000)) < 600) {
+        if (Math.floor(this.timeToSec(this.editForm.loopDetail.single.etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.single.stime)) < 600) {
           this.errmsg('比赛开始结束间隔要大于10分钟！')
           return false
         }
@@ -1377,7 +1388,9 @@ export default {
       if (this.editForm.data.repeatType != 0) {
         if (this.editForm.loopDetail.loopData.length > 0) {
           for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
-            if ((Math.floor(this.editForm.loopDetail.loopData[i].etime / 1000) - Math.floor(this.editForm.loopDetail.loopData[i].stime / 1000)) < 600) {
+            console.log("测试11 " + Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)))
+            console.log("测试22 " + Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime)))
+            if ((Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime))) < 600) {
               this.errmsg('比赛开始结束间隔要大于10分钟！')
               return false
             }
