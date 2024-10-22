@@ -9,8 +9,7 @@
                 </el-form-item>
                 <el-form-item label="类型：" :required="true">
                     <el-select v-model="form.repeatType" placeholder="请选择" size="mini">
-                        <el-option v-for="item in repeatCfgs" :key="item.value" :label="item.label"
-                            :value="item.value" />
+                        <el-option label="全部" :value=-1></el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="状态：" :required="true">
@@ -68,6 +67,11 @@
                         {{ getStatusName(scope.row.status) }}
                     </template>
                 </el-table-column>
+                <el-table-column prop="repeatType" label="循环类型" sortable>
+                    <template slot-scope="scope">
+                        {{ getRepeatTypeName(scope.row.repeatType) }}
+                    </template>
+                </el-table-column>
                 <el-table-column fixed="right" label="操作" width="200px">
                     <template slot-scope="scope">
                         <el-button v-if="showDevTool && (scope.row.status >= 5)" type="danger" size="mini"
@@ -96,7 +100,7 @@ export default {
             form: {
                 gameId: 2031,
                 status: -1,
-                repeatType: 0,
+                repeatType: -1,
             },
             gameCfgs: [
                 { "value": 2031, "label": "tongits" },
@@ -111,6 +115,8 @@ export default {
             ],
             repeatCfgs: [
                 { "value": 0, "label": "单场" },
+                { "value": 1, "label": "单天单场" },
+                { "value": 2, "label": "单天多场" },
             ],
             csCfgs: [],
             tableData: [],
@@ -127,7 +133,7 @@ export default {
         resetSearch() {
             this.form.gameId = 2031
             this.form.status = -1
-            this.form.repeatType = 0
+            this.form.repeatType = -1
         },
         getList() {
             request({
@@ -173,6 +179,16 @@ export default {
                 }
             }
             return statusName
+        },
+        getRepeatTypeName(repeatType) {
+            var rpeatTypeName = ""
+            for (var i = 0; i < this.repeatCfgs.length; i++) {
+                if (this.repeatCfgs[i].value == repeatType) {
+                    rpeatTypeName = this.repeatCfgs[i].label
+                    break
+                }
+            }
+            return rpeatTypeName
         },
         handleShowDevTools() {
             // 浏览器设置ShowDev=1才可以看到开发工具

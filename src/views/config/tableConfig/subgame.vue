@@ -22,7 +22,8 @@
         <el-form ref="edit" :model="edit" label-width="150px" :inline="true" size="small">
           <el-row>
             <el-form-item label="新增游戏">
-              <el-col :span="16">            <el-input v-model="gameComm.newGameName" size="mini" /></el-col>
+              <el-col :span="16">
+              <el-input v-model="gameComm.newGameName" size="mini" /></el-col>
               <el-col :span="8"><el-button size="mini" @click="addNewGame">添加</el-button></el-col>
             </el-form-item>
           </el-row>
@@ -194,6 +195,21 @@
           </template>
           <template slot-scope="scope">
             {{ clientDB.GetShowValue('Status', scope.row.Status) }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="检查"
+          column-key="op"
+          width="100"
+        >
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="success"
+              icon="el-icon-check"
+              @click="handleCheck(scope.row)"
+            >检查
+            </el-button>
           </template>
         </el-table-column>
         <el-table-column
@@ -787,6 +803,34 @@ export default {
         })
       }).catch(() => {
         console.log('取消')
+      })
+    },
+    handleCheck(ob) {
+      request({
+        url: '/subgame/check',
+        method: 'get',
+        data: {
+          ID: ob.ID,
+          status: 0
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          var channel = response.Data.Channel
+          var exist = response.Data.Exist
+          console.log(response.Data)
+          var text = ""
+          for (const ch in channel) {
+            console.log(ch, channel[ch])
+            text += ch.toString() + "  "+ (channel[ch]>0?"存在":"缺失")
+            text += '<br>'
+          }
+          text += exist?"最新版本已经存在该游戏":"最新版本不存在该游戏"
+          Message.success({
+            dangerouslyUseHTMLString: true,
+            message: text,
+            type: "warning"
+          })
+        }
       })
     },
     //* * ********************** 修改/添加弹框相关 *****************
