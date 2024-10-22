@@ -1,25 +1,25 @@
-# GameImagePicker 赛事图片选择器
+# ImagePicker 图片选择器
 
-选择赛事图片，并回显。
+选择图片，并回显。
 
 ## 基础用法
 
 ```javascript
 <template>
   <div>
-    <GameImagePicker v-model="imagePath" />
-  </div
+    <ImagePicker v-model="imageUrl" />
+  </div>
 </template>
 
 <script>
-import GameImagePicker from "@/components/GameImagePicker/GameImagePicker.vue";
+import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 
 export default {
-  components: { GameImagePicker },
+  components: { ImagePicker },
   data() {
     return {
-      // 图片路径
-      imagePath: '',
+      // 图片 URL
+      imageUrl: '',
     }
   },
 }
@@ -31,23 +31,23 @@ export default {
 ```javascript
 <template>
   <div>
-    <GameImagePicker v-model="imagePath">
+    <ImagePicker v-model="imageUrl">
       <template>
         <el-button type="primary">选择图片</el-button>
       </template>
-    </GameImagePicker>
-  </div
+    </ImagePicker>
+  </div>
 </template>
 
 <script>
-import GameImagePicker from "@/components/GameImagePicker/GameImagePicker.vue";
+import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 
 export default {
-  components: { GameImagePicker },
+  components: { ImagePicker },
   data() {
     return {
-      // 图片路径
-      imagePath: '',
+      // 图片 URL
+      imageUrl: '',
     }
   },
 }
@@ -59,18 +59,15 @@ export default {
 ```javascript
 <template>
   <div>
-    <GameImagePicker
+    <ImagePicker
       ref="pickerRef"
-      v-model="imagePath"
+      v-model="imageUrl"
       @pick="handlePick">
       <template>
         <el-button type="primary">选择图片</el-button>
       </template>
-      <template v-slot:image="{ url, path, cdnUrl, serverRoot }">
+      <template v-slot:image="{ url }">
         <div>url: {{ url }}</div>
-        <div>path: {{ path }}</div>
-        <div>cdnUrl: {{ cdnUrl }}</div>
-        <div>serverRoot: {{ serverRoot }}</div>
 
         <!-- 通过组件暴露的 `trigger` 方法，可以手动触发图片选择弹框` -->
         <el-button
@@ -79,19 +76,19 @@ export default {
           修改图片
         </el-button>
       </template>
-    </GameImagePicker>
-  </div
+    </ImagePicker>
+  </div>
 </template>
 
 <script>
-import GameImagePicker from "@/components/GameImagePicker/GameImagePicker.vue";
+import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 
 export default {
-  components: { GameImagePicker },
+  components: { ImagePicker },
   data() {
     return {
-      // 图片路径
-      imagePath: '',
+      // 图片 URL
+      imageUrl: '',
     }
   },
 }
@@ -103,7 +100,6 @@ export default {
 | 参数名称        | 说明           | 类型     | 可选值 | 默认值 |
 | --------------- | -------------- | -------- | ------ | ------ |
 | value (v-model) | 图片 URL       | `string` | -      | -      |
-| path (.sync) | 图片路径       | `string` | -      | -      |
 | width           | 可选，图片宽度 | `number` | -      | `109`  |
 | height          | 可选，图片高度 | `number` | -      | `159`  |
 
@@ -111,8 +107,7 @@ export default {
 
 | 事件名称 | 说明               | 参数               |
 | -------- | ------------------ | ------------------ |
-| cancel   | 点击取消按钮时触发 | -                  |
-| change   | 图片改变时触发     | image: `ImageData` |
+| pick   | 图片选中时触发     | image: `ImageData` |
 
 ## Slots
 
@@ -127,28 +122,17 @@ export default {
 | -------- | ---------------- | ------------ |
 | trigger  | 触发图片选择弹框 | `() => void` |
 
-## 类型定义
+## ImagePickerDialog 图片选择弹框
 
-### ImageData
-
-| 属性名称   | 说明          | 类型     |
-| ---------- | ------------- | -------- |
-| url       | 图片 URL      | `string` |
-| path       | 图片路径      | `string` |
-| cdnUrl     | 图片 CDN 地址 | `string` |
-| serverRoot | 图片目录      | `string` |
-
-## GameImagePickerDialog 赛事图片选择弹框
-
-用于选择赛事图片。
+用于选择图片。
 
 ### 基础用法
 
 ```javascript
 <template>
   <div>
-    <GameImagePickerDialog
-      v-model="visible"
+    <ImagePickerDialog
+      :visible.sync="visible"
       @cancel="handleCancel"
       @pick="handlePick"
     />
@@ -157,10 +141,10 @@ export default {
 </template>
 
 <script>
-import GameImagePickerDialog from "@/components/GameImagePicker/GameImagePickerDialog.vue";
+import ImagePickerDialog from "@/components/ImagePicker/ImagePickerDialog.vue";
 
 export default {
-  components: { GameImagePickerDialog },
+  components: { ImagePickerDialog },
   data() {
     return {
       // 弹框是否显示
@@ -191,9 +175,8 @@ export default {
 
 | 参数名称        | 说明           | 类型      | 可选值 | 默认值  |
 | --------------- | -------------- | --------- | ------ | ------- |
-| value (v-model) | 弹框是否显示   | `boolean` | -      | `false` |
-| url            | 可选，图片 URL | `string`  | -      | -       |
-| path            | 可选，图片路径 | `string`  | -      | -       |
+| value (v-model)            | 图片 URL | `string`  | -      | -       |
+| visible (.sync) | 弹框是否显示   | `boolean` | -      | `false` |
 
 ### Events
 
@@ -201,3 +184,13 @@ export default {
 | -------- | ------------------ | ------------------ |
 | cancel   | 点击取消按钮时触发 | -                  |
 | pick     | 点击确定按钮时触发 | image: `ImageData` |
+
+## 类型定义
+
+### ImageData
+
+| 属性名称   | 说明          | 类型     |
+| ---------- | ------------- | -------- |
+| value       | 图片 URL/图片路径      | `string` |
+| name       | 图片名称      | `string` |
+| url       | 图片 URL      | `string` |
