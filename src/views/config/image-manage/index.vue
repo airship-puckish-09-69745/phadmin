@@ -67,8 +67,8 @@
 <script>
 import request from '@/utils/request'
 import { IMAGE_CATEGORIES } from '@/constants/image'
+import ImageCategoryMenu from '@/components/ImagePicker/ImageCategoryMenu.vue'
 import ImageUploadForm from './components/ImageUploadForm/ImageUploadForm.vue'
-import ImageCategoryMenu from './components/ImageCategoryMenu/ImageCategoryMenu.vue'
 
 export default {
   components: {
@@ -166,6 +166,15 @@ export default {
     },
 
     /**
+     * @description 设置列表数据
+     */
+    setList(value) {
+      if (Array.isArray(value)) {
+        this.list = value
+      }
+    },
+
+    /**
      * @description 获取列表数据
      * @param {object} data 参数
      * @prop {string} data.category 图片类型
@@ -184,15 +193,6 @@ export default {
 
         return Promise.reject(res)
       }).finally(() => this.setLoading(false))
-    },
-
-    /**
-     * @description 设置列表数据
-     */
-    setList(value) {
-      if (Array.isArray(value)) {
-        this.list = value
-      }
     },
 
     /**
@@ -367,13 +367,14 @@ export default {
     align-items: center;
 
     &__image {
+      border-radius: 4px;
       width: 200px;
       height: 291px;
     }
 
     &__text {
-      padding: 8px 12px;
       width: 100%;
+      padding: 8px;
       color: #303133;
       text-align: center;
       word-wrap: break-word;
