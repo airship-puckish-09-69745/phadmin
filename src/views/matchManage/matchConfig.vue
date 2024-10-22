@@ -59,6 +59,8 @@
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-setting" @click="handleShowDevTools()">开发工具</el-button>
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加比赛</el-button>
+        <el-button size="mini" icon="el-icon-copy" @click="copyAll">复制整日</el-button>
+        <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -515,6 +517,7 @@ import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../devTools/appInfo.vue'
+import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 
 export default {
@@ -698,6 +701,7 @@ export default {
   },
   mounted() {
     this.getList()
+    console.log('1')
   },
   methods: {
     resetSearch() {
@@ -1261,6 +1265,49 @@ export default {
         .catch(() => {
           console.log('取消')
         })
+    },
+    copyAll() {
+      this.$confirm('确定要复制所有今天的比赛到明天吗？', '提醒')
+        .then(() => {
+          request({
+            url: '/matchconfig/match/config/copy/today',
+            method: 'post',
+            data: {}
+          }).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('复制所有今天比赛到明天成功！')
+              return
+            } else {
+              Message.error('复制比赛配置失败：' + response.Data)
+              return
+            }
+          })
+        })
+        .catch(() => {
+          console.log('取消')
+        })
+    },
+    expireAll() {
+      // 在v-if处已限制，只有已下架的比赛可以删除
+      this.$confirm('您确定要将今天之前的比赛下架吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/matchconfig/match/config/status/all',
+          method: 'post',
+          data: {}
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('下架今天之前比赛配置成功！')
+          } else {
+            Message.error('下架今天之前比赛配置失败！')
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     },
     handleDelete(id) {
       // 在v-if处已限制，只有已下架的比赛可以删除
