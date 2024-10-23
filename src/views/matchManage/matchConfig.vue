@@ -59,8 +59,9 @@
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-setting" @click="handleShowDevTools()">开发工具</el-button>
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加比赛</el-button>
-        <el-button size="mini" icon="el-icon-copy" @click="copyAll">复制整日</el-button>
+        <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button>
         <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button>
+        <el-button size="mini" icon="el-icon-delete" @click="deleteAllOff">清理下架</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -702,6 +703,8 @@ export default {
   mounted() {
     this.getList()
     console.log('1')
+    //自动清理过期配置
+
   },
   methods: {
     resetSearch() {
@@ -1288,7 +1291,6 @@ export default {
         })
     },
     expireAll() {
-      // 在v-if处已限制，只有已下架的比赛可以删除
       this.$confirm('您确定要将今天之前的比赛下架吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1303,6 +1305,27 @@ export default {
             Message.success('下架今天之前比赛配置成功！')
           } else {
             Message.error('下架今天之前比赛配置失败！')
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    deleteAllOff() {
+      this.$confirm('您确定要清理所有已下架的比赛配置吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/matchconfig/match/config/delete/alloff',
+          method: 'post',
+          data: {}
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('清理已下架的比赛配置成功！')
+          } else {
+            Message.error('清理已下架的比赛配置失败！')
           }
         })
       }).catch(() => {
