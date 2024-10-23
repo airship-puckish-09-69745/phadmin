@@ -1279,6 +1279,7 @@ export default {
           }).then(response => {
             if (response.RetCode === 0) {
               Message.success('复制所有今天比赛到明天成功！')
+              this.getList()
               return
             } else {
               Message.error('复制比赛配置失败：' + response.Data)
@@ -1303,6 +1304,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('下架今天之前比赛配置成功！')
+            this.getList()
           } else {
             Message.error('下架今天之前比赛配置失败！')
           }
@@ -1324,6 +1326,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('清理已下架的比赛配置成功！')
+            this.getList()
           } else {
             Message.error('清理已下架的比赛配置失败！')
           }
