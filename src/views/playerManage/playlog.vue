@@ -2447,7 +2447,8 @@
                 <hr v-if="index > 0" >
                   <el-divider direction="vertical"></el-divider>
                 </hr>
-                {{getCarracingLogoName(item.id) + '(' + item.moneyBet/1000 + ')'}}
+                {{getCarracingLogoName(item.id)}}
+                <!--{{getCarracingLogoName(item.id) + '(' + item.moneyBet/1000 + ')'}}-->
               </div>
           </template>
           </el-table-column>
