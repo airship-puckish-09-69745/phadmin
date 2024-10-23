@@ -72,6 +72,7 @@
 
 <script>
 import axios from 'axios'
+import store from '@/store'
 import { getToken } from '@/utils/auth'
 /**
  * @description 创建文件校验器工厂函数
