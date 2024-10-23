@@ -72,7 +72,7 @@
 
 <script>
 import axios from 'axios'
-
+import { getToken } from '@/utils/auth'
 /**
  * @description 创建文件校验器工厂函数
  * @param {Function[]} fns 校验规则数组
@@ -346,9 +346,15 @@ export default {
       const config = {
         headers: {
           'Content-Type': 'multipart/form-data'
-        }
+        },
+        withCredentials: true,
       }
-
+      if (store.getters.token) {
+        // let each request carry token
+        // ['X-Token'] is a custom headers key
+        // please modify it according to the actual situation
+        config.headers['X-Token'] = getToken()
+      }
       this.setLoading(true)
       axios.post(url, formData, config).then(res => {
         const { status, data } = res || {}
