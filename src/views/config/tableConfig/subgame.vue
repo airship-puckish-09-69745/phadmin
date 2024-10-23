@@ -820,11 +820,15 @@ export default {
           console.log(response.Data)
           var text = ""
           for (const ch in channel) {
-            console.log(ch, channel[ch])
-            text += ch.toString() + "  "+ (channel[ch]>0?"存在":"缺失")
-            text += '<br>'
+            if (channel[ch] === 0) {
+              text += '<p>' +ch.toString() + ':  <span style="color: red;">缺失</span></p>'
+            } else if (channel[ch] === 1) {
+              text += '<p>' +ch.toString() + ':  false</p>'
+            }  else if (channel[ch] === 2) {
+              text += '<p>' +ch.toString() + ':  true</p>'
+            }
           }
-          text += exist?"最新版本已经存在该游戏":"最新版本不存在该游戏"
+          text += exist?"最新版本已经存在该游戏":'最新版本<span style="color: red;">不存在</span>该游戏'
           Message.success({
             dangerouslyUseHTMLString: true,
             message: text,
