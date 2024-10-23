@@ -1407,6 +1407,13 @@ export default {
       }
 
       if (this.editForm.data.repeatType != 0) {
+        if (this.editForm.loopDetail.intervalDay < 0) {
+          this.errmsg('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
+          return false
+        }
+      }
+
+      if (this.editForm.data.repeatType == 2) {
         if (this.editForm.loopDetail.loopData.length > 0) {
           for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
             if ((Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime))) < 600) {
@@ -1419,11 +1426,6 @@ export default {
               return false
             }
           }
-        }
-
-        if (this.editForm.loopDetail.intervalDay < 0) {
-          this.errmsg('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
-          return false
         }
       }
 
