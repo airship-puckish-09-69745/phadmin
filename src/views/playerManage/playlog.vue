@@ -2428,14 +2428,9 @@
     </el-dialog>
 
     <el-dialog title="Carracing详情" :visible.sync="carracingDetailVisible" width="1300px">
-      <el-descriptions class="margin-top" title="">
-        <el-descriptions-item>
-          <template slot="label">
-            开奖logo
-          </template>
-          {{getCarracingCarLogoName()}}
-        </el-descriptions-item>
-      </el-descriptions>
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">开奖logo：</span><div style="color:red;">{{getCarracingCarLogoName()}}</div>
+      </div>
 
       <el-table ref="filterTable" :data="carracingData.players" border>
           <el-table-column prop="uid" label="uid">
