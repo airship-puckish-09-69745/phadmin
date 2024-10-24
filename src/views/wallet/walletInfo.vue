@@ -15,7 +15,8 @@
           <el-col :span="4">
             <el-form-item>
               <el-button type="danger" size="mini" @click="open('是否清除下注状态',1)">清除下注状态</el-button>
-              <el-button type="warning" size="mini" @click="open('是否清除下注状态',2)">清除玩牌异常状态</el-button>
+              <el-button type="warning" size="mini" @click="open('是否清除玩牌异常注状态',2)">清除玩牌异常状态</el-button>
+              <el-button type="warning" size="mini" @click="open('是否执行Rollin操作',3)">执行Rollin操作</el-button>
             </el-form-item>
           </el-col>
         </el-form>
@@ -153,6 +154,25 @@ export default {
         }
       })
     },
+    Rollin() {
+      const $this = this
+      if ($this.item.uid === '' || $this.item.uid === 0 || $this.item.uid === 'NaN'|| $this.item.uid ===NaN) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/wallet/Rollin',
+          Uid: $this.item.uid,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success("执行Rollin成功！")
+        }
+      })
+    },
       formatNumber(n) {
           return n.toLocaleString()
       },
@@ -166,6 +186,8 @@ export default {
           this.cleanRoundStatus()
         }else if (type==2){
             this.cleanPlayStatus()
+        }else if (type==3){
+          this.Rollin()
         }
       }).catch(() => {
         this.$message({
