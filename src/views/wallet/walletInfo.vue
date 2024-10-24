@@ -12,7 +12,7 @@
               <el-button type="primary" size="mini" @click="getData">查询</el-button>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
+          <el-col :span="8">
             <el-form-item>
               <el-button type="danger" size="mini" @click="open('是否清除下注状态',1)">清除下注状态</el-button>
               <el-button type="warning" size="mini" @click="open('是否清除玩牌异常注状态',2)">清除玩牌异常状态</el-button>
