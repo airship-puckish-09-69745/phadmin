@@ -164,7 +164,7 @@ export default {
         url: '/dataProxy/info',
         method: 'post',
         data: {
-          Path: '/wallet/Rollin',
+          Path: '/wallet/rollin',
           Uid: $this.item.uid,
         }
       }).then(response => {
