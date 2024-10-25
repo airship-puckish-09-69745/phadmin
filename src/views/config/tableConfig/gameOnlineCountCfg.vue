@@ -142,7 +142,8 @@ export default {
         // 47: 'Billiard-8ball',
         // 48: 'Billiard-9ball'
         113: 'Pusoy-Swap',
-        111: 'Domino QiuQiu'
+        111: 'Domino QiuQiu',
+        120: 'Tongits-Swap'
       },
 
       selectedGid: -1,
