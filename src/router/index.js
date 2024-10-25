@@ -1160,6 +1160,18 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchMonitor'),
         name: 'matchMonitor',
         meta: { title: '赛事监控', noCache: true }
+      },
+      {
+        path: 'matchTcc',
+        component: () => import('@/views/matchManage/matchTcc'),
+        name: 'matchTcc',
+        meta: { title: 'Tcc名单配置', noCache: true }
+      },
+      {
+        path: 'matchLimitWhite',
+        component: () => import('@/views/matchManage/matchLimitWhite'),
+        name: 'matchLimitWhite',
+        meta: { title: '限制白名单', noCache: true }
       }
     ]
   },
