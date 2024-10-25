@@ -190,6 +190,15 @@
           <template slot-scope="scope">
             {{ statNames[scope.row.status] }}
           </template>
+        </el-table-column>   <el-table-column
+          prop="status"
+          label="状态"
+          sortable="custom"
+          width="90"
+        >
+          <template slot-scope="scope">
+            {{ walletNames[scope.row.WalletType] }}
+          </template>
         </el-table-column>
         <el-table-column
           label="操作"
@@ -331,6 +340,7 @@ export default {
       betMoneyList: '200,100',
       Ratio: 900,
       statNames: { 0: '冻结', 1: '正常', 2: '游戏中' },
+      walletNames: { 0: '转账钱包', 1: '单一钱包' },
       libShow: $libShow,
       showData: [],
       clientDB: new ClientTableData([], 1, {}),
