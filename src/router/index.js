@@ -1179,7 +1179,7 @@ export const asyncRoutes = [
     path: '/playlog',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'PLAYLOG_MANAGEMENT' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
       {
@@ -2153,7 +2153,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'DEV_TOOL' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',
