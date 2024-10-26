@@ -307,6 +307,7 @@ export default {
         case 98:
         case 152:
         case 154:
+        case 156:
         case 160:
         {
           // 混有购买免费数据
