@@ -119,7 +119,7 @@
           width="200"
         >
           <template slot-scope="scope">
-            <el-button class="ewm-copy-content" type="success" size="mini" :data-clipboard-text="scope.row.EnterUrl" @click="copyClick(scope.row)" round>复制链接</el-button> ｜
+            <el-button class="ewm-copy-content" type="success" size="mini" :data-clipboard-text="scope.row.EnterUrl" round @click="copyClick(scope.row)">复制链接</el-button> ｜
             <el-link :href="scope.row.EnterUrl" type="success" target="_blank">打开链接</el-link>
           </template>
         </el-table-column>
@@ -140,7 +140,7 @@ import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import Clipboard from 'clipboard'
-import { $libDate, $libShow, ClientTableData } from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 // import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 import store from '@/store'
@@ -247,32 +247,32 @@ export default {
       ],
       sources: [
         {
-          name: 'IOS',
-          val: 'IOS'
+          name: 'glife.bingoplus.com',
+          val: 'glife.bingoplus.com'
         },
         {
-          name: 'Android',
-          val: 'Android'
+          name: 'glife.peryagame.com',
+          val: 'glife.peryagame.com'
         },
         {
-          name: 'PC',
-          val: 'PC'
+          name: 'glife.arenaplus.net',
+          val: 'glife.arenaplus.net'
         },
         {
-          name: 'H5',
-          val: 'H5'
+          name: 'arenaplusandroid2.com',
+          val: 'arenaplusandroid2.com'
         },
         {
-          name: 'GLIFE',
-          val: 'GLIFE'
+          name: '1.bingoplus.net',
+          val: '1.bingoplus.net'
         },
         {
-          name: 'MAYA',
-          val: 'MAYA'
+          name: 'maya.peryagame.com',
+          val: 'maya.peryagame.com'
         },
         {
-          name: 'LAZADA',
-          val: 'LAZADA'
+          name: 'bingoplus.com',
+          val: 'bingoplus.com'
         }
       ],
       activities: [
@@ -305,7 +305,7 @@ export default {
         need_test_uri: '0',
         cashier: 'http://baidu.com',
         path: '1',
-        source: 'H5',
+        source: 'glife.bingoplus.com',
         activity: '',
         live_id: ''
       },

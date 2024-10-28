@@ -1808,6 +1808,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/enterurl'),
         name: 'enterurl',
         meta: { title: '生成游戏链接 ◐' }
+      },
+      {
+        path: 'point',
+        component: () => import('@/views/thirdparty/point'),
+        name: 'point',
+        meta: { title: '积分链接 ◐' }
       }
     ]
   },
