@@ -1438,8 +1438,8 @@ export default {
       } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
-      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 600)) {
-        this.errmsg('比赛开始结束间隔要大于10分钟！')
+      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
+        this.errmsg('循环赛开始结束时间不能为同一天！')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
