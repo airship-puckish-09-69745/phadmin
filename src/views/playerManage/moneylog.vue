@@ -31,6 +31,9 @@
       </el-form>
     </el-row>
     <el-row>
+      <el-col :span="3">
+        <el-button type="danger" size="mini">注意:*****************数据的显示会有延时,最慢不会超过2分钟*****************</el-button>
+      </el-col>
       <el-col :span="2" :offset="10">
         <el-button type="primary" size="mini" @click="gamePanelVisible = true">牌局输赢</el-button>
       </el-col>
@@ -523,6 +526,11 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          if (response.Data === 'no Data') {
+            Message.success('no Data')
+            loading.close()
+            return
+          }
           let objs = response.Data || []
           objs = $this.libMoney.TransForShow(objs)
           $this.moneyData = objs
