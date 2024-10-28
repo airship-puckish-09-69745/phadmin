@@ -305,7 +305,6 @@ export default {
         case 94:
         case 96:
         case 98:
-        case 152:
         case 154:
         case 156:
         case 160:
@@ -325,6 +324,7 @@ export default {
         }
         case 86:
         case 150:
+        case 152:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
