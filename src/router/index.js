@@ -1195,6 +1195,18 @@ export const asyncRoutes = [
             meta: { title: 'PusoyDos - ◐', gid: 34 }
           },
           {
+            path: 'playlog_uno',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_uno',
+            meta: { title: 'Uno - 单人◐', gid: 117 }
+          },
+          {
+            path: 'playlog_unoTeam',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_unoTeam',
+            meta: { title: 'Uno - 组队◐', gid: 121 }
+          },
+          {
             path: 'playlog_tongits',
             component: () => import('@/views/playerManage/tongitsPlaylog'),
             name: 'playlog_tongits',
