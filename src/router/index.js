@@ -1098,6 +1098,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'christmasConfig',
+        component: () => import('@/views/empty'),
+        name: 'christmasConfig',
+        meta: { title: '圣诞活动配置', noCache: true },
+        children: [
+          {
+            path: 'christmasActivityConfig',
+            component: () => import('@/views/config/tableConfig/activity/christmasFortuneTreeConfig'),
+            name: 'christmasActivityConfig',
+            meta: { title: '圣诞活动配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'activityCommonConfig',
         component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
         name: 'activityCommonConfig',
