@@ -7,7 +7,7 @@
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
         <el-form-item label="游戏：" :required="true">
           <el-select v-model="form.gameId" placeholder="请选择" size="mini">
-            <el-option label="全部" :value=-1></el-option>
+            <el-option label="全部" :value="-1" />
             <el-option
               v-for="item in gameCfgs"
               :key="item.value"
@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item label="类型：" :required="true">
           <el-select v-model="form.repeatType" placeholder="请选择" size="mini">
-            <el-option label="全部" :value=-1></el-option>
+            <el-option label="全部" :value="-1" />
             <el-option
               v-for="item in repeatCfgs"
               :key="item.value"
@@ -29,7 +29,7 @@
         </el-form-item>
         <el-form-item label="状态：" :required="true">
           <el-select v-model="form.status" placeholder="请选择" size="mini">
-            <el-option label="全部" :value=-1></el-option>
+            <el-option label="全部" :value="-1" />
             <el-option
               v-for="item in statusCfgs"
               :key="item.value"
@@ -40,7 +40,7 @@
         </el-form-item>
         <el-form-item label="赛制：" :required="true">
           <el-select v-model="form.csId" placeholder="请选择" size="mini">
-            <el-option label="全部" :value=-1></el-option>
+            <el-option label="全部" :value="-1" />
             <el-option
               v-for="item in csCfgs"
               :key="item.value"
@@ -50,15 +50,18 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button  size="mini" @click="resetSearch">重置查询条件</el-button>
+          <el-button size="mini" @click="resetSearch">重置查询条件</el-button>
           <el-button type="primary" size="mini" @click="getList">查询</el-button>
         </el-form-item>
       </el-form>
     </el-row>
     <el-row>
       <div style="float: right; margin-bottom: 10px;">
-        <el-button size="mini" @click="handleShowDevTools()" icon="el-icon-setting">开发工具</el-button>
-        <el-button size="mini" @click="showForm(0)" icon="el-icon-plus">添加比赛</el-button>
+        <el-button size="mini" icon="el-icon-setting" @click="handleShowDevTools()">开发工具</el-button>
+        <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加比赛</el-button>
+        <el-button size="mini" icon="el-icon-document-copy" @click="copyAll">复制整日</el-button>
+        <el-button size="mini" icon="el-icon-delete" @click="expireAll">下架过往</el-button>
+        <el-button size="mini" icon="el-icon-delete" @click="deleteAllOff">清理下架</el-button>
       </div>
       <el-table
         :data="tableData"
@@ -93,7 +96,7 @@
           label="开始时间"
         >
           <template slot-scope="{row}">
-            <DateTimeShow :show-type="2" :timestamp="row.start_time"/>
+            <DateTimeShow :show-type="2" :timestamp="row.start_time" />
           </template>
         </el-table-column>
         <el-table-column
@@ -101,7 +104,7 @@
           label="结束时间"
         >
           <template slot-scope="{row}">
-            <DateTimeShow :show-type="2" :timestamp="row.end_time"/>
+            <DateTimeShow :show-type="2" :timestamp="row.end_time" />
           </template>
         </el-table-column>
         <el-table-column
@@ -125,12 +128,13 @@
             <el-button v-if="scope.row.openShow==true" size="mini" type="danger" @click="updateStatus(scope.row.id, false)">下架</el-button>
           </template>
         </el-table-column>
-        <el-table-column fixed="right"
+        <el-table-column
+          fixed="right"
           label="操作"
           width="200px"
         >
-        <template slot-scope="scope">
-          <el-button
+          <template slot-scope="scope">
+            <el-button
               v-if="scope.row.Status!=2"
               size="mini"
               icon="el-icon-edit"
@@ -145,7 +149,7 @@
               @click="handleCopy(scope.row.id)"
             >复制
             </el-button>
-            
+
           </template>
         </el-table-column>
       </el-table>
@@ -177,108 +181,107 @@
     >
       <el-form :model="editForm.data" label-width="200px" size="mini">
         <el-form-item v-if="editForm.data.id > 0" label="赛事ID：">
-        {{ editForm.data.id }}
+          {{ editForm.data.id }}
         </el-form-item>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>APP信息</legend>
-            <el-table
-              :data="editForm.appInfo"
-              border
-              stripe
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'35px'}"
-              :cell-style="libShow.TableCell(0)"
-              style="width: 100%;line-height:35px;"
+          <el-table
+            :data="editForm.appInfo"
+            border
+            stripe
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'35px'}"
+            :cell-style="libShow.TableCell(0)"
+            style="width: 100%;line-height:35px;"
+          >
+            <el-table-column
+              prop="index"
+              label="序号"
+              width="50"
+            />
+            <el-table-column
+              prop="appId"
+              label="AppID"
+              width="450"
             >
-              <el-table-column
-                prop="index"
-                label="序号"
-                width="50"
-              />
-              <el-table-column
-                prop="appId"
-                label="AppID"
-                width="450"
-              >
               <template slot-scope="scope">
                 <el-select v-model="scope.row.appId" placeholder="请选择" size="mini">
-                <el-option
-                  v-for="item in appidInfoCfgs"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                />
+                  <el-option
+                    v-for="item in appidInfoCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
                 </el-select>
               </template>
-              </el-table-column>
-              <el-table-column
-                prop="channelId"
-                label="渠道ID"
-                width="450"
-              >
+            </el-table-column>
+            <el-table-column
+              prop="channelId"
+              label="渠道ID"
+              width="450"
+            >
               <template slot-scope="scope">
                 <el-checkbox-group v-model="scope.row.channelId">
-                <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                  <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
                 </el-checkbox-group>
               </template>
-              </el-table-column>
+            </el-table-column>
           </el-table>
         </fieldset>
-      <fieldset>
-        <legend>赛事信息</legend>
-        <el-form-item label="赛事名称：" :required="true">
-          <el-input style="width: 200px;" v-model="editForm.data.name" placeholder="请填写赛事名称" />
-        </el-form-item>
-        <el-form-item label="游戏选择：" :required="true">
-          <el-select @change="selectMatchGame()" v-model="editForm.data.gameId" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in gameCfgs"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="赛制选择：" :required="true">
-          <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in showCsCfgs"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="开赛条件：" :required="true">
-          <el-select v-model="editForm.data.opentMatchType" placeholder="请选择" size="mini">
-            <el-option
-              v-for="item in openMatchTypeCfgs"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item v-if="editForm.data.opentMatchType==2" label="最低开赛人数：" :required="true">
-          <el-input style="width: 200px;" v-model="editForm.data.opentMatchMember" placeholder="请填写开赛人数" />
-        </el-form-item>
-        <el-form-item label="封面图片URL：" :required="true">
-          <GameImagePicker v-model="editForm.data.imagePath" @pick="handlePick">
-          </GameImagePicker>
-        </el-form-item>
-        <el-form-item label="白名单开关：" :required="true">
-            <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.whileList.type" :label=item.value>{{ item.label }}</el-radio>
-        </el-form-item>
-        <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
-          <el-input style="width: 400px;" v-model="editForm.whileList.data" placeholder="多个uid用,分开" />
-        </el-form-item>
-        <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制(1限制0不限制)：" :required="true">
-          <el-input style="width: 200px;" v-model="editForm.data.openDaysLimit" placeholder="1限制0不限制" />
-        </el-form-item>
-        <el-form-item v-if="editForm.data.opentMatchType==2" label="排序值：" :required="true">
-          <el-input style="width: 200px;" v-model="editForm.data.sort" placeholder="值越高排序越在前" />
-        </el-form-item>
-      </fieldset>
+        <fieldset>
+          <legend>赛事信息</legend>
+          <el-form-item label="赛事名称：" :required="true">
+            <el-input v-model="editForm.data.name" style="width: 200px;" placeholder="请填写赛事名称" />
+          </el-form-item>
+          <el-form-item label="游戏选择：" :required="true">
+            <el-select v-model="editForm.data.gameId" placeholder="请选择" size="mini" @change="selectMatchGame()">
+              <el-option
+                v-for="item in gameCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="赛制选择：" :required="true">
+            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in showCsCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="开赛条件：" :required="true">
+            <el-select v-model="editForm.data.opentMatchType" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in openMatchTypeCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="最低开赛人数：" :required="true">
+            <el-input v-model="editForm.data.opentMatchMember" style="width: 200px;" placeholder="请填写开赛人数" />
+          </el-form-item>
+          <el-form-item label="封面图片URL：" :required="true">
+            <ImagePicker v-model="editForm.data.imagePath" />
+          </el-form-item>
+          <el-form-item label="白名单开关：" :required="true">
+            <el-radio v-for="item in whileListCfgs" :key="item.value" v-model="editForm.whileList.type" :label="item.value">{{ item.label }}</el-radio>
+          </el-form-item>
+          <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
+            <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制(1限制0不限制)：" :required="true">
+            <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" />
+          </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="排序值：" :required="true">
+            <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
+          </el-form-item>
+        </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
           <el-form-item label="比赛类型：" :required="true">
@@ -292,55 +295,55 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 0" label="比赛时间：" :required="true">
-              <el-date-picker
-                v-model="editForm.loopDetail.onceTime"
-                format="yyyy-MM-dd HH:mm"
-                size="mini"
-                type="datetimerange"
-                :picker-options="pickerOptions"
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                align="right"
-              />
+            <el-date-picker
+              v-model="editForm.loopDetail.onceTime"
+              format="yyyy-MM-dd HH:mm"
+              size="mini"
+              type="datetimerange"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              align="right"
+            />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
-              <el-date-picker
-                v-model="editForm.loopDetail.loopStartDate"
-                size="mini"
-                type="date"
-                placeholder="选择开始日期"
-              />
+            <el-date-picker
+              v-model="editForm.loopDetail.loopStartDate"
+              size="mini"
+              type="date"
+              placeholder="选择开始日期"
+            />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
-              <el-date-picker
-                v-model="editForm.loopDetail.loopEndDate"
-                size="mini"
-                type="date"
-                placeholder="选择结束日期"
-              />
+            <el-date-picker
+              v-model="editForm.loopDetail.loopEndDate"
+              size="mini"
+              type="date"
+              placeholder="选择结束日期"
+            />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
-            <el-input style="width: 200px;" v-model.number="editForm.loopDetail.intervalDay" placeholder="请填写间隔天数，0为每天创建" />
+            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
             <el-time-picker
-              arrow-control
               v-model="editForm.loopDetail.single.stime"
-              format="HH:mm"
-              value-format="HH:mm:ss"
-              placeholder="开始时间">
-            </el-time-picker>
-            <el-time-picker
               arrow-control
-              v-model="editForm.loopDetail.single.etime"
               format="HH:mm"
               value-format="HH:mm:ss"
-              placeholder="结束时间">
-            </el-time-picker>
+              placeholder="开始时间"
+            />
+            <el-time-picker
+              v-model="editForm.loopDetail.single.etime"
+              arrow-control
+              format="HH:mm"
+              value-format="HH:mm:ss"
+              placeholder="结束时间"
+            />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 2" label="循环时间段：" :required="true">
-            <el-button @click="addLoopItem()" type="normal" size="mini">添加时段</el-button>
+            <el-button type="normal" size="mini" @click="addLoopItem()">添加时段</el-button>
             <el-table
               :data="editForm.loopDetail.loopData"
               border
@@ -360,12 +363,12 @@
               >
                 <template slot-scope="scope">
                   <el-time-picker
+                    v-model="scope.row.stime"
                     arrow-control
                     format="HH:mm"
                     value-format="HH:mm:ss"
-                    v-model="scope.row.stime"
-                    placeholder="开始时间">
-                  </el-time-picker>
+                    placeholder="开始时间"
+                  />
                 </template>
               </el-table-column>
               <el-table-column
@@ -374,12 +377,12 @@
               >
                 <template slot-scope="scope">
                   <el-time-picker
-                    arrow-control
                     v-model="scope.row.etime"
+                    arrow-control
                     format="HH:mm"
                     value-format="HH:mm:ss"
-                    placeholder="结束时间">
-                  </el-time-picker>
+                    placeholder="结束时间"
+                  />
                 </template>
               </el-table-column>
               <el-table-column
@@ -387,26 +390,26 @@
                 label="间隔时间(秒)"
               >
                 <template slot-scope="scope">
-                  <el-input style="width: 80px;" v-model.number="scope.row.intervalSeconds" placeholder="请填写间隔时间" />
+                  <el-input v-model.number="scope.row.intervalSeconds" style="width: 80px;" placeholder="请填写间隔时间" />
                 </template>
               </el-table-column>
               <el-table-column
                 label="操作"
               >
                 <template slot-scope="scope">
-                  <el-button @click="removeLoopItem(scope.$index)" type="danger" size="mini">移除</el-button>
+                  <el-button type="danger" size="mini" @click="removeLoopItem(scope.$index)">移除</el-button>
                 </template>
               </el-table-column>
             </el-table>
           </el-form-item>
           <el-form-item label="提前显示时间(秒)：" :required="true">
-            <el-input style="width: 200px;" v-model.number="editForm.data.preShowSeconds" placeholder="请填写提前显示时间" />
+            <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
           </el-form-item>
           <el-form-item label="提前进入时间(秒)：" :required="true">
-            <el-input style="width: 200px;" v-model.number="editForm.data.preEnterSeconds" placeholder="请填写提前进入时间" />
+            <el-input v-model.number="editForm.data.preEnterSeconds" style="width: 200px;" placeholder="请填写提前进入时间" />
           </el-form-item>
           <el-form-item label="延迟进入时间(秒)：" :required="true">
-            <el-input style="width: 200px;" v-model.number="editForm.data.delayEnterSeconds" placeholder="请填写延迟进入时间" />
+            <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
           </el-form-item>
         </fieldset>
         <fieldset>
@@ -435,76 +438,75 @@
             </el-select>
           </el-form-item>
           <el-form-item v-if="editForm.data.signUpType == 0" label="报名费：" :required="true">
-            <el-input style="width: 200px;" size="mini" v-model.number="editForm.data.signUpNum" placeholder="请填写金币数量" />
+            <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
-          <el-button style="margin-bottom: 10px;" @click="addRankRewards()" type="normal" size="mini">添加</el-button>
-            <el-table
-              :data="editForm.rankRewards"
-              border
-              stripe
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'35px'}"
-              :cell-style="libShow.TableCell(0)"
-              style="width: 100%;line-height:35px;"
+          <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
+          <el-table
+            :data="editForm.rankRewards"
+            border
+            stripe
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'35px'}"
+            :cell-style="libShow.TableCell(0)"
+            style="width: 100%;line-height:35px;"
+          >
+            <el-table-column
+              prop="index"
+              label="序号"
+              width="50"
+            />
+            <el-table-column
+              prop="rewardItems"
+              label="奖励"
+              width="400"
             >
-              <el-table-column
-                prop="index"
-                label="序号"
-                width="50"
-              />
-              <el-table-column
-                prop="rewardItems"
-                label="奖励"
-                width="400"
-              >
-                <template slot-scope="scope">
-                  <ul>
-                    <li v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: lower-roman;">
-                      <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
-                        <el-option
-                          v-for="item in getTypeCfgs"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                      <el-input style="width: 80px;" v-model.number="gItem.getNum" size="mini" placeholder="请填写获得数量" />
-                    </li>
-                  </ul>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="startRank"
-                label="名次区间"
-              >
-                <template slot-scope="scope">
-                  <el-input style="width: 80px;" v-model.number="scope.row.startRank" size="mini" placeholder="开始名次" />至
-                  <el-input style="width: 80px;" v-model.number="scope.row.endRank" size="mini" placeholder="结束名次" />
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="操作"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <el-button  @click="removeRewardItme(scope.$index)" type="danger" size="mini">移除</el-button>
-                </template>
-              </el-table-column>
+              <template slot-scope="scope">
+                <ul>
+                  <li v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: lower-roman;">
+                    <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
+                      <el-option
+                        v-for="item in getTypeCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                    <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
+                  </li>
+                </ul>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="startRank"
+              label="名次区间"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.startRank" style="width: 80px;" size="mini" placeholder="开始名次" />至
+                <el-input v-model.number="scope.row.endRank" style="width: 80px;" size="mini" placeholder="结束名次" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              width="100"
+            >
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="removeRewardItme(scope.$index)">移除</el-button>
+              </template>
+            </el-table-column>
           </el-table>
         </fieldset>
 
-        <el-divider></el-divider>
+        <el-divider />
         <el-form-item>
-          <el-button @click="saveMatch()" size="medium" type="primary" icon="el-icon-s-order">保存比赛配置</el-button>
+          <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveMatch()">保存比赛配置</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
   </div>
-
 
 </template>
 <script>
@@ -514,14 +516,14 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
-import { $libDate, $libShow} from '@/utils/common'
+import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
-import GameImagePicker from "@/components/GameImagePicker/GameImagePicker.vue";
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 
 export default {
   name: 'MatchConfig',
-  components: { Compare, Publish, DateTimeShow, GameImagePicker },
+  components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
     return {
       libShow: $libShow,
@@ -532,99 +534,100 @@ export default {
         gameId: -1,
         status: -1,
         csId: -1,
-        repeatType: -1,
+        repeatType: -1
       },
-      appidInfoCfgs:[
-        {"value": 1000002, "label":"dayusenlin"},
-        {"value": 1000003, "label":"testaccount"},
-        {"value": 1000004, "label":"testkey"},
-        {"value": 1000005, "label":"BingoPlusTongits"},
-        {"value": 1000006, "label":"BingoPlusTest"},
-        {"value": 1000007, "label":"br"},
-        {"value": 1100000, "label":"xworld"},
+      appidInfoCfgs: [
+        { 'value': 1000002, 'label': 'dayusenlin' },
+        { 'value': 1000003, 'label': 'testaccount' },
+        { 'value': 1000004, 'label': 'testkey' },
+        { 'value': 1000005, 'label': 'BingoPlusTongits' },
+        { 'value': 1000006, 'label': 'BingoPlusTest' },
+        { 'value': 1000007, 'label': 'br' },
+        { 'value': 1100000, 'label': 'xworld' }
       ],
       gameCfgs: [
-        {"value": 2031, "label":"tongits"},
+        { 'value': 2031, 'label': 'tongits' }
         // {"value": 15, "label":"德州"}
       ],
       channelIdCfgs: [
-        {"value": "BP", "label":"BP"},
-        {"value": "AP", "label":"AP"},
-        {"value": "GP", "label":"GP"},
-        {"value": "PG", "label":"PG"},
-        {"value": "Dev", "label":"Dev"},
+        { 'value': 'BP', 'label': 'BP' },
+        { 'value': 'AP', 'label': 'AP' },
+        { 'value': 'GP', 'label': 'GP' },
+        { 'value': 'TP', 'label': 'TP' },
+        { 'value': 'PG', 'label': 'PG' },
+        { 'value': 'Dev', 'label': 'Dev' }
       ],
       statusCfgs: [
-        {"value":0,"label":"启用"},
-        {"value":1,"label":"禁用"},
+        { 'value': 0, 'label': '启用' },
+        { 'value': 1, 'label': '禁用' }
       ],
       repeatCfgs: [
-        {"value":0,"label":"单场"},
-        {"value":1,"label":"单天单场循环"},
-        {"value":2,"label":"单天多场循环"},
+        { 'value': 0, 'label': '单场' },
+        { 'value': 1, 'label': '单天单场循环' },
+        { 'value': 2, 'label': '单天多场循环' }
       ],
       disappearCfgs: [
-        {"value":0,"label":"结束后"},
-        {"value":1,"label":"开赛后"},
+        { 'value': 0, 'label': '结束后' },
+        { 'value': 1, 'label': '开赛后' }
       ],
       openMatchTypeCfgs: [
-        {"value":2,"label":"定时开赛"},
+        { 'value': 2, 'label': '定时开赛' }
       ],
       signUpTypeCfgs: [
-        {"value":0,"label":"付费报名"},
-        {"value":1,"label":"免费报名"},
+        { 'value': 0, 'label': '付费报名' },
+        { 'value': 1, 'label': '免费报名' }
       ],
       getTypeCfgs: [
-        {"value":1,"label":"金币"},
+        { 'value': 1, 'label': '金币' }
       ],
       whileListCfgs: [
-        {"value":0,"label":"无白名单"},
-        {"value":1,"label":"有白名单"},
+        { 'value': 0, 'label': '无白名单' },
+        { 'value': 1, 'label': '有白名单' }
       ],
       csCfgs: [],
       showCsCfgs: [],
-      endMinuteCfgs: new Map(), //打立阶段最大时长 用于配置检查
-      endNumCfgs: new Map(), //打立阶段结束规则剩余人数 用于配置检查
-      promoteNumCfgs: new Map(), //打立阶段晋级规则晋级人数 用于配置检查
+      endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
+      endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
+      promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       tableData: [],
       limit: 10,
       total: 0,
       page: 1,
       editForm: {
         visable: false,
-        title: "",
+        title: '',
         isAdd: false,
         data: {
           id: 0,
-          name: "",
+          name: '',
           gameId: 0,
           csId: 0,
           opentMatchType: 0,
           opentMatchMember: 0,
           repeatType: 0,
-          repeatDetail: "",
+          repeatDetail: '',
           disappearType: 0,
-          signUpType:0,
-          signUpNum:0,
+          signUpType: 0,
+          signUpNum: 0,
           preShowSeconds: 0,
           preEnterSeconds: 0,
           delayEnterSeconds: 0,
-          rankRewardsDetail: "",
-          imagePath: "",
-          openDaysLimit:0,
-          sort:0,
+          rankRewardsDetail: '',
+          imagePath: '',
+          openDaysLimit: 0,
+          sort: 0
         },
         loopDetail: {
-          //只有一场
+          // 只有一场
           onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
-          //循环多场
+          // 循环多场
           loopStartDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
           loopEndDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
           intervalDay: 0,
-          //单场开始
+          // 单场开始
           single: {
             stime: '',
-            etime: '',
+            etime: ''
           },
           loopData: [
             {
@@ -650,45 +653,45 @@ export default {
             ]
           }
         ],
-        appInfo:[
+        appInfo: [
           {
-            index:1,
-            appId:1000002,
-            channelId:[]
-          },
+            index: 1,
+            appId: 1000002,
+            channelId: []
+          }
         ],
         whileList: {
           type: 0,
-          data: ""
-        },
+          data: ''
+        }
       },
       AttrNames: {
-        appInfo: "APP信息",
-        matchCfgId: "赛事id",
-        title: "赛事名称",
-        gid: "游戏id",
-        ruleId: "赛制id",
-        startType: "开赛方式",
-        startUserNum: "开赛人数",
-        repeatType: "循环类型",
-        disappearType: "消失时间点",
-        startDateTime: "开始日期",
-        finishDateTime: "结束日期",
-        preShowSeconds: "提前展示比赛(秒)",
-        preEnterSeconds: "提前进入比赛(秒)",
-        delayEnterSeconds: "延迟进入比赛(秒)",
-        signType: "报名方式(0:付费报名 1:免费报名)",
-        signNum: "报名费数量",
-        status: "配置状态(0:启用 1:禁用)",
-        rewardsCfg: "名次奖励",
-        imagePath: "封面图片",
-        whileList: "白名单",
-        openDaysLimit:"每日限制",
-        sort:"排序",
-        repeatDelayDays: "间隔天数",
-        daySections: "每日时段",
+        appInfo: 'APP信息',
+        matchCfgId: '赛事id',
+        title: '赛事名称',
+        gid: '游戏id',
+        ruleId: '赛制id',
+        startType: '开赛方式',
+        startUserNum: '开赛人数',
+        repeatType: '循环类型',
+        disappearType: '消失时间点',
+        startDateTime: '开始日期',
+        finishDateTime: '结束日期',
+        preShowSeconds: '提前展示比赛(秒)',
+        preEnterSeconds: '提前进入比赛(秒)',
+        delayEnterSeconds: '延迟进入比赛(秒)',
+        signType: '报名方式(0:付费报名 1:免费报名)',
+        signNum: '报名费数量',
+        status: '配置状态(0:启用 1:禁用)',
+        rewardsCfg: '名次奖励',
+        imagePath: '封面图片',
+        whileList: '白名单',
+        openDaysLimit: '每日限制',
+        sort: '排序',
+        repeatDelayDays: '间隔天数',
+        daySections: '每日时段'
       },
-      showDevTool: false,
+      showDevTool: false
     }
   },
   computed: {
@@ -700,6 +703,9 @@ export default {
   },
   mounted() {
     this.getList()
+    console.log('1')
+    //自动清理过期配置
+
   },
   methods: {
     resetSearch() {
@@ -716,23 +722,23 @@ export default {
           Env: this.env,
           Status: 0,
           PageNum: 1,
-          PageSize: 200,
+          PageSize: 200
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
-            for (var i=0;i<objs.list.length;i++) {
+            for (var i = 0; i < objs.list.length; i++) {
               this.csCfgs.push({
-                "label": "["+objs.list[i].id+"]"+objs.list[i].name,
-                "value": objs.list[i].id,
-                "gameId": [parseInt(objs.list[i].game_id, 10)]
+                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
+                'value': objs.list[i].id,
+                'gameId': [parseInt(objs.list[i].game_id, 10)]
               })
 
-              let stage_detail = JSON.parse(objs.list[i].stage_detail)
-              for (var j=0;j<stage_detail.length;j++) {
+              const stage_detail = JSON.parse(objs.list[i].stage_detail)
+              for (var j = 0; j < stage_detail.length; j++) {
                 if (stage_detail[j].system_type == 1) { // 打立出局
-                  //console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
+                  // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
                   // 存储打立出局的最大时长配置 用于配置检查
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
@@ -755,47 +761,46 @@ export default {
           CsId: this.form.csId,
           RepeatType: this.form.repeatType,
           PageNum: this.page,
-          PageSize: this.limit,
+          PageSize: this.limit
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          let objs = response.Data || []
+          const objs = response.Data || []
           if (objs.total > 0) {
-            this.total=objs.total;
-            this.tableData = objs.list;
+            this.total = objs.total
+            this.tableData = objs.list
             if (this.tableData.length > 0) {
-              for (let i=0;i<this.tableData.length;i++) {
+              for (let i = 0; i < this.tableData.length; i++) {
                 if (this.tableData[i].status == 0) {
                   this.tableData[i].openShow = true
                 } else {
                   this.tableData[i].openShow = false
                 }
 
-                let show_appinfo = ""
-                let appInfoTemp = JSON.parse(this.tableData[i].app_info_cfg)
+                let show_appinfo = ''
+                const appInfoTemp = JSON.parse(this.tableData[i].app_info_cfg)
 
-                for (let i=0;i<appInfoTemp.length;i++) {
-
+                for (let i = 0; i < appInfoTemp.length; i++) {
                   if (i == 0) {
-                    show_appinfo += appInfoTemp[i].appId + " "
-                  }else {
-                    show_appinfo += "  " + appInfoTemp[i].appId + " "
+                    show_appinfo += appInfoTemp[i].appId + ' '
+                  } else {
+                    show_appinfo += '  ' + appInfoTemp[i].appId + ' '
                   }
-                  
+
                   show_appinfo += appInfoTemp[i].channelId
                 }
-                if(!this.tableData[i].hasOwnProperty("open_days_limit")){
+                if (!this.tableData[i].hasOwnProperty('open_days_limit')) {
                   this.tableData[i].open_days_limit = 0
                 }
-                if(!this.tableData[i].hasOwnProperty("sort")){
+                if (!this.tableData[i].hasOwnProperty('sort')) {
                   this.tableData[i].sort = 0
                 }
                 this.tableData[i].show_appinfo = show_appinfo
               }
             }
           } else {
-            this.total=0;
-            this.tableData = [];
+            this.total = 0
+            this.tableData = []
           }
         }
       })
@@ -808,22 +813,19 @@ export default {
       this.page = val
       this.getList()
     },
-    handlePick(image) {
-      console.log("测试选择" + image.path + " cdn:" + image.cdnUrl + " full url:" + image.cdnUrl + image.path)
-    },
     getGameName(gameId) {
-      var gameName = ""
-      for(var i=0;i<this.gameCfgs.length;i++) {
+      var gameName = ''
+      for (var i = 0; i < this.gameCfgs.length; i++) {
         if (this.gameCfgs[i].value == gameId) {
-          gameName =this.gameCfgs[i].label
+          gameName = this.gameCfgs[i].label
           break
         }
       }
       return gameName
     },
     getRepeatTypeShow(repeatType) {
-      var show = ""
-      for (var i=0;i<this.repeatCfgs.length;i++) {
+      var show = ''
+      for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value == repeatType) {
           show = this.repeatCfgs[i].label
           break
@@ -832,8 +834,8 @@ export default {
       return show
     },
     getDisappearTypeShow(disappearType) {
-      var show = ""
-      for (var i=0;i<this.disappearCfgs.length;i++) {
+      var show = ''
+      for (var i = 0; i < this.disappearCfgs.length; i++) {
         if (this.disappearCfgs[i].value == disappearType) {
           show = this.disappearCfgs[i].label
           break
@@ -843,9 +845,9 @@ export default {
     },
     selectMatchGame() {
       this.showCsCfgs = []
-      //循环遍历是否存在gameId
-      if(this.csCfgs.length > 0) {
-        for(var i=0;i<this.csCfgs.length;i++) {
+      // 循环遍历是否存在gameId
+      if (this.csCfgs.length > 0) {
+        for (var i = 0; i < this.csCfgs.length; i++) {
           if (this.checkHaveGame(this.editForm.data.gameId, this.csCfgs[i].gameId)) {
             this.showCsCfgs.push(this.csCfgs[i])
           }
@@ -868,8 +870,8 @@ export default {
     removeLoopItem(index) {
       this.editForm.loopDetail.loopData.splice(index, 1)
       if (this.editForm.loopDetail.loopData.length > 0) {
-        for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
-          this.editForm.loopDetail.loopData[i].index = i+1
+        for (var i = 0; i < this.editForm.loopDetail.loopData.length; i++) {
+          this.editForm.loopDetail.loopData[i].index = i + 1
         }
       }
     },
@@ -878,7 +880,7 @@ export default {
       var maxRank = 0
       if (this.editForm.rankRewards.length > 0) {
         index = this.editForm.rankRewards.length
-        for (var i=0;i<this.editForm.rankRewards.length;i++) {
+        for (var i = 0; i < this.editForm.rankRewards.length; i++) {
           if (this.editForm.rankRewards[i].endRank > maxRank) {
             maxRank = this.editForm.rankRewards[i].endRank
           }
@@ -906,22 +908,22 @@ export default {
       this.editForm.appInfo.push({
         index: index,
         appId: 1000002,
-        channelId: [],
+        channelId: []
       })
     },
     removeAppInfo(index) {
       this.editForm.appInfo.splice(index, 1)
       if (this.editForm.appInfo.length > 0) {
-        for (var i=0;i<this.editForm.appInfo.length;i++) {
-          this.editForm.appInfo[i].index = i+1
+        for (var i = 0; i < this.editForm.appInfo.length; i++) {
+          this.editForm.appInfo[i].index = i + 1
         }
       }
     },
     removeRewardItme(index) {
       this.editForm.rankRewards.splice(index, 1)
       if (this.editForm.rankRewards.length > 0) {
-        for (var i=0;i<this.editForm.rankRewards.length;i++) {
-          this.editForm.rankRewards[i].index = i+1
+        for (var i = 0; i < this.editForm.rankRewards.length; i++) {
+          this.editForm.rankRewards[i].index = i + 1
         }
       }
     },
@@ -932,121 +934,121 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     handleOn(id, val) {
-        this.$confirm("您确定要将该比赛配置上架吗？", '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                // 启用配置
-                let status = 0
-                request({
-                  url: '/matchconfig/match/config/status',
-                  method: 'post',
-                  data: {
-                    Env: this.env,
-                    Id: id,
-                    Status: status,
-                  }
-              }).then(response => {
-                if (response.RetCode === 0) {
-                  let showMsg = "启用赛事配置成功！"
-                  for (let i=0;i<this.tableData.length;i++) {
-                    if (this.tableData[i].id == id) {
-                      this.tableData[i].openShow = val
-                      this.tableData[i].status = 0
-                      status = this.tableData[i].status
-                      break
-                    }
-                  }
-                  Message.success(showMsg)
-                  this.getList()
-                } else {
-                  Message.error('更新状态失败：'+response.Data)
-                }
-                })
-            }).catch(() => {
-                console.log('取消')
-            })
+      this.$confirm('您确定要将该比赛配置上架吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 启用配置
+        let status = 0
+        request({
+          url: '/matchconfig/match/config/status',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Id: id,
+            Status: status
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const showMsg = '启用赛事配置成功！'
+            for (let i = 0; i < this.tableData.length; i++) {
+              if (this.tableData[i].id == id) {
+                this.tableData[i].openShow = val
+                this.tableData[i].status = 0
+                status = this.tableData[i].status
+                break
+              }
+            }
+            Message.success(showMsg)
+            this.getList()
+          } else {
+            Message.error('更新状态失败：' + response.Data)
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     },
     handleOff(id, val) {
-        this.$confirm("您确定要将该比赛配置下架吗？下架的比赛将自动取消", '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                // 禁用配置
-                let status = 1
-                request({
-                  url: '/matchconfig/match/config/status',
-                  method: 'post',
-                  data: {
-                    Env: this.env,
-                    Id: id,
-                    Status: status,
-                  }
-              }).then(response => {
-                if (response.RetCode === 0) {
-                  let showMsg = "禁用赛事配置成功！"
-                  for (let i=0;i<this.tableData.length;i++) {
-                    if (this.tableData[i].id == id) {
-                      this.tableData[i].openShow = val
-                      this.tableData[i].status = 1
-                      status = this.tableData[i].status
-                      break
-                    }
-                  }
-                  Message.success(showMsg)
-                  this.getList()
-                } else {
-                  Message.error('更新状态失败：'+response.Data)
-                }
-                })
-            }).catch(() => {
-                console.log('取消')
-            })
+      this.$confirm('您确定要将该比赛配置下架吗？下架的比赛将自动取消', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 禁用配置
+        let status = 1
+        request({
+          url: '/matchconfig/match/config/status',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Id: id,
+            Status: status
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const showMsg = '禁用赛事配置成功！'
+            for (let i = 0; i < this.tableData.length; i++) {
+              if (this.tableData[i].id == id) {
+                this.tableData[i].openShow = val
+                this.tableData[i].status = 1
+                status = this.tableData[i].status
+                break
+              }
+            }
+            Message.success(showMsg)
+            this.getList()
+          } else {
+            Message.error('更新状态失败：' + response.Data)
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     },
     updateStatus(id, val) {
       if (val) {
         this.handleOn(id, val)
-      }else {
+      } else {
         this.handleOff(id, val)
       }
     },
     showForm(id) {
       if (id == 0) {
-        this.editForm.title = "新增比赛配置"
+        this.editForm.title = '新增比赛配置'
         this.editForm.data = {
           id: 0,
-          name: "",
+          name: '',
           gameId: 0,
           csId: 0,
           opentMatchType: 2,
           opentMatchMember: 0,
           repeatType: 0,
-          repeatDetail: "",
+          repeatDetail: '',
           disappearType: 0,
-          signUpType:0,
-          signUpNum:0,
+          signUpType: 0,
+          signUpNum: 0,
           preShowSeconds: 0,
           preEnterSeconds: 0,
           delayEnterSeconds: 0,
-          rankRewardsDetail: "",
+          rankRewardsDetail: '',
           status: 0,
-          imagePath: "",
-          openDaysLimit:0,
-          sort:0,
+          imagePath: '',
+          openDaysLimit: 0,
+          sort: 0
         }
         this.editForm.loopDetail = {
-          //只有一场
+          // 只有一场
           onceTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
-          //循环多场
+          // 循环多场
           loopStartDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
           loopEndDate: $libDate.GetDayBegin(new Date().setSeconds(0)),
           intervalDay: 0,
-          //单场开始
+          // 单场开始
           single: {
             stime: '',
-            etime: '',
+            etime: ''
           },
           loopData: [
             {
@@ -1081,22 +1083,22 @@ export default {
         ]
         this.editForm.whileList = {
           type: 0,
-          data: ""
+          data: ''
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
       } else {
         let editData = {}
-        this.editForm.title = "编辑比赛配置"
+        this.editForm.title = '编辑比赛配置'
         this.editForm.isAdd = false
-        for (let i=0;i<this.tableData.length;i++) {
+        for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].id == id) {
             editData = this.tableData[i]
             break
           }
         }
-        if (typeof editData.id === "undefined") {
-          Message.error("比赛配置不存在")
+        if (typeof editData.id === 'undefined') {
+          Message.error('比赛配置不存在')
           return
         }
         this.editForm.data = {
@@ -1117,24 +1119,24 @@ export default {
           rankRewardsDetail: editData.rewards,
           status: editData.status,
           imagePath: editData.image_path,
-          openDaysLimit:editData.open_days_limit,
-          sort:editData.sort,
+          openDaysLimit: editData.open_days_limit,
+          sort: editData.sort
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
-        if (editData.while_list != "") {
-          let whileList = JSON.parse(editData.while_list)
+        if (editData.while_list != '') {
+          const whileList = JSON.parse(editData.while_list)
           this.editForm.whileList.type = whileList.type
           this.editForm.whileList.data = whileList.data
         }
         if (editData.repeat_type == 0) {
-          this.editForm.loopDetail.onceTime = [new Date(editData.start_time*1000),new Date(editData.end_time*1000)]
+          this.editForm.loopDetail.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         } else {
-          let repeatDetail = JSON.parse(editData.repeat_detail)
-          this.editForm.loopDetail.loopStartDate = $libDate.GetDayBegin(editData.start_time*1000)
-          this.editForm.loopDetail.loopEndDate = $libDate.GetDayBegin(editData.end_time*1000)
+          const repeatDetail = JSON.parse(editData.repeat_detail)
+          this.editForm.loopDetail.loopStartDate = $libDate.GetDayBegin(editData.start_time * 1000)
+          this.editForm.loopDetail.loopEndDate = $libDate.GetDayBegin(editData.end_time * 1000)
           this.editForm.loopDetail.intervalDay = repeatDetail.intervalDay
           if (editData.repeat_type == 1) {
-            //单天单场
+            // 单天单场
             this.editForm.loopDetail.single.stime = repeatDetail.msTime
             this.editForm.loopDetail.single.etime = repeatDetail.meTime
           } else {
@@ -1143,9 +1145,9 @@ export default {
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
         this.showCsCfgs = []
-        //循环遍历是否存在gameId
-        if(this.csCfgs.length > 0) {
-          for(var i=0;i<this.csCfgs.length;i++) {
+        // 循环遍历是否存在gameId
+        if (this.csCfgs.length > 0) {
+          for (var i = 0; i < this.csCfgs.length; i++) {
             if (this.checkHaveGame(this.editForm.data.gameId, this.csCfgs[i].gameId)) {
               this.showCsCfgs.push(this.csCfgs[i])
             }
@@ -1156,7 +1158,7 @@ export default {
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
-      for (var i=0;i<gameArr.length;i++) {
+      for (var i = 0; i < gameArr.length; i++) {
         if (gid == gameArr[i]) {
           flag = true
           break
@@ -1169,32 +1171,32 @@ export default {
         return
       }
 
-      let rankReward = JSON.stringify(this.editForm.rankRewards)
-      let whileDetail = JSON.stringify(this.editForm.whileList)
-      let repeatDetail = ""
+      const rankReward = JSON.stringify(this.editForm.rankRewards)
+      const whileDetail = JSON.stringify(this.editForm.whileList)
+      let repeatDetail = ''
       let bTime = 0
       let eTime = 0
       if (this.editForm.data.repeatType == 0) {
-        //单场
+        // 单场
         if (this.editForm.loopDetail.onceTime) {
           this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
           this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-          repeatDetail = JSON.stringify({startTime: bTime,endTime: eTime})
+          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime })
         }
-      }  else {
-        //循环
+      } else {
+        // 循环
         bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
         eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
-        let intervalDay = this.editForm.loopDetail.intervalDay
+        const intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
-          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime})
+          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime })
         } else {
-          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData})
+          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
       }
-      //console.log("测试：" + this.$store.getters.name)
+      // console.log("测试：" + this.$store.getters.name)
       request({
         url: '/matchconfig/match/config/create',
         method: 'POST',
@@ -1220,92 +1222,169 @@ export default {
           PreShowSeconds: this.editForm.data.preShowSeconds,
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds,
-          OpenDaysLimit:this.editForm.data.openDaysLimit,
-          Sort:this.editForm.data.sort,
+          OpenDaysLimit: this.editForm.data.openDaysLimit,
+          Sort: this.editForm.data.sort
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          let showMsg = "新增比赛配置成功！"
+          let showMsg = '新增比赛配置成功！'
           if (this.editForm.data.id > 0) {
-            showMsg = "编辑比赛配置成功！"
+            showMsg = '编辑比赛配置成功！'
           }
           Message.success(showMsg)
           this.getList()
           this.editForm.visable = false
           return
         } else {
-          let errMsg = "新增比赛配置失败！"
+          let errMsg = '新增比赛配置失败！'
           if (this.editForm.data.id > 0) {
-            errMsg = "编辑比赛配置失败！"
+            errMsg = '编辑比赛配置失败！'
           }
-          Message.error(errMsg+response.Data)
+          Message.error(errMsg + response.Data)
           return
         }
       })
     },
     handleCopy(id) {
       this.$confirm('确定要复制吗？', '提醒')
-          .then(() => {
-            request({
-              url: '/matchconfig/match/config/copy',
-              method: 'post',
-              data: {
-                Env: this.env,
-                Id: id,
-              }
-            }).then(response => {
-              if (response.RetCode === 0) {
-                Message.success("复制比赛配置成功！")
-                this.getList()
-                return
-              } else {
-                Message.error('复制比赛配置失败：'+response.Data)
-                return
-              }
-            })
+        .then(() => {
+          request({
+            url: '/matchconfig/match/config/copy',
+            method: 'post',
+            data: {
+              Env: this.env,
+              Id: id
+            }
+          }).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('复制比赛配置成功！')
+              this.getList()
+              return
+            } else {
+              Message.error('复制比赛配置失败：' + response.Data)
+              return
+            }
           })
-          .catch(() => {
-            console.log('取消')
-          })
-    },
-    handleDelete(id) {
-      // 在v-if处已限制，只有已下架的比赛可以删除
-      this.$confirm("您确定要将该比赛配置删除吗？", '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-            request({
-              url: '/matchconfig/match/config/delete',
-              method: 'post',
-              data: {
-                Env: this.env,
-                Id: id,
-              }
-              }).then(response => {
-                if (response.RetCode === 0) {
-                  Message.success('删除比赛配置成功！')
-                  this.getList()
-                } else {
-                  Message.error('删除比赛配置失败！')
-                }
-              })
-        }).catch(() => {
+        })
+        .catch(() => {
           console.log('取消')
         })
     },
+    copyAll() {
+      this.$confirm('确定要复制所有今天的比赛到明天吗？', '提醒')
+        .then(() => {
+          request({
+            url: '/matchconfig/match/config/copy/today',
+            method: 'post',
+            data: {}
+          }).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('复制所有今天比赛到明天成功！')
+              this.getList()
+              return
+            } else {
+              Message.error('复制比赛配置失败：' + response.Data)
+              return
+            }
+          })
+        })
+        .catch(() => {
+          console.log('取消')
+        })
+    },
+    expireAll() {
+      this.$confirm('您确定要将今天之前的比赛下架吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/matchconfig/match/config/status/all',
+          method: 'post',
+          data: {}
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('下架今天之前比赛配置成功！')
+            this.getList()
+          } else {
+            Message.error('下架今天之前比赛配置失败！')
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    deleteAllOff() {
+      this.$confirm('您确定要清理所有已下架的比赛配置吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/matchconfig/match/config/delete/alloff',
+          method: 'post',
+          data: {}
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('清理已下架的比赛配置成功！')
+            this.getList()
+          } else {
+            Message.error('清理已下架的比赛配置失败！')
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    handleDelete(id) {
+      // 在v-if处已限制，只有已下架的比赛可以删除
+      this.$confirm('您确定要将该比赛配置删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/matchconfig/match/config/delete',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Id: id
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('删除比赛配置成功！')
+            this.getList()
+          } else {
+            Message.error('删除比赛配置失败！')
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
     errmsg(txt) {
-      this.$alert(txt,'',{
+      this.$alert(txt, '', {
         type: 'error',
         center: true,
-        showConfirmButton: false,
-      });
+        showConfirmButton: false
+      })
     },
     handleShowDevTools() {
       // 浏览器设置ShowDev=1才可以看到开发工具
       if (window.ShowDev == 1) {
         this.showDevTool = !this.showDevTool
       }
+    },
+    timeToSec(time) {
+      var s = '';
+ 
+      var hour = time.split(':')[0];
+      var min = time.split(':')[1];
+      var sec = time.split(':')[2];
+
+      s = Number(hour*3600) + Number(min*60) + Number(sec);
+
+      return s;
     },
     configCheck() {
       if (this.editForm.data.signUpType == 1) {
@@ -1315,39 +1394,41 @@ export default {
 
       if (this.editForm.whileList.type == 1) {
         // 如果开启白名单，则白名单不可为空
-        if (this.editForm.whileList.data == "") {
+        if (this.editForm.whileList.data == '') {
           this.errMsg('白名单不可为空！')
           return false
         }
       }
 
       if (this.editForm.data.repeatType == 1) {
-        if ((Math.floor(this.editForm.loopDetail.single.etime / 1000) - Math.floor(this.editForm.loopDetail.single.stime / 1000)) < 600) {
+        if (Math.floor(this.timeToSec(this.editForm.loopDetail.single.etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.single.stime)) < 600) {
           this.errmsg('比赛开始结束间隔要大于10分钟！')
           return false
         }
       }
 
       if (this.editForm.data.repeatType != 0) {
-        if (this.editForm.loopDetail.loopData.length > 0) {
-          for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
-            if ((Math.floor(this.editForm.loopDetail.loopData[i].etime / 1000) - Math.floor(this.editForm.loopDetail.loopData[i].stime / 1000)) < 600) {
-              this.errmsg('比赛开始结束间隔要大于10分钟！')
-              return false
-            }
-
-            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 300) {
-              this.errmsg('循环赛间隔时间至少大于300秒（五分钟）！')
-              return false
-            }
-          }
-        }
-
         if (this.editForm.loopDetail.intervalDay < 0) {
           this.errmsg('循环赛间隔天数需要设置大于等于0（最小为0表示每天创建）！')
           return false
         }
-      } 
+      }
+
+      if (this.editForm.data.repeatType == 2) {
+        if (this.editForm.loopDetail.loopData.length > 0) {
+          for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+            if ((Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime))) < 600) {
+              this.errmsg('比赛开始结束间隔要大于10分钟！')
+              return false
+            }
+
+            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 120) {
+              this.errmsg('循环赛间隔时间至少大于120秒（2分钟）！')
+              return false
+            }
+          }
+        }
+      }
 
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
@@ -1358,8 +1439,8 @@ export default {
       } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
-      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 600)) {
-        this.errmsg('比赛开始结束间隔要大于10分钟！')
+      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
+        this.errmsg('循环赛开始结束时间不能为同一天！')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
@@ -1368,30 +1449,25 @@ export default {
         this.errmsg('赛制选择不能为空')
         return false
       } else {
-        
-          // 获取打立阶段最大时长
-          let endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
-          if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin))
-          {
-            this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
-            return false
-          }
+        // 获取打立阶段最大时长
+        const endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
+        if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin)) {
+          this.errmsg('延迟进入时间不能大于打立出局阶段总时长')
+          return false
+        }
 
-          let endNum = this.endNumCfgs.get(this.editForm.data.csId)
-          let promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
+        const endNum = this.endNumCfgs.get(this.editForm.data.csId)
+        const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
 
-          if (this.editForm.data.opentMatchMember < endNum)
-          {
-            this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
-            return false
-          }
+        if (this.editForm.data.opentMatchMember < endNum) {
+          this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
+          return false
+        }
 
-          if (this.editForm.data.opentMatchMember < promoteNum)
-          {
-            this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
-            return false
-          }
-
+        if (this.editForm.data.opentMatchMember < promoteNum) {
+          this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
+          return false
+        }
       }
       return true
     }

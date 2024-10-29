@@ -301,7 +301,8 @@ export default {
         29: 'Tongits-Quick',
         34: 'PusoyDos',
         47: 'Billiard-8ball  ',
-        48: 'Billiard-9ball  '
+        48: 'Billiard-9ball  ',
+        120: 'Tongits-Swap'
         // 52: 'Sleeping Beauty',
         // 51: 'Phoenix'
       },
@@ -494,7 +495,7 @@ export default {
             return false
           }
           // tongits 判断发车人数有配置的时候，必须大于等于 3
-          if ((this.allCfg.All[i].GameId == 22 || this.allCfg.All[i].GameId == 31) && this.allCfg.All[i].Config[j].IsOpen && this.allCfg.All[i].Config[j].PlayerNum > 0 && this.allCfg.All[i].Config[j].PlayerNum < 3) {
+          if ((this.allCfg.All[i].GameId == 22 || this.allCfg.All[i].GameId == 31 || this.allCfg.All[i].GameId === 120) && this.allCfg.All[i].Config[j].IsOpen && this.allCfg.All[i].Config[j].PlayerNum > 0 && this.allCfg.All[i].Config[j].PlayerNum < 3) {
             Message.error('Tongits 的【发车人数】必须大于等于 3')
             return false
           }

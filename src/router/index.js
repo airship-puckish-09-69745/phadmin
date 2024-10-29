@@ -222,6 +222,12 @@ export const asyncRoutes = [
                 name: 'tongitsTableQuick',
                 meta: { title: 'Tongits-Quick ◐' }
               },
+              {
+                path: 'tongitsswapTable',
+                component: () => import('@/views/config/tableConfig/tongitsTableSwap'),
+                name: 'tongitsSwapTable',
+                meta: { title: 'Tongits-Swap ◐' }
+              },
               /*          {
                           path: 'tongitsTogether',
                           component: () => import('@/views/config/tableConfig/tongits_blacklist'),
@@ -1154,6 +1160,18 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchMonitor'),
         name: 'matchMonitor',
         meta: { title: '赛事监控', noCache: true }
+      },
+      {
+        path: 'matchTcc',
+        component: () => import('@/views/matchManage/matchTcc'),
+        name: 'matchTcc',
+        meta: { title: 'Tcc名单配置', noCache: true }
+      },
+      {
+        path: 'matchLimitWhite',
+        component: () => import('@/views/matchManage/matchLimitWhite'),
+        name: 'matchLimitWhite',
+        meta: { title: '限制白名单', noCache: true }
       }
     ]
   },
@@ -1161,7 +1179,7 @@ export const asyncRoutes = [
     path: '/playlog',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'PLAYLOG_MANAGEMENT' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
       {
@@ -1229,6 +1247,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsPlaylog'),
             name: 'playlog_tongits',
             meta: { title: 'Tongits-Quick ', gid: 29 }
+          },
+          {
+            path: 'playlog_swap_tongits',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_tongits',
+            meta: { title: 'Tongits - Swap ◐', gid: 120 }
           },
           {
             path: 'playlog_texas',
@@ -1796,6 +1820,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/enterurl'),
         name: 'enterurl',
         meta: { title: '生成游戏链接 ◐' }
+      },
+      {
+        path: 'point',
+        component: () => import('@/views/thirdparty/point'),
+        name: 'point',
+        meta: { title: '积分链接 ◐' }
       }
     ]
   },
@@ -2141,7 +2171,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'DEV_TOOL' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',

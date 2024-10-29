@@ -106,6 +106,7 @@ export default {
                 { "value": 2031, "label": "tongits" },
             ],
             statusCfgs: [
+                { "value": 0, "label": "已创建" },
                 { "value": 1, "label": "已展示" },
                 { "value": 2, "label": "入场中" },
                 { "value": 3, "label": "已开始" },

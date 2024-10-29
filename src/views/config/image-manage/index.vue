@@ -8,14 +8,14 @@
     <div class="image-manage-operation">
       <ImageUploadForm
         class="image-manage-form"
-        :options="imageCategories"
+        :options="IMAGE_CATEGORIES"
         :default-category="condition.category"
         @success="handleUploadSuccess"
       />
       <ImageCategoryMenu
         v-model="condition.category"
         class="image-manage-menu"
-        :options="imageCategories"
+        :options="IMAGE_CATEGORIES"
         @select="handleCategorySelect"
       />
     </div>
@@ -66,8 +66,9 @@
 
 <script>
 import request from '@/utils/request'
+import { IMAGE_CATEGORIES } from '@/constants/image'
+import ImageCategoryMenu from '@/components/ImagePicker/ImageCategoryMenu.vue'
 import ImageUploadForm from './components/ImageUploadForm/ImageUploadForm.vue'
-import ImageCategoryMenu from './components/ImageCategoryMenu/ImageCategoryMenu.vue'
 
 export default {
   components: {
@@ -76,22 +77,17 @@ export default {
   },
   data() {
     return {
-      imageCategories: [
-        { value: 'match', label: '比赛' },
-        { value: 'act', label: '活动' },
-        { value: 'mission', label: '任务' },
-        { value: 'other', label: '其他' }
-      ],
+      IMAGE_CATEGORIES: Object.freeze(IMAGE_CATEGORIES),
 
       condition: {
         category: 'match',
         current: 1,
         pageSize: 10
       },
-      total: 0,
 
       list: [],
       filteredList: [],
+      total: 0,
 
       loading: false
     }
@@ -99,7 +95,7 @@ export default {
 
   computed: {
     title() {
-      return this.imageCategories.find((item) => item.value === this.condition.category)?.label
+      return this.IMAGE_CATEGORIES.find((item) => item.value === this.condition.category)?.label
     }
   },
 
@@ -170,6 +166,15 @@ export default {
     },
 
     /**
+     * @description 设置列表数据
+     */
+    setList(value) {
+      if (Array.isArray(value)) {
+        this.list = value
+      }
+    },
+
+    /**
      * @description 获取列表数据
      * @param {object} data 参数
      * @prop {string} data.category 图片类型
@@ -188,15 +193,6 @@ export default {
 
         return Promise.reject(res)
       }).finally(() => this.setLoading(false))
-    },
-
-    /**
-     * @description 设置列表数据
-     */
-    setList(value) {
-      if (Array.isArray(value)) {
-        this.list = value
-      }
     },
 
     /**
@@ -371,13 +367,14 @@ export default {
     align-items: center;
 
     &__image {
+      border-radius: 4px;
       width: 200px;
       height: 291px;
     }
 
     &__text {
-      padding: 8px 12px;
       width: 100%;
+      padding: 8px;
       color: #303133;
       text-align: center;
       word-wrap: break-word;
