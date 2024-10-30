@@ -972,7 +972,7 @@ export default {
       })
     },
     handleOff(id, val) {
-      this.$confirm('您确定要将该比赛配置下架吗？下架的比赛将自动取消', '提示', {
+      this.$confirm('您确定要将该比赛配置下架吗？会对已显示的比赛下架，并且该配置不会再创建新比赛', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -989,7 +989,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            const showMsg = '禁用赛事配置成功！'
+            const showMsg = '下架赛事配置成功！'
             for (let i = 0; i < this.tableData.length; i++) {
               if (this.tableData[i].id == id) {
                 this.tableData[i].openShow = val
