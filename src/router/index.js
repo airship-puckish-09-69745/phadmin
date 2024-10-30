@@ -1098,6 +1098,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'christmasConfig',
+        component: () => import('@/views/empty'),
+        name: 'christmasConfig',
+        meta: { title: '圣诞活动配置', noCache: true },
+        children: [
+          {
+            path: 'christmasActivityConfig',
+            component: () => import('@/views/config/tableConfig/activity/christmasFortuneTreeConfig'),
+            name: 'christmasActivityConfig',
+            meta: { title: '圣诞活动配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'activityCommonConfig',
         component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
         name: 'activityCommonConfig',
@@ -1160,6 +1174,18 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchMonitor'),
         name: 'matchMonitor',
         meta: { title: '赛事监控', noCache: true }
+      },
+      {
+        path: 'matchTcc',
+        component: () => import('@/views/matchManage/matchTcc'),
+        name: 'matchTcc',
+        meta: { title: 'Tcc名单配置', noCache: true }
+      },
+      {
+        path: 'matchLimitWhite',
+        component: () => import('@/views/matchManage/matchLimitWhite'),
+        name: 'matchLimitWhite',
+        meta: { title: '限制白名单', noCache: true }
       }
     ]
   },
@@ -1167,7 +1193,7 @@ export const asyncRoutes = [
     path: '/playlog',
     component: Layout,
     redirect: 'noRedirect',
-    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'CFG_MANAGEMENT' },
+    meta: { title: '牌局日志 ◐', icon: 'log', perm: 'PLAYLOG_MANAGEMENT' },
     // eslint-disable-next-line no-sparse-arrays
     children: [
       {
@@ -1199,6 +1225,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pusoyDos',
             meta: { title: 'PusoyDos - ◐', gid: 34 }
+          },
+          {
+            path: 'playlog_uno',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_uno',
+            meta: { title: 'Uno - 单人◐', gid: 117 }
+          },
+          {
+            path: 'playlog_unoTeam',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_unoTeam',
+            meta: { title: 'Uno - 组队◐', gid: 121 }
           },
           {
             path: 'playlog_tongits',
@@ -1796,6 +1834,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/enterurl'),
         name: 'enterurl',
         meta: { title: '生成游戏链接 ◐' }
+      },
+      {
+        path: 'point',
+        component: () => import('@/views/thirdparty/point'),
+        name: 'point',
+        meta: { title: '积分链接 ◐' }
       }
     ]
   },
@@ -2141,7 +2185,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'DEV_TOOL' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',

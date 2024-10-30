@@ -291,6 +291,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled='editForm.data.id > 0'
               />
             </el-select>
           </el-form-item>
@@ -553,6 +554,7 @@ export default {
         { 'value': 'BP', 'label': 'BP' },
         { 'value': 'AP', 'label': 'AP' },
         { 'value': 'GP', 'label': 'GP' },
+        { 'value': 'TP', 'label': 'TP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],
@@ -645,7 +647,7 @@ export default {
             rewardItems: [
               {
                 index: 1,
-                getType: 0,
+                getType: 1,
                 getPid: 0,
                 getNum: 0
               }
@@ -894,7 +896,7 @@ export default {
         rewardItems: [
           {
             index: 1,
-            getType: 0,
+            getType: 1,
             getPid: 0,
             getNum: 0
           }
@@ -970,7 +972,7 @@ export default {
       })
     },
     handleOff(id, val) {
-      this.$confirm('您确定要将该比赛配置下架吗？下架的比赛将自动取消', '提示', {
+      this.$confirm('您确定要将该比赛配置下架吗？会对已显示的比赛下架，并且该配置不会再创建新比赛', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -987,7 +989,7 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            const showMsg = '禁用赛事配置成功！'
+            const showMsg = '下架赛事配置成功！'
             for (let i = 0; i < this.tableData.length; i++) {
               if (this.tableData[i].id == id) {
                 this.tableData[i].openShow = val
@@ -1073,7 +1075,7 @@ export default {
             rewardItems: [
               {
                 index: 1,
-                getType: 0,
+                getType: 1,
                 getPid: 0,
                 getNum: 0
               }
@@ -1421,8 +1423,8 @@ export default {
               return false
             }
 
-            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 300) {
-              this.errmsg('循环赛间隔时间至少大于300秒（五分钟）！')
+            if (this.editForm.loopDetail.loopData[i].intervalSeconds < 120) {
+              this.errmsg('循环赛间隔时间至少大于120秒（2分钟）！')
               return false
             }
           }
@@ -1438,8 +1440,8 @@ export default {
       } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
-      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 600)) {
-        this.errmsg('比赛开始结束间隔要大于10分钟！')
+      } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
+        this.errmsg('循环赛开始结束时间不能为同一天！')
         return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')

@@ -1198,8 +1198,8 @@ export default {
           $this.item = $this.libShowMoney.TransForShow(response.Data || $this.item)
           $this.item.UserAccount = response.Data.Account || ''
           $this.item.AppId = response.Data.AppID || 0
-          $this.$EventBus.$emit('uid-change', response.Data.Uid)
           $this.item.Uid = response.Data.Uid || 0
+          $this.$refs.uidInput.saveUid($this.item.Uid)
           $this.getTags()
         }
       })
@@ -1244,8 +1244,8 @@ export default {
       }).then(response => {
         // console.log(response)
         if (response.RetCode === 0) {
-          this.friendList = response.Data
-          this.friendListDialog = true
+          $this.friendList = response.Data
+          $this.friendListDialog = true
         }
       })
     }
