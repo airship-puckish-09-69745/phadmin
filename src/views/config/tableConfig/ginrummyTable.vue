@@ -288,12 +288,12 @@
         <el-row>
           <el-col :span="11">
             <el-form-item
-              label="下注时长："
+              label="操作时长："
               :required="true"
               prop="item.ActionSeconds"
               :rules="dataRule(true,{type:'n',range:'5'})"
             >
-              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" ><template slot="append">[5,30]秒 默认8秒</template></el-input>
+              <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" ><template slot="append">[5,30]秒 默认15秒</template></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="11">
