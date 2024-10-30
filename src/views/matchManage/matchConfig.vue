@@ -972,9 +972,10 @@ export default {
       })
     },
     handleOff(id, val) {
-      this.$confirm('您确定要将该比赛配置下架吗？会对已显示的比赛下架，并且该配置不会再创建新比赛', '提示', {
+      this.$confirm('您确定要将该比赛配置下架吗？<span style="color: red;">会对已显示的比赛下架，并且该配置不会再创建新比赛</span>', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        dangerouslyUseHTMLString: true,
         type: 'warning'
       }).then(() => {
         // 禁用配置

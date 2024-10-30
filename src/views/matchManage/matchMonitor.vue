@@ -198,9 +198,10 @@ export default {
             }
         },
         handleOff(listId) {
-            this.$confirm("您确定要将该比赛下架吗？下架的比赛将自动取消", '提示', {
+            this.$confirm('您确定要将该比赛下架吗？<span style="color: red;">下架的比赛将自动取消</span>', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
+                dangerouslyUseHTMLString: true,
                 type: 'warning'
             }).then(() => {
                 request({
