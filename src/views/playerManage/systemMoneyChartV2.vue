@@ -385,7 +385,8 @@ export default {
 
       userVisible: false,
       users: [],
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 120], // 糖果传奇调用addGameName特殊处理
+      // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 120], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -404,7 +405,6 @@ export default {
   },
   // mixins: [IsMars],
   created() {
-    console.log("========")
     this.env = store.getters.env || this.env
     // this.sortOrder = this.defaultOrder
 
@@ -505,7 +505,7 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92,98,150,152,156)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160)
         }
