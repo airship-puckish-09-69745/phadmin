@@ -112,7 +112,7 @@
           <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
             <el-form-item label="档次条件：" :required="true" prop="RaffleLevel">
               <el-col :span="15">
-                <el-select v-model="edit.item.RaffleLevel" size="mini">
+                <el-select v-if="!edit.isEdit" v-model="edit.item.RaffleLevel" size="mini" >
                   <el-option
                     v-for="item in RaffleLevelList"
                     :key="item.value"
@@ -120,12 +120,16 @@
                     :value="item.value"
                   />
                 </el-select>
+                <span v-else>
+                  {{ edit.item.RaffleLevel }}
+                </span>
+                （₱）
               </el-col>
             </el-form-item>
 
             <el-form-item label="基础圣诞袜数量：" :required="true" prop="SockBaseNum">
               <el-col :span="15">
-                <el-input v-model="edit.item.SockBaseNum" />
+                <el-input v-model.number="edit.item.SockBaseNum" />
               </el-col>
             </el-form-item>
             <el-form-item label="圣诞袜系数最小：" :required="true" prop="CoefficientMin">
@@ -141,13 +145,16 @@
           </el-form>
           <el-row>
             <el-col :span="20" :offset="2">
+              <el-button size="mini" type="primary" icon="el-icon-plus" @click="handlePrizeCreate()">
+                添加配置
+              </el-button>
+
               <el-form ref="ProtectCfg" v-model="edit.item.PrizeCfg" label-width="150px" style="margin-top: 10px">
                 <el-table
                   :data="edit.item.PrizeCfg"
                   border
                   style="width: 100%"
                   :cell-style="libShow.DefaultTableCell"
-                  @row-click="clickData"
                 >
                   <el-table-column
                     prop="Reward"
@@ -195,7 +202,7 @@
                       <el-button
                         size="mini"
                         type="warning"
-                        @click="handleDelete(scope.row)"
+                        @click="handlePrizeDelete(scope.row)"
                       >删除
                       </el-button>
                     </template>
@@ -213,6 +220,44 @@
 
         <el-tab-pane label="排行榜配置">
           <el-row :gutter="5">
+            <el-col>
+              <el-form ref="rankCfg" v-model="item.RankCfg" label-width="150px" style="margin-top: 10px">
+                <el-table
+                  :data="item.RankCfg"
+                  border
+                  style="width: 100%"
+                  :cell-style="libShow.DefaultTableCell"
+                >
+                  <el-table-column
+                    prop="RankStart"
+                    label="排名开始"
+                    width="100"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.RankStart" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="RankEnd"
+                    label="排名结束"
+                    width="100"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.RankEnd" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="PrizeUnlimited"
+                    label="奖励金额"
+                    width="200"
+                  >
+                    <template slot-scope="scope">
+                      <el-input v-model.number="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </el-form>
+            </el-col>
           </el-row>
         </el-tab-pane>
       </el-tabs>
@@ -239,17 +284,17 @@ import Compare from "@/components/Compare/index.vue";
 function newPrizePoolCfg() {
   return {
     RaffleLevel: 200,
-    RewardMax: 38,
+    RewardMax: 0,
     SockBaseNum: 10,
     CoefficientMin: 0.8,
     CoefficientMax: 1.2,
     PrizeCfg: [
-      { Reward: 38, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 18.8, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 10.8, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 3.8, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 1.8, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
-      { Reward: 0.1, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
+      { Reward: 0, Weight: 30, PrizeNum: 0, PrizeUnlimited: true },
+      { Reward: 0, Weight: 90, PrizeNum: 0, PrizeUnlimited: true },
+      { Reward: 0, Weight: 180, PrizeNum: 0, PrizeUnlimited: true },
+      { Reward: 0, Weight: 59700, PrizeNum: 0, PrizeUnlimited: true },
+      { Reward: 0, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true },
+      { Reward: 0, Weight: 120000, PrizeNum: 0, PrizeUnlimited: true }
     ]
   }
 }
@@ -348,7 +393,15 @@ export default {
           }
         ],
         RankCfg: [
-          {}
+          { RankStart: 1, RankEnd: 1, Reward: 28888 },
+          { RankStart: 2, RankEnd: 2, Reward: 18888 },
+          { RankStart: 3, RankEnd: 3, Reward: 8888 },
+          { RankStart: 4, RankEnd: 5, Reward: 2888 },
+          { RankStart: 6, RankEnd: 10, Reward: 1888 },
+          { RankStart: 11, RankEnd: 20, Reward: 888 },
+          { RankStart: 21, RankEnd: 40, Reward: 288 },
+          { RankStart: 41, RankEnd: 70, Reward: 188 },
+          { RankStart: 71, RankEnd: 100, Reward: 88 },
         ]
       },
 
@@ -415,9 +468,21 @@ export default {
     },
     handleDelete(ob) {
       let $this = this
-      this.$confirm('是否确认删除此项配置?', '提示', {type:'warning'}).then(() => {
+      this.$confirm('是否确认删除此奖池配置?', '提示', {type:'warning'}).then(() => {
         const delIndex = $this.item.PrizePoolCfg.findIndex(item => item.RaffleLevel === ob.RaffleLevel)
         this.item.PrizePoolCfg.splice(delIndex, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    handlePrizeCreate() {
+      this.edit.item.PrizeCfg.push({ Reward: 0, Weight: 0, PrizeNum: 0, PrizeUnlimited: true })
+    },
+    handlePrizeDelete(ob) {
+      let $this = this
+      this.$confirm('是否确认删除此奖励配置?', '提示', {type:'warning'}).then(() => {
+        const delIndex = $this.edit.item.PrizeCfg.findIndex(item => item.Reward === ob.Reward)
+        this.edit.item.PrizeCfg.splice(delIndex, 1)
       }).catch(() => {
         console.log('取消')
       })
@@ -432,22 +497,51 @@ export default {
       return null
     },
     save() {
-      // if (!this.checkData()) return
+      // 检查是否有重复的奖励
+      for (let i = 0; i < this.edit.item.PrizeCfg.length; i++) {
+        const prize = this.edit.item.PrizeCfg[i]
+        if (parseInt(prize.Reward*100) === 0) {
+          this.$alert(`[奖励金额：0] 不允许添加`, '提示', {type:'warning'})
+          return
+        }
+        for (let j = i + 1; j < this.edit.item.PrizeCfg.length; j++) {
+          const _prize = this.edit.item.PrizeCfg[j]
+          console.log('_prize.Reward', _prize.Reward, ' prize.Reward', prize.Reward, _prize.Reward === prize.Reward)
+          if (parseInt(_prize.Reward*100) === parseInt(prize.Reward*100)) {
+            this.$alert(`[奖励金额：${prize.Reward}] 已存在，不能重复添加`, '提示', {type:'warning'})
+            return
+          }
+        }
+      }
+
+      // 查找最大的奖励金额
+      let maxReward = 0
+      this.edit.item.PrizeCfg.forEach(v => {
+        const reward = v.Reward
+        if (reward > maxReward) {
+          maxReward = reward
+        }
+      })
+      this.edit.item.RewardMax = maxReward
+
+      const newData = JSON.parse(JSON.stringify(this.edit.item))
       const index = this.item.PrizePoolCfg.findIndex(item => item.RaffleLevel === this.edit.item.RaffleLevel)
       if (this.edit.isEdit) {
-        this.item.PrizePoolCfg.splice(index, 1, this.edit.item)
+        this.item.PrizePoolCfg.splice(index, 1, newData)
       } else {
+        // 如果是新增，检查是否有重复的档次
         if (index >= 0) {
           this.$alert(`[档次条件：${this.edit.item.RaffleLevel}] 已存在，不能重复添加`, '提示', {type:'warning'})
           return
         }
-        // 新增
-        this.item.PrizePoolCfg.push(this.edit.item)
+        // 新增到
+        this.item.PrizePoolCfg.push(newData)
         // 按档次金额排序
         this.item.PrizePoolCfg.sort((a, b) => {
           return a.RaffleLevel - b.RaffleLevel
         })
       }
+
       this.edit.visible = false
     },
     getData() {
@@ -461,10 +555,16 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           console.log('christmasConfig', response.Data)
+
+          const rankCfg = JSON.parse(JSON.stringify($this.item.RankCfg))
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
             const old = JSON.parse(response.Data.Data)
+
+            $this.item.StartTime *= 1000
+            $this.item.EndTime *= 1000
+            $this.item.ShowEndTime *= 1000
 
             $this.item.PrizePoolCfg.map(item => {
               item.RaffleLevel /= 1000
@@ -473,10 +573,17 @@ export default {
               item.CoefficientMax /= 10
 
               item.PrizeCfg.map(prizeCfg => {
-                prizeCfg.RewardMax /= 1000
                 prizeCfg.Reward /= 1000
               })
             })
+
+            $this.item.RankCfg.map(item => {
+              item.Reward /= 1000
+            })
+
+            if ($this.item.RankCfg.length === 0) {
+              $this.item.RankCfg = rankCfg
+            }
 
             this.$refs.compare.SetOldVal(old)
           }
@@ -486,6 +593,10 @@ export default {
     encodeData() {
       const cpy = {}
       Object.assign(cpy, this.item)
+
+      cpy.StartTime /= 1000
+      cpy.EndTime /= 1000
+      cpy.ShowEndTime /= 1000
 
       cpy.PrizePoolCfg = []
 
@@ -501,7 +612,6 @@ export default {
         for (const i in this.item.PrizePoolCfg[o].PrizeCfg) {
           const pCfg = {}
           pCfg.Reward = this.item.PrizePoolCfg[o].PrizeCfg[i].Reward * 1000
-          pCfg.RewardMax = this.item.PrizePoolCfg[o].PrizeCfg[i].RewardMax * 1000
           pCfg.Weight = this.item.PrizePoolCfg[o].PrizeCfg[i].Weight
           pCfg.PrizeNum = this.item.PrizePoolCfg[o].PrizeCfg[i].PrizeNum
           pCfg.PrizeUnlimited = this.item.PrizePoolCfg[o].PrizeCfg[i].PrizeUnlimited
@@ -509,6 +619,15 @@ export default {
         }
 
         cpy.PrizePoolCfg.push(obj)
+      }
+
+      cpy.RankCfg = []
+      for (const i in this.item.RankCfg) {
+        const rCfg = {}
+        rCfg.RankStart = this.item.RankCfg[i].RankStart
+        rCfg.RankEnd = this.item.RankCfg[i].RankEnd
+        rCfg.Reward = this.item.RankCfg[i].Reward * 1000
+        cpy.RankCfg.push(rCfg)
       }
 
       return JSON.stringify(cpy)
