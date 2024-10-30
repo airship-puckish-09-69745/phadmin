@@ -291,6 +291,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled='editForm.data.id > 0'
               />
             </el-select>
           </el-form-item>
@@ -646,7 +647,7 @@ export default {
             rewardItems: [
               {
                 index: 1,
-                getType: 0,
+                getType: 1,
                 getPid: 0,
                 getNum: 0
               }
@@ -895,7 +896,7 @@ export default {
         rewardItems: [
           {
             index: 1,
-            getType: 0,
+            getType: 1,
             getPid: 0,
             getNum: 0
           }
@@ -1074,7 +1075,7 @@ export default {
             rewardItems: [
               {
                 index: 1,
-                getType: 0,
+                getType: 1,
                 getPid: 0,
                 getNum: 0
               }
