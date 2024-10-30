@@ -404,6 +404,7 @@ export default {
   },
   // mixins: [IsMars],
   created() {
+    console.log("========")
     this.env = store.getters.env || this.env
     // this.sortOrder = this.defaultOrder
 
