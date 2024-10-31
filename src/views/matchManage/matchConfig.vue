@@ -275,8 +275,18 @@
           <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制(1限制0不限制)：" :required="true">
-            <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" />
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制：" :required="true">
+            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
+            <el-switch
+                style="display: block"
+                v-model="editForm.data.openDaysLimit"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                :active-value='1'
+                :inactive-value='0'
+                active-text="是"
+                inactive-text="否">
+            </el-switch>
           </el-form-item>
           <el-form-item v-if="editForm.data.opentMatchType==2" label="排序值：" :required="true">
             <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
