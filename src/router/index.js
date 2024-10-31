@@ -1148,6 +1148,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/jackpotAward'),
         name: 'ban',
         meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'pointlog',
+        component: () => import('@/views/playerManage/pointlog'),
+        name: 'pointtransfer',
+        meta: { title: '积分流水 ◐' }
       }
     ]
   },
@@ -1839,7 +1845,13 @@ export const asyncRoutes = [
         path: 'point',
         component: () => import('@/views/thirdparty/point'),
         name: 'point',
-        meta: { title: '积分链接 ◐' }
+        meta: { title: '积分链接、转账 ◐' }
+      },
+      {
+        path: 'pointtransfer',
+        component: () => import('@/views/thirdparty/pointTransfer.vue'),
+        name: 'pointtransfer',
+        meta: { title: '积分转账日志 ◐' }
       }
     ]
   },

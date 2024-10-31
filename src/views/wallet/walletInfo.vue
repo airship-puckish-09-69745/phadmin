@@ -32,6 +32,8 @@
           <el-descriptions-item label="原始转出金额">{{ formatNumber(walletInfo.RawRolloutMoney/1000) }}</el-descriptions-item>
           <el-descriptions-item label="当前下注金额">{{ formatNumber(walletInfo.BetAmount/1000) }}</el-descriptions-item>
           <el-descriptions-item label="当前转出资产">{{ formatNumber(walletInfo.RolloutMoney/1000) }}</el-descriptions-item>
+          <el-descriptions-item label="最新下注时间">{{ formatTime(walletInfo.BetTime) }}</el-descriptions-item>
+          <el-descriptions-item label="最新Rollout时间">{{ formatTime(walletInfo.RolloutTime) }}</el-descriptions-item>
           <el-descriptions-item label="阶段">{{stageMap[walletInfo.Stage] }}</el-descriptions-item>
 
           <el-descriptions-item label="上次交易id">{{ walletInfo.TxId }}</el-descriptions-item>
@@ -79,6 +81,8 @@ export default {
         TxId: '',
         RoundId: '',
         RefreshTime: 0,
+        RolloutTime: 0,
+        BetTime: 0
       },
       stageMap: {
         0: '正常阶段', 1: 'Bet 阶段', 2: 'Rollout阶段',
