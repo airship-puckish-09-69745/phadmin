@@ -340,9 +340,9 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
-<!--          <el-col :span="11">-->
-<!--            <game-level v-model="edit.item.Level" />-->
-<!--          </el-col>-->
+          <el-col :span="11">
+            <game-level v-model="edit.item.Level" />
+          </el-col>
         </el-row>
 
         <el-row>
