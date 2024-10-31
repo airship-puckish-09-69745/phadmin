@@ -39,8 +39,32 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="活动规则图片URL：" :required="true">
+                  <el-form-item label="规则图片URL：" :required="true">
                     <ImagePicker v-model="item.ImgUrl" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="活动图标URL：" :required="true">
+                    <ImagePicker v-model="item.Icon" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="勾选支持的游戏：" :required="true">
+                    <el-input
+                      placeholder="输入关键字进行过滤"
+                      v-model="filterText">
+                    </el-input>
+                    <el-tree
+                      :data="treeData"
+                      show-checkbox
+                      node-key="id"
+                      ref="tree"
+                      highlight-current
+                      :props="defaultProps"
+                      :filter-node-method="filterNode"
+                      @check-change="handleCheckChange"
+                    >
+                    </el-tree>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -275,7 +299,7 @@
 <script>
 
 import Publish from "@/components/Publish/index.vue";
-import {$libShow, DataRule} from "@/utils/common";
+import {$libShow, ClientTableData, DataRule} from "@/utils/common";
 import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 import {Message} from "element-ui";
 import request from "@/utils/request";
@@ -301,6 +325,14 @@ function newPrizePoolCfg() {
 
 export default {
   components: {Compare, ImagePicker, Publish},
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
+    gameIdCfg(val) {
+
+    }
+  },
   data() {
     return {
       subKey: 'christmas_fortune_tree_cfg',
@@ -402,7 +434,8 @@ export default {
           { RankStart: 21, RankEnd: 40, Reward: 288 },
           { RankStart: 41, RankEnd: 70, Reward: 188 },
           { RankStart: 71, RankEnd: 100, Reward: 88 },
-        ]
+        ],
+        GameIdCfg: [],
       },
 
       RaffleLevelList: [
@@ -421,6 +454,30 @@ export default {
         item: newPrizePoolCfg(),
         isEdit: false
       },
+
+      treeData: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }],
+
+      filterText: '',
+
+      defaultProps: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled',
+      }
     }
   },
   created() {
@@ -437,6 +494,10 @@ export default {
     getEditTitle() {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改配置' : '新增配置'
+    },
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
     },
     handleCreate() {
       this.edit.item = newPrizePoolCfg()
@@ -586,6 +647,8 @@ export default {
             }
 
             this.$refs.compare.SetOldVal(old)
+
+            this.getGameAll()
           }
         }
       })
@@ -630,6 +693,8 @@ export default {
         cpy.RankCfg.push(rCfg)
       }
 
+      cpy.GameIdCfg = this.item.GameIdCfg
+
       return JSON.stringify(cpy)
     },
     setData() {
@@ -653,6 +718,64 @@ export default {
           }
         })
       })
+    },
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          const data = {}
+          for (let i = 0; i < objs.length; i++) {
+            const obj = objs[i]
+            if (obj.ShowDatacenter !== 1) {
+              continue
+            }
+
+            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
+            if (data.hasOwnProperty(obj.CategoryID)) {
+              data[obj.CategoryID].push(game)
+            } else {
+              data[obj.CategoryID] = [game]
+            }
+          }
+
+          this.treeData = []
+          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+
+          for (const key in data) {
+            const games = data[key]
+            const cty = {id: 'p-' + key, label: categories[key], children: []}
+
+            for (let i = 0; i < games.length; i++) {
+              const game = games[i]
+              cty.children.push({id: game.Gid, label: game.Name})
+            }
+            this.treeData.push(cty)
+          }
+
+          console.log(this.item.GameIdCfg)
+          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
+          console.log(data)
+        }
+      })
+    },
+    handleCheckChange(data, checked, indeterminate) {
+      const nodes = this.$refs.tree.getCheckedNodes()
+
+      this.item.GameIdCfg = []
+
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i]
+        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino') {
+          continue
+        }
+        this.item.GameIdCfg.push(node.id)
+      }
+
+      console.log(this.item.GameIdCfg)
     }
   }
 }

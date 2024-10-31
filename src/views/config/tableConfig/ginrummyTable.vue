@@ -214,6 +214,7 @@
                 <el-option label="10" :value="10" />
                 <el-option label="20" :value="20" />
                 <el-option label="50" :value="50" />
+                <el-option label="100" :value="100" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -457,7 +458,7 @@ function newItem() {
     CarryUpper: '',
     HideCarry: '',
     TableMoney: '',
-    MaxPlayerCount: 4,
+    MaxPlayerCount: 2,
     ObjectCount: '',
     FlowRate: '',
     FlowRatePot: '',
@@ -512,7 +513,7 @@ export default {
         CarryUpper: '最大携带',
         HideCarry: '隐藏目标值',
         TableMoney: '底注',
-        MaxPlayerCount: 4,
+        MaxPlayerCount: 2,
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         FlowRatePot: 'pot抽水率',
