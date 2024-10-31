@@ -44,7 +44,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="支持的游戏ID：" :required="true">
+                  <el-form-item label="勾选支持的游戏：" :required="true">
                     <el-input
                       placeholder="输入关键字进行过滤"
                       v-model="filterText">
@@ -725,6 +725,10 @@ export default {
           const data = {}
           for (let i = 0; i < objs.length; i++) {
             const obj = objs[i]
+            if (obj.ShowDatacenter !== 1) {
+              continue
+            }
+
             const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
             if (data.hasOwnProperty(obj.CategoryID)) {
               data[obj.CategoryID].push(game)
@@ -738,7 +742,7 @@ export default {
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: key, label: categories[key], children: []}
+            const cty = {id: 'p-' + key, label: categories[key], children: []}
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
