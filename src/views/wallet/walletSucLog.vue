@@ -85,9 +85,9 @@
           <el-table-column label="操作金额" width="160px">
             <template slot-scope="scope">
               <span v-if="scope.row.BetAmount> 0 && scope.row.LogType !== 4 "> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
-              <span v-else-if="scope.row.RollMoney>  0 && scope.row.LogType !== 4"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
-              <span v-else-if="scope.row.TotalPayoffAmount>  0 && scope.row.LogType == 11"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
-              <span v-else-if="scope.row.TotalPayoffAmount>  0 && scope.row.LogType == 12"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
+              <span v-else-if="scope.row.RollMoney!== 0 && scope.row.LogType !== 4"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
+              <span v-else-if="scope.row.TotalPayoffAmount> 0 && scope.row.LogType === 11"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
+              <span v-else-if="scope.row.TotalPayoffAmount> 0 && scope.row.LogType === 12"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
               <span v-else>{{0}}</span>
             </template>
           </el-table-column>
@@ -200,10 +200,10 @@ export default {
         2003 :'回合结束',
         2004 :'回退',
         2005 :'增值',
-        2006 :'转出',
-        2007 :'内部结算',
-        2008 :'游戏结算',
-        2009 :'转入',
+        2006 :'预扣',
+        2007 :'游戏结算',
+        2008 :'平台结算',
+        2009 :'转入平台',
         2010 :'比赛报名',
         2011 :'比赛结束',
       },
@@ -215,8 +215,8 @@ export default {
         5 :'转出',
         6 :'回退',
         7 :'增值业务',
-        8 :'内部结算',
-        9 :'游戏结算',
+        8 :'游戏结算',
+        9 :'平台结算',
         10 :'转入',
         11 :'比赛报名',
         12 :'比赛结束',
