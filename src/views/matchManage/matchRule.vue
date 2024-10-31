@@ -295,6 +295,19 @@
               <el-form-item label="积分带入上限：" :required="true">
                 <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.promotion_rule.score_brought_in.max_score" placeholder="请填写积分带入上限" />
               </el-form-item>
+              <el-form-item label="是否开启带分下限：" :required="true">
+                <el-switch
+                  style="display: block"
+                  v-model="stageItem.system_strike_out.promotion_rule.score_brought_in.open_min_score"
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="开启"
+                  inactive-text="关闭">
+                </el-switch>
+              </el-form-item>
+              <el-form-item label="积分带入下限：" :required="true" v-if="stageItem.system_strike_out.promotion_rule.score_brought_in.open_min_score">
+                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.promotion_rule.score_brought_in.min_score" placeholder="请填写积分带入下限" />
+              </el-form-item>
               <el-form-item label="带分方式：" :required="true">
                 <el-radio v-for="scoreItem in scoreMethodCfgs" :key="scoreItem.value" v-model="stageItem.system_strike_out.promotion_rule.score_brought_in.score_method" :label=scoreItem.value>{{ scoreItem.label }}</el-radio>
               </el-form-item>
@@ -502,6 +515,10 @@ export default {
                       "player_num":0, //发车人数
                       "wait_time":0, //等待时间
                     }
+                  }
+                  if(element.system_type == 1 && !element.system_strike_out.promotion_rule.score_brought_in.hasOwnProperty("min_score")){
+                    one[step].system_strike_out.promotion_rule.score_brought_in.min_score = 0
+                    one[step].system_strike_out.promotion_rule.score_brought_in.open_min_score = false
                   }
                 }
                 this.tableData[i].stage_detail = one
@@ -746,6 +763,8 @@ export default {
               "user_number": 10,      //晋级人数
               "score_brought_in": {   //积分带入情况
                   "max_score": 1000,  //带分上限
+                  "min_score": 0,     //带分下限
+                  "open_min_score":false, //是否开启带分上限
                   "score_method": 2,  //带分方式：1开方加倍,2固定比列
                   "score_multiple": 1,   //开方加倍数，带分方式为1有值
                   "score_rate": 100,   //固定比列(%)，带分方式为2有值
@@ -1028,6 +1047,17 @@ export default {
           if (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_method == 2 && (strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_rate <= 0 || strikeOutStage.system_strike_out.promotion_rule.score_brought_in.score_rate > 100)) {
             this.errmsg('打立出局阶段的带分比例值无效！')
             return false
+          }
+          let bi = strikeOutStage.system_strike_out.promotion_rule.score_brought_in;
+          if (bi.min_score != 0 ) {
+            if(bi.min_score > bi.max_score){
+              this.errmsg('打立出局晋级的带分 下限大于上限值')
+              return false
+            }
+            if(bi.min_score < -10000 || bi.min_score > 10000) {
+              this.errmsg('打立出局晋级的带分 下限取值范围[-10000,10000]')
+              return false
+            }
           }
         } else if (this.editForm.data.stage_detail[i].system_type == 2) { //定局积分阶段配置检查
           const reachOutStage = this.editForm.data.stage_detail[i]
