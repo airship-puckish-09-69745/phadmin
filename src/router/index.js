@@ -1845,13 +1845,13 @@ export const asyncRoutes = [
         path: 'point',
         component: () => import('@/views/thirdparty/point'),
         name: 'point',
-        meta: { title: '积分链接 ◐' }
+        meta: { title: '积分链接、转账 ◐' }
       },
       {
         path: 'pointtransfer',
         component: () => import('@/views/thirdparty/pointTransfer.vue'),
         name: 'pointtransfer',
-        meta: { title: '积分转账 ◐' }
+        meta: { title: '积分转账日志 ◐' }
       }
     ]
   },
