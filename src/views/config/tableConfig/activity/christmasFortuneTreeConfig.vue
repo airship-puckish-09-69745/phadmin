@@ -39,8 +39,13 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="活动规则图片URL：" :required="true">
+                  <el-form-item label="规则图片URL：" :required="true">
                     <ImagePicker v-model="item.ImgUrl" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="活动图标URL：" :required="true">
+                    <ImagePicker v-model="item.Icon" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
