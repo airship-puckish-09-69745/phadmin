@@ -14,7 +14,7 @@
               </el-select>
             </el-form-item>
             <el-form-item v-model="item.account" label="账号：" :required="true" label-width="100px">
-              <el-select v-model="item.account" filterable allow-create placeholder="请选择" size="mini">
+              <el-select v-model="item.account" filterable allow-create default-first-option placeholder="请选择" size="mini">
                 <el-option
                   v-for="row in accounts"
                   :label="row.nick"
