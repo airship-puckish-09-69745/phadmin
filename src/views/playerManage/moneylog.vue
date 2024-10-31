@@ -93,7 +93,10 @@
         width="200"
       >
         <template slot-scope="scope">
-          {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}
+          <span v-if="scope.row.ActType===2009 ">{{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType===2008">  {{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType===2006">  {{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else> {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -329,8 +332,8 @@ const filterMap = {
     2003:'派奖',
     2004: '回退订单',
     2005: '增值业务',
-    2006: '从平台转出',
-    2007: '内部结算',
+    2006: '预扣-从平台转出',
+    2007: '游戏结算',
     2008: '平台结算汇总+刷新金额',
     2009: '转入平台',
     2010: '比赛报名',
