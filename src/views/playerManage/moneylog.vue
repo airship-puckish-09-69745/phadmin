@@ -95,7 +95,7 @@
         <template slot-scope="scope">
           <span v-if="scope.row.ActType===2009 ">{{ formatNumber(scope.row.MoneyNow) }}</span>
           <span v-else-if="scope.row.ActType===2008">  {{ formatNumber(scope.row.MoneyNow) }}</span>
-          <span v-else-if="scope.row.ActType===2006">  {{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType===2006">  {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
           <span v-else> {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
         </template>
       </el-table-column>
@@ -122,12 +122,9 @@
         width="200"
       >
         <template slot-scope="scope">
-          <span v-if="scope.row.MoneyType==1 || scope.row.MoneyType==2">
-            {{ formatNumber(scope.row.MoneyAll) }}
-          </span>
-          <span v-if="scope.row.MoneyType==5">
-            {{ formatNumber(scope.row.MoneyNow) }}
-          </span>
+          <span v-if="scope.row.ActType===2006">{{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
+          <span v-else-if="scope.row.MoneyType==1 || scope.row.MoneyType==2">{{ formatNumber(scope.row.MoneyAll) }}</span>
+          <span v-else-if="scope.row.MoneyType==5">{{ formatNumber(scope.row.MoneyNow) }}</span>
         </template>
       </el-table-column>
       <el-table-column
