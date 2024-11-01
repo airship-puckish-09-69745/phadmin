@@ -1098,6 +1098,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'gameZoneConfig',
+        component: () => import('@/views/empty'),
+        name: 'gameZoneConfig',
+        meta: { title: 'gameZone配置', noCache: true },
+        children: [
+          {
+            path: 'gameZoneConfig',
+            component: () => import('@/views/config/tableConfig/activity/gameZoneConfig'),
+            name: 'gameZoneConfig',
+            meta: { title: 'gameZone配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'christmasConfig',
         component: () => import('@/views/empty'),
         name: 'christmasConfig',
