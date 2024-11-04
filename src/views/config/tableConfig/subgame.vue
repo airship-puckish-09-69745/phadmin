@@ -774,7 +774,18 @@ export default {
       })
     },
     handlePrepare(ob) {
-      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: "/thirdpartiesgames/check/comm",
+          GameKey: ob.GameKey,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+        }
+      })
     },
     handleOffline(ob) {
       this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
@@ -806,12 +817,14 @@ export default {
       })
     },
     handleCheck(ob) {
+      console.log(ob)
       request({
-        url: '/subgame/check',
+        url: '/dataProxy/info',
         method: 'get',
         data: {
-          ID: ob.ID,
-          status: 0
+          Path: "/thirdpartiesgames/check/app",
+          GameKey: ob.GameKey,
+          AppId: ob.AppId,
         }
       }).then(response => {
         if (response.RetCode === 0) {
