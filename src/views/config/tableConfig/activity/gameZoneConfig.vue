@@ -507,7 +507,7 @@ export default {
       console.log(this.item.GameList)
     },
     handleCheckChangeWinMore(data, checked, indeterminate) {
-      const nodes = this.$refs.tree.getCheckedNodes()
+      const nodes = this.$refs.treeWinMore.getCheckedNodes()
 
       this.WinMoreItem.GameList = []
 
