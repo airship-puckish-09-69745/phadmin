@@ -777,6 +777,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/gigaace_slots_cfg'),
                 name: 'gigaace_slots_cfg',
                 meta: { title: 'GigaAce' }
+              },
+              {
+                path: 'majorace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/majorace_slots_cfg'),
+                name: 'majorace_slots_cfg',
+                meta: { title: 'MajorAce' }
               }
             ]
           },
@@ -894,6 +900,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/gigaacemars_slots_cfg'),
                 name: 'gigaacemars_slots_cfg',
                 meta: { title: 'GigaAce(审)' }
+              },
+              {
+                path: 'majoracemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/majoracemars_slots_cfg'),
+                name: 'majoracemars_slots_cfg',
+                meta: { title: 'MajorAce(审)' }
               }
             ]
           },
@@ -1168,13 +1180,13 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/pointlog'),
         name: 'pointtransfer',
         meta: { title: '积分流水 ◐' }
-      },
-      {
-        path: 'pointGameFailLog',
-        component: () => import('@/views/playerManage/PointGameFailLog'),
-        name: 'pointgamefail',
-        meta: { title: '积分注单失败 ◐' }
       }
+      // {
+      //   path: 'pointGameFailLog',
+      //   component: () => import('@/views/playerManage/PointGameFailLog'),
+      //   name: 'pointgamefail',
+      //   meta: { title: '积分注单失败 ◐' }
+      // }
     ]
   },
   {
@@ -1635,6 +1647,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdom_slots_log',
             meta: { title: 'SharkKingdom', gid: 158 }
+          },
+          {
+            path: 'majorace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'majorace_slots_log',
+            meta: { title: 'MajorAce', gid: 162 }
           }
         ]
       },
@@ -1751,6 +1769,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdommars_slots_log',
             meta: { title: 'SharkKingdom(审)', gid: 159 }
+          },
+          {
+            path: 'majoracemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'majoracemars_slots_log',
+            meta: { title: 'MajorAce(审)', gid: 163 }
           }
         ]
       },
