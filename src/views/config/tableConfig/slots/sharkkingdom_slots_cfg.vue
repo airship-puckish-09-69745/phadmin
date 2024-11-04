@@ -26,7 +26,7 @@
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('sharkkingdom_slots_ext')" :env-empty="false" compare-type="Object" />
-            <slots-superace-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
+            <slots-sharkkingdom-ext v-if="extCfgBool" v-model="extCfg" @saveData="saveExtCfg" />
           </el-tab-pane>
           <el-tab-pane label="剧本" name="script">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
@@ -55,10 +55,11 @@ import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsSuperaceExt from './components_x/superace_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
+import SlotsSharkkingdomExt from '@/views/config/tableConfig/slots/components_x/sharkkingdom_ext.vue';
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSuperaceExt, slotsReelsDouble, slotsScript },
+  components: {SlotsSharkkingdomExt, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsSuperaceExt, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
