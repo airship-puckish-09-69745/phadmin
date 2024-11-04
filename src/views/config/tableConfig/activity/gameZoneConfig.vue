@@ -25,17 +25,17 @@
                   <el-form-item label="gameZone支持的游戏ID：" :required="true">
                     <el-input
                       placeholder="输入关键字进行过滤"
-                      v-model="filterText">
+                      v-model="filterTextZone">
                     </el-input>
                     <el-tree
-                      :data="treeData"
+                      :data="treeDataZone"
                       show-checkbox
                       node-key="id"
                       ref="treeGameZone"
                       highlight-current
-                      :props="defaultProps"
-                      :filter-node-method="filterNode"
-                      @check-change="handleCheckChange"
+                      :props="defaultPropsZone"
+                      :filter-node-method="filterNodeZone"
+                      @check-change="handleCheckChangeZone"
                     >
                     </el-tree>
                   </el-form-item>
@@ -63,16 +63,16 @@
                   <el-form-item label="winMore支持的游戏ID：" :required="true">
                     <el-input
                       placeholder="输入关键字进行过滤"
-                      v-model="filterText">
+                      v-model="mayLikeFilterText">
                     </el-input>
                     <el-tree
-                      :data="treeData"
+                      :data="mayLikeTreeData"
                       show-checkbox
                       node-key="id"
-                      ref="tree"
+                      ref="treeWinMore"
                       highlight-current
-                      :props="defaultProps"
-                      :filter-node-method="filterNode"
+                      :props="mayLikeDefaultProps"
+                      :filter-node-method="mayLikeFilterNode"
                       @check-change="handleCheckChangeWinMore"
                     >
                     </el-tree>
@@ -250,6 +250,17 @@ function newItem() {
 }
 export default {
   components: {Compare, ImagePicker, Publish},
+  watch: {
+    filterTextZone(val) {
+      this.$refs.treeGameZone.filter(val);
+    },
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    },
+    gameIdCfg(val) {
+
+    }
+  },
   data() {
     return {
       subKey: 'gameZone_cfg',
@@ -324,7 +335,7 @@ export default {
           }
         ]
       },
-      treeData: [{
+      treeDataZone: [{
         id: 1,
         label: '一级 1',
         children: [{
@@ -339,9 +350,29 @@ export default {
           }]
         }]
       }],
-
-      filterText: '',
-      defaultProps: {
+      mayLikeTreeData: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }],
+      filterTextZone: '',
+      mayLikeFilterText: '',
+      defaultPropsZone: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled'
+      },
+      mayLikeDefaultProps: {
         label: 'label',
         children: 'children',
         disabled: 'disabled'
@@ -351,6 +382,7 @@ export default {
   created() {
     this.getData()
     this.getGameAll()
+    this.getMaylikeGameAll()
     console.log(1)
   },
   methods: {
@@ -364,7 +396,58 @@ export default {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
+    filterNodeZone(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+    mayLikeFilterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
     getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objsZone = response.Data || []
+          const dataZone = {}
+          for (let i = 0; i < objsZone.length; i++) {
+            const objZone = objsZone[i]
+            if (objZone.ShowDatacenter !== 1) {
+              continue
+            }
+
+            const gameZone = {Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description}
+            if (dataZone.hasOwnProperty(objZone.CategoryID)) {
+              dataZone[objZone.CategoryID].push(gameZone)
+            } else {
+              dataZone[objZone.CategoryID] = [gameZone]
+            }
+          }
+
+          this.treeDataZone = []
+          const categoriesZone = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+
+          for (const keyZone in dataZone) {
+            const gamesZone = dataZone[keyZone]
+            const ctyZone = {id: 'p-' + keyZone, label: categoriesZone[keyZone], children: []}
+
+            for (let i = 0; i < gamesZone.length; i++) {
+              const gameZone = gamesZone[i]
+              ctyZone.children.push({id: gameZone.Gid, label: gameZone.Name})
+            }
+            this.treeDataZone.push(ctyZone)
+          }
+
+          console.log('getGameAll ', this.item.GameList)
+          this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
+          console.log('getGameAll ', this.treeDataZone)
+        }
+      })
+    },
+    getMaylikeGameAll() {
       request({
         url: '/thirdpartygames/all',
         method: 'get',
@@ -387,7 +470,7 @@ export default {
             }
           }
 
-          this.treeData = []
+          this.mayLikeTreeData = []
           const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
 
           for (const key in data) {
@@ -398,26 +481,27 @@ export default {
               const game = games[i]
               cty.children.push({id: game.Gid, label: game.Name})
             }
-            this.treeData.push(cty)
+            this.mayLikeTreeData.push(cty)
           }
-
-          console.log(this.item.GameIdCfg)
-          this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
-          console.log(data)
+          console.log("=================")
+          console.log(this.WinMoreItem.GameList)
+          this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+          console.log(this.mayLikeTreeData)
+          console.log("=================")
         }
       })
     },
-    handleCheckChange(data, checked, indeterminate) {
-      const nodes = this.$refs.treeGameZone.getCheckedNodes()
+    handleCheckChangeZone(data, checked, indeterminate) {
+      const nodesZone = this.$refs.treeGameZone.getCheckedNodes()
 
       this.item.GameList = []
 
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i]
-        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino') {
+      for (let i = 0; i < nodesZone.length; i++) {
+        const nodeZone = nodesZone[i]
+        if (nodeZone.label === 'Slot' || nodeZone.label === 'Poker' || nodeZone.label === 'Casino') {
           continue
         }
-        this.item.GameList.push(node.id)
+        this.item.GameList.push(nodeZone.id)
       }
 
       console.log(this.item.GameList)
