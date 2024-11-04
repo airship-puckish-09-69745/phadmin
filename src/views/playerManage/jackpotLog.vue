@@ -342,9 +342,6 @@
           <el-col :span="8">
             <el-input v-model="itemForm.progressChange" size="mini" />
           </el-col>
-          <el-col :span="8">
-            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changeItemPool()">保存</el-button>
-          </el-col>
         </el-form-item>
         <el-form-item label="修改实物领奖数：">
           <el-col :span="8">
