@@ -154,34 +154,48 @@
         <el-form-item label="初始积分：" :required="true">
           <el-input style="width: 200px;" v-model.number="editForm.data.init_score" placeholder="请填写初始积分，默认0" />
         </el-form-item>
+        <el-form-item label="是否SNG：" :required="true">
+          <el-switch
+              style="display: block"
+              v-model="editForm.data.rule_type"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value='1'
+              :inactive-value='0'
+              active-text="是"
+              inactive-text="否">
+            </el-switch>
+        </el-form-item>
         <fieldset v-for="stageItem in editForm.data.stage_detail"  :key="stageItem.stage_index" style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛{{ stageItem.stage_index }}阶段</legend>
-          <el-form-item label="赛制类型：" :required="true">
-            <el-select v-model="stageItem.system_type" :disabled="true" placeholder="请选择" size="mini">
-              <el-option
-                v-for="item in systemTypeCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="配桌方式：" :required="true">
-            <el-radio v-for="allocItem in allocTypeCfgs" :key="allocItem.value" v-model="stageItem.alloc_type" :label=allocItem.value>{{ allocItem.label }}</el-radio>
-          </el-form-item>
-          <div v-if="stageItem.system_type == 1">
-            <el-form-item label="发车人数：" :required="true">
-              <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.player_num" placeholder="发车人数" />
+          <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
+            <el-form-item label="赛制类型：" :required="true">
+              <el-select v-model="stageItem.system_type" :disabled="true" placeholder="请选择" size="mini">
+                <el-option
+                  v-for="item in systemTypeCfgs"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-form-item>
-            <el-form-item label="发车时间：" :required="true">
-              <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.wait_time" placeholder="发车人数" >
-                <template slot="append">秒</template>
-              </el-input>
+            <el-form-item label="配桌方式：" :required="true">
+              <el-radio v-for="allocItem in allocTypeCfgs" :key="allocItem.value" v-model="stageItem.alloc_type" :label=allocItem.value>{{ allocItem.label }}</el-radio>
             </el-form-item>
+            <div v-if="stageItem.system_type == 1">
+              <el-form-item label="发车人数：" :required="true">
+                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.player_num" placeholder="发车人数" />
+              </el-form-item>
+              <el-form-item label="发车时间：" :required="true">
+                <el-input style="width: 200px;" v-model.number="stageItem.system_strike_out.wait_queue.wait_time" placeholder="发车人数" >
+                  <template slot="append">秒</template>
+                </el-input>
+              </el-form-item>
+            </div>
           </div>
          
           <!-- 此处是专配置打立出局相关配置 -->
-          <div v-if="stageItem.system_type == 1">
+          <div v-if="stageItem.system_type == 1 && editForm.data.rule_type==0">
             <!-- 底分增长配置 -->
             <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
               <legend>底分增长配置</legend>
@@ -610,6 +624,7 @@ export default {
           "name": "mtt赛制配置",
           "game_id": [2031],
           "init_score": 1000,
+          "rule_type":0,
           "stage_detail": [],
           "status": 0,
           "modifier": "",
@@ -626,7 +641,9 @@ export default {
             //Message.info("测试111：" + JSON.stringify([this.tableData[i].game_id]))
 
             this.editForm.data = this.tableData[i]
-
+            if(!this.editForm.data.hasOwnProperty("rule_type")){
+              this.editForm.data.rule_type = 0
+            }
             let gameId = parseInt(this.tableData[i].game_id, 10);
 
             this.editForm.data.game_id = [gameId]
@@ -851,6 +868,7 @@ export default {
           StageDetail: stageDetail,
           GameId: gameId,
           InitScore: this.editForm.data.init_score,
+          RuleType:this.editForm.data.rule_type,
         }
       }).then(response => {
         if (response.RetCode === 0) {
