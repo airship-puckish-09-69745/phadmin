@@ -177,6 +177,7 @@ export default {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       prizeVisible: false,
+      itemProgressVisible: false,
       envProjectName: process.env.VUE_APP_PROJECT
     }
   },

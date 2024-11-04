@@ -1168,6 +1168,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/pointlog'),
         name: 'pointtransfer',
         meta: { title: '积分流水 ◐' }
+      },
+      {
+        path: 'pointGameFailLog',
+        component: () => import('@/views/playerManage/PointGameFailLog'),
+        name: 'pointgamefail',
+        meta: { title: '积分注单失败 ◐' }
       }
     ]
   },

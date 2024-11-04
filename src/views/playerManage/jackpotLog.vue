@@ -73,6 +73,9 @@
         <el-form-item>
           <el-button type="success" size="mini" @click="showInfo">奖池信息</el-button>
         </el-form-item>
+        <el-form-item v-if="searchForm.gameId==119">
+          <el-button type="success" size="mini" @click="showItemInfo">实物信息</el-button>
+        </el-form-item>
       </el-form>
     </el-row>
     <el-table
@@ -323,6 +326,37 @@
         <el-form-item />
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="实物发奖信息"
+      :modal="false"
+      :visible.sync="itemProgressVisible"
+    >
+      <el-descriptions title="">
+        <el-descriptions-item label="进度">{{ itemProgressInfo.Progress }}</el-descriptions-item>
+        <el-descriptions-item v-if="envProjectName=='ph'" label="实物领奖数">{{ itemProgressInfo.AwardNum }}</el-descriptions-item>
+        <el-descriptions-item label="上一次数据重置时间">{{ itemProgressInfo.ClearTimeStr }}</el-descriptions-item>
+      </el-descriptions>
+      <el-form :model="itemForm">
+        <el-form-item label="---------修改进度：">
+          <el-col :span="8">
+            <el-input v-model="itemForm.progressChange" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changeItemPool()">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="修改实物领奖数：">
+          <el-col :span="8">
+            <el-input v-model="itemForm.AwardChange" size="mini" />
+          </el-col>
+          <el-col :span="8">
+            <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changeItemPool()">保存</el-button>
+          </el-col>
+        </el-form-item>
+        <el-form-item />
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -403,10 +437,20 @@ export default {
         ShowPool: 0,
         UpdateTime: 0
       },
+      itemProgressVisible: false,
+      itemProgressInfo: {
+        Progress: 0,
+        AwardNum: 0,
+        ClearTimeStr: ""
+      },
       envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
         ChangeNum: 0,
         ChangeRobotNum: 0
+      },
+      itemForm: {
+        progressChange: 0,
+        AwardChange: 0
       }
     }
   },
@@ -469,7 +513,6 @@ export default {
           { 'value': 1, 'label': 'HIGH' }]
       } else if (this.searchForm.gameId === 119) {
         this.levelConfig = [
-          { 'value': 0, 'label': '全部' },
           { 'value': 1, 'label': 'HIGH' }
         ]
       } else if (this.searchForm.gameId === 106) {
@@ -615,6 +658,68 @@ export default {
         })
       }
       this.prizeVisible = true
+    },
+    showItemInfo() {
+      const _this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/jackpot/info/item',
+          GameId: _this.searchForm.gameId,
+          App: 0,
+          Level: _this.searchForm.level
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          if (objs.length === 0 || objs == 'no Data') {
+            Message.success('查询结果为空')
+            // loading.close()
+            return
+          }
+          _this.itemProgressInfo = objs
+        } else {
+          Message.error(response.Data)
+        }
+        // loading.close()
+      })
+      this.itemProgressVisible = true
+    },
+    changeItemPool() {
+      const _this = this
+      let ProgressChange = _this.itemForm.progressChange
+      if (ProgressChange === "") {
+        ProgressChange = 0
+      }
+      let AwardChange = _this.itemForm.AwardChange
+      if (AwardChange === "") {
+        AwardChange = 0
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: _this.env,
+          Path: '/jackpot/item/operate',
+          GameId: _this.searchForm.gameId,
+          App: _this.searchForm.app,
+          Level: _this.searchForm.level,
+          ProgressChange: ProgressChange,
+          AwardChange: AwardChange,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          _this.showItemInfo()
+          this.$message({
+            message: '操作成功！',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('操作失败')
+        }
+      })
     },
     changePrizePool(isRobot) {
       const _this = this
