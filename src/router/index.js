@@ -537,6 +537,28 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/filipinoMahjongVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '菲律宾麻将' },
+            children: [
+              {
+                path: 'filipinoMahjongTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '菲律宾麻将配桌', noCache: true },
+                children: [
+                  {
+                    path: 'filipinoMahjongTable',
+                    component: () => import('@/views/filipinoMahjong/table/filipinoMahjongTable'),
+                    name: 'filipinoMahjongTable',
+                    meta: { title: '菲律宾麻将' }
+          }
+        ]
+              }
+            ]
           }
         ]
       },
@@ -1399,6 +1421,20 @@ export const asyncRoutes = [
                 meta: { title: '9Ball ◐', gid: 48 }
               }
             ]
+          },
+          {
+            path: '/filipinoMahjongVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '菲律宾麻将' },
+            children: [
+              {
+                path: 'playlog_filipinoMahjong',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_filipinoMahjong',
+                meta: { title: '菲律宾麻将 ◐', gid: 122 }
+          }
+        ]
           }
         ]
       },

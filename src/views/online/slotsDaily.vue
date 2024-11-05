@@ -275,6 +275,8 @@ export default {
           return 'CrazyAce'
         case 160:
           return 'GigaAce'
+        case 162:
+          return 'MajorAce'
       }
       return '未知老虎机-' + sType
     },
@@ -308,6 +310,7 @@ export default {
         case 154:
         case 156:
         case 160:
+        case 162:
         {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
