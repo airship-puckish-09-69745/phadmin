@@ -136,10 +136,10 @@
         <el-descriptions-item label="累计贡献值">{{ WindropcGameResult.JackpotContributeTotal /1000 }}</el-descriptions-item>
         <el-descriptions-item label="单次贡献值">{{ WindropcGameResult.JackpotContribute /1000 }}</el-descriptions-item>
         <el-descriptions-item label="总球数">{{ WindropcGameResult.BallNum }}</el-descriptions-item>
-        <el-descriptions-item label="总下注金额">{{ WindropcGameResult.BetAllScore /1000 }}</el-descriptions-item>
-        <el-descriptions-item label="单球下注金币">{{ WindropcGameResult.BetScore /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="总下注积分">{{ WindropcGameResult.BetAllScore /1000 }}</el-descriptions-item>
+        <el-descriptions-item label="单球下注积分">{{ WindropcGameResult.BetScore /1000 }}</el-descriptions-item>
         <el-descriptions-item label="当前能量">{{ WindropcGameResult.CurEnergy /1000 }}</el-descriptions-item>
-        <el-descriptions-item label="能量奖励">{{ WindropcGameResult.EnergyNum <1000 ? WindropcGameResult.EnergyNum+' 球' : WindropcGameResult.EnergyNum+' 金币' }}</el-descriptions-item>
+        <el-descriptions-item label="能量奖励">{{ WindropcGameResult.EnergyNum <1000 ? WindropcGameResult.EnergyNum+' 球' : WindropcGameResult.EnergyNum+' 积分' }}</el-descriptions-item>
         <el-descriptions-item label="Spin总次数">{{ WindropcGameResult.SpinCount }}</el-descriptions-item>
         <el-descriptions-item label="开始时间">{{ formatTime(WindropcGameResult.StartTime) }}</el-descriptions-item>
         <el-descriptions-item label="结束时间">{{ formatTime(WindropcGameResult.FinishTime) }}</el-descriptions-item>
@@ -192,7 +192,7 @@
         </el-table-column>
         <el-table-column
           prop="SpinScore"
-          label="spin中奖金币"
+          label="spin中奖积分"
           width="120"
         >
           <template slot-scope="scope">
@@ -201,7 +201,7 @@
         </el-table-column>
         <el-table-column
           prop="Score"
-          label="金币"
+          label="积分"
           width="120"
         >
           <template slot-scope="scope">
