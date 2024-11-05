@@ -335,6 +335,7 @@
       <el-descriptions title="">
         <el-descriptions-item label="进度">{{ itemProgressInfo.Progress }}</el-descriptions-item>
         <el-descriptions-item v-if="envProjectName=='ph'" label="实物领奖数">{{ itemProgressInfo.AwardNum }}</el-descriptions-item>
+        <el-descriptions-item label="上一次发满奖时间">{{ itemProgressInfo.AwardFullTimeStr }}</el-descriptions-item>
         <el-descriptions-item label="上一次数据重置时间">{{ itemProgressInfo.ClearTimeStr }}</el-descriptions-item>
       </el-descriptions>
       <el-form :model="itemForm">
@@ -438,7 +439,8 @@ export default {
       itemProgressInfo: {
         Progress: 0,
         AwardNum: 0,
-        ClearTimeStr: ""
+        ClearTimeStr: "",
+        AwardFullTimeStr:""
       },
       envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
