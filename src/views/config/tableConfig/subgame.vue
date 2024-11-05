@@ -817,7 +817,32 @@ export default {
       })
     },
     handleCheck(ob) {
-      console.log(ob)
+      const loading = this.$loading({
+        lock: true,
+        text: '检测中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      request({
+        url: '/gamepkgversions/lobbyversions',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          if (response.Data.length > 0) {
+            // this.LobbyVersionID = response.Data[response.Data.length - 1].ID
+            // this.LobbyVersion = response.Data[response.Data.length - 1].LobbyVersion
+            // this.LobbyVersionStatus = response.Data[response.Data.length - 1].Status
+            this.handleCheck2(ob, response.Data[response.Data.length - 1].LobbyVersion, loading)
+            return
+          }
+        }
+        loading && loading.close()
+      }).catch(function() {
+        loading && loading.close()
+      })
+    },
+    handleCheck2(ob, lobbyVersion,loading) {
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -825,9 +850,11 @@ export default {
           Path: "/thirdpartiesgames/check/app",
           GameKey: ob.GameKey,
           AppId: ob.AppId,
+          LobbyVersion: lobbyVersion,
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          loading && loading.close()
           var channel = response.Data.Channel
           var exist = response.Data.Exist
           console.log(response.Data)
@@ -848,6 +875,8 @@ export default {
             type: "warning"
           })
         }
+      }).catch(function() {
+        loading && loading.close()
       })
     },
     //* * ********************** 修改/添加弹框相关 *****************
