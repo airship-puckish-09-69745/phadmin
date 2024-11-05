@@ -123,7 +123,7 @@
     <el-dialog
       title="Windropc详情"
       :visible.sync="WindropcGameVisible"
-      width="65%"
+      width="60%"
     >
       <br>
       <el-descriptions
@@ -247,15 +247,15 @@
           <template slot-scope="scope"> {{ formatHMSTime(scope.row.BallTime/1000) }}.{{ scope.row.BallTime%1000 }}  </template>
         </el-table-column>
 
-        <el-table-column
-          prop="TracksPos"
-          label="路径"
-          width="620"
-        >
-          <template slot-scope="scope">
-            <span v-html="scope.row.TracksPos" />
-          </template>
-        </el-table-column>
+<!--        <el-table-column-->
+<!--          prop="TracksPos"-->
+<!--          label="路径"-->
+<!--          width="620"-->
+<!--        >-->
+<!--          <template slot-scope="scope">-->
+<!--            <span v-html="scope.row.TracksPos" />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
       </el-table>
     </el-dialog>
   </div>
