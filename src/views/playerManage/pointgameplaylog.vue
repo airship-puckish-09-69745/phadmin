@@ -102,17 +102,15 @@
       </el-col>
     </el-row>
 
-
     <el-row type="flex" justify="end">
       <el-col :span="12">
         <div class="block">
           <el-pagination
-            background
-            :current-page="item.currPage"
-            :page-sizes="[20]"
-            :page-size="item.limit"
-            layout=" prev, next"
-            :total="totalCount"
+            :current-page="clientDB.GetPage().GetCurrentPage()"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="clientDB.GetPage().GetPageNum()"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="clientDB.GetPage().GetTotalCount()"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
@@ -257,6 +255,21 @@
 <!--          </template>-->
 <!--        </el-table-column>-->
       </el-table>
+      <el-row type="flex" justify="end">
+        <el-col :span="12">
+          <div class="block">
+            <el-pagination
+              :current-page="clientDB.GetPage().GetCurrentPage()"
+              :page-sizes="[10, 20, 30, 40]"
+              :page-size="clientDB.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDB.GetPage().GetTotalCount()"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </el-col>
+      </el-row>
     </el-dialog>
   </div>
 </template>
@@ -280,7 +293,7 @@ export default {
     return {
       timeRange: [$libDate.GetDayBegin(new Date()), $libDate.GetDayEnd(new Date())],
       libShow: $libShow,
-      clientDB: new ClientTableData([], 1, filterMap),
+      clientDB: new ClientTableData([], 10, filterMap),
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       item: {
         date: $libDate.GetDayBegin(new Date().getTime()),
@@ -347,6 +360,8 @@ export default {
             return
           }
           $this.tableData = response.Data
+          $this.clientDB = new ClientTableData(objs, this.clientDB.GetPage().GetPageNum(), filterMap, 'ID', -1)
+          $this.handleCurrentChange(1)
         }
         console.log("========",response)
       })
@@ -481,14 +496,16 @@ export default {
     // },
     // 分页处理
     handleSizeChange(val) {
-      this.item.limit = val
-      this.getData()
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
     },
     handleCurrentChange(val) {
-      this.item.offset= val
-      this.getData()
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
     },
-
+    refreshShow() {
+      this.tableData = this.clientDB.GetCurrentPageData()
+    },
   }
 }
 </script>
