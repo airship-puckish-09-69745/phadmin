@@ -121,6 +121,17 @@
         label="Uid"
         width="120"
       />
+
+      <el-table-column
+        prop="MoneyOrigin"
+        label="牌局前金额"
+        width="100"
+      >
+        <template slot-scope="scope">
+          {{ formatNumber(scope.row.MoneyOrigin) }}
+        </template>
+      </el-table-column>
+
       <el-table-column
         prop="TableMoney"
         label="前注"
