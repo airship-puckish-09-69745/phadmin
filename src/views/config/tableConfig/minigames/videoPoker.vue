@@ -550,7 +550,7 @@ export default {
 
   created() {
     console.log(process.env.VUE_APP_PROJECT_NAME)
-    if (process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') {
+    if (process.env.VUE_APP_PROJECT_NAME === '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境' || process.env.VUE_APP_PROJECT_NAME === 'Zoo-线上环境') {
       this.isHiddenWild = false
     }
     this.getData()
