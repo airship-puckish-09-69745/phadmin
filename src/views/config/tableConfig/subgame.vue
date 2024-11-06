@@ -833,7 +833,12 @@ export default {
             // this.LobbyVersionID = response.Data[response.Data.length - 1].ID
             // this.LobbyVersion = response.Data[response.Data.length - 1].LobbyVersion
             // this.LobbyVersionStatus = response.Data[response.Data.length - 1].Status
-            this.handleCheck2(ob, response.Data[response.Data.length - 1].LobbyVersion, loading)
+            for (let i=response.Data.length - 1; i >= 0; i--) {
+              if (response.Data[i].Status === 1) {
+                this.handleCheck2(ob, response.Data[i].LobbyVersion, loading)
+                break
+              }
+            }
             return
           }
         }
