@@ -91,11 +91,11 @@
               {{ scope.row.UniqueNo }}
             </template>
           </el-table-column>
-<!--          <el-table-column label="操作"> //todo-->
-<!--            <template slot-scope="scope" style="width: 100px;">-->
-<!--              <el-button type="text" size="mini" @click="retry(scope.row.UniqueNo)">重试</el-button>-->
-<!--            </template>-->
-<!--          </el-table-column>-->
+          <el-table-column label="操作"> //todo
+            <template slot-scope="scope" style="width: 100px;">
+              <el-button type="text" size="mini" @click="retry(scope.row.UniqueNo)">重试</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -230,23 +230,22 @@ export default {
         }
       })
     },
-
+    retry(uniqueNo){
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/pointgame/fail/retry',
+          UniqueNo: uniqueNo,
+        }
+      }).then(response => {
+        console.log("=====", response)
+        if (response.RetCode === 0) {
+          Message.success("重试成功！")
+        }
+      })
+    },
     //todo:
-    // retry(txid){
-    //   request({
-    //     url: '/dataProxy/info',
-    //     method: 'post',
-    //     data: {
-    //       Path: '/wallet/retry/faillog',
-    //       UniqueNo: txid,
-    //     }
-    //   }).then(response => {
-    //     console.log("=====", response)
-    //     if (response.RetCode === 0) {
-    //       Message.success("重试成功！")
-    //     }
-    //   })
-    // },
     // retryTimeFailLog(){
     //   request({
     //     url: '/dataProxy/info',

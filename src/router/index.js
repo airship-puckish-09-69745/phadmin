@@ -1507,7 +1507,7 @@ export const asyncRoutes = [
           },
           {
             path: 'playlog_windropc',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pointgameplaylog.vue'),
             name: 'playlog_windropc',
             meta: { title: 'Windrop积分 ◐', gid: 119 }
           },
