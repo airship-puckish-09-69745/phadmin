@@ -78,7 +78,7 @@
               <el-table-column
                 prop="NormalMatrixCacheSize"
                 label="正常图案缓存数量"
-                width="150"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
@@ -89,7 +89,7 @@
               <el-table-column
                 prop="ScatterMatrixCacheSize"
                 label="Scatter图案缓存数量"
-                width="150"
+                width="200"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
@@ -100,7 +100,7 @@
               <el-table-column
                 prop="SwitchScatterPercent"
                 label="作为Scatter主图案的概率"
-                width="150"
+                width="300"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
@@ -111,7 +111,7 @@
               <el-table-column
                 prop="TriggerScatterPercent"
                 label="触发进入Scatter概率"
-                width="150"
+                width="300"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
@@ -156,8 +156,8 @@
               </el-table-column>
               <el-table-column
                 prop="PerTenThousand"
-                label="终点"
-                width="200"
+                label="概率(万分之一)"
+                width="500"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
@@ -169,7 +169,7 @@
           </fieldset>
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
-            <el-form-item label="下注总金额抽水(千分比)：">
+            <el-form-item label="下注总金额抽水(千分之一)：">
               <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize><template slot="append">‰(千分之一)</template></el-input>
             </el-form-item>
             <el-form-item label="中奖概率(百万分之一)：">
