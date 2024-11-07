@@ -117,9 +117,6 @@ export default {
               }
             }
             cfg.BetListAct = BetListAct
-            if (typeof(cfg.EnableScriptV3) == 'undefined') {
-              cfg.EnableScriptV3 = false
-            }
 
             this.baseCfg = cfg
             // 设置修改之前数据

@@ -84,13 +84,6 @@
             <el-input v-model.number="slotsData.BuyFreeFeeRate" />
           </el-form-item>
 
-          <el-form-item label="启用新全局剧本‰">
-            <el-select v-model="slotsData.EnableScriptV3">
-              <el-option label="启用" :value="true" />
-              <el-option label="禁用" :value="false" />
-            </el-select>
-          </el-form-item>
-
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
           </el-form-item>
@@ -155,8 +148,7 @@ export default {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
-        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
-        'EnableScriptV3': this.slotsData.EnableScriptV3
+        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate
       }
     },
     submitFrm() {
