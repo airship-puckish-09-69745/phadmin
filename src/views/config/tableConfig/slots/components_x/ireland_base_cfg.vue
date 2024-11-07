@@ -84,6 +84,13 @@
             <el-input v-model.number="slotsData.BuyFreeFeeRate" />
           </el-form-item>
 
+          <el-form-item label="是否启用新版剧本">
+            <el-select v-model="slotsData.EnableScriptV3" disabled>
+              <el-option label="启用" :value="true" />
+              <el-option label="禁用" :value="false" />
+            </el-select>
+          </el-form-item>
+
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
           </el-form-item>

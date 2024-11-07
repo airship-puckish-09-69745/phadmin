@@ -16,7 +16,7 @@
           </el-form-item>
           </el-col>
           <fieldset style="margin:20px auto;">
-            <legend>结果集分布</legend>
+            <legend>倍数相关配置</legend>
             <el-table
               ref="filterTable"
               :data="item.OddsCfg"
@@ -33,7 +33,7 @@
               />
               <el-table-column
                 prop="OddsMin"
-                label="起点"
+                label="最小倍数"
                 width="150"
               >
                 <template slot-scope="scope">
@@ -44,7 +44,7 @@
               </el-table-column>
               <el-table-column
                 prop="OddsMax"
-                label="终点"
+                label="最大倍数"
                 width="150"
               >
                 <template slot-scope="scope">
@@ -54,8 +54,30 @@
                 </template>
               </el-table-column>
               <el-table-column
+                prop="ScriptSteps"
+                label="剧本中出现次数"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  <el-col :span="20">
+                    <el-input v-model.number="scope.row.ScriptSteps" size="mini" />
+                  </el-col>
+                </template>
+              </el-table-column>
+              <el-table-column
                 prop="ScriptOddsSum"
-                label="普通数量"
+                label="剧本中倍数总和"
+                width="150"
+              >
+                <template slot-scope="scope">
+                  <el-col :span="20">
+                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini" />
+                  </el-col>
+                </template>
+              </el-table-column>
+              <el-table-column
+                prop="NormalMatrixCacheSize"
+                label="正常图案缓存数量"
                 width="150"
               >
                 <template slot-scope="scope">
@@ -66,7 +88,7 @@
               </el-table-column>
               <el-table-column
                 prop="ScatterMatrixCacheSize"
-                label="scatter数量"
+                label="Scatter图案缓存数量"
                 width="150"
               >
                 <template slot-scope="scope">
@@ -76,46 +98,24 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="ScriptOddsSum"
-                label="ScriptOddsSum"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini" />
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="ScriptSteps"
-                label="ScriptSteps"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScriptSteps" size="mini" />
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
                 prop="SwitchScatterPercent"
-                label="SwitchScatterPercent"
+                label="作为Scatter主图案的概率"
                 width="150"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini" />
+                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini"><template slot="append">%</template></el-input>
                   </el-col>
                 </template>
               </el-table-column>
               <el-table-column
                 prop="TriggerScatterPercent"
-                label="TriggerScatterPercent"
+                label="触发进入Scatter概率"
                 width="150"
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini" />
+                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini"><template slot="append">%</template></el-input>
                   </el-col>
                 </template>
               </el-table-column>
@@ -128,7 +128,7 @@
             </el-table>
           </fieldset>
           <fieldset style="margin:20px auto;">
-            <legend>Scatter中奖次数</legend>
+            <legend>Scatter中奖次数配置</legend>
             <el-table
               ref="filterTable"
               :data="item.ScatterHitCfg"
@@ -161,7 +161,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.PerTenThousand" size="mini" />
+                    <el-input v-model="scope.row.PerTenThousand" size="mini"><template slot="append">单位:万分之一</template></el-input>
                   </el-col>
                 </template>
               </el-table-column>
@@ -170,10 +170,10 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
             <el-form-item label="下注总金额抽水(千分比)：">
-              <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize></el-input>
+              <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize><template slot="append">‰(千分之一)</template></el-input>
             </el-form-item>
             <el-form-item label="中奖概率(百万分之一)：">
-              <el-input v-model.number="item.BigPrizeCfg.HitPerMillion"></el-input>
+              <el-input v-model.number="item.BigPrizeCfg.HitPerMillion"><template slot="append">单位:百万分之一</template></el-input>
             </el-form-item>
             <el-table
               ref="filterTable"
@@ -191,7 +191,7 @@
               />
               <el-table-column
                 prop="OddsMin"
-                label="起点"
+                label="最小倍数"
                 width="200"
               >
                 <template slot-scope="scope">
@@ -202,7 +202,7 @@
               </el-table-column>
               <el-table-column
                 prop="OddsMax"
-                label="终点"
+                label="最大倍数"
                 width="200"
               >
                 <template slot-scope="scope">
@@ -212,8 +212,8 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="ScriptOddsSum"
-                label="普通数量"
+                prop="Weight"
+                label="权重"
                 width="200"
               >
                 <template slot-scope="scope">
