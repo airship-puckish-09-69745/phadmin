@@ -38,7 +38,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.OddsMin" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMin" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -49,7 +49,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.OddsMax" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMax" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -60,7 +60,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.NormalMatrixCacheSize" size="mini" />
+                    <el-input v-model.number="scope.row.NormalMatrixCacheSize" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -71,7 +71,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.ScatterMatrixCacheSize" size="mini" />
+                    <el-input v-model.number="scope.row.ScatterMatrixCacheSize" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -82,7 +82,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.ScriptOddsSum" size="mini" />
+                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -93,7 +93,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.ScriptSteps" size="mini" />
+                    <el-input v-model.number="scope.row.ScriptSteps" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -104,7 +104,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.SwitchScatterPercent" size="mini" />
+                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -115,7 +115,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.TriggerScatterPercent" size="mini" />
+                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -170,10 +170,10 @@
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
             <el-form-item label="下注总金额抽水(千分比)：">
-              <el-input v-model="item.BigPrizeCfg.TaxPerThousand" autosize></el-input>
+              <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize></el-input>
             </el-form-item>
             <el-form-item label="中奖概率(百万分之一)：">
-              <el-input v-model="item.BigPrizeCfg.HitPerMillion"></el-input>
+              <el-input v-model.number="item.BigPrizeCfg.HitPerMillion"></el-input>
             </el-form-item>
             <el-table
               ref="filterTable"
@@ -196,7 +196,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.OddsMin" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMin" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -207,7 +207,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.OddsMax" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMax" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
@@ -218,7 +218,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.Weight" size="mini" />
+                    <el-input v-model.number="scope.row.Weight" size="mini" />
                   </el-col>
                 </template>
               </el-table-column>
