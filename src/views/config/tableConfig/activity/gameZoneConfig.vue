@@ -602,34 +602,34 @@ export default {
         data: {}
       }).then(response => {
         if (response.RetCode === 0) {
-          const objsZone = response.Data || []
-          const dataZone = {}
-          for (let i = 0; i < objsZone.length; i++) {
-            const objZone = objsZone[i]
-            if (objZone.ShowDatacenter !== 1) {
+          const objsOtherZone = response.Data || []
+          const dataOtherZone = {}
+          for (let i = 0; i < objsOtherZone.length; i++) {
+            const objOtherZone = objsOtherZone[i]
+            if (objOtherZone.ShowDatacenter !== 1) {
               continue
             }
 
-            const gameZone = {Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description}
-            if (dataZone.hasOwnProperty(objZone.CategoryID)) {
-              dataZone[objZone.CategoryID].push(gameZone)
+            const gameZoneOther = {Gid: objOtherZone.Gid, Name: objOtherZone.Name, Description: objOtherZone.Description}
+            if (dataOtherZone.hasOwnProperty(objOtherZone.CategoryID)) {
+              dataOtherZone[objsOtherZone.CategoryID].push(gameZoneOther)
             } else {
-              dataZone[objZone.CategoryID] = [gameZone]
+              dataOtherZone[objsOtherZone.CategoryID] = [gameZoneOther]
             }
           }
 
           this.treeDataOtherZone = []
-          const categoriesZone = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categoriesZoneOther = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
 
-          for (const keyZone in dataZone) {
-            const gamesZone = dataZone[keyZone]
-            const ctyZone = {id: 'p-' + keyZone, label: categoriesZone[keyZone], children: []}
+          for (const keyZoneOther in dataOtherZone) {
+            const gamesZoneOther = dataOtherZone[keyZone]
+            const ctyZoneOther = {id: 'p-' + keyZoneOther, label: categoriesZoneOther[keyZoneOther], children: []}
 
-            for (let i = 0; i < gamesZone.length; i++) {
-              const gameZone = gamesZone[i]
-              ctyZone.children.push({id: gameZone.Gid, label: gameZone.Name})
+            for (let i = 0; i < gamesZoneOther.length; i++) {
+              const gameZoneOther = gamesZoneOther[i]
+              ctyZoneOther.children.push({id: gameZoneOther.Gid, label: gameZoneOther.Name})
             }
-            this.treeDataOtherZone.push(ctyZone)
+            this.treeDataOtherZone.push(ctyZoneOther)
           }
 
           // console.log('getGameAll ', this.item.GameList)
