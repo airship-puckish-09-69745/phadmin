@@ -622,7 +622,7 @@ export default {
           const categoriesZoneOther = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
 
           for (const keyZoneOther in dataOtherZone) {
-            const gamesZoneOther = dataOtherZone[keyZone]
+            const gamesZoneOther = dataOtherZone[keyZoneOther]
             const ctyZoneOther = {id: 'p-' + keyZoneOther, label: categoriesZoneOther[keyZoneOther], children: []}
 
             for (let i = 0; i < gamesZoneOther.length; i++) {
