@@ -1834,7 +1834,7 @@ export const asyncRoutes = [
             path: 'mahjongfortune_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortune_slots_log',
-            meta: { title: 'MahjongFortune', gid: 165 }
+            meta: { title: 'MahjongFortune(审)', gid: 165 }
           }
         ]
       },
