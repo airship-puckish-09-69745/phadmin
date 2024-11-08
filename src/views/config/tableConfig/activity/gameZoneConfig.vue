@@ -183,6 +183,70 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+<!--        /////////////////////////-->
+        <!--        /////////////////////////-->
+        <el-tab-pane label="gameZone其他活动配置">
+          <el-row :gutter="5">
+            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateOtherGameZone()">
+              添加配置
+            </el-button>
+            <el-form ref="gameZoneOther" v-model="gameZoneOther" label-width="150px" style="margin-top: 10px">
+              <el-table
+                :data="gameZoneOther"
+                border
+                style="width: 100%"
+                :cell-style="libShow.DefaultTableCell"
+                @row-click="clickDataOtherGameZone"
+              >
+                <el-table-column
+                  prop="Id"
+                  label="活动id"
+                  width="200"
+                />
+                <el-table-column
+                  prop="IsOpen"
+                  label="开关"
+                  width="200"
+                >
+                  <template v-slot:default="scope">
+                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled=true />
+                  </template>
+
+                </el-table-column>
+                <el-table-column
+                  prop="IconLink"
+                  label="活动icon"
+                  width="200"
+                >
+                  <template v-slot:default="scope">
+                    <el-image src="scope.row.IconLink"></el-image>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="操作"
+                  column-key="op"
+                  width="250"
+                >
+                  <template slot-scope="scope">
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      @click="handleEditOtherGameZone(scope.row)"
+                    >编辑
+                    </el-button>
+                    <el-button
+                      size="mini"
+                      type="warning"
+                      @click="handleDeleteOtherGameZone(scope.row)"
+                    >删除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form>
+
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
 
       <el-row>
@@ -230,6 +294,55 @@
       </el-form>
     </el-dialog>
 
+    <el-dialog
+      :title="getEditTitleOtherGameZone()"
+      :visible.sync="editOtherGameZone.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="editOtherGameZone.item" :model="editOtherGameZone.item" label-width="250px" size="small">
+        <el-form-item label="活动id：" :required="true" prop="Id">
+          <el-col :span="15">
+            <el-input v-model.number="editOtherGameZone.item.Id" />
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="游戏icon：" :required="true" prop="IconLink">
+          <el-col :span="15">
+            <ImagePicker v-model="editOtherGameZone.item.IconLink" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="开关：" :required="true" prop="IsOpen">
+          <el-col :span="15">
+            <el-switch v-model="editOtherGameZone.item.IsOpen" :active-value="true" :inactive-value="false" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="支持游戏：" prop="GameList">
+          <el-col :span="15">
+<!--            TODO 此处设置tree-->
+            <el-tree
+              :data="treeDataOtherZone"
+              show-checkbox
+              node-key="id"
+              ref="treeGameOtherZone"
+              highlight-current
+              :props="defaultPropsOtherZone"
+              :filter-node-method="filterNodeOtherZone"
+              @check-change="handleCheckChangeOtherZone"
+            >
+            </el-tree>
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="10" :offset="6">
+              <el-button type="primary" size="medium" @click="saveOtherGameZone">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
 
     <!--对比组件-->
     <compare ref="compare" />
@@ -247,6 +360,9 @@ import Compare from "@/components/Compare/index.vue";
 
 function newItem() {
   return { Gid: 1, GameIconLink: '', GameSort: 1, IsOpen: true }
+}
+function newItemOtherGameZone() {
+  return { Id: 1, IconLink: '', IsOpen: true, GameList: [] }
 }
 export default {
   components: {Compare, ImagePicker, Publish},
@@ -271,6 +387,11 @@ export default {
       edit: {
         visible: false,
         item: newItem(),
+        isEdit: false
+      },
+      editOtherGameZone: {
+        visible: false,
+        item: newItemOtherGameZone(),
         isEdit: false
       },
       WinMoreItem: {
@@ -302,7 +423,7 @@ export default {
             IconLink: '',
             IsOpen: true,
             GameList: []
-          },
+          }
         ],
         WinMoreItem:[
           {
@@ -350,6 +471,21 @@ export default {
           }]
         }]
       }],
+      treeDataOtherZone: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }],
       mayLikeTreeData: [{
         id: 1,
         label: '一级 1',
@@ -372,17 +508,25 @@ export default {
         children: 'children',
         disabled: 'disabled'
       },
+      defaultPropsOtherZone: {
+        label: 'label',
+        children: 'children',
+        disabled: 'disabled'
+      },
       mayLikeDefaultProps: {
         label: 'label',
         children: 'children',
         disabled: 'disabled'
-      }
+      },
+      gameZoneOther:[],
+      gameZoneOtherGameList:[]
     }
   },
   created() {
     this.getData()
     this.getGameAll()
     this.getMaylikeGameAll()
+    this.getOtherGameZoneAll()
     console.log(1)
   },
   methods: {
@@ -397,6 +541,10 @@ export default {
       return data.label.indexOf(value) !== -1;
     },
     filterNodeZone(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+    filterNodeOtherZone(value, data) {
       if (!value) return true;
       return data.label.indexOf(value) !== -1;
     },
@@ -444,6 +592,49 @@ export default {
           console.log('getGameAll ', this.item.GameList)
           this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
           console.log('getGameAll ', this.treeDataZone)
+        }
+      })
+    },
+    getOtherGameZoneAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objsZone = response.Data || []
+          const dataZone = {}
+          for (let i = 0; i < objsZone.length; i++) {
+            const objZone = objsZone[i]
+            if (objZone.ShowDatacenter !== 1) {
+              continue
+            }
+
+            const gameZone = {Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description}
+            if (dataZone.hasOwnProperty(objZone.CategoryID)) {
+              dataZone[objZone.CategoryID].push(gameZone)
+            } else {
+              dataZone[objZone.CategoryID] = [gameZone]
+            }
+          }
+
+          this.treeDataOtherZone = []
+          const categoriesZone = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+
+          for (const keyZone in dataZone) {
+            const gamesZone = dataZone[keyZone]
+            const ctyZone = {id: 'p-' + keyZone, label: categoriesZone[keyZone], children: []}
+
+            for (let i = 0; i < gamesZone.length; i++) {
+              const gameZone = gamesZone[i]
+              ctyZone.children.push({id: gameZone.Gid, label: gameZone.Name})
+            }
+            this.treeDataOtherZone.push(ctyZone)
+          }
+
+          // console.log('getGameAll ', this.item.GameList)
+          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
+          // console.log('getGameAll ', this.treeDataZone)
         }
       })
     },
@@ -506,6 +697,19 @@ export default {
 
       console.log(this.item.GameList)
     },
+    handleCheckChangeOtherZone(data, checked, indeterminate) {
+      const nodesZone = this.$refs.treeGameOtherZone.getCheckedNodes()
+
+      this.gameZoneOtherGameList = []
+
+      for (let i = 0; i < nodesZone.length; i++) {
+        const nodeZone = nodesZone[i]
+        if (nodeZone.label === 'Slot' || nodeZone.label === 'Poker' || nodeZone.label === 'Casino') {
+          continue
+        }
+        this.gameZoneOtherGameList.push(nodeZone.id)
+      }
+    },
     handleCheckChangeWinMore(data, checked, indeterminate) {
       const nodes = this.$refs.treeWinMore.getCheckedNodes()
 
@@ -539,6 +743,8 @@ export default {
             this.item.GameZoneItem.forEach(value => {
               if (value.Id === 2) {
                 this.WinMoreItem = value
+              } else {
+                this.gameZoneOther.push(value)
               }
             })
             this.item.WinMoreItem.forEach(value => {
@@ -560,18 +766,35 @@ export default {
       this.edit.isEdit = false
       this.edit.visible = true
     },
+    handleCreateOtherGameZone() {
+      this.editOtherGameZone.item = newItemOtherGameZone()
+      this.editOtherGameZone.isEdit = false
+      this.editOtherGameZone.visible = true
+    },
     getEditTitle() {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改配置' : '新增配置'
+    },
+    getEditTitleOtherGameZone() {
+      this.isDisabled = this.edit.isEdit
+      return this.edit.isEdit ? '修改活动配置' : '新增活动配置'
     },
     // 操作类函数
     clickData(row, column, event) {
       this.edit.visible = true
       this.edit.isEdit = true
     },
+    clickDataOtherGameZone(row, column, event) {
+      this.editOtherGameZone.visible = true
+      this.editOtherGameZone.isEdit = true
+    },
     handleEdit(ob) {
       this.initFormData(true, ob.Gid)
       this.edit.visible = true
+    },
+    handleEditOtherGameZone(ob) {
+      this.initFormDataOtherGameZone(true, ob.Id)
+      this.editOtherGameZone.visible = true
     },
     save() {
       const newData = JSON.parse(JSON.stringify(this.edit.item))
@@ -595,6 +818,26 @@ export default {
       this.edit.visible = false
       this.edit.isEdit = false
     },
+    saveOtherGameZone() {
+      this.editOtherGameZone.item.GameList = this.gameZoneOtherGameList
+      const newData = JSON.parse(JSON.stringify(this.editOtherGameZone.item))
+      const index = this.gameZoneOtherGameList.findIndex(item => item.Id === this.editOtherGameZone.item.Id)
+      if (this.editOtherGameZone.isEdit) {
+        this.gameZoneOther.splice(index, 1, newData)
+      } else {
+        // 如果是新增，检查是否有重复的档次
+        if (index >= 0) {
+          this.$alert(`[已存在，不能重复添加`, '提示', {type:'warning'})
+          return
+        }
+        // 新增到
+        this.gameZoneOther.push(newData)
+      }
+      this.gameZoneOtherGameList = []
+      this.$refs.treeGameOtherZone.setCheckedKeys([])
+      this.editOtherGameZone.visible = false
+      this.editOtherGameZone.isEdit = false
+    },
     initFormData(bEdit, gid) {
       this.edit.isEdit = bEdit
       if (gid) {
@@ -604,10 +847,30 @@ export default {
         }
       }
     },
+    initFormDataOtherGameZone(bEdit, id) {
+      this.editOtherGameZone.isEdit = bEdit
+      if (id) {
+        const _data = this.getOtherGameZoneDataByGid(id)
+        if (_data) {
+          Object.assign(this.editOtherGameZone.item, _data)
+          this.gameZoneOtherGameList = this.editOtherGameZone.item.GameList
+          this.$refs.treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
+        }
+      }
+    },
     getDataByGid(gid) {
       for (let i = 0; i < this.MayLikeGameList.length; i++) {
         const data = this.MayLikeGameList[i]
         if (data.Gid === gid) {
+          return data
+        }
+      }
+      return null
+    },
+    getOtherGameZoneDataByGid(id) {
+      for (let i = 0; i < this.gameZoneOther.length; i++) {
+        const data = this.gameZoneOther[i]
+        if (data.Id === id) {
           return data
         }
       }
@@ -622,16 +885,30 @@ export default {
         console.log('取消')
       })
     },
+    handleDeleteOtherGameZone(ob) {
+      let $this = this
+      this.$confirm('是否确认删除?', '提示', {type:'warning'}).then(() => {
+        const delIndex = $this.gameZoneOther.findIndex(item => item.Id === ob.Id)
+        this.gameZoneOther.splice(delIndex, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
     encodeData() {
       const cpy = {}
       Object.assign(cpy, this.item)
-      const index = this.item.GameZoneItem.findIndex(item => item.Id === 2)
-      cpy.GameZoneItem.splice(index, 1, this.WinMoreItem)
+      // const index = this.item.GameZoneItem.findIndex(item => item.Id === 2)
+      // cpy.GameZoneItem.splice(index, 1, this.WinMoreItem)
       const MayLikeIndex = this.item.WinMoreItem.findIndex(item => item.Id === 3)
       cpy.WinMoreItem.splice(MayLikeIndex, 1, this.MayLikeItem)
       const FavoritesIndex = this.item.WinMoreItem.findIndex(item => item.Id === 4)
       cpy.WinMoreItem.splice(FavoritesIndex, 1, this.FavoritesItem)
       cpy.MayLikeItem = this.MayLikeGameList
+      cpy.GameZoneItem = []
+      cpy.GameZoneItem.push(this.WinMoreItem)
+      for (const o in this.gameZoneOther) {
+        cpy.GameZoneItem.push(this.gameZoneOther[o])
+      }
       return JSON.stringify(cpy)
     },
     setData() {
