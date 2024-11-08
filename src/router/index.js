@@ -783,6 +783,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majorace_slots_cfg'),
                 name: 'majorace_slots_cfg',
                 meta: { title: 'MajorAce' }
+              },
+              {
+                path: 'mahjongfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
+                name: 'mahjongfortune_slots_cfg',
+                meta: { title: 'MahjongFortune' }
               }
             ]
           },

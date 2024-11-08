@@ -27,6 +27,7 @@
               <el-option label="RomanArenaMars" :value="97" />
               <el-option label="SuperTongit" :value="98" />
               <el-option label="SuperTongitMars" :value="99" />
+              <el-option label="MahjongFortune" :value="100" />
               <el-option label="SuperGemsIII" :value="150" />
               <el-option label="SuperGemsIIIMars" :value="151" />
               <el-option label="AladdinsLamp" :value="152" />
