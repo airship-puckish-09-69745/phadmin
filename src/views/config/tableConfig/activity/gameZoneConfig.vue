@@ -612,9 +612,9 @@ export default {
 
             const gameZoneOther = {Gid: objOtherZone.Gid, Name: objOtherZone.Name, Description: objOtherZone.Description}
             if (dataOtherZone.hasOwnProperty(objOtherZone.CategoryID)) {
-              dataOtherZone[objsOtherZone.CategoryID].push(gameZoneOther)
+              dataOtherZone[objOtherZone.CategoryID].push(gameZoneOther)
             } else {
-              dataOtherZone[objsOtherZone.CategoryID] = [gameZoneOther]
+              dataOtherZone[objOtherZone.CategoryID] = [gameZoneOther]
             }
           }
 
