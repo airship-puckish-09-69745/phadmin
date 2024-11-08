@@ -537,6 +537,28 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/filipinoMahjongVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '菲律宾麻将' },
+            children: [
+              {
+                path: 'filipinoMahjongTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '菲律宾麻将配桌', noCache: true },
+                children: [
+                  {
+                    path: 'filipinoMahjongTable',
+                    component: () => import('@/views/filipinoMahjong/table/filipinoMahjongTable'),
+                    name: 'filipinoMahjongTable',
+                    meta: { title: '菲律宾麻将' }
+          }
+        ]
+              }
+            ]
           }
         ]
       },
@@ -916,6 +938,12 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'millionaire_script_cfg',
+            component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
+            name: 'millionaire_script_cfg',
+            meta: { title: 'millionaire配置V3' }
+          },
+          {
             path: 'slots_act_configs_v2',
             component: () => import('@/views/config/tableConfig/slots/slotsActConfigV2'),
             name: 'slots_act_configs_v2',
@@ -1186,13 +1214,13 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/pointlog'),
         name: 'pointtransfer',
         meta: { title: '积分流水 ◐' }
+      },
+      {
+        path: 'pointGameFailLog',
+        component: () => import('@/views/playerManage/PointGameFailLog'),
+        name: 'pointgamefail',
+        meta: { title: '积分注单失败 ◐' }
       }
-      // {
-      //   path: 'pointGameFailLog',
-      //   component: () => import('@/views/playerManage/PointGameFailLog'),
-      //   name: 'pointgamefail',
-      //   meta: { title: '积分注单失败 ◐' }
-      // }
     ]
   },
   {
@@ -1405,6 +1433,20 @@ export const asyncRoutes = [
                 meta: { title: '9Ball ◐', gid: 48 }
               }
             ]
+          },
+          {
+            path: '/filipinoMahjongVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: '菲律宾麻将' },
+            children: [
+              {
+                path: 'playlog_filipinoMahjong',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_filipinoMahjong',
+                meta: { title: '菲律宾麻将 ◐', gid: 122 }
+          }
+        ]
           }
         ]
       },
@@ -1477,7 +1519,7 @@ export const asyncRoutes = [
           },
           {
             path: 'playlog_windropc',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pointgameplaylog.vue'),
             name: 'playlog_windropc',
             meta: { title: 'Windrop积分 ◐', gid: 119 }
           },

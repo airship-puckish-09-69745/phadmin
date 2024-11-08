@@ -772,12 +772,12 @@ export default {
           },
           "end_rule": {               //结束规则
               "end_method": 3, //结束方式：1时间截止，2人数截止，3:时间+人数截止
-              "lave_user_number": 10, //剩余人数
+              "lave_user_number": 9, //剩余人数
               "match_minute": 100,    //开赛多少分钟
           },
           "promotion_rule": {         //晋级规则
               "score_sort_type": 1,   //晋级排名规则：1按总排名，2按桌内排名，打立默认是1
-              "user_number": 10,      //晋级人数
+              "user_number": 9,      //晋级人数
               "score_brought_in": {   //积分带入情况
                   "max_score": 1000,  //带分上限
                   "min_score": 0,     //带分下限
@@ -831,12 +831,12 @@ export default {
           },
           "end_rule": {               //结束规则
               "end_method": 3, //结束方式：1时间截止，2人数截止，3:时间+人数截止
-              "lave_user_number": 10, //剩余人数
+              "lave_user_number": 9, //剩余人数
               "match_minute": 100,    //开赛多少分钟
           },
           "promotion_rule": {         //晋级规则
               "score_sort_type": 1,   //晋级排名规则：1按总排名，2按桌内排名，打立默认是1
-              "user_number": 10,      //晋级人数
+              "user_number": 9,      //晋级人数
               "score_brought_in": {   //积分带入情况
                   "max_score": 1000,  //带分上限
                   "score_method": 2,  //带分方式：1开方加倍,2固定比列

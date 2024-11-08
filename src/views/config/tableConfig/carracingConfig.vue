@@ -143,13 +143,13 @@
                   <el-table-column label="中奖倍率">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].Odds" size="mini" />
-                    </template>                    
+                    </template>
                   </el-table-column>
 
                   <el-table-column label="图标个数">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].Count" size="mini" />
-                    </template>                    
+                    </template>
                   </el-table-column>
 
                   <el-table-column label="概率">
@@ -168,9 +168,9 @@
                   <el-table-column label="jackpot概率">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].JackPotRate" size="mini" />
-                    </template>                    
+                    </template>
                   </el-table-column>
-                  
+
                   <el-table-column label="单个区域单个玩家最大下注额度">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].MaxUserMoneyBet" size="mini" />
@@ -350,9 +350,9 @@
                 </el-col>
               </el-form>
             </el-col>
-            
+
             <robot-online-items :items="item.RobotMemberArr" />
-            
+
 
           </el-tab-pane>
 
@@ -399,7 +399,7 @@
             <!--              <legend>jackpot每日限制</legend>-->
             <!--              <jackpot-day-limit :jackpot-rand-awards="RandAwards" />-->
             <!--            </fieldset>-->
-            
+
             <!--
             <el-col :span="20">
               <el-button style="margin-bottom:10px;" type="normal" icon="el-icon-plus" size="mini" @click="doAddRandAwards()">添加</el-button>
@@ -417,7 +417,7 @@
                   :cell-style="libShow.DefaultTableCell"
                   style="width: 100%"
                 >
-                
+
                   <el-table-column type="index" />
                   <el-table-column label="奖励类型" prop="JackpotType">
                     <template slot-scope="scope">
@@ -658,13 +658,13 @@ export default {
   },
   created() {
     console.log(process.env.VUE_APP_PROJECT)
-    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境') {
+    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == '菲1-线上环境' || process.env.VUE_APP_PROJECT_NAME == 'Zoo-线上环境') {
       this.isHidden = false
     }
     this.getData()
   },
   methods: {
-    
+
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -761,7 +761,7 @@ export default {
     getPostData() {
       const ret = JSON.parse(JSON.stringify(this.item))
       console.log("上传====>",ret)
-      
+
       //下注配置
       let betItem = {}
       if (ret.LuckyPachinkoCfg) {

@@ -165,6 +165,11 @@ export default {
           id: 1000008,
           agentId: 'gli',
           desc: 'BP gli 提审账号[1000008]'
+        },
+        {
+          id: 1000007,
+          agentId: 'zootest',
+          desc: 'Zoo测试账号[1000007]'
         }
         // ,{
         //   id: 1000005,
@@ -333,6 +338,11 @@ export default {
           id: 1000005,
           agentId: 'BingoPlusTongits',
           desc: 'BP正式账号[1000005]'
+        },
+        {
+          id: 1000007,
+          agentId: 'zootest',
+          desc: 'Zoo测试账号[1000007]'
         }
       ]
     }
