@@ -821,7 +821,7 @@ export default {
     saveOtherGameZone() {
       this.editOtherGameZone.item.GameList = this.gameZoneOtherGameList
       const newData = JSON.parse(JSON.stringify(this.editOtherGameZone.item))
-      const index = this.gameZoneOtherGameList.findIndex(item => item.Id === this.editOtherGameZone.item.Id)
+      const index = this.gameZoneOther.findIndex(item => item.Id === this.editOtherGameZone.item.Id)
       if (this.editOtherGameZone.isEdit) {
         this.gameZoneOther.splice(index, 1, newData)
       } else {
