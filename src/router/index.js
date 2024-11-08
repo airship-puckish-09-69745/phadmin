@@ -805,6 +805,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majorace_slots_cfg'),
                 name: 'majorace_slots_cfg',
                 meta: { title: 'MajorAce' }
+              },
+              {
+                path: 'mahjongfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
+                name: 'mahjongfortune_slots_cfg',
+                meta: { title: 'MahjongFortune' }
               }
             ]
           },
@@ -930,6 +936,12 @@ export const asyncRoutes = [
                 meta: { title: 'MajorAce(审)' }
               }
             ]
+          },
+          {
+            path: 'millionaire_script_cfg',
+            component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
+            name: 'millionaire_script_cfg',
+            meta: { title: 'millionaire配置V3' }
           },
           {
             path: 'slots_act_configs_v2',
@@ -1507,7 +1519,7 @@ export const asyncRoutes = [
           },
           {
             path: 'playlog_windropc',
-            component: () => import('@/views/playerManage/playlog'),
+            component: () => import('@/views/playerManage/pointgameplaylog.vue'),
             name: 'playlog_windropc',
             meta: { title: 'Windrop积分 ◐', gid: 119 }
           },

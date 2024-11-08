@@ -8,3 +8,8 @@ export function IsProd() {
   console.log('isProd', env)
   return env === 'production'
 }
+export function IsProjectZoo() {
+  const project = process.env.VUE_APP_PROJECT
+  console.log('isProd', project)
+  return project === 'zoo'
+}
