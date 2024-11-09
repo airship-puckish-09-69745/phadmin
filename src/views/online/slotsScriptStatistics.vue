@@ -32,7 +32,7 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-              style="width: 500px"
+              style="width: 800px"
             >
               <el-table-column label="命中统计">
                 <el-table-column
