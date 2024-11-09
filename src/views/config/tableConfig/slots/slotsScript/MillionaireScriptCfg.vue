@@ -375,10 +375,24 @@ export default {
     validData() {
       const data = this.getPostData()
       //计算总步数
-      let steps = 0, odds = 0
+      let steps = 0, odds = 0, scatterSwitchPercents = 0
       for (const k in data.OddsCfg) {
         steps += data.OddsCfg[k].ScriptSteps
         odds += data.OddsCfg[k].ScriptOddsSum
+        scatterSwitchPercents += data.OddsCfg[k].SwitchScatterPercent
+        if (data.OddsCfg[k].NormalMatrixCacheSize < 5) {
+          Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMin + "的正常图案缓存数量无效!")
+          return
+        }
+        if (data.OddsCfg[k].SwitchScatterPercent > 0 && data.OddsCfg[k].ScatterMatrixCacheSize < 5) {
+          Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMin + "的Scatter图案缓存数量无效!")
+          return
+        }
+      }
+      //Scatter主图案总概率
+      if (scatterSwitchPercents !== 100) {
+        Message.error("Scatter主图案的总概率之和不是100%！当前值:" + scatterSwitchPercents + '%')
+        return
       }
       //计算返回率
       const rtp = odds / 20000 * 100
@@ -387,7 +401,7 @@ export default {
       } else if (rtp > 100 || rtp < 50) {
         Message.error("返奖率异常！当前返奖率:" + rtp + '%')
       } else {
-        Message.error("当前返奖率:" + rtp + '%')
+        Message.success("当前返奖率:" + rtp + '%')
       }
     }
   }
