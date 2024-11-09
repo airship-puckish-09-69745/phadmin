@@ -232,6 +232,9 @@
           </fieldset>
           <el-col :offset="16" :span="8">
             <el-form-item>
+              <el-button type="primary" @click="validData">检查配置</el-button>
+            </el-form-item>
+            <el-form-item>
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
           </el-col>
@@ -370,6 +373,24 @@ export default {
           }
         })
       })
+    },
+    validData() {
+      const data = this.getPostData()
+      //计算总步数
+      let steps = 0, odds = 0
+      for (const k in data.OddsCfg) {
+        steps += data.OddsCfg[k].ScriptSteps
+        odds += data.OddsCfg[k].ScriptOddsSum
+      }
+      //计算返回率
+      const rsp = odds / 20
+      if (steps !== 2000) {
+        Message.error("剧本总步数有误！当前总步数:" + steps)
+      } else if (rsp > 100 || rsp < 50) {
+        Message.error("返奖率异常！当前返奖率:" + odds + '%')
+      } else {
+        Message.error("当前返奖率:" + odds + '%')
+      }
     }
   }
 }
