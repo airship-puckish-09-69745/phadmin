@@ -232,7 +232,7 @@
           </fieldset>
           <el-col :offset="16" :span="8">
             <el-form-item>
-              <el-button type="primary" @click="validData">检查配置</el-button>&nbsp;
+              <el-button type="info" @click="validData">检查配置</el-button>&nbsp;
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
           </el-col>
