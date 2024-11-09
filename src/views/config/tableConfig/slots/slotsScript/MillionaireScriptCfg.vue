@@ -232,9 +232,7 @@
           </fieldset>
           <el-col :offset="16" :span="8">
             <el-form-item>
-              <el-button type="primary" @click="validData">检查配置</el-button>
-            </el-form-item>
-            <el-form-item>
+              <el-button type="primary" @click="validData">检查配置</el-button>&nbsp;
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
           </el-col>
@@ -387,7 +385,7 @@ export default {
       if (steps !== 2000) {
         Message.error("剧本总步数有误！当前总步数:" + steps)
       } else if (rsp > 100 || rsp < 50) {
-        Message.error("返奖率异常！当前返奖率:" + odds + '%')
+        Message.error("返奖率异常！当前返奖率:" + rsp + '%')
       } else {
         Message.error("当前返奖率:" + odds + '%')
       }
