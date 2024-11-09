@@ -612,6 +612,7 @@ export default {
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
+      reachOutNumCfgs:new Map(), //定局晋级人数
       tableData: [],
       limit: 10,
       total: 0,
@@ -767,6 +768,10 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                 
+                }else if(stage_detail[j].system_type == 2){
+                  //存储定局信息
+                  this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
               }
             }
@@ -1490,14 +1495,21 @@ export default {
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.OpenMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
+        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
           this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
           return false
         }
 
-        if (this.editForm.data.OpenMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
+        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
           this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
           return false
+        }
+        if (this.editForm.data.opentMatchType==1) {
+          const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
+          if (this.editForm.data.opentMatchMember < promotion_user_num){
+            this.errmsg('开赛人数不能小于定局第一阶段的晋级人数')
+            return false
+          }
         }
       }
       return true
