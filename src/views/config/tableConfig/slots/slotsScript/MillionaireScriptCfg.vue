@@ -381,11 +381,11 @@ export default {
         odds += data.OddsCfg[k].ScriptOddsSum
       }
       //计算返回率
-      const rsp = odds / 20
+      const rtp = odds / 2000 * 100
       if (steps !== 2000) {
         Message.error("剧本总步数有误！当前总步数:" + steps)
-      } else if (rsp > 100 || rsp < 50) {
-        Message.error("返奖率异常！当前返奖率:" + rsp + '%')
+      } else if (rtp > 100 || rtp < 50) {
+        Message.error("返奖率异常！当前返奖率:" + rtp + '%')
       } else {
         Message.error("当前返奖率:" + odds + '%')
       }
