@@ -23,7 +23,7 @@
         </el-row>
 
         <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
-          <el-col :span="6">
+          <el-col :span="8">
             <el-table
               ref="filterTable"
               :data="scriptTableData"
