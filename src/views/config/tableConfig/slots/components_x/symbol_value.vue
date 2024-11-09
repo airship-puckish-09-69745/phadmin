@@ -73,7 +73,7 @@ export default {
   },
   data() {
     return {
-      editDisabled: true,
+      editDisabled: false,
       lock: false
     }
   },

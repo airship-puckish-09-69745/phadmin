@@ -805,6 +805,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majorace_slots_cfg'),
                 name: 'majorace_slots_cfg',
                 meta: { title: 'MajorAce' }
+              },
+              {
+                path: 'mahjongfortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
+                name: 'mahjongfortune_slots_cfg',
+                meta: { title: 'MahjongFortune' }
               }
             ]
           },
@@ -1695,6 +1701,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'majorace_slots_log',
             meta: { title: 'MajorAce', gid: 162 }
+          },
+          {
+            path: 'mahjongfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongfortune_slots_log',
+            meta: { title: 'MahjongFortune', gid: 164 }
           }
         ]
       },
@@ -1817,6 +1829,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'majoracemars_slots_log',
             meta: { title: 'MajorAce(审)', gid: 163 }
+          },
+          {
+            path: 'mahjongfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongfortune_slots_log',
+            meta: { title: 'MahjongFortune(审)', gid: 165 }
           }
         ]
       },
