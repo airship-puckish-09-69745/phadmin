@@ -1495,16 +1495,16 @@ export default {
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.OpenMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
+        if (this.editForm.data.openMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
           this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
           return false
         }
 
-        if (this.editForm.data.OpenMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
+        if (this.editForm.data.openMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
           this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
           return false
         }
-        if (this.editForm.data.OpenMatchType==1) {
+        if (this.editForm.data.openMatchType==1) {
           const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
           if (this.editForm.data.opentMatchMember < promotion_user_num){
             this.errmsg('开赛人数不能小于定局第一阶段的晋级人数')
