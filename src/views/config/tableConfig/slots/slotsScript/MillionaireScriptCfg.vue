@@ -387,7 +387,7 @@ export default {
       } else if (rtp > 100 || rtp < 50) {
         Message.error("返奖率异常！当前返奖率:" + rtp + '%')
       } else {
-        Message.error("当前返奖率:" + odds + '%')
+        Message.error("当前返奖率:" + rtp + '%')
       }
     }
   }
