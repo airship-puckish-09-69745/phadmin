@@ -16,7 +16,7 @@
             <el-input v-model="cfg.BonusColCount" placeholder="请输入内容,如4,8,12,16"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="进入Bonus/免费模式概率">
+          <el-form-item label="进入Bonus/免费模式权重">
             <el-input v-model="cfg.BonusWeight" placeholder="请输入内容,如5,8,10"> <template slot="append">普通,Bonus,免费</template> </el-input>
           </el-form-item>
 
