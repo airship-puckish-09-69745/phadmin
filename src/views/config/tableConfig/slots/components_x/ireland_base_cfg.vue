@@ -27,6 +27,7 @@
               <el-option label="RomanArenaMars" :value="97" />
               <el-option label="SuperTongit" :value="98" />
               <el-option label="SuperTongitMars" :value="99" />
+              <el-option label="MahjongFortune" :value="100" />
               <el-option label="SuperGemsIII" :value="150" />
               <el-option label="SuperGemsIIIMars" :value="151" />
               <el-option label="AladdinsLamp" :value="152" />
@@ -41,6 +42,8 @@
               <el-option label="GigaAceMars" :value="161" />
               <el-option label="MajorAce" :value="162" />
               <el-option label="MajorAceMars" :value="163" />
+              <el-option label="FireLink" :value="166" />
+              <el-option label="FireLinkMars" :value="167" />
             </el-select>
           </el-form-item>
 
@@ -82,6 +85,13 @@
 
           <el-form-item label="购买免费模式保底奖池抽水‰">
             <el-input v-model.number="slotsData.BuyFreeFeeRate" />
+          </el-form-item>
+
+          <el-form-item label="是否启用新版剧本">
+            <el-select v-model="slotsData.EnableScriptV3" disabled>
+              <el-option label="启用" :value="true" />
+              <el-option label="禁用" :value="false" />
+            </el-select>
           </el-form-item>
 
           <el-form-item>

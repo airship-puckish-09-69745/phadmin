@@ -250,6 +250,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled='checkMatchRuleDisable(item.value)'
               />
             </el-select>
           </el-form-item>
@@ -260,10 +261,11 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
+                :disabled="item.disabled"
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="最低开赛人数：" :required="true">
+          <el-form-item  label="最低开赛人数：" :required="true">
             <el-input v-model="editForm.data.opentMatchMember" style="width: 200px;" placeholder="请填写开赛人数" />
           </el-form-item>
           <el-form-item label="封面图片URL：" :required="true">
@@ -288,7 +290,7 @@
                 inactive-text="否">
             </el-switch>
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="排序值：" :required="true">
+          <el-form-item  label="排序值：" :required="true">
             <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
           </el-form-item>
         </fieldset>
@@ -301,11 +303,11 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                :disabled='editForm.data.id > 0'
+                :disabled='checkRepeatDisable(item.value)'
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.repeatType == 0" label="比赛时间：" :required="true">
+          <el-form-item v-if="editForm.data.repeatType == 0" :label="getMatchStartTimeLabel()" :required="true">
             <el-date-picker
               v-model="editForm.loopDetail.onceTime"
               format="yyyy-MM-dd HH:mm"
@@ -317,6 +319,9 @@
               end-placeholder="结束日期"
               align="right"
             />
+            <el-tooltip v-if="editForm.data.opentMatchType == 1" class="item" effect="dark" content="人满开赛时结束时间无意义，但必须大于开始时间" placement="right-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
             <el-date-picker
@@ -413,13 +418,19 @@
               </el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item label="提前显示时间(秒)：" :required="true">
+          <el-form-item label="提前显示时间(秒)：" :required="true" v-if="editForm.data.opentMatchType==2">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
           </el-form-item>
-          <el-form-item label="提前进入时间(秒)：" :required="true">
+          <el-form-item label="创建时间(秒)" :required="true" v-if="editForm.data.opentMatchType==1">
+            <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写创建时间" />
+            <el-tooltip v-if="editForm.data.opentMatchType == 1" class="item" effect="dark" content="比赛开始时间=最后开赛时间-创建时间" placement="right-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="提前进入时间(秒)：" :required="true" v-if="editForm.data.opentMatchType==2">
             <el-input v-model.number="editForm.data.preEnterSeconds" style="width: 200px;" placeholder="请填写提前进入时间" />
           </el-form-item>
-          <el-form-item label="延迟进入时间(秒)：" :required="true">
+          <el-form-item label="延迟进入时间(秒)：" :required="true" v-if="editForm.data.opentMatchType==2">
             <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
           </el-form-item>
         </fieldset>
@@ -573,16 +584,17 @@ export default {
         { 'value': 1, 'label': '禁用' }
       ],
       repeatCfgs: [
-        { 'value': 0, 'label': '单场' },
-        { 'value': 1, 'label': '单天单场循环' },
-        { 'value': 2, 'label': '单天多场循环' }
+        { 'value': 0, 'label': '单场',disabled:false },
+        { 'value': 1, 'label': '单天单场循环',disabled:false },
+        { 'value': 2, 'label': '单天多场循环',disabled:false }
       ],
       disappearCfgs: [
         { 'value': 0, 'label': '结束后' },
         { 'value': 1, 'label': '开赛后' }
       ],
       openMatchTypeCfgs: [
-        { 'value': 2, 'label': '定时开赛' }
+        { 'value': 2, 'label': '定时开赛',disabled:false },
+        { 'value': 1, 'label': '人满即开',disabled:false }
       ],
       signUpTypeCfgs: [
         { 'value': 0, 'label': '付费报名' },
@@ -600,6 +612,7 @@ export default {
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
+      reachOutNumCfgs:new Map(), //定局晋级人数
       tableData: [],
       limit: 10,
       total: 0,
@@ -743,7 +756,8 @@ export default {
               this.csCfgs.push({
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
-                'gameId': [parseInt(objs.list[i].game_id, 10)]
+                'gameId': [parseInt(objs.list[i].game_id, 10)],
+                "ruleType":objs.list[i].rule_type,
               })
 
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
@@ -754,6 +768,10 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                 
+                }else if(stage_detail[j].system_type == 2){
+                  //存储定局信息
+                  this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
               }
             }
@@ -1028,6 +1046,7 @@ export default {
     },
     showForm(id) {
       if (id == 0) {
+        this.disableOpenType(false,0)
         this.editForm.title = '新增比赛配置'
         this.editForm.data = {
           id: 0,
@@ -1165,6 +1184,7 @@ export default {
             }
           }
         }
+        this.disableOpenType(true,editData.open_match_type)
       }
       this.editForm.visable = true
     },
@@ -1179,6 +1199,9 @@ export default {
       return flag
     },
     saveMatch() {
+      if(this.editForm.data.opentMatchType == 1){
+        this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds;
+      }
       if (!this.configCheck()) {
         return
       }
@@ -1208,6 +1231,7 @@ export default {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
       }
+      
       // console.log("测试：" + this.$store.getters.name)
       request({
         url: '/matchconfig/match/config/create',
@@ -1471,17 +1495,78 @@ export default {
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.opentMatchMember < endNum) {
+        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
           this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
           return false
         }
 
-        if (this.editForm.data.opentMatchMember < promoteNum) {
+        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
           this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
           return false
         }
+        if (this.editForm.data.opentMatchType==1) {
+          const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
+          if (this.editForm.data.opentMatchMember < promotion_user_num){
+            this.errmsg('开赛人数不能小于定局第一阶段的晋级人数')
+            return false
+          }
+        }
       }
       return true
+    },
+    disableOpenType(isDisable,enableType){
+      console.log("disable",isDisable,enableType)
+      if(isDisable){
+        for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
+          if(this.openMatchTypeCfgs[index].value == enableType){
+            this.openMatchTypeCfgs[index].disabled = false
+          }else{
+            this.openMatchTypeCfgs[index].disabled = true
+          }
+        }
+      }else{
+        for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
+          this.openMatchTypeCfgs[index].disabled = false
+        }
+      }
+    },
+    checkRepeatDisable(val){
+      if (this.editForm.data.id > 0 ) {
+        return true;
+      }
+      if(this.editForm.data.opentMatchType == 1){
+        if(val == 1 || val == 2){
+          return true
+        } 
+      }
+      return false;
+    },
+    getMatchStartTimeLabel(){
+      if(this.editForm.data.opentMatchType == 2){
+        return "开赛时间"
+      }else{
+        return "最后开赛时间"
+      }
+    },
+    checkMatchRuleDisable(val){
+      for(let i=0;i<this.csCfgs.length;i++){
+        if(this.csCfgs[i].value == val){
+          if(this.editForm.data.opentMatchType == 1){
+            if(this.csCfgs[i].ruleType != 1){
+              return true
+            }else{
+              return false
+            }
+          }else if (this.editForm.data.opentMatchType == 2) {
+            if(this.csCfgs[i].ruleType != 0){
+              return true
+            }else{
+              return false
+            }
+          }
+        }
+      }
+      return false
     }
   }
 }
