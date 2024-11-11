@@ -940,6 +940,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majoracemars_slots_cfg'),
                 name: 'majoracemars_slots_cfg',
                 meta: { title: 'MajorAce(审)' }
+              },
+              {
+                path: 'pharaohtreasure_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
+                name: 'pharaohtreasure_slots_cfg',
+                meta: { title: 'Pharaoh Treasure(审)' }
               }
             ]
           },
@@ -1457,8 +1463,8 @@ export const asyncRoutes = [
                 component: () => import('@/views/playerManage/playlog'),
                 name: 'playlog_filipinoMahjong',
                 meta: { title: '菲律宾麻将 ◐', gid: 122 }
-          }
-        ]
+              }
+            ]
           }
         ]
       },
