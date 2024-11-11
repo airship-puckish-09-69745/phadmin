@@ -15,6 +15,7 @@
           </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <h3 style="text-align:center;color: red;">【该配置中的scatter图标赔付倍数对应4个、5个、6个】</h3>
             <publish primary-key="ID" :key-id="getFullKey('pharaohtreasuremars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-pay-table v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" :label-map="labelMap" :start-col="4" @saveData="saveBaseCfg" />
           </el-tab-pane>
