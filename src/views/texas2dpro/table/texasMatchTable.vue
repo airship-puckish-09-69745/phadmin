@@ -421,13 +421,13 @@ export default {
       ],
       BlindTypeName: [
         { key: '[1]快速盲注配置', value: 1 },
-        { key: '[2]常规盲注配置', value: 2 },
+        { key: '[2]小赛2m升盲', value: 2 },
         { key: '[3]Daily Free', value: 3 }
       ],
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
-        { key: '[1]固定奖励1', value: 1 },
-        { key: '[2]固定奖励2', value: 2 },
+        { key: '[1]188奖池赛', value: 1 },
+        { key: '[2]1288单场赛', value: 2 },
         { key: '[3]固定奖励3', value: 3 },
         { key: '[4]Daily Free', value: 4 }
       ],

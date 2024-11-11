@@ -23,7 +23,7 @@
         </el-row>
 
         <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
-          <el-col :span="6">
+          <el-col :span="8">
             <el-table
               ref="filterTable"
               :data="scriptTableData"
@@ -32,7 +32,7 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-              style="width: 500px"
+              style="width: 800px"
             >
               <el-table-column label="命中统计">
                 <el-table-column
@@ -68,6 +68,10 @@
                     {{ (parseInt(scope.row.cnt) / sumData[scope.row.gid] * 100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
+
+                <el-table-column prop="idx" label="Scatter次数" width="130px"><template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template></el-table-column>
+                <el-table-column prop="idx" label="Scatter占比" width="130px"><template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template></el-table-column>
+
               </el-table-column>
             </el-table>
             <el-row>
@@ -474,6 +478,7 @@ export default {
 
       Actions: {},
       ActionOdds: 1,
+      scatterCounts: []
     }
   },
   created() {
@@ -626,6 +631,7 @@ export default {
         let scriptTableData = []
         let stepTableData = []
         let jackpotTableData = []
+        let scatterCounts = []
 
         this.stepSum = {}
         this.sumData = {}
@@ -714,6 +720,10 @@ export default {
                   jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].probability = parseFloat(response.Data['script'][key])
                 }
               }
+            } else if (strings1[0] === 'scatter') {
+              if (strings1[1] === 'count') {
+                scatterCounts[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+              }
             }
           }
 
@@ -770,6 +780,7 @@ export default {
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
         this.queryKeyInput()
+        this.scatterCounts = scatterCounts
 
         $this.loading = false
       })
@@ -953,6 +964,24 @@ export default {
           return 'GRAND'
         default:
           return '无'
+      }
+    },
+    getScatterCount(idx) {
+      idx = parseInt(idx)
+      if (typeof(this.scatterCounts[idx]) === 'undefined') {
+        return 0
+      } else {
+        return this.scatterCounts[idx]
+      }
+    },
+    getScatterPercent(idx, totalCnt) {
+      const scatterCnt = this.getScatterCount(idx)
+      totalCnt = parseInt(totalCnt)
+      if (totalCnt <= 0 || scatterCnt <= 0) {
+        return '0%'
+      } else {
+        let percent = scatterCnt * 100 / totalCnt
+        return percent.toFixed(2) + '%'
       }
     }
   }
