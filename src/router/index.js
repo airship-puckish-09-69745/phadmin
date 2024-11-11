@@ -811,6 +811,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
                 name: 'mahjongfortune_slots_cfg',
                 meta: { title: 'MahjongFortune' }
+              },
+              {
+                path: 'firelink_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/firelink_slots_cfg'),
+                name: 'firelink_slots_cfg',
+                meta: { title: 'FireLink' }
               }
             ]
           },
@@ -1658,13 +1664,13 @@ export const asyncRoutes = [
             path: 'romanarena_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'romanarena_slots_log',
-            meta: { title: 'roman arena', gid: 96 }
+            meta: { title: 'Roman Arena', gid: 96 }
           },
           {
             path: 'supertongit_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supertongit_slots_log',
-            meta: { title: 'superTongit', gid: 98 }
+            meta: { title: 'SuperTongit', gid: 98 }
           },
           {
             path: 'supergemiii_slots_log',
