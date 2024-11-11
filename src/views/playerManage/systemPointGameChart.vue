@@ -187,7 +187,7 @@
           width="150"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.ItemChanged / 1000) }}
+            {{ formatNumber(scope.row.ItemChanged) }}
           </template>
         </el-table-column>
 
@@ -518,6 +518,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          console.log('do init 111111', response.Data)
           $this.users = response.Data || []
           $this.userVisible = true
         }
