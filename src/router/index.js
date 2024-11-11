@@ -554,9 +554,23 @@ export const asyncRoutes = [
                     path: 'filipinoMahjongTable',
                     component: () => import('@/views/filipinoMahjong/table/filipinoMahjongTable'),
                     name: 'filipinoMahjongTable',
-                    meta: { title: '菲律宾麻将' }
-          }
-        ]
+                    meta: { title: '菲律宾麻将配桌' }
+                  }
+                ]
+              },
+              {
+                path: 'filipinoMahjongRobot',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '菲律宾麻将 AI', noCache: true },
+                children: [
+                  {
+                    path: 'filipinoMahjongRobot',
+                    component: () => import('@/views/filipinoMahjong/table/filipinoMahjongRobot'),
+                    name: 'filipinoMahjongRobot',
+                    meta: { title: '菲律宾麻将 AI' }
+                  }
+                ]
               }
             ]
           }
