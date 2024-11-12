@@ -1415,6 +1415,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_ginRummy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_ginRummy',
+            meta: { title: 'GinRummy◐', gid: 116 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',

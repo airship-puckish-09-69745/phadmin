@@ -2473,8 +2473,8 @@
       </el-table>
     </el-dialog>
 
-    <texas-n-l-h-detail-log v-if="gameLogComponent.gid==32" :game-log="gameLogComponent" @closeDialog="closeDialog" />
-    <qiu-qiu-game-log v-if="gameLogComponent.gid==111" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <texas-n-l-h-detail-log v-if="gameLogComponent.gid === 32" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <qiu-qiu-game-log v-if="gameLogComponent.gid === 111" :game-log="gameLogComponent" @closeDialog="closeDialog" />
 
     <wingo-lottery-detail-log v-if="gameLogComponent.gid === 112" :game-log="gameLogComponent.detail" :game-log-visible="gameLogComponent.visible" :gid="112" @closeDialog="closeDialog" />
 

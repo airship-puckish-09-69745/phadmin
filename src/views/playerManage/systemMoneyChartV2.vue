@@ -836,7 +836,7 @@ export default {
     },
     checkDate(ob, type, originData, healthData) {
       if (ob) {
-        if (ob.Gid > 50 && ob.Gid < 100) {
+        if (this.isSlots(ob.Gid)) {
           // 老虎机目前没有存 MoneyLose
           if (type == 1) {
             // 老虎机目前没有存 MoneyLose
