@@ -837,6 +837,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/firelink_slots_cfg'),
                 name: 'firelink_slots_cfg',
                 meta: { title: 'FireLink' }
+              },
+              {
+                path: 'pharaohtreasure_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
+                name: 'pharaohtreasure_slots_cfg',
+                meta: { title: 'PharaohTreasure' }
               }
             ]
           },
@@ -962,9 +968,9 @@ export const asyncRoutes = [
                 meta: { title: 'MajorAce(审)' }
               },
               {
-                path: 'pharaohtreasure_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
-                name: 'pharaohtreasure_slots_cfg',
+                path: 'pharaohtreasuremars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
+                name: 'pharaohtreasuremars_slots_cfg',
                 meta: { title: 'Pharaoh Treasure(审)' }
               }
             ]
