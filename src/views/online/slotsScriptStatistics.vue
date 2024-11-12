@@ -651,6 +651,15 @@ export default {
     newItem() {
       return this.item
     },
+    newBigPrize() {
+      this.bigPrize = {
+        count: 0,
+        hit: 0,
+        tax: 0,
+        money: 0,
+        sections_items: []
+      }
+    },
     updateGid() {
       this.queryGid = 80
     },
@@ -942,9 +951,16 @@ export default {
           bet: this.bigPrizeForm.bet
         }
       }).then(response => {
+        $this.newBigPrize()
         if (response.RetCode === 0) {
-          console.log('bigPrizeStatistic>>>', response.Data)
+          $this.bigPrize.count = response.Data.script.count || 0
+          $this.bigPrize.hit = response.Data.script.hit || 0
+          $this.bigPrize.money = response.Data.script.money || 0
+          $this.bigPrize.tax = response.Data.script.tax || 0
+          $this.bigPrize.sections_items = response.Data.script.sections_items || 0
         }
+        $this.loading = false
+      }).catch(function() {
         $this.loading = false
       })
     },
