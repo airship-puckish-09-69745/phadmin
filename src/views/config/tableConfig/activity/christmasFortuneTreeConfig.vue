@@ -31,7 +31,7 @@
                     <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="24">
                   <el-form-item label="下注/赢钱获得圣诞袜比例">
                     <el-input v-model.number="item.SockGainRatio" size="mini">
                       <template slot="append">%</template>
