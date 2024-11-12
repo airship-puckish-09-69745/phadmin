@@ -378,6 +378,7 @@ export default {
         152: 'Aladdin\'s Lamp',
         150: 'SuperGems3',
         156: 'Crazy Ace',
+        158: 'Shark Kingdom',
         118: 'Car Racing',
         120: 'Tongits Swap',
         162: 'Major Ace',
@@ -387,7 +388,7 @@ export default {
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118], // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118,158], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
