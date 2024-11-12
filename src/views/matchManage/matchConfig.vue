@@ -1511,6 +1511,10 @@ export default {
             return false
           }
         }
+        if(this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
+          this.errmsg('sng比赛必须开赛后消失')
+          return false
+        }
       }
       return true
     },
