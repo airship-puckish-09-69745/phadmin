@@ -39,8 +39,13 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
-                  <el-form-item label="规则图片URL：" :required="true">
-                    <ImagePicker v-model="item.ImgUrl" />
+                  <el-form-item label="规则图片横板：" :required="true">
+                    <ImagePicker v-model="item.RuleImgHor" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="规则图片竖版：" :required="true">
+                    <ImagePicker v-model="item.RuleImgVer" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
@@ -346,7 +351,8 @@ export default {
         EndTime: 1735487999000,
         ShowEndTime: 1735574399000,
         SockGainRatio: 10,
-        ImgUrl: '',
+        RuleImgHor: '',
+        RuleImgVer: '',
         PrizePoolCfg: [
           {
             RaffleLevel: 200,
