@@ -27,6 +27,7 @@
         <div
           :class="gid===10000?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
           @click="getInfo(10000,2)"
+          :style="{ height: '130px' }"
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
@@ -57,6 +58,7 @@
             v-if="!isSlots(o)"
             :class="gid===o?'card-panel card-panel_selected':'card-panel card-panel_selected_not'"
             @click="getInfo(o,2)"
+            :style="{ height: '130px' }"
           >
             <el-tooltip class="item" effect="dark" placement="top" :disabled="o!=37">
               <div slot="content" style="white-space: pre-line;font-size: 14px" v-html="getBlackJackTitle()" />
