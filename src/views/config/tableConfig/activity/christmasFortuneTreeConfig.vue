@@ -38,12 +38,12 @@
                     </el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="24">
+                <el-col :span="12">
                   <el-form-item label="规则图片横板：" :required="true">
                     <ImagePicker v-model="item.RuleImgHor" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="24">
+                <el-col :span="12">
                   <el-form-item label="规则图片竖版：" :required="true">
                     <ImagePicker v-model="item.RuleImgVer" />
                   </el-form-item>
