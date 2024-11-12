@@ -119,7 +119,7 @@ import {$libDate, $libShow} from "@/utils/common";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'QiuQiuGameLog',
+  name: 'GinRummy',
   components: {},
   props: {
     GameLog: {
@@ -201,6 +201,7 @@ export default {
     },
 
     initData(val) {
+      console.log("===============",val)
       val.detail.players.forEach(item => {
         this.userData[item.uid]=item
       })

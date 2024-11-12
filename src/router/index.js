@@ -696,7 +696,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
             meta: { title: 'Carracing ◐' }
-          }
+          },
+          {
+            path: 'MinesBattleTable',
+            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+            name: 'MinesBattleTable',
+            meta: { title: 'MinesBattle ◐' }
+          },
         ]
       },
 
