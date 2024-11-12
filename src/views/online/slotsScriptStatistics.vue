@@ -404,7 +404,7 @@
                   <template slot="label">
                     今天中奖概率
                   </template>
-                  {{ bigPrize.count === 0 ? 0 : bigPrize.hit/bigPrize.count * 100 }}
+                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit/bigPrize.count * 100).toFixed(2) + "%") }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
@@ -433,13 +433,9 @@
                       prop="odd_range"
                       label="倍数区间"
                       width="130px"
-                    >
-                      <template slot-scope="scope">
-                        {{ getTitle(parseInt(scope.row.gid), parseInt(scope.row.idx)) }}
-                      </template>
-                    </el-table-column>
+                    />
                     <el-table-column
-                      prop="count"
+                      prop="hit"
                       label="中奖次数"
                     />
                     <el-table-column
@@ -447,12 +443,12 @@
                       label="中奖概率"
                     >
                       <template slot-scope="scope">
-                        {{ (scope.row.hit / parseInt(bigPrize.hit) * 100).toFixed(2) + "%" }}
+                        {{ scope.row.hit ? ((scope.row.hit / parseInt(bigPrize.hit) * 100).toFixed(2) + "%") : 0 }}
                       </template>
                     </el-table-column>
 
                     <el-table-column prop="odds" label="平均返奖倍数" width="130px">
-                      <template slot-scope="scope">{{ (scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2) + "%" }}</template>
+                      <template slot-scope="scope">{{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2) + "%") : 0 }}</template>
                     </el-table-column>
                   </el-table>
                 </el-descriptions-item>

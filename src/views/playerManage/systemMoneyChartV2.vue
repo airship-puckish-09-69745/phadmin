@@ -378,6 +378,7 @@ export default {
         152: 'Aladdin\'s Lamp',
         150: 'SuperGems3',
         156: 'Crazy Ace',
+        158: 'Shark Kingdom',
         118: 'Car Racing',
         120: 'Tongits Swap',
         162: 'Major Ace',
@@ -387,7 +388,7 @@ export default {
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 120], // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118,158], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -417,6 +418,9 @@ export default {
     this.addGameNames()
     this.getInfo(this.gid)
     this.getAuthorityData()
+    if (process.env.NODE_ENV === 'development') {
+      this.defaultOrder.push(120) // tongitsSwap
+    }
     console.log(this.$store.state.user.pers['USER_MANAGEMENT'])
   },
   methods: {
@@ -467,7 +471,7 @@ export default {
         }
       }
 
-      if (this.selectOrder != 1){
+      if (this.selectOrder != 1) {
         let objs = []
         for (let i = 0; i < this.sortOrder.length; i++) {
           const gid = this.sortOrder[i]
@@ -506,14 +510,14 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92,98,150,152,156)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 98, 150, 152, 156)
         } else {
           this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160, 162)
         }
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 38, 46, 47, 48, 35,49,113]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 38, 46, 47, 48, 35, 49, 113]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
@@ -522,7 +526,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49,46,35,113,120]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true
