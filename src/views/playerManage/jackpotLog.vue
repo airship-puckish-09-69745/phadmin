@@ -461,7 +461,7 @@ export default {
         { 'value': 1000002, 'label': '1000002' },
         { 'value': 1000007, 'label': '1000007' }
       ]
-      this.gameId = 106
+      this.searchForm.gameId = 106
     }
   },
   methods: {
