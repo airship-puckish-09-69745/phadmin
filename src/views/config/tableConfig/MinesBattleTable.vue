@@ -275,7 +275,6 @@
               label="玩家操作时长："
               :required="true"
               prop="item.ActionSeconds"
-              :rules="dataRule(true,{type:'n',range:'2-4'})"
             >
               <el-input v-model.number="edit.item.ActionSeconds" placeholder="玩家操作时长">
                 <template slot="append">秒</template>
@@ -285,7 +284,6 @@
               label="抽水费率："
               :required="true"
               prop="item.FlowRate"
-              :rules="dataRule(true,{type:'n',range:'2-4'})"
             >
               <el-input v-model.number="edit.item.FlowRate" placeholder="抽水费率">
                 <template slot="append">‰</template>
