@@ -87,12 +87,6 @@ export const constantRoutes = [
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
         name: 'dashboard',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      },
-      {
-        path: '/dashboardpoint',
-        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测(积分) ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
   },
@@ -2018,6 +2012,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/pointTransfer.vue'),
         name: 'pointtransfer',
         meta: { title: '积分转账日志 ◐' }
+      },
+      {
+        path: '/systemPointGameChart',
+        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
+        name: 'systemPointGameChart',
+        meta: { title: '积分系统健康监测 ◐' }
       }
     ]
   },
