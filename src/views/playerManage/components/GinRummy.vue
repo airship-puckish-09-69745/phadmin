@@ -1,115 +1,137 @@
 <template>
   <el-dialog v-if="GameLog.gid==116" title="GinRummy 详情" :visible.sync="GameLog.visible" width="1300px">
-    <el-descriptions class="margin-top" title="" :column="5" border>
+    <el-descriptions class="margin-top" title="" :column="4" border size="mini">
       <el-descriptions-item>
         <template slot="label">前注：</template>
-        {{ formatNumber(GameLog.detail.antes / 1000) }}
+        {{ formatNumber(GameLog.detail.tableMoney / 1000) }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">总台费：</template>
-        {{ formatNumber(GameLog.detail.totalTableFee / 1000) }}
+        <template slot="label">回合数：</template>
+        {{ formatNumber(GameLog.detail.round) }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">台费比例：</template>
-        {{ formatNumber(GameLog.detail.FlowRate / 1000) }}
+        <template slot="label">结束原因：</template>
+        {{ formatNumber(reasonOverMap[GameLog.detail.reasonOver]) }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">Pot：</template>
+        {{ formatNumber(GameLog.detail.pot / 1000) }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">开始时间：</template>
         {{ formatTime(GameLog.detail.startTime) }}
-      </el-descriptions-item>
-      <el-descriptions-item>
+      </el-descriptions-item><el-descriptions-item>
         <template slot="label">结束时间：</template>
-        {{ formatTime(GameLog.detail.endTime) }}
+        {{ formatTime(GameLog.detail.finishTime) }}
       </el-descriptions-item>
     </el-descriptions>
-      <el-table
-        :data="GameLog.detail.players"
-        border
-        :row-style="getUserStyle"
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :cell-style="libShow.DefaultTableCell"
-        size="mini"
-      >
-        <el-table-column label="uid">
-          <template slot-scope="scope">{{scope.row.uid }}</template>
-        </el-table-column>
-        <el-table-column label="是否庄家">
-          <template slot-scope="scope">{{scope.row.isDealer?'庄家':'闲家' }}</template>
-        </el-table-column>
-        <el-table-column label="总下注">
-          <template slot-scope="scope">{{formatNumber(scope.row.moneyBet/ 1000) }}</template>
-        </el-table-column>
-        <el-table-column label="总输赢">
-          <template slot-scope="scope">{{formatNumber((scope.row.moneyChange )/1000) }}</template>
-        </el-table-column>
-        <el-table-column label="玩家台费">
-          <template slot-scope="scope">{{formatNumber((scope.row.moneyTaxed )/1000) }}</template>
-        </el-table-column>
-      </el-table>
     <el-table
-      :data="GameLog.detail.turnInfos"
+      :data="GameLog.detail.roundRet"
+      border
+      :row-style="getUserStyle"
+      :header-cell-style="libShow.DefaultTableHeadClass"
+      :cell-style="libShow.DefaultTableCell"
+      size="mini"
+
+    >
+      <el-table-column label="Round" width="80px">
+        <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+      </el-table-column>
+      <el-table-column>
+        <template slot-scope="scope">
+          <el-table
+            :data="scope.row.player"
+            border
+            :row-style="getUserStyle"
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :cell-style="libShow.DefaultTableCell"
+            size="mini"
+            style="margin-top: -10px"
+
+          >
+            <el-table-column label="Uid">
+              <template slot-scope="scope2">{{ scope2.row.uid }}</template>
+            </el-table-column>
+            <el-table-column min-width="400px" label="手牌">
+              <template slot-scope="scope">
+                <span v-for="(k,v) in scope.row.groups">
+                  <fieldset style="display: inline-block;padding: 1px 1px 1px 1px;color: #0a76a4">
+                       <span v-for="(k2,v2) in k.cards" style="margin-top: 30px">
+                            <el-image
+                              style="width: 37px; height: 50px"
+                              :src="getCardUrl(cardConversionColor(k2,'2-2','4-4','3-3','1-1'))"
+                            />
+                </span>
+                  </fieldset>
+                </span>
+
+              </template>
+            </el-table-column>
+            <el-table-column label="手牌数量">
+              <template slot-scope="scope2">{{ scope2.row.cardsNum }}</template>
+            </el-table-column>
+            <el-table-column label="总得分">
+              <template slot-scope="scope2">{{ scope2.row.score }}</template>
+            </el-table-column>
+            <el-table-column label="剩余分数">
+              <template slot-scope="scope2">{{ scope2.row.scoreDie }}</template>
+            </el-table-column>
+            <el-table-column label="得分">
+              <template slot-scope="scope2">{{ scope2.row.scoreRound }}</template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-table
+      :data="GameLog.detail.players"
       border
       :header-cell-style="libShow.DefaultTableHeadClass"
       :cell-style="libShow.DefaultTableCell"
       size="mini"
       style="margin-top: 10px"
     >
-      <el-table-column label="轮数" width="120px">
-        <template slot-scope="scope">{{ roundMap[scope.row.Index] }}</template>
-      </el-table-column>
-      <el-table-column>
-        <template slot-scope="scope">
-          <el-table
-            :row-style="getUserStyle"
-            :data="scope.row.infos"
-            border
-          >
-            <el-table-column label="uid">
-              <template slot-scope="scope">{{ scope.row.uid }}</template>
-            </el-table-column>
-            <el-table-column label="座位">
-              <template slot-scope="scope">{{ scope.row.seatId }}</template>
-            </el-table-column>
-            <el-table-column label="操作类型">
-              <template slot-scope="scope">{{ cardType[scope.row.type] }}</template>
-            </el-table-column>
-            <el-table-column label="筹码值">
-              <template slot-scope="scope">{{ formatNumber(scope.row.chip /1000) }}</template>
-            </el-table-column>
-            <el-table-column label="操作">
-              <template slot-scope="scope">{{ scope.row.attitude == 0 ? '主动操作' : '被动操作' }}</template>
-            </el-table-column>
-            <el-table-column label="牌型">
-              <template slot-scope="scope" v-if=" scope.row.cardInfo">
-                <span v-if="scope.row.cardInfo.CardType >= 10">
-                {{ CardTypeMap[scope.row.cardInfo.CardType] }}
-              </span>
-                <span v-if="scope.row.cardInfo.CardType < 10">
-                  {{ getCardPoint(scope.row.cardInfo.CardPoint) }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column label="牌值"width="150px">
-              <template slot-scope="scope" v-if=" scope.row.cardInfo">
-                <div v-for="(card,index) in scope.row.cardInfo.cards" style="display: inline-table;">
-                  {{ '牌'+(index+1) }}
-                  <div v-if="card >= 0" class="dominoHr">
-                    <el-image
-                      style="width: 30px; height: 30px"
-                      :src="getDominoCardUrl(card,0)"
-                    />
-                    <el-image
-                      style="width: 30px; height: 30px;margin-top: -3px"
-                      :src="getDominoCardUrl(card,1)"
-                    />
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </template>
+
+      <el-table-column label="最终结算">
+         <el-table-column label="uid">
+           <template slot-scope="scope">{{ scope.row.uid }}</template>
+         </el-table-column>
+         <el-table-column label="总得分">
+           <template slot-scope="scope">{{ scope.row.score }}</template>
+         </el-table-column>
+         <el-table-column label="第四回合死牌点数">
+           <template slot-scope="scope">{{ scope.row.scoreDie4 }}</template>
+         </el-table-column>
+         <el-table-column label="第四回合先摸牌">
+           <template slot-scope="scope">{{ scope.row.isFirst4 === 1 ? '是' : '否' }}</template>
+         </el-table-column>
+         <el-table-column label="输赢">
+           <template slot-scope="scope">{{ scope.row.moneyWon  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="抽成">
+           <template slot-scope="scope">{{ scope.row.moneyTaxed  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="pot投入">
+           <template slot-scope="scope">{{ scope.row.moneyPotPay  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="pot">
+           <template slot-scope="scope">{{ scope.row.moneyPotWin  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="pot抽成">
+           <template slot-scope="scope">{{ scope.row.moneyPotTaxed  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="筹码变化金额">
+           <template slot-scope="scope">{{ scope.row.moneyChange  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="当前金额">
+           <template slot-scope="scope">{{ scope.row.moneyCur  / 1000}}</template>
+         </el-table-column>
+         <el-table-column label="抽成贡献(输家)">
+           <template slot-scope="scope">{{ scope.row.payRake  / 1000}}</template>
+         </el-table-column>
       </el-table-column>
     </el-table>
+
   </el-dialog>
 
 </template>
@@ -145,8 +167,14 @@ export default {
         2: 3, // 红桃 0x21->>0x31
         3: 1 //  方片  0x31->>0x11
       },
+      reasonOverMap:{
+        1:'超分',
+        2:'4局正常打完',
+        3:'投降',
+        4:'连续超时3次',
+      },
       UidMap: {},
-      userData:{},
+      userData: {},
       UidStyleMap: {},
       tableData: [],
       userInfo: {},
@@ -201,18 +229,18 @@ export default {
     },
 
     initData(val) {
-      console.log("===============",val)
+      console.log("===============", val)
       val.detail.players.forEach(item => {
-        this.userData[item.uid]=item
+        this.userData[item.uid] = item
       })
-      console.log("====,",this.userData)
+      console.log("====,", this.userData)
     },
     getCardPoint(val) {
       var s = val.toString(16);
-      if (s.length<2){
+      if (s.length < 2) {
         s = '0' + s
       }
-        return '(' + s[0] + ',' + s[1] + ')'
+      return '(' + s[0] + ',' + s[1] + ')'
     },
     getRealUid(uid) {
       if (uid < 1000000) {
@@ -222,11 +250,11 @@ export default {
       }
       return uid
     },
-    getUserStyle(  {row,idx} ) {
-      if (this.userData[row.uid].isDealer) {
-        return { color: 'red' , width: '120px', textAlign: 'center',fontSize: '12px',height: '20px'}
-      }
-      return {fontSize: '12px',height: '20px'}
+    getUserStyle({row, idx}) {
+      // if (this.userData[row.uid].isDealer) {
+      //   return { color: 'red' , width: '120px', textAlign: 'center',fontSize: '12px',height: '20px'}
+      // }
+      // return {fontSize: '12px',height: '20px'}
     },
     formatNumber(n) {
       return n.toLocaleString()
@@ -258,10 +286,9 @@ export default {
       return newCard
     },
     getCardUrl(card) {
-      if (card == '') {
+      if (card === '' || card === '' || 0) {
         return
       }
-      // const cardNum = this.getCardNum(card)
       return require('@/assets/poker/' + card + '.png')
     },
     formatTime(ts) {
@@ -269,6 +296,7 @@ export default {
     },
     cardConversionColor(num, meihua, heitao, hongtao, fangkuai) {
       // 要转换的颜色-转换后的颜色  梅花:?-2,黑桃:?-4,红桃:?-3,方块:?-1
+      console.log("===", num)
       if (num == 0) {
         return 2
       }
@@ -283,11 +311,12 @@ export default {
         this.ConversionColorMap[f[0]] = f[1]
       }
       var s = num.toString(16)
-      // 补0
+
+      // 补1
       if (s.length === 1) {
-        s = '0' + s[0]
+        s = '1' + s[0] + ''
       }
-      if (s[1] == 'e') {
+      if (s[1] === 'e') {
         s = s[0] + '1'
       }
       const result = '0x' + this.ConversionColorMap[s[0]] + s[1]
@@ -308,7 +337,8 @@ export default {
   display: inline-table;
   padding-left: 10px;
 }
-.dominoHr{
+
+.dominoHr {
   display: flex;
   flex-direction: column;
 }
