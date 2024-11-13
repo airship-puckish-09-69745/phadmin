@@ -30,20 +30,18 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              汇总：<span :class="getSummaryClass(summary[10000])"> {{
-                getSummaryResult(summary[10000]).toFixed(2)
+              汇总：<span :class="getSummaryClass(total[selectType])"> {{
+                getSummaryResult(total[selectType]).toFixed(2)
               }}% </span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[10000]) }}
+              收益：{{ getSystemGot(total[selectType]) }}
             </div>
             <div>
-              流水：{{ summary[10000] ? formatNumber(Math.floor(summary[10000].Bet / 1000)) : 0 }}
+              流水：{{ total[selectType] ? formatNumber(Math.floor(total[selectType].Bet / 1000)) : 0 }}
             </div>
             <div>
-              在玩：{{
-                summary[10000] ? summary[10000].OnlineCount : 0
-              }}({{ summary[10000] ? summary[10000].RecentFive : 0 }})
+              在玩：{{ total[selectType].OnlineCount }})
             </div>
           </div>
         </div>
@@ -317,6 +315,7 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
+      total: { 1: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }, 2: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }, 3: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }, 4: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }}, // 不同筛选下的汇总
       gameNames: {
         10: 'Crash',
         15: 'Texas Poker',
@@ -389,7 +388,7 @@ export default {
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118,158], // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 158], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -694,11 +693,32 @@ export default {
           } else {
             $this.summary = response.Data.Summary
             console.log($this.summary)
+
             let totalOnline = 0
+            $this.total[2] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[3] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[4] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+
             for (const o in $this.summary) {
-              totalOnline += $this.summary[o].OnlineCount
+              if (o === '10000') {
+                continue
+              }
+              totalOnline += $this.summary[o].OnlineCount > 0 ? $this.summary[o].OnlineCount : $this.summary[o].RecentFive
+
+              let sType = 4
+              if ($this.isSlots(parseInt(o))) {
+                sType = 3
+              } else if ($this.isPoker(parseInt(o))) {
+                sType = 2
+              }
+              $this.total[sType].Bet += $this.summary[o].Bet
+              $this.total[sType].Won += $this.summary[o].Won
+              $this.total[sType].Tax += $this.summary[o].Tax
+              $this.total[sType].Lose += $this.summary[o].Lose
+              $this.total[sType].OnlineCount += $this.summary[o].OnlineCount > 0 ? $this.summary[o].OnlineCount : $this.summary[o].RecentFive
             }
             $this.summary[10000].OnlineCount = totalOnline
+            $this.total[1] = $this.summary[10000]
           }
           $this.initChartData()
           $this.showHealth()
