@@ -178,7 +178,7 @@
 
 
     <el-dialog
-      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156) && searchForm.level === 0"
+      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -390,7 +390,8 @@ export default {
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 90, 'label': 'FortuneComing' },
         { 'value': 118, 'label': 'CarRacing' },
-        { 'value': 156, 'label': 'CrazyAce' }
+        { 'value': 156, 'label': 'CrazyAce' },
+        { 'value': 166, 'label': 'FireLink' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -550,7 +551,7 @@ export default {
           console.error("Error processing BetList:", error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
-      } else if (this.searchForm.gameId === 150) {
+      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166) {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
@@ -591,7 +592,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156) && this.searchForm.level === 0) {
+      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
           .filter(config => config.value !== 0) // 过滤掉 value 为 0 的选项
@@ -762,7 +763,7 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
-      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156) {
+      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166) {
         return parseInt(amount) / 100000
       }
       return parseInt(amount) / 1000

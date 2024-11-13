@@ -15,10 +15,10 @@ git clone http://192.168.1.53:3000/go-dev/idadmin.git
 cd idadmin
 
 # 安装依赖包
-npm install --registry=https://registry.npm.taobao.org
+npm install --registry=https://registry.npmmirror.com
 
 # npm 设置 淘宝镜像
-npm config set registry https://registry.npm.taobao.org
+npm config set registry https://registry.npmmirror.com
 ```
 
 ## 常用命令行

@@ -382,6 +382,7 @@ export default {
         118: 'Car Racing',
         120: 'Tongits Swap',
         162: 'Major Ace',
+        166: 'Fire Link',
         10000: '汇总'
       },
 
@@ -512,7 +513,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 98, 150, 152, 156)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160, 162)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160, 162, 166)
         }
       }
     },

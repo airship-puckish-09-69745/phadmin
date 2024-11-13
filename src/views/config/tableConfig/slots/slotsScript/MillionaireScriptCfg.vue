@@ -380,11 +380,11 @@ export default {
         steps += data.OddsCfg[k].ScriptSteps
         odds += data.OddsCfg[k].ScriptOddsSum
         scatterSwitchPercents += data.OddsCfg[k].SwitchScatterPercent
-        if (data.OddsCfg[k].NormalMatrixCacheSize < 5) {
+        if (data.OddsCfg[k].NormalMatrixCacheSize < 1) {
           Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMax + "的正常图案缓存数量无效!")
           return
         }
-        if (data.OddsCfg[k].SwitchScatterPercent > 0 && data.OddsCfg[k].ScatterMatrixCacheSize < 5) {
+        if (data.OddsCfg[k].SwitchScatterPercent > 0 && data.OddsCfg[k].ScatterMatrixCacheSize < 1) {
           Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMax + "的Scatter图案缓存数量无效!")
           return
         }
