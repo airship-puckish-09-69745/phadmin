@@ -17,6 +17,8 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
+              filterable
+              default-first-option
             />
           </el-select>
         </el-form-item>
@@ -238,7 +240,8 @@ export default {
         { 'value': 90, 'label': 'FortuneComing' },
         { 'value': 118, 'label': 'CarRacing' },
         { 'value': 150, 'label': 'SuperGemIII' },
-        { 'value': 156, 'label': 'CrazyAce' }
+        { 'value': 156, 'label': 'CrazyAce' },
+        { 'value': 82, 'label': 'Millionaire' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },

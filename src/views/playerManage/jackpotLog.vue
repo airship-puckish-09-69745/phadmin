@@ -11,7 +11,7 @@
           />
         </el-form-item>
         <el-form-item label="玩法：">
-          <el-select v-model="searchForm.gameId" placeholder="请选择" @change="changeLevelConfig">
+          <el-select v-model="searchForm.gameId" placeholder="请选择" filterable default-first-option @change="changeLevelConfig">
             <el-option
               v-for="item in gameConfig"
               :key="item.value"
@@ -176,7 +176,6 @@
       </el-col>
     </el-row>
 
-
     <el-dialog
       v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166) && searchForm.level === 0"
       title="奖池信息"
@@ -201,7 +200,7 @@
         </el-table-column>
 
         <!-- 展示奖池列 -->
-        <el-table-column label="展示奖池" v-if="envProjectName === 'ph'">
+        <el-table-column v-if="envProjectName === 'ph'" label="展示奖池">
           <template slot-scope="scope">
             {{ toRupee(scope.row.ShowPool) }}
           </template>
@@ -240,7 +239,7 @@
         </el-table-column>
 
         <!-- 展示奖池列 -->
-        <el-table-column label="展示奖池1" v-if="envProjectName === 'ph'">
+        <el-table-column v-if="envProjectName === 'ph'" label="展示奖池1">
           <template slot-scope="scope">
             {{ toRupee(scope.row.ShowPool) }}
           </template>
@@ -259,14 +258,14 @@
             <el-input v-model="prizeForm.ChangeNum" size="mini" />
           </el-col>
           <el-col :span="4" style="margin-left: 10px;">
-          <el-select v-model="prizeForm.Level" placeholder="请选择" @change="changeLevelConfig">
-            <el-option
-              v-for="item in fCLevelConfig"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+            <el-select v-model="prizeForm.Level" placeholder="请选择" @change="changeLevelConfig">
+              <el-option
+                v-for="item in fCLevelConfig"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
           </el-col>
           <el-col :span="4">
             <el-button style="margin-left: 10px;" type="primary" size="mini" @click="changePrizePool(false)">保存</el-button>
@@ -414,7 +413,7 @@ export default {
         { 'value': 3, 'label': '后台调整用户奖池' },
         { 'value': 4, 'label': '后台调整展示奖池' }
       ],
-      fCLevelConfig : [
+      fCLevelConfig: [
         { 'value': 5002, 'label': '下注额5中奖200倍' },
         { 'value': 10002, 'label': '下注额10中奖200倍' },
         { 'value': 50002, 'label': '下注额50中奖200倍' },
@@ -440,8 +439,8 @@ export default {
       itemProgressInfo: {
         Progress: 0,
         AwardNum: 0,
-        ClearTimeStr: "",
-        AwardFullTimeStr:""
+        ClearTimeStr: '',
+        AwardFullTimeStr: ''
       },
       envProjectName: process.env.VUE_APP_PROJECT,
       prizeForm: {
@@ -455,7 +454,15 @@ export default {
     }
   },
   created() {
-    console.log('======', this.envProjectName)
+    console.log('======', process.env.VUE_APP_PROJECT_NAME)
+    if (process.env.VUE_APP_PROJECT_NAME === 'Zoo-线上环境') {
+      this.appConfig = [
+        { 'value': 0, 'label': '全部' },
+        { 'value': 1000002, 'label': '1000002' },
+        { 'value': 1000007, 'label': '1000007' }
+      ]
+      this.gameId = 106
+    }
   },
   methods: {
     search() {
@@ -535,20 +542,20 @@ export default {
               const baseBetFactor = bet / 1000 * cfg.BaseBet
               if (bet == 50 || bet == 100) {
                 return [
-                  { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet/10, '中将200倍'].join('') }
+                  { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet / 10, '中将200倍'].join('') }
                 ]
               }
               return [
-                { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet/10, '中将200倍'].join('') },
-                { 'value': baseBetFactor * 1000 + 5, 'label': ['下注额', bet/10, '中将500倍'].join('') },
-                { 'value': baseBetFactor * 1000 + 10, 'label': ['下注额', bet/10, '中将1000倍'].join('') }
+                { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet / 10, '中将200倍'].join('') },
+                { 'value': baseBetFactor * 1000 + 5, 'label': ['下注额', bet / 10, '中将500倍'].join('') },
+                { 'value': baseBetFactor * 1000 + 10, 'label': ['下注额', bet / 10, '中将1000倍'].join('') }
               ]
             }).flat()
 
             this.levelConfig = this.levelConfig.concat(betConfig)
           }
         }).catch(error => {
-          console.error("Error processing BetList:", error)
+          console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
       } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166) {
@@ -570,7 +577,7 @@ export default {
             this.levelConfig = this.levelConfig.concat(betConfig)
           }
         }).catch(error => {
-          console.error("Error processing BetList:", error)
+          console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
       } else if (this.searchForm.gameId === 156) {
@@ -690,11 +697,11 @@ export default {
     changeItemPool() {
       const _this = this
       let ProgressChange = _this.itemForm.progressChange
-      if (ProgressChange === "") {
+      if (ProgressChange === '') {
         ProgressChange = 0
       }
       let AwardChange = _this.itemForm.AwardChange
-      if (AwardChange === "") {
+      if (AwardChange === '') {
         AwardChange = 0
       }
       request({
@@ -707,7 +714,7 @@ export default {
           App: _this.searchForm.app,
           Level: _this.searchForm.level,
           ProgressChange: ProgressChange,
-          AwardChange: AwardChange,
+          AwardChange: AwardChange
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -818,7 +825,7 @@ export default {
           return null
         }
       }).catch(error => {
-        console.error("Error fetching data:", error)
+        console.error('Error fetching data:', error)
         return []
       })
     },
@@ -837,7 +844,7 @@ export default {
           return null
         }
       }).catch(error => {
-        console.error("Error fetching data:", error)
+        console.error('Error fetching data:', error)
         return []
       })
     },
