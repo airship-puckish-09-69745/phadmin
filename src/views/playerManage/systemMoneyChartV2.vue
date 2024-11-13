@@ -30,12 +30,12 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              汇总：<span :class="getSummaryClass(total[selectType])"> {{
-                getSummaryResult(total[selectType]).toFixed(2)
+              汇总：<span :class="getSummaryClass(total[selectType], selectType == 3)"> {{
+                getSummaryResult(total[selectType], selectType == 3).toFixed(2)
               }}% </span>
             </div>
             <div>
-              收益：{{ getSystemGot(total[selectType]) }}
+              收益：{{ getSystemGot(total[selectType], selectType == 3) }}
             </div>
             <div>
               流水：{{ total[selectType] ? formatNumber(Math.floor(total[selectType].Bet / 1000)) : 0 }}
@@ -54,12 +54,12 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{
-                getSummaryResult(summary[o]).toFixed(2)
+              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], false)"> {{
+                getSummaryResult(summary[o], false).toFixed(2)
               }}%</span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[o]) }}
+              收益：{{ getSystemGot(summary[o], false) }}
             </div>
             <div>
               流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -77,12 +77,12 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{
-                getSummaryResult(summary[o]).toFixed(2)
+              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o],false)"> {{
+                getSummaryResult(summary[o],false).toFixed(2)
               }}%</span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[o]) }}
+              收益：{{ getSystemGot(summary[o],false) }}
             </div>
             <div>
               流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -107,11 +107,11 @@
               <div class="card-panel-description">
                 <div class="card-panel-text">
                   {{ gameNames[o] }}：<span
-                    :class="getSummaryClass(summary[o])"
-                  > {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+                    :class="getSummaryClass(summary[o],false)"
+                  > {{ getSummaryResult(summary[o],false).toFixed(2) }}%</span>
                 </div>
                 <div>
-                  收益：{{ getSystemGot(summary[o]) }}
+                  收益：{{ getSystemGot(summary[o],false) }}
                 </div>
                 <div>
                   流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -135,12 +135,12 @@
           >
             <div class="card-panel-description">
               <div class="card-panel-text">
-                {{ gameNames[o] }}：<span :class="getSummaryRtpClass(summary[o])"> {{
-                  getSlotsSummaryResult(summary[o])
+                {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], true)"> {{
+                  getSummaryResult(summary[o], true).toFixed(2)
                 }}%</span>
               </div>
               <div>
-                收益：{{ summary[o] ? formatNumber(Math.floor((summary[o].Bet - summary[o].Won) / 1000)) : 0 }}
+                收益：{{getSystemGot(summary[o],true) }}
               </div>
               <div>
                 总下注：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -578,9 +578,12 @@ export default {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
-    getSummaryClass(ob) {
+    getSummaryClass(ob, isSlot) {
       if (ob && ob.Bet !== 0) {
-        const systemGot = ob.Lose + ob.Tax - ob.Won
+        let systemGot = ob.Lose + ob.Tax - ob.Won
+        if (isSlot) {
+          systemGot = ob.Bet - ob.Won
+        }
         const rate = systemGot * 100 / ob.Bet
         if (rate > 5.5) {
           return 'card-panel-OK'
@@ -593,7 +596,7 @@ export default {
         return 'card-panel-Normal'
       }
     },
-    getSummaryRtpClass(ob) {
+/*    getSummaryRtpClass(ob) {
       if (ob && ob.Bet !== 0) {
         const systemGot = ob.Bet - ob.Won
         const rate = systemGot * 100 / ob.Bet
@@ -607,18 +610,25 @@ export default {
       } else {
         return 'card-panel-Normal'
       }
-    },
-    getSummaryResult(ob) {
+    },*/
+    getSummaryResult(ob, isSlots) {
       if (ob && ob.Bet !== 0) {
-        const systemGot = ob.Lose + ob.Tax - ob.Won
+        let systemGot = ob.Lose + ob.Tax - ob.Won
+        if (isSlots) {
+          systemGot = ob.Bet - ob.Won
+        }
         return systemGot * 100 / ob.Bet
       } else {
         return 0
       }
     },
-    getSystemGot(ob) {
+    getSystemGot(ob, isSlots) {
       if (ob) {
-        return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
+        if (isSlots) {
+          return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+        } else {
+          return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
+        }
       }
     },
     getRtp(ob) {
@@ -627,12 +637,12 @@ export default {
       }
       return 0
     },
-    getSlotsSummaryResult(ob) {
+/*    getSlotsSummaryResult(ob) {
       if (ob && ob.Bet !== 0) {
         return ((ob.Bet - ob.Won) * 100 / ob.Bet).toFixed(2)
       }
       return 0
-    },
+    },*/
     getReturnMoney(ob) {
       if (ob) {
         return this.formatNumber((ob.Bet - ob.Lose + ob.Won) / 1000)
