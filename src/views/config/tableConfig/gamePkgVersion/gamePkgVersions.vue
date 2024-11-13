@@ -1353,15 +1353,14 @@ export default {
         return
       }
       let text = this.getChangeID(addData, delData, editData)
-      console.log("getChangeID", )
+      console.log("getChangeID", text)
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Path: '/misc/warn',
-          ID: this.LobbyVersionID,
           Env: this.env,
-          Step: this.stepNames[step],
+          Text: text,
         }
       }).then(response => {
         console.log(response)
