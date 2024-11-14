@@ -454,7 +454,7 @@
                     </el-table-column>
 
                     <el-table-column prop="odds" label="平均返奖倍数" width="130px">
-                      <template slot-scope="scope">{{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2) + "%") : 0 }}</template>
+                      <template slot-scope="scope">{{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2)) : 0 }}</template>
                     </el-table-column>
                   </el-table>
                 </el-descriptions-item>
