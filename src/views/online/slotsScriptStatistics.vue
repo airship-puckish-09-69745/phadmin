@@ -420,7 +420,7 @@
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
-                    奖池金额
+                    奖池剩余金额
                   </template>
                   {{ bigPrize.pool_money / 1000 }}
                 </el-descriptions-item>
