@@ -179,13 +179,18 @@ export default {
     },
     getInfo() {
       const $this = this
+      let uid = this.item.Uid
+      // 判断 uid 是否有值，没有值给 0
+      if (uid === '' || uid === undefined || isNaN(uid)) {
+        uid = 0
+      }
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Env: this.env,
           Path: '/bigprizelog/logs',
-          Uid: parseInt(this.item.Uid),
+          Uid: parseInt(uid),
           Gid: this.item.Gid,
           App: this.item.App,
           Time: this.getTime(this.item.date),
