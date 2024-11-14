@@ -404,7 +404,7 @@
                   <template slot="label">
                     今天中奖概率
                   </template>
-                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit/bigPrize.count * 100).toFixed(2) + "%") }}
+                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit/bigPrize.count * 100).toFixed(6) + "%") }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
