@@ -177,6 +177,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/colorTableUserData'),
         name: 'colorTableUserData',
         meta: { title: 'color - 桌子数据 ◐' }
+      },
+      {
+        path: 'bigprizelog',
+        component: () => import('@/views/playerManage/bigprizelog'),
+        name: '大奖日志',
+        meta: { title: 'slots - 大奖日志 ◐' }
       }
     ]
   },
