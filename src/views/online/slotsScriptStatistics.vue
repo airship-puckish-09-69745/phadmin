@@ -420,6 +420,12 @@
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
+                    奖池金额
+                  </template>
+                  {{ bigPrize.pool_money / 1000 }}
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template slot="label">
                     区间统计
                   </template>
                   <el-table
@@ -570,6 +576,7 @@ export default {
         hit: 0,
         tax: 0,
         money: 0,
+        pool_money: 0,
         sections_items: []
       },
       postData: {},
@@ -653,6 +660,7 @@ export default {
         hit: 0,
         tax: 0,
         money: 0,
+        pool_money: 0,
         sections_items: []
       }
     },
@@ -794,7 +802,6 @@ export default {
               if (strings1[1] === 'step') {
                 // 步数统计
                 // SlotsType_目标倍率_当前倍率_剧本_x_y
-                var strings1 = key.split('_')
                 let prefix = ''
                 if (parseInt(strings1[2]) === -2) {
                   prefix = '指定正数'
@@ -816,7 +823,7 @@ export default {
                 scriptMap[this.queryGid + '_' + prefix].rows[step] = []
                 scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data['script']['script_times_' + strings1[2] + '_' + strings1[3]]
               } else if (strings1[1] === 'times') {
-
+              //
               } else if (strings1[1] === 'count') {
                 var strings = key.split('_')
                 this.sumData[this.queryGid] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
@@ -953,6 +960,7 @@ export default {
           $this.bigPrize.hit = response.Data.script.hit || 0
           $this.bigPrize.money = response.Data.script.money || 0
           $this.bigPrize.tax = response.Data.script.tax || 0
+          $this.bigPrize.pool_money = response.Data.script.pool_money || 0
           $this.bigPrize.sections_items = response.Data.script.sections_items || 0
         }
         $this.loading = false
