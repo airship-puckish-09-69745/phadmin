@@ -382,6 +382,7 @@ export default {
         120: 'Tongits Swap',
         162: 'Major Ace',
         166: 'Fire Link',
+        123: 'Mines Battle',
         10000: '汇总'
       },
 
