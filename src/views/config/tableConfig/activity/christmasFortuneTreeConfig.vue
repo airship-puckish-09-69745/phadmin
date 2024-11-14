@@ -31,16 +31,21 @@
                     <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="24">
                   <el-form-item label="下注/赢钱获得圣诞袜比例">
                     <el-input v-model.number="item.SockGainRatio" size="mini">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="24">
-                  <el-form-item label="规则图片URL：" :required="true">
-                    <ImagePicker v-model="item.ImgUrl" />
+                <el-col :span="12">
+                  <el-form-item label="规则图片横板：" :required="true">
+                    <ImagePicker v-model="item.RuleImgHor" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="规则图片竖版：" :required="true">
+                    <ImagePicker v-model="item.RuleImgVer" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="24">
@@ -346,7 +351,8 @@ export default {
         EndTime: 1735487999000,
         ShowEndTime: 1735574399000,
         SockGainRatio: 10,
-        ImgUrl: '',
+        RuleImgHor: '',
+        RuleImgVer: '',
         PrizePoolCfg: [
           {
             RaffleLevel: 200,

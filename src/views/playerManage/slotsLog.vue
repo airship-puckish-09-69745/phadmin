@@ -124,7 +124,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156].indexOf(gid) >= 0">
+        <template v-if="[150,156,166].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
@@ -166,7 +166,7 @@
             </el-table-column>
           </el-table-column>
         </template>
-        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,160,162].indexOf(gid) >= 0">
+        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -313,14 +313,14 @@ export default {
     console.log(1)
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
-    if (this.gid === 150) {
+    if (this.gid === 150 || this.gid === 166) {
       this.typeNames[1] = 'bonus'
     }
   },
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,160,162].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -537,7 +537,7 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150 || $this.gid === 156) {
+            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {

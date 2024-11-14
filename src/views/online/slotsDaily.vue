@@ -16,12 +16,13 @@
           <el-row>
             <el-descriptions class="margin-top" :column="2" border style="width: 1100px" title="小奖池">
 
-              <el-descriptions-item v-for="(v,k) in GamePrizePoolMap"v-if="(k+'').indexOf(value.slotsType)===0" class="background: #E1F3D8;">
+              <el-descriptions-item v-for="(v,k) in GamePrizePoolMap" v-if="(k+'').indexOf(value.slotsType)===0"
+                                    class="background: #E1F3D8;">
                 <template slot="label">
-                  <i class="el-icon-user" />
+                  <i class="el-icon-user"/>
                   {{ getGameName(k) }}
                 </template>
-                <span :style="v/1000>1000000?'color:red':''">{{ Math.floor(v/1000).toLocaleString() }}</span>
+                <span :style="v/1000>1000000?'color:red':''">{{ Math.floor(v / 1000).toLocaleString() }}</span>
               </el-descriptions-item>
 
             </el-descriptions>
@@ -77,7 +78,8 @@
                 width="100"
                 class-name="warning-row"
               >
-                <template slot-scope="scope"><span :style="percentColor(scope.row.yesterday.color)">{{ scope.row.yesterday.percent }}</span></template>
+                <template slot-scope="scope"><span
+                  :style="percentColor(scope.row.yesterday.color)">{{ scope.row.yesterday.percent }}</span></template>
               </el-table-column>
               <el-table-column
                 prop="yesterday"
@@ -101,7 +103,9 @@
                 prop="day7"
                 width="100"
               >
-                <template slot-scope="scope"><span :style="percentColor(scope.row.day7.color)">{{ scope.row.day7.percent }}</span></template>
+                <template slot-scope="scope"><span :style="percentColor(scope.row.day7.color)">{{
+                    scope.row.day7.percent
+                  }}</span></template>
               </el-table-column>
               <el-table-column
                 prop="day7"
@@ -158,6 +162,7 @@
   display: table;
   content: "";
 }
+
 .clearfix:after {
   clear: both
 }
@@ -166,7 +171,7 @@
 <script>
 import request from '@/utils/request'
 import store from '@/store'
-import { $libDate, $libShow, MoneyShow } from '@/utils/common'
+import {$libDate, $libShow, MoneyShow} from '@/utils/common'
 import slotsLineChart from './components/slotsLineChart'
 
 const RETURN_ALL_KEY = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
@@ -175,11 +180,10 @@ const RETURN_ALL_KEY_SUM = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'Slo
 const RETURN_HIT_KEY = ['SlotsReturn1Times', 'SlotsReturn2Times', 'SlotsReturn3Times', 'SlotsReturn4Times', 'SlotsReturn5Times', 'SlotsReturn6Times', 'Jackpot1Times', 'Jackpot2Times', 'Jackpot3Times', 'Jackpot4Times', 'Jackpot5Times', 'Jackpot6Times']
 
 export default {
-  components: { slotsLineChart },
+  components: {slotsLineChart},
   data() {
     return {
-      lists: [
-      ],
+      lists: [],
 
       libMoney: new MoneyShow(['TotalBet', 'SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']),
       dialogVisible: false,
@@ -195,7 +199,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167]
     }
   },
   created() {
@@ -225,7 +229,7 @@ export default {
             }
             this.lists.push(this.calcData(obj[key]))
           }
-          console.log("=========",this.lists)
+          console.log("=========", this.lists)
 
         } else {
           $this.$message.error(response.Data)
@@ -273,10 +277,14 @@ export default {
           return 'GrandAce'
         case 156:
           return 'CrazyAce'
+        case 158:
+          return 'SharkKingdom'
         case 160:
           return 'GigaAce'
         case 162:
           return 'MajorAce'
+        case 166:
+          return 'FireLink'
       }
       return '未知老虎机-' + sType
     },
@@ -310,8 +318,7 @@ export default {
         case 154:
         case 156:
         case 160:
-        case 162:
-        {
+        case 162: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
@@ -328,13 +335,13 @@ export default {
         case 86:
         case 150:
         case 152:
-        {
+        case 166: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
           lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          if (one.SlotsType === 150 || one.SlotsType === 152) {
+          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166) {
             lists.push(this.calcItemNormal('bonus返奖', 'SlotsReturn5', one))
           } else {
             lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
@@ -348,7 +355,7 @@ export default {
           break
         }
       }
-      console.log("========",one.SlotsType,lists)
+      console.log("========", one.SlotsType, lists)
 
       return lists
     },
@@ -379,9 +386,9 @@ export default {
     getObjRow(key) {
       const item = {
         key: key,
-        today: { 'number': 0, 'percent': '', color: '', hit: '-' },
-        yesterday: { 'number': 0, 'percent': '', color: '', hit: '-' },
-        day7: { 'number': 0, 'percent': '', color: '', hit: '-' }
+        today: {'number': 0, 'percent': '', color: '', hit: '-'},
+        yesterday: {'number': 0, 'percent': '', color: '', hit: '-'},
+        day7: {'number': 0, 'percent': '', color: '', hit: '-'}
       }
       return item
     },
@@ -533,7 +540,7 @@ export default {
       if (color == '') {
         return {}
       }
-      return { 'color': color }
+      return {'color': color}
     },
     // -------图表-------
     doShowChart(slotsType) {
@@ -926,56 +933,56 @@ export default {
       })
     },
     */
-   /*
-    createSeries(name, data) {
-      return {
-        name: name,
-        type: 'line',
-        // stack: 'Total',
-        data: data
-      }
-    },
-    */
-   /*
-    transTime(t) {
-      if (!t) {
-        return 0
-      }
-      let time = t
-      if (typeof t !== 'number') {
-        time = t.getTime()
-      }
-      return parseInt($libDate.SelectTimeToIndiaByZone(time) / 1000)
-    },
-    */
-   /*
-    getPercentTimes(num, deno) {
-      if (num == 0 || deno == 0) {
-        return 0.00
-      } else {
-        const p = ((num / deno) * 100).toFixed(3)
-        return p
-      }
-    },
-    */
-   /*
-    loading() {
-      this.tempLoading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-    },
-    */
-   /*
-    loadingClose() {
-      const $this = this
-      setTimeout(function() {
-        $this.tempLoading.close()
-      }, 500)
-    },
-    */
+    /*
+     createSeries(name, data) {
+       return {
+         name: name,
+         type: 'line',
+         // stack: 'Total',
+         data: data
+       }
+     },
+     */
+    /*
+     transTime(t) {
+       if (!t) {
+         return 0
+       }
+       let time = t
+       if (typeof t !== 'number') {
+         time = t.getTime()
+       }
+       return parseInt($libDate.SelectTimeToIndiaByZone(time) / 1000)
+     },
+     */
+    /*
+     getPercentTimes(num, deno) {
+       if (num == 0 || deno == 0) {
+         return 0.00
+       } else {
+         const p = ((num / deno) * 100).toFixed(3)
+         return p
+       }
+     },
+     */
+    /*
+     loading() {
+       this.tempLoading = this.$loading({
+         lock: true,
+         text: 'Loading',
+         spinner: 'el-icon-loading',
+         background: 'rgba(0, 0, 0, 0.7)'
+       })
+     },
+     */
+    /*
+     loadingClose() {
+       const $this = this
+       setTimeout(function() {
+         $this.tempLoading.close()
+       }, 500)
+     },
+     */
     getGameName(gid) {
       const id = parseInt(gid)
       if (id > 5000) {

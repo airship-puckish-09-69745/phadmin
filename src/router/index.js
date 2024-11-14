@@ -74,7 +74,7 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    meta: { title: '系统监控', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
+    meta: { title: '系统健康监测', icon: 'el-icon-pie-chart', perm: 'DATA_MONITOR' },
     children: [
       // {
       //   path: 'dashboard',
@@ -177,6 +177,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/colorTableUserData'),
         name: 'colorTableUserData',
         meta: { title: 'color - 桌子数据 ◐' }
+      },
+      {
+        path: 'bigprizelog',
+        component: () => import('@/views/playerManage/bigprizelog'),
+        name: '大奖日志',
+        meta: { title: 'slots - 大奖日志 ◐' }
       }
     ]
   },
@@ -554,9 +560,23 @@ export const asyncRoutes = [
                     path: 'filipinoMahjongTable',
                     component: () => import('@/views/filipinoMahjong/table/filipinoMahjongTable'),
                     name: 'filipinoMahjongTable',
-                    meta: { title: '菲律宾麻将' }
-          }
-        ]
+                    meta: { title: '菲律宾麻将配桌' }
+                  }
+                ]
+              },
+              {
+                path: 'filipinoMahjongRobot',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '菲律宾麻将 AI', noCache: true },
+                children: [
+                  {
+                    path: 'filipinoMahjongRobot',
+                    component: () => import('@/views/filipinoMahjong/table/filipinoMahjongRobot'),
+                    name: 'filipinoMahjongRobot',
+                    meta: { title: '菲律宾麻将 AI' }
+                  }
+                ]
               }
             ]
           }
@@ -676,7 +696,13 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
             meta: { title: 'Carracing ◐' }
-          }
+          },
+          {
+            path: 'MinesBattleTable',
+            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+            name: 'MinesBattleTable',
+            meta: { title: 'MinesBattle ◐' }
+          },
         ]
       },
 
@@ -811,6 +837,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
                 name: 'mahjongfortune_slots_cfg',
                 meta: { title: 'MahjongFortune' }
+              },
+              {
+                path: 'firelink_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/firelink_slots_cfg'),
+                name: 'firelink_slots_cfg',
+                meta: { title: 'FireLink' }
+              },
+              {
+                path: 'pharaohtreasure_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
+                name: 'pharaohtreasure_slots_cfg',
+                meta: { title: 'PharaohTreasure' }
               }
             ]
           },
@@ -934,6 +972,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/majoracemars_slots_cfg'),
                 name: 'majoracemars_slots_cfg',
                 meta: { title: 'MajorAce(审)' }
+              },
+              {
+                path: 'pharaohtreasuremars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
+                name: 'pharaohtreasuremars_slots_cfg',
+                meta: { title: 'Pharaoh Treasure(审)' }
               }
             ]
           },
@@ -1258,6 +1302,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchLimitWhite'),
         name: 'matchLimitWhite',
         meta: { title: '限制白名单', noCache: true }
+      },
+      {
+        path: 'matchWatcherList',
+        component: () => import('@/views/matchManage/watcherList.vue'),
+        name: 'matchWatcherList',
+        meta: { title: '主播名单', noCache: true }
       }
     ]
   },
@@ -1377,6 +1427,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_ginRummy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_ginRummy',
+            meta: { title: 'GinRummy◐', gid: 116 }
+          },
+          {
             path: 'texasNlhStat',
             component: () => import('@/views/empty'),
             redirect: 'noRedirect',
@@ -1445,8 +1501,8 @@ export const asyncRoutes = [
                 component: () => import('@/views/playerManage/playlog'),
                 name: 'playlog_filipinoMahjong',
                 meta: { title: '菲律宾麻将 ◐', gid: 122 }
-          }
-        ]
+              }
+            ]
           }
         ]
       },
@@ -1652,13 +1708,13 @@ export const asyncRoutes = [
             path: 'romanarena_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'romanarena_slots_log',
-            meta: { title: 'roman arena', gid: 96 }
+            meta: { title: 'Roman Arena', gid: 96 }
           },
           {
             path: 'supertongit_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supertongit_slots_log',
-            meta: { title: 'superTongit', gid: 98 }
+            meta: { title: 'SuperTongit', gid: 98 }
           },
           {
             path: 'supergemiii_slots_log',
@@ -1701,6 +1757,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'majorace_slots_log',
             meta: { title: 'MajorAce', gid: 162 }
+          },
+          {
+            path: 'mahjongfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongfortune_slots_log',
+            meta: { title: 'MahjongFortune', gid: 164 }
+          },
+          {
+            path: 'firelink_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'firelink_slots_log',
+            meta: { title: 'FireLink', gid: 166 }
           }
         ]
       },
@@ -1823,6 +1891,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'majoracemars_slots_log',
             meta: { title: 'MajorAce(审)', gid: 163 }
+          },
+          {
+            path: 'mahjongfortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongfortune_slots_log',
+            meta: { title: 'MahjongFortune(审)', gid: 165 }
           }
         ]
       },
@@ -1944,6 +2018,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/pointTransfer.vue'),
         name: 'pointtransfer',
         meta: { title: '积分转账日志 ◐' }
+      },
+      {
+        path: '/systemPointGameChart',
+        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
+        name: 'systemPointGameChart',
+        meta: { title: '积分系统健康监测 ◐' }
       }
     ]
   },

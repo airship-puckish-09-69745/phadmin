@@ -42,6 +42,8 @@
               <el-option label="GigaAceMars" :value="161" />
               <el-option label="MajorAce" :value="162" />
               <el-option label="MajorAceMars" :value="163" />
+              <el-option label="FireLink" :value="166" />
+              <el-option label="FireLinkMars" :value="167" />
             </el-select>
           </el-form-item>
 

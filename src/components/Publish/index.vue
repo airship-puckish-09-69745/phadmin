@@ -273,6 +273,12 @@ export default {
       default: function() {
         return true
       }
+    },
+    onStepChange: { // 后置发布的回调
+      type: Function,
+      default: function() {
+        return true
+      }
     }
   },
   data() {
@@ -374,6 +380,7 @@ export default {
             if (response.RetCode === 0) {
               $this.stepActive++
               $this.$message.success('发布成功')
+              $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
             }
           })
         })
@@ -386,6 +393,7 @@ export default {
           if (response.RetCode === 0) {
             $this.stepActive++
             $this.$message.success('发布成功')
+            $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
           }
         })
       }

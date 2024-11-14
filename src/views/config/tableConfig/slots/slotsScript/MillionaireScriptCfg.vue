@@ -232,6 +232,7 @@
           </fieldset>
           <el-col :offset="16" :span="8">
             <el-form-item>
+              <el-button type="info" @click="validData">检查配置</el-button>&nbsp;
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
           </el-col>
@@ -370,6 +371,38 @@ export default {
           }
         })
       })
+    },
+    validData() {
+      const data = this.getPostData()
+      //计算总步数
+      let steps = 0, odds = 0, scatterSwitchPercents = 0
+      for (const k in data.OddsCfg) {
+        steps += data.OddsCfg[k].ScriptSteps
+        odds += data.OddsCfg[k].ScriptOddsSum
+        scatterSwitchPercents += data.OddsCfg[k].SwitchScatterPercent
+        if (data.OddsCfg[k].NormalMatrixCacheSize < 1) {
+          Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMax + "的正常图案缓存数量无效!")
+          return
+        }
+        if (data.OddsCfg[k].SwitchScatterPercent > 0 && data.OddsCfg[k].ScatterMatrixCacheSize < 1) {
+          Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMax + "的Scatter图案缓存数量无效!")
+          return
+        }
+      }
+      //Scatter主图案总概率
+      if (scatterSwitchPercents !== 100) {
+        Message.error("Scatter主图案的总概率之和不是100%！当前值:" + scatterSwitchPercents + '%')
+        return
+      }
+      //计算返回率
+      const rtp = odds / 10 / data.ScriptSteps * 100
+      if (steps !== data.ScriptSteps) {
+        Message.error("剧本总步数有误！当前总步数:" + steps)
+      } else if (rtp > 100 || rtp < 50) {
+        Message.error("返奖率异常！当前返奖率:" + rtp + '%')
+      } else {
+        Message.success("当前返奖率:" + rtp + '%')
+      }
     }
   }
 }

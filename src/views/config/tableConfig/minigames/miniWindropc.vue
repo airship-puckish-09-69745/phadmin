@@ -825,7 +825,7 @@
                     </el-form-item>
                   </el-row>
                   <el-row >
-                    <el-form-item label="每x个小球开一次手机：">
+                    <el-form-item label="x个小球开一次手机：">
                       <el-input v-model.number="item.ItemFullProgress" placeholder="" />
                     </el-form-item>
                   </el-row>
