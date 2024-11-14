@@ -394,6 +394,15 @@
                   <el-input style="width: 80px;" v-model.number="scope.row.bottom_score"/>
                 </template>
               </el-table-column>
+              <el-table-column
+                prop="time_out"
+                label="开始前暂停时间(秒)"
+                v-if="envProjectName == 'ph_audit' && editForm.data.rule_type==1"
+              >
+                <template slot-scope="scope">
+                  <el-input style="width: 80px;" v-model.number="scope.row.time_out"/>
+                </template>
+              </el-table-column>
             </el-table>
             </el-form-item>
           </div>
@@ -419,6 +428,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       libShow: $libShow,
       form: {
         gameId: -1,
@@ -851,7 +861,7 @@ export default {
       let stageDetail = JSON.stringify(this.editForm.data.stage_detail)
       let gameId = parseInt(this.editForm.data.game_id, 10);
       let origin = this.editForm.data.game_id
-
+      console.log("save stageDetail==> ",stageDetail)
       // Message.info("gameId:" + gameId + " origin:" + origin)
 
       if (!this.configCheck()) {
