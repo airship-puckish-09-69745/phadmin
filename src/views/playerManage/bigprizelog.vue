@@ -179,14 +179,13 @@ export default {
     },
     getInfo() {
       const $this = this
-      console.log('time', this.getTime(this.item.date))
       request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
           Env: this.env,
           Path: '/bigprizelog/logs',
-          Uid: this.item.Uid,
+          Uid: parseInt(this.item.Uid),
           Gid: this.item.Gid,
           App: this.item.App,
           Time: this.getTime(this.item.date),
