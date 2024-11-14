@@ -579,7 +579,13 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          }, {
+            path: 'MinesBattleTable',
+            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+            name: 'MinesBattleTable',
+            meta: { title: 'MinesBattle ◐' }
           }
+
         ]
       },
       {
@@ -696,13 +702,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
             meta: { title: 'Carracing ◐' }
-          },
-          {
-            path: 'MinesBattleTable',
-            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
-            name: 'MinesBattleTable',
-            meta: { title: 'MinesBattle ◐' }
-          },
+          }
         ]
       },
 
@@ -1503,6 +1503,12 @@ export const asyncRoutes = [
                 meta: { title: '菲律宾麻将 ◐', gid: 122 }
               }
             ]
+          },
+          {
+            path: 'playlog_minesBattle',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_minesBattle',
+            meta: { title: 'MinesBattle◐', gid: 123 }
           }
         ]
       },
