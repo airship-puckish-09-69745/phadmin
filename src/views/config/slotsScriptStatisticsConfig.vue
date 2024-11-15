@@ -252,8 +252,9 @@ export default {
         return
       }
 
-      this.tableData.push(this.item)
+      this.clientDB.AddData(this.item)
       this.selectGameVisible = false
+      this.refresh()
     },
     delOddsList(idx) {
       this.item.OddsList.splice(idx, 1)
@@ -317,7 +318,6 @@ export default {
             for (let o of cfg) {
               console.log(o.OddsList)
               let bet = o.Bet
-              console.log("======",o.Gid,bet)
               for (let i = 0; i < o.OddsList.length; i++) {
                 o.OddsList[i].MaxOdds += parseInt(bet)
                 o.OddsList[i].MinOdds += parseInt(bet)
@@ -367,8 +367,9 @@ export default {
     },
     getCfg() {
       const cfg = []
-      for (const i in this.tableData) {
-        const item = JSON.parse(JSON.stringify(this.tableData[i]))
+      let data =this.clientDB.ShowData
+      for (const i in data) {
+        const item = JSON.parse(JSON.stringify(data[i]))
         cfg.push(item)
       }
       for (let o of cfg) {
