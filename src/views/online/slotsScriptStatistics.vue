@@ -1024,7 +1024,7 @@ export default {
           return a.app - b.app
         })
         returnMoneyTableData.sort(function (a, b){
-
+            a.bet - b.bet
         })
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
