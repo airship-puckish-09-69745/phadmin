@@ -88,6 +88,21 @@
             </el-form-item>
           </el-col>
         </el-row>
+        
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="互动道具每日免费次数" :required="true" prop="item.InteractDayFreeTimes" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.InteractDayFreeTimes" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="11">
+            <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
+              <el-input v-model="edit.item.InteractItemPrice" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-row>
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level" :rules="dataRule(true,{type:'n',range:'0'})">
