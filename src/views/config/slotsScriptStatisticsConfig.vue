@@ -268,7 +268,9 @@ export default {
       this.selectGameVisible = true
     },
     delRow(idx, row) {
-      this.tableData.splice(idx, 1)
+      // this.tableData.splice(idx, 1)
+      this.clientDB.DelData2("Gid",this.tableData[idx].Gid)
+      this.refresh()
     },
     addOddsList() {
       if (!this.item.OddsList) {
@@ -294,7 +296,10 @@ export default {
       var parse = JSON.parse(JSON.stringify(this.item))
       this.tableData[this.idx] = parse
       this.selectGameVisible = false
-      this.tableData.splice(0, 0)
+      this.clientDB.UpdateData2("Gid", parse)
+      console.log(parse)
+      this.refresh()
+
     },
 
     getFullKey(k) {
