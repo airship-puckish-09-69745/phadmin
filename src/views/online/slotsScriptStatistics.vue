@@ -395,7 +395,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{(scope.row.returnMoney /  (betMap[scope.row.bet] * scope.row.bet )*100).toFixed(2) + "%" }}
+                    {{(scope.row.returnMoney /  (cfgMap[queryGid+''].Bet * scope.row.bet *betMap[scope.row.bet]) *100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
 
