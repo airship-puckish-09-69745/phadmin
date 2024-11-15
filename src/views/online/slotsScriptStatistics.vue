@@ -14,7 +14,7 @@
             />
             <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
               <!--              <el-option label="所有" :value="0"/>-->
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)" />
+              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)"/>
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
             <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
@@ -67,8 +67,12 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="idx" label="Scatter次数" width="130px"><template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template></el-table-column>
-                <el-table-column prop="idx" label="Scatter占比" width="130px"><template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template></el-table-column>
+                <el-table-column prop="idx" label="Scatter次数" width="130px">
+                  <template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template>
+                </el-table-column>
+                <el-table-column prop="idx" label="Scatter占比" width="130px">
+                  <template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template>
+                </el-table-column>
 
               </el-table-column>
             </el-table>
@@ -207,7 +211,8 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166" :span="13" :offset="1">
+          <el-col v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166" :span="13"
+                  :offset="1">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -331,6 +336,78 @@
               </el-col>
             </el-row>
           </el-col>
+
+          <el-col :span="13" :offset="1">
+            <el-table
+              ref="filterTable"
+              :data="returnMoneyTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+
+            >
+              <el-table-column label="返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                      {{scope.row.bet / 1000}}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{betMap[scope.row.bet]}}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                prop="gid"
+                label="下注额度"
+                width="80px"
+              >
+                <template slot-scope="scope">
+                  {{ (betMap[scope.row.bet] * scope.row.bet / 1000)}}
+                </template>
+              </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注占比"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{(parseInt(betMap[scope.row.bet]) / getTotalBetTime() *100).toFixed(2) + '%'}}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{scope.row.returnMoney /1000}}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{(scope.row.returnMoney /  (betMap[scope.row.bet] * scope.row.bet )*100).toFixed(2) + "%" }}
+                  </template>
+                </el-table-column>
+
+              </el-table-column>
+            </el-table>
+
+          </el-col>
         </el-row>
 
       </el-tab-pane>
@@ -404,7 +481,7 @@
                   <template slot="label">
                     今天中奖概率
                   </template>
-                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit/bigPrize.count * 100).toFixed(2) + "%") }}
+                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit / bigPrize.count * 100).toFixed(2) + "%") }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
@@ -454,7 +531,9 @@
                     </el-table-column>
 
                     <el-table-column prop="odds" label="平均返奖倍数" width="130px">
-                      <template slot-scope="scope">{{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2) + "%") : 0 }}</template>
+                      <template slot-scope="scope">
+                        {{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2) + "%") : 0 }}
+                      </template>
                     </el-table-column>
                   </el-table>
                 </el-descriptions-item>
@@ -476,44 +555,44 @@
           <el-tabs type="border-card">
             <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
               <thead>
-                <th>
-                  <template>
-                    总次数：{{ timesSum }}
-                  </template>
-                </th>
-                <th v-for="(v,k) in showData.column">
-                  <template>
-                    <span>{{ v }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  总次数：{{ timesSum }}
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <span>{{ v }}</span>
+                </template>
+              </th>
               </thead>
               <thead>
-                <th>
-                  <template>
-                    概率：
-                  </template>
-                </th>
-                <th v-for="(v,k) in showData.column">
-                  <template>
-                    <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  概率：
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
+                </template>
+              </th>
               </thead>
 
               <thead>
-                <th>
-                  <template>
-                    步数 / 剧本
-                  </template>
-                </th>
-                <th v-for="(v,k) in showData.column">
-                  <template>
-                    <!--
-                  <span @click="showChart(idx, k1)">{{ k1 }}</span>
-                  -->
-                    <span>{{ k }}</span>
-                  </template>
-                </th>
+              <th>
+                <template>
+                  步数 / 剧本
+                </template>
+              </th>
+              <th v-for="(v,k) in showData.column">
+                <template>
+                  <!--
+                <span @click="showChart(idx, k1)">{{ k1 }}</span>
+                -->
+                  <span>{{ k }}</span>
+                </template>
+              </th>
               </thead>
               <tr v-for=" (v,k) in showData.rows" style="text-align: center">
                 <td>{{ k }}</td>
@@ -543,16 +622,16 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import request2 from '@/utils/request2'
 import MoneyInput from '@/components/MoneyInput'
-import { $libShow, ClientTableData } from '@/utils/common'
+import {$libShow, ClientTableData} from '@/utils/common'
 import store from '@/store'
 import XLSX from 'xlsx'
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: {Compare, Publish, MoneyInput},
 
   data() {
     return {
@@ -592,11 +671,12 @@ export default {
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
       jackpotClientDB: new ClientTableData([], 1, filterMap),
+      returnMoneyClientDB: new ClientTableData([], 1, filterMap),
       showBtn: 0,
       libShow: $libShow,
       item: {
         Gid: 0,
-        OddsList: [{ MinOdds: 0, MaxOdds: 0 }]
+        OddsList: [{MinOdds: 0, MaxOdds: 0}]
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -605,6 +685,7 @@ export default {
       coordinateTableData: [],
       stepTableData: [],
       jackpotTableData: [],
+      returnMoneyTableData: [],
 
       queryTime: new Date().getTime(),
       loading: false,
@@ -621,7 +702,8 @@ export default {
 
       Actions: {},
       ActionOdds: 1,
-      scatterCounts: []
+      scatterCounts: [],
+      betMap: {}
     }
   },
   created() {
@@ -642,6 +724,16 @@ export default {
     },
     refreshJackpot() {
       this.jackpotTableData = this.jackpotClientDB.GetCurrentPageData()
+    },
+    refreshReturnMoney() {
+      this.returnMoneyTableData = this.returnMoneyClientDB.GetCurrentPageData()
+    },
+    getTotalBetTime() {
+      let cnt =0
+      for (const o in this.betMap) {
+        cnt+=parseInt(this.betMap[o])
+      }
+      return cnt
     },
     handleClick(tab, event) {
       if (parseInt(tab.index) == 0) {
@@ -706,7 +798,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
+              this.cfgMap[o.Gid] = {OddsList: o.OddsList, Bet: o.Bet}
             }
           }
         }
@@ -743,6 +835,7 @@ export default {
       this.refreshCoordinate()
       this.refreshStep()
       this.refreshJackpot()
+      this.refreshReturnMoney()
     },
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
@@ -787,7 +880,9 @@ export default {
         const stepTableData = []
         const jackpotTableData = []
         const scatterCounts = []
+        const returnMoneyTableData = []
 
+        this.betMap={}
         this.stepSum = {}
         this.sumData = {}
         this.coordinateSum = {}
@@ -823,12 +918,12 @@ export default {
                 scriptMap[this.queryGid + '_' + prefix].rows[step] = []
                 scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data['script']['script_times_' + strings1[2] + '_' + strings1[3]]
               } else if (strings1[1] === 'times') {
-              //
-              } else if (strings1[1] === 'count') {
+                //
+              }  else if (strings1[1] === 'count') {
                 var strings = key.split('_')
                 this.sumData[this.queryGid] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
 
-                scriptTableData.push({ gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key] })
+                scriptTableData.push({gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key]})
               } else {
                 let prefix = ''
                 if (parseInt(strings1[1]) === -2) {
@@ -878,6 +973,13 @@ export default {
               if (strings1[1] === 'count') {
                 scatterCounts[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
               }
+            } else if (strings1[0] === 'spin') {
+              if (strings1[1] === 'bet') {
+                this.betMap[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+              }
+              if (strings1[1] === 'return') {
+                returnMoneyTableData.push({bet:parseInt(strings1[3]),returnMoney: response.Data['script'][key]})
+              }
             }
           }
 
@@ -907,19 +1009,19 @@ export default {
             })
           }
         }
-        coordinateTableData.sort(function(a, b) {
+        coordinateTableData.sort(function (a, b) {
           return b.cnt - a.cnt
         })
 
-        stepTableData.sort(function(a, b) {
+        stepTableData.sort(function (a, b) {
           return b.cnt - a.cnt
         })
 
-        scriptTableData.sort(function(a, b) {
+        scriptTableData.sort(function (a, b) {
           return a.idx - b.idx
         })
 
-        jackpotTableData.sort(function(a, b) {
+        jackpotTableData.sort(function (a, b) {
           if (a.app === b.app) {
             if (a.bet === b.bet) {
               return b.type - a.type
@@ -928,11 +1030,14 @@ export default {
           }
           return a.app - b.app
         })
+        returnMoneyTableData.sort(function (a, b){
 
+        })
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
+        this.returnMoneyClientDB = new ClientTableData(returnMoneyTableData, 20, filterMap, 'idx', -1)
         this.queryKeyInput()
         this.scatterCounts = scatterCounts
 
@@ -964,7 +1069,7 @@ export default {
           $this.bigPrize.sections_items = response.Data.script.sections_items || 0
         }
         $this.loading = false
-      }).catch(function() {
+      }).catch(function () {
         $this.loading = false
       })
     },
@@ -973,7 +1078,7 @@ export default {
         return
       }
       try {
-        const realKey = { 150: 'supergemiii', 88: 'crazy777' }
+        const realKey = {150: 'supergemiii', 88: 'crazy777'}
         let key = this.gameScene[gid] + '_slots_rule'
         if (gid === 88 || gid === 150) {
           key = realKey[gid] + '_slots_rule'
@@ -992,7 +1097,7 @@ export default {
               request2({
                 url: '/slotsActConfigV2/one',
                 method: 'get',
-                data: { ID: ruleCfg.ActConfig.ActId, Env: 'test' }
+                data: {ID: ruleCfg.ActConfig.ActId, Env: 'test'}
               }, false).then(response => {
                 this.Actions = {}
                 if (response.RetCode === 0) {
@@ -1020,7 +1125,7 @@ export default {
         return
       }
       try {
-        const realKey = { 150: 'supergemiii', 88: 'crazy777' }
+        const realKey = {150: 'supergemiii', 88: 'crazy777'}
         let key = this.gameScene[gid] + '_slots_base'
         if (gid === 88 || gid === 150) {
           key = realKey[gid] + '_slots_base'
@@ -1050,7 +1155,7 @@ export default {
       }
       this.betOptions = []
       for (const i in betList) {
-        this.betOptions.push({ 'key': betList[i], 'label': betList[i] / 1000 })
+        this.betOptions.push({'key': betList[i], 'label': betList[i] / 1000})
         if (i === '0') {
           this.bigPrizeForm.bet = betList[i]
         }
@@ -1105,7 +1210,7 @@ export default {
         19: 19,
         20: 20
       }
-      const stepMap = { 2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50 }
+      const stepMap = {2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50}
       this.$confirm('是否确认导出当前游戏统计数据?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
