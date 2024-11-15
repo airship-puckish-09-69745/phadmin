@@ -350,7 +350,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                      {{cfgMap[queryGid+'']?cfgMap[queryGid+''].Bet * scope.row.bet: scope.row.bet+"_" }}
+                      {{cfgMap[queryGid+'']?cfgMap[queryGid+''].Bet * scope.row.bet /1000: scope.row.bet+"_" }}
                   </template>
                 </el-table-column>
                 <el-table-column
