@@ -67,12 +67,8 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="idx" label="Scatter次数" width="130px">
-                  <template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template>
-                </el-table-column>
-                <el-table-column prop="idx" label="Scatter占比" width="130px">
-                  <template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template>
-                </el-table-column>
+                <el-table-column prop="idx" label="Scatter次数" width="130px"><template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template></el-table-column>
+                <el-table-column prop="idx" label="Scatter占比" width="130px"><template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template></el-table-column>
 
               </el-table-column>
             </el-table>
@@ -211,8 +207,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166" :span="13"
-                  :offset="1">
+          <el-col v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166" :span="13" :offset="1">
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -481,7 +476,7 @@
                   <template slot="label">
                     今天中奖概率
                   </template>
-                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit / bigPrize.count * 100).toFixed(2) + "%") }}
+                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit/bigPrize.count * 100).toFixed(6) + "%") }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
@@ -531,9 +526,7 @@
                     </el-table-column>
 
                     <el-table-column prop="odds" label="平均返奖倍数" width="130px">
-                      <template slot-scope="scope">
-                        {{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit) * 100).toFixed(2) + "%") : 0 }}
-                      </template>
+                      <template slot-scope="scope">{{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit)).toFixed(2)) : 0 }}</template>
                     </el-table-column>
                   </el-table>
                 </el-descriptions-item>
@@ -555,44 +548,44 @@
           <el-tabs type="border-card">
             <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
               <thead>
-              <th>
-                <template>
-                  总次数：{{ timesSum }}
-                </template>
-              </th>
-              <th v-for="(v,k) in showData.column">
-                <template>
-                  <span>{{ v }}</span>
-                </template>
-              </th>
+                <th>
+                  <template>
+                    总次数：{{ timesSum }}
+                  </template>
+                </th>
+                <th v-for="(v,k) in showData.column">
+                  <template>
+                    <span>{{ v }}</span>
+                  </template>
+                </th>
               </thead>
               <thead>
-              <th>
-                <template>
-                  概率：
-                </template>
-              </th>
-              <th v-for="(v,k) in showData.column">
-                <template>
-                  <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
-                </template>
-              </th>
+                <th>
+                  <template>
+                    概率：
+                  </template>
+                </th>
+                <th v-for="(v,k) in showData.column">
+                  <template>
+                    <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
+                  </template>
+                </th>
               </thead>
 
               <thead>
-              <th>
-                <template>
-                  步数 / 剧本
-                </template>
-              </th>
-              <th v-for="(v,k) in showData.column">
-                <template>
-                  <!--
-                <span @click="showChart(idx, k1)">{{ k1 }}</span>
-                -->
-                  <span>{{ k }}</span>
-                </template>
-              </th>
+                <th>
+                  <template>
+                    步数 / 剧本
+                  </template>
+                </th>
+                <th v-for="(v,k) in showData.column">
+                  <template>
+                    <!--
+                  <span @click="showChart(idx, k1)">{{ k1 }}</span>
+                  -->
+                    <span>{{ k }}</span>
+                  </template>
+                </th>
               </thead>
               <tr v-for=" (v,k) in showData.rows" style="text-align: center">
                 <td>{{ k }}</td>
@@ -676,7 +669,7 @@ export default {
       libShow: $libShow,
       item: {
         Gid: 0,
-        OddsList: [{MinOdds: 0, MaxOdds: 0}]
+        OddsList: [{ MinOdds: 0, MaxOdds: 0 }]
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -798,7 +791,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = {OddsList: o.OddsList, Bet: o.Bet}
+              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
             }
           }
         }
@@ -918,12 +911,12 @@ export default {
                 scriptMap[this.queryGid + '_' + prefix].rows[step] = []
                 scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data['script']['script_times_' + strings1[2] + '_' + strings1[3]]
               } else if (strings1[1] === 'times') {
-                //
-              }  else if (strings1[1] === 'count') {
+              //
+              } else if (strings1[1] === 'count') {
                 var strings = key.split('_')
                 this.sumData[this.queryGid] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
 
-                scriptTableData.push({gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key]})
+                scriptTableData.push({ gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key] })
               } else {
                 let prefix = ''
                 if (parseInt(strings1[1]) === -2) {
@@ -1009,19 +1002,19 @@ export default {
             })
           }
         }
-        coordinateTableData.sort(function (a, b) {
+        coordinateTableData.sort(function(a, b) {
           return b.cnt - a.cnt
         })
 
-        stepTableData.sort(function (a, b) {
+        stepTableData.sort(function(a, b) {
           return b.cnt - a.cnt
         })
 
-        scriptTableData.sort(function (a, b) {
+        scriptTableData.sort(function(a, b) {
           return a.idx - b.idx
         })
 
-        jackpotTableData.sort(function (a, b) {
+        jackpotTableData.sort(function(a, b) {
           if (a.app === b.app) {
             if (a.bet === b.bet) {
               return b.type - a.type
@@ -1069,7 +1062,7 @@ export default {
           $this.bigPrize.sections_items = response.Data.script.sections_items || 0
         }
         $this.loading = false
-      }).catch(function () {
+      }).catch(function() {
         $this.loading = false
       })
     },
@@ -1078,7 +1071,7 @@ export default {
         return
       }
       try {
-        const realKey = {150: 'supergemiii', 88: 'crazy777'}
+        const realKey = { 150: 'supergemiii', 88: 'crazy777' }
         let key = this.gameScene[gid] + '_slots_rule'
         if (gid === 88 || gid === 150) {
           key = realKey[gid] + '_slots_rule'
@@ -1097,7 +1090,7 @@ export default {
               request2({
                 url: '/slotsActConfigV2/one',
                 method: 'get',
-                data: {ID: ruleCfg.ActConfig.ActId, Env: 'test'}
+                data: { ID: ruleCfg.ActConfig.ActId, Env: 'test' }
               }, false).then(response => {
                 this.Actions = {}
                 if (response.RetCode === 0) {
@@ -1125,7 +1118,7 @@ export default {
         return
       }
       try {
-        const realKey = {150: 'supergemiii', 88: 'crazy777'}
+        const realKey = { 150: 'supergemiii', 88: 'crazy777' }
         let key = this.gameScene[gid] + '_slots_base'
         if (gid === 88 || gid === 150) {
           key = realKey[gid] + '_slots_base'
@@ -1155,7 +1148,7 @@ export default {
       }
       this.betOptions = []
       for (const i in betList) {
-        this.betOptions.push({'key': betList[i], 'label': betList[i] / 1000})
+        this.betOptions.push({ 'key': betList[i], 'label': betList[i] / 1000 })
         if (i === '0') {
           this.bigPrizeForm.bet = betList[i]
         }
@@ -1210,7 +1203,7 @@ export default {
         19: 19,
         20: 20
       }
-      const stepMap = {2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50}
+      const stepMap = { 2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50 }
       this.$confirm('是否确认导出当前游戏统计数据?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
