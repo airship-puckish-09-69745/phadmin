@@ -16,7 +16,11 @@
         <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
         <el-table-column prop="Level" label="级别" sortable="custom" width="100" />
         <el-table-column prop="TableMoney" label="底分" width="200" />
+        <!--
         <el-table-column prop="TableFee" label="台费(千分比)" sortable="custom" width="200" />
+        -->
+        <el-table-column prop="CarryLower" label="最小携带" sortable="custom" width="200" />
+        <el-table-column prop="CarryUpper" label="最大携带" sortable="custom" width="200" />
         <el-table-column prop="LastModify" label="最近修改" width="160">
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
@@ -53,13 +57,23 @@
               <el-input v-model.number="edit.item.TableMoney" placeholder="请输入" />
             </el-form-item>
           </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="台费为1倍底分" placement="right-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+        </el-row>
+
+        <el-row>
           <el-col :span="11">
             <el-form-item label="人数：" :required="true" prop="item.TableMaxPlayerNum" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.TableMaxPlayerNum" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
+
         <el-row>
+          <!--
           <el-col :span="9">
             <el-form-item label="台费(千分比)：" :required="true" prop="item.TableFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.TableFee" placeholder="请输入" />
@@ -70,6 +84,7 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
+          -->
           <el-col :span="11">
             <el-form-item label="桌子数量：" :required="true" prop="item.ObjectCount" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.ObjectCount" placeholder="请输入" />
@@ -82,6 +97,8 @@
               <el-input v-model.number="edit.item.CarryLower" placeholder="请输入" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="11">
             <el-form-item label="最大携带：" :required="true" prop="item.CarryUpper" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.CarryUpper" placeholder="请输入" />
@@ -90,16 +107,22 @@
         </el-row>
         
         <el-row>
+          <!--
           <el-col :span="11">
             <el-form-item label="互动道具每日免费次数" :required="true" prop="item.InteractDayFreeTimes" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.InteractDayFreeTimes" placeholder="请输入" />
             </el-form-item>
           </el-col>
-
+          -->
           <el-col :span="11">
-            <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice">
-              <el-input v-model="edit.item.InteractItemPrice" placeholder="请输入" />
+            <el-form-item label="互动道具每次价格消耗" :required="true" prop="item.InteractItemPrice" :rules="dataRule(true,{type:'n',range:'0'})">
+              <el-input v-model.number="edit.item.InteractItemPrice" placeholder="请输入" />
             </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="实际扣除n/1000" placement="right-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
         </el-row>
 
@@ -219,6 +242,8 @@ function newItem() {
     TableMaxPlayerNum: 4,
     TableFee: 10,
     Level: 1,
+    InteractDayFreeTimes: 0,
+    InteractItemPrice: 0,
     TimeConfig: {},
     WalletConfig:{},
     PlayingConfig:{},
@@ -396,6 +421,7 @@ export default {
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
+          console.log("_data:", _data)
           try {
             this.edit.TimeConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.TimeConfig))
             if (_data.WalletConfig) {
