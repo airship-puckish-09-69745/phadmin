@@ -1308,6 +1308,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/watcherList.vue'),
         name: 'matchWatcherList',
         meta: { title: '主播名单', noCache: true }
+      },
+      {
+        path: 'matchPosterList',
+        component: () => import('@/views/matchManage/posterList.vue'),
+        name: 'matchPosterList',
+        meta: { title: '比赛海报', noCache: true }
       }
     ]
   },
