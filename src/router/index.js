@@ -849,6 +849,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
                 name: 'pharaohtreasure_slots_cfg',
                 meta: { title: 'PharaohTreasure' }
+              },
+              {
+                path: 'epicace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/epicace_slots_cfg'),
+                name: 'epicace_slots_cfg',
+                meta: { title: 'EpicAce' }
               }
             ]
           },
