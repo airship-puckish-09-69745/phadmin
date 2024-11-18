@@ -2507,6 +2507,42 @@
       </el-table>
     </el-dialog>
 
+
+
+
+
+    <el-dialog
+      title="雷区详情"
+      :visible.sync="minesBattleVisible"
+      width="650px"
+    >
+      <div id="sweeperShowTable">
+        <table>
+          <tr><td>奖池贡献</td><td>扣除奖池贡献</td><td>累计奖池贡献</td><td>点控命中</td></tr>
+          <tr><td>{{ sweeperPlay.JackpotContribute/1000 }}</td><td>{{ sweeperPlay.ReduceContribute/1000 }}</td><td>{{ sweeperPlay.CurrentContribute
+          /1000 }}</td><td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td></tr>
+        </table>
+      </div>
+      <ul id="sweeperShow">
+        <li v-for="(o,key) in minesBattleDetails" :key="key" :label="o" :value="key">
+          <template>
+            <span v-if="o.result==1" :style="o.step!=0?'color:green':'color:gold'"> {{ o.name }}</span>
+            <span v-else :style="o.step!=0?'color:red':''">{{ o.name }}</span>
+          </template>
+          <div class="showStep">
+            <template>
+              <span v-if="o.step!=0" style="color:blue">{{ o.step }}</span>
+              <span v-else>{{ o.step }}</span>
+            </template>
+          </div>
+        </li>
+      </ul>
+    </el-dialog>
+
+
+
+
+
     <GinRummy v-if="gameLogComponent.gid === 116" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
@@ -2608,6 +2644,10 @@ export default {
       sweeperSTD: [8.00, 8.33, 8.70, 9.09, 9.52, 10.00, 10.53, 11.11, 11.76, 12.50, 13.33, 14.29, 15.38, 16.67, 18.18, 20.00, 22.22, 25.00, 28.57, 33.33, 40.00, 50.00, 66.67, 100],
       sweeperPlay: [],
       sweeperRateVisible: false,
+
+
+      minesBattleVisible: false,
+      minesBattleDetails: [],
 
       towerVisible: false,
       towerData: '',
@@ -3170,6 +3210,8 @@ export default {
             $this.showPusoySwapGame(obj)
           } else if (gid === 118) {
             $this.showCarracingGame(obj)
+          } else if (gid === 123) {
+            $this.showMinesGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -3807,6 +3849,26 @@ export default {
       console.log(this.sweeperPlay)
 
       this.sweeperVisible = true
+    },
+    showMinesGame(obj) {
+      const showDetail = []
+      for (let i = 0; i < obj.details.length; i++) {
+        const detailRow = obj.details[i]
+        const areaIndex = detailRow.index - 1
+        let showName = '炸弹'
+        if (detailRow.result == 1) {
+          showName = '金币'
+        }
+
+        if (detailRow.result == 3) {
+          showName = '宝箱'
+        }
+        showDetail[areaIndex] = { name: showName, step: detailRow.step, result: detailRow.result }
+      }
+
+      this.minesBattleDetails = showDetail
+      console.log(this.minesBattleDetails)
+      this.minesBattleVisible = true
     },
     showTowerGame(obj) {
       this.towerData = obj.Tower.Symbol

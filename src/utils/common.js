@@ -529,6 +529,20 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     this._sortByProp()
     this.FilterData()
   }
+  this.DelData2 = function(keyName,id) {
+    for (var i = 0; i < $this.TotalData.length; i++) {
+      const item = $this.TotalData[i]
+      if (item[keyName] === id) {
+        console.log(item,keyName,id)
+        $this.TotalData.splice(i, 1)
+        break
+      }
+    }
+    $this.ShowData = $this.TotalData.slice(0)
+    $this.Page.SetTotalCount($this.TotalData.length)
+    this._sortByProp()
+    this.FilterData()
+  }
 
   // 添加数组中的字段内容
   this.AddData = function(ob) {

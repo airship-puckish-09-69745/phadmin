@@ -87,12 +87,6 @@ export const constantRoutes = [
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
         name: 'dashboard',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      },
-      {
-        path: '/dashboardpoint',
-        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测(积分) ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
   },
@@ -183,6 +177,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/colorTableUserData'),
         name: 'colorTableUserData',
         meta: { title: 'color - 桌子数据 ◐' }
+      },
+      {
+        path: 'bigprizelog',
+        component: () => import('@/views/playerManage/bigprizelog'),
+        name: '大奖日志',
+        meta: { title: 'slots - 大奖日志 ◐' }
       }
     ]
   },
@@ -579,7 +579,13 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          }, {
+            path: 'MinesBattleTable',
+            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+            name: 'MinesBattleTable',
+            meta: { title: 'MinesBattle ◐' }
           }
+
         ]
       },
       {
@@ -696,13 +702,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
             meta: { title: 'Carracing ◐' }
-          },
-          {
-            path: 'MinesBattleTable',
-            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
-            name: 'MinesBattleTable',
-            meta: { title: 'MinesBattle ◐' }
-          },
+          }
         ]
       },
 
@@ -1503,6 +1503,12 @@ export const asyncRoutes = [
                 meta: { title: '菲律宾麻将 ◐', gid: 122 }
               }
             ]
+          },
+          {
+            path: 'playlog_minesBattle',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_minesBattle',
+            meta: { title: 'MinesBattle◐', gid: 123 }
           }
         ]
       },
@@ -2018,6 +2024,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/pointTransfer.vue'),
         name: 'pointtransfer',
         meta: { title: '积分转账日志 ◐' }
+      },
+      {
+        path: '/systemPointGameChart',
+        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
+        name: 'systemPointGameChart',
+        meta: { title: '积分系统健康监测 ◐' }
       }
     ]
   },
