@@ -985,7 +985,7 @@ export const asyncRoutes = [
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
-            meta: { title: 'millionaire配置V3' }
+            meta: { title: '老虎机V3配置' }
           },
           {
             path: 'slots_act_configs_v2',
