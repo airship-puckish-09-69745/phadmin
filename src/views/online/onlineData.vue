@@ -21,27 +21,35 @@
         </el-tab-pane>
         <el-tab-pane label="今日分游戏在玩" name="gamesPlaying">
           <el-row>
-            <el-form :model="item" label-width="150px" size="big">
-              <el-select
-                v-model="gids"
-                multiple
-                filterable
-                collapse-tags
-                :clearable="true"
-                style="margin-left: 20px;"
-                placeholder="请选择">
-                <el-option
-                  v-for="item in gameOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-              <el-button type="success" size="mini" @click="onlineAllGames">查询</el-button>
+            <el-form :model="item" :inline="true" label-width="100px" size="medium">
+              <el-form-item label="游戏">
+                <el-select
+                  v-model="gids"
+                  multiple
+                  filterable
+                  default-first-option
+                  collapse-tags
+                  :clearable="true"
+                  style="margin-left: 20px;"
+                  placeholder="请选择">
+                  <el-option
+                    v-for="item in gameOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item><el-button type="success" size="mini" @click="onlineAllGames">查询</el-button></el-form-item>
             </el-form>
           </el-row>
         </el-tab-pane>
       </el-tabs>
+    </el-row>
+    <el-row>
+      <el-col>
+        &nbsp;
+      </el-col>
     </el-row>
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
