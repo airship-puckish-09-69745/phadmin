@@ -47,11 +47,6 @@
       </el-tabs>
     </el-row>
     <el-row>
-      <el-col>
-        &nbsp;
-      </el-col>
-    </el-row>
-    <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
   </div>
