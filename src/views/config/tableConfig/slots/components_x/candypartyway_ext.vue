@@ -9,11 +9,11 @@
           </el-form-item>
 
           <el-form-item label="普通模式中奖倍数">
-            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7" :readonly="true"> <template slot="append">五个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.MultiStr" placeholder="请输入内容,如1,2,3,5,7" :readonly="true" disabled> <template slot="append">五个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式中奖倍数">
-            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,8,10" :readonly="true"> <template slot="append">五个值用 , 连接</template> </el-input>
+            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,4,6,8,10" :readonly="true" disabled> <template slot="append">五个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
