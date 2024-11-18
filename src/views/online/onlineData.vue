@@ -19,7 +19,28 @@
             </div>
           </el-col>
         </el-tab-pane>
-        <el-tab-pane label="今日分游戏在玩" name="gamesPlaying" />
+        <el-tab-pane label="今日分游戏在玩" name="gamesPlaying">
+          <el-row>
+            <el-form :model="item" label-width="150px" size="big">
+              <el-select
+                v-model="gids"
+                multiple
+                filterable
+                collapse-tags
+                :clearable="true"
+                style="margin-left: 20px;"
+                placeholder="请选择">
+                <el-option
+                  v-for="item in gameOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+              <el-button type="success" size="mini" @click="onlineAllGames">查询</el-button>
+            </el-form>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
     </el-row>
     <el-row>
@@ -58,10 +79,12 @@ export default {
       tab: 'onlineAndPlaying',
       logData: [],
       gameTypeMap: {},
+      gameOptions: [],
       libShow: $libShow,
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       chartData: NewPlaying(),
       gid: 1001,
+      gids: [],
       summary: {},
       summary1: {},
       summary2: {},
@@ -206,11 +229,11 @@ export default {
     },
     onlineAllGames() {
       const $this = this
-      const gameTypes = []
-      for (const i in $this.gameTypeMap) {
-        gameTypes.push(parseInt(i))
-      }
-      const gidStr = JSON.stringify(gameTypes)
+      // const gameTypes = []
+      // for (const i in $this.gameTypeMap) {
+      //   gameTypes.push(parseInt(i))
+      // }
+      const gidStr = JSON.stringify(this.gids)
       const names = this.gameTypeMap
       const loading = this.$loading({
         lock: true,
@@ -259,6 +282,8 @@ export default {
               continue
             }
             this.gameTypeMap[objs[i].Gid] = objs[i].Name
+            this.gameOptions.push({ value: objs[i].Gid, label: objs[i].Name })
+            this.gids.push(objs[i].Gid)
           }
         }
       })
