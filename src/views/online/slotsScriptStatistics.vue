@@ -14,7 +14,7 @@
             />
             <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
               <!--              <el-option label="所有" :value="0"/>-->
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)"/>
+              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)" />
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
             <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
@@ -341,7 +341,6 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-
             >
               <el-table-column label="返奖统计">
                 <el-table-column
@@ -350,7 +349,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                      {{cfgMap[queryGid+'']?cfgMap[queryGid+''].Bet * scope.row.bet /1000: scope.row.bet+"_" }}
+                    {{ cfgMap[queryGid]?cfgMap[queryGid].Bet * scope.row.bet /1000: scope.row.bet+"_" }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -359,25 +358,25 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{betMap[scope.row.bet]}}
+                    {{ betMap[scope.row.bet] }}
                   </template>
                 </el-table-column>
                 <el-table-column
-                prop="gid"
-                label="下注额度"
-                width="80px"
-              >
-                <template slot-scope="scope">
-                  {{ cfgMap[queryGid+'']?cfgMap[queryGid+''].Bet * scope.row.bet *betMap[scope.row.bet] /1000: scope.row.bet+"_"}}
-                </template>
-              </el-table-column>
+                  prop="gid"
+                  label="下注额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ cfgMap[queryGid]?cfgMap[queryGid].Bet * scope.row.bet *betMap[scope.row.bet] /1000: scope.row.bet+"_" }}
+                  </template>
+                </el-table-column>
                 <el-table-column
                   prop="gid"
                   label="下注占比"
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{(parseInt(betMap[scope.row.bet]) / getTotalBetTime() *100).toFixed(2) + '%'}}
+                    {{ (parseInt(betMap[scope.row.bet]) / getTotalBetTime() *100).toFixed(2) + '%' }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -386,7 +385,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{scope.row.returnMoney /1000}}
+                    {{ scope.row.returnMoney /1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -395,7 +394,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{(scope.row.returnMoney /  (cfgMap[queryGid+''].Bet * scope.row.bet *betMap[scope.row.bet]) *100).toFixed(2) + "%" }}
+                    {{ (scope.row.returnMoney / ((cfgMap[queryGid] && cfgMap[queryGid].Bet ? cfgMap[queryGid].Bet: 0) * scope.row.bet *betMap[scope.row.bet]) *100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
 
@@ -615,16 +614,16 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import request2 from '@/utils/request2'
 import MoneyInput from '@/components/MoneyInput'
-import {$libShow, ClientTableData} from '@/utils/common'
+import { $libShow, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import XLSX from 'xlsx'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
 
   data() {
     return {
@@ -722,9 +721,9 @@ export default {
       this.returnMoneyTableData = this.returnMoneyClientDB.GetCurrentPageData()
     },
     getTotalBetTime() {
-      let cnt =0
+      let cnt = 0
       for (const o in this.betMap) {
-        cnt+=parseInt(this.betMap[o])
+        cnt += parseInt(this.betMap[o])
       }
       return cnt
     },
@@ -791,7 +790,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
+              $this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
             }
           }
         }
@@ -875,7 +874,7 @@ export default {
         const scatterCounts = []
         const returnMoneyTableData = []
 
-        this.betMap={}
+        this.betMap = {}
         this.stepSum = {}
         this.sumData = {}
         this.coordinateSum = {}
@@ -971,7 +970,7 @@ export default {
                 this.betMap[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
               }
               if (strings1[1] === 'return') {
-                returnMoneyTableData.push({bet:parseInt(strings1[3]),returnMoney: response.Data['script'][key]})
+                returnMoneyTableData.push({ bet: parseInt(strings1[3]), returnMoney: response.Data['script'][key] })
               }
             }
           }
@@ -1023,8 +1022,8 @@ export default {
           }
           return a.app - b.app
         })
-        returnMoneyTableData.sort(function (a, b){
-            a.bet - b.bet
+        returnMoneyTableData.sort(function(a, b) {
+          a.bet - b.bet
         })
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
@@ -1134,7 +1133,7 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              this.handleSlotsBetOptions(baseCfg.BetList)
+              this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
             }
           }
         })
@@ -1142,13 +1141,13 @@ export default {
         console.log(e)
       }
     },
-    handleSlotsBetOptions(betList) {
+    handleSlotsBetOptions(betList, baseBet) {
       if (betList.length <= 0) {
         return
       }
       this.betOptions = []
       for (const i in betList) {
-        this.betOptions.push({ 'key': betList[i], 'label': betList[i] / 1000 })
+        this.betOptions.push({ 'key': betList[i], 'label': betList[i] * baseBet / 1000 })
         if (i === '0') {
           this.bigPrizeForm.bet = betList[i]
         }
