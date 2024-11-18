@@ -1,21 +1,26 @@
 <template xmlns="http://www.w3.org/1999/html">
   <div class="app-container">
     <el-row class="panel-group" :gutter="10">
-      <el-col :span="4" class="card-panel-col">
-        <div :class="gid===1001?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryPlaying(1001, true)">
-          <div class="card-panel-description">
-            <div class="card-panel-text">
-              在玩：<span :class="getDcClass(playingDiff.today)"> {{ getDcResult(playingDiff.today) }} </span>
+      <el-tabs v-model="tab" @tab-click="tabClick">
+        <el-tab-pane label="今日在玩" name="onlineAndPlaying">
+          <el-col :span="4" class="card-panel-col">
+            <div :class="gid===1001?'card-panel card-panel_selected':'card-panel card-panel_selected_not'" @click="queryPlaying(1001, true)">
+              <div class="card-panel-description">
+                <div class="card-panel-text">
+                  在玩：<span :class="getDcClass(playingDiff.today)"> {{ getDcResult(playingDiff.today) }} </span>
+                </div>
+                <div>
+                  前3天：<span :class="getDcClass(playingDiff.day3)">{{ getDcResult(playingDiff.day3) }}</span>
+                </div>
+                <div>
+                  上周：<span :class="getDcClass(playingDiff.week)">{{ getDcResult(playingDiff.week) }}</span>
+                </div>
+              </div>
             </div>
-            <div>
-              前3天：<span :class="getDcClass(playingDiff.day3)">{{ getDcResult(playingDiff.day3) }}</span>
-            </div>
-            <div>
-              上周：<span :class="getDcClass(playingDiff.week)">{{ getDcResult(playingDiff.week) }}</span>
-            </div>
-          </div>
-        </div>
-      </el-col>
+          </el-col>
+        </el-tab-pane>
+        <el-tab-pane label="今日分游戏在玩" name="gamesPlaying" />
+      </el-tabs>
     </el-row>
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
@@ -50,7 +55,9 @@ export default {
       item: {
         date: new Date()
       },
+      tab: 'onlineAndPlaying',
       logData: [],
+      gameTypeMap: {},
       libShow: $libShow,
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       chartData: NewPlaying(),
@@ -77,14 +84,31 @@ export default {
     this.env = store.getters.env || this.env
     // this.getInfo(this.gid)
     this.queryPlaying(1001, true)
+    this.getAllGameList()
   },
   methods: {
+    tabClick(tab, event) {
+      const showName = ['online', 'playing']
+      this.showSelectDate = showName.indexOf(tab.name) >= 0
+      this.tab = tab.name
+      this.submit()
+    },
+    submit() {
+      switch (this.tab) {
+        case 'onlineAndPlaying':
+          this.queryPlaying(1001, true)
+          break
+        case 'gamesPlaying':
+          this.onlineAllGames()
+          break
+      }
+    },
     // 显示相关
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
     getDcClass(num) {
-      if (num == 0) {
+      if (parseInt(num) === 0) {
         return 'card-panel-Normal'
       } else if (num > 0) {
         return 'card-panel-OK'
@@ -93,7 +117,7 @@ export default {
       }
     },
     getDcResult(num) {
-      if (num == 0) {
+      if (parseInt(num) === 0) {
         return num + '%'
       } else if (num > 0) {
         return num + '% ↑'
@@ -154,7 +178,6 @@ export default {
           Path: '/other/realtime/playing'
         }
       }).then(response => {
-        console.log('playing response ', response)
         const chartData = NewPlaying()
         if (response.RetCode === 0) {
           chartData['xData'] = response.Data.Cols
@@ -172,14 +195,71 @@ export default {
               break
             }
           }
-          console.log('date ', dt)
-          console.log('index ', index)
           $this.playingDiff.today = $this.calcRatio(response.Data.Today[index], response.Data.Yesterday[index])
           $this.playingDiff.day3 = $this.calcRatio(response.Data.Today[index], response.Data.Day3[index])
           $this.playingDiff.week = $this.calcRatio(response.Data.Today[index], response.Data.Week[index])
         }
         if (isRefresh) {
           $this.chartData = chartData
+        }
+      })
+    },
+    onlineAllGames() {
+      const $this = this
+      const gameTypes = []
+      for (const i in $this.gameTypeMap) {
+        gameTypes.push(parseInt(i))
+      }
+      const gidStr = JSON.stringify(gameTypes)
+      const names = this.gameTypeMap
+      const loading = this.$loading({
+        lock: true,
+        text: '数据拉取中，请稍候...',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/other/games/realtime/playing',
+          gids: gidStr
+        }
+      }).then(function(response) {
+        loading.close()
+        if (response.RetCode === 0) {
+          const chartData = NewPlaying()
+          const items = response.Data
+          chartData['xData'] = items[0].Cols
+          chartData.yData = []
+          for (let i = 0; i < items.length; i++) {
+            chartData.yData.push({
+              Name: names[items[i].Gid],
+              Type: 'line',
+              Data: items[i].Player
+            })
+          }
+          $this.chartData = chartData
+        }
+      }).catch(function() {
+        loading.close()
+      })
+    },
+    getAllGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          for (let i = 0; i < objs.length; i++) {
+            if (objs[i].Status !== 2 || objs[i].ShowDatacenter !== 1) {
+              continue
+            }
+            this.gameTypeMap[objs[i].Gid] = objs[i].Name
+          }
         }
       })
     }

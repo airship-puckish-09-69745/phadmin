@@ -1,5 +1,7 @@
 <template>
-  <div :class="className" :style="{height:height,width:width}" />
+  <div>
+    <div :class="className" :style="{height:height,width:width}" ref="chartContainer" />
+  </div>
 </template>
 
 <script>
@@ -34,7 +36,8 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      isZoomed: false
     }
   },
   watch: {
@@ -50,6 +53,7 @@ export default {
     }
   },
   mounted() {
+    this.initChart()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -60,7 +64,7 @@ export default {
   },
   methods: {
     initChart() {
-      this.chart = echarts.init(this.$el, 'macarons')
+      this.chart = echarts.init(this.$refs.chartContainer, 'macarons')
       this.setOptions()
     },
     setOptions() {
@@ -123,8 +127,26 @@ export default {
         legend: {
           data: yNames
         },
-        series: series
+        series: series,
+        dataZoom: [
+          {
+            type: 'inside',
+            start: 0,
+            end: 100
+            // disabled: !this.isZoomed
+          },
+          {
+            type: 'slider',
+            start: 0,
+            end: 100
+            // disabled: !this.isZoomed
+          }
+        ]
       })
+    },
+    toggleZoom() {
+      this.isZoomed = !this.isZoomed
+      this.setOptions()
     }
   }
 }
