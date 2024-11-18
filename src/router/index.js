@@ -1786,7 +1786,7 @@ export const asyncRoutes = [
             path: 'epicace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'epicace_slots_log',
-            meta: { title: 'FireLink', gid: 170 }
+            meta: { title: 'EpicAce', gid: 170 }
           }
         ]
       },
