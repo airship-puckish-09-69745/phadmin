@@ -849,6 +849,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
                 name: 'pharaohtreasure_slots_cfg',
                 meta: { title: 'PharaohTreasure' }
+              },
+              {
+                path: 'epicace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/epicace_slots_cfg'),
+                name: 'epicace_slots_cfg',
+                meta: { title: 'EpicAce' }
               }
             ]
           },
@@ -1775,6 +1781,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'firelink_slots_log',
             meta: { title: 'FireLink', gid: 166 }
+          },
+          {
+            path: 'epicace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'epicace_slots_log',
+            meta: { title: 'EpicAce', gid: 170 }
           }
         ]
       },
