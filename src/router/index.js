@@ -2278,10 +2278,16 @@ export const asyncRoutes = [
         meta: { title: '游戏包版本配置', icon: 'el-icon-files' },
         children: [
           {
+            path: 'game_pkg_versions_copy',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersionsCopy.vue'),
+            name: 'game_pkg_versions_copy',
+            meta: { title: '游戏包配置列表 ◐', noCache: true }
+          },
+          {
             path: 'game_pkg_versions',
             component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
             name: 'game_pkg_versions',
-            meta: { title: '游戏包配置列表 ◐', noCache: true }
+            meta: { title: '游戏包配置列表测试版 ◐', noCache: true }
           },
           {
             path: 'pkgversionsWhiteList',
