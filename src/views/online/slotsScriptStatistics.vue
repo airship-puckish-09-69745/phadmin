@@ -14,7 +14,7 @@
             />
             <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
               <!--              <el-option label="所有" :value="0"/>-->
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)"/>
+              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)" />
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
             <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
@@ -213,8 +213,11 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166" :span="13"
-                  :offset="1">
+          <el-col
+            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166"
+            :span="13"
+            :offset="1"
+          >
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -348,7 +351,6 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-
             >
               <el-table-column label="返奖统计">
                 <el-table-column
@@ -551,7 +553,7 @@
         <el-row>
           <el-form :model="scripStepForm" label-width="80px" :inline="true" size="small">
             <el-row>
-              <el-form-item v-model="scripStepForm.gid" label="老虎机：" :required="true" label-width="80px" >
+              <el-form-item v-model="scripStepForm.gid" label="老虎机：" :required="true" label-width="80px">
                 <el-select
                   v-model="scripStepForm.gid"
                   placeholder="请选择"
@@ -590,13 +592,13 @@
             </el-row>
             <el-row>
               <el-form-item v-model="scripStepForm.counter" label="计数值：" :required="true" label-width="80px">
-                <el-input v-model.number="scripStepForm.counter"></el-input>
+                <el-input v-model.number="scripStepForm.counter" />
               </el-form-item>
               <el-form-item v-model="scripStepForm.scriptId" label="剧本Id：" :required="true" label-width="80px">
-                <el-input v-model.number="scripStepForm.scriptId"></el-input>
+                <el-input v-model.number="scripStepForm.scriptId" />
               </el-form-item>
               <el-form-item v-model="scripStepForm.step" label="步数：" :required="true" label-width="80px">
-                <el-input v-model.number="scripStepForm.step"></el-input>
+                <el-input v-model.number="scripStepForm.step" />
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" size="mini" @click="getSlotsScriptStep2(1)">查询当前剧本</el-button>
@@ -607,29 +609,26 @@
           <el-tabs type="border-card">
             <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
               <thead>
-              <th>
-                <template>
-                  <span class='colStyle'> {{ '位置' }}</span>
-                </template>
-              </th>
-              <th v-for="(v,k) in 50">
-                <template>
-                  <span class='colStyle'> {{ k + 1 }}</span>
-                </template>
-              </th>
+                <th>
+                  <template>
+                    <span class="colStyle"> {{ '位置' }}</span>
+                  </template>
+                </th>
+                <th v-for="(v,k) in 50">
+                  <template>
+                    <span class="colStyle"> {{ k + 1 }}</span>
+                  </template>
+                </th>
               </thead>
               <tr v-for=" (v,k) in stepData" style="text-align: center">
-                <td class='colStyle'>{{ (k) * 50 + '' }}</td>
-                <td v-for="(col,idx) in v" :style='getColColor(k,idx)'>
-                  <span class='colStyle'>{{ col }}</span>
+                <td class="colStyle">{{ (k) * 50 + '' }}</td>
+                <td v-for="(col,idx) in v" :style="getColColor(k,idx)">
+                  <span class="colStyle">{{ col }}</span>
                 </td>
               </tr>
             </table>
           </el-tabs>
-          <el-row>
-
-
-          </el-row>
+          <el-row />
         </el-row>
       </el-tab-pane>
     </el-tabs>
@@ -645,44 +644,44 @@
           <el-tabs type="border-card">
             <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
               <thead>
-              <th>
-                <template>
-                  总次数：{{ timesSum }}
-                </template>
-              </th>
-              <th v-for="(v,k) in showData.column">
-                <template>
-                  <span>{{ v }}</span>
-                </template>
-              </th>
+                <th>
+                  <template>
+                    总次数：{{ timesSum }}
+                  </template>
+                </th>
+                <th v-for="(v,k) in showData.column">
+                  <template>
+                    <span>{{ v }}</span>
+                  </template>
+                </th>
               </thead>
               <thead>
-              <th>
-                <template>
-                  概率：
-                </template>
-              </th>
-              <th v-for="(v,k) in showData.column">
-                <template>
-                  <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
-                </template>
-              </th>
+                <th>
+                  <template>
+                    概率：
+                  </template>
+                </th>
+                <th v-for="(v,k) in showData.column">
+                  <template>
+                    <span style="font-size: 11px">{{ ((parseInt(v) / timesSum) * 100).toFixed(2) + '%' }}</span>
+                  </template>
+                </th>
               </thead>
 
               <thead>
-              <th>
-                <template>
-                  步数 / 剧本
-                </template>
-              </th>
-              <th v-for="(v,k) in showData.column">
-                <template>
-                  <!--
+                <th>
+                  <template>
+                    步数 / 剧本
+                  </template>
+                </th>
+                <th v-for="(v,k) in showData.column">
+                  <template>
+                    <!--
                 <span @click="showChart(idx, k1)">{{ k1 }}</span>
                 -->
-                  <span>{{ k }}</span>
-                </template>
-              </th>
+                    <span>{{ k }}</span>
+                  </template>
+                </th>
               </thead>
               <tr v-for=" (v,k) in showData.rows" style="text-align: center">
                 <td>{{ k }}</td>
@@ -712,16 +711,16 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import request2 from '@/utils/request2'
 import MoneyInput from '@/components/MoneyInput'
-import {$libShow, ClientTableData} from '@/utils/common'
+import { $libShow, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import XLSX from 'xlsx'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
 
   data() {
     return {
@@ -736,7 +735,7 @@ export default {
         bet: 0,
         counter: 0,
         scriptId: 0,
-        step: 0,
+        step: 0
       },
       pickerOptions: {
         disabledDate(time) {
@@ -773,7 +772,7 @@ export default {
       libShow: $libShow,
       item: {
         Gid: 0,
-        OddsList: [{MinOdds: 0, MaxOdds: 0}]
+        OddsList: [{ MinOdds: 0, MaxOdds: 0 }]
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -802,7 +801,7 @@ export default {
       scatterCounts: [],
       betMap: {},
       stepData: {},
-      cacheStep: {},
+      cacheStep: {}
     }
   },
   created() {
@@ -850,11 +849,11 @@ export default {
       return this.item
     },
     getColColor(k, idx) {
-      let number = (parseInt(this.scripStepForm.step / 50) - 1) * 50;
+      const number = (parseInt(this.scripStepForm.step / 50) - 1) * 50
       if (number === (k) * 50 && this.scripStepForm.step % 50 === 0 && number === (k) * 50 && idx === 49) {
         return 'background: red'
       }
-      var number2 = parseInt(this.scripStepForm.step / 50) * 50;
+      var number2 = parseInt(this.scripStepForm.step / 50) * 50
       if (number2 === (k) * 50) {
         if (idx + 1 === this.scripStepForm.step - number2) {
           return 'background: red'
@@ -914,7 +913,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = {OddsList: o.OddsList, Bet: o.Bet}
+              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
             }
           }
         }
@@ -1042,7 +1041,7 @@ export default {
                 var strings = key.split('_')
                 this.sumData[this.queryGid] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
 
-                scriptTableData.push({gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key]})
+                scriptTableData.push({ gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key] })
               } else {
                 let prefix = ''
                 if (parseInt(strings1[1]) === -2) {
@@ -1097,7 +1096,7 @@ export default {
                 this.betMap[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
               }
               if (strings1[1] === 'return') {
-                returnMoneyTableData.push({bet: parseInt(strings1[3]), returnMoney: response.Data['script'][key]})
+                returnMoneyTableData.push({ bet: parseInt(strings1[3]), returnMoney: response.Data['script'][key] })
               }
             }
           }
@@ -1128,19 +1127,19 @@ export default {
             })
           }
         }
-        coordinateTableData.sort(function (a, b) {
+        coordinateTableData.sort(function(a, b) {
           return b.cnt - a.cnt
         })
 
-        stepTableData.sort(function (a, b) {
+        stepTableData.sort(function(a, b) {
           return b.cnt - a.cnt
         })
 
-        scriptTableData.sort(function (a, b) {
+        scriptTableData.sort(function(a, b) {
           return a.idx - b.idx
         })
 
-        jackpotTableData.sort(function (a, b) {
+        jackpotTableData.sort(function(a, b) {
           if (a.app === b.app) {
             if (a.bet === b.bet) {
               return b.type - a.type
@@ -1149,7 +1148,7 @@ export default {
           }
           return a.app - b.app
         })
-        returnMoneyTableData.sort(function (a, b) {
+        returnMoneyTableData.sort(function(a, b) {
           return a.bet - b.bet
         })
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
@@ -1188,7 +1187,7 @@ export default {
           $this.bigPrize.sections_items = response.Data.script.sections_items || 0
         }
         $this.loading = false
-      }).catch(function () {
+      }).catch(function() {
         $this.loading = false
       })
     },
@@ -1197,7 +1196,7 @@ export default {
         return
       }
       try {
-        const realKey = {150: 'supergemiii', 88: 'crazy777'}
+        const realKey = { 150: 'supergemiii', 88: 'crazy777' }
         let key = this.gameScene[gid] + '_slots_rule'
         if (gid === 88 || gid === 150) {
           key = realKey[gid] + '_slots_rule'
@@ -1216,7 +1215,7 @@ export default {
               request2({
                 url: '/slotsActConfigV2/one',
                 method: 'get',
-                data: {ID: ruleCfg.ActConfig.ActId, Env: 'test'}
+                data: { ID: ruleCfg.ActConfig.ActId, Env: 'test' }
               }, false).then(response => {
                 this.Actions = {}
                 if (response.RetCode === 0) {
@@ -1244,12 +1243,11 @@ export default {
         return
       }
       try {
-        const realKey = {150: 'supergemiii', 88: 'crazy777',76:'candypartyway'}
+        const realKey = { 150: 'supergemiii', 88: 'crazy777', 76: 'candypartyway' }
         let key = this.gameScene[gid] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
             key = realKey[gid] + '_slots_base'
-
           }
         }
 
@@ -1264,7 +1262,7 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              this.handleSlotsBetOptions(baseCfg.BetList)
+              this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
             }
           }
         })
@@ -1272,19 +1270,19 @@ export default {
         console.log(e)
       }
     },
-    handleSlotsBetOptions(betList) {
+    handleSlotsBetOptions(betList, baseBet) {
       if (betList.length <= 0) {
         return
       }
       this.betOptions = []
       for (const i in betList) {
-        this.betOptions.push({'key': betList[i], 'label': betList[i] / 1000})
+        this.betOptions.push({ 'key': betList[i], 'label': betList[i] * baseBet / 1000 })
         if (i === '0') {
           this.bigPrizeForm.bet = betList[i]
           this.scripStepForm.bet = betList[i]
         }
       }
-      console.log('betOptions: ', this.betOptions)
+      // console.log('betOptions: ', this.betOptions)
     },
     getSlotsActConfig(ActId) {
 
@@ -1309,7 +1307,7 @@ export default {
     getSlotsScriptStep2(typ) {
       if (this.cacheStep.counter === this.scripStepForm.counter && this.cacheStep.scriptId === this.scripStepForm.scriptId) {
         this.cacheStep.step = this.scripStepForm.step
-        //刷新 this.stepData.
+        // 刷新 this.stepData.
         this.stepData.splice(this.stepData.length, 0)
       } else {
         this.getSlotsScriptStep(typ)
@@ -1328,12 +1326,12 @@ export default {
           bet: this.scripStepForm.bet,
           typ: typ,
           queryCounter: this.scripStepForm.counter,
-          queryScriptId: this.scripStepForm.scriptId,
+          queryScriptId: this.scripStepForm.scriptId
 
         }
       }).then(response => {
         console.log(response)
-        var groupArray = this.groupArray(response.Data.script, 50);
+        var groupArray = this.groupArray(response.Data.script, 50)
         console.log(groupArray)
         this.stepData = groupArray
         this.scripStepForm.counter = response.Data.counter
@@ -1348,15 +1346,15 @@ export default {
     },
     groupArray(arr, groupSize = 50) {
       return arr.reduce((result, item, index) => {
-        const groupIndex = Math.floor(index / groupSize);
+        const groupIndex = Math.floor(index / groupSize)
 
         if (!result[groupIndex]) {
-          result[groupIndex] = [];
+          result[groupIndex] = []
         }
 
-        result[groupIndex].push(item);
-        return result;
-      }, []);
+        result[groupIndex].push(item)
+        return result
+      }, [])
     },
     exportExcel() {
       if (this.stepTableData.length <= 0) {
@@ -1386,7 +1384,7 @@ export default {
         19: 19,
         20: 20
       }
-      const stepMap = {2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50}
+      const stepMap = { 2: 5, 3: 10, 4: 15, 5: 20, 6: 25, 7: 30, 8: 35, 9: 40, 10: 45, 11: 50 }
       this.$confirm('是否确认导出当前游戏统计数据?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
