@@ -557,8 +557,8 @@ export default {
       gameZoneOther:[],
       gameZoneOtherGameList:[],
       activityOptions: [
-        { label: '圣诞摇钱树[7]', value: 7 },
-        { label: 'Poker乐园[8]', value: 8 },
+        { label: '圣诞摇钱树-[7]', value: 7 },
+        { label: 'Poker乐园-[8]', value: 8 },
       ]
     }
   },
