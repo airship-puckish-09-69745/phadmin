@@ -462,6 +462,10 @@
           <el-form-item v-if="editForm.data.signUpType == 0" label="报名费：" :required="true">
             <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType != 0"label="今日投注下限(0不限制)：" :required="true">
+            <el-input v-model.number="editForm.data.betLowLimit" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
+          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -520,6 +524,20 @@
               </template>
             </el-table-column>
           </el-table>
+        </fieldset>
+
+        <fieldset>
+          <legend>引导推荐</legend>
+          <el-form-item label="游戏推荐：" :required="true">
+            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in guideCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
         </fieldset>
 
         <el-divider />
@@ -609,6 +627,7 @@ export default {
       ],
       csCfgs: [],
       showCsCfgs: [],
+      guideCfgs: [],  //赛事推荐相关
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
@@ -639,7 +658,9 @@ export default {
           rankRewardsDetail: '',
           imagePath: '',
           openDaysLimit: 0,
-          sort: 0
+          sort: 0,
+          betLowLimit: 0,
+          associateKey: -1
         },
         loopDetail: {
           // 只有一场
@@ -715,7 +736,8 @@ export default {
         repeatDelayDays: '间隔天数',
         daySections: '每日时段'
       },
-      showDevTool: false
+      showDevTool: false,
+      subKey: 'match_guide_list'
     }
   },
   computed: {
@@ -724,6 +746,7 @@ export default {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
+    this.getGuideCfgs()
   },
   mounted() {
     this.getList()
@@ -768,7 +791,6 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                 
                 }else if(stage_detail[j].system_type == 2){
                   //存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -830,6 +852,31 @@ export default {
           } else {
             this.total = 0
             this.tableData = []
+          }
+        }
+      })
+    },
+    getGuideCfgs() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
+            const objs = JSON.parse(response.Data.Data)
+            if (objs.length > 0) {
+              this.guideCfgs = []
+              for (let i = 0; i < objs.length; i++) {
+                this.guideCfgs.push({
+                  'label': objs[i].record_name,
+                  'value': parseInt(objs[i].associate_key)
+                })
+              }
+            }
           }
         }
       })
@@ -1067,7 +1114,9 @@ export default {
           status: 0,
           imagePath: '',
           openDaysLimit: 0,
-          sort: 0
+          sort: 0,
+          betLowLimit: 0,
+          associateKey: '0'
         }
         this.editForm.loopDetail = {
           // 只有一场
@@ -1151,7 +1200,9 @@ export default {
           status: editData.status,
           imagePath: editData.image_path,
           openDaysLimit: editData.open_days_limit,
-          sort: editData.sort
+          sort: editData.sort,
+          betLowLimit: editData.bet_low_limit,
+          associateKey: editData.associate_key
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
@@ -1231,8 +1282,6 @@ export default {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
       }
-      
-      // console.log("测试：" + this.$store.getters.name)
       request({
         url: '/matchconfig/match/config/create',
         method: 'POST',
@@ -1259,7 +1308,9 @@ export default {
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds,
           OpenDaysLimit: this.editForm.data.openDaysLimit,
-          Sort: this.editForm.data.sort
+          Sort: this.editForm.data.sort,
+          BetLowLimit: this.editForm.data.betLowLimit,
+          AssociateKey: this.editForm.data.associateKey
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1413,7 +1464,6 @@ export default {
     },
     timeToSec(time) {
       var s = '';
- 
       var hour = time.split(':')[0];
       var min = time.split(':')[1];
       var sec = time.split(':')[2];
@@ -1484,7 +1534,10 @@ export default {
       } else if (this.editForm.data.csId <= 0) {
         this.errmsg('赛制选择不能为空')
         return false
-      } else {
+      } else if (this.editForm.data.betLowLimit < 0) {
+        this.errmsg('今日投注下限数值不能小于零')
+        return false
+      }else {
         // 获取打立阶段最大时长
         const endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
         if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin)) {
@@ -1514,6 +1567,7 @@ export default {
         if(this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           this.errmsg('sng比赛必须开赛后消失')
           return false
+
         }
       }
       return true
@@ -1541,7 +1595,7 @@ export default {
       if(this.editForm.data.opentMatchType == 1){
         if(val == 1 || val == 2){
           return true
-        } 
+        }
       }
       return false;
     },
