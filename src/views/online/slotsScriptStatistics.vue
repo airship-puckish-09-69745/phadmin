@@ -551,14 +551,14 @@
         <el-row>
           <el-form :model="scripStepForm" label-width="80px" :inline="true" size="small">
             <el-row>
-              <el-form-item v-model="scripStepForm.gid" label="老虎机：" :required="true" label-width="80px">
+              <el-form-item v-model="scripStepForm.gid" label="老虎机：" :required="true" label-width="80px" >
                 <el-select
                   v-model="scripStepForm.gid"
                   placeholder="请选择"
                   filterable
                   default-first-option
                   size="mini"
-                  @change="changeBigPrizeGid()"
+                  @change="changeGid(scripStepForm.gid)"
                 >
                   <el-option
                     v-for="row in gameOptions"
@@ -956,6 +956,9 @@ export default {
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
     },
+    changeGid(gid) {
+      this.queryBase(gid)
+    },
     coordinateHandleCurrentChange(val) {
       this.coordinateClientDB.GetPage().SetPageNo(val)
       this.refreshCoordinate()
@@ -1241,11 +1244,15 @@ export default {
         return
       }
       try {
-        const realKey = {150: 'supergemiii', 88: 'crazy777'}
+        const realKey = {150: 'supergemiii', 88: 'crazy777',76:'candypartyway'}
         let key = this.gameScene[gid] + '_slots_base'
-        if (gid === 88 || gid === 150) {
-          key = realKey[gid] + '_slots_base'
+        for (const k in realKey) {
+          if (gid === parseInt(k)) {
+            key = realKey[gid] + '_slots_base'
+
+          }
         }
+
         request2({
           url: '/customizeconfig/one',
           method: 'get',
@@ -1337,6 +1344,7 @@ export default {
         this.cacheStep['step'] = response.Data.step
         $this.loading = false
       })
+      $this.loading = false
     },
     groupArray(arr, groupSize = 50) {
       return arr.reduce((result, item, index) => {
