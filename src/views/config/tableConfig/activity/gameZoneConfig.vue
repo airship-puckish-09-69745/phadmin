@@ -116,6 +116,14 @@
                   width="200"
                 />
                 <el-table-column
+                  label="游戏名称"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ showGameName(1,scope.row.Gid) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="IsOpen"
                   label="开关"
                   width="200"
@@ -131,7 +139,7 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-image src="scope.row.GameIconLink"></el-image>
+                    <ImagePicker v-model="scope.row.GameIconLink" />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -204,6 +212,14 @@
                   width="200"
                 />
                 <el-table-column
+                  label="活动名称"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ showGameName(2,scope.row.Id) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="IsOpen"
                   label="开关"
                   width="200"
@@ -219,7 +235,8 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-image src="scope.row.IconLink"></el-image>
+<!--                    <el-image src="scope.row.IconLink"></el-image>-->
+                    <ImagePicker v-model="scope.row.IconLink" />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -295,7 +312,18 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label="游戏id：" :required="true" prop="Gid">
           <el-col :span="15">
-            <el-input v-model.number="edit.item.Gid" />
+<!--            <el-input v-model.number="edit.item.Gid" />-->
+            <template>
+              <el-select v-model.number="edit.item.Gid" placeholder="请选择">
+                <el-option
+                  v-for="item in gameSelect"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+
+            </template>
           </el-col>
         </el-form-item>
 
@@ -334,7 +362,15 @@
       <el-form ref="editOtherGameZone.item" :model="editOtherGameZone.item" label-width="250px" size="small">
         <el-form-item label="活动id：" :required="true" prop="Id">
           <el-col :span="15">
-            <el-input v-model.number="editOtherGameZone.item.Id" />
+<!--            <el-input v-model.number="editOtherGameZone.item.Id" />-->
+            <el-select v-model.number="editOtherGameZone.item.Id" placeholder="请选择">
+              <el-option
+                v-for="item in activitySelect"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id">
+              </el-option>
+            </el-select>
           </el-col>
         </el-form-item>
 
@@ -559,7 +595,14 @@ export default {
       activityOptions: [
         { label: '圣诞摇钱树-[7]', value: 7 },
         { label: 'Poker乐园-[8]', value: 8 },
-      ]
+      ],
+      gameSelect: [],
+      activitySelect: [
+        { name: 'slot背包-[5]', id: 5 },
+        { name: 'slot任务-[6]', id: 6 },
+        { name: '圣诞摇钱树-[7]', id: 7 },
+        { name: 'Poker乐园-[8]', id: 8 }
+      ],
     }
   },
   created() {
@@ -613,6 +656,8 @@ export default {
             } else {
               dataZone[objZone.CategoryID] = [gameZone]
             }
+            const gameSelectInfo = {id: objZone.Gid, name : objZone.Description}
+            this.gameSelect.push(gameSelectInfo)
           }
 
           this.treeDataZone = []
@@ -973,6 +1018,21 @@ export default {
           }
         })
       })
+    },
+    showGameName(type,id) {
+      console.log('showGameName', id)
+      let temp = this.gameSelect
+      if (type === 2) {
+        temp = this.activitySelect
+      }
+      for (let i = 0; i < temp.length; i++) {
+        const data = temp[i]
+        if (data.id === id) {
+          console.log('showGameName', id , data.name)
+          return data.name
+        }
+      }
+      return ''
     }
   }
 }
