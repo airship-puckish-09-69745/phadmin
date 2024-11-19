@@ -247,6 +247,37 @@
 
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="游戏内活动入口配置">
+          <el-row :gutter="5">
+            <el-col :span="16">
+              <el-form ref="item" label-width="220px">
+                <el-col :span="24">
+                  <el-form-item label="活动入口开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-switch v-model="item.GameEvent.IsOpen" :active-value="true" :inactive-value="false" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="活动入口图标：" :required="true">
+                    <ImagePicker v-model="item.GameEvent.IconLink" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="支持的活动ID：" :required="true">
+                    <el-select v-model="item.GameEvent.ActivityIds" multiple placeholder="请选择" style="width: 300px">
+                      <el-option
+                        v-for="item in activityOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
 
       <el-row>
@@ -454,7 +485,12 @@ export default {
             GameSort: 1,
             IsOpen: true
           }
-        ]
+        ],
+        GameEvent: {
+          IsOpen: true,
+          IconLink: '',
+          ActivityIds: []
+        },
       },
       treeDataZone: [{
         id: 1,
@@ -519,7 +555,11 @@ export default {
         disabled: 'disabled'
       },
       gameZoneOther:[],
-      gameZoneOtherGameList:[]
+      gameZoneOtherGameList:[],
+      activityOptions: [
+        { label: '圣诞摇钱树', value: 7 },
+        { label: 'Poker乐园', value: 8 },
+      ]
     }
   },
   created() {
