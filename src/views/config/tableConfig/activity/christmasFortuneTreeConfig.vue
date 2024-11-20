@@ -12,68 +12,92 @@
             <el-col :span="16">
               <el-form ref="item" label-width="220px">
                 <el-col :span="12">
-                  <el-form-item label="活动开关" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-form-item label="活动开关：" :rules="dataRule(true,{type:'n',range:'0'})">
                     <el-switch v-model="item.IsOpen" :active-value="true" :inactive-value="false" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="展示结束时间">
+                  <el-form-item label="展示结束时间：">
                     <el-date-picker v-model="item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动开始时间">
+                  <el-form-item label="活动开始时间：">
                     <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动结束时间">
+                  <el-form-item label="活动结束时间：">
                     <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="24">
-                  <el-form-item label="下注/赢钱获得圣诞袜比例">
+                <el-col :span="12">
+                  <el-form-item label="下注/赢钱获得圣诞袜比例：">
                     <el-input v-model.number="item.SockGainRatio" size="mini">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="规则图片横板：" :required="true">
-                    <ImagePicker v-model="item.RuleImgHor" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="规则图片竖版：" :required="true">
-                    <ImagePicker v-model="item.RuleImgVer" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
                   <el-form-item label="活动图标URL：" :required="true">
                     <ImagePicker v-model="item.Icon" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
-                  <el-form-item label="勾选支持的游戏：" :required="true">
-                    <el-input
-                      placeholder="输入关键字进行过滤"
-                      v-model="filterText">
-                    </el-input>
-                    <el-tree
-                      :data="treeData"
-                      show-checkbox
-                      node-key="id"
-                      ref="tree"
-                      highlight-current
-                      :props="defaultProps"
-                      :filter-node-method="filterNode"
-                      @check-change="handleCheckChange"
-                    >
-                    </el-tree>
-                  </el-form-item>
-                </el-col>
               </el-form>
             </el-col>
+          </el-row>
+          <el-row :gutter="5">
+            <el-form label-width="220px">
+              <el-col :span="24">
+                <el-form-item label="规则图片横板：" :required="true">
+                  <el-col :span="2" v-for="(v,k) in item.RuleImgHor">
+                    <span style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Hor')">移除</span>
+                      <ImagePicker v-model="item.RuleImgHor[k]" />
+                    </span>
+                  </el-col>
+                  <span style="position: relative;">
+                    <el-button @click="addRuleImage('Hor')">添加</el-button>
+                  </span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="规则图片竖版：" :required="true">
+                  <el-col :span="2" v-for="(v,k) in item.RuleImgVer">
+                    <span style="display: inline-block; position: relative;">
+                      <span style="position: absolute; top: -20px; right: 1px; cursor: pointer; z-index: 99" @click="removeRuleImage(k, 'Vor')">移除</span>
+                      <ImagePicker v-model="item.RuleImgVer[k]" />
+                    </span>
+                  </el-col>
+                  <span style="position: relative;">
+                    <el-button @click="addRuleImage('Vor')">添加</el-button>
+                  </span>
+                </el-form-item>
+              </el-col>
+            </el-form>
+          </el-row>
+          <el-row :gutter="5">
+            <el-form label-width="220px">
+              <el-col :span="12">
+                <el-form-item label="勾选支持的游戏：" :required="true">
+                  <el-input
+                    placeholder="输入关键字进行过滤"
+                    v-model="filterText">
+                  </el-input>
+                  <el-tree
+                    :data="treeData"
+                    show-checkbox
+                    node-key="id"
+                    ref="tree"
+                    highlight-current
+                    :props="defaultProps"
+                    :filter-node-method="filterNode"
+                    @check-change="handleCheckChange"
+                  >
+                  </el-tree>
+                </el-form-item>
+              </el-col>
+            </el-form>
           </el-row>
         </el-tab-pane>
 
@@ -351,8 +375,8 @@ export default {
         EndTime: 1735487999000,
         ShowEndTime: 1735574399000,
         SockGainRatio: 10,
-        RuleImgHor: '',
-        RuleImgVer: '',
+        RuleImgHor: [],
+        RuleImgVer: [],
         PrizePoolCfg: [
           {
             RaffleLevel: 200,
@@ -782,6 +806,22 @@ export default {
       }
 
       console.log(this.item.GameIdCfg)
+    },
+    addRuleImage(type) {
+      console.log('addRuleImage type:', type)
+      if (type === 'Hor') {
+        this.item.RuleImgHor.push('')
+      } else {
+        this.item.RuleImgVer.push('')
+      }
+    },
+    removeRuleImage(index, type) {
+      console.log('removeRuleImage index:', index, 'type:', type)
+      if (type === 'Hor') {
+        this.item.RuleImgHor.splice(index, 1)
+      } else {
+        this.item.RuleImgVer.splice(index, 1)
+      }
     }
   }
 }
