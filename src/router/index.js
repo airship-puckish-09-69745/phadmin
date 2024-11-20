@@ -1787,6 +1787,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'epicace_slots_log',
             meta: { title: 'EpicAce', gid: 170 }
+          },
+          {
+            path: ' pharaohtreasure_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pharaohtreasure_slots_log',
+            meta: { title: 'PharaohTreasure', gid: 168 }
           }
         ]
       },
