@@ -740,6 +740,8 @@ export default {
         if (this.orgLobbyVersions[i].ID === this.LobbyVersionID) {
           this.LobbyVersion = this.orgLobbyVersions[i].LobbyVersion
           this.LobbyVersionStatus = this.orgLobbyVersions[i].Status
+          this.LobbyVersionTag = this.orgLobbyVersions[i].Tag
+          this.canEdit = (this.LobbyVersionTag === 0)
           break
         }
       }
@@ -766,6 +768,12 @@ export default {
           Message.success('修改链接版本状态成功！')
           $this.LobbyVersionTag = targetTag
           $this.canEdit = ($this.LobbyVersionTag === 0)
+          for (let i = 0; i < $this.orgLobbyVersions.length; i++) {
+              if ($this.orgLobbyVersions[i].ID === $this.LobbyVersionID) {
+                $this.orgLobbyVersions[i].Tag = targetTag
+                break
+              }
+            }
         }
       }).catch(function() {
         loading.close()
