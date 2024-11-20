@@ -3,7 +3,7 @@
     <el-form :model="searchForm" label-width="110px" :inline="true" size="small">
       <el-row>
         <el-form-item v-model="searchForm.gameId" label="游戏：" :required="true" label-width="80px">
-          <el-select v-model="searchForm.gameId" placeholder="游戏筛选" size="large">
+          <el-select v-model="searchForm.gameId" filterable default-first-option placeholder="游戏筛选" size="large">
             <el-option
               v-for="row in games2"
               :label="row.name"
