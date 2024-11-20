@@ -952,6 +952,7 @@ export default {
       this.refreshStep()
       this.refreshJackpot()
       this.refreshReturnMoney()
+      this.queryBase(this.queryGid)
     },
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
