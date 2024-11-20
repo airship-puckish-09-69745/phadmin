@@ -405,7 +405,7 @@
                 >
                   <template slot-scope="scope">
                     {{
-                      (scope.row.returnMoney  /currentBaseBet * scope.row.bet * betMap[scope.row.bet] * 100).toFixed(2) + "%"
+                      ((scope.row.returnMoney /(currentBaseBet * scope.row.bet * betMap[scope.row.bet]))*100).toFixed(2)    + "%"
                     }}
                   </template>
                 </el-table-column>
