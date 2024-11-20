@@ -809,6 +809,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce' }
               },
               {
+                path: 'wrathofzeus_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
+                name: 'wrathofzeus_slots_cfg',
+                meta: { title: 'WrathOfZeus' }
+              },
+              {
                 path: 'crazyace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazyace_slots_cfg'),
                 name: 'crazyace_slots_cfg',
@@ -954,6 +960,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
+              },
+              {
+                path: 'wrathofzeusmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeusmars_slots_cfg'),
+                name: 'wrathofzeusmars_slots_cfg',
+                meta: { title: 'WrathOfZeus(审)' }
               },
               {
                 path: 'crazyacemars_slots_cfg',
@@ -1747,6 +1759,12 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce', gid: 154 }
           },
           {
+            path: 'wrathofzeus_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeus_slots_log',
+            meta: { title: 'WrathOfZeus', gid: 172 }
+          },
+          {
             path: 'crazyace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
@@ -1891,6 +1909,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
             meta: { title: 'GrandAce(审)', gid: 155 }
+          },
+          {
+            path: 'wrathofzeusmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeusmars_slots_log',
+            meta: { title: 'WrathOfZeus(审)', gid: 173 }
           },
           {
             path: 'crazyacemars_slots_log',
