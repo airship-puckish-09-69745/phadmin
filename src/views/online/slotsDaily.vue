@@ -279,6 +279,8 @@ export default {
           return 'CrazyAce'
         case 158:
           return 'SharkKingdom'
+        case 168:
+          return 'PharaohTreasure'
         case 160:
           return 'GigaAce'
         case 162:
@@ -322,6 +324,7 @@ export default {
         case 158:
         case 160:
         case 162:
+        case 168:
         case 170:{
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
