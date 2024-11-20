@@ -377,7 +377,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{ cfgMap[queryGid + ''] ? cfgMap[queryGid + ''].Bet * scope.row.bet * betMap[scope.row.bet] / 1000 : scope.row.bet + "_" }}
+                    {{  currentBaseBet * scope.row.bet * betMap[scope.row.bet] / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -405,7 +405,7 @@
                 >
                   <template slot-scope="scope">
                     {{
-                      (scope.row.returnMoney / (cfgMap[queryGid + ''] ? (cfgMap[queryGid + ''].Bet * scope.row.bet * betMap[scope.row.bet]) : 0) * 100).toFixed(2) + "%"
+                      ((scope.row.returnMoney /(currentBaseBet * scope.row.bet * betMap[scope.row.bet]))*100).toFixed(2)    + "%"
                     }}
                   </template>
                 </el-table-column>
@@ -801,7 +801,8 @@ export default {
       scatterCounts: [],
       betMap: {},
       stepData: {},
-      cacheStep: {}
+      cacheStep: {},
+      currentBaseBet:{},
     }
   },
   created() {
@@ -951,6 +952,7 @@ export default {
       this.refreshStep()
       this.refreshJackpot()
       this.refreshReturnMoney()
+      this.queryBase(this.queryGid)
     },
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
@@ -1263,6 +1265,7 @@ export default {
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
               this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              this.currentBaseBet = baseCfg.BaseBet
             }
           }
         })

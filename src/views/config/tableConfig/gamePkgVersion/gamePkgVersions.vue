@@ -656,7 +656,11 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作' || !this.canEdit) {
+      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作' ) {
+        return
+      }
+      if (!this.canEdit) {
+        this.$alert('锁定状态中不可修改，请先解锁')
         return
       }
       this.initFormData(true, row.ID)
@@ -736,6 +740,8 @@ export default {
         if (this.orgLobbyVersions[i].ID === this.LobbyVersionID) {
           this.LobbyVersion = this.orgLobbyVersions[i].LobbyVersion
           this.LobbyVersionStatus = this.orgLobbyVersions[i].Status
+          this.LobbyVersionTag = this.orgLobbyVersions[i].Tag
+          this.canEdit = (this.LobbyVersionTag === 0)
           break
         }
       }
@@ -762,6 +768,12 @@ export default {
           Message.success('修改链接版本状态成功！')
           $this.LobbyVersionTag = targetTag
           $this.canEdit = ($this.LobbyVersionTag === 0)
+          for (let i = 0; i < $this.orgLobbyVersions.length; i++) {
+              if ($this.orgLobbyVersions[i].ID === $this.LobbyVersionID) {
+                $this.orgLobbyVersions[i].Tag = targetTag
+                break
+              }
+            }
         }
       }).catch(function() {
         loading.close()
