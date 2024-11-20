@@ -2287,7 +2287,7 @@ export const asyncRoutes = [
             path: 'game_pkg_versions',
             component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
             name: 'game_pkg_versions',
-            meta: { title: '游戏包配置列表测试版 ◐', noCache: true }
+            meta: { title: '游戏包配置列表开发版 ◐', noCache: true }
           },
           {
             path: 'pkgversionsWhiteList',
