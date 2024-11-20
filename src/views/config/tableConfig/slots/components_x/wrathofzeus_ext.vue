@@ -3,47 +3,6 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
-
-          <el-form-item label="解锁黄金图标下注值">
-            <el-input v-model="tempGoldSymbolStr" placeholder="请输入内容,如1,2,3,5">
-              <template slot="append">四个值用 , 连接</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="解锁JP图标下注值">
-            <el-input v-model="tempJackpotSymbolStr" placeholder="请输入内容,如2,4,6,10">
-              <template slot="append">四个值用 , 连接</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP期望中奖金额">
-            <el-input v-model="tempJackpotHopeStr" placeholder="请输入内容,如2,4,6,10">
-              <template slot="append">四个值用 , 连接</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP中奖限制">
-            <el-input v-model="tempJackpotLimitStr" placeholder="请输入内容,如2,4,6,10">
-              <template slot="append">四个值用 , 连接</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="发放JP中奖比例">
-            <el-input v-model="cfg.JackpotMultiStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接单位%</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP抽水比例" prop="JackpotFeeRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JackpotFeeRate" placeholder="请输入内容,如2"><template slot="append">‰</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP抽水权重">
-            <el-input v-model="cfg.JackpotFeeWeightStr" placeholder="请输入内容,如2,4,6,10"> <template slot="append">四个值用 , 连接</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP奖池滚动比例" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JackpotShowPoolRate" placeholder="请输入内容,如2"><template slot="append">%</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
@@ -103,12 +62,7 @@ export default {
   data() {
     return {
       cfg: {
-      },
-      // 临时变量
-      tempGoldSymbolStr: '',
-      tempJackpotSymbolStr: '',
-      tempJackpotHopeStr: '',
-      tempJackpotLimitStr: ''
+      }
     }
   },
   created() {
@@ -124,12 +78,6 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
-      // 放大1000倍并保存到cfg
-      this.cfg.GoldSymbolStr = this.scaleUp(this.tempGoldSymbolStr)
-      this.cfg.JackpotSymbolStr = this.scaleUp(this.tempJackpotSymbolStr)
-      this.cfg.JackpotHopeStr = this.scaleUp(this.tempJackpotHopeStr)
-      this.cfg.JackpotLimitStr = this.scaleUp(this.tempJackpotLimitStr)
-
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -152,26 +100,7 @@ export default {
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
-        // 初始化临时变量为缩小后的值
-        this.tempGoldSymbolStr = this.scaleDown(this.cfg.GoldSymbolStr)
-        this.tempJackpotSymbolStr = this.scaleDown(this.cfg.JackpotSymbolStr)
-        this.tempJackpotHopeStr = this.scaleDown(this.cfg.JackpotHopeStr)
-        this.tempJackpotLimitStr = this.scaleDown(this.cfg.JackpotLimitStr)
       }
-    },
-    // 缩小1000倍的方法
-    scaleDown(value) {
-      if (value) {
-        return value.split(',').map(val => (parseFloat(val) / 1000).toString()).join(',')
-      }
-      return ''
-    },
-    // 放大1000倍的方法
-    scaleUp(value) {
-      if (value) {
-        return value.split(',').map(val => (parseFloat(val) * 1000).toString()).join(',')
-      }
-      return ''
     }
   }
 }
