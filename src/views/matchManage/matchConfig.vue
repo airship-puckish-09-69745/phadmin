@@ -540,6 +540,21 @@
           </el-form-item>
         </fieldset>
 
+        <fieldset>
+          <legend>数据中心上报</legend>
+          <el-form-item label="是否上报数据中心：" :required="true">
+            <el-switch
+              style="display: block"
+              v-model="editForm.data.dcReport"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value='1'
+              :inactive-value='0'
+              active-text="是"
+              inactive-text="否">
+            </el-switch>
+          </el-form-item>
+        </fieldset>
         <el-divider />
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveMatch()">保存比赛配置</el-button>
@@ -660,7 +675,8 @@ export default {
           openDaysLimit: 0,
           sort: 0,
           betLowLimit: 0,
-          associateKey: -1
+          associateKey: -1,
+          dcReport: 0
         },
         loopDetail: {
           // 只有一场
@@ -876,6 +892,7 @@ export default {
                   'value': parseInt(objs[i].associate_key)
                 })
               }
+              console.log('guideCfgs     ',this.guideCfgs)
             }
           }
         }
@@ -1116,7 +1133,8 @@ export default {
           openDaysLimit: 0,
           sort: 0,
           betLowLimit: 0,
-          associateKey: '0'
+          associateKey: '0',
+          dcReport: 0,
         }
         this.editForm.loopDetail = {
           // 只有一场
@@ -1202,8 +1220,10 @@ export default {
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
           betLowLimit: editData.bet_low_limit,
-          associateKey: editData.associate_key
+          associateKey: editData.associate_key,
+          dcReport: editData.dc_report
         }
+        console.log("associateKey --- ",this.editForm.data.associateKey)
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
           const whileList = JSON.parse(editData.while_list)
@@ -1310,7 +1330,8 @@ export default {
           OpenDaysLimit: this.editForm.data.openDaysLimit,
           Sort: this.editForm.data.sort,
           BetLowLimit: this.editForm.data.betLowLimit,
-          AssociateKey: this.editForm.data.associateKey
+          AssociateKey: this.editForm.data.associateKey,
+          DcReport: this.editForm.data.dcReport
         }
       }).then(response => {
         if (response.RetCode === 0) {
