@@ -656,7 +656,11 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
-      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作' || !this.canEdit) {
+      if (column.label === 'selectBox' || column.label === 'ID' || column.label === '包名' || column.label === '操作' ) {
+        return
+      }
+      if (!this.canEdit) {
+        this.$alert('锁定状态中不可修改，请先解锁')
         return
       }
       this.initFormData(true, row.ID)
