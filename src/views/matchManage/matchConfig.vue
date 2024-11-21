@@ -464,7 +464,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.signUpType != 0"label="今日投注下限(0不限制)：" :required="true">
-            <el-input v-model.number="editForm.data.betLowLimit" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
+            <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
         </fieldset>
 
@@ -674,8 +674,7 @@ export default {
           imagePath: '',
           openDaysLimit: 0,
           sort: 0,
-          betLowLimit: 0,
-          associateKey: -1,
+          associateKey: 0,
           dcReport: 0
         },
         loopDetail: {
@@ -724,8 +723,12 @@ export default {
         whileList: {
           type: 0,
           data: ''
-        }
+        },
+        signExtra: {
+          betCnt: 0
+        },
       },
+
       AttrNames: {
         appInfo: 'APP信息',
         matchCfgId: '赛事id',
@@ -892,7 +895,6 @@ export default {
                   'value': parseInt(objs[i].associate_key)
                 })
               }
-              console.log('guideCfgs     ',this.guideCfgs)
             }
           }
         }
@@ -1132,9 +1134,8 @@ export default {
           imagePath: '',
           openDaysLimit: 0,
           sort: 0,
-          betLowLimit: 0,
-          associateKey: '0',
-          dcReport: 0,
+          associateKey: 0,
+          dcReport: 0
         }
         this.editForm.loopDetail = {
           // 只有一场
@@ -1183,6 +1184,10 @@ export default {
           type: 0,
           data: ''
         }
+
+        this.editForm.signExtra = {
+          betCnt: 0
+        }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
       } else {
@@ -1219,11 +1224,9 @@ export default {
           imagePath: editData.image_path,
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
-          betLowLimit: editData.bet_low_limit,
-          associateKey: editData.associate_key,
+          associateKey: parseInt(editData.associate_key),
           dcReport: editData.dc_report
         }
-        console.log("associateKey --- ",this.editForm.data.associateKey)
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
           const whileList = JSON.parse(editData.while_list)
@@ -1246,6 +1249,14 @@ export default {
           }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
+        if (editData.sign_extra && editData.sign_extra != '' && editData.sign_extra != 'undefined') {
+          const signExtra = JSON.parse(editData.sign_extra)
+
+          if (signExtra && signExtra.betCnt) {
+            this.editForm.signExtra.betCnt = signExtra.betCnt
+          }
+
+        }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
@@ -1329,9 +1340,9 @@ export default {
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds,
           OpenDaysLimit: this.editForm.data.openDaysLimit,
           Sort: this.editForm.data.sort,
-          BetLowLimit: this.editForm.data.betLowLimit,
           AssociateKey: this.editForm.data.associateKey,
-          DcReport: this.editForm.data.dcReport
+          DcReport: this.editForm.data.dcReport,
+          SignExtra: JSON.stringify(this.editForm.signExtra)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1554,9 +1565,6 @@ export default {
         return false
       } else if (this.editForm.data.csId <= 0) {
         this.errmsg('赛制选择不能为空')
-        return false
-      } else if (this.editForm.data.betLowLimit < 0) {
-        this.errmsg('今日投注下限数值不能小于零')
         return false
       }else {
         // 获取打立阶段最大时长

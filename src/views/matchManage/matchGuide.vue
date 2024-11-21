@@ -69,12 +69,12 @@
               width="50"
             />
             <el-table-column
-              prop="gameId"
+              prop="game_id"
               label="游戏类型"
               width="400"
             >
               <template slot-scope="scope">
-                <el-select v-model="scope.row.gameId" placeholder="请选择" size="mini">
+                <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini">
                   <el-option
                     v-for="item in gameGuideCfgs"
                     :key="item.value"
@@ -85,17 +85,17 @@
               </template>
             </el-table-column>
             <el-table-column
-              prop="sortId"
+              prop="sort_id"
               label="排序"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.sortId" style="width: 80px;" size="mini" placeholder="填写排序值" />
+                <el-input v-model.number="scope.row.sort_id" style="width: 80px;" size="mini" placeholder="填写排序值" />
               </template>
             </el-table-column>
 
-            <el-table-column label="游戏图标URL" prop="imagePath" :required="true">
+            <el-table-column label="游戏图标URL" prop="image_path" :required="true">
               <template slot-scope="scope">
-                <ImagePicker v-model="scope.row.imagePath" />
+                <ImagePicker v-model="scope.row.image_path" />
               </template>
             </el-table-column>
 
@@ -256,9 +256,9 @@ export default {
       index++
       this.guideRecord.push({
         index: index,
-        sortId: '',
-        gameId: '',
-        imagePath: ''
+        sort_id: '',
+        game_id: '',
+        image_path: ''
       })
     },
 
@@ -303,19 +303,20 @@ export default {
       if (!this.configCheck()) {
         return
       }
+      console.log("guideRecord",this.guideRecord)
       var record_name = '['
       var record_key = ''
       if (this.guideRecord.length > 0) {
         for (var i = 0; i < this.guideRecord.length; i++) {
-          record_name = record_name + this.GetGameName(this.guideRecord[i].gameId)
-          record_key = record_key + (this.guideRecord[i].gameId).toString()
+          record_name = record_name + this.GetGameName(this.guideRecord[i].game_id)
+          record_key = record_key + (this.guideRecord[i].game_id).toString()
 
           if (i !== this.guideRecord.length - 1) {
             record_name += ','
           }
         }
       }
-
+      console.log("111 guideRecord",this.guideRecord)
       record_name = record_name + ']'
       if (this.editForm.isAdd === false) {
         for (let i = 0; i < this.guideList.length; i++) {
@@ -398,7 +399,7 @@ export default {
         return false
       }
       for (var i = 0; i < this.guideRecord.length; i++) {
-        if (this.guideRecord[i].sortId == '' || this.guideRecord[i].imagePath == '' || this.guideRecord[i].gameId == '') {
+        if (this.guideRecord[i].sort_id == '' || this.guideRecord[i].image_path == '' || this.guideRecord[i].game_id == '') {
           this.errmsg('需要填写推荐游戏配置信息')
           return false
         }
