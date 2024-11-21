@@ -13,7 +13,15 @@
           <el-form ref="form" :model="form" label-width="200px">
             <el-row>
               <el-form-item label="活动状态：">
-                <el-switch v-model="postData.switch" active-text="下架" inactive-text="正常" active-color="#cc0000" inactive-color="#009900" />
+                <el-switch style="display: block"
+                           v-model="postData.switch"
+                           active-color="#13ce66"
+                           inactive-color="#ff4949"
+                           :active-value='1'
+                           :inactive-value='0'
+                           active-text="正常"
+                           inactive-text="下架"
+                />
               </el-form-item>
             </el-row>
             <el-col :offset="0" :span="8">
@@ -27,6 +35,7 @@
 
       <el-table
         :data="postData.tableData"
+        border
         stripe
         :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)"
@@ -69,25 +78,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="status"
-          label="开关"
-        >
-          <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
           fixed="right"
-          label="操作"
           width="200px"
+          label="操作"
         >
+
           <template slot-scope="scope">
             <el-button
               size="mini"
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
-
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -201,7 +203,7 @@ export default {
       showCsCfgs: [],
       postData: {
         'tableData': [],
-        'switch': false
+        'switch': 0
       },
       raw: {},
       limit: 10,
@@ -278,6 +280,7 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
+          console.log("收到数据 ",response)
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const cfg = JSON.parse(response.Data.Data)
             this.postData.tableData = cfg.tableData
@@ -315,10 +318,6 @@ export default {
           this.showCsCfgs.push(this.csCfgs[i])
         }
       }
-    },
-
-    selectMatchGame() {
-
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
