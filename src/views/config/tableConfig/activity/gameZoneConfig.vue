@@ -24,27 +24,26 @@
                 <el-col :span="12">
                   <el-form-item label="gameZone支持的游戏ID：" :required="true">
                     <el-input
+                      v-model="filterTextZone"
                       placeholder="输入关键字进行过滤"
-                      v-model="filterTextZone">
-                    </el-input>
+                    />
                     <el-tree
+                      ref="treeGameZone"
                       :data="treeDataZone"
                       show-checkbox
                       node-key="id"
-                      ref="treeGameZone"
                       highlight-current
                       :props="defaultPropsZone"
                       :filter-node-method="filterNodeZone"
                       @check-change="handleCheckChangeZone"
-                    >
-                    </el-tree>
+                    />
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
           </el-row>
         </el-tab-pane>
-<!--        ///////////////////////////-->
+        <!--        ///////////////////////////-->
         <el-tab-pane label="winMore配置">
           <el-row :gutter="5">
             <el-col :span="16">
@@ -62,27 +61,26 @@
                 <el-col :span="12">
                   <el-form-item label="winMore支持的游戏ID：" :required="true">
                     <el-input
+                      v-model="mayLikeFilterText"
                       placeholder="输入关键字进行过滤"
-                      v-model="mayLikeFilterText">
-                    </el-input>
+                    />
                     <el-tree
+                      ref="treeWinMore"
                       :data="mayLikeTreeData"
                       show-checkbox
                       node-key="id"
-                      ref="treeWinMore"
                       highlight-current
                       :props="mayLikeDefaultProps"
                       :filter-node-method="mayLikeFilterNode"
                       @check-change="handleCheckChangeWinMore"
-                    >
-                    </el-tree>
+                    />
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
           </el-row>
         </el-tab-pane>
-<!--        /////////////////////////-->
+        <!--        /////////////////////////-->
         <el-tab-pane label="mayLike活动配置">
           <el-row :gutter="5">
             <el-col :span="16">
@@ -116,12 +114,20 @@
                   width="200"
                 />
                 <el-table-column
+                  label="游戏名称"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ showGameName(1,scope.row.Gid) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="IsOpen"
                   label="开关"
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled=true />
+                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />
                   </template>
 
                 </el-table-column>
@@ -131,7 +137,7 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-image src="scope.row.GameIconLink"></el-image>
+                    <ImagePicker v-model="scope.row.GameIconLink" />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -164,7 +170,7 @@
 
           </el-row>
         </el-tab-pane>
-<!--        /////////////////////-->
+        <!--        /////////////////////-->
         <el-tab-pane label="Favorites活动配置">
           <el-row :gutter="5">
             <el-col :span="16">
@@ -183,7 +189,7 @@
             </el-col>
           </el-row>
         </el-tab-pane>
-<!--        /////////////////////////-->
+        <!--        /////////////////////////-->
         <!--        /////////////////////////-->
         <el-tab-pane label="gameZone其他活动配置">
           <el-row :gutter="5">
@@ -204,12 +210,20 @@
                   width="200"
                 />
                 <el-table-column
+                  label="活动名称"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ showGameName(2,scope.row.Id) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="IsOpen"
                   label="开关"
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled=true />
+                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />
                   </template>
 
                 </el-table-column>
@@ -219,7 +233,8 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-image src="scope.row.IconLink"></el-image>
+                    <!--                    <el-image src="scope.row.IconLink"></el-image>-->
+                    <ImagePicker v-model="scope.row.IconLink" />
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -247,6 +262,37 @@
 
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane v-if="item.GameEvent != null" label="游戏内活动入口配置">
+          <el-row :gutter="5">
+            <el-col :span="16">
+              <el-form ref="item" label-width="220px">
+                <el-col :span="24">
+                  <el-form-item label="活动入口开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-switch v-model="item.GameEvent.IsOpen" :active-value="true" :inactive-value="false" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="活动入口图标：" :required="true">
+                    <ImagePicker v-model="item.GameEvent.IconLink" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="24">
+                  <el-form-item label="支持的活动ID：" :required="true">
+                    <el-select v-model="item.GameEvent.ActivityIds" multiple placeholder="请选择" style="width: 300px">
+                      <el-option
+                        v-for="item in activityOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-form>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
 
       <el-row>
@@ -264,7 +310,18 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label="游戏id：" :required="true" prop="Gid">
           <el-col :span="15">
-            <el-input v-model.number="edit.item.Gid" />
+            <!--            <el-input v-model.number="edit.item.Gid" />-->
+            <template>
+              <el-select v-model.number="edit.item.Gid" placeholder="请选择">
+                <el-option
+                  v-for="item in gameSelect"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                />
+              </el-select>
+
+            </template>
           </el-col>
         </el-form-item>
 
@@ -303,7 +360,15 @@
       <el-form ref="editOtherGameZone.item" :model="editOtherGameZone.item" label-width="250px" size="small">
         <el-form-item label="活动id：" :required="true" prop="Id">
           <el-col :span="15">
-            <el-input v-model.number="editOtherGameZone.item.Id" />
+            <!--            <el-input v-model.number="editOtherGameZone.item.Id" />-->
+            <el-select v-model.number="editOtherGameZone.item.Id" placeholder="请选择">
+              <el-option
+                v-for="item in activitySelect"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              />
+            </el-select>
           </el-col>
         </el-form-item>
 
@@ -319,18 +384,17 @@
         </el-form-item>
         <el-form-item label="支持游戏：" prop="GameList">
           <el-col :span="15">
-<!--            TODO 此处设置tree-->
+            <!--            TODO 此处设置tree-->
             <el-tree
+              ref="treeGameOtherZone"
               :data="treeDataOtherZone"
               show-checkbox
               node-key="id"
-              ref="treeGameOtherZone"
               highlight-current
               :props="defaultPropsOtherZone"
               :filter-node-method="filterNodeOtherZone"
               @check-change="handleCheckChangeOtherZone"
-            >
-            </el-tree>
+            />
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -343,7 +407,6 @@
       </el-form>
     </el-dialog>
 
-
     <!--对比组件-->
     <compare ref="compare" />
   </el-col>
@@ -351,12 +414,12 @@
 
 <script>
 
-import Publish from "@/components/Publish/index.vue";
-import {$libShow, DataRule} from "@/utils/common";
-import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
-import {Message} from "element-ui";
-import request from "@/utils/request";
-import Compare from "@/components/Compare/index.vue";
+import Publish from '@/components/Publish/index.vue'
+import { $libShow, DataRule } from '@/utils/common'
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import { Message } from 'element-ui'
+import request from '@/utils/request'
+import Compare from '@/components/Compare/index.vue'
 
 function newItem() {
   return { Gid: 1, GameIconLink: '', GameSort: 1, IsOpen: true }
@@ -365,18 +428,7 @@ function newItemOtherGameZone() {
   return { Id: 1, IconLink: '', IsOpen: true, GameList: [] }
 }
 export default {
-  components: {Compare, ImagePicker, Publish},
-  watch: {
-    filterTextZone(val) {
-      this.$refs.treeGameZone.filter(val);
-    },
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    },
-    gameIdCfg(val) {
-
-    }
-  },
+  components: { Compare, ImagePicker, Publish },
   data() {
     return {
       subKey: 'gameZone_cfg',
@@ -417,7 +469,7 @@ export default {
         IsOpen: true,
         ImgUrl: '',
         GameList: [],
-        GameZoneItem:[
+        GameZoneItem: [
           {
             Id: 2,
             IconLink: '',
@@ -425,7 +477,7 @@ export default {
             GameList: []
           }
         ],
-        WinMoreItem:[
+        WinMoreItem: [
           {
             Id: 3,
             IconLink: '',
@@ -454,7 +506,12 @@ export default {
             GameSort: 1,
             IsOpen: true
           }
-        ]
+        ],
+        GameEvent: {
+          IsOpen: true,
+          IconLink: '',
+          ActivityIds: []
+        }
       },
       treeDataZone: [{
         id: 1,
@@ -518,8 +575,31 @@ export default {
         children: 'children',
         disabled: 'disabled'
       },
-      gameZoneOther:[],
-      gameZoneOtherGameList:[]
+      gameZoneOther: [],
+      gameZoneOtherGameList: [],
+      activityOptions: [
+        { label: '圣诞摇钱树-[7]', value: 7 },
+        { label: 'Poker乐园-[8]', value: 8 }
+      ],
+      gameSelect: [],
+      activitySelect: [
+        { name: 'slot背包-[5]', id: 5 },
+        { name: 'slot任务-[6]', id: 6 },
+        { name: '圣诞摇钱树-[7]', id: 7 },
+        { name: 'Poker乐园-[8]', id: 8 }
+      ],
+      blockGames: [32, 36, 38, 39, 43, 44]
+    }
+  },
+  watch: {
+    filterTextZone(val) {
+      this.$refs.treeGameZone.filter(val)
+    },
+    filterText(val) {
+      this.$refs.tree.filter(val)
+    },
+    gameIdCfg(val) {
+
     }
   },
   created() {
@@ -537,20 +617,20 @@ export default {
       return DataRule(required, config)
     },
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     filterNodeZone(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     filterNodeOtherZone(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     mayLikeFilterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     getGameAll() {
       request({
@@ -567,31 +647,31 @@ export default {
               continue
             }
 
-            const gameZone = {Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description}
+            const gameZone = { Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description }
             if (dataZone.hasOwnProperty(objZone.CategoryID)) {
               dataZone[objZone.CategoryID].push(gameZone)
             } else {
               dataZone[objZone.CategoryID] = [gameZone]
             }
+            const gameSelectInfo = { id: objZone.Gid, name: objZone.Description }
+            this.gameSelect.push(gameSelectInfo)
           }
 
           this.treeDataZone = []
-          const categoriesZone = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categoriesZone = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const keyZone in dataZone) {
             const gamesZone = dataZone[keyZone]
-            const ctyZone = {id: 'p-' + keyZone, label: categoriesZone[keyZone], children: []}
+            const ctyZone = { id: 'p-' + keyZone, label: categoriesZone[keyZone], children: [] }
 
             for (let i = 0; i < gamesZone.length; i++) {
               const gameZone = gamesZone[i]
-              ctyZone.children.push({id: gameZone.Gid, label: gameZone.Name})
+              ctyZone.children.push({ id: gameZone.Gid, label: gameZone.Name })
             }
             this.treeDataZone.push(ctyZone)
           }
 
-          console.log('getGameAll ', this.item.GameList)
           this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
-          console.log('getGameAll ', this.treeDataZone)
         }
       })
     },
@@ -610,7 +690,7 @@ export default {
               continue
             }
 
-            const gameZoneOther = {Gid: objOtherZone.Gid, Name: objOtherZone.Name, Description: objOtherZone.Description}
+            const gameZoneOther = { Gid: objOtherZone.Gid, Name: objOtherZone.Name, Description: objOtherZone.Description }
             if (dataOtherZone.hasOwnProperty(objOtherZone.CategoryID)) {
               dataOtherZone[objOtherZone.CategoryID].push(gameZoneOther)
             } else {
@@ -619,22 +699,18 @@ export default {
           }
 
           this.treeDataOtherZone = []
-          const categoriesZoneOther = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categoriesZoneOther = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const keyZoneOther in dataOtherZone) {
             const gamesZoneOther = dataOtherZone[keyZoneOther]
-            const ctyZoneOther = {id: 'p-' + keyZoneOther, label: categoriesZoneOther[keyZoneOther], children: []}
+            const ctyZoneOther = { id: 'p-' + keyZoneOther, label: categoriesZoneOther[keyZoneOther], children: [] }
 
             for (let i = 0; i < gamesZoneOther.length; i++) {
               const gameZoneOther = gamesZoneOther[i]
-              ctyZoneOther.children.push({id: gameZoneOther.Gid, label: gameZoneOther.Name})
+              ctyZoneOther.children.push({ id: gameZoneOther.Gid, label: gameZoneOther.Name })
             }
             this.treeDataOtherZone.push(ctyZoneOther)
           }
-
-          // console.log('getGameAll ', this.item.GameList)
-          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
-          // console.log('getGameAll ', this.treeDataZone)
         }
       })
     },
@@ -653,7 +729,7 @@ export default {
               continue
             }
 
-            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
             if (data.hasOwnProperty(obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -662,40 +738,42 @@ export default {
           }
 
           this.mayLikeTreeData = []
-          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
+              cty.children.push({ id: game.Gid, label: game.Name })
             }
             this.mayLikeTreeData.push(cty)
           }
-          console.log("=================")
-          console.log(this.WinMoreItem.GameList)
           this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
-          console.log(this.mayLikeTreeData)
-          console.log("=================")
         }
       })
     },
     handleCheckChangeZone(data, checked, indeterminate) {
+      if (checked) {
+        if (this.blockGames.indexOf(data.id) !== -1) {
+          this.$refs.treeGameZone.getNode(data).checked = false
+          const message = data.label + '游戏不可添加配置，目前不支持'
+          this.$message.warning(message)
+          return
+        }
+      }
       const nodesZone = this.$refs.treeGameZone.getCheckedNodes()
 
       this.item.GameList = []
 
       for (let i = 0; i < nodesZone.length; i++) {
         const nodeZone = nodesZone[i]
-        if (nodeZone.label === 'Slot' || nodeZone.label === 'Poker' || nodeZone.label === 'Casino') {
+        if (nodeZone.label === 'Slot' || nodeZone.label === 'Poker' || nodeZone.label === 'Casino' || this.blockGames.indexOf(nodeZone.id) !== -1) {
           continue
         }
         this.item.GameList.push(nodeZone.id)
       }
-
-      console.log(this.item.GameList)
     },
     handleCheckChangeOtherZone(data, checked, indeterminate) {
       const nodesZone = this.$refs.treeGameOtherZone.getCheckedNodes()
@@ -711,19 +789,25 @@ export default {
       }
     },
     handleCheckChangeWinMore(data, checked, indeterminate) {
+      if (checked) {
+        if (this.blockGames.indexOf(data.id) !== -1) {
+          this.$refs.treeWinMore.getNode(data).checked = false
+          const message = data.label + '游戏不可添加配置，目前不支持'
+          this.$message.warning(message)
+          return
+        }
+      }
       const nodes = this.$refs.treeWinMore.getCheckedNodes()
 
       this.WinMoreItem.GameList = []
 
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i]
-        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino') {
+        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino' || this.blockGames.indexOf(node.id) !== -1) {
           continue
         }
         this.WinMoreItem.GameList.push(node.id)
       }
-
-      console.log(this.WinMoreItem.GameList)
     },
     getData() {
       const $this = this
@@ -735,7 +819,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('gameZone', response.Data)
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
@@ -804,7 +887,7 @@ export default {
       } else {
         // 如果是新增，检查是否有重复的档次
         if (index >= 0) {
-          this.$alert(`[已存在，不能重复添加`, '提示', {type:'warning'})
+          this.$alert(`[已存在，不能重复添加`, '提示', { type: 'warning' })
           return
         }
         // 新增到
@@ -827,7 +910,7 @@ export default {
       } else {
         // 如果是新增，检查是否有重复的档次
         if (index >= 0) {
-          this.$alert(`[已存在，不能重复添加`, '提示', {type:'warning'})
+          this.$alert(`[已存在，不能重复添加`, '提示', { type: 'warning' })
           return
         }
         // 新增到
@@ -877,8 +960,8 @@ export default {
       return null
     },
     handleDelete(ob) {
-      let $this = this
-      this.$confirm('是否确认删除?', '提示', {type:'warning'}).then(() => {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.MayLikeGameList.findIndex(item => item.Gid === ob.Gid)
         this.MayLikeGameList.splice(delIndex, 1)
       }).catch(() => {
@@ -886,8 +969,8 @@ export default {
       })
     },
     handleDeleteOtherGameZone(ob) {
-      let $this = this
-      this.$confirm('是否确认删除?', '提示', {type:'warning'}).then(() => {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.gameZoneOther.findIndex(item => item.Id === ob.Id)
         this.gameZoneOther.splice(delIndex, 1)
       }).catch(() => {
@@ -913,7 +996,6 @@ export default {
     },
     setData() {
       this.form.Data = this.encodeData()
-      console.log('setData', this.form.Data)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
@@ -933,6 +1015,19 @@ export default {
           }
         })
       })
+    },
+    showGameName(type, id) {
+      let temp = this.gameSelect
+      if (type === 2) {
+        temp = this.activitySelect
+      }
+      for (let i = 0; i < temp.length; i++) {
+        const data = temp[i]
+        if (data.id === id) {
+          return data.name
+        }
+      }
+      return ''
     }
   }
 }

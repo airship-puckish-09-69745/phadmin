@@ -87,12 +87,6 @@ export const constantRoutes = [
         component: () => import('@/views/playerManage/systemMoneyChartV2.vue'),
         name: 'dashboard',
         meta: { title: '系统健康监测 ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
-      },
-      {
-        path: '/dashboardpoint',
-        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
-        name: 'dashboard',
-        meta: { title: '系统健康监测(积分) ◐', icon: 'risk', perm: 'KEY_DATA_MONITOR' }
       }
     ]
   },
@@ -152,7 +146,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'Slots剧本监控', noCache: true }
+        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS' , noCache: true }
       },
       {
         path: 'piggyStatistics',
@@ -183,6 +177,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/colorTableUserData'),
         name: 'colorTableUserData',
         meta: { title: 'color - 桌子数据 ◐' }
+      },
+      {
+        path: 'bigprizelog',
+        component: () => import('@/views/playerManage/bigprizelog'),
+        name: '大奖日志',
+        meta: { title: 'slots - 大奖日志 ◐' }
       }
     ]
   },
@@ -579,7 +579,13 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          }, {
+            path: 'MinesBattleTable',
+            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+            name: 'MinesBattleTable',
+            meta: { title: 'MinesBattle ◐' }
           }
+
         ]
       },
       {
@@ -696,13 +702,7 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
             meta: { title: 'Carracing ◐' }
-          },
-          {
-            path: 'MinesBattleTable',
-            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
-            name: 'MinesBattleTable',
-            meta: { title: 'MinesBattle ◐' }
-          },
+          }
         ]
       },
 
@@ -809,6 +809,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce' }
               },
               {
+                path: 'wrathofzeus_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
+                name: 'wrathofzeus_slots_cfg',
+                meta: { title: 'WrathOfZeus' }
+              },
+              {
                 path: 'crazyace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazyace_slots_cfg'),
                 name: 'crazyace_slots_cfg',
@@ -849,6 +855,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
                 name: 'pharaohtreasure_slots_cfg',
                 meta: { title: 'PharaohTreasure' }
+              },
+              {
+                path: 'epicace_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/epicace_slots_cfg'),
+                name: 'epicace_slots_cfg',
+                meta: { title: 'EpicAce' }
               }
             ]
           },
@@ -950,6 +962,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce(审)' }
               },
               {
+                path: 'wrathofzeusmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeusmars_slots_cfg'),
+                name: 'wrathofzeusmars_slots_cfg',
+                meta: { title: 'WrathOfZeus(审)' }
+              },
+              {
                 path: 'crazyacemars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazyacemars_slots_cfg'),
                 name: 'crazyacemars_slots_cfg',
@@ -985,7 +1003,7 @@ export const asyncRoutes = [
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
-            meta: { title: 'millionaire配置V3' }
+            meta: { title: '老虎机V3配置' }
           },
           {
             path: 'slots_act_configs_v2',
@@ -1515,6 +1533,12 @@ export const asyncRoutes = [
                 meta: { title: '菲律宾麻将 ◐', gid: 122 }
               }
             ]
+          },
+          {
+            path: 'playlog_minesBattle',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_minesBattle',
+            meta: { title: 'MinesBattle◐', gid: 123 }
           }
         ]
       },
@@ -1747,6 +1771,12 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce', gid: 154 }
           },
           {
+            path: 'wrathofzeus_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeus_slots_log',
+            meta: { title: 'WrathOfZeus', gid: 172 }
+          },
+          {
             path: 'crazyace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
@@ -1781,6 +1811,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'firelink_slots_log',
             meta: { title: 'FireLink', gid: 166 }
+          },
+          {
+            path: 'epicace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'epicace_slots_log',
+            meta: { title: 'EpicAce', gid: 170 }
+          },
+          {
+            path: ' pharaohtreasure_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pharaohtreasure_slots_log',
+            meta: { title: 'PharaohTreasure', gid: 168 }
           }
         ]
       },
@@ -1879,6 +1921,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
             meta: { title: 'GrandAce(审)', gid: 155 }
+          },
+          {
+            path: 'wrathofzeusmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeusmars_slots_log',
+            meta: { title: 'WrathOfZeus(审)', gid: 173 }
           },
           {
             path: 'crazyacemars_slots_log',
@@ -2030,6 +2078,12 @@ export const asyncRoutes = [
         component: () => import('@/views/thirdparty/pointTransfer.vue'),
         name: 'pointtransfer',
         meta: { title: '积分转账日志 ◐' }
+      },
+      {
+        path: '/systemPointGameChart',
+        component: () => import('@/views/playerManage/systemPointGameChart.vue'),
+        name: 'systemPointGameChart',
+        meta: { title: '积分系统健康监测 ◐' }
       }
     ]
   },
@@ -2266,10 +2320,16 @@ export const asyncRoutes = [
         meta: { title: '游戏包版本配置', icon: 'el-icon-files' },
         children: [
           {
+            path: 'game_pkg_versions_copy',
+            component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersionsCopy.vue'),
+            name: 'game_pkg_versions_copy',
+            meta: { title: '游戏包配置列表 ◐', noCache: true }
+          },
+          {
             path: 'game_pkg_versions',
             component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
             name: 'game_pkg_versions',
-            meta: { title: '游戏包配置列表 ◐', noCache: true }
+            meta: { title: '游戏包配置列表开发版 ◐', noCache: true }
           },
           {
             path: 'pkgversionsWhiteList',

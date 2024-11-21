@@ -199,7 +199,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167, 171]
     }
   },
   created() {
@@ -277,14 +277,20 @@ export default {
           return 'GrandAce'
         case 156:
           return 'CrazyAce'
+        case 172:
+          return 'WrathOfZeus'
         case 158:
           return 'SharkKingdom'
+        case 168:
+          return 'PharaohTreasure'
         case 160:
           return 'GigaAce'
         case 162:
           return 'MajorAce'
         case 166:
           return 'FireLink'
+        case 170:
+          return 'EpicAce'
       }
       return '未知老虎机-' + sType
     },
@@ -317,8 +323,11 @@ export default {
         case 98:
         case 154:
         case 156:
+        case 158:
         case 160:
-        case 162: {
+        case 162:
+        case 168:
+        case 170:{
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))

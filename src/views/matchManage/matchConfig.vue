@@ -491,17 +491,32 @@
               width="400"
             >
               <template slot-scope="scope">
-                <ul>
-                  <li v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: lower-roman;">
-                    <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
-                      <el-option
-                        v-for="item in getTypeCfgs"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                      />
-                    </el-select>
-                    <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
+                <ul style="list-style: none;">
+                  <li v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: none;">
+                    <span>金币奖励：</span>
+                      <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
+                        <el-option
+                          v-for="item in getTypeCfgs"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                      <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
+                  </li>
+                  <li style="list-style: none;" v-if="scope.row.propsReward != null">
+                    <span>道具奖励：</span>
+                      <el-select v-model="scope.row.propsReward.propsId" placeholder="道具" size="mini" style="width:200px">
+                        <el-option
+                          v-for="item in propsInfo"
+                          :key="item.propsId"
+                          :label="item.propsName"
+                          :value="item.propsId"
+                        >
+                        <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
+                        <span>{{ item.propsName }}</span>
+                        </el-option>
+                      </el-select>
                   </li>
                 </ul>
               </template>
@@ -640,6 +655,22 @@ export default {
         { 'value': 0, 'label': '无白名单' },
         { 'value': 1, 'label': '有白名单' }
       ],
+      propsInfo:[ //道具信息，暂时写死
+        {
+          "propsId":0,
+          "propsType":0,
+          "propsName":"无",
+          "propsIcon":"",
+          "propsAttr":""
+        },
+        {
+          "propsId":1,
+          "propsType":1,
+          "propsName":"IPhone 16 Pro Max",
+          "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
+          "propsAttr":""
+        }
+      ],
       csCfgs: [],
       showCsCfgs: [],
       guideCfgs: [],  //赛事推荐相关
@@ -710,7 +741,14 @@ export default {
                 getPid: 0,
                 getNum: 0
               }
-            ]
+            ],
+            propsReward:{
+              propsId:0,
+              propsType:0,
+              propsName:"",
+              propsIcon:"",
+              propsAttr:""
+            }
           }
         ],
         appInfo: [
@@ -994,7 +1032,14 @@ export default {
             getPid: 0,
             getNum: 0
           }
-        ]
+        ],
+        propsReward:{
+              propsId:0,
+              propsType:0,
+              propsName:"",
+              propsIcon:"",
+              propsAttr:""
+        }
       })
     },
     addAppInfo(index) {
@@ -1177,7 +1222,14 @@ export default {
                 getPid: 0,
                 getNum: 0
               }
-            ]
+            ],
+            propsReward:{
+              propsId:0,
+              propsType:0,
+              propsName:"",
+              propsIcon:"",
+              propsAttr:""
+            }
           }
         ]
         this.editForm.whileList = {
@@ -1287,7 +1339,13 @@ export default {
       if (!this.configCheck()) {
         return
       }
-
+      //修复道具
+      for (let i = 0; i < this.editForm.rankRewards.length; i++) {
+        let element = this.editForm.rankRewards[i];
+        if(element.hasOwnProperty("propsReward") && element.propsReward.propsId > 0){
+          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId)
+        }
+      }
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1654,6 +1712,27 @@ export default {
         }
       }
       return false
+    },
+    getPropsRewardItem(pid){
+      let one = {
+        propsId:0,
+        propsType:0,
+        propsName:"",
+        propsIcon:"",
+        propsAttr:""
+      }
+      for (let i = 0; i < this.propsInfo.length; i++) {
+        const element = this.propsInfo[i];
+        if(element.propsId == pid){
+          one.propsId = element.propsId;
+          one.propsType = element.propsType;
+          one.propsName = element.propsName;
+          one.propsIcon = element.propsIcon;
+          one.propsAttr = element.propsAttr;
+          break
+        }
+      }
+      return one;
     }
   }
 }

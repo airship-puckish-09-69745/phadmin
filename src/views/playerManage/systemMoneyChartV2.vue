@@ -30,12 +30,12 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              汇总：<span :class="getSummaryClass(total[selectType])"> {{
-                getSummaryResult(total[selectType]).toFixed(2)
+              汇总：<span :class="getSummaryClass(total[selectType], selectType == 3)"> {{
+                getSummaryResult(total[selectType], selectType == 3).toFixed(2)
               }}% </span>
             </div>
             <div>
-              收益：{{ getSystemGot(total[selectType]) }}
+              收益：{{ getSystemGot(total[selectType], selectType == 3) }}
             </div>
             <div>
               流水：{{ total[selectType] ? formatNumber(Math.floor(total[selectType].Bet / 1000)) : 0 }}
@@ -54,12 +54,12 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{
-                getSummaryResult(summary[o]).toFixed(2)
+              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], false)"> {{
+                getSummaryResult(summary[o], false).toFixed(2)
               }}%</span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[o]) }}
+              收益：{{ getSystemGot(summary[o], false) }}
             </div>
             <div>
               流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -77,12 +77,12 @@
         >
           <div class="card-panel-description">
             <div class="card-panel-text">
-              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o])"> {{
-                getSummaryResult(summary[o]).toFixed(2)
+              {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o],false)"> {{
+                getSummaryResult(summary[o],false).toFixed(2)
               }}%</span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[o]) }}
+              收益：{{ getSystemGot(summary[o],false) }}
             </div>
             <div>
               流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -107,11 +107,11 @@
               <div class="card-panel-description">
                 <div class="card-panel-text">
                   {{ gameNames[o] }}：<span
-                    :class="getSummaryClass(summary[o])"
-                  > {{ getSummaryResult(summary[o]).toFixed(2) }}%</span>
+                    :class="getSummaryClass(summary[o],false)"
+                  > {{ getSummaryResult(summary[o],false).toFixed(2) }}%</span>
                 </div>
                 <div>
-                  收益：{{ getSystemGot(summary[o]) }}
+                  收益：{{ getSystemGot(summary[o],false) }}
                 </div>
                 <div>
                   流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -135,12 +135,12 @@
           >
             <div class="card-panel-description">
               <div class="card-panel-text">
-                {{ gameNames[o] }}：<span :class="getSummaryRtpClass(summary[o])"> {{
-                  getSlotsSummaryResult(summary[o])
+                {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o], true)"> {{
+                  getSummaryResult(summary[o], true).toFixed(2)
                 }}%</span>
               </div>
               <div>
-                收益：{{ summary[o] ? formatNumber(Math.floor((summary[o].Bet - summary[o].Won) / 1000)) : 0 }}
+                收益：{{getSystemGot(summary[o],true) }}
               </div>
               <div>
                 总下注：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -382,13 +382,15 @@ export default {
         120: 'Tongits Swap',
         162: 'Major Ace',
         166: 'Fire Link',
+        123: 'Mines Battle',
+        170: 'Epic Ace',
         10000: '汇总'
       },
 
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 158], // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 158,123], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -510,9 +512,9 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 98, 150, 152, 156)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160, 162, 166)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160, 162, 166, 170)
         }
       }
     },
@@ -526,7 +528,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true
@@ -578,9 +580,12 @@ export default {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
-    getSummaryClass(ob) {
+    getSummaryClass(ob, isSlot) {
       if (ob && ob.Bet !== 0) {
-        const systemGot = ob.Lose + ob.Tax - ob.Won
+        let systemGot = ob.Lose + ob.Tax - ob.Won
+        if (isSlot) {
+          systemGot = ob.Bet - ob.Won
+        }
         const rate = systemGot * 100 / ob.Bet
         if (rate > 5.5) {
           return 'card-panel-OK'
@@ -593,7 +598,7 @@ export default {
         return 'card-panel-Normal'
       }
     },
-    getSummaryRtpClass(ob) {
+/*    getSummaryRtpClass(ob) {
       if (ob && ob.Bet !== 0) {
         const systemGot = ob.Bet - ob.Won
         const rate = systemGot * 100 / ob.Bet
@@ -607,18 +612,25 @@ export default {
       } else {
         return 'card-panel-Normal'
       }
-    },
-    getSummaryResult(ob) {
+    },*/
+    getSummaryResult(ob, isSlots) {
       if (ob && ob.Bet !== 0) {
-        const systemGot = ob.Lose + ob.Tax - ob.Won
+        let systemGot = ob.Lose + ob.Tax - ob.Won
+        if (isSlots) {
+          systemGot = ob.Bet - ob.Won
+        }
         return systemGot * 100 / ob.Bet
       } else {
         return 0
       }
     },
-    getSystemGot(ob) {
+    getSystemGot(ob, isSlots) {
       if (ob) {
-        return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
+        if (isSlots) {
+          return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+        } else {
+          return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
+        }
       }
     },
     getRtp(ob) {
@@ -627,12 +639,12 @@ export default {
       }
       return 0
     },
-    getSlotsSummaryResult(ob) {
+/*    getSlotsSummaryResult(ob) {
       if (ob && ob.Bet !== 0) {
         return ((ob.Bet - ob.Won) * 100 / ob.Bet).toFixed(2)
       }
       return 0
-    },
+    },*/
     getReturnMoney(ob) {
       if (ob) {
         return this.formatNumber((ob.Bet - ob.Lose + ob.Won) / 1000)
