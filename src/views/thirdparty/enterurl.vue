@@ -72,7 +72,7 @@
           </el-select>
         </el-form-item>
         <el-form-item v-model="item.activity" label="活动场景：" label-width="110px">
-          <el-select v-model="item.activity" placeholder="请选择" size="mini">
+          <el-select v-model="item.activity" filterable allow-create default-first-option placeholder="请选择" size="mini">
             <el-option
               v-for="row in activities"
               :label="row.name"
