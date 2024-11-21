@@ -345,21 +345,21 @@
           <el-col :span="13" :offset="1">
             <el-table
               ref="filterTable"
-              :data="returnMoneyTableData"
+              :data="OrdinaryReturnTableData"
               stripe
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
             >
-              <el-table-column label="返奖统计">
+              <el-table-column label="普通返奖统计">
                 <el-table-column
                   prop="gid"
                   label="Bet值"
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{ cfgMap[queryGid + ''] ? cfgMap[queryGid + ''].Bet * scope.row.bet / 1000 : scope.row.bet + "_" }}
+                    {{ currentBaseBet * scope.row.bet / 1000   }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -368,7 +368,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{ betMap[scope.row.bet] }}
+                    {{ scope.row.times }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -377,7 +377,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{  currentBaseBet * scope.row.bet * betMap[scope.row.bet] / 1000 }}
+                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -386,7 +386,7 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{ (parseInt(betMap[scope.row.bet]) / getTotalBetTime() * 100).toFixed(2) + '%' }}
+                    {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -395,7 +395,16 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{ scope.row.returnMoney / 1000 }}
+                    {{ returnMap[ scope.row.bet] / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((currentBaseBet * scope.row.bet * scope.row.times)  - (returnMap[ scope.row.bet])) / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -405,7 +414,89 @@
                 >
                   <template slot-scope="scope">
                     {{
-                      ((scope.row.returnMoney /(currentBaseBet * scope.row.bet * betMap[scope.row.bet]))*100).toFixed(2)    + "%"
+                      ((returnMap[scope.row.bet] /(currentBaseBet * scope.row.bet *  scope.row.times))*100).toFixed(2)    + "%"
+                    }}
+                  </template>
+                </el-table-column>
+
+              </el-table-column>
+            </el-table>
+
+          </el-col>
+
+          <el-col :span="13" :offset="1">
+            <el-table
+              ref="filterTable"
+              :data="BuyReturnMoneyTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column label="购买返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{   scope.row.bet / 1000  }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.times }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{    scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注占比"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((  scope.row.bet * scope.row.times)  - (buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet]:0)) / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{
+                      (buyReturnMap[scope.row.bet] / (scope.row.bet *  scope.row.times) *100).toFixed(2)   + "%"
                     }}
                   </template>
                 </el-table-column>
@@ -767,7 +858,8 @@ export default {
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
       jackpotClientDB: new ClientTableData([], 1, filterMap),
-      returnMoneyClientDB: new ClientTableData([], 1, filterMap),
+      ordinaryReturnClientDB: new ClientTableData([], 1, filterMap),
+      buyReturnClientDB: new ClientTableData([], 1, filterMap),
       showBtn: 0,
       libShow: $libShow,
       item: {
@@ -781,7 +873,8 @@ export default {
       coordinateTableData: [],
       stepTableData: [],
       jackpotTableData: [],
-      returnMoneyTableData: [],
+      OrdinaryReturnTableData: [],
+      BuyReturnMoneyTableData: [],
 
       queryTime: new Date().getTime(),
       loading: false,
@@ -799,7 +892,8 @@ export default {
       Actions: {},
       ActionOdds: 1,
       scatterCounts: [],
-      betMap: {},
+      returnMap: {},
+      buyReturnMap: {},
       stepData: {},
       cacheStep: {},
       currentBaseBet:{},
@@ -824,13 +918,24 @@ export default {
     refreshJackpot() {
       this.jackpotTableData = this.jackpotClientDB.GetCurrentPageData()
     },
-    refreshReturnMoney() {
-      this.returnMoneyTableData = this.returnMoneyClientDB.GetCurrentPageData()
+    refreshBuyReturn() {
+      this.BuyReturnMoneyTableData = this.buyReturnClientDB.GetCurrentPageData()
     },
-    getTotalBetTime() {
+    refreshOrdinaryReturn() {
+      this.OrdinaryReturnTableData = this.ordinaryReturnClientDB.GetCurrentPageData()
+    },
+    getTotalOrdinaryBetTimes() {
       let cnt = 0
-      for (const o in this.betMap) {
-        cnt += parseInt(this.betMap[o])
+      for (const o of this.ordinaryReturnClientDB.TotalData) {
+        console.log("==================="+o)
+        cnt += parseInt(o.times)
+      }
+      return cnt
+    },
+    getTotalBuyBetTimes() {
+      let cnt = 0
+      for (const o of this.buyReturnClientDB.TotalData) {
+        cnt += parseInt(o.times)
       }
       return cnt
     },
@@ -951,7 +1056,8 @@ export default {
       this.refreshCoordinate()
       this.refreshStep()
       this.refreshJackpot()
-      this.refreshReturnMoney()
+      this.refreshBuyReturn()
+      this.refreshOrdinaryReturn()
       this.queryBase(this.queryGid)
     },
     changeBigPrizeGid() {
@@ -1000,9 +1106,11 @@ export default {
         const stepTableData = []
         const jackpotTableData = []
         const scatterCounts = []
-        const returnMoneyTableData = []
+        const ordinaryReturnMoneyTableData = []
+        const buyReturnMoneyTableData = []
 
-        this.betMap = {}
+        this.returnMap = {}
+        this.buyReturnMap = {}
         this.stepSum = {}
         this.sumData = {}
         this.coordinateSum = {}
@@ -1094,15 +1202,24 @@ export default {
                 scatterCounts[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
               }
             } else if (strings1[0] === 'spin') {
-              if (strings1[1] === 'bet') {
-                this.betMap[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+              if (strings1[1] === 'ordinary') {
+                if (strings1[2] === 'times') {
+                  ordinaryReturnMoneyTableData.push({bet: parseInt(strings1[3]),times: response.Data['script'][key]})
+                }
+                if (strings1[2] === 'return') {
+                  this.returnMap[parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                }
               }
-              if (strings1[1] === 'return') {
-                returnMoneyTableData.push({ bet: parseInt(strings1[3]), returnMoney: response.Data['script'][key] })
+              if (strings1[1] === 'buy') {
+                if (strings1[2] === 'times') {
+                  buyReturnMoneyTableData.push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+                if (strings1[2] === 'return'){
+                  this.buyReturnMap[parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                }
               }
             }
           }
-
           for (const key in scriptMap) {
             stepTableData.push({
               gid: scriptMap[key].gid,
@@ -1150,14 +1267,18 @@ export default {
           }
           return a.app - b.app
         })
-        returnMoneyTableData.sort(function(a, b) {
+        ordinaryReturnMoneyTableData.sort(function(a, b) {
+          return a.bet - b.bet
+        })
+        buyReturnMoneyTableData.sort(function(a, b) {
           return a.bet - b.bet
         })
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
-        this.returnMoneyClientDB = new ClientTableData(returnMoneyTableData, 20, filterMap, 'idx', -1)
+        this.ordinaryReturnClientDB = new ClientTableData(ordinaryReturnMoneyTableData, 20, filterMap, 'idx', -1)
+        this.buyReturnClientDB = new ClientTableData(buyReturnMoneyTableData, 20, filterMap, 'idx', -1)
         this.queryKeyInput()
         this.scatterCounts = scatterCounts
 
