@@ -263,7 +263,7 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="游戏内活动入口配置">
+        <el-tab-pane v-if="item.GameEvent != null" label="游戏内活动入口配置">
           <el-row :gutter="5">
             <el-col :span="16">
               <el-form ref="item" label-width="220px">
