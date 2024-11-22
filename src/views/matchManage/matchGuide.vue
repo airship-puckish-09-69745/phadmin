@@ -316,7 +316,6 @@ export default {
       if (!this.configCheck()) {
         return
       }
-      console.log("guideRecord",this.guideRecord)
       var record_name = '['
       var record_key = ''
       if (this.guideRecord.length > 0) {
@@ -329,7 +328,6 @@ export default {
           }
         }
       }
-      console.log("111 guideRecord",this.guideRecord)
       record_name = record_name + ']'
       if (this.editForm.isAdd === false) {
         for (let i = 0; i < this.guideList.length; i++) {

@@ -1277,6 +1277,18 @@ export default {
           associateKey: parseInt(editData.associate_key),
           dcReport: editData.dc_report
         }
+
+        /*如果在本地找不到值 则显示0 */
+        let isfind = false
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.guideCfgs[i].value === this.editForm.data.associateKey) {
+            isfind = true
+            break
+          }
+        }
+        if (isfind === false) {
+          this.editForm.data.associateKey = 0
+        }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
           const whileList = JSON.parse(editData.while_list)
