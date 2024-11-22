@@ -376,7 +376,7 @@ export default {
     },
     getFullKey() {
       console.log('subKey', this.subKeyMap[this.queryGid])
-      return 'CustomizeCfg_' + this.subKeyMap[this.queryGid]
+      return 'CustomizeCfg_' + this.subKeyMap[this.queryGid]+'_script_cfg'
     },
     getPostData() {
       const ret = {}
