@@ -662,13 +662,6 @@ export default {
           "propsName":"无",
           "propsIcon":"",
           "propsAttr":""
-        },
-        {
-          "propsId":1,
-          "propsType":1,
-          "propsName":"IPhone 16 Pro Max",
-          "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
-          "propsAttr":""
         }
       ],
       csCfgs: [],
@@ -804,6 +797,7 @@ export default {
     this.env = store.getters.env || this.env
     this.getCsCfgs()
     this.getGuideCfgs()
+    this.getPropsCfgs()
   },
   mounted() {
     this.getList()
@@ -1737,6 +1731,42 @@ export default {
         }
       }
       return one;
+    },
+    getPropsCfgs(){
+      //暂时写死配置
+      let items = [];
+      if(process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境'){ //线上走另外一份配置
+        items = [
+          {
+            "propsId":2,
+            "propsType":1,
+            "propsName":"YAMAHA MIO GRAVIS",
+            "propsIcon":"https://cdn.tiptop.bet/gf/match/ymhmt.png",
+            "propsAttr":""
+          }
+        ];
+      }else{
+        items = [
+          {
+            "propsId":1,
+            "propsType":1,
+            "propsName":"IPhone 16 Pro Max",
+            "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
+            "propsAttr":""
+          },
+          {
+            "propsId":2,
+            "propsType":1,
+            "propsName":"YAMAHA MIO GRAVIS",
+            "propsIcon":"http://192.168.6.16:8092/match/ymhmt.png",
+            "propsAttr":""
+          }
+        ];
+      }
+      for (let i = 0; i < items.length; i++) {
+        const element = items[i];
+        this.propsInfo.push(element)
+      }
     }
   }
 }

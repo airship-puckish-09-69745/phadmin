@@ -300,8 +300,44 @@ export default {
         }
       },
       subKeyMap:{
-        "82":"millionaire_script_cfg",
-        "76":"candypartyway_script_cfg",
+        '76':'candypartyway',
+        '89':'crazy777mars',
+        '161':'gigaacemars',
+        '94':'chargebison',
+        '78':'supergem',
+        '80':'candycandy',
+        '85':'superacemars',
+        '95':'chargebisonmars',
+        '158':'sharkkingdom',
+        '90':'moneycoming',
+        '97':'romanarenamars',
+        '153':'aladdinlampmars',
+        '77':'candypartyallline',
+        '81':'supergemmars',
+        '79':'candycandymars',
+        '99':'supertongitmars',
+        '157':'crazyacemars',
+        '154':'grandace',
+        '86':'supergemii',
+        '84':'superace',
+        '88':'crazy777',
+        '159':'sharkkingdommars',
+        '98':'supertongit',
+        '93':'fortuneacegomars',
+        '96':'romanarena',
+        '155':'grandacemars',
+        '163':'majoracemars',
+        '150':'supergemiii',
+        '82':'millionaire',
+        '152':'aladdinlamp',
+        '160':'gigaace',
+        '156':'crazyace',
+        '162':'majorace',
+        '87':'supergemiimars',
+        '151':'supergemiiimars',
+        '83':'millionairemars',
+        '92':'fortuneacego',
+        '91':'moneycomingmars',
       }
     }
   },
@@ -340,7 +376,7 @@ export default {
     },
     getFullKey() {
       console.log('subKey', this.subKeyMap[this.queryGid])
-      return 'CustomizeCfg_' + this.subKeyMap[this.queryGid]
+      return 'CustomizeCfg_' + this.subKeyMap[this.queryGid]+'_script_cfg'
     },
     getPostData() {
       const ret = {}
@@ -357,7 +393,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: this.subKeyMap[this.queryGid]
+          SubKey: this.subKeyMap[this.queryGid]+"_script_cfg"
         }
       }).then(response => {
         if (response.RetCode === 0) {
