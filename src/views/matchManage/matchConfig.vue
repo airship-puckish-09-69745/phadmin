@@ -462,6 +462,10 @@
           <el-form-item v-if="editForm.data.signUpType == 0" label="报名费：" :required="true">
             <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType != 0"label="今日投注下限(0不限制)：" :required="true">
+            <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
+          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -537,6 +541,35 @@
           </el-table>
         </fieldset>
 
+        <fieldset>
+          <legend>引导推荐</legend>
+          <el-form-item label="游戏推荐：" :required="true">
+            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in guideCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+        </fieldset>
+
+        <fieldset>
+          <legend>数据中心上报</legend>
+          <el-form-item label="是否上报数据中心：" :required="true">
+            <el-switch
+              style="display: block"
+              v-model="editForm.data.dcReport"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value='1'
+              :inactive-value='0'
+              active-text="是"
+              inactive-text="否">
+            </el-switch>
+          </el-form-item>
+        </fieldset>
         <el-divider />
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveMatch()">保存比赛配置</el-button>
@@ -629,17 +662,11 @@ export default {
           "propsName":"无",
           "propsIcon":"",
           "propsAttr":""
-        },
-        {
-          "propsId":1,
-          "propsType":1,
-          "propsName":"IPhone 16 Pro Max",
-          "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
-          "propsAttr":""
         }
       ],
       csCfgs: [],
       showCsCfgs: [],
+      guideCfgs: [],  //赛事推荐相关
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
@@ -670,7 +697,9 @@ export default {
           rankRewardsDetail: '',
           imagePath: '',
           openDaysLimit: 0,
-          sort: 0
+          sort: 0,
+          associateKey: 0,
+          dcReport: 0
         },
         loopDetail: {
           // 只有一场
@@ -725,8 +754,12 @@ export default {
         whileList: {
           type: 0,
           data: ''
-        }
+        },
+        signExtra: {
+          betCnt: 0
+        },
       },
+
       AttrNames: {
         appInfo: 'APP信息',
         matchCfgId: '赛事id',
@@ -753,7 +786,8 @@ export default {
         repeatDelayDays: '间隔天数',
         daySections: '每日时段'
       },
-      showDevTool: false
+      showDevTool: false,
+      subKey: 'match_guide_list'
     }
   },
   computed: {
@@ -762,6 +796,8 @@ export default {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
+    this.getGuideCfgs()
+    this.getPropsCfgs()
   },
   mounted() {
     this.getList()
@@ -806,7 +842,6 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                 
                 }else if(stage_detail[j].system_type == 2){
                   //存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -868,6 +903,31 @@ export default {
           } else {
             this.total = 0
             this.tableData = []
+          }
+        }
+      })
+    },
+    getGuideCfgs() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
+            const objs = JSON.parse(response.Data.Data)
+            if (objs.length > 0) {
+              this.guideCfgs = []
+              for (let i = 0; i < objs.length; i++) {
+                this.guideCfgs.push({
+                  'label': objs[i].record_name,
+                  'value': parseInt(objs[i].associate_key)
+                })
+              }
+            }
           }
         }
       })
@@ -1112,7 +1172,9 @@ export default {
           status: 0,
           imagePath: '',
           openDaysLimit: 0,
-          sort: 0
+          sort: 0,
+          associateKey: 0,
+          dcReport: 0
         }
         this.editForm.loopDetail = {
           // 只有一场
@@ -1168,6 +1230,10 @@ export default {
           type: 0,
           data: ''
         }
+
+        this.editForm.signExtra = {
+          betCnt: 0
+        }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
       } else {
@@ -1203,7 +1269,9 @@ export default {
           status: editData.status,
           imagePath: editData.image_path,
           openDaysLimit: editData.open_days_limit,
-          sort: editData.sort
+          sort: editData.sort,
+          associateKey: parseInt(editData.associate_key),
+          dcReport: editData.dc_report
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
@@ -1227,6 +1295,14 @@ export default {
           }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
+        if (editData.sign_extra && editData.sign_extra != '' && editData.sign_extra != 'undefined') {
+          const signExtra = JSON.parse(editData.sign_extra)
+
+          if (signExtra && signExtra.betCnt) {
+            this.editForm.signExtra.betCnt = signExtra.betCnt
+          }
+
+        }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
@@ -1289,8 +1365,6 @@ export default {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
       }
-      
-      // console.log("测试：" + this.$store.getters.name)
       request({
         url: '/matchconfig/match/config/create',
         method: 'POST',
@@ -1317,7 +1391,10 @@ export default {
           PreEnterSeconds: this.editForm.data.preEnterSeconds,
           DelayEnterSeconds: this.editForm.data.delayEnterSeconds,
           OpenDaysLimit: this.editForm.data.openDaysLimit,
-          Sort: this.editForm.data.sort
+          Sort: this.editForm.data.sort,
+          AssociateKey: this.editForm.data.associateKey,
+          DcReport: this.editForm.data.dcReport,
+          SignExtra: JSON.stringify(this.editForm.signExtra)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1471,7 +1548,6 @@ export default {
     },
     timeToSec(time) {
       var s = '';
- 
       var hour = time.split(':')[0];
       var min = time.split(':')[1];
       var sec = time.split(':')[2];
@@ -1542,7 +1618,7 @@ export default {
       } else if (this.editForm.data.csId <= 0) {
         this.errmsg('赛制选择不能为空')
         return false
-      } else {
+      }else {
         // 获取打立阶段最大时长
         const endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
         if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin)) {
@@ -1572,6 +1648,7 @@ export default {
         if(this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           this.errmsg('sng比赛必须开赛后消失')
           return false
+
         }
       }
       return true
@@ -1599,7 +1676,7 @@ export default {
       if(this.editForm.data.opentMatchType == 1){
         if(val == 1 || val == 2){
           return true
-        } 
+        }
       }
       return false;
     },
@@ -1650,6 +1727,42 @@ export default {
         }
       }
       return one;
+    },
+    getPropsCfgs(){
+      //暂时写死配置
+      let items = [];
+      if(process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境'){ //线上走另外一份配置
+        items = [
+          {
+            "propsId":2,
+            "propsType":1,
+            "propsName":"YAMAHA MIO GRAVIS",
+            "propsIcon":"https://cdn.tiptop.bet/gf/match/ymhmt.png",
+            "propsAttr":""
+          }
+        ];
+      }else{
+        items = [
+          {
+            "propsId":1,
+            "propsType":1,
+            "propsName":"IPhone 16 Pro Max",
+            "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
+            "propsAttr":""
+          },
+          {
+            "propsId":2,
+            "propsType":1,
+            "propsName":"YAMAHA MIO GRAVIS",
+            "propsIcon":"http://192.168.6.16:8092/match/ymhmt.png",
+            "propsAttr":""
+          }
+        ];
+      }
+      for (let i = 0; i < items.length; i++) {
+        const element = items[i];
+        this.propsInfo.push(element)
+      }
     }
   }
 }
