@@ -3,6 +3,14 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
+          <el-form-item label="普通模式下 大wild在除了第一个轴出现的概率" prop="WildBigNormal" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.WildBigNormal" :required="true" > <template slot="append">‱</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式下 大wild在最后一个轴出现的概率" prop="WildBigFree" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.WildBigFree" :required="true" > <template slot="append">‱</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
