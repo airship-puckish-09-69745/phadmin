@@ -342,7 +342,7 @@ export default {
             'id': new Date().setSeconds(0),
             'records': this.guideRecord,
             'record_name': record_name,
-            'associate_key': (new Date().setSeconds(0)).toString() + record_key
+            'associate_key': (new Date().setSeconds(0)).toString()
           }
         )
       }

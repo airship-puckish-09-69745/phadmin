@@ -698,7 +698,7 @@ export default {
           imagePath: '',
           openDaysLimit: 0,
           sort: 0,
-          associateKey: 0,
+          associateKey: '0',
           dcReport: 0
         },
         loopDetail: {
@@ -928,7 +928,7 @@ export default {
               for (let i = 0; i < objs.length; i++) {
                 this.guideCfgs.push({
                   'label': objs[i].record_name,
-                  'value': parseInt(objs[i].associate_key)
+                  'value': objs[i].associate_key
                 })
               }
             }
@@ -1274,7 +1274,7 @@ export default {
           imagePath: editData.image_path,
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
-          associateKey: parseInt(editData.associate_key),
+          associateKey: editData.associate_key,
           dcReport: editData.dc_report
         }
 
@@ -1287,7 +1287,7 @@ export default {
           }
         }
         if (isfind === false) {
-          this.editForm.data.associateKey = 0
+          this.editForm.data.associateKey = '0'
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
