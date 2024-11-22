@@ -1732,7 +1732,15 @@ export default {
       //暂时写死配置
       let items = [];
       if(process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境'){ //线上走另外一份配置
-
+        items = [
+          {
+            "propsId":2,
+            "propsType":1,
+            "propsName":"YAMAHA MIO GRAVIS",
+            "propsIcon":"https://cdn.tiptop.bet/gf/match/ymhmt.png",
+            "propsAttr":""
+          }
+        ];
       }else{
         items = [
           {
