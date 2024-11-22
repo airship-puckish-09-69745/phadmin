@@ -927,6 +927,10 @@ export default {
             const objs = JSON.parse(response.Data.Data)
             if (objs.length > 0) {
               this.guideCfgs = []
+              this.guideCfgs.push({
+                'label': '无',
+                'value': 0
+              })
               for (let i = 0; i < objs.length; i++) {
                 this.guideCfgs.push({
                   'label': objs[i].record_name,
