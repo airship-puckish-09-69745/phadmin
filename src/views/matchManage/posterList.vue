@@ -9,11 +9,19 @@
       </div>
 
       <el-row style="margin-top: 30px">
-        <el-col :span="12" :offset="4">
+        <el-col :span="8" :offset="0">
           <el-form ref="form" :model="form" label-width="200px">
             <el-row>
               <el-form-item label="活动状态：">
-                <el-switch v-model="postData.switch" active-text="下架" inactive-text="正常" active-color="#cc0000" inactive-color="#009900" />
+                <el-switch style="display: block"
+                           v-model="postData.switch"
+                           active-color="#13ce66"
+                           inactive-color="#ff4949"
+                           active-value='1'
+                           inactive-value='0'
+                           active-text="正常"
+                           inactive-text="下架"
+                />
               </el-form-item>
             </el-row>
             <el-col :offset="0" :span="8">
@@ -27,6 +35,7 @@
 
       <el-table
         :data="postData.tableData"
+        border
         stripe
         :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)"
@@ -69,25 +78,18 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="status"
-          label="开关"
-        >
-          <template slot-scope="scope">
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
-          </template>
-        </el-table-column>
-        <el-table-column
           fixed="right"
-          label="操作"
           width="200px"
+          label="操作"
         >
+
           <template slot-scope="scope">
             <el-button
               size="mini"
               icon="el-icon-edit"
               @click="showForm(scope.row.id)"
             >编辑</el-button>
-
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -188,6 +190,7 @@ import Compare from '@/components/Compare'
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
+    console.log("data()")
     return {
       activeTab: 'base',
       libShow: $libShow,
@@ -201,7 +204,7 @@ export default {
       showCsCfgs: [],
       postData: {
         'tableData': [],
-        'switch': false
+        'switch': 0
       },
       raw: {},
       limit: 10,
@@ -315,10 +318,6 @@ export default {
           this.showCsCfgs.push(this.csCfgs[i])
         }
       }
-    },
-
-    selectMatchGame() {
-
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)

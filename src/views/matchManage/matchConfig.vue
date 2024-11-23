@@ -698,7 +698,7 @@ export default {
           imagePath: '',
           openDaysLimit: 0,
           sort: 0,
-          associateKey: 0,
+          associateKey: '0',
           dcReport: 0
         },
         loopDetail: {
@@ -921,10 +921,14 @@ export default {
             const objs = JSON.parse(response.Data.Data)
             if (objs.length > 0) {
               this.guideCfgs = []
+              this.guideCfgs.push({
+                'label': '无',
+                'value': 0
+              })
               for (let i = 0; i < objs.length; i++) {
                 this.guideCfgs.push({
                   'label': objs[i].record_name,
-                  'value': parseInt(objs[i].associate_key)
+                  'value': objs[i].associate_key
                 })
               }
             }
@@ -1270,8 +1274,20 @@ export default {
           imagePath: editData.image_path,
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
-          associateKey: parseInt(editData.associate_key),
+          associateKey: editData.associate_key,
           dcReport: editData.dc_report
+        }
+
+        /*如果在本地找不到值 则显示0 */
+        let isfind = false
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.guideCfgs[i].value === this.editForm.data.associateKey) {
+            isfind = true
+            break
+          }
+        }
+        if (isfind === false) {
+          this.editForm.data.associateKey = '0'
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {

@@ -70,7 +70,7 @@
             />
             <el-table-column
               prop="game_id"
-              label="游戏类型"
+              label="游戏名"
               width="400"
             >
               <template slot-scope="scope">
@@ -158,13 +158,7 @@ export default {
       },
       AttrNames: {
       },
-
-      gameGuideCfgs: [
-        { 'value': 22, 'label': 'tongits' },
-        { 'value': 21, 'label': 'pusoy' },
-        { 'value': 25, 'label': 'color game' },
-        { 'value': 20, 'label': 'sweeper' }
-      ],
+      gameGuideCfgs: [],
       guideList: [],
       guideRecord: [],
       subKey: 'match_guide_list'
@@ -176,6 +170,7 @@ export default {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getBeginMatchCfgs()
+    this.getGameAll()
   },
   mounted() {
     this.getList()
@@ -184,6 +179,24 @@ export default {
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    getGameAll() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          this.gameGuideCfgs = []
+          for (var i = 0; i < objs.length; i++) {
+            this.gameGuideCfgs.push({
+              'label': objs[i].Name,
+              'value': objs[i].Gid
+            })
+          }
+        }
+      })
     },
     getBeginMatchCfgs() {
       request({
@@ -303,7 +316,6 @@ export default {
       if (!this.configCheck()) {
         return
       }
-      console.log("guideRecord",this.guideRecord)
       var record_name = '['
       var record_key = ''
       if (this.guideRecord.length > 0) {
@@ -316,7 +328,6 @@ export default {
           }
         }
       }
-      console.log("111 guideRecord",this.guideRecord)
       record_name = record_name + ']'
       if (this.editForm.isAdd === false) {
         for (let i = 0; i < this.guideList.length; i++) {
@@ -331,7 +342,7 @@ export default {
             'id': new Date().setSeconds(0),
             'records': this.guideRecord,
             'record_name': record_name,
-            'associate_key': (new Date().setSeconds(0)).toString() + record_key
+            'associate_key': (new Date().setSeconds(0)).toString()
           }
         )
       }

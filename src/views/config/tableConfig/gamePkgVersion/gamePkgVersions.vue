@@ -100,8 +100,8 @@
         </el-form-item>
         <el-form-item v-if="(LobbyVersionTag===1)">
           <el-tooltip content="点击后可修改包的版本号" placement="top">el-icon-lock
-            <el-button v-if="canEdit" size="mini" type="success" icon="el-icon-unlock" @click="canEdit=!canEdit"> </el-button>
-            <el-button v-if="!canEdit" size="mini" type="danger" icon="el-icon-lock" @click="canEdit=!canEdit"> </el-button>
+            <el-button v-if="canEdit" size="mini" type="success" icon="el-icon-unlock" @click="canEdit=!canEdit">已解锁</el-button>
+            <el-button v-if="!canEdit" size="mini" type="danger" icon="el-icon-lock" @click="canEdit=!canEdit">锁定中</el-button>
           </el-tooltip>
         </el-form-item>
       </el-form>
@@ -1353,7 +1353,7 @@ export default {
     },
     onStepChange(step, key, addData, delData, editData) {
       // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
-      // console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       // 同步到正式
       if (this.env === 'pro' && step != 4 && step != 6) {
         console.log("生产环境只在审核和同步正式发送通知")
@@ -1362,12 +1362,16 @@ export default {
       let lobby = ''
       if (this.env === 'test') {
         lobby=`【已发布】开发版本【${this.LobbyVersion}】`
-        this.canEdit = false
+        if (this.LobbyVersionTag === 1) {
+          this.canEdit = false
+        }
       } else if (step === 4) {
         lobby=`【待审核】线上版本【${this.LobbyVersion}】`
       } else if (step === 6) {
         lobby=`【已发布】线上版本【${this.LobbyVersion}】`
-        this.canEdit = false
+        if (this.LobbyVersionTag === 1) {
+          this.canEdit = false
+        }
       }
       let text_arr = this.getChangeID(addData, delData, editData)
       if (text_arr.length === 0) {
