@@ -2122,6 +2122,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameHealthCheckCfg'),
             name: 'gameHealthCheckCfg',
             meta: { title: '游戏健康度检查配置 ◐' }
+          },
+          {
+            path: 'loginCheckCNIpCfg',
+            component: () => import('@/views/config/baseConfig/loginCheckCNIpCfg'),
+            name: 'loginCheckCNIpCfg',
+            meta: { title: '登录验证国内IP配置 ◐' }
           }
           // ,{
           //   path: 'smsWhite',
