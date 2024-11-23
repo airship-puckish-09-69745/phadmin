@@ -295,77 +295,77 @@
         </el-tab-pane>
         <!--///////////////////////////////////-->
 
-        <el-tab-pane label="大厅选场配置">
-          <el-row :gutter="5">
-            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateHallGames()">
-              添加配置
-            </el-button>
-            <el-form ref="hallGame" v-model="hallGame" label-width="150px" style="margin-top: 10px">
-              <el-table
-                :data="hallGame"
-                border
-                style="width: 100%"
-                :cell-style="libShow.DefaultTableCell"
-                @row-click="clickDataHallGame"
-              >
-                <el-table-column
-                  prop="Gid"
-                  label="游戏名称"
-                  width="200"
-                >
-                  <template slot-scope="scope">
-                    {{ showGameName(1,scope.row.Gid) }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="IsOpen"
-                  label="开关"
-                  width="200"
-                >
-                  <template v-slot:default="scope">
-                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />
-                  </template>
+<!--        <el-tab-pane label="大厅选场配置">-->
+<!--          <el-row :gutter="5">-->
+<!--            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateHallGames()">-->
+<!--              添加配置-->
+<!--            </el-button>-->
+<!--            <el-form ref="hallGame" v-model="hallGame" label-width="150px" style="margin-top: 10px">-->
+<!--              <el-table-->
+<!--                :data="hallGame"-->
+<!--                border-->
+<!--                style="width: 100%"-->
+<!--                :cell-style="libShow.DefaultTableCell"-->
+<!--                @row-click="clickDataHallGame"-->
+<!--              >-->
+<!--                <el-table-column-->
+<!--                  prop="Gid"-->
+<!--                  label="游戏名称"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    {{ showGameName(1,scope.row.Gid) }}-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="IsOpen"-->
+<!--                  label="开关"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template v-slot:default="scope">-->
+<!--                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />-->
+<!--                  </template>-->
 
-                </el-table-column>
-                <el-table-column
-                  prop="IconLink"
-                  label="游戏icon"
-                  width="200"
-                >
-                  <template v-slot:default="scope">
-                    <ImagePicker v-model="scope.row.IconLink" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="GameSort"
-                  label="排序"
-                  width="200"
-                />
-                <el-table-column
-                  label="操作"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      @click="handleEditHallGame(scope.row)"
-                    >编辑
-                    </el-button>
-                    <el-button
-                      size="mini"
-                      type="warning"
-                      @click="handleDeleteHallGame(scope.row)"
-                    >删除
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-form>
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="IconLink"-->
+<!--                  label="游戏icon"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template v-slot:default="scope">-->
+<!--                    <ImagePicker v-model="scope.row.IconLink" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="GameSort"-->
+<!--                  label="排序"-->
+<!--                  width="200"-->
+<!--                />-->
+<!--                <el-table-column-->
+<!--                  label="操作"-->
+<!--                  column-key="op"-->
+<!--                  width="250"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-button-->
+<!--                      type="primary"-->
+<!--                      size="mini"-->
+<!--                      @click="handleEditHallGame(scope.row)"-->
+<!--                    >编辑-->
+<!--                    </el-button>-->
+<!--                    <el-button-->
+<!--                      size="mini"-->
+<!--                      type="warning"-->
+<!--                      @click="handleDeleteHallGame(scope.row)"-->
+<!--                    >删除-->
+<!--                    </el-button>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--              </el-table>-->
+<!--            </el-form>-->
 
-          </el-row>
-        </el-tab-pane>
+<!--          </el-row>-->
+<!--        </el-tab-pane>-->
         <!--        ///////////////////////////////-->
         <el-tab-pane label="单独游戏推荐配置">
           <el-row :gutter="5">
