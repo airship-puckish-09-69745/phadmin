@@ -926,10 +926,12 @@ export default {
                 'value': 0
               })
               for (let i = 0; i < objs.length; i++) {
-                this.guideCfgs.push({
-                  'label': objs[i].record_name,
-                  'value': objs[i].associate_key
-                })
+                if (objs[i].scene_id && objs[i].scene_id === 1) {
+                  this.guideCfgs.push({
+                    'label': objs[i].record_name,
+                    'value': objs[i].associate_key
+                  })
+                }
               }
             }
           }

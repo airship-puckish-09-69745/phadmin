@@ -26,6 +26,15 @@
         </el-table-column>
 
         <el-table-column
+          prop="scene_id"
+          label="推荐场景"
+        >
+          <template slot-scope="scope">
+            {{ getSceneName(scope.row.scene_id,scope.row.left_time) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column
           fixed="right"
           label="操作"
           width="200px"
@@ -52,7 +61,25 @@
     >
       <el-form :model="editForm.data" label-width="200px" size="mini">
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
-          <legend>引导游戏</legend>
+
+          <el-form-item label="推荐场景：" :required="true">
+            <el-select v-model="editForm.scene_id" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in useSceneCfg"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.scene_id == 3 || editForm.scene_id == 4" label="开赛剩余时间(秒):" :required="true">
+            <el-input v-model.number="editForm.left_time" style="width: 200px;" size="mini" placeholder="填写时间" />
+          </el-form-item>
+
+
+          <legend>引导推荐</legend>
           <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addGameGuideCfg()">添加游戏</el-button>
           <el-table
             :data="guideRecord"
@@ -154,13 +181,23 @@ export default {
           id: 0,
           name: '',
           imagePath: ''
-        }
+        },
+        scene_id: 0,
+        left_time: 0
       },
       AttrNames: {
       },
       gameGuideCfgs: [],
       guideList: [],
       guideRecord: [],
+
+      useSceneCfg: [
+        { 'label': '投注限制-弹窗', 'value': 1 },
+        { 'label': '大厅无次数-弹窗', 'value': 2 },
+        { 'label': '大厅无次数+报大赛-弹窗', 'value': 3 },
+        { 'label': '等待界面-弹窗', 'value': 4 },
+        { 'label': '结算界面-弹窗', 'value': 5 }
+      ],
       subKey: 'match_guide_list'
     }
   },
@@ -309,6 +346,8 @@ export default {
           name: editData.name
         }
         this.guideRecord = editData.records
+        this.editForm.scene_id = editData.scene_id || 1
+        this.editForm.left_time = editData.left_time || 0
       }
       this.editForm.visable = true
     },
@@ -333,6 +372,8 @@ export default {
         for (let i = 0; i < this.guideList.length; i++) {
           if (this.guideList[i].id === this.editForm.data.id) {
             this.guideList[i].record_name = record_name
+            this.guideList[i].scene_id = this.editForm.scene_id || 1
+            this.guideList[i].left_time = this.editForm.left_time || 0
             break
           }
         }
@@ -342,7 +383,9 @@ export default {
             'id': new Date().setSeconds(0),
             'records': this.guideRecord,
             'record_name': record_name,
-            'associate_key': (new Date().setSeconds(0)).toString()
+            'associate_key': (new Date().setSeconds(0)).toString(),
+            'scene_id': this.editForm.scene_id || 1,
+            'left_time': this.editForm.left_time || 0
           }
         )
       }
@@ -415,7 +458,29 @@ export default {
           return false
         }
       }
+      if (this.editForm.scene_id <= 0) {
+        this.errmsg("请选择场景推荐")
+        return false
+      }
+
+      if ((this.editForm.scene_id === 3 || this.editForm.scene_id === 4) && this.editForm.left_time <= 0) {
+        this.errmsg( "当前场景需要填写时间")
+        return false
+      }
       return true
+    },
+    getSceneName(scene_id, left_time) {
+      let sceneName = ''
+      for (var i = 0; i < this.useSceneCfg.length; i++) {
+        if (this.useSceneCfg[i].value === scene_id) {
+          sceneName = this.useSceneCfg[i].label
+          if (scene_id === 3 && left_time > 0) {
+            sceneName = sceneName + ' [距离开赛前' + left_time + '秒推荐 ]'
+          }
+          break
+        }
+      }
+      return sceneName
     }
   }
 }
