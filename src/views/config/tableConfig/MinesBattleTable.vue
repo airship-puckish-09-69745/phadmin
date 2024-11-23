@@ -3,6 +3,7 @@
     <el-row>
       <publish primary-key="ID" key-id="MinesBattleTableConfig" :env-empty="true" :check="configCheck"
                :attr-names="AttrNames"/>
+      <el-button type="warning" round @click="showBlackArea">用户在玩雷区</el-button>
     </el-row>
     <el-row>
       <el-col :span="22" style="color:#BB0000;">
@@ -404,6 +405,38 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="查看玩家在玩雷区"
+      :modal="false"
+      :visible.sync="blackArea.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-row>
+        <el-form :model="blackArea" label-width="120px" size="small">
+          <el-form-item label="玩家id：">
+            <el-input v-model.number="blackArea.uid" size="11" placeholder="请输入在用户id" />
+          </el-form-item>
+          <el-form-item label="生成雷区：">
+            <div v-if="blackArea.showUlReslt">
+              <ul id="sweeperShow">
+                <li v-for="(o,key) in blackArea.result" :key="key" :label="o" :value="key">
+                  {{ o.result }}
+                  <div class="showStep">
+                    {{ o.step }}
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" size="mini" @click="goSearch">执行</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames"/>
   </div>
@@ -482,6 +515,12 @@ export default {
         Status: '状态',
         ForceTick: '强制换桌',
         ForceCount: '强制换桌的局数'
+      },
+      blackArea: {
+        visible: false,
+        uid: 0,
+        result: [],
+        showUlReslt: false
       }
     }
   },
@@ -725,7 +764,85 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    showBlackArea() {
+      this.blackArea.visible = true
+    },
+    goSearch() {
+      this.blackArea.showUlReslt = false
+      this.blackArea.result = []
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/game/mines/battle/area',
+          Gid: 123,
+          Uid: this.blackArea.uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '') {
+            if (response.RetCode === 0) {
+              const showDetail = []
+              for (let i = 0; i < response.Data.details.length; i++) {
+                const detailRow = response.Data.details[i]
+                const areaIndex = detailRow.index - 1
+                let showName = '炸弹'
+                if (detailRow.result == 1) {
+                  showName = '金币'
+                }
+                showDetail[areaIndex] = { result: showName, step: detailRow.step }
+              }
+              this.blackArea.result = showDetail
+              this.blackArea.showUlReslt = true
+            } else {
+              this.$message.error(response.Data)
+            }
+          }
+        }
+      })
     }
   }
 }
 </script>
+
+<style scoped>
+ul#sweeperShow {
+  width: 801px;
+  height: 801px;
+  padding: 0px;
+  clear: both;
+  margin: 0;
+  list-style: none;
+  border-top: #999 1px solid;
+  border-left: #999 1px solid;
+}
+
+ul#sweeperShow li {
+  width: 160px;
+  height: 160px;
+  font-size: 35px;
+  float: left;
+  margin: 0px;
+  border: none;
+  list-style: none;
+  line-height: 150px;
+  border-right: #999 1px solid;
+  border-bottom: #999 1px solid;
+}
+
+ul#sweeperShow li .showStep {
+  width: 30px;
+  height: 30px;
+  font-size: 21px;
+  line-height: 30px;
+  border-top: 1px #999 solid;
+  border-right: 1px #999 solid;
+  text-align: center;
+  float: left;
+  margin-top: 130px;
+  margin-right: 18px;
+}
+</style>

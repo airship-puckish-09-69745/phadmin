@@ -463,7 +463,7 @@
             <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType != 0"label="今日投注下限(0不限制)：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
         </fieldset>
@@ -1314,12 +1314,7 @@ export default {
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
         if (editData.sign_extra && editData.sign_extra != '' && editData.sign_extra != 'undefined') {
-          const signExtra = JSON.parse(editData.sign_extra)
-
-          if (signExtra && signExtra.betCnt) {
-            this.editForm.signExtra.betCnt = signExtra.betCnt
-          }
-
+          this.editForm.signExtra = JSON.parse(editData.sign_extra)
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
