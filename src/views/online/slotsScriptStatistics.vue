@@ -14,7 +14,7 @@
             />
             <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
               <!--              <el-option label="所有" :value="0"/>-->
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)"/>
+              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)" />
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
             <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
@@ -67,8 +67,12 @@
                   </template>
                 </el-table-column>
 
-                <el-table-column prop="idx" label="Scatter次数" width="130px"><template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template></el-table-column>
-                <el-table-column prop="idx" label="Scatter占比" width="130px"><template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template></el-table-column>
+                <el-table-column prop="idx" label="Scatter次数" width="130px">
+                  <template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template>
+                </el-table-column>
+                <el-table-column prop="idx" label="Scatter占比" width="130px">
+                  <template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template>
+                </el-table-column>
 
               </el-table-column>
             </el-table>
@@ -130,7 +134,9 @@
                 </el-table-column>
                 <el-table-column label="最终输赢">
                   <template slot-scope="scope">
-                    {{ parseInt(Actions[scope.row.orgKey]) / cfgMap[parseInt(scope.row.gid)].Bet }}
+                    {{
+                      parseInt(Actions[scope.row.orgKey]) / cfgMap[parseInt(scope.row.gid)] ? cfgMap[parseInt(scope.row.gid)].Bet : 0
+                    }}
                   </template>
                 </el-table-column>
               </el-table-column>
@@ -207,7 +213,11 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166" :span="13" :offset="1">
+          <el-col
+            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166"
+            :span="13"
+            :offset="1"
+          >
             <el-table
               ref="filterTable"
               :data="jackpotTableData"
@@ -335,22 +345,21 @@
           <el-col :span="13" :offset="1">
             <el-table
               ref="filterTable"
-              :data="returnMoneyTableData"
+              :data="OrdinaryReturnTableData"
               stripe
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-
             >
-              <el-table-column label="返奖统计">
+              <el-table-column label="普通返奖统计">
                 <el-table-column
                   prop="gid"
                   label="Bet值"
                   width="80px"
                 >
                   <template slot-scope="scope">
-                      {{cfgMap[queryGid+'']?cfgMap[queryGid+''].Bet * scope.row.bet /1000: scope.row.bet+"_" }}
+                    {{ currentBaseBet * scope.row.bet / 1000   }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -359,25 +368,25 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{betMap[scope.row.bet]}}
+                    {{ scope.row.times }}
                   </template>
                 </el-table-column>
                 <el-table-column
-                prop="gid"
-                label="下注额度"
-                width="80px"
-              >
-                <template slot-scope="scope">
-                  {{ cfgMap[queryGid+'']?cfgMap[queryGid+''].Bet * scope.row.bet *betMap[scope.row.bet] /1000: scope.row.bet+"_"}}
-                </template>
-              </el-table-column>
+                  prop="gid"
+                  label="下注额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
                 <el-table-column
                   prop="gid"
                   label="下注占比"
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{(parseInt(betMap[scope.row.bet]) / getTotalBetTime() *100).toFixed(2) + '%'}}
+                    {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -386,7 +395,16 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{scope.row.returnMoney /1000}}
+                    {{ returnMap[ scope.row.bet] / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((currentBaseBet * scope.row.bet * scope.row.times)  - (returnMap[ scope.row.bet])) / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -395,7 +413,91 @@
                   width="80px"
                 >
                   <template slot-scope="scope">
-                    {{(scope.row.returnMoney /  (cfgMap[queryGid+''].Bet * scope.row.bet *betMap[scope.row.bet]) *100).toFixed(2) + "%" }}
+                    {{
+                      ((returnMap[scope.row.bet] /(currentBaseBet * scope.row.bet *  scope.row.times))*100).toFixed(2)    + "%"
+                    }}
+                  </template>
+                </el-table-column>
+
+              </el-table-column>
+            </el-table>
+
+          </el-col>
+
+          <el-col :span="13" :offset="1">
+            <el-table
+              ref="filterTable"
+              :data="BuyReturnMoneyTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column label="购买返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{   scope.row.bet / 1000  }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.times }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{    scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注占比"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((  scope.row.bet * scope.row.times)  - (buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet]:0)) / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{
+                      (buyReturnMap[scope.row.bet] / (scope.row.bet *  scope.row.times) *100).toFixed(2)   + "%"
+                    }}
                   </template>
                 </el-table-column>
 
@@ -476,7 +578,7 @@
                   <template slot="label">
                     今天中奖概率
                   </template>
-                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit/bigPrize.count * 100).toFixed(6) + "%") }}
+                  {{ bigPrize.count === 0 ? 0 : ((bigPrize.hit / bigPrize.count * 100).toFixed(6) + "%") }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
@@ -526,13 +628,98 @@
                     </el-table-column>
 
                     <el-table-column prop="odds" label="平均返奖倍数" width="130px">
-                      <template slot-scope="scope">{{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit)).toFixed(2)) : 0 }}</template>
+                      <template slot-scope="scope">
+                        {{ scope.row.odds ? ((scope.row.odds / parseInt(scope.row.hit)).toFixed(2)) : 0 }}
+                      </template>
                     </el-table-column>
                   </el-table>
                 </el-descriptions-item>
               </el-descriptions>
             </el-col>
           </el-row>
+        </el-row>
+      </el-tab-pane>
+
+      <el-tab-pane v-loading="loading" label="当前剧本和步数" name="scripStep">
+        <el-row>
+          <el-form :model="scripStepForm" label-width="80px" :inline="true" size="small">
+            <el-row>
+              <el-form-item v-model="scripStepForm.gid" label="老虎机：" :required="true" label-width="80px">
+                <el-select
+                  v-model="scripStepForm.gid"
+                  placeholder="请选择"
+                  filterable
+                  default-first-option
+                  size="mini"
+                  @change="changeGid(scripStepForm.gid)"
+                >
+                  <el-option
+                    v-for="row in gameOptions"
+                    :key="row.key"
+                    :label="row.label"
+                    :value="row.key"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item v-model="scripStepForm.bet" label="下注金额：" :required="true" label-width="120px">
+                <el-select
+                  v-model="scripStepForm.bet"
+                  default-first-option
+                  filterable
+                  placeholder="请选择"
+                  size="mini"
+                >
+                  <el-option
+                    v-for="row in betOptions"
+                    :key="row.key"
+                    :label="row.label"
+                    :value="row.key"
+                  />
+                </el-select>
+                <el-form-item>
+                  <el-button type="primary" size="mini" @click="getSlotsScriptStep(0)">查询当前剧本和步数</el-button>
+                </el-form-item>
+              </el-form-item>
+            </el-row>
+            <el-row>
+              <el-form-item v-model="scripStepForm.counter" label="计数值：" :required="true" label-width="80px">
+                <el-input v-model.number="scripStepForm.counter" />
+              </el-form-item>
+              <el-form-item v-model="scripStepForm.scriptId" label="剧本Id：" :required="true" label-width="80px">
+                <el-input v-model.number="scripStepForm.scriptId" />
+              </el-form-item>
+              <el-form-item v-model="scripStepForm.step" label="步数：" :required="true" label-width="80px">
+                <el-input v-model.number="scripStepForm.step" />
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" size="mini" @click="getSlotsScriptStep2(1)">查询当前剧本</el-button>
+              </el-form-item>
+            </el-row>
+
+          </el-form>
+          <el-tabs type="border-card">
+            <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
+              <thead>
+                <th>
+                  <template>
+                    <span class="colStyle"> {{ '位置' }}</span>
+                  </template>
+                </th>
+                <th v-for="(v,k) in 50">
+                  <template>
+                    <span class="colStyle"> {{ k + 1 }}</span>
+                  </template>
+                </th>
+              </thead>
+              <tr v-for=" (v,k) in stepData" style="text-align: center">
+                <td class="colStyle">{{ (k) * 50 + '' }}</td>
+                <td v-for="(col,idx) in v" :style="getColColor(k,idx)">
+                  <span class="colStyle">{{ col }}</span>
+                </td>
+              </tr>
+            </table>
+          </el-tabs>
+          <el-row />
         </el-row>
       </el-tab-pane>
     </el-tabs>
@@ -581,8 +768,8 @@
                 <th v-for="(v,k) in showData.column">
                   <template>
                     <!--
-                  <span @click="showChart(idx, k1)">{{ k1 }}</span>
-                  -->
+                <span @click="showChart(idx, k1)">{{ k1 }}</span>
+                -->
                     <span>{{ k }}</span>
                   </template>
                 </th>
@@ -615,16 +802,16 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import request2 from '@/utils/request2'
 import MoneyInput from '@/components/MoneyInput'
-import {$libShow, ClientTableData} from '@/utils/common'
+import { $libShow, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import XLSX from 'xlsx'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, MoneyInput},
+  components: { Compare, Publish, MoneyInput },
 
   data() {
     return {
@@ -633,6 +820,13 @@ export default {
         gid: 82,
         date: new Date().getTime(), // 默认选中今天
         bet: 0
+      },
+      scripStepForm: {
+        gid: 82,
+        bet: 0,
+        counter: 0,
+        scriptId: 0,
+        step: 0
       },
       pickerOptions: {
         disabledDate(time) {
@@ -664,7 +858,8 @@ export default {
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
       jackpotClientDB: new ClientTableData([], 1, filterMap),
-      returnMoneyClientDB: new ClientTableData([], 1, filterMap),
+      ordinaryReturnClientDB: new ClientTableData([], 1, filterMap),
+      buyReturnClientDB: new ClientTableData([], 1, filterMap),
       showBtn: 0,
       libShow: $libShow,
       item: {
@@ -678,7 +873,8 @@ export default {
       coordinateTableData: [],
       stepTableData: [],
       jackpotTableData: [],
-      returnMoneyTableData: [],
+      OrdinaryReturnTableData: [],
+      BuyReturnMoneyTableData: [],
 
       queryTime: new Date().getTime(),
       loading: false,
@@ -696,7 +892,11 @@ export default {
       Actions: {},
       ActionOdds: 1,
       scatterCounts: [],
-      betMap: {}
+      returnMap: {},
+      buyReturnMap: {},
+      stepData: {},
+      cacheStep: {},
+      currentBaseBet:{},
     }
   },
   created() {
@@ -718,26 +918,54 @@ export default {
     refreshJackpot() {
       this.jackpotTableData = this.jackpotClientDB.GetCurrentPageData()
     },
-    refreshReturnMoney() {
-      this.returnMoneyTableData = this.returnMoneyClientDB.GetCurrentPageData()
+    refreshBuyReturn() {
+      this.BuyReturnMoneyTableData = this.buyReturnClientDB.GetCurrentPageData()
     },
-    getTotalBetTime() {
-      let cnt =0
-      for (const o in this.betMap) {
-        cnt+=parseInt(this.betMap[o])
+    refreshOrdinaryReturn() {
+      this.OrdinaryReturnTableData = this.ordinaryReturnClientDB.GetCurrentPageData()
+    },
+    getTotalOrdinaryBetTimes() {
+      let cnt = 0
+      for (const o of this.ordinaryReturnClientDB.TotalData) {
+        console.log("==================="+o)
+        cnt += parseInt(o.times)
+      }
+      return cnt
+    },
+    getTotalBuyBetTimes() {
+      let cnt = 0
+      for (const o of this.buyReturnClientDB.TotalData) {
+        cnt += parseInt(o.times)
       }
       return cnt
     },
     handleClick(tab, event) {
-      if (parseInt(tab.index) == 0) {
+      if (parseInt(tab.index) === 0) {
         this.getSlotsScriptStatistics()
       }
-      if (parseInt(tab.index) == 1) {
+      if (parseInt(tab.index) === 1) {
         this.queryBase(this.bigPrizeForm.gid)
+      }
+      if (parseInt(tab.index) === 2) {
+        this.queryBase(this.scripStepForm.gid)
+        // this.getSlotsScriptStep()
       }
     },
     newItem() {
       return this.item
+    },
+    getColColor(k, idx) {
+      const number = (parseInt(this.scripStepForm.step / 50) - 1) * 50
+      if (number === (k) * 50 && this.scripStepForm.step % 50 === 0 && number === (k) * 50 && idx === 49) {
+        return 'background: red'
+      }
+      var number2 = parseInt(this.scripStepForm.step / 50) * 50
+      if (number2 === (k) * 50) {
+        if (idx + 1 === this.scripStepForm.step - number2) {
+          return 'background: red'
+        }
+      }
+      return ''
     },
     newBigPrize() {
       this.bigPrize = {
@@ -828,10 +1056,15 @@ export default {
       this.refreshCoordinate()
       this.refreshStep()
       this.refreshJackpot()
-      this.refreshReturnMoney()
+      this.refreshBuyReturn()
+      this.refreshOrdinaryReturn()
+      this.queryBase(this.queryGid)
     },
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
+    },
+    changeGid(gid) {
+      this.queryBase(gid)
     },
     coordinateHandleCurrentChange(val) {
       this.coordinateClientDB.GetPage().SetPageNo(val)
@@ -873,9 +1106,11 @@ export default {
         const stepTableData = []
         const jackpotTableData = []
         const scatterCounts = []
-        const returnMoneyTableData = []
+        const ordinaryReturnMoneyTableData = []
+        const buyReturnMoneyTableData = []
 
-        this.betMap={}
+        this.returnMap = {}
+        this.buyReturnMap = {}
         this.stepSum = {}
         this.sumData = {}
         this.coordinateSum = {}
@@ -911,7 +1146,7 @@ export default {
                 scriptMap[this.queryGid + '_' + prefix].rows[step] = []
                 scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data['script']['script_times_' + strings1[2] + '_' + strings1[3]]
               } else if (strings1[1] === 'times') {
-              //
+                //
               } else if (strings1[1] === 'count') {
                 var strings = key.split('_')
                 this.sumData[this.queryGid] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
@@ -967,15 +1202,24 @@ export default {
                 scatterCounts[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
               }
             } else if (strings1[0] === 'spin') {
-              if (strings1[1] === 'bet') {
-                this.betMap[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+              if (strings1[1] === 'ordinary') {
+                if (strings1[2] === 'times') {
+                  ordinaryReturnMoneyTableData.push({bet: parseInt(strings1[3]),times: response.Data['script'][key]})
+                }
+                if (strings1[2] === 'return') {
+                  this.returnMap[parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                }
               }
-              if (strings1[1] === 'return') {
-                returnMoneyTableData.push({bet:parseInt(strings1[3]),returnMoney: response.Data['script'][key]})
+              if (strings1[1] === 'buy') {
+                if (strings1[2] === 'times') {
+                  buyReturnMoneyTableData.push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+                if (strings1[2] === 'return'){
+                  this.buyReturnMap[parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                }
               }
             }
           }
-
           for (const key in scriptMap) {
             stepTableData.push({
               gid: scriptMap[key].gid,
@@ -1023,14 +1267,18 @@ export default {
           }
           return a.app - b.app
         })
-        returnMoneyTableData.sort(function (a, b){
-            a.bet - b.bet
+        ordinaryReturnMoneyTableData.sort(function(a, b) {
+          return a.bet - b.bet
+        })
+        buyReturnMoneyTableData.sort(function(a, b) {
+          return a.bet - b.bet
         })
         this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
-        this.returnMoneyClientDB = new ClientTableData(returnMoneyTableData, 20, filterMap, 'idx', -1)
+        this.ordinaryReturnClientDB = new ClientTableData(ordinaryReturnMoneyTableData, 20, filterMap, 'idx', -1)
+        this.buyReturnClientDB = new ClientTableData(buyReturnMoneyTableData, 20, filterMap, 'idx', -1)
         this.queryKeyInput()
         this.scatterCounts = scatterCounts
 
@@ -1118,11 +1366,14 @@ export default {
         return
       }
       try {
-        const realKey = { 150: 'supergemiii', 88: 'crazy777' }
+        const realKey = { 150: 'supergemiii', 88: 'crazy777', 76: 'candypartyway' }
         let key = this.gameScene[gid] + '_slots_base'
-        if (gid === 88 || gid === 150) {
-          key = realKey[gid] + '_slots_base'
+        for (const k in realKey) {
+          if (gid === parseInt(k)) {
+            key = realKey[gid] + '_slots_base'
+          }
         }
+
         request2({
           url: '/customizeconfig/one',
           method: 'get',
@@ -1134,7 +1385,8 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              this.handleSlotsBetOptions(baseCfg.BetList)
+              this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              this.currentBaseBet = baseCfg.BaseBet
             }
           }
         })
@@ -1142,18 +1394,19 @@ export default {
         console.log(e)
       }
     },
-    handleSlotsBetOptions(betList) {
+    handleSlotsBetOptions(betList, baseBet) {
       if (betList.length <= 0) {
         return
       }
       this.betOptions = []
       for (const i in betList) {
-        this.betOptions.push({ 'key': betList[i], 'label': betList[i] / 1000 })
+        this.betOptions.push({ 'key': betList[i], 'label': betList[i] * baseBet / 1000 })
         if (i === '0') {
           this.bigPrizeForm.bet = betList[i]
+          this.scripStepForm.bet = betList[i]
         }
       }
-      console.log('betOptions: ', this.betOptions)
+      // console.log('betOptions: ', this.betOptions)
     },
     getSlotsActConfig(ActId) {
 
@@ -1174,6 +1427,58 @@ export default {
       }
       this.detailVisible = true
       this.showData = row
+    },
+    getSlotsScriptStep2(typ) {
+      if (this.cacheStep.counter === this.scripStepForm.counter && this.cacheStep.scriptId === this.scripStepForm.scriptId) {
+        this.cacheStep.step = this.scripStepForm.step
+        // 刷新 this.stepData.
+        this.stepData.splice(this.stepData.length, 0)
+      } else {
+        this.getSlotsScriptStep(typ)
+      }
+    },
+    getSlotsScriptStep(typ) {
+      const $this = this
+      $this.loading = true
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/script/step',
+          Env: store.getters.env,
+          gid: this.scripStepForm.gid,
+          bet: this.scripStepForm.bet,
+          typ: typ,
+          queryCounter: this.scripStepForm.counter,
+          queryScriptId: this.scripStepForm.scriptId
+
+        }
+      }).then(response => {
+        console.log(response)
+        var groupArray = this.groupArray(response.Data.script, 50)
+        console.log(groupArray)
+        this.stepData = groupArray
+        this.scripStepForm.counter = response.Data.counter
+        this.scripStepForm.scriptId = response.Data.scriptId
+        this.scripStepForm.step = response.Data.step
+        this.cacheStep['counter'] = response.Data.counter
+        this.cacheStep['scriptId'] = response.Data.scriptId
+        this.cacheStep['step'] = response.Data.step
+        $this.loading = false
+      })
+      $this.loading = false
+    },
+    groupArray(arr, groupSize = 50) {
+      return arr.reduce((result, item, index) => {
+        const groupIndex = Math.floor(index / groupSize)
+
+        if (!result[groupIndex]) {
+          result[groupIndex] = []
+        }
+
+        result[groupIndex].push(item)
+        return result
+      }, [])
     },
     exportExcel() {
       if (this.stepTableData.length <= 0) {
@@ -1333,5 +1638,9 @@ export default {
 
 .table th {
   font-weight: bold;
+}
+
+.colStyle {
+  font-size: 11px;
 }
 </style>

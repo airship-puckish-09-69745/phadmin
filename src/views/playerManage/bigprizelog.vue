@@ -129,7 +129,8 @@ export default {
         { 'value': 1000005, 'label': 'BP-正式[1000005]' }
       ],
       games: [
-        { 'value': 82, 'label': 'Millionaire' }
+        { 'value': 82, 'label': 'Millionaire' },
+        { 'value': 76, 'label': 'Candy Rush' }
       ],
 
       item: {
