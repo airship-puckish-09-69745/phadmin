@@ -128,10 +128,7 @@ export default {
         { 'value': 1000003, 'label': 'BP-测试[1000003]' },
         { 'value': 1000005, 'label': 'BP-正式[1000005]' }
       ],
-      games: [
-        { 'value': 82, 'label': 'Millionaire' },
-        { 'value': 76, 'label': 'Candy Rush' }
-      ],
+      games: [],
 
       item: {
         Uid: 0,
