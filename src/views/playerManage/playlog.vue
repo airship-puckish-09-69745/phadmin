@@ -3852,8 +3852,8 @@ export default {
     },
     showMinesGame(obj) {
       const showDetail = []
-      for (let i = 0; i < obj.details.length; i++) {
-        const detailRow = obj.details[i]
+      for (let i = 0; i < obj.blockDetails.length; i++) {
+        const detailRow = obj.blockDetails[i]
         const areaIndex = detailRow.index - 1
         let showName = '炸弹'
         if (detailRow.result == 1) {
