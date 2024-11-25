@@ -22,7 +22,7 @@
         </el-row>
 
 
-        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
           <el-col :span="11" :offset="1">
             <el-table
               ref="filterTable"
@@ -104,7 +104,6 @@
             </el-table>
 
           </el-col>
-
           <el-col :span="11" :offset="1">
             <el-table
               ref="filterTable"
@@ -187,10 +186,8 @@
 
           </el-col>
         </el-row>
-          <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
-
-
-          <el-col :span="8">
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
+          <el-col :span="11">
             <el-table
               ref="filterTable"
               :data="scriptTableData"
@@ -260,7 +257,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="8" :offset="1">
+          <el-col :span="11" :offset="1">
             <el-table
               ref="filterTable"
               :data="coordinateTableData"
@@ -325,6 +322,8 @@
               </el-col>
             </el-row>
           </el-col>
+        </el-row>
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
           <el-col :span="6" :offset="1">
             <el-table
               ref="filterTable"
@@ -509,8 +508,6 @@
               </el-col>
             </el-row>
           </el-col>
-
-
         </el-row>
 
       </el-tab-pane>
