@@ -274,6 +274,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
+           <el-button type="primary" @click="addBigPrizePlansCfgRow(0)" size="mini">添加</el-button>
             <el-table
               ref="filterTable"
               :data="item.BigPrizeCfg.Plans"
@@ -283,6 +284,7 @@
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
               style="width: 100%"
+              :key="itemKey"
             >
               <el-table-column
                 type="index"
@@ -458,6 +460,7 @@ export default {
       detailVisible: false,
       showVisibleData: [],
       showVisibleIdx: 0,
+      itemKey:0,
       subKeyMap: {
         '76': 'candypartyway',
         '89': 'crazy777mars',
@@ -540,6 +543,7 @@ export default {
       console.log('rows', row,idx)
     },
     addBigPrizePlansCfgRow(row) {
+      console.log('row', row,this.item.BigPrizeCfg)
       if (!this.item.BigPrizeCfg.Plans) {
         this.item.BigPrizeCfg['Plans'] = []
       }
@@ -548,7 +552,8 @@ export default {
         "OddsMax": 0,
         "OddsCfg": [],
       })
-      this.item.BigPrizeCfg.Plans.splice(row, 0)
+      console.log('-----------------', row,this.item.BigPrizeCfg)
+      this.itemKey = Math.random()
     },
     delBigPrizePlansOddsCfgRow(row) {
       this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.splice(row, 1)
