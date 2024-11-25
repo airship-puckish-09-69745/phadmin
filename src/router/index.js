@@ -2136,7 +2136,7 @@ export const asyncRoutes = [
             meta: { title: '游戏健康度检查配置 ◐' }
           },
           {
-            path: 'loginCheckCNIpCfg',
+            path: 'loginCheckIpCfg',
             component: () => import('@/views/config/baseConfig/loginCheckIpCfg'),
             name: 'loginCheckIpCfg',
             meta: { title: '登录检测IP配置 ◐' }
