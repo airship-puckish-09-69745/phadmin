@@ -37,7 +37,7 @@
                 <el-table-column
                   prop="gid"
                   label="Bet值"
-                  width="80px"
+                  width="60px"
                 >
                   <template slot-scope="scope">
                     {{ currentBaseBet * scope.row.bet / 1000   }}
@@ -73,7 +73,7 @@
                 <el-table-column
                   prop="gid"
                   label="返奖额度"
-                  width="80px"
+                  width="120px"
                 >
                   <template slot-scope="scope">
                     {{ returnMap[ scope.row.bet] / 1000 }}
