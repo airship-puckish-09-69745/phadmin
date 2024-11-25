@@ -273,8 +273,6 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-
-
             </el-row>
             <el-table
               ref="filterTable"
@@ -297,7 +295,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>
+                    <el-input v-model.number="scope.row.OddsMin" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -306,9 +304,12 @@
                 label="最大倍数"
                 width="200"
               >
+              <template slot-scope="{}" slot="header">
+                <show-tip head-title="最大倍数" head-tip="0为无限大" ></show-tip>
+              </template>
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>
+                    <el-input v-model.number="scope.row.OddsMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -368,7 +369,7 @@
         >
           <template slot-scope="scope">
             <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMin" size="mini"/>
+              <el-input v-model.number="scope.row.OddsMin" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
             </el-col>
           </template>
         </el-table-column>
@@ -377,9 +378,12 @@
           label="最大倍数"
           width="200"
         >
+          <template slot-scope="{}" slot="header">
+                <show-tip head-title="最大倍数" head-tip="0为无限大" ></show-tip>
+              </template>
           <template slot-scope="scope">
             <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMax" size="mini"/>
+              <el-input v-model.number="scope.row.OddsMax" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
             </el-col>
           </template>
         </el-table-column>
@@ -390,7 +394,7 @@
         >
           <template slot-scope="scope">
             <el-col :span="20">
-              <el-input v-model.number="scope.row.Weight" size="mini"/>
+              <el-input v-model.number="scope.row.Weight" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
             </el-col>
           </template>
         </el-table-column>
@@ -413,10 +417,11 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import {$libShow, DataRule, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
+import ShowTip from "@/components/Tip/showTip.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, BetAmount},
+  components: {ShowTip, Compare, Publish, BetAmount},
   data() {
     return {
       item: {
