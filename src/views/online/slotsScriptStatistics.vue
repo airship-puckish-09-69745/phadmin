@@ -21,8 +21,173 @@
           </el-col>
         </el-row>
 
-        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;">
-          <el-col :span="8">
+
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
+          <el-col :span="11" :offset="1">
+            <el-table
+              ref="filterTable"
+              :data="OrdinaryReturnTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column label="普通返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="60px"
+                >
+                  <template slot-scope="scope">
+                    {{ currentBaseBet * scope.row.bet / 1000   }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.times }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注占比"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ returnMap[ scope.row.bet] / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((currentBaseBet * scope.row.bet * scope.row.times)  - (returnMap[ scope.row.bet])) / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{
+                      ((returnMap[scope.row.bet] /(currentBaseBet * scope.row.bet *  scope.row.times))*100).toFixed(2)    + "%"
+                    }}
+                  </template>
+                </el-table-column>
+
+              </el-table-column>
+            </el-table>
+
+          </el-col>
+          <el-col :span="11" :offset="1">
+            <el-table
+              ref="filterTable"
+              :data="BuyReturnMoneyTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px'}"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column label="购买返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{   scope.row.bet / 1000  }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注次数"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.times }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{    scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注占比"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((  scope.row.bet * scope.row.times)  - (buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet]:0)) / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{
+                      (buyReturnMap[scope.row.bet] / (scope.row.bet *  scope.row.times) *100).toFixed(2)   + "%"
+                    }}
+                  </template>
+                </el-table-column>
+
+              </el-table-column>
+            </el-table>
+
+          </el-col>
+        </el-row>
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
+          <el-col :span="11">
             <el-table
               ref="filterTable"
               :data="scriptTableData"
@@ -92,7 +257,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :span="8" :offset="1">
+          <el-col :span="11" :offset="1">
             <el-table
               ref="filterTable"
               :data="coordinateTableData"
@@ -157,6 +322,8 @@
               </el-col>
             </el-row>
           </el-col>
+        </el-row>
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
           <el-col :span="6" :offset="1">
             <el-table
               ref="filterTable"
@@ -340,170 +507,6 @@
                 </div>
               </el-col>
             </el-row>
-          </el-col>
-
-          <el-col :span="13" :offset="1">
-            <el-table
-              ref="filterTable"
-              :data="OrdinaryReturnTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-            >
-              <el-table-column label="普通返奖统计">
-                <el-table-column
-                  prop="gid"
-                  label="Bet值"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ currentBaseBet * scope.row.bet / 1000   }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注次数"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.times }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注额度"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注占比"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="返奖额度"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ returnMap[ scope.row.bet] / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="GGR"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ ((currentBaseBet * scope.row.bet * scope.row.times)  - (returnMap[ scope.row.bet])) / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="返奖率"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{
-                      ((returnMap[scope.row.bet] /(currentBaseBet * scope.row.bet *  scope.row.times))*100).toFixed(2)    + "%"
-                    }}
-                  </template>
-                </el-table-column>
-
-              </el-table-column>
-            </el-table>
-
-          </el-col>
-
-          <el-col :span="13" :offset="1">
-            <el-table
-              ref="filterTable"
-              :data="BuyReturnMoneyTableData"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-            >
-              <el-table-column label="购买返奖统计">
-                <el-table-column
-                  prop="gid"
-                  label="Bet值"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{   scope.row.bet / 1000  }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注次数"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ scope.row.times }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注额度"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{    scope.row.bet * scope.row.times / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注占比"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="返奖额度"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="GGR"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ ((  scope.row.bet * scope.row.times)  - (buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet]:0)) / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="返奖率"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{
-                      (buyReturnMap[scope.row.bet] / (scope.row.bet *  scope.row.times) *100).toFixed(2)   + "%"
-                    }}
-                  </template>
-                </el-table-column>
-
-              </el-table-column>
-            </el-table>
-
           </el-col>
         </el-row>
 
