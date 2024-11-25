@@ -24,27 +24,26 @@
                 <el-col :span="12">
                   <el-form-item label="gameZone支持的游戏ID：" :required="true">
                     <el-input
+                      v-model="filterTextZone"
                       placeholder="输入关键字进行过滤"
-                      v-model="filterTextZone">
-                    </el-input>
+                    />
                     <el-tree
+                      ref="treeGameZone"
                       :data="treeDataZone"
                       show-checkbox
                       node-key="id"
-                      ref="treeGameZone"
                       highlight-current
                       :props="defaultPropsZone"
                       :filter-node-method="filterNodeZone"
                       @check-change="handleCheckChangeZone"
-                    >
-                    </el-tree>
+                    />
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
           </el-row>
         </el-tab-pane>
-<!--        ///////////////////////////-->
+        <!--        ///////////////////////////-->
         <el-tab-pane label="winMore配置">
           <el-row :gutter="5">
             <el-col :span="16">
@@ -62,27 +61,26 @@
                 <el-col :span="12">
                   <el-form-item label="winMore支持的游戏ID：" :required="true">
                     <el-input
+                      v-model="mayLikeFilterText"
                       placeholder="输入关键字进行过滤"
-                      v-model="mayLikeFilterText">
-                    </el-input>
+                    />
                     <el-tree
+                      ref="treeWinMore"
                       :data="mayLikeTreeData"
                       show-checkbox
                       node-key="id"
-                      ref="treeWinMore"
                       highlight-current
                       :props="mayLikeDefaultProps"
                       :filter-node-method="mayLikeFilterNode"
                       @check-change="handleCheckChangeWinMore"
-                    >
-                    </el-tree>
+                    />
                   </el-form-item>
                 </el-col>
               </el-form>
             </el-col>
           </el-row>
         </el-tab-pane>
-<!--        /////////////////////////-->
+        <!--        /////////////////////////-->
         <el-tab-pane label="mayLike活动配置">
           <el-row :gutter="5">
             <el-col :span="16">
@@ -129,7 +127,7 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled=true />
+                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />
                   </template>
 
                 </el-table-column>
@@ -172,7 +170,7 @@
 
           </el-row>
         </el-tab-pane>
-<!--        /////////////////////-->
+        <!--        /////////////////////-->
         <el-tab-pane label="Favorites活动配置">
           <el-row :gutter="5">
             <el-col :span="16">
@@ -191,7 +189,7 @@
             </el-col>
           </el-row>
         </el-tab-pane>
-<!--        /////////////////////////-->
+        <!--        /////////////////////////-->
         <!--        /////////////////////////-->
         <el-tab-pane label="gameZone其他活动配置">
           <el-row :gutter="5">
@@ -225,7 +223,7 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled=true />
+                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />
                   </template>
 
                 </el-table-column>
@@ -235,7 +233,7 @@
                   width="200"
                 >
                   <template v-slot:default="scope">
-<!--                    <el-image src="scope.row.IconLink"></el-image>-->
+                    <!--                    <el-image src="scope.row.IconLink"></el-image>-->
                     <ImagePicker v-model="scope.row.IconLink" />
                   </template>
                 </el-table-column>
@@ -265,7 +263,7 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="游戏内活动入口配置">
+        <el-tab-pane v-if="item.GameEvent != null" label="游戏内活动入口配置">
           <el-row :gutter="5">
             <el-col :span="16">
               <el-form ref="item" label-width="220px">
@@ -295,6 +293,148 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+        <!--///////////////////////////////////-->
+
+<!--        <el-tab-pane label="大厅选场配置">-->
+<!--          <el-row :gutter="5">-->
+<!--            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateHallGames()">-->
+<!--              添加配置-->
+<!--            </el-button>-->
+<!--            <el-form ref="hallGame" v-model="hallGame" label-width="150px" style="margin-top: 10px">-->
+<!--              <el-table-->
+<!--                :data="hallGame"-->
+<!--                border-->
+<!--                style="width: 100%"-->
+<!--                :cell-style="libShow.DefaultTableCell"-->
+<!--                @row-click="clickDataHallGame"-->
+<!--              >-->
+<!--                <el-table-column-->
+<!--                  prop="Gid"-->
+<!--                  label="游戏名称"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    {{ showGameName(1,scope.row.Gid) }}-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="IsOpen"-->
+<!--                  label="开关"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template v-slot:default="scope">-->
+<!--                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />-->
+<!--                  </template>-->
+
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="IconLink"-->
+<!--                  label="游戏icon"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template v-slot:default="scope">-->
+<!--                    <ImagePicker v-model="scope.row.IconLink" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--                <el-table-column-->
+<!--                  prop="GameSort"-->
+<!--                  label="排序"-->
+<!--                  width="200"-->
+<!--                />-->
+<!--                <el-table-column-->
+<!--                  label="操作"-->
+<!--                  column-key="op"-->
+<!--                  width="250"-->
+<!--                >-->
+<!--                  <template slot-scope="scope">-->
+<!--                    <el-button-->
+<!--                      type="primary"-->
+<!--                      size="mini"-->
+<!--                      @click="handleEditHallGame(scope.row)"-->
+<!--                    >编辑-->
+<!--                    </el-button>-->
+<!--                    <el-button-->
+<!--                      size="mini"-->
+<!--                      type="warning"-->
+<!--                      @click="handleDeleteHallGame(scope.row)"-->
+<!--                    >删除-->
+<!--                    </el-button>-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
+<!--              </el-table>-->
+<!--            </el-form>-->
+
+<!--          </el-row>-->
+<!--        </el-tab-pane>-->
+        <!--        ///////////////////////////////-->
+        <el-tab-pane label="单独游戏推荐配置">
+          <el-row :gutter="5">
+            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateZoneGame()">
+              添加配置
+            </el-button>
+            <el-form ref="zoneGame" v-model="zoneGame" label-width="150px" style="margin-top: 10px">
+              <el-table
+                :data="zoneGame"
+                border
+                style="width: 100%"
+                :cell-style="libShow.DefaultTableCell"
+                @row-click="clickDataZoneGame"
+              >
+                <el-table-column
+                  prop="Gid"
+                  label="游戏"
+                  width="200"
+                >
+                  <template v-slot:default="scope">
+                    <el-checkbox-group v-model="scope.row.Gids" size="medium" disabled>
+                      <el-checkbox-button v-for="game in scope.row.Gids" :key="game" :label="game">{{ showGameName(1,game) }}</el-checkbox-button>
+                    </el-checkbox-group>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="推荐游戏"
+                  width="500"
+                >
+                  <template v-slot:default="scope">
+                    <el-checkbox-group v-model="scope.row.Games" size="medium" disabled>
+                      <el-checkbox-button v-for="game in scope.row.Games" :key="game.Gid" :label="game.Gid">{{ showGameName(1,game.Gid) }}</el-checkbox-button>
+                    </el-checkbox-group>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="IsOpen"
+                  label="开关"
+                  width="200"
+                >
+                  <template v-slot:default="scope">
+                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  label="操作"
+                  column-key="op"
+                  width="250"
+                >
+                  <template slot-scope="scope">
+                    <el-button
+                      type="primary"
+                      size="mini"
+                      @click="handleEditZoneGame(scope.row)"
+                    >编辑
+                    </el-button>
+                    <el-button
+                      size="mini"
+                      type="warning"
+                      @click="handleDeleteZoneGame(scope.row)"
+                    >删除
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form>
+
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
 
       <el-row>
@@ -312,15 +452,15 @@
       <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
         <el-form-item label="游戏id：" :required="true" prop="Gid">
           <el-col :span="15">
-<!--            <el-input v-model.number="edit.item.Gid" />-->
+            <!--            <el-input v-model.number="edit.item.Gid" />-->
             <template>
               <el-select v-model.number="edit.item.Gid" placeholder="请选择">
                 <el-option
                   v-for="item in gameSelect"
                   :key="item.id"
                   :label="item.name"
-                  :value="item.id">
-                </el-option>
+                  :value="item.id"
+                />
               </el-select>
 
             </template>
@@ -362,14 +502,14 @@
       <el-form ref="editOtherGameZone.item" :model="editOtherGameZone.item" label-width="250px" size="small">
         <el-form-item label="活动id：" :required="true" prop="Id">
           <el-col :span="15">
-<!--            <el-input v-model.number="editOtherGameZone.item.Id" />-->
+            <!--            <el-input v-model.number="editOtherGameZone.item.Id" />-->
             <el-select v-model.number="editOtherGameZone.item.Id" placeholder="请选择">
               <el-option
                 v-for="item in activitySelect"
                 :key="item.id"
                 :label="item.name"
-                :value="item.id">
-              </el-option>
+                :value="item.id"
+              />
             </el-select>
           </el-col>
         </el-form-item>
@@ -386,18 +526,17 @@
         </el-form-item>
         <el-form-item label="支持游戏：" prop="GameList">
           <el-col :span="15">
-<!--            TODO 此处设置tree-->
+            <!--            TODO 此处设置tree-->
             <el-tree
+              ref="treeGameOtherZone"
               :data="treeDataOtherZone"
               show-checkbox
               node-key="id"
-              ref="treeGameOtherZone"
               highlight-current
               :props="defaultPropsOtherZone"
               :filter-node-method="filterNodeOtherZone"
               @check-change="handleCheckChangeOtherZone"
-            >
-            </el-tree>
+            />
           </el-col>
         </el-form-item>
         <el-form-item>
@@ -410,6 +549,155 @@
       </el-form>
     </el-dialog>
 
+    <el-dialog
+      :title="getEditTitleHallGame()"
+      :visible.sync="editHallGame.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="editHallGame.item" :model="editHallGame.item" label-width="250px" size="small">
+        <el-form-item label="大厅选择游戏：" :required="true" prop="Gid">
+          <el-col :span="15">
+            <el-select ref="editHallGameSelect" v-model.number="editHallGame.item.Gid" placeholder="请选择" >
+              <el-option
+                v-for="itemHallGame in gameSelect"
+                :key="itemHallGame.id"
+                :label="itemHallGame.name"
+                :value="itemHallGame.id"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="游戏icon：" :required="true" prop="IconLink">
+          <el-col :span="15">
+            <ImagePicker v-model="editHallGame.item.IconLink" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="开关：" :required="true" prop="IsOpen">
+          <el-col :span="15">
+            <el-switch v-model="editHallGame.item.IsOpen" :active-value="true" :inactive-value="false" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="排序：" :required="true" prop="GameSort">
+          <el-col :span="15">
+            <el-input v-model.number="editHallGame.item.GameSort" />
+          </el-col>
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="10" :offset="6">
+              <el-button type="primary" size="medium" @click="saveHallGame">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      :title="getEditTitleHallGame()"
+      :visible.sync="editZoneGame.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="editZoneGame.item" :model="editZoneGame.item" label-width="250px" size="small">
+        <el-form-item label="游戏：" :required="true" prop="Gids">
+          <el-col :span="15">
+            <el-select v-model="editZoneGame.item.Gids" multiple placeholder="请选择" >
+              <el-option
+                v-for="itemZoneGame in gameSelect"
+                :key="itemZoneGame.id"
+                :label="itemZoneGame.name"
+                :value="itemZoneGame.id"
+              />
+            </el-select>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item label="开关：" :required="true" prop="IsOpen">
+          <el-switch v-model="editZoneGame.item.IsOpen" :active-value="true" :inactive-value="false" />
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="addZoneGame">新增推荐游戏</el-button>
+        </el-form-item>
+        <el-form-item label="推荐游戏列表：">
+          <el-table
+            :data="editZoneGame.item.Games"
+            :row-style="rowStyle"
+            border
+            max-height="600"
+            style="width: 100%"
+            :cell-style="libShow.DefaultTableCell"
+          >
+            <el-table-column
+              prop="Gid"
+              label="推荐游戏"
+              width="150"
+            >
+              <template v-slot:default="scope">
+                <el-select v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
+                  <el-option
+                    v-for="item in gameSelect"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="IsOpen"
+              label="开关"
+              width="100"
+            >
+              <template v-slot:default="scope">
+                <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" />
+              </template>
+
+            </el-table-column>
+            <el-table-column
+              prop="IconLink"
+              label="推荐游戏icon"
+              width="200"
+            >
+              <template v-slot:default="scope">
+                <ImagePicker v-model="scope.row.IconLink" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="GameSort"
+              label="排序"
+              width="100"
+            >
+              <template v-slot:default="scope">
+                <el-input v-model.number="scope.row.GameSort" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              column-key="op"
+              width="150"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="warning"
+                  @click="handleDeleteZoneGameD(scope.row)"
+                >删除
+                </el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-form-item>
+        <el-form-item>
+          <el-row>
+            <el-col :span="10" :offset="6">
+              <el-button type="primary" size="medium" @click="saveZoneGameD">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
 
     <!--对比组件-->
     <compare ref="compare" />
@@ -418,12 +706,12 @@
 
 <script>
 
-import Publish from "@/components/Publish/index.vue";
-import {$libShow, DataRule} from "@/utils/common";
-import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
-import {Message} from "element-ui";
-import request from "@/utils/request";
-import Compare from "@/components/Compare/index.vue";
+import Publish from '@/components/Publish/index.vue'
+import { $libShow, DataRule } from '@/utils/common'
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import { Message } from 'element-ui'
+import request from '@/utils/request'
+import Compare from '@/components/Compare/index.vue'
 
 function newItem() {
   return { Gid: 1, GameIconLink: '', GameSort: 1, IsOpen: true }
@@ -431,19 +719,14 @@ function newItem() {
 function newItemOtherGameZone() {
   return { Id: 1, IconLink: '', IsOpen: true, GameList: [] }
 }
+function newItemHallGame() {
+  return { Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }
+}
+function newItemZoneGame() {
+  return { Index : -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }] }
+}
 export default {
-  components: {Compare, ImagePicker, Publish},
-  watch: {
-    filterTextZone(val) {
-      this.$refs.treeGameZone.filter(val);
-    },
-    filterText(val) {
-      this.$refs.tree.filter(val);
-    },
-    gameIdCfg(val) {
-
-    }
-  },
+  components: { Compare, ImagePicker, Publish },
   data() {
     return {
       subKey: 'gameZone_cfg',
@@ -459,6 +742,16 @@ export default {
       editOtherGameZone: {
         visible: false,
         item: newItemOtherGameZone(),
+        isEdit: false
+      },
+      editHallGame: {
+        visible: false,
+        item: newItemHallGame(),
+        isEdit: false
+      },
+      editZoneGame: {
+        visible: false,
+        item: newItemZoneGame(),
         isEdit: false
       },
       WinMoreItem: {
@@ -484,7 +777,7 @@ export default {
         IsOpen: true,
         ImgUrl: '',
         GameList: [],
-        GameZoneItem:[
+        GameZoneItem: [
           {
             Id: 2,
             IconLink: '',
@@ -492,7 +785,7 @@ export default {
             GameList: []
           }
         ],
-        WinMoreItem:[
+        WinMoreItem: [
           {
             Id: 3,
             IconLink: '',
@@ -527,6 +820,8 @@ export default {
           IconLink: '',
           ActivityIds: []
         },
+        ZoneGame: [],
+        HallGame: []
       },
       treeDataZone: [{
         id: 1,
@@ -590,11 +885,11 @@ export default {
         children: 'children',
         disabled: 'disabled'
       },
-      gameZoneOther:[],
-      gameZoneOtherGameList:[],
+      gameZoneOther: [],
+      gameZoneOtherGameList: [],
       activityOptions: [
         { label: '圣诞摇钱树-[7]', value: 7 },
-        { label: 'Poker乐园-[8]', value: 8 },
+        { label: 'Poker乐园-[8]', value: 8 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -603,6 +898,20 @@ export default {
         { name: '圣诞摇钱树-[7]', id: 7 },
         { name: 'Poker乐园-[8]', id: 8 }
       ],
+      blockGames: [32, 36, 38, 39, 43, 44],
+      hallGame: [],
+      zoneGame: []
+    }
+  },
+  watch: {
+    filterTextZone(val) {
+      this.$refs.treeGameZone.filter(val)
+    },
+    filterText(val) {
+      this.$refs.tree.filter(val)
+    },
+    gameIdCfg(val) {
+
     }
   },
   created() {
@@ -620,20 +929,20 @@ export default {
       return DataRule(required, config)
     },
     filterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     filterNodeZone(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     filterNodeOtherZone(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     mayLikeFilterNode(value, data) {
-      if (!value) return true;
-      return data.label.indexOf(value) !== -1;
+      if (!value) return true
+      return data.label.indexOf(value) !== -1
     },
     getGameAll() {
       request({
@@ -650,33 +959,32 @@ export default {
               continue
             }
 
-            const gameZone = {Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description}
+            const gameZone = { Gid: objZone.Gid, Name: objZone.Name, Description: objZone.Description }
+            // eslint-disable-next-line no-prototype-builtins
             if (dataZone.hasOwnProperty(objZone.CategoryID)) {
               dataZone[objZone.CategoryID].push(gameZone)
             } else {
               dataZone[objZone.CategoryID] = [gameZone]
             }
-            const gameSelectInfo = {id: objZone.Gid, name : objZone.Description}
+            const gameSelectInfo = { id: objZone.Gid, name: objZone.Description }
             this.gameSelect.push(gameSelectInfo)
           }
 
           this.treeDataZone = []
-          const categoriesZone = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categoriesZone = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const keyZone in dataZone) {
             const gamesZone = dataZone[keyZone]
-            const ctyZone = {id: 'p-' + keyZone, label: categoriesZone[keyZone], children: []}
+            const ctyZone = { id: 'p-' + keyZone, label: categoriesZone[keyZone], children: [] }
 
             for (let i = 0; i < gamesZone.length; i++) {
               const gameZone = gamesZone[i]
-              ctyZone.children.push({id: gameZone.Gid, label: gameZone.Name})
+              ctyZone.children.push({ id: gameZone.Gid, label: gameZone.Name })
             }
             this.treeDataZone.push(ctyZone)
           }
 
-          console.log('getGameAll ', this.item.GameList)
           this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
-          console.log('getGameAll ', this.treeDataZone)
         }
       })
     },
@@ -695,7 +1003,8 @@ export default {
               continue
             }
 
-            const gameZoneOther = {Gid: objOtherZone.Gid, Name: objOtherZone.Name, Description: objOtherZone.Description}
+            const gameZoneOther = { Gid: objOtherZone.Gid, Name: objOtherZone.Name, Description: objOtherZone.Description }
+            // eslint-disable-next-line no-prototype-builtins
             if (dataOtherZone.hasOwnProperty(objOtherZone.CategoryID)) {
               dataOtherZone[objOtherZone.CategoryID].push(gameZoneOther)
             } else {
@@ -704,22 +1013,18 @@ export default {
           }
 
           this.treeDataOtherZone = []
-          const categoriesZoneOther = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categoriesZoneOther = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const keyZoneOther in dataOtherZone) {
             const gamesZoneOther = dataOtherZone[keyZoneOther]
-            const ctyZoneOther = {id: 'p-' + keyZoneOther, label: categoriesZoneOther[keyZoneOther], children: []}
+            const ctyZoneOther = { id: 'p-' + keyZoneOther, label: categoriesZoneOther[keyZoneOther], children: [] }
 
             for (let i = 0; i < gamesZoneOther.length; i++) {
               const gameZoneOther = gamesZoneOther[i]
-              ctyZoneOther.children.push({id: gameZoneOther.Gid, label: gameZoneOther.Name})
+              ctyZoneOther.children.push({ id: gameZoneOther.Gid, label: gameZoneOther.Name })
             }
             this.treeDataOtherZone.push(ctyZoneOther)
           }
-
-          // console.log('getGameAll ', this.item.GameList)
-          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
-          // console.log('getGameAll ', this.treeDataZone)
         }
       })
     },
@@ -738,7 +1043,8 @@ export default {
               continue
             }
 
-            const game = {Gid: obj.Gid, Name: obj.Name, Description: obj.Description}
+            const game = { Gid: obj.Gid, Name: obj.Name, Description: obj.Description }
+            // eslint-disable-next-line no-prototype-builtins
             if (data.hasOwnProperty(obj.CategoryID)) {
               data[obj.CategoryID].push(game)
             } else {
@@ -747,40 +1053,42 @@ export default {
           }
 
           this.mayLikeTreeData = []
-          const categories = {1: 'Slot', 2: 'Poker', 3: 'Casino'}
+          const categories = { 1: 'Slot', 2: 'Poker', 3: 'Casino' }
 
           for (const key in data) {
             const games = data[key]
-            const cty = {id: 'p-' + key, label: categories[key], children: []}
+            const cty = { id: 'p-' + key, label: categories[key], children: [] }
 
             for (let i = 0; i < games.length; i++) {
               const game = games[i]
-              cty.children.push({id: game.Gid, label: game.Name})
+              cty.children.push({ id: game.Gid, label: game.Name })
             }
             this.mayLikeTreeData.push(cty)
           }
-          console.log("=================")
-          console.log(this.WinMoreItem.GameList)
           this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
-          console.log(this.mayLikeTreeData)
-          console.log("=================")
         }
       })
     },
     handleCheckChangeZone(data, checked, indeterminate) {
+      if (checked) {
+        if (this.blockGames.indexOf(data.id) !== -1) {
+          this.$refs.treeGameZone.getNode(data).checked = false
+          const message = data.label + '游戏不可添加配置，目前不支持'
+          this.$message.warning(message)
+          return
+        }
+      }
       const nodesZone = this.$refs.treeGameZone.getCheckedNodes()
 
       this.item.GameList = []
 
       for (let i = 0; i < nodesZone.length; i++) {
         const nodeZone = nodesZone[i]
-        if (nodeZone.label === 'Slot' || nodeZone.label === 'Poker' || nodeZone.label === 'Casino') {
+        if (nodeZone.label === 'Slot' || nodeZone.label === 'Poker' || nodeZone.label === 'Casino' || this.blockGames.indexOf(nodeZone.id) !== -1) {
           continue
         }
         this.item.GameList.push(nodeZone.id)
       }
-
-      console.log(this.item.GameList)
     },
     handleCheckChangeOtherZone(data, checked, indeterminate) {
       const nodesZone = this.$refs.treeGameOtherZone.getCheckedNodes()
@@ -796,19 +1104,25 @@ export default {
       }
     },
     handleCheckChangeWinMore(data, checked, indeterminate) {
+      if (checked) {
+        if (this.blockGames.indexOf(data.id) !== -1) {
+          this.$refs.treeWinMore.getNode(data).checked = false
+          const message = data.label + '游戏不可添加配置，目前不支持'
+          this.$message.warning(message)
+          return
+        }
+      }
       const nodes = this.$refs.treeWinMore.getCheckedNodes()
 
       this.WinMoreItem.GameList = []
 
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i]
-        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino') {
+        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino' || this.blockGames.indexOf(node.id) !== -1) {
           continue
         }
         this.WinMoreItem.GameList.push(node.id)
       }
-
-      console.log(this.WinMoreItem.GameList)
     },
     getData() {
       const $this = this
@@ -820,7 +1134,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('gameZone', response.Data)
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
@@ -841,6 +1154,16 @@ export default {
               }
             })
             this.MayLikeGameList = this.item.MayLikeItem
+            if (this.item.ZoneGame == null) {
+              this.zoneGame = []
+            } else {
+              this.zoneGame = this.item.ZoneGame
+            }
+            if (this.item.HallGame == null) {
+              this.hallGame = []
+            } else {
+              this.hallGame = this.item.HallGame
+            }
             this.$refs.compare.SetOldVal(old)
           }
         }
@@ -856,6 +1179,16 @@ export default {
       this.editOtherGameZone.isEdit = false
       this.editOtherGameZone.visible = true
     },
+    handleCreateHallGames() {
+      this.editHallGame.item = newItemHallGame()
+      this.editHallGame.isEdit = false
+      this.editHallGame.visible = true
+    },
+    handleCreateZoneGame() {
+      this.editZoneGame.item = newItemZoneGame()
+      this.editZoneGame.isEdit = false
+      this.editZoneGame.visible = true
+    },
     getEditTitle() {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改配置' : '新增配置'
@@ -864,14 +1197,39 @@ export default {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改活动配置' : '新增活动配置'
     },
+    getEditTitleHallGame() {
+      this.isDisabled = this.editHallGame.isEdit
+      return this.editHallGame.isEdit ? '修改转场配置' : '新增转场配置'
+    },
     // 操作类函数
     clickData(row, column, event) {
       this.edit.visible = true
       this.edit.isEdit = true
+      this.handleEdit(row)
     },
     clickDataOtherGameZone(row, column, event) {
+      if (column.columnKey === 'op') {
+        return
+      }
       this.editOtherGameZone.visible = true
       this.editOtherGameZone.isEdit = true
+      this.handleEditOtherGameZone(row)
+    },
+    clickDataHallGame(row, column, event) {
+      if (column.columnKey === 'op') {
+        return
+      }
+      this.editHallGame.visible = true
+      this.editHallGame.isEdit = true
+      this.handleEditHallGame(row)
+    },
+    clickDataZoneGame(row, column, event) {
+      if (column.columnKey === 'op') {
+        return
+      }
+      this.editZoneGame.visible = true
+      this.editZoneGame.isEdit = true
+      this.handleEditZoneGame(row)
     },
     handleEdit(ob) {
       this.initFormData(true, ob.Gid)
@@ -881,6 +1239,14 @@ export default {
       this.initFormDataOtherGameZone(true, ob.Id)
       this.editOtherGameZone.visible = true
     },
+    handleEditHallGame(ob) {
+      this.initFormDataHallGame(true, ob.Gid)
+      this.editHallGame.visible = true
+    },
+    handleEditZoneGame(ob) {
+      this.initFormDataZoneGame(true, ob.Index)
+      this.editZoneGame.visible = true
+    },
     save() {
       const newData = JSON.parse(JSON.stringify(this.edit.item))
       const index = this.MayLikeGameList.findIndex(item => item.Gid === this.edit.item.Gid)
@@ -889,7 +1255,7 @@ export default {
       } else {
         // 如果是新增，检查是否有重复的档次
         if (index >= 0) {
-          this.$alert(`[已存在，不能重复添加`, '提示', {type:'warning'})
+          this.$alert(`[已存在，不能重复添加`, '提示', { type: 'warning' })
           return
         }
         // 新增到
@@ -912,7 +1278,7 @@ export default {
       } else {
         // 如果是新增，检查是否有重复的档次
         if (index >= 0) {
-          this.$alert(`[已存在，不能重复添加`, '提示', {type:'warning'})
+          this.$alert(`[已存在，不能重复添加`, '提示', { type: 'warning' })
           return
         }
         // 新增到
@@ -922,6 +1288,92 @@ export default {
       this.$refs.treeGameOtherZone.setCheckedKeys([])
       this.editOtherGameZone.visible = false
       this.editOtherGameZone.isEdit = false
+    },
+    saveHallGame() {
+      const newData = JSON.parse(JSON.stringify(this.editHallGame.item))
+      if (!this.checkGames(this.editHallGame.item.Gid)) {
+        this.$alert(`添加选场游戏错误，游戏不存在`, '提示', { type: 'warning' })
+        return
+      }
+      const index = this.hallGame.findIndex(item => item.Gid === this.editHallGame.item.Gid)
+      if (this.editHallGame.isEdit) {
+        this.hallGame.splice(index, 1, newData)
+      } else {
+        // 如果是新增，检查是否有重复的档次
+        if (index >= 0) {
+          this.$alert(`[已存在，不能重复添加`, '提示', { type: 'warning' })
+          return
+        }
+        // 新增到
+        this.hallGame.push(newData)
+      }
+      this.editHallGame.visible = false
+      this.editHallGame.isEdit = false
+    },
+    checkGames(gid) {
+      for (let i = 0; i < this.gameSelect.length; i++) {
+        // eslint-disable-next-line no-empty
+        if (this.gameSelect[i].id === gid) {
+          return true
+        }
+      }
+      return false
+    },
+    checkZoneGames(gids,index) {
+      if (gids.length <= 0) {
+        return false
+      }
+      let gameSelArray = []
+      for (let i = 0; i < this.gameSelect.length; i++) {
+        gameSelArray.push(this.gameSelect[i].id)
+      }
+      const allIn = gids.every(value => gameSelArray.includes(value))
+      if (!allIn) {
+        return false
+      }
+      gameSelArray = []
+      for (let i = 0; i < this.zoneGame.length; i++) {
+        if (this.zoneGame[i].Index === index) {
+          continue
+        }
+        gameSelArray.push(...this.zoneGame[i].Gids)
+      }
+      // if (gameSelArray.length === 0) {
+      //   return true
+      // }
+      const intersection = gameSelArray.filter(value => gids.includes(value))
+      return intersection.length <= 0
+    },
+    saveZoneGameD() {
+      const newData = JSON.parse(JSON.stringify(this.editZoneGame.item))
+
+      if (!this.checkZoneGames(this.editZoneGame.item.Gids,this.editZoneGame.item.Index)) {
+        this.$alert(`添加错误，游戏不存在`, '提示', { type: 'warning' })
+        return
+      }
+      for (let i = 0; i < this.editZoneGame.item.Games.length; i++) {
+        const game = this.editZoneGame.item.Games[i]
+        if (!this.checkGames(game.Gid)) {
+          this.$alert(`推荐游戏添加错误，游戏不存在`, '提示', { type: 'warning' })
+          return
+        }
+      }
+      const index = this.zoneGame.findIndex(item => item.Index === this.editZoneGame.item.Index)
+      if (this.editZoneGame.isEdit) {
+        this.zoneGame.splice(index, 1, newData)
+      } else {
+        const length = this.zoneGame.length
+        let indexNew = 1
+        if (length > 0) {
+          indexNew = this.zoneGame[length - 1].Index + 1
+        }
+        newData.Index = indexNew
+        // 新增到
+        this.zoneGame.push(newData)
+      }
+      this.editZoneGame.visible = false
+      this.editZoneGame.isEdit = false
+      console.log(this.zoneGame)
     },
     initFormData(bEdit, gid) {
       this.edit.isEdit = bEdit
@@ -943,6 +1395,24 @@ export default {
         }
       }
     },
+    initFormDataHallGame(bEdit, id) {
+      this.editHallGame.isEdit = bEdit
+      if (id) {
+        const _data = this.getHallGameDataByGid(id)
+        if (_data) {
+          Object.assign(this.editHallGame.item, _data)
+        }
+      }
+    },
+    initFormDataZoneGame(bEdit, id) {
+      this.editZoneGame.isEdit = bEdit
+      if (id) {
+        const _data = this.getZoneGameDataByGid(id)
+        if (_data) {
+          Object.assign(this.editZoneGame.item, _data)
+        }
+      }
+    },
     getDataByGid(gid) {
       for (let i = 0; i < this.MayLikeGameList.length; i++) {
         const data = this.MayLikeGameList[i]
@@ -961,9 +1431,27 @@ export default {
       }
       return null
     },
+    getHallGameDataByGid(id) {
+      for (let i = 0; i < this.hallGame.length; i++) {
+        const data = this.hallGame[i]
+        if (data.Gid === id) {
+          return data
+        }
+      }
+      return null
+    },
+    getZoneGameDataByGid(id) {
+      for (let i = 0; i < this.zoneGame.length; i++) {
+        const data = this.zoneGame[i]
+        if (data.Index === id) {
+          return data
+        }
+      }
+      return null
+    },
     handleDelete(ob) {
-      let $this = this
-      this.$confirm('是否确认删除?', '提示', {type:'warning'}).then(() => {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.MayLikeGameList.findIndex(item => item.Gid === ob.Gid)
         this.MayLikeGameList.splice(delIndex, 1)
       }).catch(() => {
@@ -971,10 +1459,37 @@ export default {
       })
     },
     handleDeleteOtherGameZone(ob) {
-      let $this = this
-      this.$confirm('是否确认删除?', '提示', {type:'warning'}).then(() => {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
         const delIndex = $this.gameZoneOther.findIndex(item => item.Id === ob.Id)
         this.gameZoneOther.splice(delIndex, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    handleDeleteHallGame(ob) {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
+        const delIndex = $this.hallGame.findIndex(item => item.Gid === ob.Gid)
+        this.hallGame.splice(delIndex, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    handleDeleteZoneGame(ob) {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
+        const delIndex = $this.zoneGame.findIndex(item => item.Index === ob.Index)
+        this.zoneGame.splice(delIndex, 1)
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    handleDeleteZoneGameD(ob) {
+      const $this = this
+      this.$confirm('是否确认删除?', '提示', { type: 'warning' }).then(() => {
+        const delIndex = $this.editZoneGame.item.Games.findIndex(item => item.Gid === ob.Gid)
+        this.editZoneGame.item.Games.splice(delIndex, 1)
       }).catch(() => {
         console.log('取消')
       })
@@ -994,11 +1509,12 @@ export default {
       for (const o in this.gameZoneOther) {
         cpy.GameZoneItem.push(this.gameZoneOther[o])
       }
+      cpy.HallGame = this.hallGame
+      cpy.ZoneGame = this.zoneGame
       return JSON.stringify(cpy)
     },
     setData() {
       this.form.Data = this.encodeData()
-      console.log('setData', this.form.Data)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
@@ -1019,8 +1535,7 @@ export default {
         })
       })
     },
-    showGameName(type,id) {
-      console.log('showGameName', id)
+    showGameName(type, id) {
       let temp = this.gameSelect
       if (type === 2) {
         temp = this.activitySelect
@@ -1028,11 +1543,31 @@ export default {
       for (let i = 0; i < temp.length; i++) {
         const data = temp[i]
         if (data.id === id) {
-          console.log('showGameName', id , data.name)
           return data.name
         }
       }
       return ''
+    },
+    addZoneGame() {
+      this.editZoneGame.item.Games.push({ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true })
+    },
+    rowStyle({ row, rowIndex }) {
+      return 'height: 50px;'
+    },
+    changeZoneGame(id) {
+      console.log('changeHallGame===>', id)
+      if (!this.checkGames(id)) {
+        this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
+        return
+      }
+      const length = this.editZoneGame.item.Games.length
+      for (let i = 0; i < length - 1; i++) {
+        if (id === this.editZoneGame.item.Games[i].Gid) {
+          console.log('changeHallGame', id)
+          Message.error('重复')
+          this.editZoneGame.item.Games[length - 1].Gid = 1
+        }
+      }
     }
   }
 }

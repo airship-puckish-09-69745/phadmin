@@ -146,7 +146,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'Slots剧本监控', noCache: true }
+        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS' , noCache: true }
       },
       {
         path: 'piggyStatistics',
@@ -809,6 +809,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce' }
               },
               {
+                path: 'wrathofzeus_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
+                name: 'wrathofzeus_slots_cfg',
+                meta: { title: 'WrathOfZeus' }
+              },
+              {
                 path: 'crazyace_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazyace_slots_cfg'),
                 name: 'crazyace_slots_cfg',
@@ -960,6 +966,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
+              },
+              {
+                path: 'wrathofzeusmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/wrathofzeusmars_slots_cfg'),
+                name: 'wrathofzeusmars_slots_cfg',
+                meta: { title: 'WrathOfZeus(审)' }
               },
               {
                 path: 'crazyacemars_slots_cfg',
@@ -1320,6 +1332,18 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/watcherList.vue'),
         name: 'matchWatcherList',
         meta: { title: '主播名单', noCache: true }
+      },
+      {
+        path: 'matchPosterList',
+        component: () => import('@/views/matchManage/posterList.vue'),
+        name: 'matchPosterList',
+        meta: { title: '比赛海报', noCache: true }
+      },
+      {
+        path: 'matchGuideList',
+        component: () => import('@/views/matchManage/matchGuide.vue'),
+        name: 'matchPosterList',
+        meta: { title: '赛事引导', noCache: true }
       }
     ]
   },
@@ -1753,6 +1777,12 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce', gid: 154 }
           },
           {
+            path: 'wrathofzeus_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeus_slots_log',
+            meta: { title: 'WrathOfZeus', gid: 172 }
+          },
+          {
             path: 'crazyace_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyace_slots_log',
@@ -1903,6 +1933,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
             meta: { title: 'GrandAce(审)', gid: 155 }
+          },
+          {
+            path: 'wrathofzeusmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeusmars_slots_log',
+            meta: { title: 'WrathOfZeus(审)', gid: 173 }
           },
           {
             path: 'crazyacemars_slots_log',
@@ -2098,6 +2134,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/gameHealthCheckCfg'),
             name: 'gameHealthCheckCfg',
             meta: { title: '游戏健康度检查配置 ◐' }
+          },
+          {
+            path: 'loginCheckCNIpCfg',
+            component: () => import('@/views/config/baseConfig/loginCheckCNIpCfg'),
+            name: 'loginCheckCNIpCfg',
+            meta: { title: '登录验证国内IP配置 ◐' }
           }
           // ,{
           //   path: 'smsWhite',
@@ -2305,7 +2347,7 @@ export const asyncRoutes = [
             path: 'game_pkg_versions',
             component: () => import('@/views/config/tableConfig/gamePkgVersion/gamePkgVersions.vue'),
             name: 'game_pkg_versions',
-            meta: { title: '游戏包配置列表测试版 ◐', noCache: true }
+            meta: { title: '游戏包配置列表开发版 ◐', noCache: true }
           },
           {
             path: 'pkgversionsWhiteList',
