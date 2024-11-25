@@ -19,7 +19,7 @@
           :label-style="{'text-align': 'right', 'font-weight':'bold','padding':'5px', 'color':'red'}"
           border
         >
-          <el-descriptions-item label="说明：">当前实现，应用开启IP检测后，国内的IP将被拒绝登录（白名单内的IP能登录）。后期规划：支持分地区检测，支持IP黑名单。</el-descriptions-item>
+          <el-descriptions-item label="说明：">当前实现，应用开启IP检测后，国内的IP将被拒绝登录（白名单内的IP能登录）；IP白名单一个输入框一个IP。后期规划：支持分地区检测，支持IP黑名单。</el-descriptions-item>
         </el-descriptions>
       </el-col>
     </el-row>
