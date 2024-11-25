@@ -147,9 +147,10 @@ export default {
   },
   computed: {},
   created() {
-    this.env = store.getters.env || this.env
-    this.item.Gid = this.games[0].value
     this.getGameList()
+    this.env = store.getters.env || this.env
+    this.item.Gid = 82
+
   },
   methods: {
     handleSizeChange(val) {
