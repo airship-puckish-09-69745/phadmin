@@ -19,7 +19,7 @@
           </el-form-item>
 
           <el-form-item label="JP下注金额抽水">
-            <el-input v-model="cfg.JPFeeRate" placeholder="请输入内容">
+            <el-input v-model.number="cfg.JPFeeRate" placeholder="请输入内容">
               <template slot="append">‰</template>
             </el-input>
           </el-form-item>
