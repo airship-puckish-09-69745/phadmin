@@ -1179,6 +1179,7 @@ export default {
         if (response.RetCode === 0) {
           Message.success('发布成功！')
           this.getList()
+          $this.$refs.filterTable.clearSelection()
           $this.edit.batchPublishWhiteVersion = false
         }
       }).catch(function() {
