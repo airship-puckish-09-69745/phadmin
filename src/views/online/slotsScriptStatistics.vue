@@ -701,23 +701,23 @@
 
           </el-form>
           <el-tabs type="border-card">
-            <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
+            <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0" style="padding:1px">
               <thead>
                 <th>
                   <template>
                     <span class="colStyle"> {{ '位置' }}</span>
                   </template>
                 </th>
-                <th v-for="(v,k) in 50">
+                <th v-for="(v,k) in 50" class="colStyle">
                   <template>
                     <span class="colStyle"> {{ k + 1 }}</span>
                   </template>
                 </th>
               </thead>
-              <tr v-for=" (v,k) in stepData" style="text-align: center">
+              <tr v-for=" (v,k) in stepData" style="text-align: center" >
                 <td class="colStyle">{{ (k) * 50 + '' }}</td>
-                <td v-for="(col,idx) in v" :style="getColColor(k,idx)">
-                  <span class="colStyle">{{ col }}</span>
+                <td v-for="(col,idx) in v" :style="getColColor(k,idx)" >
+                  <span class="colStyle">{{ col===0?0:(col/ currentBaseBet) }}</span>
                 </td>
               </tr>
             </table>
@@ -960,15 +960,15 @@ export default {
     getColColor(k, idx) {
       const number = (parseInt(this.scripStepForm.step / 50) - 1) * 50
       if (number === (k) * 50 && this.scripStepForm.step % 50 === 0 && number === (k) * 50 && idx === 49) {
-        return 'background: red'
+        return 'background: red;line-height: 90%'
       }
       var number2 = parseInt(this.scripStepForm.step / 50) * 50
       if (number2 === (k) * 50) {
         if (idx + 1 === this.scripStepForm.step - number2) {
-          return 'background: red'
+          return 'background: red;line-height: 90%'
         }
       }
-      return ''
+      return 'line-height: 90%'
     },
     newBigPrize() {
       this.bigPrize = {
@@ -1644,6 +1644,7 @@ export default {
 }
 
 .colStyle {
-  font-size: 11px;
+  font-size: 10px;
+  height: 40px;
 }
 </style>
