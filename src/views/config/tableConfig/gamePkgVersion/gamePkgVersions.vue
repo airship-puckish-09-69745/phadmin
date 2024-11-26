@@ -100,8 +100,8 @@
         </el-form-item>
         <el-form-item v-if="(LobbyVersionTag===1)">
           <el-tooltip content="点击后可修改包的版本号" placement="top">el-icon-lock
-            <el-button v-if="canEdit" size="mini" type="success" icon="el-icon-unlock" @click="canEdit=!canEdit"> </el-button>
-            <el-button v-if="!canEdit" size="mini" type="danger" icon="el-icon-lock" @click="canEdit=!canEdit"> </el-button>
+            <el-button v-if="canEdit" size="mini" type="success" icon="el-icon-unlock" @click="setEdit(!canEdit)">已解锁</el-button>
+            <el-button v-if="!canEdit" size="mini" type="danger" icon="el-icon-lock" @click="setEdit(!canEdit)">锁定中</el-button>
           </el-tooltip>
         </el-form-item>
       </el-form>
@@ -741,11 +741,12 @@ export default {
           this.LobbyVersion = this.orgLobbyVersions[i].LobbyVersion
           this.LobbyVersionStatus = this.orgLobbyVersions[i].Status
           this.LobbyVersionTag = this.orgLobbyVersions[i].Tag
-          this.canEdit = (this.LobbyVersionTag === 0)
+          this.setEdit(this.LobbyVersionTag === 0)
           break
         }
       }
       this.getList()
+      this.$refs.filterTable.clearSelection();
     },
     lobbyTagChange(targetTag) {
       const $this = this
@@ -767,13 +768,13 @@ export default {
         if (response.RetCode === 0) {
           Message.success('修改链接版本状态成功！')
           $this.LobbyVersionTag = targetTag
-          $this.canEdit = ($this.LobbyVersionTag === 0)
+          $this.setEdit($this.LobbyVersionTag === 0)
           for (let i = 0; i < $this.orgLobbyVersions.length; i++) {
-              if ($this.orgLobbyVersions[i].ID === $this.LobbyVersionID) {
-                $this.orgLobbyVersions[i].Tag = targetTag
-                break
-              }
+            if ($this.orgLobbyVersions[i].ID === $this.LobbyVersionID) {
+              $this.orgLobbyVersions[i].Tag = targetTag
+              break
             }
+          }
         }
       }).catch(function() {
         loading.close()
@@ -1178,6 +1179,7 @@ export default {
         if (response.RetCode === 0) {
           Message.success('发布成功！')
           this.getList()
+          $this.$refs.filterTable.clearSelection()
           $this.edit.batchPublishWhiteVersion = false
         }
       }).catch(function() {
@@ -1312,7 +1314,7 @@ export default {
             this.LobbyVersion = response.Data[response.Data.length - 1].LobbyVersion
             this.LobbyVersionStatus = response.Data[response.Data.length - 1].Status
             this.LobbyVersionTag = response.Data[response.Data.length - 1].Tag
-            this.canEdit = (this.LobbyVersionTag === 0)
+            this.setEdit(this.LobbyVersionTag === 0)
           }
           this.orgLobbyVersions = response.Data || []
           this.handleDisplayLobbyVersions()
@@ -1344,7 +1346,7 @@ export default {
         this.LobbyVersionID = this.lobbyVersions[this.lobbyVersions.length - 1].key
         this.LobbyVersion = this.lobbyVersions[this.lobbyVersions.length - 1].label
         this.LobbyVersionTag = this.lobbyVersions[this.lobbyVersions.length - 1].tag
-        this.canEdit = (this.LobbyVersionTag === 0)
+        this.setEdit(this.LobbyVersionTag === 0)
         this.LobbyVersionStatus = 1
       }
     },
@@ -1353,21 +1355,25 @@ export default {
     },
     onStepChange(step, key, addData, delData, editData) {
       // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
-      // console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       // 同步到正式
-      if (this.env === 'pro' && step != 4 && step != 6) {
+      if (this.env === 'pro' && step != 3 && step != 5) {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
       let lobby = ''
       if (this.env === 'test') {
         lobby=`【已发布】开发版本【${this.LobbyVersion}】`
-        this.canEdit = false
-      } else if (step === 4) {
+        if (this.LobbyVersionTag === 1) {
+          this.setEdit(false)
+        }
+      } else if (step === 3) {
         lobby=`【待审核】线上版本【${this.LobbyVersion}】`
-      } else if (step === 6) {
+      } else if (step === 5) {
         lobby=`【已发布】线上版本【${this.LobbyVersion}】`
-        this.canEdit = false
+        if (this.LobbyVersionTag === 1) {
+          this.setEdit(false)
+        }
       }
       let text_arr = this.getChangeID(addData, delData, editData)
       if (text_arr.length === 0) {
@@ -1452,7 +1458,11 @@ export default {
         }
       }
       return change
-    }
+    },
+    setEdit(canEdit){
+      this.canEdit = canEdit
+      this.$refs.filterTable.clearSelection();
+    } 
   }
 }
 </script>

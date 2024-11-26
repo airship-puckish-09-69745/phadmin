@@ -463,7 +463,7 @@
             <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType != 0"label="今日投注下限(0不限制)：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
         </fieldset>
@@ -543,7 +543,7 @@
 
         <fieldset>
           <legend>引导推荐</legend>
-          <el-form-item label="游戏推荐：" :required="true">
+          <el-form-item label="游戏推荐方案：" :required="true">
             <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in guideCfgs"
@@ -698,7 +698,7 @@ export default {
           imagePath: '',
           openDaysLimit: 0,
           sort: 0,
-          associateKey: 0,
+          associateKey: '0',
           dcReport: 0
         },
         loopDetail: {
@@ -787,7 +787,7 @@ export default {
         daySections: '每日时段'
       },
       showDevTool: false,
-      subKey: 'match_guide_list'
+      subKey: 'match_guide_list_new'
     }
   },
   computed: {
@@ -926,10 +926,10 @@ export default {
                 'value': 0
               })
               for (let i = 0; i < objs.length; i++) {
-                this.guideCfgs.push({
-                  'label': objs[i].record_name,
-                  'value': parseInt(objs[i].associate_key)
-                })
+                  this.guideCfgs.push({
+                    'label': objs[i].scheme_title,
+                    'value': objs[i].associate_key
+                  })
               }
             }
           }
@@ -1274,8 +1274,20 @@ export default {
           imagePath: editData.image_path,
           openDaysLimit: editData.open_days_limit,
           sort: editData.sort,
-          associateKey: parseInt(editData.associate_key),
+          associateKey: editData.associate_key,
           dcReport: editData.dc_report
+        }
+
+        /*如果在本地找不到值 则显示0 */
+        let isfind = false
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.guideCfgs[i].value === this.editForm.data.associateKey) {
+            isfind = true
+            break
+          }
+        }
+        if (isfind === false) {
+          this.editForm.data.associateKey = '0'
         }
         this.editForm.rankRewards = JSON.parse(editData.rewards)
         if (editData.while_list != '') {
@@ -1300,12 +1312,7 @@ export default {
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
         if (editData.sign_extra && editData.sign_extra != '' && editData.sign_extra != 'undefined') {
-          const signExtra = JSON.parse(editData.sign_extra)
-
-          if (signExtra && signExtra.betCnt) {
-            this.editForm.signExtra.betCnt = signExtra.betCnt
-          }
-
+          this.editForm.signExtra = JSON.parse(editData.sign_extra)
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId

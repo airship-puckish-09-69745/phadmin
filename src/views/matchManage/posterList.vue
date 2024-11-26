@@ -9,7 +9,7 @@
       </div>
 
       <el-row style="margin-top: 30px">
-        <el-col :span="12" :offset="4">
+        <el-col :span="8" :offset="0">
           <el-form ref="form" :model="form" label-width="200px">
             <el-row>
               <el-form-item label="活动状态：">
@@ -17,8 +17,8 @@
                            v-model="postData.switch"
                            active-color="#13ce66"
                            inactive-color="#ff4949"
-                           :active-value='1'
-                           :inactive-value='0'
+                           active-value='1'
+                           inactive-value='0'
                            active-text="正常"
                            inactive-text="下架"
                 />
@@ -190,6 +190,7 @@ import Compare from '@/components/Compare'
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
+    console.log("data()")
     return {
       activeTab: 'base',
       libShow: $libShow,
@@ -280,7 +281,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log("收到数据 ",response)
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const cfg = JSON.parse(response.Data.Data)
             this.postData.tableData = cfg.tableData

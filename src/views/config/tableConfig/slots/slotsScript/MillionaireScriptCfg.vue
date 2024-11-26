@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames"/>
 
 
     <el-row :gutter="10" style="margin-top: 30px">
@@ -47,7 +47,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMin" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -58,7 +58,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMax" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -69,7 +69,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScriptSteps" size="mini" />
+                    <el-input v-model.number="scope.row.ScriptSteps" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -80,7 +80,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini" />
+                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -91,7 +91,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.NormalMatrixCacheSize" size="mini" />
+                    <el-input v-model.number="scope.row.NormalMatrixCacheSize" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -102,7 +102,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScatterMatrixCacheSize" size="mini" />
+                    <el-input v-model.number="scope.row.ScatterMatrixCacheSize" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -113,7 +113,9 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini"><template slot="append">%</template></el-input>
+                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini">
+                      <template slot="append">%</template>
+                    </el-input>
                   </el-col>
                 </template>
               </el-table-column>
@@ -124,7 +126,9 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini"><template slot="append">%</template></el-input>
+                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini">
+                      <template slot="append">%</template>
+                    </el-input>
                   </el-col>
                 </template>
               </el-table-column>
@@ -159,7 +163,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.HitTimes" size="mini" />
+                    <el-input v-model="scope.row.HitTimes" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -170,29 +174,117 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.PerTenThousand" size="mini"><template slot="append">单位:万分之一</template></el-input>
+                    <el-input v-model="scope.row.PerTenThousand" size="mini">
+                      <template slot="append">单位:万分之一</template>
+                    </el-input>
                   </el-col>
                 </template>
               </el-table-column>
             </el-table>
           </fieldset>
+<!--          <fieldset style="margin:20px auto;">-->
+<!--            <legend>大奖配置</legend>-->
+<!--            <el-form-item label="下注总金额抽水(千分之一)：">-->
+<!--              <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>-->
+<!--                <template slot="append">‰(千分之一)</template>-->
+<!--              </el-input>-->
+<!--            </el-form-item>-->
+<!--            <el-form-item label="中奖概率(百万分之一)：">-->
+<!--              <el-input v-model.number="item.BigPrizeCfg.HitPerMillion">-->
+<!--                <template slot="append">单位:百万分之一</template>-->
+<!--              </el-input>-->
+<!--            </el-form-item>-->
+<!--            <el-table-->
+<!--              ref="filterTable"-->
+<!--              :data="item.BigPrizeCfg.OddsCfg"-->
+<!--              stripe-->
+<!--              border-->
+<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--              :row-style="{height:'10px'}"-->
+<!--              :cell-style="libShow.DefaultTableCell"-->
+<!--              style="width: 100%"-->
+<!--            >-->
+<!--              <el-table-column-->
+<!--                type="index"-->
+<!--                width="50"-->
+<!--              />-->
+<!--              <el-table-column-->
+<!--                prop="OddsMin"-->
+<!--                label="最小倍数"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="OddsMax"-->
+<!--                label="最大倍数"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="Weight"-->
+<!--                label="权重"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.Weight" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column>-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-button type="primary" @click="addBigPrizeCfgRow(scope.$index+1)" size="mini">添加</el-button>-->
+<!--                  <el-button type="primary" @click="delBigPrizeCfgRow(scope.$index)" size="mini">删除</el-button>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--            </el-table>-->
+<!--          </fieldset>-->
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
-            <el-form-item label="下注总金额抽水(千分之一)：">
-              <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize><template slot="append">‰(千分之一)</template></el-input>
-            </el-form-item>
-            <el-form-item label="中奖概率(百万分之一)：">
-              <el-input v-model.number="item.BigPrizeCfg.HitPerMillion"><template slot="append">单位:百万分之一</template></el-input>
-            </el-form-item>
+            <el-row>
+              <el-col :span="8" :offset="4" style="text-align: center;">
+                <el-form-item label="下注总金额抽水(千分之一)：">
+                  <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>
+                    <template slot="append">‰(千分之一)</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="中奖概率(百万分之一)：">
+                  <el-input v-model.number="item.BigPrizeCfg.HitPerMillion">
+                    <template slot="append">单位:百万分之一</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" :offset="4">
+                <el-form-item label="中奖最大间隔(多少次中一次奖)">
+                  <el-input v-model.number="item.BigPrizeCfg.HitSteps">
+                    <template slot="append">次</template>
+                  </el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+           <el-button type="primary" @click="addBigPrizePlansCfgRow(0)" size="mini">添加</el-button>
             <el-table
               ref="filterTable"
-              :data="item.BigPrizeCfg.OddsCfg"
+              :data="item.BigPrizeCfg.Plans"
               stripe
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
               style="width: 100%"
+              :key="itemKey"
             >
               <el-table-column
                 type="index"
@@ -205,7 +297,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMin" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMin" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -214,27 +306,28 @@
                 label="最大倍数"
                 width="200"
               >
+              <template slot-scope="{}" slot="header">
+                <show-tip head-title="最大倍数" head-tip="0为无限大" ></show-tip>
+              </template>
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMax" size="mini" />
+                    <el-input v-model.number="scope.row.OddsMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
                   </el-col>
                 </template>
               </el-table-column>
               <el-table-column
-                prop="Weight"
-                label="权重"
+                prop="OddsMax"
+                label="中将倍数配置"
                 width="200"
               >
                 <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.Weight" size="mini" />
-                  </el-col>
+                  <el-button type="primary" @click="editOddsCfg(scope.row,scope.$index)" size="mini">配置</el-button>
                 </template>
               </el-table-column>
               <el-table-column>
                 <template slot-scope="scope">
-                  <el-button type="primary" @click="addBigPrizeCfgRow(scope.$index+1)" size="mini">添加</el-button>
-                  <el-button type="primary" @click="delBigPrizeCfgRow(scope.$index)" size="mini">删除</el-button>
+                  <el-button type="primary" @click="addBigPrizePlansCfgRow(scope.$index+1)" size="mini">添加</el-button>
+                  <el-button type="primary" @click="delBigPrizePlansCfgRow(scope.$index)" size="mini">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -251,38 +344,104 @@
     </el-row>
 
     <!--对比组件-->
-    <compare ref="compare" :attr-names="AttrNames" />
+    <compare ref="compare" :attr-names="AttrNames"/>
+    <el-dialog
+      v-if="detailVisible"
+      title="配置详情"
+      :visible.sync="detailVisible"
+      width="60%">
+      <el-row>
+        <el-col :offset="0" :span="12">
+          <el-button type="primary" @click="addBigPrizePlansOddsCfgRow(0)" size="mini">添加</el-button>
+          <el-button type="success" size="mini" @click="closeVisible()">确定</el-button>
+        </el-col>
+      </el-row>
+      <el-table
+        :data="showVisibleData"
+        stripe
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%">
+        <el-table-column
+          prop="OddsMin"
+          label="最小倍数"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-col :span="20">
+              <el-input v-model.number="scope.row.OddsMin" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            </el-col>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="OddsMax"
+          label="最大倍数"
+          width="200"
+        >
+          <template slot-scope="{}" slot="header">
+                <show-tip head-title="最大倍数" head-tip="0为无限大" ></show-tip>
+              </template>
+          <template slot-scope="scope">
+            <el-col :span="20">
+              <el-input v-model.number="scope.row.OddsMax" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            </el-col>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Weight"
+          label="权重"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-col :span="20">
+              <el-input v-model.number="scope.row.Weight" size="mini"  oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            </el-col>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
 
+            <el-button type="primary" @click="delBigPrizePlansOddsCfgRow(scope.$index)" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, DataRule, MoneyShow, ValidateVueItem } from '@/utils/common'
+import {$libShow, DataRule, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
+import ShowTip from "@/components/Tip/showTip.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, BetAmount },
+  components: {ShowTip, Compare, Publish, BetAmount},
   data() {
     return {
       item: {
-        ScriptSteps:0,
-        ScriptNumber:0,
-        BigPrizeCfg:{
-          TaxPerThousand:0,
-          HitPerMillion:0,
-          OddsCfg:[]
+        ScriptSteps: 0,
+        ScriptNumber: 0,
+        BigPrizeCfg: {
+          TaxPerThousand: 0,
+          HitPerMillion: 0,
+          HitSteps: 0,
+          OddsCfg: [],
+          Plans: []
         },
         OddsCfg: []
       },
       gidOptions: {},
-      gameOptions:[],
-      queryGid : 82,
-      orgDataList:[],
+      gameOptions: [],
+      queryGid: 82,
+      orgDataList: [],
       form: {},
       subKey: 'millionaire_script_cfg',
       libShow: $libShow,
@@ -294,50 +453,53 @@ export default {
         'Data.BigPrizeCfg.TaxPerThousand': ' 下注总金额抽水比例',
         'Data.BigPrizeCfg.HitPerMillion': ' 中奖概率',
         'Data.BigPrizeCfg.OddsCfg': ' 大奖中奖倍数配置',
-
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
       },
-      subKeyMap:{
-        '76':'candypartyway',
-        '89':'crazy777mars',
-        '161':'gigaacemars',
-        '94':'chargebison',
-        '78':'supergem',
-        '80':'candycandy',
-        '85':'superacemars',
-        '95':'chargebisonmars',
-        '158':'sharkkingdom',
-        '90':'moneycoming',
-        '97':'romanarenamars',
-        '153':'aladdinlampmars',
-        '77':'candypartyallline',
-        '81':'supergemmars',
-        '79':'candycandymars',
-        '99':'supertongitmars',
-        '157':'crazyacemars',
-        '154':'grandace',
-        '86':'supergemii',
-        '84':'superace',
-        '88':'crazy777',
-        '159':'sharkkingdommars',
-        '98':'supertongit',
-        '93':'fortuneacegomars',
-        '96':'romanarena',
-        '155':'grandacemars',
-        '163':'majoracemars',
-        '150':'supergemiii',
-        '82':'millionaire',
-        '152':'aladdinlamp',
-        '160':'gigaace',
-        '156':'crazyace',
-        '162':'majorace',
-        '87':'supergemiimars',
-        '151':'supergemiiimars',
-        '83':'millionairemars',
-        '92':'fortuneacego',
-        '91':'moneycomingmars',
+      detailVisible: false,
+      showVisibleData: [],
+      showVisibleIdx: 0,
+      itemKey:0,
+      subKeyMap: {
+        '76': 'candypartyway',
+        '89': 'crazy777mars',
+        '161': 'gigaacemars',
+        '94': 'chargebison',
+        '78': 'supergem',
+        '80': 'candycandy',
+        '85': 'superacemars',
+        '95': 'chargebisonmars',
+        '158': 'sharkkingdom',
+        '90': 'moneycoming',
+        '97': 'romanarenamars',
+        '153': 'aladdinlampmars',
+        '77': 'candypartyallline',
+        '81': 'supergemmars',
+        '79': 'candycandymars',
+        '99': 'supertongitmars',
+        '157': 'crazyacemars',
+        '154': 'grandace',
+        '86': 'supergemii',
+        '84': 'superace',
+        '88': 'crazy777',
+        '159': 'sharkkingdommars',
+        '98': 'supertongit',
+        '93': 'fortuneacegomars',
+        '96': 'romanarena',
+        '155': 'grandacemars',
+        '163': 'majoracemars',
+        '150': 'supergemiii',
+        '82': 'millionaire',
+        '152': 'aladdinlamp',
+        '160': 'gigaace',
+        '156': 'crazyace',
+        '162': 'majorace',
+        '87': 'supergemiimars',
+        '151': 'supergemiiimars',
+        '83': 'millionairemars',
+        '92': 'fortuneacego',
+        '91': 'moneycomingmars',
       }
     }
   },
@@ -346,8 +508,11 @@ export default {
     this.getGameList()
   },
   methods: {
-    addOddsCfgRow(row){
-      this.item.OddsCfg.splice(row,0, {
+    closeVisible(){
+      this.detailVisible = false
+    },
+    addOddsCfgRow(row) {
+      this.item.OddsCfg.splice(row, 0, {
         "OddsMin": 0,
         "OddsMax": 0,
         "ScriptSteps": 0,
@@ -358,25 +523,60 @@ export default {
         "TriggerScatterPercent": 0
       })
     },
-    delOddsCfgRow(row){
-      this.item.OddsCfg.splice(row,1)
+    delOddsCfgRow(row) {
+      this.item.OddsCfg.splice(row, 1)
     },
-    addBigPrizeCfgRow(row){
-      this.item.BigPrizeCfg.OddsCfg.splice(row,0, {
+    addBigPrizeCfgRow(row) {
+      this.item.BigPrizeCfg.OddsCfg.splice(row, 0, {
         "OddsMin": 0,
         "OddsMax": 0,
         "Weight": 0
       })
     },
-    delBigPrizeCfgRow(row){
-      this.item.BigPrizeCfg.OddsCfg.splice(row,1)
+    delBigPrizeCfgRow(row) {
+      this.item.BigPrizeCfg.OddsCfg.splice(row, 1)
+    },
+    editOddsCfg(row,idx) {
+      this.detailVisible = true
+      this.showVisibleData = row.OddsCfg
+      this.showVisibleIdx = idx
+      console.log('rows', row,idx)
+    },
+    addBigPrizePlansCfgRow(row) {
+      console.log('row', row,this.item.BigPrizeCfg)
+      if (!this.item.BigPrizeCfg.Plans) {
+        this.item.BigPrizeCfg['Plans'] = []
+      }
+      this.item.BigPrizeCfg.Plans.push({
+        "OddsMin": 0,
+        "OddsMax": 0,
+        "OddsCfg": [],
+      })
+      console.log('-----------------', row,this.item.BigPrizeCfg)
+      this.itemKey = Math.random()
+    },
+    delBigPrizePlansOddsCfgRow(row) {
+      this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.splice(row, 1)
+    },
+    addBigPrizePlansOddsCfgRow() {
+      if (!this.item.BigPrizeCfg.Plans) {
+        this.item.BigPrizeCfg['Plans'] = []
+      }
+      this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.push({
+        "OddsMin": 0,
+        "OddsMax": 0,
+        "Weight": 0,
+      })
+    },
+    delBigPrizePlansCfgRow(row) {
+      this.item.BigPrizeCfg.Plans.splice(row, 1)
     },
     dataRule(required, config) {
       return DataRule(required, config)
     },
     getFullKey() {
       console.log('subKey', this.subKeyMap[this.queryGid])
-      return 'CustomizeCfg_' + this.subKeyMap[this.queryGid]+'_script_cfg'
+      return 'CustomizeCfg_' + this.subKeyMap[this.queryGid] + '_script_cfg'
     },
     getPostData() {
       const ret = {}
@@ -384,16 +584,16 @@ export default {
       return ret
     },
     getData() {
-      if (!this.subKeyMap[this.queryGid]){
+      if (!this.subKeyMap[this.queryGid]) {
         Message.error('该游戏尚未配置key')
-        this.item={}
+        this.item = {}
         return
       }
       request({
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: this.subKeyMap[this.queryGid]+"_script_cfg"
+          SubKey: this.subKeyMap[this.queryGid] + "_script_cfg"
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -415,7 +615,7 @@ export default {
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return

@@ -128,10 +128,7 @@ export default {
         { 'value': 1000003, 'label': 'BP-测试[1000003]' },
         { 'value': 1000005, 'label': 'BP-正式[1000005]' }
       ],
-      games: [
-        { 'value': 82, 'label': 'Millionaire' },
-        { 'value': 76, 'label': 'Candy Rush' }
-      ],
+      games: [],
 
       item: {
         Uid: 0,
@@ -150,8 +147,10 @@ export default {
   },
   computed: {},
   created() {
+    this.getGameList()
     this.env = store.getters.env || this.env
-    this.item.Gid = this.games[0].value
+    this.item.Gid = 82
+
   },
   methods: {
     handleSizeChange(val) {
@@ -177,6 +176,25 @@ export default {
         }
       }
       return name
+    },
+    getGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 199) {
+             continue
+            }
+             this.games.push({
+              value: response.Data[i].Gid,
+              label: response.Data[i].Name
+            })
+          }
+        }
+      })
     },
     getInfo() {
       const $this = this
