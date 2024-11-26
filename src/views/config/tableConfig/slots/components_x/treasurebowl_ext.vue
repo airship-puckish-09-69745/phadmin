@@ -8,7 +8,7 @@
             <el-input v-model="cfg.BuyFreeOdds" :required="true"/>
           </el-form-item>
 
-          <el-form-item label="Jackpot模式的赔率(剧本)" prop="JackpotStrOdds" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="Jackpot模式的赔率(剧本)" prop="JackpotStrOdds">
             <el-input v-model="cfg.JackpotStrOdds" :required="true"/>
           </el-form-item>
 
