@@ -727,7 +727,7 @@
                 <td class="colStyle">{{ (k) * 50 + '' }}</td>
                 <td v-for="(col,idx) in v" :style="getColColor(k,idx)" >
                   <span v-if="col===0" class="colStyle"> 0 </span>
-                  <span v-else class="colStyle" style="margin-left: -1px;color: #007017;font-weight: bold;">{{ col/ currentBaseBet }}</span>
+                  <span v-else class="colStyle" style="margin-left: -6px;color: #007017;font-weight: bold;">{{ col/ currentBaseBet }}</span>
 
                 </td>
               </tr>
