@@ -2130,10 +2130,10 @@ export const asyncRoutes = [
             meta: { title: '游戏健康度检查配置 ◐' }
           },
           {
-            path: 'loginCheckCNIpCfg',
-            component: () => import('@/views/config/baseConfig/loginCheckCNIpCfg'),
-            name: 'loginCheckCNIpCfg',
-            meta: { title: '登录验证国内IP配置 ◐' }
+            path: 'loginCheckIpCfg',
+            component: () => import('@/views/config/baseConfig/loginCheckIpCfg'),
+            name: 'loginCheckIpCfg',
+            meta: { title: '登录检测IP配置 ◐' }
           }
           // ,{
           //   path: 'smsWhite',
