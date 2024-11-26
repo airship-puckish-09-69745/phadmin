@@ -543,7 +543,7 @@
 
         <fieldset>
           <legend>引导推荐</legend>
-          <el-form-item label="游戏推荐：" :required="true">
+          <el-form-item label="游戏推荐方案：" :required="true">
             <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in guideCfgs"
@@ -787,7 +787,7 @@ export default {
         daySections: '每日时段'
       },
       showDevTool: false,
-      subKey: 'match_guide_list'
+      subKey: 'match_guide_list_new'
     }
   },
   computed: {
@@ -926,12 +926,10 @@ export default {
                 'value': 0
               })
               for (let i = 0; i < objs.length; i++) {
-                if (objs[i].scene_id && objs[i].scene_id === 1) {
                   this.guideCfgs.push({
-                    'label': objs[i].record_name,
+                    'label': objs[i].scheme_title,
                     'value': objs[i].associate_key
                   })
-                }
               }
             }
           }
