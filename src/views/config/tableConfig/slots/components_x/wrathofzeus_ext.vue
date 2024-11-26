@@ -3,8 +3,8 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
-          <el-form-item label="普通模式下 大wild在除了第一个轴出现的概率" prop="WildBigNormal" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.WildBigNormal" :required="true" > <template slot="append">‱</template> </el-input>
+          <el-form-item label="普通模式下 大wild在除了第2345轴出现的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildBigNormal" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ 4轴12‱ 5轴13‱</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式下 大wild在最后一个轴出现的概率" prop="WildBigFree" :rules="dataRule(true,{type:'n'})">

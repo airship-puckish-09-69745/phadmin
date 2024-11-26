@@ -8,8 +8,13 @@
             style="width: 100%"
           >
             <el-table-column
+              prop="value"
+              label="值"
+              width="100"
+            />
+            <el-table-column
               prop="name"
-              label=""
+              label="符号"
               width="100"
             />
             <template v-for="col in cols">
