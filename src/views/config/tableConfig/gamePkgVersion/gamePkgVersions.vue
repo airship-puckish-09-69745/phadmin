@@ -1367,9 +1367,9 @@ export default {
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
-      } else if (step === 4) {
+      } else if (step === 3) {
         lobby=`【待审核】线上版本【${this.LobbyVersion}】`
-      } else if (step === 6) {
+      } else if (step === 5) {
         lobby=`【已发布】线上版本【${this.LobbyVersion}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
