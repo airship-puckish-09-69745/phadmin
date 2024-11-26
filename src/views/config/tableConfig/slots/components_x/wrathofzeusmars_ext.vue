@@ -8,7 +8,7 @@
           </el-form-item>
 
           <el-form-item label="免费模式下 大wild在最后一个轴出现的概率" prop="WildBigFree" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.WildBigFree" :required="true" />
+            <el-input v-model.number="cfg.WildBigFree" :required="true" > <template slot="append">‱</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
