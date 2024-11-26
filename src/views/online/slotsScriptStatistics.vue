@@ -63,7 +63,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="gid"
-                  label="下注占比"
+                  label="下注次数占比"
                   width="80px"
                 >
                   <template slot-scope="scope">
@@ -97,6 +97,15 @@
                     {{
                       ((returnMap[scope.row.bet] /(currentBaseBet * scope.row.bet *  scope.row.times))*100).toFixed(2)    + "%"
                     }}
+                  </template>
+                </el-table-column>
+                 <el-table-column
+                  prop="gid"
+                  label="下注额度占比"
+                  width="80px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalOrdinaryBet() )*100).toFixed(2) + '%' }}
                   </template>
                 </el-table-column>
 
@@ -701,7 +710,7 @@
 
           </el-form>
           <el-tabs type="border-card">
-            <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0" style="padding:1px">
+            <table class="table table-border table-bordered table-bg table-striped"  border="0" cellspacing="0" cellpadding="0"  STYLE="width:100%;table-layout:fixed;">
               <thead>
                 <th>
                   <template>
@@ -935,6 +944,14 @@ export default {
       }
       return cnt
     },
+   getTotalOrdinaryBet() {
+      let cnt = 0
+      for (const o of this.ordinaryReturnClientDB.TotalData) {
+        cnt += parseInt(o.times * o.bet+'')
+        console.log("==================="+cnt)
+      }
+      return cnt
+    },
     getTotalBuyBetTimes() {
       let cnt = 0
       for (const o of this.buyReturnClientDB.TotalData) {
@@ -960,15 +977,15 @@ export default {
     getColColor(k, idx) {
       const number = (parseInt(this.scripStepForm.step / 50) - 1) * 50
       if (number === (k) * 50 && this.scripStepForm.step % 50 === 0 && number === (k) * 50 && idx === 49) {
-        return 'background: red;line-height: 90%'
+        return 'background: red;word-break:keep-all;  white-space:nowrap; '
       }
       var number2 = parseInt(this.scripStepForm.step / 50) * 50
       if (number2 === (k) * 50) {
         if (idx + 1 === this.scripStepForm.step - number2) {
-          return 'background: red;line-height: 90%'
+          return 'background: red;line-height: 90%;word-break:keep-all;  white-space:nowrap; '
         }
       }
-      return 'line-height: 90%'
+      return 'width: 50px%;word-break:keep-all;  white-space:nowrap; '
     },
     newBigPrize() {
       this.bigPrize = {
@@ -1644,7 +1661,8 @@ export default {
 }
 
 .colStyle {
-  font-size: 10px;
-  height: 40px;
+  font-size: 11px;
+  word-break:keep-all;
+  white-space:nowrap;
 }
 </style>
