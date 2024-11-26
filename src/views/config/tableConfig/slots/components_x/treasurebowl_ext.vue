@@ -5,7 +5,7 @@
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model="cfg.BuyFreeOdds" :required="true"/>
+            <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
           </el-form-item>
 
           <el-form-item label="Jackpot模式的赔率(剧本)" prop="JackpotStrOdds">
@@ -20,7 +20,7 @@
 
           <el-form-item label="JP下注金额抽水">
             <el-input v-model="cfg.JPFeeRate" placeholder="请输入内容">
-              <template slot="append">%</template>
+              <template slot="append">‰</template>
             </el-input>
           </el-form-item>
 
