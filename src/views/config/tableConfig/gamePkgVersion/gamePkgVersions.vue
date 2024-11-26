@@ -1357,7 +1357,7 @@ export default {
       // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
       console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       // 同步到正式
-      if (this.env === 'pro' && step != 4 && step != 6) {
+      if (this.env === 'pro' && step != 3 && step != 5) {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
