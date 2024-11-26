@@ -723,10 +723,12 @@
                   </template>
                 </th>
               </thead>
-              <tr v-for=" (v,k) in stepData" style="text-align: center" >
+              <tr v-for=" (v,k) in stepData" style="text-align: left" >
                 <td class="colStyle">{{ (k) * 50 + '' }}</td>
                 <td v-for="(col,idx) in v" :style="getColColor(k,idx)" >
-                  <span class="colStyle">{{ col===0?0:(col/ currentBaseBet) }}</span>
+                  <span v-if="col===0" class="colStyle"> 0 </span>
+                  <span v-else class="colStyle" style="margin-left: -1px;color: #007017;font-weight: bold;">{{ col/ currentBaseBet }}</span>
+
                 </td>
               </tr>
             </table>
@@ -977,12 +979,12 @@ export default {
     getColColor(k, idx) {
       const number = (parseInt(this.scripStepForm.step / 50) - 1) * 50
       if (number === (k) * 50 && this.scripStepForm.step % 50 === 0 && number === (k) * 50 && idx === 49) {
-        return 'background: red;word-break:keep-all;  white-space:nowrap; '
+        return 'background: #ff6868;word-break:keep-all;  white-space:nowrap; '
       }
       var number2 = parseInt(this.scripStepForm.step / 50) * 50
       if (number2 === (k) * 50) {
         if (idx + 1 === this.scripStepForm.step - number2) {
-          return 'background: red;line-height: 90%;word-break:keep-all;  white-space:nowrap; '
+          return 'background: #ff6868;line-height: 90%;word-break:keep-all;  white-space:nowrap; '
         }
       }
       return 'width: 50px%;word-break:keep-all;  white-space:nowrap; '
