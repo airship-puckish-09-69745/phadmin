@@ -23,8 +23,14 @@
               style="width: 100%"
             >
               <el-table-column
+                prop="value"
+                label="值"
+                width="100"
+                header-align="center"
+              />
+              <el-table-column
                 prop="name"
-                label="图标"
+                label="符号"
                 width="100"
                 header-align="center"
               />
