@@ -81,6 +81,7 @@
                 <el-table-column
                   prop="gid"
                   label="返奖额度"
+                  width="120px"
                 >
                   <template slot-scope="scope">
                     {{ returnMap[ scope.row.bet] / 1000 }}
@@ -148,7 +149,7 @@
                 <el-table-column
                   prop="gid"
                   label="下注额度"
-                  width="100px"
+                     width="120px"
                 >
                   <template slot-scope="scope">
                     {{    scope.row.bet * scope.row.times / 1000 }}
@@ -156,7 +157,7 @@
                 </el-table-column>
                 <el-table-column
                   prop="gid"
-                  label="下注额度占比2"
+                  label="下注额度占比"
                   width="100px"
                 >
                   <template slot-scope="scope">
@@ -166,7 +167,7 @@
                 <el-table-column
                   prop="gid"
                   label="返奖额度"
-                  width="100px"
+                    width="120px"
                 >
                   <template slot-scope="scope">
                     {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
