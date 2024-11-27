@@ -1449,7 +1449,7 @@ export default {
           }
         }
       }
-      if (change.length === 0) {
+      if (Object.keys(change).length === 0) {
         console.log("no change return")
         return
       }
