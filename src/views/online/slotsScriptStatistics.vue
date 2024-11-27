@@ -950,7 +950,6 @@ export default {
       let cnt = 0
       for (const o of this.ordinaryReturnClientDB.TotalData) {
         cnt += parseInt(o.times * o.bet+'')
-        console.log("==================="+cnt)
       }
       return cnt
     },
@@ -1388,7 +1387,7 @@ export default {
         return
       }
       try {
-        const realKey = { 150: 'supergemiii', 88: 'crazy777', 76: 'candypartyway' }
+        const realKey = { 150: 'supergemiii', 88: 'crazy777', 76: 'candypartyway',152:'aladdinlamp' }
         let key = this.gameScene[gid] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
