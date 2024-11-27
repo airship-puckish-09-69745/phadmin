@@ -364,6 +364,7 @@ export default {
   name: 'RocketRet',
   data() {
     return {
+      submap : {90 : 'moneycoming_slots_base', 150 : 'supergemiii_slots_base', 166 : 'firelink_slots_base'},
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -531,7 +532,7 @@ export default {
         ]
       } else if (this.searchForm.gameId === 90) {
         // 调用 getData() 获取 BetList 数组
-        this.getFortuneComingData().then(cfg => {
+        this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
 
           if (cfg && cfg.BetList && cfg.BetList.length > 0) {
@@ -562,7 +563,6 @@ export default {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
-
           if (cfg && cfg.BetList && cfg.BetList.length > 0) {
             const betConfig = cfg.BetList.map(bet => {
               const baseBetFactor = bet / 1000 * cfg.BaseBet
@@ -815,26 +815,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'supergemiii_slots_base'
-        }
-      }).then(response => {
-        if (response.RetCode === 0 && response.Data && response.Data.Data !== '') {
-          const cfg = JSON.parse(response.Data.Data)
-          return cfg
-        } else {
-          return null
-        }
-      }).catch(error => {
-        console.error('Error fetching data:', error)
-        return []
-      })
-    },
-    getFortuneComingData() {
-      return request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: 'moneycoming_slots_base'
+          SubKey: this.submap[this.searchForm.gameId]
         }
       }).then(response => {
         if (response.RetCode === 0 && response.Data && response.Data.Data !== '') {

@@ -1361,48 +1361,29 @@ export default {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
+      this.getChangeID(addData, delData, editData)
+    },
+    getLobbyStr(lobbyVer){
       let lobby = ''
       if (this.env === 'test') {
-        lobby=`【已发布】开发版本【${this.LobbyVersion}】`
+        lobby=`【已发布】开发版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       } else if (step === 3) {
-        lobby=`【待审核】线上版本【${this.LobbyVersion}】`
+        lobby=`【待审核】线上版本【${lobbyVer}】`
       } else if (step === 5) {
-        lobby=`【已发布】线上版本【${this.LobbyVersion}】`
+        lobby=`【已发布】线上版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       }
-      let text_arr = this.getChangeID(addData, delData, editData)
-      if (text_arr.length === 0) {
-        console.log("no change return")
-        return
-      }
-      for (const v of text_arr) {
-        lobby += '\r\n'+v
-      }
-      console.log("change content", lobby)
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Path: '/misc/warn',
-          Env: this.env,
-          Text: lobby,
-        }
-      }).then(response => {
-        console.log(response)
-        if (response.RetCode === 0) {
-          console.log('wanring success')
-        }
-      })
+      return lobby
     },
-    getChangeID(addData, delData, editData) {
+    async getChangeID(addData, delData, editData) {
       let adds = new Map()
       let dels = new Map()
-      let change = []
+      let change = {}
       // 新增取newVal
       if (addData) {
         // console.log("addData",addData)
@@ -1440,24 +1421,77 @@ export default {
         if (value.WhiteVersion !== '') {
           str += `${value.WhiteVersion}【白名单】`
         }
-        change.push(str)
+        const lobby = this.getLobbyStr(value.LobbyVersion)
+        change[lobby]? change[lobby].push(str): change[lobby]=[str]
       }
       if (editData) {
         for (const edit of editData) {
+          const id = edit.Head.ID
+          console.log(id)
           for (const ele of edit.Rows) {
             if (ele.key === 'GamePkgVersion' || ele.key === 'WhiteVersion') {
-              const _data = this.clientDB.GetDataByID(edit.Head.ID)
+              let _data = {}//this.clientDB.GetDataByID(id)
+              if (_data.ID === undefined) {
+                _data = await this.getItemData(edit.Head.ID)
+                if (_data.ID === undefined) {
+                  console.log("continue", edit.Head.ID)
+                  continue
+                }
+              }
+              const lobby = this.getLobbyStr(_data.LobbyVersion)
               let str = `【ID】${_data.ID}【${_data.BundleKey}】: ${_data.GamePkgVersion}【全量】`
               if (_data.WhiteVersion !== '') {
                 str += `${_data.WhiteVersion}【白名单】`
               }
-              change.push(str)
+              change[lobby]? change[lobby].push(str): change[lobby]=[str]
               break
             }
           }
         }
       }
-      return change
+      if (change.length === 0) {
+        console.log("no change return")
+        return
+      }
+    
+      var lobby = ''
+      for (const key in change) {
+        let str = key
+        for (const ver of change[key]) {
+          str += '\r\n'+ver
+        }
+        lobby += str + '\r\n'
+      }
+      console.log("change content", lobby)
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/misc/warn',
+          Env: this.env,
+          Text: lobby,
+        }
+      }).then(response => {
+        console.log(response)
+        if (response.RetCode === 0) {
+          console.log('wanring success')
+        }
+      })
+    },
+    async getItemData(Id) {
+      const response = await request({
+        url: 'gamepkgversions/one',
+        method: 'get',
+        data: {
+          Env: this.env,
+          ID: Id,
+        }
+      })
+      if (response.RetCode === 0) {
+        console.log('getItemData success', response.Data)
+        return response.Data
+      }
+      return {}
     },
     setEdit(canEdit){
       this.canEdit = canEdit
