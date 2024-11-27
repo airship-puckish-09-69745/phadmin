@@ -53,7 +53,7 @@
                  <el-table-column
                   prop="gid"
                   label="下注次数占比"
-                  width="120px"
+                  width="100px"
                 >
                   <template slot-scope="scope">
                     {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
@@ -139,7 +139,7 @@
                 </el-table-column>
                  <el-table-column
                   prop="gid"
-                  label="下注占比"
+                  label="下注次数占比"
                   width="100px"
                 >
                   <template slot-scope="scope">
@@ -158,7 +158,7 @@
                 <el-table-column
                   prop="gid"
                   label="下注额度占比"
-                  width="100px"
+                  width="90px"
                 >
                   <template slot-scope="scope">
                     {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalBuyOrdinaryBet() )*100).toFixed(2) + '%'  }}
