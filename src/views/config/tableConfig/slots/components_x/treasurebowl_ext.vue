@@ -10,8 +10,9 @@
 
           <el-form-item label="Jackpot模式的赔率(剧本)" prop="JackpotStrOdds">
             <!--            MINI MINOR MAJOR MEGA GRAND-->
-            <template slot="append">MINI MINOR MAJOR MEGA GRAND全为大写</template>
-            <el-input v-model="cfg.JackpotStrOdds" :required="true"/>
+            <el-input v-model="cfg.JackpotStrOdds" :required="true">
+              <template slot="append">MINI MINOR MAJOR MEGA GRAND全为大写</template>
+            </el-input>
           </el-form-item>
 
           <el-form-item label="进入Jackpot的概率与倍率映射" prop="JackpotStrOdds">
