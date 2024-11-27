@@ -22,22 +22,21 @@
         </el-row>
 
 
-        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-          <el-col :span="11" :offset="1">
+        <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px;margin-top: 20px">
+          <el-col :span="11" >
             <el-table
               ref="filterTable"
               :data="OrdinaryReturnTableData"
               stripe
               border
               :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
+              :row-style="{height:'10px',width: '100%'}"
               :cell-style="libShow.DefaultTableCell"
             >
               <el-table-column label="普通返奖统计">
                 <el-table-column
                   prop="gid"
                   label="Bet值"
-                  width="60px"
                 >
                   <template slot-scope="scope">
                     {{ currentBaseBet * scope.row.bet / 1000   }}
@@ -46,25 +45,15 @@
                 <el-table-column
                   prop="gid"
                   label="下注次数"
-                  width="80px"
                 >
                   <template slot-scope="scope">
                     {{ scope.row.times }}
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注额度"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
+                 <el-table-column
                   prop="gid"
                   label="下注次数占比"
-                  width="80px"
+                  width="120px"
                 >
                   <template slot-scope="scope">
                     {{ (parseInt(scope.row.times) / getTotalOrdinaryBetTimes() * 100).toFixed(2) + '%' }}
@@ -72,8 +61,26 @@
                 </el-table-column>
                 <el-table-column
                   prop="gid"
-                  label="返奖额度"
+                  label="下注额度"
                   width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
+                    <el-table-column
+                  prop="gid"
+                  label="下注额度占比"
+                   width="100px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalOrdinaryBet() )*100).toFixed(2) + '%' }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="gid"
+                  label="返奖额度"
                 >
                   <template slot-scope="scope">
                     {{ returnMap[ scope.row.bet] / 1000 }}
@@ -82,7 +89,6 @@
                 <el-table-column
                   prop="gid"
                   label="GGR"
-                  width="80px"
                 >
                   <template slot-scope="scope">
                     {{ ((currentBaseBet * scope.row.bet * scope.row.times)  - (returnMap[ scope.row.bet])) / 1000 }}
@@ -91,7 +97,7 @@
                 <el-table-column
                   prop="gid"
                   label="返奖率"
-                  width="80px"
+                  width="100px"
                 >
                   <template slot-scope="scope">
                     {{
@@ -99,16 +105,6 @@
                     }}
                   </template>
                 </el-table-column>
-                 <el-table-column
-                  prop="gid"
-                  label="下注额度占比"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalOrdinaryBet() )*100).toFixed(2) + '%' }}
-                  </template>
-                </el-table-column>
-
               </el-table-column>
             </el-table>
 
@@ -127,7 +123,6 @@
                 <el-table-column
                   prop="gid"
                   label="Bet值"
-                  width="80px"
                 >
                   <template slot-scope="scope">
                     {{   scope.row.bet / 1000  }}
@@ -136,25 +131,15 @@
                 <el-table-column
                   prop="gid"
                   label="下注次数"
-                  width="80px"
                 >
                   <template slot-scope="scope">
                     {{ scope.row.times }}
                   </template>
                 </el-table-column>
-                <el-table-column
-                  prop="gid"
-                  label="下注额度"
-                  width="80px"
-                >
-                  <template slot-scope="scope">
-                    {{    scope.row.bet * scope.row.times / 1000 }}
-                  </template>
-                </el-table-column>
-                <el-table-column
+                 <el-table-column
                   prop="gid"
                   label="下注占比"
-                  width="80px"
+                  width="100px"
                 >
                   <template slot-scope="scope">
                     {{ (parseInt(scope.row.times) / getTotalBuyBetTimes() * 100).toFixed(2) + '%' }}
@@ -162,8 +147,26 @@
                 </el-table-column>
                 <el-table-column
                   prop="gid"
+                  label="下注额度"
+                  width="100px"
+                >
+                  <template slot-scope="scope">
+                    {{    scope.row.bet * scope.row.times / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="下注额度占比2"
+                  width="100px"
+                >
+                  <template slot-scope="scope">
+                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalBuyOrdinaryBet() )*100).toFixed(2) + '%'  }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
                   label="返奖额度"
-                  width="80px"
+                  width="100px"
                 >
                   <template slot-scope="scope">
                     {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
@@ -172,7 +175,7 @@
                 <el-table-column
                   prop="gid"
                   label="GGR"
-                  width="80px"
+                  width="100px"
                 >
                   <template slot-scope="scope">
                     {{ ((  scope.row.bet * scope.row.times)  - (buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet]:0)) / 1000 }}
@@ -181,7 +184,7 @@
                 <el-table-column
                   prop="gid"
                   label="返奖率"
-                  width="80px"
+                  width="100px"
                 >
                   <template slot-scope="scope">
                     {{
@@ -205,7 +208,7 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-              style="width: 800px"
+              style=""
             >
               <el-table-column label="命中统计">
                 <el-table-column
@@ -333,7 +336,7 @@
           </el-col>
         </el-row>
         <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-          <el-col :span="6" :offset="1">
+          <el-col :span="11" >
             <el-table
               ref="filterTable"
               :data="stepTableData"
@@ -342,7 +345,7 @@
               :header-cell-style="libShow.DefaultTableHeadClass"
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
-              style="width: 700px"
+              style="width: 100%"
             >
               <el-table-column label="步数统计">
                 <el-table-column
@@ -953,6 +956,13 @@ export default {
       }
       return cnt
     },
+     getTotalBuyOrdinaryBet() {
+      let cnt = 0
+      for (const o of this.buyReturnClientDB.TotalData) {
+        cnt += parseInt(o.times * o.bet+'')
+      }
+      return cnt
+    },
     getTotalBuyBetTimes() {
       let cnt = 0
       for (const o of this.buyReturnClientDB.TotalData) {
@@ -999,7 +1009,7 @@ export default {
       }
     },
     updateGid() {
-      this.queryGid = 80
+
     },
     addOne() {
       this.item = {
@@ -1069,10 +1079,6 @@ export default {
     async queryKeyInput() {
       await this.queryRule(this.queryGid)
 
-      this.coordinateClientDB.Search(this.queryGid, ['gid'])
-      this.scriptClientDB.Search(this.queryGid, ['gid'])
-      this.stepClientDB.Search(this.queryGid, ['gid'])
-      this.jackpotClientDB.Search(this.queryGid, ['gid'])
       this.refreshScript()
       this.refreshCoordinate()
       this.refreshStep()
@@ -1387,7 +1393,14 @@ export default {
         return
       }
       try {
-        const realKey = { 150: 'supergemiii', 88: 'crazy777', 76: 'candypartyway',152:'aladdinlamp' }
+        const realKey = {
+          150: 'supergemiii',
+          88: 'crazy777',
+          76: 'candypartyway',
+          152: 'aladdinlamp',
+          86: 'CustomizeCfg_supergemii',
+          90:'CustomizeCfg_moneycoming'
+        }
         let key = this.gameScene[gid] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
