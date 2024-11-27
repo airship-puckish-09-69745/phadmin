@@ -1361,9 +1361,9 @@ export default {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
-      this.getChangeID(addData, delData, editData)
+      this.getChangeID(step, addData, delData, editData)
     },
-    getLobbyStr(lobbyVer){
+    getLobbyStr(lobbyVer,step){
       let lobby = ''
       if (this.env === 'test') {
         lobby=`【已发布】开发版本【${lobbyVer}】`
@@ -1380,7 +1380,7 @@ export default {
       }
       return lobby
     },
-    async getChangeID(addData, delData, editData) {
+    async getChangeID(step,addData, delData, editData) {
       let adds = new Map()
       let dels = new Map()
       let change = {}
@@ -1421,7 +1421,7 @@ export default {
         if (value.WhiteVersion !== '') {
           str += `${value.WhiteVersion}【白名单】`
         }
-        const lobby = this.getLobbyStr(value.LobbyVersion)
+        const lobby = this.getLobbyStr(value.LobbyVersion, step)
         change[lobby]? change[lobby].push(str): change[lobby]=[str]
       }
       if (editData) {
@@ -1438,7 +1438,7 @@ export default {
                   continue
                 }
               }
-              const lobby = this.getLobbyStr(_data.LobbyVersion)
+              const lobby = this.getLobbyStr(_data.LobbyVersion, step)
               let str = `【ID】${_data.ID}【${_data.BundleKey}】: ${_data.GamePkgVersion}【全量】`
               if (_data.WhiteVersion !== '') {
                 str += `${_data.WhiteVersion}【白名单】`
