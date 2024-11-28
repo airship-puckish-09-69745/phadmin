@@ -104,6 +104,12 @@
             <el-button v-if="!canEdit" size="mini" type="danger" icon="el-icon-lock" @click="setEdit(!canEdit)">锁定中</el-button>
           </el-tooltip>
         </el-form-item>
+        <el-form-item v-if="env==='test'">
+          <el-tooltip content="打开或关闭发送Lark消息" placement="top">el-icon-lock
+            <el-button v-if="configData.lark" size="mini" type="success" icon="el-icon-message" @click="setMessgeStatus"></el-button>
+            <el-button v-if="!configData.lark" size="mini" type="danger" icon="el-icon-message" @click="setMessgeStatus"></el-button>
+          </el-tooltip>
+        </el-form-item>
       </el-form>
     </el-row>
     <div style="padding-top: 10px">
@@ -539,6 +545,7 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish/index.vue'
+import axios from 'axios'
 
 const filterMap = {}
 
@@ -547,6 +554,8 @@ export default {
   data() {
     return {
       canEdit: true,
+      config: {},
+      configData: {},
       loadingShow: false,
       tableData: [],
       historyMap: {},
@@ -612,6 +621,7 @@ export default {
     this.env = store.getters.env || this.env
     this.isDisabled = false
     this.getLobbyVersions()
+    this.getMessgeStatus()
   },
   methods: {
     newItem() {
@@ -1354,6 +1364,9 @@ export default {
       return "       "+ this.LobbyVersion+" 版本必须是整包！包含所有 bundle！"
     },
     onStepChange(step, key, addData, delData, editData) {
+      if (this.env === 'test' && !this.configData.lark) {
+        return
+      }
       // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
       console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       // 同步到正式
@@ -1361,7 +1374,7 @@ export default {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
-      this.getChangeID(step, addData, delData, editData)
+      this.makeMessage(step, addData, delData, editData)
     },
     getLobbyStr(lobbyVer,step){
       let lobby = ''
@@ -1380,7 +1393,7 @@ export default {
       }
       return lobby
     },
-    async getChangeID(step,addData, delData, editData) {
+    async makeMessage(step,addData, delData, editData) {
       let adds = new Map()
       let dels = new Map()
       let change = {}
@@ -1454,22 +1467,24 @@ export default {
         return
       }
     
-      var lobby = ''
+      var msg = ''
       for (const key in change) {
         let str = key
         for (const ver of change[key]) {
           str += '\r\n'+ver
         }
-        lobby += str + '\r\n'
+        msg += str + '\r\n'
       }
-      console.log("change content", lobby)
+      msg += '<at user_id="ou_bb0bd6f4c6ee50ff7c7293d2830998a9">xiong</at><at user_id="ou_3e515e261edc919b26c52c8c71594e5a">SamYe</at><at user_id="ou_91aa565bf3fffa8b0d708b298e67e970">高勋</at>\r\n'
+      console.log("change content", msg)
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Path: '/misc/warn',
           Env: this.env,
-          Text: lobby,
+          Text: msg,
+          // Warn: "shit",
         }
       }).then(response => {
         console.log(response)
@@ -1496,7 +1511,37 @@ export default {
     setEdit(canEdit){
       this.canEdit = canEdit
       this.$refs.filterTable.clearSelection();
-    } 
+    },
+    getMessgeStatus(){
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'admin_config'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('cfg', response)
+          this.config = response.Data || {}
+          if (response.Data.Data && response.Data.Data !== '') {
+            this.configData = JSON.parse(response.Data.Data)
+          }
+        }
+      })
+    },
+    setMessgeStatus(){
+      this.configData.lark = !this.configData.lark
+      this.config.Data = JSON.stringify(this.configData)
+      request({
+        url: '/customizeconfig/update',
+        method: 'post',
+        data: this.config,
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功')
+        }
+      })
+    }
   }
 }
 </script>
