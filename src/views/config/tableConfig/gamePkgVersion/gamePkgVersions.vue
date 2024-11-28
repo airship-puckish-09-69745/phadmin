@@ -106,8 +106,8 @@
         </el-form-item>
         <el-form-item v-if="env==='test'">
           <el-tooltip content="打开或关闭发送Lark消息" placement="top">el-icon-lock
-            <el-button v-if="configData.lark" size="mini" type="success" icon="el-icon-message" @click="setMessgeStatus"></el-button>
-            <el-button v-if="!configData.lark" size="mini" type="danger" icon="el-icon-message" @click="setMessgeStatus"></el-button>
+            <el-button v-if="configData.lark" size="mini" type="success" icon="el-icon-message" @click="setMessgeStatus">已启用通知</el-button>
+            <el-button v-if="!configData.lark" size="mini" type="danger" icon="el-icon-message" @click="setMessgeStatus">已禁用通知</el-button>
           </el-tooltip>
         </el-form-item>
       </el-form>
@@ -545,7 +545,6 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish/index.vue'
-import axios from 'axios'
 
 const filterMap = {}
 
@@ -1393,6 +1392,15 @@ export default {
       }
       return lobby
     },
+    getLobbyTagOn(lobbyVer){
+    for (let i = 0; i < this.orgLobbyVersions.length; i++) {
+        if (lobbyVer === this.orgLobbyVersions[i].LobbyVersion) {
+          console.log("hit lobby", lobbyVer, JSON.stringify(this.orgLobbyVersions[i]))
+          return this.orgLobbyVersions[i].Tag === 1
+        }
+      }
+      return false
+    },
     async makeMessage(step,addData, delData, editData) {
       let adds = new Map()
       let dels = new Map()
@@ -1430,6 +1438,9 @@ export default {
         if (value.WhiteVersion === value2.WhiteVersion && value.GamePkgVersion === value2.GamePkgVersion) {
           continue
         }
+        if (!this.getLobbyTagOn(value.LobbyVersion)) {
+          continue
+        }
         let str = `【ID】${value.ID}【${value.BundleKey}】: ${value.GamePkgVersion}【全量】`
         if (value.WhiteVersion !== '') {
           str += `${value.WhiteVersion}【白名单】`
@@ -1450,6 +1461,9 @@ export default {
                   console.log("continue", edit.Head.ID)
                   continue
                 }
+              }
+              if (!this.getLobbyTagOn(_data.LobbyVersion)) {
+                continue
               }
               const lobby = this.getLobbyStr(_data.LobbyVersion, step)
               let str = `【ID】${_data.ID}【${_data.BundleKey}】: ${_data.GamePkgVersion}【全量】`
@@ -1475,7 +1489,11 @@ export default {
         }
         msg += str + '\r\n'
       }
-      msg += '<at user_id="ou_bb0bd6f4c6ee50ff7c7293d2830998a9">xiong</at><at user_id="ou_3e515e261edc919b26c52c8c71594e5a">SamYe</at><at user_id="ou_91aa565bf3fffa8b0d708b298e67e970">高勋</at>\r\n'
+      
+      // 正式发布才@相关人员
+      if (step === 5 && this.env === 'pro') {
+        msg += '<at user_id="ou_bb0bd6f4c6ee50ff7c7293d2830998a9">xiong</at><at user_id="ou_3e515e261edc919b26c52c8c71594e5a">SamYe</at><at user_id="ou_91aa565bf3fffa8b0d708b298e67e970">高勋</at>\r\n'
+      }
       console.log("change content", msg)
       request({
         url: '/dataProxy/info',
