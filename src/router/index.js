@@ -2236,6 +2236,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/image-manage'),
         name: 'ImageManage',
         meta: { title: '图片管理', noCache: true }
+      },
+      {
+        path: 'common-game-config',
+        component: () => import('@/views/config/commonGameConfig'),
+        name: 'CommonGameConfig',
+        meta: { title: '游戏公共配置', noCache: true }
       }
     ]
   },
