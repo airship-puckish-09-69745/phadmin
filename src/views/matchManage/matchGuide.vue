@@ -5,10 +5,13 @@
         :attr-names="AttrNames" />
     </el-row>
 
-    <el-row style="margin-top: 25px;padding-top:25px;">
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="showForm(0)">
-        添加推荐配置
-      </el-button>
+    <el-row style="margin: 15px 0;">
+      AppId <el-select v-model="searchFilter.app_id" filterable placeholder="请选择" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
+        <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
+      </el-select>
+      <el-button size="mini" type="primary" icon="el-icon-search" @click="showForm(0)" />
+      <el-button size="mini" type="primary" icon="el-icon-plus" @click="showForm(0)">复制配置列表</el-button>
+      <el-button style="float: right;" size="mini" type="success" icon="el-icon-plus" @click="showForm(0)" />
     </el-row>
 
     <el-row>
@@ -36,7 +39,7 @@
 
     <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false"
       :close-on-press-escape="false">
-      <el-form :model="editForm.data" label-width="200px" size="mini">
+      <el-form :model="editForm.data" label-width="120px" size="mini">
         <!-- <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;"> -->
 
         <el-form-item label="配置标题：" :required="true">
@@ -105,6 +108,9 @@ import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 
+import { getAllCommonGameConfig } from '@/utils/common-game-config'
+
+const LOCAL_APPID_KEY = 'match-guide/appid' // 缓存appid的key
 export default {
   components: { Compare, Publish, ImagePicker },
   data() {
@@ -117,12 +123,16 @@ export default {
       form: {
         status: 0
       },
+      searchFilter: {
+        app_id: '' // 必填，缓存本地
+      },
       csCfgs: [],
       showCsCfgs: [],
       raw: {},
       limit: 10,
       total: 0,
       page: 1,
+      appidInfoCfgs: [],
       editForm: {
         visable: false,
         title: '',
@@ -151,22 +161,68 @@ export default {
         { 'label': '结算界面-弹窗', 'value': 5 }
       ],
       activeCollapseIndex: '',
-      subKey: 'match_guide_list_new'
+      subKey: 'match_guide_list_new',
+      gameConfigList: [], // 游戏公共配置的列表
+      appGameOptions: []// app_id下的游戏icon配置列表
     }
   },
   computed: {
   },
   created() {
+    getAllCommonGameConfig().then(data => {
+      // console.log('getAllCommonGameConfig: ', data.gid_image_resource)
+      this.gameConfigList = data.gid_image_resource
+      this.getAppGameOptions()
+    })
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getBeginMatchCfgs()
     this.getGameAll()
   },
   mounted() {
+    this.getAppidInfoCfg()
+    this.getFilterAppId()
     this.getList()
     this.getBeginMatchCfgs()
   },
   methods: {
+    handleUpdateAppid(appid) {
+      console.log('appid==>', appid)
+      localStorage.setItem(LOCAL_APPID_KEY, appid)
+      this.getAppGameOptions()
+    },
+    /**
+     * 通过当前选择的app_id获取icon配置列表
+     */
+    getAppGameOptions() {
+      const currentCfg = this.gameConfigList.find(item => item.app_id === this.searchFilter.app_id)
+      // 如果没有配置，currentCfg === null
+      if (!currentCfg) {
+        this.appGameOptions = []
+        return
+      }
+      this.appGameOptions = currentCfg.gid_image_list
+      console.log('this.appGameOptions==>', this.appGameOptions)
+    },
+    /**
+     * 从本地缓存获取appId
+     * 如果没有缓存，默认取第一个
+     */
+    getFilterAppId() {
+      const localData = localStorage.getItem(LOCAL_APPID_KEY)
+      this.searchFilter.app_id = localData ? parseInt(localData) : this.appidInfoCfgs[0].value
+    },
+    getAppidInfoCfg() {
+      this.appidInfoCfgs = [
+        { 'value': 1000002, 'label': 'dayusenlin' },
+        { 'value': 1000003, 'label': 'testaccount' },
+        { 'value': 1000004, 'label': 'testkey' },
+        { 'value': 1000005, 'label': 'BingoPlusTongits' },
+        { 'value': 1000006, 'label': 'BingoPlusTest' },
+        { 'value': 1000007, 'label': 'br' },
+        { 'value': 1100000, 'label': 'xworld' }
+      ]
+    },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },

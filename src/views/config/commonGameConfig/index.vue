@@ -4,7 +4,7 @@
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="{}" />
     </el-row>
     <el-row style="margin: 10px 0;">
-      AppId <el-select v-model="searchFilter.app_id" filterable placeholder="请选择" size="small" style="margin-right: 12px;" @change="handleUpdateAppid">
+      AppId <el-select v-model="searchFilter.app_id" filterable placeholder="请选择" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
         <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
       </el-select>
       <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch" />
