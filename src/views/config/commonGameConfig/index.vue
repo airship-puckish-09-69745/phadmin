@@ -16,6 +16,7 @@
       最后修改时间：{{ formatTime(allGameConfig.update_time) }}
     </el-row>
     <el-table :data="gameTableData" style="width: 100%">
+      <el-table-column prop="id" label="ID" width="140" />
       <el-table-column prop="app_info" label="应用ID" width="280">
         <template slot-scope="scope">
           <div>{{ scope.row.app_info.join(',') }}</div>
@@ -34,6 +35,7 @@
       <el-table-column label="操作" width="120">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="handleUpdate(scope.row, scope.$index)">编辑</el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete" @click="handleDeleteConfig(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -229,6 +231,9 @@ export default {
       }
       console.log(this.allGameConfig)
 
+      this.updateConfigData()
+    },
+    updateConfigData() {
       this.raw.Data = JSON.stringify(this.allGameConfig)
       // this.raw.Data = JSON.stringify({})
       console.log('raw: ', this.raw)
@@ -255,6 +260,7 @@ export default {
       })
     },
     getTableData() {
+      console.log(this.searchFilter.app_info)
       this.gameTableData = this.allGameConfig.gid_image_resource
     },
     getAppidInfoCfg() {
@@ -268,6 +274,7 @@ export default {
         { 'value': 1100000, 'label': 'xworld' }
       ]
     },
+    // 删除配置里面的游戏项
     handleDeleteGame(row, index) {
       // console.log(row, index)
       this.$confirm(`确定要删除【${this.GetGameName(row.game_id)}】吗？`, '删除游戏', {
@@ -276,6 +283,23 @@ export default {
         type: 'warning'
       }).then(() => {
         this.formDialog.form.gid_image_list.splice(index, 1)
+      })
+    },
+    // 删除整个配置
+    handleDeleteConfig(row) {
+      // console.log(row, index)
+      this.$confirm(`确定要删除id=【${row.id}】的配置吗？`, '删除配置', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.allGameConfig.gid_image_resource.forEach((item, index) => {
+          if (item.id === row.id) {
+            this.allGameConfig.gid_image_resource.splice(index, 1)
+            this.updateConfigData()
+            return
+          }
+        })
       })
     },
     checkForm() {
