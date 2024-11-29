@@ -1282,6 +1282,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/PointGameFailLog'),
         name: 'pointgamefail',
         meta: { title: '积分注单失败 ◐' }
+      },
+         {
+        path: 'ApplyCompensation',
+        component: () => import('@/views/playerManage/ApplyCompensation.vue'),
+        name: 'ApplyCompensation',
+        meta: { title: '申请金额补偿 ◐' }
       }
     ]
   },
