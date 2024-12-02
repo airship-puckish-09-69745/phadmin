@@ -274,6 +274,17 @@ export default {
       })
     },
     setData() {
+      const newbie = this.cfgData.Newbie.Mission1Rate + this.cfgData.Newbie.Mission2Rate + this.cfgData.Newbie.Mission3Rate
+      const normal = this.cfgData.Normal.Mission1Rate + this.cfgData.Normal.Mission2Rate + this.cfgData.Normal.Mission3Rate
+      if (newbie !== 100) {
+        Message.error('新手任务总占比没有到达100%')
+        return
+      }
+      if (normal !== 100) {
+        Message.error('老用户任务总占比没有到达100%')
+        return
+      }
+
       const postData = $libType.DeepCopy(this.cfgData)
 
       for (const k in postData.RichCardList) {
@@ -283,7 +294,6 @@ export default {
           postData.RichCardList[k].Bets.push(parseFloat(bets[i]) * 1000)
         }
       }
-
       // console.log('postData', postData)
 
       this.form.Data = JSON.stringify(postData)
