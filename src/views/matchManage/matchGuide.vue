@@ -62,7 +62,7 @@
                 <el-table-column prop="game_id" label="游戏名">
                   <template slot-scope="scope">
                     <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini">
-                      <el-option v-for="game in gameGuideCfgs" :key="game.value" :label="game.label"
+                      <el-option v-for="game in appGameOptions" :key="game.value" :label="game.label"
                         :value="game.value" />
                     </el-select>
                   </template>
@@ -151,6 +151,7 @@ export default {
       },
       gameGuideCfgs: [],
       guideList: [],
+      appGuideData: [], // 根据appId从guideList匹配之后的数据
       guideRecord: [],
 
       useSceneCfg: [
@@ -182,7 +183,7 @@ export default {
   mounted() {
     this.getAppidInfoCfg()
     this.getFilterAppId()
-    this.getList()
+    this.getList(this.getAppGuideData)
     this.getBeginMatchCfgs()
   },
   methods: {
@@ -190,6 +191,7 @@ export default {
       console.log('appid==>', appid)
       localStorage.setItem(LOCAL_APPID_KEY, appid)
       this.getAppGameOptions()
+      this.getAppGuideData()
     },
     /**
      * 通过当前选择的app_id获取icon配置列表
@@ -202,6 +204,9 @@ export default {
         return
       }
       this.appGameOptions = currentCfg.gid_image_list
+      this.appGameOptions.forEach(item => {
+        item.label = `${this.GetGameName(item.game_id)}-${item.game_id}`
+      })
       console.log('this.appGameOptions==>', this.appGameOptions)
     },
     /**
@@ -222,6 +227,14 @@ export default {
         { 'value': 1000007, 'label': 'br' },
         { 'value': 1100000, 'label': 'xworld' }
       ]
+    },
+    /**
+     * guideList匹配app_id相同的数据
+     */
+    getAppGuideData() {
+      const appGuideData = this.guideList.filter(item => item.app_id === this.searchFilter.app_id)
+      console.log(appGuideData)
+      this.appGuideData = appGuideData
     },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
@@ -273,7 +286,7 @@ export default {
         }
       })
     },
-    getList() {
+    getList(cb) {
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -291,6 +304,8 @@ export default {
             this.raw = response.Data
           }
           this.raw = response.Data
+
+          if (cb) cb()
         }
       })
     },
