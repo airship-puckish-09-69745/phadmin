@@ -1427,6 +1427,8 @@ export default {
               this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
               this.currentBaseBet = baseCfg.BaseBet
             }
+          }else {
+            Message.error('获取基础配置失败')
           }
         })
       } catch (e) {
