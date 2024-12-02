@@ -420,7 +420,7 @@
       <el-form ref="edit" :model="edit" label-width="150px" size="small" inline>
         <el-tabs type="card">
           <el-form-item label="从原始AppId" :required="true">
-            <el-select v-model="copyListDialog.srcAppId" style="width: 230px" placeholder="请选择" size="mini">
+            <el-select v-model="copyListDialog.srcAppId" style="width: 220px" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in appInfo"
                 :key="item.key"
@@ -430,7 +430,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="复制到AppId" :required="true">
-            <el-select v-model="copyListDialog.targetAppId" style="width: 230px" placeholder="请选择" size="mini">
+            <el-select v-model="copyListDialog.targetAppId" style="width: 220px" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in getAppsFiltered(copyListDialog.srcAppId)"
                 :key="item.key"
