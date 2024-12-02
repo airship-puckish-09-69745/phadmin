@@ -391,7 +391,8 @@ export default {
         { 'value': 90, 'label': 'FortuneComing' },
         { 'value': 118, 'label': 'CarRacing' },
         { 'value': 156, 'label': 'CrazyAce' },
-        { 'value': 166, 'label': 'FireLink' }
+        { 'value': 166, 'label': 'FireLink' },
+        { 'value': 174, 'label': 'TreasureBowl' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
