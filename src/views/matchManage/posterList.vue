@@ -5,130 +5,31 @@
     </el-row>
     <el-row>
       <div style="float: right; margin-bottom: 10px;">
-        <el-button type="success" icon="el-icon-plus" @click="showForm(0)">添加比赛海报</el-button>
+        <el-button type="success" icon="el-icon-plus" @click="showForm(0)">添加赛事海报</el-button>
       </div>
-
-      <el-row style="margin-top: 30px">
-        <el-col :span="8" :offset="0">
-          <el-form ref="form" :model="form" label-width="200px">
-            <el-row>
-              <el-form-item label="活动状态：">
-                <el-switch style="display: block"
-                           v-model="postData.switch"
-                           active-color="#13ce66"
-                           inactive-color="#ff4949"
-                           active-value='1'
-                           inactive-value='0'
-                           active-text="正常"
-                           inactive-text="下架"
-                />
-              </el-form-item>
-            </el-row>
-            <el-col :offset="0" :span="8">
-              <el-form-item>
-                <el-button type="primary" @click="saveSwitch(0)">开关保存</el-button>
-              </el-form-item>
-            </el-col>
-          </el-form>
-        </el-col>
       </el-row>
 
-      <el-table
-        :data="postData.tableData"
-        border
-        stripe
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :cell-style="libShow.TableCell(10)"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="sort_id"
-          label="排序值"
-        />
-        <el-table-column
-          prop="name"
-          label="赛事名称"
-        />
-        <el-table-column
-          prop="start_time"
-          label="开始时间"
-        >
-          <template slot-scope="{row}">
-            <DateTimeShow :show-type="2" :timestamp="row.start_time" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="end_time"
-          label="结束时间"
-        >
-          <template slot-scope="{row}">
-            <DateTimeShow :show-type="2" :timestamp="row.end_time" />
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="modifier"
-          label="修改人"
-        />
-        <el-table-column
-          prop="update_time"
-          label="修改时间"
-        >
-          <template slot-scope="scope">
-            {{ formatTime(scope.row.update_time) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          fixed="right"
-          width="200px"
-          label="操作"
-        >
-
-          <template slot-scope="scope">
-            <el-button
-              size="mini"
-              icon="el-icon-edit"
-              @click="showForm(scope.row.id)"
-            >编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-row>
-    <el-row type="flex" justify="center">
-      <div class="block">
-        <el-pagination
-          :current-page="page"
-          :page-sizes="[10, 20, 30, 40]"
-          :page-size="limit"
-          layout="slot, total, sizes, prev, next"
-          prev-text="上一页"
-          next-text="下一页"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-        >
-          <span class="pageSizeInput" style="padding-right: 10px">
-            当前页：{{ page }}/{{ Math.ceil(total/limit) }}
-          </span>
-        </el-pagination>
-      </div>
-    </el-row>
     <el-dialog
       :title="editForm.title"
       :visible.sync="editForm.visable"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      width="67%"
     >
-      <el-form :model="editForm.data" label-width="200px" size="mini">
-        <el-form-item v-if="editForm.data.sort_id > 0" label="海报排序ID：">
-          {{ editForm.data.sort_id }}
-        </el-form-item>
-        <fieldset>
-          <legend>海报信息</legend>
-          <el-form-item label="赛事名称：" :required="true">
-            <el-select v-model="editForm.data.matchId" placeholder="请选择" size="mini" @change="selectMatchName()">
+
+      <el-form :model="editForm.data" label-width="300px" size="mini">
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
+
+          <legend>海报列表配置</legend>
+
+          <el-form-item  label="配置标题：" :required="true">
+            <el-input v-model="editForm.data.title" style="width: 200px;" placeholder="填写配置标题" />
+          </el-form-item>
+
+          <el-form-item label="AppId：" :required="true">
+            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini">
               <el-option
-                v-for="item in showCsCfgs"
+                v-for="item in appidInfoCfgs"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -136,41 +37,112 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item label="游戏选择：" :required="true">
-            <el-select v-model="editForm.data.gameId" placeholder="请选择" size="mini">
-              <el-option
-                v-for="items in gameCfgs"
-                :key="items.value"
-                :label="items.label"
-                :value="items.value"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="海报图片URL：" :required="true">
-            <ImagePicker v-model="editForm.data.imagePath" />
-          </el-form-item>
-
-          <el-form-item label="海报排序：" :required="true">
-            <el-input v-model="editForm.data.sort_id" style="width: 200px;" placeholder="填写海报排序值" />
-          </el-form-item>
-          <el-form-item label="生效时间：" :required="true">
-            <el-date-picker
-              v-model="editForm.onceTime"
-              format="yyyy-MM-dd HH:mm"
-              size="mini"
-              type="datetimerange"
-              :picker-options="pickerOptions"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              align="right"
+          <el-form-item  label="配置开关：" :required="true">
+            <el-switch style="display: block"
+                       v-model="editForm.data.switch"
+                       active-color="#13ce66"
+                       inactive-color="#ff4949"
+                       active-value='1'
+                       inactive-value='0'
+                       active-text="正常"
+                       inactive-text="下架"
             />
           </el-form-item>
 
+          <el-button style="margin-bottom: 20px;" type="normal"  @click="addPosterCfg()">添加海报</el-button>
+          <el-table
+            :data="posterRecord"
+            border
+            stripe
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'35px'}"
+            :cell-style="libShow.TableCell(0)"
+            style="width: 100%;line-height:35px;"
+          >
+
+            <el-table-column prop="sort_id" label="排序" width="90" :required="true" >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.sort_id" style="width: 60px;" size="mini" placeholder="排序值" />
+              </template>
+            </el-table-column>
+
+
+            <el-table-column prop="jump_id" label="跳转类型" width="140" >
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.jump_id" placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="item in postJumpCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="game_id" label="子游戏跳转" width="140">
+              <template slot-scope="scope">
+                <el-select v-if="scope.row.jump_id==2" v-model="scope.row.game_id" placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="item in gameCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+
+
+            <el-table-column label="海报入口图" prop="image_path" width="150" :required="true">
+              <template slot-scope="scope">
+                <ImagePicker v-model="scope.row.image_path" />
+              </template>
+            </el-table-column>
+
+            <el-table-column label="海报详情图" prop="detail_image_path" width="150" :required="true">
+              <template slot-scope="scope">
+                <ImagePicker v-if="scope.row.jump_id==1"  v-model="scope.row.detail_image_path" />
+              </template>
+            </el-table-column>
+
+            <el-table-column label="生效时间：" prop="effective_time" :required="true">
+              <template slot-scope="scope">
+                <el-date-picker
+                  v-model="scope.row.effective_time"
+                  format="yyyy-MM-dd HH:mm"
+                  size="mini"
+                  type="datetimerange"
+                  :picker-options="pickerOptions"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  align="right"
+                />
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="first_jump" label="是否首弹" width="110" :required="true" >
+              <template slot-scope="scope">
+                <el-switch style="display: block"
+                           v-model="scope.row.first_jump"
+                           active-color="#13ce66"
+                           inactive-color="#ff4949"
+                           active-value='1'
+                           inactive-value='0'
+                           active-text="是"
+                           inactive-text="否"
+                />
+              </template>
+            </el-table-column>
+
+            <el-table-column label="操作" width="100" >
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="removeMatchPosterItme(scope.$index)">移除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
         </fieldset>
-        <el-form-item>
-          <el-button size="medium" type="primary" icon="el-icon-s-order" @click="saveMatch()">保存海报配置</el-button>
-        </el-form-item>
       </el-form>
     </el-dialog>
     <!--对比组件-->
@@ -202,6 +174,7 @@ export default {
       },
       csCfgs: [],
       showCsCfgs: [],
+      posterRecord:[],
       postData: {
         'tableData': [],
         'switch': 0
@@ -219,7 +192,8 @@ export default {
           name: '',
           matchId: 0,
           imagePath: '',
-          sortId: 0
+          title: '',
+          app_id: 100002
         }
       },
       AttrNames: {
@@ -227,6 +201,22 @@ export default {
       gameCfgs: [
         { 'value': 2031, 'label': 'tongits' }
       ],
+
+      appidInfoCfgs: [
+        { 'value': 1000002, 'label': 'dayusenlin' },
+        { 'value': 1000003, 'label': 'testaccount' },
+        { 'value': 1000004, 'label': 'testkey' },
+        { 'value': 1000005, 'label': 'BingoPlusTongits' },
+        { 'value': 1000006, 'label': 'BingoPlusTest' },
+        { 'value': 1000007, 'label': 'br' },
+        { 'value': 1100000, 'label': 'xworld' }
+      ],
+      postJumpCfgs: [
+        { 'value': 1, 'label': '打开海报详情' },
+        { 'value': 2, 'label': '跳转到子游戏' },
+        { 'value': 3, 'label': '跳转比赛详情' },
+      ],
+
       subKey: 'match_poster_list'
     }
   },
@@ -243,6 +233,20 @@ export default {
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    addPosterCfg() {
+      console.log("添加海报")
+      let index = 0
+      if (this.posterRecord.length > 0) {
+        index = this.posterRecord.length
+      }
+      index++
+      this.posterRecord.push({
+        index: index,
+        sort_id: '',
+        game_id: '',
+        image_path: ''
+      })
     },
     getBeginMatchCfgs() {
       request({
@@ -496,7 +500,10 @@ export default {
         return false
       }
       return true
-    }
+    },
+    removeMatchPosterItme(idx) {
+
+    },
   }
 }
 </script>
