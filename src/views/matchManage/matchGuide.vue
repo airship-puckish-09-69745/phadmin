@@ -10,9 +10,9 @@
         <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
       </el-select>
       <el-button size="mini" type="primary" icon="el-icon-search" @click="getAppGuideData" />
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleShowCopyDialog">复制配置列表</el-button>
+      <!-- <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleShowCopyDialog">复制配置列表</el-button> -->
 
-      <el-button style="float: right;" size="mini" type="primary" icon="el-icon-edit" @click="showForm(searchFilter.app_id)" />
+      <el-button style="float: right;" size="mini" type="primary" icon="el-icon-edit" @click="showForm(searchFilter.app_id)">编辑所有场景</el-button>
       <el-button v-if="!appGuideData" style="float: right;" size="mini" type="success" icon="el-icon-plus" @click="showForm(0)" />
       <el-button v-else style="float: right;" size="mini" type="danger" icon="el-icon-delete" @click="handleDeleteAll" />
     </el-row>
@@ -63,7 +63,7 @@
       </div>
     </el-row>
 
-    <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false"
+    <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false" width="80%"
       :close-on-press-escape="false">
       <el-form :model="editForm.data" label-width="120px" size="mini">
         <!-- <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;"> -->
@@ -93,7 +93,7 @@
                     </el-select>
                   </template>
                 </el-table-column>
-                <el-table-column prop="sort_id" label="排序" width="100">
+                <el-table-column prop="sort_id" label="排序" width="120">
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.sort_id" style="width: 80px;" size="mini" placeholder="填写排序值" />
                   </template>
@@ -164,7 +164,7 @@
       </el-form>
     </el-dialog>
 
-    <el-dialog v-if="schemeDialog.updateIndex" :title="`编辑场景【${appGuideData.scheme_records[schemeDialog.updateIndex].label}】`" :visible.sync="schemeDialog.visible" :close-on-click-modal="false" :close-on-press-escape="false">
+    <el-dialog v-if="appGuideData && (schemeDialog.updateIndex || schemeDialog.updateIndex === 0)" :title="`编辑场景【${appGuideData.scheme_records[schemeDialog.updateIndex].label}】`" :visible.sync="schemeDialog.visible" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-button style="margin-bottom: 8px;" type="success" size="mini" @click="addGameGuideCfg(schemeDialog.form)">添加游戏</el-button>
       <div v-if="schemeDialog.form.scene_id == 3 || schemeDialog.form.scene_id == 4" style="margin-bottom: 8px;">
         开赛剩余时间(秒):
@@ -265,7 +265,7 @@ export default {
         }
       },
       schemeDialog: {
-        updateIndex: 0,
+        updateIndex: null,
         visible: false,
         form: {
           label: '',
@@ -318,17 +318,23 @@ export default {
      * @param index
      */
     showEditSchemeDialog(index) {
+      // alert(index)
       this.schemeDialog.visible = true
       this.schemeDialog.updateIndex = index
       this.schemeDialog.form = {
         ...this.appGuideData.scheme_records[index]
       }
+      console.log(this.schemeDialog)
     },
-    handleShowCopyDialog() {
-      this.copyDialog.visible = true
-      this.copyDialog.form.srcAppId = this.searchFilter.app_id
-      this.copyDialog.form.targetAppId = ''
-    },
+    /**
+     * 去掉复制功能
+     * 由于不同app_id配置的游戏icon不同，不应该复制
+     */
+    // handleShowCopyDialog() {
+    //   this.copyDialog.visible = true
+    //   this.copyDialog.form.srcAppId = this.searchFilter.app_id
+    //   this.copyDialog.form.targetAppId = ''
+    // },
     handleCopy() {
       console.log('handleCopy==>', this.copyDialog)
       if (!this.copyDialog.form.targetAppId) {
@@ -803,13 +809,13 @@ export default {
      * 如果没有就是对外面整个数据列表进行检查
      * @param index
      */
-    configCheck(index) {
+    configCheck(index = null) {
       let gameChecked = true
       let timeChecked = true
       // alert(this.editForm.scheme_records[3].records[2].sort_id == '')
       // return false
 
-      if (index) {
+      if (index !== null) {
         const record = this.schemeDialog.form
         if (record.records.length === 0) {
           gameChecked = false
