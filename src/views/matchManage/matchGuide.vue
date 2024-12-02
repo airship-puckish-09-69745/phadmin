@@ -9,22 +9,18 @@
       AppId <el-select v-model="searchFilter.app_id" filterable placeholder="请选择" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
         <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
       </el-select>
-      <el-button size="mini" type="primary" icon="el-icon-search" @click="showForm(0)" />
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="showForm(0)">复制配置列表</el-button>
-      <el-button style="float: right;" size="mini" type="success" icon="el-icon-plus" @click="showForm(0)" />
+      <el-button size="mini" type="primary" icon="el-icon-search" @click="getAppGuideData" />
+      <!-- <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleShowCopyDialog">复制配置列表</el-button> -->
+
+      <el-button style="float: right;" size="mini" type="primary" icon="el-icon-edit" @click="showForm(searchFilter.app_id)">编辑所有场景</el-button>
+      <el-button v-if="!appGuideData" style="float: right;" size="mini" type="success" icon="el-icon-plus" @click="showForm(0)" />
+      <el-button v-else style="float: right;" size="mini" type="danger" icon="el-icon-delete" @click="handleDeleteAll" />
     </el-row>
 
     <el-row>
-      <el-table :data="guideList" border stripe :header-cell-style="libShow.DefaultTableHeadClass"
+      <!-- <el-table :data="guideList" border stripe :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)" style="width: 60%">
-        <el-table-column prop="scheme_title" label="配置标题">
-        </el-table-column>
-
-        <!-- <el-table-column prop="scene_id" label="推荐场景">
-          <template slot-scope="scope">
-            {{ getSceneName(scope.row.scene_id, scope.row.left_time) }}
-          </template>
-</el-table-column> -->
+        <el-table-column prop="scheme_title" label="配置标题" />
 
         <el-table-column fixed="right" label="操作" width="200px">
           <template slot-scope="scope">
@@ -34,20 +30,50 @@
 
           </template>
         </el-table-column>
+      </el-table> -->
+      <el-table v-if="appGuideData" :data="appGuideData.scheme_records" border stripe :header-cell-style="libShow.DefaultTableHeadClass" :cell-style="libShow.TableCell(10)">
+        <el-table-column prop="label" label="推荐场景" width="200" />
+        <!-- <el-table-column prop="record_name" label="游戏名称" /> -->
+        <el-table-column label="游戏">
+          <template slot-scope="scope">
+            <div>
+              <!-- {{ GetGameName(game.game_id) }}
+              <img :src="game.image_path" width="120"> -->
+              <el-card v-for="(game, index) in scope.row.records" :key="index" class="box-card" style="width: 136px; display: inline-block; margin-right: 6px;" :body-style="{padding: '8px'}">
+                <img :src="game.image_path" width="120">
+                <div class="clearfix text-center">
+                  <span>{{ GetGameName(game.game_id) }}</span>
+                </div>
+              </el-card>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="开赛剩余时间(秒)" prop="left_time" width="200" />
+
+        <el-table-column fixed="right" label="操作" width="100px">
+          <template slot-scope="scope">
+            <el-button size="mini" type="primary" icon="el-icon-edit" @click="showEditSchemeDialog(scope.$index)" />
+          </template>
+        </el-table-column>
       </el-table>
+
+      <div v-else>
+        <div style="text-align: center; color: red;padding: 20px;">暂无数据！</div>
+      </div>
     </el-row>
 
-    <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false"
+    <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false" width="80%"
       :close-on-press-escape="false">
       <el-form :model="editForm.data" label-width="120px" size="mini">
         <!-- <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;"> -->
 
-        <el-form-item label="配置标题：" :required="true">
+        <!-- <el-form-item label="配置标题：" :required="true">
           <el-input v-model="editForm.scheme_title" size="mini" placeholder="填写配置标题" />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="推荐场景：" :required="true">
           <el-collapse v-model="activeCollapseIndex">
-            <el-collapse-item v-for="item in editForm.scheme_records" :key="item.value" :title="item.label"
+            <el-collapse-item v-for="(item, schemeIndex) in editForm.scheme_records" :key="item.value" :title="item.label"
               :name="item.value">
               <el-button style="margin-bottom: 8px;" type="success" size="mini"
                 @click="addGameGuideCfg(item)">添加游戏</el-button>
@@ -61,13 +87,13 @@
                 <el-table-column prop="index" label="序号" width="50" />
                 <el-table-column prop="game_id" label="游戏名">
                   <template slot-scope="scope">
-                    <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini">
-                      <el-option v-for="game in appGameOptions" :key="game.value" :label="game.label"
-                        :value="game.value" />
+                    <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini" @change="handleUpdateGame(scope.row.game_id, schemeIndex, scope.$index)">
+                      <el-option v-for="game in appGameOptions" :key="game.value" :label="GetGameName(game.game_id)"
+                        :value="game.game_id" />
                     </el-select>
                   </template>
                 </el-table-column>
-                <el-table-column prop="sort_id" label="排序" width="100">
+                <el-table-column prop="sort_id" label="排序" width="120">
                   <template slot-scope="scope">
                     <el-input v-model.number="scope.row.sort_id" style="width: 80px;" size="mini" placeholder="填写排序值" />
                   </template>
@@ -75,7 +101,8 @@
 
                 <el-table-column label="游戏图标URL" prop="image_path" width="130" :required="true">
                   <template slot-scope="scope">
-                    <ImagePicker v-model="scope.row.image_path" />
+                    <!-- <ImagePicker v-model="scope.row.image_path" /> -->
+                    <img :src="scope.row.image_path" width="100%">
                   </template>
                 </el-table-column>
 
@@ -94,6 +121,89 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="复制配置"
+      :visible.sync="copyDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="copyForm" :model="copyDialog.form" label-width="150px" size="small" inline :style="{width: '780px'}">
+        <el-tabs type="card">
+          <el-form-item label="从原始AppId" :required="true">
+            <el-select v-model="copyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in appidInfoCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="复制到AppId" :required="true">
+            <el-select v-model="copyDialog.form.targetAppId" style="width: 210px" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in appidInfoCfgs.filter(item => item.value !== copyDialog.form.srcAppId)"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击发布按钮，将复制的新数据更新到线上；若状态为非上架状态，需先进行上架后点击发布</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleCopy">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog v-if="appGuideData && (schemeDialog.updateIndex || schemeDialog.updateIndex === 0)" :title="`编辑场景【${appGuideData.scheme_records[schemeDialog.updateIndex].label}】`" :visible.sync="schemeDialog.visible" :close-on-click-modal="false" :close-on-press-escape="false">
+      <el-button style="margin-bottom: 8px;" type="success" size="mini" @click="addGameGuideCfg(schemeDialog.form)">添加游戏</el-button>
+      <div v-if="schemeDialog.form.scene_id == 3 || schemeDialog.form.scene_id == 4" style="margin-bottom: 8px;">
+        开赛剩余时间(秒):
+        <el-input v-model.number="schemeDialog.form.left_time" style="width: 200px;" size="mini" placeholder="填写时间(秒):" />
+      </div>
+      <el-table :data="schemeDialog.form.records" border stripe :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '35px' }" :cell-style="libShow.TableCell(0)" style="width: 100%;line-height:35px;">
+        <el-table-column prop="index" label="序号" width="50" />
+        <el-table-column prop="game_id" label="游戏名">
+          <template slot-scope="scope">
+            <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini" @change="handleUpdateSchemeGame(scope.row.game_id, scope.$index)">
+              <el-option v-for="game in appGameOptions" :key="game.value" :label="GetGameName(game.game_id)" :value="game.game_id" />
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="sort_id" label="排序" width="100">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.sort_id" style="width: 80px;" size="mini" placeholder="填写排序值" />
+          </template>
+        </el-table-column>
+
+        <el-table-column label="游戏图标URL" prop="image_path" width="130" :required="true">
+          <template slot-scope="scope">
+            <!-- <ImagePicker v-model="scope.row.image_path" /> -->
+            <img :src="scope.row.image_path" width="100%">
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="100">
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" @click="removeSchemeGameGuideItme(scope.$index)">移除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-row style="padding-top: 20px;">
+        <el-col :span="12" :offset="10">
+          <el-button type="primary" size="medium" @click="handleSaveScheme">保存</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -105,14 +215,14 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 
 import { $libDate, $libShow } from '@/utils/common'
-import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+// import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import Compare from '@/components/Compare'
 
 import { getAllCommonGameConfig } from '@/utils/common-game-config'
 
 const LOCAL_APPID_KEY = 'match-guide/appid' // 缓存appid的key
 export default {
-  components: { Compare, Publish, ImagePicker },
+  components: { Compare, Publish },
   data() {
     return {
       activeTab: 'base',
@@ -146,6 +256,22 @@ export default {
         scheme_records: [],
         scene_id: 0,
         left_time: 0
+      },
+      copyDialog: {
+        visible: false,
+        form: {
+          srcAppId: '',
+          targetAppId: ''
+        }
+      },
+      schemeDialog: {
+        updateIndex: null,
+        visible: false,
+        form: {
+          label: '',
+          record_name: '',
+          records: []
+        }
       },
       AttrNames: {
       },
@@ -183,10 +309,77 @@ export default {
   mounted() {
     this.getAppidInfoCfg()
     this.getFilterAppId()
-    this.getList(this.getAppGuideData)
+    this.getList()
     this.getBeginMatchCfgs()
   },
   methods: {
+    /**
+     * 对单个场景的游戏进行编辑
+     * @param index
+     */
+    showEditSchemeDialog(index) {
+      // alert(index)
+      this.schemeDialog.visible = true
+      this.schemeDialog.updateIndex = index
+      this.schemeDialog.form = {
+        ...this.appGuideData.scheme_records[index]
+      }
+      console.log(this.schemeDialog)
+    },
+    /**
+     * 去掉复制功能
+     * 由于不同app_id配置的游戏icon不同，不应该复制
+     */
+    // handleShowCopyDialog() {
+    //   this.copyDialog.visible = true
+    //   this.copyDialog.form.srcAppId = this.searchFilter.app_id
+    //   this.copyDialog.form.targetAppId = ''
+    // },
+    handleCopy() {
+      console.log('handleCopy==>', this.copyDialog)
+      if (!this.copyDialog.form.targetAppId) {
+        Message.error('请选择目标AppId')
+        return
+      }
+
+      const srcCfg = this.guideList.find(item => item.app_id === this.copyDialog.form.srcAppId)
+      const targetCfg = this.guideList.find(item => item.app_id === this.copyDialog.form.targetAppId)
+      // 如果复制空白数据，就会清空目标数据，直接删除目标数据
+      if (!srcCfg) {
+        this.guideList.forEach((item, index) => {
+          if (item.app_id === targetCfg.app_id) {
+            this.guideList.splice(index, 1)
+            this.updateRequest()
+            this.copyDialog.visible = false
+            return
+          }
+        })
+        return
+      }
+
+      console.log('srcCfg==>', srcCfg)
+      console.log('targetCfg==>', targetCfg)
+      if (!targetCfg) {
+        this.guideList.push({
+          ...srcCfg,
+          app_id: this.copyDialog.form.targetAppId
+        })
+        this.updateRequest()
+        this.copyDialog.visible = false
+      } else {
+        this.guideList.forEach(item => {
+          if (item.app_id === targetCfg.app_id) {
+            item = {
+              ...srcCfg,
+              app_id: this.copyDialog.form.targetAppId
+            }
+            this.updateRequest()
+            this.copyDialog.visible = false
+            return
+          }
+        })
+      }
+    },
     handleUpdateAppid(appid) {
       console.log('appid==>', appid)
       localStorage.setItem(LOCAL_APPID_KEY, appid)
@@ -204,9 +397,9 @@ export default {
         return
       }
       this.appGameOptions = currentCfg.gid_image_list
-      this.appGameOptions.forEach(item => {
-        item.label = `${this.GetGameName(item.game_id)}-${item.game_id}`
-      })
+      // this.appGameOptions.forEach(item => {
+      //   item.value = parseInt(item.game_id)
+      // })
       console.log('this.appGameOptions==>', this.appGameOptions)
     },
     /**
@@ -232,9 +425,41 @@ export default {
      * guideList匹配app_id相同的数据
      */
     getAppGuideData() {
-      const appGuideData = this.guideList.filter(item => item.app_id === this.searchFilter.app_id)
+      const appGuideData = this.guideList.find(item => item.app_id === this.searchFilter.app_id)
       console.log(appGuideData)
       this.appGuideData = appGuideData
+    },
+    /**
+     * 场景选择游戏之后，必须更新对应的icon
+     * @param game_id
+     * @param schemeIndex scheme_records的index
+     * @param index 游戏的index
+     */
+    handleUpdateGame(game_id, schemeIndex, index) {
+      const image_path = this.appGameOptions.find(item => item.game_id === game_id).image_path
+      // console.log('game_id==>', game_id)
+      // console.log('index==>', index)
+      this.editForm.scheme_records[schemeIndex].records[index].image_path = image_path
+      // console.log(this.editForm.scheme_records[schemeIndex])
+      // console.log(this.editForm.scheme_records[schemeIndex].records[index])
+      // console.log(this.editForm.scheme_records[schemeIndex].scheme_records[index])
+    },
+    handleUpdateSchemeGame(game_id, index) {
+      this.schemeDialog.form.records[index].image_path = this.appGameOptions.find(item => item.game_id === game_id).image_path
+    },
+    /**
+     * 编辑场景之后保存
+     */
+    handleSaveScheme() {
+      // console.log(this.appGuideData.scheme_records[this.schemeDialog.updateIndex])
+      if (this.configCheck(this.schemeDialog.updateIndex)) {
+        // console.log(this.schemeDialog.form)
+        // return
+        this.appGuideData.scheme_records[this.schemeDialog.updateIndex] = this.schemeDialog.form
+        this.updateRequest(() => {
+          this.schemeDialog.visible = false
+        })
+      }
     },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
@@ -254,6 +479,8 @@ export default {
               'value': objs[i].Gid
             })
           }
+
+          // console.log('this.gameGuideCfgs: ', this.gameGuideCfgs)
         }
       })
     },
@@ -286,7 +513,7 @@ export default {
         }
       })
     },
-    getList(cb) {
+    getList() {
       request({
         url: '/customizeconfig/one',
         method: 'get',
@@ -305,11 +532,13 @@ export default {
           }
           this.raw = response.Data
 
-          if (cb) cb()
+          this.getAppGuideData()
         }
       })
     },
     GetGameName(gameId) {
+      // console.log('gameId: ', gameId)
+      // console.log('this.gameGuideCfgs: ', this.gameGuideCfgs)
       var gameName = ''
       for (var i = 0; i < this.gameGuideCfgs.length; i++) {
         if (this.gameGuideCfgs[i].value === gameId) {
@@ -323,19 +552,8 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
 
+    // addSchemeGameGuideCfg(item) {},
     addGameGuideCfg(item) {
-      // let index = 0
-      // if (this.guideRecord.length > 0) {
-      //   index = this.guideRecord.length
-      // }
-      // index++
-      // this.guideRecord.push({
-      //   index: index,
-      //   sort_id: '',
-      //   game_id: '',
-      //   image_path: ''
-      // })
-
       console.log(item)
       let index = 0
       if (item.records.length > 0) {
@@ -363,12 +581,12 @@ export default {
         }
       }
     },
-    showForm(id) {
-      if (id === 0) {
+    showForm(app_id) {
+      if (!app_id) {
         this.editForm.title = '新增游戏推荐配置'
-        this.editForm.scheme_title = ''
+        // this.editForm.scheme_title = ''
         this.editForm.data = {
-          id: 0,
+          app_id: app_id,
           name: '',
           imagePath: ''
         }
@@ -391,11 +609,11 @@ export default {
       } else {
         console.log('【guideList】：', this.guideList)
         const editData = {
-          ...this.guideList.find(item => item.id === id)
+          ...this.guideList.find(item => item.app_id === app_id)
         }
-        this.editForm.id = id
+        this.editForm.app_id = app_id
         this.editForm.scheme_records = editData.scheme_records
-        this.editForm.scheme_title = editData.scheme_title
+        // this.editForm.scheme_title = editData.scheme_title
         this.editForm.associate_key = editData.associate_key
         this.editForm.title = '编辑推荐配置'
         this.editForm.isAdd = false
@@ -463,10 +681,11 @@ export default {
       let data = null
       if (this.editForm.isAdd === true) {
         data = {
+          app_id: this.searchFilter.app_id,
           id: new Date().setSeconds(0),
           associate_key: (new Date().setSeconds(0)).toString(),
-          scheme_records: _this.editForm.scheme_records,
-          scheme_title: _this.editForm.scheme_title
+          scheme_records: _this.editForm.scheme_records
+          // scheme_title: _this.editForm.scheme_title
         }
         data.scheme_records.forEach(item => {
           item.record_name = `[${item.records.map(record => _this.GetGameName(record.game_id)).join(',')}]`
@@ -476,30 +695,55 @@ export default {
         let updateIndex = 0
         data = this.guideList.find((item, index) => {
           updateIndex = index
-          return item.id === _this.editForm.id
+          return item.app_id === _this.searchFilter.app_id
         })
+        // data.scheme_records.forEach(item => {
+        //   item.record_name = `[${item.records.map(record => _this.GetGameName(record.game_id)).join(',')}]`
+        // })
         this.guideList[updateIndex] = data
       }
       console.log(this.guideList)
       // return
 
-      this.raw.Data = JSON.stringify(this.guideList)
-      request({
-        url: 'customizeconfig/update',
-        method: 'post',
-        data: this.raw
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const showMsg = '保存成功'
-          Message.success(showMsg)
-          this.getList()
-          this.editForm.visable = false
-          return
-        } else {
-          const errMsg = '保存成功失败！'
-          Message.error(errMsg + response.Data)
-          return
-        }
+      this.updateRequest(() => {
+        this.editForm.visable = false
+      })
+      // this.raw.Data = JSON.stringify(this.guideList)
+      // request({
+      //   url: 'customizeconfig/update',
+      //   method: 'post',
+      //   data: this.raw
+      // }).then(response => {
+      //   if (response.RetCode === 0) {
+      //     const showMsg = '保存成功'
+      //     Message.success(showMsg)
+      //     this.getList()
+      //     this.editForm.visable = false
+      //     return
+      //   } else {
+      //     const errMsg = '保存成功失败！'
+      //     Message.error(errMsg + response.Data)
+      //     return
+      //   }
+      // })
+    },
+    /**
+     * 删除一个app_id下的所有配置
+     */
+    handleDeleteAll() {
+      const appName = this.appidInfoCfgs.find(item => item.value === this.searchFilter.app_id).label
+      this.$confirm(`您确定要删除【${appName}-${this.searchFilter.app_id}】的所有配置吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.guideList.forEach((item, index) => {
+          if (item.app_id === this.searchFilter.app_id) {
+            this.guideList.splice(index, 1)
+            this.updateRequest()
+            return
+          }
+        })
       })
     },
     handleDelete(id) {
@@ -516,21 +760,40 @@ export default {
           newList.push(this.guideList[key])
         }
         this.guideList = newList
-        this.raw.Data = JSON.stringify(this.guideList)
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          data: this.raw
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('删除配置成功！')
-            this.getList()
-          } else {
-            Message.error('删除配置失败！')
-          }
-        })
+
+        this.updateRequest()
+        // this.raw.Data = JSON.stringify(this.guideList)
+        // request({
+        //   url: 'customizeconfig/update',
+        //   method: 'post',
+        //   data: this.raw
+        // }).then(response => {
+        //   if (response.RetCode === 0) {
+        //     Message.success('删除配置成功！')
+        //     this.getList()
+        //   } else {
+        //     Message.error('删除配置失败！')
+        //   }
+        // })
       }).catch(() => {
         console.log('取消')
+      })
+    },
+    updateRequest(cb) {
+      this.raw.Data = JSON.stringify(this.guideList)
+      request({
+        url: 'customizeconfig/update',
+        method: 'post',
+        data: this.raw
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('修改配置成功！')
+          this.getList()
+        } else {
+          Message.error('修改配置失败！')
+        }
+
+        if (cb) cb()
       })
     },
     errmsg(txt) {
@@ -540,16 +803,26 @@ export default {
         showConfirmButton: false
       })
     },
-    configCheck() {
+    /**
+     * 提交保存之前检测每一项游戏的属性不能为空
+     * 如果index有值就是对单个场景的编辑进行检查
+     * 如果没有就是对外面整个数据列表进行检查
+     * @param index
+     */
+    configCheck(index = null) {
       let gameChecked = true
       let timeChecked = true
-      this.editForm.scheme_records.forEach(record => {
+      // alert(this.editForm.scheme_records[3].records[2].sort_id == '')
+      // return false
+
+      if (index !== null) {
+        const record = this.schemeDialog.form
         if (record.records.length === 0) {
           gameChecked = false
           return
         } else {
           for (var i = 0; i < record.records.length; i++) {
-            if (record.records.sort_id == '' || record.records.image_path == '' || record.records.game_id == '') {
+            if (record.records[i].sort_id == '' || record.records[i].image_path == '' || record.records[i].game_id == '') {
               gameChecked = false
             }
           }
@@ -558,11 +831,29 @@ export default {
         if ((record.scene_id == 3 || record.scene_id == 4) && (!record.left_time || record.left_time <= 0)) {
           timeChecked = false
         }
-      })
-      if (!this.editForm.scheme_title) {
-        this.errmsg('需要填写配置标题')
-        return false
+      } else {
+        this.editForm.scheme_records.forEach(record => {
+          // console.log(record)
+          if (record.records.length === 0) {
+            gameChecked = false
+            return
+          } else {
+            for (var i = 0; i < record.records.length; i++) {
+              if (record.records[i].sort_id == '' || record.records[i].image_path == '' || record.records[i].game_id == '') {
+                gameChecked = false
+              }
+            }
+          }
+
+          if ((record.scene_id == 3 || record.scene_id == 4) && (!record.left_time || record.left_time <= 0)) {
+            timeChecked = false
+          }
+        })
       }
+      // if (!this.editForm.scheme_title) {
+      //   this.errmsg('需要填写配置标题')
+      //   return false
+      // }
       if (!gameChecked) {
         this.errmsg('需要填写推荐游戏配置信息')
         return false
