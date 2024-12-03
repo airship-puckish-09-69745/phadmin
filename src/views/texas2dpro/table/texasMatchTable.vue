@@ -218,12 +218,12 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="报名费用:" :required="true" prop="item.SignupFee">
               <el-input v-model="edit.item.SignupFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="服务费:" :required="true" prop="item.ServiceFee" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="服务费:" :required="true" prop="item.ServiceFee">
               <el-input v-model="edit.item.ServiceFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
