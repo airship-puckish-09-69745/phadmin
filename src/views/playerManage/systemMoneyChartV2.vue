@@ -374,6 +374,8 @@ export default {
         112: 'Wingo',
         113: 'PusoySwap',
         115: 'Multi NiuNiu',
+        116: 'Gin Rummy',
+        117: 'Uno',
         152: 'Aladdin\'s Lamp',
         150: 'SuperGems3',
         156: 'Crazy Ace',
@@ -383,13 +385,15 @@ export default {
         162: 'Major Ace',
         166: 'Fire Link',
         123: 'Mines Battle',
+        170: 'Epic Ace',
         10000: '汇总'
       },
 
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38, 35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 158,123], // 糖果传奇调用addGameNames特殊处理
+      defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38,
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123,117,116], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -511,9 +515,9 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 160, 162, 166)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 166, 170)
         }
       }
     },

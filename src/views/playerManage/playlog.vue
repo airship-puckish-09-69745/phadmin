@@ -2440,36 +2440,36 @@
 
     <el-dialog title="Carracing详情" :visible.sync="carracingDetailVisible" width="1300px">
       <div style=" font-size:14px; line-height: 18px; height: 25px;">
-        <span style="float:left;">开奖logo：</span><div style="color:red;">{{getCarracingCarLogoName()}}</div>
+        <span style="float:left;">开奖logo：</span><div style="color:red;">{{ getCarracingCarLogoName() }}</div>
       </div>
 
       <el-table ref="filterTable" :data="carracingData.players" border>
-          <el-table-column prop="uid" label="uid">
-            <template slot-scope="scope">{{ scope.row.uid }}</template>
-          </el-table-column>
-          <el-table-column prop="uid" label="Target">
-            <template slot-scope="scope">
-              <div v-for="(item,index) in scope.row.optionsResult" class="block">
-                <hr v-if="index > 0" >
-                  <el-divider direction="vertical"></el-divider>
-                </hr>
-                {{getCarracingLogoName(item.id)}}
-                <!--{{getCarracingLogoName(item.id) + '(' + item.moneyBet/1000 + ')'}}-->
-              </div>
+        <el-table-column prop="uid" label="uid">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="Target">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.optionsResult" class="block">
+              <hr v-if="index > 0">
+              <el-divider direction="vertical" />
+              </hr>
+              {{ getCarracingLogoName(item.id) }}
+              <!--{{getCarracingLogoName(item.id) + '(' + item.moneyBet/1000 + ')'}}-->
+            </div>
           </template>
-          </el-table-column>
-          <el-table-column prop="uid" label="Bet">
-            <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
-          </el-table-column>
-          <el-table-column prop="uid" label="JackPot">
-            <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotAward/1000:'' }}</template>
-          </el-table-column>
-          <el-table-column prop="uid" label="JackpotType">
-            <template slot-scope="scope">{{ jackpotType[scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotType:-1] }}</template>
-          </el-table-column>
-          <el-table-column prop="uid" label="win">
-            <template slot-scope="scope">{{ formatNumber(scope.row.moneyWin/1000) }}</template>
-          </el-table-column>
+        </el-table-column>
+        <el-table-column prop="uid" label="Bet">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="JackPot">
+          <template slot-scope="scope">{{ scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotAward/1000:'' }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="JackpotType">
+          <template slot-scope="scope">{{ jackpotType[scope.row.LuckyPachinko?scope.row.LuckyPachinko.Jackpot.JackpotType:-1] }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="win">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyWin/1000) }}</template>
+        </el-table-column>
       </el-table>
     </el-dialog>
 
@@ -2507,6 +2507,35 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog
+      title="雷区详情"
+      :visible.sync="minesBattleVisible"
+      width="650px"
+    >
+      <div id="sweeperShowTable">
+        <table>
+          <tr><td>操作用户</td><td>操作类型</td><td>扣除金币数</td><td>操作结果</td></tr>
+          <tr v-for="(play,key) in minesBattlePlayDetails" :key="key" :label="play" :value="key">
+            <td>{{ play.uid }}</td><td>{{  play.action }}</td><td>{{ play.money /1000 }}</td><td>{{  play.result }}</td>
+          </tr>
+        </table>
+      </div>
+      <ul id="sweeperShow">
+        <li v-for="(o,key) in minesBattleDetails" :key="key" :label="o" :value="key">
+          <template>
+            <span v-if="o.result==1" :style="o.step!=0?'color:green':'color:gold'"> {{ o.name }}</span>
+            <span v-else :style="o.step!=0?'color:red':''">{{ o.name }}</span>
+          </template>
+          <div class="showStep">
+            <template>
+              <span v-if="o.step!=0" style="color:blue">{{ o.step }}</span>
+              <span v-else>{{ o.step }}</span>
+            </template>
+          </div>
+        </li>
+      </ul>
+    </el-dialog>
+
     <GinRummy v-if="gameLogComponent.gid === 116" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
@@ -2531,7 +2560,7 @@ import TexasNLHDetailLog from '@/views/playerManage/components/TexasNLHGameLog.v
 import QiuQiuGameLog from '@/views/playerManage/components/QiuQiuGameLog.vue'
 import WingoLotteryDetailLog from '@/views/playerManage/components/WingoLotteryGameLog.vue'
 import MultiPlayerNiuNiuDetailLog from '@/views/playerManage/components/MultiPlayerNiuNiu.vue'
-import GinRummy from "@/views/playerManage/components/GinRummy.vue";
+import GinRummy from '@/views/playerManage/components/GinRummy.vue'
 
 const filterMap = {
   IsPractice: { 1: '是', 0: '否', 6: '钓鱼付费', 7: '钓鱼未付', 8: '钓鱼2付费', 9: '钓鱼2未付费', 10: '钓鱼3付费', 11: '钓鱼3未付费' },
@@ -2609,6 +2638,9 @@ export default {
       sweeperPlay: [],
       sweeperRateVisible: false,
 
+      minesBattleVisible: false,
+      minesBattleDetails: [],
+      minesBattlePlayDetails: [],
       towerVisible: false,
       towerData: '',
 
@@ -2785,22 +2817,22 @@ export default {
         6: 'declare',
         7: '其他玩家都drop了'
       },
-      niuniuTypeMap:{
-        100 : '高牌',
-        101 : '牛1',
-        102 : '牛2',
-        103 : '牛3',
-        104 : '牛4',
-        105 : '牛5',
-        106 : '牛6',
-        107 : '牛7',
-        108 : '牛8',
-        109 : '牛9',
-        110 : '牛牛',
-        111 : '四花',
-        112 : '五花',
-        113 : '四条',
-        114 : '五小',
+      niuniuTypeMap: {
+        100: '高牌',
+        101: '牛1',
+        102: '牛2',
+        103: '牛3',
+        104: '牛4',
+        105: '牛5',
+        106: '牛6',
+        107: '牛7',
+        108: '牛8',
+        109: '牛9',
+        110: '牛牛',
+        111: '四花',
+        112: '五花',
+        113: '四条',
+        114: '五小'
       },
       chartData: newChartData(),
       dataArr: [],
@@ -3162,7 +3194,7 @@ export default {
             $this.showSolitaire(obj)
           } else if (gid === 106) {
             $this.showPiggy(obj)
-          } else if ($this.LogComponentGameIds.indexOf(gid) !== -1 || gid === 115|| gid === 116) {
+          } else if ($this.LogComponentGameIds.indexOf(gid) !== -1 || gid === 115 || gid === 116) {
             $this.showGameLogComponent(obj, gid)
           } else if (gid === 46) {
             $this.showDominoGame(obj)
@@ -3170,6 +3202,8 @@ export default {
             $this.showPusoySwapGame(obj)
           } else if (gid === 118) {
             $this.showCarracingGame(obj)
+          } else if (gid === 123) {
+            $this.showMinesGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -3258,10 +3292,10 @@ export default {
       }
       return imgMap[id]
     },
-    showCarracingGame(obj){
+    showCarracingGame(obj) {
       this.carracingDetail = obj
       this.carracingData = obj.Carracing
-      console.log("this.carracingData => ", this.carracingData)
+      console.log('this.carracingData => ', this.carracingData)
       this.carracingDetailVisible = true
     },
     getCarracingCarLogoName() {
@@ -3275,15 +3309,15 @@ export default {
     },
     getCarracingLogoName(id) {
       const nameMap = {
-        0:"兰博基尼",
-        1:"法拉利",
-        2:"宝马",
-        3:"奔驰",
-        4:"丰田",
-        5:"三菱",
-        6:"马自达",
-        7:"本田",
-        8:"Gratis",
+        0: '兰博基尼',
+        1: '法拉利',
+        2: '宝马',
+        3: '奔驰',
+        4: '丰田',
+        5: '三菱',
+        6: '马自达',
+        7: '本田',
+        8: 'Gratis'
       }
       return nameMap[id]
     },
@@ -3807,6 +3841,48 @@ export default {
       console.log(this.sweeperPlay)
 
       this.sweeperVisible = true
+    },
+    showMinesGame(obj) {
+      const showDetail = []
+      for (let i = 0; i < obj.blockDetails.length; i++) {
+        const detailRow = obj.blockDetails[i]
+        const areaIndex = detailRow.index - 1
+        let showName = '炸弹'
+        if (detailRow.result == 1) {
+          showName = '金币'
+        }
+
+        if (detailRow.result == 3) {
+          showName = '宝箱'
+        }
+        showDetail[areaIndex] = { name: showName, step: detailRow.step, result: detailRow.result }
+      }
+
+      const playDetail = []
+      for (let k = 0; k < obj.playDetails.length; k++) {
+        const detailRow = obj.playDetails[k]
+        let playAction = '扫雷'
+        if (detailRow.actionType == 2) {
+          playAction = '跳过'
+        }
+
+        let resultName = ''
+        if (detailRow.result == 1) {
+          resultName = '金币'
+        }
+
+        if (detailRow.result == 2) {
+          resultName = '炸弹'
+        }
+
+        playDetail[k] = { action: playAction, uid: detailRow.uid, result: resultName, money: detailRow.actionMoney }
+      }
+
+      this.minesBattleDetails = showDetail
+      this.minesBattlePlayDetails = playDetail
+      console.log(this.minesBattleDetails)
+      console.log(this.minesBattlePlayDetails)
+      this.minesBattleVisible = true
     },
     showTowerGame(obj) {
       this.towerData = obj.Tower.Symbol
