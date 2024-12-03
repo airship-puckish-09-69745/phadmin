@@ -217,15 +217,25 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="11">
+          <el-col :span="9">
             <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.SignupFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="11">
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="扩大1000倍填写，0.1 则填写100" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
+          <el-col :span="9">
             <el-form-item label="服务费:" :required="true" prop="item.ServiceFee" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.ServiceFee" placeholder="请输入" />
             </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="扩大1000倍填写，0.1 则填写100" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
         </el-row>
         <el-row>
