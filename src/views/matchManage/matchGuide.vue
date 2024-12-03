@@ -1,8 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object"
-        :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
     </el-row>
 
     <el-row style="margin: 15px 0;">
@@ -63,8 +62,7 @@
       </div>
     </el-row>
 
-    <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false" width="80%"
-      :close-on-press-escape="false">
+    <el-dialog :title="editForm.title" :visible.sync="editForm.visable" :close-on-click-modal="false" width="80%" :close-on-press-escape="false">
       <el-form :model="editForm.data" label-width="120px" size="mini">
         <!-- <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;"> -->
 
@@ -78,23 +76,18 @@
         </el-form-item>
         <el-form-item label="推荐场景：" :required="true">
           <el-collapse v-model="activeCollapseIndex">
-            <el-collapse-item v-for="(item, schemeIndex) in editForm.scheme_records" :key="item.value" :title="item.label"
-              :name="item.value">
-              <el-button style="margin-bottom: 8px;" type="success" size="mini"
-                @click="addGameGuideCfg(item)">添加游戏</el-button>
+            <el-collapse-item v-for="(item, schemeIndex) in editForm.scheme_records" :key="item.value" :title="item.label" :name="item.value">
+              <el-button style="margin-bottom: 8px;" type="success" size="mini" @click="addGameGuideCfg(item)">添加游戏</el-button>
               <div v-if="item.scene_id == 3 || item.scene_id == 4" style="margin-bottom: 8px;">
                 开赛剩余时间(秒):
                 <el-input v-model.number="item.left_time" style="width: 200px;" size="mini" placeholder="填写时间(秒):" />
               </div>
-              <el-table :data="item.records" border stripe :header-cell-style="libShow.DefaultTableHeadClass"
-                :row-style="{ height: '35px' }" :cell-style="libShow.TableCell(0)"
-                style="width: 100%;line-height:35px;">
+              <el-table :data="item.records" border stripe :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{ height: '35px' }" :cell-style="libShow.TableCell(0)" style="width: 100%;line-height:35px;">
                 <el-table-column prop="index" label="序号" width="50" />
                 <el-table-column prop="game_id" label="游戏名">
                   <template slot-scope="scope">
                     <el-select v-model="scope.row.game_id" placeholder="请选择" size="mini" @change="handleUpdateGame(scope.row.game_id, schemeIndex, scope.$index)">
-                      <el-option v-for="game in appGameOptions" :key="game.value" :label="GetGameName(game.game_id)"
-                        :value="game.game_id" />
+                      <el-option v-for="game in appGameOptions" :key="game.value" :label="GetGameName(game.game_id)" :value="game.game_id" />
                     </el-select>
                   </template>
                 </el-table-column>
@@ -572,7 +565,7 @@ export default {
         game_id: '',
         image_path: ''
       }
-      if (item.value == 3 || item.value == 4) {
+      if (item.value === 3 || item.value === 4) {
         newGame.left_time = 0
       }
       item.records.push(newGame)
@@ -604,7 +597,7 @@ export default {
             records: []
           }
 
-          if (record.scene_id == 3 || record.scene_id == 4) {
+          if (record.scene_id === 3 || record.scene_id === 4) {
             record.left_time = 0
           }
           return record
@@ -828,13 +821,13 @@ export default {
           return
         } else {
           for (var i = 0; i < record.records.length; i++) {
-            if (record.records[i].sort_id == '' || record.records[i].image_path == '' || record.records[i].game_id == '') {
+            if (record.records[i].sort_id === '' || record.records[i].image_path === '' || record.records[i].game_id === '') {
               gameChecked = false
             }
           }
         }
 
-        if ((record.scene_id == 3 || record.scene_id == 4) && (!record.left_time || record.left_time <= 0)) {
+        if ((record.scene_id === 3 || record.scene_id === 4) && (!record.left_time || record.left_time <= 0)) {
           timeChecked = false
         }
       } else {
@@ -845,13 +838,13 @@ export default {
             return
           } else {
             for (var i = 0; i < record.records.length; i++) {
-              if (record.records[i].sort_id == '' || record.records[i].image_path == '' || record.records[i].game_id == '') {
+              if (record.records[i].sort_id === '' || record.records[i].image_path === '' || record.records[i].game_id === '') {
                 gameChecked = false
               }
             }
           }
 
-          if ((record.scene_id == 3 || record.scene_id == 4) && (!record.left_time || record.left_time <= 0)) {
+          if ((record.scene_id === 3 || record.scene_id === 4) && (!record.left_time || record.left_time <= 0)) {
             timeChecked = false
           }
         })
