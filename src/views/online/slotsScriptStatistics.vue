@@ -1402,8 +1402,9 @@ export default {
           88: 'crazy777',
           76: 'candypartyway',
           152: 'aladdinlamp',
-          86: 'CustomizeCfg_supergemii',
-          90:'CustomizeCfg_moneycoming'
+          86: 'supergemii',
+          90:'moneycoming',
+          92:'fortuneacego'
         }
         let key = this.gameScene[gid] + '_slots_base'
         for (const k in realKey) {
@@ -1412,7 +1413,7 @@ export default {
           }
         }
 
-        request2({
+        request({
           url: '/customizeconfig/one',
           method: 'get',
           data: {

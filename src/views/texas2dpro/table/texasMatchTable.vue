@@ -218,13 +218,13 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.SignupFee" placeholder="请输入" />
+            <el-form-item label="报名费用:" :required="true" prop="item.SignupFee">
+              <el-input v-model="edit.item.SignupFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
           <el-col :span="11">
-            <el-form-item label="服务费:" :required="true" prop="item.ServiceFee" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.ServiceFee" placeholder="请输入" />
+            <el-form-item label="服务费:" :required="true" prop="item.ServiceFee">
+              <el-input v-model="edit.item.ServiceFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -621,6 +621,8 @@ export default {
             }
             objs[o].PreMatchBeginTime = objs[o].RaceCanEnterTime / 60
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
+            objs[o].ServiceFee = objs[o].ServiceFee/1000
+            objs[o].SignupFee = objs[o].SignupFee/1000
 
             console.log(objs[o])
           }
@@ -741,6 +743,8 @@ export default {
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
+      postData.ServiceFee = postData.ServiceFee * 1000
+      postData.SignupFee = postData.SignupFee * 1000
       if (postData.RaceType === 2) {
         postData.RaceWeekStr = ''
         for (var i = 0; i < postData.RaceWeek.length; i++) {
