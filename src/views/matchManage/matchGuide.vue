@@ -68,9 +68,14 @@
       <el-form :model="editForm.data" label-width="120px" size="mini">
         <!-- <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;"> -->
 
-        <!-- <el-form-item label="配置标题：" :required="true">
+        <el-form-item label="AppId：" :required="true">
+          <el-select v-model="editForm.app_id" filterable placeholder="请选择" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
+            <el-option v-for="item in appidInfoCfgs" :key="item.value" :label="`${item.label}-${item.value}`" :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="配置标题：" :required="true">
           <el-input v-model="editForm.scheme_title" size="mini" placeholder="填写配置标题" />
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="推荐场景：" :required="true">
           <el-collapse v-model="activeCollapseIndex">
             <el-collapse-item v-for="(item, schemeIndex) in editForm.scheme_records" :key="item.value" :title="item.label"
@@ -244,6 +249,7 @@ export default {
       page: 1,
       appidInfoCfgs: [],
       editForm: {
+        app_id: '',
         visable: false,
         title: '',
         scheme_title: '',
