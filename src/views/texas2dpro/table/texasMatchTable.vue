@@ -56,6 +56,9 @@
           </template>
         </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
+         <template slot-scope="scope">
+            {{ scope.row.SignupFee }} / 1000
+          </template>
         <el-table-column prop="ServiceFee" label="服务费" width="70" />
         <el-table-column prop="LastModify" label="最近修改" width="150">
           <template slot-scope="scope">
