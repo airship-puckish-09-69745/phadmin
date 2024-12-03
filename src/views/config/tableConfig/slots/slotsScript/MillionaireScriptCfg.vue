@@ -356,9 +356,12 @@
                 label="目标下注金额列表"
                 width="200"
               >
+                <template slot-scope="{}" slot="header">
+                  <show-tip head-title="目标下注金额列表" head-tip="英文逗号分割:1,2,3"></show-tip>
+                </template>
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model.number="scope.row.TargetBets" size="mini"
+                    <el-input v-model="scope.row.TargetBets" size="mini"
                               oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
                   </el-col>
                 </template>
@@ -499,9 +502,6 @@
           label="最大倍数"
           width="200"
         >
-          <template slot-scope="{}" slot="header">
-            <show-tip head-title="最大倍数" head-tip="0为无限大"></show-tip>
-          </template>
           <template slot-scope="scope">
             <el-col :span="20">
               <el-input v-model.number="scope.row.OddsMax" size="mini"
@@ -698,7 +698,7 @@ export default {
         this.item['BetOddsPlans'] = []
       }
       this.item.BetOddsPlans.push({
-        "TargetBets": 0,
+        "TargetBets": [],
         "OddsCfg": [],
       })
       console.log('this.item.BetOddsPlans', this.item)
@@ -753,6 +753,13 @@ export default {
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
+      for (const o of ret.BetOddsPlans) {
+        if (typeof (o.TargetBets) == "string") {
+          for (const s of o.TargetBets.split(',')) {
+            o.TargetBets.push(parseInt(s))
+          }
+        }
+      }
       return ret
     },
     getData() {
