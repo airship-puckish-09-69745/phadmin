@@ -1246,20 +1246,6 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'matchMapConfig',
-        component: () => import('@/views/empty'),
-        name: 'matchMapConfig',
-        meta: { title: '比赛map配置', noCache: true },
-        children: [
-          {
-            path: 'matchMapConfig',
-            component: () => import('@/views/config/tableConfig/activity/matchMapConfig.vue'),
-            name: 'matchMapConfig',
-            meta: { title: '比赛map配置', noCache: true }
-          }
-        ]
-      },
-      {
         path: 'activityCommonConfig',
         component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
         name: 'activityCommonConfig',
@@ -1370,6 +1356,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchGuide.vue'),
         name: 'matchPosterList',
         meta: { title: '赛事引导', noCache: true }
+      },
+      {
+        path: 'matchMapConfig',
+        component: () => import('@/views/matchManage/matchMapConfig.vue'),
+        name: 'matchMapConfig',
+        meta: { title: '比赛map配置', noCache: true }
       }
     ]
   },
