@@ -56,7 +56,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="SignupFee" label="报名费用" width="90" />
+          <template slot-scope="scope">
+            {{ scope.row.SignupFee / 1000  }}
+          </template>
         <el-table-column prop="ServiceFee" label="服务费" width="70" />
+          <template slot-scope="scope">
+            {{ scope.row.ServiceFee / 1000  }}
+          </template>
         <el-table-column prop="LastModify" label="最近修改" width="150">
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
@@ -217,25 +223,15 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="9">
+          <el-col :span="11">
             <el-form-item label="报名费用:" :required="true" prop="item.SignupFee" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.SignupFee" placeholder="请输入" />
+              <el-input v-model="edit.item.SignupFee" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="扩大1000倍填写，0.1 则填写100" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
-          </el-col>
-          <el-col :span="9">
+          <el-col :span="11">
             <el-form-item label="服务费:" :required="true" prop="item.ServiceFee" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.ServiceFee" placeholder="请输入" />
+              <el-input v-model="edit.item.ServiceFee" placeholder="请输入" />
             </el-form-item>
-          </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="扩大1000倍填写，0.1 则填写100" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
           </el-col>
         </el-row>
         <el-row>
@@ -751,6 +747,8 @@ export default {
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
+      postData.ServiceFee = postData.ServiceFee * 1000
+      postData.SignupFee = postData.SignupFee * 1000
       if (postData.RaceType === 2) {
         postData.RaceWeekStr = ''
         for (var i = 0; i < postData.RaceWeek.length; i++) {
