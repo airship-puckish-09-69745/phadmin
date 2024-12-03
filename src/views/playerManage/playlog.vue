@@ -2473,6 +2473,54 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="JackpotWheel详情" :visible.sync="jackpotWheelDetailVisible" width="1300px">
+      <el-table ref="filterTable" :data="jackpotWheelData.players" border>
+        <el-table-column prop="uid" label="uid">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="Target">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.optionsResult" class="block">
+              <hr v-if="index > 0">
+              <el-divider direction="vertical" />
+              </hr>
+              {{ getJackpotWheelLogoName(item.id) }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="uid" label="Bet">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="win">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyWin/1000) }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
+    <el-dialog title="FreeSpin详情" :visible.sync="freeSpinDetailVisible" width="1300px">
+      <el-table ref="filterTable" :data="freeSpinData.players" border>
+        <el-table-column prop="uid" label="uid">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="Target">
+          <template slot-scope="scope">
+            <div v-for="(item,index) in scope.row.optionsResult" class="block">
+              <hr v-if="index > 0">
+              <el-divider direction="vertical" />
+              </hr>
+              {{ getFreeSpinLogoName(item.id) }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="uid" label="Bet">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet /1000) }}</template>
+        </el-table-column>
+        <el-table-column prop="uid" label="win">
+          <template slot-scope="scope">{{ formatNumber(scope.row.moneyWin/1000) }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
     <texas-n-l-h-detail-log v-if="gameLogComponent.gid === 32" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <qiu-qiu-game-log v-if="gameLogComponent.gid === 111" :game-log="gameLogComponent" @closeDialog="closeDialog" />
 
@@ -2717,6 +2765,14 @@ export default {
       carracingDetail: {},
       carracingData: {},
       carracingDetailVisible: false,
+      
+      jackpotWheelDetail: {},
+      jackpotWheelData: {},
+      jackpotWheelDetailVisible: false,
+
+      freeSpinDetail: {},
+      freeSpinData: {},
+      freeSpinDetailVisible: false,
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
@@ -3204,6 +3260,10 @@ export default {
             $this.showCarracingGame(obj)
           } else if (gid === 123) {
             $this.showMinesGame(obj)
+          } else if (gid === 124) {
+            $this.showJackpotWheelGame(obj)
+          } else if (gid === 125) {
+            $this.showFreeSpinGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -3321,6 +3381,77 @@ export default {
       }
       return nameMap[id]
     },
+
+    showJackpotWheelGame(obj) {
+      this.jackpotWheelDetail = obj
+      this.jackpotWheelData = obj.JackPotWheel
+      console.log('this.jackpotWheelData => ', this.jackpotWheelData)
+      this.jackpotWheelDetailVisible = true
+    },
+    getJackpotWheelCarLogoName() {
+      if (this.jackpotWheelData.cards != undefined && this.jackpotWheelData.cards.length > 0) {
+        return this.getJackpotWheelLogoName(this.jackpotWheelData.cards[this.jackpotWheelData.cards.length - 1])
+      }
+      return 0
+    },
+    getJackpotWheelPlayerBet() {
+      return formatNumber(jackpotWheelDetail.Bet / 1000)
+    },
+    getJackpotWheelLogoName(id) {
+      const nameMap = {
+        0: 'try again',
+        1: '0.2',
+        2: '0.4',
+        3: '1',
+        4: '2',
+        5: '5',
+        6: '10',
+        7: '15',
+        8: '20',
+        9: 'Minor',
+        10: 'Major',
+        11: 'Grand',
+      }
+      return nameMap[id]
+    },
+
+    showFreeSpinGame(obj) {
+      this.freeSpinDetail = obj
+      this.freeSpinData = obj.FreeSpin
+      console.log('this.freeSpinData => ', this.freeSpinData)
+      this.freeSpinDetailVisible = true
+    },
+    getFreeSpinCarLogoName() {
+      if (this.freeSpinData.cards != undefined && this.freeSpinData.cards.length > 0) {
+        return this.getFreeSpinLogoName(this.freeSpinData.cards[this.freeSpinData.cards.length - 1])
+      }
+      return 0
+    },
+    getFreeSpinPlayerBet() {
+      return formatNumber(freeSpinDetail.Bet / 1000)
+    },
+    getFreeSpinLogoName(id) {
+      const nameMap = {
+        0: '0.2',
+        1: '0.4',
+        2: '0.6',
+        3: '0.8',
+        4: '1.2',
+        5: '2',
+        6: '4',
+        7: '8',
+        8: '10',
+        9: '15',
+        10: '20',
+        11: '40',
+        12: '80',
+        13: '200',
+        14: 'FreeSpin*5',
+        15: 'FreeSpin*10',
+      }
+      return nameMap[id]
+    },
+
     showTexasGame(obj) {
       this.actions = obj.logs
       const cards = JSON.parse(obj.cardData)

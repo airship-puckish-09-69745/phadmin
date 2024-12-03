@@ -696,6 +696,18 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/carracingConfig'),
             name: 'carracing_cfg',
             meta: { title: 'Carracing ◐' }
+          },
+          {
+            path: 'jackpotwheel_cfg',
+            component: () => import('@/views/config/tableConfig/jackpotwheelConfig'),
+            name: 'jackpotwheel_cfg',
+            meta: { title: 'Jackpotwheel ◐' }
+          },
+          {
+            path: 'freespin_cfg',
+            component: () => import('@/views/config/tableConfig/freespinConfig'),
+            name: 'freespin_cfg',
+            meta: { title: 'FreeSpin ◐' }
           }
         ]
       },
