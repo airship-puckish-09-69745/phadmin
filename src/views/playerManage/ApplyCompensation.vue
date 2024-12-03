@@ -186,16 +186,9 @@
         </el-form-item>
         <el-form-item label="金额：" label-width="120px" :required="true">
           <template slot="label">
-            <span>金额
-              <el-tooltip class="item" effect="dark" placement="right">
-                <i class="el-icon-question" style="font-size: 16px; vertical-align: middle;"></i>
-                <div slot="content">
-                  <p>输入1000金额,实际补偿1金额</p>
-                </div>
-              </el-tooltip>
-            </span>
+            <span>金额</span>
           </template>
-          <el-input v-model.number="item.Amount" placeholder="金额" size="mini"/>
+          <el-input v-model="item.Amount" placeholder="金额" size="mini"/>
         </el-form-item>
         <el-form-item label="异常原因：" label-width="120px" :required="true">
           <el-input
@@ -205,7 +198,7 @@
             v-model="item.Description">
           </el-input>
         </el-form-item>
-        <el-form-item label="异常详细信息：" label-width="120px" :required="true">
+        <el-form-item label="异常详细信息：" label-width="120px" >
           <template slot="label">
             <span>异常详细信息
               <el-tooltip class="item" effect="dark" placement="right">
@@ -315,6 +308,7 @@ export default {
         })
       } else {
         data.AbnormalTime = parseInt(data.AbnormalTime / 1000)
+        data.Amount *= 1000
         request({
           url: '/applycompensation/create',
           method: 'post',
@@ -352,7 +346,7 @@ export default {
       this.item.AppID = row.app_id
       this.item.GameId = row.game_id
       this.item.Description = row.description
-      this.item.Amount = row.amount
+      this.item.Amount = row.amount /1000
       this.item.Detail = row.detail
       this.item.AbnormalTime = row.abnormal_time * 1000
       this.visibleData = true
