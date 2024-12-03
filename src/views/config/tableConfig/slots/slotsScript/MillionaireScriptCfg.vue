@@ -755,9 +755,11 @@ export default {
       Object.assign(ret, this.item)
       for (const o of ret.BetOddsPlans) {
         if (typeof (o.TargetBets) == "string") {
+          let temp = []
           for (const s of o.TargetBets.split(',')) {
-            o.TargetBets.push(parseInt(s))
+            temp.push(parseInt(s))
           }
+          o.TargetBets = temp
         }
       }
       return ret
