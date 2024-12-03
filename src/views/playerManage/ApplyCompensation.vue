@@ -115,7 +115,8 @@
               <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
                          @click="initiateApplication(scope.row)">发起申请
               </el-button>
-              <el-button type="text" :disabled="getDisable(scope.row,[6,2,8])" v-if="showBtn(scope.row,[6,2,8])" size="mini"
+              <el-button type="text" :disabled="getDisable(scope.row,[6,2,8])" v-if="showBtn(scope.row,[6,2,8])"
+                         size="mini"
                          @click="execution(scope.row)">发起补偿/重试
               </el-button>
               <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
@@ -198,7 +199,7 @@
             v-model="item.Description">
           </el-input>
         </el-form-item>
-        <el-form-item label="异常详细信息：" label-width="120px" >
+        <el-form-item label="异常详细信息：" label-width="120px">
           <template slot="label">
             <span>异常详细信息
               <el-tooltip class="item" effect="dark" placement="right">
@@ -295,6 +296,7 @@ export default {
       let data = this.item
       if (this.isEdit) {
         data.AbnormalTime = parseInt(data.AbnormalTime / 1000)
+        data.Amount *= 1000
         request({
           url: '/applycompensation/update',
           method: 'post',
@@ -346,7 +348,7 @@ export default {
       this.item.AppID = row.app_id
       this.item.GameId = row.game_id
       this.item.Description = row.description
-      this.item.Amount = row.amount /1000
+      this.item.Amount = row.amount / 1000
       this.item.Detail = row.detail
       this.item.AbnormalTime = row.abnormal_time * 1000
       this.visibleData = true
@@ -444,13 +446,13 @@ export default {
         url: '/applycompensation/wallet/damage',
         method: 'Post',
         data: {
-          ID:row.id,
-          Uid:row.uid,
-          Amount:row.amount,
-          GameId:row.game_id,
-          App:row.app_id,
-          Detail:row.detail,
-          AbnormalTime:row.abnormal_time
+          ID: row.id,
+          Uid: row.uid,
+          Amount: row.amount,
+          GameId: row.game_id,
+          App: row.app_id,
+          Detail: row.detail,
+          AbnormalTime: row.abnormal_time
         }
       }).then(response => {
         if (response.RetCode === 0) {
