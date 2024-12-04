@@ -495,7 +495,8 @@
         </el-col>
         <el-col :offset="2" :span="4">
           <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="right">
-            <el-button type="primary" @click="checkBetPlans()" size="mini" style="background-color:#ff8000">检查</el-button>
+            <el-button type="primary" @click="checkBetPlans()" size="mini" style="background-color:#ff8000">检查
+            </el-button>
           </el-tooltip>
         </el-col>
       </el-row>
@@ -726,6 +727,7 @@ export default {
       this.item.BetOddsPlans.push({
         "TargetBets": [],
         "OddsCfg": [],
+        "TargetBetStr": "",
       })
       console.log('this.item.BetOddsPlans', this.item)
       this.itemKey = Math.random()
@@ -739,10 +741,13 @@ export default {
       this.showVisibleIdx = idx
     },
     showTargetBetStr(str) {
-      let s = str.split(',')
+      if (str.length === '') {
+        return ''
+      }
+      let arr = str.split(',')
       let cfg = this.slotCfg[this.queryGid]
       let ret = ''
-      for (const s of s) {
+      for (const s of arr) {
         ret += Number(s) * Number(cfg.Bet) + ','
       }
       return ret.substring(0, ret.length - 1)
