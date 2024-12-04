@@ -313,7 +313,7 @@ export default {
     console.log(1)
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
-    if (this.gid === 150 || this.gid === 166) {
+    if (this.gid === 150 || this.gid === 166 || this.gid === 176) {
       this.typeNames[1] = 'bonus'
     }
   },
