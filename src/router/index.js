@@ -1356,6 +1356,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchGuide.vue'),
         name: 'matchPosterList',
         meta: { title: '赛事引导', noCache: true }
+      },
+      {
+        path: 'matchMapConfig',
+        component: () => import('@/views/matchManage/matchMapConfig.vue'),
+        name: 'matchMapConfig',
+        meta: { title: '比赛map配置', noCache: true }
       }
     ]
   },

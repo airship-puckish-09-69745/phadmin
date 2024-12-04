@@ -41,7 +41,7 @@
                   </el-col>
                 </el-form>
               </el-col>
-
+              
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
                   <el-col :span="8">
@@ -51,7 +51,7 @@
                   </el-col>
                 </el-form>
               </el-col>
-
+              
               <fieldset style="margin-top:10px">
                 
                 <el-col :span="20">
@@ -137,7 +137,7 @@
                     </template>
                   </el-table-column>
 
-                  <el-table-column label="类型(0:odds 1:free)">
+                  <el-table-column label="类型(0:odds 5:free)">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].Type" size="mini" />
                     </template>
