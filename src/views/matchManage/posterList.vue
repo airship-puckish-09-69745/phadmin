@@ -5,6 +5,38 @@
     </el-row>
     <el-row>
 
+      <el-row>
+        <el-form :model="form" label-width="100px" :inline="true" size="mini">
+          <el-form-item label="AppId：" :required="true">
+            <el-select v-model="form.app_id" placeholder="请选择" size="mini">
+              <el-option label="全部" :value="-1" />
+              <el-option
+                v-for="item in appidInfoCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="状态：" :required="true">
+            <el-select v-model="form.status" placeholder="请选择" size="mini">
+              <el-option label="全部" :value="-1" />
+              <el-option
+                v-for="item in statusCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-button size="mini" @click="resetSearch">重置查询条件</el-button>
+            <el-button type="primary" size="mini" @click="getListCheck">查询</el-button>
+          </el-form-item>
+        </el-form>
+      </el-row>
+
       <el-row style="margin-top: 30px">
         <el-col :span="2" :offset="0">
           <el-form ref="form" :model="posterList" label-width="200px">
@@ -220,7 +252,8 @@ export default {
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
       form: {
-        status: 0
+        status: -1,
+        app_id:-1,
       },
       showCsCfgs: [],
       posterList: {
@@ -298,6 +331,10 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
 
+      resetSearch() {
+        this.form.app_id = -1
+        this.form.status = -1
+      },
     getBeginMatchCfgs() {
       request({
         url: '/matchconfig/match/config/list',
@@ -358,6 +395,59 @@ export default {
             this.posterList = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
+            this.raw = response.Data
+          }
+          this.raw = response.Data
+        }
+      })
+    },
+
+    getListCheck() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
+            const cfg = JSON.parse(response.Data.Data)
+            if (cfg.tableData.length > 0) {
+              this.posterList.tableData = []
+              if (this.form.app_id < 0 && this.form.status >= 0) {
+                for (var i = 0; i < cfg.tableData.length; i++) {
+                  if (this.form.status == 1 && cfg.tableData[i].switch == true) {
+                    this.posterList.tableData.push(cfg.tableData[i])
+                  }
+                  if (this.form.status == 0 &&  cfg.tableData[i].switch == false) {
+                      this.posterList.tableData.push( cfg.tableData[i])
+                  }
+                }
+
+              } else if (this.form.app_id > 0 && this.form.status < 0) {
+                for (var i = 0; i < cfg.tableData.length; i++) {
+                  if (cfg.tableData[i].app_id == this.form.app_id) {
+                    this.posterList.tableData.push(cfg.tableData[i])
+                  }
+                }
+              } else if (this.form.app_id > 0 && this.form.status >= 0) {
+                for (var i = 0; i < cfg.tableData.length; i++) {
+                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 1 &&  cfg.tableData[i].switch == true)) {
+                    this.posterList.tableData.push( cfg.tableData[i])
+                  }
+
+                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 0 &&  cfg.tableData[i].switch == false)) {
+                    this.posterList.tableData.push( cfg.tableData[i])
+                  }
+                }
+              } else {
+                this.posterList = JSON.parse(response.Data.Data)
+              }
+            }
+
+              // 设置修改之前数据
+              this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
           }
           this.raw = response.Data
@@ -432,9 +522,6 @@ export default {
         }
       }
       return jumpName
-    },
-    showSwitchForm() {
-
     },
     showForm(id) {
       if (id === 0) {
