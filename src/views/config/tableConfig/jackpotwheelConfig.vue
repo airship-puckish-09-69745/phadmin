@@ -341,9 +341,9 @@ export default {
     transMoneyForShow() {
       let that = this
       for (const o of  that.item.BetAreaOptions) {
-        if (o.Type == 0) { //=1:免费次数
+        //if (o.Type == 0) { //=1:免费次数
           o.Odds /= 1000
-        }        
+        //}
       }
 
       for (const j in that.item.Rate) {
@@ -444,9 +444,9 @@ export default {
       }
       //赔率配置
       for (const o of ret.BetAreaOptions) {
-        if (o.Type == 0) {  //=1:免费次数
+        //if (o.Type == 0) {  //=1:免费次数
           o.Odds *= 1000
-        }        
+        //}        
       }
       for (const i in this.item.Rate) {
           ret.Rate[i] *= 1000
