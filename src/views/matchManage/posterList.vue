@@ -4,21 +4,78 @@
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
     </el-row>
     <el-row>
-      <div style="float: right; margin-bottom: 10px;">
-        <el-button type="success" icon="el-icon-plus" @click="showForm(0)">添加赛事海报</el-button>
+
+      <el-row style="margin-top: 30px">
+        <el-col :span="2" :offset="0">
+          <el-form ref="form" :model="posterList" label-width="200px">
+            <el-row>
+              <el-form-item label="应用开关：">
+                  <el-checkbox-group v-model="posterList.switchData" style="width: 700px">
+                    <el-checkbox v-for="item in appidInfoCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                  </el-checkbox-group>
+              </el-form-item>
+            </el-row>
+          </el-form>
+
+
+        </el-col>
+      </el-row>
+
+      <div style="height: 50px;">
+        <el-button type="primary" size="mini" @click="saveSwitch()">应用开关保存</el-button>
+        <el-button type="success" icon="el-icon-plus" size="mini" @click="showForm(0)">添加赛事海报</el-button>
       </div>
+
       <el-table
-        :data="posterList"
+        :data="posterList.tableData"
         border
         stripe
         :header-cell-style="libShow.DefaultTableHeadClass"
         :cell-style="libShow.TableCell(10)"
-        style="width: 50%"
+        style="width: 80%"
       >
-        <el-table-column
-          prop="title"
-          label="海报标题"
-        />
+        <el-table-column prop="title" label="海报标题" />
+
+        <el-table-column prop="app_id" label="AppId">
+          <template slot-scope="scope">
+            {{ getAppName(scope.row.app_id) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="image_path" label="海报图">
+          <template slot-scope="{row}">
+            <el-image
+              style="width: 60px; height: 60px"
+              :src="row.image_path"
+              lazy></el-image>
+          </template>
+        </el-table-column>
+        <el-table-column prop="jump_id" label="跳转类型" >
+          <template slot-scope="scope">
+            {{ getJumpName(scope.row.jump_id) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="start_time" label="开始时间">
+          <template slot-scope="{row}">
+            <DateTimeShow :show-type="2" :timestamp="row.start_time" />
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="end_time" label="结束时间" >
+          <template slot-scope="{row}">
+            <DateTimeShow :show-type="2" :timestamp="row.end_time" />
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="switch" label="状态">
+          <template slot-scope="scope">
+            {{ getStatusName(scope.row.switch) }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="sort_id" label="排序" />
+
         <el-table-column
           fixed="right"
           width="200px"
@@ -48,9 +105,9 @@
       <el-form :model="editForm.data" label-width="300px" size="mini">
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
 
-          <legend>海报列表配置</legend>
+          <legend>海报配置</legend>
 
-          <el-form-item  label="配置标题：" :required="true">
+          <el-form-item label="配置标题：" :required="true">
             <el-input v-model="editForm.data.title" style="width: 200px;" placeholder="填写配置标题" />
           </el-form-item>
 
@@ -65,120 +122,73 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item  label="配置开关：" :required="true">
-            <el-switch style="display: block"
-                       v-model="editForm.data.switch"
-                       active-color="#13ce66"
-                       inactive-color="#ff4949"
-                       active-value='1'
-                       inactive-value='0'
-                       active-text="正常"
-                       inactive-text="下架"
+          <el-form-item label="配置开关：" :required="true" prop="switch">
+            <el-switch v-model="editForm.data.switch" :active-value="true" :inactive-value="false" />
+          </el-form-item>
+
+          <el-form-item label="排序" :required="true" >
+            <el-input v-model="editForm.data.sort_id" style="width: 200px;" placeholder="填写海报排序值" />
+          </el-form-item>
+
+          <el-form-item label="海报图" :required="true">
+            <ImagePicker v-model="editForm.data.image_path" />
+          </el-form-item>
+
+          <el-form-item label="跳转类型" :required="true">
+            <el-select v-model="editForm.data.jump_id" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in postJumpCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.jump_id==1" label="海报详情图" :required="true">
+            <ImagePicker v-model="editForm.data.details_image_path" />
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.jump_id==2" label="游戏跳转" :required="true">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in gameCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.jump_id==3" label="比赛跳转" :required="true">
+            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini" @change="selectMatchName()">
+              <el-option
+                v-for="item in showCsCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="生效时间：" :required="true">
+            <el-date-picker
+              v-model="editForm.onceTime"
+              format="yyyy-MM-dd HH:mm"
+              size="mini"
+              type="datetimerange"
+              :picker-options="pickerOptions"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              align="right"
             />
           </el-form-item>
 
-          <el-button style="margin-bottom: 20px;" type="normal"  @click="addPosterCfg()">添加海报</el-button>
-          <el-table
-            :data="posterRecord"
-            border
-            stripe
-            :header-cell-style="libShow.DefaultTableHeadClass"
-            :row-style="{height:'35px'}"
-            :cell-style="libShow.TableCell(0)"
-            style="width: 100%;line-height:35px;"
-          >
+          <el-form-item label="是否首弹:" :required="true" prop="first_jump" >
+            <el-switch v-model="editForm.data.first_jump" :active-value="true" :inactive-value="false" />
+          </el-form-item>
 
-            <el-table-column prop="sort_id" label="排序" width="90" :required="true" >
-              <template slot-scope="scope">
-                <el-input v-model.number="scope.row.sort_id" style="width: 60px;" size="mini" placeholder="排序值" />
-              </template>
-            </el-table-column>
-
-
-            <el-table-column prop="jump_id" label="跳转类型" width="140" >
-              <template slot-scope="scope">
-                <el-select v-model="scope.row.jump_id" placeholder="请选择" size="mini">
-                  <el-option
-                    v-for="item in postJumpCfgs"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-
-            <el-table-column prop="game_id" label="游戏跳转" width="140">
-              <template slot-scope="scope">
-                <el-select v-if="scope.row.jump_id==2" v-model="scope.row.game_id" placeholder="请选择" size="mini">
-                  <el-option
-                    v-for="item in gameCfgs"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-
-                <el-select v-if="scope.row.jump_id==3" v-model="scope.row.match_cfg_id" placeholder="请选择" size="mini" @change="selectMatchName()">
-                  <el-option
-                    v-for="item in showCsCfgs"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </template>
-            </el-table-column>
-
-
-            <el-table-column label="海报入口图" prop="image_path" width="150" :required="true">
-              <template slot-scope="scope">
-                <ImagePicker v-model="scope.row.image_path" />
-              </template>
-            </el-table-column>
-
-            <el-table-column label="海报详情图" prop="detail_image_path" width="150" :required="true">
-              <template slot-scope="scope">
-                <ImagePicker v-if="scope.row.jump_id==1"  v-model="scope.row.detail_image_path" />
-              </template>
-            </el-table-column>
-
-            <el-table-column label="生效时间：" prop="effective_time" :required="true">
-              <template slot-scope="scope">
-                <el-date-picker
-                  v-model="scope.row.effective_time"
-                  format="yyyy-MM-dd HH:mm"
-                  size="mini"
-                  type="datetimerange"
-                  :picker-options="pickerOptions"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  align="right"
-                />
-              </template>
-            </el-table-column>
-
-            <el-table-column prop="first_jump" label="是否首弹" width="110" :required="true" >
-              <template slot-scope="scope">
-                <el-switch style="display: block"
-                           v-model="scope.row.first_jump"
-                           active-color="#13ce66"
-                           inactive-color="#ff4949"
-                           active-value="1"
-                           inactive-value="0"
-                           active-text="是"
-                           inactive-text="否"
-                />
-              </template>
-            </el-table-column>
-
-            <el-table-column label="操作" width="160" >
-              <template slot-scope="scope">
-                  <el-button size="mini" type="danger" @click="removeMatchPosterItme(scope.row.id, false)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
         </fieldset>
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="savePosetCfg()">保存海报配置</el-button>
@@ -213,10 +223,13 @@ export default {
         status: 0
       },
       showCsCfgs: [],
-      posterRecord:[],
-      posterList: [],
+      posterList: {
+        'tableData': [],
+        'switchData': []
+      },
       matchCfg: [],
       raw: {},
+      switchList: [],
       limit: 10,
       total: 0,
       page: 1,
@@ -228,8 +241,7 @@ export default {
           id: 0,
           title: '',
           app_id: 1000002,
-          switch: '1',
-          records: []
+          switch: 'true'
         }
       },
       AttrNames: {
@@ -251,6 +263,20 @@ export default {
         { 'value': 1, 'label': '打开海报详情' },
         { 'value': 2, 'label': '跳转到子游戏' },
         { 'value': 3, 'label': '跳转比赛详情' },
+      ],
+
+      statusCfgs: [
+        { "value": 0, "label": "关闭" },
+        { "value": 1, "label": "开启" },
+      ],
+
+      channelIdCfgs: [
+        { 'value': 'BP', 'label': 'BP' },
+        { 'value': 'AP', 'label': 'AP' },
+        { 'value': 'GP', 'label': 'GP' },
+        { 'value': 'TP', 'label': 'TP' },
+        { 'value': 'PG', 'label': 'PG' },
+        { 'value': 'Dev', 'label': 'Dev' }
       ],
 
       subKey: 'match_poster_list'
@@ -319,24 +345,6 @@ export default {
         }
       })
     },
-    addPosterCfg() {
-      let index = 0
-      if (this.posterRecord.length > 0) {
-        index = this.posterRecord.length
-      }
-      index++
-      this.posterRecord.push({
-        index: index,
-        sort_id: '',
-        game_id: '',
-        image_path: '',
-        detail_image_path: '',
-        jump_id: '',
-        first_jump: '',
-        match_cfg_id: '',
-        effective_time: ''
-      })
-    },
     getList() {
       request({
         url: '/customizeconfig/one',
@@ -368,8 +376,65 @@ export default {
         }
       }
     },
+
+    saveSwitch() {
+      this.raw.Data = JSON.stringify(this.posterList)
+      request({
+        url: 'customizeconfig/update',
+        method: 'post',
+        data: this.raw
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const showMsg = '保存成功'
+          Message.success(showMsg)
+          this.getList()
+          this.editForm.visable = false
+          return
+        } else {
+          const errMsg = '保存成功失败！'
+          Message.error(errMsg + response.Data)
+          return
+        }
+      })
+    },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    getStatusName(status) {
+      var statusName = ""
+      for (var i = 0; i < this.statusCfgs.length; i++) {
+        if (this.statusCfgs[i].value == status) {
+          statusName = this.statusCfgs[i].label
+          break
+        }
+      }
+      return statusName
+    },
+
+    getAppName(id) {
+      var appName = ""
+      for (var i = 0; i < this.appidInfoCfgs.length; i++) {
+        if (this.appidInfoCfgs[i].value == id) {
+          appName = this.appidInfoCfgs[i].label
+          break
+        }
+      }
+      appName = appName + '[' + id +']'
+      return appName
+    },
+
+    getJumpName(jump_id) {
+      var jumpName = ""
+      for (var i = 0; i < this.postJumpCfgs.length; i++) {
+        if (this.postJumpCfgs[i].value == jump_id) {
+          jumpName = this.postJumpCfgs[i].label
+          break
+        }
+      }
+      return jumpName
+    },
+    showSwitchForm() {
+
     },
     showForm(id) {
       if (id === 0) {
@@ -378,29 +443,40 @@ export default {
           id: 0,
           title: '',
           app_id: 1000002,
-          switch: '1',
-          records: []
+          switch: true,
+          jump_id: 1,
+          details_image_path: '',
+          image_path: '',
+          first_jump: false,
+          match_cfg_id: 0,
+          start_time: 0,
+          end_time: 0,
+          sort_id : 0,
+          game_id: 0,
         }
-        this.posterRecord = []
         this.editForm.isAdd = true
       } else {
         let editData = {}
         this.editForm.title = '编辑海报配置'
         this.editForm.isAdd = false
-        for (let i = 0; i < this.posterList.length; i++) {
-          if (this.posterList[i].id === id) {
-            editData = this.posterList[i]
+        for (let i = 0; i < this.posterList.tableData.length; i++) {
+          if (this.posterList.tableData[i].id === id) {
+            editData = this.posterList.tableData[i]
             break
           }
         }
-        this.editForm.data = {
-          id: editData.id,
-          title: editData.title,
-          app_id: editData.app_id,
-          switch: editData.switch,
-          records: editData.records
+        this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
+        this.editForm.data = editData
+        let find = false
+        for (var i = 0; i < this.showCsCfgs.length; i++) {
+          if (this.showCsCfgs[i].value == this.editForm.data.match_cfg_id) {
+            find = true
+            break
+          }
         }
-        this.posterRecord = editData.records
+        if (find == false) {
+          this.editForm.data.match_cfg_id = 0
+        }
       }
       this.editForm.visable = true
       this.selectMatchName()
@@ -409,35 +485,47 @@ export default {
       if (!this.configCheck()) {
         return
       }
-      if (this.editForm.isAdd === false) {
 
-        for (var i = 0; i < this.posterRecord.length; i++) {
-          if (this.posterRecord[i].jump_id == 1) {
-            this.posterRecord[i].game_id = ''
-            this.posterRecord[i].match_cfg_id = ''
-          } else if (this.posterRecord[i].jump_id == 2) {
-            this.posterRecord[i].match_cfg_id = ''
-            this.posterRecord[i].detail_image_path = ''
-          } else if (this.posterRecord[i].jump_id == 3) {
-            this.posterRecord[i].detail_image_path = ''
-            this.posterRecord[i].game_id = ''
-          }
-        }
-        for (let i = 0; i < this.posterList.length; i++) {
-          if (this.posterList[i].id === this.editForm.data.id) {
-            this.posterList[i].records = this.posterRecord
-            this.posterList[i].title = this.editForm.data.title
-            this.posterList[i].switch = this.editForm.data.switch
+      let bTime = 0
+      let eTime = 0
+      this.editForm.onceTime[0].setSeconds(0) // 去除秒数
+      this.editForm.onceTime[1].setSeconds(0) // 去除秒数
+      bTime = Math.floor(this.editForm.onceTime[0] / 1000)
+      eTime = Math.floor(this.editForm.onceTime[1] / 1000)
+
+      if (this.editForm.isAdd === false) {
+        for (var i = 0; i < this.posterList.tableData.length; i++) {
+          if (this.posterList.tableData[i].id == this.editForm.data.id ) {
+            this.posterList.tableData[i].title = this.editForm.data.title
+            this.posterList.tableData[i].switch = this.editForm.data.switch
+            this.posterList.tableData[i].sort_id = parseInt(this.editForm.data.sort_id)
+            this.posterList.tableData[i].game_id = this.editForm.data.game_id
+            this.posterList.tableData[i].image_path = this.editForm.data.image_path
+            this.posterList.tableData[i].details_image_path = this.editForm.data.details_image_path
+            this.posterList.tableData[i].jump_id = this.editForm.data.jump_id
+            this.posterList.tableData[i].first_jump = this.editForm.data.first_jump
+            this.posterList.tableData[i].match_cfg_id = this.editForm.data.match_cfg_id
+            this.posterList.tableData[i].start_time = bTime
+            this.posterList.tableData[i].end_time = eTime
+
           }
         }
       } else {
-        this.posterList.push(
+        this.posterList.tableData.push(
           {
             'id': new Date().setSeconds(0),
             'title': this.editForm.data.title,
             'app_id': this.editForm.data.app_id,
             'switch': this.editForm.data.switch,
-            'records': this.posterRecord
+            'sort_id': parseInt(this.editForm.data.sort_id),
+            'game_id': this.editForm.data.game_id,
+            'image_path': this.editForm.data.image_path,
+            'details_image_path': this.editForm.data.details_image_path,
+            'jump_id': this.editForm.data.jump_id,
+            'first_jump': this.editForm.data.first_jump,
+            'match_cfg_id': this.editForm.data.match_cfg_id,
+            'start_time': bTime,
+            'end_time': eTime
           }
         )
       }
@@ -467,13 +555,13 @@ export default {
         type: 'warning'
       }).then(() => {
         const newList = []
-        for (const key in this.posterList) {
-          if (this.posterList[key].id === id) {
+        for (const key in this.posterList.tableData) {
+          if (this.posterList.tableData[key].id === id) {
             continue
           }
-          newList.push(this.posterList[key])
+          newList.push(this.posterList.tableData[key])
         }
-        this.posterList = newList
+        this.posterList.tableData = newList
         this.raw.Data = JSON.stringify(this.posterList)
         request({
           url: 'customizeconfig/update',
@@ -499,57 +587,34 @@ export default {
       })
     },
     configCheck() {
-      //console.log("this.posterRecord ", this.posterRecord)
       if (this.editForm.data.title == '') {
-        this.errmsg('标题不能为空')
+        this.errmsg("请填写标题")
+        return false
+      }
+      if (this.editForm.data.sort_id <= 0) {
+        this.errmsg("请海报排序")
+        return false
+      }
+      if (this.editForm.data.image_path == '') {
+        this.errmsg("请填写海报入口图")
         return false
       }
 
-      if (this.posterRecord.length == 0 ) {
-        this.errmsg('海报内容不能为空')
+      if (this.editForm.data.jump_id == 1 && this.editForm.data.details_image_path == '') {
+        this.errmsg("请上传海报详情图")
         return false
       }
-      console.log("this.posterRecord ",this.posterRecord)
-      for (var i = 0; i < this.posterRecord.length; i++) {
-        if (this.posterRecord[i].sort_id == '' || this.posterRecord[i].sort_id == 0 ) {
-          this.errmsg('海报排序值不能为空')
-          return false
-        }
-        if (this.posterRecord[i].jump_id == '' || this.posterRecord[i].jump_id == 0 ) {
-          this.errmsg('请填写游戏跳转类型')
-          return false
-        }
 
-        if (this.posterRecord[i].effective_time == '' ) {
-          this.errmsg('请填写海报生效时间')
-          return false
-        }
-        if (this.posterRecord[i].jump_id == 2 && this.posterRecord[i].game_id == '') {
-          this.errmsg('请选择需要跳转的子游戏')
-          return false
-        }
-
-        if (this.posterRecord[i].jump_id == 1 && this.posterRecord[i].detail_image_path == '') {
-          this.errmsg('请上传海报详情图')
-          return false
-        }
-
-        if (this.posterRecord[i].jump_id == 3 && this.posterRecord[i].match_cfg_id == '') {
-          this.errmsg('请选择赛事跳转')
-          return false
-        }
+      if (this.editForm.data.jump_id == 2 &&  this.editForm.data.game_id <= 0) {
+         this.errmsg("请选择子游戏")
+        return false
       }
-
+      if (this.editForm.data.jump_id == 3 &&  this.editForm.data.match_cfg_id <= 0) {
+        this.errmsg("请选择比赛赛事")
+        return false
+      }
       return true
-    },
-    removeMatchPosterItme(index) {
-      this.posterRecord.splice(index, 1)
-      if (this.posterRecord.length > 0) {
-        for (var i = 0; i < this.guideRecord.length; i++) {
-          this.guideRecord[i].index = i + 1
-        }
-      }
-    },
+    }
   }
 }
 </script>

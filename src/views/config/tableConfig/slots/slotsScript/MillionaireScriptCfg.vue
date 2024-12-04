@@ -937,13 +937,12 @@ export default {
         return
       }
       //计算返回率
-      const rtp = odds / 10 / data.ScriptSteps * 100
+      const rtp10 = odds / (10 * data.ScriptSteps) * 100
+      const rtp100 = odds / (100 * data.ScriptSteps) * 100
       if (steps !== data.ScriptSteps) {
         Message.error("剧本总步数有误！当前总步数:" + steps)
-      } else if (rtp > 100 || rtp < 50) {
-        Message.error("返奖率异常！当前返奖率:" + rtp + '%')
       } else {
-        Message.success("当前返奖率:" + rtp + '%')
+        Message.success("10倍投返奖率:" + rtp10 + '%, 100倍投返奖率:' + rtp100 + '%')
       }
     }
   }
