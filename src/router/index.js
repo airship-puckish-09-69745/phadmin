@@ -875,6 +875,12 @@ export const asyncRoutes = [
                 meta: { title: 'TreasureBowl' }
               },
               {
+                path: 'puppyhome_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/puppyhome_slots_cfg'),
+                name: 'puppyhome_slots_cfg',
+                meta: { title: 'PuppyHome' }
+              },
+              {
                 path: 'mayantotem_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mayantotem_slots_cfg'),
                 name: 'mayantotem_slots_cfg',
@@ -1686,6 +1692,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_carracing',
             meta: { title: 'Carracing ◐', gid: 118 }
+          },
+          {
+            path: 'playlog_jackpotwheel',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_jackpotwheel',
+            meta: { title: 'JackpotWheel ◐', gid: 124 }
+          },
+          {
+            path: 'playlog_freespin',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_freespin',
+            meta: { title: 'FreeSpin ◐', gid: 125 }
           }
         ]
       },
@@ -1843,22 +1861,28 @@ export const asyncRoutes = [
             meta: { title: 'FireLink', gid: 166 }
           },
           {
-            path: 'epicace_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'epicace_slots_log',
-            meta: { title: 'EpicAce', gid: 170 }
-          },
-          {
             path: ' pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
             meta: { title: 'PharaohTreasure', gid: 168 }
           },
           {
+            path: 'epicace_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'epicace_slots_log',
+            meta: { title: 'EpicAce', gid: 170 }
+          },
+          {
             path: 'treasurebowl_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'treasurebowl_slots_log',
             meta: { title: 'TreasureBowl', gid: 174 }
+          },
+          {
+            path: 'puppyhome_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'puppyhome_slots_log',
+            meta: { title: 'PuppyHome', gid: 176 }
           }
         ]
       },
