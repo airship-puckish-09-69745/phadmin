@@ -744,6 +744,9 @@ export default {
       if (str.length === '') {
         return ''
       }
+      if (!this.slotCfg[this.queryGid]){
+        return '当你看到这行字时,说明剧本监控没有配置,需要从配置中获取基础下注倍数'
+      }
       let arr = str.split(',')
       let cfg = this.slotCfg[this.queryGid]
       let ret = ''
@@ -842,6 +845,7 @@ export default {
               }
               itemElement['TargetBetStr'] = str.substring(0, str.length - 1)
             }
+            this.this.showVisibleData = {}
             console.log(this.item)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
