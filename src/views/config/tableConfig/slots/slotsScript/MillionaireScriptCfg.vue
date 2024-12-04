@@ -845,7 +845,6 @@ export default {
               }
               itemElement['TargetBetStr'] = str.substring(0, str.length - 1)
             }
-            this.this.showVisibleData = {}
             console.log(this.item)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
