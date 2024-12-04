@@ -384,6 +384,7 @@ export default {
         120: 'Tongits Swap',
         162: 'Major Ace',
         166: 'Fire Link',
+        164: 'MahjongFortune',
         123: 'Mines Battle',
         170: 'Epic Ace',
         10000: '汇总'
