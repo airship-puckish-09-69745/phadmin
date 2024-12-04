@@ -335,8 +335,6 @@ export default {
     //* *************添加/修改相关*****************
     canEdit() {
       var users = this.edit.item.CurrentUserName.split(',')
-      console.log('=========', users, this.uname)
-
       return !(this.edit.item.Status !== 1 || !users.includes(this.uname))
     },
     viewDetail() {
@@ -435,6 +433,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data
           if (objs != null) {
+            this.edit.actions=[]
             for (let i = objs.length - 1; i >= 0; i--) {
               const ob = {
                 UserName: objs[i].UserName,

@@ -38,7 +38,7 @@
               收益：{{ getSystemGot(total[selectType], selectType == 3) }}
             </div>
             <div>
-              流水：{{ total[selectType] ? formatNumber(Math.floor(total[selectType].Bet / 1000)) : 0 }}
+              流水：{{ total[selectType] ? Math.floor(total[selectType].Bet / 1000).toFixed(2) : 0 }}
             </div>
             <div>
               在玩：{{ total[selectType].OnlineCount }})
@@ -62,7 +62,7 @@
               收益：{{ getSystemGot(summary[o], false) }}
             </div>
             <div>
-              流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
+              流水：{{ summary[o] ? Math.floor(summary[o].Bet / 1000).toFixed(2) : 0 }}
             </div>
             <div>
               在玩：{{ summary[o] ? summary[o].OnlineCount : 0 }}({{ summary[o] ? summary[o].RecentFive : 0 }})
@@ -85,7 +85,7 @@
               收益：{{ getSystemGot(summary[o],false) }}
             </div>
             <div>
-              流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
+              流水：{{ summary[o] ? Math.floor(summary[o].Bet / 1000).toFixed(2) : 0 }}
             </div>
             <div>
               在玩：{{ summary[o] ? summary[o].OnlineCount : 0 }}({{ summary[o] ? summary[o].RecentFive : 0 }})
@@ -143,7 +143,7 @@
                 收益：{{getSystemGot(summary[o],true) }}
               </div>
               <div>
-                总下注：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
+                总下注：{{ summary[o] ?Math.floor(summary[o].Bet / 1000).toFixed(2) : 0 }}
               </div>
               <div>
                 在玩：({{ summary[o] ? summary[o].RecentFive : 0 }})
@@ -631,9 +631,9 @@ export default {
     getSystemGot(ob, isSlots) {
       if (ob) {
         if (isSlots) {
-          return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+          return Math.floor((ob.Bet - ob.Won) / 1000).toFixed(2)
         } else {
-          return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
+          return Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000).toFixed(2)
         }
       }
     },
