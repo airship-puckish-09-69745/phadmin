@@ -1692,6 +1692,18 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_carracing',
             meta: { title: 'Carracing ◐', gid: 118 }
+          },
+          {
+            path: 'playlog_jackpotwheel',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_jackpotwheel',
+            meta: { title: 'JackpotWheel ◐', gid: 124 }
+          },
+          {
+            path: 'playlog_freespin',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_freespin',
+            meta: { title: 'FreeSpin ◐', gid: 125 }
           }
         ]
       },
