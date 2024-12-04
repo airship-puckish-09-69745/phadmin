@@ -873,6 +873,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/treasurebowl_slots_cfg'),
                 name: 'treasurebowl_slots_cfg',
                 meta: { title: 'TreasureBowl' }
+              },
+              {
+                path: 'mayantotem_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mayantotem_slots_cfg'),
+                name: 'mayantotem_slots_cfg',
+                meta: { title: 'MayanTotem' }
               }
             ]
           },
