@@ -532,7 +532,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123, 117]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true
