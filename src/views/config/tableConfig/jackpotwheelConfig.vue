@@ -44,9 +44,16 @@
 
               <el-col :span="24" :offset="5">
                 <el-form :inline="true">
+                  
                   <el-col :span="8">
                     <el-form-item label="赢钱榜展示数量">
                       <el-input v-model.number="item.WinMoneyShowNum" size="mini" />
+                    </el-form-item>
+                  </el-col>
+                  
+                  <el-col :span="8">
+                    <el-form-item label="jackpot*bet(比例)">
+                      <el-input v-model.number="item.JackpotFee" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
@@ -136,13 +143,25 @@
                       <el-input v-model="item.BetAreaOptions[scope.$index].Odds" size="mini" />
                     </template>
                   </el-table-column>
-
-                  <el-table-column label="类型(0:odds 1:free 2:Minor奖池 3:Major奖池 4:Grand奖池)">
+                  
+                  <el-table-column label="类型(0:odds 1:Grand奖池 2:Major奖池 3:Minor奖池)">
                     <template slot-scope="scope">
                       <el-input v-model.number="item.BetAreaOptions[scope.$index].Type" size="mini" />
                     </template>
                   </el-table-column>
-
+                <!--
+                <el-table-column label="类型">
+                    <el-select placeholder="请选择" size="mini" style="width: 140px">
+                      <el-option
+                        v-for="typeItem in rewardType"
+                        :key="typeItem.value"
+                        :label="typeItem.label"
+                        :value="typeItem.value"
+                      >
+                      </el-option>
+                    </el-select>
+              </el-table-column>
+-->
                   <el-table-column label="概率">
                     <el-table-column :label="'表1'">
                       <template slot-scope="scope">
@@ -209,7 +228,7 @@
               </fieldset>
             </el-col>
           </el-tab-pane>
-          
+
         </el-tabs>
         <el-col style="margin-top:16px;" :offset="8" :span="8">
           <el-form-item>
@@ -294,7 +313,14 @@ export default {
         9:'Minor',
         10:'Major',
         11:'Grand',
-      }
+      },
+      rewardType:[
+      { 'label': '0dds', 'value': 0 },
+      { 'label': 'Grand奖池', 'value': 1 },
+      { 'label': 'Major奖池', 'value': 2 },
+      { 'label': 'Minor奖池', 'value': 3 },
+      { 'label': 'free', 'value': 5 },
+      ],
     }
   },
   created() {
