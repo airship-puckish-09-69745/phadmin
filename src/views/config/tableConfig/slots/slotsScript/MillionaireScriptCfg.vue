@@ -938,7 +938,7 @@ export default {
       if (steps !== data.ScriptSteps) {
         Message.error("剧本总步数有误！当前总步数:" + steps)
       } else {
-        Message.success("10倍投返奖率:" + rtp10 + '%, 100倍投返奖率:' + rtp100)
+        Message.success("10倍投返奖率:" + rtp10 + '%, 100倍投返奖率:' + rtp100 + '%')
       }
     }
   }
