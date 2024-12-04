@@ -35,7 +35,13 @@
         style="width: 80%"
       >
         <el-table-column prop="title" label="海报标题" />
-        <el-table-column prop="app_id" label="AppId" />
+
+        <el-table-column prop="app_id" label="AppId">
+          <template slot-scope="scope">
+            {{ getAppName(scope.row.app_id) }}
+          </template>
+        </el-table-column>
+
         <el-table-column prop="image_path" label="海报图">
           <template slot-scope="{row}">
             <el-image
@@ -67,6 +73,8 @@
             {{ getStatusName(scope.row.switch) }}
           </template>
         </el-table-column>
+
+        <el-table-column prop="sort_id" label="排序" />
 
         <el-table-column
           fixed="right"
@@ -355,7 +363,6 @@ export default {
           this.raw = response.Data
         }
       })
-      console.log("收到数据 ",this.posterList)
     },
     selectMatchName() {
       this.showCsCfgs = []
@@ -404,6 +411,18 @@ export default {
       return statusName
     },
 
+    getAppName(id) {
+      var appName = ""
+      for (var i = 0; i < this.appidInfoCfgs.length; i++) {
+        if (this.appidInfoCfgs[i].value == id) {
+          appName = this.appidInfoCfgs[i].label
+          break
+        }
+      }
+      appName = appName + '[' + id +']'
+      return appName
+    },
+
     getJumpName(jump_id) {
       var jumpName = ""
       for (var i = 0; i < this.postJumpCfgs.length; i++) {
@@ -448,6 +467,16 @@ export default {
         }
         this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         this.editForm.data = editData
+        let find = false
+        for (var i = 0; i < this.showCsCfgs.length; i++) {
+          if (this.showCsCfgs[i].value == this.editForm.data.match_cfg_id) {
+            find = true
+            break
+          }
+        }
+        if (find == false) {
+          this.editForm.data.match_cfg_id = 0
+        }
       }
       this.editForm.visable = true
       this.selectMatchName()
@@ -459,7 +488,6 @@ export default {
 
       let bTime = 0
       let eTime = 0
-      console.log("时间控件 ", this.editForm.onceTime)
       this.editForm.onceTime[0].setSeconds(0) // 去除秒数
       this.editForm.onceTime[1].setSeconds(0) // 去除秒数
       bTime = Math.floor(this.editForm.onceTime[0] / 1000)
@@ -559,7 +587,6 @@ export default {
       })
     },
     configCheck() {
-      console.log("配置检查 ", this.editForm.data)
       if (this.editForm.data.title == '') {
         this.errmsg("请填写标题")
         return false
