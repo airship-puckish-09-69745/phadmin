@@ -245,6 +245,7 @@ import { getAllCommonGameConfig } from '@/utils/common-game-config'
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
+    console.log("data()")
     return {
       activeTab: 'base',
       libShow: $libShow,
@@ -455,6 +456,7 @@ export default {
       })
     },
     selectMatchName() {
+      console.log("select Match")
       this.showCsCfgs = []
       if (this.matchCfg.length > 0) {
         for (var i = 0; i < this.matchCfg.length; i++) {
@@ -554,6 +556,7 @@ export default {
         }
         this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         this.editForm.data = editData
+        this.selectMatchName()
         let find = false
         for (var i = 0; i < this.showCsCfgs.length; i++) {
           if (this.showCsCfgs[i].value == this.editForm.data.match_cfg_id) {
@@ -566,7 +569,6 @@ export default {
         }
       }
       this.editForm.visable = true
-      this.selectMatchName()
     },
     savePosetCfg() {
       if (!this.configCheck()) {
