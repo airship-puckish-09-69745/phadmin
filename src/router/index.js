@@ -1351,12 +1351,12 @@ export const asyncRoutes = [
         name: 'matchLimitWhite',
         meta: { title: '限制白名单', noCache: true }
       },
-      {
-        path: 'matchWatcherList',
-        component: () => import('@/views/matchManage/watcherList.vue'),
-        name: 'matchWatcherList',
-        meta: { title: '主播名单', noCache: true }
-      },
+      // {
+      //   path: 'matchWatcherList',
+      //   component: () => import('@/views/matchManage/watcherList.vue'),
+      //   name: 'matchWatcherList',
+      //   meta: { title: '主播名单', noCache: true }
+      // },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
