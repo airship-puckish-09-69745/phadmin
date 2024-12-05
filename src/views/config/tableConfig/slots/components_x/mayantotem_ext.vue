@@ -10,6 +10,10 @@
             </el-input>
           </el-form-item>
 
+          <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
+          </el-form-item>
+
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true"/>
           </el-form-item>

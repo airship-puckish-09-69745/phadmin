@@ -978,7 +978,7 @@ export default {
             } else {
               dataZone[objZone.CategoryID] = [gameZone]
             }
-            const gameSelectInfo = { id: objZone.Gid, name: objZone.Description }
+            const gameSelectInfo = { id: objZone.Gid, name: objZone.Name }
             this.gameSelect.push(gameSelectInfo)
           }
 
