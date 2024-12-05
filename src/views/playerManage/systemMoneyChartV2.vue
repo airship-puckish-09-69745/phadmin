@@ -38,7 +38,7 @@
               收益：{{ getSystemGot(total[selectType], selectType == 3) }}
             </div>
             <div>
-              流水：{{ total[selectType] ? Math.floor(total[selectType].Bet / 1000).toFixed(2) : 0 }}
+              流水：{{ total[selectType] ? formatNumber(Math.floor(total[selectType].Bet / 1000)) : 0 }}
             </div>
             <div>
               在玩：{{ total[selectType].OnlineCount }})
@@ -62,7 +62,7 @@
               收益：{{ getSystemGot(summary[o], false) }}
             </div>
             <div>
-              流水：{{ summary[o] ? Math.floor(summary[o].Bet / 1000).toFixed(2) : 0 }}
+              流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
             </div>
             <div>
               在玩：{{ summary[o] ? summary[o].OnlineCount : 0 }}({{ summary[o] ? summary[o].RecentFive : 0 }})
@@ -85,7 +85,7 @@
               收益：{{ getSystemGot(summary[o],false) }}
             </div>
             <div>
-              流水：{{ summary[o] ? Math.floor(summary[o].Bet / 1000).toFixed(2) : 0 }}
+              流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
             </div>
             <div>
               在玩：{{ summary[o] ? summary[o].OnlineCount : 0 }}({{ summary[o] ? summary[o].RecentFive : 0 }})
@@ -143,7 +143,7 @@
                 收益：{{getSystemGot(summary[o],true) }}
               </div>
               <div>
-                总下注：{{ summary[o] ?Math.floor(summary[o].Bet / 1000).toFixed(2) : 0 }}
+                总下注：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
               </div>
               <div>
                 在玩：({{ summary[o] ? summary[o].RecentFive : 0 }})
@@ -386,6 +386,8 @@ export default {
         166: 'Fire Link',
         164: 'MahjongFortune',
         123: 'Mines Battle',
+        124: 'Jackpot Wheel',
+        125: 'Free Spin',
         170: 'Epic Ace',
         10000: '汇总'
       },
@@ -394,7 +396,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123,117,116], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123,117,116,124,125], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -631,9 +633,9 @@ export default {
     getSystemGot(ob, isSlots) {
       if (ob) {
         if (isSlots) {
-          return Math.floor((ob.Bet - ob.Won) / 1000).toFixed(2)
+          return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
         } else {
-          return Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000).toFixed(2)
+          return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
         }
       }
     },
