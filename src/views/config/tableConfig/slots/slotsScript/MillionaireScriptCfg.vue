@@ -28,9 +28,11 @@
             <legend>倍数相关配置</legend>
             <el-row>
               <el-col :span="6">
-                <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
-                  检查倍数总和区间
-                </el-button>
+                <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item" effect="dark" placement="top">
+                  <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
+                    检查倍数总和区间
+                  </el-button>
+                </el-tooltip>
               </el-col>
             </el-row>
             <el-table
@@ -715,16 +717,14 @@ export default {
       let str = ''
       for (const i in this.item.OddsCfg) {
         let obj = this.item.OddsCfg[i]
-        if (obj.OddsMin * obj.ScriptSteps >= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
-
+        if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
         } else {
-          console.log(obj.OddsMin , obj.OddsMax,obj.ScriptSteps,obj.ScriptOddsSum ,obj.OddsMin * obj.ScriptSteps >= obj.ScriptOddsSum,obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps)
-          str+=`第${i}行数据校验不通过\n`
+          str += `第${i}行数据校验不通过\n`
         }
       }
-      if (str.length>0){
+      if (str.length > 0) {
         this.$message.error(str)
-      }else {
+      } else {
         this.$message.success('检查通过')
       }
     },
