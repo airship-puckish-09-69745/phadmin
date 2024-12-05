@@ -386,6 +386,8 @@ export default {
         166: 'Fire Link',
         164: 'MahjongFortune',
         123: 'Mines Battle',
+        124: 'Jackpot Wheel',
+        125: 'Free Spin',
         170: 'Epic Ace',
         10000: '汇总'
       },
@@ -394,7 +396,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123,117,116], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123,117,116,124,125], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
