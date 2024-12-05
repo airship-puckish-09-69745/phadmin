@@ -494,8 +494,12 @@
           <el-button type="success" size="mini" @click="closeVisible()">确定</el-button>
         </el-col>
         <el-col :offset="2" :span="4">
-          <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="right">
+          <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="top">
             <el-button type="primary" @click="checkBetPlans()" size="mini" style="background-color:#ff8000">检查
+            </el-button>
+          </el-tooltip>
+          <el-tooltip content="最小倍数*出现个数<剧本总和" effect="dark" placement="top">
+            <el-button type="primary" @click="checkBetPlansSum()" size="mini" style="background-color:#b600ff">检查
             </el-button>
           </el-tooltip>
         </el-col>
@@ -744,7 +748,7 @@ export default {
       if (str.length === '') {
         return ''
       }
-      if (!this.slotCfg[this.queryGid]){
+      if (!this.slotCfg[this.queryGid]) {
         return '当你看到这行字时,说明剧本监控没有配置,需要从配置中获取基础下注倍数'
       }
       let arr = str.split(',')
@@ -883,6 +887,20 @@ export default {
       }
       Message.success('当前百分比：' + (cnt / (this.item.ScriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
     },
+    checkBetPlansSum() {
+      let str = ''
+      for (const o of this.showVisibleData) {
+        console.log(o.OddsMin * o.ScriptSteps, o.ScriptOddsSum,(o.OddsMin * o.ScriptSteps )> o.ScriptOddsSum)
+        if ((o.OddsMin * o.ScriptSteps ) > o.ScriptOddsSum) {
+          str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
+        }
+      }
+      if (str.length <= 0) {
+        Message.success("数据ok的！" + str)
+      } else {
+        Message.error('数据异常:' + str)
+      }
+    },
     getGameList() {
       request({
         url: '/thirdpartygames/all',
@@ -894,7 +912,6 @@ export default {
             if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 199) {
               continue
             }
-
             this.gameOptions.push({
               key: response.Data[i].Gid,
               label: response.Data[i].Name

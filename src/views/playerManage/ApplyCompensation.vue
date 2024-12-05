@@ -452,7 +452,8 @@ export default {
           GameId: row.game_id,
           App: row.app_id,
           Detail: row.detail,
-          AbnormalTime: row.abnormal_time
+          AbnormalTime: row.abnormal_time,
+          Reason : row.description +'|操作人:'+row.applicant_user,
         }
       }).then(response => {
         if (response.RetCode === 0) {
