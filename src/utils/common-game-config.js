@@ -15,3 +15,19 @@ export const getAllCommonGameConfig = async() => {
     }
   }
 }
+
+export const getAllMatchGuidesConfig = async() => {
+  const response = await request({
+    url: '/customizeconfig/one',
+    method: 'get',
+    data: {
+      SubKey: 'match_guide_list_new'
+    }
+  })
+
+  if (response.RetCode === 0) {
+    if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
+      return JSON.parse(response.Data.Data)
+    }
+  }
+}
