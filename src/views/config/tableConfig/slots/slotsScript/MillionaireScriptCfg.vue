@@ -26,6 +26,13 @@
           </el-col>
           <fieldset style="margin:20px auto;">
             <legend>倍数相关配置</legend>
+            <el-row>
+              <el-col :span="6">
+                <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
+                  检查倍数总和区间
+                </el-button>
+              </el-col>
+            </el-row>
             <el-table
               ref="filterTable"
               :data="item.OddsCfg"
@@ -704,6 +711,23 @@ export default {
     delBigPrizeCfgRow(row) {
       this.item.BigPrizeCfg.OddsCfg.splice(row, 1)
     },
+    validateDteOddsSum() {
+      let str = ''
+      for (const i in this.item.OddsCfg) {
+        let obj = this.item.OddsCfg[i]
+        if (obj.OddsMin * obj.ScriptSteps >= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
+
+        } else {
+          console.log(obj.OddsMin , obj.OddsMax,obj.ScriptSteps,obj.ScriptOddsSum ,obj.OddsMin * obj.ScriptSteps >= obj.ScriptOddsSum,obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps)
+          str+=`第${i}行数据校验不通过\n`
+        }
+      }
+      if (str.length>0){
+        this.$message.error(str)
+      }else {
+        this.$message.success('检查通过')
+      }
+    },
     editOddsCfg(row, idx) {
       this.detailVisible = true
       this.showVisibleData = row.OddsCfg
@@ -890,8 +914,8 @@ export default {
     checkBetPlansSum() {
       let str = ''
       for (const o of this.showVisibleData) {
-        console.log(o.OddsMin * o.ScriptSteps, o.ScriptOddsSum,(o.OddsMin * o.ScriptSteps )> o.ScriptOddsSum)
-        if ((o.OddsMin * o.ScriptSteps ) > o.ScriptOddsSum) {
+        console.log(o.OddsMin * o.ScriptSteps, o.ScriptOddsSum, (o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum)
+        if ((o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum) {
           str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
         }
       }
