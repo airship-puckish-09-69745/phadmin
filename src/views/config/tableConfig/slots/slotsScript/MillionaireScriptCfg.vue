@@ -748,7 +748,6 @@ export default {
       this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.splice(row, 1)
     },
     addBetOddsPlansRow(row) {
-      console.log('row', row, this.item.BigPrizeCfg)
       if (!this.item.BetOddsPlans) {
         this.item['BetOddsPlans'] = []
       }
@@ -757,7 +756,6 @@ export default {
         "OddsCfg": [],
         "TargetBetStr": "",
       })
-      console.log('this.item.BetOddsPlans', this.item)
       this.itemKey = Math.random()
     },
     delBetOddsPlansRow(row) {
@@ -873,7 +871,6 @@ export default {
               }
               itemElement['TargetBetStr'] = str.substring(0, str.length - 1)
             }
-            console.log(this.item)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
           }
@@ -914,7 +911,6 @@ export default {
     checkBetPlansSum() {
       let str = ''
       for (const o of this.showVisibleData) {
-        console.log(o.OddsMin * o.ScriptSteps, o.ScriptOddsSum, (o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum)
         if ((o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum) {
           str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
         }
