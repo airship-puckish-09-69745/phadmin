@@ -534,7 +534,23 @@ export default {
         }
         this.editForm.data.app_id = editData.app_id
         this.editForm.data.id = editData.id
-        this.editForm.data.scheme_records = editData.scheme_records
+        // this.editForm.data.scheme_records = editData.scheme_records
+        // 由于保存的时候会去掉没有选择游戏的场景，但是显示的时候还是显示5个场景，所以这里必须填充空的场景
+        const scheme_records = this.useSceneCfg.map(scene => {
+          const existScheme = editData.scheme_records.find(item => item.scene_id === scene.value)
+          const record = existScheme || {
+            label: scene.label,
+            record_name: '',
+            scene_id: scene.value,
+            records: []
+          }
+
+          if (record.scene_id === 3 || record.scene_id === 4) {
+            record.left_time = 0
+          }
+          return record
+        })
+        this.editForm.data.scheme_records = scheme_records
         this.editForm.data.scheme_title = editData.scheme_title
         this.editForm.associate_key = editData.associate_key
         this.editForm.title = '编辑推荐配置'
@@ -618,6 +634,15 @@ export default {
       // console.log(this.editForm)
       // console.log(this.guideList)
       // return
+
+      // 过滤掉this.guideList中没有选择游戏数据的场景
+      this.guideList.forEach(item => {
+        item.scheme_records.forEach((scheme, index) => {
+          if (scheme.records.length === 0) {
+            item.scheme_records.splice(index, 1)
+          }
+        })
+      })
 
       this.updateRequest(() => {
         this.editForm.visible = false
