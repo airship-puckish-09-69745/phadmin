@@ -53,7 +53,7 @@
                   
                   <el-col :span="8">
                     <el-form-item label="jackpot*bet(比例)">
-                      <el-input v-model.number="item.JackpotFee" size="mini" ><template  slot="append">%</template></el-input>
+                      <el-input v-model.number="item.JackpotFeeRate" size="mini" ><template  slot="append">%</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-form>
