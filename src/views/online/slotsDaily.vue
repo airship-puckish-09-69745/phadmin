@@ -277,6 +277,8 @@ export default {
           return 'GrandAce'
         case 156:
           return 'CrazyAce'
+        case 180:
+          return 'FishingMaster'
         case 172:
           return 'WrathOfZeus'
         case 158:

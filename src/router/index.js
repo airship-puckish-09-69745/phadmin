@@ -815,6 +815,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce' }
               },
               {
+                path: 'fishingmaster_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fishingmaster_slots_cfg'),
+                name: 'fishingmaster_slots_cfg',
+                meta: { title: 'FishingMaster' }
+              },
+              {
                 path: 'wrathofzeus_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
                 name: 'wrathofzeus_slots_cfg',
@@ -984,6 +990,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
+              },
+              {
+                path: 'fishingmastermars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fishingmastermars_slots_cfg'),
+                name: 'fishingmastermars_slots_cfg',
+                meta: { title: 'FishingMaster(审)' }
               },
               {
                 path: 'wrathofzeusmars_slots_cfg',
@@ -1351,12 +1363,12 @@ export const asyncRoutes = [
         name: 'matchLimitWhite',
         meta: { title: '限制白名单', noCache: true }
       },
-      {
-        path: 'matchWatcherList',
-        component: () => import('@/views/matchManage/watcherList.vue'),
-        name: 'matchWatcherList',
-        meta: { title: '主播名单', noCache: true }
-      },
+      // {
+      //   path: 'matchWatcherList',
+      //   component: () => import('@/views/matchManage/watcherList.vue'),
+      //   name: 'matchWatcherList',
+      //   meta: { title: '主播名单', noCache: true }
+      // },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
@@ -1819,6 +1831,12 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce', gid: 154 }
           },
           {
+            path: 'fishingmaster_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fishingmaster_slots_log',
+            meta: { title: 'FishingMaster', gid: 180 }
+          },
+          {
             path: 'wrathofzeus_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeus_slots_log',
@@ -1981,6 +1999,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
             meta: { title: 'GrandAce(审)', gid: 155 }
+          },
+          {
+            path: 'fishingmastermars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fishingmastermars_slots_log',
+            meta: { title: 'FishingMaster(审)', gid: 181 }
           },
           {
             path: 'wrathofzeusmars_slots_log',

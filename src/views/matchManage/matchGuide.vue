@@ -610,7 +610,7 @@ export default {
           app_id: _this.editForm.data.app_id,
           id: new Date().setSeconds(0),
           associate_key: (new Date().setSeconds(0)).toString(),
-          scheme_records: _this.editForm.data.scheme_records,
+          scheme_records: _this.editForm.data.scheme_records.filter(item => item.records.length > 0),
           scheme_title: _this.editForm.data.scheme_title
         }
         data.scheme_records.forEach(item => {
@@ -625,24 +625,12 @@ export default {
             return
           }
         })
-        // data.scheme_records.forEach(item => {
-        //   item.record_name = `[${item.records.map(record => _this.GetGameName(record.game_id)).join(',')}]`
-        // })
+        _this.editForm.data.scheme_records = _this.editForm.data.scheme_records.filter(item => item.records.length > 0)
         this.guideList[updateIndex] = _this.editForm.data
       }
 
       // console.log(this.editForm)
-      // console.log(this.guideList)
       // return
-
-      // 过滤掉this.guideList中没有选择游戏数据的场景
-      this.guideList.forEach(item => {
-        item.scheme_records.forEach((scheme, index) => {
-          if (scheme.records.length === 0) {
-            item.scheme_records.splice(index, 1)
-          }
-        })
-      })
 
       this.updateRequest(() => {
         this.editForm.visible = false

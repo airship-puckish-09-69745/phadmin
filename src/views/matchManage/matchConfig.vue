@@ -556,7 +556,7 @@
           </el-form-item>
 
           <el-form-item label="赛事分类：" :required="true">
-            <el-select v-model="editForm.signExtra.eventType" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in matchEvents"
                 :key="item.value"
@@ -775,7 +775,7 @@ export default {
         },
         signExtra: {
           betCnt: 0,
-          eventType: 0
+          matchEvents: 0
         },
       },
 
@@ -1270,7 +1270,7 @@ export default {
 
         this.editForm.signExtra = {
           betCnt: 0,
-          eventType: 0
+          matchEvents: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs

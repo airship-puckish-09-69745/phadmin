@@ -53,7 +53,7 @@
         </el-table> -->
         <el-form ref="form" :model="formDialog.form" label-width="130px">
           <el-form-item label="选择游戏" :rules="[{ required: true, message: '请选择游戏' }]">
-            <el-select v-model="formDialog.form.game.game_id" filterable placeholder="请选择游戏" size="small" style="width: 100%;">
+            <el-select v-model="formDialog.form.game.game_id" filterable placeholder="请选择游戏" size="small" style="width: 100%;    " :disabled="formDialog.isedit">
               <el-option v-for="(game, i) in gameGuideCfgs" :key="i" :label="`${game.label}-${game.value}`" :value="game.value" />
             </el-select>
           </el-form-item>
@@ -146,7 +146,8 @@ export default {
             game_id: '',
             image_path: ''
           },
-          update_index: 0 // 仅编辑时需要，确定修改的是哪一条数据
+          update_index: 0, // 仅编辑时需要，确定修改的是哪一条数据
+          isedit: false
         }
       },
       copyDialog: {
@@ -240,6 +241,7 @@ export default {
       }
       this.formDialog.title = '修改游戏'
       this.formDialog.visible = true
+      this.formDialog.isedit = true
     },
     GetGameName(gameId) {
       var gameName = ''
@@ -252,7 +254,6 @@ export default {
       return gameName
     },
     handleUpdateAppid(appid) {
-      console.log('appid==>', appid)
       localStorage.setItem(LOCAL_APPID_KEY, appid)
       this.onSearch()
     },
@@ -266,10 +267,12 @@ export default {
           const objs = response.Data || []
           this.gameGuideCfgs = []
           for (var i = 0; i < objs.length; i++) {
-            this.gameGuideCfgs.push({
-              'label': objs[i].Name,
-              'value': objs[i].Gid
-            })
+            if (objs[i].Status === 2) {
+              this.gameGuideCfgs.push({
+                'label': objs[i].Name,
+                'value': objs[i].Gid
+              })
+            }
           }
         }
       })
@@ -301,6 +304,7 @@ export default {
     },
     handleCloseDialog() {
       this.formDialog.visible = false
+      this.formDialog.isedit = false
       this.handleResetForm()
     },
     handleConfirmDialog() {
@@ -308,7 +312,7 @@ export default {
         return
       }
 
-      console.log('【formDialog】: ', this.formDialog)
+      //console.log('【formDialog】: ', this.formDialog)
       this.allGameConfig.update_time = Math.round(Date.now() / 1000)
       let cfg = this.getCurrentConfig()
       // alert(cfg)
@@ -325,7 +329,7 @@ export default {
         } else {
           cfg.gid_image_list.push(this.formDialog.form.game)
         }
-        console.log('【cfg】: ', cfg)
+        //console.log('【cfg】: ', cfg)
       } else {
         cfg.gid_image_list[this.formDialog.form.update_index] = this.formDialog.form.game
         this.allGameConfig.gid_image_resource.forEach(item => {
@@ -335,7 +339,7 @@ export default {
         })
         // console.log('【update】: ', cfg.gid_image_list[this.formDialog.form.update_index])
       }
-      console.log(this.allGameConfig)
+      //console.log(this.allGameConfig)
 
       this.updateConfigData()
     },
@@ -355,6 +359,7 @@ export default {
           Message.success(showMsg)
           this.getAllGameConfig(this.onSearch)
           this.formDialog.visible = false
+          this.formDialog.isedit = false
           this.handleResetForm()
           return
         } else {
@@ -412,6 +417,19 @@ export default {
       if (!checkedGamesParams) {
         this.errmsg('游戏和icon必须选择！')
         return false
+      }
+      var cfg = this.getCurrentConfig()
+      if (cfg) {
+        let count = 0
+        for (var i = 0; i < cfg.gid_image_list.length; i++) {
+          if (this.formDialog.form.game.game_id === cfg.gid_image_list[i].game_id) {
+            count = count + 1
+          }
+        }
+        if (this.formDialog.isedit === false && count > 0) {
+          this.errmsg('请勿上传相同的游戏')
+          return false
+        }
       }
 
       return true
