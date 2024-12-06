@@ -28,7 +28,8 @@
             <legend>倍数相关配置</legend>
             <el-row>
               <el-col :span="6">
-                <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item" effect="dark" placement="top">
+                <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
+                            effect="dark" placement="top">
                   <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
                     检查倍数总和区间
                   </el-button>
@@ -502,14 +503,20 @@
           <el-button type="primary" @click="addBetOddsPlansCfgRow(0)" size="mini">添加</el-button>
           <el-button type="success" size="mini" @click="closeVisible()">确定</el-button>
         </el-col>
-        <el-col :offset="2" :span="4">
+        <el-col :offset="2" :span="8">
           <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="top">
             <el-button type="primary" @click="checkBetPlans()" size="mini" style="background-color:#ff8000">检查
             </el-button>
           </el-tooltip>
-          <el-tooltip content="最小倍数*出现个数<剧本总和" effect="dark" placement="top">
+          <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
             <el-button type="primary" @click="checkBetPlansSum()" size="mini" style="background-color:#b600ff">检查
             </el-button>
+          </el-tooltip>
+
+        </el-col>
+        <el-col :offset="3" :span="3">
+          <el-tooltip content="xlsx/xls文件,格式保持一致" effect="dark" placement="top">
+            <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
           </el-tooltip>
         </el-col>
       </el-row>
@@ -591,6 +598,7 @@ import request from '@/utils/request'
 import {$libShow, DataRule, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import ShowTip from "@/components/Tip/showTip.vue";
+import XLSX from "xlsx";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -719,7 +727,8 @@ export default {
         let obj = this.item.OddsCfg[i]
         if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
         } else {
-          str += `第${i}行数据校验不通过\n`
+          let a = Number(i) + 1
+          str += `第${a}行数据校验不通过\n`
         }
       }
       if (str.length > 0) {
@@ -920,6 +929,49 @@ export default {
       } else {
         Message.error('数据异常:' + str)
       }
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.ImportExcel(file);
+      }
+    },
+    ImportExcel(file) {
+      const reader = new FileReader();
+
+      /**
+       * 文件读取完成后的回调函数
+       *
+       * 该方法在Excel文件读取完成后被调用，
+       * 使用xlsx库解析文件内容并遍历打印每一行的数据。
+       *
+       * @param {Event} e - 文件读取事件对象
+       * @returns {void}
+       */
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+        this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg = []
+        json.forEach((row, index) => {
+          if (index > 0) {
+            this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg.push({
+              "OddsMin": row[0],
+              "OddsMax": row[1],
+              "ScriptSteps": row[2],
+              "ScriptOddsSum": row[3],
+            })
+            console.log(`Row ${index + 1}:`, row);
+          }
+          this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg
+          this.itemKey2 += 1
+        });
+      };
+
+      reader.readAsArrayBuffer(file);
     },
     getGameList() {
       request({
