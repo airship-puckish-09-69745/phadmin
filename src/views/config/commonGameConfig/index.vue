@@ -53,7 +53,7 @@
         </el-table> -->
         <el-form ref="form" :model="formDialog.form" label-width="130px">
           <el-form-item label="选择游戏" :rules="[{ required: true, message: '请选择游戏' }]">
-            <el-select v-model="formDialog.form.game.game_id" filterable placeholder="请选择游戏" size="small" style="width: 100%;">
+            <el-select v-model="formDialog.form.game.game_id" filterable placeholder="请选择游戏" size="small" style="width: 100%;    " :disabled="formDialog.isedit">
               <el-option v-for="(game, i) in gameGuideCfgs" :key="i" :label="`${game.label}-${game.value}`" :value="game.value" />
             </el-select>
           </el-form-item>
@@ -146,7 +146,8 @@ export default {
             game_id: '',
             image_path: ''
           },
-          update_index: 0 // 仅编辑时需要，确定修改的是哪一条数据
+          update_index: 0, // 仅编辑时需要，确定修改的是哪一条数据
+          isedit: false
         }
       },
       copyDialog: {
@@ -240,6 +241,7 @@ export default {
       }
       this.formDialog.title = '修改游戏'
       this.formDialog.visible = true
+      this.formDialog.isedit = true
     },
     GetGameName(gameId) {
       var gameName = ''
@@ -302,6 +304,7 @@ export default {
     },
     handleCloseDialog() {
       this.formDialog.visible = false
+      this.formDialog.isedit = false
       this.handleResetForm()
     },
     handleConfirmDialog() {
@@ -356,6 +359,7 @@ export default {
           Message.success(showMsg)
           this.getAllGameConfig(this.onSearch)
           this.formDialog.visible = false
+          this.formDialog.isedit = false
           this.handleResetForm()
           return
         } else {
@@ -416,11 +420,15 @@ export default {
       }
       var cfg = this.getCurrentConfig()
       if (cfg) {
+        let count = 0
         for (var i = 0; i < cfg.gid_image_list.length; i++) {
           if (this.formDialog.form.game.game_id === cfg.gid_image_list[i].game_id) {
-            this.errmsg('请勿上传相同的游戏')
-            return false
+            count = count + 1
           }
+        }
+        if (this.formDialog.isedit === false && count > 0) {
+          this.errmsg('请勿上传相同的游戏')
+          return false
         }
       }
 
