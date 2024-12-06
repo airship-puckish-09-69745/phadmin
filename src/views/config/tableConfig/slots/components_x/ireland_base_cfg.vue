@@ -48,6 +48,9 @@
               <el-option label="EpicAce" :value="170" />
               <el-option label="EpicAceMars" :value="171" />
               <el-option label="TreasureBowl" :value="174" />
+              <el-option label="PuppyHome" :value="176" />
+              <el-option label="PuppyHomeMars" :value="177" />
+              <el-option label="MayanTotem" :value="178" />
             </el-select>
           </el-form-item>
 

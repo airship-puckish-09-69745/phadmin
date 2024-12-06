@@ -120,17 +120,17 @@
          <el-table-column label="第四回合先摸牌">
            <template slot-scope="scope">{{ scope.row.isFirst4 === 1 ? '是' : '否' }}</template>
          </el-table-column>
-         <el-table-column label="牌局输赢">
+         <el-table-column label="牌局 won">
            <template slot-scope="scope">{{ scope.row.moneyWon  / 1000}}</template>
          </el-table-column>
          <el-table-column label="牌局抽成">
            <template slot-scope="scope">{{ scope.row.moneyTaxed  / 1000}}</template>
          </el-table-column>
+        <el-table-column label="pot won">
+          <template slot-scope="scope">{{ scope.row.moneyPotWin  / 1000}}</template>
+        </el-table-column>
          <el-table-column label="pot投入">
            <template slot-scope="scope">{{ scope.row.moneyPotPay  / 1000}}</template>
-         </el-table-column>
-         <el-table-column label="pot">
-           <template slot-scope="scope">{{ scope.row.moneyPotWin  / 1000}}</template>
          </el-table-column>
          <el-table-column label="pot抽成">
            <template slot-scope="scope">{{ scope.row.moneyPotTaxed  / 1000}}</template>

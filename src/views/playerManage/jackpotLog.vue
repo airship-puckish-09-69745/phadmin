@@ -390,8 +390,11 @@ export default {
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 90, 'label': 'FortuneComing' },
         { 'value': 118, 'label': 'CarRacing' },
+        { 'value': 124, 'label': 'JackpotWheel' },
+        { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 156, 'label': 'CrazyAce' },
-        { 'value': 166, 'label': 'FireLink' }
+        { 'value': 166, 'label': 'FireLink' },
+        { 'value': 174, 'label': 'TreasureBowl' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

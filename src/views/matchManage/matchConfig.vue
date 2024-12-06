@@ -205,7 +205,7 @@
               width="450"
             >
               <template slot-scope="scope">
-                <el-select v-model="scope.row.appId" placeholder="请选择" size="mini">
+                <el-select v-model="scope.row.appId" placeholder="请选择" size="mini" @change="selectShowGuieds()">
                   <el-option
                     v-for="item in appidInfoCfgs"
                     :key="item.value"
@@ -544,9 +544,21 @@
         <fieldset>
           <legend>引导推荐</legend>
           <el-form-item label="游戏推荐方案：" :required="true">
-            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini" >
               <el-option
-                v-for="item in guideCfgs"
+                v-for="item in guideShowCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled='checkMatchGuidesDisable(editForm.appInfo[0].appId)'
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="赛事分类：" :required="true">
+            <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in matchEvents"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -590,6 +602,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import {getAllCommonGameConfig, getAllMatchGuidesConfig} from '@/utils/common-game-config'
 
 export default {
   name: 'MatchConfig',
@@ -664,9 +677,14 @@ export default {
           "propsAttr":""
         }
       ],
+      matchEvents: [
+        { 'value': 0, 'label': 'All' },
+        { 'value': 1, 'label': 'Events' },
+      ],
       csCfgs: [],
       showCsCfgs: [],
       guideCfgs: [],  //赛事推荐相关
+      guideShowCfgs: [], //赛事推荐相关 跟AppId 关联
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
@@ -756,7 +774,8 @@ export default {
           data: ''
         },
         signExtra: {
-          betCnt: 0
+          betCnt: 0,
+          matchEvents: 0
         },
       },
 
@@ -787,7 +806,6 @@ export default {
         daySections: '每日时段'
       },
       showDevTool: false,
-      subKey: 'match_guide_list_new'
     }
   },
   computed: {
@@ -833,7 +851,6 @@ export default {
                 'gameId': [parseInt(objs.list[i].game_id, 10)],
                 "ruleType":objs.list[i].rule_type,
               })
-
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
                 if (stage_detail[j].system_type == 1) { // 打立出局
@@ -908,33 +925,49 @@ export default {
       })
     },
     getGuideCfgs() {
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
+      getAllMatchGuidesConfig().then(data => {
+        this.guideCfgs = []
+        this.guideCfgs.push({
+          'label': '无',
+          'value': 0,
+          'appId': 0,
+        })
+        for (var i = 0; i < data.length; i++) {
+          this.guideCfgs.push({
+            'label': data[i].scheme_title,
+            'value': data[i].associate_key,
+            'appId': data[i].app_id,
+          })
         }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
-            const objs = JSON.parse(response.Data.Data)
-            if (objs.length > 0) {
-              this.guideCfgs = []
-              this.guideCfgs.push({
-                'label': '无',
-                'value': 0
-              })
-              for (let i = 0; i < objs.length; i++) {
-                  this.guideCfgs.push({
-                    'label': objs[i].scheme_title,
-                    'value': objs[i].associate_key
-                  })
-              }
-            }
+
+      })
+    },
+    checkMatchGuidesDisable(appId) {
+      for (var i = 0;i < this.guideCfgs.length; i++) {
+        if (this.guideCfgs[i].appId > 0 &&  this.guideCfgs[i].appId == appId ) {
+            return false
+        }
+      }
+      return true
+    },
+
+    selectShowGuieds() {
+      this.guideShowCfgs = []
+      this.guideShowCfgs.push(
+        {
+          'label': '无',
+          'value': 0,
+          'appId': 0,
+        }
+      )
+
+      if (this.guideCfgs.length > 0) {
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.checkHaveAppId(this.guideCfgs[i].appId, this.editForm.appInfo)) {
+            this.guideShowCfgs.push(this.guideCfgs[i])
           }
         }
-      })
+      }
     },
     handleSizeChange(val) {
       this.limit = val
@@ -1236,10 +1269,12 @@ export default {
         }
 
         this.editForm.signExtra = {
-          betCnt: 0
+          betCnt: 0,
+          matchEvents: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
+        this.guideShowCfgs = this.guideCfgs
       } else {
         let editData = {}
         this.editForm.title = '编辑比赛配置'
@@ -1326,11 +1361,35 @@ export default {
         this.disableOpenType(true,editData.open_match_type)
       }
       this.editForm.visable = true
+      this.guideShowCfgs = []
+      this.guideShowCfgs.push({
+        'label': '无',
+        'value': 0,
+        'appId': 0,
+      })
+      if (this.guideCfgs.length > 0) {
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.checkHaveAppId(this.guideCfgs[i].appId, this.editForm.appInfo)) {
+            this.guideShowCfgs.push(this.guideCfgs[i])
+          }
+        }
+      }
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
       for (var i = 0; i < gameArr.length; i++) {
         if (gid == gameArr[i]) {
+          flag = true
+          break
+        }
+      }
+      return flag
+    },
+
+    checkHaveAppId(appId, appInfo) {
+      let flag = false
+      for (var i = 0; i < appInfo.length; i++ ){
+        if (appId == appInfo[i].appId) {
           flag = true
           break
         }
@@ -1665,7 +1724,6 @@ export default {
       return true
     },
     disableOpenType(isDisable,enableType){
-      console.log("disable",isDisable,enableType)
       if(isDisable){
         for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
           if(this.openMatchTypeCfgs[index].value == enableType){
