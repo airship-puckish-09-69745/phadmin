@@ -27,12 +27,17 @@
           <fieldset style="margin:20px auto;">
             <legend>倍数相关配置</legend>
             <el-row>
-              <el-col :span="6">
+              <el-col :span="1">
                 <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
                             effect="dark" placement="top">
                   <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
                     检查倍数总和区间
                   </el-button>
+                </el-tooltip>
+              </el-col>
+              <el-col :offset="1" :span="3">
+                <el-tooltip content="xlsx/xls文件,只导入前四列，格式保持一致" effect="dark" placement="top">
+                  <input type="file" @change="handleFileUpload1" accept=".xlsx, .xls" size="mini"></input>
                 </el-tooltip>
               </el-col>
             </el-row>
@@ -687,11 +692,14 @@ export default {
     }
   },
   created() {
-    this.getConfigData()
-    this.getData()
-    this.getGameList()
+    this.fetchData();
   },
   methods: {
+    async fetchData() {
+      await this.getConfigData();
+      await this.getGameList();
+      await this.getData();
+    },
     closeVisible() {
       this.detailVisible = false
       this.BetOddsPlanDetailVisible = false
@@ -930,6 +938,45 @@ export default {
         Message.error('数据异常:' + str)
       }
     },
+    handleFileUpload1(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.ImportExcel1(file);
+      }
+    },
+    ImportExcel1(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+
+        this.item.OddsCfg = []
+        json.forEach((row, index) => {
+          if (index > 0) {
+            this.item.OddsCfg.push( {
+              "OddsMin": row[0],
+              "OddsMax":  row[1],
+              "ScriptSteps":  row[2],
+              "ScriptOddsSum":  row[3],
+              "NormalMatrixCacheSize": 0,
+              "ScatterMatrixCacheSize": 0,
+              "SwitchScatterPercent": 0,
+              "TriggerScatterPercent": 0
+            })
+          }
+          this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg
+          this.itemKey2 += 1
+        });
+      };
+
+      reader.readAsArrayBuffer(file);
+    },
+
+
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {
@@ -938,16 +985,6 @@ export default {
     },
     ImportExcel(file) {
       const reader = new FileReader();
-
-      /**
-       * 文件读取完成后的回调函数
-       *
-       * 该方法在Excel文件读取完成后被调用，
-       * 使用xlsx库解析文件内容并遍历打印每一行的数据。
-       *
-       * @param {Event} e - 文件读取事件对象
-       * @returns {void}
-       */
       reader.onload = (e) => {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, {type: 'array'});
