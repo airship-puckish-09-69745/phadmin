@@ -385,6 +385,7 @@ export default {
         162: 'Major Ace',
         166: 'Fire Link',
         164: 'MahjongFortune',
+        180: 'FishingMaster',
         172: 'WrathOfZeus',
         123: 'Mines Battle',
         124: 'Jackpot Wheel',
@@ -521,7 +522,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 166)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 166, 170)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 180, 166, 170)
         }
       }
     },
