@@ -1,13 +1,16 @@
 <template>
     <div>
-        <el-input placeholder="" v-model="version" disabled>
+        <el-input placeholder="" v-model="version.ver" disabled>
             <template slot="prepend">当前版本</template>
         </el-input>
+        <el-input placeholder="" v-model="version.desc"  disabled>
+            <template slot="prepend">版本信息</template>
+        </el-input>
         <el-input placeholder="请输入版本" v-model="curr">
-            <template slot="prepend">设置版本</template>
+            <template slot="prepend">新增版本</template>
         </el-input>
         <el-input width="300" placeholder="请输入信息" v-model="desc">
-            <template slot="prepend">添加信息</template>
+            <template slot="prepend">填写信息</template>
         </el-input>
         <el-button size="mini" type="primary" icon="el-icon-message" @click="setRecord">同步</el-button>
     </div>
@@ -23,8 +26,12 @@ export default {
         return {
             show: false,
             item: {},
-            version: '',
-            curr: '',
+            version: {
+                ver:'',
+                desc:'',
+            },
+            temp_ver: {},
+            curr: this.getTimeFormat(),
             desc: '',
             list: []
         }
@@ -41,6 +48,7 @@ export default {
             if (newValue) {
                 this.getRecord()
                 this.curr = this.getTimeFormat()
+                this.desc = ''
             }
         }
     },
@@ -62,14 +70,15 @@ export default {
                     if (response.Data !== '') {
                         this.list = JSON.parse(response.Data.Data)
                         if (this.list.length > 0) {
-                            this.version = JSON.stringify(this.list[this.list.length-1])
+                            this.version = this.list[this.list.length-1]
                         }
                     }
                 }
             })
         },
         setRecord(){
-            this.list.push({ver:this.lobby +'/'+this.curr + '.json', desc:this.desc})
+            this.temp_ver = {ver:this.lobby +'/'+this.curr + '.json', desc:this.desc}
+            this.list.push(this.temp_ver)
             this.item.Data = JSON.stringify(this.list)
             request({
                 url: '/customizeconfig/update',
@@ -86,7 +95,17 @@ export default {
             })
         },
         syncConfigToCDN(){
-            const str = JSON.stringify(this.data)
+            let arr = []
+            for (let i=0; i< this.data.length; i++) {
+                if (this.data[i].Status===2) {
+                    arr.push({
+                        BundleKey: this.data[i].BundleKey, 
+                        GamePkgVersion: this.data[i].GamePkgVersion, 
+                        WhiteVersion: this.data[i].WhiteVersion
+                    })
+                }
+            }
+            const str = JSON.stringify(arr)
             // console.log(data)
 
             // 创建Blob对象来容纳JSON文本数据，指定类型为application/json
@@ -106,6 +125,8 @@ export default {
                 console.log(JSON.stringify(response))
                 if (response.RetCode === 0) {
                     Message.success('保存成功')
+                    this.version = this.temp_ver
+                    this.desc = ''
                 } else {
                     Message.success('保存失败')
                 }
