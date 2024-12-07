@@ -60,16 +60,16 @@
               <template slot="append">%</template>
             </el-input>
           </el-descriptions-item>
-          <el-descriptions-item label="任务二小于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务二小于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission2BetMinSmall" size="mini" />
           </el-descriptions-item>
-          <el-descriptions-item label="任务二大于等于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务二大于等于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission2BetMinBig" size="mini" />
           </el-descriptions-item>
-          <el-descriptions-item label="任务三小于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务三小于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission3BetMinSmall" size="mini" />
           </el-descriptions-item>
-          <el-descriptions-item label="任务三大于等于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务三大于等于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission3BetMinBig" size="mini" />
           </el-descriptions-item>
           <el-descriptions-item label="增长保底系数(放大100倍)">

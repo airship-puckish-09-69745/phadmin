@@ -6,7 +6,7 @@
 
           <el-form-item label="Bonus等级与奖励倍数映射">
             <el-input v-model="cfg.BonusAndRewardMap" placeholder="请输入内容,如3:2, 5:4, 8:6, 10:8, 12:10">
-              <template slot="append">8个等级. BonusNum1:Reward1,BonusNum2:Reward2...</template>
+              <template slot="append">倍率扩大了100倍. BonusNum1:Reward1,BonusNum2:Reward2...</template>
             </el-input>
           </el-form-item>
 
