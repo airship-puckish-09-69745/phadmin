@@ -955,21 +955,21 @@ export default {
         const worksheet = workbook.Sheets[firstSheetName];
         const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
-        // this.item.OddsCfg = []
+        this.item.OddsCfg = []
         // let org = JSON.parse(JSON.stringify( this.item.OddsCfg));
         json.forEach((row, index) => {
           if (index > 0) {
             let idx = index-1
             console.log(index,idx,row)
             this.item.OddsCfg[idx]= {
-              "OddsMin": row[0],
-              "OddsMax":  row[1],
-              "ScriptSteps":  row[2],
-              "ScriptOddsSum":  row[3],
-              "NormalMatrixCacheSize":  this.item.OddsCfg[idx]?this.item.OddsCfg[idx].NormalMatrixCacheSize:0,
-              "ScatterMatrixCacheSize": this.item.OddsCfg[idx]?this.item.OddsCfg[idx].ScatterMatrixCacheSize:0,
-              "SwitchScatterPercent": this.item.OddsCfg[idx]?this.item.OddsCfg[idx].SwitchScatterPercent:0,
-              "TriggerScatterPercent": this.item.OddsCfg[idx]?this.item.OddsCfg[idx].TriggerScatterPercent:0,
+              "OddsMin": row[0]?row[0]:0,
+              "OddsMax":  row[1]?row[1]:0,
+              "ScriptSteps":  row[2]?row[2]:0,
+              "ScriptOddsSum":  row[3]?row[3]:0,
+              "NormalMatrixCacheSize":  row[4]?row[4]:0,
+              "ScatterMatrixCacheSize":row[5]?row[5]:0,
+              "SwitchScatterPercent": row[6]?row[6]:0,
+              "TriggerScatterPercent": row[7]?row[7]:0,
             }
           }
           this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg
