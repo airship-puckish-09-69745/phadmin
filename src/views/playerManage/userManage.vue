@@ -286,7 +286,7 @@ export default {
         GullakLevel: 0,
         Nick: '',
         KycStatus: 0,
-        PlatRegisterTime: '',
+        PlatRegisterTime: 0,
         RegisterTime: '',
         RegisterChannel: '',
         LastLoginTime: '',
