@@ -679,6 +679,7 @@ export default {
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
     initFormData(bEdit, ID) {
+      console.log( this.edit.item.FirstPassCellMoney,  this.edit.item.TwoPassCellMoney)
       this.edit.isEdit = bEdit
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
@@ -689,6 +690,8 @@ export default {
             this.$refs.compare.SetOldVal(_data)
           }
         }
+        this.edit.item.FirstPassCellMoney /=1000
+        this.edit.item.TwoPassCellMoney /=1000
       }
     },
     dataRule(required, config) {
@@ -746,6 +749,8 @@ export default {
       return true
     },
     save() {
+      this.edit.item.FirstPassCellMoney *= 1000
+      this.edit.item.TwoPassCellMoney *= 1000
       if (!this.checkData()) return
       if (!this.checkForce()) return
       if (this.edit.isEdit) {
