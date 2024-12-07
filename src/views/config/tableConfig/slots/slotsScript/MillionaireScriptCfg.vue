@@ -36,7 +36,7 @@
                 </el-tooltip>
               </el-col>
               <el-col :offset="1" :span="3">
-                <el-tooltip content="xlsx/xls文件,只导入前四列，格式保持一致" effect="dark" placement="top">
+                <el-tooltip content="xlsx/xls文件,只导入前四列，格式保持一致,需要首行标题" effect="dark" placement="top">
                   <input type="file" @change="handleFileUpload1" accept=".xlsx, .xls" size="mini"></input>
                 </el-tooltip>
               </el-col>
@@ -50,6 +50,7 @@
               :row-style="{height:'10px'}"
               :cell-style="libShow.DefaultTableCell"
               style="width: 100%"
+              :key="itemKeyBet"
             >
               <el-table-column
                 type="index"
@@ -520,7 +521,7 @@
 
         </el-col>
         <el-col :offset="3" :span="3">
-          <el-tooltip content="xlsx/xls文件,格式保持一致" effect="dark" placement="top">
+          <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
             <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
           </el-tooltip>
         </el-col>
@@ -648,6 +649,7 @@ export default {
       showVisibleIdx: 0,
       itemKey: 0,
       itemKey2: 0,
+      itemKeyBet: 0,
       slotCfg: {},
       subKeyMap: {
         '76': 'candypartyway',
@@ -953,23 +955,25 @@ export default {
         const worksheet = workbook.Sheets[firstSheetName];
         const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
-
-        this.item.OddsCfg = []
+        // this.item.OddsCfg = []
+        // let org = JSON.parse(JSON.stringify( this.item.OddsCfg));
         json.forEach((row, index) => {
           if (index > 0) {
-            this.item.OddsCfg.push( {
+            let idx = index-1
+            console.log(index,idx,row)
+            this.item.OddsCfg[idx]= {
               "OddsMin": row[0],
               "OddsMax":  row[1],
               "ScriptSteps":  row[2],
               "ScriptOddsSum":  row[3],
-              "NormalMatrixCacheSize": 0,
-              "ScatterMatrixCacheSize": 0,
-              "SwitchScatterPercent": 0,
-              "TriggerScatterPercent": 0
-            })
+              "NormalMatrixCacheSize":  this.item.OddsCfg[idx]?this.item.OddsCfg[idx].NormalMatrixCacheSize:0,
+              "ScatterMatrixCacheSize": this.item.OddsCfg[idx]?this.item.OddsCfg[idx].ScatterMatrixCacheSize:0,
+              "SwitchScatterPercent": this.item.OddsCfg[idx]?this.item.OddsCfg[idx].SwitchScatterPercent:0,
+              "TriggerScatterPercent": this.item.OddsCfg[idx]?this.item.OddsCfg[idx].TriggerScatterPercent:0,
+            }
           }
           this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg
-          this.itemKey2 += 1
+          this.itemKeyBet += 1
         });
       };
 
