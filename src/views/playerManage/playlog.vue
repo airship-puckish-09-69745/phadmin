@@ -3652,7 +3652,7 @@ export default {
 
     showJackpotWheelGame(obj) {
       this.jackpotWheelDetail = obj
-      this.jackpotWheelData = obj.JackPotWheel
+      this.jackpotWheelData = obj.JackpotWheel
       console.log('this.jackpotWheelData => ', this.jackpotWheelData)
       this.jackpotWheelDetailVisible = true
     },
