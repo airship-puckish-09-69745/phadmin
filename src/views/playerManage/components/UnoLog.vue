@@ -86,23 +86,23 @@
         <el-table-column label="Bet">
           <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
         </el-table-column>
-        <el-table-column label="MoneyChange">
-          <template slot-scope="scope">{{ scope.row.moneyChange / 1000 }}</template>
-        </el-table-column>
-        <el-table-column label="MoneyCurrent">
-          <template slot-scope="scope">{{ scope.row.moneyCur / 1000 }}</template>
+        <el-table-column label="Won">
+          <template slot-scope="scope">{{ scope.row.moneyWon / 1000 }}</template>
         </el-table-column>
         <el-table-column label="Taxed">
           <template slot-scope="scope">{{ scope.row.moneyTaxed / 1000 }}</template>
         </el-table-column>
-        <el-table-column label="PlayTimes">
-          <template slot-scope="scope">{{ scope.row.playTimes }}</template>
+        <el-table-column label="MoneySettle">
+          <template slot-scope="scope">{{ scope.row.moneyChange / 1000 }}</template>
+        </el-table-column>
+        <el-table-column label="MoneyChange">
+          <template slot-scope="scope">{{ (scope.row.moneyChange - scope.row.moneyBet) / 1000 }}</template>
+        </el-table-column>
+        <el-table-column label="MoneyCurrent">
+          <template slot-scope="scope">{{ scope.row.moneyCur / 1000 }}</template>
         </el-table-column>
         <el-table-column label="Rank">
           <template slot-scope="scope">{{ scope.row.rank }}</template>
-        </el-table-column>
-        <el-table-column label="Won">
-          <template slot-scope="scope">{{ scope.row.moneyWon / 1000 }}</template>
         </el-table-column>
       </el-table-column>
     </el-table>
