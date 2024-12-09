@@ -2686,6 +2686,16 @@
         <el-table-column prop="uid" label="Bet">
           <template slot-scope="scope">{{ formatNumber(scope.row.moneyBet / 1000) }}</template>
         </el-table-column>
+        <el-table-column prop="uid" label="JackPot">
+          <template slot-scope="scope">
+            {{ scope.row.LuckyPachinko ? scope.row.LuckyPachinko.JackpotAward / 1000 : '' }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="uid" label="JackpotType">
+          <template slot-scope="scope">
+            {{ jackpotType[scope.row.LuckyPachinko ? scope.row.LuckyPachinko.JackpotType : -1] }}
+          </template>
+        </el-table-column>
         <el-table-column prop="uid" label="win">
           <template slot-scope="scope">{{ formatNumber(scope.row.moneyWin / 1000) }}</template>
         </el-table-column>
