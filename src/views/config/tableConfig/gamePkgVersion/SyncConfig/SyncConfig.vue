@@ -1,7 +1,7 @@
 <template>
     <div>
       <el-card class="box-card">
-        <el-input placeholder="" v-model="version.path">
+        <el-input placeholder="" v-model="version.path" disabled>
             <template slot="prepend">文件路径</template>
         </el-input>
         <el-input placeholder="" v-model="version.ver" disabled>
