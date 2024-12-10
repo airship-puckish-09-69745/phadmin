@@ -243,7 +243,8 @@ export default {
         { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 156, 'label': 'CrazyAce' },
-        { 'value': 82, 'label': 'Millionaire' }
+        { 'value': 82, 'label': 'Millionaire' },
+        { 'value': 166, 'label': 'FireLink' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
