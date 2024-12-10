@@ -1,11 +1,17 @@
 <template>
     <div>
+      <el-card class="box-card">
+        <el-input placeholder="" v-model="version.path">
+            <template slot="prepend">文件路径</template>
+        </el-input>
         <el-input placeholder="" v-model="version.ver" disabled>
             <template slot="prepend">当前版本</template>
         </el-input>
         <el-input placeholder="" v-model="version.desc"  disabled>
             <template slot="prepend">版本信息</template>
         </el-input>
+      </el-card>
+      <el-card class="box-card">
         <el-input placeholder="请输入版本" v-model="curr">
             <template slot="prepend">新增版本</template>
         </el-input>
@@ -13,6 +19,7 @@
             <template slot="prepend">填写信息</template>
         </el-input>
         <el-button size="mini" type="primary" icon="el-icon-message" @click="setRecord">同步</el-button>
+      </el-card>
     </div>
 </template> 
 
@@ -27,6 +34,7 @@ export default {
             show: false,
             item: {},
             version: {
+                path:'',
                 ver:'',
                 desc:'',
             },
@@ -77,7 +85,11 @@ export default {
             })
         },
         setRecord(){
-            this.temp_ver = {ver:this.lobby +'/'+this.curr + '.json', desc:this.desc}
+            this.temp_ver = {
+                path: '/lobby/'+this.lobby,
+                ver: this.curr + '.json',
+                desc:this.desc
+            }
             this.list.push(this.temp_ver)
             this.item.Data = JSON.stringify(this.list)
             request({
