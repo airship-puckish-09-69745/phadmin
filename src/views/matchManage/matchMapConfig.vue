@@ -144,6 +144,7 @@ export default {
     },
     setData() {
       this.form.Data = this.encodeData()
+      const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
@@ -154,7 +155,7 @@ export default {
         request({
           url: 'customizeconfig/update',
           method: 'post',
-          data: this.form
+          data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
             console.log('save', response)
