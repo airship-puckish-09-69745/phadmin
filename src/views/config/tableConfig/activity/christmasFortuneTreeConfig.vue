@@ -313,6 +313,39 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="白名单配置">
+          <el-form ref="item" label-width="220px">
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
+                  <el-option
+                    v-for="item in appIdOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
+                  <el-option
+                    v-for="item in siteIdOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
 
       <el-row>
@@ -466,6 +499,10 @@ export default {
           { RankStart: 71, RankEnd: 100, Reward: 88 },
         ],
         GameIdCfg: [],
+        WhitelistCfg: {
+          AppIdList: [],
+          SiteIdList: []
+        }
       },
 
       RaffleLevelList: [
@@ -500,6 +537,44 @@ export default {
           }]
         }]
       }],
+
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: '提审1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        },
+      ],
+
+      siteIdOptions: [
+        {
+          value: 'Dev',
+          label: 'Dev'
+        },
+        {
+          value: 'BP',
+          label: 'BP'
+        },
+        {
+          value: 'GP',
+          label: 'GP'
+        },
+        {
+          value: 'AP',
+          label: 'AP'
+        },
+        {
+          value: 'PG',
+          label: 'PG'
+        },
+      ],
 
       filterText: '',
 
@@ -648,6 +723,7 @@ export default {
           console.log('christmasConfig', response.Data)
 
           const rankCfg = JSON.parse(JSON.stringify($this.item.RankCfg))
+          const whitelistCfg = JSON.parse(JSON.stringify($this.item.WhitelistCfg))
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
@@ -674,6 +750,10 @@ export default {
 
             if ($this.item.RankCfg.length === 0) {
               $this.item.RankCfg = rankCfg
+            }
+
+            if ($this.item.WhitelistCfg == null) {
+              $this.item.WhitelistCfg = whitelistCfg
             }
 
             this.$refs.compare.SetOldVal(old)
@@ -724,6 +804,8 @@ export default {
       }
 
       cpy.GameIdCfg = this.item.GameIdCfg
+
+      cpy.WhitelistCfg = this.item.WhitelistCfg
 
       return JSON.stringify(cpy)
     },
@@ -822,6 +904,12 @@ export default {
       } else {
         this.item.RuleImgVer.splice(index, 1)
       }
+    },
+    onAppIdOptionsChange() {
+      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
+    },
+    onSiteIdOptionsChange() {
+      console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
     }
   }
 }
