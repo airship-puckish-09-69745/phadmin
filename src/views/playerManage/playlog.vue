@@ -2800,6 +2800,9 @@
           <div class="some" v-for="(item,index) in scope.row.someInfo" :key="index">
               {{ item.someName }}
           </div>
+          
+          <span style="float:left;" v-if="isMahjongFangChongUser(scope.row.uid)">{{'点炮'}}</span>
+          
           </template>
         </el-table-column>
         <el-table-column prop="husomecount" label="番数">
@@ -3780,6 +3783,14 @@ export default {
     getMahjongCardUrl(card) {
       //console.log('/filipinomahjong/' + card + '.png')
       return require('@/assets/filipinomahjong/' + card + '.png')
+    },
+    isMahjongFangChongUser(uid){
+      for (const u of this.FilipinoMahjongDetail.playerList){
+        if (u.iHu == 2 && u.ifcUid == uid){
+          return true
+        }
+      }
+      return false
     },
     getMahjongDiceUrl(dice) {
       return require('@/assets/domino/' + dice + '.png')

@@ -289,6 +289,8 @@ export default {
           return 'GigaAce'
         case 162:
           return 'MajorAce'
+        case 164:
+          return 'MahjongFortune'
         case 166:
           return 'FireLink'
         case 170:
