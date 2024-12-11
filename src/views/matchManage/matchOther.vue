@@ -123,7 +123,7 @@ export default {
   components: { Compare, ImagePicker, Publish },
   data() {
     return {
-      subKey: 'match_share_config',
+      subKey: 'match_other_config',
       libShow: $libShow,
       form: {
         Data: {}

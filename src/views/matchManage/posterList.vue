@@ -144,7 +144,7 @@
           </el-form-item>
 
           <el-form-item label="AppId：" :required="true">
-            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
+            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini" :disabled="!editForm.isAdd" @change="selectMatchName()">
               <el-option
                 v-for="item in appidInfoCfgs"
                 :key="item.value"
@@ -193,7 +193,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.jump_id==3" label="比赛跳转" :required="true">
-            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini" @change="selectMatchName()">
+            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in showCsCfgs"
                 :key="item.value"
@@ -542,6 +542,7 @@ export default {
           game_id: 0,
         }
         this.editForm.isAdd = true
+        this.selectMatchName()
       } else {
         let editData = {}
         this.editForm.title = '编辑海报配置'
