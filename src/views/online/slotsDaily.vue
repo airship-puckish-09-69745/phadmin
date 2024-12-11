@@ -289,6 +289,8 @@ export default {
           return 'GigaAce'
         case 162:
           return 'MajorAce'
+        case 164:
+          return 'MahjongFortune'
         case 166:
           return 'FireLink'
         case 170:
@@ -328,6 +330,7 @@ export default {
         case 158:
         case 160:
         case 162:
+        case 164:
         case 168:
         case 170:{
           // 混有购买免费数据
