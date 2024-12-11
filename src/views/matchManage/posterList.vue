@@ -144,7 +144,7 @@
           </el-form-item>
 
           <el-form-item label="AppId：" :required="true">
-            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.app_id" placeholder="请选择" size="mini" :disabled="!editForm.isAdd">
               <el-option
                 v-for="item in appidInfoCfgs"
                 :key="item.value"
@@ -167,7 +167,7 @@
           </el-form-item>
 
           <el-form-item label="跳转类型" :required="true">
-            <el-select v-model="editForm.data.jump_id" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.jump_id" placeholder="请选择" size="mini" @change="selectPosterJumpType()">
               <el-option
                 v-for="item in postJumpCfgs"
                 :key="item.value"
@@ -217,7 +217,7 @@
             />
           </el-form-item>
 
-          <el-form-item label="是否首弹:" :required="true" prop="first_jump" >
+          <el-form-item v-if="editForm.data.jump_id==1" label="是否首弹:" :required="true" prop="first_jump" >
             <el-switch v-model="editForm.data.first_jump" :active-value="true" :inactive-value="false" />
           </el-form-item>
 
@@ -245,7 +245,6 @@ import { getAllCommonGameConfig } from '@/utils/common-game-config'
 export default {
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
-    console.log("data()")
     return {
       activeTab: 'base',
       libShow: $libShow,
@@ -332,10 +331,10 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
 
-      resetSearch() {
-        this.form.app_id = -1
-        this.form.status = -1
-      },
+    resetSearch() {
+      this.form.app_id = -1
+      this.form.status = -1
+    },
     getBeginMatchCfgs() {
       request({
         url: '/matchconfig/match/config/list',
@@ -421,8 +420,8 @@ export default {
                   if (this.form.status == 1 && cfg.tableData[i].switch == true) {
                     this.posterList.tableData.push(cfg.tableData[i])
                   }
-                  if (this.form.status == 0 &&  cfg.tableData[i].switch == false) {
-                      this.posterList.tableData.push( cfg.tableData[i])
+                  if (this.form.status == 0 && cfg.tableData[i].switch == false) {
+                    this.posterList.tableData.push(cfg.tableData[i])
                   }
                 }
 
@@ -434,12 +433,12 @@ export default {
                 }
               } else if (this.form.app_id > 0 && this.form.status >= 0) {
                 for (var i = 0; i < cfg.tableData.length; i++) {
-                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 1 &&  cfg.tableData[i].switch == true)) {
-                    this.posterList.tableData.push( cfg.tableData[i])
+                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 1 && cfg.tableData[i].switch == true)) {
+                    this.posterList.tableData.push(cfg.tableData[i])
                   }
 
-                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 0 &&  cfg.tableData[i].switch == false)) {
-                    this.posterList.tableData.push( cfg.tableData[i])
+                  if (cfg.tableData[i].app_id == this.form.app_id && (this.form.status == 0 && cfg.tableData[i].switch == false)) {
+                    this.posterList.tableData.push(cfg.tableData[i])
                   }
                 }
               } else {
@@ -447,8 +446,8 @@ export default {
               }
             }
 
-              // 设置修改之前数据
-              this.$refs.compare.SetOldVal(response.Data.Data)
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
           }
           this.raw = response.Data
@@ -456,12 +455,11 @@ export default {
       })
     },
     selectMatchName() {
-      console.log("select Match")
       this.showCsCfgs = []
       if (this.matchCfg.length > 0) {
         for (var i = 0; i < this.matchCfg.length; i++) {
           for (var j = 0; j < this.matchCfg[i].app_info.length; j++) {
-            if (this.matchCfg[i].app_info[j].appId == this.editForm.data.app_id) {
+            if (this.matchCfg[i].app_info[j].appId === this.editForm.data.app_id) {
               this.showCsCfgs.push(this.matchCfg[i])
             }
           }
@@ -511,7 +509,7 @@ export default {
           break
         }
       }
-      appName = appName + '[' + id +']'
+      appName = appName + '[' + id + ']'
       return appName
     },
 
@@ -540,7 +538,7 @@ export default {
           match_cfg_id: 0,
           start_time: 0,
           end_time: 0,
-          sort_id : 0,
+          sort_id: 0,
           game_id: 0,
         }
         this.editForm.isAdd = true
@@ -584,7 +582,7 @@ export default {
 
       if (this.editForm.isAdd === false) {
         for (var i = 0; i < this.posterList.tableData.length; i++) {
-          if (this.posterList.tableData[i].id == this.editForm.data.id ) {
+          if (this.posterList.tableData[i].id == this.editForm.data.id) {
             this.posterList.tableData[i].title = this.editForm.data.title
             this.posterList.tableData[i].switch = this.editForm.data.switch
             this.posterList.tableData[i].sort_id = parseInt(this.editForm.data.sort_id)
@@ -675,6 +673,22 @@ export default {
         showConfirmButton: false
       })
     },
+
+    selectPosterJumpType() {
+      if (this.editForm.data.jump_id === 1) {
+        this.editForm.data.game_id = 0
+        this.editForm.data.match_cfg_id = 0
+      } else if (this.editForm.data.jump_id === 2) {
+        this.editForm.data.match_cfg_id = 0
+        this.editForm.data.first_jump = false
+        this.editForm.data.details_image_path = ''
+      } else if (this.editForm.data.jump_id === 3) {
+        this.editForm.data.game_id = 0
+        this.editForm.data.first_jump = false
+        this.editForm.data.details_image_path = ''
+      }
+    },
+
     configCheck() {
       if (this.editForm.data.title == '') {
         this.errmsg("请填写标题")
