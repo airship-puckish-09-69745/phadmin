@@ -329,6 +329,7 @@
               size="mini"
               type="date"
               placeholder="选择开始日期"
+              :disabled="repeatLoopDisabled()"
             />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
@@ -340,7 +341,7 @@
             />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
-            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" />
+            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()"/>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
             <el-time-picker
@@ -804,6 +805,10 @@ export default {
         sort: '排序',
         repeatDelayDays: '间隔天数',
         daySections: '每日时段'
+      },
+      singleCopy: {
+        id: 0,
+        isCopy: false
       },
       showDevTool: false,
     }
@@ -1475,6 +1480,8 @@ export default {
           Message.success(showMsg)
           this.getList()
           this.editForm.visable = false
+          this.singleCopy.isCopy = false
+          this.singleCopy.id = 0
           return
         } else {
           let errMsg = '新增比赛配置失败！'
@@ -1500,6 +1507,8 @@ export default {
             if (response.RetCode === 0) {
               Message.success('复制比赛配置成功！')
               this.getList()
+              this.singleCopy.isCopy = true
+              this.singleCopy.id = id
               return
             } else {
               Message.error('复制比赛配置失败：' + response.Data)
@@ -1699,26 +1708,30 @@ export default {
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
+        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
           this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
           return false
         }
 
-        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
+        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
           this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
           return false
         }
-        if (this.editForm.data.opentMatchType==1) {
+        if (this.editForm.data.opentMatchType == 1) {
           const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
-          if (this.editForm.data.opentMatchMember < promotion_user_num){
+          if (this.editForm.data.opentMatchMember < promotion_user_num) {
             this.errmsg('开赛人数不能小于定局第一阶段的晋级人数')
             return false
           }
         }
-        if(this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
+        if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           this.errmsg('sng比赛必须开赛后消失')
           return false
 
+        }
+        if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
+          this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
+          return false
         }
       }
       return true
@@ -1832,7 +1845,13 @@ export default {
         const element = items[i];
         this.propsInfo.push(element)
       }
-    }
+    },
+    repeatLoopDisabled() {
+      if(this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
+        return true
+      }
+      return false
+    },
   }
 }
 </script>
