@@ -15,11 +15,11 @@
           >
             <el-table-column
               prop="AppId"
-              label="渠道ID"
+              label="应用ID"
               width="200"
             />
             <el-table-column
-              label="渠道名称"
+              label="应用名称"
               width="200"
             >
               <template slot-scope="scope">
