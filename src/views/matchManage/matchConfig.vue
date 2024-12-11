@@ -407,7 +407,7 @@
                 label="间隔时间(秒)"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.intervalSeconds" style="width: 80px;" placeholder="请填写间隔时间" />
+                  <el-input v-model.number="scope.row.intervalSeconds" style="width: 80px;" placeholder="请填写间隔时间" :disabled="repeatLoopDisabled()" />
                 </template>
               </el-table-column>
               <el-table-column
