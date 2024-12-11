@@ -312,37 +312,6 @@ export default {
           lists.push(this.calcItemTotal('总计', one))
           break
         }
-        case 76:
-        case 78:
-        case 80:
-        case 82:
-        case 84:
-        case 88:
-        case 90:
-        case 92:
-        case 94:
-        case 96:
-        case 98:
-        case 154:
-        case 156:
-        case 158:
-        case 160:
-        case 162:
-        case 168:
-        case 170:{
-          // 混有购买免费数据
-          lists.push(this.calcPlayTimes(one))
-          lists.push(this.calcTotalBet(one))
-          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItemTotalNormal('正常合计', one))
-          lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
-          lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
-          lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
-          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
-          lists.push(this.calcItemTotalSum('所有返奖总计', one))
-          break
-        }
         case 86:
         case 150:
         case 152:
@@ -357,6 +326,21 @@ export default {
           } else {
             lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
           }
+          lists.push(this.calcItemTotalNormal('正常合计', one))
+          lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
+          lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
+          lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
+          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
+          lists.push(this.calcItemTotalSum('所有返奖总计', one))
+          break
+        }
+        default:
+        {
+          // 混有购买免费数据
+          lists.push(this.calcPlayTimes(one))
+          lists.push(this.calcTotalBet(one))
+          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
           lists.push(this.calcItemTotalNormal('正常合计', one))
           lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
           lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
