@@ -96,6 +96,11 @@
                   >
                   </el-tree>
                 </el-form-item>
+                <el-form-item label="给选中游戏排序：" :required="true">
+                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                    排序
+                  </el-button>
+                </el-form-item>
               </el-col>
             </el-form>
           </el-row>
@@ -348,6 +353,48 @@
         </el-tab-pane>
       </el-tabs>
 
+      <el-dialog
+        title="给选中游戏排序"
+        :visible.sync="edit.gamesSortDialogVisible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-table
+          :data="GamesSorted"
+          border
+          style="width: 100%"
+          :cell-style="libShow.DefaultTableCell"
+        >
+          <el-table-column
+            prop="GameId"
+            label="游戏Id"
+            width="200"
+          />
+          <el-table-column
+            prop="Name"
+            label="游戏名称"
+            width="200"
+          />
+          <el-table-column
+            prop="OrderNo"
+            label="排序编号"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.OrderNo"
+                size="mini"
+                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                @change="onOrderNoChange"
+              ></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-row style="top: 10px">
+          <el-button type="primary" @click="saveGamesSort">保存</el-button>
+        </el-row>
+      </el-dialog>
+
       <el-row>
         <br>
         <el-button type="primary" @click="setData">保存</el-button>
@@ -505,6 +552,12 @@ export default {
         }
       },
 
+      GamesSorted: [
+        {
+          GameId: 1, Name: '测试游戏1', OrderNo: 1
+        }
+      ],
+
       RaffleLevelList: [
         { label: 200, value: 200 },
         { label: 500, value: 500 },
@@ -519,7 +572,8 @@ export default {
       edit: {
         visible: false,
         item: newPrizePoolCfg(),
-        isEdit: false
+        isEdit: false,
+        gamesSortDialogVisible: false,
       },
 
       treeData: [{
@@ -608,6 +662,26 @@ export default {
       this.edit.item = newPrizePoolCfg()
       this.edit.isEdit = false
       this.edit.visible = true
+    },
+    showGamesSortDialog() {
+      this.edit.gamesSortDialogVisible = true
+    },
+    saveGamesSort() {
+      this.edit.gamesSortDialogVisible = false
+      // 根据排序编号重新排序
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
+      // 保存排序
+      this.item.GameIdCfg = []
+      this.GamesSorted.forEach(item => {
+        this.item.GameIdCfg.push(item.GameId)
+      })
+    },
+    onOrderNoChange() {
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
     },
     // 操作类函数
     clickData(row, column, event) {
@@ -866,6 +940,23 @@ export default {
               cty.children.push({id: game.Gid, label: game.Name})
             }
             this.treeData.push(cty)
+          }
+
+          this.GamesSorted = []
+          for (let i = 0; i < this.item.GameIdCfg.length; i++) {
+            const gameId = this.item.GameIdCfg[i]
+            let name = ''
+            for (let j = 0; j < this.treeData.length; j++) {
+              const cty = this.treeData[j]
+              for (let k = 0; k < cty.children.length; k++) {
+                const game = cty.children[k]
+                if (game.id === gameId) {
+                  name = game.label
+                  break
+                }
+              }
+            }
+            this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
           }
 
           console.log(this.item.GameIdCfg)
