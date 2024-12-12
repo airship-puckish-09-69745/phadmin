@@ -1439,6 +1439,7 @@ export default {
         } else {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
+        console.log("保存数据 ", this.editForm.data.associateKey,this.editForm.signExtra)
       }
       request({
         url: '/matchconfig/match/config/create',
