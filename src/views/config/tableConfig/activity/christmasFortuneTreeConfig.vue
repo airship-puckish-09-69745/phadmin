@@ -942,22 +942,8 @@ export default {
             this.treeData.push(cty)
           }
 
-          this.GamesSorted = []
-          for (let i = 0; i < this.item.GameIdCfg.length; i++) {
-            const gameId = this.item.GameIdCfg[i]
-            let name = ''
-            for (let j = 0; j < this.treeData.length; j++) {
-              const cty = this.treeData[j]
-              for (let k = 0; k < cty.children.length; k++) {
-                const game = cty.children[k]
-                if (game.id === gameId) {
-                  name = game.label
-                  break
-                }
-              }
-            }
-            this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
-          }
+          // 更新选中游戏的排序
+          this.updateGamesSorted()
 
           console.log(this.item.GameIdCfg)
           this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
@@ -965,18 +951,43 @@ export default {
         }
       })
     },
-    handleCheckChange(data, checked, indeterminate) {
-      const nodes = this.$refs.tree.getCheckedNodes()
-
-      this.item.GameIdCfg = []
-
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i]
-        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino') {
-          continue
+    updateGamesSorted() {
+      this.GamesSorted = []
+      for (let i = 0; i < this.item.GameIdCfg.length; i++) {
+        const gameId = this.item.GameIdCfg[i]
+        let name = ''
+        for (let j = 0; j < this.treeData.length; j++) {
+          const cty = this.treeData[j]
+          for (let k = 0; k < cty.children.length; k++) {
+            const game = cty.children[k]
+            if (game.id === gameId) {
+              name = game.label
+              break
+            }
+          }
         }
-        this.item.GameIdCfg.push(node.id)
+        this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
       }
+    },
+    handleCheckChange(data, checked, indeterminate) {
+      console.log('handleCheckChange', data, checked, indeterminate)
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        return
+      }
+
+      const index = this.item.GameIdCfg.indexOf(data.id)
+      if (checked) {
+        if (index < 0) {
+          this.item.GameIdCfg.push(data.id)
+        }
+      } else {
+        if (index >= 0) {
+          this.item.GameIdCfg.splice(index, 1)
+        }
+      }
+
+      // 更新选中游戏的排序
+      this.updateGamesSorted()
 
       console.log(this.item.GameIdCfg)
     },
