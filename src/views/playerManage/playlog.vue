@@ -2749,6 +2749,9 @@
         <el-table-column prop="uid" label="uid">
           <template slot-scope="scope">{{ scope.row.uid}}</template>
         </el-table-column>
+        <el-table-column prop="nick" label="nick">
+          <template slot-scope="scope">{{ scope.row.nick}}</template>
+        </el-table-column>
         <el-table-column prop="seat" label="seat" width="60px">
           <template slot-scope="scope">{{ scope.row.seat}}</template>
         </el-table-column>
