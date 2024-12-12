@@ -2773,7 +2773,7 @@
             <div v-for="(card, i) in scope.row.ridgeCards[index].cards" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(card)"/>
             </div>
-            <span style="float:right;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid+(scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : '')}}</span>
+            <span style="float:right;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid+(scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '')}}</span>
           </div>
           </template>
         </el-table-column>
