@@ -891,6 +891,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/mayantotem_slots_cfg'),
                 name: 'mayantotem_slots_cfg',
                 meta: { title: 'MayanTotem' }
+              },
+              {
+                path: 'godoffortune_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/godoffortune_slots_cfg'),
+                name: 'godoffortune_slots_cfg',
+                meta: { title: 'GodOfFortune' }
               }
             ]
           },
@@ -1907,6 +1913,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'puppyhome_slots_log',
             meta: { title: 'PuppyHome', gid: 176 }
+          },
+          {
+            path: 'godoffortune_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'godoffortune_slots_log',
+            meta: { title: 'GodOfFortune', gid: 182 }
           }
         ]
       },

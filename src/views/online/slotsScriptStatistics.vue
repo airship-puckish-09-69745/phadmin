@@ -743,6 +743,10 @@
           <el-row />
         </el-row>
       </el-tab-pane>
+
+      <el-tab-pane label="任务统计" name="mission">
+        <slotsMissionstatistics v-if="showMiss"></slotsMissionstatistics>
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog
@@ -827,12 +831,13 @@ import { $libShow, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import XLSX from 'xlsx'
 import { Message } from 'element-ui'
+import slotsMissionstatistics from '@/views/online/components/slotsMissionStatistics.vue'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: { Compare, Publish, MoneyInput, slotsMissionstatistics },
 
   data() {
     return {
@@ -918,6 +923,7 @@ export default {
       stepData: {},
       cacheStep: {},
       currentBaseBet:{},
+      showMiss: false,
     }
   },
   created() {
@@ -984,6 +990,9 @@ export default {
       if (parseInt(tab.index) === 2) {
         this.queryBase(this.scripStepForm.gid)
         // this.getSlotsScriptStep()
+      }
+      if (parseInt(tab.index)=== 3){
+        this.showMiss = true
       }
     },
     newItem() {

@@ -96,6 +96,11 @@
                   >
                   </el-tree>
                 </el-form-item>
+                <el-form-item label="给选中游戏排序：" :required="true">
+                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                    排序
+                  </el-button>
+                </el-form-item>
               </el-col>
             </el-form>
           </el-row>
@@ -313,7 +318,82 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="白名单配置">
+          <el-form ref="item" label-width="220px">
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
+                  <el-option
+                    v-for="item in appIdOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
+                  <el-option
+                    v-for="item in siteIdOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
+
+      <el-dialog
+        title="给选中游戏排序"
+        :visible.sync="edit.gamesSortDialogVisible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-table
+          :data="GamesSorted"
+          border
+          style="width: 100%"
+          :cell-style="libShow.DefaultTableCell"
+        >
+          <el-table-column
+            prop="GameId"
+            label="游戏Id"
+            width="200"
+          />
+          <el-table-column
+            prop="Name"
+            label="游戏名称"
+            width="200"
+          />
+          <el-table-column
+            prop="OrderNo"
+            label="排序编号"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.OrderNo"
+                size="mini"
+                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                @change="onOrderNoChange"
+              ></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-row style="top: 10px">
+          <el-button type="primary" @click="saveGamesSort">保存</el-button>
+        </el-row>
+      </el-dialog>
 
       <el-row>
         <br>
@@ -466,7 +546,17 @@ export default {
           { RankStart: 71, RankEnd: 100, Reward: 88 },
         ],
         GameIdCfg: [],
+        WhitelistCfg: {
+          AppIdList: [],
+          SiteIdList: []
+        }
       },
+
+      GamesSorted: [
+        {
+          GameId: 1, Name: '测试游戏1', OrderNo: 1
+        }
+      ],
 
       RaffleLevelList: [
         { label: 200, value: 200 },
@@ -482,7 +572,8 @@ export default {
       edit: {
         visible: false,
         item: newPrizePoolCfg(),
-        isEdit: false
+        isEdit: false,
+        gamesSortDialogVisible: false,
       },
 
       treeData: [{
@@ -500,6 +591,44 @@ export default {
           }]
         }]
       }],
+
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: '提审1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        },
+      ],
+
+      siteIdOptions: [
+        {
+          value: 'Dev',
+          label: 'Dev'
+        },
+        {
+          value: 'BP',
+          label: 'BP'
+        },
+        {
+          value: 'GP',
+          label: 'GP'
+        },
+        {
+          value: 'AP',
+          label: 'AP'
+        },
+        {
+          value: 'PG',
+          label: 'PG'
+        },
+      ],
 
       filterText: '',
 
@@ -533,6 +662,26 @@ export default {
       this.edit.item = newPrizePoolCfg()
       this.edit.isEdit = false
       this.edit.visible = true
+    },
+    showGamesSortDialog() {
+      this.edit.gamesSortDialogVisible = true
+    },
+    saveGamesSort() {
+      this.edit.gamesSortDialogVisible = false
+      // 根据排序编号重新排序
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
+      // 保存排序
+      this.item.GameIdCfg = []
+      this.GamesSorted.forEach(item => {
+        this.item.GameIdCfg.push(item.GameId)
+      })
+    },
+    onOrderNoChange() {
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
     },
     // 操作类函数
     clickData(row, column, event) {
@@ -648,6 +797,7 @@ export default {
           console.log('christmasConfig', response.Data)
 
           const rankCfg = JSON.parse(JSON.stringify($this.item.RankCfg))
+          const whitelistCfg = JSON.parse(JSON.stringify($this.item.WhitelistCfg))
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
@@ -674,6 +824,10 @@ export default {
 
             if ($this.item.RankCfg.length === 0) {
               $this.item.RankCfg = rankCfg
+            }
+
+            if ($this.item.WhitelistCfg == null) {
+              $this.item.WhitelistCfg = whitelistCfg
             }
 
             this.$refs.compare.SetOldVal(old)
@@ -724,6 +878,8 @@ export default {
       }
 
       cpy.GameIdCfg = this.item.GameIdCfg
+
+      cpy.WhitelistCfg = this.item.WhitelistCfg
 
       return JSON.stringify(cpy)
     },
@@ -786,6 +942,23 @@ export default {
             this.treeData.push(cty)
           }
 
+          this.GamesSorted = []
+          for (let i = 0; i < this.item.GameIdCfg.length; i++) {
+            const gameId = this.item.GameIdCfg[i]
+            let name = ''
+            for (let j = 0; j < this.treeData.length; j++) {
+              const cty = this.treeData[j]
+              for (let k = 0; k < cty.children.length; k++) {
+                const game = cty.children[k]
+                if (game.id === gameId) {
+                  name = game.label
+                  break
+                }
+              }
+            }
+            this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
+          }
+
           console.log(this.item.GameIdCfg)
           this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
           console.log(data)
@@ -822,6 +995,12 @@ export default {
       } else {
         this.item.RuleImgVer.splice(index, 1)
       }
+    },
+    onAppIdOptionsChange() {
+      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
+    },
+    onSiteIdOptionsChange() {
+      console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
     }
   }
 }
