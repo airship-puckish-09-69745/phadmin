@@ -2726,7 +2726,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="FilipionMahjong详情" :visible.sync="FilipinoMahjongDetailVisible" width="1500px">
+    <el-dialog title="FilipionMahjong详情" :visible.sync="FilipinoMahjongDetailVisible" width="1600px">
       <div style=" font-size:32px; line-height: 36px; height: 36px; color:red; " v-if="FilipinoMahjongDetail.isLiuJu === true">
         <span style="float:left;">流局</span>
       </div>
@@ -2747,9 +2747,12 @@
       </div>
       <el-table ref="filterTable" :data="FilipinoMahjongDetail.playerList" border>
         <el-table-column prop="uid" label="uid">
-          <template slot-scope="scope">{{ scope.row.uid }}</template>
+          <template slot-scope="scope">{{ scope.row.uid}}</template>
         </el-table-column>
-        <el-table-column prop="dealer" label="庄家">
+        <el-table-column prop="seat" label="seat" width="60px">
+          <template slot-scope="scope">{{ scope.row.seat}}</template>
+        </el-table-column>
+        <el-table-column prop="dealer" label="庄家" width="60px">
           <template slot-scope="scope">{{ scope.row.uid === FilipinoMahjongDetail.bankerUid ? '是' : '-' }}</template>
         </el-table-column>
         <el-table-column prop="flowercards" label="花牌" width="300px">
@@ -3750,7 +3753,11 @@ export default {
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log//obj
       //this.FilipinoMahjongDetail.GameLog = log
-      console.log('this.FilipinoMahjongDetail => ', this.FilipinoMahjongDetail)
+      //console.log('this.FilipinoMahjongDetail => ', this.FilipinoMahjongDetail)
+      //玩家按座位号排序
+      if (this.FilipinoMahjongDetail.playerList != undefined && this.FilipinoMahjongDetail.playerList.length > 0){
+        this.FilipinoMahjongDetail.playerList = this.FilipinoMahjongDetail.playerList.sort((a, b) => {return a.seat - b.seat })
+      }
       this.FilipinoMahjongDetailVisible = true
     },
     getFilipinoMahjongRidgeInfo(type){
