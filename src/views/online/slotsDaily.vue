@@ -295,6 +295,10 @@ export default {
           return 'FireLink'
         case 170:
           return 'EpicAce'
+        case 174:
+          return 'TreasureBowl'
+        case 178:
+          return 'MayanTotem'
       }
       return '未知老虎机-' + sType
     },
