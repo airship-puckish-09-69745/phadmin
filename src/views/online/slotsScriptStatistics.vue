@@ -619,7 +619,7 @@
                     {{ (bigPrize.pool_money / 1000 /parseInt(cfgMap[bigPrizeForm.gid].JackpotShowBet)).toFixed(2)}}
                   </span>
                   <span v-else>
-                    {{ bigPrize.pool_money / 1000 +"(未配置缩小倍数)" }}
+                    {{ bigPrize.pool_money / 1000 }}
                   </span>
                 </el-descriptions-item>
                 <el-descriptions-item>
