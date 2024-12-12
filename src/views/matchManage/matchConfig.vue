@@ -946,7 +946,6 @@ export default {
         }
 
       })
-      console.log("推荐方案三 ",this.guideCfgs)
     },
     checkMatchGuidesDisable(appId) {
       for (var i = 0;i < this.guideCfgs.length; i++) {
@@ -974,7 +973,6 @@ export default {
           }
         }
       }
-      console.log("推荐方案一 ",this.guideShowCfgs)
     },
     handleSizeChange(val) {
       this.limit = val
@@ -1381,7 +1379,6 @@ export default {
           }
         }
       }
-      console.log("推荐方案二 ",this.guideShowCfgs)
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
