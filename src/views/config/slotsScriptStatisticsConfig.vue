@@ -275,6 +275,7 @@ export default {
       this.idx = idx
       this.item.Gid = row.Gid
       this.item.Bet = row.Bet
+      this.item.JackpotShowBet = row.JackpotShowBet
       this.item.OddsList = row.OddsList
       this.showBtn = 1
       this.selectGameVisible = true
