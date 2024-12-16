@@ -375,8 +375,9 @@ export default {
       return DataRule(required, config)
     },
     createSave(postData) {
+      console.log("保存数据 ", postData)
       request({
-        url: '/slotsActConfigV2/create',
+        url: '/matchprizeconfig/match/prize/create',
         method: 'post',
         data: postData
       }).then(response => {
@@ -401,22 +402,22 @@ export default {
       })
     },
     getPostData() {
-      // return {
-      //   ID: this.edit.item.ID,
-      //   Name: this.edit.item.Name,
-      //   Acts: this.edit.isNewImport ? JSON.stringify(this.edit.showActs) : '',
-      //   SheetNames: JSON.stringify(this.edit.sheetNames)
-      // }
+      return {
+        ID: this.edit.item.ID,
+        Name: this.edit.item.Name,
+        Data: this.edit.isNewImport ? JSON.stringify(this.edit.showActs) : '',
+        SheetNames: JSON.stringify(this.edit.sheetNames)
+      }
     },
     save() {
-      // const $this = this
-      // if (this.edit.isEdit) {
-      //   $this.editSave($this.getPostData())
-      // } else {
-      //   this.createSave(this.getPostData())
-      // }
-      // this.edit.isNewImport = false
-      // this.edit.visible = false
+      const $this = this
+      if (this.edit.isEdit) {
+        $this.editSave($this.getPostData())
+      } else {
+        this.createSave(this.getPostData())
+      }
+      this.edit.isNewImport = false
+      this.edit.visible = false
     },
     checkImport(file) {
       const isLt4M = file.size / 1024 / 1024 < 4
@@ -464,7 +465,7 @@ export default {
         rets.push(this.transformData(result))
       }
       $this.edit.showActs = rets
-      console.log("数据  ",this.edit.showActs)
+      //console.log("数据  ",this.edit.showActs)
       $this.edit.isNewImport = true
     },
     parseKeys() {
@@ -565,13 +566,11 @@ export default {
 
       let index;
       for(index in Tbl) {
-        //console.log("ddd ",index)
         this.edit.rowName.push(index)
         retTbl.push(Tbl[index])
       }
 
       for(index in columnTbl) {
-        //console.log("ddd ",index)
         this.edit.columnName.push(index)
       }
       console.log("组装数据 ",retTbl)
