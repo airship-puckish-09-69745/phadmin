@@ -2726,17 +2726,14 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="FilipionMahjong详情" :visible.sync="FilipinoMahjongDetailVisible" width="1500px">
+    <el-dialog title="FilipionMahjong详情" :visible.sync="FilipinoMahjongDetailVisible" width="1600px">
       <div style=" font-size:32px; line-height: 36px; height: 36px; color:red; " v-if="FilipinoMahjongDetail.isLiuJu === true">
         <span style="float:left;">流局</span>
       </div>
       <div style=" font-size:14px; line-height: 60px; height: 60px;">
         <span style="float:left;">癞子：</span>
         <div v-for="(item,index) in FilipinoMahjongDetail.jokerCards" class="block">
-          <el-image
-              style="width: 37px; height: 50px"
-              :src="getMahjongCardUrl(item)"
-            />
+          <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)"/>
         </div>
       </div>
       <div style=" font-size:14px; line-height: 50px; height: 50px;">
@@ -2745,64 +2742,62 @@
         <el-image style="width: 37px; height: 40px" :src="getMahjongDiceUrl(item)" />
         </div>
       </div>
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
+        <span style="float:left;">{{'底分:' + FilipinoMahjongDetail.tableMoney/1000}}</span>
+      </div>
       <el-table ref="filterTable" :data="FilipinoMahjongDetail.playerList" border>
         <el-table-column prop="uid" label="uid">
-          <template slot-scope="scope">{{ scope.row.uid }}</template>
+          <template slot-scope="scope">{{ scope.row.uid}}</template>
         </el-table-column>
-        <el-table-column prop="dealer" label="庄家">
+        <el-table-column prop="nick" label="nick">
+          <template slot-scope="scope">{{ scope.row.nick}}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="seat" width="60px">
+          <template slot-scope="scope">{{ scope.row.seat}}</template>
+        </el-table-column>
+        <el-table-column prop="dealer" label="庄家" width="60px">
           <template slot-scope="scope">{{ scope.row.uid === FilipinoMahjongDetail.bankerUid ? '是' : '-' }}</template>
         </el-table-column>
-
         <el-table-column prop="flowercards" label="花牌" width="300px">
           <template slot-scope="scope">
-          <div v-for="(item) in scope.row.huaCards" class="block">
-            <el-image
-              style="width: 37px; height: 50px"
-              :src="getMahjongCardUrl(item)"
-            />
-          </div>
+            <div v-for="(item) in scope.row.huaCards" class="block">
+              <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)"/>
+            </div>
+            <span style="float:right; color:red;" v-if="scope.row.noFlowerStart === true">{{'无'}}</span>
           </template>
         </el-table-column>
-
         <el-table-column prop="ridgecards" label="坎牌 from uid" width="250px">
           <template slot-scope="scope">
           <div class="ridge" v-for="(item,index) in scope.row.ridgeCards" :key="index">
-            <!--
-            <span style="float:left;">{{getFilipinoMahjongRidgeInfo(scope.row.ridgeCards[index].ridgeType)}}</span>
-            -->
             <div v-for="(card, i) in scope.row.ridgeCards[index].cards" class="block">
                 <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(card)"/>
             </div>
-            <span style="float:right;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid+(scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '')}}</span>
+            <!--
+            <span style="float:right; color:red;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid+(scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '')}}</span>
+            -->
+            <span style="float:right; color:red;">{{ (scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '')}}</span>
+            <span style="float:right;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid}}</span>
           </div>
           </template>
         </el-table-column>
         <el-table-column prop="handcards" label="手牌" width="340px">
           <template slot-scope="scope">
           <div v-for="(item) in scope.row.handCards" class="block">
-            <el-image
-                style="width: 37px; height: 50px"
-                :src="getMahjongCardUrl(item)"
-              />
+            <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)"/>
           </div>
           </template>
         </el-table-column>
         <el-table-column prop="hucards" label="胡牌" width="80px">
           <template slot-scope="scope" v-if="scope.row.huCard > 0">
-            <el-image
-                style="width: 37px; height: 50px"
-                :src="getMahjongCardUrl(scope.row.huCard)"
-              />
+            <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(scope.row.huCard)"/>
           </template>
         </el-table-column>
         <el-table-column prop="somedata" label="番" width="134px">
           <template slot-scope="scope">
-          <div class="some" v-for="(item,index) in scope.row.someInfo" :key="index">
-              {{ item.someName }}
-          </div>
-          
-          <span style="float:left;" v-if="isMahjongFangChongUser(scope.row.uid)">{{'点炮'}}</span>
-          
+            <div class="some" v-for="(item,index) in scope.row.someInfo" :key="index">
+                {{ item.someName }}
+            </div>
+            <span style="float:left; color:red;" v-if="isMahjongFangChongUser(scope.row.uid)">{{'点炮'}}</span>
           </template>
         </el-table-column>
         <el-table-column prop="husomecount" label="番数">
@@ -3761,7 +3756,11 @@ export default {
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log//obj
       //this.FilipinoMahjongDetail.GameLog = log
-      console.log('this.FilipinoMahjongDetail => ', this.FilipinoMahjongDetail)
+      //console.log('this.FilipinoMahjongDetail => ', this.FilipinoMahjongDetail)
+      //玩家按座位号排序
+      if (this.FilipinoMahjongDetail.playerList != undefined && this.FilipinoMahjongDetail.playerList.length > 0){
+        this.FilipinoMahjongDetail.playerList = this.FilipinoMahjongDetail.playerList.sort((a, b) => {return a.seat - b.seat })
+      }
       this.FilipinoMahjongDetailVisible = true
     },
     getFilipinoMahjongRidgeInfo(type){

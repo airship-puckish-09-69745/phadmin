@@ -26,9 +26,17 @@
     <el-row>
       <el-col style="margin-top:16px;" :offset="8" :span="8">
         <el-button type="primary" size="mini" @click="setData()">保存</el-button>
+        <el-button size="mini" type="primary" icon="el-icon-message" @click="syncConfig=true">同步配置到CDN</el-button>
       </el-col>
     </el-row>
-
+    <el-dialog
+        title="同步配置到CDN"
+        :visible.sync="syncConfig"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+    >
+      <SyncConfig v-model="syncConfig" :data="item" lobby="whitelist"></SyncConfig>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
 
@@ -41,12 +49,14 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libShow } from '@/utils/common'
+import SyncConfig from './SyncConfig/WhiteList.vue'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish },
+  components: { Compare, Publish, SyncConfig },
   data() {
     return {
+      syncConfig: false,
       item: {
       },
       load: false,
