@@ -35,7 +35,7 @@
         />
         <el-table-column
           prop="Name"
-          label="剧本名称"
+          label="模板名称"
           width="150"
         />
         <el-table-column
@@ -78,7 +78,7 @@
         <publish primary-key="ID" :key-id="configKey2" :check="configCheck" :env-empty="true" />
       </el-row>
 
-      <el-form ref="edit" :model="edit" label-width="100px" :inline="true" size="small">
+      <el-form ref="edit" :model="edit" label-width="180px" :inline="true" size="small">
 
         <el-row>
           <el-col :offset="9">
@@ -109,31 +109,26 @@
               <el-tab-pane v-for="(o,idx) in edit.showActs" :key="'tabAct' + idx" :label="edit.sheetNames[idx]">
                 <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
                   <thead>
-                  <th v-for="(_,k1) in o[idx]">
-                    <span>{{ k1 }}</span>
-                  </th>
-                  </thead>
-                  <tr v-for="row in o">
-                    <td v-for="col in row">
-                      {{ col }}
-                    </td>
-                  </tr>
-                </table>
-              </el-tab-pane>
-            </el-tabs>
-          </el-col>
-          <!--
-          <el-col :span="12">
-            <el-row>
-              <line-chart :chart-data="chartData" height="600px" />
-            </el-row>
-          </el-col>
-          -->
-        </el-row>
+                    <th>排名/人数</th>
+                    <th v-for="(_,k1) in o[0]">
+                      <span>{{ showCololumnName(k1) }}</span>
+                    </th>
+                    </thead>
+                      <tr v-for="(row,k) in o[0]">
+                        <td>{{showRowName(k,row)}}</td>
+                        <td v-for="(col,_) in row">
+                          {{ showData(col) }}
+                        </td>
+                      </tr>
+                  </table>
+                </el-tab-pane>
+              </el-tabs>
+            </el-col>
+          </el-row>
 
-      </el-form>
-    </el-dialog>
-    <!--对比组件-->
+        </el-form>
+      </el-dialog>
+      <!--对比组件-->
     <compare ref="compare" />
   </div>
 </template>
@@ -213,9 +208,11 @@ export default {
         },
         isNewImport: false,
         showActs: [],
-        sheetNames: []
+        sheetNames: [],
+        rowName: [],
+        columnName: [],
+        rowData: [],
       }
-
     }
   },
   computed: {
@@ -233,6 +230,32 @@ export default {
   methods: {
     showChart(k1, k2) {
       this.initChartData(this.edit.item.Actions[k1].rows[k2].cols)
+    },
+    showCololumnName(k) {
+      if(this.edit.columnName[k]) {
+        var len = this.edit.columnName.length
+        if(this.edit.columnName[len-k-1]) {
+          if (k === 0) {
+            return this.edit.columnName[len - k - 1] + '+人'
+          } else if (k === len-1){
+            return this.edit.columnName[0] + '人'
+          } else {
+            var a = this.edit.columnName[len - k - 1]
+            var b = this.edit.columnName[len-k]-1
+            return a.toString() + '-' + b.toString() + '人'
+          }
+        }
+      }
+    },
+    showRowName(k,arr){
+      if (arr[0].minR === arr[0].maxR ) {
+        return arr[0].minR.toString()
+      } else {
+        return arr[0].minR + '-' + arr[0].maxR
+      }
+    },
+    showData(arr) {
+      return arr.val
     },
     initChartData(objs) {
       const chartData = newChartData()
@@ -413,14 +436,14 @@ export default {
       const Sheets = results['Sheets']
 
       const $this = this
-      var rets = []
+      const rets = []
 
       const keys = this.parseKeys()
-      console.log("sheetKey", keys)
 
       for (const i in this.edit.sheetNames) {
         const name = this.edit.sheetNames[i]
         const sheet = Sheets[name]
+        console.log(name, sheet)
 
         const result = []
         for (let j = 0; j < 300; j ++) {
@@ -428,31 +451,20 @@ export default {
           for (let k = 0; k < keys.length; k ++) {
             const sheetKey = keys[k]+j
             if (sheetKey in sheet) {
-              //console.log("sheetKey j  ",sheetKey,j)
               rows.push(sheet[sheetKey]['v'])
             } else {
               break
             }
           }
+
           if (rows.length > 0) {
             result.push(rows)
           }
         }
-        //console.log('111 result', result)
-        rets = (this.transformData(result))
+        rets.push(this.transformData(result))
       }
-      $this.edit.showActs = []
-      var topNum = 0
-      for (var i = 0; i < rets.length; i++ ){
-        topNum = rets[i].maxRange
-        console.log("topNum ", topNum)
-        if ($this.edit.showActs[topNum] == undefined) {
-          $this.edit.showActs[topNum] = []
-        }
-        this.edit.showActs[topNum].push(rets[i])
-
-      }
-      console.log("最后数据  ",this.edit.showActs)
+      $this.edit.showActs = rets
+      console.log("数据  ",this.edit.showActs)
       $this.edit.isNewImport = true
     },
     parseKeys() {
@@ -466,7 +478,6 @@ export default {
           res.push(arr[i]+arr[j])
         }
       }
-      console.log(res)
       return res;
     },
 
@@ -535,10 +546,43 @@ export default {
           })
         }
       }
-      const rankStr = JSON.stringify(rankData)
+      const Tbl = []
+      const retTbl = []
+      for(var i = 0; i < rankData.length; i++) {
+        if (Tbl[rankData[i].maxR] === undefined) {
+          Tbl[rankData[i].maxR] = []
+        }
+        Tbl[rankData[i].maxR].push(rankData[i])
+      }
+
+      const columnTbl = []
+      for(var i = 0; i < rankData.length; i++) {
+        if (columnTbl[rankData[i].maxRange] === undefined) {
+          columnTbl[rankData[i].maxRange] = []
+        }
+        columnTbl[rankData[i].maxRange].push(rankData[i])
+      }
+
+      let index;
+      for(index in Tbl) {
+        //console.log("ddd ",index)
+        this.edit.rowName.push(index)
+        retTbl.push(Tbl[index])
+      }
+
+      for(index in columnTbl) {
+        //console.log("ddd ",index)
+        this.edit.columnName.push(index)
+      }
+      console.log("组装数据 ",retTbl)
+      //console.log("行标题 ",this.edit.columnName)
+      //console.log("列标题 ",this.edit.rowName)
+      const rankStr = JSON.stringify(retTbl)
       var size = new Blob([rankStr]).size/1024
       console.log(" 占用内存大小 ", size)
-      return rankData;
+      const res = []
+      res.push(retTbl)
+      return res;
     }
   }
 }
