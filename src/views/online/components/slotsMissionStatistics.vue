@@ -101,7 +101,7 @@
              width="90px"
            >
              <template slot-scope="scope">
-               {{ scope.row.bet }}
+               {{ scope.row.bet / 1000 }}
              </template>
            </el-table-column>
            <el-table-column
@@ -110,7 +110,7 @@
              width="90px"
            >
              <template slot-scope="scope">
-               {{ scope.row.money }}
+               {{ scope.row.money / 1000 }}
              </template>
            </el-table-column>
            <el-table-column
@@ -119,7 +119,7 @@
              width="120px"
            >
              <template slot-scope="scope">
-               {{ scope.row.rtp }}
+               {{ (scope.row.rtp * 100).toFixed(5) + "%" }}
              </template>
            </el-table-column>
            <el-table-column
