@@ -196,11 +196,11 @@ export default {
         visible: false,
         title: '',
         isAdd: false,
-        associate_key: '',
         data: {
           app_id: '',
           scheme_title: '',
-          scheme_records: []
+          scheme_records: [],
+          associate_key: '',
         }
       },
       copyDialog: {
@@ -284,7 +284,7 @@ export default {
       this.schemeDialog.form = {
         ...this.appGuideData.scheme_records[index]
       }
-      console.log(this.schemeDialog)
+      //console.log("对单个场景的游戏进行编辑 ", this.schemeDialog)
     },
     handleUpdateAppid(appid) {
       this.getAppGameOptions()
@@ -309,7 +309,7 @@ export default {
       // this.appGameOptions.forEach(item => {
       //   item.value = parseInt(item.game_id)
       // })
-      console.log('this.appGameOptions==>', this.appGameOptions)
+      //console.log('this.appGameOptions==>', this.appGameOptions)
     },
     /**
      * 从本地缓存获取appId
@@ -344,7 +344,7 @@ export default {
      */
     getAppGuideData() {
       const appGuideData = this.guideList.filter(item => item.app_id === this.searchFilter.app_id)
-      console.log(appGuideData)
+      //console.log("getAppGuideData  ",appGuideData)
       this.appGuideData = appGuideData
     },
     /**
@@ -443,7 +443,7 @@ export default {
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const cfg = JSON.parse(response.Data.Data)
             this.guideList = cfg
-            console.log('guideList: ', this.guideList)
+            //console.log('guideList: ', this.guideList)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
@@ -472,7 +472,7 @@ export default {
 
     // addSchemeGameGuideCfg(item) {},
     addGameGuideCfg(item) {
-      console.log(item)
+      //console.log("editForm.data.scheme_records ",this.editForm.data.scheme_records)
       let index = 0
       if (item.records.length > 0) {
         index = item.records.length
@@ -488,7 +488,7 @@ export default {
         newGame.left_time = 0
       }
       item.records.push(newGame)
-      console.log(item)
+      //console.log(item)
     },
 
     removeGameGuideItme(schemeIndex, gameIndex) {
@@ -553,13 +553,13 @@ export default {
         })
         this.editForm.data.scheme_records = scheme_records
         this.editForm.data.scheme_title = editData.scheme_title
-        this.editForm.associate_key = editData.associate_key
+        this.editForm.data.associate_key = editData.associate_key
         this.editForm.title = '编辑推荐配置'
         this.editForm.isAdd = false
       }
       this.getAppGameOptions()
       this.editForm.visible = true
-      console.log(this.editForm)
+      //console.log("编辑结束  ",this.editForm)
     },
     saveMatch() {
       const _this = this
@@ -628,6 +628,7 @@ export default {
         })
         _this.editForm.data.scheme_records = _this.editForm.data.scheme_records.filter(item => item.records.length > 0)
         this.guideList[updateIndex] = _this.editForm.data
+        //console.log("修改数据 ",this.guideList)
       }
 
       // console.log(this.editForm)
