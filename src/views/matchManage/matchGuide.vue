@@ -626,9 +626,11 @@ export default {
             return
           }
         })
-        _this.editForm.data.scheme_records = _this.editForm.data.scheme_records.filter(item => item.records.length > 0)
+        _this.editForm.data.scheme_records = _this.editForm.data.scheme_records.filter(item => {
+          item.records.sort((m, n) => m.sort_id - n.sort_id)
+          return item.records.length > 0
+        })
         this.guideList[updateIndex] = _this.editForm.data
-        //console.log("修改数据 ",this.guideList)
       }
 
       // console.log(this.editForm)
