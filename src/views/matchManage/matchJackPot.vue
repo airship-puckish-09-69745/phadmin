@@ -1,6 +1,8 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
-
+    <el-row>
+      <publish primary-key="Id" key-id="MatchPrizeConfig" :env-empty="true" :head-attrs="['matchCfgId','title']" />
+    </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
         <el-button
@@ -374,12 +376,24 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    createSave(postData) {
-      console.log("保存数据 ", postData)
+    createSave() {
+      const postTabl = []
+      for (var i = 0; i < this.edit.showActs[0].length;i++){
+        for(var j = 0; j < this.edit.showActs[0][i].length; j++) {
+          for(var k = 0; k < this.edit.showActs[0][i][j].length; k++){
+            postTabl.push(this.edit.showActs[0][i][j][k])
+          }
+        }
+      }
       request({
         url: '/matchprizeconfig/match/prize/create',
         method: 'post',
-        data: postData
+        data: {
+          ID: this.edit.item.ID,
+          Name: this.edit.item.Name,
+          Data: JSON.stringify(postTabl),
+          SheetNames: this.edit.sheetNames[0]
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           this.clientDB.AddData(response.Data)
@@ -402,11 +416,21 @@ export default {
       })
     },
     getPostData() {
+      const postTabl = []
+      for (var i = 0; i < this.edit.showActs[0].length;i++){
+        for(var j = 0; j < this.edit.showActs[0][i].length; j++) {
+          for(var k = 0; k < this.edit.showActs[0][i][j].length; k++){
+            postTabl.push(this.edit.showActs[0][i][j][k])
+          }
+        }
+      }
+      console.log("eeeeeeeeeeeee  postTabl",postTabl)
+      console.log("eeeeeeeeeeeee  postTabl111",JSON.stringify(postTabl))
       return {
         ID: this.edit.item.ID,
         Name: this.edit.item.Name,
-        Data: this.edit.isNewImport ? JSON.stringify(this.edit.showActs) : '',
-        SheetNames: JSON.stringify(this.edit.sheetNames)
+        Data: JSON.stringify(postTabl),
+        SheetNames: this.edit.sheetNames[0]
       }
     },
     save() {
@@ -414,7 +438,7 @@ export default {
       if (this.edit.isEdit) {
         $this.editSave($this.getPostData())
       } else {
-        this.createSave(this.getPostData())
+        this.createSave()
       }
       this.edit.isNewImport = false
       this.edit.visible = false
@@ -515,15 +539,15 @@ export default {
           if (j === 0) {
             if (typeof (key) === 'number' && !isNaN(key)){
               rankKey.push({
-                'minR': key,
-                'maxR': key,
+                'minR':key,
+                'maxR':key,
               })
             } else if (typeof (key) === 'string'){
               if (key.indexOf('-') > 0) {
                 str = key.split('-')
                 rankKey.push({
-                  'minR': parseInt(str[0]),
-                  'maxR': parseInt(str[1])
+                  'minR':parseInt(str[0]),
+                  'maxR':parseInt(str[1])
                 })
               }
             }
@@ -544,17 +568,18 @@ export default {
           if(j === 1){
             maxRange = 100000
           } else if (j > 1) {
-            maxRange
+            maxRange = numKey[j-1-1]
           }
           rankData.push({
-            'minR': rankKey[i-1].minR,
-            'maxR': rankKey[i-1].maxR,
-            'val': data[i][j],
-            'minRange': totalNumKey,
-            'maxRange' : maxRange,
+            'minR':rankKey[i-1].minR,
+            'maxR':rankKey[i-1].maxR,
+            'val':data[i][j]*1000,
+            'minRange':totalNumKey,
+            'maxRange':maxRange-1,
           })
         }
       }
+      console.log("rankData ",rankData)
       const Tbl = []
       const retTbl = []
       for(var i = 0; i < rankData.length; i++) {
@@ -566,10 +591,10 @@ export default {
 
       const columnTbl = []
       for(var i = 0; i < rankData.length; i++) {
-        if (columnTbl[rankData[i].maxRange] === undefined) {
-          columnTbl[rankData[i].maxRange] = []
+        if (columnTbl[rankData[i].minRange] === undefined) {
+          columnTbl[rankData[i].minRange] = []
         }
-        columnTbl[rankData[i].maxRange].push(rankData[i])
+        columnTbl[rankData[i].minRange].push(rankData[i])
       }
 
       let index;
