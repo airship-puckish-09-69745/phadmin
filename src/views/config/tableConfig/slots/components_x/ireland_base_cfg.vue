@@ -52,6 +52,7 @@
               <el-option label="PuppyHomeMars" :value="177" />
               <el-option label="MayanTotem" :value="178" />
               <el-option label="GodOfFortune" :value="182" />
+              <el-option label="DanceLion" :value="184" />
             </el-select>
           </el-form-item>
 

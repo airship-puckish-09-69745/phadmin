@@ -897,6 +897,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/godoffortune_slots_cfg'),
                 name: 'godoffortune_slots_cfg',
                 meta: { title: 'GodOfFortune' }
+              },
+              {
+                path: 'dancelion_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/dancelion_slots_cfg'),
+                name: 'dancelion_slots_cfg',
+                meta: { title: 'DanceLion' }
               }
             ]
           },
@@ -1379,7 +1385,7 @@ export const asyncRoutes = [
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
         name: 'matchPosterList',
-        meta: { title: '比赛海报', noCache: true }
+        meta: { title: '赛事海报', noCache: true }
       },
       {
         path: 'matchGuideList',
@@ -1392,6 +1398,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchMapConfig.vue'),
         name: 'matchMapConfig',
         meta: { title: '比赛map配置', noCache: true }
+      },
+      {
+        path: 'matchOther',
+        component: () => import('@/views/matchManage/matchOther.vue'),
+        name: 'matchOther',
+        meta: { title: '赛事Other配置', noCache: true }
       }
     ]
   },

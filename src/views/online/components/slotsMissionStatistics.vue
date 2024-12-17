@@ -97,11 +97,20 @@
            </el-table-column>
            <el-table-column
              prop="gid"
+             label="下注值"
+             width="75px"
+           >
+             <template slot-scope="scope">
+               {{ scope.row.cardbet / 1000 }}
+             </template>
+           </el-table-column>
+           <el-table-column
+             prop="gid"
              label="下注金额"
              width="90px"
            >
              <template slot-scope="scope">
-               {{ scope.row.bet }}
+               {{ scope.row.bet / 1000 }}
              </template>
            </el-table-column>
            <el-table-column
@@ -110,16 +119,25 @@
              width="90px"
            >
              <template slot-scope="scope">
-               {{ scope.row.money }}
+               {{ scope.row.money / 1000 }}
              </template>
            </el-table-column>
            <el-table-column
              prop="gid"
-             label="rtp"
+             label="bet rtp"
              width="120px"
            >
              <template slot-scope="scope">
-               {{ scope.row.rtp }}
+               {{ (scope.row.betrtp * 100).toFixed(5) + "%" }}
+             </template>
+           </el-table-column>
+           <el-table-column
+             prop="gid"
+             label="星级rtp"
+             width="120px"
+           >
+             <template slot-scope="scope">
+               {{ (scope.row.richrtp * 100).toFixed(5) + "%" }}
              </template>
            </el-table-column>
            <el-table-column
@@ -152,6 +170,7 @@
 import { $libShow, ClientTableData } from '@/utils/common'
 import request from '@/utils/request'
 import store from '@/store'
+import {connect} from "echarts/lib/echarts";
 
 const filterMap = {}
 
@@ -223,12 +242,13 @@ export default {
       }).then(response => {
         const missionTableData = []
         const richCardTableData = []
+        const richCardRtpData = []
 
         if (response.RetCode === 0) {
           const missionMap = {}
           const richCardMap = {}
-          for (const key in response.Data['mission']) {
-            var strings1 = key.split('_')
+          for (const key in response.Data['statistics']) {
+            const strings1 = key.split('_')
             if (strings1[0] === 'newbieflag') {
               let userType = ''
               if (strings1[1] === '1') {
@@ -246,18 +266,30 @@ export default {
               if (strings1[2] === 'uid') {
                 missionMap[userType].userCount += 1
               } else if (strings1[2] === 'stage') {
-                missionMap[userType].finishMission[strings1[3]] = parseInt(response.Data['mission'][key])
+                missionMap[userType].finishMission[strings1[3]] = parseInt(response.Data['statistics'][key])
               }
             } else if (strings1[0] === 'cardlevel') {
-              if (richCardMap[strings1[1]] == null) {
-                richCardMap[strings1[1]] = {
+              if (strings1.length < 4) {
+                continue
+              }
+              if (richCardMap[strings1[1] + '_' + strings1[2]] == null) {
+                richCardMap[strings1[1] + '_' + strings1[2]] = {
                   bet: 0,
                   count: 0,
                   money: 0,
                   use: 0
                 }
               }
-              richCardMap[strings1[1]][strings1[2]] = parseInt(response.Data['mission'][key])
+              if (richCardRtpData[strings1[1]] == null) {
+                richCardRtpData[strings1[1]] = {
+                  bet: 0,
+                  money: 0
+                }
+              }
+              richCardMap[strings1[1] + '_' + strings1[2]][strings1[3]] = parseInt(response.Data['statistics'][key])
+              if (strings1[3] === 'bet' || strings1[3] === 'money') {
+                richCardRtpData[strings1[1]][strings1[3]] += parseInt(response.Data['statistics'][key])
+              }
             }
           }
           for (const typeid in missionMap) {
@@ -273,12 +305,15 @@ export default {
           }
 
           for (const key in richCardMap) {
+            const strings2 = key.split('_')
             richCardTableData.push({
               gid: this.queryGid,
-              typeid: key,
+              typeid: strings2[0],
+              cardbet: strings2[1],
               bet: richCardMap[key].bet,
               money: richCardMap[key].money,
-              rtp: richCardMap[key].money / richCardMap[key].bet,
+              betrtp: richCardMap[key].bet === 0 ? 0 : richCardMap[key].money / richCardMap[key].bet,
+              richrtp: richCardRtpData[strings2[0]].bet === 0 ? 0 : richCardRtpData[strings2[0]].money / richCardRtpData[strings2[0]].bet,
               use: richCardMap[key].use,
               count: richCardMap[key].count
             })
@@ -296,6 +331,9 @@ export default {
         })
 
         richCardTableData.sort(function(a, b) {
+          if (b.typeid === a.typeid) {
+            return b.cardbet - a.cardbet
+          }
           return b.typeid - a.typeid
         })
 
