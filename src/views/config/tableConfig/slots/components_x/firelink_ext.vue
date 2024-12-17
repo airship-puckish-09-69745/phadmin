@@ -12,6 +12,10 @@
             <el-input v-model="cfg.BonusOddsWeight" placeholder="值个数与倍率配置一样"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="Bonus模式Bonus倍率权重">
+            <el-input v-model="cfg.BonusOddsWeight2" placeholder="值个数与倍率配置一样"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="Bonus模式Bonus出现概率" prop="BonusSymbolRate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BonusSymbolRate" :required="true"> <template slot="append">％</template> </el-input>
           </el-form-item>
