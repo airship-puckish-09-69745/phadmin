@@ -293,7 +293,7 @@ export default {
               cardbet: strings2[1],
               bet: richCardMap[key].bet,
               money: richCardMap[key].money,
-              rtp: richCardMap[key].money / richCardMap[key].bet,
+              rtp: richCardMap[key].bet === 0 ? 0 : richCardMap[key].money / richCardMap[key].bet,
               use: richCardMap[key].use,
               count: richCardMap[key].count
             })
