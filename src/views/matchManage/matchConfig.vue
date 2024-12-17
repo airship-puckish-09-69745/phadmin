@@ -1730,10 +1730,10 @@ export default {
           return false
 
         }
-        if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
-          this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
-          return false
-        }
+        // if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
+        //   this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
+        //   return false
+        // }
       }
       return true
     },
