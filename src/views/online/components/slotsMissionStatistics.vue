@@ -124,11 +124,20 @@
            </el-table-column>
            <el-table-column
              prop="gid"
-             label="rtp"
+             label="bet rtp"
              width="120px"
            >
              <template slot-scope="scope">
-               {{ (scope.row.rtp * 100).toFixed(5) + "%" }}
+               {{ (scope.row.betrtp * 100).toFixed(5) + "%" }}
+             </template>
+           </el-table-column>
+           <el-table-column
+             prop="gid"
+             label="星级rtp"
+             width="120px"
+           >
+             <template slot-scope="scope">
+               {{ (scope.row.richrtp * 100).toFixed(5) + "%" }}
              </template>
            </el-table-column>
            <el-table-column
@@ -233,6 +242,7 @@ export default {
       }).then(response => {
         const missionTableData = []
         const richCardTableData = []
+        const richCardRtpData = []
 
         if (response.RetCode === 0) {
           const missionMap = {}
@@ -270,7 +280,16 @@ export default {
                   use: 0
                 }
               }
+              if (richCardRtpData[strings1[1]] == null) {
+                richCardRtpData[strings1[1]] = {
+                  bet: 0,
+                  money: 0
+                }
+              }
               richCardMap[strings1[1] + '_' + strings1[2]][strings1[3]] = parseInt(response.Data['statistics'][key])
+              if (strings1[3] === 'bet' || strings1[3] === 'money') {
+                richCardRtpData[strings1[1]][strings1[3]] += parseInt(response.Data['statistics'][key])
+              }
             }
           }
           for (const typeid in missionMap) {
@@ -293,7 +312,8 @@ export default {
               cardbet: strings2[1],
               bet: richCardMap[key].bet,
               money: richCardMap[key].money,
-              rtp: richCardMap[key].bet === 0 ? 0 : richCardMap[key].money / richCardMap[key].bet,
+              betrtp: richCardMap[key].bet === 0 ? 0 : richCardMap[key].money / richCardMap[key].bet,
+              richrtp: richCardRtpData[strings2[0]].bet === 0 ? 0 : richCardRtpData[strings2[0]].money / richCardRtpData[strings2[0]].bet,
               use: richCardMap[key].use,
               count: richCardMap[key].count
             })
