@@ -1329,7 +1329,7 @@ export const asyncRoutes = [
         path: 'ApplyCompensation',
         component: () => import('@/views/playerManage/ApplyCompensation.vue'),
         name: 'ApplyCompensation',
-        meta: { title: '申请金额补偿 ◐' }
+        meta: { title: '申请金额补偿 ◐' , perm: 'REPARATION'}
       }
     ]
   },
