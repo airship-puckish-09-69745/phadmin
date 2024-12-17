@@ -465,7 +465,7 @@ export default {
         rets.push(this.transformData(result))
       }
       $this.edit.showActs = rets
-      //console.log("数据  ",this.edit.showActs)
+      console.log("数据1111  ",this.edit.showActs)
       $this.edit.isNewImport = true
     },
     parseKeys() {
@@ -535,15 +535,23 @@ export default {
           }
         }
       }
+      console.log("numKey ",numKey)
       var totalNumKey = 0
+      var maxRange = 0
       for (var i = 1; i < data.length; i++) {
         for (let j = 1; j < data[i].length; j++) {
           totalNumKey = numKey[j-1]
+          if(j === 1){
+            maxRange = 100000
+          } else if (j > 1) {
+            maxRange
+          }
           rankData.push({
             'minR': rankKey[i-1].minR,
             'maxR': rankKey[i-1].maxR,
             'val': data[i][j],
-            'maxRange': totalNumKey
+            'minRange': totalNumKey,
+            'maxRange' : maxRange,
           })
         }
       }
