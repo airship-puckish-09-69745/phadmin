@@ -256,21 +256,21 @@ export default {
               if (strings1[2] === 'uid') {
                 missionMap[userType].userCount += 1
               } else if (strings1[2] === 'stage') {
-                missionMap[userType].finishMission[strings1[3]] = parseInt(response.Data['mission'][key])
+                missionMap[userType].finishMission[strings1[3]] = parseInt(response.Data['statistics'][key])
               }
             } else if (strings1[0] === 'cardlevel') {
               if (strings1.length < 4) {
                 continue
               }
-              if (richCardMap[strings1[1]] == null) {
-                richCardMap[strings1[1]] = {
+              if (richCardMap[strings1[1] + '_' + strings1[2]] == null) {
+                richCardMap[strings1[1] + '_' + strings1[2]] = {
                   bet: 0,
                   count: 0,
                   money: 0,
                   use: 0
                 }
               }
-              richCardMap[strings1[1] + '_' + strings1[2]][strings1[3]] = parseInt(response.Data['mission'][key])
+              richCardMap[strings1[1] + '_' + strings1[2]][strings1[3]] = parseInt(response.Data['statistics'][key])
             }
           }
           for (const typeid in missionMap) {
