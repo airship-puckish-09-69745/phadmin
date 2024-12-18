@@ -596,11 +596,11 @@ export const asyncRoutes = [
                     component: () => import('@/views/zjh/table/zjhTable'),
                     name: 'zjhTable',
                     meta: { title: 'TeenPatti' }
-				}
-				]
+				          }
+                ]
+              }
             ]
           }
-
         ]
       },
       {
