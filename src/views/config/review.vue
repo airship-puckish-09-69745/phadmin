@@ -226,6 +226,7 @@ export default {
       dataType: 1,
       libShow: $libShow,
       env: 'test',
+      applyCompensationEnv: 'test',
       uname: '',
       counts: [],
 
@@ -252,6 +253,7 @@ export default {
   },
   created() {
     this.env = store.getters.env || this.env
+    this.applyCompensationEnv = store.getters.env
     this.uname = store.getters.name || this.uname
     this.getList(1)
     console.log(1)
@@ -335,8 +337,6 @@ export default {
     //* *************添加/修改相关*****************
     canEdit() {
       var users = this.edit.item.CurrentUserName.split(',')
-      console.log('=========', users, this.uname)
-
       return !(this.edit.item.Status !== 1 || !users.includes(this.uname))
     },
     viewDetail() {
@@ -353,7 +353,8 @@ export default {
         ID: this.edit.item.ID,
         Pass: iType,
         Comment: this.edit.item.Comment,
-        Env: this.env
+        Env: this.env,
+        ApplyCompensationEnv:this.applyCompensationEnv,
       }
     },
     passReview(iType) {
@@ -428,13 +429,16 @@ export default {
         url: '/review/process',
         method: 'get',
         data: {
-          ReviewID: reviewID
+          Env:this.env,
+          ReviewID: reviewID,
+          ApplyCompensationEnv:this.applyCompensationEnv,
         },
         envEmpty: this.edit.item.EnvEmpty === 1
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data
           if (objs != null) {
+            this.edit.actions=[]
             for (let i = objs.length - 1; i >= 0; i--) {
               const ob = {
                 UserName: objs[i].UserName,

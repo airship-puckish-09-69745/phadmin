@@ -60,16 +60,16 @@
               <template slot="append">%</template>
             </el-input>
           </el-descriptions-item>
-          <el-descriptions-item label="任务二小于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务二小于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission2BetMinSmall" size="mini" />
           </el-descriptions-item>
-          <el-descriptions-item label="任务二大于等于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务二大于等于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission2BetMinBig" size="mini" />
           </el-descriptions-item>
-          <el-descriptions-item label="任务三小于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务三小于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission3BetMinSmall" size="mini" />
           </el-descriptions-item>
-          <el-descriptions-item label="任务三大于等于3000时最小下注(放大1000倍) >=">
+          <el-descriptions-item label="任务三大于等于2000时最小下注(放大1000倍) >=">
             <el-input v-model.number="cfgData.Normal.Mission3BetMinBig" size="mini" />
           </el-descriptions-item>
           <el-descriptions-item label="增长保底系数(放大100倍)">
@@ -179,7 +179,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
-      games: [76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160], // TODO 新slots加上
+      games: [],
       options: [],
       cfgData: {
         Newbie: {
@@ -212,12 +212,7 @@ export default {
     }
   },
   created() {
-    console.log(1)
-    for (const k in this.games) {
-      this.options.push({ 'label': $libShow.GameNames[this.games[k]], 'value': this.games[k] })
-    }
-    // console.log(this.options)
-
+    this.getGameList()
     this.getData()
   },
   methods: {
@@ -274,6 +269,17 @@ export default {
       })
     },
     setData() {
+      const newbie = this.cfgData.Newbie.Mission1Rate + this.cfgData.Newbie.Mission2Rate + this.cfgData.Newbie.Mission3Rate
+      const normal = this.cfgData.Normal.Mission1Rate + this.cfgData.Normal.Mission2Rate + this.cfgData.Normal.Mission3Rate
+      if (newbie !== 100) {
+        Message.error('新手任务总占比必须等于100%')
+        return
+      }
+      if (normal !== 100) {
+        Message.error('老用户任务总占比必须等于100%')
+        return
+      }
+
       const postData = $libType.DeepCopy(this.cfgData)
 
       for (const k in postData.RichCardList) {
@@ -283,7 +289,6 @@ export default {
           postData.RichCardList[k].Bets.push(parseFloat(bets[i]) * 1000)
         }
       }
-
       // console.log('postData', postData)
 
       this.form.Data = JSON.stringify(postData)
@@ -304,6 +309,29 @@ export default {
             Message.success('保存成功')
           }
         })
+      })
+    },
+    getGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid >= 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 199 || response.Data[i].ShowDatacenter === 0) {
+              continue
+            }
+            this.games.push(response.Data[i].Gid)
+            this.options.push({ 'label': $libShow.GameNames[response.Data[i].Gid], 'value': response.Data[i].Gid })
+          }
+          this.games.sort(function(a, b) {
+            return a - b
+          })
+          this.options.sort(function(a, b) {
+            return a.value - b.value
+          })
+        }
       })
     }
   }

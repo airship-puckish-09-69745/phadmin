@@ -12,6 +12,14 @@
             <el-input v-model="cfg.BonusOddsWeight" placeholder="值个数与倍率配置一样"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="Bonus模式Bonus倍率权重">
+            <el-input v-model="cfg.BonusOddsWeight2" placeholder="值个数与倍率配置一样"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus模式Bonus出现概率" prop="BonusSymbolRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BonusSymbolRate" :required="true"> <template slot="append">％</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="Bonus解锁行所需数量">
             <el-input v-model="cfg.BonusColCount" placeholder="请输入内容,如4,8,12,16"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
@@ -36,7 +44,7 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="进入免费模式最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="进入特殊模式最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 

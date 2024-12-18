@@ -239,9 +239,12 @@ export default {
         { 'value': 115, 'label': 'MultiPlayer NiuNiu' },
         { 'value': 90, 'label': 'FortuneComing' },
         { 'value': 118, 'label': 'CarRacing' },
+        { 'value': 124, 'label': 'JackpotWheel' },
+        { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 156, 'label': 'CrazyAce' },
-        { 'value': 82, 'label': 'Millionaire' }
+        { 'value': 82, 'label': 'Millionaire' },
+        { 'value': 166, 'label': 'FireLink' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },

@@ -205,7 +205,7 @@
               width="450"
             >
               <template slot-scope="scope">
-                <el-select v-model="scope.row.appId" placeholder="请选择" size="mini">
+                <el-select v-model="scope.row.appId" placeholder="请选择" size="mini" @change="selectShowGuieds()">
                   <el-option
                     v-for="item in appidInfoCfgs"
                     :key="item.value"
@@ -329,6 +329,7 @@
               size="mini"
               type="date"
               placeholder="选择开始日期"
+              :disabled="repeatLoopDisabled()"
             />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
@@ -340,7 +341,7 @@
             />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
-            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" />
+            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()"/>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
             <el-time-picker
@@ -406,7 +407,7 @@
                 label="间隔时间(秒)"
               >
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.intervalSeconds" style="width: 80px;" placeholder="请填写间隔时间" />
+                  <el-input v-model.number="scope.row.intervalSeconds" style="width: 80px;" placeholder="请填写间隔时间" :disabled="repeatLoopDisabled()" />
                 </template>
               </el-table-column>
               <el-table-column
@@ -544,9 +545,21 @@
         <fieldset>
           <legend>引导推荐</legend>
           <el-form-item label="游戏推荐方案：" :required="true">
-            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini" >
               <el-option
-                v-for="item in guideCfgs"
+                v-for="item in guideShowCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled='checkMatchGuidesDisable(editForm.appInfo[0].appId)'
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="赛事分类：" :required="true">
+            <el-select v-model="editForm.signExtra.matchEvents" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in matchEvents"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -590,6 +603,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import {getAllCommonGameConfig, getAllMatchGuidesConfig} from '@/utils/common-game-config'
 
 export default {
   name: 'MatchConfig',
@@ -664,9 +678,14 @@ export default {
           "propsAttr":""
         }
       ],
+      matchEvents: [
+        { 'value': 0, 'label': 'All' },
+        { 'value': 1, 'label': 'Events' },
+      ],
       csCfgs: [],
       showCsCfgs: [],
       guideCfgs: [],  //赛事推荐相关
+      guideShowCfgs: [], //赛事推荐相关 跟AppId 关联
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
@@ -756,7 +775,8 @@ export default {
           data: ''
         },
         signExtra: {
-          betCnt: 0
+          betCnt: 0,
+          matchEvents: 0
         },
       },
 
@@ -786,8 +806,11 @@ export default {
         repeatDelayDays: '间隔天数',
         daySections: '每日时段'
       },
+      singleCopy: {
+        id: 0,
+        isCopy: false
+      },
       showDevTool: false,
-      subKey: 'match_guide_list_new'
     }
   },
   computed: {
@@ -833,7 +856,6 @@ export default {
                 'gameId': [parseInt(objs.list[i].game_id, 10)],
                 "ruleType":objs.list[i].rule_type,
               })
-
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
                 if (stage_detail[j].system_type == 1) { // 打立出局
@@ -908,33 +930,49 @@ export default {
       })
     },
     getGuideCfgs() {
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey
+      getAllMatchGuidesConfig().then(data => {
+        this.guideCfgs = []
+        this.guideCfgs.push({
+          'label': '无',
+          'value': 0,
+          'appId': 0,
+        })
+        for (var i = 0; i < data.length; i++) {
+          this.guideCfgs.push({
+            'label': data[i].scheme_title,
+            'value': data[i].associate_key,
+            'appId': data[i].app_id,
+          })
         }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
-            const objs = JSON.parse(response.Data.Data)
-            if (objs.length > 0) {
-              this.guideCfgs = []
-              this.guideCfgs.push({
-                'label': '无',
-                'value': 0
-              })
-              for (let i = 0; i < objs.length; i++) {
-                  this.guideCfgs.push({
-                    'label': objs[i].scheme_title,
-                    'value': objs[i].associate_key
-                  })
-              }
-            }
+
+      })
+    },
+    checkMatchGuidesDisable(appId) {
+      for (var i = 0;i < this.guideCfgs.length; i++) {
+        if (this.guideCfgs[i].appId > 0 &&  this.guideCfgs[i].appId == appId ) {
+            return false
+        }
+      }
+      return true
+    },
+
+    selectShowGuieds() {
+      this.guideShowCfgs = []
+      this.guideShowCfgs.push(
+        {
+          'label': '无',
+          'value': 0,
+          'appId': 0,
+        }
+      )
+
+      if (this.guideCfgs.length > 0) {
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.checkHaveAppId(this.guideCfgs[i].appId, this.editForm.appInfo)) {
+            this.guideShowCfgs.push(this.guideCfgs[i])
           }
         }
-      })
+      }
     },
     handleSizeChange(val) {
       this.limit = val
@@ -1236,10 +1274,12 @@ export default {
         }
 
         this.editForm.signExtra = {
-          betCnt: 0
+          betCnt: 0,
+          matchEvents: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
+        this.guideShowCfgs = this.guideCfgs
       } else {
         let editData = {}
         this.editForm.title = '编辑比赛配置'
@@ -1326,11 +1366,35 @@ export default {
         this.disableOpenType(true,editData.open_match_type)
       }
       this.editForm.visable = true
+      this.guideShowCfgs = []
+      this.guideShowCfgs.push({
+        'label': '无',
+        'value': 0,
+        'appId': 0,
+      })
+      if (this.guideCfgs.length > 0) {
+        for (var i = 0; i < this.guideCfgs.length; i++) {
+          if (this.checkHaveAppId(this.guideCfgs[i].appId, this.editForm.appInfo)) {
+            this.guideShowCfgs.push(this.guideCfgs[i])
+          }
+        }
+      }
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
       for (var i = 0; i < gameArr.length; i++) {
         if (gid == gameArr[i]) {
+          flag = true
+          break
+        }
+      }
+      return flag
+    },
+
+    checkHaveAppId(appId, appInfo) {
+      let flag = false
+      for (var i = 0; i < appInfo.length; i++ ){
+        if (appId == appInfo[i].appId) {
           flag = true
           break
         }
@@ -1375,6 +1439,7 @@ export default {
         } else {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
+        console.log("保存数据 ", this.editForm.data.associateKey,this.editForm.signExtra)
       }
       request({
         url: '/matchconfig/match/config/create',
@@ -1416,6 +1481,8 @@ export default {
           Message.success(showMsg)
           this.getList()
           this.editForm.visable = false
+          this.singleCopy.isCopy = false
+          this.singleCopy.id = 0
           return
         } else {
           let errMsg = '新增比赛配置失败！'
@@ -1441,6 +1508,8 @@ export default {
             if (response.RetCode === 0) {
               Message.success('复制比赛配置成功！')
               this.getList()
+              this.singleCopy.isCopy = true
+              this.singleCopy.id = id
               return
             } else {
               Message.error('复制比赛配置失败：' + response.Data)
@@ -1640,32 +1709,35 @@ export default {
         const endNum = this.endNumCfgs.get(this.editForm.data.csId)
         const promoteNum = this.promoteNumCfgs.get(this.editForm.data.csId)
 
-        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < endNum) {
+        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < endNum) {
           this.errmsg('开赛人数不能小于打立出局的结束规则的剩余人数')
           return false
         }
 
-        if (this.editForm.data.opentMatchType==2 && this.editForm.data.opentMatchMember < promoteNum) {
+        if (this.editForm.data.opentMatchType == 2 && this.editForm.data.opentMatchMember < promoteNum) {
           this.errmsg('开赛人数不能小于打立出局的晋级规则的晋级人数')
           return false
         }
-        if (this.editForm.data.opentMatchType==1) {
+        if (this.editForm.data.opentMatchType == 1) {
           const promotion_user_num = this.reachOutNumCfgs.get(this.editForm.data.csId)
-          if (this.editForm.data.opentMatchMember < promotion_user_num){
+          if (this.editForm.data.opentMatchMember < promotion_user_num) {
             this.errmsg('开赛人数不能小于定局第一阶段的晋级人数')
             return false
           }
         }
-        if(this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
+        if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           this.errmsg('sng比赛必须开赛后消失')
           return false
 
         }
+        // if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
+        //   this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
+        //   return false
+        // }
       }
       return true
     },
     disableOpenType(isDisable,enableType){
-      console.log("disable",isDisable,enableType)
       if(isDisable){
         for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
           if(this.openMatchTypeCfgs[index].value == enableType){
@@ -1774,7 +1846,13 @@ export default {
         const element = items[i];
         this.propsInfo.push(element)
       }
-    }
+    },
+    repeatLoopDisabled() {
+      if(this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
+        return true
+      }
+      return false
+    },
   }
 }
 </script>

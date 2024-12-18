@@ -145,28 +145,36 @@
           <el-row>
             <el-col :span="11">
               <el-form-item label="操作(吃/碰/杠/胡)时间：" :required="true" prop="TimeConfig.OpTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
-                <el-input v-model.number="edit.TimeConfig.OpTimeout" placeholder="" />
+                <el-input v-model.number="edit.TimeConfig.OpTimeout" placeholder="" >
+                  <template slot="append">秒</template>
+                </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="出牌时间：" :required="true" prop="TimeConfig.PlayTimeout" :rules="dataRule(true,{type:'n',range:'0'})">
-                <el-input v-model.number="edit.TimeConfig.PlayTimeout" placeholder="" />
+                <el-input v-model.number="edit.TimeConfig.PlayTimeout" placeholder="" >
+                  <template slot="append">秒</template>
+                </el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </fieldset>
         
         <fieldset>
-          <legend>钱包转出配置 (N = 配置 * 投注额)</legend>
+          <legend>钱包转出配置 (N = 配置 * 底分)</legend>
           <el-row>
             <el-col :span="11">
               <el-form-item label="SuitableRollOutMoney:" :required="true" prop="WalletConfig.SuitableRollOutMoney" :rules="dataRule(true,{type:'n',range:'0'})" >
-                <el-input v-model.number="edit.WalletConfig.SuitableRollOutMoney" placeholder="" />
+                <el-input v-model.number="edit.WalletConfig.SuitableRollOutMoney" placeholder="" >
+                  <template slot="append"> * 底分</template>
+                </el-input>
               </el-form-item>
             </el-col>
             <el-col :span="11">
               <el-form-item label="MaxRollOutMoney:" :required="true" prop="WalletConfig.MaxRollOutMoney" :rules="dataRule(true,{type:'n',range:'0'})" >
-                <el-input v-model.number="edit.WalletConfig.MaxRollOutMoney" placeholder="" />
+                <el-input v-model.number="edit.WalletConfig.MaxRollOutMoney" placeholder="" >
+                  <template slot="append"> * 底分</template>
+                </el-input>
               </el-form-item>
             </el-col>
           </el-row>

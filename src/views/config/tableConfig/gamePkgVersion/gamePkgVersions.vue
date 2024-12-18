@@ -104,8 +104,25 @@
             <el-button v-if="!canEdit" size="mini" type="danger" icon="el-icon-lock" @click="setEdit(!canEdit)">锁定中</el-button>
           </el-tooltip>
         </el-form-item>
+        <el-form-item v-if="env==='test'">
+          <el-tooltip content="打开或关闭发送Lark消息" placement="top">el-icon-lock
+            <el-button v-if="configData.lark" size="mini" type="success" icon="el-icon-message" @click="setMessgeStatus">已启用通知</el-button>
+            <el-button v-if="!configData.lark" size="mini" type="danger" icon="el-icon-message" @click="setMessgeStatus">已禁用通知</el-button>
+          </el-tooltip>
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" type="primary" icon="el-icon-message" @click="syncConfig=true">同步配置到CDN</el-button>
+        </el-form-item>
       </el-form>
     </el-row>
+    <el-dialog
+        title="同步配置到CDN"
+        :visible.sync="syncConfig"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+    >
+      <SyncConfig v-model="syncConfig" :data="clientDB.ShowData" :lobby="LobbyVersion"></SyncConfig>
+    </el-dialog>
     <div style="padding-top: 10px">
       <el-table
         ref="filterTable"
@@ -539,14 +556,18 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish/index.vue'
+import SyncConfig from './SyncConfig/SyncConfig.vue'
 
 const filterMap = {}
 
 export default {
-  components: { Compare, Publish },
+  components: { Compare, Publish, SyncConfig },
   data() {
     return {
+      syncConfig: false,
       canEdit: true,
+      config: {},
+      configData: {},
       loadingShow: false,
       tableData: [],
       historyMap: {},
@@ -612,6 +633,7 @@ export default {
     this.env = store.getters.env || this.env
     this.isDisabled = false
     this.getLobbyVersions()
+    this.getMessgeStatus()
   },
   methods: {
     newItem() {
@@ -1354,6 +1376,9 @@ export default {
       return "       "+ this.LobbyVersion+" 版本必须是整包！包含所有 bundle！"
     },
     onStepChange(step, key, addData, delData, editData) {
+      if (this.env === 'test' && !this.configData.lark) {
+        return
+      }
       // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
       console.log("publish success", step, key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       // 同步到正式
@@ -1361,48 +1386,38 @@ export default {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
+      this.makeMessage(step, addData, delData, editData)
+    },
+    getLobbyStr(lobbyVer,step){
       let lobby = ''
       if (this.env === 'test') {
-        lobby=`【已发布】开发版本【${this.LobbyVersion}】`
+        lobby=`【已发布】开发版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       } else if (step === 3) {
-        lobby=`【待审核】线上版本【${this.LobbyVersion}】`
+        lobby=`【待审核】线上版本【${lobbyVer}】`
       } else if (step === 5) {
-        lobby=`【已发布】线上版本【${this.LobbyVersion}】`
+        lobby=`【已发布】线上版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       }
-      let text_arr = this.getChangeID(addData, delData, editData)
-      if (text_arr.length === 0) {
-        console.log("no change return")
-        return
-      }
-      for (const v of text_arr) {
-        lobby += '\r\n'+v
-      }
-      console.log("change content", lobby)
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Path: '/misc/warn',
-          Env: this.env,
-          Text: lobby,
-        }
-      }).then(response => {
-        console.log(response)
-        if (response.RetCode === 0) {
-          console.log('wanring success')
-        }
-      })
+      return lobby
     },
-    getChangeID(addData, delData, editData) {
+    getLobbyTagOn(lobbyVer){
+    for (let i = 0; i < this.orgLobbyVersions.length; i++) {
+        if (lobbyVer === this.orgLobbyVersions[i].LobbyVersion) {
+          console.log("hit lobby", lobbyVer, JSON.stringify(this.orgLobbyVersions[i]))
+          return this.orgLobbyVersions[i].Tag === 1
+        }
+      }
+      return false
+    },
+    async makeMessage(step,addData, delData, editData) {
       let adds = new Map()
       let dels = new Map()
-      let change = []
+      let change = {}
       // 新增取newVal
       if (addData) {
         // console.log("addData",addData)
@@ -1436,33 +1451,128 @@ export default {
         if (value.WhiteVersion === value2.WhiteVersion && value.GamePkgVersion === value2.GamePkgVersion) {
           continue
         }
+        if (!this.getLobbyTagOn(value.LobbyVersion)) {
+          continue
+        }
         let str = `【ID】${value.ID}【${value.BundleKey}】: ${value.GamePkgVersion}【全量】`
         if (value.WhiteVersion !== '') {
           str += `${value.WhiteVersion}【白名单】`
         }
-        change.push(str)
+        const lobby = this.getLobbyStr(value.LobbyVersion, step)
+        change[lobby]? change[lobby].push(str): change[lobby]=[str]
       }
       if (editData) {
         for (const edit of editData) {
+          const id = edit.Head.ID
+          console.log(id)
           for (const ele of edit.Rows) {
             if (ele.key === 'GamePkgVersion' || ele.key === 'WhiteVersion') {
-              const _data = this.clientDB.GetDataByID(edit.Head.ID)
+              let _data = {}//this.clientDB.GetDataByID(id)
+              if (_data.ID === undefined) {
+                _data = await this.getItemData(edit.Head.ID)
+                if (_data.ID === undefined) {
+                  console.log("continue", edit.Head.ID)
+                  continue
+                }
+              }
+              if (!this.getLobbyTagOn(_data.LobbyVersion)) {
+                continue
+              }
+              const lobby = this.getLobbyStr(_data.LobbyVersion, step)
               let str = `【ID】${_data.ID}【${_data.BundleKey}】: ${_data.GamePkgVersion}【全量】`
               if (_data.WhiteVersion !== '') {
                 str += `${_data.WhiteVersion}【白名单】`
               }
-              change.push(str)
+              change[lobby]? change[lobby].push(str): change[lobby]=[str]
               break
             }
           }
         }
       }
-      return change
+      if (Object.keys(change).length === 0) {
+        console.log("no change return")
+        return
+      }
+    
+      var msg = ''
+      for (const key in change) {
+        let str = key
+        for (const ver of change[key]) {
+          str += '\r\n'+ver
+        }
+        msg += str + '\r\n'
+      }
+      
+      // 正式发布才@相关人员
+      if (step === 5 && this.env === 'pro') {
+        msg += '<at user_id="ou_bb0bd6f4c6ee50ff7c7293d2830998a9">xiong</at><at user_id="ou_3e515e261edc919b26c52c8c71594e5a">SamYe</at><at user_id="ou_91aa565bf3fffa8b0d708b298e67e970">高勋</at>\r\n'
+      }
+      console.log("change content", msg)
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/misc/warn',
+          Env: this.env,
+          Text: msg,
+          // Warn: "shit",
+        }
+      }).then(response => {
+        console.log(response)
+        if (response.RetCode === 0) {
+          console.log('wanring success')
+        }
+      })
+    },
+    async getItemData(Id) {
+      const response = await request({
+        url: 'gamepkgversions/one',
+        method: 'get',
+        data: {
+          Env: this.env,
+          ID: Id,
+        }
+      })
+      if (response.RetCode === 0) {
+        console.log('getItemData success', response.Data)
+        return response.Data
+      }
+      return {}
     },
     setEdit(canEdit){
       this.canEdit = canEdit
       this.$refs.filterTable.clearSelection();
-    } 
+    },
+    getMessgeStatus(){
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'admin_config'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('cfg', response)
+          this.config = response.Data || {}
+          if (response.Data.Data && response.Data.Data !== '') {
+            this.configData = JSON.parse(response.Data.Data)
+          }
+        }
+      })
+    },
+    setMessgeStatus(){
+      this.configData.lark = !this.configData.lark
+      this.config.Data = JSON.stringify(this.configData)
+      request({
+        url: '/customizeconfig/update',
+        method: 'post',
+        data: this.config,
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功')
+        }
+      })
+    }
   }
 }
 </script>

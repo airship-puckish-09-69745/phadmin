@@ -171,7 +171,7 @@
 <script>
 import request from '@/utils/request'
 import store from '@/store'
-import {$libDate, $libShow, MoneyShow} from '@/utils/common'
+import { $libDate, $libShow, MoneyShow } from '@/utils/common'
 import slotsLineChart from './components/slotsLineChart'
 
 const RETURN_ALL_KEY = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
@@ -184,7 +184,6 @@ export default {
   data() {
     return {
       lists: [],
-
       libMoney: new MoneyShow(['TotalBet', 'SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']),
       dialogVisible: false,
       chartData: null,
@@ -199,7 +198,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167, 171]
+      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167, 171, 174, 178]
     }
   },
   created() {
@@ -230,7 +229,9 @@ export default {
             this.lists.push(this.calcData(obj[key]))
           }
           console.log("=========", this.lists)
-
+          this.lists.sort(function(a, b) {
+            return a.slotsType - b.slotsType
+          })
         } else {
           $this.$message.error(response.Data)
         }
@@ -239,60 +240,9 @@ export default {
     calcData(data) {
       return {
         'slotsType': data.SlotsType,
-        'title': this.getSlotsName(data.SlotsType),
+        'title': $libShow.GameNames[data.SlotsType] || '未知老虎机-' + data.SlotsType,
         'tableData': this.transData(data)
       }
-    },
-    getSlotsName(sType) {
-      switch (sType) {
-        case 76:
-          return 'CandyRush'
-        case 78:
-          return 'SuperGems'
-        case 80:
-          return 'CandyCraze'
-        case 82:
-          return 'Millionaire'
-        case 84:
-          return 'FortuneAce'
-        case 86:
-          return 'SuperGemsII'
-        case 88:
-          return 'Lucky777'
-        case 90:
-          return 'FortuneComing'
-        case 92:
-          return 'UltraAce'
-        case 94:
-          return 'Wild Buffalo'
-        case 96:
-          return 'RomanArena'
-        case 98:
-          return 'SuperTongit'
-        case 150:
-          return 'SuperGemsIII'
-        case 152:
-          return 'Aladdin\'s Lamp'
-        case 154:
-          return 'GrandAce'
-        case 156:
-          return 'CrazyAce'
-        case 172:
-          return 'WrathOfZeus'
-        case 158:
-          return 'SharkKingdom'
-        case 168:
-          return 'PharaohTreasure'
-        case 160:
-          return 'GigaAce'
-        case 162:
-          return 'MajorAce'
-        case 166:
-          return 'FireLink'
-        case 170:
-          return 'EpicAce'
-      }
-      return '未知老虎机-' + sType
     },
     transData(one) {
       one.Today = this.libMoney.TransForShow(one.Today)
@@ -310,37 +260,6 @@ export default {
           lists.push(this.calcItemTotal('总计', one))
           break
         }
-        case 76:
-        case 78:
-        case 80:
-        case 82:
-        case 84:
-        case 88:
-        case 90:
-        case 92:
-        case 94:
-        case 96:
-        case 98:
-        case 154:
-        case 156:
-        case 158:
-        case 160:
-        case 162:
-        case 168:
-        case 170:{
-          // 混有购买免费数据
-          lists.push(this.calcPlayTimes(one))
-          lists.push(this.calcTotalBet(one))
-          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
-          lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          lists.push(this.calcItemTotalNormal('正常合计', one))
-          lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
-          lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
-          lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
-          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
-          lists.push(this.calcItemTotalSum('所有返奖总计', one))
-          break
-        }
         case 86:
         case 150:
         case 152:
@@ -355,6 +274,21 @@ export default {
           } else {
             lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
           }
+          lists.push(this.calcItemTotalNormal('正常合计', one))
+          lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
+          lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
+          lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
+          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
+          lists.push(this.calcItemTotalSum('所有返奖总计', one))
+          break
+        }
+        default:
+        {
+          // 混有购买免费数据
+          lists.push(this.calcPlayTimes(one))
+          lists.push(this.calcTotalBet(one))
+          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
           lists.push(this.calcItemTotalNormal('正常合计', one))
           lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
           lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))

@@ -1,21 +1,21 @@
 <template>
   <el-dialog v-if="GameLog.gid==116" title="GinRummy 详情" :visible.sync="GameLog.visible" width="1300px">
-    <el-descriptions class="margin-top" title="" :column="4" border size="mini">
+    <el-descriptions class="margin-top" title="" :column="3" border size="mini">
       <el-descriptions-item>
         <template slot="label">前注：</template>
         {{ formatNumber(GameLog.detail.tableMoney / 1000) }}
-      </el-descriptions-item>
-      <el-descriptions-item>
-        <template slot="label">回合数：</template>
-        {{ formatNumber(GameLog.detail.round) }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">结束原因：</template>
         {{ formatNumber(reasonOverMap[GameLog.detail.reasonOver]) }}
       </el-descriptions-item>
       <el-descriptions-item>
-        <template slot="label">Pot：</template>
+        <template slot="label">牌局结束后牌桌Pot值：</template>
         {{ formatNumber(GameLog.detail.pot / 1000) }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template slot="label">总回合数：</template>
+        {{ formatNumber(GameLog.detail.round) }}
       </el-descriptions-item>
       <el-descriptions-item>
         <template slot="label">开始时间：</template>
@@ -52,10 +52,11 @@
             <el-table-column label="Uid">
               <template slot-scope="scope2">{{ scope2.row.uid }}</template>
             </el-table-column>
-            <el-table-column min-width="400px" label="手牌">
+
+            <el-table-column min-width="450px" label="手牌">
               <template slot-scope="scope">
                 <span v-for="(k,v) in scope.row.groups">
-                  <fieldset style="display: inline-block;padding: 1px 1px 1px 1px;color: #0a76a4">
+                  <fieldset style="display: inline-block; padding: 1px; color: #0a76a4; margin-top: 10px; margin-right: 7px;">
                        <span v-for="(k2,v2) in k.cards" style="margin-top: 30px">
                             <el-image
                               style="width: 37px; height: 50px"
@@ -67,22 +68,27 @@
 
               </template>
             </el-table-column>
+
             <el-table-column label="手牌数量">
               <template slot-scope="scope2">{{ scope2.row.cardsNum }}</template>
             </el-table-column>
-            <el-table-column label="总得分">
-              <template slot-scope="scope2">{{ scope2.row.score }}</template>
+            <el-table-column label="knock玩家">
+              <template slot-scope="scope2">{{ scope.row.uidKnock === scope2.row.uid ? '是' : '否' }}</template>
             </el-table-column>
-            <el-table-column label="剩余分数">
+            <el-table-column label="小局死点数">
               <template slot-scope="scope2">{{ scope2.row.scoreDie }}</template>
             </el-table-column>
-            <el-table-column label="得分">
+            <el-table-column label="小局得分">
               <template slot-scope="scope2">{{ scope2.row.scoreRound }}</template>
+            </el-table-column>
+            <el-table-column label="总得分">
+              <template slot-scope="scope2">{{ scope2.row.score }}</template>
             </el-table-column>
           </el-table>
         </template>
       </el-table-column>
     </el-table>
+
     <el-table
       :data="GameLog.detail.players"
       border
@@ -96,39 +102,42 @@
          <el-table-column label="uid">
            <template slot-scope="scope">{{ scope.row.uid }}</template>
          </el-table-column>
+        <el-table-column label="筹码变化">
+          <template slot-scope="scope">{{ scope.row.moneyChange  / 1000}}</template>
+        </el-table-column>
+        <el-table-column label="结算后金额">
+          <template slot-scope="scope">{{ scope.row.moneyCur  / 1000}}</template>
+        </el-table-column>
          <el-table-column label="总得分">
            <template slot-scope="scope">{{ scope.row.score }}</template>
          </el-table-column>
-         <el-table-column label="第四回合死牌点数">
-           <template slot-scope="scope">{{ scope.row.scoreDie4 }}</template>
+         <el-table-column label="每回合得分">
+           <template slot-scope="scope">{{ scope.row.scoreRounds }}</template>
          </el-table-column>
+        <el-table-column label="第四回合死点数">
+          <template slot-scope="scope">{{ scope.row.scoreDie4 }}</template>
+        </el-table-column>
          <el-table-column label="第四回合先摸牌">
            <template slot-scope="scope">{{ scope.row.isFirst4 === 1 ? '是' : '否' }}</template>
          </el-table-column>
-         <el-table-column label="输赢">
+         <el-table-column label="牌局 won">
            <template slot-scope="scope">{{ scope.row.moneyWon  / 1000}}</template>
          </el-table-column>
-         <el-table-column label="抽成">
+         <el-table-column label="牌局抽成">
            <template slot-scope="scope">{{ scope.row.moneyTaxed  / 1000}}</template>
          </el-table-column>
+        <el-table-column label="pot won">
+          <template slot-scope="scope">{{ scope.row.moneyPotWin  / 1000}}</template>
+        </el-table-column>
          <el-table-column label="pot投入">
            <template slot-scope="scope">{{ scope.row.moneyPotPay  / 1000}}</template>
-         </el-table-column>
-         <el-table-column label="pot">
-           <template slot-scope="scope">{{ scope.row.moneyPotWin  / 1000}}</template>
          </el-table-column>
          <el-table-column label="pot抽成">
            <template slot-scope="scope">{{ scope.row.moneyPotTaxed  / 1000}}</template>
          </el-table-column>
-         <el-table-column label="筹码变化金额">
-           <template slot-scope="scope">{{ scope.row.moneyChange  / 1000}}</template>
-         </el-table-column>
-         <el-table-column label="当前金额">
-           <template slot-scope="scope">{{ scope.row.moneyCur  / 1000}}</template>
-         </el-table-column>
-         <el-table-column label="抽成贡献(输家)">
-           <template slot-scope="scope">{{ scope.row.payRake  / 1000}}</template>
-         </el-table-column>
+<!--         <el-table-column label="抽成贡献(输家)">-->
+<!--           <template slot-scope="scope">{{ scope.row.payRake  / 1000}}</template>-->
+<!--         </el-table-column>-->
       </el-table-column>
     </el-table>
 

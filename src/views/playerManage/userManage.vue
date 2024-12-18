@@ -79,7 +79,8 @@
           <el-descriptions-item label="来源Appid：">{{ item.RegisterChannel }}</el-descriptions-item>
           <el-descriptions-item label="单一钱包：" :span="1">{{ formatNumber(item.WalletMoney / 1000) }}</el-descriptions-item>
           <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
-          <el-descriptions-item label="注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
+          <el-descriptions-item label="平台注册时间："  :span="4"><DateTimeShow :show-type="2" :timestamp="item.PlatRegisterTime" v-if="item.PlatRegisterTime>0"/></el-descriptions-item>
+          <el-descriptions-item label="UID注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
           <!--
           <el-descriptions-item label="小黑屋标志">
@@ -144,6 +145,9 @@
           </el-descriptions-item>
           <el-descriptions-item label="是否设置登录密码：">
             <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="KYC状态：">
+            <el-tag :type="item.KycStatus ? 'success' : 'danger'">{{ formatBool(item.KycStatus>0) }}</el-tag>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -281,6 +285,8 @@ export default {
         Gullak: 0,
         GullakLevel: 0,
         Nick: '',
+        KycStatus: 0,
+        PlatRegisterTime: 0,
         RegisterTime: '',
         RegisterChannel: '',
         LastLoginTime: '',
