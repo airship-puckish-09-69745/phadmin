@@ -4,7 +4,7 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm1" :model="slotsData" label-width="200px">
           <el-form-item label="老虎机类型">
-            <el-select v-model.number="slotsData.SlotsType" disabled>
+            <el-select v-model.number="slotsData.SlotsType" disabled style="width: 40%;">
               <el-option label="糖果传奇Way" :value="76" />
               <el-option label="糖果传奇Allline" :value="77" />
               <el-option label="SuperGems" :value="78" />
@@ -47,10 +47,14 @@
               <el-option label="PharaohTreasure" :value="168" />
               <el-option label="EpicAce" :value="170" />
               <el-option label="EpicAceMars" :value="171" />
+              <el-option label="172:WrathOfZeus" :value="172" />
+              <el-option label="173:WrathOfZeus Mars" :value="173" />
               <el-option label="TreasureBowl" :value="174" />
               <el-option label="PuppyHome" :value="176" />
               <el-option label="PuppyHomeMars" :value="177" />
               <el-option label="MayanTotem" :value="178" />
+              <el-option label="180:FishingMaster" :value="180" />
+              <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
               <el-option label="DanceLion" :value="184" />
             </el-select>
@@ -72,7 +76,7 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <el-form-item v-if="oddsStr" label="下注倍数">
+          <el-form-item v-if="slotsData.OddsStr !== '1'" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
 
@@ -160,6 +164,7 @@ export default {
         'Clos': this.slotsData.Clos,
         'MinVersion': this.slotsData.MinVersion,
         'Bets': this.slotsData.Bets,
+        'BetExtras': this.slotsData.BetExtras,
         'OddsStr': this.slotsData.OddsStr,
         'BaseBet': this.slotsData.BaseBet,
         'LoseMaxOddsRate': this.slotsData.LoseMaxOddsRate,
