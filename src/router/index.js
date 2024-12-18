@@ -578,8 +578,29 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/MinesBattleTable'),
             name: 'MinesBattleTable',
             meta: { title: 'MinesBattle ◐' }
+          },
+          {
+            path: '/zjhVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'TeenPatti ◐' },
+            children: [
+              {
+                path: 'zjhTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'TeenPatti配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'zjhTable',
+                    component: () => import('@/views/zjh/table/zjhTable'),
+                    name: 'zjhTable',
+                    meta: { title: 'TeenPatti' }
+				          }
+                ]
+              }
+            ]
           }
-
         ]
       },
       {
@@ -2655,3 +2676,4 @@ router.afterEach((to) => {
     // Watermark.set('未获取到用户名') // 设置水印title
   }
 })
+
