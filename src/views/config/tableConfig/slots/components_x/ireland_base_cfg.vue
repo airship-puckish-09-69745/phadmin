@@ -76,6 +76,7 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
+          <span v-if="slotsData.SlotsType === 180"  style="color: red; font-size: 11px;">注: ①.下注倍数要放大10倍 ②.10为固定值 ③.下注大小*下注倍数*基础投注=真实下注额度 </span>
           <el-form-item v-if="slotsData.OddsStr !== '1'" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
