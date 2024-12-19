@@ -3918,7 +3918,6 @@ export default {
       this.ZJHDetailVisible = true
     },
     getZJHCardsType(type){
-      console.log("type ==> ", type)
       const ZJHCardTypes = {
         1: '高牌',
 	      2: '对子',
