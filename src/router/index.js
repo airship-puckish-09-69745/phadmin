@@ -578,8 +578,29 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/MinesBattleTable'),
             name: 'MinesBattleTable',
             meta: { title: 'MinesBattle ◐' }
+          },
+          {
+            path: '/zjhVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'TeenPatti ◐' },
+            children: [
+              {
+                path: 'zjhTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'TeenPatti配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'zjhTable',
+                    component: () => import('@/views/zjh/table/zjhTable'),
+                    name: 'zjhTable',
+                    meta: { title: 'TeenPatti' }
+				          }
+                ]
+              }
+            ]
           }
-
         ]
       },
       {
@@ -897,6 +918,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/godoffortune_slots_cfg'),
                 name: 'godoffortune_slots_cfg',
                 meta: { title: 'GodOfFortune' }
+              },
+              {
+                path: 'dancelion_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/dancelion_slots_cfg'),
+                name: 'dancelion_slots_cfg',
+                meta: { title: 'DanceLion' }
               }
             ]
           },
@@ -1329,7 +1356,7 @@ export const asyncRoutes = [
         path: 'ApplyCompensation',
         component: () => import('@/views/playerManage/ApplyCompensation.vue'),
         name: 'ApplyCompensation',
-        meta: { title: '申请金额补偿 ◐' }
+        meta: { title: '申请金额补偿 ◐' , perm: 'REPARATION'}
       }
     ]
   },
@@ -2655,3 +2682,4 @@ router.afterEach((to) => {
     // Watermark.set('未获取到用户名') // 设置水印title
   }
 })
+

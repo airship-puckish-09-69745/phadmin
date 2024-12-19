@@ -690,6 +690,9 @@ export default {
         '83': 'millionairemars',
         '92': 'fortuneacego',
         '91': 'moneycomingmars',
+        '164':'mahjongfortune',
+        '170': 'epicace',
+        '171': 'epicacemars'
       }
     }
   },

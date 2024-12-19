@@ -32,6 +32,10 @@
             <el-input v-model="cfg.FreeSpecialMultiStrWeight" placeholder="请输入内容,如2,5,8,11"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="黄金符号的概率%" prop="GoldenRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.GoldenRate" :required="true" />
+          </el-form-item>
+
           <el-form-item label="大Wild数量">
             <el-input v-model="cfg.BigWildCountStr" placeholder="请输入内容,如7,8,9,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>

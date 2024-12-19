@@ -615,7 +615,12 @@
                   <template slot="label">
                     奖池剩余金额
                   </template>
-                  {{ bigPrize.pool_money / 1000 }}
+                  <span v-if="cfgMap[bigPrizeForm.gid] && cfgMap[bigPrizeForm.gid].JackpotShowBet">
+                    {{ (bigPrize.pool_money / 1000 /parseInt(cfgMap[bigPrizeForm.gid].JackpotShowBet)).toFixed(2)}}
+                  </span>
+                  <span v-else>
+                    {{ bigPrize.pool_money / 1000 }}
+                  </span>
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
@@ -954,7 +959,6 @@ export default {
     getTotalOrdinaryBetTimes() {
       let cnt = 0
       for (const o of this.ordinaryReturnClientDB.TotalData) {
-        console.log("==================="+o)
         cnt += parseInt(o.times)
       }
       return cnt
@@ -1063,7 +1067,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
+              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet ,JackpotShowBet:o.JackpotShowBet}
             }
           }
         }

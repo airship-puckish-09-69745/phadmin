@@ -13,6 +13,11 @@
             <publish primary-key="ID" :key-id="getFullKey('fishingmaster_slots_rule')" :env-empty="false" compare-type="Object" />
             <slots-symbol-value v-if="ruleCfgBool" v-model="ruleCfg" @saveData="saveRuleCfg" />
           </el-tab-pane>
+          <el-tab-pane label="支付线配置" name="pay_line">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('fishingmaster_slots_rule')" :env-empty="false" compare-type="Object" />
+            <slots-pay-line v-if="ruleCfgBool" v-model="ruleCfg" :rows="baseCfg.Rows" :cols="baseCfg.Clos" @saveData="saveRuleCfg" />
+          </el-tab-pane>
           <el-tab-pane label="赔付线配置" name="pay_table">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，重启生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('fishingmaster_slots_base')" :env-empty="false" compare-type="Object" />
@@ -168,6 +173,13 @@ export default {
         this.baseCfg.BetList = []
         for (const i in bets) {
           this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
+        }
+      }
+      if (this.baseCfg.OddsStr) {
+        const odds = this.baseCfg.OddsStr.split(',')
+        this.baseCfg.OddsList = []
+        for (const i in odds) {
+          this.baseCfg.OddsList.push(parseFloat(odds[i]))
         }
       }
       this.baseForm.Data = JSON.stringify(this.baseCfg)

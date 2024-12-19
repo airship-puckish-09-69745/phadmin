@@ -4,12 +4,16 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
-          <el-form-item label="Bonus倍数">
+          <el-form-item label="金币倍数">
             <el-input v-model="cfg.BonusMultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="Bonus倍数权重">
+          <el-form-item label="金币倍数权重">
             <el-input v-model="cfg.BonusMultiWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="Bonus模式金币出现概率" prop="BonusSymbolRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BonusSymbolRate" :required="true"> <template slot="append">％</template> </el-input>
           </el-form-item>
 
           <el-form-item label="Bonus模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
