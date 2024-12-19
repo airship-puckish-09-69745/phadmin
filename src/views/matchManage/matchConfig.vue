@@ -1774,6 +1774,10 @@ export default {
         //   this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
         //   return false
         // }
+        if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
+          this.errmsg('当前是动态奖励，请选择模板')
+          return false
+        }
       }
       return true
     },
