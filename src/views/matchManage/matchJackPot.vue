@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="Id" key-id="MatchPrizeConfig" :env-empty="true" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="Id" key-id="MatchPrizeConfig" :env-empty="true"  compare-type="Object" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -12,9 +12,6 @@
           @click="handleCreate()"
         >添加配置项
         </el-button>
-      </el-col>
-      <el-col :span="2">
-        <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
     </el-row>
     <div style="padding-top: 10px">
@@ -31,9 +28,9 @@
       >
         <el-table-column
           prop="ID"
-          label="ID"
+          label="模板ID"
           sortable
-          width="150"
+          width="100"
         />
         <el-table-column
           prop="Name"
@@ -41,30 +38,30 @@
           width="150"
         />
         <el-table-column
-          prop="ModifyUser"
+          prop="modifier"
           label="最近修改"
           width="100"
         />
         <el-table-column
-          prop="LastModify"
+          prop="update_time"
           label="修改时间"
-          width="150"
+          width="250"
         >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.LastModify) }}
+            {{ formatTime(scope.row.update_time) }}
           </template>
         </el-table-column>
         <el-table-column
           label="操作"
           column-key="op"
-          width="150"
+          width="120"
         >
           <template slot-scope="scope">
             <el-button
               type="primary"
               size="mini"
               @click="handleEdit(scope.row)"
-            >编辑/查看</el-button>
+            >查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,13 +73,10 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <el-row>
-        <publish primary-key="ID" :key-id="configKey2" :check="configCheck" :env-empty="true" />
-      </el-row>
 
       <el-form ref="edit" :model="edit" label-width="180px" :inline="true" size="small">
 
-        <el-row>
+        <el-row v-if="edit.isEdit==false">
           <el-col :offset="9">
             <el-button type="primary" size="mini" @click="save()">保存</el-button>
           </el-col>
@@ -170,8 +164,6 @@ import TestMonthCard from '@/views/devTools/testMonthCard'
 import LineChart from '@/views/playerManage/components/LineChart'
 import UploadExcelComponent from '@/components/UploadExcel/slotsAct.vue'
 
-const filterMap = {}
-
 function newChartData() {
   return {
     xData: [],
@@ -218,21 +210,12 @@ export default {
     }
   },
   computed: {
-    actionURL() {
-      return process.env.VUE_APP_BASE_API + '/other/upload'
-    },
-    configKey2() {
-      return this.configKey + '_' + this.edit.item.ID
-    }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
   },
   methods: {
-    showChart(k1, k2) {
-      this.initChartData(this.edit.item.Actions[k1].rows[k2].cols)
-    },
     showCololumnName(k) {
       if(this.edit.columnName[k]) {
         var len = this.edit.columnName.length
@@ -257,7 +240,7 @@ export default {
       }
     },
     showData(arr) {
-      return arr.val
+      return arr.val/1000
     },
     initChartData(objs) {
       const chartData = newChartData()
@@ -304,6 +287,11 @@ export default {
       this.edit.visible = true
     },
     handleCreate() {
+      //判断总数是否超过最大限制
+      if (this.tableData.length > 15) {
+        this.errMsg('总模板数量已经超过最大限制！')
+        return
+      }
       this.edit.item = {
         Name: '',
         Acts: [],
@@ -316,15 +304,16 @@ export default {
     },
     getList() {
       request({
-        url: '/slotsActConfigV2/all',
+        url: '/matchprizeconfig/match/prize/list',
         method: 'get',
-        data: {}
+        data: {
+          Env: this.env
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
-          if (objs.length > 0) {
-            this.clientDB = new ClientTableData(objs, 50, filterMap, 'ID', -1)
-            this.handleCurrentChange(1)
+          if (objs.total > 0) {
+            this.tableData = objs.list
           }
         }
       })
@@ -332,9 +321,15 @@ export default {
     configCheck() {
       return true
     },
+    errMsg(txt) {
+      this.$alert(txt, '', {
+        type: 'error',
+        center: true
+      })
+    },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
-      return this.edit.isEdit ? '修改配置' : '新增配置'
+      return this.edit.isEdit ? '查看配置' : '新增配置'
     },
     initFormData(bEdit, ID) {
       const $this = this
@@ -342,39 +337,55 @@ export default {
       this.edit.isEdit = bEdit
       if (ID) {
         request({
-          url: '/slotsActConfigV2/one',
+          url: '/matchprizeconfig/match/prize/one',
           method: 'get',
           data: {
-            ID: ID
+            ID: ID,
+            Env: this.env
           }
         }).then(response => {
           if (response.RetCode === 0) {
             this.edit.item = response.Data
             if (this.edit.item.SheetNames != '') {
-              this.edit.sheetNames = JSON.parse(this.edit.item.SheetNames)
+              this.edit.sheetNames.push(this.edit.item.SheetNames)
+            }
+            var rankData = JSON.parse(this.edit.item.Data)
+            const Tbl = []
+            const retTbl = []
+            for(var i = 0; i < rankData.length; i++) {
+              if (Tbl[rankData[i].maxR] === undefined) {
+                Tbl[rankData[i].maxR] = []
+              }
+              Tbl[rankData[i].maxR].push(rankData[i])
             }
 
-            const items = response.Data.Actions
-            const rets = []
-            for (let i = 0; i < items.length; i++) {
-              const rows = items[i].rows
-              const newRow = []
-              for (let j = 0; j < rows[0].cols.length; j++) {
-                const newCols = [j + 1]
-                for (let r = 0; r < rows.length; r++) {
-                  newCols.push(rows[r].cols[j])
-                }
-                newRow.push(newCols)
+            const columnTbl = []
+            for (var i = 0; i < rankData.length; i++) {
+              if (columnTbl[rankData[i].minRange] === undefined) {
+                columnTbl[rankData[i].minRange] = []
               }
-              rets.push(newRow)
+              columnTbl[rankData[i].minRange].push(rankData[i])
             }
-            $this.edit.showActs = rets
+
+            let index;
+            for (index in Tbl) {
+              this.edit.rowName.push(index)
+              retTbl.push(Tbl[index])
+            }
+            for (index in columnTbl) {
+              this.edit.columnName.push(index)
+            }
+            //console.log("组装数据 ",retTbl)
+            const firstrets = []
+            const secondrets = []
+            firstrets.push(retTbl)
+            secondrets.push(firstrets)
+            this.edit.showActs = secondrets
+
+            //console.log("数据2222  ",this.edit.showActs)
           }
         })
       }
-    },
-    dataRule(required, config) {
-      return DataRule(required, config)
     },
     createSave() {
       const postTabl = []
@@ -402,46 +413,11 @@ export default {
         }
       })
     },
-    editSave(postData) {
-      request({
-        url: 'slotsActConfigV2/update',
-        method: 'post',
-        data: postData
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.clientDB.UpdateData(this.edit.item)
-          this.refreshShow()
-          Message.success('保存成功！')
-        }
-      })
-    },
-    getPostData() {
-      const postTabl = []
-      for (var i = 0; i < this.edit.showActs[0].length;i++){
-        for(var j = 0; j < this.edit.showActs[0][i].length; j++) {
-          for(var k = 0; k < this.edit.showActs[0][i][j].length; k++){
-            postTabl.push(this.edit.showActs[0][i][j][k])
-          }
-        }
-      }
-      console.log("eeeeeeeeeeeee  postTabl",postTabl)
-      console.log("eeeeeeeeeeeee  postTabl111",JSON.stringify(postTabl))
-      return {
-        ID: this.edit.item.ID,
-        Name: this.edit.item.Name,
-        Data: JSON.stringify(postTabl),
-        SheetNames: this.edit.sheetNames[0]
-      }
-    },
     save() {
-      const $this = this
-      if (this.edit.isEdit) {
-        $this.editSave($this.getPostData())
-      } else {
-        this.createSave()
-      }
+      this.createSave()
       this.edit.isNewImport = false
       this.edit.visible = false
+      this.getList()
     },
     checkImport(file) {
       const isLt4M = file.size / 1024 / 1024 < 4
@@ -455,7 +431,7 @@ export default {
       return false
     },
     importSuccess(results) {
-      console.log('import result', results)
+      //console.log('import result', results)
 
       this.edit.sheetNames = results['SheetNames']
       const Sheets = results['Sheets']
@@ -489,7 +465,7 @@ export default {
         rets.push(this.transformData(result))
       }
       $this.edit.showActs = rets
-      console.log("数据1111  ",this.edit.showActs)
+      //console.log("数据1111  ",this.edit.showActs)
       $this.edit.isNewImport = true
     },
     parseKeys() {
@@ -526,7 +502,6 @@ export default {
           numKey.push(key)
         }
       }
-      //console.log("hang key" , numKey)
       //解析第一列,排名浮动 找到排名区间起始值
       const rankKey = []
       const rankData = []
@@ -579,7 +554,7 @@ export default {
           })
         }
       }
-      console.log("rankData ",rankData)
+      //console.log("rankData ",rankData)
       const Tbl = []
       const retTbl = []
       for(var i = 0; i < rankData.length; i++) {
@@ -606,7 +581,7 @@ export default {
       for(index in columnTbl) {
         this.edit.columnName.push(index)
       }
-      console.log("组装数据 ",retTbl)
+      //console.log("组装数据 ",retTbl)
       //console.log("行标题 ",this.edit.columnName)
       //console.log("列标题 ",this.edit.rowName)
       const rankStr = JSON.stringify(retTbl)

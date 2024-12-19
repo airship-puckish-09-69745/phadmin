@@ -471,8 +471,12 @@
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
-          <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
+          <el-form-item label="奖励模型：" :required="true">
+            <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }}</el-radio>
+          </el-form-item>
+          <el-button v-if="editForm.prizeExtra.awardType===0" style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
           <el-table
+            v-if="editForm.prizeExtra.awardType===0"
             :data="editForm.rankRewards"
             border
             stripe
@@ -480,6 +484,7 @@
             :row-style="{height:'35px'}"
             :cell-style="libShow.TableCell(0)"
             style="width: 100%;line-height:35px;"
+
           >
             <el-table-column
               prop="index"
@@ -540,6 +545,21 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="选择模板：" :required="true">
+            <el-select v-model="editForm.prizeExtra.prizeTemplateId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in prizeTemplateCfg"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="手续费率[千分比]：" :required="true">
+            <el-input v-model.number="editForm.prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" />
+          </el-form-item>
+
         </fieldset>
 
         <fieldset>
@@ -604,6 +624,7 @@ import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import {getAllCommonGameConfig, getAllMatchGuidesConfig} from '@/utils/common-game-config'
+import emojPrice from "@/views/config/baseConfig/emojPrice.vue";
 
 export default {
   name: 'MatchConfig',
@@ -682,6 +703,11 @@ export default {
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
       ],
+      prizeModleCfgs: [
+        { 'value': 0, 'label': '固定奖励' },
+        { 'value': 1, 'label': '动态奖励' }
+      ],
+      prizeTemplateCfg: [],
       csCfgs: [],
       showCsCfgs: [],
       guideCfgs: [],  //赛事推荐相关
@@ -778,6 +804,11 @@ export default {
           betCnt: 0,
           matchEvents: 0
         },
+        prizeExtra: {
+          awardType: 0,
+          prizeRate: 0,
+          prizeTemplateId: 0
+        }
       },
 
       AttrNames: {
@@ -804,7 +835,8 @@ export default {
         openDaysLimit: '每日限制',
         sort: '排序',
         repeatDelayDays: '间隔天数',
-        daySections: '每日时段'
+        daySections: '每日时段',
+        awardType: '奖励类型'
       },
       singleCopy: {
         id: 0,
@@ -821,6 +853,7 @@ export default {
     this.getCsCfgs()
     this.getGuideCfgs()
     this.getPropsCfgs()
+    this.getPrizeTemplateCfg()
   },
   mounted() {
     this.getList()
@@ -854,7 +887,7 @@ export default {
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
                 'gameId': [parseInt(objs.list[i].game_id, 10)],
-                "ruleType":objs.list[i].rule_type,
+                "ruleType": objs.list[i].rule_type,
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
@@ -864,7 +897,7 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                }else if(stage_detail[j].system_type == 2){
+                } else if (stage_detail[j].system_type == 2) {
                   //存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
@@ -948,9 +981,9 @@ export default {
       })
     },
     checkMatchGuidesDisable(appId) {
-      for (var i = 0;i < this.guideCfgs.length; i++) {
-        if (this.guideCfgs[i].appId > 0 &&  this.guideCfgs[i].appId == appId ) {
-            return false
+      for (var i = 0; i < this.guideCfgs.length; i++) {
+        if (this.guideCfgs[i].appId > 0 && this.guideCfgs[i].appId == appId) {
+          return false
         }
       }
       return true
@@ -1069,12 +1102,12 @@ export default {
             getNum: 0
           }
         ],
-        propsReward:{
-              propsId:0,
-              propsType:0,
-              propsName:"",
-              propsIcon:"",
-              propsAttr:""
+        propsReward: {
+          propsId: 0,
+          propsType: 0,
+          propsName: "",
+          propsIcon: "",
+          propsAttr: ""
         }
       })
     },
@@ -1193,7 +1226,7 @@ export default {
     },
     showForm(id) {
       if (id == 0) {
-        this.disableOpenType(false,0)
+        this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
         this.editForm.data = {
           id: 0,
@@ -1259,12 +1292,12 @@ export default {
                 getNum: 0
               }
             ],
-            propsReward:{
-              propsId:0,
-              propsType:0,
-              propsName:"",
-              propsIcon:"",
-              propsAttr:""
+            propsReward: {
+              propsId: 0,
+              propsType: 0,
+              propsName: "",
+              propsIcon: "",
+              propsAttr: ""
             }
           }
         ]
@@ -1276,6 +1309,12 @@ export default {
         this.editForm.signExtra = {
           betCnt: 0,
           matchEvents: 0
+        }
+
+        this.editForm.prizeExtra = {
+          awardType: 0,
+          prizeRate: 0,
+          prizeTemplateId: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -1351,8 +1390,11 @@ export default {
           }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
-        if (editData.sign_extra && editData.sign_extra != '' && editData.sign_extra != 'undefined') {
+        if (editData.sign_extra && editData.sign_extra != 'null' && editData.sign_extra != 'undefined') {
           this.editForm.signExtra = JSON.parse(editData.sign_extra)
+        }
+        if (editData.prize_extra  && editData.prize_extra != 'null' ) {
+          this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
@@ -1363,7 +1405,7 @@ export default {
             }
           }
         }
-        this.disableOpenType(true,editData.open_match_type)
+        this.disableOpenType(true, editData.open_match_type)
       }
       this.editForm.visable = true
       this.guideShowCfgs = []
@@ -1393,7 +1435,7 @@ export default {
 
     checkHaveAppId(appId, appInfo) {
       let flag = false
-      for (var i = 0; i < appInfo.length; i++ ){
+      for (var i = 0; i < appInfo.length; i++) {
         if (appId == appInfo[i].appId) {
           flag = true
           break
@@ -1402,7 +1444,7 @@ export default {
       return flag
     },
     saveMatch() {
-      if(this.editForm.data.opentMatchType == 1){
+      if (this.editForm.data.opentMatchType == 1) {
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds;
       }
       if (!this.configCheck()) {
@@ -1411,7 +1453,7 @@ export default {
       //修复道具
       for (let i = 0; i < this.editForm.rankRewards.length; i++) {
         let element = this.editForm.rankRewards[i];
-        if(element.hasOwnProperty("propsReward") && element.propsReward.propsId > 0){
+        if (element.hasOwnProperty("propsReward") && element.propsReward.propsId > 0) {
           element.propsReward = this.getPropsRewardItem(element.propsReward.propsId)
         }
       }
@@ -1427,7 +1469,7 @@ export default {
           this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime })
+          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime})
         }
       } else {
         // 循环
@@ -1435,9 +1477,20 @@ export default {
         eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
         const intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
-          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime })
+          repeatDetail = JSON.stringify({
+            startTime: bTime,
+            endTime: eTime,
+            intervalDay: intervalDay,
+            msTime: this.editForm.loopDetail.single.stime,
+            meTime: this.editForm.loopDetail.single.etime
+          })
         } else {
-          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
+          repeatDetail = JSON.stringify({
+            startTime: bTime,
+            endTime: eTime,
+            intervalDay: intervalDay,
+            loopData: this.editForm.loopDetail.loopData
+          })
         }
       }
       request({
@@ -1469,7 +1522,8 @@ export default {
           Sort: this.editForm.data.sort,
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
-          SignExtra: JSON.stringify(this.editForm.signExtra)
+          SignExtra: JSON.stringify(this.editForm.signExtra),
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1631,7 +1685,7 @@ export default {
       var min = time.split(':')[1];
       var sec = time.split(':')[2];
 
-      s = Number(hour*3600) + Number(min*60) + Number(sec);
+      s = Number(hour * 3600) + Number(min * 60) + Number(sec);
 
       return s;
     },
@@ -1665,7 +1719,7 @@ export default {
 
       if (this.editForm.data.repeatType == 2) {
         if (this.editForm.loopDetail.loopData.length > 0) {
-          for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+          for (var i = 0; i < this.editForm.loopDetail.loopData.length; i++) {
             if ((Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime))) < 600) {
               this.errmsg('比赛开始结束间隔要大于10分钟！')
               return false
@@ -1697,7 +1751,7 @@ export default {
       } else if (this.editForm.data.csId <= 0) {
         this.errmsg('赛制选择不能为空')
         return false
-      }else {
+      } else {
         // 获取打立阶段最大时长
         const endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
         if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin)) {
@@ -1729,59 +1783,59 @@ export default {
           return false
 
         }
-        if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
+        if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now() / 1000)) {
           this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
           return false
         }
       }
       return true
     },
-    disableOpenType(isDisable,enableType){
-      if(isDisable){
+    disableOpenType(isDisable, enableType) {
+      if (isDisable) {
         for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
-          if(this.openMatchTypeCfgs[index].value == enableType){
+          if (this.openMatchTypeCfgs[index].value == enableType) {
             this.openMatchTypeCfgs[index].disabled = false
-          }else{
+          } else {
             this.openMatchTypeCfgs[index].disabled = true
           }
         }
-      }else{
+      } else {
         for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
           this.openMatchTypeCfgs[index].disabled = false
         }
       }
     },
-    checkRepeatDisable(val){
-      if (this.editForm.data.id > 0 ) {
+    checkRepeatDisable(val) {
+      if (this.editForm.data.id > 0) {
         return true;
       }
-      if(this.editForm.data.opentMatchType == 1){
-        if(val == 1 || val == 2){
+      if (this.editForm.data.opentMatchType == 1) {
+        if (val == 1 || val == 2) {
           return true
         }
       }
       return false;
     },
-    getMatchStartTimeLabel(){
-      if(this.editForm.data.opentMatchType == 2){
+    getMatchStartTimeLabel() {
+      if (this.editForm.data.opentMatchType == 2) {
         return "开赛时间"
-      }else{
+      } else {
         return "最后开赛时间"
       }
     },
-    checkMatchRuleDisable(val){
-      for(let i=0;i<this.csCfgs.length;i++){
-        if(this.csCfgs[i].value == val){
-          if(this.editForm.data.opentMatchType == 1){
-            if(this.csCfgs[i].ruleType != 1){
+    checkMatchRuleDisable(val) {
+      for (let i = 0; i < this.csCfgs.length; i++) {
+        if (this.csCfgs[i].value == val) {
+          if (this.editForm.data.opentMatchType == 1) {
+            if (this.csCfgs[i].ruleType != 1) {
               return true
-            }else{
+            } else {
               return false
             }
-          }else if (this.editForm.data.opentMatchType == 2) {
-            if(this.csCfgs[i].ruleType != 0){
+          } else if (this.editForm.data.opentMatchType == 2) {
+            if (this.csCfgs[i].ruleType != 0) {
               return true
-            }else{
+            } else {
               return false
             }
           }
@@ -1789,17 +1843,17 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid){
+    getPropsRewardItem(pid) {
       let one = {
-        propsId:0,
-        propsType:0,
-        propsName:"",
-        propsIcon:"",
-        propsAttr:""
+        propsId: 0,
+        propsType: 0,
+        propsName: "",
+        propsIcon: "",
+        propsAttr: ""
       }
       for (let i = 0; i < this.propsInfo.length; i++) {
         const element = this.propsInfo[i];
-        if(element.propsId == pid){
+        if (element.propsId == pid) {
           one.propsId = element.propsId;
           one.propsType = element.propsType;
           one.propsName = element.propsName;
@@ -1810,34 +1864,34 @@ export default {
       }
       return one;
     },
-    getPropsCfgs(){
+    getPropsCfgs() {
       //暂时写死配置
       let items = [];
-      if(process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境'){ //线上走另外一份配置
+      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') { //线上走另外一份配置
         items = [
           {
-            "propsId":2,
-            "propsType":1,
-            "propsName":"YAMAHA MIO GRAVIS",
-            "propsIcon":"https://cdn.tiptop.bet/gf/match/ymhmt.png",
-            "propsAttr":""
+            "propsId": 2,
+            "propsType": 1,
+            "propsName": "YAMAHA MIO GRAVIS",
+            "propsIcon": "https://cdn.tiptop.bet/gf/match/ymhmt.png",
+            "propsAttr": ""
           }
         ];
-      }else{
+      } else {
         items = [
           {
-            "propsId":1,
-            "propsType":1,
-            "propsName":"IPhone 16 Pro Max",
-            "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
-            "propsAttr":""
+            "propsId": 1,
+            "propsType": 1,
+            "propsName": "IPhone 16 Pro Max",
+            "propsIcon": "http://192.168.6.16:8092/match/iphone16promax.png",
+            "propsAttr": ""
           },
           {
-            "propsId":2,
-            "propsType":1,
-            "propsName":"YAMAHA MIO GRAVIS",
-            "propsIcon":"http://192.168.6.16:8092/match/ymhmt.png",
-            "propsAttr":""
+            "propsId": 2,
+            "propsType": 1,
+            "propsName": "YAMAHA MIO GRAVIS",
+            "propsIcon": "http://192.168.6.16:8092/match/ymhmt.png",
+            "propsAttr": ""
           }
         ];
       }
@@ -1847,11 +1901,35 @@ export default {
       }
     },
     repeatLoopDisabled() {
-      if(this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
+      if (this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
         return true
       }
       return false
     },
-  }
+    getPrizeTemplateCfg() {
+      request({
+        url: '/matchprizeconfig/match/prize/list',
+        method: 'get',
+        data: {
+          Env: this.env
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.prizeTemplateCfg = []
+            for(var i = 0; i < objs.total; i++){
+              this.prizeTemplateCfg.push({
+                'label': objs.list[i].Name,
+                'value': objs.list[i].ID
+              })
+            }
+            console.log("收到数据",this.prizeTemplateCfg)
+
+          }
+        }
+      })
+    }
+  },
 }
 </script>
