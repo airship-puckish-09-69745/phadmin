@@ -161,94 +161,94 @@
         </el-table>
       </el-col>
     </el-row>
-    <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-      <el-col :span="11">
-        <el-table
-          ref="filterTable"
-          :data="userMissionTableData"
-          stripe
-          border
-          :header-cell-style="libShow.DefaultTableHeadClass"
-          :row-style="{height:'10px',width: '100%'}"
-          :cell-style="libShow.DefaultTableCell"
-        >
-          <el-table-column label="玩家任务详情">
-            <el-table-column
-              prop="Uid"
-              label="玩家UID"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.uid }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="typeid"
-              label="玩家类型"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.typeid }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="mission1"
-              label="任务1"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.mission1 / 1000 }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="mission2"
-              label="任务2"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.mission2 / 1000 }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="mission3"
-              label="任务3"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.mission3 / 1000 }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="totalbet"
-              label="总下注"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.totalbet / 1000 }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="finishlevel"
-              label="完成等级"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.finishlevel }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="LastRiseRate"
-              label="任务增长比"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.lastriserate / 100 + "%"}}
-              </template>
-            </el-table-column>
-          </el-table-column>
-        </el-table>
-      </el-col>
-    </el-row>
+<!--    <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">-->
+<!--      <el-col :span="11">-->
+<!--        <el-table-->
+<!--          ref="filterTable"-->
+<!--          :data="userMissionTableData"-->
+<!--          stripe-->
+<!--          border-->
+<!--          :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--          :row-style="{height:'10px',width: '100%'}"-->
+<!--          :cell-style="libShow.DefaultTableCell"-->
+<!--        >-->
+<!--          <el-table-column label="玩家任务详情">-->
+<!--            <el-table-column-->
+<!--              prop="Uid"-->
+<!--              label="玩家UID"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.uid }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="typeid"-->
+<!--              label="玩家类型"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.typeid }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="mission1"-->
+<!--              label="任务1"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.mission1 / 1000 }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="mission2"-->
+<!--              label="任务2"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.mission2 / 1000 }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="mission3"-->
+<!--              label="任务3"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.mission3 / 1000 }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="totalbet"-->
+<!--              label="总下注"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.totalbet / 1000 }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="finishlevel"-->
+<!--              label="完成等级"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.finishlevel }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--            <el-table-column-->
+<!--              prop="LastRiseRate"-->
+<!--              label="任务增长比"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.lastriserate / 100 + "%"}}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+<!--          </el-table-column>-->
+<!--        </el-table>-->
+<!--      </el-col>-->
+<!--    </el-row>-->
   </div>
 </template>
 <script>
@@ -409,18 +409,18 @@ export default {
             })
           }
 
-          for (const o of response.Data['smission']) {
-            userMissionTableData.push({
-              uid: parseInt(o.Uid),
-              typeid: o.UidType === 1 ? '新用户' : '老用户',
-              mission1: parseInt(o.Mission1Required),
-              mission2: parseInt(o.Mission2Required),
-              mission3: parseInt(o.Mission3Required),
-              totalbet: parseInt(o.TotalBet),
-              finishlevel: parseInt(o.FinishLevel),
-              lastriserate: parseInt(o.LastRiseRate)
-            })
-          }
+          // for (const o of response.Data['smission']) {
+          //   userMissionTableData.push({
+          //     uid: parseInt(o.Uid),
+          //     typeid: o.UidType === 1 ? '新用户' : '老用户',
+          //     mission1: parseInt(o.Mission1Required),
+          //     mission2: parseInt(o.Mission2Required),
+          //     mission3: parseInt(o.Mission3Required),
+          //     totalbet: parseInt(o.TotalBet),
+          //     finishlevel: parseInt(o.FinishLevel),
+          //     lastriserate: parseInt(o.LastRiseRate)
+          //   })
+          // }
         }
 
         missionTableData.sort(function(a, b) {
