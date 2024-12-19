@@ -53,6 +53,8 @@
               <el-option label="PuppyHome" :value="176" />
               <el-option label="PuppyHomeMars" :value="177" />
               <el-option label="MayanTotem" :value="178" />
+              <el-option label="188:StreetFighting" :value="188" />
+              <el-option label="189:StreetFighting Mars" :value="189" />
               <el-option label="180:FishingMaster" :value="180" />
               <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
