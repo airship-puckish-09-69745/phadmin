@@ -16,7 +16,6 @@
     </el-row>
     <div style="padding-top: 10px">
       <el-table
-        ref="filterTable"
         :data="tableData"
         stripe
         border
@@ -89,7 +88,7 @@
         </el-row>
 
         <el-row>
-          <el-form-item>
+          <el-form-item v-if="edit.isNewImport==true">
             <upload-excel-component :on-success="importSuccess" :before-upload="checkImport" />
           </el-form-item>
         </el-row>
@@ -103,20 +102,22 @@
           <el-col :span="24">
             <el-tabs type="border-card">
               <el-tab-pane v-for="(o,idx) in edit.showActs" :key="'tabAct' + idx" :label="edit.sheetNames[idx]">
-                <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
-                  <thead>
-                    <th>排名/人数</th>
-                    <th v-for="(_,k1) in o[0]">
-                      <span>{{ showCololumnName(k1) }}</span>
-                    </th>
-                    </thead>
-                      <tr v-for="(row,k) in o[0]">
-                        <td>{{showRowName(k,row)}}</td>
-                        <td v-for="(col,_) in row">
-                          {{ showData(col) }}
-                        </td>
-                      </tr>
-                  </table>
+                <div class="scroll-area">
+                  <table class="table table-border table-bordered table-bg table-striped" cellspacing="0" cellpadding="0">
+                    <thead>
+                      <th style="width: 300px">排名/人数</th>
+                      <th v-for="(_,k1) in o[0][0]" style="width: 400px">
+                        <span>{{ showCololumnName(k1) }}</span>
+                      </th>
+                      </thead>
+                        <tr v-for="(row,k) in o[0]">
+                          <td>{{showRowName(k,row)}}</td>
+                          <td v-for="(col,_) in row">
+                            {{ showData(col) }}
+                          </td>
+                        </tr>
+                    </table>
+                </div>
                 </el-tab-pane>
               </el-tabs>
             </el-col>
@@ -129,6 +130,14 @@
   </div>
 </template>
 <style>
+.scroll-area {
+  overflow: auto;
+  max-width: 100%;
+  max-height: calc(100vh - 300px);
+}
+.table {
+  width: 3000px;
+}
 .table .text-c th, .table .text-c td {
   text-align: center;
 }
@@ -164,27 +173,13 @@ import TestMonthCard from '@/views/devTools/testMonthCard'
 import LineChart from '@/views/playerManage/components/LineChart'
 import UploadExcelComponent from '@/components/UploadExcel/slotsAct.vue'
 
-function newChartData() {
-  return {
-    xData: [],
-    yData: [
-      { Name: '单', Data: [] },
-      { Name: '总', Data: [] }
-    ]
-  }
-}
 
 export default {
-  components: { TestMonthCard, Compare, Publish, LineChart, UploadExcelComponent },
+  components: {Compare, Publish, UploadExcelComponent },
   data() {
     return {
       tableData: [],
       libShow: $libShow,
-      env: 'test',
-      game: 15,
-      configKey: 'SlotsActConfigConfigV2',
-
-      chartData: newChartData(),
 
       edit: {
         visible: false,
@@ -221,13 +216,13 @@ export default {
         var len = this.edit.columnName.length
         if(this.edit.columnName[len-k-1]) {
           if (k === 0) {
-            return this.edit.columnName[len - k - 1] + '+人'
+            return this.edit.columnName[len - k - 1] + '+'
           } else if (k === len-1){
-            return this.edit.columnName[0] + '人'
+            return this.edit.columnName[0]
           } else {
             var a = this.edit.columnName[len - k - 1]
             var b = this.edit.columnName[len-k]-1
-            return a.toString() + '-' + b.toString() + '人'
+            return a.toString() + '-' + b.toString()
           }
         }
       }
@@ -242,18 +237,7 @@ export default {
     showData(arr) {
       return arr.val/1000
     },
-    initChartData(objs) {
-      const chartData = newChartData()
-      var total = 0
-      for (let i = 0; i < objs.length; i++) {
-        const ob = objs[i]
-        chartData.xData.push(i)
-        chartData.yData[0].Data.push(ob)
-        total += ob
-        chartData.yData[1].Data.push(total)
-      }
-      this.chartData = chartData
-    },
+
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
@@ -298,7 +282,7 @@ export default {
         SheetNames: []
       }
       this.edit.showActs = []
-      this.edit.isNewImport = false
+      this.edit.isNewImport = true
       this.edit.isEdit = false
       this.edit.visible = true
     },
@@ -465,8 +449,8 @@ export default {
         rets.push(this.transformData(result))
       }
       $this.edit.showActs = rets
-      //console.log("数据1111  ",this.edit.showActs)
-      $this.edit.isNewImport = true
+      console.log("数据1111  ",this.edit.showActs)
+      $this.edit.isNewImport = false
     },
     parseKeys() {
       const arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
