@@ -384,7 +384,7 @@ export const asyncRoutes = [
           },
           {
             path: 'Uno',
-            component: () => import('@/views/empty'),//import('@/views/config/tableConfig/uno/unoTable'),
+            component: () => import('@/views/empty'), //import('@/views/config/tableConfig/uno/unoTable'),
             redirect: 'noRedirect',
             meta: { title: 'Uno', noCache: true },
             children: [
@@ -596,6 +596,7 @@ export const asyncRoutes = [
                     component: () => import('@/views/zjh/table/zjhTable'),
                     name: 'zjhTable',
                     meta: { title: 'TeenPatti' }
+                    // eslint-disable-next-line no-mixed-spaces-and-tabs
 				          }
                 ]
               }
@@ -1364,12 +1365,18 @@ export const asyncRoutes = [
         name: 'pointgamefail',
         meta: { title: '积分注单失败 ◐' }
       },
-         {
+      {
         path: 'ApplyCompensation',
         component: () => import('@/views/playerManage/ApplyCompensation.vue'),
         name: 'ApplyCompensation',
-        meta: { title: '申请金额补偿 ◐' , perm: 'REPARATION'}
-      }
+        meta: { title: '申请金额补偿 ◐', perm: 'REPARATION' }
+      },
+      // {
+      //   path: 'ApplyRichcard',
+      //   component: () => import('@/views/playerManage/ApplyRichCard.vue'),
+      //   name: 'ApplyRichcard',
+      //   meta: { title: '申请发放富裕卡 ◐' }
+      // }
     ]
   },
   {
@@ -1646,10 +1653,10 @@ export const asyncRoutes = [
             meta: { title: 'MinesBattle◐', gid: 123 }
           },
           {
-                path: 'playlog_ZJH',
-                component: () => import('@/views/playerManage/playlog'),
-                name: 'playlog_ZJH',
-                meta: { title: 'TeenPatti ◐', gid: 9 }
+            path: 'playlog_ZJH',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_ZJH',
+            meta: { title: 'TeenPatti ◐', gid: 9 }
           }
         ]
       },

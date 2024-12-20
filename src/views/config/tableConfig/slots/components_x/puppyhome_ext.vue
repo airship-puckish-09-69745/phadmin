@@ -4,6 +4,14 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
+          <el-form-item label="骨头倍数">
+            <el-input v-model="cfg.BoneMultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="骨头倍数权重">
+            <el-input v-model="cfg.BoneMultiWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="金币倍数">
             <el-input v-model="cfg.BonusMultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
