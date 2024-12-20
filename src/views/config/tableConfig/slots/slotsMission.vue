@@ -212,10 +212,19 @@ export default {
     }
   },
   created() {
-    this.getGameList()
-    this.getData()
+    this.loadData()
   },
   methods: {
+    async loadData() {
+      try {
+        // 先执行 getGameList，等待其完成
+        await this.getGameList()
+        // 再执行 getData
+        this.getData()
+      } catch (error) {
+        console.error('Error loading data:', error)
+      }
+    },
     gameName(slotsType) {
       return $libShow.GameNames[slotsType]
     },

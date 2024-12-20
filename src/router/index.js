@@ -836,6 +836,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce' }
               },
               {
+                path: 'streetfighting_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/streetfighting_slots_cfg'),
+                name: 'streetfighting_slots_cfg',
+                meta: { title: 'StreetFighting' }
+              },
+              {
                 path: 'fishingmaster_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fishingmaster_slots_cfg'),
                 name: 'fishingmaster_slots_cfg',
@@ -1023,6 +1029,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
+              },
+              {
+                path: 'streetfightingmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/streetfightingmars_slots_cfg'),
+                name: 'streetfightingmars_slots_cfg',
+                meta: { title: 'StreetFighting(审)' }
               },
               {
                 path: 'fishingmastermars_slots_cfg',
@@ -1632,6 +1644,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_minesBattle',
             meta: { title: 'MinesBattle◐', gid: 123 }
+          },
+          {
+                path: 'playlog_ZJH',
+                component: () => import('@/views/playerManage/playlog'),
+                name: 'playlog_ZJH',
+                meta: { title: 'TeenPatti ◐', gid: 9 }
           }
         ]
       },
@@ -1876,6 +1894,12 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce', gid: 154 }
           },
           {
+            path: 'streetfighting_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'streetfighting_slots_log',
+            meta: { title: 'StreetFighting', gid: 188 }
+          },
+          {
             path: 'fishingmaster_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmaster_slots_log',
@@ -2050,6 +2074,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'grandacemars_slots_log',
             meta: { title: 'GrandAce(审)', gid: 155 }
+          },
+          {
+            path: 'streetfightingmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'streetfightingmars_slots_log',
+            meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
             path: 'fishingmastermars_slots_log',

@@ -220,7 +220,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">（₱）</template></el-input>
+                      <el-input v-model.number="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">（₱）</template></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -763,6 +763,7 @@ export default {
         }
       })
       this.edit.item.RewardMax = maxReward
+      console.log('maxReward:', maxReward)
 
       const newData = JSON.parse(JSON.stringify(this.edit.item))
       const index = this.item.PrizePoolCfg.findIndex(item => item.RaffleLevel === this.edit.item.RaffleLevel)
