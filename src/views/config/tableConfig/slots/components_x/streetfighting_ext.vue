@@ -4,7 +4,7 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
           <el-form-item label="免费模式中奖倍数">
-            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,3,5,6,8"> <template slot="append">用 , 连接</template> </el-input>
+            <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,3,5,6,8"> <template slot="append">用 , 连接 从掉落第二个矩阵开始</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
