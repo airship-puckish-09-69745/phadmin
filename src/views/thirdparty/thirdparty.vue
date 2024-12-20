@@ -187,7 +187,7 @@
         <div class="block">
           <el-pagination
             :current-page="clientDB.GetPage().GetCurrentPage()"
-            :page-sizes="[10, 20, 30, 40]"
+            :page-sizes="[20, 30, 40, 50]"
             :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
             :total="clientDB.GetPage().GetTotalCount()"
@@ -410,7 +410,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
+          this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 20, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
         }
       })

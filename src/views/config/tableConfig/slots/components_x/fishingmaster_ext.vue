@@ -7,6 +7,10 @@
             <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13,14"> <template slot="append">如10,11,12,13,14 代表1轴10‱ .. 5轴14‱</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="加倍模式 wild出现个数的权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildNumOdds" :required="true" placeholder="请输入内容,如1,2,3,4,5"> <template slot="append">如1,2,3,4,5 代表出现1个的概率位1/(1+2+3+4+5) </template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
