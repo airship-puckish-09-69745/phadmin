@@ -77,7 +77,7 @@
               width="120px"
             >
               <template slot-scope="scope">
-                {{ ((scope.row.finish / scope.row.missioning)*100).toFixed(2) + '%' }}
+                {{ (scope.row.missioning ===0 ? 0 : (scope.row.finish / scope.row.missioning)*100).toFixed(2) + '%' }}
               </template>
             </el-table-column>
           </el-table-column>
