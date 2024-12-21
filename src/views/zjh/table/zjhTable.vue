@@ -207,6 +207,7 @@
               </el-select>
             </el-form-item>
           </el-col>
+          <!--
           <el-col :span="11">
             <el-form-item label="练习场：" :required="true">
               <el-radio-group v-model.number="edit.item.IsPractice">
@@ -215,6 +216,7 @@
               </el-radio-group>
             </el-form-item>
           </el-col>
+          -->
         </el-row>
         <el-row>
           <el-col :span="11">
@@ -229,18 +231,20 @@
           </el-col>
           <el-col :span="11">
             <el-form-item
-              label="最大携带(练习场初始资金)："
+              label="最大携带："
               :required="true"
               prop="item.CarryUpper"
               :rules="dataRule(true,{type:'n',range:'1'})"
             >
-              <!--              <el-input v-model.number="edit.item.CarryUpper" placeholder="请输入"/>-->
+               <el-input v-model.number="edit.item.CarryUpper" placeholder="请输入"/>
+               <!--             
               <el-autocomplete
                 v-model="edit.item.CarryUpper"
                 :fetch-suggestions="getCarryUpper"
                 placeholder="请输入内容"
                 @select="selectCarryUpper"
               />
+              -->
             </el-form-item>
           </el-col>
         </el-row>
@@ -309,211 +313,6 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="玩家买入等待时长："
-              :required="true"
-              prop="item.PurchaseSecondMax"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PurchaseSecondMax" placeholder="玩家买入等待时长" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="最大围观局数："
-              prop="item.WatchTimesMax"
-              :rules="dataRule(true,{type:'n',range:'2'})"
-            >
-              <el-input v-model.number="edit.item.WatchTimesMax" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="默认胜率："
-              :required="true"
-              prop="item.DefaultWinRate"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.DefaultWinRate" placeholder="默认胜率" style="width:200px;">
-                <template slot="append">%</template>
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数倍数："
-              :required="true"
-              prop="item.PlayingMul"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingMul" placeholder="在玩人数倍数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数最小随机数："
-              :required="true"
-              prop="item.PlayingRandMin"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingRandMin" placeholder="在玩人数最小随机数" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="11">
-            <el-form-item
-              label="在玩人数最大随机数："
-              :required="true"
-              prop="item.PlayingRandMax"
-              :rules="dataRule(true,{type:'n',range:'1'})"
-            >
-              <el-input v-model.number="edit.item.PlayingRandMax" placeholder="在玩人数最大随机数" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item
-              label="幸运级别最大值(0不限制)："
-              :required="true"
-              prop="item.LuckyLevelLimitMax"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.LuckyLevelLimitMax" placeholder="0即不限制" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="11">
-            <el-form-item
-              label="幸运级别限制生效最低资产(0不限制)："
-              :required="true"
-              prop="item.LuckyLevelLimitMoney"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.LuckyLevelLimitMoney" placeholder="0即不限制" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <select-goods v-model="edit.item.GoodsId" :type="99" title="金币不足推荐商品" />
-          </el-col>
-
-          <el-col :span="11">
-            <select-goods v-model="edit.item.FirstGoodsId" :type="2" title="金币不足推荐首充商品" />
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <select-goods v-model="edit.item.BankruptGoodsId" :type="99" title="破产推荐商品" />
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="赢牌额外加成：" :required="true" prop="item.ExtraWinRatio" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.ExtraWinRatio" placeholder="赢牌额外加成"><template slot="append">%</template></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <fieldset>
-          <legend>满足充值条件推荐商品</legend>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="总充值大于等于：">
-                <el-input v-model.number="edit.item.TotalRecharge" placeholder="" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="单次充值金额大于等于：">
-                <el-input v-model.number="edit.item.MaxPayAmount" placeholder="" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-
-          <el-row>
-            <el-col :span="11">
-              <select-goods v-model="edit.item.RecommendGid" :type="99" title="金币不足推荐商品" />
-            </el-col>
-
-            <el-col :span="11">
-              <select-goods v-model="edit.item.RecommendBankruptGid" :type="99" title="破产推荐商品" />
-            </el-col>
-          </el-row>
-        </fieldset>
-
-        <fieldset>
-          <legend>场次隐藏配置</legend>
-          <el-row>
-            <el-col :span="9">
-              <money-input v-model="edit.item.SinglePay" label="单次充值大于等于" label-width="150px" :is-require="true" />
-            </el-col>
-            <el-col :span="2">
-              <el-tooltip class="item" effect="dark" content="配置成0也会生效" placement="right-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-col>
-            <el-col :span="9">
-              <money-input v-model="edit.item.TotalPay" label="总充值大于等于" label-width="150px" :is-require="true" />
-            </el-col>
-            <el-col :span="2">
-              <el-tooltip class="item" effect="dark" content="配置成0也会生效" placement="right-start">
-                <i class="el-icon-info" />
-              </el-tooltip>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="进入该场次后隐藏场次：" prop="item.Antes">
-                <el-select v-model="edit.item.HideLevel" placeholder="请选择">
-                  <el-option label="无" :value="0" />
-                  <el-option label="0.1" :value="100" />
-                  <el-option label="0.3" :value="300" />
-                  <el-option label="0.5" :value="500" />
-                  <el-option label="1" :value="1000" />
-                  <el-option label="3" :value="3000" />
-                  <el-option label="5" :value="5000" />
-                  <el-option label="10" :value="10000" />
-                  <el-option label="20" :value="20000" />
-                  <el-option label="50" :value="50000" />
-                  <el-option label="100" :value="100000" />
-                  <el-option label="200" :value="200000" />
-                  <el-option label="400" :value="400000" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </fieldset>
-
-        <fieldset>
-          <legend>钱包转出配置 (N = 配置 * 底分)</legend>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="SuitableRollOutMoney:" :required="true" prop="WalletConfig.SuitableRollOutMoney" :rules="dataRule(true,{type:'n',range:'0'})" >
-                <el-input v-model.number="edit.WalletConfig.SuitableRollOutMoney" placeholder="" >
-                  <template slot="append"> * 底分</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="MaxRollOutMoney:" :required="true" prop="WalletConfig.MaxRollOutMoney" :rules="dataRule(true,{type:'n',range:'0'})" >
-                <el-input v-model.number="edit.WalletConfig.MaxRollOutMoney" placeholder="" >
-                  <template slot="append"> * 底分</template>
-                </el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </fieldset>
-
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -541,13 +340,6 @@ import MoneyInput from '@/components/MoneyInput'
 
 const filterMap = {}
 
-function NewWalletConfig(){
-  return {
-    SuitableRollOutMoney: 5,
-    MaxRollOutMoney: 10
-  }
-}
-
 function newItem() {
   return {
     CarryLower: '',
@@ -559,28 +351,8 @@ function newItem() {
     ActionSeconds: '15',
     PoolMoneyMax: '',
     BetMoneyMax: '',
-    PurchaseSecondMax: '60',
-    WatchTimesMax: '3',
     IsPractice: 0,
     Level: 1,
-    PlayingMul: 0,
-    PlayingRandMin: 0,
-    PlayingRandMax: 0,
-    DefaultWinRate: 50,
-    LuckyLevelLimitMax: 0,
-    LuckyLevelLimitMoney: 0,
-    GoodsId: 0,
-    FirstGoodsId: 0,
-    BankruptGoodsId: 0,
-    TotalRecharge: 0,
-    MaxPayAmount: 0,
-    RecommendGid: 0,
-    SinglePay: 0,
-    TotalPay: 0,
-    HideLevel: 0,
-    RecommendBankruptGid: 0,
-    ExtraWinRatio: 0,
-    WalletConfig:{},
   }
 }
 
@@ -599,7 +371,6 @@ export default {
       edit: {
         visible: false,
         item: newItem(),
-        WalletConfig: NewWalletConfig(),
         isEdit: false,
       },
 
@@ -613,24 +384,7 @@ export default {
         ActionSeconds: '操作时间',
         PoolMoneyMax: '底池最大筹码',
         BetMoneyMax: '玩家最大下注',
-        PurchaseSecondMax: '购买等待时长',
-        WatchTimesMax: '最大围观局数',
         IsPractice: '是否练习场',
-        DefaultWinRate: '默认胜率',
-        LuckyLevelLimitMax: '限制幸运级别最大值',
-        LuckyLevelLimitMoney: '限制幸福级别的最低资产',
-        GoodsId: '金币不足推荐商品',
-        FirstGoodsId: '金币不足推荐首充商品',
-        BankruptGoodsId: '破产推荐商品',
-        TotalRecharge: '总充值',
-        MaxPayAmount: '单次最大充值额度',
-        RecommendGid: '满足充值条件金币不足推荐商品',
-        RecommendBankruptGid: '满足充值条件破产推荐商品',
-        Level: '等级',
-        SinglePay: '单次充值大于',
-        TotalPay: '总充值大于',
-        HideLevel: '进入该场次后隐藏场次',
-        ExtraWinRatio: '赢牌额外加赠比例',
         types: {
         }
       }
@@ -735,10 +489,11 @@ export default {
         return false
       }
       */
+     /*
       if (count !== 1) {
         this.$alert('发布的配置项中，必须有且仅有一个练习场配置')
         return false
-      }
+      }*/
       return true
     },
     handlePreOn(ob) {
@@ -790,21 +545,6 @@ export default {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
           Object.assign(this.edit.item, _data)
-          try {
-            if (_data.WalletConfig) {
-                console.log(ID, "=>", _data.WalletConfig)
-                this.edit.WalletConfig = this.libMoneyRobot.TransForShow(JSON.parse(_data.WalletConfig))
-              }else{
-                this.edit.WalletConfig = NewWalletConfig()
-              }
-            if (bEdit) {
-              // 设置修改之前数据
-              this.$refs.compare.SetOldVal(_data)
-            }
-          } catch (e) {
-            console.log('initFormData error 2 e:', e)
-            this.edit.WalletConfig = NewWalletConfig()
-          }
         }
       }
     },
@@ -848,25 +588,10 @@ export default {
         return false
       }
       let maxRatio = 1
-      if (this.edit.WalletConfig) {
-        if (this.edit.WalletConfig.SuitableRollOutMoney*this.edit.item.TableMoney < this.edit.item.CarryLower){
-          Message.warning('最小携带>=(SuitableRollOutMoney*TableMoney)，请检查数值正确性！')
-          return false
-        }
-        if (this.edit.WalletConfig.SuitableRollOutMoney < maxRatio){
-          Message.warning('SuitableRollOutMoney<最小赔付倍率，请检查数值正确性！')
-          return false
-        }
-        if (this.edit.WalletConfig.MaxRollOutMoney < this.edit.WalletConfig.SuitableRollOutMoney){
-          Message.warning('MaxRollOutMoney < SuitableRollOutMoney，请检查数值正确性！')
-          return false
-        }
-      }
       return true
     },
     save() {
       if (!this.checkData()) return
-      this.edit.item.WalletConfig = JSON.stringify(this.edit.WalletConfig)
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
