@@ -36,7 +36,7 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="红色财字每个倍率的概率">
+          <el-form-item label="红色财字每个倍率的权重">
             <el-input v-model="cfg.redCaiOddsRate" placeholder="用,号分割,共12个值">
               <template slot="append">分别对应0.1×,0.2×,0.3×,0.5×,0.8×,1×,2×,3×,5×,8×,10×,12×</template>
             </el-input>
