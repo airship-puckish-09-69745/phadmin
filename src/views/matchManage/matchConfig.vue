@@ -471,7 +471,7 @@
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
-          <el-form-item v-if="editForm.data.signUpType === 0" label="奖励模型：" :required="true">
+          <el-form-item  label="奖励模型：" :required="true">
             <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
           </el-form-item>
           <el-button v-if="editForm.prizeExtra.awardType===0" style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
@@ -1682,7 +1682,12 @@ export default {
         this.editForm.data.signUpNum = 0
       }
       if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0){
-        this.errmsg('付费赛报名费不能为0！')
+        this.errmsg('付费赛报名费不能为0')
+        return false
+      }
+
+      if (this.editForm.data.signUpType === 1 && this.editForm.prizeExtra.awardType == 1){
+        this.errmsg('当前选择的是免费赛,不能选择动态奖池分配模式')
         return false
       }
 
