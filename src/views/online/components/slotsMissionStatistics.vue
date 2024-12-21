@@ -55,6 +55,15 @@
             </el-table-column>
             <el-table-column
               prop="finish"
+              label="参与任务人数"
+              width="120px"
+            >
+              <template slot-scope="scope">
+                {{ scope.row.missioning }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="finish"
               label="完成任务数"
               width="120px"
             >
@@ -68,7 +77,7 @@
               width="120px"
             >
               <template slot-scope="scope">
-                {{ ((scope.row.finish / scope.row.count)*100).toFixed(2) + '%' }}
+                {{ ((scope.row.finish / scope.row.missioning)*100).toFixed(2) + '%' }}
               </template>
             </el-table-column>
           </el-table-column>
@@ -348,7 +357,8 @@ export default {
               if (missionMap[userType] == null) {
                 missionMap[userType] = {
                   userCount: 0,
-                  finishMission: { '1': 0, '2': 0, '3': 0 }
+                  finishMission: { '1': 0, '2': 0, '3': 0 },
+                  missioning: { '1': 0, '2': 0, '3': 0 }
                 }
               }
 
@@ -356,6 +366,8 @@ export default {
                 missionMap[userType].userCount += 1
               } else if (strings1[2] === 'stage') {
                 missionMap[userType].finishMission[strings1[3]] = parseInt(response.Data['statistics'][key])
+              } else if (strings1[2] === 'stageing') {
+                missionMap[userType].missioning[strings1[3]] = parseInt(response.Data['statistics'][key])
               }
             } else if (strings1[0] === 'cardlevel') {
               if (strings1.length < 4) {
@@ -389,7 +401,8 @@ export default {
                 typeid: typeid,
                 count: missionMap[typeid].userCount,
                 missionid: missionid,
-                finish: missionMap[typeid].finishMission[missionid]
+                finish: missionMap[typeid].finishMission[missionid],
+                missioning: missionMap[typeid].missioning[missionid]
               })
             }
           }
