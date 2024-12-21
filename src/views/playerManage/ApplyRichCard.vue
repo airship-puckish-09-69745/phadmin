@@ -71,12 +71,12 @@
               {{ scope.row.richcrad_level + '星' }}
             </template>
           </el-table-column>
-          <el-table-column label="富裕卡额度" width="120px">
+          <el-table-column label="富裕卡bet值" width="120px">
             <template slot-scope="scope">
               {{ scope.row.richcrad_bet / 1000 }}
             </template>
           </el-table-column>
-          <el-table-column label="异常原因">
+          <el-table-column label="发放原因">
             <template slot-scope="scope">
               {{ scope.row.description }}
             </template>
