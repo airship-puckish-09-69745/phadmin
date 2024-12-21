@@ -366,7 +366,7 @@ export default {
       }else if (data.FailType == 11) {
         let sub  = JSON.parse(data.CommonFailParamsJsonString)
         console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
-        return sub.HoldingAmount / 1000- sub.BetAmount / 1000
+        return sub.HoldingAmount / 1000- sub.BetAmount / 1000+sub.PayoffAmount / 1000
       }else if (data.FailType == 12) {
         let sub  = JSON.parse(data.CommonFailParamsJsonString)
         console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
