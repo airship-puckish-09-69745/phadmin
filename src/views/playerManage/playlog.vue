@@ -3929,6 +3929,7 @@ export default {
       return ZJHCardTypes[type]
     },
     getZJHCardUrl(card) {
+      console.log("card:", card)
       return require('@/assets/poker/' + card + '.png')
     },
 
