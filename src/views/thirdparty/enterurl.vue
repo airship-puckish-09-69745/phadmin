@@ -83,7 +83,7 @@
         <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
           <el-input v-model="item.live_id" />
         </el-form-item>
-        <el-form-item label="KYC状态" label-width="100px">
+        <!-- <el-form-item label="KYC状态" label-width="100px">
           <el-select v-model="item.kyc" placeholder="请选择" size="mini">
             <el-option label="否" value='0' />
             <el-option label="是" value='1' />
@@ -97,7 +97,7 @@
             placeholder="选择日期"
             size="mini"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>
         </el-form-item>
@@ -408,8 +408,8 @@ export default {
           source: this.item.source,
           activity: this.item.activity,
           live_id: this.item.live_id,
-          kyc: this.item.kyc,
-          r_time: this.item.r_time/1000
+          // kyc: this.item.kyc,
+          // r_time: this.item.r_time/1000
         }
       }).then(response => {
         loading.close()
