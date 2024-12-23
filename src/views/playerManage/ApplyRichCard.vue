@@ -392,7 +392,7 @@ export default {
         Description: '',
         RichCardLevel: 0,
         RichCardBet: 0,
-        Count: 0,
+        RichCardCount: 0,
         Detail: '',
         ApplyTime: new Date().getTime()
       }
