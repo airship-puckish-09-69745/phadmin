@@ -305,12 +305,6 @@ export default {
     configCheck() {
       return true
     },
-    errMsg(txt) {
-      this.$alert(txt, '', {
-        type: 'error',
-        center: true
-      })
-    },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
       return this.edit.isEdit ? '查看配置' : '新增配置'
@@ -398,6 +392,15 @@ export default {
       })
     },
     save() {
+      if (this.edit.item.Name == '') {
+        this.errmsg("请填写模板名称")
+        return
+      }
+      if (this.edit.showActs.length == 0) {
+        this.errmsg("还没有上传表格数据")
+        return
+      }
+
       this.createSave()
       this.edit.isNewImport = false
       this.edit.visible = false
@@ -415,7 +418,7 @@ export default {
       return false
     },
     importSuccess(results) {
-      //console.log('import result', results)
+      console.log('import result', results)
 
       this.edit.sheetNames = results['SheetNames']
       const Sheets = results['Sheets']
@@ -449,7 +452,7 @@ export default {
         rets.push(this.transformData(result))
       }
       $this.edit.showActs = rets
-      console.log("数据1111  ",this.edit.showActs)
+      //console.log("数据1111  ",this.edit.showActs)
       $this.edit.isNewImport = false
     },
     parseKeys() {
@@ -468,6 +471,7 @@ export default {
 
     //行代表人数浮动,列代表排名
     transformData(data) {
+     //console.log("transformData ",data)
       //先就解析第一行 人数浮动 找到最低人数起始值
       const numKey = []
       var str = ''
@@ -574,7 +578,14 @@ export default {
       const res = []
       res.push(retTbl)
       return res;
-    }
+    },
+    errmsg(txt) {
+      this.$alert(txt, '', {
+        type: 'error',
+        center: true,
+        showConfirmButton: false
+      })
+    },
   }
 }
 </script>
