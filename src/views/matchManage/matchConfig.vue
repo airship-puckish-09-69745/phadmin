@@ -471,8 +471,12 @@
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
-          <el-button style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
+          <el-form-item  label="奖励模型：" :required="true">
+            <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
+          </el-form-item>
+          <el-button v-if="editForm.prizeExtra.awardType===0" style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
           <el-table
+            v-if="editForm.prizeExtra.awardType===0"
             :data="editForm.rankRewards"
             border
             stripe
@@ -540,6 +544,21 @@
               </template>
             </el-table-column>
           </el-table>
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="选择模板：" :required="true">
+            <el-select v-model="editForm.prizeExtra.prizeTemplateId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in prizeTemplateCfg"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="手续费率[千分比]：" :required="true">
+            <el-input v-model.number="editForm.prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" />
+          </el-form-item>
+
         </fieldset>
 
         <fieldset>
@@ -682,6 +701,11 @@ export default {
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
       ],
+      prizeModleCfgs: [
+        { 'value': 0, 'label': '固定奖励' },
+        { 'value': 1, 'label': '动态奖励' }
+      ],
+      prizeTemplateCfg: [],
       csCfgs: [],
       showCsCfgs: [],
       guideCfgs: [],  //赛事推荐相关
@@ -778,6 +802,11 @@ export default {
           betCnt: 0,
           matchEvents: 0
         },
+        prizeExtra: {
+          awardType: 0,
+          prizeRate: 0,
+          prizeTemplateId: 0
+        }
       },
 
       AttrNames: {
@@ -804,7 +833,8 @@ export default {
         openDaysLimit: '每日限制',
         sort: '排序',
         repeatDelayDays: '间隔天数',
-        daySections: '每日时段'
+        daySections: '每日时段',
+        awardType: '奖励类型'
       },
       singleCopy: {
         id: 0,
@@ -821,6 +851,7 @@ export default {
     this.getCsCfgs()
     this.getGuideCfgs()
     this.getPropsCfgs()
+    this.getPrizeTemplateCfg()
   },
   mounted() {
     this.getList()
@@ -1277,6 +1308,12 @@ export default {
           betCnt: 0,
           matchEvents: 0
         }
+
+        this.editForm.prizeExtra = {
+          awardType: 0,
+          prizeRate: 0,
+          prizeTemplateId: 0
+        }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
         this.guideShowCfgs = this.guideCfgs
@@ -1351,8 +1388,11 @@ export default {
           }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
-        if (editData.sign_extra && editData.sign_extra != '' && editData.sign_extra != 'undefined') {
+        if (editData.sign_extra && editData.sign_extra != 'null' && editData.sign_extra != 'undefined') {
           this.editForm.signExtra = JSON.parse(editData.sign_extra)
+        }
+        if (editData.prize_extra  && editData.prize_extra != 'null' ) {
+          this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
@@ -1439,7 +1479,6 @@ export default {
         } else {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
-        console.log("保存数据 ", this.editForm.data.associateKey,this.editForm.signExtra)
       }
       request({
         url: '/matchconfig/match/config/create',
@@ -1470,7 +1509,8 @@ export default {
           Sort: this.editForm.data.sort,
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
-          SignExtra: JSON.stringify(this.editForm.signExtra)
+          SignExtra: JSON.stringify(this.editForm.signExtra),
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1641,6 +1681,15 @@ export default {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
       }
+      if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0){
+        this.errmsg('付费赛报名费不能为0')
+        return false
+      }
+
+      if (this.editForm.data.signUpType === 1 && this.editForm.prizeExtra.awardType == 1){
+        this.errmsg('当前选择的是免费赛,不能选择动态奖池分配模式')
+        return false
+      }
 
       if (this.editForm.whileList.type == 1) {
         // 如果开启白名单，则白名单不可为空
@@ -1730,8 +1779,12 @@ export default {
           return false
 
         }
-        if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
-          this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
+        // if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
+        //   this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
+        //   return false
+        // }
+        if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
+          this.errmsg('当前是动态奖励，请选择模板')
           return false
         }
       }
@@ -1853,6 +1906,30 @@ export default {
       }
       return false
     },
-  }
+    getPrizeTemplateCfg() {
+      request({
+        url: '/matchprizeconfig/match/prize/list',
+        method: 'get',
+        data: {
+          Env: this.env
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.prizeTemplateCfg = []
+            for(var i = 0; i < objs.total; i++){
+              this.prizeTemplateCfg.push({
+                'label': objs.list[i].Name,
+                'value': objs.list[i].ID
+              })
+            }
+            //console.log("收到数据",this.prizeTemplateCfg)
+
+          }
+        }
+      })
+    }
+  },
 }
 </script>

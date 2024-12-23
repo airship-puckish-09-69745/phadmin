@@ -995,8 +995,14 @@ export default {
             }
             this.treeDataZone.push(ctyZone)
           }
-
-          this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
+          this.$nextTick(() => {
+            const treeGameZone = this.$refs.treeGameZone
+            if (treeGameZone) {
+              // 现在可以安全地使用childComponent
+              treeGameZone.setCheckedKeys(this.item.GameList)
+            }
+          })
+          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
         }
       })
     },
@@ -1077,7 +1083,14 @@ export default {
             }
             this.mayLikeTreeData.push(cty)
           }
-          this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+          this.$nextTick(() => {
+            const treeWinMore = this.$refs.treeWinMore
+            if (treeWinMore) {
+              // 现在可以安全地使用childComponent
+              treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+            }
+          })
+          // this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
         }
       })
     },
@@ -1302,7 +1315,14 @@ export default {
         this.gameZoneOther.push(newData)
       }
       this.gameZoneOtherGameList = []
-      this.$refs.treeGameOtherZone.setCheckedKeys([])
+      this.$nextTick(() => {
+        const treeGameOtherZone = this.$refs.treeGameOtherZone
+        if (treeGameOtherZone) {
+          // 现在可以安全地使用childComponent
+          treeGameOtherZone.setCheckedKeys([])
+        }
+      })
+      // this.$refs.treeGameOtherZone.setCheckedKeys([])
       this.editOtherGameZone.visible = false
       this.editOtherGameZone.isEdit = false
     },
@@ -1408,7 +1428,13 @@ export default {
         if (_data) {
           Object.assign(this.editOtherGameZone.item, _data)
           this.gameZoneOtherGameList = this.editOtherGameZone.item.GameList
-          this.$refs.treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
+          this.$nextTick(() => {
+            const treeGameOtherZone = this.$refs.treeGameOtherZone
+            if (treeGameOtherZone) {
+              // 现在可以安全地使用childComponent
+              treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
+            }
+          })
         }
       }
     },
