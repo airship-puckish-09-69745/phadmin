@@ -179,7 +179,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.HitTimes" size="mini"/>
+                    <el-input v-model.number="scope.row.HitTimes" size="mini"/>
                   </el-col>
                 </template>
               </el-table-column>
@@ -190,7 +190,7 @@
               >
                 <template slot-scope="scope">
                   <el-col :span="20">
-                    <el-input v-model="scope.row.PerTenThousand" size="mini">
+                    <el-input v-model.number="scope.row.PerTenThousand" size="mini">
                       <template slot="append">单位:万分之一</template>
                     </el-input>
                   </el-col>
