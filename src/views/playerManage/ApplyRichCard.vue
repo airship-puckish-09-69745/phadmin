@@ -78,7 +78,7 @@
           </el-table-column>
           <el-table-column label="富裕卡数量" width="120px">
             <template slot-scope="scope">
-              {{ scope.row.richcard_count / 1000 }}
+              {{ scope.row.richcard_count }}
             </template>
           </el-table-column>
           <el-table-column label="发放原因">
@@ -212,7 +212,7 @@
           />
         </el-form-item>
         <el-form-item label="数量：" label-width="120px" :required="true">
-          <el-input v-model.number="item.RichCardConut" placeholder="数量" size="mini" />
+          <el-input v-model.number="item.RichCardCount" placeholder="数量" size="mini" />
         </el-form-item>
         <el-form-item label="发放原因：" label-width="120px" :required="true">
           <el-input
@@ -326,6 +326,7 @@ export default {
 
     addForm() {
       const data = this.item
+      console.log(data)
       if (this.isEdit) {
         request({
           url: '/applyrichcard/update',
