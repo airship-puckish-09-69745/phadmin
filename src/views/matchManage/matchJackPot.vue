@@ -109,16 +109,16 @@
                       <th v-for="(_,k1) in o[0][0]" style="width: 400px">
                         <span>{{ showCololumnName(k1) }}</span>
                       </th>
-                      </thead>
-                        <tr v-for="(row,k) in o[0]">
-                          <td>{{showRowName(k,row)}}</td>
-                          <td v-for="(col,_) in row">
-                            {{ showData(col) }}
-                          </td>
-                        </tr>
-                    </table>
+                    </thead>
+                    <tr v-for="(row,k) in o[0]">
+                      <td>{{ showRowName(k,row) }}</td>
+                      <td v-for="(col,_) in row">
+                        {{ showData(col) }}
+                      </td>
+                    </tr>
+                  </table>
                 </div>
-                </el-tab-pane>
+              </el-tab-pane>
               </el-tabs>
             </el-col>
           </el-row>
@@ -136,7 +136,7 @@
   max-height: calc(100vh - 300px);
 }
 .table {
-  width: 3000px;
+  width: 2500px;
 }
 .table .text-c th, .table .text-c td {
   text-align: center;
@@ -184,7 +184,6 @@ export default {
       edit: {
         visible: false,
         fileName: '',
-        fileList: [],
         editItem: '',
         isEdit: false,
         item: {
@@ -228,39 +227,24 @@ export default {
       }
     },
     showRowName(k,arr){
-      if (arr[0].minR === arr[0].maxR ) {
+      if (arr[0].minR === arr[0].maxR) {
         return arr[0].minR.toString()
       } else {
         return arr[0].minR + '-' + arr[0].maxR
       }
     },
     showData(arr) {
-      return arr.val/1000
+      return arr.val / 1000
     },
 
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    clearFilter() {
-      this.clientDB.ClearFilterMap()
-      this.refreshShow()
-    },
-    handleFilter() {
-      this.clientDB.FilterData()
-      this.refreshShow()
-    },
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
     },
-    handleSizeChange(val) {
-      this.clientDB.GetPage().SetPageNum(val)
-      this.refreshShow()
-    },
-    handleCurrentChange(val) {
-      this.clientDB.GetPage().SetPageNo(val)
-      this.refreshShow()
-    },
+
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
@@ -273,7 +257,7 @@ export default {
     handleCreate() {
       //判断总数是否超过最大限制
       if (this.tableData.length > 15) {
-        this.errMsg('总模板数量已经超过最大限制！')
+        this.errmsg('总模板数量已经超过最大限制！')
         return
       }
       this.edit.item = {
@@ -303,21 +287,44 @@ export default {
       })
     },
     configCheck() {
+      if (this.edit.item.Name === '') {
+        this.errmsg("请填写模板名称")
+        return false
+      }
+      if (this.edit.showActs.length === 0) {
+        this.errmsg("还没有上传表格数据")
+        return false
+      }
+      var tableData = this.edit.showActs[0][0]
+      const checkTbl = []
+      for (var i = 0; i < tableData.length; i++){
+        for (var j = 0; j < tableData[i].length; j++) {
+          if (checkTbl[tableData[i][j].maxRange] === undefined) {
+            checkTbl[tableData[i][j].maxRange] = []
+          }
+          checkTbl[tableData[i][j].maxRange].push(tableData[i][j])
+        }
+      }
+      for (let k in checkTbl) {
+        var total = 0
+        for (var j = 0; j < checkTbl[k].length; j++) {
+          total = total + (checkTbl[k][j].maxR - checkTbl[k][j].minR + 1) * checkTbl[k][j].val
+        }
+        if (total !== 1000*100) {
+          let str = `当前列相加不等于100,人数最大值: ${k.toString()},最小值${checkTbl[k][0].minRange.toString()}`
+          console.log("str ",str)
+          this.errmsg(str)
+          return false
+        }
+      }
+
       return true
-    },
-    errMsg(txt) {
-      this.$alert(txt, '', {
-        type: 'error',
-        center: true
-      })
     },
     //* * ********************** 修改/添加弹框相关 *****************
     getEditTitle() {
       return this.edit.isEdit ? '查看配置' : '新增配置'
     },
     initFormData(bEdit, ID) {
-      const $this = this
-      this.edit.fileList = []
       this.edit.isEdit = bEdit
       if (ID) {
         request({
@@ -365,8 +372,6 @@ export default {
             firstrets.push(retTbl)
             secondrets.push(firstrets)
             this.edit.showActs = secondrets
-
-            //console.log("数据2222  ",this.edit.showActs)
           }
         })
       }
@@ -374,8 +379,8 @@ export default {
     createSave() {
       const postTabl = []
       for (var i = 0; i < this.edit.showActs[0].length;i++){
-        for(var j = 0; j < this.edit.showActs[0][i].length; j++) {
-          for(var k = 0; k < this.edit.showActs[0][i][j].length; k++){
+        for (var j = 0; j < this.edit.showActs[0][i].length; j++) {
+          for (var k = 0; k < this.edit.showActs[0][i][j].length; k++){
             postTabl.push(this.edit.showActs[0][i][j][k])
           }
         }
@@ -398,6 +403,9 @@ export default {
       })
     },
     save() {
+      if (!this.configCheck()) {
+        return
+      }
       this.createSave()
       this.edit.isNewImport = false
       this.edit.visible = false
@@ -415,8 +423,6 @@ export default {
       return false
     },
     importSuccess(results) {
-      //console.log('import result', results)
-
       this.edit.sheetNames = results['SheetNames']
       const Sheets = results['Sheets']
 
@@ -428,13 +434,11 @@ export default {
       for (const i in this.edit.sheetNames) {
         const name = this.edit.sheetNames[i]
         const sheet = Sheets[name]
-        console.log(name, sheet)
-
         const result = []
         for (let j = 0; j < 300; j ++) {
           const rows = []
-          for (let k = 0; k < keys.length; k ++) {
-            const sheetKey = keys[k]+j
+          for (let k = 0; k < keys.length; k++) {
+            const sheetKey = keys[k] + j
             if (sheetKey in sheet) {
               rows.push(sheet[sheetKey]['v'])
             } else {
@@ -449,7 +453,6 @@ export default {
         rets.push(this.transformData(result))
       }
       $this.edit.showActs = rets
-      console.log("数据1111  ",this.edit.showActs)
       $this.edit.isNewImport = false
     },
     parseKeys() {
@@ -460,7 +463,7 @@ export default {
       }
       for (let i = 0; i < arr.length; i ++) {
         for (let j = 0; j < arr.length; j ++) {
-          res.push(arr[i]+arr[j])
+          res.push(arr[i] + arr[j])
         }
       }
       return res;
@@ -518,38 +521,35 @@ export default {
           }
         }
       }
-      console.log("numKey ",numKey)
       var totalNumKey = 0
       var maxRange = 0
       for (var i = 1; i < data.length; i++) {
         for (let j = 1; j < data[i].length; j++) {
           totalNumKey = numKey[j-1]
-          if(j === 1){
-            maxRange = 100000
+          if (j === 1) {
+            maxRange = 2147483647  //int32最大值
           } else if (j > 1) {
             maxRange = numKey[j-1-1]
           }
           rankData.push({
-            'minR':rankKey[i-1].minR,
-            'maxR':rankKey[i-1].maxR,
-            'val':data[i][j]*1000,
-            'minRange':totalNumKey,
-            'maxRange':maxRange-1,
+            'minR': rankKey[i - 1].minR,
+            'maxR': rankKey[i - 1].maxR,
+            'val': data[i][j] * 1000,
+            'minRange': totalNumKey,
+            'maxRange': maxRange - 1
           })
         }
       }
-      //console.log("rankData ",rankData)
       const Tbl = []
       const retTbl = []
-      for(var i = 0; i < rankData.length; i++) {
+      for (var i = 0; i < rankData.length; i++) {
         if (Tbl[rankData[i].maxR] === undefined) {
           Tbl[rankData[i].maxR] = []
         }
         Tbl[rankData[i].maxR].push(rankData[i])
       }
-
       const columnTbl = []
-      for(var i = 0; i < rankData.length; i++) {
+      for (var i = 0; i < rankData.length; i++) {
         if (columnTbl[rankData[i].minRange] === undefined) {
           columnTbl[rankData[i].minRange] = []
         }
@@ -566,15 +566,20 @@ export default {
         this.edit.columnName.push(index)
       }
       //console.log("组装数据 ",retTbl)
-      //console.log("行标题 ",this.edit.columnName)
-      //console.log("列标题 ",this.edit.rowName)
       const rankStr = JSON.stringify(retTbl)
       var size = new Blob([rankStr]).size/1024
       console.log(" 占用内存大小 ", size)
       const res = []
       res.push(retTbl)
       return res;
-    }
+    },
+    errmsg(txt) {
+      this.$alert(txt, '', {
+        type: 'error',
+        center: true,
+        showConfirmButton: false
+      })
+    },
   }
 }
 </script>
