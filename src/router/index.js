@@ -1371,12 +1371,12 @@ export const asyncRoutes = [
         name: 'ApplyCompensation',
         meta: { title: '申请金额补偿 ◐', perm: 'REPARATION' }
       },
-      // {
-      //   path: 'ApplyRichcard',
-      //   component: () => import('@/views/playerManage/ApplyRichCard.vue'),
-      //   name: 'ApplyRichcard',
-      //   meta: { title: '申请发放富裕卡 ◐' }
-      // }
+      {
+        path: 'ApplyRichcard',
+        component: () => import('@/views/playerManage/ApplyRichCard.vue'),
+        name: 'ApplyRichcard',
+        meta: { title: '申请发放富裕卡 ◐' }
+      }
     ]
   },
   {

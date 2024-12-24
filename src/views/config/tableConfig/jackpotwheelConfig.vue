@@ -451,7 +451,7 @@ export default {
 
       //做下排序（按客户端显示顺序需求）
       let BetAreaOptionsArr = []
-      let sortArr = [0,1,9,2,3,4,11,5,6,7,10,8]
+      let sortArr = [0,6,11,5,4,9,7,1,2,8,10,3]
       for (const i in sortArr){
         for (const o of ret.BetAreaOptions) {
           if (o.Id == sortArr[i]){
