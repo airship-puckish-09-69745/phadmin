@@ -1788,8 +1788,8 @@ export default {
           this.errmsg('当前是动态奖池，请选择模板')
           return false
         }
-        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 0.1 || this.editForm.prizeExtra.prizeRate >= 100)) {
-          this.errmsg('当前是动态奖池手续费率范围是[0.1-100)')
+        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+          this.errmsg('当前是动态奖池手续费率范围是[1-100)')
           return false
         }
       }
