@@ -30,7 +30,7 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="倍数图标出现概率">
+          <el-form-item label="SuperWild倍数图标出现概率">
             <el-input v-model="cfg.MultiSymbolStr" placeholder="请输入内容,如7,8,9,10"> <template slot="append">分别对应1倍,2倍,3倍</template> </el-input>
           </el-form-item>
 
