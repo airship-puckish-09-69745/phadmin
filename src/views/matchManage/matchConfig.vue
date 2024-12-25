@@ -1394,7 +1394,6 @@ export default {
         }
         if (editData.prize_extra  && editData.prize_extra != 'null' ) {
           this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-          this.editForm.prizeExtra.prizeRate = this.editForm.prizeExtra.prizeRate / 10 //将数值调小10倍
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
@@ -1482,8 +1481,6 @@ export default {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
       }
-      //收费费率调整,手续费率最小为0.1%,先将该值缩小100倍,然后再放到1000倍,实际放大10倍,保证该值传给客户端最小值为1
-      this.editForm.prizeExtra.prizeRate = this.editForm.prizeExtra.prizeRate * 10
       request({
         url: '/matchconfig/match/config/create',
         method: 'POST',
