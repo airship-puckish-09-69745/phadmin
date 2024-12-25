@@ -170,18 +170,7 @@
           <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
             <el-form-item label="档次条件：" :required="true" prop="RaffleLevel">
               <el-col :span="15">
-                <el-select v-if="!edit.isEdit" v-model="edit.item.RaffleLevel" size="mini" >
-                  <el-option
-                    v-for="item in RaffleLevelList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-                <span v-else>
-                  {{ edit.item.RaffleLevel }}
-                </span>
-                （₱）
+                <el-input v-model.number="edit.item.RaffleLevel"><template slot="append">（₱）</template></el-input>
               </el-col>
             </el-form-item>
 
@@ -570,6 +559,7 @@ export default {
       ],
 
       edit: {
+        raffleLevel: 0,
         visible: false,
         item: newPrizePoolCfg(),
         isEdit: false,
@@ -698,6 +688,7 @@ export default {
       if (raffleLevel) {
         const _data = this.getDataByTableMoney(raffleLevel)
         if (_data) {
+          this.edit.raffleLevel = raffleLevel
           Object.assign(this.edit.item, _data)
         }
       }
@@ -737,6 +728,16 @@ export default {
       return null
     },
     save() {
+      if (this.edit.isEdit && this.edit.raffleLevel !== this.edit.item.RaffleLevel) {
+        console.log('raffleLevel changed, old:' + this.edit.raffleLevel + ' new:' + this.edit.item.RaffleLevel)
+        for (const o in this.item.PrizePoolCfg) {
+          if (this.item.PrizePoolCfg[o].RaffleLevel === this.edit.raffleLevel) {
+            this.item.PrizePoolCfg[o].RaffleLevel = this.edit.item.RaffleLevel
+            break
+          }
+        }
+      }
+
       // 检查是否有重复的奖励
       for (let i = 0; i < this.edit.item.PrizeCfg.length; i++) {
         const prize = this.edit.item.PrizeCfg[i]
