@@ -5,7 +5,7 @@
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
           <el-form-item label="Bonus图标的倍率配置">
-            <el-input v-model="cfg.BonusOdds" placeholder="请输入内容,如5,8,10,12,15,20,40"> <template slot="append">用 , 连接</template> </el-input>
+            <el-input v-model="cfg.BonusOdds" placeholder="请输入内容,如5,8,10,12,15,20,40" disabled> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="普通模式Bonus倍率权重">

@@ -78,7 +78,7 @@
           </el-table-column>
           <el-table-column label="富裕卡数量" width="120px">
             <template slot-scope="scope">
-              {{ scope.row.richcard_count / 1000 }}
+              {{ scope.row.richcard_count }}
             </template>
           </el-table-column>
           <el-table-column label="发放原因">
@@ -206,13 +206,13 @@
         </el-form-item>
         <el-form-item label="富裕卡：" label-width="120px" :required="true">
           <el-cascader
+            v-model="richCardSelect"
             :options="cfgData.richCardList"
             :props="{ expandTrigger: 'hover' }"
-            @change="handleChange"
           />
         </el-form-item>
         <el-form-item label="数量：" label-width="120px" :required="true">
-          <el-input v-model.number="item.RichCardConut" placeholder="数量" size="mini" />
+          <el-input v-model.number="item.RichCardCount" placeholder="数量" size="mini" />
         </el-form-item>
         <el-form-item label="发放原因：" label-width="120px" :required="true">
           <el-input
@@ -222,24 +222,24 @@
             placeholder="发放原因"
           />
         </el-form-item>
-        <el-form-item label="发放详细信息：" label-width="120px">
-          <template slot="label">
-            <span>发放详细信息
-              <el-tooltip class="item" effect="dark" placement="right">
-                <i class="el-icon-question" style="font-size: 16px; vertical-align: middle;" />
-                <div slot="content">
-                  <p>json格式的字符串</p>
-                </div>
-              </el-tooltip>
-            </span>
-          </template>
-          <el-input
-            v-model="item.Detail"
-            type="textarea"
-            :rows="4"
-            placeholder="发放详细信息"
-          />
-        </el-form-item>
+<!--        <el-form-item label="发放详细信息：" label-width="120px">-->
+<!--          <template slot="label">-->
+<!--            <span>发放详细信息-->
+<!--              <el-tooltip class="item" effect="dark" placement="right">-->
+<!--                <i class="el-icon-question" style="font-size: 16px; vertical-align: middle;" />-->
+<!--                <div slot="content">-->
+<!--                  <p>json格式的字符串</p>-->
+<!--                </div>-->
+<!--              </el-tooltip>-->
+<!--            </span>-->
+<!--          </template>-->
+<!--          <el-input-->
+<!--            v-model="item.Detail"-->
+<!--            type="textarea"-->
+<!--            :rows="4"-->
+<!--            placeholder="发放详细信息"-->
+<!--          />-->
+<!--        </el-form-item>-->
       </el-form>
       <el-row>
         <el-col :span="24" :offset="10">
@@ -300,7 +300,8 @@ export default {
       appInfo: [],
       isEdit: false,
       cfgData: {},
-      richCardData: ''
+      richCardData: '',
+      richCardSelect: []
     }
   },
   created() {
@@ -326,6 +327,8 @@ export default {
 
     addForm() {
       const data = this.item
+      this.item.RichCardLevel = this.richCardSelect[0]
+      this.item.RichCardBet = this.richCardSelect[1]
       if (this.isEdit) {
         request({
           url: '/applyrichcard/update',
@@ -558,10 +561,6 @@ export default {
           }
         }
       })
-    },
-    handleChange(value) {
-      this.item.RichCardLevel = value[0]
-      this.item.RichCardBet = value[1]
     }
   }
 }
