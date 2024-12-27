@@ -39,8 +39,10 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动图标URL：" :required="true">
-                    <ImagePicker v-model="item.Icon" />
+                  <el-form-item label="当日发奖额阈值：" :required="true">
+                    <el-input v-model.number="item.DayPrizeThreshold" size="mini">
+                      <template slot="append">（₱）</template>
+                    </el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -100,6 +102,11 @@
                   <el-button size="mini" type="primary" @click="showGamesSortDialog()">
                     排序
                   </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="活动图标URL：" :required="true">
+                  <ImagePicker v-model="item.Icon" />
                 </el-form-item>
               </el-col>
             </el-form>
@@ -832,6 +839,10 @@ export default {
               $this.item.WhitelistCfg = whitelistCfg
             }
 
+            if ($this.item.DayPrizeThreshold != null) {
+              $this.item.DayPrizeThreshold /= 1000
+            }
+
             this.$refs.compare.SetOldVal(old)
 
             this.getGameAll()
@@ -882,6 +893,10 @@ export default {
       cpy.GameIdCfg = this.item.GameIdCfg
 
       cpy.WhitelistCfg = this.item.WhitelistCfg
+
+      if (this.item.DayPrizeThreshold!= null) {
+        cpy.DayPrizeThreshold = this.item.DayPrizeThreshold * 1000
+      }
 
       return JSON.stringify(cpy)
     },
