@@ -43,6 +43,7 @@
                     <el-input v-model.number="item.DayPrizeThreshold" size="mini">
                       <template slot="append">（₱）</template>
                     </el-input>
+                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值，已开启限制</span>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -633,11 +634,14 @@ export default {
         label: 'label',
         children: 'children',
         disabled: 'disabled',
-      }
+      },
+
+      todayRaffleAmount: 0,
     }
   },
   created() {
     this.getData()
+    this.getTodayRaffleAmount()
     console.log(1)
   },
   methods: {
@@ -1029,6 +1033,24 @@ export default {
     },
     onSiteIdOptionsChange() {
       console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
+    },
+    getTodayRaffleAmount() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/activity/christmas/today/raffle/amount'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('getTodayRaffleAmount', response.Data)
+          if (response.Data) {
+            $this.todayRaffleAmount = response.Data / 1000
+            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+          }
+        }
+      })
     }
   }
 }
