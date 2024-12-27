@@ -386,6 +386,7 @@ export default {
         166: 'Fire Link',
         164: 'MahjongFortune',
         188: 'StreetFighting',
+        192: 'BountyRaid',
         180: 'FishingMaster',
         172: 'WrathOfZeus',
         122: 'Filipino Mahjong',
@@ -445,6 +446,7 @@ export default {
           if (this.authorityCfg[this.name].includes(10000)) {
             return true
           } else {
+            //todo:111111-0
             return false
           }
         }

@@ -843,6 +843,12 @@ export const asyncRoutes = [
                 meta: { title: 'StreetFighting' }
               },
               {
+                path: 'bountyraid_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraid_slots_cfg'),
+                name: 'bountyraid_slots_cfg',
+                meta: { title: 'BountyRaid' }
+              },
+              {
                 path: 'fishingmaster_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fishingmaster_slots_cfg'),
                 name: 'fishingmaster_slots_cfg',
@@ -1042,6 +1048,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/streetfightingmars_slots_cfg'),
                 name: 'streetfightingmars_slots_cfg',
                 meta: { title: 'StreetFighting(审)' }
+              },
+              {
+                path: 'bountyraidmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
+                name: 'bountyraidmars_slots_cfg',
+                meta: { title: 'BountyRaid(审)' }
               },
               {
                 path: 'fishingmastermars_slots_cfg',
@@ -1913,6 +1925,12 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting', gid: 188 }
           },
           {
+            path: 'bountyraid_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraid_slots_log',
+            meta: { title: 'BountyRaid', gid: 192 }
+          },
+          {
             path: 'fishingmaster_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmaster_slots_log',
@@ -2093,6 +2111,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfightingmars_slots_log',
             meta: { title: 'StreetFighting(审)', gid: 189 }
+          },
+          {
+            path: 'bountyraidmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraidmars_slots_log',
+            meta: { title: 'BountyRaid(审)', gid: 193 }
           },
           {
             path: 'fishingmastermars_slots_log',

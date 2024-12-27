@@ -80,6 +80,7 @@
           <template slot-scope="scope">
             <DateTimeShow :show-type="4" :timestamp="scope.row.Uptime" />
           </template>
+        //todo:111111-0
         </el-table-column>
         <el-table-column
           prop="Uid"
@@ -320,6 +321,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
+      //todo:111111-0
       return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,180,176,182].indexOf(gid) >= 0
     },
     // 收集剧本
