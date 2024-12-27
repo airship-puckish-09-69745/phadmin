@@ -68,12 +68,17 @@
           </el-table-column>
           <el-table-column label="富裕卡等级" width="120px">
             <template slot-scope="scope">
-              {{ scope.row.richcrad_level + '星' }}
+              {{ scope.row.richcard_level + '星' }}
             </template>
           </el-table-column>
           <el-table-column label="富裕卡bet值" width="120px">
             <template slot-scope="scope">
-              {{ scope.row.richcrad_bet / 1000 }}
+              {{ scope.row.richcard_bet / 1000 }}
+            </template>
+          </el-table-column>
+          <el-table-column label="富裕卡数量" width="120px">
+            <template slot-scope="scope">
+              {{ scope.row.richcard_count }}
             </template>
           </el-table-column>
           <el-table-column label="发放原因">
@@ -136,7 +141,7 @@
                 :disabled="getDisable(scope.row,[6,2,8])"
                 size="mini"
                 @click="execution(scope.row)"
-              >发起补偿/重试
+              >发起发放/重试
               </el-button>
               <el-button
                 v-if="showBtn(scope.row,[3])"
@@ -201,10 +206,13 @@
         </el-form-item>
         <el-form-item label="富裕卡：" label-width="120px" :required="true">
           <el-cascader
+            v-model="richCardSelect"
             :options="cfgData.richCardList"
             :props="{ expandTrigger: 'hover' }"
-            @change="handleChange"
           />
+        </el-form-item>
+        <el-form-item label="数量：" label-width="120px" :required="true">
+          <el-input v-model.number="item.RichCardCount" placeholder="数量" size="mini" />
         </el-form-item>
         <el-form-item label="发放原因：" label-width="120px" :required="true">
           <el-input
@@ -214,24 +222,24 @@
             placeholder="发放原因"
           />
         </el-form-item>
-        <el-form-item label="发放详细信息：" label-width="120px">
-          <template slot="label">
-            <span>发放详细信息
-              <el-tooltip class="item" effect="dark" placement="right">
-                <i class="el-icon-question" style="font-size: 16px; vertical-align: middle;" />
-                <div slot="content">
-                  <p>json格式的字符串</p>
-                </div>
-              </el-tooltip>
-            </span>
-          </template>
-          <el-input
-            v-model="item.Detail"
-            type="textarea"
-            :rows="4"
-            placeholder="发放详细信息"
-          />
-        </el-form-item>
+<!--        <el-form-item label="发放详细信息：" label-width="120px">-->
+<!--          <template slot="label">-->
+<!--            <span>发放详细信息-->
+<!--              <el-tooltip class="item" effect="dark" placement="right">-->
+<!--                <i class="el-icon-question" style="font-size: 16px; vertical-align: middle;" />-->
+<!--                <div slot="content">-->
+<!--                  <p>json格式的字符串</p>-->
+<!--                </div>-->
+<!--              </el-tooltip>-->
+<!--            </span>-->
+<!--          </template>-->
+<!--          <el-input-->
+<!--            v-model="item.Detail"-->
+<!--            type="textarea"-->
+<!--            :rows="4"-->
+<!--            placeholder="发放详细信息"-->
+<!--          />-->
+<!--        </el-form-item>-->
       </el-form>
       <el-row>
         <el-col :span="24" :offset="10">
@@ -292,7 +300,8 @@ export default {
       appInfo: [],
       isEdit: false,
       cfgData: {},
-      richCradData: ''
+      richCardData: '',
+      richCardSelect: []
     }
   },
   created() {
@@ -318,10 +327,11 @@ export default {
 
     addForm() {
       const data = this.item
+      this.item.RichCardLevel = this.richCardSelect[0]
+      this.item.RichCardBet = this.richCardSelect[1]
       if (this.isEdit) {
-        data.Amount *= 1000
         request({
-          url: '/applyrichcrad/update',
+          url: '/applyrichcard/update',
           method: 'post',
           data: data
         }).then(response => {
@@ -332,9 +342,8 @@ export default {
           }
         })
       } else {
-        data.Amount *= 1000
         request({
-          url: '/applyrichcrad/create',
+          url: '/applyrichcard/create',
           method: 'post',
           data: data
         }).then(response => {
@@ -349,9 +358,9 @@ export default {
     },
     deleteForm(row) {
       const data = this.item
-      data.AbnormalTime = parseInt(data.AbnormalTime / 1000)
+      data.ApplyTime = parseInt(data.ApplyTime / 1000)
       request({
-        url: '/applyrichcrad/update/status/discard',
+        url: '/applyrichcard/update/status/discard',
         method: 'post',
         data: { ID: row.id }
       }).then(response => {
@@ -370,8 +379,9 @@ export default {
       this.item.AppID = row.app_id
       this.item.GameId = row.game_id
       this.item.Description = row.description
-      this.item.RichCradLevel = row.richcrad_level
-      this.item.RichCradBet = row.richcrad_bet / 1000
+      this.item.RichCardLevel = row.richcard_level
+      this.item.RichCardBet = row.richcard_bet / 1000
+      this.item.RichCardCount = row.richcard_count
       this.item.Detail = row.detail
       this.item.ApplyTime = row.apply_time * 1000
       this.visibleData = true
@@ -383,8 +393,9 @@ export default {
         AppID: 0,
         GameId: 0,
         Description: '',
-        RichCradLevel: 0,
-        RichCradBet: 0,
+        RichCardLevel: 0,
+        RichCardBet: 0,
+        RichCardCount: 0,
         Detail: '',
         ApplyTime: new Date().getTime()
       }
@@ -395,7 +406,7 @@ export default {
     },
     initiateApplication(row) {
       request({
-        url: '/applyrichcrad/update/status',
+        url: '/applyrichcard/update/status',
         method: 'post',
         data: { ID: row.id }
       }).then(response => {
@@ -414,7 +425,7 @@ export default {
         maxTime = Math.floor($libDate.SelectTimeToIndiaByZone(this.timeRange[1]) / 1000)
       }
       request({
-        url: '/applyrichcrad/list',
+        url: '/applyrichcard/list',
         method: 'get',
         data: {
           Offset: ($this.fromData.Offset - 1) * $this.fromData.Limit,
@@ -461,16 +472,17 @@ export default {
     },
     execution(row) {
       request({
-        url: '/applyrichcrad/wallet/damage',
+        url: '/applyrichcard/prop/damage',
         method: 'Post',
         data: {
           ID: row.id,
           Uid: row.uid,
-          Amount: row.amount,
+          RichCardLevel: row.richcard_level,
+          RichCardBet: row.richcard_bet,
+          RichCardCount: row.richcard_count,
           GameId: row.game_id,
           App: row.app_id,
           Detail: row.detail,
-          AbnormalTime: row.abnormal_time,
           Reason: row.description + '|操作人:' + row.applicant_user
         }
       }).then(response => {
@@ -549,10 +561,6 @@ export default {
           }
         }
       })
-    },
-    handleChange(value) {
-      this.item.RichCradLevel = value[0]
-      this.item.RichCradBet = value[1]
     }
   }
 }

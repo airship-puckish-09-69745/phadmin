@@ -555,7 +555,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="手续费率[千分比]：" :required="true">
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="手续费率[百分比]：" :required="true">
             <el-input v-model.number="editForm.prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" />
           </el-form-item>
 
@@ -952,6 +952,7 @@ export default {
                 }
                 this.tableData[i].show_appinfo = show_appinfo
               }
+              console.log("模板数据",)
             }
           } else {
             this.total = 0
@@ -1784,7 +1785,11 @@ export default {
         //   return false
         // }
         if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
-          this.errmsg('当前是动态奖励，请选择模板')
+          this.errmsg('当前是动态奖池，请选择模板')
+          return false
+        }
+        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+          this.errmsg('当前是动态奖池手续费率范围是[1-100)')
           return false
         }
       }

@@ -59,6 +59,7 @@
               <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
               <el-option label="DanceLion" :value="184" />
+              <el-option label="ArcaneEgypt" :value="190" />
             </el-select>
           </el-form-item>
 
