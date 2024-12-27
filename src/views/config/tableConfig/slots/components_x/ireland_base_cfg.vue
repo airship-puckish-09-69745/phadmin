@@ -55,6 +55,8 @@
               <el-option label="MayanTotem" :value="178" />
               <el-option label="188:StreetFighting" :value="188" />
               <el-option label="189:StreetFighting Mars" :value="189" />
+              <el-option label="192:BountyRaid" :value="192" />
+              <el-option label="193:BountyRaid Mars" :value="193" />
               <el-option label="180:FishingMaster" :value="180" />
               <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
