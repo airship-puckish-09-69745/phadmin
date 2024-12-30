@@ -401,7 +401,7 @@ export default {
   },
   created() {
     this.getData()
-    this.getTableMoneyList()
+    // this.getTableMoneyList()
     this.isDisabled = false
     console.log(1)
   },
