@@ -43,7 +43,8 @@
                     <el-input v-model.number="item.DayPrizeThreshold" size="mini">
                       <template slot="append">（₱）</template>
                     </el-input>
-                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值，已开启限制</span>
+                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
+                    <span v-eles style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
                   </el-form-item>
                 </el-col>
               </el-form>

@@ -573,11 +573,32 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          }, {
-            path: 'MinesBattleTable',
-            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
-            name: 'MinesBattleTable',
-            meta: { title: 'MinesBattle ◐' }
+          },
+          { // 牛牛
+            path: 'MinesShowDown',
+            component: () => import('@/views/empty'),
+            name: 'MinesShowDown',
+            meta: { title: 'MinesShowDown ◐', noCache: true },
+            children: [
+              {
+                path: 'MinesShowDownTable',
+                component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+                name: 'MinesShowDownTable',
+                meta: { title: 'MinesShowDownTable ◐' }
+              },
+              {
+                path: 'MinesShowDownRobotSetting',
+                component: () => import('@/views/config/tableConfig/minesShowdownRobotSetting'),
+                name: 'MinesShowDownRobotSetting',
+                meta: { title: 'MinesShowDownRobotSetting AI ◐' }
+              },
+              {
+                path: 'minesShowDownAIList',
+                component: () => import('@/views/config/tableConfig/minesShowdownAIListConfig'),
+                name: 'MinesShowDownAIList',
+                meta: { title: 'minesShowDownAI-List ◐' }
+              }
+            ]
           },
           {
             path: '/zjhVersion',
@@ -1665,10 +1686,10 @@ export const asyncRoutes = [
             ]
           },
           {
-            path: 'playlog_minesBattle',
+            path: 'playlog_MinesShowDown',
             component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_minesBattle',
-            meta: { title: 'MinesBattle◐', gid: 123 }
+            name: 'playlog_MinesShowDown',
+            meta: { title: 'MinesShowDown◐', gid: 123 }
           },
           {
             path: 'playlog_ZJH',
