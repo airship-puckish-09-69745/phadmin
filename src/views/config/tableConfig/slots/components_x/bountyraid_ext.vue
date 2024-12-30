@@ -9,6 +9,9 @@
           <el-form-item label="免费模式34轴符号变黄金符号的概率" prop="ToGoldFree" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ToGoldFree" :required="true" > <template slot="append">％</template> </el-input>
           </el-form-item>
+          <el-form-item label="免费模式进免费模式的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterPlusRate" :required="true" > <template slot="append">％</template> </el-input>
+          </el-form-item>
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
