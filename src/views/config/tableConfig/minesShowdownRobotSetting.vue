@@ -537,7 +537,8 @@ export default {
             $this.item.EnterDelayMax /= 1000
             $this.item.ExitDelayMin /= 1000
             $this.item.ExitDelayMax /= 1000
-
+            $this.item.MinOperationTime /= 1000
+            $this.item.MaxOperationTime /= 1000
             if ($this.item.ProtectCfg) {
               $this.ProtectCfg = []
             }
@@ -590,6 +591,8 @@ export default {
       cpy.EnterDelayMax *= 1000
       cpy.ExitDelayMin *= 1000
       cpy.ExitDelayMax *= 1000
+      cpy.MinOperationTime *= 1000
+      cpy.MaxOperationTime *= 1000
       cpy.ProtectCfg = []
 
       for (const o in this.ProtectCfg) {
