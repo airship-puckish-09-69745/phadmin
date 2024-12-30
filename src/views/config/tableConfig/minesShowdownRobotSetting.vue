@@ -146,18 +146,18 @@
               />
               <el-table-column
                 prop="AppendMinesOdds"
-                label="每次增加翻雷概率"
+                label="每次增加翻雷概率%"
               />
               <el-table-column
                 prop="DeductingMinesOdds"
-                label="每次减少翻雷概率"
+                label="每次减少翻雷概率%"
               />
               <el-table-column
                 prop="EachLossMoney"
-                label="每输多少金额触发"
+                label="输初始金额%"
               /> <el-table-column
                 prop="EachWinMoney"
-                label="每赢多少金额触发"
+                label="赢初始金额%"
               />
 
               <el-table-column
@@ -548,10 +548,6 @@ export default {
               one.CarryUpper /= 1000
               one.LossMoneyMax /= 1000
               one.WinMoneyMax /= 1000
-              one.AppendMinesOdds /= 1000
-              one.DeductingMinesOdds/= 1000
-              one.EachLossMoney/= 1000
-              one. EachWinMoney/= 1000
               $this.ProtectCfg.push(one)
             }
 
@@ -603,10 +599,10 @@ export default {
         obj.CarryUpper = parseInt(this.ProtectCfg[o].CarryUpper) * 1000
         obj.LossMoneyMax = parseInt(this.ProtectCfg[o].LossMoneyMax) * 1000
         obj.WinMoneyMax = parseInt(this.ProtectCfg[o].WinMoneyMax) * 1000
-        obj.AppendMinesOdds = parseInt(this.ProtectCfg[o].AppendMinesOdds) * 1000
-        obj.DeductingMinesOdds = parseInt(this.ProtectCfg[o].DeductingMinesOdds) * 1000
-        obj.EachLossMoney = parseInt(this.ProtectCfg[o].EachLossMoney) * 1000
-        obj.EachWinMoney = parseInt(this.ProtectCfg[o].EachWinMoney) * 1000
+        obj.AppendMinesOdds = parseInt(this.ProtectCfg[o].AppendMinesOdds)
+        obj.DeductingMinesOdds = parseInt(this.ProtectCfg[o].DeductingMinesOdds)
+        obj.EachLossMoney = parseInt(this.ProtectCfg[o].EachLossMoney)
+        obj.EachWinMoney = parseInt(this.ProtectCfg[o].EachWinMoney)
         cpy.ProtectCfg.push(obj)
       }
       return JSON.stringify(cpy)
