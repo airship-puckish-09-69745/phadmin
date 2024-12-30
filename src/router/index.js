@@ -588,9 +588,9 @@ export const asyncRoutes = [
               },
               {
                 path: 'MinesShowDownRobotSetting',
-                component: () => import('@/views/config/tableConfig/niuniuRobotSetting'),
+                component: () => import('@/views/config/tableConfig/minesShowdownRobotSetting'),
                 name: 'MinesShowDownRobotSetting',
-                meta: { title: 'NiuNiu AI ◐' }
+                meta: { title: 'MinesShowDownRobotSetting AI ◐' }
               },
               {
                 path: 'minesShowDownAIList',
