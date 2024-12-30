@@ -5,15 +5,15 @@
       <el-col :offset="3" :span="16">
         <el-button size="mini" type="primary" @click="setData">保存</el-button>
         <el-form ref="form" :model="item" label-position="left" style="margin-top: 30px">
-          <el-row>
-            <el-col>
-              <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" :required="true">
-                <el-col>
-                  <el-input v-model="betMoneyList" size="mini" :required="true" />
-                </el-col>
-              </el-form-item>
-            </el-col>
-          </el-row>
+<!--          <el-row>-->
+<!--            <el-col>-->
+<!--              <el-form-item label="下注额度(值用 , 连接如 200,100,50,20,10,5,1,11)" :required="true">-->
+<!--                <el-col>-->
+<!--                  <el-input v-model="betMoneyList" size="mini" :required="true" />-->
+<!--                </el-col>-->
+<!--              </el-form-item>-->
+<!--            </el-col>-->
+<!--          </el-row>-->
         </el-form>
       </el-col>
     </el-row>
@@ -365,7 +365,6 @@ export default {
     }
   },
   created() {
-    this.getData()
     this.getList()
     this.isDisabled = false
     console.log(1)
