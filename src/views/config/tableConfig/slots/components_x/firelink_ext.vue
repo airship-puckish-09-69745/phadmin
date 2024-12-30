@@ -172,52 +172,25 @@
         </el-table-column>
         <el-table-column
           prop="OddsMin"
-          label="最小倍数"
+          label="Bonus图标的数字(1等于100倍)"
           width="200"
         >
           <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMin" size="mini"
+              <el-input v-model.number="scope.row.BonusRates" size="mini"
                         oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
           </template>
         </el-table-column>
         <el-table-column
           prop="OddsMax"
-          label="最大倍数"
+          label="出现权重"
           width="200"
         >
           <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMax" size="mini"
+              <el-input v-model.number="scope.row.Weight" size="mini"
                         oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="ScriptSteps"
-          label="在剧本中出现的个数"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.ScriptSteps" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="ScriptSteps"
-          label="在剧本中的倍数总和"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.ScriptOddsSum" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
+
         <el-table-column label="操作">
           <template slot-scope="scope">
 
