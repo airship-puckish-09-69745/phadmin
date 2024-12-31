@@ -59,12 +59,12 @@
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
-        <!--        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">-->
-        <!--          <el-select v-model="item.debug" placeholder="请选择" size="mini">-->
-        <!--            <el-option label="否" value="0" />-->
-        <!--            <el-option label="是" value="1" />-->
-        <!--          </el-select>-->
-        <!--        </el-form-item>-->
+        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">
+          <el-select v-model="item.debug" placeholder="请选择" size="mini">
+            <el-option label="否" value="0" />
+            <el-option label="是" value="1" />
+          </el-select>
+        </el-form-item>
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
