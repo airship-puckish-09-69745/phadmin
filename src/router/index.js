@@ -584,19 +584,19 @@ export const asyncRoutes = [
                 path: 'MinesShowDownTable',
                 component: () => import('@/views/config/tableConfig/MinesBattleTable'),
                 name: 'MinesShowDownTable',
-                meta: { title: 'MinesShowDownTable ◐' }
+                meta: { title: 'Table ◐' }
               },
               {
                 path: 'MinesShowDownRobotSetting',
                 component: () => import('@/views/config/tableConfig/minesShowdownRobotSetting'),
                 name: 'MinesShowDownRobotSetting',
-                meta: { title: 'MinesShowDownRobotSetting AI ◐' }
+                meta: { title: 'RobotSetting AI ◐' }
               },
               {
                 path: 'minesShowDownAIList',
                 component: () => import('@/views/config/tableConfig/minesShowdownAIListConfig'),
                 name: 'MinesShowDownAIList',
-                meta: { title: 'minesShowDownAI-List ◐' }
+                meta: { title: 'AI-List ◐' }
               }
             ]
           },
