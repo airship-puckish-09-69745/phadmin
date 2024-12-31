@@ -169,7 +169,7 @@
                   <el-button
                     type="primary"
                     size="mini"
-                    @click="handleEdit(scope.row)"
+                    @click="handleEdit(scope.row,scope.$index)"
                   >编辑
                   </el-button>
                   <el-button
@@ -389,7 +389,8 @@ export default {
       edit: {
         visible: false,
         item: newItem(),
-        isEdit: false
+        isEdit: false,
+        idx: 0
       },
       editMinesCfg: {
         visible: false,
@@ -443,9 +444,10 @@ export default {
     delMinesRowCfs(ob,idx) {
       this.item.MinesCfg[this.editMinesCfg.idx].MinesOdds.splice(idx,1)
     },
-    handleEdit(ob) {
+    handleEdit(ob,idx) {
       this.initFormData(true, ob.TableMoney)
       this.edit.visible = true
+      this.edit.idx = idx
     },
     handleDelete(ob) {
       let $this = this
@@ -470,7 +472,8 @@ export default {
       let obj = JSON.parse(JSON.stringify(this.edit.item))
       const index = this.ProtectCfg.findIndex(item => item.TableMoney === this.edit.item.TableMoney)
       if (this.edit.isEdit) {
-        this.ProtectCfg.splice(index, 1, obj)
+        // this.ProtectCfg.splice(index, 1, obj)
+        this.ProtectCfg[this.edit.idx] = obj
       } else {
         if (index >= 0) {
           this.$alert('场次已存在，不能重复添加', '提示', {type:'warning'})
