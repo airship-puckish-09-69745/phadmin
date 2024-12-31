@@ -867,7 +867,9 @@ export default {
         sort: '排序',
         repeatDelayDays: '间隔天数',
         daySections: '每日时段',
-        awardType: '奖励类型'
+        awardType: '奖励类型',
+        prizeExtra: '动态奖池信息',
+        signExtra: '报名额外信息'
       },
       singleCopy: {
         id: 0,
