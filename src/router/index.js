@@ -573,11 +573,32 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          }, {
-            path: 'MinesBattleTable',
-            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
-            name: 'MinesBattleTable',
-            meta: { title: 'MinesBattle ◐' }
+          },
+          { // 牛牛
+            path: 'MinesShowDown',
+            component: () => import('@/views/empty'),
+            name: 'MinesShowDown',
+            meta: { title: 'MinesShowDown ◐', noCache: true },
+            children: [
+              {
+                path: 'MinesShowDownTable',
+                component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+                name: 'MinesShowDownTable',
+                meta: { title: 'Table ◐' }
+              },
+              {
+                path: 'MinesShowDownRobotSetting',
+                component: () => import('@/views/config/tableConfig/minesShowdownRobotSetting'),
+                name: 'MinesShowDownRobotSetting',
+                meta: { title: 'RobotSetting AI ◐' }
+              },
+              {
+                path: 'minesShowDownAIList',
+                component: () => import('@/views/config/tableConfig/minesShowdownAIListConfig'),
+                name: 'MinesShowDownAIList',
+                meta: { title: 'AI-List ◐' }
+              }
+            ]
           },
           {
             path: '/zjhVersion',
@@ -843,6 +864,12 @@ export const asyncRoutes = [
                 meta: { title: 'StreetFighting' }
               },
               {
+                path: 'bountyraid_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraid_slots_cfg'),
+                name: 'bountyraid_slots_cfg',
+                meta: { title: 'BountyRaid' }
+              },
+              {
                 path: 'fishingmaster_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fishingmaster_slots_cfg'),
                 name: 'fishingmaster_slots_cfg',
@@ -1042,6 +1069,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/streetfightingmars_slots_cfg'),
                 name: 'streetfightingmars_slots_cfg',
                 meta: { title: 'StreetFighting(审)' }
+              },
+              {
+                path: 'bountyraidmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
+                name: 'bountyraidmars_slots_cfg',
+                meta: { title: 'BountyRaid(审)' }
               },
               {
                 path: 'fishingmastermars_slots_cfg',
@@ -1381,7 +1414,7 @@ export const asyncRoutes = [
         path: 'ApplyRichcard',
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
-        meta: { title: '申请发放富裕卡 ◐' }
+        meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
       }
     ]
   },
@@ -1653,10 +1686,10 @@ export const asyncRoutes = [
             ]
           },
           {
-            path: 'playlog_minesBattle',
+            path: 'playlog_MinesShowDown',
             component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_minesBattle',
-            meta: { title: 'MinesBattle◐', gid: 123 }
+            name: 'playlog_MinesShowDown',
+            meta: { title: 'MinesShowDown◐', gid: 123 }
           },
           {
             path: 'playlog_ZJH',
@@ -1913,6 +1946,12 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting', gid: 188 }
           },
           {
+            path: 'bountyraid_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraid_slots_log',
+            meta: { title: 'BountyRaid', gid: 192 }
+          },
+          {
             path: 'fishingmaster_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmaster_slots_log',
@@ -2093,6 +2132,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfightingmars_slots_log',
             meta: { title: 'StreetFighting(审)', gid: 189 }
+          },
+          {
+            path: 'bountyraidmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraidmars_slots_log',
+            meta: { title: 'BountyRaid(审)', gid: 193 }
           },
           {
             path: 'fishingmastermars_slots_log',

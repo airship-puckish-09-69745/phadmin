@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="Id" key-id="MatchPrizeConfig" :env-empty="true"  compare-type="Object" />
+      <publish primary-key="Id" key-id="MatchPrizeConfig" :env-empty="true" compare-type="Object" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -23,7 +23,6 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
-        @sort-change="sortChange"
       >
         <el-table-column
           prop="ID"
@@ -125,8 +124,6 @@
 
         </el-form>
       </el-dialog>
-      <!--对比组件-->
-    <compare ref="compare" />
   </div>
 </template>
 <style>
@@ -241,14 +238,14 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     // 分页处理
-    refreshShow() {
-      this.tableData = this.clientDB.GetCurrentPageData()
-    },
-
-    sortChange(ob) {
-      this.clientDB.SortByProp(ob.prop, ob.order)
-      this.refreshShow()
-    },
+    // refreshShow() {
+    //   this.tableData = this.clientDB.GetCurrentPageData()
+    // },
+    //
+    // sortChange(ob) {
+    //   this.clientDB.SortByProp(ob.prop, ob.order)
+    //   this.refreshShow()
+    // },
     // 操作类函数
     handleEdit(ob) {
       this.initFormData(true, ob.ID)
@@ -281,6 +278,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
+            this.tableData = []
             this.tableData = objs.list
           }
         }
@@ -296,6 +294,34 @@ export default {
         return false
       }
       var tableData = this.edit.showActs[0][0]
+      //console.log("check data tableData: ",tableData)
+
+      //step one 判断人数相邻2个区间,首尾是否含有相同数值
+      var checkTblEx = []
+      for (var i = 0; i < tableData[0].length; i++) {
+        if (tableData[0][i].maxRange != tableData[0][i].minRange ) {
+          checkTblEx.push(tableData[0][i].maxRange)
+          checkTblEx.push(tableData[0][i].minRange)
+        }
+      }
+
+      if (this.hasSameElementInArray(checkTblEx)) {
+        this.errmsg("人数区间有重叠的人数,请检测配置")
+        return false
+      }
+      //step two  判断相邻排名2个区间,首尾是否含有相同数值
+      checkTblEx = []
+      for (var i = 0; i < tableData.length; i++) {
+        if (tableData[i][0].minR != tableData[i][0].maxR) {
+          checkTblEx.push(tableData[i][0].minR)
+          checkTblEx.push(tableData[i][0].maxR)
+        }
+      }
+      if (this.hasSameElementInArray(checkTblEx)) {
+        this.errmsg("排名区间有重叠的排名,请检测配置")
+        return false
+      }
+      //step three 先判断总数相加
       const checkTbl = []
       for (var i = 0; i < tableData.length; i++){
         for (var j = 0; j < tableData[i].length; j++) {
@@ -305,6 +331,7 @@ export default {
           checkTbl[tableData[i][j].maxRange].push(tableData[i][j])
         }
       }
+
       for (let k in checkTbl) {
         var total = 0
         for (var j = 0; j < checkTbl[k].length; j++) {
@@ -396,8 +423,6 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.clientDB.AddData(response.Data)
-          this.refreshShow()
           Message.success('保存成功！')
         }
       })
@@ -425,8 +450,6 @@ export default {
     importSuccess(results) {
       this.edit.sheetNames = results['SheetNames']
       const Sheets = results['Sheets']
-
-      const $this = this
       const rets = []
 
       const keys = this.parseKeys()
@@ -452,8 +475,8 @@ export default {
         }
         rets.push(this.transformData(result))
       }
-      $this.edit.showActs = rets
-      $this.edit.isNewImport = false
+      this.edit.showActs = rets
+      this.edit.isNewImport = false
     },
     parseKeys() {
       const arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
@@ -489,6 +512,7 @@ export default {
           numKey.push(key)
         }
       }
+      console.log("key: ",numKey)
       //解析第一列,排名浮动 找到排名区间起始值
       const rankKey = []
       const rankData = []
@@ -572,6 +596,16 @@ export default {
       const res = []
       res.push(retTbl)
       return res;
+    },
+    hasSameElementInArray(checkTblEx) {
+      var hashTbl = []
+      for(var i in checkTblEx) {
+        if (hashTbl[checkTblEx[i]]) {
+          return true
+        }
+        hashTbl[checkTblEx[i]] = true
+      }
+      return false
     },
     errmsg(txt) {
       this.$alert(txt, '', {

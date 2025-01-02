@@ -386,6 +386,7 @@ export default {
         166: 'Fire Link',
         164: 'MahjongFortune',
         188: 'StreetFighting',
+        192: 'BountyRaid',
         180: 'FishingMaster',
         172: 'WrathOfZeus',
         122: 'Filipino Mahjong',
@@ -527,7 +528,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 180, 166, 170, 176, 182)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 192, 180, 166, 170, 176, 182)
         }
       }
     },
@@ -541,7 +542,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123, 117]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123, 117,116]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true

@@ -39,8 +39,12 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动图标URL：" :required="true">
-                    <ImagePicker v-model="item.Icon" />
+                  <el-form-item label="当日发奖额阈值：" :required="true">
+                    <el-input v-model.number="item.DayPrizeThreshold" size="mini">
+                      <template slot="append">（₱）</template>
+                    </el-input>
+                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
+                    <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -100,6 +104,11 @@
                   <el-button size="mini" type="primary" @click="showGamesSortDialog()">
                     排序
                   </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="活动图标URL：" :required="true">
+                  <ImagePicker v-model="item.Icon" />
                 </el-form-item>
               </el-col>
             </el-form>
@@ -626,11 +635,14 @@ export default {
         label: 'label',
         children: 'children',
         disabled: 'disabled',
-      }
+      },
+
+      todayRaffleAmount: 0,
     }
   },
   created() {
     this.getData()
+    this.getTodayRaffleAmount()
     console.log(1)
   },
   methods: {
@@ -832,6 +844,10 @@ export default {
               $this.item.WhitelistCfg = whitelistCfg
             }
 
+            if ($this.item.DayPrizeThreshold != null) {
+              $this.item.DayPrizeThreshold /= 1000
+            }
+
             this.$refs.compare.SetOldVal(old)
 
             this.getGameAll()
@@ -882,6 +898,10 @@ export default {
       cpy.GameIdCfg = this.item.GameIdCfg
 
       cpy.WhitelistCfg = this.item.WhitelistCfg
+
+      if (this.item.DayPrizeThreshold!= null) {
+        cpy.DayPrizeThreshold = this.item.DayPrizeThreshold * 1000
+      }
 
       return JSON.stringify(cpy)
     },
@@ -1014,6 +1034,24 @@ export default {
     },
     onSiteIdOptionsChange() {
       console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
+    },
+    getTodayRaffleAmount() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/activity/christmas/today/raffle/amount'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('getTodayRaffleAmount', response.Data)
+          if (response.Data) {
+            $this.todayRaffleAmount = response.Data / 1000
+            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+          }
+        }
+      })
     }
   }
 }

@@ -94,8 +94,9 @@ export function LibShow() {
     4: '♠'
   }
   this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
-    189: 'StreetFighting',//独占一行
-    181: 'FishingMaster',//独占一行
+    188: 'StreetFighting',//独占一行
+    192: 'BountyRaid',//独占一行
+    180: 'FishingMaster',//独占一行
     16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 22: 'Tongits', 23: 'Lucky 9', 25: 'Color Game', 31: 'Tongits经典',
     34: 'Pusoy-Dos', 37: 'BlackJack', 46: '多米诺',
     51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
