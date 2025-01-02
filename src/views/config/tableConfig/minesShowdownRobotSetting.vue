@@ -61,6 +61,16 @@
                     <el-input v-model.number="item.ExitDelayMax" size="mini"><template slot="append">秒</template></el-input>
                   </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最小思考时间">
+                    <el-input v-model.number="item.MinOperationTime" size="mini"><template slot="append">秒</template></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="最大思考时间">
+                    <el-input v-model.number="item.MaxOperationTime" size="mini"><template slot="append">秒</template></el-input>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -112,37 +122,44 @@
               style="width: 100%"
               :cell-style="libShow.DefaultTableCell"
               @row-click="clickData"
+              :key="ProtectCfgKey"
             >
               <el-table-column
                 prop="TableMoney"
                 label="场次"
-                width="200"
               />
               <el-table-column
                 prop="CarryLower"
                 label="最低携带"
-                width="200"
               />
               <el-table-column
                 prop="CarryUpper"
                 label="最高携带"
-                width="200"
               />
               <el-table-column
                 prop="LossMoneyMax"
                 label="最多输金额"
-                width="200"
               />
               <el-table-column
                 prop="WinMoneyMax"
                 label="最多赢金额"
-                width="200"
               />
               <el-table-column
                 prop="AppendMinesOdds"
-                label="每次增加翻雷概率"
-                width="250"
+                label="每次增加翻雷概率%"
               />
+              <el-table-column
+                prop="DeductingMinesOdds"
+                label="每次减少翻雷概率%"
+              />
+              <el-table-column
+                prop="EachLossMoney"
+                label="输初始金额%"
+              /> <el-table-column
+                prop="EachWinMoney"
+                label="赢初始金额%"
+              />
+
               <el-table-column
                 label="操作"
                 column-key="op"
@@ -152,7 +169,7 @@
                   <el-button
                     type="primary"
                     size="mini"
-                    @click="handleEdit(scope.row)"
+                    @click="handleEdit(scope.row,scope.$index)"
                   >编辑
                   </el-button>
                   <el-button
@@ -217,6 +234,21 @@
         <el-form-item label="每次增加翻雷概率：" :required="true" prop="WinMoneyMax">
           <el-col :span="15">
             <el-input v-model="edit.item.AppendMinesOdds" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="每次减少翻雷概率：" :required="true" prop="WinMoneyMax">
+          <el-col :span="15">
+            <el-input v-model="edit.item.DeductingMinesOdds" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="每输多少金额触发：" :required="true" prop="WinMoneyMax">
+          <el-col :span="15">
+            <el-input v-model="edit.item.EachLossMoney" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="每赢多少金额触发：" :required="true" prop="WinMoneyMax">
+          <el-col :span="15">
+            <el-input v-model="edit.item.EachWinMoney" />
           </el-col>
         </el-form-item>
 
@@ -302,7 +334,7 @@ import Compare from '@/components/Compare/index.vue'
 import {$libShow, DataRule} from '@/utils/common'
 
 function newItem() {
-  return { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100,AppendMinesOdds:1 }
+  return { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100,AppendMinesOdds:1, DeductingMinesOdds:1,EachLossMoney:0,EachWinMoney:0}
 }
 
 export default {
@@ -316,6 +348,7 @@ export default {
       libShow: $libShow,
       minesCfgKey:0,
       minesCfgRowKey:0,
+      ProtectCfgKey:0,
       item: {
         EnableRobot: 0,
         MaxRobotUserNum: 1,
@@ -329,6 +362,8 @@ export default {
         ExitDelayMax: 10,
         IncrMoneyRateMin: 0,
         IncrMoneyRateMax: 0,
+        MinOperationTime: 0,
+        MaxOperationTime: 0,
         MinesCfg:[[{minOdds:0,maxOdds:0,skipOdds:0}]]
       },
 
@@ -338,18 +373,24 @@ export default {
       TableMoneyList: [
         { value: 1, label: '1' },
         { value: 5, label: '5' },
+        { value: 10, label: '10' },
+        { value: 20, label: '20' },
+        { value: 50, label: '50' },
+        { value: 200, label: '200' },
+        { value: 500, label: '500' },
       ],
 
 
       ProtectCfg: [
-        { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100 ,AppendMinesOdds:1},
-        { TableMoney: 5, CarryLower: 1000, CarryUpper: 2500, LossMoneyMax: 500, WinMoneyMax: 500 ,AppendMinesOdds:1},
+        { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100 ,AppendMinesOdds:1,DeductingMinesOdds:1,EachLossMoney:0,EachWinMoney:0},
+        { TableMoney: 5, CarryLower: 1000, CarryUpper: 2500, LossMoneyMax: 500, WinMoneyMax: 500 ,AppendMinesOdds:1,DeductingMinesOdds:1,EachLossMoney:0,EachWinMoney:0},
       ],
       isDisabled: false,
       edit: {
         visible: false,
         item: newItem(),
-        isEdit: false
+        isEdit: false,
+        idx: 0
       },
       editMinesCfg: {
         visible: false,
@@ -361,7 +402,7 @@ export default {
   },
   created() {
     this.getData()
-    this.getTableMoneyList()
+    // this.getTableMoneyList()
     this.isDisabled = false
     console.log(1)
   },
@@ -403,9 +444,10 @@ export default {
     delMinesRowCfs(ob,idx) {
       this.item.MinesCfg[this.editMinesCfg.idx].MinesOdds.splice(idx,1)
     },
-    handleEdit(ob) {
+    handleEdit(ob,idx) {
       this.initFormData(true, ob.TableMoney)
       this.edit.visible = true
+      this.edit.idx = idx
     },
     handleDelete(ob) {
       let $this = this
@@ -427,21 +469,24 @@ export default {
     },
     save() {
       // if (!this.checkData()) return
+      let obj = JSON.parse(JSON.stringify(this.edit.item))
       const index = this.ProtectCfg.findIndex(item => item.TableMoney === this.edit.item.TableMoney)
       if (this.edit.isEdit) {
-        this.ProtectCfg.splice(index, 1, this.edit.item)
+        // this.ProtectCfg.splice(index, 1, obj)
+        this.ProtectCfg[this.edit.idx] = obj
       } else {
         if (index >= 0) {
           this.$alert('场次已存在，不能重复添加', '提示', {type:'warning'})
           return
         }
         // 新增
-        this.ProtectCfg.push(this.edit.item)
+        this.ProtectCfg.push(obj)
         // 按场次金额排序
         this.ProtectCfg.sort((a, b) => {
           return a.TableMoney - b.TableMoney
         })
       }
+      this.ProtectCfgKey +=1
       this.edit.visible = false
     },
     saveMinesRow(){
@@ -495,7 +540,8 @@ export default {
             $this.item.EnterDelayMax /= 1000
             $this.item.ExitDelayMin /= 1000
             $this.item.ExitDelayMax /= 1000
-
+            $this.item.MinOperationTime /= 1000
+            $this.item.MaxOperationTime /= 1000
             if ($this.item.ProtectCfg) {
               $this.ProtectCfg = []
             }
@@ -506,7 +552,6 @@ export default {
               one.CarryUpper /= 1000
               one.LossMoneyMax /= 1000
               one.WinMoneyMax /= 1000
-              one.AppendMinesOdds /= 1000
               $this.ProtectCfg.push(one)
             }
 
@@ -549,6 +594,8 @@ export default {
       cpy.EnterDelayMax *= 1000
       cpy.ExitDelayMin *= 1000
       cpy.ExitDelayMax *= 1000
+      cpy.MinOperationTime *= 1000
+      cpy.MaxOperationTime *= 1000
       cpy.ProtectCfg = []
 
       for (const o in this.ProtectCfg) {
@@ -558,7 +605,10 @@ export default {
         obj.CarryUpper = parseInt(this.ProtectCfg[o].CarryUpper) * 1000
         obj.LossMoneyMax = parseInt(this.ProtectCfg[o].LossMoneyMax) * 1000
         obj.WinMoneyMax = parseInt(this.ProtectCfg[o].WinMoneyMax) * 1000
-        obj.AppendMinesOdds = parseInt(this.ProtectCfg[o].AppendMinesOdds) * 1000
+        obj.AppendMinesOdds = parseInt(this.ProtectCfg[o].AppendMinesOdds)
+        obj.DeductingMinesOdds = parseInt(this.ProtectCfg[o].DeductingMinesOdds)
+        obj.EachLossMoney = parseInt(this.ProtectCfg[o].EachLossMoney)
+        obj.EachWinMoney = parseInt(this.ProtectCfg[o].EachWinMoney)
         cpy.ProtectCfg.push(obj)
       }
       return JSON.stringify(cpy)

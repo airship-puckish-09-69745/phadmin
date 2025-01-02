@@ -584,19 +584,19 @@ export const asyncRoutes = [
                 path: 'MinesShowDownTable',
                 component: () => import('@/views/config/tableConfig/MinesBattleTable'),
                 name: 'MinesShowDownTable',
-                meta: { title: 'MinesShowDownTable ◐' }
+                meta: { title: 'Table ◐' }
               },
               {
                 path: 'MinesShowDownRobotSetting',
                 component: () => import('@/views/config/tableConfig/minesShowdownRobotSetting'),
                 name: 'MinesShowDownRobotSetting',
-                meta: { title: 'MinesShowDownRobotSetting AI ◐' }
+                meta: { title: 'RobotSetting AI ◐' }
               },
               {
                 path: 'minesShowDownAIList',
                 component: () => import('@/views/config/tableConfig/minesShowdownAIListConfig'),
                 name: 'MinesShowDownAIList',
-                meta: { title: 'minesShowDownAI-List ◐' }
+                meta: { title: 'AI-List ◐' }
               }
             ]
           },
@@ -966,9 +966,9 @@ export const asyncRoutes = [
                 meta: { title: 'DanceLion' }
               },
               {
-                path: 'arcaneeypt_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/arcaneeypt_slots_cfg'),
-                name: 'arcaneeypt_slots_cfg',
+                path: 'arcaneegypt_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/arcaneegypt_slots_cfg.vue'),
+                name: 'arcaneegypt_slots_cfg',
                 meta: { title: 'ArcaneEgypt' }
               }
             ]
@@ -1420,7 +1420,7 @@ export const asyncRoutes = [
         path: 'ApplyRichcard',
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
-        meta: { title: '申请发放富裕卡 ◐' }
+        meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
       }
     ]
   },
