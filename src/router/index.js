@@ -912,6 +912,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune' }
               },
               {
+                path: 'mahjongjackpot_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongjackpot_slots_cfg'),
+                name: 'mahjongjackpot_slots_cfg',
+                meta: { title: 'MahjongJackpot' }
+              },
+              {
                 path: 'firelink_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/firelink_slots_cfg'),
                 name: 'firelink_slots_cfg',
