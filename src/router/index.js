@@ -1414,7 +1414,7 @@ export const asyncRoutes = [
         path: 'ApplyRichcard',
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
-        meta: { title: '申请发放富裕卡 ◐', perm: 'RERICHCARD' }
+        meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
       }
     ]
   },
