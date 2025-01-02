@@ -933,9 +933,9 @@ export const asyncRoutes = [
                 meta: { title: 'DanceLion' }
               },
               {
-                path: 'arcaneeypt_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/arcaneeypt_slots_cfg'),
-                name: 'arcaneeypt_slots_cfg',
+                path: 'arcaneegypt_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/arcaneegypt_slots_cfg.vue'),
+                name: 'arcaneegypt_slots_cfg',
                 meta: { title: 'ArcaneEgypt' }
               }
             ]
