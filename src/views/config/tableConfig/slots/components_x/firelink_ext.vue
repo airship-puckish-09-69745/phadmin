@@ -102,7 +102,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="需要中奖的次数"
+            label="Bonus需要中奖的次数"
             width="200"
           >
             <template slot-scope="scope">
@@ -110,14 +110,14 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="最少不中奖的次数(不包括末尾三次)"
+            label="Bonus最少不中次数(不包括末尾三次)"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.MissTimesMin" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
             </template>
           </el-table-column>
           <el-table-column
-            label="最多不中奖的次数(不包括末尾三次)"
+            label="Bonus最多不中次数(不包括末尾三次)"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.MissTimesMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
@@ -125,7 +125,7 @@
           </el-table-column>
           <el-table-column
             prop="OddsMax"
-            label="图标配置"
+            label="Bonus图标配置"
             width="200"
           >
             <template slot-scope="scope">
