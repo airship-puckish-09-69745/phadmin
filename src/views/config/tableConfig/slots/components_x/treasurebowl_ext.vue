@@ -8,11 +8,24 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
           </el-form-item>
 
-          <el-form-item label="Jackpot模式的赔率(剧本)" prop="JackpotStrOdds">
-            <!--            MINI MINOR MAJOR MEGA GRAND-->
-            <el-input v-model="cfg.JackpotStrOdds" :required="true">
-              <template slot="append">MINI MINOR MAJOR MEGA GRAND全为大写</template>
-            </el-input>
+          <el-form-item label="Jackpot模式GRAND的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotGrandOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Mega的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMegaOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Major的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMajorOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Minor的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMinorOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Mini的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMiniOdds" :required="true"/>
           </el-form-item>
 
           <el-form-item label="进入Jackpot的概率与倍率映射" prop="JackpotStrOdds">

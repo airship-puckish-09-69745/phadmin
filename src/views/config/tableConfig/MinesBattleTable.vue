@@ -3,7 +3,7 @@
     <el-row>
       <publish primary-key="ID" key-id="MinesBattleTableConfig" :env-empty="true" :check="configCheck"
                :attr-names="AttrNames"/>
-<!--      <el-button type="warning" round @click="showBlackArea">用户在玩雷区</el-button>-->
+      <el-button type="warning" round @click="showBlackArea">用户在玩雷区</el-button>
     </el-row>
     <el-row>
       <el-col :span="22" style="color:#BB0000;">

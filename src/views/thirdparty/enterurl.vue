@@ -59,6 +59,12 @@
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
+        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">
+          <el-select v-model="item.debug" placeholder="请选择" size="mini">
+            <el-option label="否" value="0" />
+            <el-option label="是" value="1" />
+          </el-select>
+        </el-form-item>
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
@@ -83,7 +89,7 @@
         <el-form-item v-model="item.live_id" label="直播ID：" label-width="100px">
           <el-input v-model="item.live_id" />
         </el-form-item>
-        <el-form-item label="KYC状态" label-width="100px">
+        <!-- <el-form-item label="KYC状态" label-width="100px">
           <el-select v-model="item.kyc" placeholder="请选择" size="mini">
             <el-option label="否" value='0' />
             <el-option label="是" value='1' />
@@ -97,7 +103,7 @@
             placeholder="选择日期"
             size="mini"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>
         </el-form-item>
@@ -329,7 +335,7 @@ export default {
         activity: '',
         live_id: '',
         kyc: '0',
-        r_time: Date.parse(new Date()),
+        r_time: Date.parse(new Date())
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -407,9 +413,9 @@ export default {
           path: this.item.path,
           source: this.item.source,
           activity: this.item.activity,
-          live_id: this.item.live_id,
-          kyc: this.item.kyc,
-          r_time: this.item.r_time/1000
+          live_id: this.item.live_id
+          // kyc: this.item.kyc,
+          // r_time: this.item.r_time/1000
         }
       }).then(response => {
         loading.close()

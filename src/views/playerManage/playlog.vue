@@ -2814,6 +2814,46 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
+        <span style="float:left;">{{'底分:' + ZJHDetail.antes/1000}}</span>
+      </div>
+      <el-table ref="filterTable" :data="ZJHDetail.players" border>
+        <el-table-column prop="uid" label="uid">
+          <template slot-scope="scope">{{ scope.row.uid}}</template>
+        </el-table-column>
+        
+        <el-table-column prop="seat" label="seat" width="60px">
+          <template slot-scope="scope">{{ scope.row.seat}}</template>
+        </el-table-column>
+        
+        <el-table-column prop="cards" label="牌" width="340px">
+          <template slot-scope="scope">
+          <div v-for="(item) in scope.row.cards" class="block">
+            <el-image style="width: 37px; height: 50px" :src="getZJHCardUrl(item)"/>
+          </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="cardstype" label="牌型">
+          <template slot-scope="scope"> {{getZJHCardsType(scope.row.cardType)}} </template>
+        </el-table-column>
+
+        <el-table-column prop="bet" label="bet">
+          <template slot-scope="scope"> {{scope.row.moneyBet}} </template>
+        </el-table-column>
+
+        <el-table-column prop="Fold" label="action">
+          <template slot-scope="scope">{{ scope.row.isFold ? '弃牌' : '' }}</template>
+        </el-table-column>
+
+        <el-table-column prop="win" label="win">
+          <template slot-scope="scope"> {{scope.row.moneyChange}} </template>
+        </el-table-column>
+      
+      </el-table>
+    </el-dialog>
+
     <texas-n-l-h-detail-log v-if="gameLogComponent.gid === 32" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
     <qiu-qiu-game-log v-if="gameLogComponent.gid === 111" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
 
@@ -3141,6 +3181,9 @@ export default {
       freeSpinDetail: {},
       freeSpinData: {},
       freeSpinDetailVisible: false,
+
+      ZJHDetail: {},
+      ZJHDetailVisible: false,
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
@@ -3573,7 +3616,7 @@ export default {
           this.initData()
           const gid = this.$route.meta.gid
           console.log(obj)
-          if (gid == 9 || gid == 8 || gid == 14) {
+          if (/*gid == 9 ||*/ gid == 8 || gid == 14) {
             $this.showTPGame(obj)
           } else if (gid == 10) {
             $this.showRocketGame(obj)
@@ -3634,6 +3677,8 @@ export default {
             $this.showJackpotWheelGame(obj)
           } else if (gid === 125) {
             $this.showFreeSpinGame(obj)
+          } else if (gid === 9) {
+            $this.showZJHGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -3862,6 +3907,30 @@ export default {
         15: 'FreeSpin*10',
       }
       return nameMap[id]
+    },
+
+    showZJHGame(obj) {
+      this.ZJHDetail = obj
+      //玩家按座位号排序
+      if (this.ZJHDetail.players != undefined && this.ZJHDetail.players.length > 0){
+        this.ZJHDetail.players = this.ZJHDetail.players.sort((a, b) => {return a.seat - b.seat })
+      }
+      this.ZJHDetailVisible = true
+    },
+    getZJHCardsType(type){
+      const ZJHCardTypes = {
+        1: '高牌',
+	      2: '对子',
+	      3: '同花',
+        4: '顺子',
+        5: '同花顺',
+        6: '三条'
+      }
+      return ZJHCardTypes[type]
+    },
+    getZJHCardUrl(card) {
+      console.log("card:", card)
+      return require('@/assets/poker/' + card + '.png')
     },
 
     showTexasGame(obj) {

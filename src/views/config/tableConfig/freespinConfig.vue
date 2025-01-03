@@ -441,6 +441,19 @@ export default {
           o.Odds *= 1
         }
       }
+      //做下排序（按客户端显示顺序需求）
+      let BetAreaOptionsArr = []
+      let sortArr = [13,0,11,5,14,1,12,2,10,4,7,3,15,8,6,9]
+      for (const i in sortArr){
+        for (const o of ret.BetAreaOptions) {
+          if (o.Id == sortArr[i]){
+            BetAreaOptionsArr.push(o)
+            break
+          }
+        }
+      }
+      ret.BetAreaOptions = BetAreaOptionsArr
+      //排序结束
       for (const i in this.item.Rate) {
           ret.Rate[i] *= 1000
       }

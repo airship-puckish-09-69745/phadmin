@@ -175,6 +175,13 @@ export default {
           this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
         }
       }
+      if (this.baseCfg.OddsStr) {
+        const odds = this.baseCfg.OddsStr.split(',')
+        this.baseCfg.OddsList = []
+        for (const i in odds) {
+          this.baseCfg.OddsList.push(parseFloat(odds[i]))
+        }
+      }
       this.baseForm.Data = JSON.stringify(this.baseCfg)
       request({
         url: 'customizeconfig/update',
