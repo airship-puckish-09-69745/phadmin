@@ -97,6 +97,7 @@
         <template slot-scope="scope">
           <span v-if="scope.row.ActType===2009 ">{{ formatNumber(scope.row.MoneyNow) }}</span>
           <span v-else-if="scope.row.ActType===2008">  {{ formatNumber(scope.row.MoneyNow) }}</span>
+          <span v-else-if="scope.row.ActType===3001">  {{ formatNumber(scope.row.MoneyNow) }}</span>
           <span v-else-if="scope.row.ActType===2006">  {{
               formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged)
             }}</span>
@@ -342,6 +343,7 @@ const filterMap = {
     2010: '比赛报名',
     2011: '比赛结束',
     2012: '金币补偿',
+    3001: '比赛结束，营销接口发奖'
   }
 }
 

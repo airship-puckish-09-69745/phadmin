@@ -709,16 +709,16 @@ export default {
       ],
       // 返水金
       rebateScenesCfgs: [
-        { 'value': '6763a3f6e4b0ee21575e3bef', 'label': '没有任何限制的返水金' },
-        { 'value': '6763ab16e4b0ee21575e3c22', 'label': '有限制倍数的返水金（10倍）' }
+        { 'value': '6777a394e4b02eafc1e0deff', 'label': '没有任何限制的返水金' },
+        { 'value': '6777a3b9e4b02eafc1e0df03', 'label': '有限制倍数的返水金（10倍）' }
         // ,{ 'value': '6763ab8be4b0ee21575e3c27', 'label': '有限制倍数的返水金（没限制）' }
       ],
       // 投注金
       betScenesCfgs: [
-        { 'value': '6763a017e4b0ee21575e3be4', 'label': '任意游戏投注' },
-        { 'value': '6763a0a4e4b0ee2119156fd6', 'label': '仅限Poker类游戏投注' },
-        { 'value': '6763a15be4b0ee2119156fde', 'label': '仅限Slots类游戏投注' },
-        { 'value': '6763a2d4e4b0ee2119156fed', 'label': '仅限Tongits游戏投注' }
+        { 'value': '6777a2cde4b02eafc1e0deeb', 'label': '任意游戏投注' },
+        { 'value': '6777a307e4b02eafc1e0def1', 'label': '仅限Poker类游戏投注' },
+        { 'value': '6777a330e4b02eafc1e0def5', 'label': '仅限Slots类游戏投注' },
+        { 'value': '6777a35be4b02eafc1e0defa', 'label': '仅限Tongits游戏投注' }
       ],
       propsInfo: [ // 道具信息，暂时写死
         {
