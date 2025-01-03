@@ -50,6 +50,7 @@
               <el-option label="172:WrathOfZeus" :value="172" />
               <el-option label="173:WrathOfZeus Mars" :value="173" />
               <el-option label="TreasureBowl" :value="174" />
+              <el-option label="TreasureBowlMars" :value="175" />
               <el-option label="PuppyHome" :value="176" />
               <el-option label="PuppyHomeMars" :value="177" />
               <el-option label="MayanTotem" :value="178" />

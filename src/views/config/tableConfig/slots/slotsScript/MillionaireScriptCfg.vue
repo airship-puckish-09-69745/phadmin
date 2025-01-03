@@ -665,6 +665,8 @@ export default {
         '97': 'romanarenamars',
         '153': 'aladdinlampmars',
         '77': 'candypartyallline',
+        '174': 'treasurebowl',
+        '175': 'treasurebowlmars',
         '81': 'supergemmars',
         '79': 'candycandymars',
         '99': 'supertongitmars',
