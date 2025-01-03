@@ -2000,6 +2000,12 @@ export const asyncRoutes = [
             meta: { title: 'MahjongFortune', gid: 164 }
           },
           {
+            path: 'mahjongjackpot_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongjackpot_slots_log',
+            meta: { title: 'MahjongJackpot', gid: 186 }
+          },
+          {
             path: 'firelink_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'firelink_slots_log',
