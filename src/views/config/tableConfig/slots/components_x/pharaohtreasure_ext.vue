@@ -24,6 +24,22 @@
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="普通游戏多倍符号值">
+            <el-input v-model="cfg.MultiOddsValInNormal"> <template slot="append">从小到大排列,用逗号分割</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="普通游戏多倍符号值权重">
+            <el-input v-model="cfg.MultiOddsWeightInNormal"> <template slot="append">从小到大排列,用逗号分割,对应普通多倍符号值</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="scatter游戏多倍符号值">
+            <el-input v-model="cfg.MultiOddsValInScatter"> <template slot="append">从小到大排列,用逗号分割</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="scatter游戏多倍符号值权重">
+            <el-input v-model="cfg.MultiOddsWeightInScatter"> <template slot="append">从小到大排列,用逗号分割,对应scatter多倍符号值</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
@@ -81,6 +97,14 @@ export default {
     },
     submitFrm() {
       const $this = this
+      if (this.getStrLength(this.cfg.MultiOddsValInNormal) !== this.getStrLength(this.cfg.MultiOddsWeightInNormal)) {
+        $this.$message.error('普通游戏多倍符号值与普通游戏多倍符号值权重长度不一致')
+        return
+      }
+      if (this.getStrLength(this.cfg.MultiOddsValInScatter) !== this.getStrLength(this.cfg.MultiOddsWeightInScatter)) {
+        $this.$message.error('scatter游戏多倍符号值与scatter游戏多倍符号值权重长度不一致')
+        return
+      }
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -91,6 +115,10 @@ export default {
         $this.$emit('saveData')
         $this.lock = false
       })
+    },
+    getStrLength(str) {
+      const numberArr = str.split(',')
+      return numberArr.length
     },
     hasHit(cols, col) {
       return cols.indexOf(col) >= 0
