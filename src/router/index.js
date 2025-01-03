@@ -277,6 +277,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
                 name: 'pusoyPresetCards',
                 meta: { title: 'Pusoy用户配牌控制 ◐' }
+              },
+              {
+                path: 'PusoyWildTable',
+                component: () => import('@/views/config/tableConfig/pusoyWild/pusoyWildTable'),
+                name: 'pusoyWildTable',
+                meta: { title: 'Pusoy Wild  ◐' }
               }
             ]
           },
