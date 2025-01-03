@@ -692,7 +692,9 @@ export default {
         '91': 'moneycomingmars',
         '164':'mahjongfortune',
         '170': 'epicace',
-        '171': 'epicacemars'
+        '171': 'epicacemars',
+        '166': 'firelink',
+        '167': 'firelinkmars'
       }
     }
   },
