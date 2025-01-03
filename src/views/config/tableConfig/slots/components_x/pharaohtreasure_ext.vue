@@ -99,9 +99,11 @@ export default {
       const $this = this
       if (this.getStrLength(this.cfg.MultiOddsValInNormal) !== this.getStrLength(this.cfg.MultiOddsWeightInNormal)) {
         $this.$message.error('普通游戏多倍符号值与普通游戏多倍符号值权重长度不一致')
+        return
       }
       if (this.getStrLength(this.cfg.MultiOddsValInScatter) !== this.getStrLength(this.cfg.MultiOddsWeightInScatter)) {
         $this.$message.error('scatter游戏多倍符号值与scatter游戏多倍符号值权重长度不一致')
+        return
       }
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
