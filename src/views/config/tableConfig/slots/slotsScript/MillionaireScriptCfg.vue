@@ -696,7 +696,8 @@ export default {
         '170': 'epicace',
         '171': 'epicacemars',
         '166': 'firelink',
-        '167': 'firelinkmars'
+        '167': 'firelinkmars',
+        '178': 'mayantotem'
       }
     }
   },
