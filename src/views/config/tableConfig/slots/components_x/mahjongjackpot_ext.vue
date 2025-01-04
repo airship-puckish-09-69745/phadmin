@@ -20,8 +20,14 @@
             <el-input v-model="cfg.ExtraBetMultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="额外投注倍数" prop="ExtraBetMulti" :rules="dataRule(true,{type:'f'})">
-            <el-input v-model="cfg.ExtraBetMulti" :required="true" />
+          <el-form-item label="额外投注倍数" prop="ExtraBetMulti" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ExtraBetMulti" :required="true">
+              <template slot="append">放大了10倍，如值为15，实际为1.5</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="重转模式购买倍数" prop="BuyRespinOdds" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.BuyRespinOdds" :required="true" />
           </el-form-item>
 
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
@@ -32,12 +38,16 @@
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="购买重转倍数" prop="BuyRespinOdds" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.BuyRespinOdds" :required="true" />
-          </el-form-item>
-
           <el-form-item label="JP中奖倍数">
             <el-input v-model="cfg.JPMultiStr" :required="true" placeholder="请输入内容,如1-10,30-50,100-150,200"> <template slot="append">四个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买重转模式中奖倍数范围V2">
+            <el-input v-model="cfg.BuyRespinOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">两个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买重转模式中奖左范围概率V2">
+            <el-input v-model.number="cfg.BuyRespinRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
@@ -109,7 +119,6 @@ export default {
     submitFrm() {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
-      this.cfg.ExtraBetMulti *= 10
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -127,7 +136,6 @@ export default {
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
-        this.slotsData.ExtraBetMulti /= 10
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true

@@ -101,16 +101,17 @@
               <el-input v-model.number="scope.row.OddsMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
             </template>
           </el-table-column>
-          <el-table-column
-            label="Bonus需要中奖的次数"
-            width="200"
-          >
-            <template slot-scope="scope">
-              <el-input v-model.number="scope.row.HitTimes" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </template>
-          </el-table-column>
+<!--          <el-table-column-->
+<!--            label="需要中奖的次数"-->
+<!--            width="200"-->
+<!--          >-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-input v-model.number="scope.row.HitTimes" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
           <el-table-column
             label="Bonus最少不中次数(不包括末尾三次)"
+            width="200"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.MissTimesMin" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
@@ -124,12 +125,19 @@
             </template>
           </el-table-column>
           <el-table-column
+            label="图标数量配置"
+          >
+            <template slot-scope="scope">
+              <el-button type="primary" @click="editBonusNumCfg(scope.row,scope.$index)" size="mini">配置</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
             prop="OddsMax"
-            label="Bonus图标配置"
+            label="图标增加配置"
             width="200"
           >
             <template slot-scope="scope">
-              <el-button type="primary" @click="editOddsCfg(scope.row,scope.$index)" size="mini">配置</el-button>
+              <el-button type="primary" @click="editBonusHitCfg(scope.row,scope.$index)" size="mini">配置</el-button>
             </template>
           </el-table-column>
           <el-table-column label="删除">
@@ -153,7 +161,7 @@
       :visible.sync="detailVisible"
       width="60%">
       <el-table
-        :data="showVisibleData"
+        :data="showVisibleData.BonusNumCfg"
         stripe
         border
         :header-cell-style="libShow.DefaultTableHeadClass"
@@ -167,34 +175,95 @@
           width="80px"
         >
           <template #header>
-            <el-button type="primary" @click="addIconsCfgRow(0)" size="mini">添加</el-button>
+            <el-button type="primary" @click="addCfgRow('BonusNumCfg')" size="mini">添加</el-button>
           </template>
         </el-table-column>
         <el-table-column
-          prop="OddsMin"
-          label="Bonus图标的数字(1等于100倍)"
+          prop="NumberMin"
+          label="数量最小值"
           width="200"
         >
           <template slot-scope="scope">
-              <el-input v-model.number="scope.row.BonusRates" size="mini"
+              <el-input v-model.number="scope.row.NumberMin" size="mini"
                         oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
           </template>
         </el-table-column>
         <el-table-column
-          prop="OddsMax"
+          prop="NumberMin"
+          label="数量最大值"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.NumberMax" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Weight"
           label="出现权重"
           width="200"
         >
           <template slot-scope="scope">
-              <el-input v-model.number="scope.row.Weight" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            <el-input v-model.number="scope.row.Weight" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="delCfgRow(scope.$index,'BonusNumCfg')" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </el-dialog>
+
+    <el-dialog
+      v-if="detailHitVisible"
+      title="配置详情"
+      :visible.sync="detailHitVisible"
+      width="60%">
+      <el-table
+        :data="showVisibleData.BonusHitCfg"
+        stripe
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+        :key="itemKey2"
+      >
+        <el-table-column
+          type="index"
+          width="80px"
+        >
+          <template #header>
+            <el-button type="primary" @click="addCfgRow('BonusHitCfg')" size="mini">添加</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="AddBonusNum"
+          label="单次中奖增加的Bonus数量"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.AddBonusNum" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Weight"
+          label="权重"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Weight" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
           </template>
         </el-table-column>
 
         <el-table-column label="操作">
           <template slot-scope="scope">
-
-            <el-button type="primary" @click="delIconsCfgRow(scope.$index)" size="mini">删除</el-button>
+            <el-button type="primary" @click="delCfgRow(scope.$index,'BonusHitCfg')" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -233,8 +302,10 @@ export default {
       itemKey: 0,
       itemKey2: 0,
       detailVisible: false,
-      showVisibleData: [],
+      showVisibleData: {},
       showVisibleIdx: 0,
+
+      detailHitVisible: false,
     }
   },
   created() {
@@ -243,23 +314,27 @@ export default {
     })
   },
   methods: {
-    editOddsCfg(row, idx) {
+    editBonusNumCfg(row, idx) {
       this.detailVisible = true
-      this.showVisibleData = row.Icons
+      this.showVisibleData = row
       this.showVisibleIdx = idx
     },
-    addIconsCfgRow() {
-      if (!this.cfg.Icons) {
-        this.cfg['Icons'] = []
+    editBonusHitCfg(row, idx) {
+      this.detailHitVisible = true
+      this.showVisibleData = row
+      this.showVisibleIdx = idx
+    },
+    addCfgRow(filed) {
+      if (!this.cfg.BonusSpinCfg[this.showVisibleIdx][filed]) {
+        this.cfg.BonusSpinCfg[this.showVisibleIdx][filed] = []
       }
-      this.cfg.BonusSpinCfg[this.showVisibleIdx].Icons.push({
-        "BonusRates": 0,
-        "Weight": 0,
-      })
+      console.log(filed,this.cfg.BonusSpinCfg[this.showVisibleIdx])
+      let obj ={}
+      this.cfg.BonusSpinCfg[this.showVisibleIdx][filed].push(obj)
       this.itemKey2+=1
     },
-    delIconsCfgRow(val) {
-      this.cfg.BonusSpinCfg[this.showVisibleIdx].Icons.splice(val, 1)
+    delCfgRow(val,filed) {
+      this.cfg.BonusSpinCfg[this.showVisibleIdx][filed].splice(val, 1)
     },
     addBonusSpinCfgRow() {
       if (!this.cfg.BonusSpinCfg) {
@@ -268,10 +343,12 @@ export default {
       this.cfg.BonusSpinCfg.push({
         "OddsMin": 0,
         "OddsMax": 0,
-        "HitTimes": 0,
+        // "HitTimes": 0,
         "MissTimesMin": 0,
         "MissTimesMax": 0,
-        "Icons": []
+        // "Icons": []
+        "BonusNumCfg": [],
+        "BonusHitCfg": []
       })
       this.itemKey+=1
     },
@@ -300,21 +377,6 @@ export default {
     },
     hasHit(cols, col) {
       return cols.indexOf(col) >= 0
-    },
-    getNewBonusSpinCfg() {
-      return {
-        "OddsMin": 0,
-        "OddsMax": 0,
-        "HitTimes": 0,
-        "MissTimesMin": 0,
-        "MissTimesMax": 0,
-        "Icons": [
-          {
-            "BonusRates": 0,
-            "Weight": 0
-          }
-        ]
-      }
     },
     initData() {
       // this.initSymbolMap()
