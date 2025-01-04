@@ -29,7 +29,7 @@
           </el-form-item>
 
           <el-form-item label="普通游戏多倍符号值权重">
-            <el-input v-model="cfg.MultiOddsWeightInNormal"> <template slot="append">从小到大排列,用逗号分割,对应普通多倍符号值</template> </el-input>
+            <el-input v-model="cfg.MultiOddsWeightInNormal"> <template slot="append">从大到小排列,用逗号分割,对应普通多倍符号值</template> </el-input>
           </el-form-item>
 
           <el-form-item label="scatter游戏多倍符号值">
@@ -37,7 +37,7 @@
           </el-form-item>
 
           <el-form-item label="scatter游戏多倍符号值权重">
-            <el-input v-model="cfg.MultiOddsWeightInScatter"> <template slot="append">从小到大排列,用逗号分割,对应scatter多倍符号值</template> </el-input>
+            <el-input v-model="cfg.MultiOddsWeightInScatter"> <template slot="append">从大到小排列,用逗号分割,对应scatter多倍符号值</template> </el-input>
           </el-form-item>
 
         </el-form>
