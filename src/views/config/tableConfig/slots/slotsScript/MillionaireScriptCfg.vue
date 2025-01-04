@@ -665,6 +665,8 @@ export default {
         '97': 'romanarenamars',
         '153': 'aladdinlampmars',
         '77': 'candypartyallline',
+        '174': 'treasurebowl',
+        '175': 'treasurebowlmars',
         '81': 'supergemmars',
         '79': 'candycandymars',
         '99': 'supertongitmars',
@@ -692,7 +694,9 @@ export default {
         '91': 'moneycomingmars',
         '164':'mahjongfortune',
         '170': 'epicace',
-        '171': 'epicacemars'
+        '171': 'epicacemars',
+        '166': 'firelink',
+        '167': 'firelinkmars'
       }
     }
   },

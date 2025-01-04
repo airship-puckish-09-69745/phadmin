@@ -136,7 +136,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'pharaohtreasuremars_slots_rule'
+          SubKey: 'pharaohtreasure_slots_rule'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -155,7 +155,7 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: 'pharaohtreasuremars_slots_ext'
+          SubKey: 'pharaohtreasure_slots_ext'
         }
       }).then(response => {
         if (response.RetCode === 0) {

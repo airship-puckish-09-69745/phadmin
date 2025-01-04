@@ -139,6 +139,7 @@ export default {
           this.ruleForm = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             this.ruleCfg = JSON.parse(response.Data.Data)
+            this.ruleCfg.SlotsType = 180
             // 设置修改之前数据
             // this.$refs.compare.SetOldVal(response.Data.Data)
           }

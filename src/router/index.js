@@ -277,6 +277,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
                 name: 'pusoyPresetCards',
                 meta: { title: 'Pusoy用户配牌控制 ◐' }
+              },
+              {
+                path: 'PusoyWildTable',
+                component: () => import('@/views/config/tableConfig/pusoyWild/pusoyWildTable'),
+                name: 'pusoyWildTable',
+                meta: { title: 'Pusoy Wild  ◐' }
               }
             ]
           },
@@ -912,6 +918,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune' }
               },
               {
+                path: 'mahjongjackpot_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongjackpot_slots_cfg'),
+                name: 'mahjongjackpot_slots_cfg',
+                meta: { title: 'MahjongJackpot' }
+              },
+              {
                 path: 'firelink_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/firelink_slots_cfg'),
                 name: 'firelink_slots_cfg',
@@ -960,9 +972,9 @@ export const asyncRoutes = [
                 meta: { title: 'DanceLion' }
               },
               {
-                path: 'arcaneeypt_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/arcaneeypt_slots_cfg'),
-                name: 'arcaneeypt_slots_cfg',
+                path: 'arcaneegypt_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/arcaneegypt_slots_cfg.vue'),
+                name: 'arcaneegypt_slots_cfg',
                 meta: { title: 'ArcaneEgypt' }
               }
             ]
@@ -1608,6 +1620,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_pusoyWild',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyWild',
+            meta: { title: 'PusoyWild ◐', gid: 126 }
+          },
+          {
             path: 'playlog_ginRummy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ginRummy',
@@ -1992,6 +2010,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortune_slots_log',
             meta: { title: 'MahjongFortune', gid: 164 }
+          },
+          {
+            path: 'mahjongjackpot_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongjackpot_slots_log',
+            meta: { title: 'MahjongJackpot', gid: 186 }
           },
           {
             path: 'firelink_slots_log',
