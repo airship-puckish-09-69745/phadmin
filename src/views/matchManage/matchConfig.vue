@@ -576,6 +576,11 @@
             <el-input v-model.number="editForm.prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" />
           </el-form-item>
 
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="奖励类型" :required="true">
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="1">金币</el-radio>
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金</el-radio>
+          </el-form-item>
+
         </fieldset>
 
         <fieldset>
@@ -837,7 +842,9 @@ export default {
         prizeExtra: {
           awardType: 0,
           prizeRate: 0,
-          prizeTemplateId: 0
+          prizeTemplateId: 0,
+          rewardType: 1,
+          sceneId: 0
         }
       },
 
@@ -1347,7 +1354,9 @@ export default {
         this.editForm.prizeExtra = {
           awardType: 0,
           prizeRate: 0,
-          prizeTemplateId: 0
+          prizeTemplateId: 0,
+          rewardType: 1,
+          sceneId: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -1819,7 +1828,10 @@ export default {
         //   return false
         // }
         // 验证固定奖励的配置项
+        this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
         if (this.editForm.prizeExtra.awardType == 0) {
+          this.editForm.prizeExtra.rewardType = 1
+          this.editForm.prizeExtra.sceneId = 0
           if (!this.checkRewardCfg(this.editForm.rankRewards)) {
             return false
           }
@@ -1831,6 +1843,15 @@ export default {
         if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
           this.errmsg('当前是动态奖池手续费率范围是[1-100)')
           return false
+        }
+
+        // 目前动态奖池只有真金和返水金
+        if (this.editForm.prizeExtra.rewardType == 2) {
+          this.editForm.prizeExtra.rewardType = 3
+        }
+        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+        if (this.editForm.prizeExtra.rewardType == 3) {
+          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
         }
       }
       return true
