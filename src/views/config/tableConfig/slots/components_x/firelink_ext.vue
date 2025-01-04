@@ -110,7 +110,7 @@
 <!--            </template>-->
 <!--          </el-table-column>-->
           <el-table-column
-            label="Bonus需要中奖的次数"
+            label="Bonus最少不中次数(不包括末尾三次)"
             width="200"
           >
             <template slot-scope="scope">
@@ -118,14 +118,14 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="Bonus最少不中次数(不包括末尾三次)"
+            label="Bonus最多不中次数(不包括末尾三次)"
           >
             <template slot-scope="scope">
               <el-input v-model.number="scope.row.MissTimesMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
             </template>
           </el-table-column>
           <el-table-column
-            label="Bonus最多不中次数(不包括末尾三次)"
+            label="图标数量配置"
           >
             <template slot-scope="scope">
               <el-button type="primary" @click="editBonusNumCfg(scope.row,scope.$index)" size="mini">配置</el-button>
@@ -133,7 +133,7 @@
           </el-table-column>
           <el-table-column
             prop="OddsMax"
-            label="Bonus图标配置"
+            label="图标增加配置"
             width="200"
           >
             <template slot-scope="scope">
