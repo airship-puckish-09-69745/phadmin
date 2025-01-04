@@ -277,6 +277,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
                 name: 'pusoyPresetCards',
                 meta: { title: 'Pusoy用户配牌控制 ◐' }
+              },
+              {
+                path: 'PusoyWildTable',
+                component: () => import('@/views/config/tableConfig/pusoyWild/pusoyWildTable'),
+                name: 'pusoyWildTable',
+                meta: { title: 'Pusoy Wild  ◐' }
               }
             ]
           },
@@ -1612,6 +1618,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_pusoySwap',
             meta: { title: 'PusoySwap ◐', gid: 113 }
+          },
+          {
+            path: 'playlog_pusoyWild',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyWild',
+            meta: { title: 'PusoyWild ◐', gid: 126 }
           },
           {
             path: 'playlog_ginRummy',

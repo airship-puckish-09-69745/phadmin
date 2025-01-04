@@ -20,6 +20,10 @@
             <el-input v-model="cfg.ExtraBetMultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="额外投注倍数" prop="ExtraBetMulti" :rules="dataRule(true,{type:'f'})">
+            <el-input v-model="cfg.ExtraBetMulti" :required="true" />
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
@@ -105,6 +109,7 @@ export default {
     submitFrm() {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
+      this.cfg.ExtraBetMulti *= 10
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -122,6 +127,7 @@ export default {
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
+        this.slotsData.ExtraBetMulti /= 10
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
