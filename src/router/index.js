@@ -1620,6 +1620,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_pusoyWild',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyWild',
+            meta: { title: 'PusoyWild ◐', gid: 126 }
+          },
+          {
             path: 'playlog_ginRummy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ginRummy',
