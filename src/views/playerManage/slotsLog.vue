@@ -103,6 +103,17 @@
             {{ formatNumber(scope.row.Bet/1000) }}
           </template>
         </el-table-column>
+
+        <el-table-column
+          prop="Bet"
+          label="下注倍数"
+          width="90"
+        >
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.BetOdds) }}
+          </template>
+        </el-table-column>
+
         <el-table-column
           prop="ReturnBet"
           label="输赢"

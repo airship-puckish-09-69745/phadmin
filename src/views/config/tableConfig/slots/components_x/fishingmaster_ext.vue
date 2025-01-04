@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="200px">
+        <el-form ref="frm2" :model="cfg" label-width="300px">
           <el-form-item label="免费模式 wild在12345拓展成一整列的概率" :rules="dataRule(true)">
             <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13,14"> <template slot="append">如10,11,12,13,14 代表1轴10‱ .. 5轴14‱</template> </el-input>
           </el-form-item>
@@ -25,6 +25,14 @@
 
           <el-form-item label="购买免费模式中奖左范围概率V2">
             <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买免费模式中奖倍数范围V2(加倍打开)">
+            <el-input v-model="cfg.BuyFreeOddsRangeV2Multi" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买免费模式中奖左范围概率V2(加倍打开)">
+            <el-input v-model.number="cfg.BuyFreeRateV2Multi" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数分布V2">
