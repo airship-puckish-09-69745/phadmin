@@ -1620,6 +1620,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_pusoyWild',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyWild',
+            meta: { title: 'PusoyWild ◐', gid: 126 }
+          },
+          {
             path: 'playlog_ginRummy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ginRummy',
@@ -2046,7 +2052,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'godoffortune_slots_log',
             meta: { title: 'GodOfFortune', gid: 182 }
-          }
+          },
+          {
+            path: 'mayantotem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mayantotem_slots_log',
+            meta: { title: 'MayanTotem', gid: 178 }
+          },
         ]
       },
       {

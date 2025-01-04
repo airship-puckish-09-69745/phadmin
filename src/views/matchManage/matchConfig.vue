@@ -508,7 +508,7 @@
                         :value="item.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 2" v-model="gItem.rebateScene" placeholder="请选择投注金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
                       <el-option
                         v-for="scene in betScenesCfgs"
                         :key="scene.value"
@@ -516,7 +516,7 @@
                         :value="scene.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 3" v-model="gItem.rebateScene" placeholder="请选择返水金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
                       <el-option
                         v-for="scene in rebateScenesCfgs"
                         :key="scene.value"
@@ -709,16 +709,15 @@ export default {
       ],
       // 返水金
       rebateScenesCfgs: [
-        { 'value': '6763a3f6e4b0ee21575e3bef', 'label': '没有任何限制的返水金' },
-        { 'value': '6763ab16e4b0ee21575e3c22', 'label': '有限制倍数的返水金（10倍）' }
-        // ,{ 'value': '6763ab8be4b0ee21575e3c27', 'label': '有限制倍数的返水金（没限制）' }
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
       ],
       // 投注金
       betScenesCfgs: [
-        { 'value': '6763a017e4b0ee21575e3be4', 'label': '任意游戏投注' },
-        { 'value': '6763a0a4e4b0ee2119156fd6', 'label': '仅限Poker类游戏投注' },
-        { 'value': '6763a15be4b0ee2119156fde', 'label': '仅限Slots类游戏投注' },
-        { 'value': '6763a2d4e4b0ee2119156fed', 'label': '仅限Tongits游戏投注' }
+        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ],
       propsInfo: [ // 道具信息，暂时写死
         {
@@ -808,7 +807,7 @@ export default {
                 getType: 1,
                 getPid: 0,
                 getNum: 0,
-                rebateScene: '' // 返水金场景值（调用营销接口时用）
+                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
               }
             ],
             propsReward: {
@@ -1132,7 +1131,7 @@ export default {
             getType: 1,
             getPid: 0,
             getNum: 0,
-            rebateScene: '' // 返水金场景值（调用营销接口时用）（暂时写死：仅限Gamezone厅任意游戏投注的投注金）
+            sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
           }
         ],
         propsReward: {
@@ -1323,7 +1322,7 @@ export default {
                 getType: 1,
                 getPid: 0,
                 getNum: 0,
-                rebateScene: '' // 返水金场景值（调用营销接口时用）
+                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
               }
             ],
             propsReward: {
@@ -1859,14 +1858,14 @@ export default {
         for (let i = 0; i < element.rewardItems.length; i++) {
           const rewardItem = element.rewardItems[i]
           if (rewardItem.getType == 1) {
-            element.rewardItems[i].rebateScene = ''
+            element.rewardItems[i].sceneId = 0
           } else if (rewardItem.getType == 2) {
-            if (!this.isInBetScenes(rewardItem.rebateScene)) {
+            if (!this.isInBetScenes(rewardItem.sceneId)) {
               this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择投注金')
               return false
             }
           } else if (rewardItem.getType == 3) {
-            if (!this.isInRebateScenes(rewardItem.rebateScene)) {
+            if (!this.isInRebateScenes(rewardItem.sceneId)) {
               this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择返水金')
               return false
             }

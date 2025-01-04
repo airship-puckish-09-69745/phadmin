@@ -29,9 +29,11 @@
           </el-form-item>
 
           <el-form-item label="进入Jackpot的概率与倍率映射" prop="JackpotStrOdds">
-            <el-input v-model="cfg.JackpotStrRateMap" :required="true">
-              <template slot="append">概率:[剧本目标最小倍数,剧本目标最大倍数)。多个区间用;分号分割</template>
-            </el-input>
+            <el-tooltip class="item" effect="dark" content="例如: 1:[1:3),表示当剧本倍数在1到3时,有1%的概率,进入jackpot,且jackpot倍率是1。多个区间用;分号分割" placement="top-end">
+              <el-input v-model="cfg.JackpotStrRateMap" :required="true">
+                <template slot="append">概率:[剧本目标最小倍数,剧本目标最大倍数)</template>
+              </el-input>
+            </el-tooltip>
           </el-form-item>
 
           <el-form-item label="JP下注金额抽水">

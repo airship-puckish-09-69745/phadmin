@@ -2810,7 +2810,7 @@
             {{scope.row.trophy}}
           </template>
         </el-table-column>
-      
+
       </el-table>
     </el-dialog>
 
@@ -2822,11 +2822,11 @@
         <el-table-column prop="uid" label="uid">
           <template slot-scope="scope">{{ scope.row.uid}}</template>
         </el-table-column>
-        
+
         <el-table-column prop="seat" label="seat" width="60px">
           <template slot-scope="scope">{{ scope.row.seat}}</template>
         </el-table-column>
-        
+
         <el-table-column prop="cards" label="牌" width="340px">
           <template slot-scope="scope">
           <div v-for="(item) in scope.row.cards" class="block">
@@ -2850,7 +2850,7 @@
         <el-table-column prop="win" label="win">
           <template slot-scope="scope"> {{scope.row.moneyChange}} </template>
         </el-table-column>
-      
+
       </el-table>
     </el-dialog>
 
@@ -2970,6 +2970,7 @@
 
     <GinRummy v-if="gameLogComponent.gid === 116" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
     <uno-log v-if="gameLogComponent.gid === 117" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
+    <pusoyWild-log v-if="gameLogComponent.gid === 126" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
     <el-row>
       <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
@@ -2995,6 +2996,7 @@ import WingoLotteryDetailLog from '@/views/playerManage/components/WingoLotteryG
 import MultiPlayerNiuNiuDetailLog from '@/views/playerManage/components/MultiPlayerNiuNiu.vue'
 import GinRummy from '@/views/playerManage/components/GinRummy.vue'
 import UnoLog from "@/views/playerManage/components/UnoLog.vue";
+import PusoyWildLog from "@/views/playerManage/components/PusoyWildLog.vue";
 
 const filterMap = {
   IsPractice: {
@@ -3035,7 +3037,8 @@ export default {
     Compare,
     Publish,
     UidInput,
-    LineChart
+    LineChart,
+    PusoyWildLog
   },
   data() {
     return {
@@ -3309,7 +3312,7 @@ export default {
         4: 'MINI'
       },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
-      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117]
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126]
     }
   },
   computed: {},
