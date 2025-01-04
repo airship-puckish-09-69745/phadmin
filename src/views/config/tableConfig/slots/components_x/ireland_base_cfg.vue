@@ -45,6 +45,7 @@
               <el-option label="FireLink" :value="166" />
               <el-option label="FireLinkMars" :value="167" />
               <el-option label="PharaohTreasure" :value="168" />
+              <el-option label="PharaohTreasureMars" :value="169" />
               <el-option label="EpicAce" :value="170" />
               <el-option label="EpicAceMars" :value="171" />
               <el-option label="172:WrathOfZeus" :value="172" />
