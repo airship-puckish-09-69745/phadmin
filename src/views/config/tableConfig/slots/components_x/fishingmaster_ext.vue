@@ -94,6 +94,19 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const wildBigFreeValue = this.cfg.WildBigFree;
+      const numbers = wildBigFreeValue.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbers.length !== 5) {
+        this.$message.error('免费模式 wild在12345拓展成一整列的概率  err:请输入5个数字并用,隔开');
+        return;
+      }
+      const big = 3000
+      const invalidNumbers = numbers.filter(num => isNaN(num) || num > big);
+      if (invalidNumbers.length > 0) {
+        this.$message.error(`免费模式 wild在12345拓展成一整列的概率  err:每个数字必须小于等于${big}‱`);
+        return;
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())

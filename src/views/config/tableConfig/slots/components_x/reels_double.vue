@@ -133,6 +133,31 @@ export default {
       this.setData()
 
       const $this = this
+      if (this.slotsData.SlotsType === 180) {
+        for (const ReelsRate_idx in this.slotsData.ReelsRateConfigDistribution) {
+          const ReelsRate = this.slotsData.ReelsRateConfigDistribution[ReelsRate_idx]
+          if (ReelsRate['Config']['Id']===2){
+            const Items = ReelsRate.Items
+            for (const Item_idx in Items){
+              const Item = Items[Item_idx]
+              let sum = 0;
+              let wild = 0
+              for (const Symbol_idx in Item.Symbol){
+                const Symbol = Item.Symbol[Symbol_idx]
+                sum = sum + Symbol.Number
+                if (Symbol.Symbol == 10){
+                  wild = Symbol.Number
+                }
+              }
+              const prop = 10
+              if (wild/sum > prop/100){
+                this.$message.error(`免费模式 轴${Item.Reels+1} wild权重占比大于${prop}% wild:${wild} sum:${sum} 占比:${wild/sum*100}%`);
+                return;
+              }
+            }
+          }
+        }
+      }
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
