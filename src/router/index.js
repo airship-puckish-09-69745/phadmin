@@ -1475,12 +1475,6 @@ export const asyncRoutes = [
             meta: { title: '德州专业版', noCache: true },
             children: [
               {
-                path: 'texasNlhInsure',
-                component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
-                name: 'texasNlhInsure',
-                meta: { title: '保险数据' }
-              },
-              {
                 path: 'texasNlhJP',
                 component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
                 name: 'texasNlhJP',
