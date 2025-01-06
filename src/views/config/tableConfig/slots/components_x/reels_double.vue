@@ -149,7 +149,7 @@ export default {
                   wild = Symbol.Number
                 }
               }
-              const prop = 10
+              const prop = 5
               if (wild/sum > prop/100){
                 this.$message.error(`免费模式 轴${Item.Reels+1} wild权重占比大于${prop}% wild:${wild} sum:${sum} 占比:${wild/sum*100}%`);
                 return;
