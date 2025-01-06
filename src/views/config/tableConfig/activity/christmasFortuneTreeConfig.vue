@@ -39,8 +39,12 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动图标URL：" :required="true">
-                    <ImagePicker v-model="item.Icon" />
+                  <el-form-item label="当日发奖额阈值：" :required="true">
+                    <el-input v-model.number="item.DayPrizeThreshold" size="mini">
+                      <template slot="append">（₱）</template>
+                    </el-input>
+                    <span v-if="todayRaffleAmount > item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
+                    <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -95,6 +99,16 @@
                     @check-change="handleCheckChange"
                   >
                   </el-tree>
+                </el-form-item>
+                <el-form-item label="给选中游戏排序：" :required="true">
+                  <el-button size="mini" type="primary" @click="showGamesSortDialog()">
+                    排序
+                  </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
+                <el-form-item label="活动图标URL：" :required="true">
+                  <ImagePicker v-model="item.Icon" />
                 </el-form-item>
               </el-col>
             </el-form>
@@ -165,18 +179,7 @@
           <el-form ref="edit.item" :model="edit.item" label-width="250px" size="small">
             <el-form-item label="档次条件：" :required="true" prop="RaffleLevel">
               <el-col :span="15">
-                <el-select v-if="!edit.isEdit" v-model="edit.item.RaffleLevel" size="mini" >
-                  <el-option
-                    v-for="item in RaffleLevelList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-                <span v-else>
-                  {{ edit.item.RaffleLevel }}
-                </span>
-                （₱）
+                <el-input v-model.number="edit.item.RaffleLevel"><template slot="append">（₱）</template></el-input>
               </el-col>
             </el-form-item>
 
@@ -215,7 +218,7 @@
                     width="200"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">（₱）</template></el-input>
+                      <el-input v-model.number="scope.row.Reward" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "><template slot="append">（₱）</template></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -313,7 +316,82 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="白名单配置">
+          <el-form ref="item" label-width="220px">
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
+                  <el-option
+                    v-for="item in appIdOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
+                <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
+                  <el-option
+                    v-for="item in siteIdOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
+
+      <el-dialog
+        title="给选中游戏排序"
+        :visible.sync="edit.gamesSortDialogVisible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+      >
+        <el-table
+          :data="GamesSorted"
+          border
+          style="width: 100%"
+          :cell-style="libShow.DefaultTableCell"
+        >
+          <el-table-column
+            prop="GameId"
+            label="游戏Id"
+            width="200"
+          />
+          <el-table-column
+            prop="Name"
+            label="游戏名称"
+            width="200"
+          />
+          <el-table-column
+            prop="OrderNo"
+            label="排序编号"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input
+                v-model="scope.row.OrderNo"
+                size="mini"
+                oninput=" if(value < 0 || value === '' || value == null){value = 0;} "
+                @change="onOrderNoChange"
+              ></el-input>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-row style="top: 10px">
+          <el-button type="primary" @click="saveGamesSort">保存</el-button>
+        </el-row>
+      </el-dialog>
 
       <el-row>
         <br>
@@ -466,7 +544,17 @@ export default {
           { RankStart: 71, RankEnd: 100, Reward: 88 },
         ],
         GameIdCfg: [],
+        WhitelistCfg: {
+          AppIdList: [],
+          SiteIdList: []
+        }
       },
+
+      GamesSorted: [
+        {
+          GameId: 1, Name: '测试游戏1', OrderNo: 1
+        }
+      ],
 
       RaffleLevelList: [
         { label: 200, value: 200 },
@@ -480,9 +568,11 @@ export default {
       ],
 
       edit: {
+        raffleLevel: 0,
         visible: false,
         item: newPrizePoolCfg(),
-        isEdit: false
+        isEdit: false,
+        gamesSortDialogVisible: false,
       },
 
       treeData: [{
@@ -501,17 +591,58 @@ export default {
         }]
       }],
 
+      appIdOptions: [
+        {
+          value: 1000002,
+          label: '内部1000002'
+        },
+        {
+          value: 1000003,
+          label: '提审1000003'
+        },
+        {
+          value: 1000005,
+          label: '正式1000005'
+        },
+      ],
+
+      siteIdOptions: [
+        {
+          value: 'Dev',
+          label: 'Dev'
+        },
+        {
+          value: 'BP',
+          label: 'BP'
+        },
+        {
+          value: 'GP',
+          label: 'GP'
+        },
+        {
+          value: 'AP',
+          label: 'AP'
+        },
+        {
+          value: 'PG',
+          label: 'PG'
+        },
+      ],
+
       filterText: '',
 
       defaultProps: {
         label: 'label',
         children: 'children',
         disabled: 'disabled',
-      }
+      },
+
+      todayRaffleAmount: 0,
     }
   },
   created() {
     this.getData()
+    this.getTodayRaffleAmount()
     console.log(1)
   },
   methods: {
@@ -534,6 +665,26 @@ export default {
       this.edit.isEdit = false
       this.edit.visible = true
     },
+    showGamesSortDialog() {
+      this.edit.gamesSortDialogVisible = true
+    },
+    saveGamesSort() {
+      this.edit.gamesSortDialogVisible = false
+      // 根据排序编号重新排序
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
+      // 保存排序
+      this.item.GameIdCfg = []
+      this.GamesSorted.forEach(item => {
+        this.item.GameIdCfg.push(item.GameId)
+      })
+    },
+    onOrderNoChange() {
+      this.GamesSorted.sort((a, b) => {
+        return a.OrderNo - b.OrderNo
+      })
+    },
     // 操作类函数
     clickData(row, column, event) {
       if (row.status === 2) {
@@ -549,6 +700,7 @@ export default {
       if (raffleLevel) {
         const _data = this.getDataByTableMoney(raffleLevel)
         if (_data) {
+          this.edit.raffleLevel = raffleLevel
           Object.assign(this.edit.item, _data)
         }
       }
@@ -588,6 +740,16 @@ export default {
       return null
     },
     save() {
+      if (this.edit.isEdit && this.edit.raffleLevel !== this.edit.item.RaffleLevel) {
+        console.log('raffleLevel changed, old:' + this.edit.raffleLevel + ' new:' + this.edit.item.RaffleLevel)
+        for (const o in this.item.PrizePoolCfg) {
+          if (this.item.PrizePoolCfg[o].RaffleLevel === this.edit.raffleLevel) {
+            this.item.PrizePoolCfg[o].RaffleLevel = this.edit.item.RaffleLevel
+            break
+          }
+        }
+      }
+
       // 检查是否有重复的奖励
       for (let i = 0; i < this.edit.item.PrizeCfg.length; i++) {
         const prize = this.edit.item.PrizeCfg[i]
@@ -614,6 +776,7 @@ export default {
         }
       })
       this.edit.item.RewardMax = maxReward
+      console.log('maxReward:', maxReward)
 
       const newData = JSON.parse(JSON.stringify(this.edit.item))
       const index = this.item.PrizePoolCfg.findIndex(item => item.RaffleLevel === this.edit.item.RaffleLevel)
@@ -648,6 +811,7 @@ export default {
           console.log('christmasConfig', response.Data)
 
           const rankCfg = JSON.parse(JSON.stringify($this.item.RankCfg))
+          const whitelistCfg = JSON.parse(JSON.stringify($this.item.WhitelistCfg))
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.item = JSON.parse(response.Data.Data)
@@ -674,6 +838,14 @@ export default {
 
             if ($this.item.RankCfg.length === 0) {
               $this.item.RankCfg = rankCfg
+            }
+
+            if ($this.item.WhitelistCfg == null) {
+              $this.item.WhitelistCfg = whitelistCfg
+            }
+
+            if ($this.item.DayPrizeThreshold != null) {
+              $this.item.DayPrizeThreshold /= 1000
             }
 
             this.$refs.compare.SetOldVal(old)
@@ -724,6 +896,12 @@ export default {
       }
 
       cpy.GameIdCfg = this.item.GameIdCfg
+
+      cpy.WhitelistCfg = this.item.WhitelistCfg
+
+      if (this.item.DayPrizeThreshold!= null) {
+        cpy.DayPrizeThreshold = this.item.DayPrizeThreshold * 1000
+      }
 
       return JSON.stringify(cpy)
     },
@@ -786,24 +964,52 @@ export default {
             this.treeData.push(cty)
           }
 
+          // 更新选中游戏的排序
+          this.updateGamesSorted()
+
           console.log(this.item.GameIdCfg)
           this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
           console.log(data)
         }
       })
     },
-    handleCheckChange(data, checked, indeterminate) {
-      const nodes = this.$refs.tree.getCheckedNodes()
-
-      this.item.GameIdCfg = []
-
-      for (let i = 0; i < nodes.length; i++) {
-        const node = nodes[i]
-        if (node.label === 'Slot' || node.label === 'Poker' || node.label === 'Casino') {
-          continue
+    updateGamesSorted() {
+      this.GamesSorted = []
+      for (let i = 0; i < this.item.GameIdCfg.length; i++) {
+        const gameId = this.item.GameIdCfg[i]
+        let name = ''
+        for (let j = 0; j < this.treeData.length; j++) {
+          const cty = this.treeData[j]
+          for (let k = 0; k < cty.children.length; k++) {
+            const game = cty.children[k]
+            if (game.id === gameId) {
+              name = game.label
+              break
+            }
+          }
         }
-        this.item.GameIdCfg.push(node.id)
+        this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
       }
+    },
+    handleCheckChange(data, checked, indeterminate) {
+      console.log('handleCheckChange', data, checked, indeterminate)
+      if (data.label === 'Slot' || data.label === 'Poker' || data.label === 'Casino') {
+        return
+      }
+
+      const index = this.item.GameIdCfg.indexOf(data.id)
+      if (checked) {
+        if (index < 0) {
+          this.item.GameIdCfg.push(data.id)
+        }
+      } else {
+        if (index >= 0) {
+          this.item.GameIdCfg.splice(index, 1)
+        }
+      }
+
+      // 更新选中游戏的排序
+      this.updateGamesSorted()
 
       console.log(this.item.GameIdCfg)
     },
@@ -822,6 +1028,30 @@ export default {
       } else {
         this.item.RuleImgVer.splice(index, 1)
       }
+    },
+    onAppIdOptionsChange() {
+      console.log('onAppIdOptionsChange', this.item.WhitelistCfg.AppIdList)
+    },
+    onSiteIdOptionsChange() {
+      console.log('onSiteIdOptionsChange', this.item.WhitelistCfg.SiteIdList)
+    },
+    getTodayRaffleAmount() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/activity/christmas/today/raffle/amount'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('getTodayRaffleAmount', response.Data)
+          if (response.Data) {
+            $this.todayRaffleAmount = response.Data / 1000
+            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+          }
+        }
+      })
     }
   }
 }

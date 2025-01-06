@@ -66,6 +66,14 @@
                   </template>
                 </el-table-column>
                 <el-table-column
+                  prop="JackpotShowBet"
+                  label="奖池显示缩小配置"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.JackpotShowBet }}
+                  </template>
+                </el-table-column>
+                <el-table-column
                   prop="Gid"
                   label="区间"
                   width="1100"
@@ -128,6 +136,9 @@
         </el-form-item>
         <el-form-item label="基础投注">
           <el-input v-model="item.Bet"></el-input>
+        </el-form-item>
+        <el-form-item label="奖池显示缩小配置">
+          <el-input v-model="item.JackpotShowBet"></el-input>
         </el-form-item>
         <el-form-item label="统计步数">
           <el-input v-model.number="item.StepCfg"></el-input>
@@ -204,6 +215,7 @@ export default {
         OddsList: [{MinOdds: 0, MaxOdds: 0}],
         Bet: 0,
         StepCfg:0,
+        JackpotShowBet:0,
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -263,6 +275,7 @@ export default {
       this.idx = idx
       this.item.Gid = row.Gid
       this.item.Bet = row.Bet
+      this.item.JackpotShowBet = row.JackpotShowBet
       this.item.OddsList = row.OddsList
       this.showBtn = 1
       this.selectGameVisible = true

@@ -110,8 +110,19 @@
             <el-button v-if="!configData.lark" size="mini" type="danger" icon="el-icon-message" @click="setMessgeStatus">已禁用通知</el-button>
           </el-tooltip>
         </el-form-item>
+        <el-form-item>
+          <el-button size="mini" type="primary" icon="el-icon-message" @click="syncConfig=true">同步配置到CDN</el-button>
+        </el-form-item>
       </el-form>
     </el-row>
+    <el-dialog
+        title="同步配置到CDN"
+        :visible.sync="syncConfig"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+    >
+      <SyncConfig v-model="syncConfig" :data="clientDB.ShowData" :lobby="LobbyVersion"></SyncConfig>
+    </el-dialog>
     <div style="padding-top: 10px">
       <el-table
         ref="filterTable"
@@ -545,13 +556,15 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare/index.vue'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish/index.vue'
+import SyncConfig from './SyncConfig/SyncConfig.vue'
 
 const filterMap = {}
 
 export default {
-  components: { Compare, Publish },
+  components: { Compare, Publish, SyncConfig },
   data() {
     return {
+      syncConfig: false,
       canEdit: true,
       config: {},
       configData: {},

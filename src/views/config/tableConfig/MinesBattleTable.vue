@@ -214,14 +214,14 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item label="练习场：" :required="true">
-              <el-radio-group v-model.number="edit.item.IsPractice">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="11">-->
+<!--            <el-form-item label="练习场：" :required="true">-->
+<!--              <el-radio-group v-model.number="edit.item.IsPractice">-->
+<!--                <el-radio :label="1">是</el-radio>-->
+<!--                <el-radio :label="0">否</el-radio>-->
+<!--              </el-radio-group>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
         </el-row>
 
         <el-row>
@@ -305,40 +305,22 @@
 
         <el-row>
           <el-col :span="11">
-            <el-form-item
-              label="是否练习场："
-              :required="true"
-              prop="item.IsPractice"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.IsPractice" placeholder="是否练习场"/>
-            </el-form-item>
+<!--            <el-form-item-->
+<!--              label="是否练习场："-->
+<!--              :required="true"-->
+<!--              prop="item.IsPractice"-->
+<!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.IsPractice" placeholder="是否练习场"/>-->
+<!--            </el-form-item>-->
           </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="隐藏场次："
-              :required="true"
-              prop="item.HideLevel"
-              :rules="dataRule(true,{type:'n',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.HideLevel" placeholder="隐藏场次"/>
-            </el-form-item>
-          </el-col>
+
         </el-row>
         <el-row>
           <el-col :span="11">
             <game-level v-model="edit.item.Level"/>
           </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="最大旁观数："
-              :required="true"
-              prop="item.WatchTimesMax"
-              :rules="dataRule(true,{type:'f',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.WatchTimesMax" placeholder="最大旁观数"/>
-            </el-form-item>
-          </el-col>
+
         </el-row>
         <el-row>
           <el-col :span="11">
@@ -351,16 +333,16 @@
               <el-input v-model.number="edit.item.HideCarry" placeholder="隐藏目标值"/>
             </el-form-item>
           </el-col>
-          <el-col :span="11">
-            <el-form-item
-              label="推荐倍数："
-              :required="true"
-              prop="item.RecommendMoney"
-              :rules="dataRule(true,{type:'f',range:'0'})"
-            >
-              <el-input v-model.number="edit.item.RecommendMoney" placeholder="推荐倍数"/>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="11">-->
+<!--            <el-form-item-->
+<!--              label="推荐倍数："-->
+<!--              :required="true"-->
+<!--              prop="item.RecommendMoney"-->
+<!--              :rules="dataRule(true,{type:'f',range:'0'})"-->
+<!--            >-->
+<!--              <el-input v-model.number="edit.item.RecommendMoney" placeholder="推荐倍数"/>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
         </el-row>
         <el-row>
           <el-col :span="11">
@@ -679,6 +661,7 @@ export default {
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
     initFormData(bEdit, ID) {
+      console.log( this.edit.item.FirstPassCellMoney,  this.edit.item.TwoPassCellMoney)
       this.edit.isEdit = bEdit
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
@@ -689,6 +672,8 @@ export default {
             this.$refs.compare.SetOldVal(_data)
           }
         }
+        this.edit.item.FirstPassCellMoney /=1000
+        this.edit.item.TwoPassCellMoney /=1000
       }
     },
     dataRule(required, config) {
@@ -746,6 +731,8 @@ export default {
       return true
     },
     save() {
+      this.edit.item.FirstPassCellMoney *= 1000
+      this.edit.item.TwoPassCellMoney *= 1000
       if (!this.checkData()) return
       if (!this.checkForce()) return
       if (this.edit.isEdit) {

@@ -430,7 +430,7 @@
                     <el-table-column
                       v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(min)"
-                      width="150"
+                      width="160"
                     >
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.NumMin" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
@@ -439,8 +439,12 @@
                     <el-table-column
                       v-if="envProjectName != 'ph_audit'"
                       label="Jp开奖人数(max)"
-                      width="150"
+                      width="160"
                     >
+                      <template slot="header">
+                        <p style="text-align: center">  Jp开奖人数(max)</p>
+                        <span style="color: red;font-size: 11px">  注: 开奖人数max只能<=10</span>
+                      </template>
                       <template slot-scope="scope">
                         <el-input v-model.number="scope.row.NumMax" oninput="if(value < 0 || value == '' || value == null || value == 'NAN'){value = 0;};value=parseInt(value)" />
                       </template>
@@ -452,7 +456,7 @@
                     >
                       <template slot="header">
                         <p style="text-align: center">  Jp开奖人数(时间段控制)</p>
-                        <span style="color: red;font-size: 11px">  注: 没有覆盖的时间段按左边配置走</span>
+                        <span style="color: red;font-size: 11px">  注: 1.没有覆盖的时间段按左边配置走 2.开奖人数max只能<=10</span>
                       </template>
                       <template slot-scope="scope">
                         <el-button  type="primary" icon="el-icon-edit" circle size="mini" @click="showJpDayLimitDialog(scope.row,scope.$index)" />

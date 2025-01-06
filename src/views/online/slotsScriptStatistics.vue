@@ -615,7 +615,12 @@
                   <template slot="label">
                     奖池剩余金额
                   </template>
-                  {{ bigPrize.pool_money / 1000 }}
+                  <span v-if="cfgMap[bigPrizeForm.gid] && cfgMap[bigPrizeForm.gid].JackpotShowBet">
+                    {{ (bigPrize.pool_money / 1000 /parseInt(cfgMap[bigPrizeForm.gid].JackpotShowBet)).toFixed(2)}}
+                  </span>
+                  <span v-else>
+                    {{ bigPrize.pool_money / 1000 }}
+                  </span>
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <template slot="label">
@@ -743,6 +748,10 @@
           <el-row />
         </el-row>
       </el-tab-pane>
+
+      <el-tab-pane label="任务统计" name="mission">
+        <slotsMissionstatistics v-if="showMiss"></slotsMissionstatistics>
+      </el-tab-pane>
     </el-tabs>
 
     <el-dialog
@@ -827,12 +836,13 @@ import { $libShow, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import XLSX from 'xlsx'
 import { Message } from 'element-ui'
+import slotsMissionstatistics from '@/views/online/components/slotsMissionStatistics.vue'
 
 const filterMap = {}
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, MoneyInput },
+  components: { Compare, Publish, MoneyInput, slotsMissionstatistics },
 
   data() {
     return {
@@ -918,6 +928,7 @@ export default {
       stepData: {},
       cacheStep: {},
       currentBaseBet:{},
+      showMiss: false,
     }
   },
   created() {
@@ -948,7 +959,6 @@ export default {
     getTotalOrdinaryBetTimes() {
       let cnt = 0
       for (const o of this.ordinaryReturnClientDB.TotalData) {
-        console.log("==================="+o)
         cnt += parseInt(o.times)
       }
       return cnt
@@ -984,6 +994,9 @@ export default {
       if (parseInt(tab.index) === 2) {
         this.queryBase(this.scripStepForm.gid)
         // this.getSlotsScriptStep()
+      }
+      if (parseInt(tab.index)=== 3){
+        this.showMiss = true
       }
     },
     newItem() {
@@ -1054,7 +1067,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet }
+              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet ,JackpotShowBet:o.JackpotShowBet}
             }
           }
         }

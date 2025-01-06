@@ -131,15 +131,15 @@
                   </template>
 
                 </el-table-column>
-                <el-table-column
-                  prop="GameIconLink"
-                  label="游戏icon"
-                  width="200"
-                >
-                  <template v-slot:default="scope">
-                    <ImagePicker v-model="scope.row.GameIconLink" />
-                  </template>
-                </el-table-column>
+<!--                <el-table-column-->
+<!--                  prop="GameIconLink"-->
+<!--                  label="游戏icon"-->
+<!--                  width="200"-->
+<!--                >-->
+<!--                  <template v-slot:default="scope">-->
+<!--                    <ImagePicker v-model="scope.row.GameIconLink" />-->
+<!--                  </template>-->
+<!--                </el-table-column>-->
                 <el-table-column
                   prop="GameSort"
                   label="排序"
@@ -367,7 +367,7 @@
 <!--          </el-row>-->
 <!--        </el-tab-pane>-->
         <!--        ///////////////////////////////-->
-        <el-tab-pane label="单独游戏推荐配置">
+        <el-tab-pane label="侧拉栏游戏推荐">
           <el-row :gutter="5">
             <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateZoneGame()">
               添加配置
@@ -380,6 +380,11 @@
                 :cell-style="libShow.DefaultTableCell"
                 @row-click="clickDataZoneGame"
               >
+                <el-table-column
+                  prop="Desc"
+                  label="描述"
+                  width="200"
+                />
                 <el-table-column
                   prop="Gid"
                   label="游戏"
@@ -467,11 +472,11 @@
           </el-col>
         </el-form-item>
 
-        <el-form-item label="游戏icon：" :required="true" prop="GameIconLink">
-          <el-col :span="15">
-            <ImagePicker v-model="edit.item.GameIconLink" />
-          </el-col>
-        </el-form-item>
+<!--        <el-form-item label="游戏icon：" :required="true" prop="GameIconLink">-->
+<!--          <el-col :span="15">-->
+<!--            <ImagePicker v-model="edit.item.GameIconLink" />-->
+<!--          </el-col>-->
+<!--        </el-form-item>-->
         <el-form-item label="游戏排序：" :required="true" prop="GameSort">
           <el-col :span="15">
             <el-input v-model.number="edit.item.GameSort" />
@@ -601,9 +606,16 @@
       :close-on-press-escape="false"
     >
       <el-form ref="editZoneGame.item" :model="editZoneGame.item" label-width="250px" size="small">
+        <el-form-item
+          prop="Desc"
+          label="描述"
+          width="100"
+        >
+          <el-input v-model="editZoneGame.item.Desc" />
+        </el-form-item>
         <el-form-item label="游戏：" :required="true" prop="Gids">
           <el-col :span="15">
-            <el-select v-model="editZoneGame.item.Gids" multiple placeholder="请选择" >
+            <el-select v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
               <el-option
                 v-for="itemZoneGame in gameSelect"
                 :key="itemZoneGame.id"
@@ -655,15 +667,15 @@
               </template>
 
             </el-table-column>
-            <el-table-column
-              prop="IconLink"
-              label="推荐游戏icon"
-              width="200"
-            >
-              <template v-slot:default="scope">
-                <ImagePicker v-model="scope.row.IconLink" />
-              </template>
-            </el-table-column>
+<!--            <el-table-column-->
+<!--              prop="IconLink"-->
+<!--              label="推荐游戏icon"-->
+<!--              width="200"-->
+<!--            >-->
+<!--              <template v-slot:default="scope">-->
+<!--                <ImagePicker v-model="scope.row.IconLink" />-->
+<!--              </template>-->
+<!--            </el-table-column>-->
             <el-table-column
               prop="GameSort"
               label="排序"
@@ -723,7 +735,7 @@ function newItemHallGame() {
   return { Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }
 }
 function newItemZoneGame() {
-  return { Index : -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }] }
+  return { Desc: '', Index: -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }] }
 }
 export default {
   components: { Compare, ImagePicker, Publish },
@@ -966,7 +978,7 @@ export default {
             } else {
               dataZone[objZone.CategoryID] = [gameZone]
             }
-            const gameSelectInfo = { id: objZone.Gid, name: objZone.Description }
+            const gameSelectInfo = { id: objZone.Gid, name: objZone.Name }
             this.gameSelect.push(gameSelectInfo)
           }
 
@@ -983,8 +995,14 @@ export default {
             }
             this.treeDataZone.push(ctyZone)
           }
-
-          this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
+          this.$nextTick(() => {
+            const treeGameZone = this.$refs.treeGameZone
+            if (treeGameZone) {
+              // 现在可以安全地使用childComponent
+              treeGameZone.setCheckedKeys(this.item.GameList)
+            }
+          })
+          // this.$refs.treeGameZone.setCheckedKeys(this.item.GameList)
         }
       })
     },
@@ -1065,7 +1083,14 @@ export default {
             }
             this.mayLikeTreeData.push(cty)
           }
-          this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+          this.$nextTick(() => {
+            const treeWinMore = this.$refs.treeWinMore
+            if (treeWinMore) {
+              // 现在可以安全地使用childComponent
+              treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
+            }
+          })
+          // this.$refs.treeWinMore.setCheckedKeys(this.WinMoreItem.GameList)
         }
       })
     },
@@ -1158,6 +1183,11 @@ export default {
               this.zoneGame = []
             } else {
               this.zoneGame = this.item.ZoneGame
+              for (let i = 0; i < this.zoneGame.length; i++) {
+                if(this.zoneGame[i].Desc == null) {
+                  this.zoneGame[i].Desc = ''
+                }
+              }
             }
             if (this.item.HallGame == null) {
               this.hallGame = []
@@ -1199,7 +1229,7 @@ export default {
     },
     getEditTitleHallGame() {
       this.isDisabled = this.editHallGame.isEdit
-      return this.editHallGame.isEdit ? '修改转场配置' : '新增转场配置'
+      return this.editHallGame.isEdit ? '修改侧拉栏游戏推荐' : '新增侧拉栏游戏推荐'
     },
     // 操作类函数
     clickData(row, column, event) {
@@ -1285,7 +1315,14 @@ export default {
         this.gameZoneOther.push(newData)
       }
       this.gameZoneOtherGameList = []
-      this.$refs.treeGameOtherZone.setCheckedKeys([])
+      this.$nextTick(() => {
+        const treeGameOtherZone = this.$refs.treeGameOtherZone
+        if (treeGameOtherZone) {
+          // 现在可以安全地使用childComponent
+          treeGameOtherZone.setCheckedKeys([])
+        }
+      })
+      // this.$refs.treeGameOtherZone.setCheckedKeys([])
       this.editOtherGameZone.visible = false
       this.editOtherGameZone.isEdit = false
     },
@@ -1351,13 +1388,13 @@ export default {
         this.$alert(`添加错误，游戏不存在`, '提示', { type: 'warning' })
         return
       }
-      for (let i = 0; i < this.editZoneGame.item.Games.length; i++) {
-        const game = this.editZoneGame.item.Games[i]
-        if (!this.checkGames(game.Gid)) {
-          this.$alert(`推荐游戏添加错误，游戏不存在`, '提示', { type: 'warning' })
-          return
-        }
-      }
+      // for (let i = 0; i < this.editZoneGame.item.Games.length; i++) {
+      //   const game = this.editZoneGame.item.Games[i]
+      //   if (!this.checkGames(game.Gid)) {
+      //     this.$alert(`推荐游戏添加错误，游戏不存在`, '提示', { type: 'warning' })
+      //     return
+      //   }
+      // }
       const index = this.zoneGame.findIndex(item => item.Index === this.editZoneGame.item.Index)
       if (this.editZoneGame.isEdit) {
         this.zoneGame.splice(index, 1, newData)
@@ -1391,7 +1428,13 @@ export default {
         if (_data) {
           Object.assign(this.editOtherGameZone.item, _data)
           this.gameZoneOtherGameList = this.editOtherGameZone.item.GameList
-          this.$refs.treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
+          this.$nextTick(() => {
+            const treeGameOtherZone = this.$refs.treeGameOtherZone
+            if (treeGameOtherZone) {
+              // 现在可以安全地使用childComponent
+              treeGameOtherZone.setCheckedKeys(this.editOtherGameZone.item.GameList)
+            }
+          })
         }
       }
     },
@@ -1515,6 +1558,7 @@ export default {
     },
     setData() {
       this.form.Data = this.encodeData()
+      console.log('setData', this.form.Data)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
@@ -1556,16 +1600,43 @@ export default {
     },
     changeZoneGame(id) {
       console.log('changeHallGame===>', id)
-      if (!this.checkGames(id)) {
-        this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
-        return
-      }
+      // if (!this.checkGames(id)) {
+      //   this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
+      //   return
+      // }
       const length = this.editZoneGame.item.Games.length
       for (let i = 0; i < length - 1; i++) {
         if (id === this.editZoneGame.item.Games[i].Gid) {
           console.log('changeHallGame', id)
-          Message.error('重复')
+          Message.error('重复添加推荐游戏')
           this.editZoneGame.item.Games[length - 1].Gid = 1
+        }
+      }
+    },
+    changeZoneGameGids(id) {
+      console.log('changeHallGame===>', id)
+      // if (!this.checkGames(id)) {
+      //   this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
+      //   return
+      // }
+      const gid = id[id.length-1]
+      const lengthZoneGame = this.zoneGame.length
+      for (let i = 0; i < lengthZoneGame - 1; i++) {
+        const gids = this.zoneGame[i].Gids
+        if (gids.includes(gid)) {
+          console.log('changeHallGame', gid)
+          Message.error('重复添加游戏,其他项目存在')
+          this.editZoneGame.item.Gids.splice(length - 1, 1)
+          return
+        }
+      }
+      const length = this.editZoneGame.item.Gids.length
+      for (let i = 0; i < length - 1; i++) {
+        if (gid === this.editZoneGame.item.Gids[i]) {
+          console.log('changeHallGame', gid)
+          Message.error('重复添加游戏，本项目存在')
+          this.editZoneGame.item.Gids.splice(length - 1, 1)
+          return
         }
       }
     }

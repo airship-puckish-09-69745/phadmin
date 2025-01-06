@@ -384,8 +384,22 @@ export default {
         120: 'Tongits Swap',
         162: 'Major Ace',
         166: 'Fire Link',
+        164: 'MahjongFortune',
+        188: 'StreetFighting',
+        192: 'BountyRaid',
+        180: 'FishingMaster',
+        172: 'WrathOfZeus',
+        122: 'Filipino Mahjong',
         123: 'Mines Battle',
+        124: 'Jackpot Wheel',
+        125: 'Free Spin',
         170: 'Epic Ace',
+        174: 'Treasure Bowl',
+        176: 'Puppy Home',
+        182: 'God Of Fortune',
+        186: 'MahjongJackpot',
+        178: 'Mayan Totem',
+        9: 'Teen Patti',
         10000: '汇总'
       },
 
@@ -393,7 +407,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123,117,116], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 124, 125, 122, 9], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -515,9 +529,9 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174,178)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 166, 170)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 192, 180, 166, 170, 176, 182, 174, 186,178)
         }
       }
     },
@@ -531,7 +545,7 @@ export default {
       return true
     },
     isPoker(o) {
-      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123]
+      const pokerTypes = [22, 21, 28, 15, 23, 29, 34, 32, 49, 46, 35, 113, 120, 123, 117,116]
       for (let i = 0; i < pokerTypes.length; i++) {
         if (pokerTypes[i] === o) {
           return true

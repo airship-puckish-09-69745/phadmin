@@ -94,15 +94,18 @@ export function LibShow() {
     4: '♠'
   }
   this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
+    188: 'StreetFighting',//独占一行
+    192: 'BountyRaid',//独占一行
+    180: 'FishingMaster',//独占一行
     16: 'Baccarat', 17: 'wingo', 18: '球队标转盘', 19: '动物转盘', 20: '扫雷', 22: 'Tongits', 23: 'Lucky 9', 25: 'Color Game', 31: 'Tongits经典',
     34: 'Pusoy-Dos', 37: 'BlackJack', 46: '多米诺',
     51: '凤凰', 52: '睡美人', 53: '小丑', 	54: '黄金列车', 55: '澳洲', 56: '象鼻神', 57: '黄金矿工', 58: '阿拉丁',
     59: '芝加哥', 60: '糖果派', 61: 'fireKick',
     76: 'Candy Rush', 78: 'SuperGems', 80: 'Candy Craze', 82: 'Millionaire', 84: 'FortuneAce', 86: 'SuperGemsII', 88: 'Lucky777', 90: 'FortuneComing', 92: 'UltraAce', 94: 'Wild Buffalo', 96: 'RomanArena', 98: 'SuperTongit',// slots
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 119: 'Windropc积分', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
-    112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing',
+    112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin',
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
-    170: 'EpicAce'// slots
+    170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem'// slots
   }
 
   this.NumMap = {
