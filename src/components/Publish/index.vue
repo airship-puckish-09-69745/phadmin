@@ -645,10 +645,17 @@ export default {
         if (oldValue[key]) {
           oldVal = oldValue[key]
         }
+
         if (newValue[key]) {
           newVal = newValue[key]
         }
-
+        // 0值兼容
+        if (oldValue[key] === 0) {
+          oldVal = 0
+        }
+        if (newValue[key] === 0) {
+          newVal = 0
+        }
         // 如果值相等，不需要对比，直接跳过
         if (this.tranString(oldVal) === this.tranString(newVal)) {
           continue

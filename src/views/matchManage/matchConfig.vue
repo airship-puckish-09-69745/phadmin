@@ -49,6 +49,18 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="APPID：" :required="true">
+          <el-select v-model="form.appId" placeholder="请选择" size="mini">
+            <el-option label="全部" :value="-1" />
+            <el-option
+              v-for="item in appidInfoCfgs"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" @click="resetSearch">重置查询条件</el-button>
           <el-button type="primary" size="mini" @click="getList">查询</el-button>
@@ -86,6 +98,7 @@
         <el-table-column
           prop="game_id"
           label="游戏名称"
+          width="100"
         >
           <template slot-scope="scope">
             {{ getGameName(scope.row.game_id) }}
@@ -105,6 +118,21 @@
         >
           <template slot-scope="{row}">
             <DateTimeShow :show-type="2" :timestamp="row.end_time" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="sort"
+          label="赛事排序"
+          width="60"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="repeatType"
+          label="赛事类型"
+        >
+          <template slot-scope="scope">
+            {{ getRepeatTypeShow(scope.row.repeat_type) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -659,7 +687,8 @@ export default {
         gameId: -1,
         status: -1,
         csId: -1,
-        repeatType: -1
+        repeatType: -1,
+        appId: -1
       },
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
@@ -875,7 +904,9 @@ export default {
         daySections: '每日时段',
         awardType: '奖励类型',
         prizeExtra: '动态奖池信息',
-        signExtra: '报名额外信息'
+        signExtra: '报名额外信息',
+        associateKey: '推荐方案',
+        dcReport: '是否上报数据中心',
       },
       singleCopy: {
         id: 0,
@@ -896,7 +927,6 @@ export default {
   },
   mounted() {
     this.getList()
-    console.log('1')
     // 自动清理过期配置
   },
   methods: {
@@ -905,6 +935,7 @@ export default {
       this.form.status = -1
       this.form.csId = -1
       this.form.repeatType = -1
+      this.form.appId = -1
     },
     getCsCfgs() {
       request({
@@ -955,6 +986,7 @@ export default {
           Status: this.form.status,
           CsId: this.form.csId,
           RepeatType: this.form.repeatType,
+          AppId: this.form.appId,
           PageNum: this.page,
           PageSize: this.limit
         }
@@ -963,37 +995,26 @@ export default {
           const objs = response.Data || []
           if (objs.total > 0) {
             this.total = objs.total
-            this.tableData = objs.list
-            if (this.tableData.length > 0) {
-              for (let i = 0; i < this.tableData.length; i++) {
-                if (this.tableData[i].status == 0) {
-                  this.tableData[i].openShow = true
-                } else {
-                  this.tableData[i].openShow = false
-                }
-
+            this.tableData = []
+            const tableDataCpy = objs.list
+            if (tableDataCpy.length > 0) {
+              for (let i = 0; i < tableDataCpy.length; i++) {
                 let show_appinfo = ''
-                const appInfoTemp = JSON.parse(this.tableData[i].app_info_cfg)
-
-                for (let i = 0; i < appInfoTemp.length; i++) {
-                  if (i == 0) {
-                    show_appinfo += appInfoTemp[i].appId + ' '
-                  } else {
-                    show_appinfo += '  ' + appInfoTemp[i].appId + ' '
+                show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
+                if (show_appinfo !== '') {
+                  tableDataCpy[i].show_appinfo = show_appinfo
+                  tableDataCpy[i].openShow = tableDataCpy[i].status === 0
+                  if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
+                    tableDataCpy[i].open_days_limit = 0
                   }
-
-                  show_appinfo += appInfoTemp[i].channelId
+                  if (!tableDataCpy[i].hasOwnProperty('sort')) {
+                    tableDataCpy[i].sort = 0
+                  }
+                  this.tableData.push(tableDataCpy[i])
                 }
-                if (!this.tableData[i].hasOwnProperty('open_days_limit')) {
-                  this.tableData[i].open_days_limit = 0
-                }
-                if (!this.tableData[i].hasOwnProperty('sort')) {
-                  this.tableData[i].sort = 0
-                }
-                this.tableData[i].show_appinfo = show_appinfo
               }
-              console.log('模板数据')
             }
+            console.log("----- ",this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -1064,9 +1085,10 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
+      console.log("类型 ",repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
-        if (this.repeatCfgs[i].value == repeatType) {
+        if (this.repeatCfgs[i].value === repeatType) {
           show = this.repeatCfgs[i].label
           break
         }
@@ -2049,6 +2071,21 @@ export default {
           }
         }
       })
+    },
+    //在这里实现APPID过滤
+    filterMatchListByAppId(appInfo){
+      let show_appinfo = ''
+      const appInfoTemp = JSON.parse(appInfo)
+      for (let i = 0; i < appInfoTemp.length; i++) {
+        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue;
+        if (i === 0) {
+          show_appinfo += appInfoTemp[i].appId + ' '
+        } else {
+          show_appinfo += '  ' + appInfoTemp[i].appId + ' '
+        }
+        show_appinfo += appInfoTemp[i].channelId
+      }
+      return show_appinfo
     }
   }
 }
