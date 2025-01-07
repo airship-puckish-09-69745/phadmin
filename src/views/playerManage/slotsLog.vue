@@ -110,7 +110,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.BetOdds) }}
+            {{ scope.row.BetOdds ? formatNumber(scope.row.BetOdds) : 0}}
           </template>
         </el-table-column>
 
