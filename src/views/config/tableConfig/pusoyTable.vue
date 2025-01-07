@@ -271,9 +271,9 @@
               label="座位数："
               :required="true"
               prop="item.MaxPlayerCount"
-              :rules="dataRule(true,{type:'n',range:'2'})"
+              :rules="dataRule(true,{type:'n',range:'2-4'})"
             >
-              <el-input v-model.number="edit.item.MaxPlayerCount" disabled="true" placeholder="座位数" />
+              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="座位数" />
             </el-form-item>
           </el-col>
           <el-col :span="9">
