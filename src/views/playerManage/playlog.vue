@@ -4575,16 +4575,9 @@ export default {
     showPusoySwapGame(obj) {
       console.log(obj)
       this.pusoySwapShootOneShow = false
-      let isInvalid = true
+
       for (const k in obj.players) {
-        if (obj.players[k].moneyWon !== 0) {
-          isInvalid = false
-        }
-      }
-      for (const k in obj.players) {
-        if (isInvalid) {
-          obj.players[k].moneyBet = 0
-        }
+
         for (const i in obj.groupTop) {
           if (obj.groupTop[i].uid === obj.players[k].uid) {
             obj.players[k].groupTop = obj.groupTop[i]
@@ -4619,16 +4612,7 @@ export default {
     showPusoyGame(obj) {
       console.log(obj)
       this.pusoyShootOneShow = false
-      let isInvalid = true
       for (const k in obj.players) {
-        if (obj.players[k].moneyWon !== 0) {
-          isInvalid = false
-        }
-      }
-      for (const k in obj.players) {
-        if (isInvalid) {
-          obj.players[k].moneyBet = 0
-        }
         for (const i in obj.groupTop) {
           if (obj.groupTop[i].uid === obj.players[k].uid) {
             obj.players[k].groupTop = obj.groupTop[i]
