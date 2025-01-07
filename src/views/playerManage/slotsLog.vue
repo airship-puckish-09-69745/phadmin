@@ -135,7 +135,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156,166].indexOf(gid) >= 0">
+        <template v-if="[150,156,166,174].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
