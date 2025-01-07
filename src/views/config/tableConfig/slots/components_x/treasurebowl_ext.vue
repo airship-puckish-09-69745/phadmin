@@ -21,11 +21,15 @@
           </el-form-item>
 
           <el-form-item label="Jackpot模式Minor的赔率(剧本)" prop="JackpotStrOdds">
-            <el-input v-model.number="cfg.JackpotMinorOdds" :required="true"/>
+            <el-input v-model.number="cfg.JackpotMinorOdds" :required="true">
+              <template slot="append">该配置仅用于前端,后端不会生效</template>
+            </el-input>
           </el-form-item>
 
           <el-form-item label="Jackpot模式Mini的赔率(剧本)" prop="JackpotStrOdds">
-            <el-input v-model.number="cfg.JackpotMiniOdds" :required="true"/>
+            <el-input v-model.number="cfg.JackpotMiniOdds" :required="true">
+              <template slot="append">该配置仅用于前端,后端不会生效</template>
+            </el-input>
           </el-form-item>
 
           <el-form-item label="进入Jackpot的概率与倍率映射" prop="JackpotStrOdds">

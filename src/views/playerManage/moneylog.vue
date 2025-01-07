@@ -4,12 +4,12 @@
       <el-form :model="item" label-width="80px" :inline="true" size="small">
 
         <el-form-item label="UID：" :required="true">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}"/>
+          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
         </el-form-item>
         <el-form-item>
           <el-date-picker
-            :default-time="['00:00:00', '23:59:59']"
             v-model="timeRange"
+            :default-time="['00:00:00', '23:59:59']"
             type="datetimerange"
             value-format="timestamp"
             :picker-options="pickerOptions"
@@ -70,7 +70,7 @@
         width="200"
       >
         <template slot-scope="scope">
-          <DateTimeShow :show-type="2" :timestamp="scope.row.UpdateTime"/>
+          <DateTimeShow :show-type="2" :timestamp="scope.row.UpdateTime" />
         </template>
       </el-table-column>
       <el-table-column
@@ -80,8 +80,8 @@
       >
         <template v-slot:header>
           <el-select v-model="clientDB.FilterValueMap['MoneyType']" size="mini" @change="handleFilter">
-            <el-option label="货币类型" :value="0"/>
-            <el-option v-for="(o,key) in clientDB.FilterMap['MoneyType']" :key="key" :label="o" :value="key"/>
+            <el-option label="货币类型" :value="0" />
+            <el-option v-for="(o,key) in clientDB.FilterMap['MoneyType']" :key="key" :label="o" :value="key" />
           </el-select>
         </template>
         <template slot-scope="scope">
@@ -99,8 +99,8 @@
           <span v-else-if="scope.row.ActType===2008">  {{ formatNumber(scope.row.MoneyNow) }}</span>
           <span v-else-if="scope.row.ActType===3001">  {{ formatNumber(scope.row.MoneyNow) }}</span>
           <span v-else-if="scope.row.ActType===2006">  {{
-              formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged)
-            }}</span>
+            formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged)
+          }}</span>
           <span v-else> {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
         </template>
       </el-table-column>
@@ -114,8 +114,13 @@
             v-if="scope.row.MoneyType===1||scope.row.MoneyType===2"
             :style="scope.row.MoneyChanged>0?'color:red':'color:green'"
           >{{
-              formatNumber(scope.row.MoneyChanged)
-            }}</span>
+            formatNumber(scope.row.MoneyChanged)
+          }}</span>
+          <span
+            v-else-if="scope.row.ActType===3001"
+          >{{
+            formatNumber(scope.row.MoneyChanged)
+          }}</span>
           <span v-else>
             {{ formatNumber(scope.row.MoneyChanged) }}x
           </span>
@@ -129,8 +134,8 @@
         <template slot-scope="scope">
           <span v-if="scope.row.ActType===2006">{{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
           <span v-else-if="scope.row.MoneyType==1 || scope.row.MoneyType==2">{{
-              formatNumber(scope.row.MoneyAll)
-            }}</span>
+            formatNumber(scope.row.MoneyAll)
+          }}</span>
           <span v-else-if="scope.row.MoneyType==5">{{ formatNumber(scope.row.MoneyNow) }}</span>
         </template>
       </el-table-column>
@@ -140,8 +145,8 @@
       >
         <template v-slot:header>
           <el-select v-model="clientDB.FilterValueMap['ActType']" multiple size="mini" @change="handleFilter2">
-            <el-option label="操作类型" :value="0"/>
-            <el-option v-for="o in actTypeSort" :key="o" :label="clientDB.FilterMap['ActType'][o]" :value="o"/>
+            <el-option label="操作类型" :value="0" />
+            <el-option v-for="o in actTypeSort" :key="o" :label="clientDB.FilterMap['ActType'][o]" :value="o" />
           </el-select>
         </template>
         <template slot-scope="scope">
@@ -197,28 +202,28 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
       >
-        <el-table-column property="Name" label="操作说明" width="200"/>
+        <el-table-column property="Name" label="操作说明" width="200" />
         <el-table-column property="Win" label="赢流水" width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.Win) }}
           </template>
         </el-table-column>
-        <el-table-column property="WinTimes" label="赢局数" width="70"/>
+        <el-table-column property="WinTimes" label="赢局数" width="70" />
         <el-table-column property="Lose" label="输流水" width="150">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.Lose) }}
           </template>
         </el-table-column>
-        <el-table-column property="LoseTimes" label="输局数" width="70"/>
+        <el-table-column property="LoseTimes" label="输局数" width="70" />
         <el-table-column property="Total" label="总输赢" width="150">
           <template slot-scope="scope">
-            <span v-text="formatNumber(scope.row.Win + scope.row.Lose)"/>
+            <span v-text="formatNumber(scope.row.Win + scope.row.Lose)" />
           </template>
         </el-table-column>
       </el-table>
     </el-dialog>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px"/>
+      <line-chart :chart-data="chartData" height="600px" />
     </el-row>
     <el-drawer
       title="概要时间线"
@@ -291,13 +296,13 @@ import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import LineChart from './components/LineChart'
 import request from '@/utils/request'
-import {$libDate, $libShow, ClientTableData, MoneyShow} from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
 import store from '@/store'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 
 const filterMap = {
-  MoneyType: {1: 'Deposited', 2: 'Winning', 10: '只看金流'}, // 4: '贡献值',
+  MoneyType: { 1: 'Deposited', 2: 'Winning', 10: '只看金流' }, // 4: '贡献值',
   ActType: {
     1000: '玩牌赢',
     1001: '玩牌输',
@@ -351,10 +356,10 @@ function newChartData() {
   return {
     xData: [],
     yData: [
-      {Name: '全部金币', Data: []},
-      {Name: 'Desposited', Data: []},
-      {Name: 'Winning', Data: []},
-      {Name: '基础值', Data: []}
+      { Name: '全部金币', Data: [] },
+      { Name: 'Desposited', Data: [] },
+      { Name: 'Winning', Data: [] },
+      { Name: '基础值', Data: [] }
     ]
   }
 }
@@ -362,7 +367,7 @@ function newChartData() {
 export default {
   name: 'Moneylog',
   // eslint-disable-next-line vue/no-unused-components
-  components: {DateTimeShow, Compare, Publish, UidInput, LineChart},
+  components: { DateTimeShow, Compare, Publish, UidInput, LineChart },
   data() {
     return {
       tableData: [],
@@ -371,7 +376,7 @@ export default {
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
       actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,
-        2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,2012],
+        2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
 
       item: {
         Uid: 0
@@ -394,7 +399,7 @@ export default {
         '糖果传奇Way', '糖果传奇Allline', 'CandyCrazeMars', 'CandyCraze', 'SuperGems', 'SuperGemsMars', 'Millionaire', 'MillionaireMars', // 别加后面，这行老虎机的
         'sicbo', 'Hilo'],
       libMoney: new MoneyShow(['MoneyChanged', 'MoneyNow', 'MoneyAll']),
-      walletType: [ //钱包金流类型
+      walletType: [ // 钱包金流类型
         2000,
         2001,
         2002,
@@ -407,8 +412,8 @@ export default {
         2009,
         2010,
         2011,
-        2012,
-      ],
+        2012
+      ]
     }
   },
   computed: {},
@@ -429,7 +434,7 @@ export default {
         actTypes[this.clientDB.FilterValueMap['ActType'][i]] = true
       }
       this.clientDB.ShowData = this.clientDB.TotalData.filter(
-        function (data) {
+        function(data) {
           if (actTypes[data.ActType]) {
             return true
           } else {
@@ -449,12 +454,12 @@ export default {
     },
     isWalletType(type) {
       // 单一钱包类型
-      return this.walletType.indexOf(type) >= 0;
+      return this.walletType.indexOf(type) >= 0
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {
         this.clientDB.ShowData = this.clientDB.TotalData.filter(
-          function (data) {
+          function(data) {
             if (data.MoneyType == 1 || data.MoneyType == 2) {
               return true
             } else {
@@ -513,7 +518,7 @@ export default {
       }
       if (eTime - bTime > 86400) {
         Message.error('不支持跨天查询')
-        return;
+        return
       }
       const loading = this.$loading({
         lock: true,
@@ -558,7 +563,7 @@ export default {
           for (let i = 0; i < objs.length; i++) {
             gameName = objs[i].ActMsg === 'sweeper' ? 'Sweeper' : objs[i].ActMsg
             if (winInfo[gameName] === undefined) {
-              winInfo[gameName] = {Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0}
+              winInfo[gameName] = { Name: gameName, Win: 0, Lose: 0, WinTimes: 0, LoseTimes: 0 }
             }
             const t = objs[i].UpdateTime
             if (winInfo[gameName] && $this.isSlotInfo(objs[i])) {
@@ -664,7 +669,7 @@ export default {
     },
     showDrawer() {
       this.drawer.visible = true
-      const objs = this.moneyData.sort(function (a, b) {
+      const objs = this.moneyData.sort(function(a, b) {
         return a.ID - b.ID
       })
       const timeArr = []
@@ -677,7 +682,7 @@ export default {
         }
         switch (obj.ActType) {
           case 1: // 注册
-            timeArr.push({Time: obj.UpdateTime, ActType: obj.ActType})
+            timeArr.push({ Time: obj.UpdateTime, ActType: obj.ActType })
             break
           case 18:// 重置基础值
             timeArr.push({
@@ -808,7 +813,7 @@ export default {
             break
         }
       }
-      this.drawer.lines = [{cnt: '', color: '', t: '总计'}]
+      this.drawer.lines = [{ cnt: '', color: '', t: '总计' }]
       let pay = 0
       let withdraw = 0
       let payCount = 0
@@ -854,7 +859,7 @@ export default {
               '，赢：' + timeArr[o].WinCount + '，输：' + timeArr[o].LoseCount + '，资产：' + timeArr[o].Money
             game = timeArr[o].Game
             if (!gameMap[game]) {
-              gameMap[game] = {WinCount: 0, LoseCount: 0, Win: 0, Lose: 0}
+              gameMap[game] = { WinCount: 0, LoseCount: 0, Win: 0, Lose: 0 }
             }
             gameMap[game].Game = game
             gameMap[game].WinCount += timeArr[o].WinCount
@@ -867,7 +872,7 @@ export default {
               '，获得：' + this.formatNumber(timeArr[o].Win - timeArr[o].Bet) + '，资产：' + timeArr[o].Money
             game = timeArr[o].Game
             if (!gameMap[game]) {
-              gameMap[game] = {WinCount: 0, LoseCount: 0, Win: 0, Lose: 0}
+              gameMap[game] = { WinCount: 0, LoseCount: 0, Win: 0, Lose: 0 }
             }
             gameMap[game].Game = game
             gameMap[game].LoseCount += timeArr[o].Times
@@ -875,7 +880,7 @@ export default {
             gameMap[game].Win += timeArr[o].Win
             break
         }
-        this.drawer.lines.push({content: cnt, timestamp: t, color: color})
+        this.drawer.lines.push({ content: cnt, timestamp: t, color: color })
       }
       const games = []
       for (const o in gameMap) {
@@ -921,8 +926,8 @@ export default {
           for (let i = 0; i < response.Data.length; i++) {
             this.gameMap[response.Data[i].Gid] = response.Data[i].Name
           }
-          //todo 比赛游戏临时添加
-          this.gameMap[2031] = "TongitsMtt"
+          // todo 比赛游戏临时添加
+          this.gameMap[2031] = 'TongitsMtt'
         }
       })
     },

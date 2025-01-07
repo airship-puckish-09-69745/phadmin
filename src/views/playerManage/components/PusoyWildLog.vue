@@ -1,9 +1,12 @@
 <template>
   <el-dialog v-if="showGameLog.gid===126" title="PusoyWild牌局详情" :visible.sync="pusoyWildDetailVisible" width="1600px">
-    <div class="tag-group">
-      <span class="tag-group__title">赖子：</span>
-      <el-tag>{{ showWildCard() }}</el-tag>
-    </div>
+<!--    <div class="tag-group">-->
+<!--      <span class="tag-group__title">赖子：</span>-->
+<!--      <div v-html="showWildCard()" />-->
+<!--    </div>-->
+    <el-descriptions>
+      <el-descriptions-item label="赖子"><div v-html="showWildCard()" /></el-descriptions-item>
+    </el-descriptions>
     <br>
     <el-table
       :data="pusoyWildDetail.players"
@@ -16,28 +19,31 @@
         <el-table-column prop="cards" label="后手牌" width="150">
           <template #default="scopeB">
             <template v-if="scopeB.row.cardType > 1">
-              <div v-html="showCard(scopeB.row.cards)" />
+<!--              <div v-html="showCard(scopeB.row.cards)" />-->
+
+              <div v-html="showCard(scopeB.row.cards,false)" />
+              <div v-html="showCard(scopeB.row.cardsSpe,true)" />
               <span>({{ pusoyCardTypes[scopeB.row.cardType] || '' }})</span>
             </template>
             <template v-else>
-              <div v-html="showCard(scopeB.row.groupBottom.cards)" />
+              <div v-html="showCard(scopeB.row.groupBottom.cards,false)" />
+              <div v-html="showCard(scopeB.row.groupBottom.cardsSpe,true)" />
               <span>({{ pusoyGroupCardTypes[scopeB.row.groupBottom.cardType] || '' }})</span>
-              <span>({{ showIndexes(scopeB.row.groupBottom.wildCardIndexes) || '' }})</span>
             </template>
           </template>
         </el-table-column>
         <el-table-column prop="cards" label="中手牌" width="150">
           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.groupMiddle.cards)" />
+            <div v-html="showCard(scope.row.groupMiddle.cards,false)" />
+            <div v-html="showCard(scope.row.groupMiddle.cardsSpe,true)" />
             <span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span>
-            <span>({{ showIndexes(scope.row.groupMiddle.wildCardIndexes) || '' }})</span>
           </template>
         </el-table-column>
         <el-table-column prop="cards" label="前手牌" width="150">
           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.groupTop.cards)" />
+            <div v-html="showCard(scope.row.groupTop.cards,false)" />
+            <div v-html="showCard(scope.row.groupTop.cardsSpe,true)" />
             <span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span>
-            <span>({{ showIndexes(scope.row.groupTop.wildCardIndexes) || '' }})</span>
           </template>
         </el-table-column>
       </el-table-column>
@@ -136,11 +142,17 @@ export default {
     this.initData(this.GameLog)
   },
   methods: {
-    showCard(cards) {
+    showCard(cards,isSpe) {
       if (cards === null || cards === undefined) {
         return ''
       }
-      let ret = ''
+      let ret = '初：'
+      if (isSpe) {
+        ret = '展：'
+      }
+      if (cards.length === 1) {
+        return ret + $libShow.CardShow(cards[0])
+      }
       for (let i = 0; i < cards.length; i++) {
         ret += $libShow.CardShow(cards[i])
       }
@@ -215,21 +227,28 @@ export default {
       console.log(obj)
       this.pusoyShootOneShow = false
       for (const k in obj.players) {
+        const cards = obj.players[k].cards
         for (const i in obj.groupTop) {
           if (obj.groupTop[i].uid === obj.players[k].uid) {
             obj.players[k].groupTop = obj.groupTop[i]
+            obj.players[k].groupTop.cardsSpe = obj.players[k].groupTop.cards
+            obj.players[k].groupTop.cards = cards.slice(0, 3)
             break
           }
         }
         for (const i in obj.groupMiddle) {
           if (obj.groupMiddle[i].uid === obj.players[k].uid) {
             obj.players[k].groupMiddle = obj.groupMiddle[i]
+            obj.players[k].groupMiddle.cardsSpe = obj.players[k].groupMiddle.cards
+            obj.players[k].groupMiddle.cards = cards.slice(3, 8)
             break
           }
         }
         for (const i in obj.groupBottom) {
           if (obj.groupBottom[i].uid === obj.players[k].uid) {
             obj.players[k].groupBottom = obj.groupBottom[i]
+            obj.players[k].groupBottom.cardsSpe = obj.players[k].groupBottom.cards
+            obj.players[k].groupBottom.cards = cards.slice(8, 13)
             break
           }
         }

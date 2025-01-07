@@ -366,6 +366,16 @@ export default {
           id: 1000007,
           agentId: 'zootest',
           desc: 'Zoo测试账号[1000007]'
+        },
+        {
+          id: 1000009,
+          agentId: 'zoogame',
+          desc: 'Zoogame[1000009]正式'
+        },
+        {
+          id: 1000020,
+          agentId: 'playtime',
+          desc: 'playtime正式[1000020]'
         }
       ]
     }
