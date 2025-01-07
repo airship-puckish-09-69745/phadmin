@@ -108,6 +108,10 @@
             <el-input v-model.number="slotsData.BuyFreeFeeRate" />
           </el-form-item>
 
+          <el-form-item label="推荐下注值">
+            <el-input v-model="recommendBet" />
+          </el-form-item>
+
           <el-form-item label="是否启用新版剧本">
             <el-select v-model="slotsData.EnableScriptV3" disabled>
               <el-option label="启用" :value="true" />
@@ -154,7 +158,8 @@ export default {
   },
   data() {
     return {
-      lock: false
+      lock: false,
+      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet / 1000 : 0
     }
   },
   updated() {
@@ -180,11 +185,13 @@ export default {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
-        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate
+        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
+        'RecommendBet': this.slotsData.RecommendBet
       }
     },
     submitFrm() {
       const $this = this
+      this.slotsData.RecommendBet = this.recommendBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
