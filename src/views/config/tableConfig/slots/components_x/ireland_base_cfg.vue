@@ -83,7 +83,7 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <span v-if="slotsData.SlotsType === 180"  style="color: red; font-size: 11px;">注: ①.下注倍数要放大10倍 ②.10为固定值 ③.下注大小*下注倍数*基础投注=真实下注额度 </span>
+          <span v-if="slotsData.SlotsType === 180" style="color: red; font-size: 11px;">注: ①.下注倍数要放大10倍 ②.10为固定值 ③.下注大小*下注倍数*基础投注=真实下注额度 </span>
           <el-form-item v-if="slotsData.OddsStr !== '1'" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
@@ -191,6 +191,9 @@ export default {
     },
     submitFrm() {
       const $this = this
+      if (this.recommendBetCheck() === false) {
+        $this.$message.error('推荐下注值必须是下注大小中存在的值')
+      }
       this.slotsData.RecommendBet = this.recommendBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
@@ -202,6 +205,18 @@ export default {
         $this.$emit('saveData')
         $this.lock = false
       })
+    },
+    recommendBetCheck() {
+      if (this.slotsData.RecommendBet === 0) {
+        return true
+      }
+      var betlist = this.slotsData.Bets.split(',')
+      for (const i in betlist) {
+        if (this.slotsData.RecommendBet === betlist[i]) {
+          return true
+        }
+      }
+      return false
     }
   }
 }
