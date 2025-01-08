@@ -193,6 +193,7 @@ export default {
       const $this = this
       if (this.recommendBetCheck() === false) {
         $this.$message.error('推荐下注值必须是下注大小中存在的值')
+        return
       }
       this.slotsData.RecommendBet = this.recommendBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData())
