@@ -23,6 +23,11 @@
             <publish primary-key="ID" :key-id="getFullKey('romanarenamars_slots_base')" :env-empty="false" compare-type="Object" />
             <slots-reels-double v-if="baseCfgBool" v-model="baseCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveBaseCfg" />
           </el-tab-pane>
+          <el-tab-pane label="2套轴首行横图标" name="row_reels_double">
+            <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布】</h3>
+            <publish primary-key="ID" :key-id="getFullKey('romanarenamars_slots_ext')" :env-empty="false" compare-type="Object" />
+            <slots-row-reels-double v-if="extCfgBool" v-model="extCfg" :symbol-list="ruleCfg.SymbolList" @saveData="saveExtCfg" />
+          </el-tab-pane>
           <el-tab-pane label="拓展配置" name="scatter">
             <h3 style="text-align:center;color: red;">【注意：修改之后请在本Tab页保存并发布，发布即生效】</h3>
             <publish primary-key="ID" :key-id="getFullKey('romanarenamars_slots_ext')" :env-empty="false" compare-type="Object" />
@@ -52,10 +57,11 @@ import slotsBigWinnerCfg from './components_x/big_winner_cfg'
 import slotsVup from './components_x/slots_vup'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsRowReelsDouble from "@/views/config/tableConfig/slots/components_x/row_reels_double.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsRomanarenamarsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: {slotsRowReelsDouble, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsRomanarenamarsExt, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
