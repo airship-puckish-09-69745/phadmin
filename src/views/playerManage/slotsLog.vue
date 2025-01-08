@@ -177,6 +177,51 @@
             </el-table-column>
           </el-table-column>
         </template>
+        <!--聚宝盆-->
+        <template v-if="[174].indexOf(gid) >= 0">
+          <el-table-column
+            header-align="center"
+            label="Jackpot"
+          >
+            <el-table-column :label="getNewJPLabel(4) + '收集'">
+              <template  slot-scope="scope">
+                {{ getJPFee(scope.row.JackpotLogObj, 4) }}
+              </template>
+            </el-table-column>
+            <el-table-column :label="getNewJPLabel(3) + '收集'">
+              <template  slot-scope="scope">
+                {{ getJPFee(scope.row.JackpotLogObj, 3) }}
+              </template>
+            </el-table-column>
+            <el-table-column :label="getNewJPLabel(2) + '收集'">
+              <template  slot-scope="scope">
+                {{ getJPFee(scope.row.JackpotLogObj, 2) }}
+              </template>
+            </el-table-column>
+            <el-table-column :label="getNewJPLabel(1) + '收集'">
+              <template  slot-scope="scope">
+                {{ getJPFee(scope.row.JackpotLogObj, 1) }}
+              </template>
+            </el-table-column>
+            <el-table-column label="中奖类型">
+              <template  slot-scope="scope">
+                {{ scope.row.JackpotLogObj.JackpotInfo ? getNewJPLabel(scope.row.JackpotLogObj.JackpotInfo[0].Type) : null }}
+              </template>
+            </el-table-column>
+            <el-table-column label="中奖倍数">
+              <template  slot-scope="scope">
+                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].MultiOdds : null }}
+              </template>
+            </el-table-column>
+            <el-table-column label="中奖数额">
+              <template  slot-scope="scope">
+                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null }}
+              </template>
+            </el-table-column>
+          </el-table-column>
+        </template>
+
+        <!--聚宝盆-->
         <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
@@ -288,7 +333,7 @@ function newChartData() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { DateTimeShow, Compare, Publish, UidInput, LineChart },
+  components: { DateTimeShow, Compare, Publish, UidInput, LineChart},
   data() {
     return {
       gid: 0,
@@ -548,7 +593,7 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166) {
+            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {
@@ -586,6 +631,25 @@ export default {
           return 'MAJOR'
         case 1:
           return 'GRAND'
+        default:
+          return '无'
+      }
+    },
+    getNewJPLabel(type) {
+      if (type === null || type === undefined) {
+        return null
+      }
+      switch (type) {
+        case 5:
+          return 'MINI'
+        case 4:
+          return 'MINOR'
+        case 3:
+          return 'GRAND'
+        case 2:
+          return 'MEGA'
+        case 1:
+          return 'MAJOR'
         default:
           return '无'
       }
