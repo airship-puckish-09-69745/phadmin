@@ -562,7 +562,7 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
-      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166|| this.searchForm.gameId === 174) {
+      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166) {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
