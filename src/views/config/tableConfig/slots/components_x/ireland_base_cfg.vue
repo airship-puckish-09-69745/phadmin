@@ -112,6 +112,10 @@
             <el-input v-model="recommendBet" />
           </el-form-item>
 
+          <el-form-item v-for="(item, index) in slotsData.WinTypeMinOdds" :key="'WinTypeMinOdds-' + index" :label="getBigWinLabel(index)">
+            <el-input v-model.number="slotsData.WinTypeMinOdds[index]" />
+          </el-form-item>
+
           <el-form-item label="是否启用新版剧本">
             <el-select v-model="slotsData.EnableScriptV3" disabled>
               <el-option label="启用" :value="true" />
@@ -186,7 +190,8 @@ export default {
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
-        'RecommendBet': this.slotsData.RecommendBet
+        'RecommendBet': this.slotsData.RecommendBet,
+        'WinTypeMinOdds': this.slotsData.WinTypeMinOdds
       }
     },
     submitFrm() {
@@ -218,6 +223,11 @@ export default {
         }
       }
       return false
+    },
+    getBigWinLabel(index) {
+      // 根据索引返回对应的标签文本
+      const labels = ['BigWin最小触发倍数', 'MegaWin最小触发倍数', 'SuperWin最小触发倍数']
+      return labels[index] || '未知' // 默认返回 "未知" 以防止超出索引范围
     }
   }
 }
