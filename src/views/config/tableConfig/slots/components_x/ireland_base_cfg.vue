@@ -207,12 +207,12 @@ export default {
       })
     },
     recommendBetCheck() {
-      if (this.slotsData.RecommendBet === 0) {
+      if (this.recommendBet === 0) {
         return true
       }
       var betlist = this.slotsData.Bets.split(',')
       for (const i in betlist) {
-        if (this.slotsData.RecommendBet === betlist[i]) {
+        if (this.recommendBet === betlist[i]) {
           return true
         }
       }
