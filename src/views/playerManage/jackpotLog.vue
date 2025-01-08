@@ -583,6 +583,26 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
+      } else if (this.searchForm.gameId === 174) {
+        // 调用 getData() 获取 BetList 数组
+        this.getData().then(cfg => {
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+          if (cfg && cfg.BetList && cfg.BetList.length > 0) {
+            const betConfig = cfg.BetList.map(bet => {
+              const baseBetFactor = bet / 1000 * cfg.BaseBet
+              return [
+                { 'value': bet * 10 + 3, 'label': 'GRAND-' + baseBetFactor },
+                { 'value': bet * 10 + 2, 'label': 'MEGA-' + baseBetFactor },
+                { 'value': bet * 10 + 1, 'label': 'MAJOR-' + baseBetFactor }
+              ]
+            }).flat()
+
+            this.levelConfig = this.levelConfig.concat(betConfig)
+          }
+        }).catch(error => {
+          console.error('Error processing BetList:', error)
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+        })
       } else if (this.searchForm.gameId === 156) {
         // 调用 getData() 获取 BetList 数组
         this.levelConfig = [
