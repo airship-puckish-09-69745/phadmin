@@ -219,7 +219,7 @@ export default {
       }
       var betlist = this.slotsData.Bets.split(',')
       for (const i in betlist) {
-        if (this.recommendBet === betlist[i]) {
+        if (String(this.recommendBet) === betlist[i]) {
           return true
         }
       }
