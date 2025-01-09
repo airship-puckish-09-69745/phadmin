@@ -81,7 +81,7 @@
           </el-form-item>
 
           <!--产品需求改动,增加jackpot的概率-->
-          <el-form-item label="第三轴的每个格子出现jackpot出现概率" prop="jackpot3Rate" :rules="dataRule(true,{type:'n'})">
+          <el-form-item label="第三轴每个格子出现jackpot概率" prop="jackpot3Rate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.jackpot3Rate" :required="true">
               <template slot="append">%</template>
             </el-input>
