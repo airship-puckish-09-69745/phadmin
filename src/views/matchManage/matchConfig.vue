@@ -605,7 +605,7 @@
 
           <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="奖励类型" :required="true">
             <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="1">金币</el-radio>
-            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金</el-radio>
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金（无限制）</el-radio>
           </el-form-item>
 
         </fieldset>
