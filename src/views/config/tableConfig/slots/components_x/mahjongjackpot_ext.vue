@@ -32,9 +32,9 @@
             <el-input v-model.number="cfg.BuyRespinInJPRate" :required="true" > <template slot="append">%</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="各个JP奖项中奖倍数范围">
+          <el-form-item label="Minor Major Grand Joker 对应的JP奖项中奖倍数范围">
             <el-input v-model="cfg.JPMultiStr" :required="true" placeholder="请输入内容,如1-10,30-50,100-150,200">
-              <template slot="append">四个值用 , 连接。对应：minor major grand joker</template>
+              <template slot="append">四个值用 , 连接。</template>
             </el-input>
           </el-form-item>
 
