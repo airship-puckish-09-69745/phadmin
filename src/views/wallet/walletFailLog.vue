@@ -371,6 +371,10 @@ export default {
         let sub  = JSON.parse(data.CommonFailParamsJsonString)
         console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
         return sub.Amount / 1000
+      }else if (data.FailType == 13) {
+        let sub  = JSON.parse(data.CommonFailParamsJsonString)
+        console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
+        return sub.GiftAmount / 1000
       }else if (data.FailType == 14) {
         let sub  = JSON.parse(data.CommonFailParamsJsonString)
         console.log("json data",JSON.parse(data.CommonFailParamsJsonString));
