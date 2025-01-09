@@ -162,10 +162,15 @@ export default {
     }
   },
   data() {
-    return {
+    var data = {
       lock: false,
-      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet / 1000 : 0
+      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet / 1000 : 0,
+      initialWinTypeMinOdds: []
     }
+    for (const k in this.slotsData.WinTypeMinOdds) {
+      data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
+    }
+    return data
   },
   updated() {
     if (this.lock === false) {
@@ -204,11 +209,10 @@ export default {
       this.slotsData.RecommendBet = this.recommendBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
-        if (!isEdit) {
-          $this.$message.error('没有任何修改，不需要提交')
+        if (!isEdit && JSON.stringify($this.getDiffData().WinTypeMinOdds) === JSON.stringify($this.initialWinTypeMinOdds)) {
+          $this.$message.error('没有任何修改，不需要提交 ')
           return
         }
-
         $this.$emit('saveData')
         $this.lock = false
       })
