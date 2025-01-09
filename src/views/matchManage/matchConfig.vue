@@ -125,8 +125,7 @@
           prop="sort"
           label="赛事排序"
           width="60"
-        >
-        </el-table-column>
+        />
         <el-table-column
           prop="repeatType"
           label="赛事类型"
@@ -906,7 +905,7 @@ export default {
         prizeExtra: '动态奖池信息',
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
-        dcReport: '是否上报数据中心',
+        dcReport: '是否上报数据中心'
       },
       singleCopy: {
         id: 0,
@@ -924,6 +923,21 @@ export default {
     this.getGuideCfgs()
     this.getPropsCfgs()
     this.getPrizeTemplateCfg()
+    if (this.env === 'pro') {
+      // 正式环境暂时只开放以下选项
+      // 返水金
+      this.rebateScenesCfgs = [
+        { 'value': 5, 'label': '没有任何限制的返水金' }
+        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ]
+      // 投注金
+      this.betScenesCfgs = [
+        { 'value': 1, 'label': '任意游戏投注' }
+        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ]
+    }
   },
   mounted() {
     this.getList()
@@ -1014,7 +1028,7 @@ export default {
                 }
               }
             }
-            console.log("----- ",this.tableData)
+            console.log('----- ', this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -1085,7 +1099,7 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
-      console.log("类型 ",repeatType)
+      console.log('类型 ', repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value === repeatType) {
@@ -2072,12 +2086,12 @@ export default {
         }
       })
     },
-    //在这里实现APPID过滤
-    filterMatchListByAppId(appInfo){
+    // 在这里实现APPID过滤
+    filterMatchListByAppId(appInfo) {
       let show_appinfo = ''
       const appInfoTemp = JSON.parse(appInfo)
       for (let i = 0; i < appInfoTemp.length; i++) {
-        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue;
+        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue
         if (i === 0) {
           show_appinfo += appInfoTemp[i].appId + ' '
         } else {
