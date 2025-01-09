@@ -12,12 +12,26 @@
             <el-input v-model="cfg.BoneMultiWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="bonus额外倍数">
+            <el-input v-model="cfg.BonusMultiExStr" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="bonus额外倍数权重">
+            <el-input v-model="cfg.BonusMultiExWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="金币倍数">
             <el-input v-model="cfg.BonusMultiStr" placeholder="请输入内容,如1,2,3,5,7"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="金币倍数权重">
             <el-input v-model="cfg.BonusMultiWeight" placeholder="请输入内容,如10,10,10,10,10"> <template slot="append">用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item v-for="(item, index) in cfg.BonusTypeStr" :key="'BonusTypeStr-' + index" :label="getBonusLabel(index)">
+            <el-input v-model="cfg.BonusTypeStr[index]" :placeholder="'请输入内容,如1,2,3,5,7'">
+              <template slot="append">用 , 连接</template>
+            </el-input>
           </el-form-item>
 
           <el-form-item label="Bonus模式金币出现概率" prop="BonusSymbolRate" :rules="dataRule(true,{type:'n'})">
@@ -122,6 +136,11 @@ export default {
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
+    },
+    getBonusLabel(index) {
+      // 根据索引返回对应的标签文本
+      const labels = ['铜币', '银币', '金币', '金币+']
+      return labels[index] || '未知' // 默认返回 "未知" 以防止超出索引范围
     }
   }
 }

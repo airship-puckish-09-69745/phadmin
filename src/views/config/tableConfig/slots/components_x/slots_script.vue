@@ -15,6 +15,17 @@
           </el-select>
           </el-form-item>
 
+          <el-form-item v-if="slotsData.SlotsType === 180" label="指定剧本V2(加倍)">
+            <el-select v-model="slotsData.ActConfig.ActId2" placeholder="剧本ID" style="width: 30%;">
+              <el-option
+                  v-for="item in actionsSelectOpt"
+                  :key="item.value"
+                  :label="item.key"
+                  :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
           <el-form-item label="指定正数剧本">
             <el-row>
               <el-col :span="2">

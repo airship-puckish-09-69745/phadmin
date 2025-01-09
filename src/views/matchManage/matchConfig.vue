@@ -49,6 +49,18 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="APPID：" :required="true">
+          <el-select v-model="form.appId" placeholder="请选择" size="mini">
+            <el-option label="全部" :value="-1" />
+            <el-option
+              v-for="item in appidInfoCfgs"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" @click="resetSearch">重置查询条件</el-button>
           <el-button type="primary" size="mini" @click="getList">查询</el-button>
@@ -86,6 +98,7 @@
         <el-table-column
           prop="game_id"
           label="游戏名称"
+          width="100"
         >
           <template slot-scope="scope">
             {{ getGameName(scope.row.game_id) }}
@@ -105,6 +118,20 @@
         >
           <template slot-scope="{row}">
             <DateTimeShow :show-type="2" :timestamp="row.end_time" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="sort"
+          label="赛事排序"
+          width="60"
+        />
+        <el-table-column
+          prop="repeatType"
+          label="赛事类型"
+        >
+          <template slot-scope="scope">
+            {{ getRepeatTypeShow(scope.row.repeat_type) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -508,7 +535,7 @@
                         :value="item.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 2" v-model="gItem.rebateScene" placeholder="请选择投注金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
                       <el-option
                         v-for="scene in betScenesCfgs"
                         :key="scene.value"
@@ -516,7 +543,7 @@
                         :value="scene.value"
                       />
                     </el-select>
-                    <el-select v-if="gItem.getType === 3" v-model="gItem.rebateScene" placeholder="请选择返水金" size="mini" style="width:150px">
+                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
                       <el-option
                         v-for="scene in rebateScenesCfgs"
                         :key="scene.value"
@@ -574,6 +601,11 @@
 
           <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="手续费率[百分比]：" :required="true">
             <el-input v-model.number="editForm.prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" />
+          </el-form-item>
+
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="奖励类型" :required="true">
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="1">金币</el-radio>
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金</el-radio>
           </el-form-item>
 
         </fieldset>
@@ -654,7 +686,8 @@ export default {
         gameId: -1,
         status: -1,
         csId: -1,
-        repeatType: -1
+        repeatType: -1,
+        appId: -1
       },
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
@@ -709,16 +742,15 @@ export default {
       ],
       // 返水金
       rebateScenesCfgs: [
-        { 'value': '6763a3f6e4b0ee21575e3bef', 'label': '没有任何限制的返水金' },
-        { 'value': '6763ab16e4b0ee21575e3c22', 'label': '有限制倍数的返水金（10倍）' }
-        // ,{ 'value': '6763ab8be4b0ee21575e3c27', 'label': '有限制倍数的返水金（没限制）' }
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
       ],
       // 投注金
       betScenesCfgs: [
-        { 'value': '6763a017e4b0ee21575e3be4', 'label': '任意游戏投注' },
-        { 'value': '6763a0a4e4b0ee2119156fd6', 'label': '仅限Poker类游戏投注' },
-        { 'value': '6763a15be4b0ee2119156fde', 'label': '仅限Slots类游戏投注' },
-        { 'value': '6763a2d4e4b0ee2119156fed', 'label': '仅限Tongits游戏投注' }
+        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ],
       propsInfo: [ // 道具信息，暂时写死
         {
@@ -808,7 +840,7 @@ export default {
                 getType: 1,
                 getPid: 0,
                 getNum: 0,
-                rebateScene: '' // 返水金场景值（调用营销接口时用）
+                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
               }
             ],
             propsReward: {
@@ -838,7 +870,9 @@ export default {
         prizeExtra: {
           awardType: 0,
           prizeRate: 0,
-          prizeTemplateId: 0
+          prizeTemplateId: 0,
+          rewardType: 1,
+          sceneId: 0
         }
       },
 
@@ -869,7 +903,9 @@ export default {
         daySections: '每日时段',
         awardType: '奖励类型',
         prizeExtra: '动态奖池信息',
-        signExtra: '报名额外信息'
+        signExtra: '报名额外信息',
+        associateKey: '推荐方案',
+        dcReport: '是否上报数据中心'
       },
       singleCopy: {
         id: 0,
@@ -887,10 +923,24 @@ export default {
     this.getGuideCfgs()
     this.getPropsCfgs()
     this.getPrizeTemplateCfg()
+    if (this.env === 'pro') {
+      // 正式环境暂时只开放以下选项
+      // 返水金
+      this.rebateScenesCfgs = [
+        { 'value': 5, 'label': '没有任何限制的返水金' }
+        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ]
+      // 投注金
+      this.betScenesCfgs = [
+        { 'value': 1, 'label': '任意游戏投注' }
+        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ]
+    }
   },
   mounted() {
     this.getList()
-    console.log('1')
     // 自动清理过期配置
   },
   methods: {
@@ -899,6 +949,7 @@ export default {
       this.form.status = -1
       this.form.csId = -1
       this.form.repeatType = -1
+      this.form.appId = -1
     },
     getCsCfgs() {
       request({
@@ -949,6 +1000,7 @@ export default {
           Status: this.form.status,
           CsId: this.form.csId,
           RepeatType: this.form.repeatType,
+          AppId: this.form.appId,
           PageNum: this.page,
           PageSize: this.limit
         }
@@ -957,37 +1009,26 @@ export default {
           const objs = response.Data || []
           if (objs.total > 0) {
             this.total = objs.total
-            this.tableData = objs.list
-            if (this.tableData.length > 0) {
-              for (let i = 0; i < this.tableData.length; i++) {
-                if (this.tableData[i].status == 0) {
-                  this.tableData[i].openShow = true
-                } else {
-                  this.tableData[i].openShow = false
-                }
-
+            this.tableData = []
+            const tableDataCpy = objs.list
+            if (tableDataCpy.length > 0) {
+              for (let i = 0; i < tableDataCpy.length; i++) {
                 let show_appinfo = ''
-                const appInfoTemp = JSON.parse(this.tableData[i].app_info_cfg)
-
-                for (let i = 0; i < appInfoTemp.length; i++) {
-                  if (i == 0) {
-                    show_appinfo += appInfoTemp[i].appId + ' '
-                  } else {
-                    show_appinfo += '  ' + appInfoTemp[i].appId + ' '
+                show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
+                if (show_appinfo !== '') {
+                  tableDataCpy[i].show_appinfo = show_appinfo
+                  tableDataCpy[i].openShow = tableDataCpy[i].status === 0
+                  if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
+                    tableDataCpy[i].open_days_limit = 0
                   }
-
-                  show_appinfo += appInfoTemp[i].channelId
+                  if (!tableDataCpy[i].hasOwnProperty('sort')) {
+                    tableDataCpy[i].sort = 0
+                  }
+                  this.tableData.push(tableDataCpy[i])
                 }
-                if (!this.tableData[i].hasOwnProperty('open_days_limit')) {
-                  this.tableData[i].open_days_limit = 0
-                }
-                if (!this.tableData[i].hasOwnProperty('sort')) {
-                  this.tableData[i].sort = 0
-                }
-                this.tableData[i].show_appinfo = show_appinfo
               }
-              console.log('模板数据')
             }
+            console.log('----- ', this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -1058,9 +1099,10 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
+      console.log('类型 ', repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
-        if (this.repeatCfgs[i].value == repeatType) {
+        if (this.repeatCfgs[i].value === repeatType) {
           show = this.repeatCfgs[i].label
           break
         }
@@ -1132,7 +1174,7 @@ export default {
             getType: 1,
             getPid: 0,
             getNum: 0,
-            rebateScene: '' // 返水金场景值（调用营销接口时用）（暂时写死：仅限Gamezone厅任意游戏投注的投注金）
+            sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
           }
         ],
         propsReward: {
@@ -1323,7 +1365,7 @@ export default {
                 getType: 1,
                 getPid: 0,
                 getNum: 0,
-                rebateScene: '' // 返水金场景值（调用营销接口时用）
+                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
               }
             ],
             propsReward: {
@@ -1348,7 +1390,9 @@ export default {
         this.editForm.prizeExtra = {
           awardType: 0,
           prizeRate: 0,
-          prizeTemplateId: 0
+          prizeTemplateId: 0,
+          rewardType: 1,
+          sceneId: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -1820,7 +1864,10 @@ export default {
         //   return false
         // }
         // 验证固定奖励的配置项
+        this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
         if (this.editForm.prizeExtra.awardType == 0) {
+          this.editForm.prizeExtra.rewardType = 1
+          this.editForm.prizeExtra.sceneId = 0
           if (!this.checkRewardCfg(this.editForm.rankRewards)) {
             return false
           }
@@ -1832,6 +1879,15 @@ export default {
         if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
           this.errmsg('当前是动态奖池手续费率范围是[1-100)')
           return false
+        }
+
+        // 目前动态奖池只有真金和返水金
+        if (this.editForm.prizeExtra.rewardType == 2) {
+          this.editForm.prizeExtra.rewardType = 3
+        }
+        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+        if (this.editForm.prizeExtra.rewardType == 3) {
+          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
         }
       }
       return true
@@ -1859,14 +1915,14 @@ export default {
         for (let i = 0; i < element.rewardItems.length; i++) {
           const rewardItem = element.rewardItems[i]
           if (rewardItem.getType == 1) {
-            element.rewardItems[i].rebateScene = ''
+            element.rewardItems[i].sceneId = 0
           } else if (rewardItem.getType == 2) {
-            if (!this.isInBetScenes(rewardItem.rebateScene)) {
+            if (!this.isInBetScenes(rewardItem.sceneId)) {
               this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择投注金')
               return false
             }
           } else if (rewardItem.getType == 3) {
-            if (!this.isInRebateScenes(rewardItem.rebateScene)) {
+            if (!this.isInRebateScenes(rewardItem.sceneId)) {
               this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择返水金')
               return false
             }
@@ -2029,6 +2085,21 @@ export default {
           }
         }
       })
+    },
+    // 在这里实现APPID过滤
+    filterMatchListByAppId(appInfo) {
+      let show_appinfo = ''
+      const appInfoTemp = JSON.parse(appInfo)
+      for (let i = 0; i < appInfoTemp.length; i++) {
+        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue
+        if (i === 0) {
+          show_appinfo += appInfoTemp[i].appId + ' '
+        } else {
+          show_appinfo += '  ' + appInfoTemp[i].appId + ' '
+        }
+        show_appinfo += appInfoTemp[i].channelId
+      }
+      return show_appinfo
     }
   }
 }

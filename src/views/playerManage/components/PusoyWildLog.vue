@@ -1,0 +1,276 @@
+<template>
+  <el-dialog v-if="showGameLog.gid===126" title="PusoyWild牌局详情" :visible.sync="pusoyWildDetailVisible" width="1600px">
+<!--    <div class="tag-group">-->
+<!--      <span class="tag-group__title">赖子：</span>-->
+<!--      <div v-html="showWildCard()" />-->
+<!--    </div>-->
+    <el-descriptions>
+      <el-descriptions-item label="赖子"><div v-html="showWildCard()" /></el-descriptions-item>
+    </el-descriptions>
+    <br>
+    <el-table
+      :data="pusoyWildDetail.players"
+      :span-method="pusoySpanMethods"
+      border
+    >
+      <el-table-column prop="uid" label="UID" width="100" />
+      <el-table-column prop="seat" label="座位" width="100" />
+      <el-table-column label="手牌" width="450" align="center">
+        <el-table-column prop="cards" label="后手牌" width="150">
+          <template #default="scopeB">
+            <template v-if="scopeB.row.cardType > 1">
+<!--              <div v-html="showCard(scopeB.row.cards)" />-->
+
+              <div v-html="showCard(scopeB.row.cards,false)" />
+              <div v-html="showCard(scopeB.row.cardsSpe,true)" />
+              <span>({{ pusoyCardTypes[scopeB.row.cardType] || '' }})</span>
+            </template>
+            <template v-else>
+              <div v-html="showCard(scopeB.row.groupBottom.cards,false)" />
+              <div v-html="showCard(scopeB.row.groupBottom.cardsSpe,true)" />
+              <span>({{ pusoyGroupCardTypes[scopeB.row.groupBottom.cardType] || '' }})</span>
+            </template>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cards" label="中手牌" width="150">
+          <template slot-scope="scope">
+            <div v-html="showCard(scope.row.groupMiddle.cards,false)" />
+            <div v-html="showCard(scope.row.groupMiddle.cardsSpe,true)" />
+            <span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="cards" label="前手牌" width="150">
+          <template slot-scope="scope">
+            <div v-html="showCard(scope.row.groupTop.cards,false)" />
+            <div v-html="showCard(scope.row.groupTop.cardsSpe,true)" />
+            <span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span>
+          </template>
+        </el-table-column>
+      </el-table-column>
+      <el-table-column prop="cardType" label="牌型" width="90">
+        <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{
+          pusoyShowShootAll(scope.row)
+        }} {{ pusoyShowGroupExtra(scope.row) }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="cardScore" label="点数" width="100" />
+      <el-table-column prop="moneyBet" label="下注" width="100">
+        <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
+      </el-table-column>
+      <el-table-column prop="moneyWon" label="输赢" width="100">
+        <template slot-scope="scope">{{ scope.row.moneyWon / 1000 }}</template>
+      </el-table-column>
+      <el-table-column prop="moneyFee" label="抽水" width="100">
+        <template slot-scope="scope">{{ scope.row.moneyFee / 1000 }}</template>
+      </el-table-column>
+      <el-table-column prop="moneyTotal" label="最终资产" width="100">
+        <template slot-scope="scope">{{ scope.row.moneyTotal / 1000 }}</template>
+      </el-table-column>
+    </el-table>
+    <br>
+    <el-table
+      title="打枪："
+      :visible.sync="pusoyShootOneShow"
+      :data="pusoyWildDetail.shootOne"
+      width="100%"
+      border
+    >
+      <el-table-column label="Pusoy List：">
+        <el-table-column prop="SourcePlayer.uid" label="打枪">
+          <template slot-scope="scope">{{ scope.row.SourcePlayer.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="TargetPlayer.uid" label="Pusoy">
+          <template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
+      </el-table-column>
+    </el-table>
+    <br>
+    <el-descriptions title="扩展信息">
+      <el-descriptions-item label="桌子ID">{{ pusoyWildDetail.tid }}</el-descriptions-item>
+      <el-descriptions-item label="Server日志ID">{{ pusoyWildDetail.logId }}</el-descriptions-item>
+    </el-descriptions>
+  </el-dialog>
+
+</template>
+
+<script>
+import { $libShow } from '@/utils/common'
+
+export default {
+  name: 'PusoyWildLog',
+  components: {},
+  props: {
+    // eslint-disable-next-line vue/prop-name-casing
+    GameLog: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    }
+  },
+  data() {
+    return {
+      libShow: $libShow,
+      showGameLog: {},
+      pusoyCardTypes: {
+        0: '爆牌',
+        1: '普通牌型',
+        101: '三同花',
+        102: '三顺子',
+        103: '六对半',
+        106: '清一色',
+        112: '一条龙',
+        113: '清龙'
+      },
+      pusoyGroupCardTypes: {},
+      pusoyWildDetail: {},
+      pusoyShootOneShow: false,
+      pusoyWildDetailVisible: false,
+      wildCard: 0
+    }
+  },
+  watch: {
+    'GameLog': {
+      deep: true,
+      handler: function(val) {
+        this.initData(val)
+      }
+    }
+  },
+  created() {
+    this.initData(this.GameLog)
+  },
+  methods: {
+    showCard(cards,isSpe) {
+      if (cards === null || cards === undefined) {
+        return ''
+      }
+      let ret = '初：'
+      if (isSpe) {
+        ret = '展：'
+      }
+      if (cards.length === 1) {
+        return ret + $libShow.CardShow(cards[0])
+      }
+      for (let i = 0; i < cards.length; i++) {
+        ret += $libShow.CardShow(cards[i])
+      }
+      return ret
+    },
+    showWildCard() {
+      const card = this.wildCard
+      if (card === 0 || card === undefined) {
+        return '无赖子'
+      }
+      return $libShow.CardShow(card)
+    },
+    showIndexes(indexes) {
+      if (indexes === null || indexes === undefined) {
+        return ''
+      }
+      let ret = ''
+      for (let i = 0; i < indexes.length; i++) {
+        ret += indexes[i] + ' '
+      }
+      return ret
+    },
+    pusoyShowGroupExtra(row) {
+      if (row.groupBottom.extraScore > 0 || row.groupMiddle.extraScore > 0 || row.groupTop.extraScore > 0) {
+        return '(牌型加分)'
+      }
+      return ''
+    },
+    pusoyShowShootAll(row) {
+      if (row.uid === this.pusoyWildDetail.shootAllUid) {
+        return '(全垒打)'
+      }
+      return ''
+    },
+    pusoyShowCardTypeName(type) {
+      if (type > 1) {
+        return '特殊牌型'
+      } else {
+        return this.pusoyCardTypes[type] || '-'
+      }
+    },
+    pusoySpanMethods({ row, columnIndex }) {
+      if (columnIndex === 3) {
+        console.log('row: ', row)
+        console.log('columnIndex: ', columnIndex)
+      }
+      let _row = 0
+      let _col = 0
+      // 前三列
+      if (columnIndex === 2 && row.cardType > 1) {
+        _row = 1 // 偶数行 两行
+        _col = 3
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
+      if ((columnIndex === 3 || columnIndex === 4) && row.cardType > 1) {
+        _row = 1 // 偶数行 两行
+        _col = 0
+        return {
+          rowspan: _row,
+          colspan: _col
+        }
+      }
+    },
+    initData(val) {
+      this.showGameLog = JSON.parse(JSON.stringify(val))
+      this.showPusoyGame(this.showGameLog.detail)
+    },
+    showPusoyGame(obj) {
+      console.log(obj)
+      this.pusoyShootOneShow = false
+
+      let isInvalid = true
+      for (const k in obj.players) {
+        if (obj.players[k].moneyWon !== 0) {
+          isInvalid = false
+        }
+      }
+
+      for (const k in obj.players) {
+        const cards = obj.players[k].cards
+        if (isInvalid) {
+          obj.players[k].moneyBet = 0
+        }
+        for (const i in obj.groupTop) {
+          if (obj.groupTop[i].uid === obj.players[k].uid) {
+            obj.players[k].groupTop = obj.groupTop[i]
+            obj.players[k].groupTop.cardsSpe = obj.players[k].groupTop.cards
+            obj.players[k].groupTop.cards = cards.slice(0, 3)
+            break
+          }
+        }
+        for (const i in obj.groupMiddle) {
+          if (obj.groupMiddle[i].uid === obj.players[k].uid) {
+            obj.players[k].groupMiddle = obj.groupMiddle[i]
+            obj.players[k].groupMiddle.cardsSpe = obj.players[k].groupMiddle.cards
+            obj.players[k].groupMiddle.cards = cards.slice(3, 8)
+            break
+          }
+        }
+        for (const i in obj.groupBottom) {
+          if (obj.groupBottom[i].uid === obj.players[k].uid) {
+            obj.players[k].groupBottom = obj.groupBottom[i]
+            obj.players[k].groupBottom.cardsSpe = obj.players[k].groupBottom.cards
+            obj.players[k].groupBottom.cards = cards.slice(8, 13)
+            break
+          }
+        }
+      }
+      this.wildCard = obj.wildCard
+      if (obj.shootOne) {
+        this.pusoyShootOneShow = true
+      }
+      this.pusoyWildDetail = obj
+      this.pusoyWildDetailVisible = true
+    }
+  }
+}
+</script>

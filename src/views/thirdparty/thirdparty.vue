@@ -306,7 +306,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '', LiveUri: '', TestVer: '' }
+  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '0', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '', LiveUri: '', TestVer: '' }
 }
 
 export default {

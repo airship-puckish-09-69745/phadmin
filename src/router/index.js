@@ -277,6 +277,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
                 name: 'pusoyPresetCards',
                 meta: { title: 'Pusoy用户配牌控制 ◐' }
+              },
+              {
+                path: 'PusoyWildTable',
+                component: () => import('@/views/config/tableConfig/pusoyWild/pusoyWildTable'),
+                name: 'pusoyWildTable',
+                meta: { title: 'Pusoy Wild  ◐' }
               }
             ]
           },
@@ -1614,6 +1620,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_pusoyWild',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyWild',
+            meta: { title: 'PusoyWild ◐', gid: 126 }
+          },
+          {
             path: 'playlog_ginRummy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ginRummy',
@@ -1625,12 +1637,6 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: '德州专业版', noCache: true },
             children: [
-              {
-                path: 'texasNlhInsure',
-                component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
-                name: 'texasNlhInsure',
-                meta: { title: '保险数据' }
-              },
               {
                 path: 'texasNlhJP',
                 component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
@@ -2040,7 +2046,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'godoffortune_slots_log',
             meta: { title: 'GodOfFortune', gid: 182 }
-          }
+          },
+          {
+            path: 'mayantotem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mayantotem_slots_log',
+            meta: { title: 'MayanTotem', gid: 178 }
+          },
         ]
       },
       {
