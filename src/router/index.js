@@ -580,7 +580,7 @@ export const asyncRoutes = [
               }
             ]
           },
-          { // 牛牛
+          { // 多人扫雷
             path: 'MinesShowDown',
             component: () => import('@/views/empty'),
             name: 'MinesShowDown',
