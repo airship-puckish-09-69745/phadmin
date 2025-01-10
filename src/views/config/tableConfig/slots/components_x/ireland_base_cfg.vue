@@ -209,6 +209,9 @@ export default {
         $this.$message.error('推荐下注值必须是下注大小中存在的值')
         return
       }
+      if (this.winTypeMinOddsCheck() === false) {
+        return
+      }
       this.slotsData.RecommendBet = this.recommendBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
       this.$refs.compare.Compare(function(isEdit) {
@@ -231,6 +234,18 @@ export default {
         }
       }
       return false
+    },
+    winTypeMinOddsCheck() {
+      for (const i in this.slotsData.WinTypeMinOdds) {
+        if (this.slotsData.WinTypeMinOdds[i] === 0) {
+          this.$message.error(this.getBigWinLabel(i) + '不能为0')
+          return false
+        } else if (this.slotsData.WinTypeMinOdds[i] === '') {
+          this.$message.error(this.getBigWinLabel(i) + '不能为空')
+          return false
+        }
+      }
+      return true
     },
     getBigWinLabel(index) {
       // 根据索引返回对应的标签文本
