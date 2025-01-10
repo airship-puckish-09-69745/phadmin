@@ -244,7 +244,8 @@ export default {
         { 'value': 150, 'label': 'SuperGemIII' },
         { 'value': 156, 'label': 'CrazyAce' },
         { 'value': 82, 'label': 'Millionaire' },
-        { 'value': 166, 'label': 'FireLink' }
+        { 'value': 166, 'label': 'FireLink' },
+        { 'value': 174, 'label': 'TreasureBowl' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },

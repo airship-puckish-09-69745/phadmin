@@ -308,9 +308,21 @@
           <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制：" :required="true">
+            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
+            <el-switch
+              v-model="editForm.data.openDaysLimit"
+              style="display: block"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="是"
+              inactive-text="否"
+            />
+          </el-form-item>
           <el-form-item label="排序值：" :required="true">
-            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)"/>
-            <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
+            <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -342,17 +354,15 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-form-item>
-
-            <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
-              <el-date-picker
-                v-model="editForm.loopDetail.loopStartDate"
-                size="mini"
-                type="date"
-                placeholder="选择开始日期"
-                :disabled="repeatLoopDisabled()"
-              />
-              <span style="color:black; margin-left:10px">[00:00:00]</span>
-            </el-form-item>
+          <el-form-item v-if="editForm.data.repeatType != 0" label="比赛开始日期：" :required="true">
+            <el-date-picker
+              v-model="editForm.loopDetail.loopStartDate"
+              size="mini"
+              type="date"
+              placeholder="选择开始日期"
+              :disabled="repeatLoopDisabled()"
+            />
+          </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
             <el-date-picker
               v-model="editForm.loopDetail.loopEndDate"
@@ -360,7 +370,6 @@
               type="date"
               placeholder="选择结束日期"
             />
-            <span style="color:black; margin-left:10px">[23:59:59]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
             <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()" />
@@ -489,19 +498,6 @@
           <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
-
-          <el-form-item v-if="editForm.data.signUpType != 0" label="是否启用每日限制：" :required="true">
-            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
-            <el-switch
-              v-model="editForm.data.openDaysLimit"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value="1"
-              :inactive-value="0"
-              active-text="是"
-              inactive-text="否"
-            />
-          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -612,7 +608,7 @@
 
           <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="奖励类型" :required="true">
             <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="1">金币</el-radio>
-            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金</el-radio>
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金（无限制）</el-radio>
           </el-form-item>
 
         </fieldset>
@@ -912,7 +908,7 @@ export default {
         prizeExtra: '动态奖池信息',
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
-        dcReport: '是否上报数据中心',
+        dcReport: '是否上报数据中心'
       },
       singleCopy: {
         id: 0,
@@ -931,6 +927,21 @@ export default {
     this.getGuideCfgs()
     this.getPropsCfgs()
     this.getPrizeTemplateCfg()
+    if (this.env === 'pro') {
+      // 正式环境暂时只开放以下选项
+      // 返水金
+      this.rebateScenesCfgs = [
+        { 'value': 5, 'label': '没有任何限制的返水金' }
+        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ]
+      // 投注金
+      this.betScenesCfgs = [
+        { 'value': 1, 'label': '任意游戏投注' }
+        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ]
+    }
   },
   mounted() {
     this.getList()
@@ -1092,6 +1103,7 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
+      console.log('类型 ', repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value === repeatType) {
@@ -2095,10 +2107,11 @@ export default {
     },
     //在这里实现APPID过滤
     filterMatchListByAppId(appInfo){
+    // 在这里实现APPID过滤
       let show_appinfo = ''
       const appInfoTemp = JSON.parse(appInfo)
       for (let i = 0; i < appInfoTemp.length; i++) {
-        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue;
+        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue
         if (i === 0) {
           show_appinfo += appInfoTemp[i].appId + ' '
         } else {
