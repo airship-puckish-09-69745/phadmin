@@ -170,6 +170,9 @@ export default {
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
     }
+    if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
+      this.slotsData.WinTypeMinOdds = [6, 12, 24]
+    }
     return data
   },
   updated() {
