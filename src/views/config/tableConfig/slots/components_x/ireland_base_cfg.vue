@@ -174,13 +174,13 @@ export default {
   },
   updated() {
     if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData())
+      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds))
       this.lock = true
       console.log('origin data', this.getDiffData())
     }
   },
   methods: {
-    getDiffData() {
+    getDiffData(winTypeMinOdds) {
       return {
         'SlotsType': this.slotsData.SlotsType,
         'Rows': this.slotsData.Rows,
@@ -197,7 +197,7 @@ export default {
         'NormalFeeRate': this.slotsData.NormalFeeRate,
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
         'RecommendBet': this.slotsData.RecommendBet,
-        'WinTypeMinOdds': this.slotsData.WinTypeMinOdds
+        'WinTypeMinOdds': winTypeMinOdds
       }
     },
     submitFrm() {
@@ -207,9 +207,9 @@ export default {
         return
       }
       this.slotsData.RecommendBet = this.recommendBet * 1000
-      this.$refs.compare.SetNewVal(this.getDiffData())
+      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
       this.$refs.compare.Compare(function(isEdit) {
-        if (!isEdit && JSON.stringify($this.getDiffData().WinTypeMinOdds) === JSON.stringify($this.initialWinTypeMinOdds)) {
+        if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交 ')
           return
         }
