@@ -90,6 +90,7 @@
         <el-table-column
           prop="id"
           label="赛事ID"
+          sortable
         />
         <el-table-column
           prop="name"
@@ -124,7 +125,8 @@
         <el-table-column
           prop="sort"
           label="赛事排序"
-          width="60"
+          width="80"
+          sortable
         >
         </el-table-column>
         <el-table-column
@@ -606,7 +608,7 @@
 
           <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="奖励类型" :required="true">
             <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="1">金币</el-radio>
-            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金</el-radio>
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金（无限制）</el-radio>
           </el-form-item>
 
         </fieldset>
@@ -906,13 +908,14 @@ export default {
         prizeExtra: '动态奖池信息',
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
-        dcReport: '是否上报数据中心',
+        dcReport: '是否上报数据中心'
       },
       singleCopy: {
         id: 0,
         isCopy: false
       },
-      showDevTool: false
+      showDevTool: false,
+      showTip: false
     }
   },
   computed: {
@@ -924,6 +927,21 @@ export default {
     this.getGuideCfgs()
     this.getPropsCfgs()
     this.getPrizeTemplateCfg()
+    if (this.env === 'pro') {
+      // 正式环境暂时只开放以下选项
+      // 返水金
+      this.rebateScenesCfgs = [
+        { 'value': 5, 'label': '没有任何限制的返水金' }
+        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ]
+      // 投注金
+      this.betScenesCfgs = [
+        { 'value': 1, 'label': '任意游戏投注' }
+        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ]
+    }
   },
   mounted() {
     this.getList()
@@ -1085,7 +1103,7 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
-      console.log("类型 ",repeatType)
+      console.log('类型 ', repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value === repeatType) {
@@ -1527,7 +1545,6 @@ export default {
       let bTime = 0
       let eTime = 0
       if (this.editForm.data.repeatType == 0) {
-        console.log('单场')
         // 单场
         if (this.editForm.loopDetail.onceTime) {
           // this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
@@ -1539,7 +1556,7 @@ export default {
       } else {
         // 循环
         bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
-        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
+        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000) + (86400-1) //结束日期为当天23:59:59
         const intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime })
@@ -1748,6 +1765,11 @@ export default {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
       }
+
+      //付费赛的是,每日限制不开启
+      if (this.editForm.data.signUpType === 0) {
+        this.editForm.data.openDaysLimit = 0
+      }
       if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0) {
         this.errmsg('付费赛报名费不能为0')
         return false
@@ -1806,8 +1828,8 @@ export default {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
-        this.errmsg('循环赛开始结束时间不能为同一天！')
-        return false
+        // this.errmsg('循环赛开始结束时间不能为同一天！')  //循环赛去掉同一天检测
+        // return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
@@ -1867,13 +1889,15 @@ export default {
           return false
         }
 
-        // 目前动态奖池只有真金和返水金
-        if (this.editForm.prizeExtra.rewardType == 2) {
-          this.editForm.prizeExtra.rewardType = 3
-        }
-        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-        if (this.editForm.prizeExtra.rewardType == 3) {
-          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+        if (this.editForm.prizeExtra.awardType == 1) {
+          // 目前动态奖池只有真金和返水金
+          if (this.editForm.prizeExtra.rewardType == 2) {
+            this.editForm.prizeExtra.rewardType = 3
+          }
+          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+          if (this.editForm.prizeExtra.rewardType == 3) {
+            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+          }
         }
       }
       return true
@@ -2072,12 +2096,24 @@ export default {
         }
       })
     },
+
+    checkListSort() {
+      //检测列表排序值
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].sort == this.editForm.data.sort) {
+          this.showTip = true
+          return
+        }
+      }
+      this.showTip = false
+    },
     //在这里实现APPID过滤
     filterMatchListByAppId(appInfo){
+    // 在这里实现APPID过滤
       let show_appinfo = ''
       const appInfoTemp = JSON.parse(appInfo)
       for (let i = 0; i < appInfoTemp.length; i++) {
-        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue;
+        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue
         if (i === 0) {
           show_appinfo += appInfoTemp[i].appId + ' '
         } else {
