@@ -308,21 +308,9 @@
           <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制：" :required="true">
-            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
-            <el-switch
-              v-model="editForm.data.openDaysLimit"
-              style="display: block"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value="1"
-              :inactive-value="0"
-              active-text="是"
-              inactive-text="否"
-            />
-          </el-form-item>
           <el-form-item label="排序值：" :required="true">
-            <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
+            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)"/>
+            <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -362,6 +350,7 @@
               placeholder="选择开始日期"
               :disabled="repeatLoopDisabled()"
             />
+            <span style="color:black; margin-left:10px">[00:00:00]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
             <el-date-picker
@@ -370,6 +359,7 @@
               type="date"
               placeholder="选择结束日期"
             />
+            <span style="color:black; margin-left:10px">[23:59:59]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
             <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()" />
@@ -497,6 +487,19 @@
 
           <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType !=0" label="是否启用每日限制：" :required="true">
+            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
+            <el-switch
+              v-model="editForm.data.openDaysLimit"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="是"
+              inactive-text="否"
+            />
           </el-form-item>
         </fieldset>
 
