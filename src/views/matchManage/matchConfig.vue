@@ -1889,13 +1889,15 @@ export default {
           return false
         }
 
-        // 目前动态奖池只有真金和返水金
-        if (this.editForm.prizeExtra.rewardType == 2) {
-          this.editForm.prizeExtra.rewardType = 3
-        }
-        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-        if (this.editForm.prizeExtra.rewardType == 3) {
-          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+        if (this.editForm.prizeExtra.awardType == 1) {
+          // 目前动态奖池只有真金和返水金
+          if (this.editForm.prizeExtra.rewardType == 2) {
+            this.editForm.prizeExtra.rewardType = 3
+          }
+          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+          if (this.editForm.prizeExtra.rewardType == 3) {
+            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+          }
         }
       }
       return true
