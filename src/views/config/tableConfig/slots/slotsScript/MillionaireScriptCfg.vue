@@ -697,7 +697,11 @@ export default {
         '171': 'epicacemars',
         '166': 'firelink',
         '167': 'firelinkmars',
-        '178': 'mayantotem'
+        '172': 'wrathofzeus',
+        '173': 'wrathofzeusmars',
+        '178': 'mayantotem',
+        '182': 'godoffortune',
+        '183': 'godoffortunemars'
       }
     }
   },
