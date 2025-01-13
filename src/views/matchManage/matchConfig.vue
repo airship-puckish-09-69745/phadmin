@@ -1106,7 +1106,6 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
-      console.log('类型 ', repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value === repeatType) {
@@ -1824,6 +1823,10 @@ export default {
         }
       }
 
+      if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(this.editForm.loopDetail.loopStartDate / 1000)))) {
+        this.errmsg('循环赛比赛结束时间需要大于比赛开始时间！')
+        return false
+      }
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false
