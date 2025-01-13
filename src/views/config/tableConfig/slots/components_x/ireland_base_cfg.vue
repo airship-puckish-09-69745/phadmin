@@ -164,7 +164,7 @@ export default {
   data() {
     var data = {
       lock: false,
-      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet / 1000 : 0,
+      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: []
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
@@ -212,7 +212,7 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      this.slotsData.RecommendBet = this.recommendBet * 1000
+      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -229,7 +229,7 @@ export default {
       }
       var betlist = this.slotsData.Bets.split(',')
       for (const i in betlist) {
-        if (String(this.recommendBet) === betlist[i]) {
+        if (String(this.recommendBet / this.slotsData.BaseBet) === betlist[i]) {
           return true
         }
       }
