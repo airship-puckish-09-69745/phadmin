@@ -171,7 +171,7 @@ export default {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
     }
     if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
-      this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24]);
+      this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24])
     }
     return data
   },
@@ -236,6 +236,7 @@ export default {
       return false
     },
     winTypeMinOddsCheck() {
+      let lastWinTypeMinOdds = 0
       for (const i in this.slotsData.WinTypeMinOdds) {
         if (this.slotsData.WinTypeMinOdds[i] === 0) {
           this.$message.error(this.getBigWinLabel(i) + '不能为0')
@@ -243,7 +244,11 @@ export default {
         } else if (this.slotsData.WinTypeMinOdds[i] === '') {
           this.$message.error(this.getBigWinLabel(i) + '不能为空')
           return false
+        } else if (lastWinTypeMinOdds >= this.slotsData.WinTypeMinOdds[i]) {
+          this.$message.error(this.getBigWinLabel(i) + ' 必须大于 ' + this.getBigWinLabel(i - 1))
+          return false
         }
+        lastWinTypeMinOdds = this.slotsData.WinTypeMinOdds[i]
       }
       return true
     },
