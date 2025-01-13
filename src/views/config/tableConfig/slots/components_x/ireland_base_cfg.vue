@@ -171,7 +171,7 @@ export default {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
     }
     if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
-      this.slotsData.WinTypeMinOdds = [6, 12, 24]
+      this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24]);
     }
     return data
   },
