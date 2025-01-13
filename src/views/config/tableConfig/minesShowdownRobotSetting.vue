@@ -102,8 +102,8 @@
                 label="编辑"
               >
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="handleMinesCfsEdit(scope.row, scope.$index)">编辑配置{{scope.$index+1}}</el-button>
-                  <el-button style="background: #ffcc4b" size="mini" @click="handleMineHitsCfsEdit(scope.row, scope.$index)">踩雷配置{{scope.$index+1}}</el-button>
+                  <el-button type="primary" size="mini" @click="handleMinesCfsEdit(scope.row, scope.$index)">跳过概览</el-button>
+                  <el-button style="background: #ffcc4b" size="mini" @click="handleMineHitsCfsEdit(scope.row, scope.$index)">翻格子数</el-button>
                   <el-button type="danger" size="mini" @click="delMinesCfs(scope.row, scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
@@ -152,13 +152,13 @@
                 prop="DeductingMinesOdds"
                 label="每次减少翻雷概率%"
               />
-              <el-table-column
-                prop="EachLossMoney"
-                label="输初始金额%"
-              /> <el-table-column
-                prop="EachWinMoney"
-                label="赢初始金额%"
-              />
+<!--              <el-table-column-->
+<!--                prop="EachLossMoney"-->
+<!--                label="输初始金额%"-->
+<!--              /> <el-table-column-->
+<!--                prop="EachWinMoney"-->
+<!--                label="赢初始金额%"-->
+<!--              />-->
 
               <el-table-column
                 label="操作"
@@ -241,16 +241,16 @@
             <el-input v-model="edit.item.DeductingMinesOdds" />
           </el-col>
         </el-form-item>
-        <el-form-item label="每输多少金额触发：" :required="true" prop="WinMoneyMax">
-          <el-col :span="15">
-            <el-input v-model="edit.item.EachLossMoney" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="每赢多少金额触发：" :required="true" prop="WinMoneyMax">
-          <el-col :span="15">
-            <el-input v-model="edit.item.EachWinMoney" />
-          </el-col>
-        </el-form-item>
+<!--        <el-form-item label="每输多少金额触发：" :required="true" prop="WinMoneyMax">-->
+<!--          <el-col :span="15">-->
+<!--            <el-input v-model="edit.item.EachLossMoney" />-->
+<!--          </el-col>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="每赢多少金额触发：" :required="true" prop="WinMoneyMax">-->
+<!--          <el-col :span="15">-->
+<!--            <el-input v-model="edit.item.EachWinMoney" />-->
+<!--          </el-col>-->
+<!--        </el-form-item>-->
 
         <el-form-item>
           <el-row>
