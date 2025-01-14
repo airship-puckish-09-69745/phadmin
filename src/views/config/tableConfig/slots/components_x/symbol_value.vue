@@ -20,6 +20,7 @@
                     <el-option label="常规Bonus" :value="5" />
                     <el-option label="阿拉丁金币" :value="6" />
                     <el-option label="阿拉丁钻石" :value="7" />
+                    <el-option label="金矿火车事件" :value="8" />
                   </el-select>
                 </el-form-item>
 
