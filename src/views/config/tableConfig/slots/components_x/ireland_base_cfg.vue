@@ -164,14 +164,14 @@ export default {
   data() {
     var data = {
       lock: false,
-      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet / 1000 : 0,
+      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: []
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
     }
     if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
-      this.slotsData.WinTypeMinOdds = [6, 12, 24]
+      this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24])
     }
     return data
   },
@@ -212,7 +212,7 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      this.slotsData.RecommendBet = this.recommendBet * 1000
+      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -229,13 +229,14 @@ export default {
       }
       var betlist = this.slotsData.Bets.split(',')
       for (const i in betlist) {
-        if (String(this.recommendBet) === betlist[i]) {
+        if (String(this.recommendBet / this.slotsData.BaseBet) === betlist[i]) {
           return true
         }
       }
       return false
     },
     winTypeMinOddsCheck() {
+      let lastWinTypeMinOdds = 0
       for (const i in this.slotsData.WinTypeMinOdds) {
         if (this.slotsData.WinTypeMinOdds[i] === 0) {
           this.$message.error(this.getBigWinLabel(i) + '不能为0')
@@ -243,7 +244,11 @@ export default {
         } else if (this.slotsData.WinTypeMinOdds[i] === '') {
           this.$message.error(this.getBigWinLabel(i) + '不能为空')
           return false
+        } else if (lastWinTypeMinOdds >= this.slotsData.WinTypeMinOdds[i]) {
+          this.$message.error(this.getBigWinLabel(i) + ' 必须大于 ' + this.getBigWinLabel(i - 1))
+          return false
         }
+        lastWinTypeMinOdds = this.slotsData.WinTypeMinOdds[i]
       }
       return true
     },
