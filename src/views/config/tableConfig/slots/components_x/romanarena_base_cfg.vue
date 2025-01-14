@@ -63,6 +63,21 @@
             <el-input v-model.number="slotsData.BuyFreeFeeRate" />
           </el-form-item>
 
+          <el-form-item label="推荐下注值">
+            <el-input v-model="recommendBet" />
+          </el-form-item>
+
+          <el-form-item v-for="(item, index) in slotsData.WinTypeMinOdds" :key="'WinTypeMinOdds-' + index" :label="getBigWinLabel(index)">
+            <el-input v-model.number="slotsData.WinTypeMinOdds[index]" />
+          </el-form-item>
+
+          <el-form-item label="是否启用新版剧本">
+            <el-select v-model="slotsData.EnableScriptV3" disabled>
+              <el-option label="启用" :value="true" />
+              <el-option label="禁用" :value="false" />
+            </el-select>
+          </el-form-item>
+
           <el-form-item>
             <el-button type="success" @click="submitFrm">保存</el-button>
           </el-form-item>
@@ -101,19 +116,28 @@ export default {
     }
   },
   data() {
-    return {
-      lock: false
+    var data = {
+      lock: false,
+      recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
+      initialWinTypeMinOdds: []
     }
+    for (const k in this.slotsData.WinTypeMinOdds) {
+      data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
+    }
+    if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
+      this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24])
+    }
+    return data
   },
   updated() {
     if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData())
+      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds))
       this.lock = true
-      console.log('origin data', this.getDiffData())
+      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds))
     }
   },
   methods: {
-    getDiffData() {
+    getDiffData(winTypeMinOdds) {
       return {
         'SlotsType': this.slotsData.SlotsType,
         'Rows': this.slotsData.Rows,
@@ -127,12 +151,22 @@ export default {
           'WinMoneyTransferRate': this.slotsData.MoneyConfig.WinMoneyTransferRate
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
-        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate
+        'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
+        'RecommendBet': this.slotsData.RecommendBet,
+        'WinTypeMinOdds': winTypeMinOdds
       }
     },
     submitFrm() {
       const $this = this
-      this.$refs.compare.SetNewVal(this.getDiffData())
+      if (this.recommendBetCheck() === false) {
+        $this.$message.error('推荐下注值必须是下注大小中存在的值')
+        return
+      }
+      if (this.winTypeMinOddsCheck() === false) {
+        return
+      }
+      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
+      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
@@ -142,6 +176,40 @@ export default {
         $this.$emit('saveData')
         $this.lock = false
       })
+    },
+    recommendBetCheck() {
+      if (this.recommendBet === 0) {
+        return true
+      }
+      var betlist = this.slotsData.Bets.split(',')
+      for (const i in betlist) {
+        if (String(this.recommendBet / this.slotsData.BaseBet) === betlist[i]) {
+          return true
+        }
+      }
+      return false
+    },
+    winTypeMinOddsCheck() {
+      let lastWinTypeMinOdds = 0
+      for (const i in this.slotsData.WinTypeMinOdds) {
+        if (this.slotsData.WinTypeMinOdds[i] === 0) {
+          this.$message.error(this.getBigWinLabel(i) + '不能为0')
+          return false
+        } else if (this.slotsData.WinTypeMinOdds[i] === '') {
+          this.$message.error(this.getBigWinLabel(i) + '不能为空')
+          return false
+        } else if (lastWinTypeMinOdds >= this.slotsData.WinTypeMinOdds[i]) {
+          this.$message.error(this.getBigWinLabel(i) + ' 必须大于 ' + this.getBigWinLabel(i - 1))
+          return false
+        }
+        lastWinTypeMinOdds = this.slotsData.WinTypeMinOdds[i]
+      }
+      return true
+    },
+    getBigWinLabel(index) {
+      // 根据索引返回对应的标签文本
+      const labels = ['BigWin最小触发倍数', 'MegaWin最小触发倍数', 'SuperWin最小触发倍数']
+      return labels[index] || '未知' // 默认返回 "未知" 以防止超出索引范围
     }
   }
 }
