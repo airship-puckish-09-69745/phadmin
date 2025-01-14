@@ -65,6 +65,7 @@
               <el-option label="DanceLion" :value="184" />
               <el-option label="186:MahjongJackpot" :value="186" />
               <el-option label="ArcaneEgypt" :value="190" />
+              <el-option label="194:RoadKing" :value="194" />
             </el-select>
           </el-form-item>
 

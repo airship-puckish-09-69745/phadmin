@@ -976,6 +976,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/arcaneegypt_slots_cfg.vue'),
                 name: 'arcaneegypt_slots_cfg',
                 meta: { title: 'ArcaneEgypt' }
+              },
+              {
+                path: 'roadking_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/roadking_slots_cfg.vue'),
+                name: 'roadking_slots_cfg',
+                meta: { title: 'RoadKing' }
               }
             ]
           },
@@ -2053,6 +2059,12 @@ export const asyncRoutes = [
             name: 'mayantotem_slots_log',
             meta: { title: 'MayanTotem', gid: 178 }
           },
+          {
+            path: 'roadking_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'roadking_slots_log',
+            meta: { title: 'RoadKing', gid: 194 }
+          },
         ]
       },
       {
@@ -2204,7 +2216,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortune_slots_log',
             meta: { title: 'MahjongFortune(审)', gid: 165 }
-          }
+          },
+          {
+            path: 'roadking_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'roadking_slots_log',
+            meta: { title: 'RoadKing(审)', gid: 195 }
+          },
         ]
       },
       {
