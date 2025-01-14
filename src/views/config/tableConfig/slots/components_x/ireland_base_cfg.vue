@@ -180,7 +180,7 @@ export default {
     if (this.lock === false) {
       this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds))
       this.lock = true
-      console.log('origin data', this.getDiffData())
+      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds))
     }
   },
   methods: {

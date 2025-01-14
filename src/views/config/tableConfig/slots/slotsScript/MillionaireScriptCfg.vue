@@ -699,6 +699,8 @@ export default {
         '167': 'firelinkmars',
         '172': 'wrathofzeus',
         '173': 'wrathofzeusmars',
+        '176': 'puppyhome',
+        '177': 'puppyhomemars',
         '178': 'mayantotem',
         '182': 'godoffortune',
         '183': 'godoffortunemars'
