@@ -4,7 +4,7 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
           <el-form-item label="JP中奖概率" prop="JPRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JPRate" :required="true" > <template slot="append">‰</template> </el-input>
+            <el-input v-model.number="cfg.JPRate" :required="true" > <template slot="append">‱</template> </el-input>
           </el-form-item>
 
           <el-form-item label="JP抽水比例" prop="JPFeeRate" :rules="dataRule(true,{type:'n'})">
