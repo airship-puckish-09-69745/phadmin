@@ -1192,7 +1192,6 @@ export default {
         const ordinaryReturnMoneyTableData = {}
         const buyReturnMoneyTableData = {}
 
-        this.betOddsKey = '全部'
         this.returnMap = {}
         this.buyReturnMap = {}
         this.stepSum = {}
@@ -1438,7 +1437,6 @@ export default {
           })
         }
 
-        console.log('sumData', this.sumData)
         this.betOddsKeySelect = {}
         // this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.scriptClientDB = {}
@@ -1485,6 +1483,10 @@ export default {
             this.buyReturnClientDB[i] = new ClientTableData(buyReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
             this.betOddsKeySelect[i] = i
           }
+        }
+
+        if (!(this.betOddsKey in this.betOddsKeySelect)) {
+          this.betOddsKey = '全部'
         }
         this.queryKeyInput()
         this.scatterCounts = scatterCounts
