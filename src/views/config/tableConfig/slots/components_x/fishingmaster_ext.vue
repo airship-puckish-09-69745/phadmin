@@ -104,7 +104,7 @@ export default {
         this.$message.error('免费模式 wild在12345拓展成一整列的概率  err:请输入5个数字并用,隔开');
         return;
       }
-      const big = 1500
+      const big = 5000
       const invalidNumbers = numbers.filter(num => isNaN(num) || num > big);
       if (invalidNumbers.length > 0) {
         this.$message.error(`免费模式 wild在12345拓展成一整列的概率  err:每个数字必须小于等于${big}‱`);
