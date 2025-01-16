@@ -1771,6 +1771,7 @@ export default {
       //付费赛的是,每日限制不开启
       if (this.editForm.data.signUpType === 0) {
         this.editForm.data.openDaysLimit = 0
+        this.editForm.signExtra.betCnt = 0
       }
       if (this.editForm.data.openDaysLimit > 0 && this.editForm.data.signUpType !=0) {
         this.errmsg('每日限制已经开启')
