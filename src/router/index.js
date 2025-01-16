@@ -283,6 +283,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyWild/pusoyWildTable'),
                 name: 'pusoyWildTable',
                 meta: { title: 'Pusoy Wild  ◐' }
+              },
+              {
+                path: 'PusoyRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyRobotSetting'),
+                name: 'PusoyRobotSetting',
+                meta: { title: 'Pusoy AI ◐' }
+              },
+              {
+                path: 'PusoyAIList',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyAIListConfig'),
+                name: 'PusoyAIList',
+                meta: { title: 'PusoyAI-List ◐' }
               }
             ]
           },
