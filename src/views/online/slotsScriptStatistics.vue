@@ -20,7 +20,7 @@
             <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
 
             <el-select v-model="betOddsKey" size="mini" filterable default-first-option @change="betOddsKeyInput">
-              <el-option v-for="(o,k) in betOddsKeySelect" :key="k" :label="o" :value="o" />
+              <el-option v-for="(o,k) in betOddsKeySelect" :key="k" :label="getBetOddsName(o)" :value="o" />
             </el-select>
           </el-col>
         </el-row>
@@ -1192,6 +1192,7 @@ export default {
         const ordinaryReturnMoneyTableData = {}
         const buyReturnMoneyTableData = {}
 
+        this.betOddsKey = '全部'
         this.returnMap = {}
         this.buyReturnMap = {}
         this.stepSum = {}
@@ -1236,7 +1237,7 @@ export default {
                   if (!(this.queryGid in this.sumData)) {
                     this.sumData[this.queryGid] = {}
                   }
-                  this.sumData[this.queryGid]['全部'] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
+                  this.sumData[this.queryGid]['全部'] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid]['全部'] || 0)
                   if (!('全部' in scriptTableData)) {
                     scriptTableData['全部'] = []
                   }
@@ -1249,7 +1250,7 @@ export default {
                   if (!(this.queryGid in this.sumData)) {
                     this.sumData[this.queryGid] = {}
                   }
-                  this.sumData[this.queryGid][strings[3]] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
+                  this.sumData[this.queryGid][strings[3]] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid][strings[3]] || 0)
                   if (!(strings[3] in scriptTableData)) {
                     scriptTableData[strings[3]] = []
                   }
@@ -1437,6 +1438,7 @@ export default {
           })
         }
 
+        console.log('sumData', this.sumData)
         this.betOddsKeySelect = {}
         // this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.scriptClientDB = {}
@@ -1822,6 +1824,17 @@ export default {
       } else {
         const percent = scatterCnt * 100 / totalCnt
         return percent.toFixed(2) + '%'
+      }
+    },
+    getBetOddsName(betOdd) {
+      if (betOdd === '全部') {
+        return betOdd
+      } else {
+        if (betOdd === '10') {
+          return '普通下注' + betOdd
+        } else {
+          return '额外下注' + betOdd
+        }
       }
     }
   }
