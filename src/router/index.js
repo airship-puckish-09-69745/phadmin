@@ -1143,6 +1143,12 @@ export const asyncRoutes = [
                 meta: { title: 'MajorAce(审)' }
               },
               {
+                path: 'mahjongfortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongfortunemars_slots_cfg'),
+                name: 'mahjongfortunemars_slots_cfg',
+                meta: { title: 'MahjongFortune(审)' }
+              },
+              {
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
