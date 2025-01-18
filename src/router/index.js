@@ -1153,6 +1153,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
                 meta: { title: 'Pharaoh Treasure(审)' }
+              },
+              {
+                path: 'dancelionmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
+                name: 'dancelionmars_slots_cfg',
+                meta: { title: 'Dance Lion(审)' }
               }
             ]
           },
