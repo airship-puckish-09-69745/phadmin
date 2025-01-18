@@ -166,7 +166,8 @@ export default {
     var data = {
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
-      initialWinTypeMinOdds: []
+      initialWinTypeMinOdds: [],
+      initialBets: this.slotsData.Bets
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
@@ -178,19 +179,19 @@ export default {
   },
   updated() {
     if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds))
+      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets))
       this.lock = true
-      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds))
+      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets))
     }
   },
   methods: {
-    getDiffData(winTypeMinOdds) {
+    getDiffData(winTypeMinOdds, bets) {
       return {
         'SlotsType': this.slotsData.SlotsType,
         'Rows': this.slotsData.Rows,
         'Clos': this.slotsData.Clos,
         'MinVersion': this.slotsData.MinVersion,
-        'Bets': this.slotsData.Bets,
+        'Bets': bets,
         'BetExtras': this.slotsData.BetExtras,
         'OddsStr': this.slotsData.OddsStr,
         'BaseBet': this.slotsData.BaseBet,
@@ -214,7 +215,7 @@ export default {
         return
       }
       this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
-      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
+      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交 ')
@@ -223,6 +224,11 @@ export default {
         $this.$emit('saveData')
         $this.lock = false
       })
+      this.initialWinTypeMinOdds = []
+      for (const k in this.slotsData.WinTypeMinOdds) {
+        this.initialWinTypeMinOdds.push(parseInt(this.slotsData.WinTypeMinOdds[k]))
+      }
+      this.initialBets = this.slotsData.Bets
     },
     recommendBetCheck() {
       if (this.recommendBet === 0) {
