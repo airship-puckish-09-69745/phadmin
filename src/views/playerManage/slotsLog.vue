@@ -110,7 +110,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ scope.row.BetOdds ? formatNumber(scope.row.BetOdds) : 0}}
+            {{ scope.row.BetOdds ? betOddsNumber(scope.row.BetOdds, gid) : 0}}
           </template>
         </el-table-column>
 
@@ -495,6 +495,12 @@ export default {
       this.getInfo()
     },
     formatNumber(n) {
+      return n.toLocaleString()
+    },
+    betOddsNumber(n, gid) {
+      if (gid == 180){
+        n = n / 1000
+      }
       return n.toLocaleString()
     },
     getVupLevel(lvl) {
