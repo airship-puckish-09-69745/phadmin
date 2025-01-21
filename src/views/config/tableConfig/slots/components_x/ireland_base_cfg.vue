@@ -215,6 +215,17 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
+      if (this.slotsData.SlotsType == 180) {
+        const bets = this.slotsData.Bets.split(',')
+        for (const i in bets) {
+          let betFlot = parseFloat(bets[i])
+          let bet = betFlot * 1000
+          if (bet < 10 && bet % 2 == 1) {
+            $this.$message.error(`下注大小是三位小数时只支持偶数 err bet:${betFlot}`)
+            return
+          }
+        }
+      }
       this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets))
       this.$refs.compare.Compare(function(isEdit) {
