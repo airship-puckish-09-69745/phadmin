@@ -13,26 +13,21 @@
       </el-form>
     </el-row>
     <!--公共配置-->
-    <el-row :gutter="10" style="margin-top: 30px">
-      <el-col :span="6">
-        <div>
-          <el-statistic group-separator="," :value="form.all" title="历史账户数量总数"></el-statistic>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic group-separator="," :value="form.kyc" title="已KYC账户数量总数"></el-statistic>
-        </div>
-      </el-col>
-      <el-col :span="6">
-        <div>
-          <el-statistic group-separator="," :value="form.all-form.kyc" title="未KYC账户数量总数"></el-statistic>
-        </div>
-      </el-col>
+    <el-row>
+      <el-card class="box-card">
+        <el-form>
+          <el-form-item label="历史账户数量总数：">
+            <div>{{ form.all }}</div>
+          </el-form-item>
+          <el-form-item label="已KYC账户数量总数：">{{form.kyc}}
+          </el-form-item>
+          <el-form-item label="未KYC账户数量总数：">{{form.all-form.kyc}}
+          </el-form-item>
+        </el-form>
+      </el-card>
     </el-row>
   </div>
 </template>
-
   
   <script>
   import request from '@/utils/request'
@@ -41,10 +36,6 @@
   export default {
     data() {
       return {
-        like: true,
-        value1: 4154.564,
-        value2: 1314,
-        title: "增长人数",
         name: "kycInfo",
         apps: [
             { 'value': 0, 'label': '全部' },
