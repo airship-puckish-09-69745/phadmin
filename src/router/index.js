@@ -1457,6 +1457,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
         meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
+      },
+      {
+        path: 'kycInfo',
+        component: () => import('@/views/playerManage/kycInfo.vue'),
+        name: 'kycInfo',
+        meta: { title: 'KYC信息 ◐' }
       }
     ]
   },
