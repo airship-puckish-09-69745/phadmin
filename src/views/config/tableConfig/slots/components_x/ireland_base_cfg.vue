@@ -119,6 +119,14 @@
             <el-input v-model.number="slotsData.WinTypeMinOdds[index]" />
           </el-form-item>
 
+          <el-form-item label="普通自动下注轮数">
+            <el-input v-model="slotsData.AutoSpinNum[0]" />
+          </el-form-item>
+
+          <el-form-item label="比赛自动下注轮数">
+            <el-input v-model="slotsData.AutoSpinNum[1]" />
+          </el-form-item>
+
           <el-form-item label="是否启用新版剧本">
             <el-select v-model="slotsData.EnableScriptV3" disabled>
               <el-option label="启用" :value="true" />
@@ -168,7 +176,8 @@ export default {
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
-      initialBets: this.slotsData.Bets
+      initialBets: this.slotsData.Bets,
+      initialAutoSpinNum: []
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
@@ -176,17 +185,23 @@ export default {
     if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
       this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24])
     }
+    if (!this.slotsData.AutoSpinNum || this.slotsData.AutoSpinNum.length === 0) {
+      this.$set(this.slotsData, 'AutoSpinNum', ['', ''])
+    }
+    for (const k in this.slotsData.AutoSpinNum) {
+      data.initialAutoSpinNum.push(this.slotsData.AutoSpinNum[k])
+    }
     return data
   },
   updated() {
     if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets))
+      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
       this.lock = true
-      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets))
+      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
     }
   },
   methods: {
-    getDiffData(winTypeMinOdds, bets) {
+    getDiffData(winTypeMinOdds, bets, autoSpinNum) {
       return {
         'SlotsType': this.slotsData.SlotsType,
         'Rows': this.slotsData.Rows,
@@ -203,7 +218,8 @@ export default {
         'NormalFeeRate': this.slotsData.NormalFeeRate,
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
         'RecommendBet': this.slotsData.RecommendBet,
-        'WinTypeMinOdds': winTypeMinOdds
+        'WinTypeMinOdds': winTypeMinOdds,
+        'AutoSpinNum': autoSpinNum
       }
     },
     submitFrm() {
@@ -225,9 +241,8 @@ export default {
             return
           }
         }
-      }
-      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
-      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets))
+      }      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
+      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets, this.slotsData.AutoSpinNum))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交 ')
@@ -241,6 +256,10 @@ export default {
         this.initialWinTypeMinOdds.push(parseInt(this.slotsData.WinTypeMinOdds[k]))
       }
       this.initialBets = this.slotsData.Bets
+      this.initialAutoSpinNum = []
+      for (const k in this.slotsData.AutoSpinNum) {
+        this.initialAutoSpinNum.push(this.slotsData.AutoSpinNum[k])
+      }
     },
     recommendBetCheck() {
       if (this.recommendBet === 0) {
