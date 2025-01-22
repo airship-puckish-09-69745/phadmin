@@ -1159,6 +1159,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
                 meta: { title: 'Dance Lion(审)' }
+              },
+              {
+                path: 'epicacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/epicacemars_slots_cfg'),
+                name: 'epicacemars_slots_cfg',
+                meta: { title: 'EpicAce(审)' }
               }
             ]
           },
@@ -1457,6 +1463,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
         meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
+      },
+      {
+        path: 'kycInfo',
+        component: () => import('@/views/playerManage/kycInfo.vue'),
+        name: 'kycInfo',
+        meta: { title: 'KYC信息 ◐' }
       }
     ]
   },
