@@ -1159,6 +1159,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
                 meta: { title: 'Dance Lion(审)' }
+              },
+              {
+                path: 'epicacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/epicacemars_slots_cfg'),
+                name: 'epicacemars_slots_cfg',
+                meta: { title: 'EpicAce(审)' }
               }
             ]
           },
