@@ -8,17 +8,36 @@
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true"/>
           </el-form-item>
 
-          <el-form-item label="Jackpot模式的赔率(剧本)" prop="JackpotStrOdds">
-            <!--            MINI MINOR MAJOR MEGA GRAND-->
-            <el-input v-model="cfg.JackpotStrOdds" :required="true">
-              <template slot="append">MINI MINOR MAJOR MEGA GRAND全为大写</template>
+          <el-form-item label="Jackpot模式GRAND的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotGrandOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Mega的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMegaOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Major的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMajorOdds" :required="true"/>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Minor的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMinorOdds" :required="true">
+              <template slot="append">该配置仅用于前端,后端不会生效</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="Jackpot模式Mini的赔率(剧本)" prop="JackpotStrOdds">
+            <el-input v-model.number="cfg.JackpotMiniOdds" :required="true">
+              <template slot="append">该配置仅用于前端,后端不会生效</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="进入Jackpot的概率与倍率映射" prop="JackpotStrOdds">
-            <el-input v-model="cfg.JackpotStrRateMap" :required="true">
-              <template slot="append">概率:[剧本目标最小倍数,剧本目标最大倍数)。多个区间用;分号分割</template>
-            </el-input>
+            <el-tooltip class="item" effect="dark" content="例如: 1:[1:3),表示当剧本倍数在1到3时,有1%的概率,进入jackpot,且jackpot倍率是1。多个区间用;分号分割" placement="top-end">
+              <el-input v-model="cfg.JackpotStrRateMap" :required="true">
+                <template slot="append">概率:[剧本目标最小倍数,剧本目标最大倍数)</template>
+              </el-input>
+            </el-tooltip>
           </el-form-item>
 
           <el-form-item label="JP下注金额抽水">
@@ -59,6 +78,13 @@
 
           <el-form-item label="进入免费模式的最小赔率" prop="ScatterOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterOdds" :required="true"/>
+          </el-form-item>
+
+          <!--产品需求改动,增加jackpot的概率-->
+          <el-form-item label="第三轴每个格子出现jackpot概率" prop="jackpot3Rate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.jackpot3Rate" :required="true">
+              <template slot="append">%</template>
+            </el-input>
           </el-form-item>
 
         </el-form>

@@ -277,6 +277,24 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoyPresetCards'),
                 name: 'pusoyPresetCards',
                 meta: { title: 'Pusoy用户配牌控制 ◐' }
+              },
+              {
+                path: 'PusoyWildTable',
+                component: () => import('@/views/config/tableConfig/pusoyWild/pusoyWildTable'),
+                name: 'pusoyWildTable',
+                meta: { title: 'Pusoy Wild  ◐' }
+              },
+              {
+                path: 'PusoyRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyRobotSetting'),
+                name: 'PusoyRobotSetting',
+                meta: { title: 'Pusoy AI ◐' }
+              },
+              {
+                path: 'PusoyAIList',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyAIListConfig'),
+                name: 'PusoyAIList',
+                meta: { title: 'PusoyAI-List ◐' }
               }
             ]
           },
@@ -573,11 +591,32 @@ export const asyncRoutes = [
                 ]
               }
             ]
-          }, {
-            path: 'MinesBattleTable',
-            component: () => import('@/views/config/tableConfig/MinesBattleTable'),
-            name: 'MinesBattleTable',
-            meta: { title: 'MinesBattle ◐' }
+          },
+          { // 多人扫雷
+            path: 'MinesShowDown',
+            component: () => import('@/views/empty'),
+            name: 'MinesShowDown',
+            meta: { title: 'MinesShowDown ◐', noCache: true },
+            children: [
+              {
+                path: 'MinesShowDownTable',
+                component: () => import('@/views/config/tableConfig/MinesBattleTable'),
+                name: 'MinesShowDownTable',
+                meta: { title: 'Table ◐' }
+              },
+              {
+                path: 'MinesShowDownRobotSetting',
+                component: () => import('@/views/config/tableConfig/minesShowdownRobotSetting'),
+                name: 'MinesShowDownRobotSetting',
+                meta: { title: 'RobotSetting AI ◐' }
+              },
+              {
+                path: 'minesShowDownAIList',
+                component: () => import('@/views/config/tableConfig/minesShowdownAIListConfig'),
+                name: 'MinesShowDownAIList',
+                meta: { title: 'AI-List ◐' }
+              }
+            ]
           },
           {
             path: '/zjhVersion',
@@ -843,6 +882,12 @@ export const asyncRoutes = [
                 meta: { title: 'StreetFighting' }
               },
               {
+                path: 'bountyraid_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraid_slots_cfg'),
+                name: 'bountyraid_slots_cfg',
+                meta: { title: 'BountyRaid' }
+              },
+              {
                 path: 'fishingmaster_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fishingmaster_slots_cfg'),
                 name: 'fishingmaster_slots_cfg',
@@ -883,6 +928,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
                 name: 'mahjongfortune_slots_cfg',
                 meta: { title: 'MahjongFortune' }
+              },
+              {
+                path: 'mahjongjackpot_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongjackpot_slots_cfg'),
+                name: 'mahjongjackpot_slots_cfg',
+                meta: { title: 'MahjongJackpot' }
               },
               {
                 path: 'firelink_slots_cfg',
@@ -933,10 +984,16 @@ export const asyncRoutes = [
                 meta: { title: 'DanceLion' }
               },
               {
-                path: 'arcaneeypt_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/arcaneeypt_slots_cfg'),
-                name: 'arcaneeypt_slots_cfg',
+                path: 'arcaneegypt_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/arcaneegypt_slots_cfg.vue'),
+                name: 'arcaneegypt_slots_cfg',
                 meta: { title: 'ArcaneEgypt' }
+              },
+              {
+                path: 'roadking_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/roadking_slots_cfg.vue'),
+                name: 'roadking_slots_cfg',
+                meta: { title: 'RoadKing' }
               }
             ]
           },
@@ -1044,6 +1101,12 @@ export const asyncRoutes = [
                 meta: { title: 'StreetFighting(审)' }
               },
               {
+                path: 'bountyraidmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/bountyraidmars_slots_cfg'),
+                name: 'bountyraidmars_slots_cfg',
+                meta: { title: 'BountyRaid(审)' }
+              },
+              {
                 path: 'fishingmastermars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/fishingmastermars_slots_cfg'),
                 name: 'fishingmastermars_slots_cfg',
@@ -1080,10 +1143,28 @@ export const asyncRoutes = [
                 meta: { title: 'MajorAce(审)' }
               },
               {
+                path: 'mahjongfortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongfortunemars_slots_cfg'),
+                name: 'mahjongfortunemars_slots_cfg',
+                meta: { title: 'MahjongFortune(审)' }
+              },
+              {
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
                 meta: { title: 'Pharaoh Treasure(审)' }
+              },
+              {
+                path: 'dancelionmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
+                name: 'dancelionmars_slots_cfg',
+                meta: { title: 'Dance Lion(审)' }
+              },
+              {
+                path: 'epicacemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/epicacemars_slots_cfg'),
+                name: 'epicacemars_slots_cfg',
+                meta: { title: 'EpicAce(审)' }
               }
             ]
           },
@@ -1381,7 +1462,13 @@ export const asyncRoutes = [
         path: 'ApplyRichcard',
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
-        meta: { title: '申请发放富裕卡 ◐' }
+        meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
+      },
+      {
+        path: 'kycInfo',
+        component: () => import('@/views/playerManage/kycInfo.vue'),
+        name: 'kycInfo',
+        meta: { title: 'KYC信息 ◐' }
       }
     ]
   },
@@ -1575,6 +1662,12 @@ export const asyncRoutes = [
             meta: { title: 'PusoySwap ◐', gid: 113 }
           },
           {
+            path: 'playlog_pusoyWild',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_pusoyWild',
+            meta: { title: 'PusoyWild ◐', gid: 126 }
+          },
+          {
             path: 'playlog_ginRummy',
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ginRummy',
@@ -1586,12 +1679,6 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: '德州专业版', noCache: true },
             children: [
-              {
-                path: 'texasNlhInsure',
-                component: () => import('@/views/texas2dpro/stat/texasNlhInsure'),
-                name: 'texasNlhInsure',
-                meta: { title: '保险数据' }
-              },
               {
                 path: 'texasNlhJP',
                 component: () => import('@/views/texas2dpro/stat/texasNlhJP'),
@@ -1653,10 +1740,10 @@ export const asyncRoutes = [
             ]
           },
           {
-            path: 'playlog_minesBattle',
+            path: 'playlog_MinesShowDown',
             component: () => import('@/views/playerManage/playlog'),
-            name: 'playlog_minesBattle',
-            meta: { title: 'MinesBattle◐', gid: 123 }
+            name: 'playlog_MinesShowDown',
+            meta: { title: 'MinesShowDown◐', gid: 123 }
           },
           {
             path: 'playlog_ZJH',
@@ -1913,6 +2000,12 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting', gid: 188 }
           },
           {
+            path: 'bountyraid_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraid_slots_log',
+            meta: { title: 'BountyRaid', gid: 192 }
+          },
+          {
             path: 'fishingmaster_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmaster_slots_log',
@@ -1955,6 +2048,12 @@ export const asyncRoutes = [
             meta: { title: 'MahjongFortune', gid: 164 }
           },
           {
+            path: 'mahjongjackpot_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongjackpot_slots_log',
+            meta: { title: 'MahjongJackpot', gid: 186 }
+          },
+          {
             path: 'firelink_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'firelink_slots_log',
@@ -1989,7 +2088,19 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'godoffortune_slots_log',
             meta: { title: 'GodOfFortune', gid: 182 }
-          }
+          },
+          {
+            path: 'mayantotem_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mayantotem_slots_log',
+            meta: { title: 'MayanTotem', gid: 178 }
+          },
+          {
+            path: 'roadking_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'roadking_slots_log',
+            meta: { title: 'RoadKing', gid: 194 }
+          },
         ]
       },
       {
@@ -2095,6 +2206,12 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting(审)', gid: 189 }
           },
           {
+            path: 'bountyraidmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraidmars_slots_log',
+            meta: { title: 'BountyRaid(审)', gid: 193 }
+          },
+          {
             path: 'fishingmastermars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmastermars_slots_log',
@@ -2135,7 +2252,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mahjongfortune_slots_log',
             meta: { title: 'MahjongFortune(审)', gid: 165 }
-          }
+          },
+          {
+            path: 'roadking_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'roadking_slots_log',
+            meta: { title: 'RoadKing(审)', gid: 195 }
+          },
         ]
       },
       {

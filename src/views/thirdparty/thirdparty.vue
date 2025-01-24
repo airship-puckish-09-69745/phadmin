@@ -71,11 +71,11 @@
           label="客户端版本"
           width="100"
         />
-        <el-table-column
-          prop="GamefunVer"
-          label="gamefun版本"
-          width="100"
-        />
+        <!--        <el-table-column-->
+        <!--          prop="GamefunVer"-->
+        <!--          label="gamefun版本"-->
+        <!--          width="100"-->
+        <!--        />-->
         <el-table-column
           prop="GameUri"
           label="菲1客户端地址"
@@ -100,6 +100,11 @@
             {{ screenNames[scope.row.Screen] }}
           </template>
         </el-table-column>
+        <el-table-column
+          prop="TestVer"
+          label="客户端测试版本"
+          width="100"
+        />
         <el-table-column
           prop="TestUri"
           label="客户端测试地址"
@@ -219,19 +224,19 @@
             <el-input v-model="edit.item.Ip" />
           </el-col>
         </el-form-item>
+        <!--        <el-form-item label="菲1gamefun版本：" :required="true" prop="Ver">-->
+        <!--          <el-col :span="15">-->
+        <!--            <el-input v-model="edit.item.GamefunVer" />-->
+        <!--          </el-col>-->
+        <!--          <el-col style="width: auto">-->
+        <!--            <el-tooltip class="item" effect="dark" content="返回gamefun链接时，增加 gv 参数" placement="left-start">-->
+        <!--              <i class="el-icon-info" />-->
+        <!--            </el-tooltip>-->
+        <!--          </el-col>-->
+        <!--        </el-form-item>-->
         <el-form-item label="菲1客户端版本：" :required="true" prop="Ver">
           <el-col :span="15">
             <el-input v-model="edit.item.Ver" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="菲1gamefun版本：" :required="true" prop="Ver">
-          <el-col :span="15">
-            <el-input v-model="edit.item.GamefunVer" />
-          </el-col>
-          <el-col style="width: auto">
-            <el-tooltip class="item" effect="dark" content="返回gamefun链接时，增加 gv 参数" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
           </el-col>
         </el-form-item>
         <el-form-item label="菲1客户端uri：" :required="true" prop="GameUri">
@@ -243,6 +248,11 @@
           <!--              <i class="el-icon-info" />-->
           <!--            </el-tooltip>-->
           <!--          </el-col>-->
+        </el-form-item>
+        <el-form-item label="菲1客户端测试版本：" :required="true" prop="TestVer">
+          <el-col :span="15">
+            <el-input v-model="edit.item.TestVer" />
+          </el-col>
         </el-form-item>
         <el-form-item label="菲1客户端测试uri：" prop="TestUri">
           <el-col :span="15">
@@ -296,7 +306,7 @@ import Publish from '@/components/Publish'
 const filterMap = {}
 
 function newItem() {
-  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '', LiveUri: '' }
+  return { Account: '', Intro: '', Ip: '', Ver: '', GamefunVer: '0', GameUri: '', Screen: 'vertical', TestUri: '', TestUids: '', TexasUri: '', LiveUri: '', TestVer: '' }
 }
 
 export default {

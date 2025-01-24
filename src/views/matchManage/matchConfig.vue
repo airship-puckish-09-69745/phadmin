@@ -49,6 +49,18 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="APPID：" :required="true">
+          <el-select v-model="form.appId" placeholder="请选择" size="mini">
+            <el-option label="全部" :value="-1" />
+            <el-option
+              v-for="item in appidInfoCfgs"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button size="mini" @click="resetSearch">重置查询条件</el-button>
           <el-button type="primary" size="mini" @click="getList">查询</el-button>
@@ -78,6 +90,7 @@
         <el-table-column
           prop="id"
           label="赛事ID"
+          sortable
         />
         <el-table-column
           prop="name"
@@ -86,6 +99,7 @@
         <el-table-column
           prop="game_id"
           label="游戏名称"
+          width="100"
         >
           <template slot-scope="scope">
             {{ getGameName(scope.row.game_id) }}
@@ -105,6 +119,22 @@
         >
           <template slot-scope="{row}">
             <DateTimeShow :show-type="2" :timestamp="row.end_time" />
+          </template>
+        </el-table-column>
+
+        <el-table-column
+          prop="sort"
+          label="赛事排序"
+          width="80"
+          sortable
+        >
+        </el-table-column>
+        <el-table-column
+          prop="repeatType"
+          label="赛事类型"
+        >
+          <template slot-scope="scope">
+            {{ getRepeatTypeShow(scope.row.repeat_type) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -178,6 +208,7 @@
       :visible.sync="editForm.visable"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      width="900px"
     >
       <el-form :model="editForm.data" label-width="200px" size="mini">
         <el-form-item v-if="editForm.data.id > 0" label="赛事ID：">
@@ -244,13 +275,13 @@
             </el-select>
           </el-form-item>
           <el-form-item label="赛制选择：" :required="true">
-            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini" filterable>
               <el-option
                 v-for="item in showCsCfgs"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                :disabled='checkMatchRuleDisable(item.value)'
+                :disabled="checkMatchRuleDisable(item.value)"
               />
             </el-select>
           </el-form-item>
@@ -265,7 +296,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item  label="最低开赛人数：" :required="true">
+          <el-form-item label="最低开赛人数：" :required="true">
             <el-input v-model="editForm.data.opentMatchMember" style="width: 200px;" placeholder="请填写开赛人数" />
           </el-form-item>
           <el-form-item label="封面图片URL：" :required="true">
@@ -277,21 +308,9 @@
           <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制：" :required="true">
-            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
-            <el-switch
-                style="display: block"
-                v-model="editForm.data.openDaysLimit"
-                active-color="#13ce66"
-                inactive-color="#ff4949"
-                :active-value='1'
-                :inactive-value='0'
-                active-text="是"
-                inactive-text="否">
-            </el-switch>
-          </el-form-item>
-          <el-form-item  label="排序值：" :required="true">
-            <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
+          <el-form-item label="排序值：" :required="true">
+            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)"/>
+            <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -303,7 +322,7 @@
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                :disabled='checkRepeatDisable(item.value)'
+                :disabled="checkRepeatDisable(item.value)"
               />
             </el-select>
           </el-form-item>
@@ -331,6 +350,7 @@
               placeholder="选择开始日期"
               :disabled="repeatLoopDisabled()"
             />
+            <span style="color:black; margin-left:10px">[00:00:00]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
             <el-date-picker
@@ -339,9 +359,10 @@
               type="date"
               placeholder="选择结束日期"
             />
+            <span style="color:black; margin-left:10px">[23:59:59]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
-            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()"/>
+            <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()" />
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType == 1" label="开赛时间：" :required="true">
             <el-time-picker
@@ -419,19 +440,19 @@
               </el-table-column>
             </el-table>
           </el-form-item>
-          <el-form-item label="提前显示时间(秒)：" :required="true" v-if="editForm.data.opentMatchType==2">
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="提前显示时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写提前显示时间" />
           </el-form-item>
-          <el-form-item label="创建时间(秒)" :required="true" v-if="editForm.data.opentMatchType==1">
+          <el-form-item v-if="editForm.data.opentMatchType==1" label="创建时间(秒)" :required="true">
             <el-input v-model.number="editForm.data.preShowSeconds" style="width: 200px;" placeholder="请填写创建时间" />
             <el-tooltip v-if="editForm.data.opentMatchType == 1" class="item" effect="dark" content="比赛开始时间=最后开赛时间-创建时间" placement="right-start">
               <i class="el-icon-info" />
             </el-tooltip>
           </el-form-item>
-          <el-form-item label="提前进入时间(秒)：" :required="true" v-if="editForm.data.opentMatchType==2">
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="提前进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.preEnterSeconds" style="width: 200px;" placeholder="请填写提前进入时间" />
           </el-form-item>
-          <el-form-item label="延迟进入时间(秒)：" :required="true" v-if="editForm.data.opentMatchType==2">
+          <el-form-item v-if="editForm.data.opentMatchType==2" label="延迟进入时间(秒)：" :required="true">
             <el-input v-model.number="editForm.data.delayEnterSeconds" style="width: 200px;" placeholder="请填写延迟进入时间" />
           </el-form-item>
         </fieldset>
@@ -467,11 +488,24 @@
           <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType !=0" label="是否启用每日限制：" :required="true">
+            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
+            <el-switch
+              v-model="editForm.data.openDaysLimit"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="是"
+              inactive-text="否"
+            />
+          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
-          <el-form-item  label="奖励模型：" :required="true">
+          <el-form-item label="奖励模型：" :required="true">
             <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
           </el-form-item>
           <el-button v-if="editForm.prizeExtra.awardType===0" style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
@@ -496,32 +530,48 @@
               width="400"
             >
               <template slot-scope="scope">
-                <ul style="list-style: none;">
+                <ul style="list-style: none;padding-inline-start: 0;">
                   <li v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: none;">
                     <span>金币奖励：</span>
-                      <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
-                        <el-option
-                          v-for="item in getTypeCfgs"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
-                        />
-                      </el-select>
-                      <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
+                    <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
+                      <el-option
+                        v-for="item in getTypeCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                    <el-select v-if="gItem.getType === 2" v-model="gItem.sceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                      <el-option
+                        v-for="scene in betScenesCfgs"
+                        :key="scene.value"
+                        :label="scene.label"
+                        :value="scene.value"
+                      />
+                    </el-select>
+                    <el-select v-if="gItem.getType === 3" v-model="gItem.sceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                      <el-option
+                        v-for="scene in rebateScenesCfgs"
+                        :key="scene.value"
+                        :label="scene.label"
+                        :value="scene.value"
+                      />
+                    </el-select>
+                    <el-input v-model.number="gItem.getNum" style="width: 80px;" size="mini" placeholder="请填写获得数量" />
                   </li>
-                  <li style="list-style: none;" v-if="scope.row.propsReward != null">
+                  <li v-if="scope.row.propsReward != null" style="list-style: none;">
                     <span>道具奖励：</span>
-                      <el-select v-model="scope.row.propsReward.propsId" placeholder="道具" size="mini" style="width:200px">
-                        <el-option
-                          v-for="item in propsInfo"
-                          :key="item.propsId"
-                          :label="item.propsName"
-                          :value="item.propsId"
-                        >
+                    <el-select v-model="scope.row.propsReward.propsId" placeholder="道具" size="mini" style="width:200px">
+                      <el-option
+                        v-for="item in propsInfo"
+                        :key="item.propsId"
+                        :label="item.propsName"
+                        :value="item.propsId"
+                      >
                         <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
                         <span>{{ item.propsName }}</span>
-                        </el-option>
-                      </el-select>
+                      </el-option>
+                    </el-select>
                   </li>
                 </ul>
               </template>
@@ -559,18 +609,23 @@
             <el-input v-model.number="editForm.prizeExtra.prizeRate" style="width: 200px;" size="mini" placeholder="请填写手续费率数值" />
           </el-form-item>
 
+          <el-form-item v-if="editForm.prizeExtra.awardType === 1" label="奖励类型" :required="true">
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="1">金币</el-radio>
+            <el-radio v-model.number="editForm.prizeExtra.rewardType" :label="3">返水金（无限制）</el-radio>
+          </el-form-item>
+
         </fieldset>
 
         <fieldset>
           <legend>引导推荐</legend>
           <el-form-item label="游戏推荐方案：" :required="true">
-            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini" >
+            <el-select v-model="editForm.data.associateKey" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in guideShowCfgs"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
-                :disabled='checkMatchGuidesDisable(editForm.appInfo[0].appId)'
+                :disabled="checkMatchGuidesDisable(editForm.appInfo[0].appId)"
               />
             </el-select>
           </el-form-item>
@@ -591,15 +646,15 @@
           <legend>数据中心上报</legend>
           <el-form-item label="是否上报数据中心：" :required="true">
             <el-switch
-              style="display: block"
               v-model="editForm.data.dcReport"
+              style="display: block"
               active-color="#13ce66"
               inactive-color="#ff4949"
-              :active-value='1'
-              :inactive-value='0'
+              :active-value="1"
+              :inactive-value="0"
               active-text="是"
-              inactive-text="否">
-            </el-switch>
+              inactive-text="否"
+            />
           </el-form-item>
         </fieldset>
         <el-divider />
@@ -622,7 +677,7 @@ import { $libDate, $libShow } from '@/utils/common'
 import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
-import {getAllCommonGameConfig, getAllMatchGuidesConfig} from '@/utils/common-game-config'
+import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 
 export default {
   name: 'MatchConfig',
@@ -637,7 +692,8 @@ export default {
         gameId: -1,
         status: -1,
         csId: -1,
-        repeatType: -1
+        repeatType: -1,
+        appId: -1
       },
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
@@ -665,41 +721,55 @@ export default {
         { 'value': 1, 'label': '禁用' }
       ],
       repeatCfgs: [
-        { 'value': 0, 'label': '单场',disabled:false },
-        { 'value': 1, 'label': '单天单场循环',disabled:false },
-        { 'value': 2, 'label': '单天多场循环',disabled:false }
+        { 'value': 0, 'label': '单场', disabled: false },
+        { 'value': 1, 'label': '单天单场循环', disabled: false },
+        { 'value': 2, 'label': '单天多场循环', disabled: false }
       ],
       disappearCfgs: [
         { 'value': 0, 'label': '结束后' },
         { 'value': 1, 'label': '开赛后' }
       ],
       openMatchTypeCfgs: [
-        { 'value': 2, 'label': '定时开赛',disabled:false },
-        { 'value': 1, 'label': '人满即开',disabled:false }
+        { 'value': 2, 'label': '定时开赛', disabled: false },
+        { 'value': 1, 'label': '人满即开', disabled: false }
       ],
       signUpTypeCfgs: [
         { 'value': 0, 'label': '付费报名' },
         { 'value': 1, 'label': '免费报名' }
       ],
       getTypeCfgs: [
-        { 'value': 1, 'label': '金币' }
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
       ],
       whileListCfgs: [
         { 'value': 0, 'label': '无白名单' },
         { 'value': 1, 'label': '有白名单' }
       ],
-      propsInfo:[ //道具信息，暂时写死
+      // 返水金
+      rebateScenesCfgs: [
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ],
+      // 投注金
+      betScenesCfgs: [
+        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ],
+      propsInfo: [ // 道具信息，暂时写死
         {
-          "propsId":0,
-          "propsType":0,
-          "propsName":"无",
-          "propsIcon":"",
-          "propsAttr":""
+          'propsId': 0,
+          'propsType': 0,
+          'propsName': '无',
+          'propsIcon': '',
+          'propsAttr': ''
         }
       ],
       matchEvents: [
         { 'value': 0, 'label': 'All' },
-        { 'value': 1, 'label': 'Events' },
+        { 'value': 1, 'label': 'Events' }
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -708,12 +778,12 @@ export default {
       prizeTemplateCfg: [],
       csCfgs: [],
       showCsCfgs: [],
-      guideCfgs: [],  //赛事推荐相关
-      guideShowCfgs: [], //赛事推荐相关 跟AppId 关联
+      guideCfgs: [], // 赛事推荐相关
+      guideShowCfgs: [], // 赛事推荐相关 跟AppId 关联
       endMinuteCfgs: new Map(), // 打立阶段最大时长 用于配置检查
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
-      reachOutNumCfgs:new Map(), //定局晋级人数
+      reachOutNumCfgs: new Map(), // 定局晋级人数
       tableData: [],
       limit: 10,
       total: 0,
@@ -775,15 +845,16 @@ export default {
                 index: 1,
                 getType: 1,
                 getPid: 0,
-                getNum: 0
+                getNum: 0,
+                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
               }
             ],
-            propsReward:{
-              propsId:0,
-              propsType:0,
-              propsName:"",
-              propsIcon:"",
-              propsAttr:""
+            propsReward: {
+              propsId: 0,
+              propsType: 0,
+              propsName: '',
+              propsIcon: '',
+              propsAttr: ''
             }
           }
         ],
@@ -805,7 +876,9 @@ export default {
         prizeExtra: {
           awardType: 0,
           prizeRate: 0,
-          prizeTemplateId: 0
+          prizeTemplateId: 0,
+          rewardType: 1,
+          sceneId: 0
         }
       },
 
@@ -834,13 +907,18 @@ export default {
         sort: '排序',
         repeatDelayDays: '间隔天数',
         daySections: '每日时段',
-        awardType: '奖励类型'
+        awardType: '奖励类型',
+        prizeExtra: '动态奖池信息',
+        signExtra: '报名额外信息',
+        associateKey: '推荐方案',
+        dcReport: '是否上报数据中心'
       },
       singleCopy: {
         id: 0,
         isCopy: false
       },
       showDevTool: false,
+      showTip: false
     }
   },
   computed: {
@@ -852,12 +930,25 @@ export default {
     this.getGuideCfgs()
     this.getPropsCfgs()
     this.getPrizeTemplateCfg()
+    if (this.env === 'pro') {
+      // 正式环境暂时只开放以下选项
+      // 返水金
+      this.rebateScenesCfgs = [
+        { 'value': 5, 'label': '没有任何限制的返水金' }
+        // { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ]
+      // 投注金
+      this.betScenesCfgs = [
+        { 'value': 1, 'label': '任意游戏投注' }
+        // { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        // { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        // { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ]
+    }
   },
   mounted() {
     this.getList()
-    console.log('1')
-    //自动清理过期配置
-
+    // 自动清理过期配置
   },
   methods: {
     resetSearch() {
@@ -865,6 +956,7 @@ export default {
       this.form.status = -1
       this.form.csId = -1
       this.form.repeatType = -1
+      this.form.appId = -1
     },
     getCsCfgs() {
       request({
@@ -885,7 +977,7 @@ export default {
                 'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
                 'value': objs.list[i].id,
                 'gameId': [parseInt(objs.list[i].game_id, 10)],
-                "ruleType":objs.list[i].rule_type,
+                'ruleType': objs.list[i].rule_type
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
@@ -895,8 +987,8 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
-                }else if(stage_detail[j].system_type == 2){
-                  //存储定局信息
+                } else if (stage_detail[j].system_type == 2) {
+                  // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
                 }
               }
@@ -915,6 +1007,7 @@ export default {
           Status: this.form.status,
           CsId: this.form.csId,
           RepeatType: this.form.repeatType,
+          AppId: this.form.appId,
           PageNum: this.page,
           PageSize: this.limit
         }
@@ -923,37 +1016,26 @@ export default {
           const objs = response.Data || []
           if (objs.total > 0) {
             this.total = objs.total
-            this.tableData = objs.list
-            if (this.tableData.length > 0) {
-              for (let i = 0; i < this.tableData.length; i++) {
-                if (this.tableData[i].status == 0) {
-                  this.tableData[i].openShow = true
-                } else {
-                  this.tableData[i].openShow = false
-                }
-
+            this.tableData = []
+            const tableDataCpy = objs.list
+            if (tableDataCpy.length > 0) {
+              for (let i = 0; i < tableDataCpy.length; i++) {
                 let show_appinfo = ''
-                const appInfoTemp = JSON.parse(this.tableData[i].app_info_cfg)
-
-                for (let i = 0; i < appInfoTemp.length; i++) {
-                  if (i == 0) {
-                    show_appinfo += appInfoTemp[i].appId + ' '
-                  } else {
-                    show_appinfo += '  ' + appInfoTemp[i].appId + ' '
+                show_appinfo = this.filterMatchListByAppId(tableDataCpy[i].app_info_cfg)
+                if (show_appinfo !== '') {
+                  tableDataCpy[i].show_appinfo = show_appinfo
+                  tableDataCpy[i].openShow = tableDataCpy[i].status === 0
+                  if (!tableDataCpy[i].hasOwnProperty('open_days_limit')) {
+                    tableDataCpy[i].open_days_limit = 0
                   }
-
-                  show_appinfo += appInfoTemp[i].channelId
+                  if (!tableDataCpy[i].hasOwnProperty('sort')) {
+                    tableDataCpy[i].sort = 0
+                  }
+                  this.tableData.push(tableDataCpy[i])
                 }
-                if (!this.tableData[i].hasOwnProperty('open_days_limit')) {
-                  this.tableData[i].open_days_limit = 0
-                }
-                if (!this.tableData[i].hasOwnProperty('sort')) {
-                  this.tableData[i].sort = 0
-                }
-                this.tableData[i].show_appinfo = show_appinfo
               }
-              console.log("模板数据",)
             }
+            console.log("----- ",this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -967,22 +1049,21 @@ export default {
         this.guideCfgs.push({
           'label': '无',
           'value': 0,
-          'appId': 0,
+          'appId': 0
         })
         for (var i = 0; i < data.length; i++) {
           this.guideCfgs.push({
             'label': data[i].scheme_title,
             'value': data[i].associate_key,
-            'appId': data[i].app_id,
+            'appId': data[i].app_id
           })
         }
-
       })
     },
     checkMatchGuidesDisable(appId) {
-      for (var i = 0;i < this.guideCfgs.length; i++) {
-        if (this.guideCfgs[i].appId > 0 &&  this.guideCfgs[i].appId == appId ) {
-            return false
+      for (var i = 0; i < this.guideCfgs.length; i++) {
+        if (this.guideCfgs[i].appId > 0 && this.guideCfgs[i].appId == appId) {
+          return false
         }
       }
       return true
@@ -994,7 +1075,7 @@ export default {
         {
           'label': '无',
           'value': 0,
-          'appId': 0,
+          'appId': 0
         }
       )
 
@@ -1027,7 +1108,7 @@ export default {
     getRepeatTypeShow(repeatType) {
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
-        if (this.repeatCfgs[i].value == repeatType) {
+        if (this.repeatCfgs[i].value === repeatType) {
           show = this.repeatCfgs[i].label
           break
         }
@@ -1098,15 +1179,16 @@ export default {
             index: 1,
             getType: 1,
             getPid: 0,
-            getNum: 0
+            getNum: 0,
+            sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
           }
         ],
-        propsReward:{
-              propsId:0,
-              propsType:0,
-              propsName:"",
-              propsIcon:"",
-              propsAttr:""
+        propsReward: {
+          propsId: 0,
+          propsType: 0,
+          propsName: '',
+          propsIcon: '',
+          propsAttr: ''
         }
       })
     },
@@ -1225,7 +1307,7 @@ export default {
     },
     showForm(id) {
       if (id == 0) {
-        this.disableOpenType(false,0)
+        this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
         this.editForm.data = {
           id: 0,
@@ -1288,15 +1370,16 @@ export default {
                 index: 1,
                 getType: 1,
                 getPid: 0,
-                getNum: 0
+                getNum: 0,
+                sceneId: 0 // 返水金投注金场景类型（调用营销接口时用）
               }
             ],
-            propsReward:{
-              propsId:0,
-              propsType:0,
-              propsName:"",
-              propsIcon:"",
-              propsAttr:""
+            propsReward: {
+              propsId: 0,
+              propsType: 0,
+              propsName: '',
+              propsIcon: '',
+              propsAttr: ''
             }
           }
         ]
@@ -1313,7 +1396,9 @@ export default {
         this.editForm.prizeExtra = {
           awardType: 0,
           prizeRate: 0,
-          prizeTemplateId: 0
+          prizeTemplateId: 0,
+          rewardType: 1,
+          sceneId: 0
         }
         this.editForm.isAdd = true
         this.showCsCfgs = this.csCfgs
@@ -1356,7 +1441,7 @@ export default {
           dcReport: editData.dc_report
         }
 
-        /*如果在本地找不到值 则显示0 */
+        /* 如果在本地找不到值 则显示0 */
         let isfind = false
         for (var i = 0; i < this.guideCfgs.length; i++) {
           if (this.guideCfgs[i].value === this.editForm.data.associateKey) {
@@ -1392,9 +1477,8 @@ export default {
         if (editData.sign_extra && editData.sign_extra != 'null' && editData.sign_extra != 'undefined') {
           this.editForm.signExtra = JSON.parse(editData.sign_extra)
         }
-        if (editData.prize_extra  && editData.prize_extra != 'null' ) {
+        if (editData.prize_extra && editData.prize_extra != 'null') {
           this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-          this.editForm.prizeExtra.prizeRate = this.editForm.prizeExtra.prizeRate / 10 //将数值调小10倍
         }
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
@@ -1405,14 +1489,14 @@ export default {
             }
           }
         }
-        this.disableOpenType(true,editData.open_match_type)
+        this.disableOpenType(true, editData.open_match_type)
       }
       this.editForm.visable = true
       this.guideShowCfgs = []
       this.guideShowCfgs.push({
         'label': '无',
         'value': 0,
-        'appId': 0,
+        'appId': 0
       })
       if (this.guideCfgs.length > 0) {
         for (var i = 0; i < this.guideCfgs.length; i++) {
@@ -1435,7 +1519,7 @@ export default {
 
     checkHaveAppId(appId, appInfo) {
       let flag = false
-      for (var i = 0; i < appInfo.length; i++ ){
+      for (var i = 0; i < appInfo.length; i++) {
         if (appId == appInfo[i].appId) {
           flag = true
           break
@@ -1444,16 +1528,16 @@ export default {
       return flag
     },
     saveMatch() {
-      if(this.editForm.data.opentMatchType == 1){
-        this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds;
+      if (this.editForm.data.opentMatchType == 1) {
+        this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
       }
       if (!this.configCheck()) {
         return
       }
-      //修复道具
+      // 修复道具
       for (let i = 0; i < this.editForm.rankRewards.length; i++) {
-        let element = this.editForm.rankRewards[i];
-        if(element.hasOwnProperty("propsReward") && element.propsReward.propsId > 0){
+        const element = this.editForm.rankRewards[i]
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
           element.propsReward = this.getPropsRewardItem(element.propsReward.propsId)
         }
       }
@@ -1465,8 +1549,8 @@ export default {
       if (this.editForm.data.repeatType == 0) {
         // 单场
         if (this.editForm.loopDetail.onceTime) {
-          this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
-          this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
+          // this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
+          // this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime })
@@ -1474,7 +1558,7 @@ export default {
       } else {
         // 循环
         bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
-        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
+        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000) + (86400-1) //结束日期为当天23:59:59
         const intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime })
@@ -1482,8 +1566,6 @@ export default {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
         }
       }
-      //收费费率调整,手续费率最小为0.1%,先将该值缩小100倍,然后再放到1000倍,实际放大10倍,保证该值传给客户端最小值为1
-      this.editForm.prizeExtra.prizeRate = this.editForm.prizeExtra.prizeRate * 10
       request({
         url: '/matchconfig/match/config/create',
         method: 'POST',
@@ -1671,26 +1753,35 @@ export default {
       }
     },
     timeToSec(time) {
-      var s = '';
-      var hour = time.split(':')[0];
-      var min = time.split(':')[1];
-      var sec = time.split(':')[2];
+      var s = ''
+      var hour = time.split(':')[0]
+      var min = time.split(':')[1]
+      var sec = time.split(':')[2]
 
-      s = Number(hour*3600) + Number(min*60) + Number(sec);
+      s = Number(hour * 3600) + Number(min * 60) + Number(sec)
 
-      return s;
+      return s
     },
     configCheck() {
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
       }
-      if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0){
+
+      //付费赛的是,每日限制不开启
+      if (this.editForm.data.signUpType === 0) {
+        this.editForm.data.openDaysLimit = 0
+        this.editForm.signExtra.betCnt = 0
+      }
+      if (this.editForm.data.openDaysLimit > 0 && this.editForm.data.signUpType !=0) {
+        this.errmsg('每日限制已经开启')
+      }
+      if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0) {
         this.errmsg('付费赛报名费不能为0')
         return false
       }
 
-      if (this.editForm.data.signUpType === 1 && this.editForm.prizeExtra.awardType == 1){
+      if (this.editForm.data.signUpType === 1 && this.editForm.prizeExtra.awardType == 1) {
         this.errmsg('当前选择的是免费赛,不能选择动态奖池分配模式')
         return false
       }
@@ -1719,7 +1810,7 @@ export default {
 
       if (this.editForm.data.repeatType == 2) {
         if (this.editForm.loopDetail.loopData.length > 0) {
-          for (var i=0;i<this.editForm.loopDetail.loopData.length;i++) {
+          for (var i = 0; i < this.editForm.loopDetail.loopData.length; i++) {
             if ((Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].etime)) - Math.floor(this.timeToSec(this.editForm.loopDetail.loopData[i].stime))) < 600) {
               this.errmsg('比赛开始结束间隔要大于10分钟！')
               return false
@@ -1733,6 +1824,10 @@ export default {
         }
       }
 
+      if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(this.editForm.loopDetail.loopStartDate / 1000)))) {
+        this.errmsg('循环赛比赛结束时间需要大于比赛开始时间！')
+        return false
+      }
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false
@@ -1743,15 +1838,15 @@ export default {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
-        this.errmsg('循环赛开始结束时间不能为同一天！')
-        return false
+        // this.errmsg('循环赛开始结束时间不能为同一天！')  //循环赛去掉同一天检测
+        // return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
       } else if (this.editForm.data.csId <= 0) {
         this.errmsg('赛制选择不能为空')
         return false
-      }else {
+      } else {
         // 获取打立阶段最大时长
         const endMin = this.endMinuteCfgs.get(this.editForm.data.csId)
         if ((endMin > 0) && ((this.editForm.data.delayEnterSeconds / 60) > endMin)) {
@@ -1781,69 +1876,143 @@ export default {
         if (this.editForm.data.opentMatchType == 1 && this.editForm.data.disappearType != 1) {
           this.errmsg('sng比赛必须开赛后消失')
           return false
-
         }
         // if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
         //   this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
         //   return false
         // }
+        // 验证固定奖励的配置项
+        this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
+        if (this.editForm.prizeExtra.awardType == 0) {
+          this.editForm.prizeExtra.rewardType = 1
+          this.editForm.prizeExtra.sceneId = 0
+          if (!this.checkRewardCfg(this.editForm.rankRewards)) {
+            return false
+          }
+        }
         if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
           this.errmsg('当前是动态奖池，请选择模板')
           return false
         }
-        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 0.1 || this.editForm.prizeExtra.prizeRate >= 100)) {
-          this.errmsg('当前是动态奖池手续费率范围是[0.1-100)')
+        if ((this.editForm.prizeExtra.awardType == 1) && (this.editForm.prizeExtra.prizeRate < 1 || this.editForm.prizeExtra.prizeRate >= 100)) {
+          this.errmsg('当前是动态奖池手续费率范围是[1-100)')
           return false
+        }
+
+        if (this.editForm.prizeExtra.awardType == 1) {
+          // 目前动态奖池只有真金和返水金
+          if (this.editForm.prizeExtra.rewardType == 2) {
+            this.editForm.prizeExtra.rewardType = 3
+          }
+          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+          if (this.editForm.prizeExtra.rewardType == 3) {
+            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+          }
         }
       }
       return true
     },
-    disableOpenType(isDisable,enableType){
-      if(isDisable){
+    checkRewardCfg(rewards) {
+      console.log('rewards', rewards)
+      if (rewards.length <= 0) {
+        this.errmsg('请添加固定奖励配置')
+        return false
+      }
+      // 遍历配置项
+      for (let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        console.log('element', element)
+        if (element.startRank <= 0 || element.endRank < element.startRank) {
+          this.errmsg('请填写正确的排名')
+          return false
+        }
+
+        if (element.rewardItems.length == 0) {
+          this.errmsg('请添加奖励配置')
+          return false
+        }
+        // 遍历奖励配置项
+        for (let i = 0; i < element.rewardItems.length; i++) {
+          const rewardItem = element.rewardItems[i]
+          if (rewardItem.getType == 1) {
+            element.rewardItems[i].sceneId = 0
+          } else if (rewardItem.getType == 2) {
+            if (!this.isInBetScenes(rewardItem.sceneId)) {
+              this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择投注金')
+              return false
+            }
+          } else if (rewardItem.getType == 3) {
+            if (!this.isInRebateScenes(rewardItem.sceneId)) {
+              this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']第' + rewardItem.index + '项请正确选择返水金')
+              return false
+            }
+          }
+        }
+      }
+      return true
+    },
+    isInRebateScenes(scene) {
+      for (let index = 0; index < this.rebateScenesCfgs.length; index++) {
+        if (this.rebateScenesCfgs[index].value == scene) {
+          return true
+        }
+      }
+      return false
+    },
+    isInBetScenes(scene) {
+      for (let index = 0; index < this.betScenesCfgs.length; index++) {
+        if (this.betScenesCfgs[index].value == scene) {
+          return true
+        }
+      }
+      return false
+    },
+    disableOpenType(isDisable, enableType) {
+      if (isDisable) {
         for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
-          if(this.openMatchTypeCfgs[index].value == enableType){
+          if (this.openMatchTypeCfgs[index].value == enableType) {
             this.openMatchTypeCfgs[index].disabled = false
-          }else{
+          } else {
             this.openMatchTypeCfgs[index].disabled = true
           }
         }
-      }else{
+      } else {
         for (let index = 0; index < this.openMatchTypeCfgs.length; index++) {
           this.openMatchTypeCfgs[index].disabled = false
         }
       }
     },
-    checkRepeatDisable(val){
-      if (this.editForm.data.id > 0 ) {
-        return true;
+    checkRepeatDisable(val) {
+      if (this.editForm.data.id > 0) {
+        return true
       }
-      if(this.editForm.data.opentMatchType == 1){
-        if(val == 1 || val == 2){
+      if (this.editForm.data.opentMatchType == 1) {
+        if (val == 1 || val == 2) {
           return true
         }
       }
-      return false;
+      return false
     },
-    getMatchStartTimeLabel(){
-      if(this.editForm.data.opentMatchType == 2){
-        return "开赛时间"
-      }else{
-        return "最后开赛时间"
+    getMatchStartTimeLabel() {
+      if (this.editForm.data.opentMatchType == 2) {
+        return '开赛时间'
+      } else {
+        return '最后开赛时间'
       }
     },
-    checkMatchRuleDisable(val){
-      for(let i=0;i<this.csCfgs.length;i++){
-        if(this.csCfgs[i].value == val){
-          if(this.editForm.data.opentMatchType == 1){
-            if(this.csCfgs[i].ruleType != 1){
+    checkMatchRuleDisable(val) {
+      for (let i = 0; i < this.csCfgs.length; i++) {
+        if (this.csCfgs[i].value == val) {
+          if (this.editForm.data.opentMatchType == 1) {
+            if (this.csCfgs[i].ruleType != 1) {
               return true
-            }else{
+            } else {
               return false
             }
-          }else if (this.editForm.data.opentMatchType == 2) {
-            if(this.csCfgs[i].ruleType != 0){
+          } else if (this.editForm.data.opentMatchType == 2) {
+            if (this.csCfgs[i].ruleType != 0) {
               return true
-            }else{
+            } else {
               return false
             }
           }
@@ -1851,65 +2020,65 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid){
-      let one = {
-        propsId:0,
-        propsType:0,
-        propsName:"",
-        propsIcon:"",
-        propsAttr:""
+    getPropsRewardItem(pid) {
+      const one = {
+        propsId: 0,
+        propsType: 0,
+        propsName: '',
+        propsIcon: '',
+        propsAttr: ''
       }
       for (let i = 0; i < this.propsInfo.length; i++) {
-        const element = this.propsInfo[i];
-        if(element.propsId == pid){
-          one.propsId = element.propsId;
-          one.propsType = element.propsType;
-          one.propsName = element.propsName;
-          one.propsIcon = element.propsIcon;
-          one.propsAttr = element.propsAttr;
+        const element = this.propsInfo[i]
+        if (element.propsId == pid) {
+          one.propsId = element.propsId
+          one.propsType = element.propsType
+          one.propsName = element.propsName
+          one.propsIcon = element.propsIcon
+          one.propsAttr = element.propsAttr
           break
         }
       }
-      return one;
+      return one
     },
-    getPropsCfgs(){
-      //暂时写死配置
-      let items = [];
-      if(process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境'){ //线上走另外一份配置
+    getPropsCfgs() {
+      // 暂时写死配置
+      let items = []
+      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') { // 线上走另外一份配置
         items = [
           {
-            "propsId":2,
-            "propsType":1,
-            "propsName":"YAMAHA MIO GRAVIS",
-            "propsIcon":"https://cdn.tiptop.bet/gf/match/ymhmt.png",
-            "propsAttr":""
+            'propsId': 2,
+            'propsType': 1,
+            'propsName': 'YAMAHA MIO GRAVIS',
+            'propsIcon': 'https://cdn.tiptop.bet/gf/match/ymhmt.png',
+            'propsAttr': ''
           }
-        ];
-      }else{
+        ]
+      } else {
         items = [
           {
-            "propsId":1,
-            "propsType":1,
-            "propsName":"IPhone 16 Pro Max",
-            "propsIcon":"http://192.168.6.16:8092/match/iphone16promax.png",
-            "propsAttr":""
+            'propsId': 1,
+            'propsType': 1,
+            'propsName': 'IPhone 16 Pro Max',
+            'propsIcon': 'http://192.168.6.16:8092/match/iphone16promax.png',
+            'propsAttr': ''
           },
           {
-            "propsId":2,
-            "propsType":1,
-            "propsName":"YAMAHA MIO GRAVIS",
-            "propsIcon":"http://192.168.6.16:8092/match/ymhmt.png",
-            "propsAttr":""
+            'propsId': 2,
+            'propsType': 1,
+            'propsName': 'YAMAHA MIO GRAVIS',
+            'propsIcon': 'http://192.168.6.16:8092/match/ymhmt.png',
+            'propsAttr': ''
           }
-        ];
+        ]
       }
       for (let i = 0; i < items.length; i++) {
-        const element = items[i];
+        const element = items[i]
         this.propsInfo.push(element)
       }
     },
     repeatLoopDisabled() {
-      if(this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
+      if (this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
         return true
       }
       return false
@@ -1926,18 +2095,44 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.prizeTemplateCfg = []
-            for(var i = 0; i < objs.total; i++){
+            for (var i = 0; i < objs.total; i++) {
               this.prizeTemplateCfg.push({
                 'label': objs.list[i].Name,
                 'value': objs.list[i].ID
               })
             }
-            //console.log("收到数据",this.prizeTemplateCfg)
-
+            // console.log("收到数据",this.prizeTemplateCfg)
           }
         }
       })
+    },
+
+    checkListSort() {
+      //检测列表排序值
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].sort == this.editForm.data.sort) {
+          this.showTip = true
+          return
+        }
+      }
+      this.showTip = false
+    },
+    //在这里实现APPID过滤
+    filterMatchListByAppId(appInfo){
+    // 在这里实现APPID过滤
+      let show_appinfo = ''
+      const appInfoTemp = JSON.parse(appInfo)
+      for (let i = 0; i < appInfoTemp.length; i++) {
+        if (this.form.appId > 0 && this.form.appId !== appInfoTemp[i].appId) continue
+        if (i === 0) {
+          show_appinfo += appInfoTemp[i].appId + ' '
+        } else {
+          show_appinfo += '  ' + appInfoTemp[i].appId + ' '
+        }
+        show_appinfo += appInfoTemp[i].channelId
+      }
+      return show_appinfo
     }
-  },
+  }
 }
 </script>

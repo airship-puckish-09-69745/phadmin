@@ -62,6 +62,92 @@
 
         </el-form>
       </el-col>
+      <el-col>
+        <el-table
+          ref="filterTable"
+          :data="cfg.BonusSpinCfg"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          :key="itemKey"
+        >
+          <el-table-column
+            type="index"
+            width="80px"
+          >
+            <template #header>
+              <el-button type="primary" @click="addBonusSpinCfgRow(0)" size="mini">添加</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="OddsMin"
+            label="倍数区间开始值"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-col :span="20">
+                <el-input v-model.number="scope.row.OddsMin" size="mini"
+                          oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+              </el-col>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="倍数区间结束值"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.OddsMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            </template>
+          </el-table-column>
+<!--          <el-table-column-->
+<!--            label="需要中奖的次数"-->
+<!--            width="200"-->
+<!--          >-->
+<!--            <template slot-scope="scope">-->
+<!--              <el-input v-model.number="scope.row.HitTimes" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>-->
+<!--            </template>-->
+<!--          </el-table-column>-->
+          <el-table-column
+            label="Bonus最少不中次数(不包括末尾三次)"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.MissTimesMin" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="Bonus最多不中次数(不包括末尾三次)"
+          >
+            <template slot-scope="scope">
+              <el-input v-model.number="scope.row.MissTimesMax" size="mini" oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+            </template>
+          </el-table-column>
+          <el-table-column
+            label="图标数量配置"
+          >
+            <template slot-scope="scope">
+              <el-button type="primary" @click="editBonusNumCfg(scope.row,scope.$index)" size="mini">配置</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="OddsMax"
+            label="图标增加配置"
+            width="200"
+          >
+            <template slot-scope="scope">
+              <el-button type="primary" @click="editBonusHitCfg(scope.row,scope.$index)" size="mini">配置</el-button>
+            </template>
+          </el-table-column>
+          <el-table-column label="删除">
+            <template slot-scope="scope">
+              <el-button type="primary" @click="delBonusSpinCfgRow(scope.$index)" size="mini">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+      </el-col>
     </el-row>
 
     <el-row style="margin-top: 30px">
@@ -69,21 +155,134 @@
         <el-button type="success" @click="submitFrm">保存</el-button>
       </el-col>
     </el-row>
+    <el-dialog
+      v-if="detailVisible"
+      title="配置详情"
+      :visible.sync="detailVisible"
+      width="60%">
+      <el-table
+        :data="showVisibleData.BonusNumCfg"
+        stripe
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+        :key="itemKey2"
+      >
+        <el-table-column
+          type="index"
+          width="80px"
+        >
+          <template #header>
+            <el-button type="primary" @click="addCfgRow('BonusNumCfg')" size="mini">添加</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="NumberMin"
+          label="数量最小值"
+          width="200"
+        >
+          <template slot-scope="scope">
+              <el-input v-model.number="scope.row.NumberMin" size="mini"
+                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="NumberMin"
+          label="数量最大值"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.NumberMax" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Weight"
+          label="出现权重"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Weight" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="delCfgRow(scope.$index,'BonusNumCfg')" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
 
+    </el-dialog>
+
+    <el-dialog
+      v-if="detailHitVisible"
+      title="配置详情"
+      :visible.sync="detailHitVisible"
+      width="60%">
+      <el-table
+        :data="showVisibleData.BonusHitCfg"
+        stripe
+        border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
+        :key="itemKey2"
+      >
+        <el-table-column
+          type="index"
+          width="80px"
+        >
+          <template #header>
+            <el-button type="primary" @click="addCfgRow('BonusHitCfg')" size="mini">添加</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="AddBonusNum"
+          label="单次中奖增加的Bonus数量"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.AddBonusNum" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="Weight"
+          label="权重"
+          width="200"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Weight" size="mini"
+                      oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button type="primary" @click="delCfgRow(scope.$index,'BonusHitCfg')" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+
+    </el-dialog>
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare"/>
   </div>
 </template>
 
 <script>
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
-import { DataRule, ValidateVueItem } from '@/utils/common'
+import {$libShow, DataRule, ValidateVueItem} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
   name: 'SlotsFireLinkExt',
-  components: { RatioInput, Compare },
+  components: {RatioInput, Compare},
   model: {
     prop: 'slotsData',
     event: 'cc'
@@ -91,15 +290,22 @@ export default {
   props: {
     slotsData: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     }
   },
   data() {
     return {
-      cfg: {
-      }
+      cfg: {},
+      libShow: $libShow,
+      itemKey: 0,
+      itemKey2: 0,
+      detailVisible: false,
+      showVisibleData: {},
+      showVisibleIdx: 0,
+
+      detailHitVisible: false,
     }
   },
   created() {
@@ -108,6 +314,47 @@ export default {
     })
   },
   methods: {
+    editBonusNumCfg(row, idx) {
+      this.detailVisible = true
+      this.showVisibleData = row
+      this.showVisibleIdx = idx
+    },
+    editBonusHitCfg(row, idx) {
+      this.detailHitVisible = true
+      this.showVisibleData = row
+      this.showVisibleIdx = idx
+    },
+    addCfgRow(filed) {
+      if (!this.cfg.BonusSpinCfg[this.showVisibleIdx][filed]) {
+        this.cfg.BonusSpinCfg[this.showVisibleIdx][filed] = []
+      }
+      console.log(filed,this.cfg.BonusSpinCfg[this.showVisibleIdx])
+      let obj ={}
+      this.cfg.BonusSpinCfg[this.showVisibleIdx][filed].push(obj)
+      this.itemKey2+=1
+    },
+    delCfgRow(val,filed) {
+      this.cfg.BonusSpinCfg[this.showVisibleIdx][filed].splice(val, 1)
+    },
+    addBonusSpinCfgRow() {
+      if (!this.cfg.BonusSpinCfg) {
+        this.cfg['BonusSpinCfg'] = []
+      }
+      this.cfg.BonusSpinCfg.push({
+        "OddsMin": 0,
+        "OddsMax": 0,
+        // "HitTimes": 0,
+        "MissTimesMin": 0,
+        "MissTimesMax": 0,
+        // "Icons": []
+        "BonusNumCfg": [],
+        "BonusHitCfg": []
+      })
+      this.itemKey+=1
+    },
+    delBonusSpinCfgRow(val) {
+      this.cfg.BonusSpinCfg.splice(val, 1)
+    },
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -118,7 +365,7 @@ export default {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return

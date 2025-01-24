@@ -59,6 +59,12 @@
             <el-option label="预发布" value="1" />
           </el-select>
         </el-form-item>
+        <el-form-item v-model="item.debug" label="调试模式：" :required="true" label-width="140px">
+          <el-select v-model="item.debug" placeholder="请选择" size="mini">
+            <el-option label="否" value="0" />
+            <el-option label="是" value="1" />
+          </el-select>
+        </el-form-item>
         <el-form-item v-model="item.cashier" label="充值链接：" label-width="140px">
           <el-input v-model="item.cashier" />
         </el-form-item>
@@ -329,7 +335,7 @@ export default {
         activity: '',
         live_id: '',
         kyc: '0',
-        r_time: Date.parse(new Date()),
+        r_time: Date.parse(new Date())
       },
       libShow: $libShow,
       expiredTime: 0,
@@ -360,6 +366,16 @@ export default {
           id: 1000007,
           agentId: 'zootest',
           desc: 'Zoo测试账号[1000007]'
+        },
+        {
+          id: 1000009,
+          agentId: 'zoogame',
+          desc: 'Zoogame[1000009]正式'
+        },
+        {
+          id: 1000020,
+          agentId: 'playtime',
+          desc: 'playtime正式[1000020]'
         }
       ]
     }
@@ -407,7 +423,7 @@ export default {
           path: this.item.path,
           source: this.item.source,
           activity: this.item.activity,
-          live_id: this.item.live_id,
+          live_id: this.item.live_id
           // kyc: this.item.kyc,
           // r_time: this.item.r_time/1000
         }
