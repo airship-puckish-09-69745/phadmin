@@ -1165,6 +1165,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/epicacemars_slots_cfg'),
                 name: 'epicacemars_slots_cfg',
                 meta: { title: 'EpicAce(审)' }
+              },
+              {
+                path: 'firelinkmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/firelinkmars_slots_cfg'),
+                name: 'firelinkmars_slots_cfg',
+                meta: { title: 'FireLink(审)' }
               }
             ]
           },
