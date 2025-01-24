@@ -2206,46 +2206,22 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce(审)', gid: 155 }
           },
           {
-            path: 'streetfightingmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'streetfightingmars_slots_log',
-            meta: { title: 'StreetFighting(审)', gid: 189 }
-          },
-          {
-            path: 'bountyraidmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'bountyraidmars_slots_log',
-            meta: { title: 'BountyRaid(审)', gid: 193 }
-          },
-          {
-            path: 'fishingmastermars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'fishingmastermars_slots_log',
-            meta: { title: 'FishingMaster(审)', gid: 181 }
-          },
-          {
-            path: 'wrathofzeusmars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'wrathofzeusmars_slots_log',
-            meta: { title: 'WrathOfZeus(审)', gid: 173 }
-          },
-          {
             path: 'crazyacemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazyacemars_slots_log',
             meta: { title: 'CrazyAce(审)', gid: 157 }
           },
           {
-            path: 'gigaacemars_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'gigaacemars_slots_log',
-            meta: { title: 'GigaAce(审)', gid: 161 }
-          },
-          {
             path: 'sharkkingdommars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'sharkkingdommars_slots_log',
             meta: { title: 'SharkKingdom(审)', gid: 159 }
+          },
+          {
+            path: 'gigaacemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'gigaacemars_slots_log',
+            meta: { title: 'GigaAce(审)', gid: 161 }
           },
           {
             path: 'majoracemars_slots_log',
@@ -2260,11 +2236,47 @@ export const asyncRoutes = [
             meta: { title: 'MahjongFortune(审)', gid: 165 }
           },
           {
+            path: 'firelinkmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'firelinkmars_slots_log',
+            meta: { title: 'FireLink(审)', gid: 167 }
+          },
+          {
+            path: 'epicacemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'epicacemars_slots_log',
+            meta: { title: 'EpicAce(审)', gid: 171 }
+          },
+          {
+            path: 'wrathofzeusmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'wrathofzeusmars_slots_log',
+            meta: { title: 'WrathOfZeus(审)', gid: 173 }
+          },
+          {
+            path: 'fishingmastermars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fishingmastermars_slots_log',
+            meta: { title: 'FishingMaster(审)', gid: 181 }
+          },
+          {
+            path: 'streetfightingmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'streetfightingmars_slots_log',
+            meta: { title: 'StreetFighting(审)', gid: 189 }
+          },
+          {
+            path: 'bountyraidmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'bountyraidmars_slots_log',
+            meta: { title: 'BountyRaid(审)', gid: 193 }
+          },
+          {
             path: 'roadking_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'roadking_slots_log',
             meta: { title: 'RoadKing(审)', gid: 195 }
-          },
+          }
         ]
       },
       {
