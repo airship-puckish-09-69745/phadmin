@@ -23,6 +23,7 @@
             <el-input v-model.number="cfg.ScatterOddsMulti" :required="true" />
           </el-form-item>
 
+          <span style="color: red; font-size: 11px; margin-left: 105px;">注: ①.最低不能低于1000 </span>
           <el-form-item label="购买免费模式中奖倍数范围V2">
             <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
           </el-form-item>
@@ -31,6 +32,7 @@
             <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
+          <span style="color: red; font-size: 11px; margin-left: 40px;">注: ①.最低不能低于1000 </span>
           <el-form-item label="购买免费模式中奖倍数范围V2(加倍打开)">
             <el-input v-model="cfg.BuyFreeOddsRangeV2Multi" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
           </el-form-item>
