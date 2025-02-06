@@ -110,7 +110,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ scope.row.BetOdds ? formatNumber(scope.row.BetOdds) : 0}}
+            {{ scope.row.BetOdds ? betOddsNumber(scope.row.BetOdds, gid) : 0}}
           </template>
         </el-table-column>
 
@@ -180,7 +180,7 @@
           </el-table-column>
         </template>
         <template
-          v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178].indexOf(gid) >= 0">
+          v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -334,7 +334,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -495,6 +495,12 @@ export default {
       this.getInfo()
     },
     formatNumber(n) {
+      return n.toLocaleString()
+    },
+    betOddsNumber(n, gid) {
+      if (gid == 180){
+        n = n / 1000
+      }
       return n.toLocaleString()
     },
     getVupLevel(lvl) {

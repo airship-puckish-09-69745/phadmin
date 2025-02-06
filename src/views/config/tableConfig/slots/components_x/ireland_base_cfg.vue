@@ -65,6 +65,7 @@
               <el-option label="DanceLion" :value="184" />
               <el-option label="186:MahjongJackpot" :value="186" />
               <el-option label="ArcaneEgypt" :value="190" />
+              <el-option label="194:RoadKing" :value="194" />
             </el-select>
           </el-form-item>
 
@@ -84,7 +85,8 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <span v-if="slotsData.SlotsType === 180 || slotsData.SlotsType === 186" style="color: red; font-size: 11px;">注: ①.下注倍数要放大10倍 ②.10为固定值 ③.下注大小*下注倍数*基础投注=真实下注额度 </span>
+          <span v-if="slotsData.SlotsType === 186" style="color: red; font-size: 11px;">注: ①.下注倍数要放大10倍 ②.10为固定值 ③.下注大小*下注倍数*基础投注=真实下注额度 </span>
+          <span v-if="slotsData.SlotsType === 180" style="color: red; font-size: 11px;">注: ①.1为固定值 ②.下注大小*下注倍数*基础投注=真实下注额度 ③.真实下注额度*返奖倍数 支持3位小数 </span>
           <el-form-item v-if="slotsData.OddsStr !== '1'" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
@@ -115,6 +117,14 @@
 
           <el-form-item v-for="(item, index) in slotsData.WinTypeMinOdds" :key="'WinTypeMinOdds-' + index" :label="getBigWinLabel(index)">
             <el-input v-model.number="slotsData.WinTypeMinOdds[index]" />
+          </el-form-item>
+
+          <el-form-item label="普通自动下注轮数">
+            <el-input v-model="slotsData.AutoSpinNum[0]"> <template slot="append">无限=-1</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="比赛自动下注轮数">
+            <el-input v-model="slotsData.AutoSpinNum[1]"> <template slot="append">无限=-1</template> </el-input>
           </el-form-item>
 
           <el-form-item label="是否启用新版剧本">
@@ -165,7 +175,9 @@ export default {
     var data = {
       lock: false,
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
-      initialWinTypeMinOdds: []
+      initialWinTypeMinOdds: [],
+      initialBets: this.slotsData.Bets,
+      initialAutoSpinNum: []
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
@@ -173,23 +185,29 @@ export default {
     if (!this.slotsData.WinTypeMinOdds || this.slotsData.WinTypeMinOdds.length === 0) {
       this.$set(this.slotsData, 'WinTypeMinOdds', [6, 12, 24])
     }
+    if (!this.slotsData.AutoSpinNum || this.slotsData.AutoSpinNum.length === 0) {
+      this.$set(this.slotsData, 'AutoSpinNum', ['', ''])
+    }
+    for (const k in this.slotsData.AutoSpinNum) {
+      data.initialAutoSpinNum.push(this.slotsData.AutoSpinNum[k])
+    }
     return data
   },
   updated() {
     if (this.lock === false) {
-      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds))
+      this.$refs.compare.SetOldVal(this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
       this.lock = true
-      console.log('origin data', this.getDiffData())
+      console.log('origin data', this.getDiffData(this.initialWinTypeMinOdds, this.initialBets, this.initialAutoSpinNum))
     }
   },
   methods: {
-    getDiffData(winTypeMinOdds) {
+    getDiffData(winTypeMinOdds, bets, autoSpinNum) {
       return {
         'SlotsType': this.slotsData.SlotsType,
         'Rows': this.slotsData.Rows,
         'Clos': this.slotsData.Clos,
         'MinVersion': this.slotsData.MinVersion,
-        'Bets': this.slotsData.Bets,
+        'Bets': bets,
         'BetExtras': this.slotsData.BetExtras,
         'OddsStr': this.slotsData.OddsStr,
         'BaseBet': this.slotsData.BaseBet,
@@ -200,7 +218,8 @@ export default {
         'NormalFeeRate': this.slotsData.NormalFeeRate,
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
         'RecommendBet': this.slotsData.RecommendBet,
-        'WinTypeMinOdds': winTypeMinOdds
+        'WinTypeMinOdds': winTypeMinOdds,
+        'AutoSpinNum': autoSpinNum
       }
     },
     submitFrm() {
@@ -212,8 +231,18 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
-      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds))
+      if (this.slotsData.SlotsType == 180) {
+        const bets = this.slotsData.Bets.split(',')
+        for (const i in bets) {
+          let betFlot = parseFloat(bets[i])
+          let bet = betFlot * 1000
+          if (bet < 10 && bet % 2 == 1) {
+            $this.$message.error(`下注大小是三位小数时只支持偶数 err bet:${betFlot}`)
+            return
+          }
+        }
+      }      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
+      this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets, this.slotsData.AutoSpinNum))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交 ')
@@ -222,6 +251,15 @@ export default {
         $this.$emit('saveData')
         $this.lock = false
       })
+      this.initialWinTypeMinOdds = []
+      for (const k in this.slotsData.WinTypeMinOdds) {
+        this.initialWinTypeMinOdds.push(parseInt(this.slotsData.WinTypeMinOdds[k]))
+      }
+      this.initialBets = this.slotsData.Bets
+      this.initialAutoSpinNum = []
+      for (const k in this.slotsData.AutoSpinNum) {
+        this.initialAutoSpinNum.push(this.slotsData.AutoSpinNum[k])
+      }
     },
     recommendBetCheck() {
       if (this.recommendBet === 0) {

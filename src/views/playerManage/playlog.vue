@@ -2713,7 +2713,7 @@
         </el-table-column>
         <el-table-column prop="uid" label="JackPot">
           <template slot-scope="scope">
-            {{ scope.row.luckyPachinko ? scope.row.luckyPachinko.JackpotAward / 1000 : '' }}
+            {{ scope.row.luckyPachinko ? (scope.row.luckyPachinko.JackpotAward - scope.row.moneyWin - scope.row.moneyBet) / 1000 : '' }}
           </template>
         </el-table-column>
         <el-table-column prop="uid" label="JackpotType">

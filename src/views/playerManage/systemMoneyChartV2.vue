@@ -380,6 +380,7 @@ export default {
         150: 'SuperGems3',
         156: 'Crazy Ace',
         158: 'Shark Kingdom',
+        168: 'Pharaoh Treasure',
         118: 'Car Racing',
         120: 'Tongits Swap',
         162: 'Major Ace',
@@ -399,6 +400,7 @@ export default {
         182: 'God Of Fortune',
         186: 'MahjongJackpot',
         178: 'Mayan Totem',
+        194: 'RoadKing',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
@@ -531,9 +533,9 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 192, 180, 166, 170, 176, 182, 174, 186, 178)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 168)
         }
       }
     },

@@ -87,6 +87,53 @@
     </div>
     <el-dialog :title="getEditTitle()" :visible.sync="edit.visible" :close-on-click-modal="false" :close-on-press-escape="false">
       <el-form ref="edit" :model="edit" label-width="180px" size="small">
+         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
+          <legend>APP信息</legend>
+          <el-table
+            :data="edit.item.AppInfo"
+            border
+            stripe
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'35px'}"
+            :cell-style="libShow.TableCell(0)"
+            style="width: 100%;line-height:35px;"
+          >
+            <el-table-column
+              prop="index"
+              label="序号"
+              width="50"
+            />
+            <el-table-column
+              prop="appId"
+              label="AppID"
+              width="450"
+            >
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.appId" placeholder="请选择" size="mini" @change="selectShowGuieds()">
+                  <el-option
+                    v-for="item in appidInfoCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="channelId"
+              label="渠道ID"
+              width="450"
+            >
+              <template slot-scope="scope">
+                <el-checkbox-group v-model="scope.row.channelId">
+                  <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+                </el-checkbox-group>
+              </template>
+            </el-table-column>
+          </el-table>
+        </fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
+          <legend>比赛信息</legend>
         <el-row>
           <el-col :span="11">
             <el-form-item label="比赛名称:" :required="true" prop="item.RaceName">
@@ -215,6 +262,14 @@
               <el-input v-model="edit.item.PreMatchBeginTime" placeholder="进入时间" />
             </el-form-item>
           </el-col>
+           <el-col :span="11">
+            <el-form-item label="是否開起每日限制:" :required="true">
+              <el-radio-group v-model.number="edit.item.OpenDaysLimit">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="11">
@@ -269,7 +324,7 @@
         </el-row>
         <el-row>
           <el-col :span="11">
-            <el-form-item label="可rebuy级别限制:" :required="true" prop="item.RebuyClassLimit" :rules="dataRule(true,{type:'n',range:'0'})">
+            <el-form-item label="可Rebuy盲注级别限制:" :required="true" prop="item.RebuyClassLimit" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.RebuyClassLimit" placeholder="请输入" />
             </el-form-item>
           </el-col>
@@ -341,6 +396,7 @@
             </el-form-item>
           </el-col>
         </el-row>
+        </fieldset>
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -403,7 +459,16 @@ function newItem() {
     RewardPool: 0,
     LastModify: 0,
     ModifyUser: '',
-    Status: 0
+    Status: 0,
+    AppInfo: [
+      {
+        index: 1,
+        appId: 1000002,
+        channelId: []
+      }
+    ],
+    AppInfoStr: '',
+    OpenDaysLimit: 0,
   }
 }
 
@@ -430,6 +495,23 @@ export default {
         { key: '[2]1288单场赛', value: 2 },
         { key: '[3]固定奖励3', value: 3 },
         { key: '[4]Daily Free', value: 4 }
+      ],
+      appidInfoCfgs: [
+        { 'value': 1000002, 'label': 'dayusenlin' },
+        { 'value': 1000003, 'label': 'testaccount' },
+        { 'value': 1000004, 'label': 'testkey' },
+        { 'value': 1000005, 'label': 'BingoPlusTongits' },
+        { 'value': 1000006, 'label': 'BingoPlusTest' },
+        { 'value': 1000007, 'label': 'br' },
+        { 'value': 1100000, 'label': 'xworld' }
+      ],
+      channelIdCfgs: [
+        { 'value': 'BP', 'label': 'BP' },
+        { 'value': 'AP', 'label': 'AP' },
+        { 'value': 'GP', 'label': 'GP' },
+        { 'value': 'TP', 'label': 'TP' },
+        { 'value': 'PG', 'label': 'PG' },
+        { 'value': 'Dev', 'label': 'Dev' }
       ],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -474,13 +556,14 @@ export default {
         PreMatchBeginTime: '提前可进入时间',
         RewardId: '奖励ID',
         RewardPool: '初始奖池',
+        AppInfo: 'App信息',
+        OpenDaysLimit : '是否開啟每日限制'
       }
     }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    console.log(1)
   },
   methods: {
     formatNumber(n) {
@@ -537,6 +620,11 @@ export default {
         return '每周循环赛'
       }
     },
+    selectShowGuieds() {
+      for (var i = 0; i < this.edit.item.AppInfo.length; i++) {
+        this.edit.item.AppInfo[i].channelId = []
+      }
+    },
     clearFilter() {
       this.clientDB.ClearFilterMap()
       this.refreshShow()
@@ -548,7 +636,6 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-      console.log('refreshShow tableData: ', this.tableData)
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -565,6 +652,7 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
+      this.getList()
       if (column.columnKey !== 'op') {
         this.initFormData(true, row.ID)
         this.edit.visible = true
@@ -589,6 +677,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           for (const o in objs) {
+
             if (objs[o].RaceBeginDate === 0) {
               objs[o].RaceBeginDate = new Date()
             } else {
@@ -623,8 +712,17 @@ export default {
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
             objs[o].ServiceFee = objs[o].ServiceFee/1000
             objs[o].SignupFee = objs[o].SignupFee/1000
-
-            console.log(objs[o])
+            if (objs[o].AppInfoStr !== ''){
+              objs[o].AppInfo = JSON.parse(objs[o].AppInfoStr)
+            } else {
+              objs[o].AppInfo = [
+                {
+                  index: 1,
+                  appId: 1000002,
+                  channelId: []
+                }
+              ]
+            }
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
@@ -766,6 +864,8 @@ export default {
         postData.RaceWhiteList = ' '
       }
       postData.PreMatchBeginTime *= 60
+      postData.AppInfoStr = JSON.stringify(postData.AppInfo)
+
       console.log(postData)
       return postData
     },
@@ -788,6 +888,8 @@ export default {
     save() {
       if (this.edit.isEdit) {
         // 设置修改后数据
+        this.edit.item.AppInfoStr = JSON.stringify(this.edit.item.AppInfo)
+        console.log(this.edit.item.AppInfoStr)
         this.$refs.compare.SetNewVal(this.edit.item)
         const $this = this
         this.$refs.compare.Compare(function(isEdit) {
@@ -795,7 +897,6 @@ export default {
             Message.error('没有任何修改，不需要提交')
             return
           } else {
-            console.log($this.getPostData())
             $this.editSave($this.getPostData())
           }
         })
