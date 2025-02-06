@@ -1763,6 +1763,15 @@ export default {
       return s
     },
     configCheck() {
+      if (this.editForm.data.gameId == 0) {
+         this.errmsg('请选择游戏')
+         return false
+      }
+    
+      if (this.editForm.appInfo[0].channelId.length == 0 ) {
+        this.errmsg('请先选择渠道ID')
+        return false
+      }
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
@@ -1799,6 +1808,10 @@ export default {
           this.errmsg('比赛开始结束间隔要大于10分钟！')
           return false
         }
+        if(this.editForm.loopDetail.single.etime=='' || this.editForm.loopDetail.single.stime == '') {
+          this.errmsg('开赛时间不能为空')
+          return false
+        }
       }
 
       if (this.editForm.data.repeatType != 0) {
@@ -1819,6 +1832,10 @@ export default {
             if (this.editForm.loopDetail.loopData[i].intervalSeconds < 120) {
               this.errmsg('循环赛间隔时间至少大于120秒（2分钟）！')
               return false
+            }
+            if (this.editForm.loopDetail.loopData[i].etime == ''  || this.editForm.loopDetail.loopData[i].stime == '') {
+                this.errmsg('循环赛开始时间 结束时间不能为空')
+                return false
             }
           }
         }
@@ -1909,14 +1926,11 @@ export default {
             this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
           }
         }
-        if (this.editForm.data.opentMatchType==2 && (this.editForm.data.preShowSeconds <=0  || this.editForm.data.preEnterSeconds <= 0)) {
-          this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
-          return false
-        }
-        if (this.editForm.data.gameId == 0) {
-          this.errmsg('请选择游戏')
-          return false
-        }
+      }
+
+      if (this.editForm.data.preShowSeconds <=0  || this.editForm.data.preEnterSeconds <= 0) {
+         this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
+         return false
       }
       return true
     },
