@@ -198,7 +198,7 @@ export default {
         1: '普通',
         2: '购买'
       },
-      ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167, 171, 174, 178, 187]
+      // ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167, 171, 173, 175, 177, 179, 187]
     }
   },
   created() {
@@ -223,7 +223,8 @@ export default {
         if (response.RetCode === 0) {
           const obj = response.Data
           for (const key in obj) {
-            if (this.ignoreGame.includes(obj[key].SlotsType)) {
+            // if (this.ignoreGame.includes(obj[key].SlotsType)) {
+            if (obj[key].SlotsType % 2 === 1) {
               continue
             }
             this.lists.push(this.calcData(obj[key]))

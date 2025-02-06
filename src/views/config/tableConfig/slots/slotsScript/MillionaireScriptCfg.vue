@@ -661,6 +661,7 @@ export default {
         '85': 'superacemars',
         '95': 'chargebisonmars',
         '158': 'sharkkingdom',
+        '168': 'pharaohtreasure',
         '90': 'moneycoming',
         '97': 'romanarenamars',
         '153': 'aladdinlampmars',
@@ -697,7 +698,13 @@ export default {
         '171': 'epicacemars',
         '166': 'firelink',
         '167': 'firelinkmars',
-        '178': 'mayantotem'
+        '172': 'wrathofzeus',
+        '173': 'wrathofzeusmars',
+        '176': 'puppyhome',
+        '177': 'puppyhomemars',
+        '178': 'mayantotem',
+        '182': 'godoffortune',
+        '183': 'godoffortunemars'
       }
     }
   },

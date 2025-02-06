@@ -177,7 +177,7 @@
     </el-row>
 
     <el-dialog
-      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166) && searchForm.level === 0"
+      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -364,7 +364,7 @@ export default {
   name: 'RocketRet',
   data() {
     return {
-      submap : {90 : 'moneycoming_slots_base', 150 : 'supergemiii_slots_base', 166 : 'firelink_slots_base'},
+      submap : {90 : 'moneycoming_slots_base', 150 : 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base' },
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -583,6 +583,26 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
+      } else if (this.searchForm.gameId === 174) {
+        // 调用 getData() 获取 BetList 数组
+        this.getData().then(cfg => {
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+          if (cfg && cfg.BetList && cfg.BetList.length > 0) {
+            const betConfig = cfg.BetList.map(bet => {
+              const baseBetFactor = bet / 1000 * cfg.BaseBet
+              return [
+                { 'value': bet * 10 + 3, 'label': 'GRAND-' + baseBetFactor },
+                { 'value': bet * 10 + 2, 'label': 'MEGA-' + baseBetFactor },
+                { 'value': bet * 10 + 1, 'label': 'MAJOR-' + baseBetFactor }
+              ]
+            }).flat()
+
+            this.levelConfig = this.levelConfig.concat(betConfig)
+          }
+        }).catch(error => {
+          console.error('Error processing BetList:', error)
+          this.levelConfig = [{ 'value': 0, 'label': '全部' }]
+        })
       } else if (this.searchForm.gameId === 156) {
         // 调用 getData() 获取 BetList 数组
         this.levelConfig = [
@@ -602,7 +622,7 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166) && this.searchForm.level === 0) {
+      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166 || this.searchForm.gameId === 174) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
           .filter(config => config.value !== 0) // 过滤掉 value 为 0 的选项
@@ -773,7 +793,7 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
-      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166) {
+      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166 || this.searchForm.gameId === 174) {
         return parseInt(amount) / 100000
       }
       return parseInt(amount) / 1000

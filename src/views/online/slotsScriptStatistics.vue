@@ -18,12 +18,15 @@
             </el-select>
             <el-button type="primary" size="mini" @click="getSlotsScriptStatistics">查询</el-button>
             <el-button type="success" size="mini" @click="exportExcel">导出步数</el-button>
+
+            <el-select v-model="betOddsKey" size="mini" filterable default-first-option @change="betOddsKeyInput">
+              <el-option v-for="(o,k) in betOddsKeySelect" :key="k" :label="getBetOddsName(o)" :value="o" />
+            </el-select>
           </el-col>
         </el-row>
 
-
         <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px;margin-top: 20px">
-          <el-col :span="11" >
+          <el-col :span="11">
             <el-table
               ref="filterTable"
               :data="OrdinaryReturnTableData"
@@ -40,7 +43,7 @@
                   width="75px"
                 >
                   <template slot-scope="scope">
-                    {{ currentBaseBet * scope.row.bet / 1000   }}
+                    {{ currentBaseBet * scope.row.bet / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -52,7 +55,7 @@
                     {{ scope.row.times }}
                   </template>
                 </el-table-column>
-                 <el-table-column
+                <el-table-column
                   prop="gid"
                   label="下注次数占比"
                   width="90px"
@@ -67,13 +70,13 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{  currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
+                    {{ currentBaseBet * scope.row.bet * scope.row.times / 1000 }}
                   </template>
                 </el-table-column>
-                    <el-table-column
+                <el-table-column
                   prop="gid"
                   label="下注额度占比"
-                   width="90px"
+                  width="90px"
                 >
                   <template slot-scope="scope">
                     {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalOrdinaryBet() )*100).toFixed(2) + '%' }}
@@ -86,7 +89,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ returnMap[ scope.row.bet] / 1000 }}
+                    {{ returnMap[betOddsKey][ scope.row.bet] / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -95,7 +98,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ ((currentBaseBet * scope.row.bet * scope.row.times)  - (returnMap[ scope.row.bet])) / 1000 }}
+                    {{ ((currentBaseBet * scope.row.bet * scope.row.times) - (returnMap[betOddsKey][ scope.row.bet])) / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -104,7 +107,7 @@
                 >
                   <template slot-scope="scope">
                     {{
-                      ((returnMap[scope.row.bet] /(currentBaseBet * scope.row.bet *  scope.row.times))*100).toFixed(2)    + "%"
+                      ((returnMap[betOddsKey][scope.row.bet] /(currentBaseBet * scope.row.bet * scope.row.times))*100).toFixed(2) + "%"
                     }}
                   </template>
                 </el-table-column>
@@ -129,7 +132,7 @@
                   width="75px"
                 >
                   <template slot-scope="scope">
-                    {{   scope.row.bet / 1000  }}
+                    {{ scope.row.bet / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -141,7 +144,7 @@
                     {{ scope.row.times }}
                   </template>
                 </el-table-column>
-                 <el-table-column
+                <el-table-column
                   prop="gid"
                   label="下注次数占比"
                   width="90px"
@@ -156,7 +159,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{    scope.row.bet * scope.row.times / 1000 }}
+                    {{ scope.row.bet * scope.row.times / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -165,16 +168,16 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalBuyOrdinaryBet() )*100).toFixed(2) + '%'  }}
+                    {{ ((parseInt( scope.row.bet * scope.row.times+'') / getTotalBuyOrdinaryBet() )*100).toFixed(2) + '%' }}
                   </template>
                 </el-table-column>
                 <el-table-column
                   prop="gid"
                   label="返奖额度"
-                    width="120px"
+                  width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet] / 1000:0 }}
+                    {{ buyReturnMap[betOddsKey][ scope.row.bet]?buyReturnMap[betOddsKey][ scope.row.bet] / 1000:0 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -183,7 +186,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ ((  scope.row.bet * scope.row.times)  - (buyReturnMap[ scope.row.bet]?buyReturnMap[ scope.row.bet]:0)) / 1000 }}
+                    {{ (( scope.row.bet * scope.row.times) - (buyReturnMap[betOddsKey][ scope.row.bet]?buyReturnMap[betOddsKey][ scope.row.bet]:0)) / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -192,7 +195,7 @@
                 >
                   <template slot-scope="scope">
                     {{
-                      (buyReturnMap[scope.row.bet] / (scope.row.bet *  scope.row.times) *100).toFixed(2)   + "%"
+                      (buyReturnMap[betOddsKey][scope.row.bet] / (scope.row.bet * scope.row.times) *100).toFixed(2) + "%"
                     }}
                   </template>
                 </el-table-column>
@@ -244,7 +247,7 @@
                   label="占比"
                 >
                   <template slot-scope="scope">
-                    {{ (parseInt(scope.row.cnt) / sumData[scope.row.gid] * 100).toFixed(2) + "%" }}
+                    {{ (parseInt(scope.row.cnt) / sumData[scope.row.gid][betOddsKey] * 100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
 
@@ -261,11 +264,12 @@
               <el-col :span="12">
                 <div class="block">
                   <el-pagination
-                    :current-page="scriptClientDB.GetPage().GetCurrentPage()"
+                    v-if="scriptClientDB[betOddsKey]"
+                    :current-page="scriptClientDB[betOddsKey].GetPage().GetCurrentPage()"
                     :page-sizes="[10, 20, 30, 40]"
-                    :page-size="scriptClientDB.GetPage().GetPageNum()"
+                    :page-size="scriptClientDB[betOddsKey].GetPage().GetPageNum()"
                     layout="total, sizes, prev, pager, next, jumper"
-                    :total="scriptClientDB.GetPage().GetTotalCount()"
+                    :total="scriptClientDB[betOddsKey].GetPage().GetTotalCount()"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                   />
@@ -340,7 +344,7 @@
           </el-col>
         </el-row>
         <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
-          <el-col :span="11" >
+          <el-col :span="11">
             <el-table
               ref="filterTable"
               :data="stepTableData"
@@ -616,7 +620,7 @@
                     奖池剩余金额
                   </template>
                   <span v-if="cfgMap[bigPrizeForm.gid] && cfgMap[bigPrizeForm.gid].JackpotShowBet">
-                    {{ (bigPrize.pool_money / 1000 /parseInt(cfgMap[bigPrizeForm.gid].JackpotShowBet)).toFixed(2)}}
+                    {{ (bigPrize.pool_money / 1000 /parseInt(cfgMap[bigPrizeForm.gid].JackpotShowBet)).toFixed(2) }}
                   </span>
                   <span v-else>
                     {{ bigPrize.pool_money / 1000 }}
@@ -722,7 +726,7 @@
 
           </el-form>
           <el-tabs type="border-card">
-            <table class="table table-border table-bordered table-bg table-striped"  border="0" cellspacing="0" cellpadding="0"  STYLE="width:100%;table-layout:fixed;">
+            <table class="table table-border table-bordered table-bg table-striped" border="0" cellspacing="0" cellpadding="0" STYLE="width:100%;table-layout:fixed;">
               <thead>
                 <th>
                   <template>
@@ -735,9 +739,9 @@
                   </template>
                 </th>
               </thead>
-              <tr v-for=" (v,k) in stepData" style="text-align: left" >
+              <tr v-for=" (v,k) in stepData" style="text-align: left">
                 <td class="colStyle">{{ (k) * 50 + '' }}</td>
-                <td v-for="(col,idx) in v" :style="getColColor(k,idx)" >
+                <td v-for="(col,idx) in v" :style="getColColor(k,idx)">
                   <span v-if="col===0" class="colStyle"> 0 </span>
                   <span v-else class="colStyle" style="margin-left: -6px;color: #007017;font-weight: bold;">{{ col/ currentBaseBet }}</span>
 
@@ -750,7 +754,7 @@
       </el-tab-pane>
 
       <el-tab-pane label="任务统计" name="mission">
-        <slotsMissionstatistics v-if="showMiss"></slotsMissionstatistics>
+        <slotsMissionstatistics v-if="showMiss" />
       </el-tab-pane>
     </el-tabs>
 
@@ -885,12 +889,12 @@ export default {
         }
       },
       tableData: [],
-      scriptClientDB: new ClientTableData([], 1, filterMap),
+      scriptClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
       jackpotClientDB: new ClientTableData([], 1, filterMap),
-      ordinaryReturnClientDB: new ClientTableData([], 1, filterMap),
-      buyReturnClientDB: new ClientTableData([], 1, filterMap),
+      ordinaryReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
+      buyReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       showBtn: 0,
       libShow: $libShow,
       item: {
@@ -922,13 +926,15 @@ export default {
 
       Actions: {},
       ActionOdds: 1,
-      scatterCounts: [],
+      scatterCounts: {},
       returnMap: {},
       buyReturnMap: {},
       stepData: {},
       cacheStep: {},
-      currentBaseBet:{},
+      currentBaseBet: {},
       showMiss: false,
+      betOddsKey: '全部',
+      betOddsKeySelect: { '全部': '全部' }
     }
   },
   created() {
@@ -942,7 +948,11 @@ export default {
       this.stepTableData = this.stepClientDB.GetCurrentPageData()
     },
     refreshScript() {
-      this.scriptTableData = this.scriptClientDB.GetCurrentPageData()
+      if (this.betOddsKey in this.scriptClientDB) {
+        this.scriptTableData = this.scriptClientDB[this.betOddsKey].GetCurrentPageData()
+      } else {
+        this.scriptTableData = []
+      }
     },
     refreshCoordinate() {
       this.coordinateTableData = this.coordinateClientDB.GetCurrentPageData()
@@ -951,36 +961,52 @@ export default {
       this.jackpotTableData = this.jackpotClientDB.GetCurrentPageData()
     },
     refreshBuyReturn() {
-      this.BuyReturnMoneyTableData = this.buyReturnClientDB.GetCurrentPageData()
+      if (this.betOddsKey in this.buyReturnClientDB) {
+        this.BuyReturnMoneyTableData = this.buyReturnClientDB[this.betOddsKey].GetCurrentPageData()
+      } else {
+        this.BuyReturnMoneyTableData = []
+      }
     },
     refreshOrdinaryReturn() {
-      this.OrdinaryReturnTableData = this.ordinaryReturnClientDB.GetCurrentPageData()
+      if (this.betOddsKey in this.ordinaryReturnClientDB) {
+        this.OrdinaryReturnTableData = this.ordinaryReturnClientDB[this.betOddsKey].GetCurrentPageData()
+      } else {
+        this.OrdinaryReturnTableData = []
+      }
     },
     getTotalOrdinaryBetTimes() {
       let cnt = 0
-      for (const o of this.ordinaryReturnClientDB.TotalData) {
-        cnt += parseInt(o.times)
+      if (this.betOddsKey in this.ordinaryReturnClientDB) {
+        for (const o of this.ordinaryReturnClientDB[this.betOddsKey].TotalData) {
+          cnt += parseInt(o.times)
+        }
       }
       return cnt
     },
-   getTotalOrdinaryBet() {
+    getTotalOrdinaryBet() {
       let cnt = 0
-      for (const o of this.ordinaryReturnClientDB.TotalData) {
-        cnt += parseInt(o.times * o.bet+'')
+      if (this.betOddsKey in this.ordinaryReturnClientDB) {
+        for (const o of this.ordinaryReturnClientDB[this.betOddsKey].TotalData) {
+          cnt += parseInt(o.times * o.bet + '')
+        }
       }
       return cnt
     },
-     getTotalBuyOrdinaryBet() {
+    getTotalBuyOrdinaryBet() {
       let cnt = 0
-      for (const o of this.buyReturnClientDB.TotalData) {
-        cnt += parseInt(o.times * o.bet+'')
+      if (this.betOddsKey in this.buyReturnClientDB) {
+        for (const o of this.buyReturnClientDB[this.betOddsKey].TotalData) {
+          cnt += parseInt(o.times * o.bet + '')
+        }
       }
       return cnt
     },
     getTotalBuyBetTimes() {
       let cnt = 0
-      for (const o of this.buyReturnClientDB.TotalData) {
-        cnt += parseInt(o.times)
+      if (this.betOddsKey in this.buyReturnClientDB) {
+        for (const o of this.buyReturnClientDB[this.betOddsKey].TotalData) {
+          cnt += parseInt(o.times)
+        }
       }
       return cnt
     },
@@ -995,7 +1021,7 @@ export default {
         this.queryBase(this.scripStepForm.gid)
         // this.getSlotsScriptStep()
       }
-      if (parseInt(tab.index)=== 3){
+      if (parseInt(tab.index) === 3) {
         this.showMiss = true
       }
     },
@@ -1067,7 +1093,7 @@ export default {
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
             for (const o of cfg) {
-              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet ,JackpotShowBet:o.JackpotShowBet}
+              this.cfgMap[o.Gid] = { OddsList: o.OddsList, Bet: o.Bet, JackpotShowBet: o.JackpotShowBet }
             }
           }
         }
@@ -1075,17 +1101,21 @@ export default {
     },
     getGameName(gid) {
       for (const o of this.gameOptions) {
-        if (o.key == parseInt(gid)) {
+        if (o.key === parseInt(gid)) {
           return o.label
         }
       }
     },
     handleSizeChange(val) {
-      this.scriptClientDB.GetPage().SetPageNum(val)
+      if (this.betOddsKey in this.scriptClientDB) {
+        this.scriptClientDB[this.betOddsKey].GetPage().SetPageNum(val)
+      }
       this.refreshScript()
     },
     handleCurrentChange(val) {
-      this.scriptClientDB.GetPage().SetPageNo(val)
+      if (this.betOddsKey in this.scriptClientDB) {
+        this.scriptClientDB[this.betOddsKey].GetPage().SetPageNo(val)
+      }
       this.refreshScript()
     },
     coordinateHandleSizeChange(val) {
@@ -1096,13 +1126,22 @@ export default {
     async queryKeyInput() {
       await this.queryRule(this.queryGid)
 
-      this.refreshScript()
+      // this.refreshScript()
       this.refreshCoordinate()
       this.refreshStep()
       this.refreshJackpot()
+      // this.refreshBuyReturn()
+      // this.refreshOrdinaryReturn()
+      this.queryBase(this.queryGid)
+      this.betOddsKeyInput()
+    },
+    async betOddsKeyInput() {
+      this.refreshScript()
+      // this.refreshCoordinate()
+      // this.refreshStep()
+      // this.refreshJackpot()
       this.refreshBuyReturn()
       this.refreshOrdinaryReturn()
-      this.queryBase(this.queryGid)
     },
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
@@ -1146,12 +1185,12 @@ export default {
         // coordinate 返回数据格式，SlotsType_剧本_x_y
         // script 返回数据格式， slotsType, 配置index
         const coordinateTableData = []
-        const scriptTableData = []
+        const scriptTableData = {}
         const stepTableData = []
         const jackpotTableData = []
-        const scatterCounts = []
-        const ordinaryReturnMoneyTableData = []
-        const buyReturnMoneyTableData = []
+        const scatterCounts = { '全部': [] }
+        const ordinaryReturnMoneyTableData = {}
+        const buyReturnMoneyTableData = {}
 
         this.returnMap = {}
         this.buyReturnMap = {}
@@ -1193,9 +1232,33 @@ export default {
                 //
               } else if (strings1[1] === 'count') {
                 var strings = key.split('_')
-                this.sumData[this.queryGid] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid] || 0)
-
-                scriptTableData.push({ gid: this.queryGid, idx: strings[2], cnt: response.Data['script'][key] })
+                if (strings.length < 4) {
+                  if (!(this.queryGid in this.sumData)) {
+                    this.sumData[this.queryGid] = {}
+                  }
+                  this.sumData[this.queryGid]['全部'] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid]['全部'] || 0)
+                  if (!('全部' in scriptTableData)) {
+                    scriptTableData['全部'] = []
+                  }
+                  scriptTableData['全部'].push({
+                    gid: this.queryGid,
+                    idx: strings[2],
+                    cnt: response.Data['script'][key]
+                  })
+                } else {
+                  if (!(this.queryGid in this.sumData)) {
+                    this.sumData[this.queryGid] = {}
+                  }
+                  this.sumData[this.queryGid][strings[3]] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid][strings[3]] || 0)
+                  if (!(strings[3] in scriptTableData)) {
+                    scriptTableData[strings[3]] = []
+                  }
+                  scriptTableData[strings[3]].push({
+                    gid: this.queryGid,
+                    idx: strings[2],
+                    cnt: response.Data['script'][key]
+                  })
+                }
               } else {
                 let prefix = ''
                 if (parseInt(strings1[1]) === -2) {
@@ -1243,23 +1306,73 @@ export default {
               }
             } else if (strings1[0] === 'scatter') {
               if (strings1[1] === 'count') {
-                scatterCounts[parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+                if (strings1.length < 4) {
+                  if (!('全部' in scatterCounts)) {
+                    scatterCounts['全部'] = []
+                  }
+                  scatterCounts['全部'][parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+                } else {
+                  if (!(strings1[3] in scatterCounts)) {
+                    scatterCounts[strings1[3]] = []
+                  }
+                  scatterCounts[strings1[3]][parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+                }
               }
             } else if (strings1[0] === 'spin') {
               if (strings1[1] === 'ordinary') {
                 if (strings1[2] === 'times') {
-                  ordinaryReturnMoneyTableData.push({bet: parseInt(strings1[3]),times: response.Data['script'][key]})
+                  if (strings1.length < 6) {
+                    if (!('全部' in ordinaryReturnMoneyTableData)) {
+                      ordinaryReturnMoneyTableData['全部'] = []
+                    }
+                    ordinaryReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  } else {
+                    if (!(strings1[4] in ordinaryReturnMoneyTableData)) {
+                      ordinaryReturnMoneyTableData[strings1[4]] = []
+                    }
+                    ordinaryReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  }
                 }
                 if (strings1[2] === 'return') {
-                  this.returnMap[parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                  if (strings1.length < 6) {
+                    if (!('全部' in this.returnMap)) {
+                      this.returnMap['全部'] = {}
+                    }
+                    this.returnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                  } else {
+                    if (!(strings1[4] in this.returnMap)) {
+                      this.returnMap[strings1[4]] = {}
+                    }
+                    this.returnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                  }
                 }
               }
               if (strings1[1] === 'buy') {
                 if (strings1[2] === 'times') {
-                  buyReturnMoneyTableData.push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  if (strings1.length < 6) {
+                    if (!('全部' in buyReturnMoneyTableData)) {
+                      buyReturnMoneyTableData['全部'] = []
+                    }
+                    buyReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  } else {
+                    if (!(strings1[4] in buyReturnMoneyTableData)) {
+                      buyReturnMoneyTableData[strings1[4]] = []
+                    }
+                    buyReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  }
                 }
-                if (strings1[2] === 'return'){
-                  this.buyReturnMap[parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                if (strings1[2] === 'return') {
+                  if (strings1.length < 6) {
+                    if (!('全部' in this.buyReturnMap)) {
+                      this.buyReturnMap['全部'] = {}
+                    }
+                    this.buyReturnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                  } else {
+                    if (!(strings1[4] in this.buyReturnMap)) {
+                      this.buyReturnMap[strings1[4]] = {}
+                    }
+                    this.buyReturnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+                  }
                 }
               }
             }
@@ -1298,9 +1411,11 @@ export default {
           return b.cnt - a.cnt
         })
 
-        scriptTableData.sort(function(a, b) {
-          return a.idx - b.idx
-        })
+        for (const i in scriptTableData) {
+          scriptTableData[i].sort(function(a, b) {
+            return a.idx - b.idx
+          })
+        }
 
         jackpotTableData.sort(function(a, b) {
           if (a.app === b.app) {
@@ -1311,21 +1426,70 @@ export default {
           }
           return a.app - b.app
         })
-        ordinaryReturnMoneyTableData.sort(function(a, b) {
-          return a.bet - b.bet
-        })
-        buyReturnMoneyTableData.sort(function(a, b) {
-          return a.bet - b.bet
-        })
-        this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
+        for (const i in ordinaryReturnMoneyTableData) {
+          ordinaryReturnMoneyTableData[i].sort(function(a, b) {
+            return a.bet - b.bet
+          })
+        }
+        for (const i in buyReturnMoneyTableData) {
+          buyReturnMoneyTableData[i].sort(function(a, b) {
+            return a.bet - b.bet
+          })
+        }
+
+        this.betOddsKeySelect = {}
+        // this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
+        this.scriptClientDB = {}
+        if (Object.keys(scriptTableData).length <= 2) {
+          if ('全部' in scriptTableData) {
+            this.scriptClientDB['全部'] = new ClientTableData(scriptTableData['全部'], 20, filterMap, 'sort', -1)
+          } else {
+            this.scriptClientDB['全部'] = new ClientTableData([], 1, filterMap)
+          }
+          this.betOddsKeySelect['全部'] = '全部'
+        } else {
+          for (const i in scriptTableData) {
+            this.scriptClientDB[i] = new ClientTableData(scriptTableData[i], 20, filterMap, 'sort', -1)
+            this.betOddsKeySelect[i] = i
+          }
+        }
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
-        this.ordinaryReturnClientDB = new ClientTableData(ordinaryReturnMoneyTableData, 20, filterMap, 'idx', -1)
-        this.buyReturnClientDB = new ClientTableData(buyReturnMoneyTableData, 20, filterMap, 'idx', -1)
+        this.ordinaryReturnClientDB = {}
+        if (Object.keys(ordinaryReturnMoneyTableData).length <= 2) {
+          if ('全部' in ordinaryReturnMoneyTableData) {
+            this.ordinaryReturnClientDB['全部'] = new ClientTableData(ordinaryReturnMoneyTableData['全部'], 20, filterMap, 'idx', -1)
+          } else {
+            this.ordinaryReturnClientDB['全部'] = new ClientTableData([], 1, filterMap)
+          }
+          this.betOddsKeySelect['全部'] = '全部'
+        } else {
+          for (const i in ordinaryReturnMoneyTableData) {
+            this.ordinaryReturnClientDB[i] = new ClientTableData(ordinaryReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
+            this.betOddsKeySelect[i] = i
+          }
+        }
+        this.buyReturnClientDB = {}
+        if (Object.keys(buyReturnMoneyTableData).length <= 2) {
+          if ('全部' in buyReturnMoneyTableData) {
+            this.buyReturnClientDB['全部'] = new ClientTableData(buyReturnMoneyTableData['全部'], 20, filterMap, 'idx', -1)
+          } else {
+            this.buyReturnClientDB['全部'] = new ClientTableData([], 1, filterMap)
+          }
+          this.betOddsKeySelect['全部'] = '全部'
+        } else {
+          for (const i in buyReturnMoneyTableData) {
+            this.buyReturnClientDB[i] = new ClientTableData(buyReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
+            this.betOddsKeySelect[i] = i
+          }
+        }
+
+        if (!(this.betOddsKey in this.betOddsKeySelect)) {
+          this.betOddsKey = '全部'
+        }
         this.queryKeyInput()
         this.scatterCounts = scatterCounts
-
         $this.loading = false
       })
     },
@@ -1416,8 +1580,8 @@ export default {
           76: 'candypartyway',
           152: 'aladdinlamp',
           86: 'supergemii',
-          90:'moneycoming',
-          92:'fortuneacego'
+          90: 'moneycoming',
+          92: 'fortuneacego'
         }
         let key = this.gameScene[gid] + '_slots_base'
         for (const k in realKey) {
@@ -1574,7 +1738,7 @@ export default {
             dat.push(this.stepTableData[key].title)
             dat.push(scriptKey)
             for (const stepKey in stepMap) {
-              if (stepKey == 0 || stepKey == 1) {
+              if (stepKey === 0 || stepKey === 1) {
                 continue
               }
 
@@ -1645,10 +1809,13 @@ export default {
     },
     getScatterCount(idx) {
       idx = parseInt(idx)
-      if (typeof (this.scatterCounts[idx]) === 'undefined') {
+      if (typeof (this.scatterCounts[this.betOddsKey]) === 'undefined') {
+        return 0
+      }
+      if (typeof (this.scatterCounts[this.betOddsKey][idx]) === 'undefined') {
         return 0
       } else {
-        return this.scatterCounts[idx]
+        return this.scatterCounts[this.betOddsKey][idx]
       }
     },
     getScatterPercent(idx, totalCnt) {
@@ -1659,6 +1826,17 @@ export default {
       } else {
         const percent = scatterCnt * 100 / totalCnt
         return percent.toFixed(2) + '%'
+      }
+    },
+    getBetOddsName(betOdd) {
+      if (betOdd === '全部') {
+        return betOdd
+      } else {
+        if (betOdd === '10') {
+          return '普通下注' + betOdd
+        } else {
+          return '额外下注' + betOdd
+        }
       }
     }
   }

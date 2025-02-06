@@ -100,10 +100,10 @@
               <el-table-column
                 prop="CardType"
                 label="编辑"
-                width="200"
               >
                 <template slot-scope="scope">
-                  <el-button type="primary" size="mini" @click="handleMinesCfsEdit(scope.row, scope.$index)">编辑配置{{scope.$index+1}}</el-button>
+                  <el-button type="primary" size="mini" @click="handleMinesCfsEdit(scope.row, scope.$index)">跳过概览</el-button>
+                  <el-button style="background: #ffcc4b" size="mini" @click="handleMineHitsCfsEdit(scope.row, scope.$index)">翻格子数</el-button>
                   <el-button type="danger" size="mini" @click="delMinesCfs(scope.row, scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
@@ -152,13 +152,13 @@
                 prop="DeductingMinesOdds"
                 label="每次减少翻雷概率%"
               />
-              <el-table-column
-                prop="EachLossMoney"
-                label="输初始金额%"
-              /> <el-table-column
-                prop="EachWinMoney"
-                label="赢初始金额%"
-              />
+<!--              <el-table-column-->
+<!--                prop="EachLossMoney"-->
+<!--                label="输初始金额%"-->
+<!--              /> <el-table-column-->
+<!--                prop="EachWinMoney"-->
+<!--                label="赢初始金额%"-->
+<!--              />-->
 
               <el-table-column
                 label="操作"
@@ -241,16 +241,16 @@
             <el-input v-model="edit.item.DeductingMinesOdds" />
           </el-col>
         </el-form-item>
-        <el-form-item label="每输多少金额触发：" :required="true" prop="WinMoneyMax">
-          <el-col :span="15">
-            <el-input v-model="edit.item.EachLossMoney" />
-          </el-col>
-        </el-form-item>
-        <el-form-item label="每赢多少金额触发：" :required="true" prop="WinMoneyMax">
-          <el-col :span="15">
-            <el-input v-model="edit.item.EachWinMoney" />
-          </el-col>
-        </el-form-item>
+<!--        <el-form-item label="每输多少金额触发：" :required="true" prop="WinMoneyMax">-->
+<!--          <el-col :span="15">-->
+<!--            <el-input v-model="edit.item.EachLossMoney" />-->
+<!--          </el-col>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="每赢多少金额触发：" :required="true" prop="WinMoneyMax">-->
+<!--          <el-col :span="15">-->
+<!--            <el-input v-model="edit.item.EachWinMoney" />-->
+<!--          </el-col>-->
+<!--        </el-form-item>-->
 
         <el-form-item>
           <el-row>
@@ -320,6 +320,72 @@
         </el-col>
       </el-row>
     </el-dialog>
+    <el-dialog
+      :title="getEditTitle()"
+      :visible.sync="editMinesHitCfg.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-table
+        :data="editMinesHitCfg.items.MinesHitCfg"
+        border
+        style="width: 100%"
+        :cell-style="libShow.DefaultTableCell"
+        :key="minesCfgRowKey"
+      >
+        <el-table-column
+          label="index"
+        >
+          <template slot="header">
+            <el-button type="primary" size="mini" @click="appendMinesHitRow()">添加新配置</el-button>
+          </template>
+          <template slot-scope="scope">
+            {{ scope.$index +1}}
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="地雷最小概率"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.MinRate"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="地雷最大概率"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.MaxRate"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="最小格子数"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.MinGrid"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="最大格子数"
+        >
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.MaxGrid"/>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+        >
+          <template slot-scope="scope">
+            <el-button type="danger" size="mini" @click="delMinesRowCfs(scope.row, scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-row>
+        <el-col :span="10" :offset="6">
+          <el-button type="primary" size="medium" @click="saveMinesRow">保存</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
+
     <!--对比组件-->
     <compare ref="compare" />
   </el-col>
@@ -398,6 +464,12 @@ export default {
         isEdit: false,
         idx:0
       },
+      editMinesHitCfg: {
+        visible: false,
+        items: [],
+        isEdit: false,
+        idx:0
+      },
     }
   },
   created() {
@@ -437,6 +509,12 @@ export default {
       this.editMinesCfg.visible = true
       this.editMinesCfg.items = ob
       this.editMinesCfg.idx = idx
+    },
+    handleMineHitsCfsEdit(ob,idx) {
+      console.log(ob)
+      this.editMinesHitCfg.visible = true
+      this.editMinesHitCfg.items = ob
+      this.editMinesHitCfg.idx = idx
     },
     delMinesCfs(ob,idx) {
       this.item.MinesCfg.splice(idx,1)
@@ -491,6 +569,7 @@ export default {
     },
     saveMinesRow(){
       this.editMinesCfg.visible = false
+      this.editMinesHitCfg.visible = false
     },
     handleCreate() {
       this.edit.item = newItem()
@@ -500,6 +579,7 @@ export default {
     appendMinesCfg() {
       if (!this.item.MinesCfg){
         this.item['MinesCfg'] = []
+        this.item['MinesHitCfg'] = []
       }
       this.item.MinesCfg.push({
         MinesOdds:[],
@@ -514,6 +594,18 @@ export default {
         MinOdds:0,
         MaxOdds:0,
         SkipOdds:0
+      })
+      this.minesCfgRowKey +=1
+    },
+    appendMinesHitRow() {
+      if (!this.item.MinesCfg[this.editMinesCfg.idx].MinesHitCfg){
+        this.item.MinesCfg[this.editMinesCfg.idx]['MinesHitCfg'] = []
+      }
+      this.item.MinesCfg[this.editMinesCfg.idx].MinesHitCfg.push({
+        MinRate:0,
+        MaxRate:0,
+        MinGrid:0,
+        MaxGrid:0
       })
       this.minesCfgRowKey +=1
     },

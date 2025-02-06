@@ -910,7 +910,7 @@ export default {
         { name: '圣诞摇钱树-[7]', id: 7 },
         { name: 'Poker乐园-[8]', id: 8 }
       ],
-      blockGames: [32, 36, 38, 39, 43, 44],
+      blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
       zoneGame: []
     }

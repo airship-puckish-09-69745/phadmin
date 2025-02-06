@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="item" label-width="80px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}"/>
+          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
         </el-form-item>
 
         <el-form-item label="日期：">
@@ -64,8 +64,8 @@
         >
           <template slot-scope="scope">
             <span :style="scope.row.Rate>=scope.row.STD?'color:green':'color:red'">{{
-                scope.row.Rate.toFixed(2)
-              }}</span>
+              scope.row.Rate.toFixed(2)
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -88,8 +88,8 @@
           <el-descriptions-item label="输局数："> {{ item.loseCount }}</el-descriptions-item>
           <el-descriptions-item label="赢局数：">{{ item.winCount }}</el-descriptions-item>
           <el-descriptions-item label="胜率%：">{{
-              (item.loseCount + item.winCount) > 0 ? (item.winCount / (item.loseCount + item.winCount) * 100).toFixed(1) : 0
-            }}
+            (item.loseCount + item.winCount) > 0 ? (item.winCount / (item.loseCount + item.winCount) * 100).toFixed(1) : 0
+          }}
           </el-descriptions-item>
           <el-descriptions-item label="台费：">{{ formatNumber(item.fee) }}</el-descriptions-item>
         </el-descriptions>
@@ -120,7 +120,7 @@
         width="200"
       >
         <template slot-scope="scope">
-          <DateTimeShow :show-type="2" :timestamp="scope.row.FinishTime"/>
+          <DateTimeShow :show-type="2" :timestamp="scope.row.FinishTime" />
         </template>
       </el-table-column>
       <el-table-column
@@ -167,8 +167,8 @@
         >
           <template v-slot:header>
             <el-select v-model="clientDB.FilterValueMap['TableMoney']" size="mini" @change="handleFilter">
-              <el-option label="前注" :value="0"/>
-              <el-option v-for="(o,key) in clientDB.FilterMap['TableMoney']" :key="key" :label="o" :value="key"/>
+              <el-option label="前注" :value="0" />
+              <el-option v-for="(o,key) in clientDB.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
             </el-select>
           </template>
           <template slot-scope="scope">
@@ -300,7 +300,7 @@
           width="200"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -371,7 +371,7 @@
       width="50%"
     >
       <div v-show="showPublicCars" style=" font-size:14px; line-height: 18px; height: 25px;"><span style="float:left;">公共牌：</span>
-        <div style="float:left; " v-html="showCard(publicCards)"/>
+        <div style="float:left; " v-html="showCard(publicCards)" />
       </div>
       <el-table
         ref="filterTable"
@@ -401,7 +401,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.Cards)"/>
+            <div v-html="showCard(scope.row.Cards)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -449,9 +449,9 @@
     >
       <div style=" font-size:14px; line-height: 18px; height: 25px;">
         <span style="float:left;">庄家牌：</span>
-        <div style="float:left; " v-html="showCard(baccaratDealerCards)"/>
+        <div style="float:left; " v-html="showCard(baccaratDealerCards)" />
         <span style="float:left; margin-left:20px;">闲家牌：</span>
-        <div style="float:left; " v-html="showCard(baccaratPlayerCards)"/>
+        <div style="float:left; " v-html="showCard(baccaratPlayerCards)" />
       </div>
       <el-table
         ref="filterTable"
@@ -467,7 +467,7 @@
           width="200"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -549,9 +549,9 @@
             <td>{{ sweeperPlay.JackpotContribute / 1000 }}</td>
             <td>{{ sweeperPlay.ReduceContribute / 1000 }}</td>
             <td>{{
-                sweeperPlay.CurrentContribute
+              sweeperPlay.CurrentContribute
                 / 1000
-              }}
+            }}
             </td>
             <td>{{ getMicroCtrlName(sweeperPlay.microCtrl) }}</td>
           </tr>
@@ -574,19 +574,19 @@
     </el-dialog>
 
     <el-dialog title="Tower详情" :visible.sync="towerVisible" width="650px">
-      <div id="towerShow" v-html="towerData"/>
+      <div id="towerShow" v-html="towerData" />
     </el-dialog>
 
     <el-dialog title="Lucky9牌局详情" :visible.sync="lucky9DetailVisible" width="1200px">
       <el-table :data="lucky9Detail.players" border>
-        <el-table-column prop="uid" label="UID" width="100"/>
-        <el-table-column prop="seat" label="座位" width="100"/>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column prop="cards" label="手牌" width="200">
           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.cards)"/>
+            <div v-html="showCard(scope.row.cards)" />
           </template>
         </el-table-column>
-        <el-table-column prop="cardScore" label="点数" width="100"/>
+        <el-table-column prop="cardScore" label="点数" width="100" />
         <el-table-column prop="isDealer" label="庄家" width="100">
           <template slot-scope="scope">{{ scope.row.isDealer ? "是" : "-" }}</template>
         </el-table-column>
@@ -619,16 +619,16 @@
         <el-descriptions-item label="HitPot奖池">{{ lucky9Detail.hitPotPool / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="POT机器人">{{ lucky9Detail.potRobot }}</el-descriptions-item>
         <el-descriptions-item label="POT机器人保护">{{
-            lucky9Detail.potRobotProtected ? '是' : '-'
-          }}
+          lucky9Detail.potRobotProtected ? '是' : '-'
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="机器人缓冲池保护">{{
-            lucky9Detail.robotPoolProtected ? '是' : '-'
-          }}
+          lucky9Detail.robotPoolProtected ? '是' : '-'
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="机器人庄家保护">{{
-            lucky9Detail.robotDealerProtected ? '是' : '-'
-          }}
+          lucky9Detail.robotDealerProtected ? '是' : '-'
+        }}
         </el-descriptions-item>
       </el-descriptions>
     </el-dialog>
@@ -669,8 +669,8 @@
       </el-descriptions>
 
       <el-table :data="blackjackDetail.players" border>
-        <el-table-column prop="uid" label="UID"/>
-        <el-table-column prop="seat" label="座位"/>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="seat" label="座位" />
         <el-table-column prop="moneyBet" label="投注金额">
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.cardGroups">
@@ -790,8 +790,8 @@
       </el-descriptions>
 
       <el-table :data="dominoDetail.players" border>
-        <el-table-column prop="uid" label="UID"/>
-        <el-table-column prop="seat" label="座位"/>
+        <el-table-column prop="uid" label="UID" />
+        <el-table-column prop="seat" label="座位" />
         <el-table-column prop="winType" label="结果">
           <template slot-scope="scope">
             {{ getDominoWinType(scope.row.winType) }}
@@ -817,7 +817,7 @@
           </template>
 
         </el-table-column>
-        <el-table-column prop="points" label="剩余点数"/>
+        <el-table-column prop="points" label="剩余点数" />
         <el-table-column prop="moneyChange" label="总输赢">
           <template slot-scope="scope">
             {{ scope.row.moneyChange / 1000 }}
@@ -852,39 +852,39 @@
         :span-method="pusoySpanMethods"
         border
       >
-        <el-table-column prop="uid" label="UID" width="100"/>
-        <el-table-column prop="seat" label="座位" width="100"/>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column label="手牌" width="450" align="center">
           <el-table-column prop="cards" label="后手牌" width="150">
             <template #default="scope">
               <template v-if="scope.row.cardType > 1">
-                <div v-html="showCard(scope.row.cards)"/>
+                <div v-html="showCard(scope.row.cards)" />
                 <span>({{ pusoyCardTypes[scope.row.cardType] || '' }})</span>
               </template>
               <template v-else>
-                <div v-html="showCard(scope.row.groupBottom.cards)"/>
+                <div v-html="showCard(scope.row.groupBottom.cards)" />
                 <span>({{ pusoyGroupCardTypes[scope.row.groupBottom.cardType] || '' }})</span>
               </template>
             </template>
           </el-table-column>
           <el-table-column prop="cards" label="中手牌" width="150">
             <template slot-scope="scope">
-              <div v-html="showCard(scope.row.groupMiddle.cards)"/>
+              <div v-html="showCard(scope.row.groupMiddle.cards)" />
               <span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template>
           </el-table-column>
           <el-table-column prop="cards" label="前手牌" width="150">
             <template slot-scope="scope">
-              <div v-html="showCard(scope.row.groupTop.cards)"/>
+              <div v-html="showCard(scope.row.groupTop.cards)" />
               <span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template>
           </el-table-column>
         </el-table-column>
         <el-table-column prop="cardType" label="牌型" width="90">
           <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{
-              pusoyShowShootAll(scope.row)
-            }} {{ pusoyShowGroupExtra(scope.row) }}
+            pusoyShowShootAll(scope.row)
+          }} {{ pusoyShowGroupExtra(scope.row) }}
           </template>
         </el-table-column>
-        <el-table-column prop="cardScore" label="点数" width="100"/>
+        <el-table-column prop="cardScore" label="点数" width="100" />
         <el-table-column prop="moneyBet" label="下注" width="100">
           <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
         </el-table-column>
@@ -913,7 +913,7 @@
           <el-table-column prop="TargetPlayer.uid" label="Pusoy">
             <template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template>
           </el-table-column>
-          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged"/>
+          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
         </el-table-column>
       </el-table>
       <br>
@@ -928,49 +928,49 @@
         :data="pusoySwapDetail.players"
         border
       >
-        <el-table-column prop="uid" label="UID" width="100"/>
-        <el-table-column prop="seat" label="座位" width="100"/>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column prop="playerSwapCard" label="选择交换的手牌" width="100">
           <template #default="scopeP">
-            <div v-html="showCard(scopeP.row.playerSwapCard)"/>
+            <div v-html="showCard(scopeP.row.playerSwapCard)" />
           </template>
         </el-table-column>
         <el-table-column prop="swappedCard" label="换回的手牌" width="100">
           <template #default="scopeS">
-            <div v-html="showCard(scopeS.row.swappedCard)"/>
+            <div v-html="showCard(scopeS.row.swappedCard)" />
           </template>
         </el-table-column>
         <el-table-column label="手牌" width="450" align="center">
           <el-table-column prop="cards" label="后手牌" width="150">
             <template #default="scopeB">
               <template v-if="scopeB.row.cardType > 1">
-                <div v-html="showCard(scopeB.row.cards)"/>
+                <div v-html="showCard(scopeB.row.cards)" />
                 <span>({{ pusoyCardTypes[scopeB.row.cardType] || '' }})</span>
               </template>
               <template v-else>
-                <div v-html="showCard(scopeB.row.groupBottom.cards)"/>
+                <div v-html="showCard(scopeB.row.groupBottom.cards)" />
                 <span>({{ pusoyGroupCardTypes[scopeB.row.groupBottom.cardType] || '' }})</span>
               </template>
             </template>
           </el-table-column>
           <el-table-column prop="cards" label="中手牌" width="150">
             <template slot-scope="scope">
-              <div v-html="showCard(scope.row.groupMiddle.cards)"/>
+              <div v-html="showCard(scope.row.groupMiddle.cards)" />
               <span>({{ pusoyGroupCardTypes[scope.row.groupMiddle.cardType] || '' }})</span></template>
           </el-table-column>
           <el-table-column prop="cards" label="前手牌" width="150">
             <template slot-scope="scope">
-              <div v-html="showCard(scope.row.groupTop.cards)"/>
+              <div v-html="showCard(scope.row.groupTop.cards)" />
               <span>({{ pusoyGroupCardTypes[scope.row.groupTop.cardType] || '' }})</span></template>
           </el-table-column>
         </el-table-column>
         <el-table-column prop="cardType" label="牌型" width="90">
           <template slot-scope="scope">{{ pusoyShowCardTypeName(scope.row.cardType) }} {{
-              pusoyShowShootAll(scope.row)
-            }} {{ pusoyShowGroupExtra(scope.row) }}
+            pusoyShowShootAll(scope.row)
+          }} {{ pusoyShowGroupExtra(scope.row) }}
           </template>
         </el-table-column>
-        <el-table-column prop="cardScore" label="点数" width="100"/>
+        <el-table-column prop="cardScore" label="点数" width="100" />
         <el-table-column prop="moneyBet" label="下注" width="100">
           <template slot-scope="scope">{{ scope.row.moneyBet / 1000 }}</template>
         </el-table-column>
@@ -999,7 +999,7 @@
           <el-table-column prop="TargetPlayer.uid" label="Pusoy">
             <template slot-scope="scope">{{ scope.row.TargetPlayer.uid }}</template>
           </el-table-column>
-          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged"/>
+          <el-table-column prop="SourcePlayer.scoreChanged" label="ScoreChanged" />
         </el-table-column>
       </el-table>
       <br>
@@ -1009,14 +1009,18 @@
       </el-descriptions>
     </el-dialog>
 
-    <el-dialog v-if="gameLogComponent.gid===49" title="NiuNiu牌局详情" :visible.sync="gameLogComponent.visible"
-               width="1400px">
+    <el-dialog
+      v-if="gameLogComponent.gid===49"
+      title="NiuNiu牌局详情"
+      :visible.sync="gameLogComponent.visible"
+      width="1400px"
+    >
       <el-table
         :data="gameLogComponent.detail.players"
         border
       >
-        <el-table-column prop="uid" label="UID" width="100"/>
-        <el-table-column prop="seat" label="座位" width="100"/>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column label="手牌" width="450" align="center">
           <template slot-scope="scope">
             <span v-for="(row,idx) in scope.row.cards">
@@ -1058,16 +1062,16 @@
 
     <el-dialog title="Lucky89牌局详情" :visible.sync="bodingDetailVisible" width="1200px">
       <el-table :data="bodingDetail.players" border>
-        <el-table-column prop="uid" label="UID" width="100"/>
-        <el-table-column prop="seat" label="座位" width="100"/>
+        <el-table-column prop="uid" label="UID" width="100" />
+        <el-table-column prop="seat" label="座位" width="100" />
         <el-table-column prop="cards" label="手牌" width="200">
           <template slot-scope="scope">
-            <div v-html="showCard(scope.row.cards)"/>
+            <div v-html="showCard(scope.row.cards)" />
           </template>
         </el-table-column>
-        <el-table-column prop="cardScore" label="点数" width="100"/>
-        <el-table-column prop="cardType" label="牌型" width="100"/>
-        <el-table-column prop="cardTypeOdds" label="牌型赔率" width="100"/>
+        <el-table-column prop="cardScore" label="点数" width="100" />
+        <el-table-column prop="cardType" label="牌型" width="100" />
+        <el-table-column prop="cardTypeOdds" label="牌型赔率" width="100" />
         <el-table-column prop="isDealer" label="庄家" width="100">
           <template slot-scope="scope">{{ scope.row.isDealer ? "是" : "-" }}</template>
         </el-table-column>
@@ -1150,7 +1154,7 @@
           label="牌组"
         >
           <template slot-scope="scope">
-            <div v-html="scope.row.showHtml"/>
+            <div v-html="scope.row.showHtml" />
           </template>
         </el-table-column>
       </el-table>
@@ -1179,7 +1183,7 @@
           width="200"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1259,8 +1263,8 @@
         border
       >
         <el-descriptions-item label="累计贡献值">{{
-            WindropGameResult.JackpotContributeTotal / 1000
-          }}
+          WindropGameResult.JackpotContributeTotal / 1000
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="单次贡献值">{{ WindropGameResult.JackpotContribute / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="总球数">{{ WindropGameResult.BallNum }}</el-descriptions-item>
@@ -1268,8 +1272,8 @@
         <el-descriptions-item label="单球下注金币">{{ WindropGameResult.BetScore / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="当前能量">{{ WindropGameResult.CurEnergy / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="能量奖励">{{
-            WindropGameResult.EnergyNum < 1000 ? WindropGameResult.EnergyNum + ' 球' : WindropGameResult.EnergyNum + ' 金币'
-          }}
+          WindropGameResult.EnergyNum < 1000 ? WindropGameResult.EnergyNum + ' 球' : WindropGameResult.EnergyNum + ' 金币'
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="Spin总次数">{{ WindropGameResult.SpinCount }}</el-descriptions-item>
       </el-descriptions>
@@ -1288,7 +1292,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.ID+1"/>
+            <span v-html="scope.row.ID+1" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1307,7 +1311,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.BallTimes"/>
+            <span v-html="scope.row.BallTimes" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1316,7 +1320,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.SpinOdd"/>
+            <span v-html="scope.row.SpinOdd" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1325,7 +1329,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.SpinScore /1000)"/>
+            <span v-html="formatNumber(scope.row.SpinScore /1000)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1334,7 +1338,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.Score /1000)"/>
+            <span v-html="formatNumber(scope.row.Score /1000)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1343,12 +1347,11 @@
           width="620"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.TracksPos"/>
+            <span v-html="scope.row.TracksPos" />
           </template>
         </el-table-column>
       </el-table>
     </el-dialog>
-
 
     <el-dialog
       title="Windropc详情"
@@ -1364,20 +1367,20 @@
         border
       >
         <el-descriptions-item label="累计贡献值">{{
-            WindropcGameResult.JackpotContributeTotal / 1000
-          }}
+          WindropcGameResult.JackpotContributeTotal / 1000
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="单次贡献值">{{
-            WindropcGameResult.JackpotContribute / 1000
-          }}
+          WindropcGameResult.JackpotContribute / 1000
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="总球数">{{ WindropcGameResult.BallNum }}</el-descriptions-item>
         <el-descriptions-item label="总下注金额">{{ WindropcGameResult.BetAllScore / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="单球下注金币">{{ WindropcGameResult.BetScore / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="当前能量">{{ WindropcGameResult.CurEnergy / 1000 }}</el-descriptions-item>
         <el-descriptions-item label="能量奖励">{{
-            WindropcGameResult.EnergyNum < 1000 ? WindropcGameResult.EnergyNum + ' 球' : WindropcGameResult.EnergyNum + ' 金币'
-          }}
+          WindropcGameResult.EnergyNum < 1000 ? WindropcGameResult.EnergyNum + ' 球' : WindropcGameResult.EnergyNum + ' 金币'
+        }}
         </el-descriptions-item>
         <el-descriptions-item label="Spin总次数">{{ WindropcGameResult.SpinCount }}</el-descriptions-item>
         <el-descriptions-item label="开始时间">{{ formatTime(WindropcGameResult.StartTime) }}</el-descriptions-item>
@@ -1398,7 +1401,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.ID+1"/>
+            <span v-html="scope.row.ID+1" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1417,7 +1420,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.BallTimes"/>
+            <span v-html="scope.row.BallTimes" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1426,7 +1429,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.SpinOdd"/>
+            <span v-html="scope.row.SpinOdd" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1435,7 +1438,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.SpinScore /1000)"/>
+            <span v-html="formatNumber(scope.row.SpinScore /1000)" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1444,7 +1447,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.Score /1000)"/>
+            <span v-html="formatNumber(scope.row.Score /1000)" />
           </template>
         </el-table-column>
 
@@ -1454,7 +1457,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.JpLevel)"/>
+            <span v-html="formatNumber(scope.row.JpLevel)" />
           </template>
         </el-table-column>
 
@@ -1464,7 +1467,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="formatNumber(scope.row.JpType)"/>
+            <span v-html="formatNumber(scope.row.JpType)" />
           </template>
         </el-table-column>
 
@@ -1477,15 +1480,15 @@
             <span v-if="scope.row.JpType>10000">
               {{ formatNumber(scope.row.Jackpot) }}
             </span>
-            <span v-else v-html="formatNumber(scope.row.Jackpot /1000)"/>
+            <span v-else v-html="formatNumber(scope.row.Jackpot /1000)" />
 
           </template>
         </el-table-column>
 
         <el-table-column prop="cards" label="下注时间" width="110px">
           <template slot-scope="scope"> {{ formatHMSTime(scope.row.BallTime / 1000) }}.{{
-              scope.row.BallTime % 1000
-            }}
+            scope.row.BallTime % 1000
+          }}
           </template>
         </el-table-column>
 
@@ -1495,7 +1498,7 @@
           width="620"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.TracksPos"/>
+            <span v-html="scope.row.TracksPos" />
           </template>
         </el-table-column>
       </el-table>
@@ -1524,7 +1527,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1628,7 +1631,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1732,7 +1735,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1815,7 +1818,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1920,7 +1923,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            <span v-html="scope.row.Name"/>
+            <span v-html="scope.row.Name" />
           </template>
         </el-table-column>
         <el-table-column
@@ -1993,8 +1996,10 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  <span v-if="parseInt(rocketGameResult) > scope.row.stopOdds / 100"
-                        style="color:red">{{ scope.row.stopOdds / 100 }}</span>
+                  <span
+                    v-if="parseInt(rocketGameResult) > scope.row.stopOdds / 100"
+                    style="color:red"
+                  >{{ scope.row.stopOdds / 100 }}</span>
                   <span v-else>{{ scope.row.stopOdds / 100 }}</span>
                 </template>
               </el-table-column>
@@ -2049,7 +2054,7 @@
         </el-table-column>
         <el-table-column prop="cards" label="手牌">
           <template slot-scope="scope">
-            <div v-html="libShow.CardShow(scope.row.Card)"/>
+            <div v-html="libShow.CardShow(scope.row.Card)" />
           </template>
         </el-table-column>
         <el-table-column prop="cardScore" label="倍数">
@@ -2078,8 +2083,8 @@
             <span>{{ scope.row.uid }}</span>
             <br>
             <span>{{
-                '(' + (solitaireLog.solitaireDetail.winUid == 0 ? '平局' : (solitaireLog.solitaireDetail.winUid == scope.row.uid ? '赢' : '输')) + '_' + solitaireLogStopMap[solitaireLog.solitaireDetail.StopFlag] + ')'
-              }}</span>
+              '(' + (solitaireLog.solitaireDetail.winUid == 0 ? '平局' : (solitaireLog.solitaireDetail.winUid == scope.row.uid ? '赢' : '输')) + '_' + solitaireLogStopMap[solitaireLog.solitaireDetail.StopFlag] + ')'
+            }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="seat" label="输赢">
@@ -2137,7 +2142,7 @@
                       :src="getCardUrl(cardConversionColor(solitaireCard(d),'0-2','1-4','2-3','3-1'))"
                     />
                     <br>
-                    <span v-html="'&nbsp;'"/>
+                    <span v-html="'&nbsp;'" />
                   </div>
                 </el-row>
               </el-row>
@@ -2162,7 +2167,7 @@
                       :style="getCardStyle(i,d)"
                       :src="getCardUrl(cardConversionColor(solitaireCard(d),'0-2','1-4','2-3','3-1'))"
                     />
-                    <span v-html="'&nbsp;'"/>
+                    <span v-html="'&nbsp;'" />
                   </div>
                 </el-col>
 
@@ -2186,8 +2191,8 @@
             总输赢：
           </template>
           <span :style="WinOrLoseColor(piggyLog.detail.TotalAddMoney )"> {{
-              formatNumber(piggyLog.detail.TotalAddMoney / 1000)
-            }}</span>
+            formatNumber(piggyLog.detail.TotalAddMoney / 1000)
+          }}</span>
         </el-descriptions-item>
         <el-descriptions-item>
           <template slot="label">
@@ -2269,8 +2274,8 @@
         </el-table-column>
         <el-table-column prop="cards" label="敲击时间" width="110px">
           <template slot-scope="scope"> {{ formatHMSTime(scope.row.tapTime / 1000) }}.{{
-              scope.row.tapTime % 1000
-            }}
+            scope.row.tapTime % 1000
+          }}
           </template>
         </el-table-column>
         <el-table-column prop="seat" label="消耗金币">
@@ -2304,20 +2309,20 @@
         </el-table-column>
         <el-table-column prop="cardScore" label="F次数收益">
           <template slot-scope="scope">{{
-              showPigData(scope.row.typ, scope.row.moneyBet) ? scope.row.timesIn : 0
-            }}
+            showPigData(scope.row.typ, scope.row.moneyBet) ? scope.row.timesIn : 0
+          }}
           </template>
         </el-table-column>
         <el-table-column prop="cardScore" label="N倍数收益">
           <template slot-scope="scope">{{
-              showPigData(scope.row.typ, scope.row.moneyBet) ? (scope.row.oddsIn / 1000) : 0
-            }}
+            showPigData(scope.row.typ, scope.row.moneyBet) ? (scope.row.oddsIn / 1000) : 0
+          }}
           </template>
         </el-table-column>
         <el-table-column prop="cardScore" label="剩余免费次数">
           <template slot-scope="scope">{{
-              showPigData(scope.row.typ, scope.row.moneyBet) ? scope.row.timesFree : 0
-            }}
+            showPigData(scope.row.typ, scope.row.moneyBet) ? scope.row.timesFree : 0
+          }}
           </template>
         </el-table-column>
         <el-table-column prop="cardScore" label="Progress">
@@ -2326,11 +2331,19 @@
       </el-table>
     </el-dialog>
 
-    <pusoy-dos-detail-log :game-log="pusoyDos.pusoyDosDetail" :game-log-visible="pusoyDos.pusoyDosDetailVisible"
-                          :gid="34" @closeDialog="closeDialog"/>
+    <pusoy-dos-detail-log
+      :game-log="pusoyDos.pusoyDosDetail"
+      :game-log-visible="pusoyDos.pusoyDosDetailVisible"
+      :gid="34"
+      @closeDialog="closeDialog"
+    />
 
-    <el-dialog v-if="gameLogComponent.gid === 110" title="VideoPoker详情" :visible.sync="gameLogComponent.visible"
-               width="1200px">
+    <el-dialog
+      v-if="gameLogComponent.gid === 110"
+      title="VideoPoker详情"
+      :visible.sync="gameLogComponent.visible"
+      width="1200px"
+    >
       <el-descriptions class="margin-top" title="" :column="3" border>
         <el-descriptions-item>
           <template slot="label">
@@ -2417,8 +2430,12 @@
       </el-descriptions>
     </el-dialog>
 
-    <el-dialog v-if="gameLogComponent.gid === 107" title="Baccarat详情" :visible.sync="gameLogComponent.visible"
-               width="1200px">
+    <el-dialog
+      v-if="gameLogComponent.gid === 107"
+      title="Baccarat详情"
+      :visible.sync="gameLogComponent.visible"
+      width="1200px"
+    >
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
           <template slot="label">
@@ -2463,8 +2480,12 @@
           </span>
         </el-descriptions-item>
       </el-descriptions>
-      <el-table :data="gameLogComponent.detail.Bcr.options" border :header-cell-style="{'text-align':'center'}"
-                :row-style="getHitStyle">
+      <el-table
+        :data="gameLogComponent.detail.Bcr.options"
+        border
+        :header-cell-style="{'text-align':'center'}"
+        :row-style="getHitStyle"
+      >
         <el-table-column label="区域ID">
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
@@ -2525,8 +2546,12 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog v-if="gameLogComponent.gid==108" title="DropBall详情" :visible.sync="gameLogComponent.visible"
-               width="1300px">
+    <el-dialog
+      v-if="gameLogComponent.gid==108"
+      title="DropBall详情"
+      :visible.sync="gameLogComponent.visible"
+      width="1300px"
+    >
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
           <template slot="label">
@@ -2612,14 +2637,14 @@
               <!--              </el-table-column>-->
               <el-table-column prop="uid" label="JackpotAward">
                 <template slot-scope="scope2">{{
-                    scope2.row.playerData.LuckyPachinko ? scope2.row.playerData.LuckyPachinko.Jackpot.JackpotAward / 1000 : ''
-                  }}
+                  scope2.row.playerData.LuckyPachinko ? scope2.row.playerData.LuckyPachinko.Jackpot.JackpotAward / 1000 : ''
+                }}
                 </template>
               </el-table-column>
               <el-table-column prop="uid" label="JackpotType">
                 <template slot-scope="scope2">{{
-                    jackpotType[scope2.row.playerData.LuckyPachinko ? scope2.row.playerData.LuckyPachinko.Jackpot.JackpotType : -1]
-                  }}
+                  jackpotType[scope2.row.playerData.LuckyPachinko ? scope2.row.playerData.LuckyPachinko.Jackpot.JackpotType : -1]
+                }}
                 </template>
               </el-table-column>
             </el-table>
@@ -2642,7 +2667,7 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.optionsResult" class="block">
               <hr v-if="index > 0">
-              <el-divider direction="vertical"/>
+              <el-divider direction="vertical" />
               </hr>
               {{ getCarracingLogoName(item.id) }}
               <!--{{getCarracingLogoName(item.id) + '(' + item.moneyBet/1000 + ')'}}-->
@@ -2677,7 +2702,7 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.optionsResult" class="block">
               <hr v-if="index > 0">
-              <el-divider direction="vertical"/>
+              <el-divider direction="vertical" />
               </hr>
               {{ getJackpotWheelLogoName(item.id) }}
             </div>
@@ -2688,7 +2713,7 @@
         </el-table-column>
         <el-table-column prop="uid" label="JackPot">
           <template slot-scope="scope">
-            {{ scope.row.luckyPachinko ? scope.row.luckyPachinko.JackpotAward / 1000 : '' }}
+            {{ scope.row.luckyPachinko ? (scope.row.luckyPachinko.JackpotAward - scope.row.moneyWin - scope.row.moneyBet) / 1000 : '' }}
           </template>
         </el-table-column>
         <el-table-column prop="uid" label="JackpotType">
@@ -2711,7 +2736,7 @@
           <template slot-scope="scope">
             <div v-for="(item,index) in scope.row.optionsResult" class="block">
               <hr v-if="index > 0">
-              <el-divider direction="vertical"/>
+              <el-divider direction="vertical" />
               </hr>
               {{ getFreeSpinLogoName(item.id) }}
             </div>
@@ -2727,33 +2752,33 @@
     </el-dialog>
 
     <el-dialog title="FilipionMahjong详情" :visible.sync="FilipinoMahjongDetailVisible" width="1600px">
-      <div style=" font-size:32px; line-height: 36px; height: 36px; color:red; " v-if="FilipinoMahjongDetail.isLiuJu === true">
+      <div v-if="FilipinoMahjongDetail.isLiuJu === true" style=" font-size:32px; line-height: 36px; height: 36px; color:red; ">
         <span style="float:left;">流局</span>
       </div>
       <div style=" font-size:14px; line-height: 60px; height: 60px;">
         <span style="float:left;">癞子：</span>
         <div v-for="(item,index) in FilipinoMahjongDetail.jokerCards" class="block">
-          <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)"/>
+          <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)" />
         </div>
       </div>
       <div style=" font-size:14px; line-height: 50px; height: 50px;">
         <span style="float:left;">骰子：</span>
         <div v-for="(item,index) in FilipinoMahjongDetail.dices" class="block">
-        <el-image style="width: 37px; height: 40px" :src="getMahjongDiceUrl(item)" />
+          <el-image style="width: 37px; height: 40px" :src="getMahjongDiceUrl(item)" />
         </div>
       </div>
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
-        <span style="float:left;">{{'底分:' + FilipinoMahjongDetail.tableMoney/1000}}</span>
+        <span style="float:left;">{{ '底分:' + FilipinoMahjongDetail.tableMoney/1000 }}</span>
       </div>
       <el-table ref="filterTable" :data="FilipinoMahjongDetail.playerList" border>
         <el-table-column prop="uid" label="uid">
-          <template slot-scope="scope">{{ scope.row.uid}}</template>
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
         </el-table-column>
         <el-table-column prop="nick" label="nick">
-          <template slot-scope="scope">{{ scope.row.nick}}</template>
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
         </el-table-column>
         <el-table-column prop="seat" label="seat" width="60px">
-          <template slot-scope="scope">{{ scope.row.seat}}</template>
+          <template slot-scope="scope">{{ scope.row.seat }}</template>
         </el-table-column>
         <el-table-column prop="dealer" label="庄家" width="60px">
           <template slot-scope="scope">{{ scope.row.uid === FilipinoMahjongDetail.bankerUid ? '是' : '-' }}</template>
@@ -2761,53 +2786,53 @@
         <el-table-column prop="flowercards" label="花牌" width="300px">
           <template slot-scope="scope">
             <div v-for="(item) in scope.row.huaCards" class="block">
-              <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)"/>
+              <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)" />
             </div>
-            <span style="float:right; color:red;" v-if="scope.row.noFlowerStart === true">{{'无'}}</span>
+            <span v-if="scope.row.noFlowerStart === true" style="float:right; color:red;">{{ '无' }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="ridgecards" label="坎牌 from uid" width="250px">
           <template slot-scope="scope">
-          <div class="ridge" v-for="(item,index) in scope.row.ridgeCards" :key="index">
-            <div v-for="(card, i) in scope.row.ridgeCards[index].cards" class="block">
-                <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(card)"/>
-            </div>
-            <!--
+            <div v-for="(item,index) in scope.row.ridgeCards" :key="index" class="ridge">
+              <div v-for="(card, i) in scope.row.ridgeCards[index].cards" class="block">
+                <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(card)" />
+              </div>
+              <!--
             <span style="float:right; color:red;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid+(scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '')}}</span>
             -->
-            <span style="float:right; color:red;">{{ (scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '')}}</span>
-            <span style="float:right;" v-if="scope.row.ridgeCards[index].fromUid > 0">{{ scope.row.ridgeCards[index].fromUid}}</span>
-          </div>
+              <span style="float:right; color:red;">{{ (scope.row.ridgeCards[index].ridgeType == 5 ? '(加)' : scope.row.ridgeCards[index].ridgeType == 2 ? '('+scope.row.ridgeCards[index].usedCard+')' : '') }}</span>
+              <span v-if="scope.row.ridgeCards[index].fromUid > 0" style="float:right;">{{ scope.row.ridgeCards[index].fromUid }}</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="handcards" label="手牌" width="340px">
           <template slot-scope="scope">
-          <div v-for="(item) in scope.row.handCards" class="block">
-            <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)"/>
-          </div>
+            <div v-for="(item) in scope.row.handCards" class="block">
+              <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(item)" />
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="hucards" label="胡牌" width="80px">
-          <template slot-scope="scope" v-if="scope.row.huCard > 0">
-            <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(scope.row.huCard)"/>
+          <template v-if="scope.row.huCard > 0" slot-scope="scope">
+            <el-image style="width: 37px; height: 50px" :src="getMahjongCardUrl(scope.row.huCard)" />
           </template>
         </el-table-column>
         <el-table-column prop="somedata" label="番" width="134px">
           <template slot-scope="scope">
-            <div class="some" v-for="(item,index) in scope.row.someInfo" :key="index">
-                {{ item.someName }}
+            <div v-for="(item,index) in scope.row.someInfo" :key="index" class="some">
+              {{ item.someName }}
             </div>
-            <span style="float:left; color:red;" v-if="isMahjongFangChongUser(scope.row.uid)">{{'点炮'}}</span>
+            <span v-if="isMahjongFangChongUser(scope.row.uid)" style="float:left; color:red;">{{ '点炮' }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="husomecount" label="番数">
-          <template slot-scope="scope" v-if="scope.row.huSomeCount> 0">
-            {{scope.row.huSomeCount}}
+          <template v-if="scope.row.huSomeCount> 0" slot-scope="scope">
+            {{ scope.row.huSomeCount }}
           </template>
         </el-table-column>
         <el-table-column prop="settle" label="结算">
           <template slot-scope="scope">
-            {{scope.row.trophy}}
+            {{ scope.row.trophy }}
           </template>
         </el-table-column>
 
@@ -2816,31 +2841,31 @@
 
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
-        <span style="float:left;">{{'底分:' + ZJHDetail.antes/1000}}</span>
+        <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
       </div>
       <el-table ref="filterTable" :data="ZJHDetail.players" border>
         <el-table-column prop="uid" label="uid">
-          <template slot-scope="scope">{{ scope.row.uid}}</template>
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
         </el-table-column>
 
         <el-table-column prop="seat" label="seat" width="60px">
-          <template slot-scope="scope">{{ scope.row.seat}}</template>
+          <template slot-scope="scope">{{ scope.row.seat }}</template>
         </el-table-column>
 
         <el-table-column prop="cards" label="牌" width="340px">
           <template slot-scope="scope">
-          <div v-for="(item) in scope.row.cards" class="block">
-            <el-image style="width: 37px; height: 50px" :src="getZJHCardUrl(item)"/>
-          </div>
+            <div v-for="(item) in scope.row.cards" class="block">
+              <el-image style="width: 37px; height: 50px" :src="getZJHCardUrl(item)" />
+            </div>
           </template>
         </el-table-column>
 
         <el-table-column prop="cardstype" label="牌型">
-          <template slot-scope="scope"> {{getZJHCardsType(scope.row.cardType)}} </template>
+          <template slot-scope="scope"> {{ getZJHCardsType(scope.row.cardType) }} </template>
         </el-table-column>
 
         <el-table-column prop="bet" label="bet">
-          <template slot-scope="scope"> {{scope.row.moneyBet}} </template>
+          <template slot-scope="scope"> {{ scope.row.moneyBet }} </template>
         </el-table-column>
 
         <el-table-column prop="Fold" label="action">
@@ -2848,24 +2873,38 @@
         </el-table-column>
 
         <el-table-column prop="win" label="win">
-          <template slot-scope="scope"> {{scope.row.moneyChange}} </template>
+          <template slot-scope="scope"> {{ scope.row.moneyChange }} </template>
         </el-table-column>
 
       </el-table>
     </el-dialog>
 
-    <texas-n-l-h-detail-log v-if="gameLogComponent.gid === 32" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
-    <qiu-qiu-game-log v-if="gameLogComponent.gid === 111" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
+    <texas-n-l-h-detail-log v-if="gameLogComponent.gid === 32" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <qiu-qiu-game-log v-if="gameLogComponent.gid === 111" :game-log="gameLogComponent" @closeDialog="closeDialog" />
 
-    <wingo-lottery-detail-log v-if="gameLogComponent.gid === 112" :game-log="gameLogComponent.detail"
-                              :game-log-visible="gameLogComponent.visible" :gid="112" @closeDialog="closeDialog"/>
+    <wingo-lottery-detail-log
+      v-if="gameLogComponent.gid === 112"
+      :game-log="gameLogComponent.detail"
+      :game-log-visible="gameLogComponent.visible"
+      :gid="112"
+      @closeDialog="closeDialog"
+    />
 
-    <multi-player-niu-niu-detail-log v-if="gameLogComponent.gid === 115" :game-log="gameLogComponent.detail"
-                                     :game-log-visible="gameLogComponent.visible" :gid="115" :uid="clickRowUid"
-                                     @closeDialog="closeDialog"/>
+    <multi-player-niu-niu-detail-log
+      v-if="gameLogComponent.gid === 115"
+      :game-log="gameLogComponent.detail"
+      :game-log-visible="gameLogComponent.visible"
+      :gid="115"
+      :uid="clickRowUid"
+      @closeDialog="closeDialog"
+    />
 
-    <el-dialog v-if="gameLogComponent.gid === 47||gameLogComponent.gid === 48" title="台球详情"
-               :visible.sync="gameLogComponent.visible" width="1200px">
+    <el-dialog
+      v-if="gameLogComponent.gid === 47||gameLogComponent.gid === 48"
+      title="台球详情"
+      :visible.sync="gameLogComponent.visible"
+      width="1200px"
+    >
       <el-descriptions class="margin-top" title="" :column="5" border>
         <el-descriptions-item>
           <template slot="label">前注：</template>
@@ -2968,11 +3007,11 @@
       </ul>
     </el-dialog>
 
-    <GinRummy v-if="gameLogComponent.gid === 116" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
-    <uno-log v-if="gameLogComponent.gid === 117" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
-    <pusoyWild-log v-if="gameLogComponent.gid === 126" :game-log="gameLogComponent" @closeDialog="closeDialog"/>
+    <GinRummy v-if="gameLogComponent.gid === 116" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <uno-log v-if="gameLogComponent.gid === 117" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <pusoyWild-log v-if="gameLogComponent.gid === 126" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <el-row>
-      <line-chart :chart-data="chartData" height="600px"/>
+      <line-chart :chart-data="chartData" height="600px" />
     </el-row>
   </div>
 </template>
@@ -2982,9 +3021,9 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import {$libDate, $libShow, ClientTableData, MoneyShow} from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
 import store from '@/store'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
 import PusoyDosTable from '@/views/config/tableConfig/pusoyDos/pusoyDosTable.vue'
@@ -2995,8 +3034,8 @@ import QiuQiuGameLog from '@/views/playerManage/components/QiuQiuGameLog.vue'
 import WingoLotteryDetailLog from '@/views/playerManage/components/WingoLotteryGameLog.vue'
 import MultiPlayerNiuNiuDetailLog from '@/views/playerManage/components/MultiPlayerNiuNiu.vue'
 import GinRummy from '@/views/playerManage/components/GinRummy.vue'
-import UnoLog from "@/views/playerManage/components/UnoLog.vue";
-import PusoyWildLog from "@/views/playerManage/components/PusoyWildLog.vue";
+import UnoLog from '@/views/playerManage/components/UnoLog.vue'
+import PusoyWildLog from '@/views/playerManage/components/PusoyWildLog.vue'
 
 const filterMap = {
   IsPractice: {
@@ -3016,7 +3055,7 @@ function newChartData() {
   return {
     xData: [],
     yData: [
-      {Name: '输赢', Data: []}
+      { Name: '输赢', Data: [] }
     ]
   }
 }
@@ -3340,7 +3379,7 @@ export default {
         return this.pusoyCardTypes[type] || '-'
       }
     },
-    pusoySpanMethods({row, column, rowIndex, columnIndex}) {
+    pusoySpanMethods({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 3) {
         console.log('row: ', row)
         console.log('columnIndex: ', columnIndex)
@@ -3365,7 +3404,7 @@ export default {
         }
       }
     },
-    tableRowClassName({row, rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.Uid === this.item.Uid || row.uid === this.item.Uid) {
         return 'success-row'
       } else {
@@ -3619,7 +3658,7 @@ export default {
           this.initData()
           const gid = this.$route.meta.gid
           console.log(obj)
-          if (/*gid == 9 ||*/ gid == 8 || gid == 14) {
+          if (/* gid == 9 ||*/ gid == 8 || gid == 14) {
             $this.showTPGame(obj)
           } else if (gid == 10) {
             $this.showRocketGame(obj)
@@ -3802,16 +3841,16 @@ export default {
       return nameMap[id]
     },
     showFilipinoMahjongGame(obj, log) {
-      this.FilipinoMahjongDetail = log//obj
-      //this.FilipinoMahjongDetail.GameLog = log
-      //console.log('this.FilipinoMahjongDetail => ', this.FilipinoMahjongDetail)
-      //玩家按座位号排序
-      if (this.FilipinoMahjongDetail.playerList != undefined && this.FilipinoMahjongDetail.playerList.length > 0){
-        this.FilipinoMahjongDetail.playerList = this.FilipinoMahjongDetail.playerList.sort((a, b) => {return a.seat - b.seat })
+      this.FilipinoMahjongDetail = log// obj
+      // this.FilipinoMahjongDetail.GameLog = log
+      // console.log('this.FilipinoMahjongDetail => ', this.FilipinoMahjongDetail)
+      // 玩家按座位号排序
+      if (this.FilipinoMahjongDetail.playerList != undefined && this.FilipinoMahjongDetail.playerList.length > 0) {
+        this.FilipinoMahjongDetail.playerList = this.FilipinoMahjongDetail.playerList.sort((a, b) => { return a.seat - b.seat })
       }
       this.FilipinoMahjongDetailVisible = true
     },
-    getFilipinoMahjongRidgeInfo(type){
+    getFilipinoMahjongRidgeInfo(type) {
       const typeMap = {
         0: 'null',
         1: 'pass',
@@ -3823,17 +3862,17 @@ export default {
         7: '',
         8: '胡',
         9: '自摸',
-        10: '杠开',
+        10: '杠开'
       }
       return typeMap[type]
     },
     getMahjongCardUrl(card) {
-      //console.log('/filipinomahjong/' + card + '.png')
+      // console.log('/filipinomahjong/' + card + '.png')
       return require('@/assets/filipinomahjong/' + card + '.png')
     },
-    isMahjongFangChongUser(uid){
-      for (const u of this.FilipinoMahjongDetail.playerList){
-        if (u.iHu == 2 && u.ifcUid == uid){
+    isMahjongFangChongUser(uid) {
+      for (const u of this.FilipinoMahjongDetail.playerList) {
+        if (u.iHu == 2 && u.ifcUid == uid) {
           return true
         }
       }
@@ -3870,7 +3909,7 @@ export default {
         8: '20',
         9: 'Minor',
         10: 'Major',
-        11: 'Grand',
+        11: 'Grand'
       }
       return nameMap[id]
     },
@@ -3907,20 +3946,20 @@ export default {
         12: '80',
         13: '200',
         14: 'FreeSpin*5',
-        15: 'FreeSpin*10',
+        15: 'FreeSpin*10'
       }
       return nameMap[id]
     },
 
     showZJHGame(obj) {
       this.ZJHDetail = obj
-      //玩家按座位号排序
-      if (this.ZJHDetail.players != undefined && this.ZJHDetail.players.length > 0){
-        this.ZJHDetail.players = this.ZJHDetail.players.sort((a, b) => {return a.seat - b.seat })
+      // 玩家按座位号排序
+      if (this.ZJHDetail.players != undefined && this.ZJHDetail.players.length > 0) {
+        this.ZJHDetail.players = this.ZJHDetail.players.sort((a, b) => { return a.seat - b.seat })
       }
       this.ZJHDetailVisible = true
     },
-    getZJHCardsType(type){
+    getZJHCardsType(type) {
       const ZJHCardTypes = {
         1: '高牌',
 	      2: '对子',
@@ -3932,7 +3971,7 @@ export default {
       return ZJHCardTypes[type]
     },
     getZJHCardUrl(card) {
-      console.log("card:", card)
+      console.log('card:', card)
       return require('@/assets/poker/' + card + '.png')
     },
 
@@ -3967,9 +4006,9 @@ export default {
         if (this.$route.meta.gid == 13) {
           const name = this.showCard(ob.cards) + '</br>【' + this.showCard(obj.dealerCards) + '】'
           names.push(name)
-          tMap[ob.optionId] = {ID: ob.optionId, Name: name, Hit: ob.hit, Ret: []}
+          tMap[ob.optionId] = { ID: ob.optionId, Name: name, Hit: ob.hit, Ret: [] }
         } else {
-          tMap[ob.id] = {ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: []}
+          tMap[ob.id] = { ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: [] }
         }
       }
       for (let i = 0; i < obj.players.length; i++) {
@@ -4000,9 +4039,9 @@ export default {
         if (this.$route.meta.gid == 13) {
           const name = this.showCard(ob.cards) + '</br>【' + this.showCard(obj.dealerCards) + '】'
           names.push(name)
-          tMap[ob.optionId] = {ID: ob.optionId, Name: name, Hit: ob.hit, Ret: []}
+          tMap[ob.optionId] = { ID: ob.optionId, Name: name, Hit: ob.hit, Ret: [] }
         } else {
-          tMap[ob.id] = {ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: []}
+          tMap[ob.id] = { ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: [] }
         }
       }
       for (let i = 0; i < obj.players.length; i++) {
@@ -4157,7 +4196,7 @@ export default {
       if (rocketObj.optionsData) {
         for (let i = 0; i < rocketObj.optionsData.length; i++) {
           const ob = rocketObj.optionsData[i]
-          tMap[ob.id] = {ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: []}
+          tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate / 100, Ret: [] }
         }
       }
 
@@ -4191,28 +4230,28 @@ export default {
           stopOdds: player.stopOdds
         })
       }
-      this.rocketGameOptions.push({ID: 6, Name: 'Bet下注区域', Rate: rocketObj.stopOdds / 100, Ret: betRet})
+      this.rocketGameOptions.push({ ID: 6, Name: 'Bet下注区域', Rate: rocketObj.stopOdds / 100, Ret: betRet })
       this.rocketGameResult = rocketObj.stopOdds / 100
       console.log(this.rocketGameOptions)
       this.rocketGameVisible = true
     },
-    getHitStyle({row}) {
+    getHitStyle({ row }) {
       if (row.isHit) {
-        return {color: 'red'}
+        return { color: 'red' }
       }
       return {}
     },
-    getHitDropBallStyle({row, idx}) {
+    getHitDropBallStyle({ row, idx }) {
       if (row.Result) {
-        return {color: 'red', width: '120px'}
+        return { color: 'red', width: '120px' }
       }
       return {}
     },
-    getUserWonStyle({row, idx}) {
+    getUserWonStyle({ row, idx }) {
       if (row.moneyWon > 0) {
-        return {color: 'red', width: '120px', textAlign: 'center', fontSize: '12px', height: '20px'}
+        return { color: 'red', width: '120px', textAlign: 'center', fontSize: '12px', height: '20px' }
       }
-      return {fontSize: '12px', height: '20px'}
+      return { fontSize: '12px', height: '20px' }
     },
     showPigData(typ, bet) {
       return true
@@ -4241,7 +4280,7 @@ export default {
             console.log(ob.Rate)
           }
         }
-        tMap[ob.id] = {ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: []}
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
       }
 
       for (let i = 0; i < sicbObj.players.length; i++) {
@@ -4331,7 +4370,7 @@ export default {
       for (let i = 0; i < miniAbObj.options.length; i++) {
         const ob = miniAbObj.options[i]
         console.log(ob)
-        tMap[ob.id] = {ID: ob.id, Name: names[i], Odds: ob.Odds, IsHit: ob.isHit, players: []}
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Odds: ob.Odds, IsHit: ob.isHit, players: [] }
         console.log(tMap[ob.id])
       }
 
@@ -4368,7 +4407,7 @@ export default {
       const sevenObj = obj.Seven
       for (let i = 0; i < sevenObj.options.length; i++) {
         const ob = sevenObj.options[i]
-        tMap[ob.id] = {ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: []}
+        tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
       }
 
       for (let i = 0; i < sevenObj.players.length; i++) {
@@ -4454,7 +4493,7 @@ export default {
           showName = '宝箱'
         }
 
-        showDetail[areaIndex] = {name: showName, step: detailRow.step, result: detailRow.result}
+        showDetail[areaIndex] = { name: showName, step: detailRow.step, result: detailRow.result }
       }
 
       this.sweeperDetails = showDetail
@@ -4478,7 +4517,7 @@ export default {
         if (detailRow.result == 3) {
           showName = '宝箱'
         }
-        showDetail[areaIndex] = {name: showName, step: detailRow.step, result: detailRow.result}
+        showDetail[areaIndex] = { name: showName, step: detailRow.step, result: detailRow.result }
       }
 
       const playDetail = []
@@ -4498,7 +4537,7 @@ export default {
           resultName = '炸弹'
         }
 
-        playDetail[k] = {action: playAction, uid: detailRow.uid, result: resultName, money: detailRow.actionMoney}
+        playDetail[k] = { action: playAction, uid: detailRow.uid, result: resultName, money: detailRow.actionMoney }
       }
 
       this.minesBattleDetails = showDetail
@@ -4536,7 +4575,9 @@ export default {
     showPusoySwapGame(obj) {
       console.log(obj)
       this.pusoySwapShootOneShow = false
+
       for (const k in obj.players) {
+
         for (const i in obj.groupTop) {
           if (obj.groupTop[i].uid === obj.players[k].uid) {
             obj.players[k].groupTop = obj.groupTop[i]
@@ -4648,9 +4689,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         if (this.$route.meta.gid == 13) {
           const name = this.showCard(ob.cards) + '</br>【' + this.showCard(obj.dealerCards) + '】'
           names.push(name)
-          tMap[ob.optionId] = {ID: ob.optionId, Name: name, Hit: ob.hit, Ret: []}
+          tMap[ob.optionId] = { ID: ob.optionId, Name: name, Hit: ob.hit, Ret: [] }
         } else {
-          tMap[ob.id] = {ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: []}
+          tMap[ob.id] = { ID: ob.id, Name: names[ob.id - 1], Hit: ob.hit, Ret: [] }
         }
       }
       for (let i = 0; i < obj.players.length; i++) {
@@ -4734,7 +4775,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
     },
     initChartData() {
       console.log(1)
-      const objs = this.dataArr.sort(function (a, b) {
+      const objs = this.dataArr.sort(function(a, b) {
         return a.ID - b.ID
       })
       const chartData = newChartData()
@@ -4787,7 +4828,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
         }
       }
     },
-    changColor({row}) {
+    changColor({ row }) {
       if (row.typ == '1') {
         return {
           color: 'red'
