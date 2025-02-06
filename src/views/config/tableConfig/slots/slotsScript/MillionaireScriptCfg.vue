@@ -702,6 +702,8 @@ export default {
         '176': 'puppyhome',
         '177': 'puppyhomemars',
         '178': 'mayantotem',
+        '180': 'fishingmaster',
+        '181': 'fishingmastermars',
         '182': 'godoffortune',
         '183': 'godoffortunemars'
       }
