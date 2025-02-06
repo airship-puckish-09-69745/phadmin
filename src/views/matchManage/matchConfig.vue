@@ -1767,7 +1767,7 @@ export default {
          this.errmsg('请选择游戏')
          return false
       }
-    
+
       if (this.editForm.appInfo[0].channelId.length == 0 ) {
         this.errmsg('请先选择渠道ID')
         return false
