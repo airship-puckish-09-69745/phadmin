@@ -1909,6 +1909,14 @@ export default {
             this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
           }
         }
+        if (this.editForm.data.opentMatchType==2 && (this.editForm.data.preShowSeconds <=0  || this.editForm.data.preEnterSeconds <= 0)) {
+          this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
+          return false
+        }
+        if (this.editForm.data.gameId == 0) {
+          this.errmsg('请选择游戏')
+          return false
+        }
       }
       return true
     },
