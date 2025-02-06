@@ -564,7 +564,6 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    console.log(1)
   },
   methods: {
     formatNumber(n) {
@@ -637,7 +636,6 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
-      console.log('refreshShow tableData: ', this.tableData)
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -654,6 +652,7 @@ export default {
     },
     // 操作类函数
     clickData(row, column, event) {
+      this.getList()
       if (column.columnKey !== 'op') {
         this.initFormData(true, row.ID)
         this.edit.visible = true
@@ -678,8 +677,6 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           for (const o in objs) {
-
-            console.log(objs[o])
 
             if (objs[o].RaceBeginDate === 0) {
               objs[o].RaceBeginDate = new Date()
@@ -726,7 +723,6 @@ export default {
                 }
               ]
             }
-            console.log("old=", objs[o])
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'ID', -1)
