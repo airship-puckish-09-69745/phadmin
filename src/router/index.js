@@ -1171,6 +1171,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/firelinkmars_slots_cfg'),
                 name: 'firelinkmars_slots_cfg',
                 meta: { title: 'FireLink(审)' }
+              },
+              {
+                path: 'puppyhomemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/puppyhomemars_slots_cfg'),
+                name: 'puppyhomemars_slots_cfg',
+                meta: { title: 'PuppyHome(审)' }
               }
             ]
           },
@@ -2252,6 +2258,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'wrathofzeusmars_slots_log',
             meta: { title: 'WrathOfZeus(审)', gid: 173 }
+          },
+          {
+            path: 'puppyhomemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'puppyhomemars_slots_log',
+            meta: { title: 'PuppyHome(审)', gid: 177 }
           },
           {
             path: 'fishingmastermars_slots_log',
