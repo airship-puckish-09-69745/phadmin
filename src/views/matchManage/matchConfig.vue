@@ -90,6 +90,7 @@
         <el-table-column
           prop="id"
           label="赛事ID"
+          sortable
         />
         <el-table-column
           prop="name"
@@ -124,8 +125,10 @@
         <el-table-column
           prop="sort"
           label="赛事排序"
-          width="60"
-        />
+          width="80"
+          sortable
+        >
+        </el-table-column>
         <el-table-column
           prop="repeatType"
           label="赛事类型"
@@ -305,21 +308,9 @@
           <el-form-item v-if="editForm.whileList.type==1" label="白名单设置：" :required="true">
             <el-input v-model="editForm.whileList.data" style="width: 400px;" placeholder="多个uid用,分开" />
           </el-form-item>
-          <el-form-item v-if="editForm.data.opentMatchType==2" label="是否启用每日限制：" :required="true">
-            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
-            <el-switch
-              v-model="editForm.data.openDaysLimit"
-              style="display: block"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-              :active-value="1"
-              :inactive-value="0"
-              active-text="是"
-              inactive-text="否"
-            />
-          </el-form-item>
           <el-form-item label="排序值：" :required="true">
-            <el-input v-model="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" />
+            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)"/>
+            <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -359,6 +350,7 @@
               placeholder="选择开始日期"
               :disabled="repeatLoopDisabled()"
             />
+            <span style="color:black; margin-left:10px">[00:00:00]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="比赛结束日期：" :required="true">
             <el-date-picker
@@ -367,6 +359,7 @@
               type="date"
               placeholder="选择结束日期"
             />
+            <span style="color:black; margin-left:10px">[23:59:59]</span>
           </el-form-item>
           <el-form-item v-if="editForm.data.repeatType != 0" label="间隔天数（0为每天创建）：" :required="true">
             <el-input v-model.number="editForm.loopDetail.intervalDay" style="width: 200px;" placeholder="请填写间隔天数，0为每天创建" :disabled="repeatLoopDisabled()" />
@@ -494,6 +487,19 @@
 
           <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType !=0" label="是否启用每日限制：" :required="true">
+            <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
+            <el-switch
+              v-model="editForm.data.openDaysLimit"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              :active-value="1"
+              :inactive-value="0"
+              active-text="是"
+              inactive-text="否"
+            />
           </el-form-item>
         </fieldset>
 
@@ -911,7 +917,8 @@ export default {
         id: 0,
         isCopy: false
       },
-      showDevTool: false
+      showDevTool: false,
+      showTip: false
     }
   },
   computed: {
@@ -1028,7 +1035,7 @@ export default {
                 }
               }
             }
-            console.log('----- ', this.tableData)
+            console.log("----- ",this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -1099,7 +1106,6 @@ export default {
       return gameName
     },
     getRepeatTypeShow(repeatType) {
-      console.log('类型 ', repeatType)
       var show = ''
       for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value === repeatType) {
@@ -1541,7 +1547,6 @@ export default {
       let bTime = 0
       let eTime = 0
       if (this.editForm.data.repeatType == 0) {
-        console.log('单场')
         // 单场
         if (this.editForm.loopDetail.onceTime) {
           // this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
@@ -1553,7 +1558,7 @@ export default {
       } else {
         // 循环
         bTime = Math.floor(this.editForm.loopDetail.loopStartDate / 1000)
-        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000)
+        eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000) + (86400-1) //结束日期为当天23:59:59
         const intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
           repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime })
@@ -1758,9 +1763,27 @@ export default {
       return s
     },
     configCheck() {
+      if (this.editForm.data.gameId == 0) {
+         this.errmsg('请选择游戏')
+         return false
+      }
+
+      if (this.editForm.appInfo[0].channelId.length == 0 ) {
+        this.errmsg('请先选择渠道ID')
+        return false
+      }
       if (this.editForm.data.signUpType == 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
+      }
+
+      //付费赛的是,每日限制不开启
+      if (this.editForm.data.signUpType === 0) {
+        this.editForm.data.openDaysLimit = 0
+        this.editForm.signExtra.betCnt = 0
+      }
+      if (this.editForm.data.openDaysLimit > 0 && this.editForm.data.signUpType !=0) {
+        this.errmsg('每日限制已经开启')
       }
       if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0) {
         this.errmsg('付费赛报名费不能为0')
@@ -1785,6 +1808,10 @@ export default {
           this.errmsg('比赛开始结束间隔要大于10分钟！')
           return false
         }
+        if(this.editForm.loopDetail.single.etime=='' || this.editForm.loopDetail.single.stime == '') {
+          this.errmsg('开赛时间不能为空')
+          return false
+        }
       }
 
       if (this.editForm.data.repeatType != 0) {
@@ -1806,10 +1833,18 @@ export default {
               this.errmsg('循环赛间隔时间至少大于120秒（2分钟）！')
               return false
             }
+            if (this.editForm.loopDetail.loopData[i].etime == ''  || this.editForm.loopDetail.loopData[i].stime == '') {
+                this.errmsg('循环赛开始时间 结束时间不能为空')
+                return false
+            }
           }
         }
       }
 
+      if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(this.editForm.loopDetail.loopStartDate / 1000)))) {
+        this.errmsg('循环赛比赛结束时间需要大于比赛开始时间！')
+        return false
+      }
       if (this.editForm.data.opentMatchMember <= 0) {
         this.errmsg('开赛人数值无效！')
         return false
@@ -1820,8 +1855,8 @@ export default {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
-        this.errmsg('循环赛开始结束时间不能为同一天！')
-        return false
+        // this.errmsg('循环赛开始结束时间不能为同一天！')  //循环赛去掉同一天检测
+        // return false
       } else if (this.editForm.data.signUpNum < 0) {
         this.errmsg('报名费数值不能小于零')
         return false
@@ -1881,14 +1916,21 @@ export default {
           return false
         }
 
-        // 目前动态奖池只有真金和返水金
-        if (this.editForm.prizeExtra.rewardType == 2) {
-          this.editForm.prizeExtra.rewardType = 3
+        if (this.editForm.prizeExtra.awardType == 1) {
+          // 目前动态奖池只有真金和返水金
+          if (this.editForm.prizeExtra.rewardType == 2) {
+            this.editForm.prizeExtra.rewardType = 3
+          }
+          // 动态奖池奖励里诶行如果是返水金，填充返水金类型
+          if (this.editForm.prizeExtra.rewardType == 3) {
+            this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
+          }
         }
-        // 动态奖池奖励里诶行如果是返水金，填充返水金类型
-        if (this.editForm.prizeExtra.rewardType == 3) {
-          this.editForm.prizeExtra.sceneId = 5 // 没有任何限制的返水金
-        }
+      }
+
+      if (this.editForm.data.preShowSeconds <=0  || this.editForm.data.preEnterSeconds <= 0) {
+         this.errmsg('提前进入时间 或者是提前显示时间不能配置为0')
+         return false
       }
       return true
     },
@@ -2086,8 +2128,20 @@ export default {
         }
       })
     },
+
+    checkListSort() {
+      //检测列表排序值
+      for (var i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].sort == this.editForm.data.sort) {
+          this.showTip = true
+          return
+        }
+      }
+      this.showTip = false
+    },
+    //在这里实现APPID过滤
+    filterMatchListByAppId(appInfo){
     // 在这里实现APPID过滤
-    filterMatchListByAppId(appInfo) {
       let show_appinfo = ''
       const appInfoTemp = JSON.parse(appInfo)
       for (let i = 0; i < appInfoTemp.length; i++) {

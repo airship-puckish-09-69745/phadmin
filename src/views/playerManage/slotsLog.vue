@@ -110,7 +110,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ scope.row.BetOdds ? formatNumber(scope.row.BetOdds) : 0}}
+            {{ scope.row.BetOdds ? betOddsNumber(scope.row.BetOdds, gid) : 0}}
           </template>
         </el-table-column>
 
@@ -135,38 +135,40 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156,166].indexOf(gid) >= 0">
+        <template v-if="[150,156,166,174].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
           >
-            <el-table-column :label="getJPLabel(4) + '收集'">
-              <template  slot-scope="scope">
+            <el-table-column :label="getJPLabel(4,gid) + '收集'">
+              <template slot-scope="scope">
                 {{ getJPFee(scope.row.JackpotLogObj, 4) }}
               </template>
             </el-table-column>
-            <el-table-column :label="getJPLabel(3) + '收集'">
-              <template  slot-scope="scope">
+            <el-table-column :label="getJPLabel(3,gid) + '收集'">
+              <template slot-scope="scope">
                 {{ getJPFee(scope.row.JackpotLogObj, 3) }}
               </template>
             </el-table-column>
-            <el-table-column :label="getJPLabel(2) + '收集'">
-              <template  slot-scope="scope">
+            <el-table-column :label="getJPLabel(2,gid) + '收集'">
+              <template slot-scope="scope">
                 {{ getJPFee(scope.row.JackpotLogObj, 2) }}
               </template>
             </el-table-column>
-            <el-table-column :label="getJPLabel(1) + '收集'">
-              <template  slot-scope="scope">
+            <el-table-column :label="getJPLabel(1,gid) + '收集'">
+              <template slot-scope="scope">
                 {{ getJPFee(scope.row.JackpotLogObj, 1) }}
               </template>
             </el-table-column>
             <el-table-column label="中奖类型">
-              <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? getJPLabel(scope.row.JackpotLogObj.JackpotInfo[0].Type) : null }}
+              <template slot-scope="scope">
+                {{
+                  scope.row.JackpotLogObj.JackpotInfo ? getJPLabel(scope.row.JackpotLogObj.JackpotInfo[0].Type, gid) : null
+                }}
               </template>
             </el-table-column>
             <el-table-column label="中奖倍数">
-              <template  slot-scope="scope">
+              <template slot-scope="scope">
                 {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].MultiOdds : null }}
               </template>
             </el-table-column>
@@ -177,52 +179,8 @@
             </el-table-column>
           </el-table-column>
         </template>
-        <!--聚宝盆-->
-        <template v-if="[174].indexOf(gid) >= 0">
-          <el-table-column
-            header-align="center"
-            label="Jackpot"
-          >
-            <el-table-column :label="getNewJPLabel(4) + '收集'">
-              <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 4) }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="getNewJPLabel(3) + '收集'">
-              <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 3) }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="getNewJPLabel(2) + '收集'">
-              <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 2) }}
-              </template>
-            </el-table-column>
-            <el-table-column :label="getNewJPLabel(1) + '收集'">
-              <template  slot-scope="scope">
-                {{ getJPFee(scope.row.JackpotLogObj, 1) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="中奖类型">
-              <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? getNewJPLabel(scope.row.JackpotLogObj.JackpotInfo[0].Type) : null }}
-              </template>
-            </el-table-column>
-            <el-table-column label="中奖倍数">
-              <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].MultiOdds : null }}
-              </template>
-            </el-table-column>
-            <el-table-column label="中奖数额">
-              <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null }}
-              </template>
-            </el-table-column>
-          </el-table-column>
-        </template>
-
-        <!--聚宝盆-->
-        <template v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178].indexOf(gid) >= 0">
+        <template
+          v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -376,7 +334,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -539,6 +497,12 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
+    betOddsNumber(n, gid) {
+      if (gid == 180){
+        n = n / 1000
+      }
+      return n.toLocaleString()
+    },
     getVupLevel(lvl) {
       lvl = lvl >> 2
       if (lvl & 0x01) {
@@ -618,9 +582,25 @@ export default {
       this.detailContent = row.GameLog
       this.detailPayLine = row.PayLine
     },
-    getJPLabel(type) {
+    getJPLabel(type, gid) {
       if (type === null || type === undefined) {
         return null
+      }
+
+      if (gid === 174){
+        switch (type) {
+          case 5:
+            return 'MINI'
+          case 4:
+            return 'MINOR'
+          case 3:
+            return 'MAJOR'
+          case 2:
+            return 'MEGA'// 聚宝盆大奖类型
+          case 1:
+            return 'GRAND'
+        }
+        return
       }
       switch (type) {
         case 4:
@@ -631,25 +611,6 @@ export default {
           return 'MAJOR'
         case 1:
           return 'GRAND'
-        default:
-          return '无'
-      }
-    },
-    getNewJPLabel(type) {
-      if (type === null || type === undefined) {
-        return null
-      }
-      switch (type) {
-        case 5:
-          return 'MINI'
-        case 4:
-          return 'MINOR'
-        case 3:
-          return 'GRAND'
-        case 2:
-          return 'MEGA'
-        case 1:
-          return 'MAJOR'
         default:
           return '无'
       }

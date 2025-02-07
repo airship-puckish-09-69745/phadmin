@@ -238,6 +238,10 @@ export default {
         {
           val: '1234567899',
           nick: 'bingoplus899'
+        },
+        {
+          val: '',
+          nick: '无'
         }
       ],
       screens: [
