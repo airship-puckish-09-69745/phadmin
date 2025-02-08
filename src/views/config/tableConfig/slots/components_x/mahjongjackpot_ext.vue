@@ -52,7 +52,7 @@
     <el-row>
       <el-col :span="12" :offset="3">
         <el-tabs type="border-card" value="normal">
-          <el-tab-pane label="普通模式JP奖项权重" name="normal">
+          <el-tab-pane label="剧本大奖JP奖项权重" name="normal">
             <el-table :data="NormalJPMultiWeights">
               <el-table-column prop="MultiOdds" label="额外倍数" width="100"></el-table-column>
               <el-table-column prop="WeightStr" label="奖项权重（minor,major,grand,joker）">
