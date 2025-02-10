@@ -109,6 +109,9 @@
                 <el-row>
                   UniqueNO: {{ scope.row.unique_no }}
                 </el-row>
+                <el-row>
+                  WalletGameLogNo: {{ scope.row.wallet_gameLog_no		 }}
+                </el-row>
               </template>
               <span slot="reference" size="mini">{{ scope.row.account }}</span>
             </el-popover>

@@ -39,6 +39,34 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="发放奖励类型：">
+                    <el-select v-model="item.RewardType" placeholder="请选择" size="mini" style="width:90px">
+                      <el-option
+                        v-for="item in rewardTypes"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                    <el-select v-if="item.RewardType === 2" v-model="item.SceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                      <el-option
+                        v-for="scene in betScenes"
+                        :key="scene.value"
+                        :label="scene.label"
+                        :value="scene.value"
+                      />
+                    </el-select>
+                    <el-select v-if="item.RewardType === 3" v-model="item.SceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                      <el-option
+                        v-for="scene in rebateScenes"
+                        :key="scene.value"
+                        :label="scene.label"
+                        :value="scene.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="当日发奖额阈值：" :required="true">
                     <el-input v-model.number="item.DayPrizeThreshold" size="mini">
                       <template slot="append">（₱）</template>
@@ -104,11 +132,6 @@
                   <el-button size="mini" type="primary" @click="showGamesSortDialog()">
                     排序
                   </el-button>
-                </el-form-item>
-              </el-col>
-              <el-col :span="24">
-                <el-form-item label="活动图标URL：" :required="true">
-                  <ImagePicker v-model="item.Icon" />
                 </el-form-item>
               </el-col>
             </el-form>
@@ -455,6 +478,8 @@ export default {
         SockGainRatio: 10,
         RuleImgHor: [],
         RuleImgVer: [],
+        RewardType: 1,
+        SceneId: 0,
         PrizePoolCfg: [
           {
             RaffleLevel: 200,
@@ -607,27 +632,35 @@ export default {
       ],
 
       siteIdOptions: [
-        {
-          value: 'Dev',
-          label: 'Dev'
-        },
-        {
-          value: 'BP',
-          label: 'BP'
-        },
-        {
-          value: 'GP',
-          label: 'GP'
-        },
-        {
-          value: 'AP',
-          label: 'AP'
-        },
-        {
-          value: 'PG',
-          label: 'PG'
-        },
+        { value: 'BP', label: 'BP' },
+        { value: 'AP', label: 'AP' },
+        { value: 'GP', label: 'GP' },
+        { value: 'TP', label: 'TP' },
+        { value: 'PG', label: 'PG' },
+        { value: 'Dev', label: 'Dev' }
       ],
+
+      // 奖励类型
+      rewardTypes: [
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
+      ],
+
+      // 投注金
+      betScenes: [
+        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ],
+      // 返水金
+      rebateScenes: [
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ],
+
+      filterGameIds: [ 2031, 10002 ],
 
       filterText: '',
 
@@ -906,6 +939,20 @@ export default {
       return JSON.stringify(cpy)
     },
     setData() {
+      if (this.item.RewardType === undefined) {
+        Message.error('请选择奖励类型')
+        return
+      }
+      if (this.item.SceneId === undefined) {
+        this.item.SceneId = 0
+      }
+      if (this.item.RewardType !== 1 && this.item.SceneId === 0) {
+        const typeObj = this.rewardTypes.find(item => item.value === this.item.RewardType)
+        const typeName = typeObj ? typeObj.label : ''
+        Message.error(`请选择【${typeName}】对应的使用场景`)
+        return
+      }
+
       this.form.Data = this.encodeData()
       const $this = this
       // 设置修改后数据
@@ -938,7 +985,7 @@ export default {
           const data = {}
           for (let i = 0; i < objs.length; i++) {
             const obj = objs[i]
-            if (obj.ShowDatacenter !== 1) {
+            if (obj.ShowDatacenter !== 1 || this.filterGameIds.indexOf(obj.Gid) >= 0) {
               continue
             }
 

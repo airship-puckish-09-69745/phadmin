@@ -703,6 +703,9 @@ export default {
         '176': 'puppyhome',
         '177': 'puppyhomemars',
         '178': 'mayantotem',
+        '180': 'fishingmaster',
+        '100180': 'fishingmaster_x',
+        '181': 'fishingmastermars',
         '182': 'godoffortune',
         '183': 'godoffortunemars'
       }
@@ -1045,6 +1048,10 @@ export default {
               label: response.Data[i].Name
             })
           }
+          this.gameOptions.push({
+            key: 100180,
+            label: 'Fishing Master(额外加注)'
+          })
         }
       })
     },
