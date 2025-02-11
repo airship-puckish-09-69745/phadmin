@@ -150,12 +150,12 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.level==5" style="color:green">
-              需要赢
+            <span style="color:green">
+              {{ getLevelName(scope.row.level) }}
             </span>
-            <span v-else style="color:red">
-              陪玩
-            </span>
+            <!--            <span v-else style="color:red">-->
+            <!--              陪玩-->
+            <!--            </span>-->
           </template>
         </el-table-column>
 
@@ -332,7 +332,7 @@ const filterMap = {
   allowTableMoney: 'all'
 }
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 0 }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 1 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -661,6 +661,19 @@ export default {
           Message.success('保存成功！')
         }
       })
+    },
+    getLevelName(level) {
+      if (level === 4) {
+        return '陪玩'
+      } else if (level === 1) {
+        return '正常'
+      } else if (level === 2) {
+        return '赢'
+      } else if (level === 3) {
+        return '输'
+      }else if (level === 5) {
+        return '需要赢'
+      }
     },
     createSave(postData) {
       postData.Env = this.env
