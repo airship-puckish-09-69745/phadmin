@@ -676,7 +676,7 @@ export default {
           let flag = true
           // 汇总只有老虎机的时候
           for (const o of this.defaultOrder) {
-            if (!this.isSlots(o) || o!==10000){
+            if (!this.isSlots(o) && o!==10000){
               flag = false
             }
           }
