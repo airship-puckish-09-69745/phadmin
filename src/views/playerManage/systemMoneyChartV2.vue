@@ -649,24 +649,13 @@ export default {
         if (isSlots) {
           systemGot = ob.Bet - ob.Won
         }
-        if (this.authorityNum>0){
-          systemGot = ob.Bet - ob.Won
-        }
+        // if (this.authorityNum>0){
+        //   systemGot = ob.Bet - ob.Won
+        // }
         return systemGot * 100 / ob.Bet
       } else {
         return 0
       }
-    },
-    isAllSlotGame(){
-      let f = true
-      for (const o of this.defaultOrder) {
-        if (!this.isSlots(o) && o!==10000){
-          console.log("=======",o,this.isSlots(o),typeof(o))
-          f = false
-          break
-        }
-      }
-      return f
     },
     getSystemGot(ob, isSlots) {
       if (ob) {
