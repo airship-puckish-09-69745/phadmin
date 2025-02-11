@@ -281,7 +281,7 @@ export default {
         28: 'Tongits Joker', 29: 'Tongits Quick', 31: 'Tongits-经典', 32: 'Texas Plus', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 6: '7Up7Down', 104: 'Dragon Tiger',
         35: 'Solitaire', 37: 'BlackJack', 46: 'Domino', 47: '8 Ball Plus', 48: '9 Ball Plus',
         105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Baccarat', 108: 'Dropball', 110: 'VideoPoker', 111: 'QiuQiu', 112: 'WingoLottery', 113: 'PusoySwap', 118: 'Car Racing',
-        119: 'windropc积分', 120: 'Tongits Swap', 123: 'Mines Battle', 123: 'Jackpot Wheel', 125: 'Free Spin', 122: 'Filipino Mahjong', 9: 'Teen patti', 10000: '汇总' },
+        119: 'windropc积分', 120: 'Tongits Swap', 123: 'Mines Battle', 123: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong', 122: 'Filipino Mahjong', 9: 'Teen patti', 10000: '汇总' },
 
       userVisible: false,
       users: [],

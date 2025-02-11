@@ -404,6 +404,7 @@ export default {
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
+        127: 'SaBong',
         10000: '汇总'
       },
 
