@@ -1183,6 +1183,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/puppyhomemars_slots_cfg'),
                 name: 'puppyhomemars_slots_cfg',
                 meta: { title: 'PuppyHome(审)' }
+              },
+              {
+                path: 'godoffortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/godoffortunemars_slots_cfg'),
+                name: 'godoffortunemars_slots_cfg',
+                meta: { title: 'GodOfFortune(审)' }
               }
             ]
           },
@@ -2282,6 +2288,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmastermars_slots_log',
             meta: { title: 'FishingMaster(审)', gid: 181 }
+          },
+          {
+            path: 'godoffortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'godoffortunemars_slots_log',
+            meta: { title: 'GodOfFortune(审)', gid: 183 }
           },
           {
             path: 'streetfightingmars_slots_log',
