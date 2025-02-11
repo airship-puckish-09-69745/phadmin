@@ -364,7 +364,7 @@ export default {
       item: {
         BetMoneyLevel: [{ CanBet: 100, MaxMoneyBet: 2000, MinMoneyBet: 10 }],
         BetAreaOptions: [
-          /*
+          
           {Name:"Meron",MaxMoneyBet:50000000,Id:0,Odds:1000,RobotBetRate:200},
           {Name:"Wala",MaxMoneyBet:50000000,Id:1,Odds:1000,RobotBetRate:200},
           {Name:"Perfect Pair",MaxMoneyBet:50000000,Id:2,Odds:50000,RobotBetRate:200},
@@ -375,7 +375,6 @@ export default {
           {Name:"Meron♦",MaxMoneyBet:50000000,Id:7,Odds:2900,RobotBetRate:200},
           {Name:"Wala♠",MaxMoneyBet:50000000,Id:8,Odds:2900,RobotBetRate:200},
           {Name:"Wala♥",MaxMoneyBet:50000000,Id:9,Odds:2900,RobotBetRate:200},
-          */
           {Name:"Wala♣",MaxMoneyBet:50000000,Id:10,Odds:2900,RobotBetRate:100},
           {Name:"Wala♦",MaxMoneyBet:50000000,Id:11,Odds:2900,RobotBetRate:100}
         ],
