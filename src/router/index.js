@@ -987,7 +987,7 @@ export const asyncRoutes = [
                 path: 'dancelion_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelion_slots_cfg'),
                 name: 'dancelion_slots_cfg',
-                meta: { title: 'DanceLion' }
+                meta: { title: 'Dance of the Lion' }
               },
               {
                 path: 'arcaneegypt_slots_cfg',
