@@ -417,8 +417,8 @@ export default {
       selectOrder: 1,
       sortOrder: [],
       env: 'test',
-      envProjectName: process.env.VUE_APP_PROJECT
-
+      envProjectName: process.env.VUE_APP_PROJECT,
+      authorityNum:0,
     }
   },
   computed: {
@@ -439,14 +439,23 @@ export default {
     //   this.sortOrder = this.BROrder
     // }
     this.addGameNames()
-    this.getInfo(this.gid)
-    this.getAuthorityData()
+
+    this.getAllData()
+
+
+    // this.getInfo(this.gid)
     if (process.env.NODE_ENV === 'development') {
       this.defaultOrder.push(120) // tongitsSwap
     }
     console.log(this.$store.state.user.pers['USER_MANAGEMENT'])
   },
   methods: {
+    async getAllData(){
+      await this.getAuthorityData()
+
+      await this.getInfo(this.gid)
+
+    },
     HasACC() {
       if (this.$store.state.user.pers['USER_MANAGEMENT']) {
         if (this.authorityCfg[this.name]) {
@@ -640,16 +649,44 @@ export default {
         if (isSlots) {
           systemGot = ob.Bet - ob.Won
         }
+        if (this.authorityNum>0){
+          systemGot = ob.Bet - ob.Won
+        }
         return systemGot * 100 / ob.Bet
       } else {
         return 0
       }
+    },
+    isAllSlotGame(){
+      let f = true
+      for (const o of this.defaultOrder) {
+        if (!this.isSlots(o) && o!==10000){
+          console.log("=======",o,this.isSlots(o),typeof(o))
+          f = false
+          break
+        }
+      }
+      return f
     },
     getSystemGot(ob, isSlots) {
       if (ob) {
         if (isSlots) {
           return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
         } else {
+          // let flag = true
+          // // 汇总只有老虎机的时候
+          // for (const o of this.defaultOrder) {
+          //   if (!this.isSlots(o) || o!==10000){
+          //     flag = false
+          //   }
+          // }
+          //
+          // if (flag) {
+          //   return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+          // }
+          if (this.authorityNum>0){
+            return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+          }
           return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
         }
       }
@@ -714,6 +751,7 @@ export default {
           Day: parseInt(this.item.date / 1000)
         }
       }).then(response => {
+        let has = []
         if (response.RetCode === 0) {
           if (iType === 2) {
             const objs = response.Data.Items || []
@@ -731,30 +769,47 @@ export default {
             $this.total[2] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
             $this.total[3] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
             $this.total[4] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[1] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
 
+              for (const responseElement of $this.defaultOrder) {
+                has.push(responseElement)
+              }
+
+            console.log("=======",this.sortOrder)
             for (const o in $this.summary) {
+              if ($this.authorityNum>0 &&!has.includes(parseInt(o))){
+                continue
+              }
               if (o === '10000') {
                 continue
               }
-              totalOnline += $this.summary[o].OnlineCount > 0 ? $this.summary[o].OnlineCount : $this.summary[o].RecentFive
-
               let sType = 4
               if ($this.isSlots(parseInt(o))) {
                 sType = 3
               } else if ($this.isPoker(parseInt(o))) {
                 sType = 2
               }
+              totalOnline += $this.summary[o].OnlineCount > 0 ? $this.summary[o].OnlineCount : $this.summary[o].RecentFive
               $this.total[sType].Bet += $this.summary[o].Bet
               $this.total[sType].Won += $this.summary[o].Won
               $this.total[sType].Tax += $this.summary[o].Tax
               $this.total[sType].Lose += $this.summary[o].Lose
               $this.total[sType].OnlineCount += $this.summary[o].OnlineCount > 0 ? $this.summary[o].OnlineCount : $this.summary[o].RecentFive
+
+              $this.total[1].Bet += $this.summary[o].Bet
+              $this.total[1].Won += $this.summary[o].Won
+              $this.total[1].Tax += $this.summary[o].Tax
+              $this.total[1].Lose += $this.summary[o].Lose
+              $this.total[1].OnlineCount += $this.summary[o].OnlineCount > 0 ? $this.summary[o].OnlineCount : $this.summary[o].RecentFive
             }
             $this.summary[10000].OnlineCount = totalOnline
-            $this.total[1] = $this.summary[10000]
+            if ($this.authorityNum === 0) {
+              $this.total[1] = $this.summary[10000]
+            }
           }
           $this.initChartData()
           $this.showHealth()
+
         }
       })
       $this.getPoolList()
@@ -818,6 +873,7 @@ export default {
                     this.defaultOrder.push(o)
                   }
                 }
+                this.authorityNum = this.defaultOrder.length
               } else {
                 this.sortOrder = this.defaultOrder
                 return

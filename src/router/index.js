@@ -769,6 +769,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/freespinConfig'),
             name: 'freespin_cfg',
             meta: { title: 'FreeSpin ◐' }
+          },
+          {
+            path: 'sabong_cfg',
+            component: () => import('@/views/config/tableConfig/miniSabongGame'),
+            name: 'sabong_cfg',
+            meta: { title: 'SaBong ◐' }
           }
         ]
       },
@@ -1891,6 +1897,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_freespin',
             meta: { title: 'FreeSpin ◐', gid: 125 }
+          },
+          {
+            path: 'playlog_sabong',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_sabong',
+            meta: { title: 'SaBong ◐', gid: 127 }
           }
         ]
       },
