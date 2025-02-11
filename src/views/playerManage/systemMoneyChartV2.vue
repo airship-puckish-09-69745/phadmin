@@ -673,20 +673,20 @@ export default {
         if (isSlots) {
           return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
         } else {
-          // let flag = true
-          // // 汇总只有老虎机的时候
-          // for (const o of this.defaultOrder) {
-          //   if (!this.isSlots(o) || o!==10000){
-          //     flag = false
-          //   }
-          // }
-          //
-          // if (flag) {
-          //   return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
-          // }
-          if (this.authorityNum>0){
+          let flag = true
+          // 汇总只有老虎机的时候
+          for (const o of this.defaultOrder) {
+            if (!this.isSlots(o) || o!==10000){
+              flag = false
+            }
+          }
+
+          if (flag) {
             return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
           }
+          // if (this.authorityNum>0){
+          //   return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+          // }
           return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
         }
       }
