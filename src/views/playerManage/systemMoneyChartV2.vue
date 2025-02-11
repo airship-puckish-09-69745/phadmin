@@ -353,7 +353,7 @@ export default {
         29: 'Tongits Quick',
         31: 'Tongits-经典',
         32: 'Texas Plus',
-        38: 'Texas MTT',
+        2032: 'Texas MTT',
         101: 'Sicbo',
         102: 'Hilo',
         103: 'Windrop',
@@ -410,7 +410,7 @@ export default {
       userVisible: false,
       users: [],
       // 糖果传奇调用addGameNames特殊处理
-      defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 38,
+      defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 2032,
         35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 124, 125, 122, 9, 126], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
@@ -549,7 +549,7 @@ export default {
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 38, 46, 47, 48, 35, 49, 113]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
