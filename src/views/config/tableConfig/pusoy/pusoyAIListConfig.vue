@@ -150,12 +150,12 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span style="color:green">
-              {{ getLevelName(scope.row.level) }}
+            <span v-if="scope.row.level==5" style="color:green">
+              需要赢
             </span>
-            <!--            <span v-else style="color:red">-->
-            <!--              陪玩-->
-            <!--            </span>-->
+            <span v-else style="color:red">
+              陪玩
+            </span>
           </template>
         </el-table-column>
 
@@ -662,16 +662,11 @@ export default {
         }
       })
     },
-    getLevelName(level) {
-      if (level === 4) {
+    getLevelName(money ,initMoney) {
+      let per = money *100/initMoney
+      if (per >= 90) {
         return '陪玩'
-      } else if (level === 1) {
-        return '正常'
-      } else if (level === 2) {
-        return '赢'
-      } else if (level === 3) {
-        return '输'
-      }else if (level === 5) {
+      } else {
         return '需要赢'
       }
     },
