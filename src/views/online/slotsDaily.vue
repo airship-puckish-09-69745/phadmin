@@ -292,7 +292,7 @@ export default {
           lists.push(this.calcItemTotalNormal('正常合计', one))
           lists.push(this.calcNonPercent('剧本JP购买次数', 'SlotsReturn5Times', one))
           lists.push(this.calcNonPercent('剧本JP购买金额', 'SlotsReturn5', one))
-          lists.push(this.calcItemBuy('剧本JP购买返奖', 'SlotsReturn6', one))
+          lists.push(this.calcItemBuyRespin('剧本JP购买返奖', 'SlotsReturn6', one))
           lists.push(this.calcNonPercent('购买JP购买次数', 'SlotsReturn4Times', one))
           lists.push(this.calcNonPercent('购买JP购买金额', 'SlotsReturn4', one))
           lists.push(this.calcItemBuy('购买JP返奖金额', 'SlotsReturn3', one))
@@ -411,6 +411,17 @@ export default {
       one.today.percent = this.getPercent(data.Today[key], data.Today.SlotsReturn4)
       one.yesterday.percent = this.getPercent(data.Yesterday[key], data.Yesterday.SlotsReturn4)
       one.day7.percent = this.getPercent(data.Day7[key], data.Day7.SlotsReturn4)
+
+      return one
+    },
+    calcItemBuyRespin(name, key, data) {
+      const one = this.getObjRow(name)
+      one.today.number = data.Today[key]
+      one.yesterday.number = data.Yesterday[key]
+      one.day7.number = data.Day7[key]
+      one.today.percent = this.getPercent(data.Today[key], data.Today.SlotsReturn5)
+      one.yesterday.percent = this.getPercent(data.Yesterday[key], data.Yesterday.SlotsReturn5)
+      one.day7.percent = this.getPercent(data.Day7[key], data.Day7.SlotsReturn5)
 
       return one
     },
