@@ -284,6 +284,21 @@ export default {
           lists.push(this.calcItemTotalSum('所有返奖总计', one))
           break
         }
+        case 186:
+          lists.push(this.calcPlayTimes(one))
+          lists.push(this.calcTotalBet(one))
+          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItemNormal('剧本JP返奖', 'SlotsReturn2', one))
+          lists.push(this.calcItemTotalNormal('正常合计', one))
+          lists.push(this.calcNonPercent('剧本JP购买次数', 'SlotsReturn5Times', one))
+          lists.push(this.calcNonPercent('剧本JP购买金额', 'SlotsReturn5', one))
+          lists.push(this.calcItemBuy('剧本JP购买返奖', 'SlotsReturn6', one))
+          lists.push(this.calcNonPercent('购买JP购买次数', 'SlotsReturn4Times', one))
+          lists.push(this.calcNonPercent('购买JP购买金额', 'SlotsReturn4', one))
+          lists.push(this.calcItemBuy('购买JP返奖金额', 'SlotsReturn3', one))
+          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
+          lists.push(this.calcItemTotalSum('所有返奖总计', one))
+          break;
         default:
         {
           // 混有购买免费数据
