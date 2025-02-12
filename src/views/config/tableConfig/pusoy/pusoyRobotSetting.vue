@@ -98,12 +98,26 @@
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="预机器人最小等桌">
+
                       <el-input v-model.number="item.ExitStartDelayMin" size="mini"><template slot="append">分</template></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="预机器人最大等桌">
                       <el-input v-model.number="item.ExitStartDelayMax" size="mini"><template slot="append">分</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="12">
+                    <el-form-item label="机器人最小操作时间（秒）">
+
+                      <el-input v-model.number="item.RobotOpMin" size="mini"><template slot="append">秒</template></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="机器人最大操作时间（秒）">
+                      <el-input v-model.number="item.RobotOpMax" size="mini"><template slot="append">秒</template></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -686,7 +700,9 @@ export default {
         ],
         RobotCardsPlans: [],
         RobotLevelCfg: [],
-        RobotAddTimeCfg: []
+        RobotAddTimeCfg: [],
+        RobotOpMin:0,
+        RobotOpMax:0
       },
       RobotCardsPlanIds: {},
       tableMoneyItem: {

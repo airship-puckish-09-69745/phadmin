@@ -35,15 +35,15 @@
                 {{ scope.row.typeid }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="count"
-              label="玩家数量"
-              width="90px"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.count }}
-              </template>
-            </el-table-column>
+<!--            <el-table-column-->
+<!--              prop="count"-->
+<!--              label="玩家数量"-->
+<!--              width="90px"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ scope.row.count }}-->
+<!--              </template>-->
+<!--            </el-table-column>-->
             <el-table-column
               prop="missionid"
               label="任务等级"

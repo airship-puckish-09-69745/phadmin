@@ -2855,7 +2855,7 @@
         <el-table-column prop="cards" label="牌" width="340px">
           <template slot-scope="scope">
             <div v-for="(item) in scope.row.cards" class="block">
-              <el-image style="width: 37px; height: 50px" :src="getZJHCardUrl(item)" />
+              <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
             </div>
           </template>
         </el-table-column>
@@ -2876,6 +2876,66 @@
           <template slot-scope="scope"> {{ scope.row.moneyChange }} </template>
         </el-table-column>
 
+      </el-table>
+    </el-dialog>
+
+    <el-dialog title="SaBong(斗鸡)牌局详情" :visible.sync="miniSaBongGameVisible" width="50%">
+      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+        <span style="float:left;">发牌：</span>
+        <!--
+        <div style="color:red;">{{ miniSaBongGameResult }}</div>
+        -->
+        <div v-for="(item,index) in miniSaBongGameResult" class="block">
+          <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
+        </div>
+      </div>
+      <el-table ref="filterTable" :data="miniSaBongGameOptions" border
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :cell-style="libShow.DefaultTableCell"
+        style="width: 100%">
+
+        <el-table-column prop="Name" label="下注项" width="120">
+          <template slot-scope="scope">
+            <span v-html="scope.row.Name" />
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="Hit" label="赔率" width="80">
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="Rate" label="总赔率" width="100">
+          <template slot-scope="scope">
+            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.totalOdds / 1000000 }}</span>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="Result" label="下注结果" width="800" >
+          <template slot-scope="scope">
+            <el-table ref="filterTable" :data="scope.row.players" border :show-header="true"
+              :row-class-name="tableRowClassName"
+              :cell-style="libShow.DefaultTableCell"
+              style="width: 100%">
+
+              <el-table-column prop="Uid" label="Uid" width="150"/>
+              <el-table-column prop="Bet" label="下注" width="150">
+                <template slot-scope="scope">
+                  {{ scope.row.Bet / 1000 }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="Won" label="输赢" width="200">
+                <template slot-scope="scope">
+                  <span v-if="scope.row.Won!==0" style="color:red">{{ scope.row.Won / 1000 }}</span>
+                  <span v-else>{{ scope.row.Won / 1000 }}</span>
+                </template>
+              </el-table-column>
+            </el-table>
+          </template>
+        </el-table-column>
       </el-table>
     </el-dialog>
 
@@ -3226,6 +3286,10 @@ export default {
 
       ZJHDetail: {},
       ZJHDetailVisible: false,
+
+      miniSaBongGameVisible: false,
+      miniSaBongGameResult: '',
+      miniSaBongGameOptions: [],
 
       pusoyDetail: {},
       pusoyDetailVisible: false,
@@ -3721,6 +3785,8 @@ export default {
             $this.showFreeSpinGame(obj)
           } else if (gid === 9) {
             $this.showZJHGame(obj)
+          } else if (gid === 127) {
+            $this.showMiniSaBongGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -3951,6 +4017,54 @@ export default {
       return nameMap[id]
     },
 
+    showMiniSaBongGame(obj) {
+      const names = ['Meron', 'Wala', 'Perfect Pair', 'Pair', 'Meron♠', 'Meron♥', 'Meron♣', 'Meron♦', 'Wala♠', 'Wala♥', 'Wala♣', 'Wala♦']
+      const tMap = {}
+      this.miniSaBongGameOptions = []
+      const miniSaBongObj = obj.Sabong
+      for (let i = 0; i < miniSaBongObj.options.length; i++) {
+        const ob = miniSaBongObj.options[i]
+        ob.totalOdds = ob.Odds// * ob.extraPay
+        console.log(ob)
+        tMap[ob.id] = {
+          ID: ob.id,
+          Name: names[i],
+          Odds: ob.Odds,
+          IsHit: ob.isHit,
+          //EOdds: ob.extraPay,
+          totalOdds: ob.totalOdds,
+          players: []
+        }
+        console.log(tMap[ob.id])
+      }
+
+      for (let i = 0; i < miniSaBongObj.players.length; i++) {
+        const player = miniSaBongObj.players[i]
+        if (player.areaRet === null) {
+          continue
+        }
+        for (let j = 0; j < player.areaRet.length; j++) {
+          const result = player.areaRet[j]
+          tMap[result.id].players.push({
+            Uid: player.uid,
+            Bet: result.optionBet,
+            Won: result.moneyWon
+          })
+        }
+      }
+
+      for (let i = 0; i < miniSaBongObj.options.length; i++) {
+        this.miniSaBongGameOptions.push(tMap[i])
+      }
+      console.log(this.miniSaBongGameOptions)
+      const resultTmp = []
+      for (let i = 0; i < miniSaBongObj.cards.length; i++) {
+        resultTmp.push(miniSaBongObj.cards[i].toString(16))
+      }
+      this.miniSaBongGameResult = resultTmp.join('，')
+      this.miniSaBongGameVisible = true
+    },
+
     showZJHGame(obj) {
       this.ZJHDetail = obj
       // 玩家按座位号排序
@@ -3969,10 +4083,6 @@ export default {
         6: '三条'
       }
       return ZJHCardTypes[type]
-    },
-    getZJHCardUrl(card) {
-      console.log('card:', card)
-      return require('@/assets/poker/' + card + '.png')
     },
 
     showTexasGame(obj) {
@@ -4766,6 +4876,9 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
 
       // 清空miniDvtGame数据
       this.miniDvtGameResult = ''
+
+      // 清空miniSaBongGame数据
+      this.miniSaBongGameResult = ''
 
       // 清空miniAbGame数据
       this.miniAbGameResult = ''
