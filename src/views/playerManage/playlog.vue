@@ -2880,14 +2880,15 @@
     </el-dialog>
 
     <el-dialog title="SaBong(斗鸡)牌局详情" :visible.sync="miniSaBongGameVisible" width="50%">
-      <div style=" font-size:14px; line-height: 18px; height: 25px;">
+      <div style=" font-size:14px; line-height: 18px; height: 60px;">
         <span style="float:left;">发牌：</span>
         <!--
         <div style="color:red;">{{ miniSaBongGameResult }}</div>
         -->
-        <div v-for="(item,index) in miniSaBongGameResult" class="block">
-          <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
+        <div style="color:red;" v-for="card in miniSaBongGameResult" class="block">
+          <el-image style="width: 37px; height: 50px" :src="getCardUrl(card)" />
         </div>
+        
       </div>
       <el-table ref="filterTable" :data="miniSaBongGameOptions" border
         :header-cell-style="libShow.DefaultTableHeadClass"
@@ -2903,13 +2904,6 @@
         <el-table-column prop="Hit" label="赔率" width="80">
           <template slot-scope="scope">
             <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.Odds / 1000 }}</span>
-            <span v-else>0</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="Rate" label="总赔率" width="100">
-          <template slot-scope="scope">
-            <span v-if="scope.row.IsHit" style="color:red">{{ scope.row.totalOdds / 1000000 }}</span>
             <span v-else>0</span>
           </template>
         </el-table-column>
@@ -3288,7 +3282,7 @@ export default {
       ZJHDetailVisible: false,
 
       miniSaBongGameVisible: false,
-      miniSaBongGameResult: '',
+      miniSaBongGameResult: [],
       miniSaBongGameOptions: [],
 
       pusoyDetail: {},
@@ -4056,12 +4050,17 @@ export default {
       for (let i = 0; i < miniSaBongObj.options.length; i++) {
         this.miniSaBongGameOptions.push(tMap[i])
       }
-      console.log(this.miniSaBongGameOptions)
+      /*
       const resultTmp = []
       for (let i = 0; i < miniSaBongObj.cards.length; i++) {
         resultTmp.push(miniSaBongObj.cards[i].toString(16))
       }
       this.miniSaBongGameResult = resultTmp.join('，')
+      */
+      this.miniSaBongGameResult = []
+      for (let i = 0; i < miniSaBongObj.cards.length; i++) {
+        this.miniSaBongGameResult.push(miniSaBongObj.cards[i])
+      }
       this.miniSaBongGameVisible = true
     },
 
@@ -4878,7 +4877,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       this.miniDvtGameResult = ''
 
       // 清空miniSaBongGame数据
-      this.miniSaBongGameResult = ''
+      this.miniSaBongGameResult = []
 
       // 清空miniAbGame数据
       this.miniAbGameResult = ''
