@@ -550,7 +550,7 @@ export default {
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
