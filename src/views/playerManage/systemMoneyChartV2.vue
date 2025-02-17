@@ -404,6 +404,7 @@ export default {
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
+        127: 'SaBong',
         10000: '汇总'
       },
 
@@ -411,7 +412,7 @@ export default {
       users: [],
       // 糖果传奇调用addGameNames特殊处理
       defaultOrder: [10000, 15, 22, 28, 29, 2031, 23, 25, 10, 21, 20, 34, 100, 102, 101, 103, 104, 105, 106, 111, 6, 32, 2032,
-        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 124, 125, 122, 9, 126], // 糖果传奇调用addGameNames特殊处理
+        35, 37, 107, 108, 110, 112, 115, 46, 47, 48, 49, 113, 118, 123, 117, 116, 124, 125, 122, 9, 126, 127], // 糖果传奇调用addGameNames特殊处理
       selectType: 1,
 
       selectOrder: 1,
@@ -549,7 +550,7 @@ export default {
       }
     },
     isPopType(o) {
-      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113]
+      const popTypes = [1, 9, 8, 14, 15, 21, 22, 29, 23, 28, 31, 34, 2032, 46, 47, 48, 35, 49, 113, 122]
       for (let i = 0; i < popTypes.length; i++) {
         if (popTypes[i] === o) {
           return false
@@ -649,24 +650,13 @@ export default {
         if (isSlots) {
           systemGot = ob.Bet - ob.Won
         }
-        if (this.authorityNum>0){
-          systemGot = ob.Bet - ob.Won
-        }
+        // if (this.authorityNum>0){
+        //   systemGot = ob.Bet - ob.Won
+        // }
         return systemGot * 100 / ob.Bet
       } else {
         return 0
       }
-    },
-    isAllSlotGame(){
-      let f = true
-      for (const o of this.defaultOrder) {
-        if (!this.isSlots(o) && o!==10000){
-          console.log("=======",o,this.isSlots(o),typeof(o))
-          f = false
-          break
-        }
-      }
-      return f
     },
     getSystemGot(ob, isSlots) {
       if (ob) {
@@ -674,9 +664,9 @@ export default {
           return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
         } else {
           // let flag = true
-          // // 汇总只有老虎机的时候
+          // 汇总只有老虎机的时候
           // for (const o of this.defaultOrder) {
-          //   if (!this.isSlots(o) || o!==10000){
+          //   if (!this.isSlots(o) && o!==10000){
           //     flag = false
           //   }
           // }
@@ -684,9 +674,9 @@ export default {
           // if (flag) {
           //   return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
           // }
-          if (this.authorityNum>0){
-            return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
-          }
+          // if (this.authorityNum>0){
+          //   return this.formatNumber(Math.floor((ob.Bet - ob.Won) / 1000))
+          // }
           return this.formatNumber(Math.floor((ob.Lose + ob.Tax - ob.Won) / 1000))
         }
       }

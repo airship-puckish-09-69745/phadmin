@@ -198,7 +198,8 @@ export default {
         { key: 'AP', label: 'AP' },
         { key: 'GP', label: 'GP' },
         { key: 'PG', label: 'PG' },
-        { key: 'TP', label: 'TP' }
+        { key: 'TP', label: 'TP' },
+        { key: 'CP', label: 'CP' }
       ],
       isReturnOptions: [
         { key: 0, label: '否' },

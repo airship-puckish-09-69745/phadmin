@@ -140,7 +140,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS' , noCache: true }
+        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
         path: 'piggyStatistics',
@@ -987,7 +987,7 @@ export const asyncRoutes = [
                 path: 'dancelion_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelion_slots_cfg'),
                 name: 'dancelion_slots_cfg',
-                meta: { title: 'DanceLion' }
+                meta: { title: 'Dance of the Lion' }
               },
               {
                 path: 'arcaneegypt_slots_cfg',
@@ -1158,13 +1158,13 @@ export const asyncRoutes = [
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
-                meta: { title: 'Pharaoh Treasure(审)' }
+                meta: { title: 'Pharaoh\'s Treasure(审)' }
               },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
-                meta: { title: 'Dance Lion(审)' }
+                meta: { title: 'Dance of the Lion(审)' }
               },
               {
                 path: 'epicacemars_slots_cfg',
@@ -1183,6 +1183,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/puppyhomemars_slots_cfg'),
                 name: 'puppyhomemars_slots_cfg',
                 meta: { title: 'PuppyHome(审)' }
+              },
+              {
+                path: 'godoffortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/godoffortunemars_slots_cfg'),
+                name: 'godoffortunemars_slots_cfg',
+                meta: { title: 'GodOfFortune(审)' }
               }
             ]
           },
@@ -2087,7 +2093,7 @@ export const asyncRoutes = [
             path: ' pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
-            meta: { title: 'PharaohTreasure', gid: 168 }
+            meta: { title: 'Pharaoh\'s Treasure', gid: 168 }
           },
           {
             path: 'epicace_slots_log',
@@ -2282,6 +2288,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmastermars_slots_log',
             meta: { title: 'FishingMaster(审)', gid: 181 }
+          },
+          {
+            path: 'godoffortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'godoffortunemars_slots_log',
+            meta: { title: 'GodOfFortune(审)', gid: 183 }
           },
           {
             path: 'streetfightingmars_slots_log',

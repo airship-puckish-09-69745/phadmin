@@ -332,7 +332,7 @@ const filterMap = {
   allowTableMoney: 'all'
 }
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 0 }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 1 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -661,6 +661,14 @@ export default {
           Message.success('保存成功！')
         }
       })
+    },
+    getLevelName(money ,initMoney) {
+      let per = money *100/initMoney
+      if (per >= 90) {
+        return '陪玩'
+      } else {
+        return '需要赢'
+      }
     },
     createSave(postData) {
       postData.Env = this.env
