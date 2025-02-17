@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="230px">
+        <el-form ref="frm2" :model="cfg" label-width="260px">
 
           <el-form-item label="额外倍数">
             <el-input v-model="cfg.MultiStr" :required="true" placeholder="请输入内容,如1,2,3,5" @change="onMultiStrChange"> <template slot="append">多个值用 , 连接</template> </el-input>
@@ -12,8 +12,16 @@
             <el-input v-model="cfg.MultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="剧本大奖-额外倍数权重（加倍投注）">
+            <el-input v-model="cfg.ExBetMultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">多个值用 , 连接</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="购买免费-额外倍数权重">
             <el-input v-model="cfg.BuyFreeMultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">多个值用 , 连接</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="购买免费-额外倍数权重（加倍投注）">
+            <el-input v-model="cfg.BuyFreeExBetMultiWeightStr" :required="true" placeholder="请输入内容,如1,2,3,5"> <template slot="append">多个值用 , 连接</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买重转-购买倍数" prop="BuyRespinOdds" :rules="dataRule(true,{type:'n'})">
@@ -299,9 +307,6 @@ export default {
       })
     },
     onMultiStrChange() {
-      if (this.cfg.MultiStr.split(',').length !== this.cfg.NormalJPMultiWeightStr.length) {
-        this.$message.warning('额外中奖倍数数量已经改变，请重新设置以下数据：额外中奖倍数权重、JP奖项权重')
-      }
       this.setJPMultiWeights()
     }
   }
