@@ -1158,13 +1158,13 @@ export const asyncRoutes = [
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
-                meta: { title: 'Pharaoh Treasure(审)' }
+                meta: { title: 'Pharaoh\'s Treasure(审)' }
               },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
-                meta: { title: 'Dance Lion(审)' }
+                meta: { title: 'Dance of the Lion(审)' }
               },
               {
                 path: 'epicacemars_slots_cfg',
@@ -2093,7 +2093,7 @@ export const asyncRoutes = [
             path: ' pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
-            meta: { title: 'PharaohTreasure', gid: 168 }
+            meta: { title: 'Pharaoh\'s Treasure', gid: 168 }
           },
           {
             path: 'epicace_slots_log',
