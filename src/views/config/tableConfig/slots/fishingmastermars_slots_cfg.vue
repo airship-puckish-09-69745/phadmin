@@ -104,7 +104,7 @@ export default {
 
             const OddsList = []
             for (const k in cfg.OddsList) {
-              OddsList[k] = cfg.OddsList[k]
+              OddsList[k] = cfg.OddsList[k] / 1000
             }
             cfg.OddsStr = OddsList.join(',')
 
@@ -168,6 +168,13 @@ export default {
         this.baseCfg.BetList = []
         for (const i in bets) {
           this.baseCfg.BetList.push(parseFloat(bets[i]) * 1000)
+        }
+      }
+      if (this.baseCfg.OddsStr) {
+        const odds = this.baseCfg.OddsStr.split(',')
+        this.baseCfg.OddsList = []
+        for (const i in odds) {
+          this.baseCfg.OddsList.push(parseFloat(odds[i])*1000)
         }
       }
       this.baseForm.Data = JSON.stringify(this.baseCfg)
