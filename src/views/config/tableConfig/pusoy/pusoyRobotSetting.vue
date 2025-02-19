@@ -98,6 +98,9 @@
                   <el-form-item label="机器人开关：" :rules="dataRule(true,{type:'n',range:'0'})">
                     <el-switch v-model="item.EnableRobot" :active-value="1" :inactive-value="0" />
                   </el-form-item>
+                  <el-form-item label="机器人换牌概率：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-input v-model.number="item.ChangeRand" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
                   <el-col :span="12">
                     <el-form-item label="最多机器人数">
                       <el-input v-model.number="item.MaxRobotUserNum" size="mini"><template slot="append">人</template></el-input>
@@ -737,7 +740,8 @@ export default {
         RobotAddTimeCfg: [],
         RobotOpMin: 0,
         RobotOpMax: 0,
-        BetMoneyList: []
+        BetMoneyList: [],
+        ChangeRand: 0
       },
       RobotCardsPlanIds: {},
       tableMoneyItem: {
