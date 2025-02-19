@@ -498,7 +498,7 @@ export default {
       return n.toLocaleString()
     },
     betOddsNumber(n, gid) {
-      if (gid == 180 || gid == 186){
+      if (n != 0 && n != 1){
         n = n / 1000
       }
       return n.toLocaleString()
