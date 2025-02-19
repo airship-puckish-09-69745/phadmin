@@ -32,7 +32,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="下注/赢钱获得圣诞袜比例：">
+                  <el-form-item label="下注/赢钱获得道具比例：">
                     <el-input v-model.number="item.SockGainRatio" size="mini">
                       <template slot="append">%</template>
                     </el-input>
@@ -48,7 +48,7 @@
                         :value="item.value"
                       />
                     </el-select>
-                    <el-select v-if="item.RewardType === 2" v-model="item.SceneId" placeholder="请选择投注金" size="mini" style="width:150px">
+                    <el-select v-if="item.RewardType === 2" v-model="item.RewardUseSceneId" placeholder="请选择投注金" size="mini" style="width:150px">
                       <el-option
                         v-for="scene in betScenes"
                         :key="scene.value"
@@ -56,7 +56,7 @@
                         :value="scene.value"
                       />
                     </el-select>
-                    <el-select v-if="item.RewardType === 3" v-model="item.SceneId" placeholder="请选择返水金" size="mini" style="width:150px">
+                    <el-select v-if="item.RewardType === 3" v-model="item.RewardUseSceneId" placeholder="请选择返水金" size="mini" style="width:150px">
                       <el-option
                         v-for="scene in rebateScenes"
                         :key="scene.value"
@@ -157,12 +157,12 @@
               />
               <el-table-column
                 prop="SockBaseNum"
-                label="基础圣诞袜数量"
+                label="基础道具数量"
                 width="200"
               />
               <el-table-column
                 prop="CoefficientMin"
-                label="圣诞袜系数范围"
+                label="道具系数范围"
                 width="200"
               >
                 <template slot-scope="scope">
@@ -206,17 +206,17 @@
               </el-col>
             </el-form-item>
 
-            <el-form-item label="基础圣诞袜数量：" :required="true" prop="SockBaseNum">
+            <el-form-item label="基础道具数量：" :required="true" prop="SockBaseNum">
               <el-col :span="15">
                 <el-input v-model.number="edit.item.SockBaseNum" />
               </el-col>
             </el-form-item>
-            <el-form-item label="圣诞袜系数最小：" :required="true" prop="CoefficientMin">
+            <el-form-item label="道具系数最小：" :required="true" prop="CoefficientMin">
               <el-col :span="15">
                 <el-input v-model="edit.item.CoefficientMin" />
               </el-col>
             </el-form-item>
-            <el-form-item label="圣诞袜系数最大：" :required="true" prop="CoefficientMax">
+            <el-form-item label="道具系数最大：" :required="true" prop="CoefficientMax">
               <el-col :span="15">
                 <el-input v-model="edit.item.CoefficientMax" />
               </el-col>
@@ -479,7 +479,7 @@ export default {
         RuleImgHor: [],
         RuleImgVer: [],
         RewardType: 1,
-        SceneId: 0,
+        RewardUseSceneId: 0,
         PrizePoolCfg: [
           {
             RaffleLevel: 200,
@@ -943,10 +943,10 @@ export default {
         Message.error('请选择奖励类型')
         return
       }
-      if (this.item.SceneId === undefined) {
-        this.item.SceneId = 0
+      if (this.item.RewardUseSceneId === undefined) {
+        this.item.RewardUseSceneId = 0
       }
-      if (this.item.RewardType !== 1 && this.item.SceneId === 0) {
+      if (this.item.RewardType !== 1 && this.item.RewardUseSceneId === 0) {
         const typeObj = this.rewardTypes.find(item => item.value === this.item.RewardType)
         const typeName = typeObj ? typeObj.label : ''
         Message.error(`请选择【${typeName}】对应的使用场景`)
