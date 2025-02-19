@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-gid="getFullKey()" :env-empty="false" compare-type="Object" />
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
         <el-col :span="16" :offset="3">
@@ -8,6 +8,9 @@
             <legend>信誉用户参考值</legend>
             <el-input placeholder="请输入内容" v-model="item.value">
               <template slot="prepend">信誉用户达标信誉分值：</template>
+            </el-input>
+            <el-input placeholder="请输入内容" v-model="item.updateDelta">
+              <template slot="prepend">信誉分刷新时间间隔(s)：</template>
             </el-input>
           </fieldset>
           <fieldset style="margin-top:10px">
@@ -140,6 +143,7 @@ export default {
   data() {
     return {
       item: {
+        updateDelta: 86400,
         value: 20000,
         limitConf: [
           { name: '有效流水分', dayTop: 1000000, valTop: 5000000 },
@@ -253,7 +257,7 @@ export default {
         flowLimit: this.item.limitConf[0],
         playLimit: this.item.limitConf[1],
         ggrLimit: this.item.limitConf[2],
-        updateDelta: 86400,
+        updateDelta: this.item.updateDelta,
       })
 
       const $this = this
