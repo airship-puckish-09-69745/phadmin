@@ -6,10 +6,10 @@
         <el-col :span="16" :offset="3">
           <fieldset style="margin-top:10px">
             <legend>信誉用户参考值</legend>
-            <el-input placeholder="请输入内容" v-model="item.value">
+            <el-input placeholder="请输入内容" v-model.number="item.value">
               <template slot="prepend">信誉用户达标信誉分值：</template>
             </el-input>
-            <el-input placeholder="请输入内容" v-model="item.updateDelta">
+            <el-input placeholder="请输入内容" v-model.number="item.updateDelta">
               <template slot="prepend">信誉分刷新时间间隔(s)：</template>
             </el-input>
           </fieldset>
