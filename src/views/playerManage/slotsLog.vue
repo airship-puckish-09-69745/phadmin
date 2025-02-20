@@ -135,7 +135,7 @@
           label="命中"
           width="70"
         />
-        <template v-if="[150,156,166,174].indexOf(gid) >= 0">
+        <template v-if="[150,156,166,174,196].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="Jackpot"
@@ -180,7 +180,7 @@
           </el-table-column>
         </template>
         <template
-          v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168].indexOf(gid) >= 0">
+          v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168,196].indexOf(gid) >= 0">
           <el-table-column
             header-align="center"
             label="剧本"
@@ -334,7 +334,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168].indexOf(gid) >= 0
+      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168,196].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -557,7 +557,7 @@ export default {
               objs[i]['ActLogObj'] = {}
             }
 
-            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174) {
+            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196) {
               if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
                 objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
               } else {

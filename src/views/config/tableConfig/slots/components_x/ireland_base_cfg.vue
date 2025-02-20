@@ -66,6 +66,8 @@
               <el-option label="186:MahjongJackpot" :value="186" />
               <el-option label="ArcaneEgypt" :value="190" />
               <el-option label="194:RoadKing" :value="194" />
+              <el-option label="GoldMiner" :value="196" />
+              <el-option label="GoldMinerMars" :value="197" />
             </el-select>
           </el-form-item>
 

@@ -1000,6 +1000,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/roadking_slots_cfg.vue'),
                 name: 'roadking_slots_cfg',
                 meta: { title: 'RoadKing' }
+              },
+              {
+                path: 'goldminer_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldminer_slots_cfg.vue'),
+                name: 'goldminer_slots_cfg',
+                meta: { title: 'GoldMiner' }
               }
             ]
           },
@@ -2131,6 +2137,12 @@ export const asyncRoutes = [
             name: 'roadking_slots_log',
             meta: { title: 'RoadKing', gid: 194 }
           },
+          {
+            path: 'goldminer_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldminer_slots_log',
+            meta: { title: 'GoldMiner', gid: 196 }
+          }
         ]
       },
       {
