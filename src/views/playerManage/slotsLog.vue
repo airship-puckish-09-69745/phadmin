@@ -327,7 +327,7 @@ export default {
     console.log(1)
     this.env = store.getters.env || this.env
     this.gid = this.$route.meta.gid
-    if (this.gid === 150 || this.gid === 166 || this.gid === 176) {
+    if (this.gid === 150 || this.gid === 166 || this.gid === 176 || this.gid === 178) {
       this.typeNames[1] = 'bonus'
     }
   },
@@ -498,7 +498,7 @@ export default {
       return n.toLocaleString()
     },
     betOddsNumber(n, gid) {
-      if (gid == 180){
+      if (n != 0 && n != 1){
         n = n / 1000
       }
       return n.toLocaleString()

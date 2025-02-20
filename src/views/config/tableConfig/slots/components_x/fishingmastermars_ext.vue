@@ -3,14 +3,9 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="200px">
-          <el-form-item label="免费模式 新wild上浮在12345拓展成一整列的概率" :rules="dataRule(true)">
-            <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13,14"> <template slot="append">如10,11,12,13,14 代表1轴10‱ .. 5轴14‱</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
-
         </el-form>
       </el-col>
     </el-row>

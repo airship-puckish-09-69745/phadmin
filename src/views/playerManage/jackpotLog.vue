@@ -394,7 +394,8 @@ export default {
         { 'value': 125, 'label': 'FreeSpin' },
         { 'value': 156, 'label': 'CrazyAce' },
         { 'value': 166, 'label': 'FireLink' },
-        { 'value': 174, 'label': 'TreasureBowl' }
+        { 'value': 174, 'label': 'TreasureBowl' },
+        { 'value': 186, 'label': 'MahjongJackpot'}
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

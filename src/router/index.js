@@ -140,7 +140,7 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS' , noCache: true }
+        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
         path: 'piggyStatistics',
@@ -769,6 +769,12 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/freespinConfig'),
             name: 'freespin_cfg',
             meta: { title: 'FreeSpin ◐' }
+          },
+          {
+            path: 'sabong_cfg',
+            component: () => import('@/views/config/tableConfig/miniSabongGame'),
+            name: 'sabong_cfg',
+            meta: { title: 'SaBong ◐' }
           }
         ]
       },
@@ -981,7 +987,7 @@ export const asyncRoutes = [
                 path: 'dancelion_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelion_slots_cfg'),
                 name: 'dancelion_slots_cfg',
-                meta: { title: 'DanceLion' }
+                meta: { title: 'Dance of the Lion' }
               },
               {
                 path: 'arcaneegypt_slots_cfg',
@@ -1152,13 +1158,13 @@ export const asyncRoutes = [
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
-                meta: { title: 'Pharaoh Treasure(审)' }
+                meta: { title: 'Pharaoh\'s Treasure(审)' }
               },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
-                meta: { title: 'Dance Lion(审)' }
+                meta: { title: 'Dance of the Lion(审)' }
               },
               {
                 path: 'epicacemars_slots_cfg',
@@ -1171,6 +1177,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/firelinkmars_slots_cfg'),
                 name: 'firelinkmars_slots_cfg',
                 meta: { title: 'FireLink(审)' }
+              },
+              {
+                path: 'puppyhomemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/puppyhomemars_slots_cfg'),
+                name: 'puppyhomemars_slots_cfg',
+                meta: { title: 'PuppyHome(审)' }
+              },
+              {
+                path: 'godoffortunemars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/godoffortunemars_slots_cfg'),
+                name: 'godoffortunemars_slots_cfg',
+                meta: { title: 'GodOfFortune(审)' }
               }
             ]
           },
@@ -1398,13 +1416,13 @@ export const asyncRoutes = [
         path: 'christmasConfig',
         component: () => import('@/views/empty'),
         name: 'christmasConfig',
-        meta: { title: '圣诞活动配置', noCache: true },
+        meta: { title: '摇钱树活动配置', noCache: true },
         children: [
           {
             path: 'christmasActivityConfig',
             component: () => import('@/views/config/tableConfig/activity/christmasFortuneTreeConfig'),
             name: 'christmasActivityConfig',
-            meta: { title: '圣诞活动配置', noCache: true }
+            meta: { title: '摇钱树活动配置', noCache: true }
           }
         ]
       },
@@ -1885,6 +1903,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_freespin',
             meta: { title: 'FreeSpin ◐', gid: 125 }
+          },
+          {
+            path: 'playlog_sabong',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_sabong',
+            meta: { title: 'SaBong ◐', gid: 127 }
           }
         ]
       },
@@ -2069,7 +2093,7 @@ export const asyncRoutes = [
             path: ' pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
-            meta: { title: 'PharaohTreasure', gid: 168 }
+            meta: { title: 'Pharaoh\'s Treasure', gid: 168 }
           },
           {
             path: 'epicace_slots_log',
@@ -2254,10 +2278,22 @@ export const asyncRoutes = [
             meta: { title: 'WrathOfZeus(审)', gid: 173 }
           },
           {
+            path: 'puppyhomemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'puppyhomemars_slots_log',
+            meta: { title: 'PuppyHome(审)', gid: 177 }
+          },
+          {
             path: 'fishingmastermars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fishingmastermars_slots_log',
             meta: { title: 'FishingMaster(审)', gid: 181 }
+          },
+          {
+            path: 'godoffortunemars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'godoffortunemars_slots_log',
+            meta: { title: 'GodOfFortune(审)', gid: 183 }
           },
           {
             path: 'streetfightingmars_slots_log',
@@ -2461,6 +2497,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/baseConfig/customize'),
         name: 'customize',
         meta: { title: '自定义配置 ◐', noCache: true }
+      },
+      {
+        path: 'credit',
+        component: () => import('@/views/config/baseConfig/creditScore'),
+        name: 'credit',
+        meta: { title: '信誉分配置 ◐', noCache: true }
       },
       {
         path: 'broadcast',

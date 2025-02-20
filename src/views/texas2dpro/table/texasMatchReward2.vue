@@ -48,14 +48,36 @@
         <el-row v-for="(value, index) in edit.item.reward_content" :key="index">
           <el-col :span="22">
             <el-row>
-              <el-col :span="11">
+              <el-col :span="6">
                 <el-form-item label="名次" :required="true">
-                  <el-input v-model.number="edit.item.reward_content[index].reward_rank" size="mini" :required="true" />
+                  <el-input v-model.number="edit.item.reward_content[index].reward_rank" size="mini" :required="true" style="width:100px"/>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
+              <el-col :span="16">
                 <el-form-item label="奖励" :required="true">
-                  <el-input v-model.number="edit.item.reward_content[index].reward_num" size="mini" :required="true" />
+                  <el-select v-model="edit.item.reward_content[index].reward_type" placeholder="请选择" size="mini" style="width:100px">
+                      <el-option
+                        v-for="item in getTypeCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                    <el-select v-if="edit.item.reward_content[index].reward_type > 1" v-model="edit.item.reward_content[index].scene_Id" placeholder="请选择" size="mini" style="width:100px">
+                      <el-option v-if="edit.item.reward_content[index].reward_type === 2"
+                        v-for="item in betScenesCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                       <el-option v-if="edit.item.reward_content[index].reward_type === 3"
+                        v-for="item in rebateScenesCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  <el-input v-model.number="edit.item.reward_content[index].reward_num" size="mini" :required="true" style="width:80px"/>
                 </el-form-item>
               </el-col>
               <el-col :span="2">
@@ -106,7 +128,24 @@ export default {
         visible: false,
         item: newItem(),
         isEdit: false
-      }
+      },
+      getTypeCfgs: [
+        { 'value': 1, 'label': '金币' },
+        { 'value': 2, 'label': '投注金' },
+        { 'value': 3, 'label': '返水金' }
+      ],
+      // 返水金
+      rebateScenesCfgs: [
+        { 'value': 5, 'label': '没有任何限制的返水金' },
+        { 'value': 6, 'label': '有限制倍数的返水金（10倍）' }
+      ],
+      // 投注金
+      betScenesCfgs: [
+        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 2, 'label': '仅限Poker类游戏投注' },
+        { 'value': 3, 'label': '仅限Slots类游戏投注' },
+        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+      ],
     }
   },
   created() {
@@ -138,7 +177,9 @@ export default {
             this.tableData[i]['reward_content'].push(
               {
                 reward_rank: this.edit.item.reward_content[j].reward_rank,
-                reward_num: this.edit.item.reward_content[j].reward_num
+                reward_num: this.edit.item.reward_content[j].reward_num,
+                reward_type: this.edit.item.reward_content[j].reward_type,
+                scene_Id: this.edit.item.reward_content[j].scene_Id
               }
             )
           }
@@ -169,7 +210,9 @@ export default {
       this.edit.item.reward_content.push(
         {
           reward_rank: reward_rank,
-          reward_num: 0
+          reward_num: 0,
+          reward_type: 1,
+          scene_Id: 0,
         }
       )
     },
@@ -201,15 +244,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           $this.form = response.Data || { Data: '{}' }
-          console.log(response.Data)
           const v = JSON.parse($this.form.Data)
           this.tableData = v
-          console.log(response.Data, this.tableData)
         }
       })
     },
     saveData() {
       this.initTableData()
+      console.log(this.tableData)
       const postData = JSON.parse(JSON.stringify(this.tableData))
       this.form.Data = JSON.stringify(postData)
       const $this = this

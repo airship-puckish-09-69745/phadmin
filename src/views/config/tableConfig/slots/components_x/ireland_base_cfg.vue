@@ -85,8 +85,8 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <span v-if="slotsData.SlotsType === 186" style="color: red; font-size: 11px;">注: ①.下注倍数要放大10倍 ②.10为固定值 ③.下注大小*下注倍数*基础投注=真实下注额度 </span>
-          <span v-if="slotsData.SlotsType === 180" style="color: red; font-size: 11px;">注: ①.1为固定值 ②.下注大小*下注倍数*基础投注=真实下注额度 ③.真实下注额度*返奖倍数 支持3位小数 </span>
+          <span v-if="slotsData.SlotsType === 186" style="color: red; font-size: 11px;">注: ①.下注倍数要放大1000倍 ②.1000为固定值 ③.下注大小*下注倍数*基础投注/1000=真实下注额度 </span>
+          <span v-if="slotsData.SlotsType === 180" style="color: red; font-size: 11px;">注: ①.1为固定值 ②.下注大小*下注倍数*基础投注=真实下注额度 ③.下注大小*下注倍数只支持3位小数 </span>
           <el-form-item v-if="slotsData.OddsStr !== '1'" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
@@ -219,7 +219,8 @@ export default {
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
         'RecommendBet': this.slotsData.RecommendBet,
         'WinTypeMinOdds': winTypeMinOdds,
-        'AutoSpinNum': autoSpinNum
+        'AutoSpinNum': autoSpinNum,
+        'BetOddsList': this.slotsData.BetOddsList,
       }
     },
     submitFrm() {
@@ -231,7 +232,7 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      if (this.slotsData.SlotsType == 180) {
+      if (this.slotsData.SlotsType == 180 || this.slotsData.SlotsType == 186) {
         const bets = this.slotsData.Bets.split(',')
         for (const i in bets) {
           let betFlot = parseFloat(bets[i])
@@ -241,7 +242,8 @@ export default {
             return
           }
         }
-      }      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
+      }
+      this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets, this.slotsData.AutoSpinNum))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {

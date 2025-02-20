@@ -264,13 +264,14 @@ export default {
         case 86:
         case 150:
         case 152:
+        case 178:
         case 166: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
           lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166) {
+          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166 || one.SlotsType === 178) {
             lists.push(this.calcItemNormal('bonus返奖', 'SlotsReturn5', one))
           } else {
             lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
@@ -283,6 +284,21 @@ export default {
           lists.push(this.calcItemTotalSum('所有返奖总计', one))
           break
         }
+        case 186:
+          lists.push(this.calcPlayTimes(one))
+          lists.push(this.calcTotalBet(one))
+          lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
+          lists.push(this.calcItemNormal('剧本JP返奖', 'SlotsReturn2', one))
+          lists.push(this.calcItemTotalNormal('正常合计', one))
+          lists.push(this.calcNonPercent('剧本JP购买次数', 'SlotsReturn5Times', one))
+          lists.push(this.calcNonPercent('剧本JP购买金额', 'SlotsReturn5', one))
+          lists.push(this.calcItemBuyRespin('剧本JP购买返奖', 'SlotsReturn6', one))
+          lists.push(this.calcNonPercent('购买JP购买次数', 'SlotsReturn4Times', one))
+          lists.push(this.calcNonPercent('购买JP购买金额', 'SlotsReturn4', one))
+          lists.push(this.calcItemBuy('购买JP返奖金额', 'SlotsReturn3', one))
+          lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
+          lists.push(this.calcItemTotalSum('所有返奖总计', one))
+          break;
         default:
         {
           // 混有购买免费数据
@@ -395,6 +411,17 @@ export default {
       one.today.percent = this.getPercent(data.Today[key], data.Today.SlotsReturn4)
       one.yesterday.percent = this.getPercent(data.Yesterday[key], data.Yesterday.SlotsReturn4)
       one.day7.percent = this.getPercent(data.Day7[key], data.Day7.SlotsReturn4)
+
+      return one
+    },
+    calcItemBuyRespin(name, key, data) {
+      const one = this.getObjRow(name)
+      one.today.number = data.Today[key]
+      one.yesterday.number = data.Yesterday[key]
+      one.day7.number = data.Day7[key]
+      one.today.percent = this.getPercent(data.Today[key], data.Today.SlotsReturn5)
+      one.yesterday.percent = this.getPercent(data.Yesterday[key], data.Yesterday.SlotsReturn5)
+      one.day7.percent = this.getPercent(data.Day7[key], data.Day7.SlotsReturn5)
 
       return one
     },
