@@ -2499,10 +2499,16 @@ export const asyncRoutes = [
         meta: { title: '自定义配置 ◐', noCache: true }
       },
       {
-        path: 'credit',
+        path: 'creditScore',
         component: () => import('@/views/config/baseConfig/creditScore'),
-        name: 'credit',
+        name: 'creditScore',
         meta: { title: '信誉分配置 ◐', noCache: true }
+      },
+      {
+        path: 'creditLog',
+        component: () => import('@/views/config/baseConfig/creditLog'),
+        name: 'creditLog',
+        meta: { title: '信誉分日志 ◐', noCache: true }
       },
       {
         path: 'broadcast',
