@@ -239,23 +239,6 @@
 
         <el-row>
           <el-col :span="11">
-            <el-form-item label="延迟消耗金额：" :required="true" prop="item.DelayOpTimeCostMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.DelayOpTimeCostMoney" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="最多使用次数：" :required="true" prop="item.DelayOpTimeUsedTimes" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.DelayOpTimeUsedTimes" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="显示公共牌消耗金额：" :required="true" prop="item.ShowPublicCardCostMoney" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.ShowPublicCardCostMoney" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
             <el-form-item label="进入该场次后隐藏场次：" :required="true" prop="item.HideLevel">
               <el-select v-model="edit.item.HideLevel" placeholder="请选择">
                 <el-option label="无" :value="0" />
@@ -271,9 +254,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="9">
+           <el-col :span="9">
             <el-form-item label="VPIP入池率(百分比)：" :required="true" prop="item.TablePourRatio" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.TablePourRatio" placeholder="请输入" />
             </el-form-item>
@@ -291,14 +272,6 @@
               <el-input v-model.number="edit.item.RabbitPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
-          <el-col :span="2">
-            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
-              <i class="el-icon-info" />
-            </el-tooltip>
-          </el-col>
-        </el-row>
-
-        <el-row>
           <el-col :span="11">
             <el-form-item label="互动道具每日免费次数" :required="true" prop="item.InteractDayFreeTimes" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.InteractDayFreeTimes" placeholder="请输入" />
@@ -312,24 +285,17 @@
               <el-input v-model="edit.item.InteractItemPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
+          <el-col :span="9">
             <el-form-item label="延时道具消耗(逗号隔开)" :required="true" prop="item.DelayItemPrice">
               <el-input v-model="edit.DelayItemPrice" placeholder="请输入" />
             </el-form-item>
           </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="强制看牌价格(逗号隔开)" :required="true" prop="item.ForceLookCardPrice">
-              <el-input v-model="edit.ForceLookCardPrice" placeholder="请输入" />
-            </el-form-item>
+           <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="0.1则输入1，1则输入10" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
         </el-row>
-
         <fieldset>
           <legend>时间配置</legend>
           <el-row>
@@ -651,7 +617,7 @@ export default {
           const objs = response.Data || []
           for (const o in objs) {
             objs[o].PrefixChip /= 100 // 100倍
-            objs[o].RabbitPrice /= 1000
+            objs[o].RabbitPrice /= 100
             objs[o].InteractItemPrice /= 1000
             console.log(objs[o])
           }

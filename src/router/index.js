@@ -1158,13 +1158,13 @@ export const asyncRoutes = [
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
-                meta: { title: 'Pharaoh Treasure(审)' }
+                meta: { title: 'Pharaoh\'s Treasure(审)' }
               },
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
                 name: 'dancelionmars_slots_cfg',
-                meta: { title: 'Dance Lion(审)' }
+                meta: { title: 'Dance of the Lion(审)' }
               },
               {
                 path: 'epicacemars_slots_cfg',
@@ -1416,13 +1416,13 @@ export const asyncRoutes = [
         path: 'christmasConfig',
         component: () => import('@/views/empty'),
         name: 'christmasConfig',
-        meta: { title: '圣诞活动配置', noCache: true },
+        meta: { title: '摇钱树活动配置', noCache: true },
         children: [
           {
             path: 'christmasActivityConfig',
             component: () => import('@/views/config/tableConfig/activity/christmasFortuneTreeConfig'),
             name: 'christmasActivityConfig',
-            meta: { title: '圣诞活动配置', noCache: true }
+            meta: { title: '摇钱树活动配置', noCache: true }
           }
         ]
       },
@@ -2093,7 +2093,7 @@ export const asyncRoutes = [
             path: ' pharaohtreasure_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
-            meta: { title: 'PharaohTreasure', gid: 168 }
+            meta: { title: 'Pharaoh\'s Treasure', gid: 168 }
           },
           {
             path: 'epicace_slots_log',
@@ -2497,6 +2497,12 @@ export const asyncRoutes = [
         component: () => import('@/views/config/baseConfig/customize'),
         name: 'customize',
         meta: { title: '自定义配置 ◐', noCache: true }
+      },
+      {
+        path: 'credit',
+        component: () => import('@/views/config/baseConfig/creditScore'),
+        name: 'credit',
+        meta: { title: '信誉分配置 ◐', noCache: true }
       },
       {
         path: 'broadcast',

@@ -1191,6 +1191,8 @@ export default {
         const scatterCounts = { '全部': [] }
         const ordinaryReturnMoneyTableData = {}
         const buyReturnMoneyTableData = {}
+        const mahjongJackpot2JPColsTimesTableData = {}
+        const mahjongJackpot2JPColsBuyFirstTableData = {}
 
         this.returnMap = {}
         this.buyReturnMap = {}
@@ -1375,6 +1377,32 @@ export default {
                   }
                 }
               }
+              if (strings1[1] === '2coljp') {
+                if (strings1.length < 6) {
+                  if (!('全部' in mahjongJackpot2JPColsTimesTableData)) {
+                    mahjongJackpot2JPColsTimesTableData['全部'] = []
+                  }
+                  mahjongJackpot2JPColsTimesTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                } else {
+                  if (!(strings1[4] in mahjongJackpot2JPColsTimesTableData)) {
+                    mahjongJackpot2JPColsTimesTableData[strings1[4]] = []
+                  }
+                  mahjongJackpot2JPColsTimesTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+              }
+              if (strings1[1] === 'buyrespin') {
+                if (strings1.length < 6) {
+                  if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
+                    mahjongJackpot2JPColsBuyFirstTableData['全部'] = []
+                  }
+                  mahjongJackpot2JPColsBuyFirstTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                } else {
+                  if (!(strings1[4] in mahjongJackpot2JPColsBuyFirstTableData)) {
+                    mahjongJackpot2JPColsBuyFirstTableData[strings1[4]] = []
+                  }
+                  mahjongJackpot2JPColsBuyFirstTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+              }
             }
           }
           for (const key in scriptMap) {
@@ -1433,6 +1461,18 @@ export default {
         }
         for (const i in buyReturnMoneyTableData) {
           buyReturnMoneyTableData[i].sort(function(a, b) {
+            return a.bet - b.bet
+          })
+        }
+
+        for (const i in mahjongJackpot2JPColsTimesTableData) {
+          mahjongJackpot2JPColsTimesTableData[i].sort(function(a, b) {
+            return a.bet - b.bet
+          })
+        }
+
+        for (const i in mahjongJackpot2JPColsBuyFirstTableData) {
+          mahjongJackpot2JPColsBuyFirstTableData[i].sort(function(a, b) {
             return a.bet - b.bet
           })
         }

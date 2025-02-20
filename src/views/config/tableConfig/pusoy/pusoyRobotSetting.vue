@@ -8,6 +8,38 @@
       <br>
       <el-tabs type="border-card">
         <el-tab-pane label="基础配置">
+
+          <el-row :gutter="10" style="margin-top: 30px">
+            <h5>机器人场次开关 </h5>
+            <el-form v-model="betMoneyList" label-width="150px" style="margin-top: 10px">
+              <el-table
+                :data="betMoneyList"
+                border
+                style="width: 100%"
+                :cell-style="libShow.DefaultTableCell"
+              >
+                <el-table-column
+                  label="游戏底注"
+                  width="200"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.TableMoney/1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="IsOpen"
+                  label="开关"
+                  width="200"
+                >
+                  <template v-slot:default="scope">
+                    <el-switch v-model="scope.row.IsOpen" :active-value="1" :inactive-value="0" @change="saveChanges(scope.$index, scope.row.IsOpen)" />
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-form>
+
+          </el-row>
+
           <el-row>
             <el-col :span="20" :offset="1">
               <h5>机器人昵称配置 <el-button type="text" @click="addNickCfg">添加一项</el-button></h5>
@@ -31,6 +63,7 @@
               </el-table>
             </el-col>
           </el-row>
+
           <el-row>
             <el-col :span="20" :offset="1">
               <h5>机器人暂停进桌配置 <el-button type="text" @click="addStopAddCfg">添加一项</el-button></h5>
@@ -65,6 +98,9 @@
                   <el-form-item label="机器人开关：" :rules="dataRule(true,{type:'n',range:'0'})">
                     <el-switch v-model="item.EnableRobot" :active-value="1" :inactive-value="0" />
                   </el-form-item>
+                  <el-form-item label="机器人换牌概率：" :rules="dataRule(true,{type:'n',range:'0'})">
+                    <el-input v-model.number="item.ChangeRand" size="mini"><template slot="append">%</template></el-input>
+                  </el-form-item>
                   <el-col :span="12">
                     <el-form-item label="最多机器人数">
                       <el-input v-model.number="item.MaxRobotUserNum" size="mini"><template slot="append">人</template></el-input>
@@ -83,18 +119,18 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-                <el-row>
-                  <el-col :span="12">
-                    <el-form-item label="最小延迟退桌">
-                      <el-input v-model.number="item.ExitDelayMin" size="mini"><template slot="append">秒</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="最大延迟退桌">
-                      <el-input v-model.number="item.ExitDelayMax" size="mini"><template slot="append">秒</template></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
+                <!--                <el-row>-->
+                <!--                  <el-col :span="12">-->
+                <!--                    <el-form-item label="最小延迟退桌">-->
+                <!--                      <el-input v-model.number="item.ExitDelayMin" size="mini"><template slot="append">秒</template></el-input>-->
+                <!--                    </el-form-item>-->
+                <!--                  </el-col>-->
+                <!--                  <el-col :span="12">-->
+                <!--                    <el-form-item label="最大延迟退桌">-->
+                <!--                      <el-input v-model.number="item.ExitDelayMax" size="mini"><template slot="append">秒</template></el-input>-->
+                <!--                    </el-form-item>-->
+                <!--                  </el-col>-->
+                <!--                </el-row>-->
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="预机器人最小等桌">
@@ -312,73 +348,73 @@
           </el-row>
         </el-tab-pane>
 
-        <el-tab-pane label="场次调控">
-          <el-row style="padding-top: 5px">
-            <el-col :span="24">
-              <div style="padding-top: 10px">
-                <el-table :data="item.RobotLevelCfg" stripe border style="width: 100%">
-                  <el-table-column label="底注" width="180">
-                    <template slot-scope="scope">
-                      {{ fmtMoney(scope.row.TableMoney) }}
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="当前输赢倍数" width="180">
-                    <template slot-scope="scope">
-                      <a
-                        href="javascript:void(0)"
-                        style="cursor: pointer; color:rgb(59, 59, 232);"
-                        @click="showRobotPoolForm(scope.row.TableMoney, scope.row.Pool)"
-                      >{{ (scope.row.Pool /
-                        scope.row.TableMoney).toFixed(0) }}</a>
-                      <!--                      <el-button size="mini" @click="showHistoryChart(scope.row.TableMoney)"-->
-                      <!--                                 style="float:right;margin-right: 20px;">趋势</el-button>-->
-                    </template>
-                  </el-table-column>
-                  <el-table-column label="分配">
-                    <template slot-scope="scope">
-                      <el-table :data="scope.row.Ranges" border>
-                        <el-table-column label="输赢最小(%)">
-                          <template scope="subScope">
-                            <el-input v-model.number="subScope.row.MinTimes" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="输赢最大(%)">
-                          <template scope="subScope">
-                            <el-input v-model.number="subScope.row.MaxTimes" />
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="方案">
-                          <template scope="subScope">
-                            <el-select v-model="subScope.row.PlanID" placeholder="请选择">
-                              <el-option
-                                v-for="item in item.RobotCardsPlans"
-                                :key="item.PlanID"
-                                :label="pusoyShowPlanName(item)"
-                                :value="item.PlanID"
-                              />
-                            </el-select>
-                          </template>
-                        </el-table-column>
-                        <el-table-column
-                          label="操作"
-                          :render-header="(h, obj) => addTableHeaderButton(h, obj, scope.row.TableMoney)"
-                        >
-                          <template scope="subScope">
-                            <el-button
-                              size="mini"
-                              type="danger"
-                              @click="delRow(scope.$index, subScope.$index, subScope.row)"
-                            >删除</el-button>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-col>
-          </el-row>
-        </el-tab-pane>
+        <!--        <el-tab-pane label="场次调控">-->
+        <!--          <el-row style="padding-top: 5px">-->
+        <!--            <el-col :span="24">-->
+        <!--              <div style="padding-top: 10px">-->
+        <!--                <el-table :data="item.RobotLevelCfg" stripe border style="width: 100%">-->
+        <!--                  <el-table-column label="底注" width="180">-->
+        <!--                    <template slot-scope="scope">-->
+        <!--                      {{ fmtMoney(scope.row.TableMoney) }}-->
+        <!--                    </template>-->
+        <!--                  </el-table-column>-->
+        <!--                  <el-table-column label="当前输赢倍数" width="180">-->
+        <!--                    <template slot-scope="scope">-->
+        <!--                      <a-->
+        <!--                        href="javascript:void(0)"-->
+        <!--                        style="cursor: pointer; color:rgb(59, 59, 232);"-->
+        <!--                        @click="showRobotPoolForm(scope.row.TableMoney, scope.row.Pool)"-->
+        <!--                      >{{ (scope.row.Pool /-->
+        <!--                        scope.row.TableMoney).toFixed(0) }}</a>-->
+        <!--                      &lt;!&ndash;                      <el-button size="mini" @click="showHistoryChart(scope.row.TableMoney)"&ndash;&gt;-->
+        <!--                      &lt;!&ndash;                                 style="float:right;margin-right: 20px;">趋势</el-button>&ndash;&gt;-->
+        <!--                    </template>-->
+        <!--                  </el-table-column>-->
+        <!--                  <el-table-column label="分配">-->
+        <!--                    <template slot-scope="scope">-->
+        <!--                      <el-table :data="scope.row.Ranges" border>-->
+        <!--                        <el-table-column label="输赢最小(%)">-->
+        <!--                          <template scope="subScope">-->
+        <!--                            <el-input v-model.number="subScope.row.MinTimes" />-->
+        <!--                          </template>-->
+        <!--                        </el-table-column>-->
+        <!--                        <el-table-column label="输赢最大(%)">-->
+        <!--                          <template scope="subScope">-->
+        <!--                            <el-input v-model.number="subScope.row.MaxTimes" />-->
+        <!--                          </template>-->
+        <!--                        </el-table-column>-->
+        <!--                        <el-table-column label="方案">-->
+        <!--                          <template scope="subScope">-->
+        <!--                            <el-select v-model="subScope.row.PlanID" placeholder="请选择">-->
+        <!--                              <el-option-->
+        <!--                                v-for="item in item.RobotCardsPlans"-->
+        <!--                                :key="item.PlanID"-->
+        <!--                                :label="pusoyShowPlanName(item)"-->
+        <!--                                :value="item.PlanID"-->
+        <!--                              />-->
+        <!--                            </el-select>-->
+        <!--                          </template>-->
+        <!--                        </el-table-column>-->
+        <!--                        <el-table-column-->
+        <!--                          label="操作"-->
+        <!--                          :render-header="(h, obj) => addTableHeaderButton(h, obj, scope.row.TableMoney)"-->
+        <!--                        >-->
+        <!--                          <template scope="subScope">-->
+        <!--                            <el-button-->
+        <!--                              size="mini"-->
+        <!--                              type="danger"-->
+        <!--                              @click="delRow(scope.$index, subScope.$index, subScope.row)"-->
+        <!--                            >删除</el-button>-->
+        <!--                          </template>-->
+        <!--                        </el-table-column>-->
+        <!--                      </el-table>-->
+        <!--                    </template>-->
+        <!--                  </el-table-column>-->
+        <!--                </el-table>-->
+        <!--              </div>-->
+        <!--            </el-col>-->
+        <!--          </el-row>-->
+        <!--        </el-tab-pane>-->
 
         <el-tab-pane label="进桌配置">
           <el-row style="padding-top: 5px">
@@ -567,6 +603,7 @@ function newPresetCfg(n) {
     Probability: 0
   }
 }
+
 function NewHistory() {
   return {
     xData: [],
@@ -701,8 +738,10 @@ export default {
         RobotCardsPlans: [],
         RobotLevelCfg: [],
         RobotAddTimeCfg: [],
-        RobotOpMin:0,
-        RobotOpMax:0
+        RobotOpMin: 0,
+        RobotOpMax: 0,
+        BetMoneyList: [],
+        ChangeRand: 0
       },
       RobotCardsPlanIds: {},
       tableMoneyItem: {
@@ -775,7 +814,33 @@ export default {
           value: true,
           label: '特殊牌型'
         }
-      ]
+      ],
+      betMoneyList: [
+        {
+          TableMoney: 1000,
+          IsOpen: 0
+        }, {
+          TableMoney: 5000,
+          IsOpen: 0
+        }, {
+          TableMoney: 10000,
+          IsOpen: 0
+        }, {
+          TableMoney: 20000,
+          IsOpen: 0
+        }, {
+          TableMoney: 50000,
+          IsOpen: 0
+        }, {
+          TableMoney: 100000,
+          IsOpen: 0
+        }, {
+          TableMoney: 200000,
+          IsOpen: 0
+        }, {
+          TableMoney: 500000,
+          IsOpen: 0
+        }]
     }
   },
   created() {
@@ -860,6 +925,32 @@ export default {
       this.isDisabled = this.edit.isEdit
       return this.edit.isEdit ? '修改配置' : '新增配置'
     },
+    getBetMoneyList(BetMoneyList) {
+      if (BetMoneyList.length > 0) {
+        for (const o in BetMoneyList) {
+          for (const i in this.betMoneyList) {
+            if (BetMoneyList[o] === this.betMoneyList[i].TableMoney) {
+              this.betMoneyList[i].IsOpen = 1
+            }
+          }
+        }
+        return this.betMoneyList
+      } else {
+        return this.betMoneyList
+      }
+    },
+    saveChanges(index,IsOpen){
+      this.betMoneyList[index].IsOpen = IsOpen
+    },
+    setBetMoneyList() {
+      const BetMoneyList = []
+      for (const i in this.betMoneyList) {
+        if (this.betMoneyList[i].IsOpen === 1) {
+          BetMoneyList.slice(this.betMoneyList[i].TableMoney)
+        }
+      }
+      return BetMoneyList
+    },
     getData() {
       const $this = this
       request({
@@ -878,6 +969,8 @@ export default {
             $this.item.RobotLevelCfg = $this.item.RobotLevelCfg || []
             this.item.NickCfg = this.item.NickCfg || []
             this.item.StopAddCfg = this.item.StopAddCfg || []
+            this.item.BetMoneyList = this.item.BetMoneyList || []
+            this.betMoneyList = this.getBetMoneyList(this.item.BetMoneyList)
             this.item.RobotAddTimeCfg = this.item.RobotAddTimeCfg || newRobotAdd()
             const old = JSON.parse(response.Data.Data)
             $this.item.EnterDelayMin /= 1000
@@ -897,20 +990,6 @@ export default {
             }
 
             const betCfg = []
-            // for (let i = 0; i < $this.item.BetCfg.length; i++) {
-            //   const one = $this.item.BetCfg[i]
-            //   if (betCfg[one.CardType] === undefined) {
-            //     betCfg[one.CardType] = {
-            //       CardType: one.CardType,
-            //       Odds1: 0,
-            //       Odds2: 0,
-            //       Odds3: 0,
-            //       Odds4: 0
-            //     }
-            //   }
-            //
-            //   betCfg[one.CardType]['Odds' + one.OddsBet] = one.Probability
-            // }
 
             for (const o in betCfg) {
               $this.BetCfg.push(betCfg[o])
@@ -939,32 +1018,6 @@ export default {
         }
       })
     },
-    // getTableMoneyList() {
-    //   const $this = this
-    //   request({
-    //     url: '/customizeconfig/one',
-    //     method: 'get',
-    //     data: {
-    //       SubKey: 'pusoy_ai_list_cfg'
-    //     }
-    //   }).then(response => {
-    //     if (response.RetCode === 0) {
-    //       // console.log('sign reward', response)
-    //       if (response.Data && response.Data.Data !== '') {
-    //         $this.TableMoneyList = []
-    //         $this.tableMoneyItem = JSON.parse(response.Data.Data)
-    //         for (const i in $this.tableMoneyItem.TableMoneyList) {
-    //           $this.tableMoneyItem.TableMoneyList[i] /= 1000
-    //           $this.TableMoneyList.push({
-    //             value: $this.tableMoneyItem.TableMoneyList[i],
-    //             label: $this.tableMoneyItem.TableMoneyList[i]
-    //           })
-    //         }
-    //       }
-    //       console.log('tableMoneyItem', $this.tableMoneyItem)
-    //     }
-    //   })
-    // },
     encodeData() {
       const cpy = {}
       Object.assign(cpy, this.item)
@@ -977,6 +1030,12 @@ export default {
       cpy.BetCfg = []
       cpy.ProtectCfg = []
 
+      cpy.BetMoneyList = []
+      for (const i in this.betMoneyList) {
+        if (this.betMoneyList[i].IsOpen === 1) {
+          cpy.BetMoneyList.push(this.betMoneyList[i].TableMoney)
+        }
+      }
       for (const o in this.BetCfg) {
         for (let i = 1; i <= 4; i++) {
           const obj = {}
@@ -1300,6 +1359,7 @@ export default {
         Ranges: []
       }
     },
+
     getRobotProfit(tableMoneyList) {
       const $this = this
       request({

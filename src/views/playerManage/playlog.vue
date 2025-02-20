@@ -920,6 +920,7 @@
       <el-descriptions title="扩展信息">
         <el-descriptions-item label="桌子ID">{{ pusoyDetail.tid }}</el-descriptions-item>
         <el-descriptions-item label="Server日志ID">{{ pusoyDetail.logId }}</el-descriptions-item>
+        <el-descriptions-item label="是否发生换牌">{{ pusoyShowChangeCardString(pusoyDetail.isChangedCards) }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
 
@@ -2888,7 +2889,7 @@
         <div style="color:red;" v-for="card in miniSaBongGameResult" class="block">
           <el-image style="width: 37px; height: 50px" :src="getCardUrl(card)" />
         </div>
-        
+
       </div>
       <el-table ref="filterTable" :data="miniSaBongGameOptions" border
         :header-cell-style="libShow.DefaultTableHeadClass"
@@ -3435,6 +3436,13 @@ export default {
         return '特殊牌型'
       } else {
         return this.pusoyCardTypes[type] || '-'
+      }
+    },
+    pusoyShowChangeCardString(change) {
+      if (change) {
+        return '是'
+      } else {
+        return '否'
       }
     },
     pusoySpanMethods({ row, column, rowIndex, columnIndex }) {
