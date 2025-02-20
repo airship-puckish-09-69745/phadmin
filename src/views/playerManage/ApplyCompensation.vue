@@ -400,6 +400,7 @@ export default {
       //   }
       //   uid = $this.item.uid
       // }
+      $this.offset = 0
       request({
         url: '/applycompensation/list',
         method: 'get',
