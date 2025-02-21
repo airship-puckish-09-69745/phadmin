@@ -36,6 +36,8 @@
         ref="filterTable"
         :data="item"
         border
+        show-summary
+        :summary-method="getSummaries"
         :header-cell-style="libShow.DefaultTableHeadClass"
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
@@ -57,8 +59,14 @@
           </template>
         </el-table-column>
         <el-table-column prop="validBetScore" label="有效流水分">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.validBetScore/1000) }}
+          </template>
         </el-table-column>
         <el-table-column prop="playRoundScore" label="玩牌局数分">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.playRoundScore/1000) }}
+          </template>
         </el-table-column>
       </el-table>
     </el-row>
@@ -85,14 +93,13 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libDate, $libShow } from '@/utils/common'
+import { $libDate, $libShow, $libType } from '@/utils/common'
 import store from '@/store'
 import UidInput from '@/components/UidInput'
-import { string } from 'clipboard'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, UidInput },
+  components: { Compare, Publish, UidInput},
   data() {
     return {
       env: 'test',
@@ -227,6 +234,41 @@ export default {
       this.form.currentPage = val
       this.getInfo()
     },
+    formatNumber(n) {
+      if ($libType.IsNumber(n)) {
+        return n.toLocaleString()
+      } else {
+        return n
+      }
+    },
+    getSummaries(param) {
+      const { columns, data } = param;
+      const sums = [];
+      columns.forEach((column, index) => {
+        if (index === 0) {
+          sums[index] = '总分';
+          return;
+        }
+        if (index === 1 || index === 2) {
+          sums[index] = 'N/A';
+          return;
+        }
+        const values = data.map(item => Number(item[column.property]));
+        if (!values.every(value => isNaN(value))) {
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+          sums[index]/=1000;
+        }
+      });
+
+      return sums;
+    }
   }
 }
 </script>

@@ -163,10 +163,10 @@
       :visible.sync="TagCreditDetail"
     >
       <el-descriptions :column="1" border>
-        <el-descriptions-item label="信誉分总">{{ credit.creditScore }}</el-descriptions-item>
-        <el-descriptions-item label="有效流水分">{{ credit.validBetScore }}</el-descriptions-item>
-        <el-descriptions-item label="玩牌局数分">{{ credit.playRoundScore }}</el-descriptions-item>
-        <el-descriptions-item label="GGR贡献分">{{ credit.ggrScore }}</el-descriptions-item>
+        <el-descriptions-item label="信誉分总">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="玩牌局数分">{{ formatNumber(credit.playRoundScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="GGR贡献分">{{ formatNumber(credit.ggrScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="黑名单列表">
           <template>
             <el-row v-for="gid,i in credit.blackList">
@@ -327,9 +327,12 @@ export default {
       appInfo: [],
       selectGid: 28,
       credit: {
-        IsCreditUser: 0,
-        GGRScore: 0,
         creditScore: 0,
+        validBetScore: 0,
+        playRoundScore: 0,
+        ggrScore: 0,
+        creditScore: 0,
+        blackList: [],
       },
       item: {
         Uid: 0,
@@ -1255,7 +1258,11 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.credit=response.Data
+          $this.credit.creditScore=response.Data.creditScore
+          $this.credit.validBetScore=response.Data.validBetScore
+          $this.credit.playRoundScore=response.Data.playRoundScore
+          $this.credit.ggrScore=response.Data.ggrScore
+          $this.credit.creditScore=response.Data.creditScore
           console.log("/user/credit/info:",response.Data)
         }
       })
