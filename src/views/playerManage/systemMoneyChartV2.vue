@@ -385,7 +385,7 @@ export default {
         150: 'SuperGems3',
         156: 'Crazy Ace',
         158: 'Shark Kingdom',
-        168: 'Pharaoh Treasure',
+        168: 'Pharaoh\'s Treasure',
         118: 'Car Racing',
         120: 'Tongits Swap',
         162: 'Major Ace',
