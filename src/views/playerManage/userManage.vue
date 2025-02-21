@@ -147,12 +147,63 @@
             <el-tag :type="item.IsSetLoginPwd ? 'success' : 'danger'">{{ formatBool(item.IsSetLoginPwd) }}</el-tag>
           </el-descriptions-item>
           <el-descriptions-item label="KYC状态：">
-            <el-tag :type="item.KycStatus ? 'success' : 'danger'">{{ formatBool(item.KycStatus>0) }}</el-tag>
+            <el-tag :type="item.KycStatus>0 ? 'success' : 'danger'">{{ formatBool(item.KycStatus>0) }}</el-tag>
+          </el-descriptions-item>
+          <el-descriptions-item label="总信誉分值：" :span="1">
+            <el-tag>{{ formatNumber(credit.creditScore / 1000) }}</el-tag>
+            <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
         </el-descriptions>
 
       </el-col>
     </el-row>
+
+    <el-dialog
+      title="信誉分详情"
+      :visible.sync="TagCreditDetail"
+      :before-close="TagVisibleClose"
+    >
+      <el-descriptions title="信誉分详情" :column="1" border>
+        <el-descriptions-item label="信誉分总">{{ credit.creditScore }}</el-descriptions-item>
+        <el-descriptions-item label="有效流水分">{{ credit.validBetScore }}</el-descriptions-item>
+        <el-descriptions-item label="玩牌局数分">{{ credit.playRoundScore }}</el-descriptions-item>
+        <el-descriptions-item label="GGR贡献分">{{ credit.ggrScore }}</el-descriptions-item>
+        <el-descriptions-item label="黑名单列表">
+          <template>
+            <el-row v-for="gid,i in credit.blackList">
+              <el-col :span="8" border> {{ getGameName(gid) }} </el-col>
+              <el-col :span="8" border> {{ gid }} </el-col>
+              <el-col :span="8"> 
+                <el-button type="danger" size="mini" style="margin-left: 10px;" @click="optBlackList(gid, 1)">移除</el-button>
+              </el-col>
+            </el-row>
+          </template>
+        </el-descriptions-item>
+        <el-descriptions-item label="添加黑名单">
+          <template>
+            <el-row>
+              <el-col :span="16"> 
+                <el-select v-model="selectGid" size="mini">
+                  <el-option v-for="opt in GameOption" :key="opt.value" :label="opt.label" :value="opt.value" />
+                </el-select>  
+              </el-col>
+              <el-col :span="8"> 
+                <el-button type="success" size="mini" style="margin-left: 10px;" @click="optBlackList(selectGid,0)">添加</el-button>
+              </el-col>
+            </el-row>
+          </template>
+        </el-descriptions-item>
+        <el-descriptions-item label="查看游戏各场次">
+          <el-button type="success" size="mini" style="margin-left: 10px;" @click="">查看</el-button>
+        </el-descriptions-item>
+      </el-descriptions>
+      
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="TagVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTagSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!--添加标签end-->
 
     <!--添加标签start-->
     <el-dialog
@@ -276,6 +327,12 @@ export default {
       libShow: $libShow,
       queryFlag: 1, // 1 uid查询，2 account 查询
       appInfo: [],
+      selectGid: 28,
+      credit: {
+        IsCreditUser: 0,
+        GGRScore: 0,
+        creditScore: 0,
+      },
       item: {
         Uid: 0,
         LimitedMoney: '',
@@ -336,6 +393,7 @@ export default {
       UserTags: [],
       tagRecs: [],
       TagVisible: false,
+      TagCreditDetail: false,
 
       mailEditable: false,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
@@ -360,7 +418,13 @@ export default {
         { 'label': '警告', 'value': 3 },
         { 'label': '危险', 'value': 4 }
       ],
-
+      GameOption: [
+        { 'label': 'Pusoy', 'value': 21 },
+        { 'label': 'Pusoy Swap', 'value': 113 },
+        { 'label': 'Tongits', 'value': 22 },
+        { 'label': 'Tongits Laizi', 'value': 28 },
+        { 'label': 'Tongits Quick', 'value': 29 }
+      ],
       // 修改调控结果
       paySchemaDialog: false,
       paySchemaEdit: {
@@ -458,6 +522,7 @@ export default {
       console.log('set mounted', this.item.Uid)
     }
     this.getInfo()
+    this.getCredit()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -1175,6 +1240,28 @@ export default {
           $this.$EventBus.$emit('uid-change', $this.item.Uid)
         }
       })
+      this.getCredit()
+    },
+    getCredit(){
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/user/credit/info',
+          Uid: this.item.Uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.credit=response.Data
+          console.log("/user/credit/info:",response.Data)
+        }
+      })
     },
     getInfoByAccount() {
       console.log('account:', this.accountForm.Account)
@@ -1254,6 +1341,38 @@ export default {
           $this.friendListDialog = true
         }
       })
+    },
+    optBlackList(gid,opt){
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      console.log(gid,opt)
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: this.env,
+          Path: '/user/credit/black',
+          Uid: this.item.Uid,
+          Gid: gid,
+          Opt: opt
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.credit.blackList=response.Data
+          console.log("/user/credit/black:",response.Data)
+        }
+      })
+    },
+    getGameName(gid) {
+      for (const v of this.GameOption) {
+        if (v.value === gid) {
+          return v.label
+        }
+      }
+      return "unknow"
     }
   }
 }
