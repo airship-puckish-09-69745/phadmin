@@ -161,9 +161,8 @@
     <el-dialog
       title="信誉分详情"
       :visible.sync="TagCreditDetail"
-      :before-close="TagVisibleClose"
     >
-      <el-descriptions title="信誉分详情" :column="1" border>
+      <el-descriptions :column="1" border>
         <el-descriptions-item label="信誉分总">{{ credit.creditScore }}</el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ credit.validBetScore }}</el-descriptions-item>
         <el-descriptions-item label="玩牌局数分">{{ credit.playRoundScore }}</el-descriptions-item>
@@ -194,13 +193,12 @@
           </template>
         </el-descriptions-item>
         <el-descriptions-item label="查看游戏各场次">
-          <el-button type="success" size="mini" style="margin-left: 10px;" @click="">查看</el-button>
+          <el-button type="success" size="mini" style="margin-left: 10px;" @click="goCreditLog()">查看</el-button>
         </el-descriptions-item>
       </el-descriptions>
       
       <span slot="footer" class="dialog-footer">
-        <el-button @click="TagVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addTagSubmit">确 定</el-button>
+        <el-button @click="TagCreditDetail = false">关 闭</el-button>
       </span>
     </el-dialog>
     <!--添加标签end-->
@@ -522,7 +520,6 @@ export default {
       console.log('set mounted', this.item.Uid)
     }
     this.getInfo()
-    this.getCredit()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -1373,7 +1370,17 @@ export default {
         }
       }
       return "unknow"
-    }
+    },
+    // 跳转到用户信息查询页面
+    goCreditLog() {
+      this.TagCreditDetail = false
+      this.$router.push({
+        path: '/config/creditLog',
+        query: {
+          uid: this.item.Uid
+        }
+      })
+    },
   }
 }
 </script>
