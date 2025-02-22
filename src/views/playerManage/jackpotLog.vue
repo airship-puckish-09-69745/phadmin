@@ -177,7 +177,7 @@
     </el-row>
 
     <el-dialog
-      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174) && searchForm.level === 0"
+      v-if="(searchForm.gameId === 150 || searchForm.gameId === 156 || searchForm.gameId === 166|| searchForm.gameId === 174 || searchForm.gameId === 196) && searchForm.level === 0"
       title="奖池信息"
       :modal="false"
       :visible.sync="prizeVisible"
@@ -360,11 +360,12 @@
 <script>
 import { $libDate, $libShow } from '@/utils/common'
 import request from '@/utils/request'
+import { Message } from 'element-ui'
 export default {
   name: 'RocketRet',
   data() {
     return {
-      submap : {90 : 'moneycoming_slots_base', 150 : 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base' },
+      submap: { 90: 'moneycoming_slots_base', 150: 'supergemiii_slots_base', 166: 'firelink_slots_base', 174: 'treasurebowl_slots_base', 196: 'goldminer_slots_base' },
       searchForm: {
         date: $libDate.GetDayBegin(new Date().getTime()),
         gameId: 25,
@@ -395,7 +396,8 @@ export default {
         { 'value': 156, 'label': 'CrazyAce' },
         { 'value': 166, 'label': 'FireLink' },
         { 'value': 174, 'label': 'TreasureBowl' },
-        { 'value': 186, 'label': 'MahjongJackpot'}
+        { 'value': 186, 'label': 'MahjongJackpot' },
+        { 'value': 196, 'label': 'GoldMiner' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },
@@ -498,7 +500,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          if (objs.length === 0 || objs == 'no Data') {
+          if (objs.length === 0 || objs === 'no Data') {
             Message.success('查询结果为空')
             // loading.close()
             return
@@ -541,11 +543,11 @@ export default {
 
           if (cfg && cfg.BetList && cfg.BetList.length > 0) {
             const betConfig = cfg.BetList.map(bet => {
-              if (bet == 10) {
+              if (bet === 10) {
                 return []
               }
               const baseBetFactor = bet / 1000 * cfg.BaseBet
-              if (bet == 50 || bet == 100) {
+              if (bet === 50 || bet === 100) {
                 return [
                   { 'value': baseBetFactor * 1000 + 2, 'label': ['下注额', bet / 10, '中将200倍'].join('') }
                 ]
@@ -563,7 +565,7 @@ export default {
           console.error('Error processing BetList:', error)
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
         })
-      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166) {
+      } else if (this.searchForm.gameId === 150 || this.searchForm.gameId === 166 || this.searchForm.gameId === 196) {
         // 调用 getData() 获取 BetList 数组
         this.getData().then(cfg => {
           this.levelConfig = [{ 'value': 0, 'label': '全部' }]
@@ -623,7 +625,8 @@ export default {
     showInfo() {
       const _this = this
       // 检查是否 gameId 为 150 且 level 为 0
-      if ((this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166 || this.searchForm.gameId === 174) && this.searchForm.level === 0) {
+      const gameIds = [150, 90, 156, 166, 174, 196] // 定义一个数组存储需要检查的 gameId
+      if (gameIds.includes(this.searchForm.gameId) && this.searchForm.level === 0) {
         // 循环所有 levelConfig 值（除 value === 0）
         const promises = this.levelConfig
           .filter(config => config.value !== 0) // 过滤掉 value 为 0 的选项
@@ -676,7 +679,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             const objs = response.Data || []
-            if (objs.length === 0 || objs == 'no Data') {
+            if (objs.length === 0 || objs === 'no Data') {
               Message.success('查询结果为空')
               // loading.close()
               return
@@ -705,7 +708,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          if (objs.length === 0 || objs == 'no Data') {
+          if (objs.length === 0 || objs === 'no Data') {
             Message.success('查询结果为空')
             // loading.close()
             return
@@ -794,16 +797,18 @@ export default {
     },
     // 转行卢比
     toRupee(amount) {
-      if (this.searchForm.gameId === 150 || this.searchForm.gameId === 90 || this.searchForm.gameId === 156 || this.searchForm.gameId === 166 || this.searchForm.gameId === 174) {
-        return parseInt(amount) / 100000
+      const gameIds = [150, 90, 156, 166, 174, 196] // 定义一个数组存储需要检查的 gameId
+      const parsedAmount = parseInt(amount) // 先将 amount 转换为整数
+      if (gameIds.includes(this.searchForm.gameId)) {
+        return parsedAmount / 100000
       }
-      return parseInt(amount) / 1000
+      return parsedAmount / 1000
     },
     // 获取游戏名称
     getGameName(gameId) {
       var name = ''
       for (let i = 0; i < this.gameConfig.length; i++) {
-        if (gameId == this.gameConfig[i].value) {
+        if (gameId === this.gameConfig[i].value) {
           name = this.gameConfig[i].label
           break
         }
@@ -814,7 +819,7 @@ export default {
     getTypeName(actType) {
       var name = ''
       for (let i = 0; i < this.typeConfig.length; i++) {
-        if (actType == this.typeConfig[i].value) {
+        if (actType === this.typeConfig[i].value) {
           name = this.typeConfig[i].label
           break
         }
@@ -824,7 +829,7 @@ export default {
     getPoolTypeName(poolType) {
       var name = ''
       for (let i = 0; i < this.poolConfig.length; i++) {
-        if (poolType == this.poolConfig[i].value) {
+        if (poolType === this.poolConfig[i].value) {
           name = this.poolConfig[i].label
           break
         }
