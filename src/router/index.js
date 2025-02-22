@@ -951,7 +951,7 @@ export const asyncRoutes = [
                 path: 'pharaohtreasure_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasure_slots_cfg'),
                 name: 'pharaohtreasure_slots_cfg',
-                meta: { title: 'PharaohTreasure' }
+                meta: { title: 'Pharaoh\'sTreasure' }
               },
               {
                 path: 'epicace_slots_cfg',

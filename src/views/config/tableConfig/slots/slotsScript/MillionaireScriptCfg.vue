@@ -693,7 +693,7 @@ export default {
         '83': 'millionairemars',
         '92': 'fortuneacego',
         '91': 'moneycomingmars',
-        '164':'mahjongfortune',
+        '164': 'mahjongfortune',
         '170': 'epicace',
         '171': 'epicacemars',
         '166': 'firelink',
@@ -704,6 +704,7 @@ export default {
         '177': 'puppyhomemars',
         '178': 'mayantotem',
         '180': 'fishingmaster',
+        '184': 'dancelion',
         '100180': 'fishingmaster_x',
         '181': 'fishingmastermars',
         '182': 'godoffortune',
@@ -977,17 +978,17 @@ export default {
         // let org = JSON.parse(JSON.stringify( this.item.OddsCfg));
         json.forEach((row, index) => {
           if (index > 0) {
-            let idx = index-1
-            console.log(index,idx,row)
-            this.item.OddsCfg[idx]= {
-              "OddsMin": row[0]?row[0]:0,
-              "OddsMax":  row[1]?row[1]:0,
-              "ScriptSteps":  row[2]?row[2]:0,
-              "ScriptOddsSum":  row[3]?row[3]:0,
-              "NormalMatrixCacheSize":  row[4]?row[4]:0,
-              "ScatterMatrixCacheSize":row[5]?row[5]:0,
-              "SwitchScatterPercent": row[6]?row[6]:0,
-              "TriggerScatterPercent": row[7]?row[7]:0,
+            let idx = index - 1
+            console.log(index, idx, row)
+            this.item.OddsCfg[idx] = {
+              "OddsMin": row[0] ? row[0] : 0,
+              "OddsMax": row[1] ? row[1] : 0,
+              "ScriptSteps": row[2] ? row[2] : 0,
+              "ScriptOddsSum": row[3] ? row[3] : 0,
+              "NormalMatrixCacheSize": row[4] ? row[4] : 0,
+              "ScatterMatrixCacheSize": row[5] ? row[5] : 0,
+              "SwitchScatterPercent": row[6] ? row[6] : 0,
+              "TriggerScatterPercent": row[7] ? row[7] : 0,
             }
           }
           this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg

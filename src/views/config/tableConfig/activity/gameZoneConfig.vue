@@ -131,15 +131,15 @@
                   </template>
 
                 </el-table-column>
-<!--                <el-table-column-->
-<!--                  prop="GameIconLink"-->
-<!--                  label="游戏icon"-->
-<!--                  width="200"-->
-<!--                >-->
-<!--                  <template v-slot:default="scope">-->
-<!--                    <ImagePicker v-model="scope.row.GameIconLink" />-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
+                <!--                <el-table-column-->
+                <!--                  prop="GameIconLink"-->
+                <!--                  label="游戏icon"-->
+                <!--                  width="200"-->
+                <!--                >-->
+                <!--                  <template v-slot:default="scope">-->
+                <!--                    <ImagePicker v-model="scope.row.GameIconLink" />-->
+                <!--                  </template>-->
+                <!--                </el-table-column>-->
                 <el-table-column
                   prop="GameSort"
                   label="排序"
@@ -295,77 +295,77 @@
         </el-tab-pane>
         <!--///////////////////////////////////-->
 
-<!--        <el-tab-pane label="大厅选场配置">-->
-<!--          <el-row :gutter="5">-->
-<!--            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateHallGames()">-->
-<!--              添加配置-->
-<!--            </el-button>-->
-<!--            <el-form ref="hallGame" v-model="hallGame" label-width="150px" style="margin-top: 10px">-->
-<!--              <el-table-->
-<!--                :data="hallGame"-->
-<!--                border-->
-<!--                style="width: 100%"-->
-<!--                :cell-style="libShow.DefaultTableCell"-->
-<!--                @row-click="clickDataHallGame"-->
-<!--              >-->
-<!--                <el-table-column-->
-<!--                  prop="Gid"-->
-<!--                  label="游戏名称"-->
-<!--                  width="200"-->
-<!--                >-->
-<!--                  <template slot-scope="scope">-->
-<!--                    {{ showGameName(1,scope.row.Gid) }}-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                  prop="IsOpen"-->
-<!--                  label="开关"-->
-<!--                  width="200"-->
-<!--                >-->
-<!--                  <template v-slot:default="scope">-->
-<!--                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />-->
-<!--                  </template>-->
+        <!--        <el-tab-pane label="大厅选场配置">-->
+        <!--          <el-row :gutter="5">-->
+        <!--            <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreateHallGames()">-->
+        <!--              添加配置-->
+        <!--            </el-button>-->
+        <!--            <el-form ref="hallGame" v-model="hallGame" label-width="150px" style="margin-top: 10px">-->
+        <!--              <el-table-->
+        <!--                :data="hallGame"-->
+        <!--                border-->
+        <!--                style="width: 100%"-->
+        <!--                :cell-style="libShow.DefaultTableCell"-->
+        <!--                @row-click="clickDataHallGame"-->
+        <!--              >-->
+        <!--                <el-table-column-->
+        <!--                  prop="Gid"-->
+        <!--                  label="游戏名称"-->
+        <!--                  width="200"-->
+        <!--                >-->
+        <!--                  <template slot-scope="scope">-->
+        <!--                    {{ showGameName(1,scope.row.Gid) }}-->
+        <!--                  </template>-->
+        <!--                </el-table-column>-->
+        <!--                <el-table-column-->
+        <!--                  prop="IsOpen"-->
+        <!--                  label="开关"-->
+        <!--                  width="200"-->
+        <!--                >-->
+        <!--                  <template v-slot:default="scope">-->
+        <!--                    <el-switch v-model="scope.row.IsOpen" :active-value="true" :inactive-value="false" :disabled="true" />-->
+        <!--                  </template>-->
 
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                  prop="IconLink"-->
-<!--                  label="游戏icon"-->
-<!--                  width="200"-->
-<!--                >-->
-<!--                  <template v-slot:default="scope">-->
-<!--                    <ImagePicker v-model="scope.row.IconLink" />-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
-<!--                <el-table-column-->
-<!--                  prop="GameSort"-->
-<!--                  label="排序"-->
-<!--                  width="200"-->
-<!--                />-->
-<!--                <el-table-column-->
-<!--                  label="操作"-->
-<!--                  column-key="op"-->
-<!--                  width="250"-->
-<!--                >-->
-<!--                  <template slot-scope="scope">-->
-<!--                    <el-button-->
-<!--                      type="primary"-->
-<!--                      size="mini"-->
-<!--                      @click="handleEditHallGame(scope.row)"-->
-<!--                    >编辑-->
-<!--                    </el-button>-->
-<!--                    <el-button-->
-<!--                      size="mini"-->
-<!--                      type="warning"-->
-<!--                      @click="handleDeleteHallGame(scope.row)"-->
-<!--                    >删除-->
-<!--                    </el-button>-->
-<!--                  </template>-->
-<!--                </el-table-column>-->
-<!--              </el-table>-->
-<!--            </el-form>-->
+        <!--                </el-table-column>-->
+        <!--                <el-table-column-->
+        <!--                  prop="IconLink"-->
+        <!--                  label="游戏icon"-->
+        <!--                  width="200"-->
+        <!--                >-->
+        <!--                  <template v-slot:default="scope">-->
+        <!--                    <ImagePicker v-model="scope.row.IconLink" />-->
+        <!--                  </template>-->
+        <!--                </el-table-column>-->
+        <!--                <el-table-column-->
+        <!--                  prop="GameSort"-->
+        <!--                  label="排序"-->
+        <!--                  width="200"-->
+        <!--                />-->
+        <!--                <el-table-column-->
+        <!--                  label="操作"-->
+        <!--                  column-key="op"-->
+        <!--                  width="250"-->
+        <!--                >-->
+        <!--                  <template slot-scope="scope">-->
+        <!--                    <el-button-->
+        <!--                      type="primary"-->
+        <!--                      size="mini"-->
+        <!--                      @click="handleEditHallGame(scope.row)"-->
+        <!--                    >编辑-->
+        <!--                    </el-button>-->
+        <!--                    <el-button-->
+        <!--                      size="mini"-->
+        <!--                      type="warning"-->
+        <!--                      @click="handleDeleteHallGame(scope.row)"-->
+        <!--                    >删除-->
+        <!--                    </el-button>-->
+        <!--                  </template>-->
+        <!--                </el-table-column>-->
+        <!--              </el-table>-->
+        <!--            </el-form>-->
 
-<!--          </el-row>-->
-<!--        </el-tab-pane>-->
+        <!--          </el-row>-->
+        <!--        </el-tab-pane>-->
         <!--        ///////////////////////////////-->
         <el-tab-pane label="侧拉栏游戏推荐">
           <el-row :gutter="5">
@@ -472,11 +472,11 @@
           </el-col>
         </el-form-item>
 
-<!--        <el-form-item label="游戏icon：" :required="true" prop="GameIconLink">-->
-<!--          <el-col :span="15">-->
-<!--            <ImagePicker v-model="edit.item.GameIconLink" />-->
-<!--          </el-col>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="游戏icon：" :required="true" prop="GameIconLink">-->
+        <!--          <el-col :span="15">-->
+        <!--            <ImagePicker v-model="edit.item.GameIconLink" />-->
+        <!--          </el-col>-->
+        <!--        </el-form-item>-->
         <el-form-item label="游戏排序：" :required="true" prop="GameSort">
           <el-col :span="15">
             <el-input v-model.number="edit.item.GameSort" />
@@ -563,7 +563,7 @@
       <el-form ref="editHallGame.item" :model="editHallGame.item" label-width="250px" size="small">
         <el-form-item label="大厅选择游戏：" :required="true" prop="Gid">
           <el-col :span="15">
-            <el-select ref="editHallGameSelect" v-model.number="editHallGame.item.Gid" placeholder="请选择" >
+            <el-select ref="editHallGameSelect" v-model.number="editHallGame.item.Gid" placeholder="请选择">
               <el-option
                 v-for="itemHallGame in gameSelect"
                 :key="itemHallGame.id"
@@ -606,6 +606,17 @@
       :close-on-press-escape="false"
     >
       <el-form ref="editZoneGame.item" :model="editZoneGame.item" label-width="250px" size="small">
+
+        <el-form-item label="appID：" :required="true" prop="AppId">
+          <el-radio-group v-model="editZoneGame.item.AppId" >
+            <el-radio v-for="appInfo in appidInfoCfgs" :label="appInfo.value" :key="appInfo.value">{{appInfo.label}}</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="channelID：" :required="true" prop="ChannelId">
+          <el-checkbox-group v-model="editZoneGame.item.ChannelId" >
+            <el-checkbox v-for="channelInfo in channelIdCfgs" :label="channelInfo.value" :key="channelInfo.value">{{channelInfo.label}}</el-checkbox>
+          </el-checkbox-group>
+        </el-form-item>
         <el-form-item
           prop="Desc"
           label="描述"
@@ -667,15 +678,15 @@
               </template>
 
             </el-table-column>
-<!--            <el-table-column-->
-<!--              prop="IconLink"-->
-<!--              label="推荐游戏icon"-->
-<!--              width="200"-->
-<!--            >-->
-<!--              <template v-slot:default="scope">-->
-<!--                <ImagePicker v-model="scope.row.IconLink" />-->
-<!--              </template>-->
-<!--            </el-table-column>-->
+            <!--            <el-table-column-->
+            <!--              prop="IconLink"-->
+            <!--              label="推荐游戏icon"-->
+            <!--              width="200"-->
+            <!--            >-->
+            <!--              <template v-slot:default="scope">-->
+            <!--                <ImagePicker v-model="scope.row.IconLink" />-->
+            <!--              </template>-->
+            <!--            </el-table-column>-->
             <el-table-column
               prop="GameSort"
               label="排序"
@@ -735,7 +746,7 @@ function newItemHallGame() {
   return { Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }
 }
 function newItemZoneGame() {
-  return { Desc: '', Index: -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }] }
+  return { Desc: '', Index: -1, Gids: [], IsOpen: false, Games: [{ Gid: 1, IconLink: '', GameSort: 1, IsOpen: true }], AppId: 1000002, ChannelId: [] }
 }
 export default {
   components: { Compare, ImagePicker, Publish },
@@ -751,6 +762,23 @@ export default {
         item: newItem(),
         isEdit: false
       },
+      appidInfoCfgs: [
+        { 'value': 1000002, 'label': 'dayusenlin' },
+        { 'value': 1000003, 'label': 'testaccount' },
+        { 'value': 1000004, 'label': 'testkey' },
+        { 'value': 1000005, 'label': 'BingoPlusTongits' },
+        { 'value': 1000006, 'label': 'BingoPlusTest' },
+        { 'value': 1000007, 'label': 'br' },
+        { 'value': 1100000, 'label': 'xworld' }
+      ],
+      channelIdCfgs: [
+        { 'value': 'BP', 'label': 'BP' },
+        { 'value': 'AP', 'label': 'AP' },
+        { 'value': 'GP', 'label': 'GP' },
+        { 'value': 'TP', 'label': 'TP' },
+        { 'value': 'PG', 'label': 'PG' },
+        { 'value': 'Dev', 'label': 'Dev' }
+      ],
       editOtherGameZone: {
         visible: false,
         item: newItemOtherGameZone(),
@@ -966,7 +994,7 @@ export default {
           const objsZone = response.Data || []
           const dataZone = {}
           for (let i = 0; i < objsZone.length; i++) {
-            const objZone = objsZone[i]
+            let objZone = objsZone[i]
             if (objZone.ShowDatacenter !== 1) {
               continue
             }
@@ -1184,7 +1212,7 @@ export default {
             } else {
               this.zoneGame = this.item.ZoneGame
               for (let i = 0; i < this.zoneGame.length; i++) {
-                if(this.zoneGame[i].Desc == null) {
+                if (this.zoneGame[i].Desc == null) {
                   this.zoneGame[i].Desc = ''
                 }
               }
@@ -1356,7 +1384,7 @@ export default {
       }
       return false
     },
-    checkZoneGames(gids,index) {
+    checkZoneGames(gids, index) {
       if (gids.length <= 0) {
         return false
       }
@@ -1369,32 +1397,34 @@ export default {
         return false
       }
       gameSelArray = []
+      const nowGameSelArray = []
       for (let i = 0; i < this.zoneGame.length; i++) {
         if (this.zoneGame[i].Index === index) {
-          continue
+            for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+              for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+                nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
+              }
+            }
+        } else {
+            for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+              for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+                gameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
+              }
+            }
         }
-        gameSelArray.push(...this.zoneGame[i].Gids)
       }
-      // if (gameSelArray.length === 0) {
-      //   return true
-      // }
-      const intersection = gameSelArray.filter(value => gids.includes(value))
+
+      const intersection = gameSelArray.filter(value => nowGameSelArray.includes(value))
       return intersection.length <= 0
     },
     saveZoneGameD() {
       const newData = JSON.parse(JSON.stringify(this.editZoneGame.item))
 
-      if (!this.checkZoneGames(this.editZoneGame.item.Gids,this.editZoneGame.item.Index)) {
+      if (!this.checkZoneGames(this.editZoneGame.item.Gids, this.editZoneGame.item.Index)) {
         this.$alert(`添加错误，游戏不存在`, '提示', { type: 'warning' })
         return
       }
-      // for (let i = 0; i < this.editZoneGame.item.Games.length; i++) {
-      //   const game = this.editZoneGame.item.Games[i]
-      //   if (!this.checkGames(game.Gid)) {
-      //     this.$alert(`推荐游戏添加错误，游戏不存在`, '提示', { type: 'warning' })
-      //     return
-      //   }
-      // }
+
       const index = this.zoneGame.findIndex(item => item.Index === this.editZoneGame.item.Index)
       if (this.editZoneGame.isEdit) {
         this.zoneGame.splice(index, 1, newData)
@@ -1487,6 +1517,13 @@ export default {
       for (let i = 0; i < this.zoneGame.length; i++) {
         const data = this.zoneGame[i]
         if (data.Index === id) {
+          if (data.AppId == null){
+            data.AppId = 1000002
+            data.ChannelId = ['BP', 'AP', 'GP', 'TP', 'PG', 'Dev']
+          }
+          if (Array.isArray(data.AppId)){
+            data.AppId = 1000002
+          }
           return data
         }
       }
@@ -1619,7 +1656,7 @@ export default {
       //   this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
       //   return
       // }
-      const gid = id[id.length-1]
+      const gid = id[id.length - 1]
       const lengthZoneGame = this.zoneGame.length
       for (let i = 0; i < lengthZoneGame - 1; i++) {
         const gids = this.zoneGame[i].Gids

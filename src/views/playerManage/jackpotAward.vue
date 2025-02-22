@@ -245,7 +245,8 @@ export default {
         { 'value': 156, 'label': 'CrazyAce' },
         { 'value': 82, 'label': 'Millionaire' },
         { 'value': 166, 'label': 'FireLink' },
-        { 'value': 174, 'label': 'TreasureBowl' }
+        { 'value': 174, 'label': 'TreasureBowl' },
+        { 'value': 196, 'label': 'GoldMiner' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },
