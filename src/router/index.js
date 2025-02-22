@@ -2142,6 +2142,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldminer_slots_log',
             meta: { title: 'GoldMiner', gid: 196 }
+          },
+          {
+            path: 'dancelion_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'dancelion_slots_log',
+            meta: { title: 'Dance of the Lion', gid: 184 }
           }
         ]
       },
