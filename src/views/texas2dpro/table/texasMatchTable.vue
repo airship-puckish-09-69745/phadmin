@@ -494,7 +494,10 @@ export default {
         { key: '[1]188奖池赛', value: 1 },
         { key: '[2]1288单场赛', value: 2 },
         { key: '[3]固定奖励3', value: 3 },
-        { key: '[4]Daily Free', value: 4 }
+        { key: '[4]Daily Free', value: 4 },
+        { key: '[5]3人赛投注金测试', value: 5 },
+        { key: '[6]188投注金', value: 6 },
+        { key: '[7]1288投注金', value: 7 },
       ],
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
