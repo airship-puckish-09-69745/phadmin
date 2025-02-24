@@ -996,10 +996,10 @@ export const asyncRoutes = [
                 meta: { title: 'ArcaneEgypt' }
               },
               {
-                path: 'roadking_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/roadking_slots_cfg.vue'),
-                name: 'roadking_slots_cfg',
-                meta: { title: 'RoadKing' }
+                path: 'goldtrain_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldtrain_slots_cfg.vue'),
+                name: 'goldtrain_slots_cfg',
+                meta: { title: 'GoldTrain' }
               },
               {
                 path: 'goldminer_slots_cfg',
@@ -2132,16 +2132,22 @@ export const asyncRoutes = [
             meta: { title: 'MayanTotem', gid: 178 }
           },
           {
-            path: 'roadking_slots_log',
+            path: 'goldtrain_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'roadking_slots_log',
-            meta: { title: 'RoadKing', gid: 194 }
+            name: 'goldtrain_slots_log',
+            meta: { title: 'GoldTrain', gid: 194 }
           },
           {
             path: 'goldminer_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldminer_slots_log',
             meta: { title: 'GoldMiner', gid: 196 }
+          },
+          {
+            path: 'dancelion_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'dancelion_slots_log',
+            meta: { title: 'Dance of the Lion', gid: 184 }
           }
         ]
       },
@@ -2320,10 +2326,10 @@ export const asyncRoutes = [
             meta: { title: 'BountyRaid(审)', gid: 193 }
           },
           {
-            path: 'roadking_slots_log',
+            path: 'goldtrain_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'roadking_slots_log',
-            meta: { title: 'RoadKing(审)', gid: 195 }
+            name: 'goldtrain_slots_log',
+            meta: { title: 'GoldTrain(审)', gid: 195 }
           }
         ]
       },
