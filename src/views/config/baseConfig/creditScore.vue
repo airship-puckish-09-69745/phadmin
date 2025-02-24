@@ -4,14 +4,15 @@
     <el-row :gutter="5" style="margin-top: 30px">
       <el-form ref="item" :model="item" label-width="200px">
         <el-col :span="16" :offset="3">
+          <el-button type="primary" size="mini" @click="statDialog=true">查看获取统计信息</el-button>
           <fieldset style="margin-top:10px">
             <legend>信誉用户参考值</legend>
             <el-input placeholder="请输入内容" v-model.number="item.value">
               <template slot="prepend">信誉用户达标信誉分值：</template>
             </el-input>
-            <el-input placeholder="请输入内容" v-model.number="item.updateDelta">
+            <!-- <el-input placeholder="请输入内容" v-model.number="item.updateDelta">
               <template slot="prepend">信誉分刷新时间间隔(s)：</template>
-            </el-input>
+            </el-input> -->
           </fieldset>
           <fieldset style="margin-top:10px">
             <legend>封顶配置</legend>
@@ -57,6 +58,7 @@
                 :row-style="{height:'10px'}"
                 :cell-style="libShow.DefaultTableCell"
                 style="width: 100%"
+                height="600"
               >
                 <el-table-column
                   type="index"
@@ -123,7 +125,79 @@
       </el-form>
     </el-row>
 
-    <!-- 【dialog】编辑机器人人数 -->
+    <!-- 【dialog】数据统计 -->
+    <el-dialog
+      title="好友列表"
+      :visible.sync="statDialog"
+      width="60%"
+    >
+      <el-form :inline="true" :model="form" class="demo-form-inline">
+        <el-date-picker
+          v-model="daterange"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+        <el-form-item>
+          <el-button type="primary" @click="getStat">查询</el-button>
+        </el-form-item>
+      </el-form>
+      <span>
+        <el-table
+          ref="filterTable"
+          :data="stat"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="date"
+            label="日期"
+            sortable
+            width="120"
+          />
+          <el-table-column
+            prop="userCount"
+            label="历史总用户数量"
+            sortable
+          />
+          <el-table-column
+            prop="kycCount"
+            label="已KYC验证用户数量"
+          />
+          <el-table-column
+            prop="creditCount"
+            label="信誉分达标用户数量"
+          />
+          <el-table-column
+            prop="gid21"
+            label="Pusoy黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid113"
+            label="PusoySwap黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid22"
+            label="Tongits黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid28"
+            label="TongitsLaizi黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid29"
+            label="TongitsQuick黑名单用户数量"
+          />
+        </el-table>
+      </span>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -134,7 +208,7 @@ import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
-import { $libShow, DataRule, ValidateVueItem } from '@/utils/common'
+import { $libDate,$libShow, DataRule, ValidateVueItem } from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 
 export default {
@@ -142,6 +216,11 @@ export default {
   components: { Compare, Publish, BetAmount },
   data() {
     return {
+      daterange: [
+        $libDate.GetDayBegin(new Date().getTime()-86400*8*1000),
+        $libDate.GetDayBegin(new Date().getTime()-86400*1*1000)
+      ],
+      statDialog: false,
       item: {
         updateDelta: 86400,
         value: 20000,
@@ -183,6 +262,7 @@ export default {
       isHidden: true, // 默认隐藏
       testCards: '',
       form: {},
+      stat: [],
       BetOddsList: [],
       subKey: 'credit_score_cfg',
       libShow: $libShow,
@@ -238,6 +318,26 @@ export default {
             console.log("xxxxxx")
             this.limitConf = [item.flowLimit, item.playLimit, item.ggrLimit]
             this.glconf = item.glconf
+          }
+        }
+      })
+    },
+    getStat() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/misc/credit/stat',
+          From: this.daterange[0]/1000,
+          To: this.daterange[1]/1000,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log(response.Data)
+          this.stat = response.Data || {}
+          if (response.Data !== '') {
+            this.stat = response.Data
           }
         }
       })
