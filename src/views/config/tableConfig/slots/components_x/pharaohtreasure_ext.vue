@@ -41,7 +41,7 @@
           </el-form-item>
 
           <el-form-item label="免费模式下增加免费次数概率">
-            <el-input v-model.number="cfg.AddFreeTimes" placeholder="免费模式出现三个scatter,就可以增加次数5次"> <template slot="append">%</template> </el-input>
+            <el-input v-model.number="cfg.AddFreeTimesRate" placeholder="免费模式出现三个scatter,就可以增加次数5次"> <template slot="append">%</template> </el-input>
           </el-form-item>
 
         </el-form>
