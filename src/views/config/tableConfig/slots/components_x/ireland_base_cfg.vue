@@ -62,7 +62,7 @@
               <el-option label="180:FishingMaster" :value="180" />
               <el-option label="181:FishingMaster Mars" :value="181" />
               <el-option label="GodOfFortune" :value="182" />
-              <el-option label="DanceLion" :value="184" />
+              <el-option label="Dance of the Lion" :value="184" />
               <el-option label="186:MahjongJackpot" :value="186" />
               <el-option label="ArcaneEgypt" :value="190" />
               <el-option label="194:RoadKing" :value="194" />
