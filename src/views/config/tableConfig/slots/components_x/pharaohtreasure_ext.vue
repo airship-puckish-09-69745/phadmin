@@ -40,6 +40,10 @@
             <el-input v-model="cfg.MultiOddsWeightInScatter"> <template slot="append">从大到小排列,用逗号分割,对应scatter多倍符号值</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="免费模式下增加免费次数概率">
+            <el-input v-model.number="cfg.AddFreeTimes" placeholder="免费模式出现三个scatter,就可以增加次数5次"> <template slot="append">%</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
