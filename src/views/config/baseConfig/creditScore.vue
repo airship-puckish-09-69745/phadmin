@@ -10,9 +10,9 @@
             <el-input placeholder="请输入内容" v-model.number="item.value">
               <template slot="prepend">信誉用户达标信誉分值：</template>
             </el-input>
-            <!-- <el-input placeholder="请输入内容" v-model.number="item.updateDelta">
+            <el-input placeholder="请输入内容" v-model.number="item.updateDelta">
               <template slot="prepend">信誉分刷新时间间隔(s)：</template>
-            </el-input> -->
+            </el-input>
           </fieldset>
           <fieldset style="margin-top:10px">
             <legend>封顶配置</legend>
