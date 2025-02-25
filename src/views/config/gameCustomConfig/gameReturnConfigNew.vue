@@ -32,15 +32,15 @@
             <el-form-item l>
               <el-button type="primary" size="mini" @click="refresh">查询</el-button>
             </el-form-item>
-            <el-form-item label="启用配置">
+            <el-form-item label="配置状态">
               <el-switch
-                  v-model="isEnabled"
-                  active-text="开"
-                  inactive-text="关"
+                  v-model="isDisabled"
+                  active-text="启用"
+                  inactive-text="禁用"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
-                  :active-value="true"
-                  :inactive-value="false"
+                  :active-value="false"
+                  :inactive-value="true"
                   @change="disabledSwitch"
                 />
             </el-form-item>
@@ -203,7 +203,7 @@ export default {
       appInfo: [],
       channel: 'Dev',
       appId: 1000002,
-      isEnabled: false,
+      isDisabled: false,
 
       channelOptions: [
         // {key: "0", label: '请选择'},
@@ -510,7 +510,7 @@ export default {
       }
       for (let i=0; i < this.enableds.length; i++) {
         if (this.enableds[i].app_id === this.appId && this.enableds[i].channel === this.channel) {
-          this.enableds[i].enabled = yes
+          this.enableds[i].disabled = yes
           find = true
           break
         }
@@ -520,25 +520,25 @@ export default {
         this.enableds.push({
           app_id: this.appId,
           channel: this.channel,
-          enabled: yes
+          disabled: yes
         })
         console.log(this.enableds)
       }
     },
     refreshEnabled(val) {
       console.log(this.enableds)
-      console.log(this.appId, this.channel,this.isEnabled)
+      console.log(this.appId, this.channel,this.isDisabled)
       if (this.enableds === undefined) {
-        this.isEnabled = false
+        this.isDisabled = false
         return
       }
       for (let i=0; i < this.enableds.length; i++) {
         if (this.enableds[i].app_id === this.appId && this.enableds[i].channel === this.channel) {
-          this.isEnabled = this.enableds[i].enabled
+          this.isDisabled = this.enableds[i].disabled
           return
         }
       }
-      this.isEnabled = false
+      this.isDisabled = false
     }
   }
 }
