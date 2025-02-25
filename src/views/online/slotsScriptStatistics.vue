@@ -401,7 +401,7 @@
             </el-row>
           </el-col>
           <el-col
-            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166"
+            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166 || queryGid == 196"
             :span="13"
             :offset="1"
           >

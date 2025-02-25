@@ -2,18 +2,19 @@
   <div class="app-container">
     <el-row style="margin-bottom: 10px;">
       <el-col :span="24">
-        <el-alert type="success" description="数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询" />
+        <el-alert type="success"
+                  description="数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询"/>
       </el-col>
     </el-row>
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
+          <UidInput @setUid="function(iUid){item.Uid=iUid}"/>
         </el-form-item>
         <el-form-item label="类型：">
           <el-select v-model="item.actType" size="mini">
-            <el-option label="全部" :value="-1" />
-            <el-option v-for="(o,k) in typeNames" :label="o" :value="k" />
+            <el-option label="全部" :value="-1"/>
+            <el-option v-for="(o,k) in typeNames" :label="o" :value="k"/>
           </el-select>
         </el-form-item>
         <el-form-item label="日期：">
@@ -27,7 +28,8 @@
         <el-form-item>
           <el-switch
             v-model="isVup"
-          /> 小黑屋
+          />
+          小黑屋
         </el-form-item>
         <el-form-item>
           <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
@@ -49,7 +51,10 @@
           <el-descriptions-item label="总局数："> {{ statData.round }}</el-descriptions-item>
           <el-descriptions-item label="总下注金额："> {{ formatNumber(statData.betMoney / 1000) }}</el-descriptions-item>
           <el-descriptions-item label="总返奖金额："> {{ formatNumber(statData.winMoney / 1000) }}</el-descriptions-item>
-          <el-descriptions-item label="总赢：">{{ formatNumber(statData.winMoney / 1000 - statData.betMoney / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="总赢：">{{
+              formatNumber(statData.winMoney / 1000 - statData.betMoney / 1000)
+            }}
+          </el-descriptions-item>
           <el-descriptions-item label="抽水：">{{ formatNumber(statData.totalFee / 1000) }}</el-descriptions-item>
         </el-descriptions>
       </el-col>
@@ -78,7 +83,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <DateTimeShow :show-type="4" :timestamp="scope.row.Uptime" />
+            <DateTimeShow :show-type="4" :timestamp="scope.row.Uptime"/>
           </template>
         </el-table-column>
         <el-table-column
@@ -100,7 +105,7 @@
           width="70"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.Bet/1000) }}
+            {{ formatNumber(scope.row.Bet / 1000) }}
           </template>
         </el-table-column>
 
@@ -110,7 +115,7 @@
           width="90"
         >
           <template slot-scope="scope">
-            {{ scope.row.BetOdds ? betOddsNumber(scope.row.BetOdds, gid) : 0}}
+            {{ scope.row.BetOdds ? betOddsNumber(scope.row.BetOdds, gid) : 0 }}
           </template>
         </el-table-column>
 
@@ -119,7 +124,7 @@
           label="输赢"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.ReturnBet/1000) }}
+            {{ formatNumber(scope.row.ReturnBet / 1000) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -127,7 +132,7 @@
           label="服务费"
         >
           <template slot-scope="scope">
-            {{ formatNumber(scope.row.ServiceFee/1000) }}
+            {{ formatNumber(scope.row.ServiceFee / 1000) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -173,56 +178,61 @@
               </template>
             </el-table-column>
             <el-table-column label="中奖数额">
-              <template  slot-scope="scope">
-                {{ scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null }}
+              <template slot-scope="scope">
+                {{
+                  scope.row.JackpotLogObj.JackpotInfo ? scope.row.JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null
+                }}
               </template>
             </el-table-column>
           </el-table-column>
         </template>
         <template
-          v-if="[51,52,53,54,57,58,59,66,67,76,78,80,82,84,86, 88, 90, 92, 94, 96, 98, 150,152,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168,196].indexOf(gid) >= 0">
+          v-if="gid % 2 === 0">
           <el-table-column
             header-align="center"
             label="剧本"
           >
-            <el-table-column prop="ActLogObj.ActOdds" label="剧本倍率" />
-            <el-table-column prop="ActLogObj.TargetOdds" label="目标倍率" />
-            <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率" />
-            <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70" />
-            <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100" />
-            <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" v-if="!isActV2(gid)" />
-            <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit" />
-            <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" v-if="!isActV2(gid)" />
-            <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池" v-if="!isActV2(gid)" />
-            <el-table-column prop="ActLogObj.DoWinRate" label="执行胜率" v-if="!isActV2(gid)" />
-            <el-table-column prop="ActLogObj.CurrentWinRate" :formatter="showWinRate" label="当前胜率" v-if="!isActV2(gid)" />
+            <el-table-column prop="ActLogObj.ActOdds" label="剧本倍率"/>
+            <el-table-column prop="ActLogObj.TargetOdds" label="目标倍率"/>
+            <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率"/>
+            <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70"/>
+            <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100"/>
+            <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit"/>
+            <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池"
+                             v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.DoWinRate" label="执行胜率" v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.CurrentWinRate" :formatter="showWinRate" label="当前胜率"
+                             v-if="!isActV2(gid)"/>
             <el-table-column prop="ActLogObj.ScriptCol" label="剧本坐标">
               <template slot-scope="scope">
                 {{ showPosition(scope.row) }}
               </template>
             </el-table-column>
-            <el-table-column prop="ActLogObj.RandomFlag" :formatter="showRandomFlag" label="随机flag" />
-            <el-table-column prop="ActLogObj.RandomOdds" label="目标倍率" />
-            <el-table-column prop="ActLogObj.DoRandomOdds" label="执行目标倍率" />
-            <el-table-column prop="ActLogObj.HitOdds" label="最终倍率" />
+            <el-table-column prop="ActLogObj.RandomFlag" :formatter="showRandomFlag" label="随机flag"/>
+            <el-table-column prop="ActLogObj.RandomOdds" label="目标倍率"/>
+            <el-table-column prop="ActLogObj.DoRandomOdds" label="执行目标倍率"/>
+            <el-table-column prop="ActLogObj.HitOdds" label="最终倍率"/>
             <el-table-column prop="ActLogObj.IsWinRateSwitchScript" :formatter="showBool" label="切换脚本">
               <template slot-scope="scope">
-                <span v-if="scope.row.ActLogObj.IsWinRateSwitchScript || scope.row.ActLogObj.IsFinishSwitchScript" style="color:red">{{ scope.row.ActLogObj.IsWinRateSwitchScript?'胜率变换':'剧本切换' }}</span>
+                <span v-if="scope.row.ActLogObj.IsWinRateSwitchScript || scope.row.ActLogObj.IsFinishSwitchScript"
+                      style="color:red">{{ scope.row.ActLogObj.IsWinRateSwitchScript ? '胜率变换' : '剧本切换' }}</span>
                 <span v-else>否</span>
               </template>
             </el-table-column>
-            <el-table-column prop="ActLogObj.SwitchScriptBeforeTargetOdds" label="切换前目标倍率" />
-            <el-table-column prop="ActLogObj.SwitchScriptBeforeCurrentOdds" label="切换前执行倍率" />
-            <el-table-column prop="ActLogObj.SwitchScriptBeforeOverflow" label="切换前溢出值" />
-            <el-table-column prop="ActLogObj.IsFinishCurrentOdds" :formatter="showBool" label="是否执行完当前目标倍率" />
-            <el-table-column prop="ActLogObj.NextOverflow" label="下一个倍率溢出值" />
-            <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率" />
-            <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" v-if="!isActV2(gid)" />
-            <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" v-if="!isActV2(gid)" />
+            <el-table-column prop="ActLogObj.SwitchScriptBeforeTargetOdds" label="切换前目标倍率"/>
+            <el-table-column prop="ActLogObj.SwitchScriptBeforeCurrentOdds" label="切换前执行倍率"/>
+            <el-table-column prop="ActLogObj.SwitchScriptBeforeOverflow" label="切换前溢出值"/>
+            <el-table-column prop="ActLogObj.IsFinishCurrentOdds" :formatter="showBool" label="是否执行完当前目标倍率"/>
+            <el-table-column prop="ActLogObj.NextOverflow" label="下一个倍率溢出值"/>
+            <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率"/>
+            <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" v-if="!isActV2(gid)"/>
 
-            <el-table-column prop="ActLogObj.CollectOddsAdd" label="收集倍率增加" v-if="isActCollect(gid)" />
-            <el-table-column prop="ActLogObj.CollectOddsSub" label="收集倍率扣减" v-if="isActCollect(gid)" />
-            <el-table-column prop="ActLogObj.CollectOddsTotal" label="累计收集倍率" v-if="isActCollect(gid)" />
+            <el-table-column prop="ActLogObj.CollectOddsAdd" label="收集倍率增加" v-if="isActCollect(gid)"/>
+            <el-table-column prop="ActLogObj.CollectOddsSub" label="收集倍率扣减" v-if="isActCollect(gid)"/>
+            <el-table-column prop="ActLogObj.CollectOddsTotal" label="累计收集倍率" v-if="isActCollect(gid)"/>
 
             <el-table-column prop="ActLogObj.IsLotteryLimit" label="保底限制" v-if="isActV2(gid)">
               <template slot-scope="scope">
@@ -242,7 +252,7 @@
         width="50%"
       >
         <p>命中支付线：{{ detailPayLine }}</p>
-        <div id="slotsLogDetail" v-html="detailContent" />
+        <div id="slotsLogDetail" v-html="detailContent"/>
       </el-dialog>
     </el-row>
     <el-row type="flex" justify="end">
@@ -261,7 +271,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
   </div>
 </template>
@@ -271,9 +281,9 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
+import {$libDate, $libShow, ClientTableData, MoneyShow} from '@/utils/common'
 import store from '@/store'
-import { Message } from 'element-ui'
+import {Message} from 'element-ui'
 import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
 
@@ -281,17 +291,17 @@ function newChartData() {
   return {
     xData: [],
     yData: [
-      { Name: '个人输赢', Data: [] },
-      { Name: '资产', Data: [] },
-      { Name: 'Winning', Data: [] },
-      { Name: '危险系数', Data: [] }
+      {Name: '个人输赢', Data: []},
+      {Name: '资产', Data: []},
+      {Name: 'Winning', Data: []},
+      {Name: '危险系数', Data: []}
     ]
   }
 }
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { DateTimeShow, Compare, Publish, UidInput, LineChart},
+  components: {DateTimeShow, Compare, Publish, UidInput, LineChart},
   data() {
     return {
       gid: 0,
@@ -316,7 +326,7 @@ export default {
       totalCount: 0,
       currentPage: 0,
       pageNum: 20,
-      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot' },
+      typeNames: {0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot'},
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -334,7 +344,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78,80,82,84,86,88,90,92,94,96,98,150,154,156,158,160,162,164,166,170,172,188,192,180,176,182,174,178,168,196].indexOf(gid) >= 0
+      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170, 172, 188, 192, 180, 176, 182, 174, 178, 168, 196, 184].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -389,7 +399,7 @@ export default {
     },
     initChartData() {
       console.log(1)
-      const objs = this.dataArr.sort(function(a, b) {
+      const objs = this.dataArr.sort(function (a, b) {
         return a.Uptime - b.Uptime
       })
       const chartData = newChartData()
@@ -426,11 +436,11 @@ export default {
           let prefix = ''
           if (row.ActLogObj.hasOwnProperty('SheetIndex') && row.ActLogObj.hasOwnProperty('ActId') && row.ActLogObj.ActId > 0) {
             if (row.ActLogObj.SheetIndex === -2) {
-              prefix='指定正数'
+              prefix = '指定正数'
             } else if (row.ActLogObj.SheetIndex === -1) {
-              prefix='指定负数'
+              prefix = '指定负数'
             } else {
-              prefix='常规'+(row.ActLogObj.SheetIndex+1)
+              prefix = '常规' + (row.ActLogObj.SheetIndex + 1)
             }
           }
           return prefix + '(' + (row.ActLogObj.ScriptRow + 1) + ',' + (row.ActLogObj.ScriptCol + 1) + ')'
@@ -498,7 +508,7 @@ export default {
       return n.toLocaleString()
     },
     betOddsNumber(n, gid) {
-      if (n != 0 && n != 1){
+      if (n != 0 && n != 1) {
         n = n / 1000
       }
       return n.toLocaleString()
@@ -587,7 +597,7 @@ export default {
         return null
       }
 
-      if (gid === 174){
+      if (gid === 174) {
         switch (type) {
           case 5:
             return 'MINI'
@@ -632,16 +642,17 @@ export default {
 </script>
 
 <style>
-    #slotsLogDetail table {
-        border-collapse: collapse;
-        width: 100%;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-    #slotsLogDetail table td{
-        border: 1px solid #eee;
-        height: 31px;
-        line-height: 31px;
-        padding: 2px;
-    }
+#slotsLogDetail table {
+  border-collapse: collapse;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#slotsLogDetail table td {
+  border: 1px solid #eee;
+  height: 31px;
+  line-height: 31px;
+  padding: 2px;
+}
 </style>

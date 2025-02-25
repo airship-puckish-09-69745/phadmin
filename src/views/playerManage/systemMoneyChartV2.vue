@@ -78,11 +78,11 @@
           <div class="card-panel-description">
             <div class="card-panel-text">
               {{ gameNames[o] }}：<span :class="getSummaryClass(summary[o],false)"> {{
-                getSummaryResult(summary[o],false).toFixed(2)
+                getSummaryResult(summary[o], false).toFixed(2)
               }}%</span>
             </div>
             <div>
-              收益：{{ getSystemGot(summary[o],false) }}
+              收益：{{ getSystemGot(summary[o], false) }}
             </div>
             <div>
               流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -103,15 +103,15 @@
             @click="getInfo(o,2)"
           >
             <el-tooltip class="item" effect="dark" placement="top" :disabled="o!=37">
-              <div slot="content" style="white-space: pre-line;font-size: 14px" v-html="getBlackJackTitle()" />
+              <div slot="content" style="white-space: pre-line;font-size: 14px" v-html="getBlackJackTitle()"/>
               <div class="card-panel-description">
                 <div class="card-panel-text">
                   {{ gameNames[o] }}：<span
-                    :class="getSummaryClass(summary[o],false)"
-                  > {{ getSummaryResult(summary[o],false).toFixed(2) }}%</span>
+                  :class="getSummaryClass(summary[o],false)"
+                > {{ getSummaryResult(summary[o], false).toFixed(2) }}%</span>
                 </div>
                 <div>
-                  收益：{{ getSystemGot(summary[o],false) }}
+                  收益：{{ getSystemGot(summary[o], false) }}
                 </div>
                 <div>
                   流水：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -140,7 +140,7 @@
                 }}%</span>
               </div>
               <div>
-                收益：{{ getSystemGot(summary[o],true) }}
+                收益：{{ getSystemGot(summary[o], true) }}
               </div>
               <div>
                 总下注：{{ summary[o] ? formatNumber(Math.floor(summary[o].Bet / 1000)) : 0 }}
@@ -183,7 +183,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px" />
+      <line-chart :chart-data="chartData" height="600px"/>
     </el-row>
     <el-dialog
       title="在线用户详情"
@@ -264,18 +264,18 @@ import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import LineChart from './components/LineChart'
-import { $libDate, $libShow, MoneyShow } from '@/utils/common'
-import { IsMars, IsProd } from '@/utils/env'
+import {$libDate, $libShow, MoneyShow} from '@/utils/common'
+import {IsMars, IsProd} from '@/utils/env'
 import store from '@/store'
-import { Message } from 'element-ui'
-import { mapGetters } from 'vuex'
+import {Message} from 'element-ui'
+import {mapGetters} from 'vuex'
 
 function newHealthData() {
   return {
     xData: [],
     yData: [
-      { Name: '昨日收益', Data: [] },
-      { Name: '今日收益', Data: [] }
+      {Name: '昨日收益', Data: []},
+      {Name: '今日收益', Data: []}
     ]
   }
 }
@@ -284,12 +284,12 @@ function newOriginData() {
   return {
     xData: [],
     yData: [
-      { Name: '昨日系统赢', Data: [] },
-      { Name: '昨日台费', Data: [] },
-      { Name: '昨日有效流水', Data: [] },
-      { Name: '今日系统赢', Data: [] },
-      { Name: '今日台费', Data: [] },
-      { Name: '今日有效流水', Data: [] }
+      {Name: '昨日系统赢', Data: []},
+      {Name: '昨日台费', Data: []},
+      {Name: '昨日有效流水', Data: []},
+      {Name: '今日系统赢', Data: []},
+      {Name: '今日台费', Data: []},
+      {Name: '今日有效流水', Data: []}
     ]
   }
 }
@@ -297,7 +297,7 @@ function newOriginData() {
 export default {
   name: 'SystemMoney',
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, UidInput, LineChart },
+  components: {Compare, Publish, UidInput, LineChart},
   data() {
     return {
       item: {
@@ -315,7 +315,12 @@ export default {
       libMoney: new MoneyShow(['MoneyWon', 'MoneyLose', 'MoneyTax', 'MoneyBet']),
       gid: 10000,
       summary: {},
-      total: { 1: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }, 2: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }, 3: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }, 4: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }}, // 不同筛选下的汇总
+      total: {
+        1: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0},
+        2: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0},
+        3: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0},
+        4: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
+      }, // 不同筛选下的汇总
       gameNames: {
         10: 'Crash',
         15: 'Texas Poker',
@@ -380,7 +385,7 @@ export default {
         150: 'SuperGems3',
         156: 'Crazy Ace',
         158: 'Shark Kingdom',
-        168: 'Pharaoh Treasure',
+        168: 'Pharaoh\'s Treasure',
         118: 'Car Racing',
         120: 'Tongits Swap',
         162: 'Major Ace',
@@ -398,9 +403,11 @@ export default {
         174: 'Treasure Bowl',
         176: 'Puppy Home',
         182: 'God Of Fortune',
+        184: 'DanceLion',
         186: 'MahjongJackpot',
         178: 'Mayan Totem',
         194: 'RoadKing',
+        196: 'GoldMiner',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
@@ -419,7 +426,7 @@ export default {
       sortOrder: [],
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT,
-      authorityNum:0,
+      authorityNum: 0,
     }
   },
   computed: {
@@ -451,7 +458,7 @@ export default {
     console.log(this.$store.state.user.pers['USER_MANAGEMENT'])
   },
   methods: {
-    async getAllData(){
+    async getAllData() {
       await this.getAuthorityData()
 
       await this.getInfo(this.gid)
@@ -512,7 +519,7 @@ export default {
             const ob = this.summary[gid]
             if (ob) {
               const got = ob.Lose + ob.Tax - ob.Won
-              objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
+              objs.push({Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0})
             }
           } else {
             objs.push({
@@ -523,11 +530,11 @@ export default {
           }
         }
         if (this.selectOrder === 2) {
-          objs = objs.sort(function(a, b) {
+          objs = objs.sort(function (a, b) {
             return b.Got - a.Got
           })
         } else {
-          objs = objs.sort(function(a, b) {
+          objs = objs.sort(function (a, b) {
             return b.Sum - a.Sum
           })
         }
@@ -545,7 +552,7 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 168)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 168, 196)
         }
       }
     },
@@ -592,7 +599,7 @@ export default {
         SortOrder = ob.order === 'ascending' ? 1 : -1
       }
 
-      const compare = function(a, b) {
+      const compare = function (a, b) {
         const val1 = a[SortName]
         const val2 = b[SortName]
         if (val1 < val2) {
@@ -702,7 +709,7 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
-    tableRowClassName({ row, rowIndex }) {
+    tableRowClassName({row, rowIndex}) {
       if (row.IsPay) {
         return 'success-row'
       }
@@ -756,18 +763,18 @@ export default {
             console.log($this.summary)
 
             let totalOnline = 0
-            $this.total[2] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
-            $this.total[3] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
-            $this.total[4] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
-            $this.total[1] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[2] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
+            $this.total[3] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
+            $this.total[4] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
+            $this.total[1] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
 
-              for (const responseElement of $this.defaultOrder) {
-                has.push(responseElement)
-              }
+            for (const responseElement of $this.defaultOrder) {
+              has.push(responseElement)
+            }
 
-            console.log("=======",this.sortOrder)
+            console.log("=======", this.sortOrder)
             for (const o in $this.summary) {
-              if ($this.authorityNum>0 &&!has.includes(parseInt(o))){
+              if ($this.authorityNum > 0 && !has.includes(parseInt(o))) {
                 continue
               }
               if (o === '10000') {
@@ -835,7 +842,7 @@ export default {
             }
           }
         }
-        datas.sort(function(a, b) {
+        datas.sort(function (a, b) {
           return a.Ante - b.Ante
         })
         for (const o of datas) {
@@ -887,7 +894,7 @@ export default {
         preObjs = objs
       }
       if (preObjs.length > 0) {
-        preObjs.sort(function(a, b) {
+        preObjs.sort(function (a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }
@@ -898,7 +905,7 @@ export default {
         })
       }
       if (objs.length > 0) {
-        objs.sort(function(a, b) {
+        objs.sort(function (a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }

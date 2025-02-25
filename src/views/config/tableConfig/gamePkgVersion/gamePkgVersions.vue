@@ -1505,7 +1505,7 @@ export default {
       
       // 正式发布才@相关人员
       if (step === 5 && this.env === 'pro') {
-        msg += '<at user_id="ou_bb0bd6f4c6ee50ff7c7293d2830998a9">xiong</at><at user_id="ou_3e515e261edc919b26c52c8c71594e5a">SamYe</at><at user_id="ou_91aa565bf3fffa8b0d708b298e67e970">高勋</at>\r\n'
+        msg += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at><at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at><at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>\r\n'
       }
       console.log("change content", msg)
       request({
