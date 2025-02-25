@@ -364,6 +364,10 @@ export default {
           $this.postData = response.Data || {}
           if (response.Data && response.Data.Data !== '') {
             const cfg = JSON.parse(response.Data.Data)
+            if (!Array.isArray(cfg)) {
+              Message.error('请使用新版本！')
+              return
+            }
             this.$refs.compare.SetOldVal(response.Data.Data)
             $this.allCfg = cfg
             $this.DuplicateData = []

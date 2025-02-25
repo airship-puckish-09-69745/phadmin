@@ -2806,10 +2806,16 @@ export const asyncRoutes = [
         meta: { title: '返回大厅按钮配置', icon: 'el-icon-files' },
         children: [
           {
+            path: 'gameReturnConfigNew',
+            component: () => import('@/views/config/gameCustomConfig/gameReturnConfigNew'),
+            name: 'gameReturnConfigNew',
+            meta: { title: '返回大厅按钮配置【新】 ◐', noCache: true }
+          },
+          {
             path: 'gameReturnConfig',
             component: () => import('@/views/config/gameCustomConfig/gameReturnConfig'),
             name: 'gameReturnConfig',
-            meta: { title: '返回大厅按钮配置 ◐', noCache: true }
+            meta: { title: '返回大厅按钮配置【旧】 ◐', noCache: true }
           },
           {
             path: 'gameReturnWhiteList',
