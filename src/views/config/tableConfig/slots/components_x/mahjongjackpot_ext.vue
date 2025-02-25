@@ -103,7 +103,7 @@
               </el-tab-pane>
               <el-tab-pane label="剧本目标触发JP配置" name="script">
                 <el-button type="primary" @click="addScriptJPConfigRow">添加</el-button>
-                <el-table :data="item.ScriptJPRate">
+                <el-table :data="item.ScriptJPRates">
                   <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.MinOdds" :required="true" placeholder="请输入内容,如10"> </el-input>
