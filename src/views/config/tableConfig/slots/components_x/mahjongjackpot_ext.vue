@@ -177,7 +177,7 @@ export default {
         {
           ExBetOdds: 1000,
           Name: '正常投注',
-          ScriptJPRate: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
+          ScriptJPRates: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
           BigBonusWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyFreeWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyRespinWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
@@ -185,7 +185,7 @@ export default {
         {
           ExBetOdds: 1500,
           Name: '加倍投注',
-          ScriptJPRate: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
+          ScriptJPRates: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
           BigBonusWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyFreeWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyRespinWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
@@ -246,7 +246,7 @@ export default {
         obj.BigBonusWeights = []
         obj.BuyFreeWeights = []
         obj.BuyRespinWeights = []
-        obj.ScriptJPRate = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i].ScriptJPRate : obj.ScriptJPRate
+        obj.ScriptJPRates = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i].ScriptJPRates : obj.ScriptJPRates
         const cfg = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i] : obj
 
         for (let j = 0; j < multiOddsList.length; j++) {
@@ -271,7 +271,7 @@ export default {
         const editObj = this.JPMultiWeights[i]
         const obj = {
           ExBetOdds: this.JPMultiWeights[i].ExBetOdds,
-          ScriptJPRate: this.JPMultiWeights[i].ScriptJPRate,
+          ScriptJPRates: this.JPMultiWeights[i].ScriptJPRates,
           BigBonusWeightStrList: [],
           BuyFreeWeightStrList: [],
           BuyRespinWeightStrList: [],
@@ -293,10 +293,10 @@ export default {
         if (this.JPMultiWeights[i].Name !== this.TabsBetTypeActiveName) {
           continue
         }
-        if (!this.JPMultiWeights[i].ScriptJPRate) {
-          this.JPMultiWeights[i].ScriptJPRate = []
+        if (!this.JPMultiWeights[i].ScriptJPRates) {
+          this.JPMultiWeights[i].ScriptJPRates = []
         }
-        this.JPMultiWeights[i].ScriptJPRate.push({
+        this.JPMultiWeights[i].ScriptJPRates.push({
           MinOdds: 0,
           MaxOdds: 0,
           InJPRate: 0
@@ -315,7 +315,7 @@ export default {
             if (this.JPMultiWeights[i].Name !== this.TabsBetTypeActiveName) {
               continue
             }
-            this.JPMultiWeights[i].ScriptJPRate.splice(index, 1)
+            this.JPMultiWeights[i].ScriptJPRates.splice(index, 1)
           }
         console.log('removeScriptJPConfigRow index', index)
       })
