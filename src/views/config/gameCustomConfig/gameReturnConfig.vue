@@ -32,6 +32,9 @@
             <el-form-item l>
               <el-button type="primary" size="mini" @click="refresh">查询</el-button>
             </el-form-item>
+            <el-form-item>
+              <el-button type="danger" size="mini" @click="setNewData">存储为新版本数据</el-button>
+            </el-form-item>
           </el-form-item>
         </el-form>
 
@@ -383,6 +386,37 @@ export default {
       const cfg = this.getCfg()
       console.log('saveData ===> ', cfg)
       if (!this.checkData(cfg)) {
+        return false
+      }
+
+      // this.form.Data = JSON.stringify(cfg)
+      this.postData.Data = JSON.stringify(cfg)
+      const $this = this
+      // 设置修改后数据
+      // this.$refs.compare.SetNewVal(this.form)
+      this.$refs.compare.SetNewVal(this.postData.Data)
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          // data: $this.form
+          data: $this.postData
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+      })
+    },
+    setNewData() {
+      const cfg ={datas: this.getCfg()}
+      console.log('saveData ===> ', cfg)
+      if (!this.checkData(cfg.datas)) {
         return false
       }
 
