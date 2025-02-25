@@ -196,6 +196,7 @@
               >
                 <el-radio :label="1">图片</el-radio>
                 <el-radio :label="2">文本</el-radio>
+                <el-radio :label="3">比赛</el-radio>
               </el-radio-group>
             </el-form-item>
             <!--             <el-form-item label="上传Banner图：" :required="true">
@@ -232,7 +233,7 @@
               <el-col :span="16"><el-input v-model="edit.item.icon_page" /></el-col>
             </el-form-item>
             <el-form-item
-              v-if="edit.item.content_type === 2"
+              v-if="edit.item.content_type >= 2"
               label="富文本内容："
               :required="true"
               prop="content"
@@ -399,7 +400,8 @@ export default {
 
       typeOption: [
         { label: '图片', value: 1 },
-        { label: '文本', value: 2 }
+        { label: '文本', value: 2 },
+        { label: '比赛', value: 3 }
       ],
 
       AttrNames: {
