@@ -63,7 +63,7 @@
     </el-row>
     <el-row>
       <el-col :span="12" :offset="3">
-        <el-tabs type="border-card" value="正常投注" tab-position="top">
+        <el-tabs v-model="TabsBetTypeActiveName" type="border-card" value="正常投注" tab-position="top">
           <el-tab-pane
             v-for="item in JPMultiWeights"
             :key="item.BetOdds"
@@ -172,6 +172,7 @@ export default {
       NormalJPMultiWeights: [],
       BuyFreeJPMultiWeights: [],
       BuyRespinJPMultiWeights: [],
+      TabsBetTypeActiveName: '正常投注',
       JPMultiWeights: [
         {
           ExBetOdds: 1000,
@@ -206,7 +207,7 @@ export default {
     },
     submitFrm() {
       const multiOddsCnt = this.cfg.MultiStr.split(',').length
-      if (multiOddsCnt !== this.cfg.MultiWeightStr.split(',').length || multiOddsCnt!== this.cfg.BuyFreeMultiWeightStr.split(',').length) {
+      if (multiOddsCnt !== this.cfg.MultiWeightStr.split(',').length || multiOddsCnt !== this.cfg.BuyFreeMultiWeightStr.split(',').length) {
         this.$message.error('额外中奖倍数数量与相关权重的数量不一致')
         return false
       }
@@ -287,12 +288,19 @@ export default {
       }
     },
     addScriptJPConfigRow() {
-      if (this.cfg.ScriptJPConfig == null) this.cfg.ScriptJPConfig = []
-      this.cfg.ScriptJPConfig.push({
-        MinOdds: 0,
-        MaxOdds: 0,
-        InJPRate: 0
-      })
+      for (let i = 0; i < this.JPMultiWeights.length; i++) {
+        if (this.JPMultiWeights[i].Name !== this.TabsBetTypeActiveName) {
+          continue
+        }
+        if (!this.JPMultiWeights[i].ScriptJPRate) {
+          this.JPMultiWeights[i].ScriptJPRate = []
+        }
+        this.JPMultiWeights[i].ScriptJPRate.push({
+          MinOdds: 0,
+          MaxOdds: 0,
+          InJPRate: 0
+        })
+      }
       console.log('addScriptJPConfigRow', this.cfg.ScriptJPConfig)
     },
     removeScriptJPConfigRow(index) {
@@ -302,8 +310,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.cfg.ScriptJPConfig.splice(index, 1)
-        console.log('removeScriptJPConfigRow', this.cfg.ScriptJPConfig)
+          for (let i = 0; i < this.JPMultiWeights.length; i++) {
+            if (this.JPMultiWeights[i].Name !== this.TabsBetTypeActiveName) {
+              continue
+            }
+            this.JPMultiWeights[i].ScriptJPRate.splice(index, 1)
+          }
+        console.log('removeScriptJPConfigRow index', index)
       })
     },
     onMultiStrChange() {
