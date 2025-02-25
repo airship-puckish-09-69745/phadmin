@@ -114,9 +114,9 @@
                       <el-input v-model.number="scope.row.MaxOdds" :required="true" placeholder="请输入内容,如10"> </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="WeightStr" label="触发概率%">
+                  <el-table-column prop="WeightStr" label="触发概率‱">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.InJPRate" :required="true" placeholder="请输入内容,如10"> <template slot="append">%</template> </el-input>
+                      <el-input v-model.number="scope.row.InJPRate" :required="true" placeholder="请输入内容,如10"> <template slot="append">‱</template> </el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" width="120">
