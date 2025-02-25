@@ -246,6 +246,7 @@ export default {
         obj.BigBonusWeights = []
         obj.BuyFreeWeights = []
         obj.BuyRespinWeights = []
+        obj.ScriptJPRate = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i].ScriptJPRate : obj.ScriptJPRate
         const cfg = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i] : obj
 
         for (let j = 0; j < multiOddsList.length; j++) {
