@@ -1193,6 +1193,7 @@ export default {
         const buyReturnMoneyTableData = {}
         const mahjongJackpot2JPColsTimesTableData = {}
         const mahjongJackpot2JPColsBuyFirstTableData = {}
+        const mahjongJackpot2JPColsReturnMoneyTableData = {}
 
         this.returnMap = {}
         this.buyReturnMap = {}
