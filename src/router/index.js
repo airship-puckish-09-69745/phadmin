@@ -254,6 +254,12 @@ export const asyncRoutes = [
               },
 
               {
+                path: 'tongitsTableAIJoker',
+                component: () => import('@/views/config/tableConfig/tongitsLaiziAIConfig'),
+                name: 'tongitsTableAIJoker',
+                meta: { title: 'TongitsJokerAI ◐' }
+              },
+              {
                 path: 'tongitsJokerAIList',
                 component: () => import('@/views/config/tableConfig/tongitsJokerAIListConfig'),
                 name: 'tongitsJokerAIList',
