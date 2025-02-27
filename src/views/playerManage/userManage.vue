@@ -66,7 +66,7 @@
               </el-select>
             </el-col>
             <el-col :span="8">
-<!--              <el-row v-if="money!=0"><span>{{ formatNumber(money) }}</span></el-row>-->
+              <!--              <el-row v-if="money!=0"><span>{{ formatNumber(money) }}</span></el-row>-->
               <el-input v-model="money" size="mini" />
             </el-col>
             <el-col :span="6" :offset="1">
@@ -77,9 +77,14 @@
           <el-descriptions-item label="系列：">{{ item.AppID > 100000?'Galaxy':'Android' }}</el-descriptions-item>
           <el-descriptions-item label="AppID：">{{ item.AppID }}</el-descriptions-item>
           <el-descriptions-item label="来源Appid：">{{ item.RegisterChannel }}</el-descriptions-item>
-          <el-descriptions-item label="单一钱包：" :span="1">{{ formatNumber(item.WalletMoney / 1000) }}</el-descriptions-item>
+          <el-descriptions-item label="单一钱包：" :span="1">
+            {{ formatNumber(item.WalletMoney / 1000) }}
+            <template v-if="item.WalletType==1">
+              <el-button size="mini" @click="refreshWalletMoney">刷新资产</el-button>
+            </template>
+          </el-descriptions-item>
           <el-descriptions-item label="钱包类型：" :span="3">{{ item.WalletType==1?'单一钱包':'转账钱包' }}</el-descriptions-item>
-          <el-descriptions-item label="平台注册时间："  :span="4"><DateTimeShow :show-type="2" :timestamp="item.PlatRegisterTime/1000" v-if="item.PlatRegisterTime>0"/></el-descriptions-item>
+          <el-descriptions-item label="平台注册时间：" :span="4"><DateTimeShow v-if="item.PlatRegisterTime>0" :show-type="2" :timestamp="item.PlatRegisterTime/1000" /></el-descriptions-item>
           <el-descriptions-item label="UID注册时间："><DateTimeShow :show-type="2" :timestamp="item.RegisterTime" /></el-descriptions-item>
           <el-descriptions-item label="最近登录时间："><DateTimeShow :show-type="2" :timestamp="item.LastLoginTime" /></el-descriptions-item>
           <!--
@@ -161,6 +166,7 @@
     <el-dialog
       title="信誉分详情"
       :visible.sync="TagCreditDetail"
+      :before-close="TagVisibleClose"
     >
       <el-descriptions :column="2" border>
         <el-descriptions-item label="UID" :span="2">
@@ -179,7 +185,7 @@
             <el-row v-for="gid,i in credit.blackList">
               <el-col :span="8" border> {{ getGameName(gid) }} </el-col>
               <el-col :span="8" border> {{ gid }} </el-col>
-              <el-col :span="8"> 
+              <el-col :span="8">
                 <el-button type="danger" size="mini" style="margin-left: 10px;" @click="optBlackList(gid, 1)">移除</el-button>
               </el-col>
             </el-row>
@@ -188,24 +194,25 @@
         <el-descriptions-item label="添加黑名单" :span="2">
           <template>
             <el-row>
-              <el-col :span="16"> 
+              <el-col :span="16">
                 <el-select v-model="selectGid" size="mini">
                   <el-option v-for="opt in GameOption" :key="opt.value" :label="opt.label" :value="opt.value" />
-                </el-select>  
+                </el-select>
               </el-col>
-              <el-col :span="8"> 
+              <el-col :span="8">
                 <el-button type="success" size="mini" style="margin-left: 10px;" @click="optBlackList(selectGid,0)">添加</el-button>
               </el-col>
             </el-row>
           </template>
         </el-descriptions-item>
         <el-descriptions-item label="查看游戏各场次">
-          <el-button type="success" size="mini" style="margin-left: 10px;" @click="goCreditLog()">查看</el-button>
+          <el-button type="success" size="mini" style="margin-left: 10px;" @click="">查看</el-button>
         </el-descriptions-item>
       </el-descriptions>
-      
+
       <span slot="footer" class="dialog-footer">
-        <el-button @click="TagCreditDetail = false">关 闭</el-button>
+        <el-button @click="TagVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addTagSubmit">确 定</el-button>
       </span>
     </el-dialog>
     <!--添加标签end-->
@@ -334,12 +341,9 @@ export default {
       appInfo: [],
       selectGid: 28,
       credit: {
-        creditScore: 0,
-        validBetScore: 0,
-        playRoundScore: 0,
-        ggrScore: 0,
-        creditScore: 0,
-        blackList: [],
+        IsCreditUser: 0,
+        GGRScore: 0,
+        creditScore: 0
       },
       item: {
         Uid: 0,
@@ -530,6 +534,7 @@ export default {
       console.log('set mounted', this.item.Uid)
     }
     this.getInfo()
+    this.getCredit()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -1249,10 +1254,7 @@ export default {
       })
       this.getCredit()
     },
-    getCredit(){
-      if (this.env !== 'test') {
-        return
-      }
+    getCredit() {
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
@@ -1360,12 +1362,12 @@ export default {
         }
       })
     },
-    optBlackList(gid,opt){
+    optBlackList(gid, opt) {
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
       }
-      console.log(gid,opt)
+      console.log(gid, opt)
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -1379,8 +1381,8 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.credit.blackList=response.Data
-          console.log("/user/credit/black:",response.Data)
+          $this.credit.blackList = response.Data
+          console.log('/user/credit/black:', response.Data)
         }
       })
     },
@@ -1390,15 +1392,25 @@ export default {
           return v.label
         }
       }
-      return "unknow"
+      return 'unknow'
     },
-    // 跳转到用户信息查询页面
-    goCreditLog() {
-      this.TagCreditDetail = false
-      this.$router.push({
-        path: '/config/creditLog',
-        query: {
-          uid: this.item.Uid
+    refreshWalletMoney() {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: this.env,
+          Path: '/user/wallet/refresh',
+          Uid: this.item.Uid
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.item.WalletMoney = response.Data.Money
         }
       })
     },

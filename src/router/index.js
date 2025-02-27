@@ -254,6 +254,12 @@ export const asyncRoutes = [
               },
 
               {
+                path: 'tongitsTableAIJoker',
+                component: () => import('@/views/config/tableConfig/tongitsLaiziAIConfig'),
+                name: 'tongitsTableAIJoker',
+                meta: { title: 'TongitsJokerAI ◐' }
+              },
+              {
                 path: 'tongitsJokerAIList',
                 component: () => import('@/views/config/tableConfig/tongitsJokerAIListConfig'),
                 name: 'tongitsJokerAIList',
@@ -302,6 +308,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoy/pusoyAIListConfig'),
                 name: 'PusoyAIList',
                 meta: { title: 'PusoyAI-List ◐' }
+              },
+              {
+                path: 'PusoyWildRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyWildRobotSetting'),
+                name: 'PusoyWildRobotSetting',
+                meta: { title: 'PusoyWild AI ◐' }
+              },
+              {
+                path: 'PusoyWildAIList',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyWildAIListConfig'),
+                name: 'PusoyWildAIList',
+                meta: { title: 'PusoyWildAI-List ◐' }
               }
             ]
           },
@@ -1202,6 +1220,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/godoffortunemars_slots_cfg'),
                 name: 'godoffortunemars_slots_cfg',
                 meta: { title: 'GodOfFortune(审)' }
+              },
+              {
+                path: 'goldminermars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/goldminermars_slots_cfg'),
+                name: 'goldminermars_slots_cfg',
+                meta: { title: 'GoldMiner(审)' }
               }
             ]
           },
@@ -2337,6 +2361,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
             meta: { title: 'GoldTrain(审)', gid: 195 }
+          },
+          {
+            path: 'goldminer_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'goldminer_slots_log',
+            meta: { title: 'GoldMiner(审)', gid: 197 }
           }
         ]
       },

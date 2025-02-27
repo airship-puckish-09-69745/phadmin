@@ -1191,8 +1191,9 @@ export default {
         const scatterCounts = { '全部': [] }
         const ordinaryReturnMoneyTableData = {}
         const buyReturnMoneyTableData = {}
-        const mahjongJackpot2JPColsTimesTableData = {}
-        const mahjongJackpot2JPColsBuyFirstTableData = {}
+        const mahjongJackpot2JPColsTimesTableData = {} // 出现2列JP的次数统计
+        const mahjongJackpot2JPColsBuyTableData = {}  // 出现2列JP的购买统计
+        const mahjongJackpot2JPColsBuyFirstTableData = {} // 出现2列JP的首次购买统计
 
         this.returnMap = {}
         this.buyReturnMap = {}
@@ -1391,6 +1392,19 @@ export default {
                 }
               }
               if (strings1[1] === 'buyrespin') {
+                if (strings1.length < 6) {
+                  if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
+                    mahjongJackpot2JPColsBuyTableData['全部'] = []
+                  }
+                  mahjongJackpot2JPColsBuyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                } else {
+                  if (!(strings1[4] in mahjongJackpot2JPColsBuyTableData)) {
+                    mahjongJackpot2JPColsBuyTableData[strings1[4]] = []
+                  }
+                  mahjongJackpot2JPColsBuyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+              }
+              if (strings1[1] === 'buyrespinfirst') {
                 if (strings1.length < 6) {
                   if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
                     mahjongJackpot2JPColsBuyFirstTableData['全部'] = []
@@ -1610,7 +1624,7 @@ export default {
       }
     },
     queryBase(gid) { // 加载基础配置
-      if (this.gameScene[gid] === undefined || this.gameScene[gid] === 'undefined') {
+      if (this.gameScene[gid%100000] === undefined || this.gameScene[gid%100000] === 'undefined') {
         return
       }
       try {
@@ -1623,7 +1637,7 @@ export default {
           90: 'moneycoming',
           92: 'fortuneacego'
         }
-        let key = this.gameScene[gid] + '_slots_base'
+        let key = this.gameScene[gid%100000] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
             key = realKey[gid] + '_slots_base'
@@ -1641,7 +1655,15 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              if (gid > 100000) {
+                let arr = []
+                for (const k in baseCfg.BetList) {
+                  arr.push(baseCfg.BetList[k]*1.5)
+                }
+                this.handleSlotsBetOptions(arr, baseCfg.BaseBet)
+              } else {
+                this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              }
               this.currentBaseBet = baseCfg.BaseBet
             }
           }
@@ -1827,6 +1849,10 @@ export default {
             this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
             this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
+          this.gameOptions.push({
+            key: 100180,
+            label: 'Fishing Master(额外加注)'
+          })
         }
       })
     },
@@ -1872,7 +1898,7 @@ export default {
       if (betOdd === '全部') {
         return betOdd
       } else {
-        if (betOdd === '10') {
+        if (betOdd === '1' || betOdd === '1000') {
           return '普通下注' + betOdd
         } else {
           return '额外下注' + betOdd
