@@ -105,7 +105,8 @@
           />
         </el-form-item> -->
         <el-form-item>
-          <el-button type="primary" size="mini" @click="enterurl">生成链接</el-button>
+          <el-button type="primary" size="mini" @click="enterurl()">打开游戏</el-button>
+          <el-button type="primary" size="mini" @click="enterurl(true)">客户端测试（7456）</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -126,24 +127,22 @@
       >
         <el-table-column
           prop="EnterUrl"
-          label="进入链接"
-          width="1100"
+          label="链接"
         />
         <el-table-column
           prop="ExpiredTime"
           label="过期时间"
-          width="150"
         />
-        <el-table-column
-          label="操作"
-          column-key="op"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-button class="ewm-copy-content" type="success" size="mini" :data-clipboard-text="scope.row.EnterUrl" round @click="copyClick(scope.row)">复制链接</el-button> ｜
-            <el-link :href="scope.row.EnterUrl" type="success" target="_blank">打开链接</el-link>
-          </template>
-        </el-table-column>
+        <!--        <el-table-column-->
+        <!--          label="操作"-->
+        <!--          column-key="op"-->
+        <!--          width="200"-->
+        <!--        >-->
+        <!--          <template slot-scope="scope">-->
+        <!--            <el-button class="ewm-copy-content" type="success" size="mini" :data-clipboard-text="scope.row.EnterUrl" round @click="copyClick(scope.row)">复制链接</el-button> ｜-->
+        <!--            <el-link :href="scope.row.EnterUrl" type="success" target="_blank">打开链接</el-link>-->
+        <!--          </template>-->
+        <!--        </el-table-column>-->
       </el-table>
     </div>
   </div>
@@ -389,7 +388,7 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
-    enterurl() {
+    enterurl(local) {
       this.item.nick = ''
       let k
       for (k in this.accounts) {
@@ -442,6 +441,14 @@ export default {
           one.ExpiredTime = $libDate.FormateMilisecondStrByZone(response.Data.ExpiredTime * 1000, 2, 'cn')
           this.tableData.push(one)
           console.log(this.tableData)
+          let link = response.Data.Url
+          // 将链接 ? 符号前的前缀替换为 http://localhost:7456/
+          if (local) {
+            const index = link.indexOf('?')
+            const suffix = link.substring(index)
+            link = 'http://localhost:7456/' + suffix
+          }
+          window.open(link, '_blank')
         } else {
           this.$alert(response.Data)
         }
