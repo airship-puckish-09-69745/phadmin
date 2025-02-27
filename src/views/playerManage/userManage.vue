@@ -171,7 +171,8 @@
       <el-descriptions :column="2" border>
         <el-descriptions-item label="UID" :span="2">
           <el-tag type="success">{{ credit.uid }}</el-tag>
-          <el-button type="danger" size="mini" style="margin-left: 10px;" @click="clearCreditData()">清空信誉分数据</el-button>
+          <el-button type="success" size="mini" style="margin-left: 10px;" @click="getCredit()">刷新</el-button>
+          <el-button type="danger" size="mini" style="margin-right: 100px;" @click="clearCreditData()">清空信誉分数据</el-button>
         </el-descriptions-item>
         <el-descriptions-item label="信誉分总" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
@@ -341,9 +342,16 @@ export default {
       appInfo: [],
       selectGid: 28,
       credit: {
-        IsCreditUser: 0,
-        GGRScore: 0,
-        creditScore: 0
+        creditScore: 0,
+        validBetScore: 0,
+        playRoundScore: 0,
+        ggrScore: 0,
+        creditScore: 0,
+        dayVbs: 0,
+        dayPrs: 0,
+        dayGgrs: 0,
+        blackList: [],
+        uid: 0
       },
       item: {
         Uid: 0,
@@ -1264,9 +1272,9 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Env: this.env,
+          Env: $this.env,
           Path: '/user/credit/info',
-          Uid: this.item.Uid
+          Uid: $this.item.Uid
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1278,6 +1286,7 @@ export default {
           $this.credit.dayVbs=response.Data.dayVbs
           $this.credit.dayPrs=response.Data.dayPrs
           $this.credit.dayGgrs=response.Data.dayGgrs
+          $this.credit.blackList=response.Data.blackList
           $this.credit.uid=response.Data.uid
           console.log("/user/credit/info:",response.Data)
         }
@@ -1434,6 +1443,7 @@ export default {
           $this.credit.dayVbs=0
           $this.credit.dayPrs=0
           $this.credit.dayGgrs=0
+          $this.credit.blackList=[]
           console.log("/user/credit/clear:",response.Data)
         }
       })
