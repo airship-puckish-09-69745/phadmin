@@ -1191,9 +1191,9 @@ export default {
         const scatterCounts = { '全部': [] }
         const ordinaryReturnMoneyTableData = {}
         const buyReturnMoneyTableData = {}
-        const mahjongJackpot2JPColsTimesTableData = {}
-        const mahjongJackpot2JPColsBuyFirstTableData = {}
-        const mahjongJackpot2JPColsReturnMoneyTableData = {}
+        const mahjongJackpot2JPColsTimesTableData = {} // 出现2列JP的次数统计
+        const mahjongJackpot2JPColsBuyTableData = {}  // 出现2列JP的购买统计
+        const mahjongJackpot2JPColsBuyFirstTableData = {} // 出现2列JP的首次购买统计
 
         this.returnMap = {}
         this.buyReturnMap = {}
@@ -1392,6 +1392,19 @@ export default {
                 }
               }
               if (strings1[1] === 'buyrespin') {
+                if (strings1.length < 6) {
+                  if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
+                    mahjongJackpot2JPColsBuyTableData['全部'] = []
+                  }
+                  mahjongJackpot2JPColsBuyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                } else {
+                  if (!(strings1[4] in mahjongJackpot2JPColsBuyTableData)) {
+                    mahjongJackpot2JPColsBuyTableData[strings1[4]] = []
+                  }
+                  mahjongJackpot2JPColsBuyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+              }
+              if (strings1[1] === 'buyrespinfirst') {
                 if (strings1.length < 6) {
                   if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
                     mahjongJackpot2JPColsBuyFirstTableData['全部'] = []
@@ -1873,7 +1886,7 @@ export default {
       if (betOdd === '全部') {
         return betOdd
       } else {
-        if (betOdd === '10') {
+        if (betOdd === '1' || betOdd === '1000') {
           return '普通下注' + betOdd
         } else {
           return '额外下注' + betOdd
