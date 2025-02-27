@@ -207,7 +207,7 @@
           </template>
         </el-descriptions-item>
         <el-descriptions-item label="查看游戏各场次">
-          <el-button type="success" size="mini" style="margin-left: 10px;" @click="">查看</el-button>
+          <el-button type="success" size="mini" style="margin-left: 10px;" @click="goCreditLog">查看</el-button>
         </el-descriptions-item>
       </el-descriptions>
 
@@ -1447,7 +1447,17 @@ export default {
           console.log("/user/credit/clear:",response.Data)
         }
       })
-    }
+    },
+    // 跳转到用户信息查询页面
+    goCreditLog() {
+      this.TagCreditDetail = false
+      this.$router.push({
+        path: '/config/creditLog',
+        query: {
+          uid: this.item.Uid
+        }
+      })
+    },
   }
 }
 </script>
