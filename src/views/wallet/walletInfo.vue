@@ -26,6 +26,7 @@
           <el-descriptions-item   label="Uid">{{ walletInfo.Uid }}</el-descriptions-item>
           <el-descriptions-item label="账号">{{ walletInfo.Account }}</el-descriptions-item>
           <el-descriptions-item label="App">{{ walletInfo.App }}</el-descriptions-item>
+          <el-descriptions-item label="平台">{{ walletInfo.Site}}</el-descriptions-item>
           <el-descriptions-item label="刷新时间">{{ formatTime(walletInfo.RefreshTime) }}</el-descriptions-item>
 
           <el-descriptions-item label="当前资产">{{ formatNumber(walletInfo.Money/1000) }}</el-descriptions-item>
@@ -73,6 +74,7 @@ export default {
         Uid: 0,
         Account: '',
         App: 0,
+        Site: '',
         BetAmount: 0,
         Money: 0,
         Stage: 0,

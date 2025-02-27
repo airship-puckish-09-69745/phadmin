@@ -4,6 +4,14 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="24">
         <el-form inline   :inline="true" size="small">
+          <el-select v-model="item.app" filterable placeholder="请选择" size="mini">
+            <el-option
+              v-for="row in appInfo"
+              :key="row.key"
+              :label="row.label"
+              :value="row.key"
+            />
+          </el-select>
           <el-form-item label="日期：">
             <el-date-picker
               v-model="queryTime"
@@ -169,6 +177,7 @@ export default {
     return {
       queryTime: $libDate.GetDayBegin(new Date()),
       libShow: $libShow,
+      appInfo: [],
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       item: {
         limit: 20,
@@ -227,6 +236,7 @@ export default {
   created() {
     this.getGameList()
     this.getData()
+    this.getAppInfo()
   },
   methods: {
     formatTime(ts) {
@@ -341,6 +351,24 @@ export default {
         }
       })
     },
+    getAppInfo() {
+      request({
+        url: '/thirdparties/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          // const objs = response.Data || []
+          for (let i = 0; i < response.Data.length; i++) {
+            this.appInfo.push({
+              key: response.Data[i].ID,
+              label: response.Data[i].Account
+            })
+          }
+        }
+      })
+    },
+
     // 分页处理
     handleSizeChange(val) {
       this.item.limit = val

@@ -254,6 +254,12 @@ export const asyncRoutes = [
               },
 
               {
+                path: 'tongitsTableAIJoker',
+                component: () => import('@/views/config/tableConfig/tongitsLaiziAIConfig'),
+                name: 'tongitsTableAIJoker',
+                meta: { title: 'TongitsJokerAI ◐' }
+              },
+              {
                 path: 'tongitsJokerAIList',
                 component: () => import('@/views/config/tableConfig/tongitsJokerAIListConfig'),
                 name: 'tongitsJokerAIList',
@@ -302,6 +308,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoy/pusoyAIListConfig'),
                 name: 'PusoyAIList',
                 meta: { title: 'PusoyAI-List ◐' }
+              },
+              {
+                path: 'PusoyWildRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyWildRobotSetting'),
+                name: 'PusoyWildRobotSetting',
+                meta: { title: 'PusoyWild AI ◐' }
+              },
+              {
+                path: 'PusoyWildAIList',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyWildAIListConfig'),
+                name: 'PusoyWildAIList',
+                meta: { title: 'PusoyWildAI-List ◐' }
               }
             ]
           },

@@ -1624,7 +1624,7 @@ export default {
       }
     },
     queryBase(gid) { // 加载基础配置
-      if (this.gameScene[gid] === undefined || this.gameScene[gid] === 'undefined') {
+      if (this.gameScene[gid%100000] === undefined || this.gameScene[gid%100000] === 'undefined') {
         return
       }
       try {
@@ -1637,7 +1637,7 @@ export default {
           90: 'moneycoming',
           92: 'fortuneacego'
         }
-        let key = this.gameScene[gid] + '_slots_base'
+        let key = this.gameScene[gid%100000] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
             key = realKey[gid] + '_slots_base'
@@ -1655,7 +1655,15 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              if (gid > 100000) {
+                let arr = []
+                for (const k in baseCfg.BetList) {
+                  arr.push(baseCfg.BetList[k]*1.5)
+                }
+                this.handleSlotsBetOptions(arr, baseCfg.BaseBet)
+              } else {
+                this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              }
               this.currentBaseBet = baseCfg.BaseBet
             }
           }
@@ -1841,6 +1849,10 @@ export default {
             this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
             this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
+          this.gameOptions.push({
+            key: 100180,
+            label: 'Fishing Master(额外加注)'
+          })
         }
       })
     },
