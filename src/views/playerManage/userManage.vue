@@ -162,12 +162,19 @@
       title="信誉分详情"
       :visible.sync="TagCreditDetail"
     >
-      <el-descriptions :column="1" border>
-        <el-descriptions-item label="信誉分总">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
+      <el-descriptions :column="2" border>
+        <el-descriptions-item label="UID" :span="2">
+          <el-tag type="success">{{ credit.uid }}</el-tag>
+          <el-button type="danger" size="mini" style="margin-left: 10px;" @click="clearCreditData()">清空信誉分数据</el-button>
+        </el-descriptions-item>
+        <el-descriptions-item label="信誉分总" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="玩牌局数分">{{ formatNumber(credit.playRoundScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="日玩牌局数分">{{ formatNumber(credit.dayPrs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="GGR贡献分">{{ formatNumber(credit.ggrScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="黑名单列表">
+        <el-descriptions-item label="日GGR贡献分">{{ formatNumber(credit.dayGgrs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="黑名单列表" :span="2">
           <template>
             <el-row v-for="gid,i in credit.blackList">
               <el-col :span="8" border> {{ getGameName(gid) }} </el-col>
@@ -178,7 +185,7 @@
             </el-row>
           </template>
         </el-descriptions-item>
-        <el-descriptions-item label="添加黑名单">
+        <el-descriptions-item label="添加黑名单" :span="2">
           <template>
             <el-row>
               <el-col :span="16"> 
@@ -1266,6 +1273,10 @@ export default {
           $this.credit.playRoundScore=response.Data.playRoundScore
           $this.credit.ggrScore=response.Data.ggrScore
           $this.credit.creditScore=response.Data.creditScore
+          $this.credit.dayVbs=response.Data.dayVbs
+          $this.credit.dayPrs=response.Data.dayPrs
+          $this.credit.dayGgrs=response.Data.dayGgrs
+          $this.credit.uid=response.Data.uid
           console.log("/user/credit/info:",response.Data)
         }
       })
@@ -1391,6 +1402,30 @@ export default {
         }
       })
     },
+    clearCreditData() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: $this.env,
+          Path: '/user/credit/clear',
+          Uid: $this.credit.uid,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.credit.creditScore=0
+          $this.credit.validBetScore=0
+          $this.credit.playRoundScore=0
+          $this.credit.ggrScore=0
+          $this.credit.creditScore=0
+          $this.credit.dayVbs=0
+          $this.credit.dayPrs=0
+          $this.credit.dayGgrs=0
+          console.log("/user/credit/clear:",response.Data)
+        }
+      })
+    }
   }
 }
 </script>
