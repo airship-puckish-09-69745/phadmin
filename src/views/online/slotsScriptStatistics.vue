@@ -1642,11 +1642,15 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              let baseBet = baseCfg.BaseBet
               if (gid > 100000) {
-                baseBet = 1500
+                let arr = []
+                for (const k in baseCfg.BetList) {
+                  arr.push(baseCfg.BetList[k]*1.5)
+                }
+                this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              } else {
+                this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
               }
-              this.handleSlotsBetOptions(baseCfg.BetList, baseBet)
               this.currentBaseBet = baseCfg.BaseBet
             }
           }
