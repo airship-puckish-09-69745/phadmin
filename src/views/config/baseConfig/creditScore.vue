@@ -329,8 +329,14 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             console.log("xxxxxx")
-            this.limitConf = [item.flowLimit, item.playLimit, item.ggrLimit]
-            this.glconf = item.glconf
+            this.item.value /= 1000
+            for (const v of this.item.limitConf) {
+              v.dayTop /= 1000
+              v.valTop /= 1000
+            }
+            for (const v of this.item.glconf) {
+              v.radio /= 100
+            }
           }
         }
       })
@@ -363,13 +369,20 @@ export default {
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+      const limits =this.item.limitConf
+      let glconf = []
+      for (const v of this.item.glconf) {
+        let item = Object.assign({},v)
+        item.radio *= 100
+        glconf.push(item)
+      }
 
       this.form.Data = JSON.stringify({
-        value: this.item.value,
-        glconf: this.item.glconf,
-        flowLimit: this.item.limitConf[0],
-        playLimit: this.item.limitConf[1],
-        ggrLimit: this.item.limitConf[2],
+        value: this.item.value*1000,
+        glconf: glconf,
+        flowLimit: {dayTop:limits[0].dayTop*1000, valTop:limits[0].valTop*1000},
+        playLimit: {dayTop:limits[1].dayTop*1000, valTop:limits[1].valTop*1000},
+        ggrLimit: {dayTop:limits[2].dayTop*1000, valTop:limits[2].valTop*1000},
         updateDelta: this.item.updateDelta,
       })
 

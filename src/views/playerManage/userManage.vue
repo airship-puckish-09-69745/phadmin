@@ -173,6 +173,7 @@
           <el-tag type="success">{{ credit.uid }}</el-tag>
           <el-button type="success" size="mini" style="margin-left: 10px;" @click="getCredit()">刷新</el-button>
           <el-button type="danger" size="mini" style="margin-right: 100px;" @click="clearCreditData()">清空信誉分数据</el-button>
+          <el-button v-if="env='test'" type="danger" size="mini" style="margin-right: 100px;" @click="getCredit(true)">刷用户日数据</el-button>
         </el-descriptions-item>
         <el-descriptions-item label="信誉分总" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
@@ -364,9 +365,9 @@ export default {
         Nick: '',
         KycStatus: 0,
         PlatRegisterTime: 0,
-        RegisterTime: '',
+        RegisterTime: 0,
         RegisterChannel: '',
-        LastLoginTime: '',
+        LastLoginTime: 0,
         Country: '',
         Language: '',
         Icon: '',
@@ -1262,7 +1263,7 @@ export default {
       })
       this.getCredit()
     },
-    getCredit() {
+    getCredit(refresh) {
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
@@ -1274,7 +1275,8 @@ export default {
         data: {
           Env: $this.env,
           Path: '/user/credit/info',
-          Uid: $this.item.Uid
+          Uid: $this.item.Uid,
+          Refresh: refresh
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1282,7 +1284,6 @@ export default {
           $this.credit.validBetScore=response.Data.validBetScore
           $this.credit.playRoundScore=response.Data.playRoundScore
           $this.credit.ggrScore=response.Data.ggrScore
-          $this.credit.creditScore=response.Data.creditScore
           $this.credit.dayVbs=response.Data.dayVbs
           $this.credit.dayPrs=response.Data.dayPrs
           $this.credit.dayGgrs=response.Data.dayGgrs
