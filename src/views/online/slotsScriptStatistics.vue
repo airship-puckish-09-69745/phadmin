@@ -1611,7 +1611,7 @@ export default {
       }
     },
     queryBase(gid) { // 加载基础配置
-      if (this.gameScene[gid] === undefined || this.gameScene[gid] === 'undefined') {
+      if (this.gameScene[gid%100000] === undefined || this.gameScene[gid%100000] === 'undefined') {
         return
       }
       try {
@@ -1622,10 +1622,9 @@ export default {
           152: 'aladdinlamp',
           86: 'supergemii',
           90: 'moneycoming',
-          92: 'fortuneacego',
-          100180: 'fishingmaster'
+          92: 'fortuneacego'
         }
-        let key = this.gameScene[gid] + '_slots_base'
+        let key = this.gameScene[gid%100000] + '_slots_base'
         for (const k in realKey) {
           if (gid === parseInt(k)) {
             key = realKey[gid] + '_slots_base'
