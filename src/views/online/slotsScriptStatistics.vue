@@ -1647,7 +1647,7 @@ export default {
                 for (const k in baseCfg.BetList) {
                   arr.push(baseCfg.BetList[k]*1.5)
                 }
-                this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+                this.handleSlotsBetOptions(arr, baseCfg.BaseBet)
               } else {
                 this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
               }
