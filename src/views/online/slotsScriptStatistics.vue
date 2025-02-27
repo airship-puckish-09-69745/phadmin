@@ -1622,7 +1622,8 @@ export default {
           152: 'aladdinlamp',
           86: 'supergemii',
           90: 'moneycoming',
-          92: 'fortuneacego'
+          92: 'fortuneacego',
+          100180: 'fishingmaster'
         }
         let key = this.gameScene[gid] + '_slots_base'
         for (const k in realKey) {
@@ -1642,7 +1643,11 @@ export default {
             const baseCfg = JSON.parse(response.Data.Data)
             console.log('base>>>', baseCfg)
             if (baseCfg.BetList) {
-              this.handleSlotsBetOptions(baseCfg.BetList, baseCfg.BaseBet)
+              let baseBet = baseCfg.BaseBet
+              if (gid > 100000) {
+                baseBet = 1500
+              }
+              this.handleSlotsBetOptions(baseCfg.BetList, baseBet)
               this.currentBaseBet = baseCfg.BaseBet
             }
           }
