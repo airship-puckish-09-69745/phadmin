@@ -1828,6 +1828,10 @@ export default {
             this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
             this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
+          this.gameOptions.push({
+            key: 100180,
+            label: 'Fishing Master(额外加注)'
+          })
         }
       })
     },
