@@ -89,6 +89,7 @@
     <el-descriptions title="扩展信息">
       <el-descriptions-item label="桌子ID">{{ pusoyWildDetail.tid }}</el-descriptions-item>
       <el-descriptions-item label="Server日志ID">{{ pusoyWildDetail.logId }}</el-descriptions-item>
+      <el-descriptions-item label="是否发生换牌">{{ pusoyShowChangeCardString(pusoyWildDetail.isChangedCards) }}</el-descriptions-item>
     </el-descriptions>
   </el-dialog>
 
@@ -222,6 +223,13 @@ export default {
     initData(val) {
       this.showGameLog = JSON.parse(JSON.stringify(val))
       this.showPusoyGame(this.showGameLog.detail)
+    },
+    pusoyShowChangeCardString(change) {
+      if (change) {
+        return '是'
+      } else {
+        return '否'
+      }
     },
     showPusoyGame(obj) {
       console.log(obj)
