@@ -102,7 +102,7 @@
                   label="有效下注换算系数"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.radio" size="mini" />
+                    <el-input v-model.number="scope.row.radio" />
                   </template>
                 </el-table-column>
 
@@ -111,7 +111,7 @@
                   label="局数分"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.score" size="mini" />
+                    <el-input v-model.number="scope.row.score" />
                   </template>
                 </el-table-column>
 
@@ -119,13 +119,13 @@
                   label="操作"
                 >
                   <template slot-scope="scope">
-                    <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
+                    <el-button type="danger" @click="delRow(scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </el-row>
             <el-row>
-              <el-button type="danger" size="mini" @click="addRow()">添加</el-button>
+              <el-button type="primary" @click="addRow()">添加</el-button>
             </el-row>
           </fieldset>
         </el-col>
