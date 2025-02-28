@@ -626,7 +626,7 @@
         </el-form-item>
         <el-form-item label="游戏：" :required="true" prop="Gids">
           <el-col :span="15">
-            <el-select v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
+            <el-select style="width: 500px;" popper-class="custom-dropdown1" v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
               <el-option
                 v-for="itemZoneGame in gameSelect"
                 :key="itemZoneGame.id"
@@ -658,7 +658,7 @@
               width="330"
             >
               <template v-slot:default="scope">
-                <el-select style="width: 270px;" v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
+                <el-select style="width: 270px;" popper-class="custom-dropdown" v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
                   <el-option
                     v-for="item in gameSelect"
                     :key="item.id"
@@ -1691,7 +1691,20 @@ export default {
   }
 }
 </script>
-
 <style>
-
+.custom-dropdown .el-select-dropdown__wrap {
+  max-height: 900px; /* 设置下拉框的最大高度 */
+  max-width: 270px; /* 设置下拉框的最大宽度 */
+  width: 270px; /* 设置下拉框的宽度 */
+}
+.custom-dropdown .el-select-dropdown__list {
+  max-height: calc(900px - 40px); /* 根据需要减去可能的滚动条高度 */
+}
+.custom-dropdown1 .el-select-dropdown__wrap {
+  max-height: 900px; /* 设置下拉框的最大高度 */
+  max-width: 500px; /* 设置下拉框的最大宽度 */
+}
+.custom-dropdown1 .el-select-dropdown__list {
+  max-height: calc(900px - 40px); /* 根据需要减去可能的滚动条高度 */
+}
 </style>
