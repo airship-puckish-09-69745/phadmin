@@ -608,13 +608,13 @@
       <el-form ref="editZoneGame.item" :model="editZoneGame.item" label-width="250px" size="small">
 
         <el-form-item label="appID：" :required="true" prop="AppId">
-          <el-radio-group v-model="editZoneGame.item.AppId" >
-            <el-radio v-for="appInfo in appidInfoCfgs" :label="appInfo.value" :key="appInfo.value">{{appInfo.label}}</el-radio>
+          <el-radio-group v-model="editZoneGame.item.AppId">
+            <el-radio v-for="appInfo in appidInfoCfgs" :key="appInfo.value" :label="appInfo.value">{{ appInfo.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="channelID：" :required="true" prop="ChannelId">
-          <el-checkbox-group v-model="editZoneGame.item.ChannelId" >
-            <el-checkbox v-for="channelInfo in channelIdCfgs" :label="channelInfo.value" :key="channelInfo.value">{{channelInfo.label}}</el-checkbox>
+          <el-checkbox-group v-model="editZoneGame.item.ChannelId">
+            <el-checkbox v-for="channelInfo in channelIdCfgs" :key="channelInfo.value" :label="channelInfo.value">{{ channelInfo.label }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item
@@ -655,16 +655,18 @@
             <el-table-column
               prop="Gid"
               label="推荐游戏"
-              width="150"
+              width="330"
             >
               <template v-slot:default="scope">
-                <el-select v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
+                <el-select style="width: 270px;" v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
                   <el-option
                     v-for="item in gameSelect"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id"
-                  />
+                    :value="item.id">
+                    <span style="float: left">{{ item.name }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ showZoneGameLabel(item.id) }}</span>
+                  </el-option>
                 </el-select>
               </template>
             </el-table-column>
@@ -994,7 +996,7 @@ export default {
           const objsZone = response.Data || []
           const dataZone = {}
           for (let i = 0; i < objsZone.length; i++) {
-            let objZone = objsZone[i]
+            const objZone = objsZone[i]
             if (objZone.ShowDatacenter !== 1) {
               continue
             }
@@ -1400,17 +1402,17 @@ export default {
       const nowGameSelArray = []
       for (let i = 0; i < this.zoneGame.length; i++) {
         if (this.zoneGame[i].Index === index) {
-            for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
-              for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
-                nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
-              }
+          for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+            for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+              nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
             }
+          }
         } else {
-            for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
-              for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
-                gameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
-              }
+          for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+            for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+              gameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
             }
+          }
         }
       }
 
@@ -1517,11 +1519,11 @@ export default {
       for (let i = 0; i < this.zoneGame.length; i++) {
         const data = this.zoneGame[i]
         if (data.Index === id) {
-          if (data.AppId == null){
+          if (data.AppId == null) {
             data.AppId = 1000002
             data.ChannelId = ['BP', 'AP', 'GP', 'TP', 'PG', 'Dev']
           }
-          if (Array.isArray(data.AppId)){
+          if (Array.isArray(data.AppId)) {
             data.AppId = 1000002
           }
           return data
@@ -1649,6 +1651,15 @@ export default {
           this.editZoneGame.item.Games[length - 1].Gid = 1
         }
       }
+    },
+    showZoneGameLabel(id) {
+      const length = this.editZoneGame.item.Games.length
+      for (let i = 0; i < length - 1; i++) {
+        if (id === this.editZoneGame.item.Games[i].Gid) {
+          return '(已添加)'
+        }
+      }
+      return ''
     },
     changeZoneGameGids(id) {
       console.log('changeHallGame===>', id)
