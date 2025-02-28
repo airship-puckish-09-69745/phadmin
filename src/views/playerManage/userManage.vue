@@ -173,7 +173,7 @@
           <el-tag type="success">{{ credit.uid }}</el-tag>
           <el-button type="success" size="mini" style="margin-left: 10px;" @click="getCredit()">刷新</el-button>
           <el-button type="danger" size="mini" style="margin-right: 100px;" @click="clearCreditData()">清空信誉分数据</el-button>
-          <el-button v-if="env='test'" type="danger" size="mini" style="margin-right: 100px;" @click="getCredit(true)">刷用户日数据</el-button>
+          <el-button v-if="env=='test'" type="danger" size="mini" style="margin-right: 100px;" @click="getCredit(true)">刷用户日数据</el-button>
         </el-descriptions-item>
         <el-descriptions-item label="信誉分总" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
@@ -543,7 +543,6 @@ export default {
       console.log('set mounted', this.item.Uid)
     }
     this.getInfo()
-    this.getCredit()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -1264,6 +1263,9 @@ export default {
       this.getCredit()
     },
     getCredit(refresh) {
+      if (this.env!='test') {
+        return
+      }
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
