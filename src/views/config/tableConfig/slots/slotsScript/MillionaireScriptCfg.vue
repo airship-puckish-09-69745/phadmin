@@ -708,7 +708,8 @@ export default {
         '100180': 'fishingmaster_x',
         '181': 'fishingmastermars',
         '182': 'godoffortune',
-        '183': 'godoffortunemars'
+        '183': 'godoffortunemars',
+        '190': 'arcaneegypt'
       }
     }
   },
