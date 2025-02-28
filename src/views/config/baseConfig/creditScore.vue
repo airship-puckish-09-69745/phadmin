@@ -43,12 +43,12 @@
                 </el-table-column>
                 <el-table-column prop="dayTop" label="每日封顶值">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.dayTop" size="mini" />
+                    <el-input v-model.number="scope.row.dayTop" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="valTop" label="单项封顶值">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.valTop" size="mini" />
+                    <el-input v-model.number="scope.row.valTop" size="mini" />
                   </template>
                 </el-table-column>
               </el-table>
