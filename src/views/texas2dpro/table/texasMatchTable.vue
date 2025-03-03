@@ -708,6 +708,10 @@ export default {
               console.log(objs[o].RaceBeginTime)
             }
 
+            if (objs[o].BgImage === ' ') {
+              objs[o].BgImage = ''
+            }
+
             if (objs[o].RaceEndTime === 0) {
               objs[o].RaceEndTime = new Date()
             } else {
