@@ -51,7 +51,7 @@
       <el-col :span="15" :offset="3">
         <el-tabs type="border-card" value="normal">
           <el-tab-pane label="特殊符号配置" name="normal">
-            <el-button type="primary" @click="cfg.SpecialSymbols.push({Name:'',Value:0,WeightNormal:0,WeightFree:0,EventRate:0,EventOdds:0})">添加</el-button>
+            <el-button type="primary" @click="cfg.SpecialSymbols.push({Name:'',Value:0,WeightNormal:0,WeightFree:0,EventRate:0,EventOdds:0,EventSort:0})">添加</el-button>
             <el-table :data="cfg.SpecialSymbols">
               <el-table-column prop="Name" label="符号名称">
                 <template slot-scope="scope">
@@ -78,9 +78,14 @@
                   <el-input v-model.number="scope.row.EventRate" :required="true" placeholder="请输入内容"/>
                 </template>
               </el-table-column>
-              <el-table-column prop="EventOdds" label="事件触发的倍数">
+              <el-table-column prop="EventOdds" label="事件触发的倍数(放大100倍)">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.EventOdds" :required="true" placeholder="请输入内容"/>
+                </template>
+              </el-table-column>
+              <el-table-column prop="EventSort" label="事件展示排序号">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.EventSort" :required="true" placeholder="请输入内容"/>
                 </template>
               </el-table-column>
               <el-table-column label="操作">
@@ -112,7 +117,7 @@ import { DataRule, ValidateVueItem } from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  name: 'SlotsRoadKingExt',
+  name: 'SlotsGoldTrainExt',
   components: { RatioInput, Compare },
   model: {
     prop: 'slotsData',

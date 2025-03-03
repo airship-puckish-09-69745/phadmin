@@ -308,6 +308,18 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/pusoy/pusoyAIListConfig'),
                 name: 'PusoyAIList',
                 meta: { title: 'PusoyAI-List ◐' }
+              },
+              {
+                path: 'PusoyWildRobotSetting',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyWildRobotSetting'),
+                name: 'PusoyWildRobotSetting',
+                meta: { title: 'PusoyWild AI ◐' }
+              },
+              {
+                path: 'PusoyWildAIList',
+                component: () => import('@/views/config/tableConfig/pusoy/pusoyWildAIListConfig'),
+                name: 'PusoyWildAIList',
+                meta: { title: 'PusoyWildAI-List ◐' }
               }
             ]
           },
@@ -895,6 +907,12 @@ export const asyncRoutes = [
                 meta: { title: 'GrandAce' }
               },
               {
+                path: 'fortuneblessing_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortuneblessing_slots_cfg'),
+                name: 'fortuneblessing_slots_cfg',
+                meta: { title: 'FortuneBlessing' }
+              },
+              {
                 path: 'streetfighting_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/streetfighting_slots_cfg'),
                 name: 'streetfighting_slots_cfg',
@@ -1118,6 +1136,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/grandacemars_slots_cfg'),
                 name: 'grandacemars_slots_cfg',
                 meta: { title: 'GrandAce(审)' }
+              },
+              {
+                path: 'fortuneblessingmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortuneblessingmars_slots_cfg'),
+                name: 'fortuneblessingmars_slots_cfg',
+                meta: { title: 'FortuneBlessing(审)' }
               },
               {
                 path: 'streetfightingmars_slots_cfg',
@@ -2049,6 +2073,12 @@ export const asyncRoutes = [
             meta: { title: 'GrandAce', gid: 154 }
           },
           {
+            path: 'fortuneblessing_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortuneblessing_slots_log',
+            meta: { title: 'FortuneBlessing', gid: 198 }
+          },
+          {
             path: 'streetfighting_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfighting_slots_log',
@@ -2149,6 +2179,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mayantotem_slots_log',
             meta: { title: 'MayanTotem', gid: 178 }
+          },
+          {
+            path: 'arcaneegypt_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegypt_slots_log',
+            meta: { title: 'ArcaneEgypt', gid: 178 }
           },
           {
             path: 'goldtrain_slots_log',
@@ -2331,6 +2367,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'godoffortunemars_slots_log',
             meta: { title: 'GodOfFortune(审)', gid: 183 }
+          },
+          {
+            path: 'fortuneblessingmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortuneblessingmars_slots_log',
+            meta: { title: 'FortuneBlessing(审)', gid: 199 }
           },
           {
             path: 'streetfightingmars_slots_log',

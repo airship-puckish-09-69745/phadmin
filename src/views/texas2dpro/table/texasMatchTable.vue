@@ -148,6 +148,11 @@
             </el-form-item>
           </el-col>
         </el-row>
+        </el-row>
+          <el-form-item label="封面图片URL：" :required="true">
+              <ImagePicker v-model="edit.item.BgImage" />
+          </el-form-item>
+        </el-row>
         <el-row>
           <el-col :span="20">
             <el-form-item label="比赛类型:" :required="true">
@@ -421,6 +426,7 @@ import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 
 const filterMap = {}
 
@@ -428,6 +434,7 @@ function newItem() {
   return {
     RaceName: '',
     GameId: 32,
+    BgImage: '',
     RaceType: 0,
     RaceWeek: [],
     RaceWeekStr: '',
@@ -474,7 +481,7 @@ function newItem() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, GameLevel, MoneyInput },
+  components: { Compare, Publish, GameLevel, MoneyInput, ImagePicker },
   data() {
     return {
       tableData: [],
@@ -532,6 +539,7 @@ export default {
       AttrNames: {
         RaceName: '比赛名称',
         GameId: '玩法',
+        BgImage: '背景图片',
         RaceWeek: '星期',
         RaceBeginDate: '开始日期',
         RaceEndDate: '结束日期',
@@ -700,6 +708,10 @@ export default {
               console.log(objs[o].RaceBeginTime)
             }
 
+            if (objs[o].BgImage === ' ') {
+              objs[o].BgImage = ''
+            }
+
             if (objs[o].RaceEndTime === 0) {
               objs[o].RaceEndTime = new Date()
             } else {
@@ -843,7 +855,13 @@ export default {
       postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceBeginTime > 86400) {
+        postData.RaceBeginTime = postData.RaceBeginTime - 86400
+      }
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceBeginTime > postData.RaceEndTime && postData.RaceEndTime < 86400) {
+        postData.RaceEndTime = postData.RaceEndTime + 86400
+      }
       postData.ServiceFee = postData.ServiceFee * 1000
       postData.SignupFee = postData.SignupFee * 1000
       if (postData.RaceType === 2) {
@@ -865,6 +883,9 @@ export default {
       }
       if (postData.RaceWhiteList === '') {
         postData.RaceWhiteList = ' '
+      }
+      if (postData.BgImage === '') {
+        postData.BgImage = ' '
       }
       postData.PreMatchBeginTime *= 60
       postData.AppInfoStr = JSON.stringify(postData.AppInfo)

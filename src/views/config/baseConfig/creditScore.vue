@@ -10,8 +10,21 @@
             <el-input placeholder="请输入内容" v-model.number="item.value">
               <template slot="prepend">信誉用户达标信誉分值：</template>
             </el-input>
-            <el-input placeholder="请输入内容" v-model.number="item.updateDelta">
-              <template slot="prepend">信誉分刷新时间间隔(s)：</template>
+            <el-input v-if="false" placeholder="请输入内容" v-model.number="item.updateDelta">
+              <template slot="prepend">信誉分刷新时刻：</template>
+              <template slot="append">
+                <el-time-select
+                  size="mini"
+                  @change="printChange"
+                  v-model="item.updateDelta"
+                  :picker-options="{
+                    start: '08:30',
+                    step: '00:15',
+                    end: '20:30'
+                  }"
+                  placeholder="选择时间">
+                </el-time-select>
+              </template>
             </el-input>
           </fieldset>
           <fieldset style="margin-top:10px">
@@ -30,12 +43,12 @@
                 </el-table-column>
                 <el-table-column prop="dayTop" label="每日封顶值">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.dayTop" size="mini" />
+                    <el-input v-model.number="scope.row.dayTop" size="mini" />
                   </template>
                 </el-table-column>
                 <el-table-column prop="valTop" label="单项封顶值">
                   <template slot-scope="scope">
-                    <el-input v-model="scope.row.valTop" size="mini" />
+                    <el-input v-model.number="scope.row.valTop" size="mini" />
                   </template>
                 </el-table-column>
               </el-table>
@@ -89,7 +102,7 @@
                   label="有效下注换算系数"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.radio" size="mini" />
+                    <el-input v-model.number="scope.row.radio" />
                   </template>
                 </el-table-column>
 
@@ -98,7 +111,7 @@
                   label="局数分"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.score" size="mini" />
+                    <el-input v-model.number="scope.row.score" />
                   </template>
                 </el-table-column>
 
@@ -106,13 +119,13 @@
                   label="操作"
                 >
                   <template slot-scope="scope">
-                    <el-button type="danger" size="mini" @click="delRow(scope.$index)">删除</el-button>
+                    <el-button type="danger" @click="delRow(scope.$index)">删除</el-button>
                   </template>
                 </el-table-column>
               </el-table>
             </el-row>
             <el-row>
-              <el-button type="danger" size="mini" @click="addRow()">添加</el-button>
+              <el-button type="primary" @click="addRow()">添加</el-button>
             </el-row>
           </fieldset>
         </el-col>
@@ -316,8 +329,14 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             console.log("xxxxxx")
-            this.limitConf = [item.flowLimit, item.playLimit, item.ggrLimit]
-            this.glconf = item.glconf
+            this.item.value /= 1000
+            for (const v of this.item.limitConf) {
+              v.dayTop /= 1000
+              v.valTop /= 1000
+            }
+            for (const v of this.item.glconf) {
+              v.radio /= 100
+            }
           }
         }
       })
@@ -350,13 +369,20 @@ export default {
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+      const limits =this.item.limitConf
+      let glconf = []
+      for (const v of this.item.glconf) {
+        let item = Object.assign({},v)
+        item.radio *= 100
+        glconf.push(item)
+      }
 
       this.form.Data = JSON.stringify({
-        value: this.item.value,
-        glconf: this.item.glconf,
-        flowLimit: this.item.limitConf[0],
-        playLimit: this.item.limitConf[1],
-        ggrLimit: this.item.limitConf[2],
+        value: this.item.value*1000,
+        glconf: glconf,
+        flowLimit: {dayTop:limits[0].dayTop*1000, valTop:limits[0].valTop*1000},
+        playLimit: {dayTop:limits[1].dayTop*1000, valTop:limits[1].valTop*1000},
+        ggrLimit: {dayTop:limits[2].dayTop*1000, valTop:limits[2].valTop*1000},
         updateDelta: this.item.updateDelta,
       })
 
@@ -384,6 +410,9 @@ export default {
     },
     delRow(index) {
       this.item.glconf.splice(index, 1)
+    },
+    printChange() {
+      console.log(this.item.updateDelta, typeof this.item.updateDelta)
     }
   }
 }
