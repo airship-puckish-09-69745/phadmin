@@ -466,7 +466,11 @@ export default {
       this.appConfig = [
         { 'value': 0, 'label': '全部' },
         { 'value': 1000002, 'label': '1000002' },
-        { 'value': 1000007, 'label': '1000007' }
+        { 'value': 1000007, 'label': 'zoo测试帐号' },
+        { 'value': 1000009, 'label': 'zoo 正式帐号' },
+        { 'value': 1000023, 'label': 'whisper正式' },
+        { 'value': 1000030, 'label': 'idgames 测试帐号' },
+        { 'value': 1000031, 'label': 'idgames 正式' }
       ]
       this.searchForm.gameId = 106
     }

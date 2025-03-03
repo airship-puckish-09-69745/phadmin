@@ -94,6 +94,7 @@ export function LibShow() {
     4: '♠'
   }
   this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
+    198: 'FortuneBlessing',//独占一行
     188: 'StreetFighting',//独占一行
     192: 'BountyRaid',//独占一行
     180: 'FishingMaster',//独占一行
