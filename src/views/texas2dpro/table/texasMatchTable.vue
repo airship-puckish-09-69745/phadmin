@@ -149,7 +149,7 @@
           </el-col>
         </el-row>
         </el-row>
-          <el-form-item label="封面图片URL：" :required="true">
+          <el-form-item label="封面图片URL：" :required="false">
               <ImagePicker v-model="edit.item.BgImage" />
           </el-form-item>
         </el-row>
