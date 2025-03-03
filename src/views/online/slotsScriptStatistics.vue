@@ -205,6 +205,106 @@
 
           </el-col>
         </el-row>
+        <el-row v-if="queryGid === 186" style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
+          <el-col :span="11">
+            <el-table
+              ref="filterTable"
+              :data="Has2JPColsBuyRespinTableData"
+              stripe
+              border
+              :header-cell-style="libShow.DefaultTableHeadClass"
+              :row-style="{height:'10px',width: '100%'}"
+              :cell-style="libShow.DefaultTableCell"
+            >
+              <el-table-column label="重转返奖统计">
+                <el-table-column
+                  prop="gid"
+                  label="Bet值"
+                  width="75px"
+                >
+                  <template slot-scope="scope">
+                    {{ currentBaseBet * scope.row.bet / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="出现2列jp次数"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    {{ scope.row.times }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="出现2列jp首次购买次数"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    {{ getBuyRespinFirstTimes(scope.row.bet) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="购买jp次数"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    {{ getBuyRespinTimes(scope.row.bet) }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="出现2列jp首次购买占比"
+                  width="90px"
+                >
+                  <template slot-scope="scope">
+                    {{ (getBuyRespinFirstTimes(scope.row.bet) / scope.row.times * 100).toFixed(2) + '%' }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="购买jp额度"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ getBuyRespinBet(scope.row.bet) / 1000 }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column
+                  prop="gid"
+                  label="购买jp返奖"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ getBuyRespinReturn(scope.row.bet) / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="GGR"
+                  width="120px"
+                >
+                  <template slot-scope="scope">
+                    {{ (getBuyRespinBet(scope.row.bet) - getBuyRespinReturn(scope.row.bet)) / 1000 }}
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="gid"
+                  label="返奖率"
+                >
+                  <template slot-scope="scope">
+                    {{
+                      (getBuyRespinBet(scope.row.bet) > 0 ? ((getBuyRespinReturn(scope.row.bet) / getBuyRespinBet(scope.row.bet))*100).toFixed(2) : 0) + "%"
+                    }}
+                  </template>
+                </el-table-column>
+              </el-table-column>
+            </el-table>
+
+          </el-col>
+        </el-row>
         <el-row style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
           <el-col :span="11">
             <el-table
@@ -895,6 +995,8 @@ export default {
       jackpotClientDB: new ClientTableData([], 1, filterMap),
       ordinaryReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       buyReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
+      buyRespinReturnClientDB: { '全部': new ClientTableData([], 1, filterMap) },
+      has2JPClosClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       showBtn: 0,
       libShow: $libShow,
       item: {
@@ -910,6 +1012,7 @@ export default {
       jackpotTableData: [],
       OrdinaryReturnTableData: [],
       BuyReturnMoneyTableData: [],
+      Has2JPColsBuyRespinTableData: [],
 
       queryTime: new Date().getTime(),
       loading: false,
@@ -929,6 +1032,10 @@ export default {
       scatterCounts: {},
       returnMap: {},
       buyReturnMap: {},
+      buyRespinReturnMap: {},
+      buyRespinTimeMap: {},
+      buyRespinTotalBetMap: {},
+      buyRespinFirstTimesMap: {},
       stepData: {},
       cacheStep: {},
       currentBaseBet: {},
@@ -973,6 +1080,17 @@ export default {
       } else {
         this.OrdinaryReturnTableData = []
       }
+      console.log('OrdinaryReturnTableData', this.OrdinaryReturnTableData)
+      console.log('OrdinaryReturnTableData Type', typeof this.OrdinaryReturnTableData)
+    },
+    refreshRespinReturn() {
+      if (this.betOddsKey in this.has2JPClosClientDB) {
+        this.Has2JPColsBuyRespinTableData = this.has2JPClosClientDB[this.betOddsKey].GetCurrentPageData()
+      } else {
+        this.Has2JPColsBuyRespinTableData = []
+      }
+      // console.log('Has2JPColsBuyRespinTableData', this.Has2JPColsBuyRespinTableData)
+      // console.log('Has2JPColsBuyRespinTableData Type', typeof this.Has2JPColsBuyRespinTableData)
     },
     getTotalOrdinaryBetTimes() {
       let cnt = 0
@@ -1009,6 +1127,38 @@ export default {
         }
       }
       return cnt
+    },
+    getBuyRespinBet(bet) {
+      if (this.betOddsKey in this.buyRespinTotalBetMap) {
+        if (bet in this.buyRespinTotalBetMap[this.betOddsKey]) {
+          return this.buyRespinTotalBetMap[this.betOddsKey][bet]
+        }
+      }
+      return 0
+    },
+    getBuyRespinReturn(bet) {
+      if (this.betOddsKey in this.buyRespinReturnMap) {
+        if (bet in this.buyRespinReturnMap[this.betOddsKey]) {
+          return this.buyRespinReturnMap[this.betOddsKey][bet]
+        }
+      }
+      return 0
+    },
+    getBuyRespinTimes(bet) {
+      if (this.betOddsKey in this.buyRespinTimeMap) {
+        if (bet in this.buyRespinTimeMap[this.betOddsKey]) {
+          return this.buyRespinTimeMap[this.betOddsKey][bet]
+        }
+      }
+      return 0
+    },
+    getBuyRespinFirstTimes(bet) {
+      if (this.betOddsKey in this.buyRespinFirstTimesMap) {
+        if (bet in this.buyRespinFirstTimesMap[this.betOddsKey]) {
+          return this.buyRespinFirstTimesMap[this.betOddsKey][bet]
+        }
+      }
+      return 0
     },
     handleClick(tab, event) {
       if (parseInt(tab.index) === 0) {
@@ -1142,6 +1292,7 @@ export default {
       // this.refreshJackpot()
       this.refreshBuyReturn()
       this.refreshOrdinaryReturn()
+      this.refreshRespinReturn()
     },
     changeBigPrizeGid() {
       this.queryBase(this.bigPrizeForm.gid)
@@ -1191,15 +1342,17 @@ export default {
         const scatterCounts = { '全部': [] }
         const ordinaryReturnMoneyTableData = {}
         const buyReturnMoneyTableData = {}
-        const mahjongJackpot2JPColsTimesTableData = {} // 出现2列JP的次数统计
-        const mahjongJackpot2JPColsBuyTableData = {}  // 出现2列JP的购买统计
-        const mahjongJackpot2JPColsBuyFirstTableData = {} // 出现2列JP的首次购买统计
+        const has2JpColsTableData = {}  // 出现2列JP的统计
 
         this.returnMap = {}
         this.buyReturnMap = {}
         this.stepSum = {}
         this.sumData = {}
         this.coordinateSum = {}
+        this.buyRespinTimeMap = {}
+        this.buyRespinTotalBetMap = {}
+        this.buyRespinReturnMap = {}
+        this.buyRespinFirstTimesMap = {}
 
         if (response.RetCode === 0) {
           const scriptMap = {}
@@ -1380,41 +1533,86 @@ export default {
               }
               if (strings1[1] === '2coljp') {
                 if (strings1.length < 6) {
-                  if (!('全部' in mahjongJackpot2JPColsTimesTableData)) {
-                    mahjongJackpot2JPColsTimesTableData['全部'] = []
+                  if (!('全部' in has2JpColsTableData)) {
+                    has2JpColsTableData['全部'] = []
                   }
-                  mahjongJackpot2JPColsTimesTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  const bet = parseInt(strings1[3])
+                  has2JpColsTableData['全部'].push({ bet: bet, times: response.Data['script'][key] })
                 } else {
-                  if (!(strings1[4] in mahjongJackpot2JPColsTimesTableData)) {
-                    mahjongJackpot2JPColsTimesTableData[strings1[4]] = []
+                  const betOdds = strings1[4]
+                  const bet = parseInt(strings1[3])
+                  if (!(betOdds in has2JpColsTableData)) {
+                    has2JpColsTableData[betOdds] = []
                   }
-                  mahjongJackpot2JPColsTimesTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                  has2JpColsTableData[betOdds].push({ bet: bet, times: response.Data['script'][key] })
                 }
               }
               if (strings1[1] === 'buyrespin') {
-                if (strings1.length < 6) {
-                  if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
-                    mahjongJackpot2JPColsBuyTableData['全部'] = []
+                if (strings1[2] === 'times') {
+                  if (strings1.length < 6) {
+                    if (!('全部' in this.buyRespinTimeMap)) {
+                      this.buyRespinTimeMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    this.buyRespinTimeMap['全部'][bet]= response.Data['script'][key]
+                  } else {
+                    const betOdds = strings1[4]
+                    const bet = parseInt(strings1[3])
+                    if (!(betOdds in this.buyRespinTimeMap)) {
+                      this.buyRespinTimeMap[betOdds] = {}
+                    }
+                    this.buyRespinTimeMap[betOdds][bet] = response.Data['script'][key]
                   }
-                  mahjongJackpot2JPColsBuyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-                } else {
-                  if (!(strings1[4] in mahjongJackpot2JPColsBuyTableData)) {
-                    mahjongJackpot2JPColsBuyTableData[strings1[4]] = []
+                }
+                if (strings1[2] === 'return') {
+                  if (strings1.length < 6) {
+                    if (!('全部' in this.buyRespinReturnMap)) {
+                      this.buyRespinReturnMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    this.buyRespinReturnMap['全部'][bet] = parseInt(response.Data['script'][key])
+                  } else {
+                    const betOdds = strings1[4]
+                    const bet = parseInt(strings1[3])
+                    if (!(betOdds in this.buyRespinReturnMap)) {
+                      this.buyRespinReturnMap[betOdds] = {}
+                    }
+                    this.buyRespinReturnMap[betOdds][bet] = parseInt(response.Data['script'][key])
                   }
-                  mahjongJackpot2JPColsBuyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+                }
+                if (strings1[2] === 'bet') {
+                  if (strings1.length < 6) {
+                    if (!('全部' in this.buyRespinTotalBetMap)) {
+                      this.buyRespinTotalBetMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    this.buyRespinTotalBetMap['全部'][bet] = parseInt(response.Data['script'][key])
+                  } else {
+                    const betOdds = strings1[4]
+                    const bet = parseInt(strings1[3])
+                    if (!(betOdds in this.buyRespinTotalBetMap)) {
+                      this.buyRespinTotalBetMap[betOdds] = {}
+                    }
+                    this.buyRespinTotalBetMap[betOdds][bet] = parseInt(response.Data['script'][key])
+                  }
                 }
               }
               if (strings1[1] === 'buyrespinfirst') {
-                if (strings1.length < 6) {
-                  if (!('全部' in mahjongJackpot2JPColsBuyFirstTableData)) {
-                    mahjongJackpot2JPColsBuyFirstTableData['全部'] = []
+                if (strings1[2] === 'times') {
+                  if (strings1.length < 6) {
+                    if (!('全部' in this.buyRespinFirstTimesMap)) {
+                      this.buyRespinFirstTimesMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    this.buyRespinFirstTimesMap['全部'][bet] = response.Data['script'][key]
+                  } else {
+                    const betOdds = strings1[4]
+                    const bet = parseInt(strings1[3])
+                    if (!(betOdds in this.buyRespinFirstTimesMap)) {
+                      this.buyRespinFirstTimesMap[betOdds] = {}
+                    }
+                    this.buyRespinFirstTimesMap[betOdds][bet] = response.Data['script'][key]
                   }
-                  mahjongJackpot2JPColsBuyFirstTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-                } else {
-                  if (!(strings1[4] in mahjongJackpot2JPColsBuyFirstTableData)) {
-                    mahjongJackpot2JPColsBuyFirstTableData[strings1[4]] = []
-                  }
-                  mahjongJackpot2JPColsBuyFirstTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
                 }
               }
             }
@@ -1479,14 +1677,8 @@ export default {
           })
         }
 
-        for (const i in mahjongJackpot2JPColsTimesTableData) {
-          mahjongJackpot2JPColsTimesTableData[i].sort(function(a, b) {
-            return a.bet - b.bet
-          })
-        }
-
-        for (const i in mahjongJackpot2JPColsBuyFirstTableData) {
-          mahjongJackpot2JPColsBuyFirstTableData[i].sort(function(a, b) {
+        for (const i in has2JpColsTableData) {
+          has2JpColsTableData[i].sort(function(a, b) {
             return a.bet - b.bet
           })
         }
@@ -1535,6 +1727,21 @@ export default {
         } else {
           for (const i in buyReturnMoneyTableData) {
             this.buyReturnClientDB[i] = new ClientTableData(buyReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
+            this.betOddsKeySelect[i] = i
+          }
+        }
+
+        this.has2JPClosClientDB = {}
+        if (Object.keys(has2JpColsTableData).length <= 2) {
+          if ('全部' in has2JpColsTableData) {
+            this.has2JPClosClientDB['全部'] = new ClientTableData(has2JpColsTableData['全部'], 20, filterMap, 'idx', -1)
+          } else {
+            this.has2JPClosClientDB['全部'] = new ClientTableData([], 1, filterMap)
+          }
+          this.betOddsKeySelect['全部'] = '全部'
+        } else {
+          for (const i in has2JpColsTableData) {
+            this.has2JPClosClientDB[i] = new ClientTableData(has2JpColsTableData[i], 20, filterMap, 'idx', -1)
             this.betOddsKeySelect[i] = i
           }
         }
