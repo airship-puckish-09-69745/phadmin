@@ -63,7 +63,7 @@
     </el-row>
     <el-row>
       <el-col :span="12" :offset="3">
-        <el-tabs type="border-card" value="正常投注" tab-position="top">
+        <el-tabs v-model="TabsBetTypeActiveName" type="border-card" value="正常投注" tab-position="top">
           <el-tab-pane
             v-for="item in JPMultiWeights"
             :key="item.BetOdds"
@@ -103,7 +103,7 @@
               </el-tab-pane>
               <el-tab-pane label="剧本目标触发JP配置" name="script">
                 <el-button type="primary" @click="addScriptJPConfigRow">添加</el-button>
-                <el-table :data="item.ScriptJPRate">
+                <el-table :data="item.ScriptJPRates">
                   <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
                     <template slot-scope="scope">
                       <el-input v-model.number="scope.row.MinOdds" :required="true" placeholder="请输入内容,如10"> </el-input>
@@ -114,9 +114,9 @@
                       <el-input v-model.number="scope.row.MaxOdds" :required="true" placeholder="请输入内容,如10"> </el-input>
                     </template>
                   </el-table-column>
-                  <el-table-column prop="WeightStr" label="触发概率%">
+                  <el-table-column prop="WeightStr" label="触发概率‱">
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.InJPRate" :required="true" placeholder="请输入内容,如10"> <template slot="append">%</template> </el-input>
+                      <el-input v-model.number="scope.row.InJPRate" :required="true" placeholder="请输入内容,如10"> <template slot="append">‱</template> </el-input>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" width="120">
@@ -172,11 +172,12 @@ export default {
       NormalJPMultiWeights: [],
       BuyFreeJPMultiWeights: [],
       BuyRespinJPMultiWeights: [],
+      TabsBetTypeActiveName: '正常投注',
       JPMultiWeights: [
         {
           ExBetOdds: 1000,
           Name: '正常投注',
-          ScriptJPRate: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
+          ScriptJPRates: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
           BigBonusWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyFreeWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyRespinWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
@@ -184,7 +185,7 @@ export default {
         {
           ExBetOdds: 1500,
           Name: '加倍投注',
-          ScriptJPRate: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
+          ScriptJPRates: [{MinOdds: 10, MaxOdds: 30, InJPRate: 10}, {MinOdds: 31, MaxOdds: 40, InJPRate: 20}],
           BigBonusWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyFreeWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
           BuyRespinWeights: [{MultiOdds: 1, WeightStr: '1,2,3,5'}],
@@ -206,7 +207,7 @@ export default {
     },
     submitFrm() {
       const multiOddsCnt = this.cfg.MultiStr.split(',').length
-      if (multiOddsCnt !== this.cfg.MultiWeightStr.split(',').length || multiOddsCnt!== this.cfg.BuyFreeMultiWeightStr.split(',').length) {
+      if (multiOddsCnt !== this.cfg.MultiWeightStr.split(',').length || multiOddsCnt !== this.cfg.BuyFreeMultiWeightStr.split(',').length) {
         this.$message.error('额外中奖倍数数量与相关权重的数量不一致')
         return false
       }
@@ -245,6 +246,7 @@ export default {
         obj.BigBonusWeights = []
         obj.BuyFreeWeights = []
         obj.BuyRespinWeights = []
+        obj.ScriptJPRates = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i].ScriptJPRates : obj.ScriptJPRates
         const cfg = this.cfg.JPMultiWeights[i] ? this.cfg.JPMultiWeights[i] : obj
 
         for (let j = 0; j < multiOddsList.length; j++) {
@@ -269,7 +271,7 @@ export default {
         const editObj = this.JPMultiWeights[i]
         const obj = {
           ExBetOdds: this.JPMultiWeights[i].ExBetOdds,
-          ScriptJPRate: this.JPMultiWeights[i].ScriptJPRate,
+          ScriptJPRates: this.JPMultiWeights[i].ScriptJPRates,
           BigBonusWeightStrList: [],
           BuyFreeWeightStrList: [],
           BuyRespinWeightStrList: [],
@@ -287,12 +289,19 @@ export default {
       }
     },
     addScriptJPConfigRow() {
-      if (this.cfg.ScriptJPConfig == null) this.cfg.ScriptJPConfig = []
-      this.cfg.ScriptJPConfig.push({
-        MinOdds: 0,
-        MaxOdds: 0,
-        InJPRate: 0
-      })
+      for (let i = 0; i < this.JPMultiWeights.length; i++) {
+        if (this.JPMultiWeights[i].Name !== this.TabsBetTypeActiveName) {
+          continue
+        }
+        if (!this.JPMultiWeights[i].ScriptJPRates) {
+          this.JPMultiWeights[i].ScriptJPRates = []
+        }
+        this.JPMultiWeights[i].ScriptJPRates.push({
+          MinOdds: 0,
+          MaxOdds: 0,
+          InJPRate: 0
+        })
+      }
       console.log('addScriptJPConfigRow', this.cfg.ScriptJPConfig)
     },
     removeScriptJPConfigRow(index) {
@@ -302,8 +311,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.cfg.ScriptJPConfig.splice(index, 1)
-        console.log('removeScriptJPConfigRow', this.cfg.ScriptJPConfig)
+          for (let i = 0; i < this.JPMultiWeights.length; i++) {
+            if (this.JPMultiWeights[i].Name !== this.TabsBetTypeActiveName) {
+              continue
+            }
+            this.JPMultiWeights[i].ScriptJPRates.splice(index, 1)
+          }
+        console.log('removeScriptJPConfigRow index', index)
       })
     },
     onMultiStrChange() {

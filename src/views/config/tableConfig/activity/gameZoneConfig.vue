@@ -608,13 +608,13 @@
       <el-form ref="editZoneGame.item" :model="editZoneGame.item" label-width="250px" size="small">
 
         <el-form-item label="appID：" :required="true" prop="AppId">
-          <el-radio-group v-model="editZoneGame.item.AppId" >
-            <el-radio v-for="appInfo in appidInfoCfgs" :label="appInfo.value" :key="appInfo.value">{{appInfo.label}}</el-radio>
+          <el-radio-group v-model="editZoneGame.item.AppId">
+            <el-radio v-for="appInfo in appidInfoCfgs" :key="appInfo.value" :label="appInfo.value">{{ appInfo.label }}</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="channelID：" :required="true" prop="ChannelId">
-          <el-checkbox-group v-model="editZoneGame.item.ChannelId" >
-            <el-checkbox v-for="channelInfo in channelIdCfgs" :label="channelInfo.value" :key="channelInfo.value">{{channelInfo.label}}</el-checkbox>
+          <el-checkbox-group v-model="editZoneGame.item.ChannelId">
+            <el-checkbox v-for="channelInfo in channelIdCfgs" :key="channelInfo.value" :label="channelInfo.value">{{ channelInfo.label }}</el-checkbox>
           </el-checkbox-group>
         </el-form-item>
         <el-form-item
@@ -626,7 +626,7 @@
         </el-form-item>
         <el-form-item label="游戏：" :required="true" prop="Gids">
           <el-col :span="15">
-            <el-select v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
+            <el-select style="width: 500px;" popper-class="custom-dropdown1" v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
               <el-option
                 v-for="itemZoneGame in gameSelect"
                 :key="itemZoneGame.id"
@@ -655,16 +655,18 @@
             <el-table-column
               prop="Gid"
               label="推荐游戏"
-              width="150"
+              width="330"
             >
               <template v-slot:default="scope">
-                <el-select v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
+                <el-select style="width: 270px;" popper-class="custom-dropdown" v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
                   <el-option
                     v-for="item in gameSelect"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id"
-                  />
+                    :value="item.id">
+                    <span style="float: left">{{ item.name }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px">{{ showZoneGameLabel(item.id) }}</span>
+                  </el-option>
                 </el-select>
               </template>
             </el-table-column>
@@ -994,7 +996,7 @@ export default {
           const objsZone = response.Data || []
           const dataZone = {}
           for (let i = 0; i < objsZone.length; i++) {
-            let objZone = objsZone[i]
+            const objZone = objsZone[i]
             if (objZone.ShowDatacenter !== 1) {
               continue
             }
@@ -1400,17 +1402,17 @@ export default {
       const nowGameSelArray = []
       for (let i = 0; i < this.zoneGame.length; i++) {
         if (this.zoneGame[i].Index === index) {
-            for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
-              for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
-                nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
-              }
+          for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+            for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+              nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
             }
+          }
         } else {
-            for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
-              for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
-                gameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
-              }
+          for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+            for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+              gameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
             }
+          }
         }
       }
 
@@ -1517,11 +1519,11 @@ export default {
       for (let i = 0; i < this.zoneGame.length; i++) {
         const data = this.zoneGame[i]
         if (data.Index === id) {
-          if (data.AppId == null){
+          if (data.AppId == null) {
             data.AppId = 1000002
             data.ChannelId = ['BP', 'AP', 'GP', 'TP', 'PG', 'Dev']
           }
-          if (Array.isArray(data.AppId)){
+          if (Array.isArray(data.AppId)) {
             data.AppId = 1000002
           }
           return data
@@ -1650,6 +1652,15 @@ export default {
         }
       }
     },
+    showZoneGameLabel(id) {
+      const length = this.editZoneGame.item.Games.length
+      for (let i = 0; i < length - 1; i++) {
+        if (id === this.editZoneGame.item.Games[i].Gid) {
+          return '(已添加)'
+        }
+      }
+      return ''
+    },
     changeZoneGameGids(id) {
       console.log('changeHallGame===>', id)
       // if (!this.checkGames(id)) {
@@ -1680,7 +1691,20 @@ export default {
   }
 }
 </script>
-
 <style>
-
+.custom-dropdown .el-select-dropdown__wrap {
+  max-height: 900px; /* 设置下拉框的最大高度 */
+  max-width: 270px; /* 设置下拉框的最大宽度 */
+  width: 270px; /* 设置下拉框的宽度 */
+}
+.custom-dropdown .el-select-dropdown__list {
+  max-height: calc(900px - 40px); /* 根据需要减去可能的滚动条高度 */
+}
+.custom-dropdown1 .el-select-dropdown__wrap {
+  max-height: 900px; /* 设置下拉框的最大高度 */
+  max-width: 500px; /* 设置下拉框的最大宽度 */
+}
+.custom-dropdown1 .el-select-dropdown__list {
+  max-height: calc(900px - 40px); /* 根据需要减去可能的滚动条高度 */
+}
 </style>

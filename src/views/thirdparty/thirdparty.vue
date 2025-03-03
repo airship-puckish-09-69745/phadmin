@@ -533,8 +533,16 @@ export default {
       })
     },
     getPostData() {
+      this.trimData()
       const postData = this.libMoney.TransForStore(this.edit.item)
+      console.log('postData', postData)
       return postData
+    },
+    trimData() {
+      const itemArr = ['Account', 'Intro', 'Ip', 'Ver', 'GamefunVer', 'GameUri', 'Screen', 'TestUri', 'TestUids', 'TexasUri', 'LiveUri', 'TestVer']
+      for (const i in itemArr) {
+        this.edit.item[itemArr[i]] = this.edit.item[itemArr[i]].trim()
+      }
     },
     checkData() {
       this.$refs['edit.item'].validate(valid => {})
