@@ -149,7 +149,7 @@
           </el-col>
         </el-row>
         </el-row>
-          <el-form-item label="封面图片URL：" :required="false">
+          <el-form-item label="封面图片URL：" :required="true">
               <ImagePicker v-model="edit.item.BgImage" />
           </el-form-item>
         </el-row>
@@ -873,6 +873,9 @@ export default {
       }
       if (postData.RaceWhiteList === '') {
         postData.RaceWhiteList = ' '
+      }
+      if (postData.BgImage === '') {
+        postData.BgImage = ' '
       }
       postData.PreMatchBeginTime *= 60
       postData.AppInfoStr = JSON.stringify(postData.AppInfo)
