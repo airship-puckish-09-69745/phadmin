@@ -855,7 +855,13 @@ export default {
       postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceBeginTime > 86400) {
+        postData.RaceBeginTime = postData.RaceBeginTime - 86400
+      }
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceBeginTime > postData.RaceEndTime && postData.RaceEndTime < 86400) {
+        postData.RaceEndTime = postData.RaceEndTime + 86400
+      }
       postData.ServiceFee = postData.ServiceFee * 1000
       postData.SignupFee = postData.SignupFee * 1000
       if (postData.RaceType === 2) {
