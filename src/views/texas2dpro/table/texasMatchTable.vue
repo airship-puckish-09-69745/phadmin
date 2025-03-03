@@ -148,6 +148,11 @@
             </el-form-item>
           </el-col>
         </el-row>
+        </el-row>
+          <el-form-item label="封面图片URL：" :required="true">
+              <ImagePicker v-model="edit.item.BgImage" />
+          </el-form-item>
+        </el-row>
         <el-row>
           <el-col :span="20">
             <el-form-item label="比赛类型:" :required="true">
@@ -421,6 +426,7 @@ import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
+import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 
 const filterMap = {}
 
@@ -428,6 +434,7 @@ function newItem() {
   return {
     RaceName: '',
     GameId: 32,
+    BgImage: '',
     RaceType: 0,
     RaceWeek: [],
     RaceWeekStr: '',
@@ -474,7 +481,7 @@ function newItem() {
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, GameLevel, MoneyInput },
+  components: { Compare, Publish, GameLevel, MoneyInput, ImagePicker },
   data() {
     return {
       tableData: [],
@@ -532,6 +539,7 @@ export default {
       AttrNames: {
         RaceName: '比赛名称',
         GameId: '玩法',
+        BgImage: '背景图片',
         RaceWeek: '星期',
         RaceBeginDate: '开始日期',
         RaceEndDate: '结束日期',
