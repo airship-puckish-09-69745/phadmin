@@ -213,7 +213,7 @@
       </el-descriptions>
 
       <span slot="footer" class="dialog-footer">
-        <el-button @click="TagVisible = false">关 闭</el-button>
+        <el-button @click="TagCreditDetail = false">关 闭</el-button>
       </span>
     </el-dialog>
     <!--添加标签end-->
