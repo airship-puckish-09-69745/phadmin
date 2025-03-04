@@ -1242,6 +1242,12 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'slots_plan_config',
+            component: () => import('@/views/config/tableConfig/slots/slotsScript/slotsPlanConfig'),
+            name: 'slots_plan_config',
+            meta: { title: '老虎机方案配置' }
+          },
+          {
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
@@ -2905,7 +2911,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',

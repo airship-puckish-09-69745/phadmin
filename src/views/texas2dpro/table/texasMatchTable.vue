@@ -294,6 +294,11 @@
               <el-input v-model.number="edit.item.EndSignupClass" placeholder="请输入" />
             </el-form-item>
           </el-col>
+           <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="注意截止时间需要小于比赛间隔时间" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
           <el-col :span="11">
             <el-form-item label="最低开赛人数:" :required="true" prop="item.MinPeopleNum" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.MinPeopleNum" placeholder="请输入" />
@@ -332,6 +337,11 @@
             <el-form-item label="可Rebuy盲注级别限制:" :required="true" prop="item.RebuyClassLimit" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.RebuyClassLimit" placeholder="请输入" />
             </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="注意截止时间需要小于比赛间隔时间" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
           <el-col :span="11">
             <el-form-item label="rebuy后筹码数量:" :required="true" prop="item.RebuyChipNum" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -708,6 +718,10 @@ export default {
               console.log(objs[o].RaceBeginTime)
             }
 
+            if (objs[o].BgImage === ' ') {
+              objs[o].BgImage = ''
+            }
+
             if (objs[o].RaceEndTime === 0) {
               objs[o].RaceEndTime = new Date()
             } else {
@@ -851,7 +865,13 @@ export default {
       postData.RaceBeginDate = this.timeToTimestamp(postData.RaceBeginDate)
       postData.RaceEndDate = this.timeToTimestamp(postData.RaceEndDate)
       postData.RaceBeginTime = this.timeToTimestamp(postData.RaceBeginTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceBeginTime > 86400) {
+        postData.RaceBeginTime = postData.RaceBeginTime - 86400
+      }
       postData.RaceEndTime = this.timeToTimestamp(postData.RaceEndTime) % (24 * 3600) + 8 * 3600
+      if (postData.RaceBeginTime > postData.RaceEndTime && postData.RaceEndTime < 86400) {
+        postData.RaceEndTime = postData.RaceEndTime + 86400
+      }
       postData.ServiceFee = postData.ServiceFee * 1000
       postData.SignupFee = postData.SignupFee * 1000
       if (postData.RaceType === 2) {
