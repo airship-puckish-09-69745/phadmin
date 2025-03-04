@@ -4,6 +4,46 @@
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="230px">
 
+          <el-form-item label="普通模式消除额外倍数">
+            <el-input v-model.number="cfg.ExtraOdds" placeholder="请输入内容" />
+          </el-form-item>
+
+          <el-form-item label="免费模式消除额外倍数">
+            <el-input v-model.number="cfg.FreeExtraOdds" placeholder="请输入内容" />
+          </el-form-item>
+
+          <el-form-item label="普通模式Scatter形状权重">
+            <el-input v-model="cfg.ScatterIrregularShapeWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。形状从1开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式Scatter形状权重">
+            <el-input v-model="cfg.FreeScatterIrregularShapeWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。形状从1开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="普通模式一般图案形状权重">
+            <el-input v-model="cfg.IrregularShapeWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。形状从1开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式一般图案形状权重">
+            <el-input v-model="cfg.FreeIrregularShapeWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。形状从1开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="普通模式银框出现概率">
+            <el-input v-model.number="cfg.SilverRate"><template slot="append">‰</template></el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式银框出现概率">
+            <el-input v-model.number="cfg.FreeSilverRate"><template slot="append">‰</template></el-input>
+          </el-form-item>
+
+          <el-form-item label="金框图标权重">
+            <el-input v-model="cfg.GoldSymbolWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。图案从1开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式再中scatter概率">
+            <el-input v-model.number="cfg.ReHitScatterRate"><template slot="append">‰</template></el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数">
             <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容" />
           </el-form-item>
@@ -22,14 +62,6 @@
 
           <el-form-item label="购买免费模式中奖倍数分布V2">
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="金框出现概率">
-            <el-input v-model.number="slotsData.GoldRate"><template slot="append">%</template></el-input>
-          </el-form-item>
-
-          <el-form-item label="免费模式再中scatter概率">
-            <el-input v-model.number="slotsData.ReHitScatterRate"><template slot="append">‰</template></el-input>
           </el-form-item>
 
         </el-form>
