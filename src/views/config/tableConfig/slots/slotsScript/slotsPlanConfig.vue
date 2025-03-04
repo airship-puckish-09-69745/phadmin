@@ -246,6 +246,9 @@
           <!--   赔率配置弹窗  -->
     <el-dialog :visible.sync="editSlotsScriptOddsCfgVisible" title="倍率配置">
       <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini">添加</el-button>
+      <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
+        <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
+      </el-tooltip>
       <el-table :data="editSlotsScriptOddsCfgFormData"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -337,21 +340,22 @@
       </div>
     </el-dialog>
           <!-- 下注金额区分赔率方案配置-->
-   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px">
+   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px" :close-on-click-modal="false">
       <el-button @click="appendComment(editBetOddsPlansFormData,newBetOddsPlans())" type="success" size="mini">添加</el-button>
+
       <el-table :data="editBetOddsPlansFormData"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
                 :row-style="{height:'10px'}"
                 :cell-style="libShow.DefaultTableCell"
                 stripe>
-        <el-table-column prop="Odds" label="目标下注金额列表" width="200px">
+        <el-table-column prop="Odds" label="目标下注金额列表" width="250px">
           <template slot="header">
             <span>目标下注金额列表</span>
           </template>
           <template slot-scope="scope">
             <span v-for="(v,idx) in scope.row.TargetBets">
-              <el-input v-model.number="scope.row.TargetBets[idx]" size="mini">
+              <el-input v-model.number="scope.row.TargetBets[idx]" size="mini" @input="(v)=>(scope.row.TargetBets[idx]=v.replace(/[^\d.]/g,''))">
                 <template #prepend><el-button @click="appendComment(scope.row.TargetBets,0)"   size="mini">添加</el-button></template>
                 <template #append><el-button @click="delComment(scope.row.TargetBets,idx)"   size="mini">删除</el-button></template>
               </el-input>
@@ -360,6 +364,9 @@
         </el-table-column>
          <el-table-column prop="OddsCfg" label="倍数配置">
            <template slot-scope="scope">
+              <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
+                     <input type="file" @change="(event) => handleFileUpload2(event, scope.$index)" accept=".xlsx, .xls" size="mini"></input>
+              </el-tooltip>
             <el-table :data="scope.row.OddsCfg" stripe>
               <el-table-column prop="Odds" label="最小倍数">
                 <template slot-scope="scope">
@@ -495,73 +502,7 @@
 <!--    </fieldset>-->
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames"/>
-    <el-dialog
-      v-if="detailVisible"
-      title="配置详情"
-      :visible.sync="detailVisible"
-      width="60%">
-      <el-row>
-        <el-col :offset="0" :span="12">
-          <el-button type="primary" @click="addBigPrizePlansOddsCfgRow(0)" size="mini">添加</el-button>
-          <el-button type="success" size="mini" @click="closeVisible()">确定</el-button>
-        </el-col>
-      </el-row>
-      <el-table
-        :data="showVisibleData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%">
-        <el-table-column
-          prop="OddsMin"
-          label="最小倍数"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMin" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="OddsMax"
-          label="最大倍数"
-          width="200"
-        >
-          <template slot-scope="{}" slot="header">
-            <show-tip head-title="最大倍数" head-tip="0为无限大"></show-tip>
-          </template>
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMax" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="Weight"
-          label="权重"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.Weight" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
 
-            <el-button type="primary" @click="delBigPrizePlansOddsCfgRow(scope.$index)" size="mini">删除2</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-    </el-dialog>
   </div>
 </template>
 
@@ -573,6 +514,8 @@ import request from '@/utils/request'
 import {$libShow, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import ShowTip from "@/components/Tip/showTip.vue";
+import {number} from "echarts/lib/export";
+import XLSX from "xlsx";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -765,13 +708,9 @@ export default {
           return
         }
       }
-
         this.showItem.SlotsType = this.queryGid
         this.showItem.Plans = this.newPlansCfg()
         this.showItem.ID = 0
-
-
-
     },
     newItem() {
       return {
@@ -781,13 +720,16 @@ export default {
     },
     openAddDialog() {
       this.addDialogVisible = true;
-      this.addFormData = {
-        PlanId: 0,
-        PlanName: '',
-        IsDefault: 0,
-        IsDisabled: 0,
+      this.addFormData =     {
+        PlanId: 1,
+        PlanName: '新增方案',
+        IsDefault: 1,
+        IsDisabled: 1,
+        Versions: [
+
+        ],
         ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0}
-      };
+      }
     },
     addPlan() {
       const newPlan = {
@@ -834,12 +776,25 @@ export default {
       this.currentPlanIndex = planIndex;
     },
     newVersion() {
-      return    {
-          Version: 0,
-          Comment: '',
-          IsReady: false,
-          ScriptCfg:{}
-      };
+      return   {
+        Version: 0,
+        Comment: '',
+        IsReady: false,
+        ScriptCfg:
+          {
+            ScriptSteps:0,
+            ScriptNumber:0,
+            OddsCfg:[],
+            ScatterHitCfg:[],
+            BetOddsPlans:[],
+            BigPrizeCfg:{
+              TaxPerThousand:0,
+              HitPerMillion:0,
+              HitSteps:0,
+              Plans:[]
+            },
+          }
+      }
     },
     openEditVersionDialog(planIndex, versionIndex) {
       this.editVersionDialogVisible = true;
@@ -850,7 +805,7 @@ export default {
         Version: version.Version,
         Comment: version.Comment,
         IsReady: version.IsReady,
-        ScriptCfg: version.ScriptCfg,openEditVersionDialog
+        ScriptCfg: version.ScriptCfg,
       };
       this.currentPlanIndex = planIndex;
       this.currentVersionIndex = versionIndex;
@@ -899,6 +854,14 @@ export default {
       this.editSlotsScriptOddsCfgFormData = obj
     },
     saveOddsCfg(key,obj){
+      if (key==='BetOddsPlans'){
+        for (let o of obj) {
+          for (const i in o.TargetBets) {
+            o.TargetBets[i] = o.TargetBets *1000
+          }
+        }
+      }
+      console.log(key,obj,this.showItem.Plans[this.currentPlanIndex])
       this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg[key] =  JSON.parse(JSON.stringify(obj))
       this.editSlotsScriptOddsCfgVisible = false
       this.editScatterHitCfgVisible = false
@@ -916,6 +879,11 @@ export default {
     },
     openBetOddsPlanCfg(obj){
       this.editBetOddsPlansVisible  = true
+      for (const o of obj) {
+        for (const i in o.TargetBets) {
+          o.TargetBets[i] = Number(o.TargetBets)/1000
+        }
+      }
       this.editBetOddsPlansFormData = obj
     },
     openBigPrizeOddsCfg(obj){
@@ -1030,6 +998,9 @@ export default {
       }
     },
     updateCfg(){
+      if (!this.checkData()) {
+        return
+      }
       request({
         url: '/slotsScriptV3Config/update',
         method: 'post',
@@ -1066,6 +1037,7 @@ export default {
       })
     },
     getVersion(row,planRow) {
+
       console.log(row,planRow.PlanId)
       const $this = this
       request({
@@ -1085,6 +1057,111 @@ export default {
           }
         }
       })
+    },
+    createCfg(){
+      if (!this.checkData()) {
+        return
+      }
+      request({
+        url: '/slotsScriptV3Config/create',
+        method: 'post',
+        data: {
+          SlotsType: this.showItem.SlotsType,
+          ConfigData: JSON.stringify(this.showItem.Plans)
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+        }
+        console.log('response', response)
+      })
+    },
+    checkData(){
+      if (this.showItem.SlotsType<=0){
+        Message.error('请选择游戏类型！')
+        return false
+      }
+      if (this.showItem.Plans.length<=0){
+        Message.error('请添加方案！')
+        return false
+      }
+      for (const o of this.showItem.Plans) {
+        if (o.ScriptRule.TrafficCtrl<=0){
+          Message.error('请设置流量控制！')
+          return false
+        }
+      }
+      return true
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.ImportExcel(file);
+      }
+    },
+    ImportExcel(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, {type: 'array'});
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+
+        this.editSlotsScriptOddsCfgFormData=[]
+        json.forEach((row, index) => {
+          if (index > 0) {
+            let idx = index - 1
+            console.log(index, idx, row)
+
+            this.editSlotsScriptOddsCfgFormData.push({
+              OddsMin: row[0],
+              OddsMax: row[1],
+              ScriptSteps: row[2],
+              ScriptOddsSum: row[3],
+              NormalMatrixCacheSize: 0,
+              ScatterMatrixCacheSize: 0,
+              SwitchScatterPercent: 0,
+              TriggerScatterPercent: 0
+            })
+          }
+        });
+      };
+
+      reader.readAsArrayBuffer(file);
+      this.$forceUpdate()
+    },
+
+    handleFileUpload2(event,datIdx,) {
+      console.log(datIdx,event)
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+          console.log(this.editBetOddsPlansFormData[datIdx].OddsCfg)
+          this.editBetOddsPlansFormData[datIdx].OddsCfg=[]
+          json.forEach((row, index) => {
+            if (index > 0) {
+              let idx = index - 1
+              console.log(index, idx, row,datIdx)
+
+              this.editBetOddsPlansFormData[datIdx].OddsCfg.push({
+                OddsMin: row[0],
+                OddsMax: row[1],
+                ScriptSteps: row[2],
+                ScriptOddsSum: row[3],
+              })
+            }
+          });
+        };
+        reader.readAsArrayBuffer(file);
+        this.$forceUpdate()
+      }
     },
   }
 }
