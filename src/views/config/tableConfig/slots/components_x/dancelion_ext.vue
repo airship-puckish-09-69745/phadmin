@@ -13,9 +13,11 @@
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
-            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">
-              <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template>
-            </el-input>
+            <el-tooltip class="item" effect="dark" content="范围最小值是'红色财字每个倍率'最大值的九倍" placement="top-end">
+              <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750">
+                <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template>
+              </el-input>
+            </el-tooltip>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖左范围概率V2">
