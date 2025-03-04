@@ -44,16 +44,9 @@
               </template>
             </el-table-column>
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
-            <el-table-column prop="IsReady" label="是否就绪">
-              <template slot-scope="scope">
-                {{ scope.row.IsReady === 1 ? '就绪' : '未就绪' }}
-              </template>
-            </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="versionScope">
 
-                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"
-                           size="mini">创建剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
                            size="mini">编辑</el-button>
                 <el-button @click="deleteVersion(scope.$index, versionScope.$index)" type="danger"
@@ -120,23 +113,11 @@
         </el-form-item>
 
          <el-form-item label="平台">
-           <el-select v-model="addFormData.ScriptRuleDescription.Platform">
-              <el-option label="不限" :value="" />
-              <el-option label="Dev" :value="Dev" />
-              <el-option label="BP" :value="BP" />
-              <el-option label="GP" :value="GP" />
-              <el-option label="AP" :value="AP" />
-              <el-option label="PG" :value="PG" />
-           </el-select>
+          <el-input v-model="addFormData.ScriptRuleDescription.Platform" placeholder=" "></el-input>
         </el-form-item>
-<!--        <el-form-item label="用户类型">-->
-<!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
-<!--              <el-option label="不限" :value="0" />-->
-<!--              <el-option label="新注" :value="1" />-->
-<!--              <el-option label="活跃" :value="2" />-->
-<!--              <el-option label="大R" :value="3" />-->
-<!--           </el-select>-->
-<!--        </el-form-item>-->
+        <el-form-item label="用户类型">
+          <el-input  v-model.number="addFormData.ScriptRuleDescription.UserType" placeholder=""></el-input >
+        </el-form-item>
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="addFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -150,7 +131,7 @@
           <!-- 编辑方案对话框 -->
     <el-dialog :visible.sync="editDialogVisible" title="编辑方案">
       <el-form :model="editFormData" label-width="120px">
-        <el-form-item label="差异化方案ID(数字)">
+        <el-form-item label="差异化方案ID">
           <el-input v-model="editFormData.PlanId" placeholder="请输入差异化方案ID"></el-input>
         </el-form-item>
         <el-form-item label="差异化方案名称">
@@ -164,8 +145,8 @@
         </el-form-item>
         <el-form-item label="是否禁用">
           <el-radio-group v-model="editFormData.IsDisabled">
-            <el-radio :label="0">未禁用</el-radio>
             <el-radio :label="1">禁用</el-radio>
+            <el-radio :label="0">未禁用</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="平台">
@@ -583,6 +564,9 @@ export default {
 
       },
       item: {},
+      channels: [
+        'Dev'
+      ],
       gameOptions: [],
       queryGid: 82,
       orgDataList: [],
@@ -840,13 +824,10 @@ export default {
         Version: version.Version,
         Comment: version.Comment,
         IsReady: version.IsReady,
-        ScriptCfg: version.ScriptCfg,openEditVersionDialog
+        ScriptCfg: version.ScriptCfg,
       };
       this.currentPlanIndex = planIndex;
       this.currentVersionIndex = versionIndex;
-    },
-    openCreateVersionScriptsDialog(planIndex, versionIndex) {
-      //todo
     },
     saveEditVersion() {
       const updatedVersion = {
