@@ -46,7 +46,10 @@
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
             <el-table-column label="操作">
               <template slot-scope="versionScope">
-
+               <el-button @click="createVersion(versionScope.row,scope.row)" type="primary"
+                    size="mini">新增版本</el-button>
+               <el-button @click="getVersion(versionScope.row,scope.row)" type="primary"
+                    size="mini">查看版本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
                            size="mini">编辑</el-button>
                 <el-button @click="deleteVersion(scope.$index, versionScope.$index)" type="danger"
@@ -1013,19 +1016,45 @@ export default {
         console.log('response', response)
       })
     },
-    createCfg(){
+    createVersion(row,planRow){
+      const $this = this
       request({
-        url: '/slotsScriptV3Config/create',
+        url: '/dataProxy/info',
         method: 'post',
         data: {
-          SlotsType: this.showItem.SlotsType,
-          ConfigData: JSON.stringify(this.showItem.Plans)
+          Path: '/slotsStat/script/plan/data',
+          planID:$this.queryGid,
+          gameID:planRow.PlanId,
+          planVer:row.Version
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          Message.success('保存成功！')
+          console.log('getTodayRaffleAmount', response.Data)
+          if (response.Data) {
+            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+          }
         }
-        console.log('response', response)
+      })
+    },
+    getVersion(row,planRow) {
+      console.log(row,planRow.PlanId)
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/script/plan/data',
+          planID:$this.queryGid,
+          gameID:planRow.PlanId,
+          planVer:row.Version
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('getTodayRaffleAmount', response.Data)
+          if (response.Data) {
+            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+          }
+        }
       })
     },
   }
