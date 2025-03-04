@@ -14,6 +14,7 @@
       <el-row>
         <el-button @click="saveCfgByGid()" type="primary" size="mini">保存配置</el-button>
       </el-row>
+      <br />
       <fieldset>
         <span>
           <el-button @click="openAddDialog" type="success" size="mini">添加方案</el-button>
@@ -44,12 +45,20 @@
               </template>
             </el-table-column>
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
+            <el-table-column prop="IsReady" label="是否就绪">
+              <template slot-scope="scope">
+                {{ scope.row.IsReady === 1 ? '就绪' : '未就绪' }}
+              </template>
+            </el-table-column>
             <el-table-column label="操作">
               <template slot-scope="versionScope">
+
+<!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
+<!--                           size="mini">创建剧本</el-button>-->
                <el-button @click="createVersion(versionScope.row,scope.row)" type="primary"
-                    size="mini">新增版本</el-button>
+                    size="mini">创建剧本</el-button>
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary"
-                    size="mini">查看版本</el-button>
+                    size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
                            size="mini">编辑</el-button>
                 <el-button @click="deleteVersion(scope.$index, versionScope.$index)" type="danger"
@@ -96,7 +105,7 @@
           <!-- 添加方案对话框 -->
     <el-dialog :visible.sync="addDialogVisible" title="添加方案">
       <el-form :model="addFormData" label-width="120px">
-        <el-form-item label="差异化方案ID">
+        <el-form-item label="差异化方案ID(数字)">
           <el-input-number v-model="addFormData.PlanId" placeholder="请输入差异化方案ID"></el-input-number>
         </el-form-item>
         <el-form-item label="差异化方案名称">
@@ -116,11 +125,18 @@
         </el-form-item>
 
          <el-form-item label="平台">
-          <el-input v-model="addFormData.ScriptRuleDescription.Platform" placeholder=" "></el-input>
+           <el-select v-model="addFormData.ScriptRuleDescription.Platform">
+              <el-option v-for="v in channels" :label="v.label" :value="v.value" />
+           </el-select>
         </el-form-item>
-        <el-form-item label="用户类型">
-          <el-input  v-model.number="addFormData.ScriptRuleDescription.UserType" placeholder=""></el-input >
-        </el-form-item>
+<!--        <el-form-item label="用户类型">-->
+<!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
+<!--              <el-option label="不限" :value="0" />-->
+<!--              <el-option label="新注" :value="1" />-->
+<!--              <el-option label="活跃" :value="2" />-->
+<!--              <el-option label="大R" :value="3" />-->
+<!--           </el-select>-->
+<!--        </el-form-item>-->
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="addFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -134,7 +150,7 @@
           <!-- 编辑方案对话框 -->
     <el-dialog :visible.sync="editDialogVisible" title="编辑方案">
       <el-form :model="editFormData" label-width="120px">
-        <el-form-item label="差异化方案ID">
+        <el-form-item label="差异化方案ID(数字)">
           <el-input v-model="editFormData.PlanId" placeholder="请输入差异化方案ID"></el-input>
         </el-form-item>
         <el-form-item label="差异化方案名称">
@@ -148,16 +164,18 @@
         </el-form-item>
         <el-form-item label="是否禁用">
           <el-radio-group v-model="editFormData.IsDisabled">
-            <el-radio :label="1">禁用</el-radio>
             <el-radio :label="0">未禁用</el-radio>
+            <el-radio :label="1">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="平台">
-          <el-input v-model="editFormData.ScriptRuleDescription.Platform" placeholder=" "></el-input>
+           <el-select v-model="editFormData.ScriptRuleDescription.Platform">
+              <el-option v-for="v in channels" :label="v.label" :value="v.value" />
+           </el-select>
         </el-form-item>
-        <el-form-item label="用户类型">
-          <el-input  v-model.number="editFormData.ScriptRuleDescription.UserType" placeholder=""></el-input>
-        </el-form-item>
+<!--        <el-form-item label="用户类型">-->
+<!--          <el-input  v-model.number="editFormData.ScriptRuleDescription.UserType" placeholder=""></el-input>-->
+<!--        </el-form-item>-->
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="editFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -568,6 +586,13 @@ export default {
       },
       item: {},
       gameOptions: [],
+      channels: [
+        {'label': '不限', 'value': ''},
+        {'label': 'BP', 'value': 'BP'},
+        {'label': 'GP', 'value': 'GP'},
+        {'label': 'AP', 'value': 'AP'},
+        {'label': 'PG', 'value': 'PG'}
+      ],
       queryGid: 82,
       orgDataList: [],
       form: {},
@@ -824,10 +849,13 @@ export default {
         Version: version.Version,
         Comment: version.Comment,
         IsReady: version.IsReady,
-        ScriptCfg: version.ScriptCfg,
+        ScriptCfg: version.ScriptCfg,openEditVersionDialog
       };
       this.currentPlanIndex = planIndex;
       this.currentVersionIndex = versionIndex;
+    },
+    openCreateVersionScriptsDialog(planIndex, versionIndex) {
+      //todo
     },
     saveEditVersion() {
       const updatedVersion = {

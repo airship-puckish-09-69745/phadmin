@@ -218,6 +218,11 @@
             >
               <el-table-column label="重转返奖统计">
                 <el-table-column
+                  prop="multiOdds"
+                  label="额外倍数"
+                  width="80px"
+                />
+                <el-table-column
                   prop="gid"
                   label="Bet值"
                   width="75px"
@@ -241,7 +246,7 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ getBuyRespinFirstTimes(scope.row.bet) }}
+                    {{ getBuyRespinFirstTimes(scope.row.bet, scope.row.multiOdds) }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -250,7 +255,7 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ getBuyRespinTimes(scope.row.bet) }}
+                    {{ getBuyRespinTimes(scope.row.bet, scope.row.multiOdds) }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -259,7 +264,7 @@
                   width="90px"
                 >
                   <template slot-scope="scope">
-                    {{ (getBuyRespinFirstTimes(scope.row.bet) / scope.row.times * 100).toFixed(2) + '%' }}
+                    {{ (getBuyRespinFirstTimes(scope.row.bet, scope.row.multiOdds) / scope.row.times * 100).toFixed(2) + '%' }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -268,7 +273,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ getBuyRespinBet(scope.row.bet) / 1000 }}
+                    {{ getBuyRespinBet(scope.row.bet, scope.row.multiOdds) / 1000 }}
                   </template>
                 </el-table-column>
 
@@ -278,7 +283,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ getBuyRespinReturn(scope.row.bet) / 1000 }}
+                    {{ getBuyRespinReturn(scope.row.bet, scope.row.multiOdds) / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -287,7 +292,7 @@
                   width="120px"
                 >
                   <template slot-scope="scope">
-                    {{ (getBuyRespinBet(scope.row.bet) - getBuyRespinReturn(scope.row.bet)) / 1000 }}
+                    {{ (getBuyRespinBet(scope.row.bet, scope.row.multiOdds) - getBuyRespinReturn(scope.row.bet, scope.row.multiOdds)) / 1000 }}
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -296,7 +301,7 @@
                 >
                   <template slot-scope="scope">
                     {{
-                      (getBuyRespinBet(scope.row.bet) > 0 ? ((getBuyRespinReturn(scope.row.bet) / getBuyRespinBet(scope.row.bet))*100).toFixed(2) : 0) + "%"
+                      (getBuyRespinBet(scope.row.bet, scope.row.multiOdds) > 0 ? ((getBuyRespinReturn(scope.row.bet, scope.row.multiOdds) / getBuyRespinBet(scope.row.bet, scope.row.multiOdds))*100).toFixed(2) : 0) + "%"
                     }}
                   </template>
                 </el-table-column>
@@ -1128,34 +1133,50 @@ export default {
       }
       return cnt
     },
-    getBuyRespinBet(bet) {
+    getBuyRespinBet(bet, multiOdds) {
       if (this.betOddsKey in this.buyRespinTotalBetMap) {
         if (bet in this.buyRespinTotalBetMap[this.betOddsKey]) {
-          return this.buyRespinTotalBetMap[this.betOddsKey][bet]
+          for (const o of this.buyRespinTotalBetMap[this.betOddsKey][bet])
+            if (o.multiOdds === multiOdds) {
+              return o.totalBet
+            }
         }
       }
       return 0
     },
-    getBuyRespinReturn(bet) {
+    getBuyRespinReturn(bet, multiOdds) {
       if (this.betOddsKey in this.buyRespinReturnMap) {
         if (bet in this.buyRespinReturnMap[this.betOddsKey]) {
-          return this.buyRespinReturnMap[this.betOddsKey][bet]
+          for (const o of this.buyRespinReturnMap[this.betOddsKey][bet]) {
+            if (o.multiOdds === multiOdds) {
+              return o.return
+            }
+          }
         }
       }
       return 0
     },
-    getBuyRespinTimes(bet) {
+    getBuyRespinTimes(bet, multiOdds) {
+      console.log('getBuyRespinTimes', bet, multiOdds, this.buyRespinTimeMap)
       if (this.betOddsKey in this.buyRespinTimeMap) {
         if (bet in this.buyRespinTimeMap[this.betOddsKey]) {
-          return this.buyRespinTimeMap[this.betOddsKey][bet]
+          for (const o of this.buyRespinTimeMap[this.betOddsKey][bet]) {
+            if (o.multiOdds === multiOdds) {
+              return o.times
+            }
+          }
         }
       }
       return 0
     },
-    getBuyRespinFirstTimes(bet) {
+    getBuyRespinFirstTimes(bet, multiOdds) {
       if (this.betOddsKey in this.buyRespinFirstTimesMap) {
         if (bet in this.buyRespinFirstTimesMap[this.betOddsKey]) {
-          return this.buyRespinFirstTimesMap[this.betOddsKey][bet]
+          for (const o of this.buyRespinFirstTimesMap[this.betOddsKey][bet]) {
+            if (o.multiOdds === multiOdds) {
+              return o.times
+            }
+          }
         }
       }
       return 0
@@ -1532,86 +1553,120 @@ export default {
                 }
               }
               if (strings1[1] === '2coljp') {
-                if (strings1.length < 6) {
+                if (strings1.length === 6) {
                   if (!('全部' in has2JpColsTableData)) {
                     has2JpColsTableData['全部'] = []
                   }
                   const bet = parseInt(strings1[3])
-                  has2JpColsTableData['全部'].push({ bet: bet, times: response.Data['script'][key] })
-                } else {
-                  const betOdds = strings1[4]
+                  const multiOdds = parseInt(strings1[4])
+                  has2JpColsTableData['全部'].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
+                } else if (strings1.length === 7) {
                   const bet = parseInt(strings1[3])
+                  const betOdds = parseInt(strings1[4])
+                  const multiOdds = parseInt(strings1[5])
                   if (!(betOdds in has2JpColsTableData)) {
                     has2JpColsTableData[betOdds] = []
                   }
-                  has2JpColsTableData[betOdds].push({ bet: bet, times: response.Data['script'][key] })
+                  has2JpColsTableData[betOdds].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
                 }
               }
               if (strings1[1] === 'buyrespin') {
                 if (strings1[2] === 'times') {
-                  if (strings1.length < 6) {
+                  if (strings1.length === 6) {
                     if (!('全部' in this.buyRespinTimeMap)) {
                       this.buyRespinTimeMap['全部'] = {}
                     }
                     const bet = parseInt(strings1[3])
-                    this.buyRespinTimeMap['全部'][bet]= response.Data['script'][key]
-                  } else {
-                    const betOdds = strings1[4]
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(multiOdds in this.buyRespinTimeMap['全部'])) {
+                      this.buyRespinTimeMap['全部'][bet] = []
+                    }
+                    this.buyRespinTimeMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                  } else if (strings1.length === 7) {
                     const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
                     if (!(betOdds in this.buyRespinTimeMap)) {
                       this.buyRespinTimeMap[betOdds] = {}
                     }
-                    this.buyRespinTimeMap[betOdds][bet] = response.Data['script'][key]
+                    if (!(bet in this.buyRespinTimeMap[betOdds])) {
+                      this.buyRespinTimeMap[betOdds][bet] = []
+                    }
+                    this.buyRespinTimeMap[betOdds][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   }
                 }
                 if (strings1[2] === 'return') {
-                  if (strings1.length < 6) {
+                  if (strings1.length < 7) {
                     if (!('全部' in this.buyRespinReturnMap)) {
                       this.buyRespinReturnMap['全部'] = {}
                     }
                     const bet = parseInt(strings1[3])
-                    this.buyRespinReturnMap['全部'][bet] = parseInt(response.Data['script'][key])
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(bet in this.buyRespinReturnMap['全部'])) {
+                      this.buyRespinReturnMap['全部'][bet] = []
+                    }
+                    this.buyRespinReturnMap['全部'][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
                   } else {
-                    const betOdds = strings1[4]
                     const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
                     if (!(betOdds in this.buyRespinReturnMap)) {
                       this.buyRespinReturnMap[betOdds] = {}
                     }
-                    this.buyRespinReturnMap[betOdds][bet] = parseInt(response.Data['script'][key])
+                    if (!(bet in this.buyRespinReturnMap[betOdds])) {
+                      this.buyRespinReturnMap[betOdds][bet] = []
+                    }
+                    this.buyRespinReturnMap[betOdds][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
                   }
                 }
                 if (strings1[2] === 'bet') {
-                  if (strings1.length < 6) {
+                  if (strings1.length < 7) {
                     if (!('全部' in this.buyRespinTotalBetMap)) {
                       this.buyRespinTotalBetMap['全部'] = {}
                     }
                     const bet = parseInt(strings1[3])
-                    this.buyRespinTotalBetMap['全部'][bet] = parseInt(response.Data['script'][key])
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(bet in this.buyRespinTotalBetMap['全部'])) {
+                      this.buyRespinTotalBetMap['全部'][bet] = []
+                    }
+                    this.buyRespinTotalBetMap['全部'][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key])})
                   } else {
-                    const betOdds = strings1[4]
                     const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
                     if (!(betOdds in this.buyRespinTotalBetMap)) {
                       this.buyRespinTotalBetMap[betOdds] = {}
                     }
-                    this.buyRespinTotalBetMap[betOdds][bet] = parseInt(response.Data['script'][key])
+                    if (!(bet in this.buyRespinTotalBetMap[betOdds])) {
+                      this.buyRespinTotalBetMap[betOdds][bet] = []
+                    }
+                    this.buyRespinTotalBetMap[betOdds][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key]) })
                   }
                 }
               }
               if (strings1[1] === 'buyrespinfirst') {
                 if (strings1[2] === 'times') {
-                  if (strings1.length < 6) {
+                  if (strings1.length < 7) {
                     if (!('全部' in this.buyRespinFirstTimesMap)) {
                       this.buyRespinFirstTimesMap['全部'] = {}
                     }
                     const bet = parseInt(strings1[3])
-                    this.buyRespinFirstTimesMap['全部'][bet] = response.Data['script'][key]
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(bet in this.buyRespinFirstTimesMap['全部'])) {
+                      this.buyRespinFirstTimesMap['全部'][bet] = []
+                    }
+                    this.buyRespinFirstTimesMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   } else {
-                    const betOdds = strings1[4]
                     const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
                     if (!(betOdds in this.buyRespinFirstTimesMap)) {
                       this.buyRespinFirstTimesMap[betOdds] = {}
                     }
-                    this.buyRespinFirstTimesMap[betOdds][bet] = response.Data['script'][key]
+                    if (!(bet in this.buyRespinFirstTimesMap[betOdds])) {
+                      this.buyRespinFirstTimesMap[betOdds][bet] = []
+                    }
+                    this.buyRespinFirstTimesMap[betOdds][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   }
                 }
               }
