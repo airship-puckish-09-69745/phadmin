@@ -55,8 +55,6 @@
               <el-option label="PuppyHome" :value="176" />
               <el-option label="PuppyHomeMars" :value="177" />
               <el-option label="MayanTotem" :value="178" />
-              <el-option label="198:FortuneBlessing" :value="198" />
-              <el-option label="199:FortuneBlessing Mars" :value="199" />
               <el-option label="188:StreetFighting" :value="188" />
               <el-option label="189:StreetFighting Mars" :value="189" />
               <el-option label="192:BountyRaid" :value="192" />
@@ -70,6 +68,10 @@
               <el-option label="194:GoldTrain" :value="194" />
               <el-option label="GoldMiner" :value="196" />
               <el-option label="GoldMinerMars" :value="197" />
+              <el-option label="198:FortuneBlessing" :value="198" />
+              <el-option label="199:FortuneBlessing Mars" :value="199" />
+              <el-option label="200:AtlantisTreasure" :value="200" />
+              <el-option label="201:AtlantisTreasureMars" :value="201" />
             </el-select>
           </el-form-item>
 
