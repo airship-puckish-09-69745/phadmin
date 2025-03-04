@@ -404,7 +404,7 @@ export default {
         174: 'Treasure Bowl',
         176: 'Puppy Home',
         182: 'God Of Fortune',
-        184: 'DanceLion',
+        184: 'Dance of the Lion',
         186: 'MahjongJackpot',
         178: 'Mayan Totem',
         194: 'RoadKing',
