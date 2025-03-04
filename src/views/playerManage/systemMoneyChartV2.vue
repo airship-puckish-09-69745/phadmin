@@ -393,6 +393,7 @@ export default {
         164: 'MahjongFortune',
         198: 'FortuneBlessing',
         188: 'StreetFighting',
+        190: 'Arcane Egypt',
         192: 'BountyRaid',
         180: 'FishingMaster',
         172: 'WrathOfZeus',
