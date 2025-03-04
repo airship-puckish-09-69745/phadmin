@@ -15,15 +15,18 @@
         <el-button @click="saveCfgByGid()" type="primary" size="mini">保存配置</el-button>
       </el-row>
       <br />
-      <fieldset>
-        <span>
-          <el-button @click="openAddDialog" type="success" size="mini">添加方案</el-button>
-    <el-table :data="showItem.Plans"
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              stripe>
+
+    </el-row>
+<!--    <fieldset style="width: 100px">-->
+        <span >
+      <el-button @click="openAddDialog" type="success" size="mini">添加方案</el-button>
+      <el-table :data="showItem.Plans"
+                border
+                height="750px"
+                :header-cell-style="libShow.DefaultTableHeadClass"
+                :row-style="{height:'10px'}"
+                :cell-style="libShow.DefaultTableCell"
+                stripe>
       <el-table-column prop="PlanId" label="差异化方案ID"></el-table-column>
       <el-table-column prop="PlanName" label="差异化方案名称"></el-table-column>
       <el-table-column prop="IsDefault" label="是否是默认方案">
@@ -50,15 +53,15 @@
                 {{ scope.row.IsReady === 1 ? '就绪' : '未就绪' }}
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="350px">
               <template slot-scope="versionScope">
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
-<!--                           size="mini">创建剧本</el-button>-->
-               <el-button @click="createVersion(versionScope.row,scope.row)" type="primary"
-                    size="mini">创建剧本</el-button>
-               <el-button @click="getVersion(versionScope.row,scope.row)" type="primary"
-                    size="mini">查看剧本</el-button>
+                <!--                           size="mini">创建剧本</el-button>-->
+               <el-button @click="createVersion(versionScope.row,scope.row)" type="success"
+                          size="mini">创建剧本</el-button>
+               <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
+                          size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
                            size="mini">编辑</el-button>
                 <el-button @click="deleteVersion(scope.$index, versionScope.$index)" type="danger"
@@ -129,14 +132,14 @@
               <el-option v-for="v in channels" :label="v.label" :value="v.value" />
            </el-select>
         </el-form-item>
-<!--        <el-form-item label="用户类型">-->
-<!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
-<!--              <el-option label="不限" :value="0" />-->
-<!--              <el-option label="新注" :value="1" />-->
-<!--              <el-option label="活跃" :value="2" />-->
-<!--              <el-option label="大R" :value="3" />-->
-<!--           </el-select>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="用户类型">-->
+        <!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
+        <!--              <el-option label="不限" :value="0" />-->
+        <!--              <el-option label="新注" :value="1" />-->
+        <!--              <el-option label="活跃" :value="2" />-->
+        <!--              <el-option label="大R" :value="3" />-->
+        <!--           </el-select>-->
+        <!--        </el-form-item>-->
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="addFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -173,9 +176,9 @@
               <el-option v-for="v in channels" :label="v.label" :value="v.value" />
            </el-select>
         </el-form-item>
-<!--        <el-form-item label="用户类型">-->
-<!--          <el-input  v-model.number="editFormData.ScriptRuleDescription.UserType" placeholder=""></el-input>-->
-<!--        </el-form-item>-->
+        <!--        <el-form-item label="用户类型">-->
+        <!--          <el-input  v-model.number="editFormData.ScriptRuleDescription.UserType" placeholder=""></el-input>-->
+        <!--        </el-form-item>-->
         <el-form-item label="流量控制(权重)">
           <el-input v-model.number="editFormData.ScriptRuleDescription.TrafficCtrl" placeholder=" "></el-input>
         </el-form-item>
@@ -240,7 +243,7 @@
     </el-dialog>
 
 
-    <!--   赔率配置弹窗  -->
+          <!--   赔率配置弹窗  -->
     <el-dialog :visible.sync="editSlotsScriptOddsCfgVisible" title="倍率配置">
       <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini">添加</el-button>
       <el-table :data="editSlotsScriptOddsCfgFormData"
@@ -301,7 +304,7 @@
         <el-button @click="saveOddsCfg('OddsCfg',editSlotsScriptOddsCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
-    <!--    Scatter中奖次数配置-->
+          <!--    Scatter中奖次数配置-->
     <el-dialog :visible.sync="editScatterHitCfgVisible" title="Scatter中奖次数配置">
       <el-button @click="appendComment(editScatterHitCfgFormData,newScatterHitCfg())" type="success" size="mini">添加</el-button>
       <el-table :data="editScatterHitCfgFormData"
@@ -333,7 +336,7 @@
         <el-button @click="saveOddsCfg('ScatterHitCfg',editScatterHitCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
-    <!-- 下注金额区分赔率方案配置-->
+          <!-- 下注金额区分赔率方案配置-->
    <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px">
       <el-button @click="appendComment(editBetOddsPlansFormData,newBetOddsPlans())" type="success" size="mini">添加</el-button>
       <el-table :data="editBetOddsPlansFormData"
@@ -398,7 +401,7 @@
         <el-button @click="saveOddsCfg('BetOddsPlans',editBetOddsPlansFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
-    <!-- 大奖配置-->
+          <!-- 大奖配置-->
    <el-dialog :visible.sync="editBigPrizeOddsCfgVisible" title="大奖配置" width="1600px">
        <el-form>
          <el-col>
@@ -459,7 +462,7 @@
       </div>
     </el-dialog>
 
-   <!--  大奖倍数配置   -->
+          <!--  大奖倍数配置   -->
    <el-dialog :visible.sync="editBigPrizeOddsPlansCfgVisible" title="大奖配置" width="600px">
       <el-button @click="appendComment(editBigPrizeOddsPlansCfgFormData,newBigPrizeCfg())" type="success" size="mini">添加</el-button>
       <el-table :data="editBigPrizeOddsPlansCfgFormData"
@@ -489,9 +492,7 @@
       </div>
    </el-dialog>
     </span>
-      </fieldset>
-    </el-row>
-
+<!--    </fieldset>-->
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames"/>
     <el-dialog
