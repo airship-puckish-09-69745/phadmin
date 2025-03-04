@@ -14,6 +14,7 @@
       <el-row>
         <el-button @click="saveCfgByGid()" type="primary" size="mini">保存配置</el-button>
       </el-row>
+      <br />
       <fieldset>
         <span>
           <el-button @click="openAddDialog" type="success" size="mini">添加方案</el-button>
