@@ -1242,6 +1242,12 @@ export const asyncRoutes = [
             ]
           },
           {
+            path: 'slots_plan_config',
+            component: () => import('@/views/config/tableConfig/slots/slotsScript/slotsPlanConfig'),
+            name: 'slots_plan_config',
+            meta: { title: '老虎机方案配置' }
+          },
+          {
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
