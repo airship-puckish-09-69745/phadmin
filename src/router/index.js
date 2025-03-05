@@ -1037,6 +1037,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/goldminer_slots_cfg.vue'),
                 name: 'goldminer_slots_cfg',
                 meta: { title: 'GoldMiner' }
+              },
+              {
+                path: 'atlantistreasure_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/atlantistreasure_slots_cfg'),
+                name: 'atlantistreasure_slots_cfg',
+                meta: { title: 'AtlantisTreasure' }
               }
             ]
           },
@@ -1238,8 +1244,20 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/goldminermars_slots_cfg'),
                 name: 'goldminermars_slots_cfg',
                 meta: { title: 'GoldMiner(审)' }
+              },
+              {
+                path: 'atlantistreasuremars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/atlantistreasuremars_slots_cfg'),
+                name: 'atlantistreasuremars_slots_cfg',
+                meta: { title: 'AtlantisTreasure(审)' }
               }
             ]
+          },
+          {
+            path: 'slots_plan_config',
+            component: () => import('@/views/config/tableConfig/slots/slotsScript/slotsPlanConfig'),
+            name: 'slots_plan_config',
+            meta: { title: '老虎机方案配置' }
           },
           {
             path: 'millionaire_script_cfg',
@@ -2203,6 +2221,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'dancelion_slots_log',
             meta: { title: 'Dance of the Lion', gid: 184 }
+          },
+          {
+            path: 'atlantistreasure_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'atlantistreasure_slots_log',
+            meta: { title: 'AtlantisTreasure', gid: 200 }
           }
         ]
       },
@@ -2397,6 +2421,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldminer_slots_log',
             meta: { title: 'GoldMiner(审)', gid: 197 }
+          },
+          {
+            path: 'atlantistreasuremars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'atlantistreasuremars_slots_log',
+            meta: { title: 'AtlantisTreasure(审)', gid: 201 }
           }
         ]
       },
@@ -2905,7 +2935,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',
