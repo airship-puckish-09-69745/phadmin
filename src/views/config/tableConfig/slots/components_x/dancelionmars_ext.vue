@@ -30,12 +30,6 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="进入bonus的概率">
-            <el-input v-model="cfg.JoinBonusRateWithGreen" placeholder="请输入内容,如50,70,100">
-              <template slot="append">三个值一组用 , 连接。</template>
-            </el-input>
-          </el-form-item>
-
           <el-form-item label="红色财字每个倍率的权重">
             <el-input v-model="cfg.redCaiOddsRate" placeholder="用,号分割,共12个值">
               <template slot="append">分别对应0.1×,0.2×,0.3×,0.5×,0.8×,1×,2×,3×,5×,8×,10×,12×</template>
