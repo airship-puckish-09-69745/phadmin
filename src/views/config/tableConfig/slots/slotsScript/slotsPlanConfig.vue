@@ -246,6 +246,12 @@
           <!--   赔率配置弹窗  -->
     <el-dialog :visible.sync="editSlotsScriptOddsCfgVisible" title="倍率配置">
       <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini">添加</el-button>
+      <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
+                  effect="dark" placement="top">
+              <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
+                检查倍数总和区间
+              </el-button>
+      </el-tooltip>
       <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
         <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
       </el-tooltip>
@@ -367,6 +373,16 @@
               <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
                      <input type="file" @change="(event) => handleFileUpload2(event, scope.$index)" accept=".xlsx, .xls" size="mini"></input>
               </el-tooltip>
+              <el-col :offset="2" :span="8">
+              <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="top">
+                <el-button type="primary" @click="checkBetPlans(scope.$index)" size="mini" style="background-color:#ff8000">检查
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
+                <el-button type="primary" @click="checkBetPlansSum(scope.$index)" size="mini" style="background-color:#b600ff">检查
+                </el-button>
+              </el-tooltip>
+            </el-col>
             <el-table :data="scope.row.OddsCfg" stripe>
               <el-table-column prop="Odds" label="最小倍数">
                 <template slot-scope="scope">
@@ -498,6 +514,22 @@
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
       </div>
    </el-dialog>
+          <el-dialog
+            title="确认删除"
+            :visible.sync="showDeleteDialog"
+            width="30%"
+            :before-close="handleClose"
+          >
+      <template #content>
+        <span>确定要删除这条记录吗？</span>
+      </template>
+      <template #footer>
+        <span>
+          <el-button @click="showDeleteDialog = false">取消</el-button>
+          <el-button type="danger" @click="handleDelete">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
     </span>
 <!--    </fieldset>-->
     <!--对比组件-->
@@ -526,8 +558,8 @@ export default {
         SlotsType: 0,
         ID: 0,
         Plans: [],
-
       },
+      showDeleteDialog: false,
       item: {},
       gameOptions: [],
       channels: [
@@ -622,6 +654,7 @@ export default {
   },
   methods: {
     async fetchData() {
+      await this.getConfigData();
       await this.getGameList();
       await this.getData();
     },
@@ -812,6 +845,22 @@ export default {
     },
     openCreateVersionScriptsDialog(planIndex, versionIndex) {
       //todo
+    },
+    getConfigData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'SlotsScriptStatisticsConfig'
+        }
+      }).then(response => {
+        if (response.Data.Data !== '') {
+          let arr = JSON.parse(response.Data.Data)
+          for (const o of arr) {
+            this.slotCfg[o.Gid] = o
+          }
+        }
+      })
     },
     saveEditVersion() {
       const updatedVersion = {
@@ -1096,42 +1145,36 @@ export default {
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {
-        this.ImportExcel(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+          this.editSlotsScriptOddsCfgFormData=[]
+          json.forEach((row, index) => {
+            if (index > 0) {
+              let idx = index - 1
+              console.log(index, idx, row)
+
+              this.editSlotsScriptOddsCfgFormData.push({
+                OddsMin: row[0],
+                OddsMax: row[1],
+                ScriptSteps: row[2],
+                ScriptOddsSum: row[3],
+                NormalMatrixCacheSize: row[4],
+                ScatterMatrixCacheSize: row[5],
+                SwitchScatterPercent: row[6],
+                TriggerScatterPercent:row[7],
+              })
+            }
+          });
+        };
+        reader.readAsArrayBuffer(file);
+        this.$forceUpdate()
       }
     },
-    ImportExcel(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
-
-        this.editSlotsScriptOddsCfgFormData=[]
-        json.forEach((row, index) => {
-          if (index > 0) {
-            let idx = index - 1
-            console.log(index, idx, row)
-
-            this.editSlotsScriptOddsCfgFormData.push({
-              OddsMin: row[0],
-              OddsMax: row[1],
-              ScriptSteps: row[2],
-              ScriptOddsSum: row[3],
-              NormalMatrixCacheSize: 0,
-              ScatterMatrixCacheSize: 0,
-              SwitchScatterPercent: 0,
-              TriggerScatterPercent: 0
-            })
-          }
-        });
-      };
-
-      reader.readAsArrayBuffer(file);
-      this.$forceUpdate()
-    },
-
     handleFileUpload2(event,datIdx,) {
       console.log(datIdx,event)
       const file = event.target.files[0];
@@ -1163,6 +1206,51 @@ export default {
         this.$forceUpdate()
       }
     },
+    validateDteOddsSum() {
+      let str = ''
+      if (this.editSlotsScriptOddsCfgFormData.length===0){
+        this.$message.error('阿达西,你的数据在沟腚子里呢')
+        return
+      }
+      for (const i in this.editSlotsScriptOddsCfgFormData) {
+        let obj = this.editSlotsScriptOddsCfgFormData[i]
+        console.log(obj,obj.OddsMin * obj.ScriptSteps )
+        if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
+        } else {
+          let a = Number(i) + 1
+          str += `第${a}行数据校验不通过\n`
+        }
+      }
+      if (str.length > 0) {
+        this.$message.error(str)
+      } else {
+        this.$message.success('检查通过')
+      }
+    },
+    checkBetPlans(idx) {
+      let cnt = 0
+      for (const o of this.editBetOddsPlansFormData[idx].OddsCfg ) {
+        cnt += o.ScriptOddsSum
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      console.log(scriptSteps)
+
+      Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
+    },
+    checkBetPlansSum(idx) {
+      let str = ''
+      for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
+        if ((o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum) {
+          str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
+        }
+      }
+      if (str.length <= 0) {
+        Message.success("数据ok的！" + str)
+      } else {
+        Message.error('数据异常:' + str)
+      }
+    },
+
   }
 }
 </script>
