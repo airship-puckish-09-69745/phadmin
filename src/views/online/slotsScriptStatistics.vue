@@ -22,6 +22,10 @@
             <el-select v-model="betOddsKey" size="mini" filterable default-first-option @change="betOddsKeyInput">
               <el-option v-for="(o,k) in betOddsKeySelect" :key="k" :label="getBetOddsName(o)" :value="o" />
             </el-select>
+
+            <el-select v-model="scriptPlanId" size="mini" filterable default-first-option @change="queryKeyInput">
+              <el-option v-for="(o,k) in scriptPlans" :key="k" :label="o.label" :value="o.value" />
+            </el-select>
           </el-col>
         </el-row>
 
@@ -1046,7 +1050,16 @@ export default {
       currentBaseBet: {},
       showMiss: false,
       betOddsKey: '全部',
-      betOddsKeySelect: { '全部': '全部' }
+      betOddsKeySelect: { '全部': '全部' },
+      scriptPlanId: 0,
+      scriptPlans: [
+        {'label': '无方案', value: 0},
+        {'label': '方案1', value: 1},
+        {'label': '方案2', value: 2},
+        {'label': '方案3', value: 3},
+        {'label': '方案4', value: 4},
+        {'label': '方案5', value: 5}
+      ]
     }
   },
   created() {
@@ -1408,6 +1421,9 @@ export default {
               } else if (strings1[1] === 'times') {
                 //
               } else if (strings1[1] === 'count') {
+                if (key.indexOf("plan_" + $this.scriptPlanId) === -1) {
+                  continue
+                }
                 var strings = key.split('_')
                 if (strings.length < 4) {
                   if (!(this.queryGid in this.sumData)) {
@@ -1483,6 +1499,9 @@ export default {
               }
             } else if (strings1[0] === 'scatter') {
               if (strings1[1] === 'count') {
+                if (key.indexOf("plan_" + $this.scriptPlanId) === -1) {
+                  continue
+                }
                 if (strings1.length < 4) {
                   if (!('全部' in scatterCounts)) {
                     scatterCounts['全部'] = []
