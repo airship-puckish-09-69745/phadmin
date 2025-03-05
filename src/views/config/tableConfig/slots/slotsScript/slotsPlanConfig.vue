@@ -509,6 +509,11 @@
               <el-input v-model.number="scope.row.Weight" size="mini"></el-input>
           </template>
         </el-table-column>
+          <el-table-column prop="Odds" label="操作"  >
+          <template slot-scope="scope">
+              <el-button @click="delComment(editBigPrizeOddsPlansCfgFormData,scope.$index)" type="danger" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
