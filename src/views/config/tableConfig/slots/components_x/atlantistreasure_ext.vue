@@ -36,8 +36,12 @@
             <el-input v-model.number="cfg.FreeSilverRate"><template slot="append">‰</template></el-input>
           </el-form-item>
 
-          <el-form-item label="金框图标权重">
+          <el-form-item label="普通模式金框图标权重">
             <el-input v-model="cfg.GoldSymbolWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。图案从1开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式金框图标权重">
+            <el-input v-model="cfg.FreeGoldSymbolWeight" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。图案从1开始</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式再中scatter概率">
