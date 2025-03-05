@@ -441,6 +441,8 @@ export default {
       GameOption: [
         { 'label': 'Pusoy', 'value': 21 },
         { 'label': 'Pusoy Swap', 'value': 113 },
+        { 'label': 'Pusoy Wild', 'value': 126 },
+        { 'label': 'Pusoy Dos', 'value': 34 },
         { 'label': 'Tongits', 'value': 22 },
         { 'label': 'Tongits Laizi', 'value': 28 },
         { 'label': 'Tongits Quick', 'value': 29 }

@@ -6,7 +6,7 @@
           <UidInput ref="uidInput" @setUid="function(iUid){form.Uid=iUid}" />
           <!-- <el-input v-model="form.Uid" placeholder="请输入内容"  size="mini"></el-input> -->
         </el-form-item>
-        <el-form-item label="游戏:">
+        <!-- <el-form-item label="游戏:">
           <el-select v-model="form.Gid" size="mini">
             <el-option v-for="v of GameOptions" :label="v.name" :value="v.gid"/>
             <el-option label="所有" :value="0" />
@@ -17,7 +17,7 @@
             <el-option v-for="v of BlindOptions" :label="v.name" :value="v.val"/>
             <el-option label="所有" :value="0" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="日期：">
           <el-date-picker
             v-model="form.Date"
@@ -43,10 +43,7 @@
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
       >
-        <el-table-column prop="time" label="时间">
-          <template slot-scope="scope">
-            {{ scope.row.time==0?"": new Date(scope.row.time*1000).toLocaleString() }}
-          </template>
+        <el-table-column prop="date" label="日期">
         </el-table-column>
         <el-table-column prop="gid" label="游戏">
           <template slot-scope="scope">
@@ -118,6 +115,8 @@ export default {
       GameOptions: [
         { name: 'Pusoy', gid: 21},
         { name: 'Pusoy Swap', gid: 113},
+        { name: 'Pusoy Wild', gid: 126},
+        { name: 'Pusoy Dos', gid: 34},
         { name: 'Tongits', gid: 22},
         { name: 'Tongits Laizi', gid: 28},
         { name: 'Tongits Quick', gid: 29}
@@ -194,6 +193,12 @@ export default {
             $this.item = []
           } else {
             $this.item = response.Data
+            for (let i = 0; i < $this.item.length; i++) {
+              if ($this.item[i].gid === 0) {
+                $this.item.splice(i,1)
+                break
+              }
+            }
           }
         }
       })
