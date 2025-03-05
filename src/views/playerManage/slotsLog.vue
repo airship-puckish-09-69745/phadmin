@@ -240,10 +240,10 @@
                 <span v-else>否</span>
               </template>
             </el-table-column>
-            <el-table-column prop="ActLogObj.ScriptV3PlanId" label="planID" v-if="isActV2(gid)">
+            <el-table-column prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" v-if="isActV2(gid)">
 
             </el-table-column>
-            <el-table-column prop="ActLogObj.ScriptV3PlanVer" label="planVer" v-if="isActV2(gid)">
+            <el-table-column prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" v-if="isActV2(gid)">
 
             </el-table-column>
 
