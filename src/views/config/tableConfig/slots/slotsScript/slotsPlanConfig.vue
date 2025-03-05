@@ -58,13 +58,13 @@
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
                 <!--                           size="mini">创建剧本</el-button>-->
-               <el-button @click="createVersion(versionScope.row,scope.row)" type="success"
+               <el-button @click="showTips(1,versionScope.row,scope.row)" type="success"
                           size="mini">创建剧本</el-button>
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
                            size="mini">编辑</el-button>
-                <el-button @click="deleteVersion(scope.$index, versionScope.$index)" type="danger"
+                <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
                            size="mini">删除</el-button>
               </template>
             </el-table-column>
@@ -100,7 +100,7 @@
       <el-table-column label="操作" width="200px">
         <template slot-scope="scope">
           <el-button @click="openEditDialog(scope.row)" type="primary" size="mini">编辑</el-button>
-          <el-button @click="deletePlan(scope.$index)" type="danger" size="mini">删除</el-button>
+          <el-button @click="showTips(3,scope.$index,0)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,7 +154,7 @@
     <el-dialog :visible.sync="editDialogVisible" title="编辑方案">
       <el-form :model="editFormData" label-width="120px">
         <el-form-item label="差异化方案ID(数字)">
-          <el-input v-model="editFormData.PlanId" placeholder="请输入差异化方案ID"></el-input>
+          <el-input v-model.number="editFormData.PlanId" placeholder="请输入差异化方案ID"></el-input>
         </el-form-item>
         <el-form-item label="差异化方案名称">
           <el-input v-model="editFormData.PlanName" placeholder="请输入差异化方案名称"></el-input>
@@ -519,22 +519,51 @@
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
       </div>
    </el-dialog>
-<!--          <el-dialog-->
-<!--            title="确认删除"-->
-<!--            :visible.sync="showDeleteDialog"-->
-<!--            width="30%"-->
-<!--            :before-close="handleClose"-->
-<!--          >-->
-<!--      <template  >-->
-<!--        <span>确定要删除这条记录吗？</span>-->
-<!--      </template>-->
-<!--      <template #footer>-->
-<!--        <span>-->
-<!--          <el-button @click="showDeleteDialog = false">取消</el-button>-->
-<!--          <el-button type="danger" @click="handleDelete">确定</el-button>-->
-<!--        </span>-->
-<!--      </template>-->
-<!--    </el-dialog>-->
+    <el-dialog
+            title="确认操作"
+            :visible.sync="showDeleteDialog"
+            width="30%"
+            :before-close="handleClose"
+          >
+      <template  >
+        <span>{{tips}}</span>
+      </template>
+      <template #footer>
+        <span>
+          <el-button @click="showDeleteDialog = false">取消</el-button>
+          <el-button type="success" @click="handleDelete()">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+           title="确认操作"
+           :visible.sync="showCompletionScript"
+           width="30%"
+         >
+      <template  >
+         <table border="1">
+      <thead>
+        <tr>
+          <th>键</th>
+          <th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 使用 v-for 循环遍历 showCompletionScriptMap 对象 -->
+        <tr v-for="(v, k) in showCompletionScriptMap" :key="k">
+          <td>{{ k }}</td>
+          <td>{{ v }}</td>
+        </tr>
+      </tbody>
+    </table>
+      </template>
+      <template #footer>
+        <span>
+          <el-button type="success" @click="showCompletionScript  = false">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
     </span>
 <!--    </fieldset>-->
     <!--对比组件-->
@@ -564,7 +593,7 @@ export default {
         ID: 0,
         Plans: [],
       },
-      showDeleteDialog: false,
+
       showDeleteType: 0,
       item: {},
       gameOptions: [],
@@ -653,6 +682,17 @@ export default {
       editBigPrizeOddsPlansCfgVisible: false,
       editBigPrizeOddsPlansCfgIndex: 0,
       editBigPrizeOddsPlansCfgFormData: [],
+
+      tips:'',
+      showDeleteDialog: false,
+      showTipsVal: 0,
+      data1:{},
+      data2:{},
+      idx1:0,
+      idx2:0,
+
+      showCompletionScript: false,
+      showCompletionScriptMap:{},
     }
   },
   created() {
@@ -1080,8 +1120,8 @@ export default {
         method: 'post',
         data: {
           Path: '/slotsStat/script/plan/data',
-          planID:$this.queryGid,
-          gameID:planRow.PlanId,
+          planID:planRow.PlanId,
+          gameID:$this.queryGid,
           planVer:row.Version
         }
       }).then(response => {
@@ -1102,16 +1142,17 @@ export default {
         method: 'get',
         data: {
           Path: '/slotsStat/script/plan/data',
-          planID:$this.queryGid,
-          gameID:planRow.PlanId,
+          planID:planRow.PlanId,
+          gameID:$this.queryGid,
           planVer:row.Version
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('getTodayRaffleAmount', response.Data)
+
           if (response.Data) {
-            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+           this.showCompletionScriptMap = response.Data
           }
+          this.showCompletionScript = true
         }
       })
     },
@@ -1263,12 +1304,60 @@ export default {
       this.showDeleteDialog = false;
       done();
     },
+    showTips(val,data1,data2){
+      this.showDeleteDialog = true;
+      this.showTipsVal = val
+      if (val===1){
+        this.tips="是否创建配置"
+        this.data1=data1
+        this.data2=data2
+      }
+      if (val===2){
+        this.tips="是否删除该版本"
+        this.idx1=data1
+        this.idx2=data2
+      }
+      if (val===3){
+        this.tips="是否删除该方案"
+        this.idx1=data1
+        this.idx2=data2
+      }
+    },
     // 处理删除操作的函数
-    handleDelete() {
+    handleDelete(val) {
       // 这里可以添加实际的删除逻辑，例如调用接口删除数据
-      console.log('执行删除操作');
+      if (this.showTipsVal===1){
+        this.createVersion(this.data1 ,this.data2)
+      }
+      if (this.showTipsVal===2){
+        console.log(this.idx1,this.idx2)
+        this.deleteVersion(this.idx1, this.idx2)
+      }
+      if (this.showTipsVal===3){
+        this.deletePlan(this.idx1)
+      }
       this.showDeleteDialog = false; // 关闭弹窗
     },
   },
 }
 </script>
+<style scoped>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+</style>
