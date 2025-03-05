@@ -514,22 +514,22 @@
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
       </div>
    </el-dialog>
-          <el-dialog
-            title="确认删除"
-            :visible.sync="showDeleteDialog"
-            width="30%"
-            :before-close="handleClose"
-          >
-      <template #content>
-        <span>确定要删除这条记录吗？</span>
-      </template>
-      <template #footer>
-        <span>
-          <el-button @click="showDeleteDialog = false">取消</el-button>
-          <el-button type="danger" @click="handleDelete">确定</el-button>
-        </span>
-      </template>
-    </el-dialog>
+<!--          <el-dialog-->
+<!--            title="确认删除"-->
+<!--            :visible.sync="showDeleteDialog"-->
+<!--            width="30%"-->
+<!--            :before-close="handleClose"-->
+<!--          >-->
+<!--      <template  >-->
+<!--        <span>确定要删除这条记录吗？</span>-->
+<!--      </template>-->
+<!--      <template #footer>-->
+<!--        <span>-->
+<!--          <el-button @click="showDeleteDialog = false">取消</el-button>-->
+<!--          <el-button type="danger" @click="handleDelete">确定</el-button>-->
+<!--        </span>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
     </span>
 <!--    </fieldset>-->
     <!--对比组件-->
@@ -560,6 +560,7 @@ export default {
         Plans: [],
       },
       showDeleteDialog: false,
+      showDeleteType: 0,
       item: {},
       gameOptions: [],
       channels: [
@@ -1250,7 +1251,17 @@ export default {
         Message.error('数据异常:' + str)
       }
     },
-
-  }
+    // 关闭弹窗时的处理函数
+    handleClose(done) {
+      this.showDeleteDialog = false;
+      done();
+    },
+    // 处理删除操作的函数
+    handleDelete() {
+      // 这里可以添加实际的删除逻辑，例如调用接口删除数据
+      console.log('执行删除操作');
+      this.showDeleteDialog = false; // 关闭弹窗
+    },
+  },
 }
 </script>
