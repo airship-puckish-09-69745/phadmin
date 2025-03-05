@@ -50,7 +50,7 @@
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
             <el-table-column prop="IsReady" label="是否就绪">
               <template slot-scope="scope">
-                {{ scope.row.IsReady === 1 ? '就绪' : '未就绪' }}
+                {{ scope.row.IsReady ? '就绪' : '未就绪' }}
               </template>
             </el-table-column>
             <el-table-column label="操作" width="350px">
