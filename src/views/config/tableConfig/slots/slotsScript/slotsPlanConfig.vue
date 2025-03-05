@@ -805,9 +805,10 @@ export default {
     },
     openAddVersionDialog(planIndex) {
       this.versionStatus = 0
-      this.editVersionDialogVisible = true;
+      // this.editVersionDialogVisible = true;
       this.editVersionFormData = this.newVersion()
       this.currentPlanIndex = planIndex;
+      this.saveEditVersion()
     },
     newVersion() {
       return   {
@@ -911,7 +912,7 @@ export default {
           }
         }
       }
-      console.log(key,obj,this.showItem.Plans[this.currentPlanIndex])
+      console.log("========？",key,obj,this.showItem.Plans[this.currentPlanIndex])
       this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg[key] =  JSON.parse(JSON.stringify(obj))
       this.editSlotsScriptOddsCfgVisible = false
       this.editScatterHitCfgVisible = false
@@ -937,6 +938,7 @@ export default {
       this.editBetOddsPlansFormData = obj
     },
     openBigPrizeOddsCfg(obj){
+      console.log('====',obj)
       this.editBigPrizeOddsCfgVisible  = true
       this.editBigPrizeOddsCfgFormData= obj
     },
