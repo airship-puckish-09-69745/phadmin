@@ -27,7 +27,7 @@
                 :row-style="{height:'10px'}"
                 :cell-style="libShow.DefaultTableCell"
                 stripe>
-      <el-table-column prop="PlanId" label="差异化方案ID"></el-table-column>
+      <el-table-column prop="PlanId" label="差异化方案ID" width="80px"></el-table-column>
       <el-table-column prop="PlanName" label="差异化方案名称"></el-table-column>
       <el-table-column prop="IsDefault" label="是否是默认方案">
         <template slot-scope="scope">
@@ -39,10 +39,10 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="Versions" label="配置版本列表" width="1200px">
+      <el-table-column prop="Versions" label="配置版本列表" width="800px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
-            <el-table-column prop="Version" label="版本号">
+            <el-table-column prop="Version" label="版本号" width="80px">
              <template slot-scope="{}" slot="header">
                 <el-button @click="openAddVersionDialog(scope.$index)" type="success" size="mini">添加版本</el-button>
               </template>
@@ -97,9 +97,10 @@
         </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column label="操作" width="200px">
+      <el-table-column label="操作" width="250px">
         <template slot-scope="scope">
           <el-button @click="openEditDialog(scope.row,scope.$index)" type="primary" size="mini">编辑</el-button>
+          <el-button @click="showTips(4,scope.row,0)" type="success" size="mini">复制</el-button>
           <el-button @click="showTips(3,scope.$index,0)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
@@ -1322,6 +1323,11 @@ export default {
         this.idx1=data1
         this.idx2=data2
       }
+      if (val===3){
+        this.tips="是否复制该方案"
+        this.data1=data1
+        this.idx2=data2
+      }
     },
     // 处理删除操作的函数
     handleDelete(val) {
@@ -1336,7 +1342,13 @@ export default {
       if (this.showTipsVal===3){
         this.deletePlan(this.idx1)
       }
+      if (this.showTipsVal===4){
+        this.copyPlan(this.idx1, this.idx2)
+      }
       this.showDeleteDialog = false; // 关闭弹窗
+    },
+    copyPlan(){
+      this.showItem.Plans.push(JSON.parse(JSON.stringify(this.data1)))
     },
     handleRadioChange(newValue,row,planIdx) {
 
