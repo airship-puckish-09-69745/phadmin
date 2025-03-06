@@ -50,7 +50,7 @@
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
             <el-table-column prop="IsReady" label="是否就绪">
               <template slot-scope="scope">
-                {{ scope.row.IsReady === 1 ? '就绪' : '未就绪' }}
+                {{ scope.row.IsReady ? '就绪' : '未就绪' }}
               </template>
             </el-table-column>
             <el-table-column label="操作" width="350px">
@@ -58,14 +58,14 @@
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
                 <!--                           size="mini">创建剧本</el-button>-->
-               <el-button @click="createVersion(versionScope.row,scope.row)" type="success"
-                          size="mini">创建剧本</el-button>
+               <el-button @click="showTips(1,versionScope.row,scope.row)" type="success"
+                          size="mini" :disabled="versionScope.row.IsReady">创建剧本</el-button>
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
-                           size="mini">编辑</el-button>
-                <el-button @click="deleteVersion(scope.$index, versionScope.$index)" type="danger"
-                           size="mini">删除</el-button>
+                           size="mini" :disabled="versionScope.row.IsReady">编辑</el-button>
+                <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
+                           size="mini" :disabled="versionScope.row.IsReady">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -100,7 +100,7 @@
       <el-table-column label="操作" width="200px">
         <template slot-scope="scope">
           <el-button @click="openEditDialog(scope.row)" type="primary" size="mini">编辑</el-button>
-          <el-button @click="deletePlan(scope.$index)" type="danger" size="mini">删除</el-button>
+          <el-button @click="showTips(3,scope.$index,0)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -154,7 +154,7 @@
     <el-dialog :visible.sync="editDialogVisible" title="编辑方案">
       <el-form :model="editFormData" label-width="120px">
         <el-form-item label="差异化方案ID(数字)">
-          <el-input v-model="editFormData.PlanId" placeholder="请输入差异化方案ID"></el-input>
+          <el-input v-model.number="editFormData.PlanId" placeholder="请输入差异化方案ID"></el-input>
         </el-form-item>
         <el-form-item label="差异化方案名称">
           <el-input v-model="editFormData.PlanName" placeholder="请输入差异化方案名称"></el-input>
@@ -246,6 +246,15 @@
           <!--   赔率配置弹窗  -->
     <el-dialog :visible.sync="editSlotsScriptOddsCfgVisible" title="倍率配置">
       <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini">添加</el-button>
+      <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
+                  effect="dark" placement="top">
+              <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
+                检查倍数总和区间
+              </el-button>
+      </el-tooltip>
+      <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
+        <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
+      </el-tooltip>
       <el-table :data="editSlotsScriptOddsCfgFormData"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -337,21 +346,22 @@
       </div>
     </el-dialog>
           <!-- 下注金额区分赔率方案配置-->
-   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px">
+   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px" :close-on-click-modal="false">
       <el-button @click="appendComment(editBetOddsPlansFormData,newBetOddsPlans())" type="success" size="mini">添加</el-button>
+
       <el-table :data="editBetOddsPlansFormData"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
                 :row-style="{height:'10px'}"
                 :cell-style="libShow.DefaultTableCell"
                 stripe>
-        <el-table-column prop="Odds" label="目标下注金额列表" width="200px">
+        <el-table-column prop="Odds" label="目标下注金额列表" width="250px">
           <template slot="header">
             <span>目标下注金额列表</span>
           </template>
           <template slot-scope="scope">
             <span v-for="(v,idx) in scope.row.TargetBets">
-              <el-input v-model.number="scope.row.TargetBets[idx]" size="mini">
+              <el-input v-model.number="scope.row.TargetBets[idx]" size="mini" @input="(v)=>(scope.row.TargetBets[idx]=v.replace(/[^\d.]/g,''))">
                 <template #prepend><el-button @click="appendComment(scope.row.TargetBets,0)"   size="mini">添加</el-button></template>
                 <template #append><el-button @click="delComment(scope.row.TargetBets,idx)"   size="mini">删除</el-button></template>
               </el-input>
@@ -360,6 +370,19 @@
         </el-table-column>
          <el-table-column prop="OddsCfg" label="倍数配置">
            <template slot-scope="scope">
+              <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
+                     <input type="file" @change="(event) => handleFileUpload2(event, scope.$index)" accept=".xlsx, .xls" size="mini"></input>
+              </el-tooltip>
+              <el-col :offset="2" :span="8">
+              <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="top">
+                <el-button type="primary" @click="checkBetPlans(scope.$index)" size="mini" style="background-color:#ff8000">检查
+                </el-button>
+              </el-tooltip>
+              <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
+                <el-button type="primary" @click="checkBetPlansSum(scope.$index)" size="mini" style="background-color:#b600ff">检查
+                </el-button>
+              </el-tooltip>
+            </el-col>
             <el-table :data="scope.row.OddsCfg" stripe>
               <el-table-column prop="Odds" label="最小倍数">
                 <template slot-scope="scope">
@@ -486,82 +509,66 @@
               <el-input v-model.number="scope.row.Weight" size="mini"></el-input>
           </template>
         </el-table-column>
+          <el-table-column prop="Odds" label="操作"  >
+          <template slot-scope="scope">
+              <el-button @click="delComment(editBigPrizeOddsPlansCfgFormData,scope.$index)" type="danger" size="mini">删除</el-button>
+          </template>
+        </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
       </div>
    </el-dialog>
+    <el-dialog
+            title="确认操作"
+            :visible.sync="showDeleteDialog"
+            width="30%"
+            :before-close="handleClose"
+          >
+      <template  >
+        <span>{{tips}}</span>
+      </template>
+      <template #footer>
+        <span>
+          <el-button @click="showDeleteDialog = false">取消</el-button>
+          <el-button type="success" @click="handleDelete()">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+           title="确认操作"
+           :visible.sync="showCompletionScript"
+           width="30%"
+         >
+      <template  >
+         <table border="1">
+      <thead>
+        <tr>
+          <th>键</th>
+          <th>值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 使用 v-for 循环遍历 showCompletionScriptMap 对象 -->
+        <tr v-for="(v, k) in showCompletionScriptMap" :key="k">
+          <td>{{ k }}</td>
+          <td>{{ v }}</td>
+        </tr>
+      </tbody>
+    </table>
+      </template>
+      <template #footer>
+        <span>
+          <el-button type="success" @click="showCompletionScript  = false">确定</el-button>
+        </span>
+      </template>
+    </el-dialog>
     </span>
 <!--    </fieldset>-->
     <!--对比组件-->
     <compare ref="compare" :attr-names="AttrNames"/>
-    <el-dialog
-      v-if="detailVisible"
-      title="配置详情"
-      :visible.sync="detailVisible"
-      width="60%">
-      <el-row>
-        <el-col :offset="0" :span="12">
-          <el-button type="primary" @click="addBigPrizePlansOddsCfgRow(0)" size="mini">添加</el-button>
-          <el-button type="success" size="mini" @click="closeVisible()">确定</el-button>
-        </el-col>
-      </el-row>
-      <el-table
-        :data="showVisibleData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%">
-        <el-table-column
-          prop="OddsMin"
-          label="最小倍数"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMin" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="OddsMax"
-          label="最大倍数"
-          width="200"
-        >
-          <template slot-scope="{}" slot="header">
-            <show-tip head-title="最大倍数" head-tip="0为无限大"></show-tip>
-          </template>
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMax" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="Weight"
-          label="权重"
-          width="200"
-        >
-          <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.Weight" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作">
-          <template slot-scope="scope">
 
-            <el-button type="primary" @click="delBigPrizePlansOddsCfgRow(scope.$index)" size="mini">删除2</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-
-    </el-dialog>
   </div>
 </template>
 
@@ -573,6 +580,8 @@ import request from '@/utils/request'
 import {$libShow, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
 import ShowTip from "@/components/Tip/showTip.vue";
+import {number} from "echarts/lib/export";
+import XLSX from "xlsx";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -583,8 +592,9 @@ export default {
         SlotsType: 0,
         ID: 0,
         Plans: [],
-
       },
+
+      showDeleteType: 0,
       item: {},
       gameOptions: [],
       channels: [
@@ -672,6 +682,17 @@ export default {
       editBigPrizeOddsPlansCfgVisible: false,
       editBigPrizeOddsPlansCfgIndex: 0,
       editBigPrizeOddsPlansCfgFormData: [],
+
+      tips:'',
+      showDeleteDialog: false,
+      showTipsVal: 0,
+      data1:{},
+      data2:{},
+      idx1:0,
+      idx2:0,
+
+      showCompletionScript: false,
+      showCompletionScriptMap:{},
     }
   },
   created() {
@@ -679,6 +700,7 @@ export default {
   },
   methods: {
     async fetchData() {
+      await this.getConfigData();
       await this.getGameList();
       await this.getData();
     },
@@ -765,13 +787,9 @@ export default {
           return
         }
       }
-
         this.showItem.SlotsType = this.queryGid
         this.showItem.Plans = this.newPlansCfg()
         this.showItem.ID = 0
-
-
-
     },
     newItem() {
       return {
@@ -781,13 +799,16 @@ export default {
     },
     openAddDialog() {
       this.addDialogVisible = true;
-      this.addFormData = {
-        PlanId: 0,
-        PlanName: '',
-        IsDefault: 0,
-        IsDisabled: 0,
+      this.addFormData =     {
+        PlanId: 1,
+        PlanName: '新增方案',
+        IsDefault: 1,
+        IsDisabled: 1,
+        Versions: [
+
+        ],
         ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0}
-      };
+      }
     },
     addPlan() {
       const newPlan = {
@@ -829,17 +850,31 @@ export default {
     },
     openAddVersionDialog(planIndex) {
       this.versionStatus = 0
-      this.editVersionDialogVisible = true;
+      // this.editVersionDialogVisible = true;
       this.editVersionFormData = this.newVersion()
       this.currentPlanIndex = planIndex;
+      this.saveEditVersion()
     },
     newVersion() {
-      return    {
-          Version: 0,
-          Comment: '',
-          IsReady: false,
-          ScriptCfg:{}
-      };
+      return   {
+        Version: 0,
+        Comment: '',
+        IsReady: false,
+        ScriptCfg:
+          {
+            ScriptSteps:0,
+            ScriptNumber:0,
+            OddsCfg:[],
+            ScatterHitCfg:[],
+            BetOddsPlans:[],
+            BigPrizeCfg:{
+              TaxPerThousand:0,
+              HitPerMillion:0,
+              HitSteps:0,
+              Plans:[]
+            },
+          }
+      }
     },
     openEditVersionDialog(planIndex, versionIndex) {
       this.editVersionDialogVisible = true;
@@ -850,13 +885,29 @@ export default {
         Version: version.Version,
         Comment: version.Comment,
         IsReady: version.IsReady,
-        ScriptCfg: version.ScriptCfg,openEditVersionDialog
+        ScriptCfg: version.ScriptCfg,
       };
       this.currentPlanIndex = planIndex;
       this.currentVersionIndex = versionIndex;
     },
     openCreateVersionScriptsDialog(planIndex, versionIndex) {
       //todo
+    },
+    getConfigData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'SlotsScriptStatisticsConfig'
+        }
+      }).then(response => {
+        if (response.Data.Data !== '') {
+          let arr = JSON.parse(response.Data.Data)
+          for (const o of arr) {
+            this.slotCfg[o.Gid] = o
+          }
+        }
+      })
     },
     saveEditVersion() {
       const updatedVersion = {
@@ -899,6 +950,14 @@ export default {
       this.editSlotsScriptOddsCfgFormData = obj
     },
     saveOddsCfg(key,obj){
+      if (key==='BetOddsPlans'){
+        for (let o of obj) {
+          for (const i in o.TargetBets) {
+            o.TargetBets[i] = o.TargetBets *1000
+          }
+        }
+      }
+      console.log("========？",key,obj,this.showItem.Plans[this.currentPlanIndex])
       this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg[key] =  JSON.parse(JSON.stringify(obj))
       this.editSlotsScriptOddsCfgVisible = false
       this.editScatterHitCfgVisible = false
@@ -916,9 +975,15 @@ export default {
     },
     openBetOddsPlanCfg(obj){
       this.editBetOddsPlansVisible  = true
+      for (const o of obj) {
+        for (const i in o.TargetBets) {
+          o.TargetBets[i] = Number(o.TargetBets)/1000
+        }
+      }
       this.editBetOddsPlansFormData = obj
     },
     openBigPrizeOddsCfg(obj){
+      console.log('====',obj)
       this.editBigPrizeOddsCfgVisible  = true
       this.editBigPrizeOddsCfgFormData= obj
     },
@@ -1030,6 +1095,9 @@ export default {
       }
     },
     updateCfg(){
+      if (!this.checkData()) {
+        return
+      }
       request({
         url: '/slotsScriptV3Config/update',
         method: 'post',
@@ -1052,8 +1120,8 @@ export default {
         method: 'post',
         data: {
           Path: '/slotsStat/script/plan/data',
-          planID:$this.queryGid,
-          gameID:planRow.PlanId,
+          planID:planRow.PlanId,
+          gameID:$this.queryGid,
           planVer:row.Version
         }
       }).then(response => {
@@ -1066,6 +1134,7 @@ export default {
       })
     },
     getVersion(row,planRow) {
+
       console.log(row,planRow.PlanId)
       const $this = this
       request({
@@ -1073,19 +1142,222 @@ export default {
         method: 'get',
         data: {
           Path: '/slotsStat/script/plan/data',
-          planID:$this.queryGid,
-          gameID:planRow.PlanId,
+          planID:planRow.PlanId,
+          gameID:$this.queryGid,
           planVer:row.Version
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('getTodayRaffleAmount', response.Data)
+
           if (response.Data) {
-            console.log('todayRaffleAmount', $this.todayRaffleAmount)
+           this.showCompletionScriptMap = response.Data
           }
+          this.showCompletionScript = true
         }
       })
     },
-  }
+    createCfg(){
+      if (!this.checkData()) {
+        return
+      }
+      request({
+        url: '/slotsScriptV3Config/create',
+        method: 'post',
+        data: {
+          SlotsType: this.showItem.SlotsType,
+          ConfigData: JSON.stringify(this.showItem.Plans)
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('保存成功！')
+        }
+        console.log('response', response)
+      })
+    },
+    checkData(){
+      if (this.showItem.SlotsType<=0){
+        Message.error('请选择游戏类型！')
+        return false
+      }
+      if (this.showItem.Plans.length<=0){
+        Message.error('请添加方案！')
+        return false
+      }
+      for (const o of this.showItem.Plans) {
+        if (o.ScriptRule.TrafficCtrl<=0){
+          Message.error('请设置流量控制！')
+          return false
+        }
+      }
+      return true
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+          this.editSlotsScriptOddsCfgFormData=[]
+          json.forEach((row, index) => {
+            if (index > 0) {
+              let idx = index - 1
+              console.log(index, idx, row)
+
+              this.editSlotsScriptOddsCfgFormData.push({
+                OddsMin: row[0],
+                OddsMax: row[1],
+                ScriptSteps: row[2],
+                ScriptOddsSum: row[3],
+                NormalMatrixCacheSize: row[4],
+                ScatterMatrixCacheSize: row[5],
+                SwitchScatterPercent: row[6],
+                TriggerScatterPercent:row[7],
+              })
+            }
+          });
+        };
+        reader.readAsArrayBuffer(file);
+        this.$forceUpdate()
+      }
+    },
+    handleFileUpload2(event,datIdx,) {
+      console.log(datIdx,event)
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, {type: 'array'});
+          const firstSheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheetName];
+          const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
+          console.log(this.editBetOddsPlansFormData[datIdx].OddsCfg)
+          this.editBetOddsPlansFormData[datIdx].OddsCfg=[]
+          json.forEach((row, index) => {
+            if (index > 0) {
+              let idx = index - 1
+              console.log(index, idx, row,datIdx)
+
+              this.editBetOddsPlansFormData[datIdx].OddsCfg.push({
+                OddsMin: row[0],
+                OddsMax: row[1],
+                ScriptSteps: row[2],
+                ScriptOddsSum: row[3],
+              })
+            }
+          });
+        };
+        reader.readAsArrayBuffer(file);
+        this.$forceUpdate()
+      }
+    },
+    validateDteOddsSum() {
+      let str = ''
+      if (this.editSlotsScriptOddsCfgFormData.length===0){
+        this.$message.error('阿达西,你的数据在沟腚子里呢')
+        return
+      }
+      for (const i in this.editSlotsScriptOddsCfgFormData) {
+        let obj = this.editSlotsScriptOddsCfgFormData[i]
+        console.log(obj,obj.OddsMin * obj.ScriptSteps )
+        if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
+        } else {
+          let a = Number(i) + 1
+          str += `第${a}行数据校验不通过\n`
+        }
+      }
+      if (str.length > 0) {
+        this.$message.error(str)
+      } else {
+        this.$message.success('检查通过')
+      }
+    },
+    checkBetPlans(idx) {
+      let cnt = 0
+      for (const o of this.editBetOddsPlansFormData[idx].OddsCfg ) {
+        cnt += o.ScriptOddsSum
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      console.log(scriptSteps)
+
+      Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
+    },
+    checkBetPlansSum(idx) {
+      let str = ''
+      for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
+        if ((o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum) {
+          str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
+        }
+      }
+      if (str.length <= 0) {
+        Message.success("数据ok的！" + str)
+      } else {
+        Message.error('数据异常:' + str)
+      }
+    },
+    // 关闭弹窗时的处理函数
+    handleClose(done) {
+      this.showDeleteDialog = false;
+      done();
+    },
+    showTips(val,data1,data2){
+      this.showDeleteDialog = true;
+      this.showTipsVal = val
+      if (val===1){
+        this.tips="是否创建配置"
+        this.data1=data1
+        this.data2=data2
+      }
+      if (val===2){
+        this.tips="是否删除该版本"
+        this.idx1=data1
+        this.idx2=data2
+      }
+      if (val===3){
+        this.tips="是否删除该方案"
+        this.idx1=data1
+        this.idx2=data2
+      }
+    },
+    // 处理删除操作的函数
+    handleDelete(val) {
+      // 这里可以添加实际的删除逻辑，例如调用接口删除数据
+      if (this.showTipsVal===1){
+        this.createVersion(this.data1 ,this.data2)
+      }
+      if (this.showTipsVal===2){
+        console.log(this.idx1,this.idx2)
+        this.deleteVersion(this.idx1, this.idx2)
+      }
+      if (this.showTipsVal===3){
+        this.deletePlan(this.idx1)
+      }
+      this.showDeleteDialog = false; // 关闭弹窗
+    },
+  },
 }
 </script>
+<style scoped>
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+</style>

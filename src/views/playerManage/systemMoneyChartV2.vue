@@ -393,6 +393,7 @@ export default {
         164: 'MahjongFortune',
         198: 'FortuneBlessing',
         188: 'StreetFighting',
+        190: 'Arcane Egypt',
         192: 'BountyRaid',
         180: 'FishingMaster',
         172: 'WrathOfZeus',
@@ -404,7 +405,7 @@ export default {
         174: 'Treasure Bowl',
         176: 'Puppy Home',
         182: 'God Of Fortune',
-        184: 'DanceLion',
+        184: 'Dance of the Lion',
         186: 'MahjongJackpot',
         178: 'Mayan Totem',
         194: 'RoadKing',
@@ -552,9 +553,9 @@ export default {
         this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
       } else {
         if (IsProd()) { // 线上
-          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 190)
+          this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 168, 196, 190, 200)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200)
         }
       }
     },

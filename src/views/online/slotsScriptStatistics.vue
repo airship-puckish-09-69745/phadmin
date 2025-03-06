@@ -809,6 +809,12 @@
                     :value="row.key"
                   />
                 </el-select>
+                <el-form-item v-model="scripStepForm.planId" label="方案Id：" :required="true" label-width="120px">
+                  <el-input v-model.number="scripStepForm.planId" />
+                </el-form-item>
+                <el-form-item v-model="scripStepForm.planVer" label="方案版本：" :required="true" label-width="120px">
+                  <el-input v-model.number="scripStepForm.planVer" />
+                </el-form-item>
                 <el-form-item>
                   <el-button type="primary" size="mini" @click="getSlotsScriptStep(0)">查询当前剧本和步数</el-button>
                 </el-form-item>
@@ -964,6 +970,8 @@ export default {
       scripStepForm: {
         gid: 82,
         bet: 0,
+        planId: 0,
+        planVer: 0,
         counter: 0,
         scriptId: 0,
         step: 0
@@ -1988,6 +1996,8 @@ export default {
           Env: store.getters.env,
           gid: this.scripStepForm.gid,
           bet: this.scripStepForm.bet,
+          planId: this.scripStepForm.planId,
+          planVer: this.scripStepForm.planVer,
           typ: typ,
           queryCounter: this.scripStepForm.counter,
           queryScriptId: this.scripStepForm.scriptId

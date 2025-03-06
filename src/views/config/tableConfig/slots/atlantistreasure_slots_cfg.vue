@@ -52,6 +52,7 @@
 import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import request from '@/utils/request'
+import slotsBaseCfg from './components_x/ireland_base_cfg'
 import slotsSymbolValue from './components_x/symbol_value'
 import slotsPayLine from './components_x/pay_line'
 import slotsPayTable from './components_x/pay_table_rate'
@@ -65,7 +66,7 @@ import slotsScript from './components_x/slots_script'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsAtlantistreasureExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
+  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsAtlantistreasureExt, slotsRowReelsDouble, slotsBigWinnerCfg, slotsVup, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',
