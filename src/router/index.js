@@ -1204,6 +1204,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune(审)' }
               },
               {
+                path: 'mahjongjackpotmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongjackpotmars_slots_cfg'),
+                name: 'mahjongjackpotmars_slots_cfg',
+                meta: { title: 'MahjongJackpot(审)' }
+              },
+              {
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
@@ -2351,10 +2357,16 @@ export const asyncRoutes = [
             meta: { title: 'MajorAce(审)', gid: 163 }
           },
           {
-            path: 'mahjongfortune_slots_log',
+            path: 'mahjongfortunemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mahjongfortune_slots_log',
+            name: 'mahjongfortunemars_slots_log',
             meta: { title: 'MahjongFortune(审)', gid: 165 }
+          },
+          {
+            path: 'mahjongjackpotmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongjackpotmars_slots_log',
+            meta: { title: 'MahjongJackpot(审)', gid: 187 }
           },
           {
             path: 'firelinkmars_slots_log',
@@ -2935,7 +2947,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',
