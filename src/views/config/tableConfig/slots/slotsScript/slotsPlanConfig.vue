@@ -99,7 +99,7 @@
       </el-table-column>
       <el-table-column label="操作" width="200px">
         <template slot-scope="scope">
-          <el-button @click="openEditDialog(scope.row)" type="primary" size="mini">编辑</el-button>
+          <el-button @click="openEditDialog(scope.row,scope.$index)" type="primary" size="mini">编辑</el-button>
           <el-button @click="showTips(3,scope.$index,0)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
@@ -800,9 +800,9 @@ export default {
     openAddDialog() {
       this.addDialogVisible = true;
       this.addFormData =     {
-        PlanId: 1,
-        PlanName: '新增方案',
-        IsDefault: 1,
+        PlanId: this.showItem.Plans.length+1,
+        PlanName: '新增方案'+this.showItem.Plans.length+1,
+        IsDefault: 0,
         IsDisabled: 1,
         Versions: [
 
@@ -822,7 +822,7 @@ export default {
       this.showItem.Plans.push(newPlan);
       this.addDialogVisible = false;
     },
-    openEditDialog(row) {
+    openEditDialog(row,idx) {
       this.editDialogVisible = true;
       this.editFormData = {
         PlanId: row.PlanId,
@@ -831,7 +831,7 @@ export default {
         IsDisabled: row.IsDisabled,
         ScriptRuleDescription: row.ScriptRule
       };
-      this.editIndex = this.showItem.Plans.findIndex(item => item.PlanId === row.PlanId);
+      this.editIndex = idx
     },
     saveEdit() {
       const updatedPlan = {
