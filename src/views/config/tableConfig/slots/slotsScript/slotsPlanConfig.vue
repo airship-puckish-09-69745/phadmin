@@ -201,7 +201,7 @@
           <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明"></el-input>
         </el-form-item>
         <el-form-item label="是否就绪">
-          <el-radio-group v-model="editVersionFormData.IsReady">
+          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" >
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
           </el-radio-group>
@@ -1337,6 +1337,30 @@ export default {
         this.deletePlan(this.idx1)
       }
       this.showDeleteDialog = false; // 关闭弹窗
+    },
+    handleRadioChange(newValue,row,planIdx) {
+      // 在这里编写你需要执行的逻辑
+      console.log('单选框的值已更改，新值为:', newValue,row.Version,planIdx);
+      // 例如，你可以根据新值进行一些操作
+      if (newValue) {
+        const $this = this
+        request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Path: '/slotsStat/script/plan/data',
+            planID:planIdx,
+            gameID:$this.queryGid,
+            planVer:row.Version
+          }
+        }).then(response => {
+          if (response.RetCode !== 0 || response.Data !=={}) {
+            Message.error("没有创建剧本，请先创建剧本再选择")
+            row.IsReady = false
+          }
+        })
+        console.log('选择了“是”');
+      }
     },
   },
 }
