@@ -347,7 +347,7 @@
       </div>
     </el-dialog>
           <!-- 下注金额区分赔率方案配置-->
-   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px" :close-on-click-modal="false">
+   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px" :close-on-click-modal="false" :show-close="false">
       <el-button @click="appendComment(editBetOddsPlansFormData,newBetOddsPlans())" type="success" size="mini">添加</el-button>
 
       <el-table :data="editBetOddsPlansFormData"
