@@ -1323,10 +1323,9 @@ export default {
         this.idx1=data1
         this.idx2=data2
       }
-      if (val===3){
+      if (val===4){
         this.tips="是否复制该方案"
         this.data1=data1
-        this.idx2=data2
       }
     },
     // 处理删除操作的函数
@@ -1348,10 +1347,19 @@ export default {
       this.showDeleteDialog = false; // 关闭弹窗
     },
     copyPlan(){
-      this.showItem.Plans.push(JSON.parse(JSON.stringify(this.data1)))
+      let val = JSON.parse(JSON.stringify(this.data1));
+      val.IsDefault = 0
+      val.IsDisabled  = 1
+      val.PlanId = this.showItem.Plans.length + 1
+      // versionScope.row.IsReady
+      for (const o of val.Versions) {
+        o.IsReady = false
+      }
+      console.log(this.data1)
+
+      this.showItem.Plans.push(val)
     },
     handleRadioChange(newValue,row,planIdx) {
-
       if (newValue) {
         const $this = this
         request({
