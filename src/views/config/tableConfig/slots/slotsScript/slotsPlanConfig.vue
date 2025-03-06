@@ -1339,9 +1339,7 @@ export default {
       this.showDeleteDialog = false; // 关闭弹窗
     },
     handleRadioChange(newValue,row,planIdx) {
-      // 在这里编写你需要执行的逻辑
-      console.log('单选框的值已更改，新值为:', newValue,row.Version,planIdx);
-      // 例如，你可以根据新值进行一些操作
+
       if (newValue) {
         const $this = this
         request({
@@ -1349,12 +1347,12 @@ export default {
           method: 'get',
           data: {
             Path: '/slotsStat/script/plan/data',
-            planID:planIdx,
+            planID:this.showItem.Plans[planIdx].PlanId,
             gameID:$this.queryGid,
             planVer:row.Version
           }
         }).then(response => {
-          if (response.RetCode !== 0 || response.Data !=={}) {
+          if (response.RetCode !== 0 && response.Data !=={}) {
             Message.error("没有创建剧本，请先创建剧本再选择")
             row.IsReady = false
           }
