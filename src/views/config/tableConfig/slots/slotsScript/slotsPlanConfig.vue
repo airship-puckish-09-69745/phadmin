@@ -59,7 +59,7 @@
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
                 <!--                           size="mini">创建剧本</el-button>-->
                <el-button @click="showTips(1,versionScope.row,scope.row)" type="success"
-                          size="mini">创建剧本</el-button>
+                          size="mini" :disabled="scope.row.IsReady">创建剧本</el-button>
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
