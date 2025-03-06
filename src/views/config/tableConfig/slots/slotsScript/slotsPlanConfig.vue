@@ -22,7 +22,6 @@
       <el-button @click="openAddDialog" type="success" size="mini">添加方案</el-button>
       <el-table :data="showItem.Plans"
                 border
-                height="750px"
                 :header-cell-style="libShow.DefaultTableHeadClass"
                 :row-style="{height:'10px'}"
                 :cell-style="libShow.DefaultTableCell"
