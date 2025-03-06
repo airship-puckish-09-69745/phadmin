@@ -294,6 +294,11 @@
               <el-input v-model.number="edit.item.EndSignupClass" placeholder="请输入" />
             </el-form-item>
           </el-col>
+           <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="注意截止时间需要小于比赛间隔时间" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
+          </el-col>
           <el-col :span="11">
             <el-form-item label="最低开赛人数:" :required="true" prop="item.MinPeopleNum" :rules="dataRule(true,{type:'n',range:'1'})">
               <el-input v-model.number="edit.item.MinPeopleNum" placeholder="请输入" />
@@ -332,6 +337,11 @@
             <el-form-item label="可Rebuy盲注级别限制:" :required="true" prop="item.RebuyClassLimit" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.RebuyClassLimit" placeholder="请输入" />
             </el-form-item>
+          </el-col>
+          <el-col :span="2">
+            <el-tooltip class="item" effect="dark" content="注意截止时间需要小于比赛间隔时间" placement="left-start">
+              <i class="el-icon-info" />
+            </el-tooltip>
           </el-col>
           <el-col :span="11">
             <el-form-item label="rebuy后筹码数量:" :required="true" prop="item.RebuyChipNum" :rules="dataRule(true,{type:'n',range:'0'})">

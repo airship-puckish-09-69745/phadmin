@@ -94,7 +94,6 @@ export function LibShow() {
     4: '♠'
   }
   this.GameNames = { 2: 'AB', 3: '龙虎', 4: 'JM', 5: 'Car', 6: '7UpD', 7: '红黑', 8: 'AK47', 9: 'TPatti', 10: 'Crash', 13: 'TP War', 14: 'TP真', 15: '德州',
-    198: 'FortuneBlessing',//独占一行
     188: 'StreetFighting',//独占一行
     192: 'BountyRaid',//独占一行
     180: 'FishingMaster',//独占一行
@@ -106,8 +105,8 @@ export function LibShow() {
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 119: 'Windropc积分', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
     112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong',
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
-    170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'RoadKing', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'DanceLion',
-    190: 'ArcaneEgypt' // slots
+    170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'RoadKing', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
+    190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure' // slots
   }
 
   this.NumMap = {

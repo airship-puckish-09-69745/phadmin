@@ -240,6 +240,13 @@
                 <span v-else>否</span>
               </template>
             </el-table-column>
+            <el-table-column prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" v-if="isActV2(gid)">
+
+            </el-table-column>
+            <el-table-column prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" v-if="isActV2(gid)">
+
+            </el-table-column>
+
 
           </el-table-column>
         </template>
@@ -344,7 +351,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170, 172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184,190].indexOf(gid) >= 0
+      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170, 172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 190, 200].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
