@@ -27,7 +27,7 @@
                 :row-style="{height:'10px'}"
                 :cell-style="libShow.DefaultTableCell"
                 stripe>
-      <el-table-column prop="PlanId" label="差异化方案ID"></el-table-column>
+      <el-table-column prop="PlanId" label="差异化方案ID" width="80px"></el-table-column>
       <el-table-column prop="PlanName" label="差异化方案名称"></el-table-column>
       <el-table-column prop="IsDefault" label="是否是默认方案">
         <template slot-scope="scope">
@@ -39,10 +39,10 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="Versions" label="配置版本列表" width="1200px">
+      <el-table-column prop="Versions" label="配置版本列表" width="800px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
-            <el-table-column prop="Version" label="版本号">
+            <el-table-column prop="Version" label="版本号" width="80px">
              <template slot-scope="{}" slot="header">
                 <el-button @click="openAddVersionDialog(scope.$index)" type="success" size="mini">添加版本</el-button>
               </template>
@@ -97,9 +97,10 @@
         </template>
         </el-table-column>
       </el-table-column>
-      <el-table-column label="操作" width="200px">
+      <el-table-column label="操作" width="250px">
         <template slot-scope="scope">
-          <el-button @click="openEditDialog(scope.row)" type="primary" size="mini">编辑</el-button>
+          <el-button @click="openEditDialog(scope.row,scope.$index)" type="primary" size="mini">编辑</el-button>
+          <el-button @click="showTips(4,scope.row,0)" type="success" size="mini">复制</el-button>
           <el-button @click="showTips(3,scope.$index,0)" type="danger" size="mini">删除</el-button>
         </template>
       </el-table-column>
@@ -800,9 +801,9 @@ export default {
     openAddDialog() {
       this.addDialogVisible = true;
       this.addFormData =     {
-        PlanId: 1,
-        PlanName: '新增方案',
-        IsDefault: 1,
+        PlanId: this.showItem.Plans.length+1,
+        PlanName: '新增方案'+this.showItem.Plans.length+1,
+        IsDefault: 0,
         IsDisabled: 1,
         Versions: [
 
@@ -822,7 +823,7 @@ export default {
       this.showItem.Plans.push(newPlan);
       this.addDialogVisible = false;
     },
-    openEditDialog(row) {
+    openEditDialog(row,idx) {
       this.editDialogVisible = true;
       this.editFormData = {
         PlanId: row.PlanId,
@@ -831,7 +832,7 @@ export default {
         IsDisabled: row.IsDisabled,
         ScriptRuleDescription: row.ScriptRule
       };
-      this.editIndex = this.showItem.Plans.findIndex(item => item.PlanId === row.PlanId);
+      this.editIndex = idx
     },
     saveEdit() {
       const updatedPlan = {
@@ -1322,6 +1323,10 @@ export default {
         this.idx1=data1
         this.idx2=data2
       }
+      if (val===4){
+        this.tips="是否复制该方案"
+        this.data1=data1
+      }
     },
     // 处理删除操作的函数
     handleDelete(val) {
@@ -1336,12 +1341,25 @@ export default {
       if (this.showTipsVal===3){
         this.deletePlan(this.idx1)
       }
+      if (this.showTipsVal===4){
+        this.copyPlan(this.idx1, this.idx2)
+      }
       this.showDeleteDialog = false; // 关闭弹窗
     },
+    copyPlan(){
+      let val = JSON.parse(JSON.stringify(this.data1));
+      val.IsDefault = 0
+      val.IsDisabled  = 1
+      val.PlanId = this.showItem.Plans.length + 1
+      // versionScope.row.IsReady
+      for (const o of val.Versions) {
+        o.IsReady = false
+      }
+      console.log(this.data1)
+
+      this.showItem.Plans.push(val)
+    },
     handleRadioChange(newValue,row,planIdx) {
-      // 在这里编写你需要执行的逻辑
-      console.log('单选框的值已更改，新值为:', newValue,row.Version,planIdx);
-      // 例如，你可以根据新值进行一些操作
       if (newValue) {
         const $this = this
         request({
@@ -1349,12 +1367,12 @@ export default {
           method: 'get',
           data: {
             Path: '/slotsStat/script/plan/data',
-            planID:planIdx,
+            planID:this.showItem.Plans[planIdx].PlanId,
             gameID:$this.queryGid,
             planVer:row.Version
           }
         }).then(response => {
-          if (response.RetCode !== 0 || response.Data !=={}) {
+          if (response.RetCode !== 0 && response.Data !=={}) {
             Message.error("没有创建剧本，请先创建剧本再选择")
             row.IsReady = false
           }
