@@ -809,10 +809,10 @@
                     :value="row.key"
                   />
                 </el-select>
-                <el-form-item v-model="scripStepForm.planId" label="方案Id：" :required="true" label-width="80px">
+                <el-form-item v-model="scripStepForm.planId" label="方案Id：" :required="true" label-width="120px">
                   <el-input v-model.number="scripStepForm.planId" />
                 </el-form-item>
-                <el-form-item v-model="scripStepForm.planVer" label="方案版本：" :required="true" label-width="80px">
+                <el-form-item v-model="scripStepForm.planVer" label="方案版本：" :required="true" label-width="120px">
                   <el-input v-model.number="scripStepForm.planVer" />
                 </el-form-item>
                 <el-form-item>
