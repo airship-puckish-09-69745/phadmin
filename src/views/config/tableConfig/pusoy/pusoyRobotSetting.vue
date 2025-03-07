@@ -469,6 +469,43 @@
             </el-col>
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane label="展示资产配置">
+          <el-row>
+            <el-col :span="20" :offset="1">
+              <el-button type="text" @click="addShowMoneyCfg">添加一项</el-button>
+              <el-table :data="ShowMoneyCfg" border>
+                <el-table-column label="场次" prop="TableMoney" width="200" >
+                  <template slot-scope="scope">
+<!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
+                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
+                      <el-option
+                        v-for="itemTableMoney in AllTableMoneyList"
+                        :key="itemTableMoney"
+                        :label="itemTableMoney/1000"
+                        :value="itemTableMoney/1000"/>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最小值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最大值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delShowMoneyCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
     </el-row>
 
@@ -564,6 +601,13 @@ function newNick(nick, probability) {
   return {
     Nick: nick,
     Probability: probability
+  }
+}
+function newShowMoneyCfg() {
+  return {
+    TableMoney: 1,
+    ShowMoneyMin: 30,
+    ShowMoneyMax: 100
   }
 }
 function newRobotAdd() {
@@ -741,7 +785,8 @@ export default {
         RobotOpMin: 0,
         RobotOpMax: 0,
         BetMoneyList: [],
-        ChangeRand: 0
+        ChangeRand: 0,
+        ShowMoneyCfg: [] // 机器人展示资产配置
       },
       RobotCardsPlanIds: {},
       tableMoneyItem: {
@@ -782,6 +827,8 @@ export default {
       ProtectCfg: [
         // { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100 },
         // { TableMoney: 5, CarryLower: 1000, CarryUpper: 2500, LossMoneyMax: 500, WinMoneyMax: 500 },
+      ],
+      ShowMoneyCfg: [
       ],
       CardTypeNames: {
         100: '无牛',
@@ -840,7 +887,8 @@ export default {
         }, {
           TableMoney: 500000,
           IsOpen: 0
-        }]
+        }],
+      AllTableMoneyList: [],
     }
   },
   created() {
@@ -939,7 +987,7 @@ export default {
         return this.betMoneyList
       }
     },
-    saveChanges(index,IsOpen){
+    saveChanges(index, IsOpen) {
       this.betMoneyList[index].IsOpen = IsOpen
     },
     setBetMoneyList() {
@@ -970,6 +1018,7 @@ export default {
             this.item.NickCfg = this.item.NickCfg || []
             this.item.StopAddCfg = this.item.StopAddCfg || []
             this.item.BetMoneyList = this.item.BetMoneyList || []
+            this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
             this.betMoneyList = this.getBetMoneyList(this.item.BetMoneyList)
             this.item.RobotAddTimeCfg = this.item.RobotAddTimeCfg || newRobotAdd()
             const old = JSON.parse(response.Data.Data)
@@ -1010,6 +1059,14 @@ export default {
               $this.ProtectCfg.push(one)
             }
 
+            for (const o in $this.item.ShowMoneyCfg) {
+              const one = Object.assign({}, $this.item.ShowMoneyCfg[o])
+              one.TableMoney /= 1000
+              one.ShowMoneyMin /= 1000
+              one.ShowMoneyMax /= 1000
+              $this.ShowMoneyCfg.push(one)
+            }
+
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
             // 获取底注
@@ -1029,6 +1086,7 @@ export default {
       cpy.ExitStartDelayMax *= 60
       cpy.BetCfg = []
       cpy.ProtectCfg = []
+      cpy.ShowMoneyCfg = []
 
       cpy.BetMoneyList = []
       for (const i in this.betMoneyList) {
@@ -1054,6 +1112,13 @@ export default {
         obj.LossMoneyMax = parseInt(this.ProtectCfg[o].LossMoneyMax) * 1000
         obj.WinMoneyMax = parseInt(this.ProtectCfg[o].WinMoneyMax) * 1000
         cpy.ProtectCfg.push(obj)
+      }
+      for (const o in this.ShowMoneyCfg) {
+        const obj = {}
+        obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
+        obj.ShowMoneyMin = parseInt(this.ShowMoneyCfg[o].ShowMoneyMin) * 1000
+        obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
+        cpy.ShowMoneyCfg.push(obj)
       }
       return JSON.stringify(cpy)
     },
@@ -1345,8 +1410,14 @@ export default {
             } else {
               tableMoneyList += ',' + tableMoney
             }
+            if (objs[i].IsPractice === 0 && objs[i].Status === 2&& objs[i].RoomLevel===0) {
+              this.AllTableMoneyList.push(tableMoney)
+            }
           }
         }
+        this.AllTableMoneyList.sort((a, b) => {
+          return a - b
+        })
         if (tableMoneyList != '') {
           this.getRobotProfit(tableMoneyList)
         }
@@ -1385,6 +1456,9 @@ export default {
     addNickCfg() {
       this.item.NickCfg.push(newNick('', 0))
     },
+    addShowMoneyCfg() {
+      this.ShowMoneyCfg.push(newShowMoneyCfg())
+    },
     delNickCfg(idx) {
       this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
@@ -1392,6 +1466,15 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$delete(this.item.NickCfg, idx)
+      })
+    },
+    delShowMoneyCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.ShowMoneyCfg, idx)
       })
     },
     addStopAddCfg() {

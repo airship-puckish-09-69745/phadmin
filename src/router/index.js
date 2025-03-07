@@ -2972,6 +2972,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletApiTimesStat.vue'),
         name: 'walletApiStat',
         meta: { title: '钱包API请求统计' }
+      },
+      {
+        path: 'walletRobotTransfer',
+        component: () => import('@/views/wallet/walletRobotTransfer.vue'),
+        name: 'walletRobotTransfer',
+        meta: { title: '机器人转账列表' }
       }
     ]
   },

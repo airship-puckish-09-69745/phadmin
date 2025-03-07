@@ -545,6 +545,10 @@ export default {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
           Object.assign(this.edit.item, _data)
+          if (bEdit) {
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(_data)
+          }
         }
       }
     },
