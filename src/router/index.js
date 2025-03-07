@@ -1663,6 +1663,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'itemConfig',
+        component: () => import('@/views/matchManage/itemConfig'),
+        name: 'itemConfig',
+        meta: { title: '道具管理', noCache: true }
       }
     ]
   },
