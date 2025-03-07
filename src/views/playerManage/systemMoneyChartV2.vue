@@ -408,7 +408,7 @@ export default {
         184: 'Dance of the Lion',
         186: 'MahjongJackpot',
         178: 'Mayan Totem',
-        194: 'RoadKing',
+        194: 'GoldTrain',
         196: 'GoldMiner',
         200: 'AtlantisTreasure',
         9: 'Teen Patti',
