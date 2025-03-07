@@ -155,7 +155,7 @@
             <el-input v-model="edit.item.RolloutUid" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
-        <el-form-item label="目标金币数：" :required="true" prop="RollinMoney">
+        <el-form-item label="转账资产：" :required="true" prop="RollinMoney">
           <el-col :span="15">
             <el-input v-model="edit.item.RollinMoney" />
           </el-col>
