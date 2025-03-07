@@ -47,7 +47,7 @@
 
         <el-table-column
           prop="RollinUidMoney"
-          label="加金币用户资产"
+          label="加金币前用户资产"
         >
           <template slot-scope="scope">
             {{ scope.row.RollinUidMoney }}
@@ -55,19 +55,10 @@
         </el-table-column>
 
 
-        <el-table-column
-          prop="RolloutUidMoney"
-          label="减金币用户资产"
-        >
-          <template slot-scope="scope">
-            {{ scope.row.RolloutUidMoney }}
-          </template>
-        </el-table-column>
-
 
         <el-table-column
           prop="RolloutUidMoney"
-          label="减金币用户资产"
+          label="减金币前用户资产"
         >
           <template slot-scope="scope">
             {{ scope.row.RolloutUidMoney }}
@@ -77,7 +68,7 @@
 
         <el-table-column
           prop="AfterRollinUidMoney"
-          label="操作后加金币用户资产"
+          label="加金币后用户资产"
         >
           <template slot-scope="scope">
             {{ scope.row.AfterRollinUidMoney }}
@@ -87,7 +78,7 @@
 
         <el-table-column
           prop="AfterRolloutUidMoney"
-          label="操作后减金币用户资产"
+          label="减金币后用户资产"
         >
           <template slot-scope="scope">
             {{ scope.row.AfterRolloutUidMoney }}
