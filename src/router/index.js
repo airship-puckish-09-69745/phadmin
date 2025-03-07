@@ -2138,6 +2138,12 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting', gid: 188 }
           },
           {
+            path: 'arcaneegypt_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegypt_slots_log',
+            meta: { title: 'ArcaneEgypt', gid: 190 }
+          },
+          {
             path: 'bountyraid_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'bountyraid_slots_log',
