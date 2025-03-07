@@ -38,7 +38,7 @@
 
         <el-table-column
           prop="RollinMoney"
-          label="用户目标资产"
+          label="转账资产"
         >
           <template slot-scope="scope">
             {{ scope.row.RollinMoney }}
