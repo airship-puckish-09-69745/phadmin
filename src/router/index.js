@@ -2947,7 +2947,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',
@@ -2972,6 +2972,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletApiTimesStat.vue'),
         name: 'walletApiStat',
         meta: { title: '钱包API请求统计' }
+      },
+      {
+        path: 'walletRobotTransfer',
+        component: () => import('@/views/wallet/walletRobotTransfer.vue'),
+        name: 'walletRobotTransfer',
+        meta: { title: '机器人转账列表' }
       }
     ]
   },

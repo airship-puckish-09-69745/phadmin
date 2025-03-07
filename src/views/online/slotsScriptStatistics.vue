@@ -2005,9 +2005,13 @@ export default {
         }
       }).then(response => {
         console.log(response)
-        var groupArray = this.groupArray(response.Data.script, 50)
-        console.log(groupArray)
-        this.stepData = groupArray
+        if (response.Data.script) {
+          var groupArray = this.groupArray(response.Data.script, 50)
+          console.log(groupArray)
+          this.stepData = groupArray
+        } else {
+          this.stepData = {}
+        }
         this.scripStepForm.counter = response.Data.counter
         this.scripStepForm.scriptId = response.Data.scriptId
         this.scripStepForm.step = response.Data.step
