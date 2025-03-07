@@ -665,6 +665,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/rummyVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Rummy ◐' },
+            children: [
+              {
+                path: 'rummyTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Rummy配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'rummyTable',
+                    component: () => import('@/views/rummy/table/rummyTable'),
+                    name: 'rummyTable',
+                    meta: { title: 'Rummy' }
+                    // eslint-disable-next-line no-mixed-spaces-and-tabs
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
