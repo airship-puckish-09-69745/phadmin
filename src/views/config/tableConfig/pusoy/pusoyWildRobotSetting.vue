@@ -167,255 +167,6 @@
           </el-row>
         </el-tab-pane>
 
-<!--        <el-tab-pane label="配牌方案">-->
-<!--          <el-button type="text" size="mini" @click="addRobotCardsPlans">添加方案</el-button>-->
-<!--          <el-row style="padding-top: 5px">-->
-<!--            <el-col :span="24">-->
-<!--              <div style="padding-top: 10px">-->
-<!--                <el-table :data="item.RobotCardsPlans" stripe border style="width: 100%">-->
-<!--                  <el-table-column label="方案ID" width="180">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-input-->
-<!--                        v-model.number="scope.row.PlanID"-->
-<!--                        :disabled="hasPlanIDAndIdx(scope.row, scope.$index)"-->
-<!--                        min="1"-->
-<!--                        placeholder="请输入方案id，注意添加之后不能修改，请谨慎操作"-->
-<!--                        @change="handlePlanIDChange(scope.row)"-->
-<!--                      />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="方案名称" width="180">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <el-input v-model.number="scope.row.PlanName" />-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="概率(整数)" width="180">-->
-<!--                    <template scope="scope">-->
-<!--                      <el-input v-model.number="scope.row.Odds"><template slot="append">‰</template></el-input>-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="牌型类别" width="180">-->
-<!--                    <template scope="scope">-->
-<!--                      <el-select-->
-<!--                        v-model="scope.row.SpecialCards"-->
-<!--                        placeholder="请选择"-->
-<!--                        @change="handleCardTypeChange(scope.row, scope.$index)"-->
-<!--                      >-->
-<!--                        <el-option v-for="v in specialCards" :key="v.value" :label="v.label" :value="v.value" />-->
-<!--                      </el-select>-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="牌型详情">-->
-<!--                    <template slot-scope="scope">-->
-<!--                      <div v-if="scope.row.SpecialCards">-->
-<!--                        <el-table :data="scope.row.SpecialCardsCfg" border>-->
-<!--                          <el-table-column label="特殊牌型" align="center">-->
-<!--                            <el-table-column label="牌型">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-select v-model="subScope.row.CardType" placeholder="请选择">-->
-<!--                                  <el-option-->
-<!--                                    v-for="item in pusoyCardTypes"-->
-<!--                                    :key="item.value"-->
-<!--                                    :label="item.label"-->
-<!--                                    :value="item.value"-->
-<!--                                  />-->
-<!--                                </el-select>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="概率(单位:总和分之一)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-input v-model.number="subScope.row.Odds" />-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="操作" :render-header="(h, obj) => addCardsDetailCfg(scope.$index)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-button-->
-<!--                                  size="mini"-->
-<!--                                  type="danger"-->
-<!--                                  plain-->
-<!--                                  @click="delRowSpecialCardsCfg(scope.$index, subScope.$index)"-->
-<!--                                >删除</el-button>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                          </el-table-column>-->
-<!--                        </el-table>-->
-<!--                      </div>-->
-<!--                      <div v-if="scope.row.SpecialCards === false">-->
-<!--                        <el-table :data="scope.row.NormalCardsCfg.Group1Cfg" border>-->
-<!--                          <el-table-column label="顶墩" align="center">-->
-<!--                            <el-table-column label="牌型">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-select v-model="subScope.row.GroupType" placeholder="请选择">-->
-<!--                                  <el-option-->
-<!--                                    v-for="item in pusoyDingCardTypes"-->
-<!--                                    :key="item.value"-->
-<!--                                    :label="item.label"-->
-<!--                                    :value="item.value"-->
-<!--                                  />-->
-<!--                                </el-select>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="概率(单位:总和分之一)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-input v-model.number="subScope.row.Odds" />-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="操作" :render-header="(h, obj) => addCardsDetailCfg(scope.$index)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-button-->
-<!--                                  size="mini"-->
-<!--                                  type="danger"-->
-<!--                                  plain-->
-<!--                                  @click="delRowNormalCardsGroup1Cfg(scope.$index, subScope.$index)"-->
-<!--                                >删除</el-button>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                          </el-table-column>-->
-<!--                        </el-table>-->
-<!--                        <el-table :data="scope.row.NormalCardsCfg.Group2Cfg" border>-->
-<!--                          <el-table-column label="中墩" align="center">-->
-<!--                            <el-table-column label="牌型">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-select v-model="subScope.row.GroupType" placeholder="请选择">-->
-<!--                                  <el-option-->
-<!--                                    v-for="item in pusoyGroupCardTypes"-->
-<!--                                    :key="item.value"-->
-<!--                                    :label="item.label"-->
-<!--                                    :value="item.value"-->
-<!--                                  />-->
-<!--                                </el-select>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="概率(单位:总和分之一)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-input v-model.number="subScope.row.Odds" />-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="操作" :render-header="(h, obj) => addNormalCardsGroup2Cfg(scope.$index)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-button-->
-<!--                                  size="mini"-->
-<!--                                  type="danger"-->
-<!--                                  plain-->
-<!--                                  @click="delRowNormalCardsGroup2Cfg(scope.$index, subScope.$index)"-->
-<!--                                >删除</el-button>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                          </el-table-column>-->
-<!--                        </el-table>-->
-<!--                        <el-table :data="scope.row.NormalCardsCfg.Group3Cfg" border>-->
-<!--                          <el-table-column label="底墩" align="center">-->
-<!--                            <el-table-column label="牌型">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-select v-model="subScope.row.GroupType" placeholder="请选择">-->
-<!--                                  <el-option-->
-<!--                                    v-for="item in pusoyGroupCardTypes"-->
-<!--                                    :key="item.value"-->
-<!--                                    :label="item.label"-->
-<!--                                    :value="item.value"-->
-<!--                                  />-->
-<!--                                </el-select>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="概率(单位:总和分之一)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-input v-model.number="subScope.row.Odds" />-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                            <el-table-column label="操作" :render-header="(h, obj) => addNormalCardsGroup3Cfg(scope.$index)">-->
-<!--                              <template scope="subScope">-->
-<!--                                <el-button-->
-<!--                                  size="mini"-->
-<!--                                  type="danger"-->
-<!--                                  plain-->
-<!--                                  @click="delRowNormalCardsGroup3Cfg(scope.$index, subScope.$index)"-->
-<!--                                >删除</el-button>-->
-<!--                              </template>-->
-<!--                            </el-table-column>-->
-<!--                          </el-table-column>-->
-<!--                        </el-table>-->
-<!--                      </div>-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                  <el-table-column label="操作" width="80">-->
-<!--                    <template scope="scope">-->
-<!--                      <el-button size="mini" type="danger" @click="delRobotCardsPlans(scope.$index)">删除</el-button>-->
-<!--                    </template>-->
-<!--                  </el-table-column>-->
-<!--                </el-table>-->
-<!--              </div>-->
-<!--            </el-col>-->
-<!--          </el-row>-->
-<!--        </el-tab-pane>-->
-
-        <!--        <el-tab-pane label="场次调控">-->
-        <!--          <el-row style="padding-top: 5px">-->
-        <!--            <el-col :span="24">-->
-        <!--              <div style="padding-top: 10px">-->
-        <!--                <el-table :data="item.RobotLevelCfg" stripe border style="width: 100%">-->
-        <!--                  <el-table-column label="底注" width="180">-->
-        <!--                    <template slot-scope="scope">-->
-        <!--                      {{ fmtMoney(scope.row.TableMoney) }}-->
-        <!--                    </template>-->
-        <!--                  </el-table-column>-->
-        <!--                  <el-table-column label="当前输赢倍数" width="180">-->
-        <!--                    <template slot-scope="scope">-->
-        <!--                      <a-->
-        <!--                        href="javascript:void(0)"-->
-        <!--                        style="cursor: pointer; color:rgb(59, 59, 232);"-->
-        <!--                        @click="showRobotPoolForm(scope.row.TableMoney, scope.row.Pool)"-->
-        <!--                      >{{ (scope.row.Pool /-->
-        <!--                        scope.row.TableMoney).toFixed(0) }}</a>-->
-        <!--                      &lt;!&ndash;                      <el-button size="mini" @click="showHistoryChart(scope.row.TableMoney)"&ndash;&gt;-->
-        <!--                      &lt;!&ndash;                                 style="float:right;margin-right: 20px;">趋势</el-button>&ndash;&gt;-->
-        <!--                    </template>-->
-        <!--                  </el-table-column>-->
-        <!--                  <el-table-column label="分配">-->
-        <!--                    <template slot-scope="scope">-->
-        <!--                      <el-table :data="scope.row.Ranges" border>-->
-        <!--                        <el-table-column label="输赢最小(%)">-->
-        <!--                          <template scope="subScope">-->
-        <!--                            <el-input v-model.number="subScope.row.MinTimes" />-->
-        <!--                          </template>-->
-        <!--                        </el-table-column>-->
-        <!--                        <el-table-column label="输赢最大(%)">-->
-        <!--                          <template scope="subScope">-->
-        <!--                            <el-input v-model.number="subScope.row.MaxTimes" />-->
-        <!--                          </template>-->
-        <!--                        </el-table-column>-->
-        <!--                        <el-table-column label="方案">-->
-        <!--                          <template scope="subScope">-->
-        <!--                            <el-select v-model="subScope.row.PlanID" placeholder="请选择">-->
-        <!--                              <el-option-->
-        <!--                                v-for="item in item.RobotCardsPlans"-->
-        <!--                                :key="item.PlanID"-->
-        <!--                                :label="pusoyShowPlanName(item)"-->
-        <!--                                :value="item.PlanID"-->
-        <!--                              />-->
-        <!--                            </el-select>-->
-        <!--                          </template>-->
-        <!--                        </el-table-column>-->
-        <!--                        <el-table-column-->
-        <!--                          label="操作"-->
-        <!--                          :render-header="(h, obj) => addTableHeaderButton(h, obj, scope.row.TableMoney)"-->
-        <!--                        >-->
-        <!--                          <template scope="subScope">-->
-        <!--                            <el-button-->
-        <!--                              size="mini"-->
-        <!--                              type="danger"-->
-        <!--                              @click="delRow(scope.$index, subScope.$index, subScope.row)"-->
-        <!--                            >删除</el-button>-->
-        <!--                          </template>-->
-        <!--                        </el-table-column>-->
-        <!--                      </el-table>-->
-        <!--                    </template>-->
-        <!--                  </el-table-column>-->
-        <!--                </el-table>-->
-        <!--              </div>-->
-        <!--            </el-col>-->
-        <!--          </el-row>-->
-        <!--        </el-tab-pane>-->
-
         <el-tab-pane label="进桌配置">
           <el-row style="padding-top: 5px">
             <el-col :span="24">
@@ -466,6 +217,43 @@
                   </el-table-column>
                 </el-table>
               </div>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+
+        <el-tab-pane label="展示资产配置">
+          <el-row>
+            <el-col :span="20" :offset="1">
+              <el-button type="text" @click="addShowMoneyCfg">添加一项</el-button>
+              <el-table :data="ShowMoneyCfg" border>
+                <el-table-column label="场次" prop="TableMoney" width="200" >
+                  <template slot-scope="scope">
+                    <!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
+                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
+                      <el-option
+                        v-for="itemTableMoney in AllTableMoneyList"
+                        :key="itemTableMoney"
+                        :label="itemTableMoney/1000"
+                        :value="itemTableMoney/1000"/>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最小值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最大值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delShowMoneyCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-col>
           </el-row>
         </el-tab-pane>
@@ -564,6 +352,13 @@ function newNick(nick, probability) {
   return {
     Nick: nick,
     Probability: probability
+  }
+}
+function newShowMoneyCfg() {
+  return {
+    TableMoney: 1,
+    ShowMoneyMin: 30,
+    ShowMoneyMax: 100
   }
 }
 function newRobotAdd() {
@@ -741,7 +536,8 @@ export default {
         RobotOpMin: 0,
         RobotOpMax: 0,
         BetMoneyList: [],
-        ChangeRand: 0
+        ChangeRand: 0,
+        ShowMoneyCfg: [] // 机器人展示资产配置
       },
       RobotCardsPlanIds: {},
       tableMoneyItem: {
@@ -782,6 +578,8 @@ export default {
       ProtectCfg: [
         // { TableMoney: 1, CarryLower: 200, CarryUpper: 500, LossMoneyMax: 100, WinMoneyMax: 100 },
         // { TableMoney: 5, CarryLower: 1000, CarryUpper: 2500, LossMoneyMax: 500, WinMoneyMax: 500 },
+      ],
+      ShowMoneyCfg: [
       ],
       CardTypeNames: {
         100: '无牛',
@@ -840,7 +638,8 @@ export default {
         }, {
           TableMoney: 500000,
           IsOpen: 0
-        }]
+        }],
+      AllTableMoneyList: [],
     }
   },
   created() {
@@ -970,6 +769,7 @@ export default {
             this.item.NickCfg = this.item.NickCfg || []
             this.item.StopAddCfg = this.item.StopAddCfg || []
             this.item.BetMoneyList = this.item.BetMoneyList || []
+            this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
             this.betMoneyList = this.getBetMoneyList(this.item.BetMoneyList)
             this.item.RobotAddTimeCfg = this.item.RobotAddTimeCfg || newRobotAdd()
             const old = JSON.parse(response.Data.Data)
@@ -1009,7 +809,13 @@ export default {
               one.WinMoneyMax /= 1000
               $this.ProtectCfg.push(one)
             }
-
+            for (const o in $this.item.ShowMoneyCfg) {
+              const one = Object.assign({}, $this.item.ShowMoneyCfg[o])
+              one.TableMoney /= 1000
+              one.ShowMoneyMin /= 1000
+              one.ShowMoneyMax /= 1000
+              $this.ShowMoneyCfg.push(one)
+            }
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
             // 获取底注
@@ -1029,7 +835,7 @@ export default {
       cpy.ExitStartDelayMax *= 60
       cpy.BetCfg = []
       cpy.ProtectCfg = []
-
+      cpy.ShowMoneyCfg = []
       cpy.BetMoneyList = []
       for (const i in this.betMoneyList) {
         if (this.betMoneyList[i].IsOpen === 1) {
@@ -1054,6 +860,13 @@ export default {
         obj.LossMoneyMax = parseInt(this.ProtectCfg[o].LossMoneyMax) * 1000
         obj.WinMoneyMax = parseInt(this.ProtectCfg[o].WinMoneyMax) * 1000
         cpy.ProtectCfg.push(obj)
+      }
+      for (const o in this.ShowMoneyCfg) {
+        const obj = {}
+        obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
+        obj.ShowMoneyMin = parseInt(this.ShowMoneyCfg[o].ShowMoneyMin) * 1000
+        obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
+        cpy.ShowMoneyCfg.push(obj)
       }
       return JSON.stringify(cpy)
     },
@@ -1345,8 +1158,14 @@ export default {
             } else {
               tableMoneyList += ',' + tableMoney
             }
+            if (objs[i].IsPractice === 0 && objs[i].Status === 2&& objs[i].RoomLevel===0) {
+              this.AllTableMoneyList.push(tableMoney)
+            }
           }
         }
+        this.AllTableMoneyList.sort((a, b) => {
+          return a - b
+        })
         if (tableMoneyList != '') {
           this.getRobotProfit(tableMoneyList)
         }
@@ -1385,6 +1204,9 @@ export default {
     addNickCfg() {
       this.item.NickCfg.push(newNick('', 0))
     },
+    addShowMoneyCfg() {
+      this.ShowMoneyCfg.push(newShowMoneyCfg())
+    },
     delNickCfg(idx) {
       this.$confirm('要删除该项吗？', '提示', {
         confirmButtonText: '确定',
@@ -1392,6 +1214,15 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$delete(this.item.NickCfg, idx)
+      })
+    },
+    delShowMoneyCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.ShowMoneyCfg, idx)
       })
     },
     addStopAddCfg() {
