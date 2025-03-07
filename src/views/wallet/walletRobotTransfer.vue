@@ -269,11 +269,9 @@ export default {
       })
     },
     handlePreOn(ob) {
-      console.log(ob.uid)
       this.changeStatus(ob, 1, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
     },
     handlePreOff(ob) {
-      console.log(ob.uid)
       this.changeStatus(ob, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
     },
     changeStatus(ob, status, msg) {
@@ -297,7 +295,7 @@ export default {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
             ob.status = status
-            $this.clientDB.UpdateData2('uid', ob)
+            $this.clientDB.UpdateData2('TransferId', ob)
           }
         })
       }).catch(() => {
@@ -462,7 +460,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.edit.item.RollinMoney /= 1000
-          this.clientDB.UpdateData2('uid', this.edit.item)
+          this.clientDB.UpdateData2('TransferId', this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
         }
