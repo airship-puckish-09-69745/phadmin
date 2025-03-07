@@ -311,6 +311,17 @@
             <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="值越高排序越在前" @input="checkListSort(editForm.data.sort)" />
             <span v-show="showTip" style="color:red; margin-left:10px">注意有相同的排序值</span>
           </el-form-item>
+
+          <el-form-item label="比赛全局ID：" :required="true">
+            <el-select v-model="editForm.signExtra.matchUniqueId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in matchUniqueIdCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>开赛时间</legend>
@@ -775,6 +786,11 @@ export default {
         { 'value': 0, 'label': '固定奖励' },
         { 'value': 1, 'label': '动态奖励' }
       ],
+      //比赛全局ID集合
+      matchUniqueIdCfgs: [
+        { 'value': 1000, 'label': '188p' },
+        { 'value': 1001, 'label': '1888p' }
+      ],
       prizeTemplateCfg: [],
       csCfgs: [],
       showCsCfgs: [],
@@ -871,7 +887,8 @@ export default {
         },
         signExtra: {
           betCnt: 0,
-          matchEvents: 0
+          matchEvents: 0,
+          matchUniqueId:0
         },
         prizeExtra: {
           awardType: 0,
@@ -1390,7 +1407,8 @@ export default {
 
         this.editForm.signExtra = {
           betCnt: 0,
-          matchEvents: 0
+          matchEvents: 0,
+          matchUniqueId: 0
         }
 
         this.editForm.prizeExtra = {

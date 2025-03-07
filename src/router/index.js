@@ -665,6 +665,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/rummyVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Rummy ◐' },
+            children: [
+              {
+                path: 'rummyTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Rummy配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'rummyTable',
+                    component: () => import('@/views/rummy/table/rummyTable'),
+                    name: 'rummyTable',
+                    meta: { title: 'Rummy' }
+                    // eslint-disable-next-line no-mixed-spaces-and-tabs
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -1640,6 +1663,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'itemConfig',
+        component: () => import('@/views/matchManage/itemConfig'),
+        name: 'itemConfig',
+        meta: { title: '道具管理', noCache: true }
       }
     ]
   },
@@ -2107,6 +2136,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfighting_slots_log',
             meta: { title: 'StreetFighting', gid: 188 }
+          },
+          {
+            path: 'arcaneegypt_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegypt_slots_log',
+            meta: { title: 'ArcaneEgypt', gid: 190 }
           },
           {
             path: 'bountyraid_slots_log',
