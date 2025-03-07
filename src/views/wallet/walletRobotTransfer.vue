@@ -95,7 +95,7 @@
               size="mini"
               type="success"
               @click="handlePreOn(scope.row)"
-            >解冻
+            >执行
             </el-button>
             <el-button
               v-if="scope.row.Status==1"
@@ -182,7 +182,7 @@ export default {
       }, // 奖励
       betMoneyList: '200,100',
       Ratio: 900,
-      statNames: { 0: '冻结', 1: '待执行', 2: '已执行'},
+      statNames: {  0: '冻结', 1: '待执行', 2: '执行中',3: '成功'},
       walletNames: { 0: '转账钱包', 1: '单一钱包' },
       libShow: $libShow,
       showData: [],
