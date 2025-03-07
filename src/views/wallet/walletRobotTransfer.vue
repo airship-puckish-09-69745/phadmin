@@ -35,10 +35,7 @@
           prop="App"
           label="应用ID"
         />
-        <el-table-column
-          prop="channel"
-          label="渠道"
-        />
+
         <el-table-column
           prop="RollinMoney"
           label="用户目标资产"
@@ -67,6 +64,35 @@
           </template>
         </el-table-column>
 
+
+        <el-table-column
+          prop="RolloutUidMoney"
+          label="减金币用户资产"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.RolloutUidMoney }}
+          </template>
+        </el-table-column>
+
+
+        <el-table-column
+          prop="AfterRollinUidMoney"
+          label="操作后加金币用户资产"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.AfterRollinUidMoney }}
+          </template>
+        </el-table-column>
+
+
+        <el-table-column
+          prop="AfterRolloutUidMoney"
+          label="操作后减金币用户资产"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.AfterRolloutUidMoney }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="Status"
           label="状态"
@@ -306,6 +332,8 @@ export default {
             objs[i].RollinMoney /= 1000
             objs[i].RollinUidMoney /= 1000
             objs[i].RolloutUidMoney /= 1000
+            objs[i].AfterRollinUidMoney /= 1000
+            objs[i].AfterRolloutUidMoney /= 1000
           }
           objs.sort(function(a, b) {
             return a.currentTid - b.currentTid
