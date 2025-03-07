@@ -15,23 +15,23 @@
             <el-input v-model="cfg.ScatterMulWt" :required="true" placeholder="请输入内容,如1,2,3,4,5"> <template slot="append">如1,2,3,4,5 代表出现*1的权重为1 </template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式 新增乘数符号数量的权重">
+          <el-form-item label="免费模式 新增乘数符号 (数量)权重">
             <el-input v-model="cfg.SymbolMulNumWt" placeholder="100,1,2,3"> <template slot="append">用,连接 如100,1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
           </el-form-item>
-          <el-form-item label="免费模式 新增红包符号数量的权重">
-            <el-input v-model="cfg.SymbolRedNumWt" placeholder="100,1,2,3"> <template slot="append">用,连接 如100,1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
+          <el-form-item label="免费模式 新增红包符号 (数量)权重">
+            <el-input v-model="cfg.SymbolRedNumWt" placeholder="100,1,2"> <template slot="append">用,连接 如100,1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
           </el-form-item>
-          <el-form-item label="免费模式 新增金红包符号数量的权重">
+          <el-form-item label="免费模式 新增金红包符号 (数量)权重">
             <el-input v-model="cfg.SymbolGoldNumWt" placeholder="100,1,2,3"> <template slot="append">用,连接 如1,2,3 代表新增0个的权重是100 1为1 2为2</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式 新增乘数符号倍数的权重">
+          <el-form-item label="免费模式 新增乘数符号 (倍数)权重">
             <el-input v-model="cfg.SymbolMulOddsWt" placeholder="1,2,3"> <template slot="append">用,连接 如1,2,3 代表出现1倍数的权重是1 2为2 3为3</template> </el-input>
           </el-form-item>
-          <el-form-item label="免费模式 新增红包符号倍数的权重">
+          <el-form-item label="免费模式 新增红包符号 (倍数)权重">
             <el-input v-model="cfg.SymbolRedOddsWt" placeholder="1,2,3"> <template slot="append">用,连接 如1,2,3 代表出现1倍数的权重是1 2为2 3为3</template> </el-input>
           </el-form-item>
-          <el-form-item label="免费模式 新增金红包符号倍数的权重">
+          <el-form-item label="免费模式 新增金红包符号 (倍数)权重">
             <el-input v-model="cfg.SymbolGoldOddsWt" placeholder="1,2,3" disabled> <template slot="append">未启用忽略</template>  </el-input>
           </el-form-item>
 
@@ -112,6 +112,10 @@ export default {
     submitFrm() {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
+      if (this.slotsData.SymbolRedNumWt.split(",").length > 3){
+        $this.$message.error(`免费模式 新增红包符号(数量) 最大支持2个 err:${this.slotsData.SymbolRedNumWt}`)
+        return
+      }
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
