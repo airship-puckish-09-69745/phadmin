@@ -227,6 +227,7 @@ export default {
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
+        'BuyRespinFeeRate': this.slotsData.BuyRespinFeeRate,
         'RecommendBet': this.slotsData.RecommendBet,
         'WinTypeMinOdds': winTypeMinOdds,
         'AutoSpinNum': autoSpinNum,
