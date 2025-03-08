@@ -156,6 +156,7 @@
           </el-descriptions-item>
           <el-descriptions-item label="总信誉分值：" :span="1">
             <el-tag>{{ formatNumber(credit.creditScore / 1000) }}</el-tag>
+            <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
         </el-descriptions>
@@ -1290,7 +1291,9 @@ export default {
           $this.credit.dayVbs=response.Data.dayVbs
           $this.credit.dayPrs=response.Data.dayPrs
           $this.credit.dayGgrs=response.Data.dayGgrs
-          $this.credit.blackList=response.Data.blackList
+          if (response.Data.blackList !== '') {
+            $this.credit.blackList=JSON.parse(response.Data.blackList)
+          }
           $this.credit.uid=response.Data.uid
           console.log("/user/credit/info:",response.Data)
         }
@@ -1380,7 +1383,28 @@ export default {
         Message.error('请输入正确的Uid')
         return
       }
-      console.log(gid, opt)
+
+      let optok = false
+      let gids = this.credit.blackList
+      if (opt == 1) {
+        for (let i=0;i<gids.length;i++) {
+          if (gids[i] == gid) {
+            gids.splice(i,1)
+            optok = true
+            break
+          }
+        }
+      } else if (!gids.includes(gid)) {
+        gids.push(gid)
+        optok = true
+      }
+      console.log(gid, opt, gids)
+
+      if (!optok) {
+        Message.error('无效操作！')
+        return
+      }
+
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -1389,13 +1413,13 @@ export default {
           Env: this.env,
           Path: '/user/credit/black',
           Uid: this.item.Uid,
-          Gid: gid,
-          Opt: opt
+          Gids: JSON.stringify(gids),
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.credit.blackList = response.Data
           console.log('/user/credit/black:', response.Data)
+        } else {
+          Message.error('更新事变')
         }
       })
     },

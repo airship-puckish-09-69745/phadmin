@@ -117,6 +117,10 @@
             <el-input v-model.number="slotsData.BuyFreeFeeRate" />
           </el-form-item>
 
+          <el-form-item v-if="slotsData.SlotsType === 186" label="购买重转模式保底奖池抽水‰">
+            <el-input v-model.number="slotsData.BuyRespinFeeRate" />
+          </el-form-item>
+
           <el-form-item label="推荐下注值">
             <el-input v-model="recommendBet" />
           </el-form-item>
@@ -223,6 +227,7 @@ export default {
         },
         'NormalFeeRate': this.slotsData.NormalFeeRate,
         'BuyFreeFeeRate': this.slotsData.BuyFreeFeeRate,
+        'BuyRespinFeeRate': this.slotsData.BuyRespinFeeRate,
         'RecommendBet': this.slotsData.RecommendBet,
         'WinTypeMinOdds': winTypeMinOdds,
         'AutoSpinNum': autoSpinNum,
