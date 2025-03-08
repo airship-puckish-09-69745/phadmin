@@ -1641,6 +1641,12 @@ export const asyncRoutes = [
         meta: { title: '赛事海报', noCache: true }
       },
       {
+        path: 'matchHomePosterList',
+        component: () => import('@/views/matchManage/homePosterList.vue'),
+        name: 'matchHomePosterList',
+        meta: { title: 'home海报', noCache: true }
+      },
+      {
         path: 'matchGuideList',
         component: () => import('@/views/matchManage/matchGuide.vue'),
         name: 'matchPosterList',
