@@ -11,7 +11,7 @@
             <el-input v-model="cfg.ScatterNum" :required="true" placeholder="请输入内容,如3,4,5,6,7"> <template slot="append">如3,4,5,6,7 代表出现3个的权重为3 </template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式 scatter->乘数 乘数的权重" :rules="dataRule(true)">
+          <el-form-item label="免费模式 scatter->乘数 (倍数)权重" :rules="dataRule(true)">
             <el-input v-model="cfg.ScatterMulWt" :required="true" placeholder="请输入内容,如1,2,3,4,5"> <template slot="append">如1,2,3,4,5 代表出现*1的权重为1 </template> </el-input>
           </el-form-item>
 
