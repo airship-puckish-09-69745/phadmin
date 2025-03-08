@@ -788,8 +788,14 @@ export default {
       ],
       //比赛全局ID集合
       matchUniqueIdCfgs: [
-        { 'value': 1000, 'label': '188p' },
-        { 'value': 1001, 'label': '1888p' }
+        { 'value': 10001, 'label': '188Free' },
+        { 'value': 10002, 'label': '12888Free' },
+        { 'value': 10003, 'label': 'P10' },
+        { 'value': 10004, 'label': 'P20' },
+        { 'value': 10005, 'label': 'P40' },
+        { 'value': 10006, 'label': 'P100' },
+        { 'value': 10007, 'label': 'P300' },
+        { 'value': 10008, 'label': 'GTCC 2005' }
       ],
       prizeTemplateCfg: [],
       csCfgs: [],

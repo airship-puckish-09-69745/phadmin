@@ -132,20 +132,7 @@
       :close-on-press-escape="false"
       width="70%"
     >
-      <el-row style="margin-top: 30px">
-        <el-col :span="2" :offset="0">
-          <el-form ref="form" :model="editForm.data" label-width="200px">
-            <el-row>
-              <el-form-item label="渠道id：">
-                <el-checkbox-group v-model="editForm.data.channelId" style="width: 700px">
-                  <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
-                </el-checkbox-group>
-              </el-form-item>
-            </el-row>
-          </el-form>
 
-        </el-col>
-      </el-row>
 
       <el-form :model="editForm.data" label-width="300px" size="mini">
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -171,7 +158,7 @@
           </el-form-item>
 
           <el-form-item label="排序" :required="true" >
-            <el-input v-model="editForm.data.sort_id" style="width: 200px;" placeholder="填写海报排序值" />
+            <el-input v-model.number="editForm.data.sort_id" style="width: 200px;" placeholder="填写海报排序值" />
           </el-form-item>
 
           <el-form-item label="海报图" :required="true">
@@ -200,6 +187,17 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item v-if="editForm.data.jump_id===1" label="赛事跳转" :required="true">
+            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in showCsCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
           <el-form-item v-if="editForm.data.jump_id==2" label="游戏跳转" :required="true">
             <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
               <el-option
@@ -211,16 +209,6 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.jump_id==3" label="比赛跳转" :required="true">
-            <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
-              <el-option
-                v-for="item in showCsCfgs"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              />
-            </el-select>
-          </el-form-item>
 
           <el-form-item label="生效时间：" :required="true">
             <el-date-picker
@@ -236,7 +224,19 @@
             />
           </el-form-item>
 
+          <el-form-item label="站点选择：">
+            <el-checkbox-group v-model="editForm.data.channelId" style="width: 700px">
+              <el-checkbox v-for="item in channelIdCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
+            </el-checkbox-group>
+          </el-form-item>
+          <el-form :model="editForm.data" label-width="300px" size="mini">
+            <el-row>
+
+            </el-row>
+          </el-form>
+
         </fieldset>
+
         <el-form-item>
           <el-button size="medium" type="primary" icon="el-icon-s-order" @click="savePosetCfg()">保存海报配置</el-button>
         </el-form-item>
@@ -285,12 +285,14 @@ export default {
         visable: false,
         title: '',
         isAdd: false,
+        onceTime : '',
         data: {
           id: 0,
           title: '',
           app_id: 1000002,
           switch: 'true',
-          channelId: []
+          channelId: [],
+          game_id:0,
         }
       },
       AttrNames: {
@@ -330,10 +332,20 @@ export default {
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],
-      guideCfgs: [], // 赛事推荐相关
+      //比赛全局ID集合
+      matchUniqueIdCfgs: [
+        { 'value': 10001, 'label': '188Free' },
+        { 'value': 10002, 'label': '12888Free' },
+        { 'value': 10003, 'label': 'P10' },
+        { 'value': 10004, 'label': 'P20' },
+        { 'value': 10005, 'label': 'P40' },
+        { 'value': 10006, 'label': 'P100' },
+        { 'value': 10007, 'label': 'P300' },
+        { 'value': 10008, 'label': 'GTCC 2005' }
+        ],
       guideShowCfgs: [], // 赛事推荐相关 跟AppId 关联
 
-      subKey: 'match_poster_list'
+      subKey: 'match_home_poster_list'
     }
   },
   computed: {
@@ -373,12 +385,27 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
+            //step one 先将比赛全局唯一ID存储起来
+            var tmpArray = []
             for (var i = 0; i < objs.list.length; i++) {
-              this.matchCfg.push({
-                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
-                'value': objs.list[i].id,
-                'app_info': JSON.parse(objs.list[i].app_info_cfg)
-              })
+              var signExtra = JSON.parse(objs.list[i].sign_extra)
+              if (signExtra.matchUniqueId != null || signExtra.matchUniqueId > 0) {
+                tmpArray.push(signExtra.matchUniqueId)
+              }
+            }
+            //step 数组中的数据去重,并根据ID转换为label标签名字
+            if (tmpArray.length > 0) {
+              const newArr = this.removeDuplicate(tmpArray)
+              for(var i = 0; i < newArr.length; i++) {
+                var name = this.getMatchName(newArr[i])
+                if (name != null && name !== '') {
+                  this.matchCfg.push({
+                    'label': name,
+                    'value': newArr[i],
+                    'app_info': JSON.parse(objs.list[i].app_info_cfg)
+                  })
+                }
+              }
             }
           }
         }
@@ -475,24 +502,6 @@ export default {
         }
       })
     },
-    selectShowGuieds() {
-      this.guideShowCfgs = []
-      this.guideShowCfgs.push(
-        {
-          'label': '无',
-          'value': 0,
-          'appId': 0
-        }
-      )
-
-      if (this.guideCfgs.length > 0) {
-        for (var i = 0; i < this.guideCfgs.length; i++) {
-          if (this.checkHaveAppId(this.guideCfgs[i].appId, this.editForm.appInfo)) {
-            this.guideShowCfgs.push(this.guideCfgs[i])
-          }
-        }
-      }
-    },
     selectMatchName() {
       this.showCsCfgs = []
       if (this.matchCfg.length > 0) {
@@ -504,6 +513,7 @@ export default {
           }
         }
       }
+      console.log("1111 ",this.showCsCfgs)
     },
 
     saveSwitch() {
@@ -562,6 +572,16 @@ export default {
       }
       return jumpName
     },
+
+    getMatchName(id) {
+      var jumpName = ''
+      for (var i = 0; i < this.matchUniqueIdCfgs.length; i++) {
+        if (this.matchUniqueIdCfgs[i].value == id) {
+          jumpName = this.matchUniqueIdCfgs[i].label
+        }
+      }
+      return jumpName
+    },
     showForm(id) {
       if (id === 0) {
         this.editForm.title = '新增比赛海报配置'
@@ -571,9 +591,7 @@ export default {
           app_id: 1000002,
           switch: true,
           jump_id: 1,
-          details_image_path: '',
           image_path: '',
-          first_jump: false,
           match_cfg_id: 0,
           start_time: 0,
           end_time: 0,
@@ -596,16 +614,15 @@ export default {
         }
         this.editForm.onceTime = [new Date(editData.start_time * 1000), new Date(editData.end_time * 1000)]
         this.editForm.data = editData
-        this.editForm.data.channelId = []
         this.selectMatchName()
         let find = false
         for (var i = 0; i < this.showCsCfgs.length; i++) {
-          if (this.showCsCfgs[i].value == this.editForm.data.match_cfg_id) {
+          if (this.showCsCfgs[i].value === this.editForm.data.match_cfg_id) {
             find = true
             break
           }
         }
-        if (find == false) {
+        if (find === false) {
           this.editForm.data.match_cfg_id = 0
         }
       }
@@ -625,15 +642,13 @@ export default {
       var saveTime = new Date().getTime()
       if (this.editForm.isAdd === false) {
         for (var i = 0; i < this.posterList.tableData.length; i++) {
-          if (this.posterList.tableData[i].id == this.editForm.data.id) {
+          if (this.posterList.tableData[i].id === this.editForm.data.id) {
             this.posterList.tableData[i].title = this.editForm.data.title
             this.posterList.tableData[i].switch = this.editForm.data.switch
             this.posterList.tableData[i].sort_id = parseInt(this.editForm.data.sort_id)
             this.posterList.tableData[i].game_id = this.editForm.data.game_id
             this.posterList.tableData[i].image_path = this.editForm.data.image_path
-            this.posterList.tableData[i].details_image_path = this.editForm.data.details_image_path
             this.posterList.tableData[i].jump_id = this.editForm.data.jump_id
-            this.posterList.tableData[i].first_jump = this.editForm.data.first_jump
             this.posterList.tableData[i].match_cfg_id = this.editForm.data.match_cfg_id
             this.posterList.tableData[i].start_time = bTime
             this.posterList.tableData[i].end_time = eTime
@@ -651,9 +666,7 @@ export default {
             'sort_id': parseInt(this.editForm.data.sort_id),
             'game_id': this.editForm.data.game_id,
             'image_path': this.editForm.data.image_path,
-            'details_image_path': this.editForm.data.details_image_path,
             'jump_id': this.editForm.data.jump_id,
-            'first_jump': this.editForm.data.first_jump,
             'match_cfg_id': this.editForm.data.match_cfg_id,
             'start_time': bTime,
             'end_time': eTime,
@@ -663,6 +676,7 @@ export default {
         )
       }
       this.raw.Data = JSON.stringify(this.posterList)
+      console.log("保存数据 ",this.posterList)
       request({
         url: 'customizeconfig/update',
         method: 'post',
@@ -721,22 +735,31 @@ export default {
     },
 
     selectPosterJumpType() {
-      if (this.editForm.data.jump_id === 1) {
-        this.editForm.data.game_id = 0
+      //1 分类跳转 2:跳转子游戏
+      if (this.editForm.data.jump_id === 2) {
         this.editForm.data.match_cfg_id = 0
-      } else if (this.editForm.data.jump_id === 2) {
-        this.editForm.data.match_cfg_id = 0
-        this.editForm.data.first_jump = false
-        this.editForm.data.details_image_path = ''
-      } else if (this.editForm.data.jump_id === 3) {
         this.editForm.data.game_id = 0
-        this.editForm.data.first_jump = false
-        this.editForm.data.details_image_path = ''
+      } else if (this.editForm.data.jump_id === 1) {
+        this.editForm.data.match_cfg_id = 0
+        this.editForm.data.game_id = 0
       }
     },
 
-    configCheck() {
-      if (this.editForm.data.title == '') {
+    removeDuplicate(arr) {
+      const newArr = []
+      arr.forEach(item => {
+        if (newArr.indexOf(item) === -1) {
+          newArr.push(item)
+        }
+      })
+      return newArr // 返回一个新数组
+    },
+   configCheck() {
+     if (this.editForm.onceTime === '') {
+       this.errmsg("请选择过期时间")
+       return false
+     }
+      if (this.editForm.data.title === '') {
         this.errmsg("请填写标题")
         return false
       }
@@ -744,22 +767,27 @@ export default {
         this.errmsg("请海报排序")
         return false
       }
-      if (this.editForm.data.image_path == '') {
+      if (this.editForm.data.image_path === '') {
         this.errmsg("请填写海报入口图")
         return false
       }
 
-      if (this.editForm.data.jump_id == 1 && this.editForm.data.details_image_path == '') {
-        this.errmsg("请上传海报详情图")
-        return false
-      }
+     if (this.editForm.data.jump_id == 1 &&  this.editForm.data.game_id <= 0) {
+       this.errmsg("请选择跳转分类")
+       return false
+     }
 
+     if (this.editForm.data.jump_id == 1 &&  this.editForm.data.match_cfg_id <= 0) {
+       this.errmsg("请选择赛事跳转")
+       return false
+     }
       if (this.editForm.data.jump_id == 2 &&  this.editForm.data.game_id <= 0) {
          this.errmsg("请选择子游戏")
-        return false
+          return false
       }
-      if (this.editForm.data.jump_id == 3 &&  this.editForm.data.match_cfg_id <= 0) {
-        this.errmsg("请选择比赛赛事")
+
+      if ((this.editForm.data.channelId).length <= 0) {
+        this.errmsg("请勾选站点")
         return false
       }
       return true

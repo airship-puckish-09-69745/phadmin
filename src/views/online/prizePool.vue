@@ -148,10 +148,12 @@ export default {
       },
       gameNamesSuffix: {
         1: '普通',
-        2: '购买'
+        2: '购买',
+        3: '重转'
       },
       libShow: $libShow,
-      dialogVisible: false
+      dialogVisible: false,
+      rowsSpanGameIdMap: {}
     }
   },
   created() {
@@ -175,16 +177,17 @@ export default {
     },
     objectSpanMethod({ row, column, rowIndex, columnIndex }) {
       if (columnIndex === 0) {
-        if (rowIndex % 2 === 0) {
+        const gid = parseInt(row.Gid / 100)
+        if (gid in this.rowsSpanGameIdMap && row.Gid % 100 === 1) {
           return {
-            rowspan: 2,
+            rowspan: this.rowsSpanGameIdMap[gid],
             colspan: 1
-          };
+          }
         } else {
           return {
             rowspan: 0,
             colspan: 0
-          };
+          }
         }
       }
     },
@@ -218,6 +221,7 @@ export default {
          $this.slotsData = []
          $this.casioData = []
         if (response.RetCode === 0) {
+          $this.rowsSpanGameIdMap = {}
           for (let i = 0; i < response.Data.length; i++) {
             const item = response.Data[i]
             if (ignore.includes(item.Gid)) {
@@ -225,6 +229,12 @@ export default {
             }
 
             if (item.Gid > 5000) {
+              const gid = parseInt(item.Gid / 100)
+              if (gid in $this.rowsSpanGameIdMap) {
+                $this.rowsSpanGameIdMap[gid] += 1
+              } else {
+                $this.rowsSpanGameIdMap[gid] = 1
+              }
               $this.slotsData.push(item)
             } else {
               $this.casioData.push(item)
