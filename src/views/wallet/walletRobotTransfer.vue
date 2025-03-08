@@ -35,13 +35,10 @@
           prop="App"
           label="应用ID"
         />
-        <el-table-column
-          prop="channel"
-          label="渠道"
-        />
+
         <el-table-column
           prop="RollinMoney"
-          label="用户目标资产"
+          label="转账资产"
         >
           <template slot-scope="scope">
             {{ scope.row.RollinMoney }}
@@ -50,7 +47,7 @@
 
         <el-table-column
           prop="RollinUidMoney"
-          label="加金币用户资产"
+          label="加金币前用户资产"
         >
           <template slot-scope="scope">
             {{ scope.row.RollinUidMoney }}
@@ -58,15 +55,35 @@
         </el-table-column>
 
 
+
         <el-table-column
           prop="RolloutUidMoney"
-          label="减金币用户资产"
+          label="减金币前用户资产"
         >
           <template slot-scope="scope">
             {{ scope.row.RolloutUidMoney }}
           </template>
         </el-table-column>
 
+
+        <el-table-column
+          prop="AfterRollinUidMoney"
+          label="加金币后用户资产"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.AfterRollinUidMoney }}
+          </template>
+        </el-table-column>
+
+
+        <el-table-column
+          prop="AfterRolloutUidMoney"
+          label="减金币后用户资产"
+        >
+          <template slot-scope="scope">
+            {{ scope.row.AfterRolloutUidMoney }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="Status"
           label="状态"
@@ -138,7 +155,7 @@
             <el-input v-model="edit.item.RolloutUid" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
-        <el-form-item label="目标金币数：" :required="true" prop="RollinMoney">
+        <el-form-item label="转账资产：" :required="true" prop="RollinMoney">
           <el-col :span="15">
             <el-input v-model="edit.item.RollinMoney" />
           </el-col>
@@ -252,11 +269,9 @@ export default {
       })
     },
     handlePreOn(ob) {
-      console.log(ob.uid)
       this.changeStatus(ob, 1, '您确定要将机器人修改为正常使用状态吗？该记录将同步到外网。')
     },
     handlePreOff(ob) {
-      console.log(ob.uid)
       this.changeStatus(ob, 0, '您确定要将机器人修改为冻结状态吗？该记录将同步到外网。')
     },
     changeStatus(ob, status, msg) {
@@ -280,7 +295,7 @@ export default {
           if (response.RetCode === 0) {
             Message.success('修改记录状态成功！')
             ob.status = status
-            $this.clientDB.UpdateData2('uid', ob)
+            $this.clientDB.UpdateData2('TransferId', ob)
           }
         })
       }).catch(() => {
@@ -306,6 +321,8 @@ export default {
             objs[i].RollinMoney /= 1000
             objs[i].RollinUidMoney /= 1000
             objs[i].RolloutUidMoney /= 1000
+            objs[i].AfterRollinUidMoney /= 1000
+            objs[i].AfterRolloutUidMoney /= 1000
           }
           objs.sort(function(a, b) {
             return a.currentTid - b.currentTid
@@ -443,7 +460,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.edit.item.RollinMoney /= 1000
-          this.clientDB.UpdateData2('uid', this.edit.item)
+          this.clientDB.UpdateData2('TransferId', this.edit.item)
           this.refreshShow()
           Message.success('保存成功！')
         }

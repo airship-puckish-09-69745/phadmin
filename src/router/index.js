@@ -665,6 +665,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/rummyVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Rummy ◐' },
+            children: [
+              {
+                path: 'rummyTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Rummy配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'rummyTable',
+                    component: () => import('@/views/rummy/table/rummyTable'),
+                    name: 'rummyTable',
+                    meta: { title: 'Rummy' }
+                    // eslint-disable-next-line no-mixed-spaces-and-tabs
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -1618,6 +1641,12 @@ export const asyncRoutes = [
         meta: { title: '赛事海报', noCache: true }
       },
       {
+        path: 'matchHomePosterList',
+        component: () => import('@/views/matchManage/homePosterList.vue'),
+        name: 'matchHomePosterList',
+        meta: { title: 'home海报', noCache: true }
+      },
+      {
         path: 'matchGuideList',
         component: () => import('@/views/matchManage/matchGuide.vue'),
         name: 'matchPosterList',
@@ -1640,6 +1669,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'itemConfig',
+        component: () => import('@/views/matchManage/itemConfig'),
+        name: 'itemConfig',
+        meta: { title: '道具管理', noCache: true }
       }
     ]
   },
@@ -1847,6 +1882,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ZJH',
             meta: { title: 'TeenPatti ◐', gid: 9 }
+          },
+          {
+            path: 'playlog_Rummy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Rummy',
+            meta: { title: 'Rummy ◐', gid: 1 }
           }
         ]
       },
@@ -2107,6 +2148,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfighting_slots_log',
             meta: { title: 'StreetFighting', gid: 188 }
+          },
+          {
+            path: 'arcaneegypt_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegypt_slots_log',
+            meta: { title: 'ArcaneEgypt', gid: 190 }
           },
           {
             path: 'bountyraid_slots_log',
