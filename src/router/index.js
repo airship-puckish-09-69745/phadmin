@@ -1882,6 +1882,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ZJH',
             meta: { title: 'TeenPatti ◐', gid: 9 }
+          },
+          {
+            path: 'playlog_Rummy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Rummy',
+            meta: { title: 'Rummy ◐', gid: 1 }
           }
         ]
       },
