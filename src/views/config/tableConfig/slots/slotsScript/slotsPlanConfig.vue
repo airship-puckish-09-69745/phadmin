@@ -38,7 +38,7 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="Versions" label="配置版本列表" width="800px">
+      <el-table-column prop="Versions" label="配置版本列表" width="900px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
             <el-table-column prop="Version" label="版本号" width="80px">
@@ -47,12 +47,14 @@
               </template>
             </el-table-column>
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
-            <el-table-column prop="IsReady" label="是否就绪">
+            <el-table-column prop="IsReady" label="是否就绪" width="80px">
               <template slot-scope="scope">
-                {{ scope.row.IsReady ? '就绪' : '未就绪' }}
+<!--                {{ scope.row.IsReady ? '就绪' : '' }}-->
+                <span v-if="scope.row.IsReady" style="color: #00b023"> {{'就绪'}} </span>
+                <span v-else  style="color: red">{{'未就绪'}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="350px">
+            <el-table-column label="操作" width="420px">
               <template slot-scope="versionScope">
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
@@ -62,7 +64,9 @@
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
-                           size="mini" :disabled="versionScope.row.IsReady">编辑</el-button>
+                           size="mini">编辑</el-button>
+                <el-button @click="copyVersionDialog(scope.$index, versionScope.$index)" style="background: #91eee3"
+                           size="mini" >复制版本</el-button>
                 <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
                            size="mini" :disabled="versionScope.row.IsReady">删除</el-button>
               </template>
@@ -195,23 +199,23 @@
     <el-dialog v-if="editVersionDialogVisible"  :destroy-on-close='true' :visible.sync="editVersionDialogVisible" title="编辑版本">
       <el-form :model="editVersionFormData" label-width="120px">
         <el-form-item label="版本号">
-          <el-input v-model.number="editVersionFormData.Version" placeholder="请输入版本号"></el-input>
+          <el-input v-model.number="editVersionFormData.Version" placeholder="请输入版本号" :disabled="editVersionFormData.IsReady"></el-input>
         </el-form-item>
         <el-form-item label="版本说明">
           <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明"></el-input>
         </el-form-item>
         <el-form-item label="是否就绪">
-          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" >
+          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" :disabled="editVersionFormData.IsReady">
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="Version" label="单个剧本步数">
-            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptSteps" size="mini"></el-input-number>
+            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptSteps" size="mini" :disabled="editVersionFormData.IsReady"></el-input-number>
         </el-form-item>
          <el-form-item prop="Version" label="总剧本数量">
           <template slot-scope="scope">
-            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptNumber" size="mini"></el-input-number>
+            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptNumber" size="mini" :disabled="editVersionFormData.IsReady"></el-input-number>
           </template>
         </el-form-item>
         <el-form-item prop="Version" label="赔率配置" inline-message>
@@ -238,7 +242,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="editVersionDialogVisible = false">取消</el-button>
-        <el-button @click="saveEditVersion" type="primary">确定</el-button>
+        <el-button @click="saveEditVersion" type="primary" :disabled="editVersionFormData.IsReady">确定</el-button>
       </div>
     </el-dialog>
 
@@ -850,8 +854,15 @@ export default {
     },
     openAddVersionDialog(planIndex) {
       this.versionStatus = 0
-      // this.editVersionDialogVisible = true;
       this.editVersionFormData = this.newVersion()
+      let maxVersion = 0
+      for (const o of this.showItem.Plans[planIndex].Versions) {
+        if (o.Version > maxVersion) {
+          maxVersion = o.Version
+        }
+      }
+      this.editVersionFormData.Version = maxVersion+1
+
       this.currentPlanIndex = planIndex;
       this.saveEditVersion()
     },
@@ -889,6 +900,20 @@ export default {
       };
       this.currentPlanIndex = planIndex;
       this.currentVersionIndex = versionIndex;
+    },
+    copyVersionDialog(planIndex, versionIndex) {
+      const version = this.showItem.Plans[planIndex].Versions[versionIndex];
+      let maxVersion = 0
+      for (const o of this.showItem.Plans[planIndex].Versions) {
+        if (o.Version > maxVersion) {
+          maxVersion = o.Version
+        }
+      }
+      let copy = JSON.parse(JSON.stringify(version))
+      copy.Version = maxVersion+1
+      copy.IsReady = false
+      this.showItem.Plans[planIndex].Versions.push(copy)
+
     },
     openCreateVersionScriptsDialog(planIndex, versionIndex) {
       //todo
