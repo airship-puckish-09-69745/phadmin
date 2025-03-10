@@ -113,11 +113,15 @@
                          @click="editData(scope.row)">编辑
               </el-button>
               <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
-                         @click="initiateApplication(scope.row)">发起申请
+                         @click="initiateApplication(scope.row,0)">发起申请
               </el-button>
               <el-button type="text" :disabled="getDisable(scope.row,[6,2,8])" v-if="showBtn(scope.row,[6,2,8])"
                          size="mini"
-                         @click="execution(scope.row)">发起补偿/重试
+                         @click="confirmExecution(scope.row)">发起补偿/重试
+              </el-button>
+              <el-button type="text" :disabled="getDisable(scope.row,[6,2,8])" v-if="showBtn(scope.row,[6,2,8])"
+                         size="mini"
+                         @click="initiateApplication(scope.row,10)">取消补偿
               </el-button>
               <el-button type="text" :disabled="getDisable(scope.row,[3])" v-if="showBtn(scope.row,[3])" size="mini"
                          @click="deleteForm(scope.row)">删除
@@ -272,6 +276,8 @@ export default {
         6: '同意',
         7: '拒绝',
         8: '小额发放-未发起',
+        9: '24h-自动取消',
+        10: '手动取消'
       },
       totalCount: 0,
       visibleData: false,
@@ -290,6 +296,17 @@ export default {
     },
     showBtn(row, idx) {
       return idx.includes(row.status);
+    },
+    confirmExecution(row) {
+      this.$confirm('确定要发起补偿/重试吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.execution(row)
+      }).catch(() => {
+        // 用户点击取消，不做任何操作
+      })
     },
 
     addForm() {
@@ -369,11 +386,14 @@ export default {
       console.log('getDisable', row.status, idx, idx.includes(row.status))
       return !idx.includes(row.status)
     },
-    initiateApplication(row) {
+    initiateApplication(row, status) {
       request({
         url: '/applycompensation/update/status',
         method: 'post',
-        data: {ID: row.id}
+        data: {
+          ID: row.id,
+          Status: status
+        }
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success('ok~')

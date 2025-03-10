@@ -143,6 +143,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'slotsScriptStatisticsV3',
+        component: () => import('@/views/online/slotsScriptStatisticsNew.vue'),
+        name: 'slotsScriptStatisticsV3',
+        meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
@@ -660,6 +666,29 @@ export const asyncRoutes = [
                     component: () => import('@/views/zjh/table/zjhTable'),
                     name: 'zjhTable',
                     meta: { title: 'TeenPatti' }
+                    // eslint-disable-next-line no-mixed-spaces-and-tabs
+				          }
+                ]
+              }
+            ]
+          },
+          {
+            path: '/rummyVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'Rummy ◐' },
+            children: [
+              {
+                path: 'rummyTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Rummy配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'rummyTable',
+                    component: () => import('@/views/rummy/table/rummyTable'),
+                    name: 'rummyTable',
+                    meta: { title: 'Rummy' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
 				          }
                 ]
@@ -1204,6 +1233,12 @@ export const asyncRoutes = [
                 meta: { title: 'MahjongFortune(审)' }
               },
               {
+                path: 'mahjongjackpotmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/mahjongjackpotmars_slots_cfg'),
+                name: 'mahjongjackpotmars_slots_cfg',
+                meta: { title: 'MahjongJackpot(审)' }
+              },
+              {
                 path: 'pharaohtreasuremars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
@@ -1612,6 +1647,12 @@ export const asyncRoutes = [
         meta: { title: '赛事海报', noCache: true }
       },
       {
+        path: 'matchHomePosterList',
+        component: () => import('@/views/matchManage/homePosterList.vue'),
+        name: 'matchHomePosterList',
+        meta: { title: 'home海报', noCache: true }
+      },
+      {
         path: 'matchGuideList',
         component: () => import('@/views/matchManage/matchGuide.vue'),
         name: 'matchPosterList',
@@ -1634,6 +1675,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'itemConfig',
+        component: () => import('@/views/matchManage/itemConfig'),
+        name: 'itemConfig',
+        meta: { title: '道具管理', noCache: true }
       }
     ]
   },
@@ -1841,6 +1888,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ZJH',
             meta: { title: 'TeenPatti ◐', gid: 9 }
+          },
+          {
+            path: 'playlog_Rummy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Rummy',
+            meta: { title: 'Rummy ◐', gid: 1 }
           }
         ]
       },
@@ -2103,6 +2156,12 @@ export const asyncRoutes = [
             meta: { title: 'StreetFighting', gid: 188 }
           },
           {
+            path: 'arcaneegypt_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'arcaneegypt_slots_log',
+            meta: { title: 'ArcaneEgypt', gid: 190 }
+          },
+          {
             path: 'bountyraid_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'bountyraid_slots_log',
@@ -2197,12 +2256,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mayantotem_slots_log',
             meta: { title: 'MayanTotem', gid: 178 }
-          },
-          {
-            path: 'arcaneegypt_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'arcaneegypt_slots_log',
-            meta: { title: 'ArcaneEgypt', gid: 178 }
           },
           {
             path: 'goldtrain_slots_log',
@@ -2351,10 +2404,16 @@ export const asyncRoutes = [
             meta: { title: 'MajorAce(审)', gid: 163 }
           },
           {
-            path: 'mahjongfortune_slots_log',
+            path: 'mahjongfortunemars_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
-            name: 'mahjongfortune_slots_log',
+            name: 'mahjongfortunemars_slots_log',
             meta: { title: 'MahjongFortune(审)', gid: 165 }
+          },
+          {
+            path: 'mahjongjackpotmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'mahjongjackpotmars_slots_log',
+            meta: { title: 'MahjongJackpot(审)', gid: 187 }
           },
           {
             path: 'firelinkmars_slots_log',
@@ -2935,7 +2994,7 @@ export const asyncRoutes = [
     component: Layout,
     alwaysShow: true,
     redirect: 'noRedirect',
-    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'ADMINUSER_MANAGEMENT' },
+    meta: { title: '单一钱包', icon: 'el-icon-copy-document', perm: 'PLAYLOG_MANAGEMENT' },
     children: [
       {
         path: 'failWallet',
@@ -2960,6 +3019,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletApiTimesStat.vue'),
         name: 'walletApiStat',
         meta: { title: '钱包API请求统计' }
+      },
+      {
+        path: 'walletRobotTransfer',
+        component: () => import('@/views/wallet/walletRobotTransfer.vue'),
+        name: 'walletRobotTransfer',
+        meta: { title: '机器人转账列表' }
       }
     ]
   },

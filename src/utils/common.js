@@ -105,7 +105,7 @@ export function LibShow() {
     100: 'Tower', 101: 'Sicbo', 102: 'Hilo', 103: 'Windrop', 119: 'Windropc积分', 104: 'Dragon Tiger', 105: 'Andar Bahar', 106: 'PIGGY TAP', 107: 'Mini Baccarat', 108: 'Dropball', 110: 'Video Poker',
     112: 'Wingo Lottery', 115: 'MultiPlayer NiuNiu', 118: 'Car Racing', 124: 'Jackpot Wheel', 125: 'Free Spin', 127: 'SaBong',
     150: 'SuperGemsIII', 152: 'Aladdin\'s Lamp', 154: 'GrandAce', 156: 'CrazyAce', 172: 'WrathOfZeus', 158: 'SharkKingdom', 160: 'GigaAce', 162: 'MajorAce', 164: 'MahjongFortune', 166: 'FireLink',
-    170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'RoadKing', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'DanceLion',
+    170: 'EpicAce', 176: 'PuppyHome', 182: 'GodOfFortune', 186: 'MahjongJackpot', 174: 'TreasureBowl', 178: 'MayanTotem', 194: 'GoldTrain', 168: 'Pharaoh\'sTreasure', 196: 'GoldMiner', 184: 'Dance of the Lion',
     190: 'ArcaneEgypt', 198: 'FortuneBlessing', 200: 'AtlantisTreasure' // slots
   }
 
@@ -431,6 +431,25 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
       function(data) {
         for (const f in $this.FilterValueMap) {
           if ($this.FilterValueMap[f] != 0 && $this.FilterValueMap[f] != data[f]) {
+            return false
+          }
+        }
+        return true
+      }
+    )
+    $this.Page.SetTotalCount($this.ShowData.length)
+    $this._sortByProp()
+  }
+// 传对应的字段和值然后返回所有
+  this.FilterDataCustomize = function(obj) {
+    $this.ShowData = $this.TotalData.filter(
+      function(data) {
+        for (const f in $this.FilterValueMap) {
+          let defaultValue = 0
+          if (obj.hasOwnProperty(f)){
+            defaultValue =parseInt( obj[f])
+          }
+          if ($this.FilterValueMap[f] != defaultValue && $this.FilterValueMap[f] != data[f]) {
             return false
           }
         }
