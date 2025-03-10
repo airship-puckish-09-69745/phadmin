@@ -107,7 +107,8 @@
               </template>
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
-              <span>机器人级别：{{ one.isRobot?'机器人':'真人' }}</span><br>
+              <span>机器人级别：{{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}</span>
+              <br>
             </div>
           </div>
         </template>
@@ -317,7 +318,8 @@ export default {
           moneyFee: val.players[j].moneyFee,
           payPot: 0 - val.players[j].payPot,
           Character: val.players[j].character,
-          isRobot: false
+          isRobot: false,
+          RobotLevel: val.players[j].RobotLevel
         })
       }
       var isRobotMap = {}
@@ -394,6 +396,15 @@ export default {
         return 0
       } else {
         return cards[0]
+      }
+    },
+    getRobotLevel(level) {
+      if (level == 0) {
+        return ''
+      } else if (level == 4) {
+        return '-- 陪玩'
+      } else if (level == 5) {
+        return '-- 要赢'
       }
     },
     showRobotLevel(level) {

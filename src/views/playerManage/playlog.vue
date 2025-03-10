@@ -897,6 +897,9 @@
         <el-table-column prop="moneyTotal" label="最终资产" width="100">
           <template slot-scope="scope">{{ scope.row.moneyTotal / 1000 }}</template>
         </el-table-column>
+        <el-table-column prop="moneyTotal" label="用户类型" width="120">
+          <template slot-scope="scope">{{ getRobotType(scope.row.RobotId,scope.row.RobotLevel) }}</template>
+        </el-table-column>
       </el-table>
       <br>
       <el-table
@@ -5010,6 +5013,16 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else {
         return '胜率'
       }
+    },
+    getRobotType(robotId, robotLevel) {
+      if (robotId == 0) {
+        return '真人'
+      } else if (robotLevel == 4) {
+        return '机器人--陪玩'
+      } else if (robotLevel == 5) {
+        return '机器人--需要赢'
+      }
+      return ''
     }
   }
 }
