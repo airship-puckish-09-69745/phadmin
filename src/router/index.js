@@ -143,6 +143,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'slotsScriptStatisticsV3',
+        component: () => import('@/views/online/slotsScriptStatisticsNew.vue'),
+        name: 'slotsScriptStatisticsV3',
+        meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
