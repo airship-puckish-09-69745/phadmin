@@ -143,6 +143,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'slotsScriptStatisticsV3',
+        component: () => import('@/views/online/slotsScriptStatisticsNew.vue'),
+        name: 'slotsScriptStatisticsV3',
+        meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
@@ -2250,12 +2256,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mayantotem_slots_log',
             meta: { title: 'MayanTotem', gid: 178 }
-          },
-          {
-            path: 'arcaneegypt_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'arcaneegypt_slots_log',
-            meta: { title: 'ArcaneEgypt', gid: 178 }
           },
           {
             path: 'goldtrain_slots_log',

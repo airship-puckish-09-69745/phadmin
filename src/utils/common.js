@@ -440,6 +440,25 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
     $this.Page.SetTotalCount($this.ShowData.length)
     $this._sortByProp()
   }
+// 传对应的字段和值然后返回所有
+  this.FilterDataCustomize = function(obj) {
+    $this.ShowData = $this.TotalData.filter(
+      function(data) {
+        for (const f in $this.FilterValueMap) {
+          let defaultValue = 0
+          if (obj.hasOwnProperty(f)){
+            defaultValue =parseInt( obj[f])
+          }
+          if ($this.FilterValueMap[f] != defaultValue && $this.FilterValueMap[f] != data[f]) {
+            return false
+          }
+        }
+        return true
+      }
+    )
+    $this.Page.SetTotalCount($this.ShowData.length)
+    $this._sortByProp()
+  }
 
   this.GetPage = function() {
     return $this.Page
