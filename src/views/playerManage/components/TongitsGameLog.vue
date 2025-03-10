@@ -38,35 +38,19 @@
               <template v-if="group.isSecretGroup">
                 <div class="block" style="background-color: green; margin: 0 1px 0 1px;">
                   <div v-for="card in group.cards" class="block">
-                    <div v-if="group.hasOwnProperty('joker')" :style="{ backgroundColor: group.hasOwnProperty('joker') && group.joker.replace.includes(card) ? 'yellow' : 'transparent' }">
                       <el-image
                       style="width: 37px; height: 50px"
-                      :src="getCardUrl(card)"
+                      :src="getCardUrl(group.hasOwnProperty('joker') && group.joker.replace.includes(card) ? 2 : card)"
                       />
-                    </div>
-                    <div v-else>
-                      <el-image
-                        style="width: 37px; height: 50px"
-                        :src="getCardUrl(card)"
-                      />
-                    </div>
                   </div>
                 </div>
               </template>
               <template v-else>
                      <div v-for="card in group.cards" class="block">
-                       <div v-if="group.hasOwnProperty('joker')" :style="{ backgroundColor: group.hasOwnProperty('joker') && group.joker.replace.includes(card) ? 'yellow' : 'transparent' }">
                          <el-image
                          style="width: 37px; height: 50px"
-                         :src="getCardUrl(card)"
+                         :src="getCardUrl(group.hasOwnProperty('joker') && group.joker.replace.includes(card) ? 2 : card)"
                          />
-                       </div>
-                       <div v-else>
-                         <el-image
-                           style="width: 37px; height: 50px"
-                           :src="getCardUrl(card)"
-                         />
-                       </div>
                      </div>
               </template>
             </template>

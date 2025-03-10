@@ -6,7 +6,7 @@
           <UidInput ref="uidInput" @setUid="function(iUid){form.Uid=iUid}" />
           <!-- <el-input v-model="form.Uid" placeholder="请输入内容"  size="mini"></el-input> -->
         </el-form-item>
-        <!-- <el-form-item label="游戏:">
+        <el-form-item label="游戏:">
           <el-select v-model="form.Gid" size="mini">
             <el-option v-for="v of GameOptions" :label="v.name" :value="v.gid"/>
             <el-option label="所有" :value="0" />
@@ -17,7 +17,7 @@
             <el-option v-for="v of BlindOptions" :label="v.name" :value="v.val"/>
             <el-option label="所有" :value="0" />
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="日期：">
           <el-date-picker
             v-model="form.Date"
@@ -42,15 +42,16 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
+        :default-sort = "{prop: 'gid', order: 'descending'}"
       >
         <el-table-column prop="date" label="日期">
         </el-table-column>
-        <el-table-column prop="gid" label="游戏">
+        <el-table-column prop="gid" label="游戏" sortable="custom">
           <template slot-scope="scope">
             {{ getGameName(scope.row.gid) }}
           </template>
         </el-table-column>
-        <el-table-column prop="blind" label="场次">
+        <el-table-column prop="blind" label="场次" sortable="custom">
           <template slot-scope="scope">
             {{ getLevelName(scope.row.blind) }}
           </template>
