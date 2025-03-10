@@ -289,63 +289,6 @@ export default {
       this.selectedRows = rows
       console.log('选中的行数据:', this.selectedRows)
     },
-    batchReview() {
-      if (this.selectedRows.length === 0) {
-        this.$message.warning('请至少选择一条记录进行批量审核！')
-        return
-      }
-      let totalAmount = 0
-      const Ids = []
-      this.selectedRows.forEach(row => {
-        const summary = row.Summary
-        const match = summary.match(/申请金额:(\d+\.\d+)/)
-        if (match) {
-          totalAmount += parseFloat(match[1])
-        }
-        if (typeof row.ID === 'number') {
-          Ids.push(row.ID)
-        }
-      })
-      this.$prompt(`选中记录的申请金额总和为: ${totalAmount.toFixed(2)}`, '批量审核信息', {
-        inputPlaceholder: '请输入审批意见',
-        inputValidator: (value) => {
-          if (value.trim() === '') {
-            return '审批意见不能为空'
-          }
-          return true
-        },
-        confirmButtonText: '确定',
-        cancelButtonText: '拒绝',
-        type: 'warning'
-      }).then((value) => {
-        const comment = value.value
-        Ids.forEach((id) => {
-          // 假设 iType 为 1 表示通过审核，可根据实际情况调整
-          const iType = 1
-          const succMsg = '审核已通过！'
-          // 修改 edit.item.ID 为当前处理的 ID
-          this.edit.item.ID = id
-          // 修改 edit.item.Comment 为用户输入的审批意见
-          this.edit.item.Comment = comment
-          this.env = ''
-          this.doPassRequest(iType, succMsg)
-        })
-      }).catch((value) => {
-        const comment = value.value
-        Ids.forEach((id) => {
-          const iType = 2
-          const succMsg = '申请已打回！'
-          // 修改 edit.item.ID 为当前处理的 ID
-          this.edit.item.ID = id
-          // 修改 edit.item.Comment 为用户输入的审批意见
-          this.edit.item.Comment = comment
-          this.env = ''
-          this.doPassRequest(iType, succMsg)
-        })
-      })
-      this.env = store.getters.env || this.env
-      this.edit.item.Comment = ''
-    },
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -475,6 +418,64 @@ export default {
         }
       }
       return false
+    },
+    batchReview() {
+      if (this.selectedRows.length === 0) {
+        this.$message.warning('请至少选择一条记录进行批量审核！')
+        return
+      }
+      let totalAmount = 0
+      const Ids = []
+      this.selectedRows.forEach(row => {
+        const summary = row.Summary
+        const match = summary.match(/申请金额:(\d+\.\d+)/)
+        if (match) {
+          totalAmount += parseFloat(match[1])
+        }
+        if (typeof row.ID === 'number') {
+          Ids.push(row.ID)
+        }
+      })
+      let inputValue = ''
+      this.$prompt(`选中记录的申请金额总和为: ${totalAmount.toFixed(2)}`, '批量审核信息', {
+        inputPlaceholder: '请输入审批意见',
+        inputValidator: (value) => {
+          if (value.trim() === '') {
+            return '审批意见不能为空'
+          }
+          inputValue = value
+          return true
+        },
+        confirmButtonText: '确定',
+        cancelButtonText: '拒绝',
+        type: 'warning'
+      }).then(() => {
+        const comment = inputValue
+        Ids.forEach((id) => {
+          // 假设 iType 为 1 表示通过审核，可根据实际情况调整
+          const iType = 1
+          const succMsg = '审核已通过！'
+          // 修改 edit.item.ID 为当前处理的 ID
+          this.edit.item.ID = id
+          // 修改 edit.item.Comment 为用户输入的审批意见
+          this.edit.item.Comment = comment
+          this.doPassRequest(iType, succMsg)
+        })
+      }).catch((action) => {
+        if (action === 'cancel') {
+          const comment = inputValue
+          Ids.forEach((id) => {
+            const iType = 2
+            const succMsg = '申请已打回！'
+            // 修改 edit.item.ID 为当前处理的 ID
+            this.edit.item.ID = id
+            // 修改 edit.item.Comment 为用户输入的审批意见
+            this.edit.item.Comment = comment
+            this.doPassRequest(iType, succMsg)
+          })
+        }
+      })
+      this.edit.item.Comment = ''
     },
     doPassRequest(iType, succMsg) {
       const postData = this.getPostData(iType)
