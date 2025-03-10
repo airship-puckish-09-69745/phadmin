@@ -368,33 +368,35 @@
                   label="占比"
                 >
                   <template slot-scope="scope">
-<!--                    {{ (parseInt(scope.row.cnt) / sumData[scope.row.gid][betOddsKey] * 100).toFixed(2) + "%" }}-->
+                    {{ (parseInt(scope.row.cnt) / getSumCnt() * 100).toFixed(2) + "%" }}
                   </template>
                 </el-table-column>
 
                 <el-table-column prop="idx" label="Scatter次数" width="130px">
-                  <template slot-scope="scope">{{ getScatterCount(scope.row.idx) }}</template>
+                  <template slot-scope="scope">
+                   {{getScatterCnt(scope.row)}}
+                  </template>
                 </el-table-column>
                 <el-table-column prop="idx" label="Scatter占比" width="130px">
-                  <template slot-scope="scope">{{ getScatterPercent(scope.row.idx, scope.row.cnt) }}</template>
+                  <template slot-scope="scope">{{ getScatterPercent(scope.row)+'%' }}</template>
                 </el-table-column>
 
               </el-table-column>
             </el-table>
             <el-row>
               <el-col :span="12">
-                <div class="block">
-                  <el-pagination
-                    v-if="scriptClientDB[betOddsKey]"
-                    :current-page="scriptClientDB[betOddsKey].GetPage().GetCurrentPage()"
-                    :page-sizes="[10, 20, 30, 40]"
-                    :page-size="scriptClientDB[betOddsKey].GetPage().GetPageNum()"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="scriptClientDB[betOddsKey].GetPage().GetTotalCount()"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                  />
-                </div>
+<!--                <div class="block">-->
+<!--                  <el-pagination-->
+<!--                    v-if="scriptClientDB[betOddsKey]"-->
+<!--                    :current-page="scriptClientDB[betOddsKey].GetPage().GetCurrentPage()"-->
+<!--                    :page-sizes="[5, 20, 30, 40]"-->
+<!--                    :page-size="scriptClientDB[betOddsKey].GetPage().GetPageNum()"-->
+<!--                    layout="total, sizes, prev, pager, next, jumper"-->
+<!--                    :total="scriptClientDB[betOddsKey].GetPage().GetTotalCount()"-->
+<!--                    @size-change="handleSizeChange"-->
+<!--                    @current-change="handleCurrentChange"-->
+<!--                  />-->
+<!--                </div>-->
               </el-col>
             </el-row>
           </el-col>
@@ -1020,6 +1022,7 @@ export default {
       tableData: [],
       scriptClientDB: { '全部': new ClientTableData([], 1, filterMap) },
       scriptStepClientDB:  new ClientTableData([], 1, filterMap),
+      scriptStepScatterClientDB:  new ClientTableData([], 1, filterMap),
       coordinateClientDB: new ClientTableData([], 1, filterMap),
       stepClientDB: new ClientTableData([], 1, filterMap),
       jackpotClientDB: new ClientTableData([], 1, filterMap),
@@ -1051,7 +1054,7 @@ export default {
       cfgMap: {},
       queryGid: 80,
       gidOptions: {},
-      sumData: {},
+      // sumData: {},
       stepSum: {},
       coordinateSum: {},
       detailVisible: false,
@@ -1119,12 +1122,18 @@ export default {
       this.scriptStepClientDB.FilterValueMap={"bet":bet,"planId":this.planId}
       this.scriptStepClientDB.FilterDataCustomize({"bet":-1,"planId":-1})
       const getCurrentPageData = this.scriptStepClientDB.GetCurrentPageData();
+      // 命中scatter
+      this.refreshHitScriptScatter()
+
       const result = {};
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key = `${item.planId}_${item.idx}_${item.bet}`;
-        if (this.planId === -1) {
-          key = `${item.idx}_${item.bet}`;
+        let key = `${item.idx}`;
+        if (this.planId >= 0) {
+          key += `_${item.planId}`;
+        }
+        if (bet >= 0) {
+          key += `_${item.bet}`;
         }
         if (!result[key]) {
           result[key] = { ...item, cnt: 0 };
@@ -1140,7 +1149,33 @@ export default {
           return a.idx - b.idx;
         }
       });
-      console.log("=======2z===",  this.scriptTableData)
+    },
+    refreshHitScriptScatter() {
+      let bet = this.betOddsKey
+      if (this.betOddsKey===-1){
+        bet = -1
+      }
+      this.scriptStepScatterClientDB.FilterValueMap={"bet":bet,"planId":this.planId}
+      this.scriptStepScatterClientDB.FilterDataCustomize({"bet":-1,"planId":-1})
+      const getStepScatterPageData = this.scriptStepScatterClientDB.GetCurrentPageData();
+
+      const result = {};
+      getStepScatterPageData.forEach(item => {
+        // 方案选所有时过滤PlanId
+        let key =`${item.idx}`;
+        if (this.planId > -1) {
+          key += `_${item.planId}`;
+        }
+        if (bet > -1) {
+          key += `_${item.bet}`;
+        }
+        if (!result[key]) {
+          result[key] = 0
+        }
+        result[key]  += parseInt(item.cnt, 10);
+      }, {});
+      this.scatterCounts = result
+      console.log("========", this.scatterCounts,getStepScatterPageData)
     },
     refreshOrdinaryReturn() {
       let bet = this.betOddsKey
@@ -1465,7 +1500,7 @@ export default {
         const scriptTableData = []
         const stepTableData = []
         const jackpotTableData = []
-        const scatterCounts = { '全部': [] }
+        const scatterCounts = []
         const ordinaryReturnMoneyTableData = []
         const buyReturnMoneyTableData = []
         const has2JpColsTableData = {}  // 出现2列JP的统计
@@ -1487,326 +1522,324 @@ export default {
 
           for (const key in response.Data['script']) {
             var strings = key.split('_')
-            this.processStepCount(strings,scriptTableData,response,key)
+            this.processStepCount(strings,scriptTableData,scatterCounts,response,key)
             this.processOrdinaryRebateCount(strings,ordinaryReturnMoneyTableData,response,key)
             this.processBuyReturnCount(strings,buyReturnMoneyTableData,response,key)
           }
-          console.log("=====",this.returnMap)
           // 步数统计
-          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 20, {}, 'sort', -1);
+          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 50, {}, 'sort', -1);
+          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 50, {}, 'sort', -1);
           // 普通返奖
-          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 20, {}, 'sort', -1);
+          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 50, {}, 'sort', -1);
           // 购买免费
-          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 20, {}, 'sort', -1);
+          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 50, {}, 'sort', -1);
 
           this.queryKeyInput()
           $this.loading = false
           return
-          // for (const key in response.Data['script']) {
-          //   var strings1 = key.split('_')
-          //   if (strings1[0] === 'script') {
-          //     if (strings1[1] === 'step') {
-          //       // 步数统计
-          //       // SlotsType_目标倍率_当前倍率_剧本_x_y
-          //       let prefix = ''
-          //       if (parseInt(strings1[2]) === -2) {
-          //         prefix = '指定正数'
-          //       } else if (parseInt(strings1[2]) === -1) {
-          //         prefix = '指定负数'
-          //       } else {
-          //         prefix = '常规' + (parseInt(strings1[2]) + 1)
-          //       }
-          //       if (!scriptMap[this.queryGid + '_' + prefix]) {
-          //         scriptMap[this.queryGid + '_' + prefix] = {
-          //           gid: this.queryGid,
-          //           rows: {},
-          //           column: {},
-          //           sheet: strings1[2]
-          //         }
-          //       }
-          //       const step = parseInt(strings1[4])
-          //       $this.mapCnt[this.queryGid + '_' + strings1[2] + '_' + strings1[3] + '_' + step] = response.Data['script'][key]
-          //       scriptMap[this.queryGid + '_' + prefix].rows[step] = []
-          //       scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data['script']['script_times_' + strings1[2] + '_' + strings1[3]]
-          //     } else if (strings1[1] === 'times') {
-          //       //
-          //     } else if (strings1[1] === 'count') {
-          //       var strings = key.split('_')
-          //       this.processStepCount(strings,scriptTableData,response.Data['script'][key])
-          //       continue
-          //       if (strings.length ===3) {
-          //         if (!(this.queryGid in this.sumData)) {
-          //           this.sumData[this.queryGid] = {}
-          //         }
-          //         this.sumData[this.queryGid]['全部'] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid]['全部'] || 0)
-          //         if (!('全部' in scriptTableData)) {
-          //           scriptTableData['全部'] = []
-          //         }
-          //         scriptTableData['全部'].push({
-          //           gid: this.queryGid,
-          //           idx: strings[2],
-          //           cnt: response.Data['script'][key]
-          //         })
-          //       } else {
-          //         if (!(this.queryGid in this.sumData)) {
-          //           this.sumData[this.queryGid] = {}
-          //         }
-          //         this.sumData[this.queryGid][strings[3]] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid][strings[3]] || 0)
-          //         if (!(strings[3] in scriptTableData)) {
-          //           scriptTableData[strings[3]] = []
-          //         }
-          //         scriptTableData[strings[3]].push({
-          //           gid: this.queryGid,
-          //           idx: strings[2],
-          //           cnt: response.Data['script'][key]
-          //         })
-          //       }
-          //     } else {
-          //       let prefix = ''
-          //       if (parseInt(strings1[1]) === -2) {
-          //         prefix = '指定正数'
-          //       } else if (parseInt(strings1[1]) === -1) {
-          //         prefix = '指定负数'
-          //       } else {
-          //         prefix = '常规' + (parseInt(strings1[1]) + 1)
-          //       }
-          //       this.coordinateSum[this.queryGid] = parseInt(response.Data['script'][key]) + (this.coordinateSum[this.queryGid] || 0)
-          //       coordinateTableData.push({
-          //         gid: this.queryGid,
-          //         type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
-          //         sort: parseInt(strings1[1]),
-          //         cnt: response.Data['script'][key],
-          //         orgKey: strings1[1] + '_' + strings1[2]
-          //       })
-          //     }
-          //   } else if (strings1[0] === 'jackpot') {
-          //     if (strings1[5] === 'count') {
-          //       betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['script'][key])
-          //     } else {
-          //       if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
-          //         jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = {
-          //           app: parseInt(strings1[2]),
-          //           bet: parseInt(strings1[4]),
-          //           fee: 0,
-          //           count: 0,
-          //           winmoney: 0,
-          //           probability: 0,
-          //           pool: 0
-          //         }
-          //       }
-          //       if (strings1[7] === 'fee') {
-          //         jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['script'][key])
-          //       } else if (strings1[7] === 'count') {
-          //         jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['script'][key])
-          //       } else if (strings1[7] === 'winmoney') {
-          //         jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['script'][key])
-          //       } else if (strings1[7] === 'pool') {
-          //         jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].pool = parseInt(response.Data['script'][key])
-          //       } else if (strings1[7] === 'probability') {
-          //         jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].probability = parseFloat(response.Data['script'][key])
-          //       }
-          //     }
-          //   } else if (strings1[0] === 'scatter') {
-          //     if (strings1[1] === 'count') {
-          //       if (strings1.length < 4) {
-          //         if (!('全部' in scatterCounts)) {
-          //           scatterCounts['全部'] = []
-          //         }
-          //         scatterCounts['全部'][parseInt(strings1[2])] = parseInt(response.Data['script'][key])
-          //       } else {
-          //         if (!(strings1[3] in scatterCounts)) {
-          //           scatterCounts[strings1[3]] = []
-          //         }
-          //         scatterCounts[strings1[3]][parseInt(strings1[2])] = parseInt(response.Data['script'][key])
-          //       }
-          //     }
-          //   } else if (strings1[0] === 'spin') {
-          //     if (strings1[1] === 'ordinary') {
-          //       if (strings1[2] === 'times') {
-          //         if (strings1.length < 6) {
-          //           if (!('全部' in ordinaryReturnMoneyTableData)) {
-          //             ordinaryReturnMoneyTableData['全部'] = []
-          //           }
-          //           ordinaryReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-          //         } else {
-          //           if (!(strings1[4] in ordinaryReturnMoneyTableData)) {
-          //             ordinaryReturnMoneyTableData[strings1[4]] = []
-          //           }
-          //           ordinaryReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-          //         }
-          //       }
-          //       if (strings1[2] === 'return') {
-          //         if (strings1.length < 6) {
-          //           if (!('全部' in this.returnMap)) {
-          //             this.returnMap['全部'] = {}
-          //           }
-          //           this.returnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-          //         } else {
-          //           if (!(strings1[4] in this.returnMap)) {
-          //             this.returnMap[strings1[4]] = {}
-          //           }
-          //           this.returnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-          //         }
-          //       }
-          //     }
-          //     if (strings1[1] === 'buy') {
-          //       if (strings1[2] === 'times') {
-          //         if (strings1.length < 6) {
-          //           if (!('全部' in buyReturnMoneyTableData)) {
-          //             buyReturnMoneyTableData['全部'] = []
-          //           }
-          //           buyReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-          //         } else {
-          //           if (!(strings1[4] in buyReturnMoneyTableData)) {
-          //             buyReturnMoneyTableData[strings1[4]] = []
-          //           }
-          //           buyReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-          //         }
-          //       }
-          //       if (strings1[2] === 'return') {
-          //         if (strings1.length < 6) {
-          //           if (!('全部' in this.buyReturnMap)) {
-          //             this.buyReturnMap['全部'] = {}
-          //           }
-          //           this.buyReturnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-          //         } else {
-          //           if (!(strings1[4] in this.buyReturnMap)) {
-          //             this.buyReturnMap[strings1[4]] = {}
-          //           }
-          //           this.buyReturnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-          //         }
-          //       }
-          //     }
-          //     if (strings1[1] === '2coljp') {
-          //       if (strings1.length === 6) {
-          //         if (!('全部' in has2JpColsTableData)) {
-          //           has2JpColsTableData['全部'] = []
-          //         }
-          //         const bet = parseInt(strings1[3])
-          //         const multiOdds = parseInt(strings1[4])
-          //         has2JpColsTableData['全部'].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
-          //       } else if (strings1.length === 7) {
-          //         const bet = parseInt(strings1[3])
-          //         const betOdds = parseInt(strings1[4])
-          //         const multiOdds = parseInt(strings1[5])
-          //         if (!(betOdds in has2JpColsTableData)) {
-          //           has2JpColsTableData[betOdds] = []
-          //         }
-          //         has2JpColsTableData[betOdds].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
-          //       }
-          //     }
-          //     if (strings1[1] === 'buyrespin') {
-          //       if (strings1[2] === 'times') {
-          //         if (strings1.length === 6) {
-          //           if (!('全部' in this.buyRespinTimeMap)) {
-          //             this.buyRespinTimeMap['全部'] = {}
-          //           }
-          //           const bet = parseInt(strings1[3])
-          //           const multiOdds = parseInt(strings1[4])
-          //           if (!(multiOdds in this.buyRespinTimeMap['全部'])) {
-          //             this.buyRespinTimeMap['全部'][bet] = []
-          //           }
-          //           this.buyRespinTimeMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
-          //         } else if (strings1.length === 7) {
-          //           const bet = parseInt(strings1[3])
-          //           const betOdds = parseInt(strings1[4])
-          //           const multiOdds = parseInt(strings1[5])
-          //           if (!(betOdds in this.buyRespinTimeMap)) {
-          //             this.buyRespinTimeMap[betOdds] = {}
-          //           }
-          //           if (!(bet in this.buyRespinTimeMap[betOdds])) {
-          //             this.buyRespinTimeMap[betOdds][bet] = []
-          //           }
-          //           this.buyRespinTimeMap[betOdds][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
-          //         }
-          //       }
-          //       if (strings1[2] === 'return') {
-          //         if (strings1.length < 7) {
-          //           if (!('全部' in this.buyRespinReturnMap)) {
-          //             this.buyRespinReturnMap['全部'] = {}
-          //           }
-          //           const bet = parseInt(strings1[3])
-          //           const multiOdds = parseInt(strings1[4])
-          //           if (!(bet in this.buyRespinReturnMap['全部'])) {
-          //             this.buyRespinReturnMap['全部'][bet] = []
-          //           }
-          //           this.buyRespinReturnMap['全部'][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
-          //         } else {
-          //           const bet = parseInt(strings1[3])
-          //           const betOdds = parseInt(strings1[4])
-          //           const multiOdds = parseInt(strings1[5])
-          //           if (!(betOdds in this.buyRespinReturnMap)) {
-          //             this.buyRespinReturnMap[betOdds] = {}
-          //           }
-          //           if (!(bet in this.buyRespinReturnMap[betOdds])) {
-          //             this.buyRespinReturnMap[betOdds][bet] = []
-          //           }
-          //           this.buyRespinReturnMap[betOdds][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
-          //         }
-          //       }
-          //       if (strings1[2] === 'bet') {
-          //         if (strings1.length < 7) {
-          //           if (!('全部' in this.buyRespinTotalBetMap)) {
-          //             this.buyRespinTotalBetMap['全部'] = {}
-          //           }
-          //           const bet = parseInt(strings1[3])
-          //           const multiOdds = parseInt(strings1[4])
-          //           if (!(bet in this.buyRespinTotalBetMap['全部'])) {
-          //             this.buyRespinTotalBetMap['全部'][bet] = []
-          //           }
-          //           this.buyRespinTotalBetMap['全部'][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key])})
-          //         } else {
-          //           const bet = parseInt(strings1[3])
-          //           const betOdds = parseInt(strings1[4])
-          //           const multiOdds = parseInt(strings1[5])
-          //           if (!(betOdds in this.buyRespinTotalBetMap)) {
-          //             this.buyRespinTotalBetMap[betOdds] = {}
-          //           }
-          //           if (!(bet in this.buyRespinTotalBetMap[betOdds])) {
-          //             this.buyRespinTotalBetMap[betOdds][bet] = []
-          //           }
-          //           this.buyRespinTotalBetMap[betOdds][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key]) })
-          //         }
-          //       }
-          //     }
-          //     if (strings1[1] === 'buyrespinfirst') {
-          //       if (strings1[2] === 'times') {
-          //         if (strings1.length < 7) {
-          //           if (!('全部' in this.buyRespinFirstTimesMap)) {
-          //             this.buyRespinFirstTimesMap['全部'] = {}
-          //           }
-          //           const bet = parseInt(strings1[3])
-          //           const multiOdds = parseInt(strings1[4])
-          //           if (!(bet in this.buyRespinFirstTimesMap['全部'])) {
-          //             this.buyRespinFirstTimesMap['全部'][bet] = []
-          //           }
-          //           this.buyRespinFirstTimesMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
-          //         } else {
-          //           const bet = parseInt(strings1[3])
-          //           const betOdds = parseInt(strings1[4])
-          //           const multiOdds = parseInt(strings1[5])
-          //           if (!(betOdds in this.buyRespinFirstTimesMap)) {
-          //             this.buyRespinFirstTimesMap[betOdds] = {}
-          //           }
-          //           if (!(bet in this.buyRespinFirstTimesMap[betOdds])) {
-          //             this.buyRespinFirstTimesMap[betOdds][bet] = []
-          //           }
-          //           this.buyRespinFirstTimesMap[betOdds][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
-          //         }
-          //       }
-          //     }
-          //   }
-          // }
-          // for (const key in scriptMap) {
-          //   stepTableData.push({
-          //     gid: scriptMap[key].gid,
-          //     title: key.split('_')[1],
-          //     rows: scriptMap[key].rows,
-          //     column: scriptMap[key].column,
-          //     cnt: scriptMap[key].cnt,
-          //     sheet: scriptMap[key].sheet
-          //   })
-          // }
+          for (const key in response.Data['script']) {
+            var strings1 = key.split('_')
+            if (strings1[0] === 'script') {
+              if (strings1[1] === 'step') {
+                // 步数统计
+                // SlotsType_目标倍率_当前倍率_剧本_x_y
+                let prefix = ''
+                if (parseInt(strings1[2]) === -2) {
+                  prefix = '指定正数'
+                } else if (parseInt(strings1[2]) === -1) {
+                  prefix = '指定负数'
+                } else {
+                  prefix = '常规' + (parseInt(strings1[2]) + 1)
+                }
+                if (!scriptMap[this.queryGid + '_' + prefix]) {
+                  scriptMap[this.queryGid + '_' + prefix] = {
+                    gid: this.queryGid,
+                    rows: {},
+                    column: {},
+                    sheet: strings1[2]
+                  }
+                }
+                const step = parseInt(strings1[4])
+                $this.mapCnt[this.queryGid + '_' + strings1[2] + '_' + strings1[3] + '_' + step] = response.Data['script'][key]
+                scriptMap[this.queryGid + '_' + prefix].rows[step] = []
+                scriptMap[this.queryGid + '_' + prefix].column[strings1[3]] = response.Data['script']['script_times_' + strings1[2] + '_' + strings1[3]]
+              } else if (strings1[1] === 'times') {
+                //
+              } else if (strings1[1] === 'count') {
+                // var strings = key.split('_')
+                // if (strings.length ===3) {
+                //   if (!(this.queryGid in this.sumData)) {
+                //     this.sumData[this.queryGid] = {}
+                //   }
+                //   this.sumData[this.queryGid]['全部'] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid]['全部'] || 0)
+                //   if (!('全部' in scriptTableData)) {
+                //     scriptTableData['全部'] = []
+                //   }
+                //   scriptTableData['全部'].push({
+                //     gid: this.queryGid,
+                //     idx: strings[2],
+                //     cnt: response.Data['script'][key]
+                //   })
+                // } else {
+                //   if (!(this.queryGid in this.sumData)) {
+                //     this.sumData[this.queryGid] = {}
+                //   }
+                //   this.sumData[this.queryGid][strings[3]] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid][strings[3]] || 0)
+                //   if (!(strings[3] in scriptTableData)) {
+                //     scriptTableData[strings[3]] = []
+                //   }
+                //   scriptTableData[strings[3]].push({
+                //     gid: this.queryGid,
+                //     idx: strings[2],
+                //     cnt: response.Data['script'][key]
+                //   })
+                // }
+              } else {
+                let prefix = ''
+                if (parseInt(strings1[1]) === -2) {
+                  prefix = '指定正数'
+                } else if (parseInt(strings1[1]) === -1) {
+                  prefix = '指定负数'
+                } else {
+                  prefix = '常规' + (parseInt(strings1[1]) + 1)
+                }
+                this.coordinateSum[this.queryGid] = parseInt(response.Data['script'][key]) + (this.coordinateSum[this.queryGid] || 0)
+                coordinateTableData.push({
+                  gid: this.queryGid,
+                  type: prefix + '(' + strings1[2] + ',' + strings1[3] + ')',
+                  sort: parseInt(strings1[1]),
+                  cnt: response.Data['script'][key],
+                  orgKey: strings1[1] + '_' + strings1[2]
+                })
+              }
+            } else if (strings1[0] === 'jackpot') {
+              if (strings1[5] === 'count') {
+                betCountMap[strings1[2] + '_' + strings1[4]] = parseInt(response.Data['script'][key])
+              } else {
+                if (jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] == null) {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]] = {
+                    app: parseInt(strings1[2]),
+                    bet: parseInt(strings1[4]),
+                    fee: 0,
+                    count: 0,
+                    winmoney: 0,
+                    probability: 0,
+                    pool: 0
+                  }
+                }
+                if (strings1[7] === 'fee') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].fee = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'count') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].count = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'winmoney') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].winmoney = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'pool') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].pool = parseInt(response.Data['script'][key])
+                } else if (strings1[7] === 'probability') {
+                  jackpotMap[strings1[2] + '_' + strings1[4] + '_' + strings1[6]].probability = parseFloat(response.Data['script'][key])
+                }
+              }
+            } else if (strings1[0] === 'scatter') {
+              // if (strings1[1] === 'count') {
+              //   if (strings1.length < 4) {
+              //     if (!('全部' in scatterCounts)) {
+              //       scatterCounts['全部'] = []
+              //     }
+              //     scatterCounts['全部'][parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+              //   } else {
+              //     if (!(strings1[3] in scatterCounts)) {
+              //       scatterCounts[strings1[3]] = []
+              //     }
+              //     scatterCounts[strings1[3]][parseInt(strings1[2])] = parseInt(response.Data['script'][key])
+              //   }
+              // }
+            } else if (strings1[0] === 'spin') {
+              // if (strings1[1] === 'ordinary') {
+              //   if (strings1[2] === 'times') {
+              //     if (strings1.length < 6) {
+              //       if (!('全部' in ordinaryReturnMoneyTableData)) {
+              //         ordinaryReturnMoneyTableData['全部'] = []
+              //       }
+              //       ordinaryReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+              //     } else {
+              //       if (!(strings1[4] in ordinaryReturnMoneyTableData)) {
+              //         ordinaryReturnMoneyTableData[strings1[4]] = []
+              //       }
+              //       ordinaryReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+              //     }
+              //   }
+              //   if (strings1[2] === 'return') {
+              //     if (strings1.length < 6) {
+              //       if (!('全部' in this.returnMap)) {
+              //         this.returnMap['全部'] = {}
+              //       }
+              //       this.returnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+              //     } else {
+              //       if (!(strings1[4] in this.returnMap)) {
+              //         this.returnMap[strings1[4]] = {}
+              //       }
+              //       this.returnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+              //     }
+              //   }
+              // }
+              // if (strings1[1] === 'buy') {
+              //   if (strings1[2] === 'times') {
+              //     if (strings1.length < 6) {
+              //       if (!('全部' in buyReturnMoneyTableData)) {
+              //         buyReturnMoneyTableData['全部'] = []
+              //       }
+              //       buyReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+              //     } else {
+              //       if (!(strings1[4] in buyReturnMoneyTableData)) {
+              //         buyReturnMoneyTableData[strings1[4]] = []
+              //       }
+              //       buyReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
+              //     }
+              //   }
+              //   if (strings1[2] === 'return') {
+              //     if (strings1.length < 6) {
+              //       if (!('全部' in this.buyReturnMap)) {
+              //         this.buyReturnMap['全部'] = {}
+              //       }
+              //       this.buyReturnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+              //     } else {
+              //       if (!(strings1[4] in this.buyReturnMap)) {
+              //         this.buyReturnMap[strings1[4]] = {}
+              //       }
+              //       this.buyReturnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
+              //     }
+              //   }
+              // }
+              if (strings1[1] === '2coljp') {
+                if (strings1.length === 6) {
+                  if (!('全部' in has2JpColsTableData)) {
+                    has2JpColsTableData['全部'] = []
+                  }
+                  const bet = parseInt(strings1[3])
+                  const multiOdds = parseInt(strings1[4])
+                  has2JpColsTableData['全部'].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
+                } else if (strings1.length === 7) {
+                  const bet = parseInt(strings1[3])
+                  const betOdds = parseInt(strings1[4])
+                  const multiOdds = parseInt(strings1[5])
+                  if (!(betOdds in has2JpColsTableData)) {
+                    has2JpColsTableData[betOdds] = []
+                  }
+                  has2JpColsTableData[betOdds].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
+                }
+              }
+              if (strings1[1] === 'buyrespin') {
+                if (strings1[2] === 'times') {
+                  if (strings1.length === 6) {
+                    if (!('全部' in this.buyRespinTimeMap)) {
+                      this.buyRespinTimeMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(multiOdds in this.buyRespinTimeMap['全部'])) {
+                      this.buyRespinTimeMap['全部'][bet] = []
+                    }
+                    this.buyRespinTimeMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                  } else if (strings1.length === 7) {
+                    const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
+                    if (!(betOdds in this.buyRespinTimeMap)) {
+                      this.buyRespinTimeMap[betOdds] = {}
+                    }
+                    if (!(bet in this.buyRespinTimeMap[betOdds])) {
+                      this.buyRespinTimeMap[betOdds][bet] = []
+                    }
+                    this.buyRespinTimeMap[betOdds][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                  }
+                }
+                if (strings1[2] === 'return') {
+                  if (strings1.length < 7) {
+                    if (!('全部' in this.buyRespinReturnMap)) {
+                      this.buyRespinReturnMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(bet in this.buyRespinReturnMap['全部'])) {
+                      this.buyRespinReturnMap['全部'][bet] = []
+                    }
+                    this.buyRespinReturnMap['全部'][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
+                  } else {
+                    const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
+                    if (!(betOdds in this.buyRespinReturnMap)) {
+                      this.buyRespinReturnMap[betOdds] = {}
+                    }
+                    if (!(bet in this.buyRespinReturnMap[betOdds])) {
+                      this.buyRespinReturnMap[betOdds][bet] = []
+                    }
+                    this.buyRespinReturnMap[betOdds][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
+                  }
+                }
+                if (strings1[2] === 'bet') {
+                  if (strings1.length < 7) {
+                    if (!('全部' in this.buyRespinTotalBetMap)) {
+                      this.buyRespinTotalBetMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(bet in this.buyRespinTotalBetMap['全部'])) {
+                      this.buyRespinTotalBetMap['全部'][bet] = []
+                    }
+                    this.buyRespinTotalBetMap['全部'][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key])})
+                  } else {
+                    const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
+                    if (!(betOdds in this.buyRespinTotalBetMap)) {
+                      this.buyRespinTotalBetMap[betOdds] = {}
+                    }
+                    if (!(bet in this.buyRespinTotalBetMap[betOdds])) {
+                      this.buyRespinTotalBetMap[betOdds][bet] = []
+                    }
+                    this.buyRespinTotalBetMap[betOdds][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key]) })
+                  }
+                }
+              }
+              if (strings1[1] === 'buyrespinfirst') {
+                if (strings1[2] === 'times') {
+                  if (strings1.length < 7) {
+                    if (!('全部' in this.buyRespinFirstTimesMap)) {
+                      this.buyRespinFirstTimesMap['全部'] = {}
+                    }
+                    const bet = parseInt(strings1[3])
+                    const multiOdds = parseInt(strings1[4])
+                    if (!(bet in this.buyRespinFirstTimesMap['全部'])) {
+                      this.buyRespinFirstTimesMap['全部'][bet] = []
+                    }
+                    this.buyRespinFirstTimesMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                  } else {
+                    const bet = parseInt(strings1[3])
+                    const betOdds = parseInt(strings1[4])
+                    const multiOdds = parseInt(strings1[5])
+                    if (!(betOdds in this.buyRespinFirstTimesMap)) {
+                      this.buyRespinFirstTimesMap[betOdds] = {}
+                    }
+                    if (!(bet in this.buyRespinFirstTimesMap[betOdds])) {
+                      this.buyRespinFirstTimesMap[betOdds][bet] = []
+                    }
+                    this.buyRespinFirstTimesMap[betOdds][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                  }
+                }
+              }
+            }
+          }
+          for (const key in scriptMap) {
+            stepTableData.push({
+              gid: scriptMap[key].gid,
+              title: key.split('_')[1],
+              rows: scriptMap[key].rows,
+              column: scriptMap[key].column,
+              cnt: scriptMap[key].cnt,
+              sheet: scriptMap[key].sheet
+            })
+          }
 
           for (const key in jackpotMap) {
             jackpotTableData.push({
@@ -2075,12 +2108,12 @@ export default {
 
     },
     //步数统计处理
-    processStepCount(strings, scriptTableData, response, key) {
+    processStepCount(strings, scriptTableData, scatterCounts, response, key) {
       // script_count_4_1_plan_0
       if (strings[0] === 'script' && strings[1] === 'count') {
         if (strings.includes('plan') && strings.length === 6) {
           // 写入方案可选项
-            this.planOptions[parseInt(strings[5])]=parseInt(strings[5])
+          this.planOptions[parseInt(strings[5])] = parseInt(strings[5])
           scriptTableData.push({
             gid: this.queryGid,
             idx: parseInt(strings[2]),
@@ -2088,7 +2121,7 @@ export default {
             planId: parseInt(strings[5]),
             cnt: response.Data['script'][key]
           })
-        } else if (!(strings.includes('plan')) && strings.length === 4){ // 兼容旧方法不含planId
+        } else if (!(strings.includes('plan')) && strings.length === 4) { // 兼容旧方法不含planId
           scriptTableData.push({
             gid: this.queryGid,
             idx: parseInt(strings[2]),
@@ -2098,7 +2131,22 @@ export default {
           })
         }
       }
-
+      // 处理scatter次数占比
+      if (strings[0] === 'scatter') {
+        let planId = 0
+        if (strings.includes('plan') && strings.length === 6) {
+          planId = parseInt(strings[5])
+          if (strings[1] === 'count') {
+            scatterCounts.push({
+              gid: this.queryGid,
+              idx: parseInt(strings[2]),
+              bet: parseInt(strings[3]),
+              planId: planId,
+              cnt: parseInt(response.Data['script'][key])
+            })
+          }
+        }
+      }
     },
     //普通返奖处理
     processOrdinaryRebateCount(strings, ordinaryReturnMoneyTableData, response, key) {
@@ -2381,26 +2429,35 @@ export default {
           return '无'
       }
     },
-    getScatterCount(idx) {
-      idx = parseInt(idx)
-      if (typeof (this.scatterCounts[this.betOddsKey]) === 'undefined') {
-        return 0
+    getSumCnt(){
+      let cnt =0
+      for (const o of this.scriptTableData) {
+          cnt+=o.cnt
       }
-      if (typeof (this.scatterCounts[this.betOddsKey][idx]) === 'undefined') {
-        return 0
-      } else {
-        return this.scatterCounts[this.betOddsKey][idx]
-      }
+      return cnt
     },
-    getScatterPercent(idx, totalCnt) {
-      const scatterCnt = this.getScatterCount(idx)
-      totalCnt = parseInt(totalCnt)
-      if (totalCnt <= 0 || scatterCnt <= 0) {
-        return '0%'
-      } else {
-        const percent = scatterCnt * 100 / totalCnt
-        return percent.toFixed(2) + '%'
+    getScatterPercent(row) {
+      let cnt = 0
+      for (const k in this.scatterCounts) {
+        console.log(this.scatterCounts[k])
+        cnt+=this.scatterCounts[k]
       }
+      let idxScatter = this.getScatterCnt(row)
+      return parseFloat( ((idxScatter / cnt).toFixed(4) * 100).toFixed(2)+'')
+
+    },
+    getScatterCnt(row){
+      let idxScatter = 0
+      if (this.betOddsKey === -1 && this.planId ===-1) {
+        idxScatter = this.scatterCounts[row.idx] || 0
+      }else if (this.betOddsKey > -1 && this.planId > -1){
+        idxScatter = this.scatterCounts[row.idx + '_' + this.planId+ '_' + this.betOddsKey] || 0
+      }else if (this.betOddsKey > -1 && this.planId === -1){
+        idxScatter = this.scatterCounts[row.idx + '_' + this.betOddsKey] || 0
+      }else if (this.betOddsKey === -1 && this.planId > -1){
+        idxScatter = this.scatterCounts[row.idx + '_' + this.planId] || 0
+      }
+      return idxScatter
     },
     getBetOddsName(betOdd) {
       if (betOdd === '全部') {

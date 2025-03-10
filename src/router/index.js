@@ -512,9 +512,9 @@ export const asyncRoutes = [
                     meta: { title: '比赛场' }
                   },
                   {
-                    path: 'texasMatchReward',
-                    component: () => import('@/views/texas2dpro/table/texasMatchReward'),
-                    name: 'texasMatchReward',
+                    path: 'texasMatchDynamicReward',
+                    component: () => import('@/views/texas2dpro/table/texasMatchDynamicReward'),
+                    name: 'texasMatchDynamicReward',
                     meta: { title: '比赛动态奖励' }
                   },
                   {
