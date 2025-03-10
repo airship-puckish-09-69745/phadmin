@@ -38,7 +38,7 @@
           {{ scope.row.IsDisabled === 1 ? '禁用' : '未禁用' }}
         </template>
       </el-table-column>
-      <el-table-column prop="Versions" label="配置版本列表" width="800px">
+      <el-table-column prop="Versions" label="配置版本列表" width="900px">
         <template slot-scope="scope" >
           <el-table :data="scope.row.Versions" stripe style="font-size: 10px">
             <el-table-column prop="Version" label="版本号" width="80px">
@@ -47,12 +47,14 @@
               </template>
             </el-table-column>
             <el-table-column prop="Comment" label="版本说明"></el-table-column>
-            <el-table-column prop="IsReady" label="是否就绪">
+            <el-table-column prop="IsReady" label="是否就绪" width="80px">
               <template slot-scope="scope">
-                {{ scope.row.IsReady ? '就绪' : '未就绪' }}
+<!--                {{ scope.row.IsReady ? '就绪' : '' }}-->
+                <span v-if="scope.row.IsReady" style="color: #00b023"> {{'就绪'}} </span>
+                <span v-else  style="color: red">{{'未就绪'}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="操作" width="350px">
+            <el-table-column label="操作" width="420px">
               <template slot-scope="versionScope">
 
 <!--                <el-button @click="openCreateVersionScriptsDialog(scope.$index, versionScope.$index)" type="success"-->
@@ -63,6 +65,8 @@
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
                            size="mini" :disabled="versionScope.row.IsReady">编辑</el-button>
+                <el-button @click="copyVersionDialog(scope.$index, versionScope.$index)" style="background: #91eee3"
+                           size="mini" >复制版本</el-button>
                 <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
                            size="mini" :disabled="versionScope.row.IsReady">删除</el-button>
               </template>
@@ -850,8 +854,15 @@ export default {
     },
     openAddVersionDialog(planIndex) {
       this.versionStatus = 0
-      // this.editVersionDialogVisible = true;
       this.editVersionFormData = this.newVersion()
+      let maxVersion = 0
+      for (const o of this.showItem.Plans[planIndex].Versions) {
+        if (o.Version > maxVersion) {
+          maxVersion = o.Version
+        }
+      }
+      this.editVersionFormData.Version = maxVersion+1
+
       this.currentPlanIndex = planIndex;
       this.saveEditVersion()
     },
@@ -889,6 +900,20 @@ export default {
       };
       this.currentPlanIndex = planIndex;
       this.currentVersionIndex = versionIndex;
+    },
+    copyVersionDialog(planIndex, versionIndex) {
+      const version = this.showItem.Plans[planIndex].Versions[versionIndex];
+      let maxVersion = 0
+      for (const o of this.showItem.Plans[planIndex].Versions) {
+        if (o.Version > maxVersion) {
+          maxVersion = o.Version
+        }
+      }
+      let copy = JSON.parse(JSON.stringify(version))
+      copy.Version = maxVersion+1
+      copy.IsReady = false
+      this.showItem.Plans[planIndex].Versions.push(copy)
+
     },
     openCreateVersionScriptsDialog(planIndex, versionIndex) {
       //todo

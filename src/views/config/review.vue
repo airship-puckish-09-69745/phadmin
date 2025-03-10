@@ -25,14 +25,22 @@
         <el-menu-item index="3">我已处理</el-menu-item>
       </el-menu>
     </el-row>
+    <el-form inline label-width="90px" :inline="true" size="small">
+      <el-form-item>
+        <el-button type="success" size="mini" @click="batchReview">批量审核</el-button>
+      </el-form-item>
+    </el-form>
     <div style="padding-top: 10px">
+      <el-checkbox v-model="isAllSelected" @change="handleSelectAll">{{ isAllSelected ? '取消全选' : '全选' }}</el-checkbox>
       <el-table
         ref="filterTable"
         :data="tableData"
         stripe
         border
         style="width: 100%"
+        @selection-change="handleSelectionChange"
       >
+        <el-table-column type="selection" width="55" :selectable="(row, index) => row.Status === 1"></el-table-column>
         <el-table-column
           prop="ID"
           label="ID"
@@ -202,6 +210,11 @@
   border-collapse: collapse;
 }
 
+.el-table .el-table__row.disabled .el-checkbox__input.is-disabled .el-checkbox__inner {
+  background-color: #f5f5f5;
+  border-color: #d9d9d9;
+}
+
 .table th {
   font-weight: bold;
 }
@@ -248,7 +261,9 @@ export default {
         actions: [],
         bLastStep: false,
         opType: 0
-      }
+      },
+      isAllSelected: false, // 全选状态
+      selectedRows: [] // 选中的行数据
     }
   },
   created() {
@@ -259,6 +274,21 @@ export default {
     console.log(1)
   },
   methods: {
+    handleSelectAll(checked) {
+      if (checked) {
+        this.tableData.forEach(row => {
+          if (row.Status === 1) {
+            this.$refs.filterTable.toggleRowSelection(row, true)
+          }
+        })
+      } else {
+        this.$refs.filterTable.clearSelection()
+      }
+    },
+    handleSelectionChange(rows) {
+      this.selectedRows = rows
+      console.log('选中的行数据:', this.selectedRows)
+    },
     formatNumber(n) {
       return n.toLocaleString()
     },
@@ -349,6 +379,7 @@ export default {
       // top.layer_show('确认发布内容','/configCompare/Config_diff.html?'+ $libUrl.GenUrlParams({keyID:keyID,opType:opType, ReviewID:id, Env:env}), 600, 700)
     },
     getPostData(iType) {
+      console.log(this.env)
       return {
         ID: this.edit.item.ID,
         Pass: iType,
@@ -358,6 +389,7 @@ export default {
       }
     },
     passReview(iType) {
+      console.log(this.env)
       let succMsg = ''
       if (iType === 1) {
         succMsg = '审核已通过！'
@@ -367,6 +399,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            console.log(this.env)
             this.doPassRequest(iType, succMsg)
           })
         }
@@ -386,8 +419,68 @@ export default {
       }
       return false
     },
+    batchReview() {
+      if (this.selectedRows.length === 0) {
+        this.$message.warning('请至少选择一条记录进行批量审核！')
+        return
+      }
+      let totalAmount = 0
+      const Ids = []
+      this.selectedRows.forEach(row => {
+        const summary = row.Summary
+        const match = summary.match(/申请金额:(\d+\.\d+)/)
+        if (match) {
+          totalAmount += parseFloat(match[1])
+        }
+        if (typeof row.ID === 'number') {
+          Ids.push(row.ID)
+        }
+      })
+      let inputValue = ''
+      this.edit.item.EnvEmpty = 1
+      this.$prompt(`选中记录的申请金额总和为: ${totalAmount.toFixed(2)}`, '批量审核信息', {
+        inputPlaceholder: '请输入审批意见',
+        inputValidator: (value) => {
+          if (value.trim() === '') {
+            return '审批意见不能为空'
+          }
+          inputValue = value
+          return true
+        },
+        confirmButtonText: '确定',
+        cancelButtonText: '拒绝',
+        type: 'warning'
+      }).then(() => {
+        const comment = inputValue
+        Ids.forEach((id) => {
+          // 假设 iType 为 1 表示通过审核，可根据实际情况调整
+          const iType = 1
+          const succMsg = '审核已通过！'
+          // 修改 edit.item.ID 为当前处理的 ID
+          this.edit.item.ID = id
+          // 修改 edit.item.Comment 为用户输入的审批意见
+          this.edit.item.Comment = comment
+          this.doPassRequest(iType, succMsg)
+        })
+      }).catch((action) => {
+        if (action === 'cancel') {
+          const comment = inputValue
+          Ids.forEach((id) => {
+            const iType = 2
+            const succMsg = '申请已打回！'
+            // 修改 edit.item.ID 为当前处理的 ID
+            this.edit.item.ID = id
+            // 修改 edit.item.Comment 为用户输入的审批意见
+            this.edit.item.Comment = comment
+            this.doPassRequest(iType, succMsg)
+          })
+        }
+      })
+      this.edit.item.Comment = ''
+    },
     doPassRequest(iType, succMsg) {
       const postData = this.getPostData(iType)
+      console.log('11111', postData)
       if (!postData) return
       request({
         url: '/review/pass',

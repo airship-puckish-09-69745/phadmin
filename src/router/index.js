@@ -143,6 +143,12 @@ export const asyncRoutes = [
         meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
       },
       {
+        path: 'slotsScriptStatisticsV3',
+        component: () => import('@/views/online/slotsScriptStatisticsNew.vue'),
+        name: 'slotsScriptStatisticsV3',
+        meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
+      },
+      {
         path: 'piggyStatistics',
         component: () => import('@/views/online/piggyStatistics.vue'),
         name: 'piggyStatistics',
@@ -1641,6 +1647,12 @@ export const asyncRoutes = [
         meta: { title: '赛事海报', noCache: true }
       },
       {
+        path: 'matchHomePosterList',
+        component: () => import('@/views/matchManage/homePosterList.vue'),
+        name: 'matchHomePosterList',
+        meta: { title: 'home海报', noCache: true }
+      },
+      {
         path: 'matchGuideList',
         component: () => import('@/views/matchManage/matchGuide.vue'),
         name: 'matchPosterList',
@@ -1876,6 +1888,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_ZJH',
             meta: { title: 'TeenPatti ◐', gid: 9 }
+          },
+          {
+            path: 'playlog_Rummy',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Rummy',
+            meta: { title: 'Rummy ◐', gid: 1 }
           }
         ]
       },
@@ -2238,12 +2256,6 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'mayantotem_slots_log',
             meta: { title: 'MayanTotem', gid: 178 }
-          },
-          {
-            path: 'arcaneegypt_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'arcaneegypt_slots_log',
-            meta: { title: 'ArcaneEgypt', gid: 178 }
           },
           {
             path: 'goldtrain_slots_log',
