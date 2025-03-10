@@ -197,7 +197,7 @@
         width="120px"
       >
         <template slot-scope="scope">
-          {{ isRobotMap[scope.row.Uid]?"机器人":showRobotLevel(scope.row.IsRobot) }}
+          {{ showRobotLevel(scope.row.IsRobot) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -633,6 +633,10 @@ export default {
           return '机器人'
         case 0:
           return '真人'
+        case 4:
+          return '机器人--陪玩'
+        case 5:
+          return '机器人--要赢'
         case 8:
           return '一级杀手机器人'
         case 9:
@@ -774,9 +778,7 @@ export default {
               this.isRobotMap[key] = response.Data[key]
             }
             for (const o of this.tableData) {
-              if (this.isRobotMap[o.Uid]) {
-                o.IsRobot = -1
-              }
+
             }
           }
         })
