@@ -1419,7 +1419,7 @@ export default {
         if (response.RetCode === 0) {
           console.log('/user/credit/black:', response.Data)
         } else {
-          Message.error('更新事变')
+          Message.error('更新失败')
         }
       })
     },
