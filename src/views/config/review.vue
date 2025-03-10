@@ -437,6 +437,7 @@ export default {
         }
       })
       let inputValue = ''
+      this.edit.item.EnvEmpty = 1
       this.$prompt(`选中记录的申请金额总和为: ${totalAmount.toFixed(2)}`, '批量审核信息', {
         inputPlaceholder: '请输入审批意见',
         inputValidator: (value) => {
