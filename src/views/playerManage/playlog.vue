@@ -5020,7 +5020,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else if (robotLevel == 4) {
         return '机器人--陪玩'
       } else if (robotLevel == 5) {
-        return '机器人--需要赢'
+        return '机器人--要赢'
       }
       return ''
     }
