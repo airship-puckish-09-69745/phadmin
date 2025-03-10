@@ -2258,12 +2258,6 @@ export const asyncRoutes = [
             meta: { title: 'MayanTotem', gid: 178 }
           },
           {
-            path: 'arcaneegypt_slots_log',
-            component: () => import('@/views/playerManage/slotsLog'),
-            name: 'arcaneegypt_slots_log',
-            meta: { title: 'ArcaneEgypt', gid: 178 }
-          },
-          {
             path: 'goldtrain_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
