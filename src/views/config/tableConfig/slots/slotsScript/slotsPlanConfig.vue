@@ -242,7 +242,7 @@
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="editVersionDialogVisible = false">取消</el-button>
-        <el-button @click="saveEditVersion" type="primary">确定</el-button>
+        <el-button @click="saveEditVersion" type="primary" :disabled="editVersionFormData.IsReady">确定</el-button>
       </div>
     </el-dialog>
 
