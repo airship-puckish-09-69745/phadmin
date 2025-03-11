@@ -230,6 +230,21 @@
           {{ formatNumber(scope.row.MoneyNow) }}
         </template>
       </el-table-column>
+
+
+      <template v-if="gid===21">
+        <el-table-column
+          prop="IsRobot"
+          label="玩家类型"
+          width="120"
+        >
+          <template slot-scope="scope">
+            {{ showRobotLevel(scope.row.IsRobot) }}
+          </template>
+        </el-table-column>
+      </template>
+
+
       <el-table-column
         :v-if="isContainsFriendGame()"
         prop="IsRobot"
@@ -4977,6 +4992,26 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           return level <= 7 ? '陪玩机器人' : level
       }
     },
+    showRobotLevel(level) {
+      switch (level) {
+        case -1 :
+          return '机器人'
+        case 0:
+          return '真人'
+        case 4:
+          return '机器人--陪玩'
+        case 5:
+          return '机器人--要赢'
+        case 8:
+          return '一级杀手机器人'
+        case 9:
+          return '二级杀手机器人'
+        case 10:
+          return '收割机器人'
+        default:
+          return level <= 7 ? '陪玩机器人' : level
+      }
+    },
     getMicroCtrlName(val) {
       if (val === 0) {
         return '空'
@@ -5020,7 +5055,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else if (robotLevel == 4) {
         return '机器人--陪玩'
       } else if (robotLevel == 5) {
-        return '机器人--需要赢'
+        return '机器人--要赢'
       }
       return ''
     }

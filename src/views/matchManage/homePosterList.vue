@@ -513,7 +513,6 @@ export default {
           }
         }
       }
-      console.log("1111 ",this.showCsCfgs)
     },
 
     saveSwitch() {
