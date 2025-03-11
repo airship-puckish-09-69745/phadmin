@@ -555,6 +555,8 @@ export default {
       ],
       DynamicRewardConfig: [
         { key: 'top 10% paid', value: 51 },
+        { key: '测试', value: 52 },
+        { key: '测试2', value: 53 },
       ],
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
