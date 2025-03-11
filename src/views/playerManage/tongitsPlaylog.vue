@@ -778,7 +778,9 @@ export default {
               this.isRobotMap[key] = response.Data[key]
             }
             for (const o of this.tableData) {
-
+              if (this.isRobotMap[o.Uid] && o.IsRobot==0) {
+                o.IsRobot = -1
+              }
             }
           }
         })
