@@ -1265,9 +1265,9 @@ export default {
       this.getCredit()
     },
     getCredit(refresh) {
-      if (this.env!='test') {
-        return
-      }
+      // if (this.env!='test') {
+      //   return
+      // }
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return

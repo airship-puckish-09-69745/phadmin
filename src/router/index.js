@@ -942,6 +942,12 @@ export const asyncRoutes = [
                 meta: { title: 'FortuneBlessing' }
               },
               {
+                path: 'fortunateebisu_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortunateebisu_slots_cfg'),
+                name: 'fortunateebisu_slots_cfg',
+                meta: { title: 'FortunateEbisu' }
+              },
+              {
                 path: 'streetfighting_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/streetfighting_slots_cfg'),
                 name: 'streetfighting_slots_cfg',
@@ -1177,6 +1183,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/fortuneblessingmars_slots_cfg'),
                 name: 'fortuneblessingmars_slots_cfg',
                 meta: { title: 'FortuneBlessing(审)' }
+              },
+              {
+                path: 'fortunateebisumars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/fortunateebisumars_slots_cfg'),
+                name: 'fortunateebisumars_slots_cfg',
+                meta: { title: 'FortunateEbisu(审)' }
               },
               {
                 path: 'streetfightingmars_slots_cfg',
@@ -2150,6 +2162,12 @@ export const asyncRoutes = [
             meta: { title: 'FortuneBlessing', gid: 198 }
           },
           {
+            path: 'fortunateebisu_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortunateebisu_slots_log',
+            meta: { title: 'FortunateEbisu', gid: 202 }
+          },
+          {
             path: 'streetfighting_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'streetfighting_slots_log',
@@ -2456,6 +2474,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneblessingmars_slots_log',
             meta: { title: 'FortuneBlessing(审)', gid: 199 }
+          },
+          {
+            path: 'fortunateebisumars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'fortunateebisumars_slots_log',
+            meta: { title: 'FortunateEbisu(审)', gid: 203 }
           },
           {
             path: 'streetfightingmars_slots_log',
