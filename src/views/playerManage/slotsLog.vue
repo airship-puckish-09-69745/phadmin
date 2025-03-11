@@ -37,6 +37,9 @@
         <el-form-item>
           <el-button type="success" size="mini" @click="showChart">输赢图表</el-button>
         </el-form-item>
+        <el-form-item>
+          <el-button type="success" size="mini" @click="exportExcel">导出</el-button>
+        </el-form-item>
       </el-form>
     </el-row>
     <el-row>
@@ -351,7 +354,7 @@ export default {
   methods: {
     // V2剧本
     isActV2(gid) {
-      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170, 172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 190, 200].indexOf(gid) >= 0
+      return [78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 154, 156, 158, 160, 162, 164, 166, 170, 172, 188, 198, 192, 180, 176, 182, 174, 178, 168, 196, 184, 202, 190, 200].indexOf(gid) >= 0
     },
     // 收集剧本
     isActCollect(gid) {
@@ -592,6 +595,146 @@ export default {
           $this.totalData.jackpotMoney = response.Data.JackpotMoney*/
           $this.dataArr = objs
         }
+      })
+    },
+    async getExportData(page) {
+      console.log('qwwer', page)
+      // sleep 2s
+      await new Promise(resolve => {
+        setTimeout(resolve, 2000)
+      })
+      const $this = this
+      await request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/slotslog/list',
+          Uid: this.item.Uid,
+          SlotsType: this.gid,
+          Time: this.getTime(this.item.date),
+          Page: page,
+          Limit: this.pageNum,
+          ActType: this.item.actType,
+          IsVup: this.isVup ? 1 : 0
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data.List || []
+          if (objs.length === 0) {
+            Message.success('查询结果为空')
+            return
+          }
+
+          for (const i in objs) {
+            if (objs[i]['ActLog'] && objs[i]['ActLog'] !== 'null') {
+              objs[i]['ActLogObj'] = JSON.parse(objs[i]['ActLog'])
+            } else {
+              objs[i]['ActLogObj'] = {}
+            }
+
+            if ($this.gid === 150 || $this.gid === 156 || $this.gid === 166 || $this.gid === 174 || $this.gid === 196) {
+              if (objs[i]['JackpotLog'] && objs[i]['JackpotLog'] !== 'null') {
+                objs[i]['JackpotLogObj'] = JSON.parse(objs[i]['JackpotLog'])
+              } else {
+                objs[i]['JackpotLogObj'] = {}
+              }
+            }
+            const tmp = []
+            tmp.push(objs[i].Id)
+            tmp.push($libDate.FormateMilisecondStr(objs[i].Uptime * 1000, 4))
+            tmp.push(objs[i].Uid)
+            tmp.push(this.getTypeName(objs[i]))
+            tmp.push(this.formatNumber(objs[i].Bet / 1000))
+            tmp.push(objs[i].BetOdds ? this.betOddsNumber(objs[i].BetOdds, this.gid) : 0)
+            tmp.push(this.formatNumber(objs[i].ReturnBet / 1000))
+            tmp.push(this.formatNumber(objs[i].ServiceFee / 1000))
+            tmp.push(objs[i].PayLine)
+            if ([150, 156, 166, 174, 196].indexOf(this.gid) >= 0) {
+              tmp.push(this.getJPFee(objs[i].JackpotLogObj, 4))
+              tmp.push(this.getJPFee(objs[i].JackpotLogObj, 3))
+              tmp.push(this.getJPFee(objs[i].JackpotLogObj, 2))
+              tmp.push(this.getJPFee(objs[i].JackpotLogObj, 1))
+              tmp.push(objs[i].JackpotLogObj.JackpotInfo ? this.getJPLabel(objs[i].JackpotLogObj.JackpotInfo[0].Type, this.gid) : null)
+              tmp.push(objs[i].JackpotLogObj.JackpotInfo ? objs[i].JackpotLogObj.JackpotInfo[0].MultiOdds : null)
+              tmp.push(objs[i].JackpotLogObj.JackpotInfo ? objs[i].JackpotLogObj.JackpotInfo[0].AddMoney / 1000 : null)
+            }
+            if (this.gid % 2 === 0) {
+              const actLogObj = objs[i].ActLogObj
+              tmp.push(actLogObj.ActOdds)
+              tmp.push(actLogObj.TargetOdds)
+              tmp.push(actLogObj.CurrentOdds)
+              tmp.push(actLogObj.CurrentOverflow)
+              tmp.push(this.toRupee(null, null, actLogObj.Profit))
+              if (!this.isActV2(this.gid)) {
+                tmp.push(this.toRupee(null, null, actLogObj.RoomProfit))
+              }
+              tmp.push(this.toRupee(null, null, actLogObj.Deposit))
+              if (!this.isActV2(this.gid)) {
+                tmp.push(this.toRupee(null, null, actLogObj.RoomPool))
+                tmp.push(this.toRupee(null, null, actLogObj.EntryPoolMoney))
+                tmp.push(actLogObj.DoWinRate)
+                tmp.push(this.showWinRate(null, null, actLogObj.CurrentWinRate))
+              }
+              tmp.push(this.showPosition(objs[i]))
+              tmp.push(this.showRandomFlag(null, null, actLogObj.RandomFlag))
+              tmp.push(actLogObj.RandomOdds)
+              tmp.push(actLogObj.DoRandomOdds)
+              tmp.push(actLogObj.HitOdds)
+              const switchScriptText = actLogObj.IsWinRateSwitchScript || actLogObj.IsFinishSwitchScript
+                ? (actLogObj.IsWinRateSwitchScript ? '胜率变换' : '剧本切换')
+                : '否'
+              tmp.push(switchScriptText)
+              tmp.push(actLogObj.SwitchScriptBeforeTargetOdds)
+              tmp.push(actLogObj.SwitchScriptBeforeCurrentOdds)
+              tmp.push(actLogObj.SwitchScriptBeforeOverflow)
+              tmp.push(this.showBool(null, null, actLogObj.IsFinishCurrentOdds))
+              tmp.push(actLogObj.NextOverflow)
+              tmp.push(actLogObj.NextTargetOdds)
+              if (!this.isActV2(this.gid)) {
+                tmp.push(this.toRupee(null, null, actLogObj.InterveneFactor))
+                tmp.push(actLogObj.RoomFactor)
+              }
+              if (this.isActCollect(this.gid)) {
+                tmp.push(actLogObj.CollectOddsAdd)
+                tmp.push(actLogObj.CollectOddsSub)
+                tmp.push(actLogObj.CollectOddsTotal)
+              }
+              if (this.isActV2(this.gid)) {
+                tmp.push(actLogObj.IsLotteryLimit ? '是' : '否')
+                tmp.push(actLogObj.ScriptV3PlanId)
+                tmp.push(actLogObj.ScriptV3PlanVer)
+              }
+            }
+            this.exportData.push(tmp)
+          }
+        }
+      })
+    },
+    exportExcel() {
+      import('@/vendor/Export2Excel').then(async excel => {
+        if (this.tableData === 0) {
+          this.$message.error('No data to export, or query first')
+          return
+        }
+        this.exportData = []
+        const max = Math.ceil(this.totalCount / this.pageNum)
+        this.isButtonDisabled = true
+        for (let i = 1; i <= max; i++) {
+          await this.getExportData(i)
+        }
+        this.isButtonDisabled = false
+        const data = this.exportData
+        const columns = this.$refs.filterTable.columns
+        // 提取表头
+        const header = columns.map(column => column.label)
+        excel.export_json_to_excel({
+          header: header, // 表头 必填
+          data, // 具体数据 必填
+          filename: 'Slots records', // 非必填
+          autoWidth: true, // 非必填
+          bookType: 'xlsx' // 非必填
+        })
       })
     },
     clickData(row, column, event) {

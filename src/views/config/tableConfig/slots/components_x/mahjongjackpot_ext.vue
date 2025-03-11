@@ -37,7 +37,7 @@
           </el-form-item>
 
           <el-form-item label="剧本大奖JP-出现的概率" prop="NormalInJPRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.NormalInJPRate" :required="true" > <template slot="append">‱</template> </el-input>
+            <el-input v-model.number="cfg.NormalInJPRate" :required="true" > <template slot="append">百万分之</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买重转-进入JP的概率" prop="BuyRespinInJPRate" :rules="dataRule(true,{type:'n'})">

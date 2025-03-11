@@ -1265,9 +1265,9 @@ export default {
       this.getCredit()
     },
     getCredit(refresh) {
-      if (this.env!='test') {
-        return
-      }
+      // if (this.env!='test') {
+      //   return
+      // }
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
@@ -1419,7 +1419,7 @@ export default {
         if (response.RetCode === 0) {
           console.log('/user/credit/black:', response.Data)
         } else {
-          Message.error('更新事变')
+          Message.error('更新失败')
         }
       })
     },

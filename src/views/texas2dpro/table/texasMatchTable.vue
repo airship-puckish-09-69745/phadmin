@@ -137,7 +137,7 @@
            <el-row>
             <el-col :span="11">
               <el-form-item label="奖励类型">
-                <el-select v-model="edit.item.TemplateType" placeholder="请选择">
+                <el-select v-model="edit.item.TemplateType" placeholder="请选择" @change="changeTemplateType">
                   <el-option v-for="item in TemplateTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
                 </el-select>
               </el-form-item>
@@ -555,6 +555,8 @@ export default {
       ],
       DynamicRewardConfig: [
         { key: 'top 10% paid', value: 51 },
+        { key: '测试', value: 52 },
+        { key: '测试2', value: 53 },
       ],
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
@@ -720,7 +722,9 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
+    changeTemplateType(){
+      this.edit.item.RewardId = 0
+    },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
