@@ -137,7 +137,7 @@
            <el-row>
             <el-col :span="11">
               <el-form-item label="奖励类型">
-                <el-select v-model="edit.item.TemplateType" placeholder="请选择">
+                <el-select v-model="edit.item.TemplateType" placeholder="请选择" @change="changeTemplateType">
                   <el-option v-for="item in TemplateTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
                 </el-select>
               </el-form-item>
@@ -720,7 +720,9 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
+    changeTemplateType(){
+      this.edit.item.RewardId = 0
+    },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
