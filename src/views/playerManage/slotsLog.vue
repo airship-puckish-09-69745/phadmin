@@ -2,19 +2,21 @@
   <div class="app-container">
     <el-row style="margin-bottom: 10px;">
       <el-col :span="24">
-        <el-alert type="success"
-                  description="数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询"/>
+        <el-alert
+          type="success"
+          description="数据根据Uid分表，需要模糊匹配请输入 0-9 数字查询。输赢图表只支持指定有效Uid查询"
+        />
       </el-col>
     </el-row>
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}"/>
+          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
         </el-form-item>
         <el-form-item label="类型：">
           <el-select v-model="item.actType" size="mini">
-            <el-option label="全部" :value="-1"/>
-            <el-option v-for="(o,k) in typeNames" :label="o" :value="k"/>
+            <el-option label="全部" :value="-1" />
+            <el-option v-for="(o,k) in typeNames" :label="o" :value="k" />
           </el-select>
         </el-form-item>
         <el-form-item label="日期：">
@@ -55,8 +57,8 @@
           <el-descriptions-item label="总下注金额："> {{ formatNumber(statData.betMoney / 1000) }}</el-descriptions-item>
           <el-descriptions-item label="总返奖金额："> {{ formatNumber(statData.winMoney / 1000) }}</el-descriptions-item>
           <el-descriptions-item label="总赢：">{{
-              formatNumber(statData.winMoney / 1000 - statData.betMoney / 1000)
-            }}
+            formatNumber(statData.winMoney / 1000 - statData.betMoney / 1000)
+          }}
           </el-descriptions-item>
           <el-descriptions-item label="抽水：">{{ formatNumber(statData.totalFee / 1000) }}</el-descriptions-item>
         </el-descriptions>
@@ -86,7 +88,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            <DateTimeShow :show-type="4" :timestamp="scope.row.Uptime"/>
+            <DateTimeShow :show-type="4" :timestamp="scope.row.Uptime" />
           </template>
         </el-table-column>
         <el-table-column
@@ -190,66 +192,72 @@
           </el-table-column>
         </template>
         <template
-          v-if="gid % 2 === 0">
+          v-if="gid % 2 === 0"
+        >
           <el-table-column
             header-align="center"
             label="剧本"
           >
-            <el-table-column prop="ActLogObj.ActOdds" label="剧本倍率"/>
-            <el-table-column prop="ActLogObj.TargetOdds" label="目标倍率"/>
-            <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率"/>
-            <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70"/>
-            <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100"/>
-            <el-table-column prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" v-if="!isActV2(gid)"/>
-            <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit"/>
-            <el-table-column prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" v-if="!isActV2(gid)"/>
-            <el-table-column prop="ActLogObj.EntryPoolMoney" :formatter="toRupee" label="进入水池"
-                             v-if="!isActV2(gid)"/>
-            <el-table-column prop="ActLogObj.DoWinRate" label="执行胜率" v-if="!isActV2(gid)"/>
-            <el-table-column prop="ActLogObj.CurrentWinRate" :formatter="showWinRate" label="当前胜率"
-                             v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.ActOdds" label="剧本倍率" />
+            <el-table-column prop="ActLogObj.TargetOdds" label="目标倍率" />
+            <el-table-column prop="ActLogObj.CurrentOdds" label="当前倍率" />
+            <el-table-column prop="ActLogObj.CurrentOverflow" label="溢出" width="70" />
+            <el-table-column prop="ActLogObj.Profit" :formatter="toRupee" label="个人输赢" width="100" />
+            <el-table-column v-if="!isActV2(gid)" prop="ActLogObj.RoomProfit" :formatter="toRupee" label="房间输赢" />
+            <el-table-column prop="ActLogObj.Deposit" :formatter="toRupee" label="Deposit" />
+            <el-table-column v-if="!isActV2(gid)" prop="ActLogObj.RoomPool" :formatter="toRupee" label="房间水池" />
+            <el-table-column
+              v-if="!isActV2(gid)"
+              prop="ActLogObj.EntryPoolMoney"
+              :formatter="toRupee"
+              label="进入水池"
+            />
+            <el-table-column v-if="!isActV2(gid)" prop="ActLogObj.DoWinRate" label="执行胜率" />
+            <el-table-column
+              v-if="!isActV2(gid)"
+              prop="ActLogObj.CurrentWinRate"
+              :formatter="showWinRate"
+              label="当前胜率"
+            />
             <el-table-column prop="ActLogObj.ScriptCol" label="剧本坐标">
               <template slot-scope="scope">
                 {{ showPosition(scope.row) }}
               </template>
             </el-table-column>
-            <el-table-column prop="ActLogObj.RandomFlag" :formatter="showRandomFlag" label="随机flag"/>
-            <el-table-column prop="ActLogObj.RandomOdds" label="目标倍率"/>
-            <el-table-column prop="ActLogObj.DoRandomOdds" label="执行目标倍率"/>
-            <el-table-column prop="ActLogObj.HitOdds" label="最终倍率"/>
+            <el-table-column prop="ActLogObj.RandomFlag" :formatter="showRandomFlag" label="随机flag" />
+            <el-table-column prop="ActLogObj.RandomOdds" label="目标倍率" />
+            <el-table-column prop="ActLogObj.DoRandomOdds" label="执行目标倍率" />
+            <el-table-column prop="ActLogObj.HitOdds" label="最终倍率" />
             <el-table-column prop="ActLogObj.IsWinRateSwitchScript" :formatter="showBool" label="切换脚本">
               <template slot-scope="scope">
-                <span v-if="scope.row.ActLogObj.IsWinRateSwitchScript || scope.row.ActLogObj.IsFinishSwitchScript"
-                      style="color:red">{{ scope.row.ActLogObj.IsWinRateSwitchScript ? '胜率变换' : '剧本切换' }}</span>
+                <span
+                  v-if="scope.row.ActLogObj.IsWinRateSwitchScript || scope.row.ActLogObj.IsFinishSwitchScript"
+                  style="color:red"
+                >{{ scope.row.ActLogObj.IsWinRateSwitchScript ? '胜率变换' : '剧本切换' }}</span>
                 <span v-else>否</span>
               </template>
             </el-table-column>
-            <el-table-column prop="ActLogObj.SwitchScriptBeforeTargetOdds" label="切换前目标倍率"/>
-            <el-table-column prop="ActLogObj.SwitchScriptBeforeCurrentOdds" label="切换前执行倍率"/>
-            <el-table-column prop="ActLogObj.SwitchScriptBeforeOverflow" label="切换前溢出值"/>
-            <el-table-column prop="ActLogObj.IsFinishCurrentOdds" :formatter="showBool" label="是否执行完当前目标倍率"/>
-            <el-table-column prop="ActLogObj.NextOverflow" label="下一个倍率溢出值"/>
-            <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率"/>
-            <el-table-column prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" v-if="!isActV2(gid)"/>
-            <el-table-column prop="ActLogObj.RoomFactor" label="房间系数" v-if="!isActV2(gid)"/>
+            <el-table-column prop="ActLogObj.SwitchScriptBeforeTargetOdds" label="切换前目标倍率" />
+            <el-table-column prop="ActLogObj.SwitchScriptBeforeCurrentOdds" label="切换前执行倍率" />
+            <el-table-column prop="ActLogObj.SwitchScriptBeforeOverflow" label="切换前溢出值" />
+            <el-table-column prop="ActLogObj.IsFinishCurrentOdds" :formatter="showBool" label="是否执行完当前目标倍率" />
+            <el-table-column prop="ActLogObj.NextOverflow" label="下一个倍率溢出值" />
+            <el-table-column prop="ActLogObj.NextTargetOdds" label="下一个目标倍率" />
+            <el-table-column v-if="!isActV2(gid)" prop="ActLogObj.InterveneFactor" :formatter="toRupee" label="干扰值" />
+            <el-table-column v-if="!isActV2(gid)" prop="ActLogObj.RoomFactor" label="房间系数" />
 
-            <el-table-column prop="ActLogObj.CollectOddsAdd" label="收集倍率增加" v-if="isActCollect(gid)"/>
-            <el-table-column prop="ActLogObj.CollectOddsSub" label="收集倍率扣减" v-if="isActCollect(gid)"/>
-            <el-table-column prop="ActLogObj.CollectOddsTotal" label="累计收集倍率" v-if="isActCollect(gid)"/>
+            <el-table-column v-if="isActCollect(gid)" prop="ActLogObj.CollectOddsAdd" label="收集倍率增加" />
+            <el-table-column v-if="isActCollect(gid)" prop="ActLogObj.CollectOddsSub" label="收集倍率扣减" />
+            <el-table-column v-if="isActCollect(gid)" prop="ActLogObj.CollectOddsTotal" label="累计收集倍率" />
 
-            <el-table-column prop="ActLogObj.IsLotteryLimit" label="保底限制" v-if="isActV2(gid)">
+            <el-table-column v-if="isActV2(gid)" prop="ActLogObj.IsLotteryLimit" label="保底限制">
               <template slot-scope="scope">
                 <span v-if="scope.row.ActLogObj.IsLotteryLimit" style="color:red">是</span>
                 <span v-else>否</span>
               </template>
             </el-table-column>
-            <el-table-column prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" v-if="isActV2(gid)">
-
-            </el-table-column>
-            <el-table-column prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" v-if="isActV2(gid)">
-
-            </el-table-column>
-
+            <el-table-column v-if="isActV2(gid)" prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" />
+            <el-table-column v-if="isActV2(gid)" prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" />
 
           </el-table-column>
         </template>
@@ -262,7 +270,7 @@
         width="50%"
       >
         <p>命中支付线：{{ detailPayLine }}</p>
-        <div id="slotsLogDetail" v-html="detailContent"/>
+        <div id="slotsLogDetail" v-html="detailContent" />
       </el-dialog>
     </el-row>
     <el-row type="flex" justify="end">
@@ -281,7 +289,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px"/>
+      <line-chart :chart-data="chartData" height="600px" />
     </el-row>
   </div>
 </template>
@@ -291,9 +299,9 @@ import Compare from '@/components/Compare'
 import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
-import {$libDate, $libShow, ClientTableData, MoneyShow} from '@/utils/common'
+import { $libDate, $libShow, ClientTableData, MoneyShow } from '@/utils/common'
 import store from '@/store'
-import {Message} from 'element-ui'
+import { Message } from 'element-ui'
 import LineChart from './components/LineChart'
 import DateTimeShow from '@/components/DatetimeShow'
 
@@ -301,17 +309,17 @@ function newChartData() {
   return {
     xData: [],
     yData: [
-      {Name: '个人输赢', Data: []},
-      {Name: '资产', Data: []},
-      {Name: 'Winning', Data: []},
-      {Name: '危险系数', Data: []}
+      { Name: '个人输赢', Data: [] },
+      { Name: '资产', Data: [] },
+      { Name: 'Winning', Data: [] },
+      { Name: '危险系数', Data: [] }
     ]
   }
 }
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: {DateTimeShow, Compare, Publish, UidInput, LineChart},
+  components: { DateTimeShow, Compare, Publish, UidInput, LineChart },
   data() {
     return {
       gid: 0,
@@ -336,7 +344,7 @@ export default {
       totalCount: 0,
       currentPage: 0,
       pageNum: 20,
-      typeNames: {0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot'},
+      typeNames: { 0: '主游戏', 1: 'wild', 2: 'scatter', 3: 'jackpot' },
       showDetail: false,
       detailContent: '',
       detailPayLine: 0
@@ -409,7 +417,7 @@ export default {
     },
     initChartData() {
       console.log(1)
-      const objs = this.dataArr.sort(function (a, b) {
+      const objs = this.dataArr.sort(function(a, b) {
         return a.Uptime - b.Uptime
       })
       const chartData = newChartData()
@@ -712,28 +720,42 @@ export default {
       })
     },
     exportExcel() {
-      import('@/vendor/Export2Excel').then(async excel => {
-        if (this.tableData === 0) {
-          this.$message.error('No data to export, or query first')
+      request({
+        url: '/other/export/time',
+        method: 'get'
+      }).then(response => {
+        if (response.RetCode !== 0) {
+        // 如果 RetCode 不为 0，提示返回的 Data 并返回
+          this.$message.error(response.Data)
           return
         }
-        this.exportData = []
-        const max = Math.ceil(this.totalCount / this.pageNum)
-        this.isButtonDisabled = true
-        for (let i = 1; i <= max; i++) {
-          await this.getExportData(i)
-        }
-        this.isButtonDisabled = false
-        const data = this.exportData
-        const columns = this.$refs.filterTable.columns
-        // 提取表头
-        const header = columns.map(column => column.label)
-        excel.export_json_to_excel({
-          header: header, // 表头 必填
-          data, // 具体数据 必填
-          filename: 'Slots records', // 非必填
-          autoWidth: true, // 非必填
-          bookType: 'xlsx' // 非必填
+        import('@/vendor/Export2Excel').then(async excel => {
+          if (this.tableData === 0) {
+            this.$message.error('No data to export, or query first')
+            return
+          }
+          if (this.totalCount > 20000) {
+            this.$message.error('导出数据量太大(' + this.totalCount + ')，可能会影响线上业务，请缩小搜索范围')
+            return
+          }
+          this.exportData = []
+          const max = Math.ceil(this.totalCount / this.pageNum)
+          this.isButtonDisabled = true
+          for (let i = 1; i <= max; i++) {
+            await this.getExportData(i)
+          }
+          this.isButtonDisabled = false
+          const data = this.exportData
+          const columns = this.$refs.filterTable.columns
+          // 提取表头
+          const header = columns.map(column => column.label)
+          excel.export_json_to_excel({
+            header: header, // 表头 必填
+            data, // 具体数据 必填
+            filename: 'Slots records', // 非必填
+            autoWidth: true, // 非必填
+            bookType: 'xlsx' // 非必填
+          })
         })
       })
     },
