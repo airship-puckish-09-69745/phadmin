@@ -730,7 +730,10 @@ export default {
               o.Data = JSON.parse(o.ConfigData)
           }
         }
+
         this.queryKeyInput()
+        this.proceedData(1)
+
         console.log('response', response)
       })
     },
@@ -819,7 +822,6 @@ export default {
           this.showItem.SlotsType = o.SlotsType
           this.showItem.Plans = o.Data
           this.showItem.ID = o.ID
-          this.proceedData(1)
 
           this.$forceUpdate()
           return
