@@ -239,7 +239,7 @@
           width="120"
         >
           <template slot-scope="scope">
-            {{ showRobotLevel(scope.row.IsRobot) }}
+            {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
           </template>
         </el-table-column>
       </template>
@@ -5026,7 +5026,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           return level <= 7 ? '陪玩机器人' : level
       }
     },
-    showRobotLevel(level) {
+    showRobotLevel(isRobot,level) {
+      if (isRobot!=0 && level==0) {
+        level = isRobot
+      }
       switch (level) {
         case -1 :
           return '机器人'
@@ -5091,7 +5094,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else if (robotLevel == 5) {
         return '机器人--要赢'
       }
-      return ''
+      return '机器人'
     }
   }
 }
