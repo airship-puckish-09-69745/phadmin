@@ -241,6 +241,7 @@
       </el-form>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editVersionDialogVisible = false">取消</el-button>
         <el-button @click="saveEditVersion" type="primary">确定</el-button>
       </div>
     </el-dialog>
@@ -426,7 +427,6 @@
       </el-table>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="editBetOddsPlansVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('BetOddsPlans',editBetOddsPlansFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
