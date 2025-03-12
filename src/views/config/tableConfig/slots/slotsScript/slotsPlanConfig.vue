@@ -1142,6 +1142,7 @@ export default {
         await this.createCfg()
       }
       await this.queryKeyInput()
+      await this.proceedData(1)
     },
     updateCfg(){
       if (!this.checkData()) {
