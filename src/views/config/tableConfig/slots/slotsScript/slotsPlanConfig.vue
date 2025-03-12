@@ -204,7 +204,7 @@
         <el-form-item label="版本说明">
           <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明" :disabled="editVersionIsReady"></el-input>
         </el-form-item>
-        <el-form-item label="是否就绪">
+        <el-form-item label="是否就绪" :disabled="editVersionIsReady">
           <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)">
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
@@ -1127,14 +1127,15 @@ export default {
         },
       ]
     },
-    saveCfgByGid(){
-      if (this.showItem.ID>0) {
-        this.proceedData(2)
-        this.updateCfg()
-      }else {
-        this.proceedData(2)
-        this.createCfg()
+    async saveCfgByGid() {
+      if (this.showItem.ID > 0) {
+        await this.proceedData(2)
+        await this.updateCfg()
+      } else {
+        await this.proceedData(2)
+        await this.createCfg()
       }
+      await this.getData()
     },
     updateCfg(){
       if (!this.checkData()) {
