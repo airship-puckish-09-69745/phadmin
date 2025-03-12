@@ -205,7 +205,7 @@
           <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明" :disabled="editVersionIsReady"></el-input>
         </el-form-item>
         <el-form-item label="是否就绪" >
-          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" :disabled="editVersionIsReady">
+          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" >
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
           </el-radio-group>
@@ -726,6 +726,9 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.orgDataList = response.Data
+          for (const o of this.orgDataList) {
+              o.Data = JSON.parse(o.ConfigData)
+          }
         }
         this.queryKeyInput()
         console.log('response', response)
@@ -802,7 +805,7 @@ export default {
           for (const v of o.Versions) {
             for (const p of v.ScriptCfg.BetOddsPlans) {
               for (const i in p.TargetBets) {
-                p.TargetBets[i] = parseFloat(p.TargetBets[i] )*1000
+                p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
               }
             }
           }
@@ -812,8 +815,9 @@ export default {
     async queryKeyInput() {
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
+          console.log('o',  o.SlotsType,o)
           this.showItem.SlotsType = o.SlotsType
-          this.showItem.Plans = JSON.parse(o.ConfigData)
+          this.showItem.Plans = o.Data
           this.showItem.ID = o.ID
           this.proceedData(1)
 
@@ -1135,7 +1139,7 @@ export default {
         await this.proceedData(2)
         await this.createCfg()
       }
-      // await this.getData()
+      await this.queryKeyInput()
     },
     updateCfg(){
       if (!this.checkData()) {
