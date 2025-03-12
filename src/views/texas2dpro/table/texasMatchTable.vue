@@ -554,9 +554,9 @@ export default {
         { key: '返水金', value: 3 }
       ],
       DynamicRewardConfig: [
-        { key: 'top 10% paid', value: 51 },
-        { key: '测试', value: 52 },
-        { key: '测试2', value: 53 },
+        { key: 'ceshi1', value: 54 },
+        { key: '91配置表', value: 55 },
+        { key: '82配置表', value: 56 },
       ],
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
