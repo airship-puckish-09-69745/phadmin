@@ -290,7 +290,7 @@ export default {
       } else if (robotLevel == 5) {
         return '机器人--要赢'
       }
-      return ''
+      return '机器人'
     }
 
   }
