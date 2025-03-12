@@ -1527,6 +1527,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'Barangay',
+        component: () => import('@/views/empty'),
+        name: 'Barangay',
+        meta: { title: 'Barangay系统', noCache: true },
+        children: [
+          {
+            path: 'Barangay',
+            component: () => import('@/views/config/tableConfig/activity/Barangay'),
+            name: 'Barangay',
+            meta: { title: 'Barangay系统', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'christmasConfig',
         component: () => import('@/views/empty'),
         name: 'christmasConfig',
