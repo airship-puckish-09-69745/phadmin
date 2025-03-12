@@ -68,7 +68,7 @@
                 <el-button @click="copyVersionDialog(scope.$index, versionScope.$index)" style="background: #91eee3"
                            size="mini" >复制版本</el-button>
                 <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
-                           size="mini" :disabled="versionScope.row.IsReady">删除</el-button>
+                           size="mini">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
