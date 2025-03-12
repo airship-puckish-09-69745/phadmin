@@ -64,7 +64,7 @@
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
-                           size="mini" :disabled="versionScope.row.IsReady">编辑</el-button>
+                           size="mini">编辑</el-button>
                 <el-button @click="copyVersionDialog(scope.$index, versionScope.$index)" style="background: #91eee3"
                            size="mini" >复制版本</el-button>
                 <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
@@ -314,6 +314,7 @@
       </el-table>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editSlotsScriptOddsCfgVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('OddsCfg',editSlotsScriptOddsCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
@@ -346,6 +347,7 @@
       </el-table>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editScatterHitCfgVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('ScatterHitCfg',editScatterHitCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
@@ -425,6 +427,7 @@
       </el-table>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editBetOddsPlansVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('BetOddsPlans',editBetOddsPlansFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
@@ -485,6 +488,7 @@
 
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editBigPrizeOddsCfgVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('BigPrizeCfg',editBigPrizeOddsCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
@@ -520,6 +524,7 @@
         </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
+        <el-button @click="editBigPrizeOddsPlansCfgVisible = false">取消</el-button>
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
       </div>
    </el-dialog>
