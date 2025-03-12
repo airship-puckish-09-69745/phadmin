@@ -133,6 +133,42 @@
           </el-table>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
+          <legend>奖励配置</legend>
+           <el-row>
+            <el-col :span="11">
+              <el-form-item label="奖励类型">
+                <el-select v-model="edit.item.TemplateType" placeholder="请选择" @change="changeTemplateType">
+                  <el-option v-for="item in TemplateTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+             <el-col v-if="edit.item.TemplateType===1" :span="11">
+              <el-form-item label="奖金类型">
+                <el-select v-model="edit.item.RewardType" placeholder="请选择">
+                  <el-option v-for="item in RewardTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="奖励配置">
+                <el-select v-if="edit.item.TemplateType===0" v-model="edit.item.RewardId" placeholder="请选择">
+                  <el-option v-for="item in RewardConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+                <el-select v-else v-model="edit.item.RewardId" placeholder="请选择">
+                  <el-option v-for="item in DynamicRewardConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="初始奖池:" :required="true" prop="item.RewardPool" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.item.RewardPool" placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </fieldset> 
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛信息</legend>
         <el-row>
           <el-col :span="11">
@@ -332,6 +368,18 @@
             </el-form-item>
           </el-col>
         </el-row>
+         <el-row>
+          <el-col :span="11">
+            <el-form-item label="ReBuy费用:" prop="item.ReBuyFee">
+              <el-input v-model="edit.item.ReBuyFee" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item label="费率(百分比):" prop="item.ServiceFeeRatio">
+              <el-input v-model="edit.item.ServiceFeeRatio" placeholder="请输入" />
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="11">
             <el-form-item label="可Rebuy盲注级别限制:" :required="true" prop="item.RebuyClassLimit" :rules="dataRule(true,{type:'n',range:'0'})">
@@ -372,20 +420,6 @@
           <el-col :span="11">
             <el-form-item label="机器人数量:" :required="true" prop="item.RobotNum" :rules="dataRule(true,{type:'n',range:'0'})">
               <el-input v-model.number="edit.item.RobotNum" placeholder="请输入" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="奖励配置">
-              <el-select v-model="edit.item.RewardId" placeholder="请选择">
-                <el-option v-for="item in RewardConfig" :key="item.key" :label="item.key" :value="item.value" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="11">
-            <el-form-item label="初始奖池:" :required="true" prop="item.RewardPool" :rules="dataRule(true,{type:'n',range:'0'})">
-              <el-input v-model.number="edit.item.RewardPool" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -462,6 +496,8 @@ function newItem() {
     OperateSeconds: 0,
     PerTableMaxNum: 0,
     IsSupportRebuy: 1,
+    ReBuyFee: 0,
+    ServiceFeeRatio: 0,
     RebuyClassLimit: 0,
     RebuyChipNum: 0,
     RebuyMaxTimes: 0,
@@ -472,6 +508,8 @@ function newItem() {
     IsStartNow: 0,
     RaceWhiteList: '',
     PreMatchBeginTime: 10,
+    TemplateType: 0,
+    RewardType: 0,
     RewardId: 0,
     RewardPool: 0,
     LastModify: 0,
@@ -505,6 +543,20 @@ export default {
         { key: '[1]快速盲注配置', value: 1 },
         { key: '[2]小赛2m升盲', value: 2 },
         { key: '[3]Daily Free', value: 3 }
+      ],
+      TemplateTypeConfig: [
+        { key: '固定奖励', value: 0 },
+        { key: '动态奖励', value: 1 },
+      ],
+      RewardTypeConfig: [
+        { key: '金币', value: 1 },
+        { key: '投注金', value: 2 },
+        { key: '返水金', value: 3 }
+      ],
+      DynamicRewardConfig: [
+        { key: 'ceshi1', value: 54 },
+        { key: '91配置表', value: 55 },
+        { key: '82配置表', value: 56 },
       ],
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
@@ -565,6 +617,8 @@ export default {
         OperateSeconds: '操作时间(秒)',
         PerTableMaxNum: '每桌人数上限',
         IsSupportRebuy: '是否支持rebuy,0否1是',
+        ReBuyFee: 'rebuy 费用',
+        ServiceFeeRatio: '费率',
         RebuyClassLimit: '可rebuy级别限制',
         RebuyChipNum: 'rebuy后筹码数量',
         RebuyMaxTimes: 'rebuy次数上限',
@@ -575,6 +629,8 @@ export default {
         IsStartNow: '比赛是否立即开始',
         RaceWhiteList: '白名单',
         PreMatchBeginTime: '提前可进入时间',
+        TemplateType: '奖励模板类型',
+        RewardType: '奖金类型',
         RewardId: '奖励ID',
         RewardPool: '初始奖池',
         AppInfo: 'App信息',
@@ -666,7 +722,9 @@ export default {
       this.clientDB.GetPage().SetPageNo(val)
       this.refreshShow()
     },
-
+    changeTemplateType(){
+      this.edit.item.RewardId = 0
+    },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
@@ -737,6 +795,8 @@ export default {
             objs[o].RaceWeek = objs[o].RaceWeekStr.split(',')
             objs[o].ServiceFee = objs[o].ServiceFee/1000
             objs[o].SignupFee = objs[o].SignupFee/1000
+            objs[o].ReBuyFee = objs[o].ReBuyFee/1000
+            objs[o].ServiceFeeRatio = objs[o].ServiceFeeRatio/100
             if (objs[o].AppInfoStr !== ''){
               objs[o].AppInfo = JSON.parse(objs[o].AppInfoStr)
             } else {
@@ -874,6 +934,8 @@ export default {
       }
       postData.ServiceFee = postData.ServiceFee * 1000
       postData.SignupFee = postData.SignupFee * 1000
+      postData.ReBuyFee = postData.ReBuyFee * 1000
+      postData.ServiceFeeRatio = postData.ServiceFeeRatio * 100
       if (postData.RaceType === 2) {
         postData.RaceWeekStr = ''
         for (var i = 0; i < postData.RaceWeek.length; i++) {

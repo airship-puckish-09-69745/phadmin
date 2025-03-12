@@ -505,12 +505,20 @@ export default {
     selectMatchName() {
       this.showCsCfgs = []
       if (this.matchCfg.length > 0) {
+        var fit = false
         for (var i = 0; i < this.matchCfg.length; i++) {
           for (var j = 0; j < this.matchCfg[i].app_info.length; j++) {
             if (this.matchCfg[i].app_info[j].appId === this.editForm.data.app_id) {
               this.showCsCfgs.push(this.matchCfg[i])
+              fit = true
             }
           }
+        }
+        if (fit === true) {
+          this.showCsCfgs.push({
+            'label': '无',
+            'value': 0
+          })
         }
       }
     },
@@ -773,12 +781,6 @@ export default {
 
      if (this.editForm.data.jump_id == 1 &&  this.editForm.data.game_id <= 0) {
        this.errmsg("请选择跳转分类")
-       return false
-     }
-
-     //free 跳转的时候，赛事跳转是非必选的
-     if (this.editForm.data.jump_id == 1 &&  this.editForm.data.game_id != 2 &&  this.editForm.data.match_cfg_id <= 0) {
-       this.errmsg("请选择赛事跳转")
        return false
      }
       if (this.editForm.data.jump_id == 2 &&  this.editForm.data.game_id <= 0) {
