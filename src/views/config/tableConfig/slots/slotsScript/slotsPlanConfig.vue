@@ -1135,7 +1135,7 @@ export default {
         await this.proceedData(2)
         await this.createCfg()
       }
-      await this.getData()
+      // await this.getData()
     },
     updateCfg(){
       if (!this.checkData()) {
