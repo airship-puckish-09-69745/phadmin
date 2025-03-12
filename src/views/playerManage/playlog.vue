@@ -232,14 +232,14 @@
       </el-table-column>
 
 
-      <template v-if="gid===21">
+      <template v-if="gid===21 || gid===126">
         <el-table-column
           prop="IsRobot"
           label="玩家类型"
           width="120"
         >
           <template slot-scope="scope">
-            {{ showRobotLevel(scope.row.IsRobot) }}
+            {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
           </template>
         </el-table-column>
       </template>
@@ -3428,7 +3428,9 @@ export default {
         4: 'MINI'
       },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
-      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126]
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126],
+      uidMap: {},
+      isRobotMap: {}
     }
   },
   computed: {},
@@ -3585,7 +3587,38 @@ export default {
     },
     // 分页处理
     refreshShow() {
+      this.uidMap = {}
       this.tableData = this.clientDB.GetCurrentPageData()
+      for (const o in this.tableData) {
+        this.uidMap[this.tableData[o].Uid] = 0
+      }
+
+      this.uids = []
+      for (var key in this.uidMap) {
+        this.uids.push(key)
+      }
+      if (this.envProjectName != 'ph_audit') {
+        request({
+          url: '/dataProxy/is/robot',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Uids: JSON.stringify(this.uids)
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            for (const key in response.Data) {
+              this.isRobotMap[key] = response.Data[key]
+            }
+            console.log(this.tableData)
+            for (const o of this.tableData) {
+              if (this.isRobotMap[o.Uid] && o.IsRobot==0) {
+                o.IsRobot = -1
+              }
+            }
+          }
+        })
+      }
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -3616,6 +3649,7 @@ export default {
       const $this = this
       this.sweeperRateVisible = false
       this.dataArr = []
+      this.uidMap = {}
       const loading = this.$loading({
         lock: true,
         text: '数据拉取中，请稍候...',
@@ -4992,7 +5026,10 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
           return level <= 7 ? '陪玩机器人' : level
       }
     },
-    showRobotLevel(level) {
+    showRobotLevel(isRobot,level) {
+      if (isRobot!=0 && level==0) {
+        level = isRobot
+      }
       switch (level) {
         case -1 :
           return '机器人'
@@ -5057,7 +5094,7 @@ UPSTREAM_TYPE_CRASH           = 10 //Crash*/
       } else if (robotLevel == 5) {
         return '机器人--要赢'
       }
-      return ''
+      return '机器人'
     }
   }
 }

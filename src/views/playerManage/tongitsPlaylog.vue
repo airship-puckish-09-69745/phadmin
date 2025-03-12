@@ -197,7 +197,7 @@
         width="120px"
       >
         <template slot-scope="scope">
-          {{ showRobotLevel(scope.row.IsRobot) }}
+          {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
         </template>
       </el-table-column>
       <el-table-column
@@ -458,7 +458,7 @@
           width="120px"
         >
           <template slot-scope="scope">
-            {{ showRobotLevel(scope.row.IsRobot) }}
+            {{ showRobotLevel(scope.row.IsRobot,scope.row.RobotLevel) }}
           </template>
         </el-table-column>
         <template v-if="gid === 24">
@@ -627,7 +627,10 @@ export default {
 
       return cfg[mode] ? cfg[mode] : mode
     },
-    showRobotLevel(level) {
+    showRobotLevel(isRobot,level) {
+      if (isRobot!=0 && level==0) {
+        level = isRobot
+      }
       switch (level) {
         case -1 :
           return '机器人'
@@ -778,7 +781,9 @@ export default {
               this.isRobotMap[key] = response.Data[key]
             }
             for (const o of this.tableData) {
-
+              if (this.isRobotMap[o.Uid] && o.IsRobot==0) {
+                o.IsRobot = -1
+              }
             }
           }
         })
