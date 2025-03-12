@@ -205,7 +205,7 @@
           <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明" :disabled="editVersionIsReady"></el-input>
         </el-form-item>
         <el-form-item label="是否就绪">
-          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" :disabled="editVersionFormData.IsReady">
+          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)">
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
           </el-radio-group>
@@ -802,7 +802,7 @@ export default {
           for (const v of o.Versions) {
             for (const p of v.ScriptCfg.BetOddsPlans) {
               for (const i in p.TargetBets) {
-                p.TargetBets[i] = parseInt(p.TargetBets[i] )*1000
+                p.TargetBets[i] = parseFloat(p.TargetBets[i] )*1000
               }
             }
           }
