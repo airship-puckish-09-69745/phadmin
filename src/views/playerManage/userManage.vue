@@ -1290,6 +1290,7 @@ export default {
           $this.credit.dayVbs=response.Data.dayVbs
           $this.credit.dayPrs=response.Data.dayPrs
           $this.credit.dayGgrs=response.Data.dayGgrs
+          $this.credit.blackList = []
           if (response.Data.blackList !== '') {
             $this.credit.blackList=JSON.parse(response.Data.blackList)
           }
