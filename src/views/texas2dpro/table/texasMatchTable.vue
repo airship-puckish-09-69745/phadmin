@@ -554,9 +554,8 @@ export default {
         { key: '返水金', value: 3 }
       ],
       DynamicRewardConfig: [
-        { key: 'ceshi1', value: 54 },
-        { key: '91配置表', value: 55 },
-        { key: '82配置表', value: 56 },
+        { key: 'UAT28', value: 100 },
+        { key: 'UAT 2.9', value: 101 },
       ],
       RewardConfig: [
         { key: '[0]动态奖励', value: 0 },
