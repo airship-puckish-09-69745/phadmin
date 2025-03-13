@@ -176,7 +176,7 @@
           <el-button type="danger" size="mini" style="margin-right: 100px;" @click="clearCreditData()">清空信誉分数据</el-button>
           <el-button v-if="env=='test'" type="danger" size="mini" style="margin-right: 100px;" @click="getCredit(true)">刷用户日数据</el-button>
         </el-descriptions-item>
-        <el-descriptions-item label="信誉分总" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="信誉分" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="玩牌局数分">{{ formatNumber(credit.playRoundScore / 1000) }}</el-descriptions-item>
@@ -347,7 +347,6 @@ export default {
         validBetScore: 0,
         playRoundScore: 0,
         ggrScore: 0,
-        creditScore: 0,
         dayVbs: 0,
         dayPrs: 0,
         dayGgrs: 0,

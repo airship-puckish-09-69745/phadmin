@@ -189,12 +189,24 @@
             label="信誉分达标用户数量"
           />
           <el-table-column
+            prop="dangerCount"
+            label="高危用户数量"
+          />
+          <el-table-column
             prop="gid21"
             label="Pusoy黑名单用户数量"
           />
           <el-table-column
             prop="gid113"
             label="PusoySwap黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid126"
+            label="PusoyWild黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid34"
+            label="PusoyDos黑名单用户数量"
           />
           <el-table-column
             prop="gid22"
