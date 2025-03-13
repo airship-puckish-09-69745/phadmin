@@ -1701,10 +1701,18 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
-      },
+      }
+    ]
+  },
+  {
+    path: '/item',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '道具管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    children: [
       {
         path: 'itemConfig',
-        component: () => import('@/views/matchManage/itemConfig'),
+        component: () => import('@/views/itemManage/itemConfig'),
         name: 'itemConfig',
         meta: { title: '道具管理', noCache: true }
       }
