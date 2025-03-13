@@ -299,6 +299,7 @@ export default {
   },
   mounted(){
     this.getList()
+    //this.checkAll()
   },
   methods: {
     getList() {
@@ -358,6 +359,7 @@ export default {
           quality: 0,
           timeType: []
         }
+        this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
         this.editForm.visable = true
         this.editForm.isAdd = true
@@ -370,7 +372,6 @@ export default {
         for (let i = 0; i < this.tableData.length; i++) {
           if (this.tableData[i].id == id) {
             editData = this.tableData[i]
-            console.log(this.tableData[i])
             break
           }
         }
@@ -452,6 +453,13 @@ export default {
       return showTextName
     },
 
+    checkAll(){
+      //默认全选
+      for (var i = 0; i < this.dayTypeCfgs.length; i++) {
+        this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
+      }
+      console.log(this.editForm.data.timeType)
+    },
     handleUpdate(id) {
       this.$confirm('您确定要将该比赛配置上架吗？', '提示', {
         confirmButtonText: '确定',
