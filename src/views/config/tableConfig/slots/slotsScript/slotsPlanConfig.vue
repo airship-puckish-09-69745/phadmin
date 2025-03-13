@@ -1223,7 +1223,7 @@ export default {
         method: 'post',
         data: {
           SlotsType: this.showItem.SlotsType,
-          ConfigData: JSON.stringify(item)
+          ConfigData: JSON.stringify(items)
         }
       }).then(response => {
         if (response.RetCode === 0) {
