@@ -121,7 +121,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="CreditScoreMode" label="信誉分开关" width="150" >
+        <el-table-column prop="CreditScoreMode" label="信誉分配桌开关" width="150" >
           <template slot-scope="scope"> {{ scope.row.CreditScoreMode }} </template>
           
         </el-table-column>
@@ -376,7 +376,7 @@
           </el-col>
 
           <el-col :span="11">
-            <el-form-item label="信誉分开关：" :required="true">
+            <el-form-item label="信誉分配桌开关：" :required="true">
               <el-radio-group v-model.number="edit.item.CreditScoreMode">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
