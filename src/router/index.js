@@ -2543,6 +2543,26 @@ export const asyncRoutes = [
       },
 
       {
+        path: 'pusoyCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Pusoy-作弊识别 ◐' },
+        children: [
+          {
+            path: 'pusoy_cheat_log',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatLog'),
+            name: 'pusoy_cheat_log',
+            meta: { title: 'pusoy作弊记录 ◐' }
+          },
+          {
+            path: 'pusoy_black',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyBlack'),
+            name: 'pusoy_black',
+            meta: { title: 'pusoy黑名单 ◐' }
+          }
+        ]
+      },
+      {
         path: 'tongitsCheat',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',

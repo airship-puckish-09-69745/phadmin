@@ -362,7 +362,7 @@ export default {
       },
       statItem: { money: 0, initMoney: 0 },
       txt: '',
-      subKey: 'tongits_ai_list_cfg'
+      subKey: 'tongitsJoker_ai_list_cfg'
     }
   },
 

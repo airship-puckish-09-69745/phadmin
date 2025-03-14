@@ -30,10 +30,15 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="wild图标出现倍率权重">
-            <el-input v-model="cfg.WildOddsRate" placeholder="请输入内容,如7,8,9,10"> <template slot="append">分别对应1倍,2倍,3倍</template> </el-input>
-          </el-form-item>
+          <!--          <el-form-item label="wild图标出现倍率权重">-->
+          <!--            <el-input v-model="cfg.WildOddsRate" placeholder="请输入内容,如7,8,9,10"> <template slot="append">分别对应1倍,2倍,3倍</template> </el-input>-->
+          <!--          </el-form-item>-->
 
+          <el-form-item label="Bonus扩展格子权重配置">
+            <el-input v-model="cfg.BonusExtendGrids" placeholder="请输入内容,如100,100,100,100">
+              <template slot="append">分别对应拓展1行,拓展2行,拓展3行,拓展4行</template>
+            </el-input>
+          </el-form-item>
         </el-form>
       </el-col>
     </el-row>
@@ -45,19 +50,19 @@
     </el-row>
 
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare"/>
   </div>
 </template>
 
 <script>
 import RatioInput from '@/components/RatioInput'
 import Compare from '@/components/Compare'
-import { DataRule, ValidateVueItem } from '@/utils/common'
+import {DataRule, ValidateVueItem} from '@/utils/common'
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
   name: 'SlotsArcaneEgyptExt',
-  components: { RatioInput, Compare },
+  components: {RatioInput, Compare},
   model: {
     prop: 'slotsData',
     event: 'cc'
@@ -65,15 +70,14 @@ export default {
   props: {
     slotsData: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       }
     }
   },
   data() {
     return {
-      cfg: {
-      }
+      cfg: {}
     }
   },
   created() {
@@ -92,7 +96,7 @@ export default {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function(isEdit) {
+      this.$refs.compare.Compare(function (isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return
