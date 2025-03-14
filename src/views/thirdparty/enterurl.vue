@@ -376,9 +376,34 @@ export default {
           desc: 'Zoogame[1000009]正式'
         },
         {
+          id: 1000016,
+          agentId: 'zooDev',
+          desc: 'zoo 内部开发[1000016]'
+        },
+        {
           id: 1000020,
           agentId: 'playtime',
           desc: 'playtime正式[1000020]'
+        },
+        {
+          id: 1000021,
+          agentId: 'whisperDev',
+          desc: 'whisperDev[1000021]'
+        },
+        {
+          id: 1000026,
+          agentId: 'domino777Dev',
+          desc: 'domino777Dev[1000026]'
+        },
+        {
+          id: 1000029,
+          agentId: 'idgamesDev',
+          desc: 'idgamesDev[1000029]'
+        },
+        {
+          id: 1000032,
+          agentId: 'weekaDev',
+          desc: 'weekaDev[1000032]'
         }
       ]
     }
