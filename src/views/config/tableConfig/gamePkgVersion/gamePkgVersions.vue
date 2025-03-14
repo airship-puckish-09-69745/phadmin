@@ -159,6 +159,12 @@
           width="150"
         />
         <el-table-column
+          prop="GameName"
+          label="游戏名(内部)"
+          sortable="custom"
+          width="150"
+        />
+        <el-table-column
           prop="BundleKey"
           label="包KEY"
           sortable="custom"
@@ -283,6 +289,11 @@
         <el-form-item label="中文名：" :required="true" prop="PkgName">
           <el-col :span="15">
             <el-input v-model="edit.item.PkgName" />
+          </el-col>
+        </el-form-item>
+        <el-form-item label="游戏名(内部)：" :required="true" prop="GameName">
+          <el-col :span="15">
+            <el-input v-model="edit.item.GameName" />
           </el-col>
         </el-form-item>
         <el-form-item label="包Key：" :required="true" prop="BundleKey">
@@ -623,6 +634,7 @@ export default {
         LobbyVersionID: '链接版本ID',
         LobbyVersion: '链接版本',
         PkgName: '中文名',
+        GameName: '游戏名(内部)',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
         WhiteVersion: '游戏包白名单版本'
@@ -637,7 +649,7 @@ export default {
   },
   methods: {
     newItem() {
-      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', PkgName: '', WhiteVersion: '', Status: 7 }
+      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', PkgName: '',GameName: '', WhiteVersion: '', Status: 7 }
     },
     newLobbyItem() {
       return { LobbyVersion: '' }

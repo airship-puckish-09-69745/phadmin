@@ -64,11 +64,11 @@
                <el-button @click="getVersion(versionScope.row,scope.row)" type="primary" style="background: #cf91ee"
                           size="mini">查看剧本</el-button>
                 <el-button @click="openEditVersionDialog(scope.$index, versionScope.$index)" type="primary"
-                           size="mini" :disabled="versionScope.row.IsReady">编辑</el-button>
+                           size="mini">编辑</el-button>
                 <el-button @click="copyVersionDialog(scope.$index, versionScope.$index)" style="background: #91eee3"
                            size="mini" >复制版本</el-button>
                 <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
-                           size="mini" :disabled="versionScope.row.IsReady">删除</el-button>
+                           size="mini">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -199,23 +199,23 @@
     <el-dialog v-if="editVersionDialogVisible"  :destroy-on-close='true' :visible.sync="editVersionDialogVisible" title="编辑版本">
       <el-form :model="editVersionFormData" label-width="120px">
         <el-form-item label="版本号">
-          <el-input v-model.number="editVersionFormData.Version" placeholder="请输入版本号"></el-input>
+          <el-input v-model.number="editVersionFormData.Version" placeholder="请输入版本号" :disabled="editVersionIsReady"></el-input>
         </el-form-item>
         <el-form-item label="版本说明">
-          <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明"></el-input>
+          <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明" :disabled="editVersionIsReady"></el-input>
         </el-form-item>
-        <el-form-item label="是否就绪">
-          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" :disabled="editVersionFormData.IsReady">
+        <el-form-item label="是否就绪" >
+          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" >
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item prop="Version" label="单个剧本步数">
-            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptSteps" size="mini"></el-input-number>
+            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptSteps" size="mini" :disabled="editVersionIsReady"></el-input-number>
         </el-form-item>
          <el-form-item prop="Version" label="总剧本数量">
           <template slot-scope="scope">
-            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptNumber" size="mini"></el-input-number>
+            <el-input-number v-model="editVersionFormData.ScriptCfg.ScriptNumber" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-form-item>
         <el-form-item prop="Version" label="赔率配置" inline-message>
@@ -249,7 +249,7 @@
 
           <!--   赔率配置弹窗  -->
     <el-dialog :visible.sync="editSlotsScriptOddsCfgVisible" title="倍率配置">
-      <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini">添加</el-button>
+      <el-button @click="appendComment(editSlotsScriptOddsCfgFormData,newOddsCfg())" type="success" size="mini" v-if="!editVersionIsReady">添加</el-button>
       <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
                   effect="dark" placement="top">
               <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
@@ -268,58 +268,59 @@
                 stripe>
         <el-table-column prop="Odds" label="最小倍数">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.OddsMin" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.OddsMin" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="最大倍数">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.OddsMax" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.OddsMax" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="在剧本中出现的个数">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.ScriptSteps" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.ScriptSteps" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="在剧本中的倍数总和">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.ScriptOddsSum" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.ScriptOddsSum" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="每个倍数正常图案缓存数量">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.NormalMatrixCacheSize" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.NormalMatrixCacheSize" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="每个倍数Scatter图案缓存数量">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.ScatterMatrixCacheSize" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.ScatterMatrixCacheSize" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="使用改图案触发Scatter的概览">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.SwitchScatterPercent" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.SwitchScatterPercent" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="触发Scatter的概率">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.TriggerScatterPercent" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.TriggerScatterPercent" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
           <el-table-column prop="Odds" label="操作">
           <template slot-scope="scope">
-            <el-button  @click="delComment(editSlotsScriptOddsCfgFormData,scope.$index)" type="danger" size="mini">删除</el-button>
+            <el-button  @click="delComment(editSlotsScriptOddsCfgFormData,scope.$index)" type="danger" size="mini" v-if="!editVersionIsReady">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editSlotsScriptOddsCfgVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('OddsCfg',editSlotsScriptOddsCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
           <!--    Scatter中奖次数配置-->
     <el-dialog :visible.sync="editScatterHitCfgVisible" title="Scatter中奖次数配置">
-      <el-button @click="appendComment(editScatterHitCfgFormData,newScatterHitCfg())" type="success" size="mini">添加</el-button>
+      <el-button @click="appendComment(editScatterHitCfgFormData,newScatterHitCfg())" type="success" size="mini"  v-if="!editVersionIsReady">添加</el-button>
       <el-table :data="editScatterHitCfgFormData"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -329,29 +330,30 @@
                 stripe>
         <el-table-column prop="Odds" label="总中奖次数">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.HitTimes" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.HitTimes" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="概率(万分比)">
           <template slot-scope="scope">
-            <el-input-number v-model="scope.row.PerTenThousand" size="mini"></el-input-number>
+            <el-input-number v-model="scope.row.PerTenThousand" size="mini" :disabled="editVersionIsReady"></el-input-number>
           </template>
         </el-table-column>
 
           <el-table-column prop="Odds" label="操作">
           <template slot-scope="scope">
-            <el-button  @click="delComment(editScatterHitCfgFormData,scope.$index)" type="danger" size="mini">删除</el-button>
+            <el-button  @click="delComment(editScatterHitCfgFormData,scope.$index)" type="danger" size="mini"  v-if="!editVersionIsReady">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editScatterHitCfgVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('ScatterHitCfg',editScatterHitCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
           <!-- 下注金额区分赔率方案配置-->
-   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px" :close-on-click-modal="false" :show-close="false">
-      <el-button @click="appendComment(editBetOddsPlansFormData,newBetOddsPlans())" type="success" size="mini">添加</el-button>
+   <el-dialog :visible.sync="editBetOddsPlansVisible" title="下注金额区分赔率方案配置" width="1200px" :close-on-click-modal="false">
+      <el-button @click="appendComment(editBetOddsPlansFormData,newBetOddsPlans())" type="success" size="mini"  v-if="!editVersionIsReady">添加</el-button>
 
       <el-table :data="editBetOddsPlansFormData"
                 border
@@ -365,9 +367,9 @@
           </template>
           <template slot-scope="scope">
             <span v-for="(v,idx) in scope.row.TargetBets">
-              <el-input v-model.number="scope.row.TargetBets[idx]" size="mini" @input="(v)=>(scope.row.TargetBets[idx]=v.replace(/[^\d.]/g,''))">
-                <template #prepend><el-button @click="appendComment(scope.row.TargetBets,0)"   size="mini">添加</el-button></template>
-                <template #append><el-button @click="delComment(scope.row.TargetBets,idx)"   size="mini">删除</el-button></template>
+              <el-input v-model.number="scope.row.TargetBets[idx]" size="mini" @input="(v)=>(scope.row.TargetBets[idx]=v.replace(/[^\d.]/g,''))" :disabled="editVersionIsReady">
+                <template #prepend><el-button @click="appendComment(scope.row.TargetBets,0)"   size="mini"  v-if="!editVersionIsReady">添加</el-button></template>
+                <template #append><el-button @click="delComment(scope.row.TargetBets,idx)"   size="mini"  v-if="!editVersionIsReady">删除</el-button></template>
               </el-input>
             </span>
           </template>
@@ -390,28 +392,28 @@
             <el-table :data="scope.row.OddsCfg" stripe>
               <el-table-column prop="Odds" label="最小倍数">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.OddsMin" size="mini"></el-input>
+                  <el-input v-model.number="scope.row.OddsMin" size="mini" :disabled="editVersionIsReady"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="Odds" label="最大倍数">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.OddsMax" size="mini"></el-input>
+                  <el-input v-model.number="scope.row.OddsMax" size="mini" :disabled="editVersionIsReady"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="Odds" label="剧本中出现的个数">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.ScriptSteps" size="mini"></el-input>
+                  <el-input v-model.number="scope.row.ScriptSteps" size="mini" :disabled="editVersionIsReady"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="Odds" label="剧本中的倍数总和">
                 <template slot-scope="scopeRow">
-                  <el-input v-model.number="scopeRow.row.ScriptOddsSum" size="mini"></el-input>
+                  <el-input v-model.number="scopeRow.row.ScriptOddsSum" size="mini" :disabled="editVersionIsReady"></el-input>
                 </template>
               </el-table-column>
                  <el-table-column prop="Odds" label="操作">
                 <template slot-scope="scopeRow">
-                  <el-button @click="appendComment(scope.row.OddsCfg,newOdds())"   size="mini">添加</el-button>
-                  <el-button @click="delComment(scope.row.OddsCfg,scope.$index)"   size="mini">删除</el-button>
+                  <el-button @click="appendComment(scope.row.OddsCfg,newOdds())"   size="mini"  v-if="!editVersionIsReady">添加</el-button>
+                  <el-button @click="delComment(scope.row.OddsCfg,scope.$index)"   size="mini"  v-if="!editVersionIsReady">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -419,12 +421,13 @@
         </el-table-column>
         <el-table-column prop="Odds" label="操作" width="80px">
           <template slot-scope="scope">
-            <el-button  @click="delComment(editBetOddsPlansFormData,scope.$index)" type="danger" size="mini">删除</el-button>
+            <el-button  @click="delComment(editBetOddsPlansFormData,scope.$index)" type="danger" size="mini"  v-if="!editVersionIsReady">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editBetOddsPlansVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('BetOddsPlans',editBetOddsPlansFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
@@ -434,23 +437,23 @@
          <el-col>
            <el-col :span="8">
               <el-form-item prop="Odds" label="下注总金额抽水比例(千分比)">
-                <el-input v-model.number="editBigPrizeOddsCfgFormData.TaxPerThousand" size="mini"><template
+                <el-input v-model.number="editBigPrizeOddsCfgFormData.TaxPerThousand" size="mini" :disabled="editVersionIsReady"><template
                   #append>‰</template></el-input>
             </el-form-item>
            </el-col>
              <el-col :span="8">
              <el-form-item prop="Odds" label="中奖概率(百万分之一)">
-                  <el-input v-model.number="editBigPrizeOddsCfgFormData.HitPerMillion" size="mini"></el-input>
+                  <el-input v-model.number="editBigPrizeOddsCfgFormData.HitPerMillion" size="mini" :disabled="editVersionIsReady"></el-input>
             </el-form-item>
                 </el-col>
           <el-col :span="8">
              <el-form-item prop="Odds" label="中奖最大间隔">
-                  <el-input v-model.number="editBigPrizeOddsCfgFormData.HitSteps" size="mini"></el-input>
+                  <el-input v-model.number="editBigPrizeOddsCfgFormData.HitSteps" size="mini" :disabled="editVersionIsReady"></el-input>
             </el-form-item>
                         </el-col>
            </el-col>
         </el-form>
-      <el-button @click="appendComment(editBigPrizeOddsCfgFormData.Plans,newBigPrizeCfg())" type="success" size="mini">添加</el-button>
+      <el-button @click="appendComment(editBigPrizeOddsCfgFormData.Plans,newBigPrizeCfg())" type="success" size="mini"  v-if="!editVersionIsReady">添加</el-button>
 
             <el-table
               :data="editBigPrizeOddsCfgFormData.Plans"
@@ -463,12 +466,12 @@
 
               <el-table-column prop="OddsMin" label="最小倍数">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.OddsMin" size="mini"></el-input>
+                  <el-input v-model.number="scope.row.OddsMin" size="mini" :disabled="editVersionIsReady"></el-input>
                 </template>
               </el-table-column>
                <el-table-column prop="OddsMax" label="最大倍数">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.OddsMax" size="mini"></el-input>
+                  <el-input v-model.number="scope.row.OddsMax" size="mini" :disabled="editVersionIsReady"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="Odds" label="中奖倍数配置">
@@ -478,20 +481,21 @@
              </el-table-column>
                  <el-table-column prop="Odds" label="操作" width="80px">
               <template slot-scope="scopeRow">
-                 <el-button @click="delComment(editBigPrizeOddsCfgFormData.Plans,scopeRow.$index)" type="danger" size="mini">删除</el-button>
+                 <el-button @click="delComment(editBigPrizeOddsCfgFormData.Plans,scopeRow.$index)" type="danger" size="mini"  v-if="!editVersionIsReady">删除</el-button>
               </template>
              </el-table-column>
           </el-table>
 
 
       <div slot="footer" class="dialog-footer">
+        <el-button @click="editBigPrizeOddsCfgVisible = false">取消</el-button>
         <el-button @click="saveOddsCfg('BigPrizeCfg',editBigPrizeOddsCfgFormData)" type="primary">确定</el-button>
       </div>
     </el-dialog>
 
           <!--  大奖倍数配置   -->
    <el-dialog :visible.sync="editBigPrizeOddsPlansCfgVisible" title="大奖配置" width="600px">
-      <el-button @click="appendComment(editBigPrizeOddsPlansCfgFormData,newBigPrizeCfg())" type="success" size="mini">添加</el-button>
+      <el-button @click="appendComment(editBigPrizeOddsPlansCfgFormData,newBigPrizeCfg())" type="success" size="mini"  v-if="!editVersionIsReady">添加</el-button>
       <el-table :data="editBigPrizeOddsPlansCfgFormData"
                 border
                 :header-cell-style="libShow.DefaultTableHeadClass"
@@ -500,26 +504,27 @@
                 stripe>
         <el-table-column prop="Odds" label="最小倍数" >
           <template slot-scope="scope">
-            <el-input v-model.number="scope.row.OddsMin" size="mini"></el-input>
+            <el-input v-model.number="scope.row.OddsMin" size="mini" :disabled="editVersionIsReady"></el-input>
           </template>
         </el-table-column>
           <el-table-column prop="Odds" label="最大倍数"  >
           <template slot-scope="scope">
-              <el-input v-model.number="scope.row.OddsMax" size="mini"></el-input>
+              <el-input v-model.number="scope.row.OddsMax" size="mini" :disabled="editVersionIsReady"></el-input>
           </template>
         </el-table-column>
          <el-table-column prop="Odds" label="权重"  >
           <template slot-scope="scope">
-              <el-input v-model.number="scope.row.Weight" size="mini"></el-input>
+              <el-input v-model.number="scope.row.Weight" size="mini" :disabled="editVersionIsReady"></el-input>
           </template>
         </el-table-column>
           <el-table-column prop="Odds" label="操作"  >
           <template slot-scope="scope">
-              <el-button @click="delComment(editBigPrizeOddsPlansCfgFormData,scope.$index)" type="danger" size="mini">删除</el-button>
+              <el-button @click="delComment(editBigPrizeOddsPlansCfgFormData,scope.$index)" type="danger" size="mini"  v-if="!editVersionIsReady">删除</el-button>
           </template>
         </el-table-column>
         </el-table>
         <div slot="footer" class="dialog-footer">
+        <el-button @click="editBigPrizeOddsPlansCfgVisible = false">取消</el-button>
         <el-button @click="saveBigPrizeOddsCfg('BigPrizeCfg ',editBigPrizeOddsPlansCfgFormData)" type="primary">确定</el-button>
       </div>
    </el-dialog>
@@ -643,6 +648,7 @@ export default {
       editIndex: -1,
 
       editVersionDialogVisible: false,
+      editVersionIsReady: false,
       versionStatus: 0,
       editVersionFormData: {
         Version: 0,
@@ -712,7 +718,7 @@ export default {
       return 'SlotsCustomScriptConfig_' + this.queryGid
     },
 
-    getData() {
+   getData() {
       request({
         url: '/slotsScriptV3Config/all',
         method: 'get',
@@ -720,8 +726,23 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.orgDataList = response.Data
+          for (const o of this.orgDataList) {
+            o.Data = JSON.parse(o.ConfigData)
+            console.log('response', o.Data)
+            for (const oz of o.Data) {
+              for (const v of oz.Versions) {
+                for (const p of v.ScriptCfg.BetOddsPlans) {
+                  for (const i in p.TargetBets) {
+                    p.TargetBets[i] /= 1000
+                  }
+                }
+              }
+            }
+          }
         }
+
         this.queryKeyInput()
+
         console.log('response', response)
       })
     },
@@ -780,12 +801,17 @@ export default {
         }
       }
     },
+    proceedData(typ) {
+      if (typ === 1) {
+
+      }
+    },
     async queryKeyInput() {
-      console.log("=====",this.orgDataList)
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
+          console.log('o',  o.SlotsType,o)
           this.showItem.SlotsType = o.SlotsType
-          this.showItem.Plans = JSON.parse(o.ConfigData)
+          this.showItem.Plans = o.Data
           this.showItem.ID = o.ID
           this.$forceUpdate()
           return
@@ -891,7 +917,7 @@ export default {
       this.editVersionDialogVisible = true;
       const version = this.showItem.Plans[planIndex].Versions[versionIndex];
       this.versionStatus = 1
-
+      this.editVersionIsReady = version.IsReady
       this.editVersionFormData = {
         Version: version.Version,
         Comment: version.Comment,
@@ -975,14 +1001,6 @@ export default {
       this.editSlotsScriptOddsCfgFormData = obj
     },
     saveOddsCfg(key,obj){
-      if (key==='BetOddsPlans'){
-        for (let o of obj) {
-          for (const i in o.TargetBets) {
-            o.TargetBets[i] = o.TargetBets *1000
-          }
-        }
-      }
-      console.log("========？",key,obj,this.showItem.Plans[this.currentPlanIndex])
       this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg[key] =  JSON.parse(JSON.stringify(obj))
       this.editSlotsScriptOddsCfgVisible = false
       this.editScatterHitCfgVisible = false
@@ -990,7 +1008,6 @@ export default {
       this.editBigPrizeOddsCfgVisible  = false
     },
     saveBigPrizeOddsCfg(key,obj){
-      console.log('====',this.editBigPrizeOddsPlansCfgIndex,this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.BigPrizeCfg.Plans[this.editBigPrizeOddsPlansCfgIndex].OddsCfg)
       this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.BigPrizeCfg.Plans[this.editBigPrizeOddsPlansCfgIndex].OddsCfg =  JSON.parse(JSON.stringify(obj))
       this.editBigPrizeOddsPlansCfgVisible = false
     },
@@ -1000,15 +1017,9 @@ export default {
     },
     openBetOddsPlanCfg(obj){
       this.editBetOddsPlansVisible  = true
-      for (const o of obj) {
-        for (const i in o.TargetBets) {
-          o.TargetBets[i] = Number(o.TargetBets)/1000
-        }
-      }
       this.editBetOddsPlansFormData = obj
     },
     openBigPrizeOddsCfg(obj){
-      console.log('====',obj)
       this.editBigPrizeOddsCfgVisible  = true
       this.editBigPrizeOddsCfgFormData= obj
     },
@@ -1112,16 +1123,27 @@ export default {
         },
       ]
     },
-    saveCfgByGid(){
-      if (this.showItem.ID>0) {
-        this.updateCfg()
-      }else {
-        this.createCfg()
+    async saveCfgByGid() {
+      if (this.showItem.ID > 0) {
+        await this.updateCfg()
+      } else {
+        await this.createCfg()
       }
+      await this.queryKeyInput()
     },
     updateCfg(){
       if (!this.checkData()) {
         return
+      }
+      var items = JSON.parse(JSON.stringify(this.showItem.Plans))
+      for (const o of items) {
+        for (const v of o.Versions) {
+          for (const p of v.ScriptCfg.BetOddsPlans) {
+            for (const i in p.TargetBets) {
+              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
+            }
+          }
+        }
       }
       request({
         url: '/slotsScriptV3Config/update',
@@ -1129,7 +1151,7 @@ export default {
         data: {
           ID: this.showItem.ID,
           SlotsType: this.showItem.SlotsType,
-          ConfigData: JSON.stringify(this.showItem.Plans)
+          ConfigData: JSON.stringify(items)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1185,12 +1207,23 @@ export default {
       if (!this.checkData()) {
         return
       }
+      var items = JSON.parse(JSON.stringify(this.showItem.Plans))
+      for (const o of items) {
+        for (const v of o.Versions) {
+          for (const p of v.ScriptCfg.BetOddsPlans) {
+            for (const i in p.TargetBets) {
+              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
+            }
+          }
+        }
+      }
+      JSON.stringify(this.showItem.Plans)
       request({
         url: '/slotsScriptV3Config/create',
         method: 'post',
         data: {
           SlotsType: this.showItem.SlotsType,
-          ConfigData: JSON.stringify(this.showItem.Plans)
+          ConfigData: JSON.stringify(items)
         }
       }).then(response => {
         if (response.RetCode === 0) {
