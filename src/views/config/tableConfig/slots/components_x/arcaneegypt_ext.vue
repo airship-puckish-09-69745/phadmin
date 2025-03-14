@@ -34,7 +34,7 @@
           <!--            <el-input v-model="cfg.WildOddsRate" placeholder="请输入内容,如7,8,9,10"> <template slot="append">分别对应1倍,2倍,3倍</template> </el-input>-->
           <!--          </el-form-item>-->
 
-          <el-form-item label="bouns扩展格子权重配置">
+          <el-form-item label="Bonus扩展格子权重配置">
             <el-input v-model="cfg.BonusExtendGrids" placeholder="请输入内容,如100,100,100,100">
               <template slot="append">分别对应拓展1行,拓展2行,拓展3行,拓展4行</template>
             </el-input>
