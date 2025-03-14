@@ -237,7 +237,7 @@ export default {
       itemTypeCfgs: [
         { 'value': 1, 'label': '门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参数券', disabled: false },
+        { 'value': 3, 'label': '德州参赛券', disabled: false },
       ],
 
       dayTypeCfgs: [
