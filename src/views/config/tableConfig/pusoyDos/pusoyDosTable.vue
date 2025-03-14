@@ -121,6 +121,11 @@
           </template>
         </el-table-column>
 
+        <el-table-column prop="CreditScoreMode" label="信誉分开关" width="150" >
+          <template slot-scope="scope"> {{ scope.row.CreditScoreMode }} </template>
+          
+        </el-table-column>
+
         <el-table-column
           prop="LastModify"
           label="最近修改"
@@ -369,6 +374,16 @@
               <el-input v-model.number="edit.item.PotScore" />
             </el-form-item>
           </el-col>
+
+          <el-col :span="11">
+            <el-form-item label="信誉分开关：" :required="true">
+              <el-radio-group v-model.number="edit.item.CreditScoreMode">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="0">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+
           <el-col :span="11">
             <!--            <el-form-item-->
             <!--              label="游戏人数："-->
@@ -434,6 +449,7 @@ function newItem() {
     RoomLevel: 0,
     RemainAlarm: 0,
     PotScore: 0,
+    CreditScoreMode:0,
     PlayMode: 1
   }
 }
