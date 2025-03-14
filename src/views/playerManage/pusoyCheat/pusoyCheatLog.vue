@@ -92,6 +92,9 @@ export default {
         return 'PusoyWild'
       }
     },
+    getSummaries(row) {
+      return row.ChangeMoney1 + row.ChangeMoney2 + row.ChangeMoney3
+    },
     formatUid(uid) {
       if (this.blackuids.includes(uid)) {
         return uid + ' (已拉黑)'
@@ -205,10 +208,19 @@ export default {
           label="0分值次数"
           width="120">
         </el-table-column>
+
         <el-table-column
           prop="PlayTimes"
           label="总局数"
           width="120">
+        </el-table-column>
+        <el-table-column
+          prop="PlayTimes"
+          label="总盈亏"
+          width="120">
+          <template slot-scope="scope">
+            {{ getSummaries(scope.row) }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="Gid"
