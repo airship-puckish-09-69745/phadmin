@@ -496,7 +496,7 @@
           </el-form-item>
 
           <el-form-item v-if=" editForm.data.signUpType == 2 || editForm.data.signUpType == 3" label="门票：" :required="true">
-            <el-select v-model="editForm.signExtra.propsId" placeholder="请选择" size="mini">
+            <el-select v-model="editForm.signExtra.propId" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in matchTicketsCfgs"
                 :key="item.value"
@@ -912,10 +912,10 @@ export default {
           betCnt: 0,
           matchEvents: 0,
           matchUniqueId:0,
-          propsId:0,    //门票道具ID,
-          propsType: 0, //道具类型,
-          propsCost:0,  //道具价值
-          propsNum: 0,  //数量
+          propId:0,    //门票道具ID,
+          propType: 0, //道具类型,
+          propCost:0,  //道具价值
+          propNum: 0,  //数量
         },
         prizeExtra: {
           awardType: 0,
@@ -924,7 +924,6 @@ export default {
           rewardType: 1,
           sceneId: 0
         },
-        propNum:0
       },
 
       AttrNames: {
@@ -1440,10 +1439,10 @@ export default {
           betCnt: 0,
           matchEvents: 0,
           matchUniqueId: 0,
-          propsId:0,
-          propsType: 0,
-          propsCost: 0,
-          propsNum: 0,
+          propId:0,
+          propType: 0,
+          propCost: 0,
+          propNum: 0,
         }
 
         this.editForm.prizeExtra = {
@@ -1595,13 +1594,14 @@ export default {
         }
       }
       for(let i = 0; i < this.matchPropsCfgs.length; i++) {
-        if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propsId) {
-            this.editForm.signExtra.propsType = this.matchPropsCfgs[i].propsType
-            this.editForm.signExtra.propsCost = this.matchPropsCfgs[i].propsCost
-            this.editForm.signExtra.propsNum  = 1 //默认写死1 后期优化
+        if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
+            this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
+            this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+            this.editForm.signExtra.propNum  = 1 //默认写死1 后期优化
             break
         }
       }
+      console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1902,7 +1902,7 @@ export default {
           this.errmsg('付费赛报名费不能为0')
           return false
         }
-        this.editForm.signExtra.propsId === 0
+        this.editForm.signExtra.propId === 0
       }
       //金币or门票报名
       if (this.editForm.data.signUpType === 3){
@@ -1910,7 +1910,7 @@ export default {
           this.errmsg('付费赛报名费不能为0')
           return false
         }
-        if(this.editForm.signExtra.propsId === 0){
+        if(this.editForm.signExtra.propId === 0){
           this.errmsg("金币or门票报名 必须选择门票")
           return false
         }
@@ -1919,7 +1919,7 @@ export default {
       if(this.editForm.data.signUpType === 2)
       {
         this.editForm.data.signUpNum = 0
-        if(this.editForm.signExtra.propsId === 0){
+        if(this.editForm.signExtra.propId === 0){
           this.errmsg("门票报名 必须选择门票")
           return false
         }
