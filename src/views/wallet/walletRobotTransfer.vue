@@ -4,10 +4,28 @@
     <el-row :gutter="10" style="margin-top: 30px">
     </el-row>
     <el-row style="padding-top: 5px">
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
-        添加机器人
-      </el-button>
-      <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh">刷新</el-button>
+      <el-form inline>
+        <el-form-item label="选择日期：">
+          <el-date-picker
+            v-model="queryTime"
+            type="date"
+            placeholder="选择日期"
+            @change="refresh"
+            size="mini"
+          />
+        </el-form-item>
+        <el-form-item label="uid：">
+          <el-input v-model.number="queryUid"   size="mini" />
+        </el-form-item>
+        <el-form-item >
+          <el-button type="success" size="mini" icon="el-icon-refresh" @click="refresh">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()">
+            添加机器人
+          </el-button>
+        </el-form-item>
+      </el-form>
+
+
     </el-row>
     <div style="padding-top: 10px">
       <el-table
@@ -82,6 +100,15 @@
         >
           <template slot-scope="scope">
             {{ scope.row.AfterRolloutUidMoney }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="CreateTime"
+          label="创建时间"
+          sortable="custom"
+        >
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.CreateTime) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -215,7 +242,9 @@ export default {
       },
       statItem: { money: 0, initMoney: 0 },
       txt: '',
-      subKey: 'tongits_ai_list_cfg'
+      subKey: 'tongits_ai_list_cfg',
+      queryTime: new Date(),
+      queryUid: 0
     }
   },
 
@@ -230,6 +259,11 @@ export default {
     console.log(1)
   },
   methods: {
+    filterUid(){
+      console.log("=======")
+      this.clientDB.FilterValueMap={"Uid":this.queryUid }
+      this.tableData = this.clientDB.GetCurrentPageData();
+    },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
@@ -311,7 +345,10 @@ export default {
           Env: _this.env,
           Path: '/transferMoney/list',
           Page: 1,
-          PageNum: 400
+          PageNum: 400,
+          uid : _this.queryUid,
+          startTime:parseInt(_this.queryTime.getTime() / 1000)
+
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -371,6 +408,7 @@ export default {
     },
 
     sortChange(ob) {
+      console.log("-------",ob.prop, ob.order)
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
