@@ -159,6 +159,50 @@
             <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
           </el-descriptions-item>
+          <el-descriptions-item label="手动添加道具:">
+            <el-col :span="2"> {{'道具类型:'}} </el-col>
+            <el-col  :span="3">
+              <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
+                <el-option
+                  v-for="item in itemTypeCfgs"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                ></el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="1" :offset="1"> {{'道具:'}} </el-col>
+            <el-col :span="3">
+              <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
+                <el-option
+                  v-for="item in tableItemData"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  />
+              </el-select>
+            </el-col>
+            <el-col :span="2" :offset="1"> {{'可用时间:'}} </el-col>
+            <el-col v-show="item.ItemType == 1" :span="3" >
+              创建时间:{{ formatTime(item.ItemStartTime)}}--结束时间:{{ formatTime(item.ItemExpireTime)}}
+            </el-col>
+            <el-col v-show="item.ItemType == 2" :span="3">
+                <el-select v-model.number="item.ItemUseTime" size="mini" placeholder="请选择">
+                  <el-option
+                    v-for="item in tableTimeData"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                    :disabled="item.disabled"
+                  />
+                </el-select>
+            </el-col>
+
+            <el-col :span="6" :offset="1">
+              <el-button type="primary" size="mini" @click="saveItemInfo">提交</el-button>
+            </el-col>
+          </el-descriptions-item>
         </el-descriptions>
 
       </el-col>
@@ -392,8 +436,19 @@ export default {
         },
         Phone: '',
         IsSetLoginPwd: false,
-        IsSetPayPwd: false
+        IsSetPayPwd: false,
+        ItemCfgId: 0,
+        ItemType: 0,
+        ItemUseTime: 0,
+        ItemQuality: 0,
+        ItemStartTime: 0,
+        ItemExpireTime: 0,
+        ItemNum: 0
       },
+      total: 0,
+      tableData: [], //头像框和门票物品配置表数据
+      tableItemData: [],
+      tableTimeData: [],
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
       money: 0,
@@ -446,6 +501,16 @@ export default {
         { 'label': 'Tongits', 'value': 22 },
         { 'label': 'Tongits Laizi', 'value': 28 },
         { 'label': 'Tongits Quick', 'value': 29 }
+      ],
+      itemTypeCfgs: [
+        { 'value': 1, 'label': '门票', disabled: false },
+        { 'value': 2, 'label': '头像框', disabled: false }
+      ],
+      dayTypeCfgs: [
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 365, 'label': '365天', disabled: false },
+        { 'value': 0, 'label': '永久', disabled: false }
       ],
       // 修改调控结果
       paySchemaDialog: false,
@@ -544,6 +609,7 @@ export default {
       console.log('set mounted', this.item.Uid)
     }
     this.getInfo()
+    this.getItemList()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -1239,6 +1305,53 @@ export default {
         console.log('取消')
       })
     },
+    saveItemInfo() {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      if (this.item.ItemType === 0) {
+        Message.error('请输入道具类型')
+        return
+      }
+      if (this.item.ItemCfgId === 0) {
+        Message.error('请输入道具id')
+        return
+      }
+      const msg = '确定添加物品吗?'
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Path: '/user/info',
+            Uid: this.item.Uid,
+            Type: 12,
+            Money: 0,
+            ItemId: this.item.ItemCfgId,
+            ItemType: this.item.ItemType,
+            UseTime: this.item.ItemUseTime,
+            Quality: this.item.ItemQuality,
+            ExpireTime: this.item.ItemExpireTime,
+            ActMsg: '管理后台By ' + store.getters.name
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改成功！')
+            this.item.ItemType = 0
+            this.item.ItemCfgId = 0
+            this.item.ItemUseTime = 0
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
     getInfo() {
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
@@ -1486,6 +1599,64 @@ export default {
         }
       })
     },
+    getItemList() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 10
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.total = objs.total
+            this.tableData = []
+            this.tableData = objs.list
+          }
+        } else {
+          this.total = 0
+          this.tableData = []
+        }
+      })
+    },
+    ShowItemList(id) {
+      this.tableItemData = []
+      console.log(this.tableData)
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].item_type == id) {
+          var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+          this.tableItemData.push(dataList)
+          this.item.ItemQuality = this.tableData[i].quality
+        }
+      }
+      this.item.ItemCfgId = 0
+    },
+    ShowItemTime(itemId){
+      this.tableTimeData = []
+      this.item.ItemUseTime = 0
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id == itemId) {
+          const time_type = JSON.parse(this.tableData[i].time_type)
+          for (let j = 0; j < time_type.length; j++) {
+            var msg = time_type[j] + '天'
+            if (time_type[j] == 0) {
+              msg = '永久'
+            }
+            var dataList = { 'value': time_type[j], 'label': msg, disabled: false }
+            this.tableTimeData.push(dataList)
+          }
+          this.item.ItemStartTime = this.tableData[i].create_time
+          this.item.ItemExpireTime = this.tableData[i].expire_time
+          break
+        }
+      }
+    },
+    ShowDataTime(itemId){
+
+    }
   }
 }
 </script>
