@@ -75,11 +75,11 @@
           sortable="custom"
           width="90"
         />
-        <el-table-column
-          prop="nick"
-          label="昵称"
-          width="120"
-        />
+<!--        <el-table-column-->
+<!--          prop="nick"-->
+<!--          label="昵称"-->
+<!--          width="120"-->
+<!--        />-->
         <el-table-column
           prop="account"
           label="账号标识"
@@ -189,6 +189,15 @@
         >
           <template slot-scope="scope">
             {{ statNames[scope.row.status] }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="lastLogin"
+          label="更新时间"
+          sortable="custom"
+          width="150">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.lastLogin) }}
           </template>
         </el-table-column>
         <el-table-column
@@ -497,7 +506,7 @@ export default {
             objs[i].allowTableMoney /= 1000
           }
           objs.sort(function(a, b) {
-            return a.currentTid - b.currentTid
+            return a.lastLogin - b.lastLogin
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
