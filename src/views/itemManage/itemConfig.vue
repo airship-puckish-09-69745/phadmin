@@ -173,12 +173,6 @@
             <span style="color:black; margin-left:10px">[00:00:00]</span>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType == 2" label="有效时间：" :required="true">
-            <el-checkbox-group v-model="editForm.data.timeType" style="width: 700px" >
-              <el-checkbox v-for="item in dayTypeCfgs" :key="item.value" :label="item.value">{{ item.label }} </el-checkbox>
-            </el-checkbox-group>
-          </el-form-item>
-
           <el-form-item label="排序：" :required="true">
             <el-input v-model.number="editForm.data.sort" style="width: 150px;" placeholder="请填写排序id" />
           </el-form-item>
