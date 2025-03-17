@@ -187,7 +187,7 @@
             <el-col v-show="item.ItemType == 2" :span="3">
                 <el-select v-model.number="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option
-                    v-for="item in tableTimeData"
+                    v-for="item in dayTypeCfgs"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
