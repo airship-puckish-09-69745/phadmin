@@ -1,6 +1,6 @@
 <script>
 import request from "@/utils/request";
-import {$libDate} from "@/utils/common";
+import {$libDate, $libType} from "@/utils/common";
 
 export default {
   data() {
@@ -106,7 +106,12 @@ export default {
       }
     },
     getSummaries(row) {
-      return row.ChangeMoney1 + row.ChangeMoney2 + row.ChangeMoney3
+      const n = (row.ChangeMoney1 + row.ChangeMoney2 + row.ChangeMoney3) /1000
+      if ($libType.IsNumber(n)) {
+        return n.toLocaleString()
+      } else {
+        return n
+      }
     },
     formatUid(uid) {
       if (this.blackuids.includes(uid)) {
@@ -125,8 +130,20 @@ export default {
       this.getInfo()
     },
     handleClick(row){
-      this.addToBlack(row)
-      this.getDataInfo()
+      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(() => {
+        this.addToBlack(row)
+        this.getDataInfo()
+      }).catch(() => {
+        console.log('取消')
+      })
+
+    },
+    formatNumber(n) {
+      if ($libType.IsNumber(n)) {
+        return n.toLocaleString()
+      } else {
+        return n
+      }
     },
     async addToBlack(row){
       const $this = this
@@ -202,16 +219,25 @@ export default {
                 prop="BeforeMoney"
                 label="玩家起始资金"
                 width="150">
+                <template slot-scope="scope">
+                  {{ formatNumber(scope.row.BeforeMoney/1000) }}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="ChangeMoney"
                 label="玩家变化资金"
                 width="150">
+                <template slot-scope="scope">
+                  {{ formatNumber(scope.row.ChangeMoney/1000) }}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="AfterMoney"
                 label="玩家最终资金"
                 width="150">
+                <template slot-scope="scope">
+                  {{ formatNumber(scope.row.AfterMoney/1000) }}
+                </template>
               </el-table-column>
             </el-table>
           </template>
@@ -254,6 +280,9 @@ export default {
           sortable
           label="场次"
           width="120">
+          <template slot-scope="scope">
+            {{ formatNumber(scope.row.TableMoney/1000) }}
+          </template>
         </el-table-column>
         <el-table-column
           prop="FinishTime"
