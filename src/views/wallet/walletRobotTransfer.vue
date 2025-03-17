@@ -337,11 +337,11 @@ export default {
       })
     },
     getList() {
+      const _this = this
       let uid = _this.queryUid
       if (uid === ''){
         uid = 0
       }
-      const _this = this
       request({
         url: '/dataProxy/info',
         method: 'get',
