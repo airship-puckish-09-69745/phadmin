@@ -42,7 +42,7 @@
 
           <el-form-item label="SuperWild的每列出现概率">
             <el-input v-model="cfg.SuperWildRate" placeholder="请输入内容,如100,100,100,100">
-              <template slot="append">共4列。用，分割开</template>
+              <template slot="append">(%)共4列。用，分割开</template>
             </el-input>
           </el-form-item>
 
