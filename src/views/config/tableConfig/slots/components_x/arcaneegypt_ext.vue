@@ -39,6 +39,25 @@
               <template slot="append">分别对应拓展1行,拓展2行,拓展3行,拓展4行</template>
             </el-input>
           </el-form-item>
+
+          <el-form-item label="SuperWild的每列出现概率">
+            <el-input v-model="cfg.SuperWildRate" placeholder="请输入内容,如100,100,100,100">
+              <template slot="append">共5列。用，分割开</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="SuperWild中单个wild的倍率">
+            <el-input v-model="cfg.WildSingleOdds" placeholder="请输入内容,如100,100,100,100">
+              <template slot="append">与"SuperWild中单个wild的倍率权重"配置要对应</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="SuperWild中单个wild的倍率权重">
+            <el-input v-model="cfg.WildSingleOddsWeight" placeholder="请输入内容,如100,100,100,100">
+              <template slot="append">与"SuperWild中单个wild的倍率"配置要对应</template>
+            </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
