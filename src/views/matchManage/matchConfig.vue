@@ -786,7 +786,7 @@ export default {
       propsInfo: [ // 道具信息，暂时写死
         {
           'propsId': 0,
-          'propsType': 0,
+          'propsType': 0,    //1:门票 2:头像框 3:德州参数券
           'propsName': '无',
           'propsIcon': '',
           'propsAttr': ''
@@ -1828,23 +1828,22 @@ export default {
             ]
             this.matchTicketsCfgs = []
             for (let i=0;i<objs.list.length;i++) {
-              this.matchPropsCfgs.push({
-                'propsType': objs.list[i].item_type,
-                'propsId' :objs.list[i].id,
-                'propsName':objs.list[i].item_name,
-                'propsIcon':objs.list[i].image,
-                'propsAttr':objs.list[i].item_describe,
-                'propsCost':objs.list[i].item_cost,
-              })
-              if (objs.list[i].item_type == 1)  {
-                this.matchTicketsCfgs.push({
-                  'label':objs.list[i].item_name,
-                  'value':objs.list[i].id,
+              if (objs.list[i].item_type == 1) {
+                this.matchPropsCfgs.push({
+                  'propsType': objs.list[i].item_type,
+                  'propsId': objs.list[i].id,
+                  'propsName': objs.list[i].item_name,
+                  'propsIcon': objs.list[i].image,
+                  'propsAttr': objs.list[i].item_describe,
+                  'propsCost': objs.list[i].item_cost,
                 })
+                  this.matchTicketsCfgs.push({
+                    'label': objs.list[i].item_name,
+                    'value': objs.list[i].id,
+                  })
+
               }
             }
-            console.log("ddddddddddddd ",this.matchPropsCfgs)
-            console.log("eeeeeeeeeee ",objs.list)
           }
         }
       })
