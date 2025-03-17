@@ -154,7 +154,7 @@
           <el-descriptions-item label="KYC状态：">
             <el-tag :type="item.KycStatus>0 ? 'success' : 'danger'">{{ formatBool(item.KycStatus>0) }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="总信誉分值：" :span="1">
+          <el-descriptions-item label="总信誉分值：" :span="2">
             <el-tag>{{ formatNumber(credit.creditScore / 1000) }}</el-tag>
             <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
