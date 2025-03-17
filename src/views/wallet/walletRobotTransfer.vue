@@ -337,6 +337,10 @@ export default {
       })
     },
     getList() {
+      let uid = _this.queryUid
+      if (uid === ''){
+        uid = 0
+      }
       const _this = this
       request({
         url: '/dataProxy/info',
@@ -346,7 +350,7 @@ export default {
           Path: '/transferMoney/list',
           Page: 1,
           PageNum: 400,
-          uid : _this.queryUid,
+          uid : uid,
           startTime:parseInt(_this.queryTime.getTime() / 1000)
 
         }
