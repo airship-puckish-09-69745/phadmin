@@ -192,24 +192,28 @@ export default {
         <el-table-column
           prop="Uid1"
           label="玩家1"
-          width="400">
+          width="400"
+          align="center">
         </el-table-column>
 
         <el-table-column
           prop="Uid2"
           label="玩家2"
-          width="400">
+          width="400"
+          align="center">
         </el-table-column>
 
         <el-table-column
           prop="Uid3"
           label="玩家3"
-          width="400">
+          width="400"
+          align="center">
         </el-table-column>
         <el-table-column
           prop="Gid"
           label="游戏"
-          width="400">
+          width="400"
+          align="center">
           <template slot-scope="scope">
             {{ formatGameId(scope.row.Gid) }}
           </template>

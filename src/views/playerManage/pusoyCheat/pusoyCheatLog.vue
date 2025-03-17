@@ -198,7 +198,7 @@ export default {
       <el-table
         :data="cheatLogs"
         border
-        style="width: 100%">
+        style="width: 100%;">
         <el-table-column
           label="玩家信息"
           width="630">
@@ -210,7 +210,8 @@ export default {
               <el-table-column
                 prop="Uid"
                 label="玩家ID"
-                width="150">
+                width="150"
+                align="center">
                 <template slot-scope="scope">
                   {{ formatUid(scope.row.Uid) }}
                 </template>
@@ -218,7 +219,8 @@ export default {
               <el-table-column
                 prop="BeforeMoney"
                 label="玩家起始资金"
-                width="150">
+                width="150"
+                align="center">
                 <template slot-scope="scope">
                   {{ formatNumber(scope.row.BeforeMoney/1000) }}
                 </template>
@@ -226,7 +228,8 @@ export default {
               <el-table-column
                 prop="ChangeMoney"
                 label="玩家变化资金"
-                width="150">
+                width="150"
+                align="center">
                 <template slot-scope="scope">
                   {{ formatNumber(scope.row.ChangeMoney/1000) }}
                 </template>
@@ -234,7 +237,8 @@ export default {
               <el-table-column
                 prop="AfterMoney"
                 label="玩家最终资金"
-                width="150">
+                width="150"
+                align="center">
                 <template slot-scope="scope">
                   {{ formatNumber(scope.row.AfterMoney/1000) }}
                 </template>
@@ -246,23 +250,27 @@ export default {
         <el-table-column
           prop="CrackTimes"
           label="crack次数"
-          width="120">
+          width="120"
+          align="center">
         </el-table-column>
         <el-table-column
           prop="ZeroTimes"
           label="0分值次数"
-          width="120">
+          width="120"
+          align="center">
         </el-table-column>
 
         <el-table-column
           prop="PlayTimes"
           label="总局数"
-          width="120">
+          width="120"
+          align="center">
         </el-table-column>
         <el-table-column
           prop="PlayTimes"
           label="总盈亏"
-          width="120">
+          width="120"
+          align="center">
           <template slot-scope="scope">
             {{ getSummaries(scope.row) }}
           </template>
@@ -270,7 +278,8 @@ export default {
         <el-table-column
           prop="Gid"
           label="游戏"
-          width="120">
+          width="120"
+          align="center">
           <template slot-scope="scope">
             {{ formatGameId(scope.row.Gid) }}
           </template>
@@ -279,7 +288,8 @@ export default {
           prop="TableMoney"
           sortable
           label="场次"
-          width="120">
+          width="120"
+          align="center">
           <template slot-scope="scope">
             {{ formatNumber(scope.row.TableMoney/1000) }}
           </template>
@@ -288,14 +298,16 @@ export default {
           prop="FinishTime"
           sortable
           label="最新时间"
-          width="120">
+          width="100"
+          align="center">
           <template slot-scope="scope">
             {{ formatTime(scope.row.FinishTime) }}
           </template>
         </el-table-column>
         <el-table-column
           label="操作"
-          width="100">
+          width="100"
+          align="center">
           <template slot-scope="scope">
             <el-button
               v-if="showBlackButton(scope.row)"
