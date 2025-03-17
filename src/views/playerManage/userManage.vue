@@ -172,7 +172,7 @@
                 ></el-option>
               </el-select>
             </el-col>
-            <el-col :span="1" :offset="1"> {{'道具:'}} </el-col>
+            <el-col :span="2" :offset="1"> {{'道具名称:'}} </el-col>
             <el-col :span="3">
               <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
                 <el-option
@@ -183,14 +183,11 @@
                   />
               </el-select>
             </el-col>
-            <el-col :span="2" :offset="1"> {{'可用时间:'}} </el-col>
-            <el-col v-show="item.ItemType == 1" :span="3" >
-              创建时间:{{ formatTime(item.ItemStartTime)}}--结束时间:{{ formatTime(item.ItemExpireTime)}}
-            </el-col>
+            <el-col v-show="item.ItemType == 2" :span="2" :offset="1"> {{'可用时间:'}} </el-col>
             <el-col v-show="item.ItemType == 2" :span="3">
                 <el-select v-model.number="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option
-                    v-for="item in tableTimeData"
+                    v-for="item in dayTypeCfgs"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
@@ -504,7 +501,8 @@ export default {
       ],
       itemTypeCfgs: [
         { 'value': 1, 'label': '门票', disabled: false },
-        { 'value': 2, 'label': '头像框', disabled: false }
+        { 'value': 2, 'label': '头像框', disabled: false },
+        { 'value': 3, 'label': '德州参赛券', disabled: false }
       ],
       dayTypeCfgs: [
         { 'value': 7, 'label': '7天', disabled: false },
@@ -1318,6 +1316,11 @@ export default {
         Message.error('请输入道具id')
         return
       }
+      console.log(this.item.ItemCfgId)
+      console.log(this.item.ItemType)
+      console.log(this.item.ItemUseTime)
+      console.log(this.item.ItemQuality)
+      console.log(this.item.ItemExpireTime)
       const msg = '确定添加物品吗?'
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
@@ -1653,10 +1656,8 @@ export default {
           break
         }
       }
-    },
-    ShowDataTime(itemId){
-
     }
+
   }
 }
 </script>
