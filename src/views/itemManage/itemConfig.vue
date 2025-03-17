@@ -52,8 +52,11 @@
             <span v-if="scope.row.item_type == 1">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-else-if="scope.row.item_type == 2">
+            <span v-if="scope.row.item_type == 2">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
+            </span>
+            <span v-if="scope.row.item_type == 3">
+              创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
           </template>
 
@@ -237,7 +240,7 @@ export default {
       itemTypeCfgs: [
         { 'value': 1, 'label': '门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参赛券', disabled: false },
+        { 'value': 3, 'label': '德州参赛券', disabled: false }
       ],
 
       dayTypeCfgs: [
@@ -300,7 +303,9 @@ export default {
   },
   mounted(){
     this.getList()
-    //this.checkAll()
+    console.log(this.tableData)
+    console.log(this.raw)
+    console.log(this.tableData.length)
   },
   methods: {
     getList() {
