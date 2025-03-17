@@ -28,7 +28,7 @@ export default {
       this.getData()
       this.getBlackData()
     },
-    getBlackData(){
+    async getBlackData(){
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -82,6 +82,19 @@ export default {
         }
       })
     },
+    showBlackButton(row){
+      const cheatUids = []
+      cheatUids.push(row.Uid1)
+      cheatUids.push(row.Uid2)
+      cheatUids.push(row.Uid3)
+      for (let i = 0; i < cheatUids.length; i++) {
+        const uid = cheatUids[i]
+        if (!this.blackuids.includes(uid)) {
+          return true
+        }
+      }
+      return false
+    },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
@@ -112,6 +125,10 @@ export default {
       this.getInfo()
     },
     handleClick(row){
+      this.addToBlack(row)
+      this.getDataInfo()
+    },
+    async addToBlack(row){
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -122,7 +139,9 @@ export default {
           Uid1: row.Uid1,
           Uid2: row.Uid2,
           Uid3: row.Uid3,
-          Gid: row.Gid
+          Gid: row.Gid,
+          Tid: row.Tid,
+          FinishTime:row.FinishTime,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -145,10 +164,10 @@ export default {
           <el-form-item label="游戏：" :required="true">
             <el-select v-model.number="Gid" placeholder="请选择">
               <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                v-for="itemGid in options"
+                :key="itemGid.value"
+                :label="itemGid.label"
+                :value="itemGid.value">
               </el-option>
             </el-select>
           </el-form-item>
@@ -245,13 +264,19 @@ export default {
             {{ formatTime(scope.row.FinishTime) }}
           </template>
         </el-table-column>
-<!--        <el-table-column-->
-<!--          label="操作"-->
-<!--          width="100">-->
-<!--          <template slot-scope="scope">-->
-<!--            <el-button @click="handleClick(scope.row)" type="text" size="small">添加黑名单</el-button>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <el-table-column
+          label="操作"
+          width="100">
+          <template slot-scope="scope">
+            <el-button
+              v-if="showBlackButton(scope.row)"
+              @click="handleClick(scope.row)"
+              type="primary"
+              size="mini"
+            >添加黑名单
+            </el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </el-row>
     <el-row type="flex" justify="end">
