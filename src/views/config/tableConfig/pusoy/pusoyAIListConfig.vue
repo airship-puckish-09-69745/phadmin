@@ -506,7 +506,7 @@ export default {
             objs[i].allowTableMoney /= 1000
           }
           objs.sort(function(a, b) {
-            return a.currentTid - b.currentTid
+            return a.lastLogin - b.lastLogin
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
           this.handleCurrentChange(1)
