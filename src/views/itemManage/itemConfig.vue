@@ -160,7 +160,7 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType == 1" label="道具过期时间：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2" label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
               size="mini"
