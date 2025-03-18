@@ -180,7 +180,7 @@
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
-                  />
+                  ></el-option>
               </el-select>
             </el-col>
             <el-col v-show="item.ItemType == 2" :span="2" :offset="1"> {{'可用时间:'}} </el-col>
@@ -192,7 +192,7 @@
                     :label="item.label"
                     :value="item.value"
                     :disabled="item.disabled"
-                  />
+                  ></el-option>
                 </el-select>
             </el-col>
 
