@@ -196,7 +196,7 @@
               >
                 <el-radio :label="1">图片</el-radio>
                 <el-radio :label="2">文本</el-radio>
-                <el-radio :label="3">比赛</el-radio>
+                <el-radio :label="3">跳转</el-radio>
               </el-radio-group>
             </el-form-item>
             <!--             <el-form-item label="上传Banner图：" :required="true">
@@ -233,13 +233,30 @@
               <el-col :span="16"><el-input v-model="edit.item.icon_page" /></el-col>
             </el-form-item>
             <el-form-item
-              v-if="edit.item.content_type >= 2"
+              v-if="edit.item.content_type === 2"
               label="富文本内容："
               :required="true"
               prop="content"
             >
               <el-input v-model="edit.item.content" type="textarea" placeholder="" />
             </el-form-item>
+            
+              <el-form-item v-if="edit.item.content_type === 3" label="跳转配置：" >
+                <el-row>
+                  <el-col :span="6">
+                    <el-select  v-model="edit.item.stepType" placeholder="请选择" @change="changeStepType">
+                      <el-option v-for="item in stepOption" :key="item.key" :label="item.key" :value="item.value" />
+                    </el-select>
+                 </el-col>
+                 <el-col :span="6">
+                  <el-select v-if="edit.item.stepType === 0" v-model="edit.item.logicId" placeholder="请选择">
+                    <el-option v-for="item in gameOption" :key="item.key" :label="item.key" :value="item.value" />
+                  </el-select>
+                  <el-input v-if="edit.item.stepType === 1" v-model="edit.item.logicId"  placeholder="输入比赛配置ID" />
+                  </el-col>
+                </el-row>
+              </el-form-item>
+            
             <el-form-item label="Banner展示时间：" :required="true">
               <el-col :span="8">
                 <el-date-picker
@@ -368,7 +385,9 @@ function newItem() {
     alert_rule: 1,
     modify_user: '',
     time_created: '',
-    time_updated: ''
+    time_updated: '',
+    logicId: 0,
+    stepType: 0
   }
 }
 
@@ -402,6 +421,16 @@ export default {
         { label: '图片', value: 1 },
         { label: '文本', value: 2 },
         { label: '比赛', value: 3 }
+      ],
+
+      gameOption: [
+        { key: '无', value: 0 },
+        { key: 'NLH', value: 32 },
+        { key: 'MTT', value: 2032 }
+      ],
+      stepOption: [
+        { key: '跳转玩法', value: 0 },
+        { key: '跳转比赛报名', value: 1 }
       ],
 
       AttrNames: {
@@ -501,6 +530,9 @@ export default {
         this.rules.content = this.dataRule(true, { type: 's', range: '2-100' })
       }
       this.$refs.editForm.clearValidate()
+    },
+    changeStepType(){
+      this.edit.item.logicId = 0
     },
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
@@ -616,7 +648,6 @@ export default {
     },
     initFormData(bEdit, ID) {
       this.edit.isEdit = bEdit
-      console.log(this.edit.item.show_time_begin)
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
@@ -625,6 +656,7 @@ export default {
           this.edit.item.show_time_end *= 1000
           this.edit.item.valid_time_begin *= 1000
           this.edit.item.valid_time_end *= 1000
+          this.praseContent()
           if (bEdit) {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(this.edit.item)
@@ -655,6 +687,7 @@ export default {
       if (this.edit.item.sort_num === '') {
         this.edit.item.sort_num = 1
       }
+      this.edit.item.content = this.getContent()
       return true
     },
     getMaxID() {
@@ -666,6 +699,20 @@ export default {
         }
       }
       return max + 1
+    },
+    getContent() {
+      var content = 
+        {
+          logicId: this.edit.item.logicId,
+          stepType: this.edit.item.stepType
+        }
+      return JSON.stringify(content)
+    },
+    praseContent() {
+      console.log(this.edit.item.content)
+/*      var content = JSON.parse(this.edit.item.content)
+      this.edit.item.logicId = content['logicId']
+      this.edit.item.stepType = content['stepType']*/
     },
     editSave(postData) {
       console.log(postData)
