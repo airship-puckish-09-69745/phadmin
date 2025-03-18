@@ -655,6 +655,13 @@ export default {
         return false
       }
 
+      if(this.editForm.data.itemType == 2) {
+        if(this.editForm.data.quality == 0) {
+          this.errmsg('请选择品质')
+          return false
+        }
+      }
+
       return true
     }
   }
