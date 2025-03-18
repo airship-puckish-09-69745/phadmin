@@ -205,7 +205,7 @@
           <el-input v-model="editVersionFormData.Comment" placeholder="请输入版本说明" :disabled="editVersionIsReady"></el-input>
         </el-form-item>
         <el-form-item label="是否就绪" >
-          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" :disabled="editVersionIsReady">
+          <el-radio-group v-model="editVersionFormData.IsReady" @change="(event) => handleRadioChange(event, editVersionFormData,currentPlanIndex)" >
             <el-radio :label="true" >是</el-radio>
             <el-radio :label="false" >不是</el-radio>
           </el-radio-group>
@@ -718,7 +718,7 @@ export default {
       return 'SlotsCustomScriptConfig_' + this.queryGid
     },
 
-    getData() {
+   getData() {
       request({
         url: '/slotsScriptV3Config/all',
         method: 'get',
@@ -726,8 +726,23 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.orgDataList = response.Data
+          for (const o of this.orgDataList) {
+            o.Data = JSON.parse(o.ConfigData)
+            console.log('response', o.Data)
+            for (const oz of o.Data) {
+              for (const v of oz.Versions) {
+                for (const p of v.ScriptCfg.BetOddsPlans) {
+                  for (const i in p.TargetBets) {
+                    p.TargetBets[i] /= 1000
+                  }
+                }
+              }
+            }
+          }
         }
+
         this.queryKeyInput()
+
         console.log('response', response)
       })
     },
@@ -788,35 +803,16 @@ export default {
     },
     proceedData(typ) {
       if (typ === 1) {
-        for (const o of this.showItem.Plans) {
-          for (const v of o.Versions) {
-            for (const p of v.ScriptCfg.BetOddsPlans) {
-              for (const i in p.TargetBets) {
-                p.TargetBets[i] /= 1000
-              }
-            }
-          }
-        }
-      }else {
-        for (const o of this.showItem.Plans) {
-          for (const v of o.Versions) {
-            for (const p of v.ScriptCfg.BetOddsPlans) {
-              for (const i in p.TargetBets) {
-                p.TargetBets[i] = parseFloat(p.TargetBets[i] )*1000
-              }
-            }
-          }
-        }
+
       }
     },
     async queryKeyInput() {
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
+          console.log('o',  o.SlotsType,o)
           this.showItem.SlotsType = o.SlotsType
-          this.showItem.Plans = JSON.parse(o.ConfigData)
+          this.showItem.Plans = o.Data
           this.showItem.ID = o.ID
-          this.proceedData(1)
-
           this.$forceUpdate()
           return
         }
@@ -1129,17 +1125,25 @@ export default {
     },
     async saveCfgByGid() {
       if (this.showItem.ID > 0) {
-        await this.proceedData(2)
         await this.updateCfg()
       } else {
-        await this.proceedData(2)
         await this.createCfg()
       }
-      // await this.getData()
+      await this.queryKeyInput()
     },
     updateCfg(){
       if (!this.checkData()) {
         return
+      }
+      var items = JSON.parse(JSON.stringify(this.showItem.Plans))
+      for (const o of items) {
+        for (const v of o.Versions) {
+          for (const p of v.ScriptCfg.BetOddsPlans) {
+            for (const i in p.TargetBets) {
+              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
+            }
+          }
+        }
       }
       request({
         url: '/slotsScriptV3Config/update',
@@ -1147,7 +1151,7 @@ export default {
         data: {
           ID: this.showItem.ID,
           SlotsType: this.showItem.SlotsType,
-          ConfigData: JSON.stringify(this.showItem.Plans)
+          ConfigData: JSON.stringify(items)
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1203,12 +1207,23 @@ export default {
       if (!this.checkData()) {
         return
       }
+      var items = JSON.parse(JSON.stringify(this.showItem.Plans))
+      for (const o of items) {
+        for (const v of o.Versions) {
+          for (const p of v.ScriptCfg.BetOddsPlans) {
+            for (const i in p.TargetBets) {
+              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
+            }
+          }
+        }
+      }
+      JSON.stringify(this.showItem.Plans)
       request({
         url: '/slotsScriptV3Config/create',
         method: 'post',
         data: {
           SlotsType: this.showItem.SlotsType,
-          ConfigData: JSON.stringify(this.showItem.Plans)
+          ConfigData: JSON.stringify(items)
         }
       }).then(response => {
         if (response.RetCode === 0) {

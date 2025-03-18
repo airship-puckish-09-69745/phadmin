@@ -135,13 +135,13 @@
           </el-select>
         </el-form-item>
         <el-form-item label="基础投注">
-          <el-input v-model="item.Bet"></el-input>
+          <el-input-number v-model="item.Bet"></el-input-number>
         </el-form-item>
         <el-form-item label="奖池显示缩小配置">
-          <el-input v-model="item.JackpotShowBet"></el-input>
+          <el-input-number v-model="item.JackpotShowBet"></el-input-number>
         </el-form-item>
         <el-form-item label="统计步数">
-          <el-input v-model.number="item.StepCfg"></el-input>
+          <el-input-number v-model.number="item.StepCfg"></el-input-number>
         </el-form-item>
         <el-form-item label="">
         </el-form-item>
@@ -154,12 +154,12 @@
         <span v-if="item.OddsList.length>0" v-for="(row,idx) in item.OddsList">
           <el-col :span="10">
            <el-form-item label="区间最小值>">
-            <el-input v-model.number="row.MinOdds" size="mini"/>
+            <el-input-number v-model.number="row.MinOdds" size="mini"/>
         </el-form-item>
         </el-col>
         <el-col :span="10">
          <el-form-item label="≤区间最大值">
-            <el-input v-model.number="row.MaxOdds" size="mini"/>
+            <el-input-number v-model.number="row.MaxOdds" size="mini"/>
         </el-form-item>
          </el-col>
            <el-col :span="1" style="margin-left: -100px">

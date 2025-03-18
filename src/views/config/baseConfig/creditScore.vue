@@ -102,7 +102,7 @@
                   label="有效下注换算系数"
                 >
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.radio" />
+                    <el-input v-model="scope.row.radio" />
                   </template>
                 </el-table-column>
 
@@ -189,12 +189,24 @@
             label="信誉分达标用户数量"
           />
           <el-table-column
+            prop="dangerCount"
+            label="高危用户数量"
+          />
+          <el-table-column
             prop="gid21"
             label="Pusoy黑名单用户数量"
           />
           <el-table-column
             prop="gid113"
             label="PusoySwap黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid126"
+            label="PusoyWild黑名单用户数量"
+          />
+          <el-table-column
+            prop="gid34"
+            label="PusoyDos黑名单用户数量"
           />
           <el-table-column
             prop="gid22"
@@ -374,10 +386,15 @@ export default {
       const limits =this.item.limitConf
       let glconf = []
       for (const v of this.item.glconf) {
-        let item = Object.assign({},v)
-        item.radio *= 100
-        glconf.push(item)
+        glconf.push({
+          gid: v.gid,
+          blind: v.blind,
+          radio: Number(v.radio)*100,
+          score: v.score,
+        })
       }
+
+      glconf.sort((a, b) => a.gid!=b.gid?(a.gid - b.gid):(a.blind-b.blind) )
 
       this.form.Data = JSON.stringify({
         value: this.item.value*1000,
@@ -408,7 +425,7 @@ export default {
       })
     },
     addRow() {
-      this.item.glconf.push({ blind: 2000, gid: 28, radio: 1, score: 1 })
+      this.item.glconf.push({ blind: 0, gid: 0, radio: 0, score: 0 })
     },
     delRow(index) {
       this.item.glconf.splice(index, 1)

@@ -1701,10 +1701,18 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
-      },
+      }
+    ]
+  },
+  {
+    path: '/item',
+    component: Layout,
+    redirect: 'noRedirect',
+    meta: { title: '道具管理', icon: 'example', perm: 'CFG_MANAGEMENT' },
+    children: [
       {
         path: 'itemConfig',
-        component: () => import('@/views/matchManage/itemConfig'),
+        component: () => import('@/views/itemManage/itemConfig'),
         name: 'itemConfig',
         meta: { title: '道具管理', noCache: true }
       }
@@ -2534,6 +2542,26 @@ export const asyncRoutes = [
         meta: { title: '小游戏奖池日志 ◐' }
       },
 
+      {
+        path: 'pusoyCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Pusoy-作弊识别 ◐' },
+        children: [
+          {
+            path: 'pusoy_cheat_log',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatLog'),
+            name: 'pusoy_cheat_log',
+            meta: { title: 'pusoy作弊记录 ◐' }
+          },
+          {
+            path: 'pusoy_black',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyBlack'),
+            name: 'pusoy_black',
+            meta: { title: 'pusoy黑名单 ◐' }
+          }
+        ]
+      },
       {
         path: 'tongitsCheat',
         component: () => import('@/views/empty'),
