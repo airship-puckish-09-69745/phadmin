@@ -196,7 +196,7 @@
               >
                 <el-radio :label="1">图片</el-radio>
                 <el-radio :label="2">文本</el-radio>
-                <el-radio :label="3">跳转</el-radio>
+                <el-radio :label="3">banner跳转</el-radio>
               </el-radio-group>
             </el-form-item>
             <!--             <el-form-item label="上传Banner图：" :required="true">
@@ -420,7 +420,7 @@ export default {
       typeOption: [
         { label: '图片', value: 1 },
         { label: '文本', value: 2 },
-        { label: '比赛', value: 3 }
+        { label: 'banner跳转', value: 3 }
       ],
 
       gameOption: [
