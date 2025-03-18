@@ -280,9 +280,6 @@ export default {
           lists.push(this.calcNonPercent('购买Scatter次数', 'SlotsReturn4Times', one))
           lists.push(this.calcNonPercent('购买Scatter金额', 'SlotsReturn4', one))
           lists.push(this.calcItemBuy('购买Scatter返奖', 'SlotsReturn3', one))
-          if (one.SlotsType === 178) {
-            lists.push(this.calcItemBuy('购买bonus返奖', 'SlotsReturn6', one))
-          }
           lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
           lists.push(this.calcItemTotalSum('所有返奖总计', one))
           break
