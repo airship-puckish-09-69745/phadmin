@@ -506,6 +506,10 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item v-if=" editForm.data.signUpType == 2 || editForm.data.signUpType == 3" label="门票数量：" :required="true">
+            <el-input v-model.number="editForm.signExtra.propNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
+          </el-form-item>
+
           <el-form-item v-if="editForm.data.signUpType == 1" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
@@ -915,7 +919,7 @@ export default {
           propId:0,    //门票道具ID,
           propType: 0, //道具类型,
           propCost:0,  //道具价值
-          propNum: 0,  //数量
+          propNum: 1,  //数量
         },
         prizeExtra: {
           awardType: 0,
@@ -1442,7 +1446,7 @@ export default {
           propId:0,
           propType: 0,
           propCost: 0,
-          propNum: 0,
+          propNum: 1,
         }
 
         this.editForm.prizeExtra = {
@@ -1597,7 +1601,6 @@ export default {
         if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
             this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
             this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
-            this.editForm.signExtra.propNum  = 1 //默认写死1 后期优化
             break
         }
       }
@@ -1901,7 +1904,10 @@ export default {
           this.errmsg('付费赛报名费不能为0')
           return false
         }
-        this.editForm.signExtra.propId === 0
+        this.editForm.signExtra.propId = 0
+        this.editForm.signExtra.propType = 0
+        this.editForm.signExtra.propCost = 0
+        this.editForm.signExtra.propNum = 0
       }
       //金币or门票报名
       if (this.editForm.data.signUpType === 3){
