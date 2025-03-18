@@ -138,7 +138,7 @@ export default {
     </el-row>
     <el-row :span="1">
       <template>
-        {{ "开关说明：一桌是否可以进1个黑名单" }}
+        {{ "开关说明：打开后一桌只能进个黑子用户" }}
       </template>
     </el-row>
     <el-row :span="6">
