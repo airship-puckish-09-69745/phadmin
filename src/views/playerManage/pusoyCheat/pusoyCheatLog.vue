@@ -88,7 +88,7 @@ export default {
             cheatLog.showBlackButton = showBlackButton
           }
           cheatLogs.sort(function(a, b) {
-            return a.FinishTime - b.FinishTime
+            return b.FinishTime - a.FinishTime
           })
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, 'showBlackButton', -1)
           $this.handleCurrentChange(1)
@@ -108,8 +108,11 @@ export default {
       }
       return false
     },
-    formatTime(ts) {
-      return $libDate.FormateSecondStr(ts, 2)
+    formatTimeDate(ts) {
+      return $libDate.FormateSecondStr(ts, 1)
+    },
+    formatTimeTime(ts) {
+      return $libDate.FormateSecondStr(ts, 4)
     },
     formatGameId(gameId) {
       if (gameId == 21) {
@@ -148,7 +151,10 @@ export default {
     handleClick(row) {
       this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(() => {
         this.addToBlack(row)
-        this.getDataInfo()
+        this.blackuids.push(row.Uid1)
+        this.blackuids.push(row.Uid2)
+        this.blackuids.push(row.Uid3)
+        // this.getDataInfo()
       }).catch(() => {
         console.log('取消')
       })
@@ -213,7 +219,7 @@ export default {
       <el-table
         :data="cheatLogs"
         border
-        style="width: 100%;"
+        style="width: 1550px;"
       >
         <el-table-column
           label="玩家信息"
@@ -327,7 +333,8 @@ export default {
           align="center"
         >
           <template slot-scope="scope">
-            {{ formatTime(scope.row.FinishTime) }}
+            <div>{{ formatTimeDate(scope.row.FinishTime) }}</div>
+            <div>{{ formatTimeTime(scope.row.FinishTime) }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -342,6 +349,13 @@ export default {
               size="mini"
               @click="handleClick(scope.row)"
             >添加黑名单
+            </el-button>
+            <el-button
+              v-else
+              type="primary"
+              size="mini"
+              disabled
+            >已处理
             </el-button>
           </template>
         </el-table-column>
