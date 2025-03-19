@@ -297,9 +297,9 @@ export default {
   },
   mounted(){
     this.getList()
-    console.log(this.tableData)
-    console.log(this.raw)
-    console.log(this.tableData.length)
+   // console.log("1111 ",this.tableData)
+    //console.log(this.raw)
+    //console.log(this.tableData.length)
   },
   methods: {
     getList() {
@@ -375,8 +375,6 @@ export default {
             break
           }
         }
-        console.log(id)
-        console.log(editData)
         if (typeof editData.id == 'undefined') {
           Message.error('道具配置不存在')
           return
@@ -458,7 +456,7 @@ export default {
       for (var i = 0; i < this.dayTypeCfgs.length; i++) {
         this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
       }
-      console.log(this.editForm.data.timeType)
+      //console.log(this.editForm.data.timeType)
     },
     handleUpdate(id) {
       this.$confirm('您确定要将该比赛配置上架吗？', '提示', {
@@ -547,7 +545,6 @@ export default {
       expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
       const timeList = JSON.stringify(this.editForm.data.timeType)
       if (this.editForm.data.ID == 0) {
-        console.log(this.editForm.data.ID)
         this.editForm.data.status = 1
         request({
           url: '/propsconfig/props/config/create',
