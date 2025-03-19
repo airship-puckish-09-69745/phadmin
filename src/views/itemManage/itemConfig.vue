@@ -233,9 +233,9 @@ export default {
       ],
 
       itemTypeCfgs: [
-        { 'value': 1, 'label': '门票', disabled: false },
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参赛券', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false }
       ],
 
       dayTypeCfgs: [
@@ -281,14 +281,16 @@ export default {
       },
 
       AttrNames: {
-        itemName: '道具名称',
-        itemCost: '道具价值',
-        itemType: '道具分类',
+        propName: '道具名称',
+        propCost: '道具价值',
+        propType: '道具分类',
         describe: '道具描述',
         image: 'ICON链接',
         expireTime: '过期时间',
         sort: '排序',
-        status: '状态'
+        propStatus: '上架状态',
+        createTime: '创建时间',
+        id: '道具ID'
       }
     }
   },
