@@ -1,6 +1,6 @@
 <script>
 import request from "@/utils/request";
-import {$libDate, DataRule} from "@/utils/common";
+import {$libDate, DataRule,ClientTableData} from "@/utils/common";
 import Publish from "@/components/Publish/index.vue";
 import Compare from '@/components/Compare/index.vue'
 import {Message} from "element-ui";
@@ -11,6 +11,7 @@ export default {
     return {
       subKey: 'pusoy_black_cfg',
       blacks: [],
+      blackCount: 0,
       totalCount: 0,
       currentPage: 1,
       pageNum: 20,
@@ -25,7 +26,8 @@ export default {
       }],
       item: {
         IsOpen: false,
-      }
+      },
+      clientDB: new ClientTableData([], 1, {})
     }
   },
   created() {
@@ -47,16 +49,25 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/pusoy/black',
-          Page: this.currentPage,
-          Limit: this.pageNum,
+          Page: 1,
+          Limit: 400,
           Uid: this.Uid,
           Gid: this.Gid
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const data = response.Data || {}
-          $this.blacks = data.Items || []
+          const blacks = data.Items || []
           $this.totalCount = data.Total || 0
+          const blackArr = new Set()
+          for (let i = 0; i < $this.blacks.length; i++) {
+            blackArr.add($this.blacks[i].Uid1)
+            blackArr.add($this.blacks[i].Uid2)
+            blackArr.add($this.blacks[i].Uid3)
+          }
+          $this.blackCount = blackArr.size
+          $this.clientDB = new ClientTableData(blacks, $this.pageNum, {}, 'Gid', -1)
+          $this.handleCurrentChange(1)
         }
       })
     },
@@ -70,14 +81,17 @@ export default {
         return 'PusoyWild'
       }
     },
+    refreshShow() {
+      this.blacks = this.clientDB.GetCurrentPageData()
+      // this.refreshStat()
+    },
     handleSizeChange(val) {
-      this.currentPage = 1
-      this.pageNum = val
-      this.getInfo()
+      this.clientDB.GetPage().SetPageNum(val)
+      this.refreshShow()
     },
     handleCurrentChange(val) {
-      this.currentPage = val
-      this.getInfo()
+      this.clientDB.GetPage().SetPageNo(val)
+      this.refreshShow()
     },
     encodeData() {
       const cpy = {}
@@ -185,6 +199,19 @@ export default {
       </el-form>
     </el-row>
     <el-row>
+      <el-col :span="12">
+        <el-descriptions
+          class="margin-top"
+          :column="1"
+          size="medium"
+          :label-style="{'text-align': 'center', 'font-weight':'bold','padding':'5px'}"
+          border
+        >
+          <el-descriptions-item label="总人数：" >{{ blackCount }}</el-descriptions-item>
+        </el-descriptions>
+      </el-col>
+    </el-row>
+    <el-row>
       <el-table
         :data="blacks"
         border
@@ -224,11 +251,11 @@ export default {
       <el-col :span="12">
         <div class="block">
           <el-pagination
-            :current-page="currentPage"
+            :current-page="clientDB.GetPage().GetCurrentPage()"
             :page-sizes="[20, 40, 60, 80]"
-            :page-size="pageNum"
+            :page-size="clientDB.GetPage().GetPageNum()"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="totalCount"
+            :total="clientDB.GetPage().GetTotalCount()"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
