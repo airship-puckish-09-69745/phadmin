@@ -566,6 +566,7 @@ export default {
         { key: '[5]3人赛投注金测试', value: 5 },
         { key: '[6]188投注金', value: 6 },
         { key: '[7]1288投注金', value: 7 },
+        { key: '[8]2888投注金', value: 8 },
       ],
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
