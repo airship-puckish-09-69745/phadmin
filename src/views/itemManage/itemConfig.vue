@@ -131,7 +131,7 @@
             <el-input v-model="editForm.data.itemName" style="width: 150px;" placeholder="请填写道具名称" />
           </el-form-item>
 
-          <el-form-item label="道具价值：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 150px;" placeholder="请填写道具价值" />
           </el-form-item>
 
@@ -163,11 +163,12 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType != 2" label="道具过期时间：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
               size="mini"
               type="date"
+              :disabled="!editForm.isAdd"
               placeholder="选择过期日期"
             />
             <span style="color:black; margin-left:10px">[00:00:00]</span>
@@ -297,9 +298,9 @@ export default {
   },
   mounted(){
     this.getList()
-    console.log(this.tableData)
-    console.log(this.raw)
-    console.log(this.tableData.length)
+   // console.log("1111 ",this.tableData)
+    //console.log(this.raw)
+    //console.log(this.tableData.length)
   },
   methods: {
     getList() {
@@ -375,8 +376,6 @@ export default {
             break
           }
         }
-        console.log(id)
-        console.log(editData)
         if (typeof editData.id == 'undefined') {
           Message.error('道具配置不存在')
           return
@@ -458,10 +457,10 @@ export default {
       for (var i = 0; i < this.dayTypeCfgs.length; i++) {
         this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
       }
-      console.log(this.editForm.data.timeType)
+      //console.log(this.editForm.data.timeType)
     },
     handleUpdate(id) {
-      this.$confirm('您确定要将该比赛配置上架吗？', '提示', {
+      this.$confirm('您确定要将该比赛配置下架吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -493,11 +492,11 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            let showMsg = '修改道具配置成功！'
+            let showMsg = '下架成功！'
             Message.success(showMsg)
             this.getList()
           } else {
-            let errMsg = '修改道具配置失败！'
+            let errMsg = '下架失败！'
             Message.error(errMsg + response.Data)
           }
         })
@@ -546,8 +545,10 @@ export default {
       let expireTime = 0
       expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
       const timeList = JSON.stringify(this.editForm.data.timeType)
+      if (this.editForm.data.itemType === 2) {
+        this.editForm.data.itemCost = 0
+      }
       if (this.editForm.data.ID == 0) {
-        console.log(this.editForm.data.ID)
         this.editForm.data.status = 1
         request({
           url: '/propsconfig/props/config/create',
@@ -632,15 +633,19 @@ export default {
         this.errmsg('请填写道具名称')
         return false
       }
-      if(this.editForm.data.itemCost == 0) {
-        this.errmsg('请填写道具价值')
-        return false
-      }
 
       if(this.editForm.data.itemType == 0) {
         this.errmsg('请选择道具分类')
         return false
       }
+
+      if(this.editForm.data.itemType != 2) {
+        if(this.editForm.data.itemCost == 0) {
+          this.errmsg('请填写道具价值')
+          return false
+        }
+      }
+
       if(this.editForm.data.describe == '') {
         this.errmsg('请填写道具描述')
         return false
