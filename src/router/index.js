@@ -1297,13 +1297,13 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/atlantistreasuremars_slots_cfg'),
                 name: 'atlantistreasuremars_slots_cfg',
                 meta: { title: 'AtlantisTreasure(审)' }
-              },
-              {
-                path: 'treasurebowlmars_slots_cfg',
-                component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
-                name: 'treasurebowlmars_slots_cfg',
-                meta: { title: 'TreasureBowl(审)' }
               }
+              // {
+              //   path: 'treasurebowlmars_slots_cfg',
+              //   component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
+              //   name: 'treasurebowlmars_slots_cfg',
+              //   meta: { title: 'TreasureBowl(审)' }
+              // }
             ]
           },
           {
