@@ -1672,6 +1672,9 @@ export default {
       const gid = id[id.length - 1]
       const lengthZoneGame = this.zoneGame.length
       for (let i = 0; i < lengthZoneGame - 1; i++) {
+        if (this.editZoneGame.item.AppId !== this.zoneGame[i].AppId){
+          continue
+        }
         const gids = this.zoneGame[i].Gids
         if (gids.includes(gid)) {
           console.log('changeHallGame', gid)
