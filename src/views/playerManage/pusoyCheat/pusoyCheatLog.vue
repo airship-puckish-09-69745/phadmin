@@ -6,6 +6,8 @@ export default {
   data() {
     return {
       cheatLogs: [],
+      changeMoneyAll:0,
+      changeMoneyBlackAll:0,
       totalCount: 0,
       currentPage: 1,
       pageNum: 20,
@@ -25,12 +27,13 @@ export default {
   created() {
   },
   methods: {
-    getDataInfo() {
-      this.getBlackData()
-      this.getData()
+    async getDataInfo() {
+      await this.getBlackData()
+      await this.getData()
     },
     async getBlackData() {
       const $this = this
+      $this.blackuids = []
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -38,7 +41,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/black',
           Page: 1,
-          Limit: 100,
+          Limit: 9999,
           Gid: this.Gid,
           Uid: 0
         }
@@ -55,8 +58,10 @@ export default {
         }
       })
     },
-    getData() {
+    async getData() {
       const $this = this
+      $this.cheatLogs = []
+      $this.clientDB = new ClientTableData([], 1, {})
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -64,7 +69,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/cheat/log',
           Page: 1,
-          Limit: 1000,
+          Limit: 9999,
           Gid: this.Gid
         }
       }).then(response => {
@@ -86,6 +91,7 @@ export default {
             }
             cheatLog.userInfo = userInfo
             cheatLog.showBlackButton = showBlackButton
+            cheatLog.ChangeMoneyAll = cheatLog.ChangeMoney1 + cheatLog.ChangeMoney2 + cheatLog.ChangeMoney3
           }
           cheatLogs.sort(function(a, b) {
             return b.FinishTime - a.FinishTime
@@ -138,6 +144,13 @@ export default {
     },
     refreshShow() {
       this.cheatLogs = this.clientDB.GetCurrentPageData()
+      this.changeMoneyAll = 0
+      for (let i = 0; i < this.clientDB.TotalData.length; i++) {
+        this.changeMoneyAll += this.clientDB.TotalData[i].ChangeMoneyAll
+        // if (this.clientDB.TotalData[i].showBlackButton) {
+        //   this.changeMoneyBlackAll += this.clientDB.TotalData[i].ChangeMoneyAll
+        // }
+      }
       // this.refreshStat()
     },
     handleSizeChange(val) {
@@ -149,11 +162,9 @@ export default {
       this.refreshShow()
     },
     handleClick(row) {
-      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(() => {
-        this.addToBlack(row)
-        this.blackuids.push(row.Uid1)
-        this.blackuids.push(row.Uid2)
-        this.blackuids.push(row.Uid3)
+      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
+        await this.addToBlack(row)
+        await this.getBlackData()
         // this.getDataInfo()
       }).catch(() => {
         console.log('取消')
@@ -214,6 +225,19 @@ export default {
           <el-button type="primary" size="mini" @click="getDataInfo">查询</el-button>
         </el-col>
       </el-form>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-descriptions
+          class="margin-top"
+          :column="1"
+          size="medium"
+          :label-style="{'text-align': 'center', 'font-weight':'bold','padding':'5px'}"
+          border
+        >
+          <el-descriptions-item label="总盈亏：" >{{ formatNumber(changeMoneyAll) }}</el-descriptions-item>
+        </el-descriptions>
+      </el-col>
     </el-row>
     <el-row>
       <el-table
