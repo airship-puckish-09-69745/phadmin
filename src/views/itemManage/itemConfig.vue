@@ -121,19 +121,19 @@
       :close-on-press-escape="false"
       width="900px"
     >
-      <el-form :model="editForm.data" label-width="150px" size="mini">
+      <el-form :model="editForm.data" label-width="200px" size="mini">
         <fieldset>
           <legend>道具信息</legend>
           <el-form-item label="道具名称：" :required="true">
-            <el-input v-model="editForm.data.itemName" style="width: 150px;" placeholder="请填写道具名称" />
+            <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType != 2" label="道具价值：" :required="true">
-            <el-input v-model.number="editForm.data.itemCost" style="width: 150px;" placeholder="请填写道具价值" />
+            <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType == 2" label="品质：" :required="true">
-            <el-select v-model="editForm.data.quality" style="width: 150px;" placeholder="请选择道具品质分类">
+            <el-select v-model="editForm.data.quality" style="width: 200px;" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
                 :key="item.value"
@@ -145,11 +145,11 @@
           </el-form-item>
 
           <el-form-item label="道具描述：" :required="true">
-            <el-input v-model="editForm.data.describe" style="width: 150px;" placeholder="请填写道具描述" />
+            <el-input v-model="editForm.data.describe" style="width: 400px;" placeholder="请填写道具描述" />
           </el-form-item>
 
           <el-form-item label="道具类别：" :required="true">
-            <el-select v-model="editForm.data.itemType" style="width: 150px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
+            <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
               <el-option
                 v-for="item in itemTypeCfgs"
                 :key="item.value"
@@ -163,7 +163,7 @@
           <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
-              size="mini"
+              style="width: 200px;"
               type="date"
               :disabled="!editForm.isAdd"
               placeholder="选择过期日期"
@@ -172,7 +172,7 @@
           </el-form-item>
 
           <el-form-item label="排序：" :required="true">
-            <el-input v-model.number="editForm.data.sort" style="width: 150px;" placeholder="请填写排序id" />
+            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
           </el-form-item>
 
           <el-form-item label="道具ICON：" :required="true">
