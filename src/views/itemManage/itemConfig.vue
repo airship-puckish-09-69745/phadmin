@@ -458,18 +458,20 @@ export default {
       }
     },
     handleUpdate(id) {
-      this.$confirm('您确定要将该比赛配置下架吗？', '提示', {
+      let editData = {}
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id == id) {
+          editData = this.tableData[i]
+          break
+        }
+      }
+      let strMsg = '您确定要将' + editData.item_name +'配置'
+      let currMsg = editData.status === 1 ? '下架吗？' : '上架吗？'
+      this.$confirm(strMsg + currMsg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let editData = {}
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].id == id) {
-            editData = this.tableData[i]
-            break
-          }
-        }
         editData.status = editData.status === 1 ? 2 : 1
         request({
           url: '/propsconfig/props/config/update',
