@@ -188,7 +188,7 @@
             </el-col>
             <el-col :span="2" :offset="1"> {{'道具数量:'}} </el-col>
             <el-col :span="2">
-              <el-input v-model="item.ItemNum" size="mini" />
+              <el-input v-model.number="item.ItemNum" size="mini" />
             </el-col>
             <el-col v-show="item.ItemType == 2" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
             <el-col v-show="item.ItemType == 2" :span="2">
@@ -508,9 +508,9 @@ export default {
         { 'label': 'Tongits Quick', 'value': 29 }
       ],
       itemTypeCfgs: [
-        { 'value': 1, 'label': '门票', disabled: false },
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参赛券', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false }
       ],
       dayTypeCfgs: [
         { 'value': 7, 'label': '7天', disabled: false },
