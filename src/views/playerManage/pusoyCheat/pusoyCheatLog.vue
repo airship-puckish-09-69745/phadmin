@@ -27,9 +27,9 @@ export default {
   created() {
   },
   methods: {
-    getDataInfo() {
-      this.getBlackData()
-      this.getData()
+    async getDataInfo() {
+      await this.getBlackData()
+      await this.getData()
     },
     async getBlackData() {
       const $this = this
@@ -58,7 +58,7 @@ export default {
         }
       })
     },
-    getData() {
+    async getData() {
       const $this = this
       $this.cheatLogs = []
       $this.clientDB = new ClientTableData([], 1, {})
@@ -162,11 +162,9 @@ export default {
       this.refreshShow()
     },
     handleClick(row) {
-      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(() => {
-        this.addToBlack(row)
-        this.blackuids.push(row.Uid1)
-        this.blackuids.push(row.Uid2)
-        this.blackuids.push(row.Uid3)
+      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
+        await this.addToBlack(row)
+        await this.getBlackData()
         // this.getDataInfo()
       }).catch(() => {
         console.log('取消')

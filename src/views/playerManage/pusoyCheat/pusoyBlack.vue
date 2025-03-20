@@ -30,9 +30,9 @@ export default {
       clientDB: new ClientTableData([], 1, {})
     }
   },
-  created() {
+  async created() {
     this.getData()
-    this.getBlack()
+    await this.getBlack()
   },
   methods: {
     getFullKey() {
@@ -41,7 +41,10 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    getBlack(){
+    async getBlackInfo(){
+      await this.getBlack()
+    },
+    getBlack() {
       const $this = this
       $this.blacks = []
       $this.clientDB = new ClientTableData([], 1, {})
@@ -198,7 +201,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" size="mini" @click="getBlack">查询</el-button>
+          <el-button type="primary" size="mini" @click="getBlackInfo">查询</el-button>
         </el-col>
       </el-form>
     </el-row>
