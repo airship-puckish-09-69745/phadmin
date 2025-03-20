@@ -1316,15 +1316,15 @@ export default {
         Message.error('请输入正确的Uid')
         return
       }
-      if (this.item.ItemType === 0) {
+      if (typeof this.item.ItemType === 'undefined' || this.item.ItemType === 0) {
         Message.error('请输入道具类型')
         return
       }
-      if (this.item.ItemCfgId === 0) {
+      if (typeof this.item.ItemCfgId === 'undefined' || this.item.ItemCfgId === 0) {
         Message.error('请输入道具id')
         return
       }
-      if (this.item.ItemNum === 0) {
+      if (typeof this.item.ItemNum === 'undefined' || this.item.ItemNum === 0) {
         Message.error('请输入道具数量')
         return
       }
@@ -1646,11 +1646,15 @@ export default {
     },
     ShowItemList(id) {
       this.tableItemData = []
+      let currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].item_type === id) {
           if (this.tableData[i].status === 1) {
-            var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
-            this.tableItemData.push(dataList)
+            let expTime = this.tableData[i].expire_time * 1000
+            if (currTime < expTime) {
+              var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+              this.tableItemData.push(dataList)
+            }
           }
         }
       }
