@@ -297,9 +297,6 @@ export default {
   },
   mounted(){
     this.getList()
-   // console.log("1111 ",this.tableData)
-    //console.log(this.raw)
-    //console.log(this.tableData.length)
   },
   methods: {
     getList() {
@@ -394,6 +391,7 @@ export default {
           quality: editData.quality,
           timeType: time_type
         }
+        this.editForm.itemEndDate = editData.expire_time * 1000
       }
     },
     getItemTypeName(item_type){
