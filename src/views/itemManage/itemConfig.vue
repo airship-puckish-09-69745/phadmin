@@ -87,11 +87,8 @@
           label="操作"
         >
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              icon="el-icon-edit"
-              @click="showForm(scope.row.id)"
-            >编辑</el-button>
+            <el-button v-if="scope.row.status==1" size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
+            <el-button v-if="scope.row.status==2" size="mini" type="danger" @click="handleUpdate(scope.row.id)">上架</el-button>
             <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
             <el-button v-if="scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
@@ -459,7 +456,6 @@ export default {
       for (var i = 0; i < this.dayTypeCfgs.length; i++) {
         this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
       }
-      //console.log(this.editForm.data.timeType)
     },
     handleUpdate(id) {
       this.$confirm('您确定要将该比赛配置下架吗？', '提示', {
@@ -474,7 +470,7 @@ export default {
             break
           }
         }
-        editData.status = 2
+        editData.status = editData.status === 1 ? 2 : 1
         request({
           url: '/propsconfig/props/config/update',
           method: 'POST',
