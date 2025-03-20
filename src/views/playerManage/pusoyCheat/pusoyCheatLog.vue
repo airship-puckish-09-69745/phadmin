@@ -6,6 +6,8 @@ export default {
   data() {
     return {
       cheatLogs: [],
+      changeMoneyAll:0,
+      changeMoneyBlackAll:0,
       totalCount: 0,
       currentPage: 1,
       pageNum: 20,
@@ -31,6 +33,7 @@ export default {
     },
     async getBlackData() {
       const $this = this
+      $this.blackuids = []
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -57,6 +60,8 @@ export default {
     },
     getData() {
       const $this = this
+      $this.cheatLogs = []
+      $this.clientDB = new ClientTableData([], 1, {})
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -86,6 +91,7 @@ export default {
             }
             cheatLog.userInfo = userInfo
             cheatLog.showBlackButton = showBlackButton
+            cheatLog.ChangeMoneyAll = cheatLog.ChangeMoney1 + cheatLog.ChangeMoney2 + cheatLog.ChangeMoney3
           }
           cheatLogs.sort(function(a, b) {
             return b.FinishTime - a.FinishTime
@@ -138,6 +144,13 @@ export default {
     },
     refreshShow() {
       this.cheatLogs = this.clientDB.GetCurrentPageData()
+      this.changeMoneyAll = 0
+      for (let i = 0; i < this.clientDB.TotalData.length; i++) {
+        this.changeMoneyAll += this.clientDB.TotalData[i].ChangeMoneyAll
+        // if (this.clientDB.TotalData[i].showBlackButton) {
+        //   this.changeMoneyBlackAll += this.clientDB.TotalData[i].ChangeMoneyAll
+        // }
+      }
       // this.refreshStat()
     },
     handleSizeChange(val) {
@@ -214,6 +227,19 @@ export default {
           <el-button type="primary" size="mini" @click="getDataInfo">查询</el-button>
         </el-col>
       </el-form>
+    </el-row>
+    <el-row>
+      <el-col :span="12">
+        <el-descriptions
+          class="margin-top"
+          :column="1"
+          size="medium"
+          :label-style="{'text-align': 'center', 'font-weight':'bold','padding':'5px'}"
+          border
+        >
+          <el-descriptions-item label="总盈亏：" >{{ formatNumber(changeMoneyAll) }}</el-descriptions-item>
+        </el-descriptions>
+      </el-col>
     </el-row>
     <el-row>
       <el-table
