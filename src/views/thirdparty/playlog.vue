@@ -85,6 +85,7 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%;margin-top:10px;"
+        max-height="620"
       >
         <el-table-column
           prop="uid"
