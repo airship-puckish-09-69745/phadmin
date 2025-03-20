@@ -41,7 +41,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/black',
           Page: 1,
-          Limit: 100,
+          Limit: 9999,
           Gid: this.Gid,
           Uid: 0
         }
@@ -69,7 +69,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/cheat/log',
           Page: 1,
-          Limit: 1000,
+          Limit: 9999,
           Gid: this.Gid
         }
       }).then(response => {

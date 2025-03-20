@@ -56,7 +56,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/black',
           Page: 1,
-          Limit: 400,
+          Limit: 9999,
           Uid: this.Uid,
           Gid: this.Gid
         }
