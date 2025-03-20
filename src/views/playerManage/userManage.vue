@@ -162,7 +162,7 @@
           <el-descriptions-item label="手动添加道具:">
             <el-col :span="2"> {{'道具类型:'}} </el-col>
             <el-col  :span="3">
-              <el-select v-model.number="item.ItemType" :key="'itemSelect_' + item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
+              <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
                 <el-option
                   v-for="option in itemTypeCfgs"
                   :key="option.value"
@@ -175,7 +175,7 @@
             <el-col :span="2" :offset="1"> {{'道具名称:'}} </el-col>
             <el-col :span="3">
               <template>
-                <el-select v-model.number="item.ItemCfgId"  size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
+                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
                   <el-option
                     v-for="option in tableItemData"
                     :key="option.value"
@@ -1646,15 +1646,16 @@ export default {
     },
     ShowItemList(id) {
       this.tableItemData = []
-      console.log(this.tableData)
       for (let i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].item_type === id) {
-          var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
-          this.tableItemData.push(dataList)
+          if (this.tableData[i].status === 1) {
+            var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+            this.tableItemData.push(dataList)
+          }
         }
       }
     },
-    ShowItemTime(itemId){
+    ShowItemTime(itemId) {
       this.tableTimeData = []
       for (let i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].id === itemId) {
