@@ -83,15 +83,12 @@
 
         <el-table-column
           fixed="right"
-          width="200px"
+          width="250px"
           label="操作"
         >
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              icon="el-icon-edit"
-              @click="showForm(scope.row.id)"
-            >编辑</el-button>
+            <el-button  size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
+            <el-button v-if="scope.row.status==2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
             <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
             <el-button v-if="scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
@@ -459,22 +456,23 @@ export default {
       for (var i = 0; i < this.dayTypeCfgs.length; i++) {
         this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
       }
-      //console.log(this.editForm.data.timeType)
     },
     handleUpdate(id) {
-      this.$confirm('您确定要将该比赛配置下架吗？', '提示', {
+      let editData = {}
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id == id) {
+          editData = this.tableData[i]
+          break
+        }
+      }
+      let strMsg = '您确定要将' + editData.item_name +'配置'
+      let currMsg = editData.status === 1 ? '下架吗？' : '上架吗？'
+      this.$confirm(strMsg + currMsg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let editData = {}
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].id == id) {
-            editData = this.tableData[i]
-            break
-          }
-        }
-        editData.status = 2
+        editData.status = editData.status === 1 ? 2 : 1
         request({
           url: '/propsconfig/props/config/update',
           method: 'POST',
