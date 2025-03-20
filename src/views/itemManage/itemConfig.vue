@@ -466,8 +466,8 @@ export default {
         }
       }
       let strMsg = '您确定要将' + editData.item_name +'配置'
-      let currMsg = editData.status === 1 ? '下架吗？' : '上架吗？'
-      this.$confirm(strMsg + currMsg, '提示', {
+      let currMsg = editData.status === 1 ? '下架' : '上架'
+      this.$confirm(strMsg + currMsg + '吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -492,11 +492,11 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            let showMsg = '下架成功！'
+            let showMsg = currMsg + '成功！'
             Message.success(showMsg)
             this.getList()
           } else {
-            let errMsg = '下架失败！'
+            let errMsg = currMsg + '失败！'
             Message.error(errMsg + response.Data)
           }
         })
