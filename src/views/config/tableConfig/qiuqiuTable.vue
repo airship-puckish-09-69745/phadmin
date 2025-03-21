@@ -91,7 +91,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item label="场次底注：" :required="true" :rules="dataRule(true,{type:'n',range:'1'})">
-              <el-input v-model.number="edit.item.Ante" placeholder="请输入" />
+              <el-input v-model="edit.item.Ante" placeholder="请输入" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -235,8 +235,8 @@ function NewResidentRobotSetting() {
 
 function newItem() {
   return {
-    Level:0,
-    IsPractice:0,
+    Level: 0,
+    IsPractice: 0,
     NeedAnte: 0,
     Ante: 0,
     CarryLower: 0,
@@ -247,9 +247,9 @@ function newItem() {
     ActionSeconds: 0,
     WatchTimesMax: 0,
     AutoBuyRatio: 0,
-    RecommendBuyRatio:0,
+    RecommendBuyRatio: 0,
     HideLevel: 0,
-    status: 0,
+    status: 0
   }
 }
 
@@ -380,7 +380,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           for (const o of objs) {
-            o.Ante /=1000
+            o.Ante /= 1000
           }
           this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
           this.handleCurrentChange(1)
@@ -506,7 +506,8 @@ export default {
     },
     getPostData() {
       const postData = this.libMoney.TransForStore(this.edit.item)
-      postData.Ante =parseInt(postData.Ante*1000)
+      console.log('postData.Ante ', postData.Ante)
+      postData.Ante = parseInt(postData.Ante*1000)
       return postData
     },
     checkData() {
