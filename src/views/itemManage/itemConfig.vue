@@ -17,7 +17,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-button  size="mini" type="success" @click="selectPageData">查询</el-button>
+        <el-button  size="mini" type="primary" @click="selectPageData">查询</el-button>
       </el-form>
 
     </el-row>
