@@ -75,26 +75,26 @@
         </template>
       </el-table-column>
       <el-table-column prop="ScriptRule" label="用户规则" >
-        <el-table-column label="平台" width="120px">
+        <el-table-column label="平台" >
           <template slot-scope="scope">
             <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
 
         </template>
         </el-table-column>
-        <el-table-column label="用户类型">
-          <template slot-scope="{}" slot="header">
-            用户类型
-               <el-tooltip class="item" effect="dark" placement="top">
-      <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>
-      <div slot="content">
-        <p>(0:不限,1:新注,2:活跃,3:大R-暂不考虑) </p>
-      </div>
-    </el-tooltip>
-              </template>
-       <template slot-scope="scope">
-          {{ scope.row.ScriptRule.UserType  }}
-        </template>
-        </el-table-column>
+<!--        <el-table-column label="用户类型">-->
+<!--          <template slot-scope="{}" slot="header">-->
+<!--            用户类型-->
+<!--               <el-tooltip class="item" effect="dark" placement="top">-->
+<!--      <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>-->
+<!--      <div slot="content">-->
+<!--        <p>(0:不限,1:新注,2:活跃,3:大R-暂不考虑) </p>-->
+<!--      </div>-->
+<!--    </el-tooltip>-->
+<!--              </template>-->
+<!--       <template slot-scope="scope">-->
+<!--          {{ scope.row.ScriptRule.UserType  }}-->
+<!--        </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="流量控制(权重)">
            <template slot-scope="scope">
           {{ scope.row.ScriptRule.TrafficCtrl  }}
