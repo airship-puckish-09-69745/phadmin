@@ -597,7 +597,7 @@
                         <span>{{ item.propsName }}</span>
                       </el-option>
                     </el-select>
-                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量11" />
+                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
                 </ul>
               </template>
@@ -813,7 +813,8 @@ export default {
         { 'value': 10005, 'label': 'P40' },
         { 'value': 10006, 'label': 'P100' },
         { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' }
+        { 'value': 10008, 'label': 'GTCC 2005' },
+        { 'value': 10009, 'label': 'Yamaha Moto' }
       ],
       prizeTemplateCfg: [],
       matchPropsCfgs: [],   //比赛道具信息
@@ -2083,12 +2084,15 @@ export default {
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        console.log('element', element)
+        console.log('1111 element', element)
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
           return false
         }
-
+        if (element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+          this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
+          return false
+        }
         if (element.rewardItems.length == 0) {
           this.errmsg('请添加奖励配置')
           return false

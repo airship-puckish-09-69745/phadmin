@@ -43,6 +43,10 @@
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,820,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="普通模式FWild在第2和4列出现概率">
+            <el-input v-model="FWildTwoFourColRateStr" placeholder="请输入内容,如25,50"> <template slot="append">% 两个值一组用 , 连接。</template> </el-input>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
@@ -134,7 +138,8 @@ export default {
   data() {
     return {
       cfg: {
-      }
+      },
+      FWildTwoFourColRateStr: ''
     }
   },
   created() {
@@ -150,6 +155,12 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const fWildTwoFourColRates = this.FWildTwoFourColRateStr.split(',')
+      this.cfg.FWildTwoFourColRates = [0, 0]
+      for (let i = 0; i < fWildTwoFourColRates.length; i++) {
+        this.cfg.FWildTwoFourColRates[i] = parseInt(fWildTwoFourColRates[i])
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -169,6 +180,7 @@ export default {
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
+        this.FWildTwoFourColRateStr = this.slotsData.FWildTwoFourColRates ? this.slotsData.FWildTwoFourColRates.join(',') : ''
         this.cfg = this.slotsData
         if (this.cfg.SpecialSymbols === undefined) {
           this.cfg.SpecialSymbols = []

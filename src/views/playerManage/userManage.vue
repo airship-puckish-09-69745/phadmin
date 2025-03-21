@@ -164,40 +164,47 @@
             <el-col  :span="3">
               <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
                 <el-option
-                  v-for="item in itemTypeCfgs"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled"
+                  v-for="option in itemTypeCfgs"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                  :disabled="option.disabled"
                 ></el-option>
               </el-select>
             </el-col>
             <el-col :span="2" :offset="1"> {{'道具名称:'}} </el-col>
             <el-col :span="3">
-              <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
-                <el-option
-                  v-for="item in tableItemData"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                  :disabled="item.disabled"
-                  ></el-option>
-              </el-select>
-            </el-col>
-            <el-col v-show="item.ItemType == 2" :span="2" :offset="1"> {{'可用时间:'}} </el-col>
-            <el-col v-show="item.ItemType == 2" :span="3">
-                <el-select v-model.number="item.ItemUseTime" size="mini" placeholder="请选择">
+              <template>
+                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
                   <el-option
-                    v-for="item in dayTypeCfgs"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                    :disabled="item.disabled"
+                    v-for="option in tableItemData"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                    :disabled="option.disabled"
                   ></el-option>
                 </el-select>
+              </template>
             </el-col>
-
-            <el-col :span="6" :offset="1">
+            <el-col :span="2" :offset="1"> {{'道具数量:'}} </el-col>
+            <el-col :span="2">
+              <el-input v-model.number="item.ItemNum" size="mini" />
+            </el-col>
+            <el-col v-show="item.ItemType == 2" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
+            <el-col v-show="item.ItemType == 2" :span="2">
+              <template>
+                <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
+                  <el-option
+                    v-for="option in dayTypeCfgs"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                    :disabled="option.disabled"
+                  ></el-option>
+                </el-select>
+              </template>
+            </el-col>
+            <el-col :span="3" :offset="1">
               <el-button type="primary" size="mini" @click="saveItemInfo">提交</el-button>
             </el-col>
           </el-descriptions-item>
@@ -501,9 +508,9 @@ export default {
         { 'label': 'Tongits Quick', 'value': 29 }
       ],
       itemTypeCfgs: [
-        { 'value': 1, 'label': '门票', disabled: false },
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参赛券', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false }
       ],
       dayTypeCfgs: [
         { 'value': 7, 'label': '7天', disabled: false },
@@ -1309,20 +1316,30 @@ export default {
         Message.error('请输入正确的Uid')
         return
       }
-      if (this.item.ItemType === 0) {
+      if (typeof this.item.ItemType === 'undefined' || this.item.ItemType === 0) {
         Message.error('请输入道具类型')
         return
       }
-      if (this.item.ItemCfgId === 0) {
+      if (typeof this.item.ItemCfgId === 'undefined' || this.item.ItemCfgId === 0) {
         Message.error('请输入道具id')
         return
       }
-      console.log(this.item.ItemCfgId)
-      console.log(this.item.ItemType)
-      console.log(this.item.ItemUseTime)
-      console.log(this.item.ItemQuality)
-      console.log(this.item.ItemExpireTime)
+      if (typeof this.item.ItemNum === 'undefined' || this.item.ItemNum === 0) {
+        Message.error('请输入道具数量')
+        return
+      }
+      if (this.item.ItemType === 2) {
+        if (typeof this.item.ItemUseTime === 'undefined') {
+          Message.error('请选择时间')
+          return
+        }
+      }
+
       const msg = '确定添加物品吗?'
+      let tmpTime = 0
+      if (this.item.ItemType === 2) {
+        tmpTime = this.item.ItemUseTime
+      }
       this.$confirm(msg, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -1338,8 +1355,9 @@ export default {
             Type: 12,
             Money: 0,
             ItemId: this.item.ItemCfgId,
+            ItemNum: this.item.ItemNum,
             ItemType: this.item.ItemType,
-            UseTime: this.item.ItemUseTime,
+            UseTime: tmpTime,
             Quality: this.item.ItemQuality,
             ExpireTime: this.item.ItemExpireTime,
             ActMsg: '管理后台By ' + store.getters.name
@@ -1349,7 +1367,7 @@ export default {
             Message.success('修改成功！')
             this.item.ItemType = 0
             this.item.ItemCfgId = 0
-            this.item.ItemUseTime = 0
+            this.item.ItemNum = 0
           }
         })
       }).catch(() => {
@@ -1628,25 +1646,27 @@ export default {
     },
     ShowItemList(id) {
       this.tableItemData = []
-      console.log(this.tableData)
+      let currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].item_type == id) {
-          var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
-          this.tableItemData.push(dataList)
-          this.item.ItemQuality = this.tableData[i].quality
+        if (this.tableData[i].item_type === id) {
+          if (this.tableData[i].status === 1) {
+            let expTime = this.tableData[i].expire_time * 1000
+            if (currTime < expTime) {
+              var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+              this.tableItemData.push(dataList)
+            }
+          }
         }
       }
-      this.item.ItemCfgId = 0
     },
-    ShowItemTime(itemId){
+    ShowItemTime(itemId) {
       this.tableTimeData = []
-      this.item.ItemUseTime = 0
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].id == itemId) {
+        if (this.tableData[i].id === itemId) {
           const time_type = JSON.parse(this.tableData[i].time_type)
           for (let j = 0; j < time_type.length; j++) {
             var msg = time_type[j] + '天'
-            if (time_type[j] == 0) {
+            if (time_type[j] === 0) {
               msg = '永久'
             }
             var dataList = { 'value': time_type[j], 'label': msg, disabled: false }
@@ -1654,6 +1674,7 @@ export default {
           }
           this.item.ItemStartTime = this.tableData[i].create_time
           this.item.ItemExpireTime = this.tableData[i].expire_time
+          this.item.ItemQuality = this.tableData[i].quality
           break
         }
       }

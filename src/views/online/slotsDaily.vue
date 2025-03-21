@@ -264,14 +264,13 @@ export default {
         case 86:
         case 150:
         case 152:
-        case 178:
         case 166: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
           lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166 || one.SlotsType === 178) {
+          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166) {
             lists.push(this.calcItemNormal('bonus返奖', 'SlotsReturn5', one))
           } else {
             lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))

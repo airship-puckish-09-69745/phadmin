@@ -4,7 +4,7 @@
       <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="false" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
-      <el-col :span="20">
+      <el-col :span="16">
         <el-button
           size="mini"
           type="primary"
@@ -15,6 +15,14 @@
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
+      </el-col>
+      <el-col :span="4">
+        <el-input
+          v-model="search"
+          size="mini"
+          placeholder="输入关键字搜索"
+          @input="searchChange"
+        />
       </el-col>
     </el-row>
     <el-row>
@@ -40,6 +48,7 @@
         :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
         style="width: 100%"
+        max-height="700"
         @row-click="clickData"
         @sort-change="sortChange"
       >
@@ -368,6 +377,11 @@ export default {
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
+    },
+    // 筛选相关逻辑
+    searchChange() {
+      this.clientDB.Search(this.search, ['ID', 'Account', 'Intro', 'Ver'])
+      this.refreshShow()
     },
     clearFilter() {
       this.clientDB.ClearFilterMap()
