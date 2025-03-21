@@ -627,44 +627,54 @@ export default {
     },
 
     configCheck() {
-      if(this.editForm.data.itemName == '') {
+      if (this.editForm.data.itemName == '') {
         this.errmsg('请填写道具名称')
         return false
       }
 
-      if(this.editForm.data.itemType == 0) {
+      if (this.editForm.data.itemType == 0) {
         this.errmsg('请选择道具分类')
         return false
       }
 
-      if(this.editForm.data.itemType != 2) {
-        if(this.editForm.data.itemCost == 0) {
+      if (this.editForm.data.itemType != 2) {
+        if (this.editForm.data.itemCost == 0) {
           this.errmsg('请填写道具价值')
           return false
         }
       }
 
-      if(this.editForm.data.describe == '') {
+      if (this.editForm.data.describe == '') {
         this.errmsg('请填写道具描述')
         return false
       }
-      if(this.editForm.itemEndDate === null) {
+      if (this.editForm.itemEndDate === null) {
         this.errmsg('请选择过期时间')
         return false
       }
 
-      if(this.editForm.data.image == '') {
+      if (this.editForm.data.image == '') {
         this.errmsg('请上传Icon图')
         return false
       }
 
-      if(this.editForm.data.itemType == 2) {
-        if(this.editForm.data.quality == 0) {
+      if (this.editForm.data.itemType == 2) {
+        if (this.editForm.data.quality == 0) {
           this.errmsg('请选择品质')
           return false
         }
+      } else {
+        if (this.editForm.data.ID == 0) {
+          let expireTime = 0
+          expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
+          let currTime = new Date().getTime()
+          let nTime = expireTime * 1000
+          if (currTime > nTime) {
+            this.errmsg('请选择时间')
+            return false
+          }
+        }
       }
-
       return true
     }
   }
