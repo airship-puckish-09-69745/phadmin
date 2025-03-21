@@ -543,9 +543,6 @@ export default {
       let expireTime = 0
       expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
       const timeList = JSON.stringify(this.editForm.data.timeType)
-      if (this.editForm.data.itemType === 2) {
-        this.editForm.data.itemCost = 0
-      }
       if (this.editForm.data.ID == 0) {
         this.editForm.data.status = 1
         request({
@@ -637,8 +634,10 @@ export default {
         return false
       }
 
-      if (this.editForm.data.itemType != 2) {
-        if (this.editForm.data.itemCost == 0) {
+      if (this.editForm.data.itemType === 2) {
+        this.editForm.data.itemCost = 0
+      } else {
+        if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
           return false
         }
