@@ -135,7 +135,7 @@
               <robot-ai-setting-out-card v-model="edit" />
             </el-tab-pane>
             <el-tab-pane label="好牌配置">
-              <robot-ai-setting-build-card v-model="edit" />
+              <robot-ai-setting-build-card v-model="edit" game-type="joker" />
             </el-tab-pane>
           </el-tabs>
         </el-row>

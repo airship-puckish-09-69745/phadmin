@@ -1388,7 +1388,8 @@ export default {
       }
       return false
     },
-    checkZoneGames(gids, index) {
+    checkZoneGames(newData, index) {
+      const gids = newData.Gids
       if (gids.length <= 0) {
         return false
       }
@@ -1402,13 +1403,20 @@ export default {
       }
       gameSelArray = []
       const nowGameSelArray = []
+
+      for (let m = 0; m < newData.ChannelId.length; m++) {
+        for (let n = 0; n < newData.Gids.length; n++) {
+          nowGameSelArray.push({ AppId: newData.AppId, ChannelId: newData.ChannelId[m], Gid: newData.Gids[n] })
+        }
+      }
+
       for (let i = 0; i < this.zoneGame.length; i++) {
         if (this.zoneGame[i].Index === index) {
-          for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
-            for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
-              nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
-            }
-          }
+          // for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+          //   for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+          //     nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
+          //   }
+          // }
         } else {
           for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
             for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
@@ -1417,15 +1425,15 @@ export default {
           }
         }
       }
+      const exists = gameSelArray.some(obj => nowGameSelArray.some(obj1 => obj1.AppId === obj.AppId && obj1.ChannelId === obj.ChannelId && obj1.Gid === obj.Gid));
 
-      const intersection = gameSelArray.filter(value => nowGameSelArray.includes(value))
-      return intersection.length <= 0
+      return exists
     },
     saveZoneGameD() {
       const newData = JSON.parse(JSON.stringify(this.editZoneGame.item))
 
-      if (!this.checkZoneGames(this.editZoneGame.item.Gids, this.editZoneGame.item.Index)) {
-        this.$alert(`添加错误，游戏不存在`, '提示', { type: 'warning' })
+      if (this.checkZoneGames(newData, this.editZoneGame.item.Index)) {
+        this.$alert(`添加错误，游戏不存在或重复配置`, '提示', { type: 'warning' })
         return
       }
 
@@ -1672,6 +1680,9 @@ export default {
       const gid = id[id.length - 1]
       const lengthZoneGame = this.zoneGame.length
       for (let i = 0; i < lengthZoneGame - 1; i++) {
+        if (this.editZoneGame.item.AppId !== this.zoneGame[i].AppId){
+          continue
+        }
         const gids = this.zoneGame[i].Gids
         if (gids.includes(gid)) {
           console.log('changeHallGame', gid)

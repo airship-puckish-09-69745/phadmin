@@ -4,6 +4,24 @@
       <publish primary-key="id" key-id="PropsConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['title']" />
     </el-row>
     <el-row>
+      <el-form :model="form" label-width="100px" :inline="true" size="mini">
+        <el-form-item label="道具类别：" :required="true">
+          <el-select v-model="form.itemOfType" style="width: 200px;" placeholder="请选择道具分类">
+            <el-option label="全部" :value="0" />
+            <el-option
+              v-for="item in itemTypeCfgs"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
+          </el-select>
+        </el-form-item>
+        <el-button  size="mini" type="success" @click="selectPageData">查询</el-button>
+      </el-form>
+
+    </el-row>
+    <el-row>
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加道具</el-button>
       </div>
@@ -83,15 +101,12 @@
 
         <el-table-column
           fixed="right"
-          width="200px"
+          width="250px"
           label="操作"
         >
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              icon="el-icon-edit"
-              @click="showForm(scope.row.id)"
-            >编辑</el-button>
+            <el-button  size="mini" icon="el-icon-edit" @click="showForm(scope.row.id)">编辑</el-button>
+            <el-button v-if="scope.row.status==2" size="mini" type="success" @click="handleUpdate(scope.row.id)">上架</el-button>
             <el-button v-if="scope.row.status==1" size="mini" type="danger" @click="handleUpdate(scope.row.id)">下架</el-button>
             <el-button v-if="scope.row.status==2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
@@ -124,19 +139,19 @@
       :close-on-press-escape="false"
       width="900px"
     >
-      <el-form :model="editForm.data" label-width="150px" size="mini">
+      <el-form :model="editForm.data" label-width="200px" size="mini">
         <fieldset>
           <legend>道具信息</legend>
           <el-form-item label="道具名称：" :required="true">
-            <el-input v-model="editForm.data.itemName" style="width: 150px;" placeholder="请填写道具名称" />
+            <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
           </el-form-item>
 
-          <el-form-item label="道具价值：" :required="true">
-            <el-input v-model.number="editForm.data.itemCost" style="width: 150px;" placeholder="请填写道具价值" />
+          <el-form-item v-if="editForm.data.itemType != 2" label="道具价值：" :required="true">
+            <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType == 2" label="品质：" :required="true">
-            <el-select v-model="editForm.data.quality" style="width: 150px;" placeholder="请选择道具品质分类">
+            <el-select v-model="editForm.data.quality" style="width: 200px;" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
                 :key="item.value"
@@ -148,11 +163,11 @@
           </el-form-item>
 
           <el-form-item label="道具描述：" :required="true">
-            <el-input v-model="editForm.data.describe" style="width: 150px;" placeholder="请填写道具描述" />
+            <el-input v-model="editForm.data.describe" style="width: 400px;" placeholder="请填写道具描述" />
           </el-form-item>
 
           <el-form-item label="道具类别：" :required="true">
-            <el-select v-model="editForm.data.itemType" style="width: 150px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
+            <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
               <el-option
                 v-for="item in itemTypeCfgs"
                 :key="item.value"
@@ -163,18 +178,19 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType != 2" label="道具过期时间：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
-              size="mini"
+              style="width: 200px;"
               type="date"
+              :disabled="!editForm.isAdd"
               placeholder="选择过期日期"
             />
             <span style="color:black; margin-left:10px">[00:00:00]</span>
           </el-form-item>
 
           <el-form-item label="排序：" :required="true">
-            <el-input v-model.number="editForm.data.sort" style="width: 150px;" placeholder="请填写排序id" />
+            <el-input v-model.number="editForm.data.sort" style="width: 200px;" placeholder="请填写排序id" />
           </el-form-item>
 
           <el-form-item label="道具ICON：" :required="true">
@@ -232,9 +248,9 @@ export default {
       ],
 
       itemTypeCfgs: [
-        { 'value': 1, 'label': '门票', disabled: false },
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参赛券', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false }
       ],
 
       dayTypeCfgs: [
@@ -259,6 +275,9 @@ export default {
       limit: 10,
       total: 0,
       page: 1,
+      form: {
+        itemOfType: 0
+      },
       editForm: {
         visable: false,
         title: '',
@@ -280,14 +299,16 @@ export default {
       },
 
       AttrNames: {
-        itemName: '道具名称',
-        itemCost: '道具价值',
-        itemType: '道具分类',
+        propName: '道具名称',
+        propCost: '道具价值',
+        propType: '道具分类',
         describe: '道具描述',
         image: 'ICON链接',
         expireTime: '过期时间',
         sort: '排序',
-        status: '状态'
+        propStatus: '上架状态',
+        createTime: '创建时间',
+        id: '道具ID'
       }
     }
   },
@@ -297,9 +318,6 @@ export default {
   },
   mounted(){
     this.getList()
-    console.log(this.tableData)
-    console.log(this.raw)
-    console.log(this.tableData.length)
   },
   methods: {
     getList() {
@@ -315,11 +333,26 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
-            this.total = objs.total
             this.tableData = []
-            this.tableData = objs.list
+            console.log(objs.total)
+            console.log(this.form.itemOfType)
+            if (this.form.itemOfType === 0) {
+              this.tableData = objs.list
+              this.total = objs.total
+            } else {
+              let n = 0
+              for (let i = 0; i < objs.list.length; i++) {
+                if (objs.list[i].item_type === this.form.itemOfType) {
+                  this.tableData.push(objs.list[i])
+                  n++
+                }
+              }
+              this.total = n
+            }
+            console.log(this.tableData)
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
+            console.log(this.raw)
           }
         } else {
           this.total = 0
@@ -375,8 +408,6 @@ export default {
             break
           }
         }
-        console.log(id)
-        console.log(editData)
         if (typeof editData.id == 'undefined') {
           Message.error('道具配置不存在')
           return
@@ -396,6 +427,7 @@ export default {
           quality: editData.quality,
           timeType: time_type
         }
+        this.editForm.itemEndDate = editData.expire_time * 1000
       }
     },
     getItemTypeName(item_type){
@@ -458,22 +490,23 @@ export default {
       for (var i = 0; i < this.dayTypeCfgs.length; i++) {
         this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
       }
-      console.log(this.editForm.data.timeType)
     },
     handleUpdate(id) {
-      this.$confirm('您确定要将该比赛配置上架吗？', '提示', {
+      let editData = {}
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id == id) {
+          editData = this.tableData[i]
+          break
+        }
+      }
+      let strMsg = '您确定要将' + editData.item_name +'配置'
+      let currMsg = editData.status === 1 ? '下架' : '上架'
+      this.$confirm(strMsg + currMsg + '吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        let editData = {}
-        for (let i = 0; i < this.tableData.length; i++) {
-          if (this.tableData[i].id == id) {
-            editData = this.tableData[i]
-            break
-          }
-        }
-        editData.status = 2
+        editData.status = editData.status === 1 ? 2 : 1
         request({
           url: '/propsconfig/props/config/update',
           method: 'POST',
@@ -493,11 +526,11 @@ export default {
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            let showMsg = '修改道具配置成功！'
+            let showMsg = currMsg + '成功！'
             Message.success(showMsg)
             this.getList()
           } else {
-            let errMsg = '修改道具配置失败！'
+            let errMsg = currMsg + '失败！'
             Message.error(errMsg + response.Data)
           }
         })
@@ -547,7 +580,6 @@ export default {
       expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
       const timeList = JSON.stringify(this.editForm.data.timeType)
       if (this.editForm.data.ID == 0) {
-        console.log(this.editForm.data.ID)
         this.editForm.data.status = 1
         request({
           url: '/propsconfig/props/config/create',
@@ -608,6 +640,11 @@ export default {
         })
       }
     },
+    selectPageData()
+    {
+      this.page = 1
+      this.getList()
+    },
 
     errmsg(txt) {
       this.$alert(txt, '', {
@@ -628,33 +665,56 @@ export default {
     },
 
     configCheck() {
-      if(this.editForm.data.itemName == '') {
+      if (this.editForm.data.itemName == '') {
         this.errmsg('请填写道具名称')
         return false
       }
-      if(this.editForm.data.itemCost == 0) {
-        this.errmsg('请填写道具价值')
-        return false
-      }
 
-      if(this.editForm.data.itemType == 0) {
+      if (this.editForm.data.itemType == 0) {
         this.errmsg('请选择道具分类')
         return false
       }
-      if(this.editForm.data.describe == '') {
+
+      if (this.editForm.data.itemType === 2) {
+        this.editForm.data.itemCost = 0
+      } else {
+        if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
+          this.errmsg('请填写道具价值')
+          return false
+        }
+      }
+
+      if (this.editForm.data.describe == '') {
         this.errmsg('请填写道具描述')
         return false
       }
-      if(this.editForm.itemEndDate === null) {
+      if (this.editForm.itemEndDate === null) {
         this.errmsg('请选择过期时间')
         return false
       }
 
-      if(this.editForm.data.image == '') {
+      if (this.editForm.data.image == '') {
         this.errmsg('请上传Icon图')
         return false
       }
 
+      if (this.editForm.data.itemType == 2) {
+        if (this.editForm.data.quality == 0) {
+          this.errmsg('请选择品质')
+          return false
+        }
+      } else {
+        if (this.editForm.data.ID == 0) {
+          let expireTime = 0
+          expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
+          let currTime = new Date().getTime()
+          let nTime = expireTime * 1000
+          if (currTime > nTime) {
+            this.errmsg('请选择时间')
+            return false
+          }
+        }
+      }
       return true
     }
   }

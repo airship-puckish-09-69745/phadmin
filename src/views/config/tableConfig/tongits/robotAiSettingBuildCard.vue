@@ -111,6 +111,26 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <el-row v-if="GameType == 'joker'">
+      <el-col :span="11">
+        <el-form-item
+          label="构建癞子概率："
+          label-width="200px"
+          :rules="dataRule(true,{type:'n',range:'0'})"
+        >
+          <el-input v-model.number="AiConfig.BuildCard.BuildJokerRatio" placeholder="单位百分比" />
+        </el-form-item>
+      </el-col>
+      <el-col :span="11">
+        <el-form-item
+          label="最大构建癞子数量："
+          label-width="200px"
+          :rules="dataRule(true,{type:'n',range:'0'})"
+        >
+          <el-input v-model.number="AiConfig.BuildCard.BuildJokerMaxNum" placeholder="0" />
+        </el-form-item>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script>
@@ -118,18 +138,24 @@ import tongitsTableRange from '@/components/TongitsTableRange'
 import { DataRule } from '@/utils/common'
 export default {
   name: 'RobotAiSettingOutCard',
-    	components: { tongitsTableRange },
+  components: { tongitsTableRange },
   model: {
 		    prop: 'AiConfig',
 		    event: 'cc'
   },
   props: {
-		    AiConfig: {
-		      type: Object,
-		      default: function() {
-		        return {}
-		      }
-		    }
+    AiConfig: {
+      type: Object,
+      default: function() {
+        return {}
+      }
+    },
+    GameType: {
+      type: String,
+      default: function() {
+        return "pot"
+      }
+    }
   },
   created() {
 		    this.$nextTick(() => {

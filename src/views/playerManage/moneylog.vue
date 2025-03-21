@@ -348,7 +348,8 @@ const filterMap = {
     2010: '比赛报名',
     2011: '比赛结束',
     2012: '金币补偿',
-    3001: '比赛结束，营销接口发奖'
+    3001: '比赛结束，营销接口发奖',
+    10000: 'Tongits比赛流水' // 混合类型查询 act_type=2010 and act_msg='2031' || act_type=3001
   }
 }
 
@@ -376,7 +377,7 @@ export default {
       clientDB: new ClientTableData([], 10, filterMap),
       libShow: $libShow,
       actTypeSort: [1000, 1001, 2, 15, 16, 18, 19, 20, 1, 7, 11, 12, 13, 14, 17, 29, 30, 31, 32, 60, 61,
-        2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012],
+        2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 10000],
 
       item: {
         Uid: 0
@@ -429,19 +430,28 @@ export default {
       this.refreshShow()
     },
     handleFilter2() {
+      const selectedTypes = this.clientDB.FilterValueMap['ActType']
+      const hasSpecial = selectedTypes.includes(10000) // 判断是否包含特殊类型
+      const normalTypes = selectedTypes.filter(t => t !== 10000) // 排除特殊类型
+
+      // 创建普通类型筛选集合
       const actTypes = {}
-      for (let i = 0; i < this.clientDB.FilterValueMap['ActType'].length; i++) {
-        actTypes[this.clientDB.FilterValueMap['ActType'][i]] = true
+      for (let i = 0; i < normalTypes.length; i++) {
+        actTypes[normalTypes[i]] = true
       }
-      this.clientDB.ShowData = this.clientDB.TotalData.filter(
-        function(data) {
-          if (actTypes[data.ActType]) {
-            return true
-          } else {
-            return false
-          }
+
+      this.clientDB.ShowData = this.clientDB.TotalData.filter(data => {
+        // 满足普通筛选条件
+        if (actTypes[data.ActType]) return true
+
+        // 特殊类型筛选逻辑
+        if (hasSpecial) {
+          return (data.ActType === 2010 && data.ActMsg === '2031') ||
+            (data.ActType === 3001) || (data.ActType === 2011 && data.ActMsg === '2031')
         }
-      )
+        return false
+      })
+
       this.clientDB.Page.SetTotalCount(this.clientDB.ShowData.length)
       this.refreshShow()
     },

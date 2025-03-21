@@ -171,7 +171,7 @@
 <script>
 import request from '@/utils/request'
 import store from '@/store'
-import { $libDate, $libShow, MoneyShow } from '@/utils/common'
+import {$libDate, $libShow, MoneyShow} from '@/utils/common'
 import slotsLineChart from './components/slotsLineChart'
 
 const RETURN_ALL_KEY = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
@@ -231,7 +231,7 @@ export default {
             this.lists.push(this.calcData(obj[key]))
           }
           console.log("=========", this.lists)
-          this.lists.sort(function(a, b) {
+          this.lists.sort(function (a, b) {
             return a.slotsType - b.slotsType
           })
         } else {
@@ -252,8 +252,7 @@ export default {
       one.Day7 = this.libMoney.TransForShow(one.Day7)
       const lists = []
       switch (one.SlotsType) {
-        case 63:
-        {
+        case 63: {
           lists.push(this.calcNonPercent('玩牌次数', 'PlayTimes', one))
           lists.push(this.calcNonPercent('总下注', 'TotalBet', one))
           lists.push(this.calcItem('正常返奖', 'SlotsReturn1', one))
@@ -265,14 +264,13 @@ export default {
         case 86:
         case 150:
         case 152:
-        case 178:
         case 166: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
           lists.push(this.calcItemNormal('正常返奖', 'SlotsReturn1', one))
           lists.push(this.calcItemNormal('Scatter返奖', 'SlotsReturn2', one))
-          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166 || one.SlotsType === 178) {
+          if (one.SlotsType === 150 || one.SlotsType === 152 || one.SlotsType === 166) {
             lists.push(this.calcItemNormal('bonus返奖', 'SlotsReturn5', one))
           } else {
             lists.push(this.calcItemNormal('转盘返奖', 'SlotsReturn5', one))
@@ -300,8 +298,7 @@ export default {
           lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
           lists.push(this.calcItemTotalSum('所有返奖总计', one))
           break;
-        default:
-        {
+        default: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
           lists.push(this.calcTotalBet(one))
