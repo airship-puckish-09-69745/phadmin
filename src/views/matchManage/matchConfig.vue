@@ -2090,7 +2090,7 @@ export default {
           this.errmsg('请填写正确的排名')
           return false
         }
-        if ((typeof(element.propsReward) != undefined) &&  (element.propsReward.propsId > 0 && element.propsReward.propsNum === 0)){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
         }
