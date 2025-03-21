@@ -828,7 +828,7 @@ export default {
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       reachOutNumCfgs: new Map(), // 定局晋级人数
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       editForm: {
