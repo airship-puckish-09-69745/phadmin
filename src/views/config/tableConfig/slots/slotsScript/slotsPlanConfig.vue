@@ -74,10 +74,11 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="ScriptRule" label="用户规则">
-        <el-table-column label="平台">
+      <el-table-column prop="ScriptRule" label="用户规则" >
+        <el-table-column label="平台" width="120px">
           <template slot-scope="scope">
-          {{ scope.row.ScriptRule.PlatformList  }}
+            <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
+
         </template>
         </el-table-column>
         <el-table-column label="用户类型">
@@ -830,7 +831,6 @@ export default {
             o.ScriptRule.PlatformList.splice( i,1)
           }
         }
-        console.log('==========',o.ScriptRule.PlatformList)
         // if (o.ScriptRule.PlatformList.length>0){
           o.ScriptRule.Platform =  o.ScriptRule.PlatformList.join()
         // }
