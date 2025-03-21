@@ -1831,8 +1831,9 @@ export default {
               }
             ]
             this.matchTicketsCfgs = []
+            var timestamp = (new Date()).valueOf();
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type == 1) {
+              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time < timestamp) {
                 this.matchPropsCfgs.push({
                   'propsType': objs.list[i].item_type,
                   'propsId': objs.list[i].id,
