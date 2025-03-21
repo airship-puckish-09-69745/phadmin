@@ -1628,7 +1628,7 @@ export default {
         data: {
           Env: this.env,
           PageNum: 1,
-          PageSize: 10
+          PageSize: 100
         }
       }).then(response => {
         if (response.RetCode === 0) {
