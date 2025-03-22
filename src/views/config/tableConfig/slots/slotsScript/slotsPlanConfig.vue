@@ -814,6 +814,8 @@ export default {
           if (oz.ScriptRule.Platform !==''){
             console.log('==========',oz.ScriptRule.Platform)
             oz.ScriptRule['PlatformList'] = oz.ScriptRule.Platform.split(",")
+          }else {
+            oz.ScriptRule['PlatformList'] = []
           }
         }
     },
