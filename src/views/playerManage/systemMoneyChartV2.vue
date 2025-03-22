@@ -866,9 +866,9 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
-            if (this.$store.state.user.pers['USER_MANAGEMENT']) {
-              if (this.authorityCfg[this.name]) {
-                // 有权限而且有限制
+              if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
+              // 限制查看pro
+              if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
                 this.defaultOrder = []
                 for (const o of this.authorityCfg[this.name]) {
                   if (this.gameNames[o]) {
@@ -876,10 +876,23 @@ export default {
                   }
                 }
                 this.authorityNum = this.defaultOrder.length
-              } else {
-                this.sortOrder = this.defaultOrder
-                return
+              }else {
+                if (this.authorityCfg[this.name]) {
+                  // 有权限而且有限制
+                  this.defaultOrder = []
+                  for (const o of this.authorityCfg[this.name]) {
+                    if (this.gameNames[o]) {
+                      this.defaultOrder.push(o)
+                    }
+                  }
+                  this.authorityNum = this.defaultOrder.length
+                } else {
+                  this.sortOrder = this.defaultOrder
+                  return
+                }
+                this.defaultOrder = []
               }
+
             } else {
               this.defaultOrder = []
             }
