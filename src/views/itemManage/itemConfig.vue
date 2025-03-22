@@ -151,7 +151,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType == 2" label="品质：" :required="true">
-            <el-select v-model="editForm.data.quality" style="width: 200px;" placeholder="请选择道具品质分类">
+            <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
                 :key="item.value"
