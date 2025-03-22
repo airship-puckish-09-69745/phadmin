@@ -869,13 +869,7 @@ export default {
               if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
               // 限制查看pro
               if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
-                this.defaultOrder = []
-                for (const o of this.authorityCfg[this.name]) {
-                  if (this.gameNames[o]) {
-                    this.defaultOrder.push(o)
-                  }
-                }
-                this.authorityNum = this.defaultOrder.length
+                this.sortOrder = this.defaultOrder
               }else {
                 if (this.authorityCfg[this.name]) {
                   // 有权限而且有限制
