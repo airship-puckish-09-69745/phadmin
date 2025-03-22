@@ -470,7 +470,13 @@ export default {
 
     },
     HasACC() {
-      if (this.$store.state.user.pers['USER_MANAGEMENT']) {
+
+      if (this.$store.state.user.pers[' KEY_DATA_MONITOR']) {
+        if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='test') {
+          return true
+        }else if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='pro'){
+          return false
+        }
         if (this.authorityCfg[this.name]) {
           if (this.authorityCfg[this.name].includes(10000)) {
             return true
