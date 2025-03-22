@@ -4,6 +4,24 @@
       <publish primary-key="id" key-id="PropsConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['title']" />
     </el-row>
     <el-row>
+      <el-form :model="form" label-width="100px" :inline="true" size="mini">
+        <el-form-item label="道具类别：" :required="true">
+          <el-select v-model="form.itemOfType" style="width: 200px;" placeholder="请选择道具分类">
+            <el-option label="全部" :value="0" />
+            <el-option
+              v-for="item in itemTypeCfgs"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+              :disabled="item.disabled"
+            />
+          </el-select>
+        </el-form-item>
+        <el-button  size="mini" type="primary" @click="selectPageData">查询</el-button>
+      </el-form>
+
+    </el-row>
+    <el-row>
       <div style="float: right; margin-bottom: 10px;">
         <el-button size="mini" icon="el-icon-plus" @click="showForm(0)">添加道具</el-button>
       </div>
@@ -133,7 +151,7 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.itemType == 2" label="品质：" :required="true">
-            <el-select v-model="editForm.data.quality" style="width: 200px;" placeholder="请选择道具品质分类">
+            <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
                 :key="item.value"
@@ -257,6 +275,9 @@ export default {
       limit: 10,
       total: 0,
       page: 1,
+      form: {
+        itemOfType: 0
+      },
       editForm: {
         visable: false,
         title: '',
@@ -312,11 +333,26 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
-            this.total = objs.total
             this.tableData = []
-            this.tableData = objs.list
+            console.log(objs.total)
+            console.log(this.form.itemOfType)
+            if (this.form.itemOfType === 0) {
+              this.tableData = objs.list
+              this.total = objs.total
+            } else {
+              let n = 0
+              for (let i = 0; i < objs.list.length; i++) {
+                if (objs.list[i].item_type === this.form.itemOfType) {
+                  this.tableData.push(objs.list[i])
+                  n++
+                }
+              }
+              this.total = n
+            }
+            console.log(this.tableData)
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
+            console.log(this.raw)
           }
         } else {
           this.total = 0
@@ -543,9 +579,6 @@ export default {
       let expireTime = 0
       expireTime = (Math.floor(this.editForm.itemEndDate / 1000))
       const timeList = JSON.stringify(this.editForm.data.timeType)
-      if (this.editForm.data.itemType === 2) {
-        this.editForm.data.itemCost = 0
-      }
       if (this.editForm.data.ID == 0) {
         this.editForm.data.status = 1
         request({
@@ -607,6 +640,11 @@ export default {
         })
       }
     },
+    selectPageData()
+    {
+      this.page = 1
+      this.getList()
+    },
 
     errmsg(txt) {
       this.$alert(txt, '', {
@@ -637,8 +675,10 @@ export default {
         return false
       }
 
-      if (this.editForm.data.itemType != 2) {
-        if (this.editForm.data.itemCost == 0) {
+      if (this.editForm.data.itemType === 2) {
+        this.editForm.data.itemCost = 0
+      } else {
+        if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
           this.errmsg('请填写道具价值')
           return false
         }
