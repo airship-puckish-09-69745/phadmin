@@ -866,11 +866,16 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
-              if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
+              if (this.$store.state.user.pers['KEY_DATA_MONITOR']>0) {
               // 限制查看pro
               if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
                 this.sortOrder = this.defaultOrder
-              }else {
+                return;
+              }else if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='pro'){
+                this.defaultOrder = []
+                this.sortOrder = this.defaultOrder
+                return;
+              }
                 if (this.authorityCfg[this.name]) {
                   // 有权限而且有限制
                   this.defaultOrder = []
@@ -885,10 +890,8 @@ export default {
                   return
                 }
                 this.defaultOrder = []
-              }
-
-            } else {
-              this.defaultOrder = []
+              } else {
+                this.defaultOrder = []
             }
             this.sortOrder = this.defaultOrder
           }
