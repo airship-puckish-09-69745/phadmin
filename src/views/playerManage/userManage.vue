@@ -1587,28 +1587,34 @@ export default {
       })
     },
     clearCreditData() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Env: $this.env,
-          Path: '/user/credit/clear',
-          Uid: $this.credit.uid,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          $this.credit.creditScore=0
-          $this.credit.validBetScore=0
-          $this.credit.playRoundScore=0
-          $this.credit.ggrScore=0
-          $this.credit.creditScore=0
-          $this.credit.dayVbs=0
-          $this.credit.dayPrs=0
-          $this.credit.dayGgrs=0
-          $this.credit.blackList=[]
-          console.log("/user/credit/clear:",response.Data)
-        }
+      this.$confirm("确定清除信誉分数据吗？", '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const $this = this
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: $this.env,
+            Path: '/user/credit/clear',
+            Uid: $this.credit.uid,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            $this.credit.creditScore=0
+            $this.credit.validBetScore=0
+            $this.credit.playRoundScore=0
+            $this.credit.ggrScore=0
+            $this.credit.creditScore=0
+            $this.credit.dayVbs=0
+            $this.credit.dayPrs=0
+            $this.credit.dayGgrs=0
+            $this.credit.blackList=[]
+            console.log("/user/credit/clear:",response.Data)
+          }
+        })
       })
     },
     // 跳转到用户信息查询页面
