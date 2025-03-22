@@ -3,7 +3,7 @@
     <el-row>
       <publish v-if="platform==='android'" primary-key="ID" key-id="SubGameConfig" :env-empty="false" :attr-names="AttrNames" :head-attrs="['ID','Name']" />
     </el-row>
-    <el-row>
+    <el-row v-if="false">
       <el-col :offset="12">
         <el-button size="mini" :round="true" type="success" @click="openGameComm">配置公共包对应关系</el-button>
       </el-col>
@@ -198,6 +198,7 @@
           </template>
         </el-table-column>
         <el-table-column
+          v-if="false"
           label="检查"
           column-key="op"
           width="100"
@@ -334,32 +335,32 @@
                 <i v-else class="el-icon-plus avatar-uploader-icon" />
               </el-upload>
             </el-form-item>
-            <el-form-item label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
+            <el-form-item v-if="false" label="图片(客户端内置)：" :required="true" prop="item.GameKey" :rules="dataRule(true,{type:'s',range:'2'})">
               <el-input v-model="edit.item.IconInner" placeholder="开发提供" />
             </el-form-item>
-            <el-form-item label="是否支持单一钱包：" :required="true">
+            <el-form-item v-if="false" label="是否支持单一钱包：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.CodePath" placeholder="开发提供" />
               </el-col>
             </el-form-item>
-            <el-form-item label="公共包路径：" :required="true">
+            <el-form-item v-if="false" label="公共包路径：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.CommCodePath" placeholder="开发提供" />
               </el-col>
             </el-form-item>
-            <el-form-item label="只白名单可见：" :required="true">
+            <el-form-item v-if="false" label="只白名单可见：" :required="true">
               <el-radio-group v-model.number="edit.item.IsWhite">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="非真实用户是否显示：" :required="true">
+            <el-form-item v-if="false" label="非真实用户是否显示：" :required="true">
               <el-radio-group v-model.number="edit.item.IsPlaying">
                 <el-radio :label="1">是</el-radio>
                 <el-radio :label="0">否</el-radio>
               </el-radio-group>
             </el-form-item>
-            <el-form-item label="最低版本限制：" :required="true">
+            <el-form-item v-if="false" label="最低版本限制：" :required="true">
               <el-col :span="11">
                 <el-input v-model="edit.item.VersionLower" placeholder="开发提供" />
               </el-col>
@@ -774,18 +775,19 @@ export default {
       })
     },
     handlePrepare(ob) {
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Path: "/thirdpartiesgames/check/comm",
-          GameKey: ob.GameKey,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
-        }
-      })
+      // request({
+      //   url: '/dataProxy/info',
+      //   method: 'get',
+      //   data: {
+      //     Path: "/thirdpartiesgames/check/comm",
+      //     GameKey: ob.GameKey,
+      //   }
+      // }).then(response => {
+      //   if (response.RetCode === 0) {
+      //     this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
+      //   }
+      // })
+      this.changeStatus(ob.ID, 2, '您确定要将记录状态修改为"上架"吗？该记录将在发布后同步到外网。')
     },
     handleOffline(ob) {
       this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
