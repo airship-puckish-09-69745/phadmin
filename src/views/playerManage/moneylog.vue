@@ -447,7 +447,7 @@ export default {
         // 特殊类型筛选逻辑
         if (hasSpecial) {
           return (data.ActType === 2010 && data.ActMsg === '2031') ||
-            (data.ActType === 3001)
+            (data.ActType === 3001) || (data.ActType === 2011 && data.ActMsg === '2031')
         }
         return false
       })

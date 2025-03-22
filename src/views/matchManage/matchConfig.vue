@@ -597,7 +597,7 @@
                         <span>{{ item.propsName }}</span>
                       </el-option>
                     </el-select>
-                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量11" />
+                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
                 </ul>
               </template>
@@ -828,7 +828,7 @@ export default {
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       reachOutNumCfgs: new Map(), // 定局晋级人数
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       editForm: {
@@ -1831,8 +1831,9 @@ export default {
               }
             ]
             this.matchTicketsCfgs = []
+            var timestamp = (new Date()).valueOf();
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type == 1) {
+              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time < timestamp) {
                 this.matchPropsCfgs.push({
                   'propsType': objs.list[i].item_type,
                   'propsId': objs.list[i].id,
@@ -2084,12 +2085,15 @@ export default {
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        console.log('element', element)
+        console.log('1111 element', element)
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
           return false
         }
-
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+          this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
+          return false
+        }
         if (element.rewardItems.length == 0) {
           this.errmsg('请添加奖励配置')
           return false

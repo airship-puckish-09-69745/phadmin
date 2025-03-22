@@ -56,7 +56,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/black',
           Page: 1,
-          Limit: 400,
+          Limit: 9999,
           Uid: this.Uid,
           Gid: this.Gid
         }
@@ -65,8 +65,11 @@ export default {
           const data = response.Data || {}
           const blacks = data.Items || []
           $this.totalCount = data.Total || 0
-
-          $this.clientDB = new ClientTableData(blacks, $this.pageNum, {}, 'Gid', -1)
+          const blackArr = []
+          for (let i = blacks.length - 1; i >= 0; i--) {
+            blackArr.push(blacks[i])
+          }
+          $this.clientDB = new ClientTableData(blackArr, $this.pageNum, {}, 'Gid', -1)
           $this.handleCurrentChange(1)
         }
       })

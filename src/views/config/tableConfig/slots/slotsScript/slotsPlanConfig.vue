@@ -74,26 +74,27 @@
           </el-table>
         </template>
       </el-table-column>
-      <el-table-column prop="ScriptRule" label="用户规则">
-        <el-table-column label="平台">
+      <el-table-column prop="ScriptRule" label="用户规则" >
+        <el-table-column label="平台" >
           <template slot-scope="scope">
-          {{ scope.row.ScriptRule.Platform  }}
+            <el-tag  v-for="tag of scope.row.ScriptRule.PlatformList" >{{tag}}</el-tag>
+
         </template>
         </el-table-column>
-        <el-table-column label="用户类型">
-          <template slot-scope="{}" slot="header">
-            用户类型
-               <el-tooltip class="item" effect="dark" placement="top">
-      <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>
-      <div slot="content">
-        <p>(0:不限,1:新注,2:活跃,3:大R-暂不考虑) </p>
-      </div>
-    </el-tooltip>
-              </template>
-       <template slot-scope="scope">
-          {{ scope.row.ScriptRule.UserType  }}
-        </template>
-        </el-table-column>
+<!--        <el-table-column label="用户类型">-->
+<!--          <template slot-scope="{}" slot="header">-->
+<!--            用户类型-->
+<!--               <el-tooltip class="item" effect="dark" placement="top">-->
+<!--      <i class="el-icon-question" style="font-size: 14px; vertical-align: middle;"></i>-->
+<!--      <div slot="content">-->
+<!--        <p>(0:不限,1:新注,2:活跃,3:大R-暂不考虑) </p>-->
+<!--      </div>-->
+<!--    </el-tooltip>-->
+<!--              </template>-->
+<!--       <template slot-scope="scope">-->
+<!--          {{ scope.row.ScriptRule.UserType  }}-->
+<!--        </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="流量控制(权重)">
            <template slot-scope="scope">
           {{ scope.row.ScriptRule.TrafficCtrl  }}
@@ -132,9 +133,14 @@
         </el-form-item>
 
          <el-form-item label="平台">
-           <el-select v-model="addFormData.ScriptRuleDescription.Platform">
-              <el-option v-for="v in channels" :label="v.label" :value="v.value" />
-           </el-select>
+                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.Platform">
+                  <el-checkbox label="BP" value="BP"></el-checkbox>
+                  <el-checkbox label="AP" value="AP"></el-checkbox>
+                  <el-checkbox label="GP" value="GP"></el-checkbox>
+                  <el-checkbox label="PG" value="PG"></el-checkbox>
+                  <el-checkbox label="TP" value="TP"></el-checkbox>
+                  <el-checkbox label="SP" value="SP"></el-checkbox>
+                </el-checkbox-group>
         </el-form-item>
         <!--        <el-form-item label="用户类型">-->
         <!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
@@ -176,9 +182,14 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="平台">
-           <el-select v-model="editFormData.ScriptRuleDescription.Platform">
-              <el-option v-for="v in channels" :label="v.label" :value="v.value" />
-           </el-select>
+          <el-checkbox-group v-model="editFormData.ScriptRuleDescription.PlatformList">
+                  <el-checkbox label="BP" value="BP"></el-checkbox>
+                  <el-checkbox label="AP" value="AP"></el-checkbox>
+                  <el-checkbox label="GP" value="GP"></el-checkbox>
+                  <el-checkbox label="PG" value="PG"></el-checkbox>
+                  <el-checkbox label="TP" value="TP"></el-checkbox>
+                  <el-checkbox label="SP" value="SP"></el-checkbox>
+                </el-checkbox-group>
         </el-form-item>
         <!--        <el-form-item label="用户类型">-->
         <!--          <el-input  v-model.number="editFormData.ScriptRuleDescription.UserType" placeholder=""></el-input>-->
@@ -635,7 +646,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
       },
       editDialogVisible: false,
       editFormData: {
@@ -643,7 +654,7 @@ export default {
         PlanName: '',
         IsDefault: 0,
         IsDisabled: 0,
-        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0}
+        ScriptRuleDescription: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
       },
       editIndex: -1,
 
@@ -728,16 +739,6 @@ export default {
           this.orgDataList = response.Data
           for (const o of this.orgDataList) {
             o.Data = JSON.parse(o.ConfigData)
-            console.log('response', o.Data)
-            for (const oz of o.Data) {
-              for (const v of oz.Versions) {
-                for (const p of v.ScriptCfg.BetOddsPlans) {
-                  for (const i in p.TargetBets) {
-                    p.TargetBets[i] /= 1000
-                  }
-                }
-              }
-            }
           }
         }
 
@@ -801,18 +802,50 @@ export default {
         }
       }
     },
-    proceedData(typ) {
-      if (typ === 1) {
-
+    proceedData(plans) {
+        for (const oz of plans) {
+          for (const v of oz.Versions) {
+            for (const p of v.ScriptCfg.BetOddsPlans) {
+              for (const i in p.TargetBets) {
+                p.TargetBets[i] /= 1000
+              }
+            }
+          }
+          if (oz.ScriptRule.Platform !==''){
+            console.log('==========',oz.ScriptRule.Platform)
+            oz.ScriptRule['PlatformList'] = oz.ScriptRule.Platform.split(",")
+          }
+        }
+    },
+    proceedUpdateData(items) {
+      for (const o of items) {
+        for (const v of o.Versions) {
+          for (const p of v.ScriptCfg.BetOddsPlans) {
+            for (const i in p.TargetBets) {
+              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
+            }
+          }
+        }
+        for (let i = 0; i < o.ScriptRule.PlatformList.length; i++) {
+          if (o.ScriptRule.PlatformList[i] === ''){
+            o.ScriptRule.PlatformList.splice( i,1)
+          }
+        }
+        // if (o.ScriptRule.PlatformList.length>0){
+          o.ScriptRule.Platform =  o.ScriptRule.PlatformList.join()
+        // }
       }
+      return items;
     },
     async queryKeyInput() {
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
-          console.log('o',  o.SlotsType,o)
-          this.showItem.SlotsType = o.SlotsType
-          this.showItem.Plans = o.Data
-          this.showItem.ID = o.ID
+          let a = JSON.parse(JSON.stringify(o))
+          this.showItem.SlotsType = a.SlotsType
+          this.showItem.Plans = a.Data
+          this.showItem.ID = a.ID
+          this.$refs.compare.SetOldVal(JSON.parse(JSON.stringify(this.showItem.Plans)))
+          this.proceedData(this.showItem.Plans)
           this.$forceUpdate()
           return
         }
@@ -940,9 +973,6 @@ export default {
       copy.IsReady = false
       this.showItem.Plans[planIndex].Versions.push(copy)
 
-    },
-    openCreateVersionScriptsDialog(planIndex, versionIndex) {
-      //todo
     },
     getConfigData() {
       request({
@@ -1119,32 +1149,36 @@ export default {
               }
             }
           ],
-          ScriptRule: {Platform:'',UserType:0,TrafficCtrl:0}
+          ScriptRule: {Platform:'',UserType:0,TrafficCtrl:0,PlatformList:[]}
         },
       ]
     },
     async saveCfgByGid() {
       if (this.showItem.ID > 0) {
-        await this.updateCfg()
+        this.$refs.compare.SetNewVal(this.proceedUpdateData(JSON.parse(JSON.stringify(this.showItem.Plans))))
+        const $this = this
+        this.$refs.compare.Compare(function(isEdit) {
+          if (!isEdit) {
+            Message.error('没有任何修改，不需要提交')
+            return
+          } else {
+            $this.updateCfg()
+          }
+        })
       } else {
         await this.createCfg()
       }
-      await this.queryKeyInput()
+      // await this.queryKeyInput()
+
     },
+
+
     updateCfg(){
       if (!this.checkData()) {
         return
       }
-      var items = JSON.parse(JSON.stringify(this.showItem.Plans))
-      for (const o of items) {
-        for (const v of o.Versions) {
-          for (const p of v.ScriptCfg.BetOddsPlans) {
-            for (const i in p.TargetBets) {
-              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
-            }
-          }
-        }
-      }
+      let items =  this.proceedUpdateData(JSON.parse(JSON.stringify(this.showItem.Plans)))
+      console.log("=======",this.showItem.SlotsType,this.showItem.ID)
       request({
         url: '/slotsScriptV3Config/update',
         method: 'post',
@@ -1156,6 +1190,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
+          this.getData()
         }
         console.log('response', response)
       })
@@ -1204,19 +1239,8 @@ export default {
       })
     },
     createCfg(){
-      if (!this.checkData()) {
-        return
-      }
-      var items = JSON.parse(JSON.stringify(this.showItem.Plans))
-      for (const o of items) {
-        for (const v of o.Versions) {
-          for (const p of v.ScriptCfg.BetOddsPlans) {
-            for (const i in p.TargetBets) {
-              p.TargetBets[i] = parseInt(parseFloat(p.TargetBets[i] )*1000)
-            }
-          }
-        }
-      }
+      let val = JSON.parse(JSON.stringify(this.showItem.Plans))
+      let items =  this.proceedUpdateData(val)
       JSON.stringify(this.showItem.Plans)
       request({
         url: '/slotsScriptV3Config/create',
@@ -1228,6 +1252,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功！')
+          this.getData()
         }
         console.log('response', response)
       })
