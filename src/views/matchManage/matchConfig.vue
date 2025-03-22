@@ -921,6 +921,7 @@ export default {
           propType: 0, //道具类型,
           propCost:0,  //道具价值
           propNum: 1,  //数量
+          propName:'',
         },
         prizeExtra: {
           awardType: 0,
@@ -1448,6 +1449,7 @@ export default {
           propType: 0,
           propCost: 0,
           propNum: 1,
+          propName: '',
         }
 
         this.editForm.prizeExtra = {
@@ -1602,10 +1604,11 @@ export default {
         if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
             this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
             this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+            this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
             break
         }
       }
-      console.log("this.editForm.signExtra",this.editForm.signExtra)
+      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
