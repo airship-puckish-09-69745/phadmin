@@ -133,7 +133,7 @@
         </el-form-item>
 
          <el-form-item label="平台">
-                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.Platform">
+                <el-checkbox-group v-model="addFormData.ScriptRuleDescription.PlatformList" @change="checkedBoxChange">
                   <el-checkbox label="BP" value="BP"></el-checkbox>
                   <el-checkbox label="AP" value="AP"></el-checkbox>
                   <el-checkbox label="GP" value="GP"></el-checkbox>
@@ -141,6 +141,7 @@
                   <el-checkbox label="TP" value="TP"></el-checkbox>
                   <el-checkbox label="SP" value="SP"></el-checkbox>
                 </el-checkbox-group>
+
         </el-form-item>
         <!--        <el-form-item label="用户类型">-->
         <!--           <el-select v-model.number="addFormData.ScriptRuleDescription.UserType">-->
@@ -182,7 +183,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="平台">
-          <el-checkbox-group v-model="editFormData.ScriptRuleDescription.PlatformList">
+          <el-checkbox-group v-model="editFormData.ScriptRuleDescription.PlatformList" @change="checkedBoxChange">
                   <el-checkbox label="BP" value="BP"></el-checkbox>
                   <el-checkbox label="AP" value="AP"></el-checkbox>
                   <el-checkbox label="GP" value="GP"></el-checkbox>
@@ -802,6 +803,11 @@ export default {
         }
       }
     },
+
+    checkedBoxChange(a){
+      console.log("多选框实时变化：" + a);
+      this.$forceUpdate();  //强制渲染多选框样式，否则值变了样式没有选中
+    },
     proceedData(plans) {
         for (const oz of plans) {
           for (const v of oz.Versions) {
@@ -815,7 +821,14 @@ export default {
             console.log('==========',oz.ScriptRule.Platform)
             oz.ScriptRule['PlatformList'] = oz.ScriptRule.Platform.split(",")
           }else {
-            oz.ScriptRule['PlatformList'] = []
+            oz.ScriptRule['PlatformList'] = [
+              "BP",
+              "AP",
+              "GP",
+              "PG",
+              "TP",
+              "SP",
+            ]
           }
         }
     },
