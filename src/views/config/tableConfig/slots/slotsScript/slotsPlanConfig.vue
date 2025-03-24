@@ -268,6 +268,11 @@
                 检查倍数总和区间
               </el-button>
       </el-tooltip>
+           <el-tooltip content="检查剧本:当前倍数总和/剧本步数*基础投注" class="item" effect="dark" placement="top">
+              <el-button type="primary" @click="checkBetOdds" size="mini" style="background: #43bef3">
+                检查
+              </el-button>
+      </el-tooltip>
       <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
         <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
       </el-tooltip>
@@ -1353,10 +1358,21 @@ export default {
         this.$forceUpdate()
       }
     },
+    checkBetOdds(idx) {
+      let cnt = 0
+      for (const i in this.editSlotsScriptOddsCfgFormData) {
+        let obj = this.editSlotsScriptOddsCfgFormData[i]
+        cnt += obj.ScriptOddsSum
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      console.log(scriptSteps)
+
+      Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
+    },
     validateDteOddsSum() {
       let str = ''
       if (this.editSlotsScriptOddsCfgFormData.length===0){
-        this.$message.error('阿达西,你的数据在沟腚子里呢')
+        this.$message.error('阿达西,你的数据呢')
         return
       }
       for (const i in this.editSlotsScriptOddsCfgFormData) {
@@ -1384,6 +1400,7 @@ export default {
 
       Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
     },
+
     checkBetPlansSum(idx) {
       let str = ''
       for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
