@@ -471,7 +471,7 @@ export default {
     },
     HasACC() {
 
-      if (this.$store.state.user.pers['KEY_DATA_MONITOR']) {
+      if (this.$store.state.user.pers['USER_MANAGEMENT']) {
         if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='test') {
           return true
         }else if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='pro'){
@@ -872,7 +872,7 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
-              if (this.$store.state.user.pers['KEY_DATA_MONITOR']>0) {
+              if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
               // 限制查看pro
               if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
                 this.sortOrder = this.defaultOrder
