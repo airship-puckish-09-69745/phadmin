@@ -896,7 +896,6 @@ export default {
                   this.sortOrder = this.defaultOrder
                   return
                 }
-                this.defaultOrder = []
               } else {
                 this.defaultOrder = []
             }
