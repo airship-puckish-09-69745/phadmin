@@ -921,6 +921,7 @@ export default {
           propType: 0, //道具类型,
           propCost:0,  //道具价值
           propNum: 1,  //数量
+          propName:'',
         },
         prizeExtra: {
           awardType: 0,
@@ -1448,6 +1449,7 @@ export default {
           propType: 0,
           propCost: 0,
           propNum: 1,
+          propName: '',
         }
 
         this.editForm.prizeExtra = {
@@ -1602,10 +1604,11 @@ export default {
         if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
             this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
             this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+            this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
             break
         }
       }
-      console.log("this.editForm.signExtra",this.editForm.signExtra)
+      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1831,8 +1834,9 @@ export default {
               }
             ]
             this.matchTicketsCfgs = []
+            var timestamp = Date.parse(new Date())/1000
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type == 1) {
+              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
                 this.matchPropsCfgs.push({
                   'propsType': objs.list[i].item_type,
                   'propsId': objs.list[i].id,
@@ -2089,7 +2093,7 @@ export default {
           this.errmsg('请填写正确的排名')
           return false
         }
-        if (element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
         }
