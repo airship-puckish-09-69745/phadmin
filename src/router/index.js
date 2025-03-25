@@ -1298,6 +1298,12 @@ export const asyncRoutes = [
                 name: 'atlantistreasuremars_slots_cfg',
                 meta: { title: 'AtlantisTreasure(审)' }
               }
+              // {
+              //   path: 'treasurebowlmars_slots_cfg',
+              //   component: () => import('@/views/config/tableConfig/slots/treasurebowlmars_slots_cfg'),
+              //   name: 'treasurebowlmars_slots_cfg',
+              //   meta: { title: 'TreasureBowl(审)' }
+              // }
             ]
           },
           {
@@ -2532,6 +2538,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'atlantistreasuremars_slots_log',
             meta: { title: 'AtlantisTreasure(审)', gid: 201 }
+          },
+          {
+            path: 'treasurebowlmars_slots_cfg',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'treasurebowlmars_slots_cfg',
+            meta: { title: 'TreasureBowl(审)', gid: 175 }
           }
         ]
       },
@@ -2542,6 +2554,26 @@ export const asyncRoutes = [
         meta: { title: '小游戏奖池日志 ◐' }
       },
 
+      {
+        path: 'pusoyCheat',
+        component: () => import('@/views/empty'),
+        redirect: 'noRedirect',
+        meta: { title: 'Pusoy-作弊识别 ◐' },
+        children: [
+          {
+            path: 'pusoy_cheat_log',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatLog'),
+            name: 'pusoy_cheat_log',
+            meta: { title: 'pusoy作弊记录 ◐' }
+          },
+          {
+            path: 'pusoy_black',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyBlack'),
+            name: 'pusoy_black',
+            meta: { title: 'pusoy黑名单 ◐' }
+          }
+        ]
+      },
       {
         path: 'tongitsCheat',
         component: () => import('@/views/empty'),

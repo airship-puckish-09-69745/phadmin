@@ -154,10 +154,59 @@
           <el-descriptions-item label="KYC状态：">
             <el-tag :type="item.KycStatus>0 ? 'success' : 'danger'">{{ formatBool(item.KycStatus>0) }}</el-tag>
           </el-descriptions-item>
-          <el-descriptions-item label="总信誉分值：" :span="1">
+          <el-descriptions-item label="总信誉分值：" :span="2">
             <el-tag>{{ formatNumber(credit.creditScore / 1000) }}</el-tag>
             <el-tag v-if="credit.blackList.length > 0" type="danger">高危</el-tag>
             <el-button type="success" size="mini" style="margin-left: 10px;" @click="TagCreditDetail=true">详情</el-button>
+          </el-descriptions-item>
+          <el-descriptions-item label="手动添加道具:">
+            <el-col :span="2"> {{'道具类型:'}} </el-col>
+            <el-col  :span="3">
+              <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
+                <el-option
+                  v-for="option in itemTypeCfgs"
+                  :key="option.value"
+                  :label="option.label"
+                  :value="option.value"
+                  :disabled="option.disabled"
+                ></el-option>
+              </el-select>
+            </el-col>
+            <el-col :span="2" :offset="1"> {{'道具名称:'}} </el-col>
+            <el-col :span="3">
+              <template>
+                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
+                  <el-option
+                    v-for="option in tableItemData"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                    :disabled="option.disabled"
+                  ></el-option>
+                </el-select>
+              </template>
+            </el-col>
+            <el-col :span="2" :offset="1"> {{'道具数量:'}} </el-col>
+            <el-col :span="2">
+              <el-input v-model.number="item.ItemNum" size="mini" />
+            </el-col>
+            <el-col v-show="item.ItemType == 2" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
+            <el-col v-show="item.ItemType == 2" :span="2">
+              <template>
+                <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
+                  <el-option
+                    v-for="option in dayTypeCfgs"
+                    :key="option.value"
+                    :label="option.label"
+                    :value="option.value"
+                    :disabled="option.disabled"
+                  ></el-option>
+                </el-select>
+              </template>
+            </el-col>
+            <el-col :span="3" :offset="1">
+              <el-button type="primary" size="mini" @click="saveItemInfo">提交</el-button>
+            </el-col>
           </el-descriptions-item>
         </el-descriptions>
 
@@ -392,8 +441,19 @@ export default {
         },
         Phone: '',
         IsSetLoginPwd: false,
-        IsSetPayPwd: false
+        IsSetPayPwd: false,
+        ItemCfgId: 0,
+        ItemType: 0,
+        ItemUseTime: 0,
+        ItemQuality: 0,
+        ItemStartTime: 0,
+        ItemExpireTime: 0,
+        ItemNum: 0
       },
+      total: 0,
+      tableData: [], //头像框和门票物品配置表数据
+      tableItemData: [],
+      tableTimeData: [],
       libShowMoney: new MoneyShow(['BonusTotal', 'BonusValid', 'Gullak', 'LimitedMoney', 'FreeMoney', 'BaseValue', 'ProduceValue', 'MCBetValue', 'MCSystemGot', 'PayValue']),
       moneyType: 1,
       money: 0,
@@ -446,6 +506,17 @@ export default {
         { 'label': 'Tongits', 'value': 22 },
         { 'label': 'Tongits Laizi', 'value': 28 },
         { 'label': 'Tongits Quick', 'value': 29 }
+      ],
+      itemTypeCfgs: [
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
+        { 'value': 2, 'label': '头像框', disabled: false },
+        { 'value': 3, 'label': '德州门票', disabled: false }
+      ],
+      dayTypeCfgs: [
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 365, 'label': '365天', disabled: false },
+        { 'value': 0, 'label': '永久', disabled: false }
       ],
       // 修改调控结果
       paySchemaDialog: false,
@@ -544,6 +615,7 @@ export default {
       console.log('set mounted', this.item.Uid)
     }
     this.getInfo()
+    this.getItemList()
   },
   activated() {
     if (this.$route.query && this.$route.query.uid > 0) {
@@ -1239,6 +1311,69 @@ export default {
         console.log('取消')
       })
     },
+    saveItemInfo() {
+      if (this.item.Uid === 0) {
+        Message.error('请输入正确的Uid')
+        return
+      }
+      if (typeof this.item.ItemType === 'undefined' || this.item.ItemType === 0) {
+        Message.error('请输入道具类型')
+        return
+      }
+      if (typeof this.item.ItemCfgId === 'undefined' || this.item.ItemCfgId === 0) {
+        Message.error('请输入道具id')
+        return
+      }
+      if (typeof this.item.ItemNum === 'undefined' || this.item.ItemNum === 0) {
+        Message.error('请输入道具数量')
+        return
+      }
+      if (this.item.ItemType === 2) {
+        if (typeof this.item.ItemUseTime === 'undefined') {
+          Message.error('请选择时间')
+          return
+        }
+      }
+
+      const msg = '确定添加物品吗?'
+      let tmpTime = 0
+      if (this.item.ItemType === 2) {
+        tmpTime = this.item.ItemUseTime
+      }
+      this.$confirm(msg, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Path: '/user/info',
+            Uid: this.item.Uid,
+            Type: 12,
+            Money: 0,
+            ItemId: this.item.ItemCfgId,
+            ItemNum: this.item.ItemNum,
+            ItemType: this.item.ItemType,
+            UseTime: tmpTime,
+            Quality: this.item.ItemQuality,
+            ExpireTime: this.item.ItemExpireTime,
+            ActMsg: '管理后台By ' + store.getters.name
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('修改成功！')
+            this.item.ItemType = 0
+            this.item.ItemCfgId = 0
+            this.item.ItemNum = 0
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
     getInfo() {
       if (this.item.Uid === 0) {
         Message.error('请输入正确的Uid')
@@ -1452,28 +1587,34 @@ export default {
       })
     },
     clearCreditData() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Env: $this.env,
-          Path: '/user/credit/clear',
-          Uid: $this.credit.uid,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          $this.credit.creditScore=0
-          $this.credit.validBetScore=0
-          $this.credit.playRoundScore=0
-          $this.credit.ggrScore=0
-          $this.credit.creditScore=0
-          $this.credit.dayVbs=0
-          $this.credit.dayPrs=0
-          $this.credit.dayGgrs=0
-          $this.credit.blackList=[]
-          console.log("/user/credit/clear:",response.Data)
-        }
+      this.$confirm("确定清除信誉分数据吗？", '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const $this = this
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: $this.env,
+            Path: '/user/credit/clear',
+            Uid: $this.credit.uid,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            $this.credit.creditScore=0
+            $this.credit.validBetScore=0
+            $this.credit.playRoundScore=0
+            $this.credit.ggrScore=0
+            $this.credit.creditScore=0
+            $this.credit.dayVbs=0
+            $this.credit.dayPrs=0
+            $this.credit.dayGgrs=0
+            $this.credit.blackList=[]
+            console.log("/user/credit/clear:",response.Data)
+          }
+        })
       })
     },
     // 跳转到用户信息查询页面
@@ -1486,6 +1627,68 @@ export default {
         }
       })
     },
+    getItemList() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 100
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.total = objs.total
+            this.tableData = []
+            this.tableData = objs.list
+          }
+        } else {
+          this.total = 0
+          this.tableData = []
+        }
+      })
+    },
+    ShowItemList(id) {
+      this.tableItemData = []
+      let currTime = new Date().getTime()
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
+          if (this.tableData[i].item_type !== 2) {
+            let expTime = this.tableData[i].expire_time * 1000
+            if (currTime < expTime) {
+              var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+              this.tableItemData.push(dataList)
+            }
+          } else {
+            var dList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+            this.tableItemData.push(dList)
+          }
+        }
+      }
+    },
+    ShowItemTime(itemId) {
+      this.tableTimeData = []
+      for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].id === itemId) {
+          const time_type = JSON.parse(this.tableData[i].time_type)
+          for (let j = 0; j < time_type.length; j++) {
+            var msg = time_type[j] + '天'
+            if (time_type[j] === 0) {
+              msg = '永久'
+            }
+            var dataList = { 'value': time_type[j], 'label': msg, disabled: false }
+            this.tableTimeData.push(dataList)
+          }
+          this.item.ItemStartTime = this.tableData[i].create_time
+          this.item.ItemExpireTime = this.tableData[i].expire_time
+          this.item.ItemQuality = this.tableData[i].quality
+          break
+        }
+      }
+    }
+
   }
 }
 </script>

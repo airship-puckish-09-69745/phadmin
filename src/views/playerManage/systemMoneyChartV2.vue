@@ -470,7 +470,13 @@ export default {
 
     },
     HasACC() {
+
       if (this.$store.state.user.pers['USER_MANAGEMENT']) {
+        if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='test') {
+          return true
+        }else if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='pro'){
+          return false
+        }
         if (this.authorityCfg[this.name]) {
           if (this.authorityCfg[this.name].includes(10000)) {
             return true
@@ -552,7 +558,7 @@ export default {
     },
     addGameNames() {
       if (IsMars()) { // 审核
-        this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83)
+        this.defaultOrder.push(76, 77, 78, 81, 79, 80, 82, 83, 175)
       } else {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 194)
@@ -866,22 +872,32 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
-            if (this.$store.state.user.pers['USER_MANAGEMENT']) {
-              if (this.authorityCfg[this.name]) {
-                // 有权限而且有限制
-                this.defaultOrder = []
-                for (const o of this.authorityCfg[this.name]) {
-                  if (this.gameNames[o]) {
-                    this.defaultOrder.push(o)
-                  }
-                }
-                this.authorityNum = this.defaultOrder.length
-              } else {
+              if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
+              // 限制查看pro
+              if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
                 this.sortOrder = this.defaultOrder
-                return
+                return;
+              }else if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='pro'){
+                this.defaultOrder = []
+                this.sortOrder = this.defaultOrder
+                return;
               }
-            } else {
-              this.defaultOrder = []
+              console.log("=======", this.name,this.authorityCfg[this.name])
+                if (this.authorityCfg[this.name]) {
+                  // 有权限而且有限制
+                  this.defaultOrder = []
+                  for (const o of this.authorityCfg[this.name]) {
+                    if (this.gameNames[o]) {
+                      this.defaultOrder.push(o)
+                    }
+                  }
+                  this.authorityNum = this.defaultOrder.length
+                } else {
+                  this.sortOrder = this.defaultOrder
+                  return
+                }
+              } else {
+                this.defaultOrder = []
             }
             this.sortOrder = this.defaultOrder
           }

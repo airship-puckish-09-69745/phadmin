@@ -40,7 +40,7 @@
         style="width: 100%"
         @selection-change="handleSelectionChange"
       >
-        <el-table-column type="selection" width="55" :selectable="(row, index) => row.Status === 1"></el-table-column>
+        <el-table-column type="selection" width="55" :selectable="(row, index) => (row.Status === 1 && row.ConfigKey === 'ApplyCompensation') "></el-table-column>
         <el-table-column
           prop="ID"
           label="ID"
@@ -277,7 +277,7 @@ export default {
     handleSelectAll(checked) {
       if (checked) {
         this.tableData.forEach(row => {
-          if (row.Status === 1) {
+          if (row.Status === 1 && row.ConfigKey === 'ApplyCompensation') {
             this.$refs.filterTable.toggleRowSelection(row, true)
           }
         })

@@ -491,15 +491,30 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.signUpType == 0" label="报名费：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType == 0 || editForm.data.signUpType == 3" label="报名费：" :required="true">
             <el-input v-model.number="editForm.data.signUpNum" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType != 0" label="今日投注下限(0不限制)：" :required="true">
+          <el-form-item v-if=" editForm.data.signUpType == 2 || editForm.data.signUpType == 3" label="门票：" :required="true">
+            <el-select v-model="editForm.signExtra.propId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in matchTicketsCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if=" editForm.data.signUpType == 2 || editForm.data.signUpType == 3" label="门票数量：" :required="true">
+            <el-input v-model.number="editForm.signExtra.propNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType == 1" label="今日投注下限(0不限制)：" :required="true">
             <el-input v-model.number="editForm.signExtra.betCnt" style="width: 200px;" size="mini" placeholder="请填写限制数值" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.signUpType !=0" label="是否启用每日限制：" :required="true">
+          <el-form-item v-if="editForm.data.signUpType ==1" label="是否启用每日限制：" :required="true">
             <!-- <el-input v-model="editForm.data.openDaysLimit" style="width: 200px;" placeholder="1限制0不限制" /> -->
             <el-switch
               v-model="editForm.data.openDaysLimit"
@@ -518,9 +533,9 @@
           <el-form-item label="奖励模型：" :required="true">
             <el-radio v-for="item in prizeModleCfgs" :key="item.value" v-model="editForm.prizeExtra.awardType" :label="item.value">{{ item.label }} </el-radio>
           </el-form-item>
-          <el-button v-if="editForm.prizeExtra.awardType===0" style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
+          <el-button  style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
           <el-table
-            v-if="editForm.prizeExtra.awardType===0"
+
             :data="editForm.rankRewards"
             border
             stripe
@@ -541,7 +556,7 @@
             >
               <template slot-scope="scope">
                 <ul style="list-style: none;padding-inline-start: 0;">
-                  <li v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: none;">
+                  <li v-if="editForm.prizeExtra.awardType===0" v-for="gItem in scope.row.rewardItems" :key="gItem.index" style="list-style: none;">
                     <span>金币奖励：</span>
                     <el-select v-model="gItem.getType" placeholder="请选择" size="mini" style="width:80px">
                       <el-option
@@ -573,15 +588,16 @@
                     <span>道具奖励：</span>
                     <el-select v-model="scope.row.propsReward.propsId" placeholder="道具" size="mini" style="width:200px">
                       <el-option
-                        v-for="item in propsInfo"
+                        v-for="item in matchPropsCfgs"
                         :key="item.propsId"
                         :label="item.propsName"
                         :value="item.propsId"
                       >
-                        <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;">
+                        <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;"/>
                         <span>{{ item.propsName }}</span>
                       </el-option>
                     </el-select>
+                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
                 </ul>
               </template>
@@ -746,7 +762,9 @@ export default {
       ],
       signUpTypeCfgs: [
         { 'value': 0, 'label': '付费报名' },
-        { 'value': 1, 'label': '免费报名' }
+        { 'value': 1, 'label': '免费报名' },
+        { 'value': 2, 'label': '纯门票' },
+        { 'value': 3, 'label': '金币or门票' }
       ],
       getTypeCfgs: [
         { 'value': 1, 'label': '金币' },
@@ -772,7 +790,7 @@ export default {
       propsInfo: [ // 道具信息，暂时写死
         {
           'propsId': 0,
-          'propsType': 0,
+          'propsType': 0,    //1:门票 2:头像框 3:德州参数券
           'propsName': '无',
           'propsIcon': '',
           'propsAttr': ''
@@ -795,9 +813,12 @@ export default {
         { 'value': 10005, 'label': 'P40' },
         { 'value': 10006, 'label': 'P100' },
         { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' }
+        { 'value': 10008, 'label': 'GTCC 2005' },
+        { 'value': 10009, 'label': 'Yamaha Moto' }
       ],
       prizeTemplateCfg: [],
+      matchPropsCfgs: [],   //比赛道具信息
+      matchTicketsCfgs: [],
       csCfgs: [],
       showCsCfgs: [],
       guideCfgs: [], // 赛事推荐相关
@@ -807,7 +828,7 @@ export default {
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       reachOutNumCfgs: new Map(), // 定局晋级人数
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       editForm: {
@@ -876,7 +897,8 @@ export default {
               propsType: 0,
               propsName: '',
               propsIcon: '',
-              propsAttr: ''
+              propsAttr: '',
+              propsNum: 0,
             }
           }
         ],
@@ -894,7 +916,12 @@ export default {
         signExtra: {
           betCnt: 0,
           matchEvents: 0,
-          matchUniqueId:0
+          matchUniqueId:0,
+          propId:0,    //门票道具ID,
+          propType: 0, //道具类型,
+          propCost:0,  //道具价值
+          propNum: 1,  //数量
+          propName:'',
         },
         prizeExtra: {
           awardType: 0,
@@ -902,7 +929,7 @@ export default {
           prizeTemplateId: 0,
           rewardType: 1,
           sceneId: 0
-        }
+        },
       },
 
       AttrNames: {
@@ -920,7 +947,7 @@ export default {
         preShowSeconds: '提前展示比赛(秒)',
         preEnterSeconds: '提前进入比赛(秒)',
         delayEnterSeconds: '延迟进入比赛(秒)',
-        signType: '报名方式(0:付费报名 1:免费报名)',
+        signType: '报名方式(0:付费报名 1:免费报名 2:纯门票 3:金币or门票)',
         signNum: '报名费数量',
         status: '配置状态(0:启用 1:禁用)',
         rewardsCfg: '名次奖励',
@@ -934,7 +961,8 @@ export default {
         prizeExtra: '动态奖池信息',
         signExtra: '报名额外信息',
         associateKey: '推荐方案',
-        dcReport: '是否上报数据中心'
+        dcReport: '是否上报数据中心',
+        propsId: '道具ID'
       },
       singleCopy: {
         id: 0,
@@ -951,7 +979,7 @@ export default {
     this.env = store.getters.env || this.env
     this.getCsCfgs()
     this.getGuideCfgs()
-    this.getPropsCfgs()
+    //this.getPropsCfgs()
     this.getPrizeTemplateCfg()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
@@ -968,6 +996,7 @@ export default {
         // { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ]
     }
+    this.getMatchProps()
   },
   mounted() {
     this.getList()
@@ -1058,7 +1087,6 @@ export default {
                 }
               }
             }
-            console.log('----- ', this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -1211,7 +1239,8 @@ export default {
           propsType: 0,
           propsName: '',
           propsIcon: '',
-          propsAttr: ''
+          propsAttr: '',
+          propsNum:0,
         }
       })
     },
@@ -1402,7 +1431,8 @@ export default {
               propsType: 0,
               propsName: '',
               propsIcon: '',
-              propsAttr: ''
+              propsAttr: '',
+              propsNum:0,
             }
           }
         ]
@@ -1414,7 +1444,12 @@ export default {
         this.editForm.signExtra = {
           betCnt: 0,
           matchEvents: 0,
-          matchUniqueId: 0
+          matchUniqueId: 0,
+          propId:0,
+          propType: 0,
+          propCost: 0,
+          propNum: 1,
+          propName: '',
         }
 
         this.editForm.prizeExtra = {
@@ -1464,7 +1499,6 @@ export default {
           associateKey: editData.associate_key,
           dcReport: editData.dc_report
         }
-
         /* 如果在本地找不到值 则显示0 */
         let isfind = false
         for (var i = 0; i < this.guideCfgs.length; i++) {
@@ -1529,6 +1563,7 @@ export default {
           }
         }
       }
+      console.log('editForm', this.editForm.rankRewards)
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
@@ -1562,9 +1597,18 @@ export default {
       for (let i = 0; i < this.editForm.rankRewards.length; i++) {
         const element = this.editForm.rankRewards[i]
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
-          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId)
+          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId,element.propsReward.propsNum)
         }
       }
+      for(let i = 0; i < this.matchPropsCfgs.length; i++) {
+        if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
+            this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
+            this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+            this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
+            break
+        }
+      }
+      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1763,6 +1807,55 @@ export default {
         console.log('取消')
       })
     },
+
+    getMatchProps() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: this.page,
+          PageSize: this.limit,
+          PropType:0,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            console.log(objs)
+            this.matchPropsCfgs = [
+              {
+                'propsId': 0,
+                'propsType': 0,
+                'propsName': '无',
+                'propsIcon': '',
+                'propsAttr': '',
+                'propsCost': ''
+              }
+            ]
+            this.matchTicketsCfgs = []
+            var timestamp = Date.parse(new Date())/1000
+            for (let i=0;i<objs.list.length;i++) {
+              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
+                this.matchPropsCfgs.push({
+                  'propsType': objs.list[i].item_type,
+                  'propsId': objs.list[i].id,
+                  'propsName': objs.list[i].item_name,
+                  'propsIcon': objs.list[i].image,
+                  'propsAttr': objs.list[i].item_describe,
+                  'propsCost': objs.list[i].item_cost,
+                })
+                  this.matchTicketsCfgs.push({
+                    'label': objs.list[i].item_name,
+                    'value': objs.list[i].id,
+                  })
+
+              }
+            }
+          }
+        }
+      })
+    },
     errmsg(txt) {
       this.$alert(txt, '', {
         type: 'error',
@@ -1806,12 +1899,40 @@ export default {
         this.editForm.data.openDaysLimit = 0
         this.editForm.signExtra.betCnt = 0
       }
+
       if (this.editForm.data.openDaysLimit > 0 && this.editForm.data.signUpType != 0) {
         this.errmsg('每日限制已经开启')
       }
-      if (this.editForm.data.signUpType === 0 && this.editForm.data.signUpNum === 0) {
-        this.errmsg('付费赛报名费不能为0')
-        return false
+      //付费塞
+      if (this.editForm.data.signUpType === 0) {
+        if  (this.editForm.data.signUpNum === 0){
+          this.errmsg('付费赛报名费不能为0')
+          return false
+        }
+        this.editForm.signExtra.propId = 0
+        this.editForm.signExtra.propType = 0
+        this.editForm.signExtra.propCost = 0
+        this.editForm.signExtra.propNum = 0
+      }
+      //金币or门票报名
+      if (this.editForm.data.signUpType === 3){
+        if (this.editForm.data.signUpNum === 0){
+          this.errmsg('付费赛报名费不能为0')
+          return false
+        }
+        if(this.editForm.signExtra.propId === 0){
+          this.errmsg("金币or门票报名 必须选择门票")
+          return false
+        }
+      }
+      //纯门票报名
+      if(this.editForm.data.signUpType === 2)
+      {
+        this.editForm.data.signUpNum = 0
+        if(this.editForm.signExtra.propId === 0){
+          this.errmsg("门票报名 必须选择门票")
+          return false
+        }
       }
 
       if (this.editForm.data.signUpType === 1 && this.editForm.prizeExtra.awardType == 1) {
@@ -1967,12 +2088,15 @@ export default {
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        console.log('element', element)
+        console.log('1111 element', element)
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
           return false
         }
-
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+          this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
+          return false
+        }
         if (element.rewardItems.length == 0) {
           this.errmsg('请添加奖励配置')
           return false
@@ -2066,16 +2190,17 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid) {
+    getPropsRewardItem(pid,propsNum) {
       const one = {
         propsId: 0,
         propsType: 0,
         propsName: '',
         propsIcon: '',
-        propsAttr: ''
+        propsAttr: '',
+        propsNum:propsNum,
       }
-      for (let i = 0; i < this.propsInfo.length; i++) {
-        const element = this.propsInfo[i]
+      for (let i = 0; i < this.matchPropsCfgs.length; i++) {
+        const element = this.matchPropsCfgs[i]
         if (element.propsId == pid) {
           one.propsId = element.propsId
           one.propsType = element.propsType
