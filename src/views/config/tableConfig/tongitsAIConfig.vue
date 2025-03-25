@@ -42,6 +42,69 @@
         </div>
       </el-col>
     </el-row>
+
+    <el-row style="padding-top: 5px">
+      <h3 style="text-align:center;">机器人输赢配置</h3>
+      <el-col :span="24">
+        <div style="padding-top: 10px">
+          <el-table
+            :data="control"
+            stripe
+            border
+            style="width: 100%"
+          >
+
+            <el-table-column
+              prop="ControlId"
+              label="行号"
+              width="70"
+            />
+
+            <el-table-column
+              label="输赢最小(%)"
+              width="120"
+            >
+              <template scope="subScope">
+                <el-input v-model.number="subScope.row.PerStartPool" />
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="输赢最大(%)"
+              width="120"
+            >
+              <template scope="subScope">
+                <el-input v-model.number="subScope.row.PerEndPool" />
+              </template>
+            </el-table-column>
+
+            <el-table-column label="机器人级别" width="120">
+              <template scope="subScope">
+                <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                  <el-option
+                    v-for="item in robotlvl"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column label="操作" :render-header="(h,obj)=>addControlButton()">
+              <template scope="subScope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="delControlRow(subScope.$index,subScope.row)"
+                >删除</el-button>
+              </template>
+            </el-table-column>
+
+          </el-table>
+        </div>
+      </el-col>
+    </el-row>
+
     <el-row style="padding-top: 5px">
       <h3 style="text-align:center;">机器人分配</h3>
       <el-col :span="24">
@@ -204,6 +267,9 @@ export default {
       actionList: [
 
       ],
+      control: [
+
+      ],
       poolMoneyList: {},
       robotlvl: [
         {
@@ -273,6 +339,10 @@ export default {
             this.item = cfg
             this.tableData = this.item.Config
             this.actionList = this.item.Action
+            if (this.item.Control) {
+              this.control = this.item.Control
+            }
+
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.moneyProc(false)
@@ -372,6 +442,7 @@ export default {
     },
     setData() {
       this.moneyProc(true)
+      this.item.Control = this.control
       this.form.Data = JSON.stringify(this.item)
       console.log('this.form.Data:', this.form.Data)
       this.moneyProc(false)
@@ -400,6 +471,10 @@ export default {
       console.log('parent:' + parent + 'mine:' + mine, row)
       this.actionList[parent].List.splice(mine, 1)
     },
+    delControlRow(mine, row) {
+      console.log('mine:' + mine, row)
+      this.control.splice(mine, 1)
+    },
     addTableHeaderButton(h, data, tableMoney) {
       console.log('h:', h)
       console.log('data:', data)
@@ -411,6 +486,15 @@ export default {
         </div>
       )
     },
+    addControlButton() {
+      return (
+        <div>
+          <span>操作</span>
+          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doAddControl()}>添加范围</el-button>
+        </div>
+      )
+    },
+
     doAdd(tableMoney) {
       console.log('tableMoney===>', tableMoney)
       for (let i = 0; i < this.actionList.length; i++) {
@@ -425,6 +509,19 @@ export default {
         }
       }
     },
+    doAddControl() {
+      console.log('control')
+      const Id = this.control.length + 1
+      this.control.push(
+        {
+          PerStartPool: 0,
+          PerEndPool: 0,
+          AiConfigLevel: 1,
+          ControlId: Id
+        }
+      )
+    },
+
     showRobotPoolForm(tableMoney) {
       this.robotForm.currentVal = this.getRobotProfitByTableMoney(tableMoney, false)
       this.robotForm.tableMoney = tableMoney
