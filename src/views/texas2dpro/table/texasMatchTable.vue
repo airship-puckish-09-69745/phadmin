@@ -1098,6 +1098,11 @@ export default {
     },
     save() {
       if (this.edit.isEdit) {
+        var postData = this.getPostData()
+        if (this.checkPropsExpire(postData)) {
+          Message.error('门票配置错误')
+          return
+        }
         // 设置修改后数据
         this.setPropsDetail()
         this.edit.item.AppInfoStr = JSON.stringify(this.edit.item.AppInfo)
@@ -1142,6 +1147,7 @@ export default {
                 'propsIcon': objs.list[i].image,
                 'propsAttr': objs.list[i].item_describe,
                 'propsCost': objs.list[i].item_cost,
+                'propsExpireTime': objs.list[i].expire_time,
               })
             }
           }
@@ -1196,6 +1202,30 @@ export default {
           }
         }
       }  
+    },
+    getPropsExpireTime(propsId) {
+      for (var i=0; i<this.matchPropsCfgs.length; i++){
+        if (propsId === this.matchPropsCfgs[i].propsId) {
+          return this.matchPropsCfgs[i].propsExpireTime
+        }
+      }
+      return 0  
+    },
+    checkPropsExpire(postData){
+      var timestamp = Date.parse(new Date())/1000
+      var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId) 
+      console.log(postData.RaceEndDate, expire_time)
+      if (expire_time < postData.RaceEndDate) {
+        return true
+      }
+
+      for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
+        expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId)
+        if (expire_time < postData.RaceEndDate) {
+          return true
+        }
+      }
+      return false
     },
     handlerChangeMin(e) {
       // if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {
