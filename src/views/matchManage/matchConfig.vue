@@ -798,7 +798,8 @@ export default {
       ],
       matchEvents: [
         { 'value': 0, 'label': 'All' },
-        { 'value': 1, 'label': 'Events' }
+        { 'value': 1, 'label': 'Events' },
+        { 'value': 2, 'label': 'GTCC' },
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
