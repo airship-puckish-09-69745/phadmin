@@ -1097,6 +1097,7 @@ export default {
       return true
     },
     save() {
+      this.setPropsDetail()
       if (this.edit.isEdit) {
         var postData = this.getPostData()
         if (this.checkPropsExpire(postData)) {
@@ -1104,7 +1105,6 @@ export default {
           return
         }
         // 设置修改后数据
-        this.setPropsDetail()
         this.edit.item.AppInfoStr = JSON.stringify(this.edit.item.AppInfo)
         this.edit.item.SignUpExtraStr = JSON.stringify(this.edit.item.SignUpExtra)
         this.edit.item.RankRewardsExtraStr = JSON.stringify(this.edit.item.RankRewardsExtra)
