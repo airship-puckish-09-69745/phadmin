@@ -64,6 +64,21 @@
               {{ scope.row.Uid }}
             </template>
           </el-table-column>
+          <el-table-column label="输赢。携带变化">
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.PayoffAmount / 1000) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="下注">
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.BetAmount / 1000) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="有效下注">
+            <template slot-scope="scope">
+              {{ formatNumber(scope.row.ValidBetAmount / 1000) }}
+            </template>
+          </el-table-column>
           <el-table-column label="回合id" width="220px">
             <template slot-scope="scope">
               {{ scope.row.RoundId }}
@@ -72,11 +87,6 @@
           <el-table-column label="子回合id" width="220px">
             <template slot-scope="scope">
               {{ scope.row.SubRoundId }}
-            </template>
-          </el-table-column>
-          <el-table-column label="输赢。携带变化">
-            <template slot-scope="scope">
-              {{ formatNumber(scope.row.PayoffAmount / 1000) }}
             </template>
           </el-table-column>
           <el-table-column label="返奖">
@@ -254,6 +264,7 @@ export default {
       })
     },
     getAppInfo() {
+      const $this = this
       request({
         url: '/thirdparties/all',
         method: 'get',
@@ -262,11 +273,18 @@ export default {
         if (response.RetCode === 0) {
           // const objs = response.Data || []
           for (let i = 0; i < response.Data.length; i++) {
-            this.appInfo.push({
+            $this.appInfo.push({
               key: response.Data[i].ID,
               label: response.Data[i].Account
             })
           }
+          for (let i = 0; i < this.appInfo.length; i++) {
+            if (this.appInfo[i].key === this.item.app) {
+              this.item.app = this.appInfo[i].key
+              return
+            }
+          }
+          this.item.app = this.appInfo[0].key
         }
       })
     },
