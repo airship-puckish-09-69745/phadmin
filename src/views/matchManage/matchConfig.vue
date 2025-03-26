@@ -799,7 +799,7 @@ export default {
       matchEvents: [
         { 'value': 0, 'label': 'All' },
         { 'value': 1, 'label': 'Events' },
-        { 'value': 2, 'label': 'GTCC' },
+        { 'value': 4, 'label': 'GTCC' }, //notice 2,3 空着
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
