@@ -1131,11 +1131,10 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
+          var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type !== this.currPropsType) {
-                continue
-              }
+              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status === 1 || objs.list[i].expire_time < timestamp)
               this.matchPropsCfgs.push({
                 'propsType': objs.list[i].item_type,
                 'propsId': objs.list[i].id,
@@ -1145,7 +1144,6 @@ export default {
                 'propsCost': objs.list[i].item_cost,
               })
             }
-            console.log(this.matchPropsCfgs)
           }
         }
       })
