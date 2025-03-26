@@ -1193,12 +1193,12 @@ export default {
       for (var i=0; i<this.matchPropsCfgs.length; i++){
         if (this.edit.item.SignUpExtra.propsId === this.matchPropsCfgs[i].propsId) {
           this.edit.item.SignUpExtra.propsType = this.matchPropsCfgs[i].propsType
-          this.edit.item.SignUpExtra.propsCost = this.matchPropsCfgs[i].propsCost
+          this.edit.item.SignUpExtra.propsCost = this.matchPropsCfgs[i].propsCost * 1000
         }
         for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
           if (this.edit.item.RankRewardsExtra[j].propsReward.propsId === this.matchPropsCfgs[i].propsId) {
             this.edit.item.RankRewardsExtra[j].propsReward.propsType = this.matchPropsCfgs[i].propsType
-            this.edit.item.RankRewardsExtra[j].propsReward.propsCost = this.matchPropsCfgs[i].propsCost
+            this.edit.item.RankRewardsExtra[j].propsReward.propsCost = this.matchPropsCfgs[i].propsCost  * 1000
           }
         }
       }  
