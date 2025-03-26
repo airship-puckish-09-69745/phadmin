@@ -1213,15 +1213,19 @@ export default {
     },
     checkPropsExpire(postData){
       var timestamp = Date.parse(new Date())/1000
+      var endTime = postData.RaceEndDate
+      if (postData.RaceType == 0) {
+        endTime = postData.RaceBeginDate
+      }
       var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId) 
       console.log(postData.RaceEndDate, expire_time)
-      if (expire_time < postData.RaceEndDate) {
+      if (expire_time < endTime) {
         return true
       }
 
       for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
         expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId)
-        if (expire_time < postData.RaceEndDate) {
+        if (expire_time < endTime) {
           return true
         }
       }
