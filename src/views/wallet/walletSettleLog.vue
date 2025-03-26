@@ -64,9 +64,14 @@
               {{ scope.row.Uid }}
             </template>
           </el-table-column>
-          <el-table-column label="输赢。携带变化">
+          <el-table-column label="输赢（携带变化）">
             <template slot-scope="scope">
               {{ formatNumber(scope.row.PayoffAmount / 1000) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="返奖">
+            <template slot-scope="scope">
+              {{ formatNumber( scope.row.MoneyRet /1000) }}
             </template>
           </el-table-column>
           <el-table-column label="下注">
@@ -87,11 +92,6 @@
           <el-table-column label="子回合id" width="220px">
             <template slot-scope="scope">
               {{ scope.row.SubRoundId }}
-            </template>
-          </el-table-column>
-          <el-table-column label="返奖">
-            <template slot-scope="scope">
-              {{ formatNumber( scope.row.MoneyRet /1000) }}
             </template>
           </el-table-column>
           <el-table-column label="Txid">
