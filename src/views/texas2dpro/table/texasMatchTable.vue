@@ -1098,12 +1098,12 @@ export default {
     },
     save() {
       this.setPropsDetail()
+      var postData = this.getPostData()
+      if (this.checkPropsExpire(postData)) {
+        Message.error('门票配置错误')
+        return
+      }
       if (this.edit.isEdit) {
-        var postData = this.getPostData()
-        if (this.checkPropsExpire(postData)) {
-          Message.error('门票配置错误')
-          return
-        }
         // 设置修改后数据
         this.edit.item.AppInfoStr = JSON.stringify(this.edit.item.AppInfo)
         this.edit.item.SignUpExtraStr = JSON.stringify(this.edit.item.SignUpExtra)
