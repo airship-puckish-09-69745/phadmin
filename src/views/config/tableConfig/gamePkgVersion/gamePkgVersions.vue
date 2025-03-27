@@ -1524,6 +1524,7 @@ export default {
       
       // 正式发布才@相关人员
       if (step === 5 && this.env === 'pro') {
+        msg += '***需检查 uat 03 是否同步版本内容***\r\n'
         msg += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at><at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at><at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>\r\n'
       }
       console.log("change content", msg)
