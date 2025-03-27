@@ -70,6 +70,7 @@
       :visible.sync="edit.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      @opened="handleEditDialogOpened"
       width="1100px"
     >
       <el-tabs type="border-card">
@@ -294,7 +295,7 @@
           <el-button type="primary" @click="addNormalEggWeightConfig()" size="mini">添加配置</el-button>
           <el-row :gutter="5">
             <el-col :span="12" v-for="(item, index) in edit.normalEggWeightConfigs">
-              <fieldset>
+              <fieldset style="margin-top: 10px">
                 <legend>
                   抽数区间
                   <el-input
@@ -313,12 +314,10 @@
                   <el-table-column
                     prop="EggId"
                     label="彩蛋ID"
-                    width="100"
                   />
                   <el-table-column
                     prop="Name"
                     label="彩蛋名称"
-                    width="100"
                   >
                     <template slot-scope="scope">
                       {{ getEggName(scope.row.EggId) }}
@@ -327,7 +326,6 @@
                   <el-table-column
                     prop="Reward"
                     label="奖励金额"
-                    width="100"
                   >
                     <template slot-scope="scope">
                       {{ getEggReward(scope.row.EggId) }}
@@ -336,7 +334,6 @@
                   <el-table-column
                     prop="Weight"
                     label="权重"
-                    width="100"
                   >
                     <template slot-scope="scope">
                       <el-input
@@ -370,12 +367,10 @@
                   <el-table-column
                     prop="EggId"
                     label="彩蛋ID"
-                    width="100"
                   />
                   <el-table-column
                     prop="Name"
                     label="彩蛋名称"
-                    width="100"
                   >
                     <template slot-scope="scope">
                       {{ getEggName(scope.row.EggId) }}
@@ -384,7 +379,6 @@
                   <el-table-column
                     prop="Reward"
                     label="奖励金额"
-                    width="100"
                   >
                     <template slot-scope="scope">
                       {{ getEggReward(scope.row.EggId) }}
@@ -393,7 +387,6 @@
                   <el-table-column
                     prop="Weight"
                     label="权重"
-                    width="100"
                   >
                     <template slot-scope="scope">
                       <el-input
@@ -753,6 +746,7 @@ export default {
   },
   mounted() {
     this.getList()
+    this.getGameAll()
   },
   computed: {
     eggReward: {
@@ -840,12 +834,9 @@ export default {
           const objs = response.Data || []
           this.clientDB = new ClientTableData(objs, 10, filterMap, 'EndTime', -1)
           this.handleCurrentChange(1)
-
-          this.getGameAll()
         }
       }).catch(err => {
         console.log(err)
-        this.getGameAll()
       })
     },
     handlePrepare(ob) {
@@ -1011,6 +1002,14 @@ export default {
         this.edit.visible = true
       }
     },
+    handleEditDialogOpened() {
+      console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
+      if (this.edit.isEdit) {
+        this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
+      } else {
+        this.$refs.tree.setCheckedKeys([])
+      }
+    },
     initFormData(bEdit, ID) {
       this.edit.isEdit = bEdit
       if (ID) {
@@ -1068,7 +1067,6 @@ export default {
           this.updateGamesSorted()
 
           console.log(this.edit.item.GameIdCfg)
-          this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
         }
       }
     },
