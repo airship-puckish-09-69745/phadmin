@@ -30,9 +30,9 @@ export default {
       clientDB: new ClientTableData([], 1, {})
     }
   },
-  created() {
+  async created() {
     this.getData()
-    this.getBlack()
+    await this.getBlack()
   },
   methods: {
     getFullKey() {
@@ -41,8 +41,14 @@ export default {
     dataRule(required, config) {
       return DataRule(required, config)
     },
-    getBlack(){
+    async getBlackInfo(){
+      await this.getBlack()
+    },
+    getBlack() {
       const $this = this
+      $this.blacks = []
+      $this.clientDB = new ClientTableData([], 1, {})
+      $this.blackCount = 0
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -50,7 +56,7 @@ export default {
           Env: this.env,
           Path: '/misc/pusoy/black',
           Page: 1,
-          Limit: 400,
+          Limit: 9999,
           Uid: this.Uid,
           Gid: this.Gid
         }
@@ -59,14 +65,11 @@ export default {
           const data = response.Data || {}
           const blacks = data.Items || []
           $this.totalCount = data.Total || 0
-          const blackArr = new Set()
-          for (let i = 0; i < $this.blacks.length; i++) {
-            blackArr.add($this.blacks[i].Uid1)
-            blackArr.add($this.blacks[i].Uid2)
-            blackArr.add($this.blacks[i].Uid3)
+          const blackArr = []
+          for (let i = blacks.length - 1; i >= 0; i--) {
+            blackArr.push(blacks[i])
           }
-          $this.blackCount = blackArr.size
-          $this.clientDB = new ClientTableData(blacks, $this.pageNum, {}, 'Gid', -1)
+          $this.clientDB = new ClientTableData(blackArr, $this.pageNum, {}, 'Gid', -1)
           $this.handleCurrentChange(1)
         }
       })
@@ -83,6 +86,13 @@ export default {
     },
     refreshShow() {
       this.blacks = this.clientDB.GetCurrentPageData()
+      const blackArr = new Set()
+      for (let i = 0; i < this.blacks.length; i++) {
+        blackArr.add(this.blacks[i].Uid1)
+        blackArr.add(this.blacks[i].Uid2)
+        blackArr.add(this.blacks[i].Uid3)
+      }
+      this.blackCount = blackArr.size
       // this.refreshStat()
     },
     handleSizeChange(val) {
@@ -194,7 +204,7 @@ export default {
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" size="mini" @click="getBlack">查询</el-button>
+          <el-button type="primary" size="mini" @click="getBlackInfo">查询</el-button>
         </el-col>
       </el-form>
     </el-row>

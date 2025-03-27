@@ -597,7 +597,7 @@
                         <span>{{ item.propsName }}</span>
                       </el-option>
                     </el-select>
-                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量11" />
+                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
                 </ul>
               </template>
@@ -798,7 +798,8 @@ export default {
       ],
       matchEvents: [
         { 'value': 0, 'label': 'All' },
-        { 'value': 1, 'label': 'Events' }
+        { 'value': 1, 'label': 'Events' },
+        { 'value': 4, 'label': 'GTCC' }, //notice 2,3 空着
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -828,7 +829,7 @@ export default {
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       reachOutNumCfgs: new Map(), // 定局晋级人数
       tableData: [],
-      limit: 10,
+      limit: 100,
       total: 0,
       page: 1,
       editForm: {
@@ -921,6 +922,7 @@ export default {
           propType: 0, //道具类型,
           propCost:0,  //道具价值
           propNum: 1,  //数量
+          propName:'',
         },
         prizeExtra: {
           awardType: 0,
@@ -1448,6 +1450,7 @@ export default {
           propType: 0,
           propCost: 0,
           propNum: 1,
+          propName: '',
         }
 
         this.editForm.prizeExtra = {
@@ -1602,10 +1605,11 @@ export default {
         if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
             this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
             this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+            this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
             break
         }
       }
-      console.log("this.editForm.signExtra",this.editForm.signExtra)
+      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1831,8 +1835,9 @@ export default {
               }
             ]
             this.matchTicketsCfgs = []
+            var timestamp = Date.parse(new Date())/1000
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type == 1) {
+              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
                 this.matchPropsCfgs.push({
                   'propsType': objs.list[i].item_type,
                   'propsId': objs.list[i].id,
@@ -2084,12 +2089,15 @@ export default {
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        console.log('element', element)
+        console.log('1111 element', element)
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
           return false
         }
-
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+          this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
+          return false
+        }
         if (element.rewardItems.length == 0) {
           this.errmsg('请添加奖励配置')
           return false

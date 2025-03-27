@@ -162,7 +162,7 @@
           <el-descriptions-item label="手动添加道具:">
             <el-col :span="2"> {{'道具类型:'}} </el-col>
             <el-col  :span="3">
-              <el-select v-model.number="item.ItemType" :key="'itemSelect_' + item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
+              <el-select v-model.number="item.ItemType" size="mini" placeholder="请选择" @change="ShowItemList(item.ItemType)">
                 <el-option
                   v-for="option in itemTypeCfgs"
                   :key="option.value"
@@ -175,7 +175,7 @@
             <el-col :span="2" :offset="1"> {{'道具名称:'}} </el-col>
             <el-col :span="3">
               <template>
-                <el-select v-model.number="item.ItemCfgId"  size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
+                <el-select v-model.number="item.ItemCfgId" size="mini" placeholder="请选择" @change="ShowItemTime(item.ItemCfgId)">
                   <el-option
                     v-for="option in tableItemData"
                     :key="option.value"
@@ -188,7 +188,7 @@
             </el-col>
             <el-col :span="2" :offset="1"> {{'道具数量:'}} </el-col>
             <el-col :span="2">
-              <el-input v-model="item.ItemNum" size="mini" />
+              <el-input v-model.number="item.ItemNum" size="mini" />
             </el-col>
             <el-col v-show="item.ItemType == 2" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
             <el-col v-show="item.ItemType == 2" :span="2">
@@ -508,9 +508,9 @@ export default {
         { 'label': 'Tongits Quick', 'value': 29 }
       ],
       itemTypeCfgs: [
-        { 'value': 1, 'label': '门票', disabled: false },
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州参赛券', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false }
       ],
       dayTypeCfgs: [
         { 'value': 7, 'label': '7天', disabled: false },
@@ -1316,15 +1316,15 @@ export default {
         Message.error('请输入正确的Uid')
         return
       }
-      if (this.item.ItemType === 0) {
+      if (typeof this.item.ItemType === 'undefined' || this.item.ItemType === 0) {
         Message.error('请输入道具类型')
         return
       }
-      if (this.item.ItemCfgId === 0) {
+      if (typeof this.item.ItemCfgId === 'undefined' || this.item.ItemCfgId === 0) {
         Message.error('请输入道具id')
         return
       }
-      if (this.item.ItemNum === 0) {
+      if (typeof this.item.ItemNum === 'undefined' || this.item.ItemNum === 0) {
         Message.error('请输入道具数量')
         return
       }
@@ -1587,28 +1587,34 @@ export default {
       })
     },
     clearCreditData() {
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Env: $this.env,
-          Path: '/user/credit/clear',
-          Uid: $this.credit.uid,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          $this.credit.creditScore=0
-          $this.credit.validBetScore=0
-          $this.credit.playRoundScore=0
-          $this.credit.ggrScore=0
-          $this.credit.creditScore=0
-          $this.credit.dayVbs=0
-          $this.credit.dayPrs=0
-          $this.credit.dayGgrs=0
-          $this.credit.blackList=[]
-          console.log("/user/credit/clear:",response.Data)
-        }
+      this.$confirm("确定清除信誉分数据吗？", '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const $this = this
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: $this.env,
+            Path: '/user/credit/clear',
+            Uid: $this.credit.uid,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            $this.credit.creditScore=0
+            $this.credit.validBetScore=0
+            $this.credit.playRoundScore=0
+            $this.credit.ggrScore=0
+            $this.credit.creditScore=0
+            $this.credit.dayVbs=0
+            $this.credit.dayPrs=0
+            $this.credit.dayGgrs=0
+            $this.credit.blackList=[]
+            console.log("/user/credit/clear:",response.Data)
+          }
+        })
       })
     },
     // 跳转到用户信息查询页面
@@ -1628,7 +1634,7 @@ export default {
         data: {
           Env: this.env,
           PageNum: 1,
-          PageSize: 10
+          PageSize: 100
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1646,15 +1652,23 @@ export default {
     },
     ShowItemList(id) {
       this.tableItemData = []
-      console.log(this.tableData)
+      let currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
-        if (this.tableData[i].item_type === id) {
-          var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
-          this.tableItemData.push(dataList)
+        if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
+          if (this.tableData[i].item_type !== 2) {
+            let expTime = this.tableData[i].expire_time * 1000
+            if (currTime < expTime) {
+              var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+              this.tableItemData.push(dataList)
+            }
+          } else {
+            var dList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
+            this.tableItemData.push(dList)
+          }
         }
       }
     },
-    ShowItemTime(itemId){
+    ShowItemTime(itemId) {
       this.tableTimeData = []
       for (let i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i].id === itemId) {

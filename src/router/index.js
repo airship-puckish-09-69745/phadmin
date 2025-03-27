@@ -1634,7 +1634,7 @@ export const asyncRoutes = [
         path: 'ApplyRichcard',
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
-        meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
+        meta: { title: '申请发放富裕卡 ◐', perm: 'RERICHCARD' }
       },
       {
         path: 'kycInfo',
@@ -3111,6 +3111,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletRobotTransfer.vue'),
         name: 'walletRobotTransfer',
         meta: { title: '机器人转账列表' }
+      },
+      {
+        path: 'walletSettleLog',
+        component: () => import('@/views/wallet/walletSettleLog.vue'),
+        name: 'walletSettleLog',
+        meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
       }
     ]
   },

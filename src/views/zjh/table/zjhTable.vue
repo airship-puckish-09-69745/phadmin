@@ -313,6 +313,15 @@
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="11" :offset="1" v-if="!IsPHAuditEnv()">
+            <el-form-item label="配牌16进制 (♠K,♥10): 4d,3a">
+              <el-input v-model="edit.item.TestCards" :required="true" />
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -352,6 +361,7 @@ function newItem() {
     PoolMoneyMax: '',
     BetMoneyMax: '',
     IsPractice: 0,
+    TestCards: '',
     Level: 1,
   }
 }
@@ -593,6 +603,9 @@ export default {
       }
       let maxRatio = 1
       return true
+    },
+    IsPHAuditEnv(){
+      return this.env == 'ph_audit'
     },
     save() {
       if (!this.checkData()) return

@@ -159,11 +159,14 @@
           width="150"
         />
         <el-table-column
-          prop="GameName"
           label="游戏名(内部)"
           sortable="custom"
           width="150"
-        />
+        >
+          <template slot-scope="scope">
+            {{ configData[scope.row.BundleKey] }}
+          </template>
+        </el-table-column>
         <el-table-column
           prop="BundleKey"
           label="包KEY"
@@ -291,9 +294,9 @@
             <el-input v-model="edit.item.PkgName" />
           </el-col>
         </el-form-item>
-        <el-form-item label="游戏名(内部)：" :required="true" prop="GameName">
+        <el-form-item label="游戏名(内部)：">
           <el-col :span="15">
-            <el-input v-model="edit.item.GameName" />
+            <el-input v-model="edit.gameName" />
           </el-col>
         </el-form-item>
         <el-form-item label="包Key：" :required="true" prop="BundleKey">
@@ -607,6 +610,7 @@ export default {
       env: 'test',
       edit: {
         visible: false,
+        gameName: "",
         item: this.newItem(),
         isEdit: false,
         lobbyVisible: false,
@@ -634,7 +638,6 @@ export default {
         LobbyVersionID: '链接版本ID',
         LobbyVersion: '链接版本',
         PkgName: '中文名',
-        GameName: '游戏名(内部)',
         BundleKey: '游戏包名',
         GamePkgVersion: '游戏包版本',
         WhiteVersion: '游戏包白名单版本'
@@ -649,7 +652,7 @@ export default {
   },
   methods: {
     newItem() {
-      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', PkgName: '',GameName: '', WhiteVersion: '', Status: 7 }
+      return { LobbyVersionID: this.LobbyVersionID, LobbyVersion: this.LobbyVersion, GamePkgVersion: '', BundleKey: '', PkgName: '', WhiteVersion: '', Status: 7 }
     },
     newLobbyItem() {
       return { LobbyVersion: '' }
@@ -698,6 +701,10 @@ export default {
         return
       }
       this.initFormData(true, row.ID)
+      if (this.configData[this.edit.item.BundleKey] === undefined) {
+        this.configData[this.edit.item.BundleKey] = ''
+      }
+      this.edit.gameName = this.configData[this.edit.item.BundleKey]
       this.edit.visible = true
     },
     // 展示批量添加白名单
@@ -1271,7 +1278,7 @@ export default {
     },
     save() {
       if (!this.checkData()) return
-
+      this.setGameName()
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(this.edit.item)
@@ -1575,13 +1582,26 @@ export default {
     setMessgeStatus(){
       this.configData.lark = !this.configData.lark
       this.config.Data = JSON.stringify(this.configData)
+      console.log(this.config.Data)
+      this.updateConfig()
+    },
+    setGameName(){
+      this.configData[this.edit.item.BundleKey] = this.edit.gameName
+      this.config.Data = JSON.stringify(this.configData)
+      console.log(this.config.Data)
+      this.updateConfig()
+    },
+    updateConfig() {
       request({
         url: '/customizeconfig/update',
         method: 'post',
         data: this.config,
       }).then(response => {
         if (response.RetCode === 0) {
-          Message.success('保存成功')
+          Message.success(`更新游戏名成功!：[${this.edit.gameName}]`)
+          this.$forceUpdate()
+        } else {
+          Message.success(`更新游戏名失败!`)
         }
       })
     }

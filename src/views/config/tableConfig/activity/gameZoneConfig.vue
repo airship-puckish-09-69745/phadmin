@@ -626,7 +626,7 @@
         </el-form-item>
         <el-form-item label="游戏：" :required="true" prop="Gids">
           <el-col :span="15">
-            <el-select style="width: 500px;" popper-class="custom-dropdown1" v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
+            <el-select v-model="editZoneGame.item.Gids" style="width: 500px;" popper-class="custom-dropdown1" multiple placeholder="请选择" @change="changeZoneGameGids">
               <el-option
                 v-for="itemZoneGame in gameSelect"
                 :key="itemZoneGame.id"
@@ -658,12 +658,13 @@
               width="330"
             >
               <template v-slot:default="scope">
-                <el-select style="width: 270px;" popper-class="custom-dropdown" v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
+                <el-select v-model="scope.row.Gid" style="width: 270px;" popper-class="custom-dropdown" placeholder="请选择推荐游戏" @change="changeZoneGame">
                   <el-option
                     v-for="item in gameSelect"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                  >
                     <span style="float: left">{{ item.name }}</span>
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ showZoneGameLabel(item.id) }}</span>
                   </el-option>
@@ -1388,7 +1389,8 @@ export default {
       }
       return false
     },
-    checkZoneGames(gids, index) {
+    checkZoneGames(newData, index) {
+      const gids = newData.Gids
       if (gids.length <= 0) {
         return false
       }
@@ -1402,13 +1404,20 @@ export default {
       }
       gameSelArray = []
       const nowGameSelArray = []
+
+      for (let m = 0; m < newData.ChannelId.length; m++) {
+        for (let n = 0; n < newData.Gids.length; n++) {
+          nowGameSelArray.push({ AppId: newData.AppId, ChannelId: newData.ChannelId[m], Gid: newData.Gids[n] })
+        }
+      }
+
       for (let i = 0; i < this.zoneGame.length; i++) {
         if (this.zoneGame[i].Index === index) {
-          for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
-            for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
-              nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
-            }
-          }
+          // for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
+          //   for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
+          //     nowGameSelArray.push({ AppId: this.zoneGame[i].AppId, ChannelId: this.zoneGame[i].ChannelId[m], Gid: this.zoneGame[i].Gids[n] })
+          //   }
+          // }
         } else {
           for (let m = 0; m < this.zoneGame[i].ChannelId.length; m++) {
             for (let n = 0; n < this.zoneGame[i].Gids.length; n++) {
@@ -1417,15 +1426,25 @@ export default {
           }
         }
       }
-
-      const intersection = gameSelArray.filter(value => nowGameSelArray.includes(value))
-      return intersection.length <= 0
+      const tmp = false
+      for (let i = 0; i < gameSelArray.length; i++) {
+        const obj = gameSelArray[i]
+        for (let j = 0; j < nowGameSelArray.length; j++) {
+          const obj1 = nowGameSelArray[j]
+          if (obj.AppId === obj1.AppId && obj.ChannelId === obj1.ChannelId && obj.Gid === obj1.Gid) {
+            console.log(index, obj.AppId, obj.ChannelId, obj.Gid)
+          }
+        }
+      }
+      const exists = gameSelArray.some(obj => nowGameSelArray.some(obj1 => obj1.AppId === obj.AppId && obj1.ChannelId === obj.ChannelId && obj1.Gid === obj.Gid))
+      console.log(exists)
+      return exists
     },
     saveZoneGameD() {
       const newData = JSON.parse(JSON.stringify(this.editZoneGame.item))
 
-      if (!this.checkZoneGames(this.editZoneGame.item.Gids, this.editZoneGame.item.Index)) {
-        this.$alert(`添加错误，游戏不存在`, '提示', { type: 'warning' })
+      if (this.checkZoneGames(newData, this.editZoneGame.item.Index)) {
+        this.$alert(`添加错误，游戏不存在或重复配置`, '提示', { type: 'warning' })
         return
       }
 
@@ -1669,24 +1688,29 @@ export default {
       //   this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
       //   return
       // }
-      const gid = id[id.length - 1]
-      const lengthZoneGame = this.zoneGame.length
-      for (let i = 0; i < lengthZoneGame - 1; i++) {
-        const gids = this.zoneGame[i].Gids
-        if (gids.includes(gid)) {
-          console.log('changeHallGame', gid)
-          Message.error('重复添加游戏,其他项目存在')
-          this.editZoneGame.item.Gids.splice(length - 1, 1)
-          return
+      if (this.editZoneGame.item.Gids.length > id.length) {
+        const gid = id[id.length - 1]
+        const lengthZoneGame = this.zoneGame.length
+        for (let i = 0; i < lengthZoneGame - 1; i++) {
+          if (this.editZoneGame.item.AppId !== this.zoneGame[i].AppId) {
+            continue
+          }
+          const gids = this.zoneGame[i].Gids
+          if (gids.includes(gid)) {
+            console.log('changeHallGame', gid)
+            Message.error('重复添加游戏,其他项目存在')
+            this.editZoneGame.item.Gids.splice(length - 1, 1)
+            return
+          }
         }
-      }
-      const length = this.editZoneGame.item.Gids.length
-      for (let i = 0; i < length - 1; i++) {
-        if (gid === this.editZoneGame.item.Gids[i]) {
-          console.log('changeHallGame', gid)
-          Message.error('重复添加游戏，本项目存在')
-          this.editZoneGame.item.Gids.splice(length - 1, 1)
-          return
+        const length = this.editZoneGame.item.Gids.length
+        for (let i = 0; i < length - 1; i++) {
+          if (gid === this.editZoneGame.item.Gids[i]) {
+            console.log('changeHallGame', gid)
+            Message.error('重复添加游戏，本项目存在')
+            this.editZoneGame.item.Gids.splice(length - 1, 1)
+            return
+          }
         }
       }
     }

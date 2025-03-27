@@ -150,15 +150,23 @@
           width="80"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.level==5" style="color:green">
-              需要赢
+           <span v-if="scope.row.level==5" style="color:green">
+              强杀
             </span>
-            <span v-else style="color:red">
+            <span v-if="scope.row.level==4" style="color:green">
+             弱杀
+            </span>
+            <span v-if="scope.row.level==3" style="color:red">
               陪玩
+            </span>
+            <span v-if="scope.row.level==2" style="color:red">
+               弱放
+            </span>
+            <span v-if="scope.row.level==1" style="color:red">
+              强放
             </span>
           </template>
         </el-table-column>
-
         <el-table-column
           prop="currentGame"
           label="游戏"
