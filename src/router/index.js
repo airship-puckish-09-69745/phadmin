@@ -1721,6 +1721,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'matchGtccConfig',
+        component: () => import('@/views/matchManage/matchGtccConfig.vue'),
+        name: 'matchGtccConfig',
+        meta: { title: 'Gtcc赛事配置', noCache: true }
       }
     ]
   },
