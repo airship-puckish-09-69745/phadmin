@@ -1561,6 +1561,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'easterConfig',
+        component: () => import('@/views/empty'),
+        name: 'easterConfig',
+        meta: { title: '复活节活动配置', noCache: true },
+        children: [
+          {
+            path: 'easterActivityConfig',
+            component: () => import('@/views/config/tableConfig/activity/easterConfig'),
+            name: 'easterActivityConfig',
+            meta: { title: '复活节活动配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'activityCommonConfig',
         component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
         name: 'activityCommonConfig',
@@ -1707,6 +1721,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'matchGtccConfig',
+        component: () => import('@/views/matchManage/matchGtccConfig.vue'),
+        name: 'matchGtccConfig',
+        meta: { title: 'Gtcc赛事配置', noCache: true }
       }
     ]
   },
