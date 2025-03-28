@@ -527,7 +527,7 @@
             />
           </el-form-item>
           <el-form-item label="比赛最大人数：" :required="true">
-            <el-input v-model.number="editForm.signExtra.matchMaxLimit" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
+            <el-input v-model.number="editForm.signExtra.matchMaxLimit" type="number" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
           </el-form-item>
         </fieldset>
 
@@ -1450,7 +1450,7 @@ export default {
           betCnt: 0,
           matchEvents: 0,
           matchUniqueId: 0,
-          propId:0,
+          propId: 0,
           propType: 0,
           propCost: 0,
           propNum: 1,
