@@ -2777,10 +2777,10 @@ export const asyncRoutes = [
         meta: { title: '信誉分配置 ◐', noCache: true }
       },
       {
-        path: 'creditLog',
-        component: () => import('@/views/config/baseConfig/creditLog'),
-        name: 'creditLog',
-        meta: { title: '信誉分日志 ◐', noCache: true }
+        path: 'creditDetail',
+        component: () => import('@/views/config/baseConfig/creditDetail'),
+        name: 'creditDetail',
+        meta: { title: '信誉分详情 ◐', noCache: true }
       },
       {
         path: 'broadcast',
