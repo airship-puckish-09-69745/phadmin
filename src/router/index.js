@@ -3078,7 +3078,13 @@ export const asyncRoutes = [
         component: () => import('@/views/config/gameLogoDisplayConfig'),
         name: 'game_logo_display_config',
         meta: { title: '游戏场次Logo显示配置' }
-      }
+      },
+      {
+        path: 'allocTools',
+        component: () => import('@/views/devTools/allocTools'),
+        name: 'allocTools',
+        meta: { title: 'Alloc开发工具' }
+      },
     ]
   },
   {
