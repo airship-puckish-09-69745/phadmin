@@ -526,6 +526,9 @@
               inactive-text="否"
             />
           </el-form-item>
+          <el-form-item label="比赛最大人数：" :required="true">
+            <el-input v-model.number="editForm.signExtra.matchMaxLimit" type="number" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
+          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -899,7 +902,7 @@ export default {
               propsName: '',
               propsIcon: '',
               propsAttr: '',
-              propsNum: 0,
+              propsNum: 0
             }
           }
         ],
@@ -917,12 +920,13 @@ export default {
         signExtra: {
           betCnt: 0,
           matchEvents: 0,
-          matchUniqueId:0,
-          propId:0,    //门票道具ID,
+          matchUniqueId: 0,
+          propId: 0,    //门票道具ID,
           propType: 0, //道具类型,
-          propCost:0,  //道具价值
+          propCost: 0,  //道具价值
           propNum: 1,  //数量
-          propName:'',
+          propName: '',
+          matchMaxLimit: 0
         },
         prizeExtra: {
           awardType: 0,
@@ -1241,7 +1245,7 @@ export default {
           propsName: '',
           propsIcon: '',
           propsAttr: '',
-          propsNum:0,
+          propsNum: 0
         }
       })
     },
@@ -1433,7 +1437,7 @@ export default {
               propsName: '',
               propsIcon: '',
               propsAttr: '',
-              propsNum:0,
+              propsNum: 0
             }
           }
         ]
@@ -1446,11 +1450,12 @@ export default {
           betCnt: 0,
           matchEvents: 0,
           matchUniqueId: 0,
-          propId:0,
+          propId: 0,
           propType: 0,
           propCost: 0,
           propNum: 1,
           propName: '',
+          matchMaxLimit: 0
         }
 
         this.editForm.prizeExtra = {
@@ -1601,12 +1606,12 @@ export default {
           element.propsReward = this.getPropsRewardItem(element.propsReward.propsId,element.propsReward.propsNum)
         }
       }
-      for(let i = 0; i < this.matchPropsCfgs.length; i++) {
+      for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
-            this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
-            this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
-            this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
-            break
+          this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
+          this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+          this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
+          break
         }
       }
       //console.log("this.editForm.signExtra",this.editForm.signExtra)

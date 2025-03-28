@@ -437,7 +437,7 @@
           </el-form-item>
 
           <el-form-item v-if="edit.item.SignUpType > 0" label="门票数量：" :required="true">
-            <el-input v-model.number="edit.item.SignUpExtra.propsNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
+            <el-input v-model.number="edit.item.SignUpExtra.propsNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" :required="true"/>
           </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -615,7 +615,13 @@ function newItem() {
     AppInfoStr: '',
     OpenDaysLimit: 0,
     SignUpType: 0,
-    SignUpExtra: {},
+    SignUpExtra: { 
+      propsId: 0,
+      propsType: 0,
+      propsNum:0,
+      propsCost:0,
+      propsName:'',
+    },
     SignUpExtraStr: '',
     RankRewardsExtra: [],
     RankRewardsExtraStr:'',
@@ -1097,9 +1103,7 @@ export default {
       return true
     },
     save() {
-      this.setPropsDetail()
-      var postData = this.getPostData()
-      if (this.checkPropsExpire(postData)) {
+      if (this.checkPropsExpire(this.getPostData())) {
         Message.error('门票配置错误')
         return
       }
@@ -1196,37 +1200,50 @@ export default {
         if (this.edit.item.SignUpExtra.propsId === this.matchPropsCfgs[i].propsId) {
           this.edit.item.SignUpExtra.propsType = this.matchPropsCfgs[i].propsType
           this.edit.item.SignUpExtra.propsCost = this.matchPropsCfgs[i].propsCost * 1000
+          this.edit.item.SignUpExtra.propsName = this.matchPropsCfgs[i].propsName
         }
         for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
           if (this.edit.item.RankRewardsExtra[j].propsReward.propsId === this.matchPropsCfgs[i].propsId) {
             this.edit.item.RankRewardsExtra[j].propsReward.propsType = this.matchPropsCfgs[i].propsType
             this.edit.item.RankRewardsExtra[j].propsReward.propsCost = this.matchPropsCfgs[i].propsCost  * 1000
+            this.edit.item.RankRewardsExtra[j].propsReward.propsName = this.matchPropsCfgs[i].propsName
           }
         }
       }  
     },
-    getPropsExpireTime(propsId) {
+    getPropsExpireTime(propsId, propsType) {
       for (var i=0; i<this.matchPropsCfgs.length; i++){
-        if (propsId === this.matchPropsCfgs[i].propsId) {
+        if (propsId === this.matchPropsCfgs[i].propsId && propsType == this.matchPropsCfgs[i].propsType) {
           return this.matchPropsCfgs[i].propsExpireTime
         }
       }
       return 0  
     },
     checkPropsExpire(postData){
+      if (postData.SignUpType == 0) {
+        this.edit.item.SignUpExtra = {}
+        return false
+      }
+      this.setPropsDetail()
+      if (this.edit.item.SignUpExtra.propsId * this.edit.item.SignUpExtra.propsType * this.edit.item.SignUpExtra.propsNum === 0 ) {
+        return true
+      } 
       var timestamp = Date.parse(new Date())/1000
       var endTime = postData.RaceEndDate
       if (postData.RaceType == 0) {
         endTime = postData.RaceBeginDate
       }
-      var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId) 
+      var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
       console.log(postData.RaceEndDate, expire_time)
       if (expire_time < endTime) {
         return true
       }
 
       for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
-        expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId)
+        if (this.edit.item.RankRewardsExtra[j].propsReward.propsId * this.edit.item.RankRewardsExtra[j].propsReward.propsType * this.edit.item.RankRewardsExtra[j].propsReward.propsNum === 0 ) {
+          return true
+        }
+        expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
         if (expire_time < endTime) {
           return true
         }
