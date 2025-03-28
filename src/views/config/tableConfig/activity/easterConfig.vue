@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['ID']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -159,6 +159,13 @@
                     </el-input>
                     <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
                     <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="集齐彩蛋图鉴奖金：" :required="true">
+                    <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
+                      <template slot="append">（₱）</template>
+                    </el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -484,7 +491,7 @@
     </el-dialog>
 
     <!--对比组件-->
-    <compare ref="compare" />
+    <compare ref="compare" :attr-names="AttrNames" />
   </div>
 </template>
 
