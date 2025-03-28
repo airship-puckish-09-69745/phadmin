@@ -1129,7 +1129,7 @@ export default {
     },
     getMatchProps() {
       request({
-        url: '/propsconfig/props/config/list',
+        url: '/propsconfig/props/config/redis/list',
         method: 'get',
         data: {
           Env: this.env,
