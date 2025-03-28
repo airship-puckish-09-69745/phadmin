@@ -393,7 +393,6 @@ export default {
           break
         }
       }
-      appName = appName + '[' + id + ']'
       return appName
     },
     getMatchName(id) {
