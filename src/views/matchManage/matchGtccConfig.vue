@@ -107,7 +107,7 @@
         </fieldset>
 
         <el-form-item>
-          <el-button size="medium" type="primary" icon="el-icon-s-order" @click="savePosetCfg()">保存海报配置</el-button>
+          <el-button size="medium" type="primary" icon="el-icon-s-order" @click="savePosetCfg()">保存配置</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -181,9 +181,9 @@ export default {
         { 'value': 1100000, 'label': 'xworld' }
       ],
       matchInfoCfgs: [
-        { 'value': 1, 'label': 'gtcc活动开启结束时间' },
-        { 'value': 2, 'label': 'preleminary资格赛开始结束时间' },
-        { 'value': 3, 'label': 'qualifier线上决赛开始结束时间' }
+        { 'value': 1, 'label': 'Gtcc' },
+        { 'value': 2, 'label': '资格赛' },
+        { 'value': 3, 'label': '线上决赛' }
       ],
       jumpCfgs: [
         { 'value': 1, 'label': 'Events' },
@@ -485,7 +485,7 @@ export default {
       })
     },
     handleDelete(id) {
-      this.$confirm('您确定要将该海报配置删除吗？', '提示', {
+      this.$confirm('您确定要将该配置删除吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -505,10 +505,10 @@ export default {
           data: this.raw
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('删除海报配置成功！')
+            Message.success('删除配置成功！')
             this.getList()
           } else {
-            Message.error('删除海报配置失败！')
+            Message.error('删除配置失败！')
           }
         })
       }).catch(() => {
