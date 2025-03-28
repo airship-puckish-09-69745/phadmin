@@ -81,22 +81,22 @@
                   <el-input v-model="edit.item.CfgId" />
                 </el-form-item>-->
                 <el-col :span="12">
-                  <el-form-item label="是否开启：" prop="IsOpen">
+                  <el-form-item label="是否开启：" prop="IsOpen" :required="true">
                     <el-switch v-model="edit.item.IsOpen" :active-value="1" :inactive-value="0" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="展示结束时间：" prop="ShowEndTime">
+                  <el-form-item label="展示结束时间：" prop="ShowEndTime" :required="true">
                     <el-date-picker v-model="edit.item.ShowEndTime" type="datetime" placeholder="选择展示结束时间" value-format="timestamp" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动开始时间：" prop="StartTime">
+                  <el-form-item label="活动开始时间：" prop="StartTime" :required="true">
                     <el-date-picker v-model="edit.item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="活动结束时间：" prop="EndTime">
+                  <el-form-item label="活动结束时间：" prop="EndTime" :required="true">
                     <el-date-picker v-model="edit.item.EndTime" type="datetime"  placeholder="选择结束时间" value-format="timestamp" />
                   </el-form-item>
                 </el-col>
@@ -125,7 +125,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="发放奖励类型：">
+                  <el-form-item label="发放奖励类型：" :required="true">
                     <el-select v-model="edit.item.RewardCfg.RewardType" placeholder="请选择" style="width:90px">
                       <el-option
                         v-for="item in rewardTypes"
