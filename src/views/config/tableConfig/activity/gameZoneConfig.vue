@@ -931,9 +931,10 @@ export default {
       gameZoneOther: [],
       gameZoneOtherGameList: [],
       activityOptions: [
-        { label: '圣诞摇钱树-[7]', value: 7 },
+        { label: '摇钱树活动-[7]', value: 7 },
         { label: 'Poker乐园-[8]', value: 8 },
-        { label: 'Banargay-[9]', value: 9 }
+        { label: 'Banargay-[9]', value: 9 },
+        { label: '复活节活动-[10]', value: 10 },
       ],
       gameSelect: [],
       activitySelect: [
