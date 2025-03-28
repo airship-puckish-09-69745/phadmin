@@ -101,26 +101,26 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="下注/赢钱获得蛋壳比例：">
+                  <el-form-item label="下注/赢钱获得蛋壳比例：" :required="true">
                     <el-input v-model.number="edit.item.EggShellGainRatio" >
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="抽到已收集彩蛋返蛋壳比例：" prop="EggShellReturnRatio" >
+                  <el-form-item label="抽到已收集彩蛋返蛋壳比例：" prop="EggShellReturnRatio" :required="true" >
                     <el-input v-model="edit.item.EggShellReturnRatio">
                       <template slot="append">%</template>
                     </el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="每抽蛋壳数量：">
+                  <el-form-item label="每抽蛋壳数量：" :required="true">
                     <el-input v-model="edit.item.EggShellsPerRaffle" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
-                  <el-form-item label="首抽蛋壳数量：">
+                  <el-form-item label="首抽蛋壳数量：" :required="true">
                     <el-input v-model="edit.item.EggShellsRaffleFirst" />
                   </el-form-item>
                 </el-col>
