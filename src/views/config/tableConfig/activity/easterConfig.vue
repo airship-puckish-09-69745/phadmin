@@ -153,19 +153,19 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
+                  <el-form-item label="集齐彩蛋图鉴奖金：" :required="true">
+                    <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
+                      <template slot="append">（₱）</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
                   <el-form-item label="当日发奖额阈值：" :required="true">
                     <el-input v-model.number="edit.item.DayPrizeThreshold">
                       <template slot="append">（₱）</template>
                     </el-input>
                     <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
                     <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="集齐彩蛋图鉴奖金：" :required="true">
-                    <el-input v-model.number="edit.item.RewardCfg.BigPrizeReward">
-                      <template slot="append">（₱）</template>
-                    </el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -560,7 +560,7 @@ function newItem() {
     RewardCfg:{
       RewardType: 1,
       UseSceneId: 0,
-      BigPrizeReward: 888880000,
+      BigPrizeReward: 88888,
     },
     RankCfg: [
       { RankStart: 1, RankEnd: 1, Reward: 28888 },
@@ -936,6 +936,8 @@ export default {
         rank.Reward = rank.Reward * 1000
       }
 
+      this.edit.item.RewardCfg.BigPrizeReward *= 1000
+
       const data = {}
       data.ID = this.edit.item.ID
       data.IsOpen = this.edit.item.IsOpen
@@ -1029,6 +1031,7 @@ export default {
           item.GameIdCfg = JSON.parse(item.GameIdCfg)
           item.WhitelistCfg = JSON.parse(item.WhitelistCfg)
           item.RewardCfg = JSON.parse(item.RewardCfg)
+          item.RewardCfg.BigPrizeReward = item.RewardCfg.BigPrizeReward / 1000
           item.RankCfg = JSON.parse(item.RankCfg)
           item.EggCfg = JSON.parse(item.EggCfg)
           item.RuleImgHor = JSON.parse(item.RuleImgHor)
