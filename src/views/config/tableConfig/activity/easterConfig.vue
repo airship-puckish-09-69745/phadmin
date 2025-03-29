@@ -1015,6 +1015,7 @@ export default {
     handleEditDialogOpened() {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
+        this.getTodayRaffleAmount()
         this.$refs.tree.setCheckedKeys(this.edit.item.GameIdCfg)
       } else {
         this.$refs.tree.setCheckedKeys([])
