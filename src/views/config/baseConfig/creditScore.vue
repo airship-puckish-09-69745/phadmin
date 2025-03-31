@@ -237,7 +237,9 @@
         </el-form-item>
         <el-form-item label="盲注" >
           <el-select v-model="blind">
+            <el-option label="所有场次" :value="0" />
             <el-option v-for="opt in item.BlindOptions" :key="opt.val" :label="opt.name" :value="opt.val" />
+            <el-option label="所有" :value="-1" />
           </el-select>
         </el-form-item>
         <el-date-picker
@@ -523,7 +525,7 @@ export default {
           return item.name
         }
       }
-      return 99999
+      return "所有场次"
     },
     getGameName(gid) {
       for (const item of this.item.GameOptions) {
