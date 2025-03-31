@@ -281,7 +281,7 @@
               >
                 <el-table-column
                   prop="Name"
-                  label="彩蛋名称"
+                  label="X"
                   width="200"
                 />
                 <el-table-column
@@ -511,25 +511,25 @@ const filterMap = {}
 
 function newEggs() {
   return [
-    { EggId: 100, Name: '奖励彩蛋', Reward: 88, Level: 0, Color: 1 },
+    { EggId: 100, Name: 'Red-X', Reward: 88, Level: 0, Color: 1 },
     { EggId: 101, Name: 'RED-Ⅰ', Reward: 0.28, Level: 1, Color: 1 },
     { EggId: 102, Name: 'RED-Ⅱ', Reward: 1.8, Level: 2, Color: 1 },
     { EggId: 103, Name: 'RED-Ⅲ', Reward: 8.8, Level: 3, Color: 1 },
     { EggId: 104, Name: 'RED-Ⅳ', Reward: 18, Level: 4, Color: 1 },
     { EggId: 105, Name: 'RED-Ⅴ', Reward: 28, Level: 5, Color: 1 },
-    { EggId: 200, Name: '奖励彩蛋', Reward: 88, Level: 0, Color: 2 },
+    { EggId: 200, Name: 'BLUE-X', Reward: 88, Level: 0, Color: 2 },
     { EggId: 201, Name: 'BLUE-Ⅰ', Reward: 0.28, Level: 1, Color: 2 },
     { EggId: 202, Name: 'BLUE-Ⅱ', Reward: 1.8, Level: 2, Color: 2 },
     { EggId: 203, Name: 'BLUE-Ⅲ', Reward: 8.8, Level: 3, Color: 2 },
     { EggId: 204, Name: 'BLUE-Ⅳ', Reward: 18, Level: 4, Color: 2 },
     { EggId: 205, Name: 'BLUE-Ⅴ', Reward: 28, Level: 5, Color: 2 },
-    { EggId: 300, Name: '奖励彩蛋', Reward: 88, Level: 0, Color: 3 },
+    { EggId: 300, Name: 'GREEN-X', Reward: 88, Level: 0, Color: 3 },
     { EggId: 301, Name: 'GREEN-Ⅰ', Reward: 0.28, Level: 1, Color: 3 },
     { EggId: 302, Name: 'GREEN-Ⅱ', Reward: 1.8, Level: 2, Color: 3 },
     { EggId: 303, Name: 'GREEN-Ⅲ', Reward: 8.8, Level: 3, Color: 3 },
     { EggId: 304, Name: 'GREEN-Ⅳ', Reward: 18, Level: 4, Color: 3 },
     { EggId: 305, Name: 'GREEN-Ⅴ', Reward: 28, Level: 5, Color: 3 },
-    { EggId: 400, Name: '奖励彩蛋', Reward: 88, Level: 0, Color: 4 },
+    { EggId: 400, Name: 'YELLOW-X', Reward: 88, Level: 0, Color: 4 },
     { EggId: 401, Name: 'YELLOW-Ⅰ', Reward: 0.28, Level: 1, Color: 4 },
     { EggId: 402, Name: 'YELLOW-Ⅱ', Reward: 1.8, Level: 2, Color: 4 },
     { EggId: 403, Name: 'YELLOW-Ⅲ', Reward: 8.8, Level: 3, Color: 4 },
