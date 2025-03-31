@@ -5,6 +5,7 @@
       <el-form ref="item" :model="item" label-width="200px">
         <el-col :span="16" :offset="3">
           <el-button type="primary" size="mini" @click="statDialog=true">查看获取统计信息</el-button>
+          <el-button type="success" size="mini" @click="blindDialog=true">场次授信用户数量</el-button>
           <fieldset style="margin-top:10px">
             <legend>信誉用户参考值</legend>
             <el-input placeholder="请输入内容" v-model.number="item.value">
@@ -140,7 +141,7 @@
 
     <!-- 【dialog】数据统计 -->
     <el-dialog
-      title="好友列表"
+      title="统计信息"
       :visible.sync="statDialog"
       width="60%"
     >
@@ -155,7 +156,7 @@
           end-placeholder="结束日期">
         </el-date-picker>
         <el-form-item>
-          <el-button type="primary" @click="getStat">查询</el-button>
+          <el-button type="primary" @click="getBlackStat">查询</el-button>
         </el-form-item>
       </el-form>
       <span>
@@ -223,6 +224,61 @@
         </el-table>
       </span>
     </el-dialog>
+    <el-dialog
+      title="场次授信用户数量"
+      :visible.sync="blindDialog"
+      width="60%"
+    >
+      <el-form :inline="true" :model="form" class="demo-form-inline">
+        <el-form-item label="游戏" >
+          <el-select v-model="gid">
+            <el-option v-for="opt in item.GameOptions" :key="opt.gid" :label="opt.name" :value="opt.gid" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="盲注" >
+          <el-select v-model="blind">
+            <el-option v-for="opt in item.BlindOptions" :key="opt.val" :label="opt.name" :value="opt.val" />
+          </el-select>
+        </el-form-item>
+        <el-date-picker
+          v-model="daterange"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+        <el-form-item>
+          <el-button type="primary" @click="getBlindStat">查询</el-button>
+        </el-form-item>
+      </el-form>
+      <span>
+        <el-table
+          ref="filterTable"
+          :data="creditStat"
+          stripe
+          border
+          :header-cell-style="libShow.DefaultTableHeadClass"
+          :row-style="{height:'10px'}"
+          :cell-style="libShow.DefaultTableCell"
+          style="width: 100%"
+        >
+          <el-table-column prop="Date" label="日期" sortable width="120"/>
+          <el-table-column prop="Gid" label="游戏">
+            <template slot-scope="scope">
+              {{ getGameName(scope.row.Gid) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="Blind" label="场次">
+            <template slot-scope="scope">
+              {{ getBlindName(scope.row.Blind) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="Cnt" label="信誉分达标用户数量"/>
+        </el-table>
+      </span>
+    </el-dialog>
     <!--对比组件-->
     <compare ref="compare" />
   </div>
@@ -246,6 +302,9 @@ export default {
         $libDate.GetDayBegin(new Date().getTime()-86400*1*1000)
       ],
       statDialog: false,
+      blindDialog: false,
+      gid: 21,
+      blind: 1000,
       item: {
         updateDelta: 86400,
         value: 20000,
@@ -290,6 +349,7 @@ export default {
       testCards: '',
       form: {},
       stat: [],
+      creditStat: [],
       BetOddsList: [],
       subKey: 'credit_score_cfg',
       libShow: $libShow,
@@ -355,7 +415,7 @@ export default {
         }
       })
     },
-    getStat() {
+    getBlackStat() {
       request({
         url: '/dataProxy/info',
         method: 'get',
@@ -371,6 +431,30 @@ export default {
           this.stat = response.Data || {}
           if (response.Data !== '') {
             this.stat = response.Data
+          }
+        }
+      })
+    },
+    getBlindStat() {
+      const from = this.dateToYYYYMMDD(new Date(this.daterange[0]))
+      const to = this.dateToYYYYMMDD(new Date(this.daterange[1]))
+      console.log(from, to, this.gid, this.blind)
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/misc/credit/blind/stat',
+          From: from,
+          To: to,
+          Gid: this.gid,
+          Blind: this.blind
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log(response.Data)
+          if (response.Data !== 'empty') {
+            this.creditStat = response.Data
           }
         }
       })
@@ -432,6 +516,28 @@ export default {
     },
     printChange() {
       console.log(this.item.updateDelta, typeof this.item.updateDelta)
+    },
+    getBlindName(blind) {
+      for (const item of this.item.BlindOptions) {
+        if (blind === item.val) {
+          return item.name
+        }
+      }
+      return 99999
+    },
+    getGameName(gid) {
+      for (const item of this.item.GameOptions) {
+        if (gid === item.gid) {
+          return item.name
+        }
+      }
+      return "unknow"
+    },
+    dateToYYYYMMDD(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return Number(`${year}${month}${day}`);
     }
   }
 }
