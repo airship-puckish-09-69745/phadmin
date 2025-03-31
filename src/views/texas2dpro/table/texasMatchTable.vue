@@ -1220,25 +1220,26 @@ export default {
       return 0  
     },
     checkPropsExpire(postData){
-      if (postData.SignUpType == 0) {
+      if (postData.SignUpType === 0) {
         this.edit.item.SignUpExtra = {}
-        return false
       }
       this.setPropsDetail()
-      if (this.edit.item.SignUpExtra.propsId * this.edit.item.SignUpExtra.propsType * this.edit.item.SignUpExtra.propsNum === 0 ) {
-        return true
-      } 
-      var timestamp = Date.parse(new Date())/1000
-      var endTime = postData.RaceEndDate
-      if (postData.RaceType == 0) {
-        endTime = postData.RaceBeginDate
+      if (postData.SignUpType > 0) {
+        if (this.edit.item.SignUpExtra.propsId * this.edit.item.SignUpExtra.propsType * this.edit.item.SignUpExtra.propsNum === 0 ) {
+          return true
+        } 
+        var timestamp = Date.parse(new Date())/1000
+        var endTime = postData.RaceEndDate
+        if (postData.RaceType == 0) {
+          endTime = postData.RaceBeginDate
+        }
+        var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
+        console.log(postData.RaceEndDate, expire_time)
+        if (expire_time < endTime) {
+          return true
+        }
       }
-      var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
-      console.log(postData.RaceEndDate, expire_time)
-      if (expire_time < endTime) {
-        return true
-      }
-
+      
       for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
         if (this.edit.item.RankRewardsExtra[j].propsReward.propsId * this.edit.item.RankRewardsExtra[j].propsReward.propsType * this.edit.item.RankRewardsExtra[j].propsReward.propsNum === 0 ) {
           return true
