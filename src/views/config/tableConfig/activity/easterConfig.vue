@@ -281,7 +281,7 @@
               >
                 <el-table-column
                   prop="Name"
-                  label="X"
+                  label="彩蛋名称"
                   width="200"
                 />
                 <el-table-column
@@ -642,7 +642,7 @@ export default {
           { Color: 4, Name: 'YELLOW', Rewards: { 0: 88, 1: 0.28, 2: 1.8, 3: 8.8, 4: 18, 5: 28} },
         ],
         eggColumns: [
-          { prop: 'Reward0', label: '奖励彩蛋' },
+          { prop: 'Reward0', label: 'X' },
           { prop: 'Reward1', label: 'Ⅰ' },
           { prop: 'Reward2', label: 'Ⅱ' },
           { prop: 'Reward3', label: 'Ⅲ' },
