@@ -3,22 +3,6 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
-          <el-form-item label="JP中奖概率" prop="JPRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JPRate" :required="true" > <template slot="append">‱</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP抽水比例" prop="JPFeeRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.JPFeeRate" :required="true" > <template slot="append">‰</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP抽水分配权重" prop="JPFeeSlWeightStr" placeholder="请输入内容,如150,151,820,表示：mini,minor,grand">
-            <el-input v-model="cfg.JPFeeSlWeightStr" :required="true" > <template slot="append">三个值用 , 连接。如150,151,820。代表：mini,minor,grand</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="JP中奖分配权重" prop="JPSlWeightStr" placeholder="请输入内容,如150,151,820,表示：mini,minor,grand">
-            <el-input v-model="cfg.JPSlWeightStr" :required="true" > <template slot="append">三个值用 , 连接。如150,151,820。代表：mini,minor,grand</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="免费模式再进免费模式的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.ScatterPlusRate" :required="true" > <template slot="append">％</template> </el-input>
           </el-form-item>
