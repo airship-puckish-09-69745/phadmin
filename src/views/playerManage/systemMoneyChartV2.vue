@@ -882,7 +882,7 @@ export default {
                 this.sortOrder = this.defaultOrder
                 return;
               }
-              console.log("=======", this.name,this.authorityCfg[this.name])
+              console.log("=======", this.name,this.authorityCfg[this.name],this.defaultOrder)
                 if (this.authorityCfg[this.name]) {
                   // 有权限而且有限制
                   this.defaultOrder = []
