@@ -106,7 +106,7 @@ export default {
       item: [],
       form: {
         Uid: 0,
-        DateRange: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),new Date()],
+        DateRange: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 3),new Date(new Date().getTime() - 3600 * 1000 * 24 * 1)],
         Date: $libDate.GetDayBegin(new Date().getTime()),
         Gid: 0,
         Blind: 0,
@@ -137,11 +137,21 @@ export default {
       ],
       pickerOptions: {
         shortcuts: [{
+          text: '最近三天',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 3);
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
+            picker.$emit('pick', [start, end]);
+          }
+        },{
           text: '最近一周',
           onClick(picker) {
             const end = new Date();
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
             picker.$emit('pick', [start, end]);
           }
         }, {
@@ -150,6 +160,7 @@ export default {
             const end = new Date();
             const start = new Date();
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1);
             picker.$emit('pick', [start, end]);
           }
         }]
