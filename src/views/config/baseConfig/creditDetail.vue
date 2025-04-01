@@ -122,7 +122,7 @@ export default {
         { name: 'Pusoy Wild', gid: 126},
         { name: 'Pusoy Dos', gid: 34},
         { name: 'Tongits', gid: 22},
-        { name: 'Tongits Laizi', gid: 28},
+        { name: 'Tongits Joker', gid: 28},
         { name: 'Tongits Quick', gid: 29}
       ],
       BlindOptions: [
