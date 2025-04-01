@@ -35,6 +35,21 @@
                     <el-switch v-model="scope.row.IsOpen" :active-value="1" :inactive-value="0" @change="saveChanges(scope.$index, scope.row.IsOpen)" />
                   </template>
                 </el-table-column>
+                <el-table-column
+                  prop="RobotCount"
+                  label="机器人数"
+                  width="200"
+                >
+                  <template v-slot:default="scope">
+                    <el-select v-model="scope.row.RobotCount" placeholder="请选择">
+                      <el-option
+                        v-for="robotCount in RobotCountList"
+                        :key="robotCount"
+                        :label="robotCount"
+                        :value="robotCount"/>
+                    </el-select>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-form>
 
@@ -865,30 +880,39 @@ export default {
       betMoneyList: [
         {
           TableMoney: 1000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 5000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 10000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 20000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 50000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 100000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 200000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }, {
           TableMoney: 500000,
-          IsOpen: 0
+          IsOpen: 0,
+          RobotCount: 2
         }],
       AllTableMoneyList: [],
+      RobotCountList: [1,2]
     }
   },
   created() {
@@ -980,12 +1004,21 @@ export default {
             if (BetMoneyList[o] === this.betMoneyList[i].TableMoney) {
               this.betMoneyList[i].IsOpen = 1
             }
+            this.betMoneyList[i].RobotCount = BetMoneyList[o].RobotCount || 2
           }
         }
         return this.betMoneyList
       } else {
         return this.betMoneyList
       }
+    },
+    changeBetMoneyList(BetMoneyListNew, BetMoneyList) {
+      if (BetMoneyListNew.length == 0) {
+        return BetMoneyList
+      }else {
+        return BetMoneyListNew
+      }
+
     },
     saveChanges(index, IsOpen) {
       this.betMoneyList[index].IsOpen = IsOpen
@@ -1019,7 +1052,10 @@ export default {
             this.item.StopAddCfg = this.item.StopAddCfg || []
             this.item.BetMoneyList = this.item.BetMoneyList || []
             this.item.ShowMoneyCfg = this.item.ShowMoneyCfg || []
-            this.betMoneyList = this.getBetMoneyList(this.item.BetMoneyList)
+            this.item.BetMoneyListNew = this.item.BetMoneyListNew || []
+            this.item.BetMoneyList = this.item.BetMoneyList || []
+            this.item.BetMoneyListNew = this.changeBetMoneyList(this.item.BetMoneyListNew,this.item.BetMoneyList)
+            this.betMoneyList = this.getBetMoneyList(this.item.BetMoneyListNew)
             this.item.RobotAddTimeCfg = this.item.RobotAddTimeCfg || newRobotAdd()
             const old = JSON.parse(response.Data.Data)
             $this.item.EnterDelayMin /= 1000
@@ -1089,10 +1125,16 @@ export default {
       cpy.ShowMoneyCfg = []
 
       cpy.BetMoneyList = []
+      cpy.BetMoneyListNew = []
       for (const i in this.betMoneyList) {
         if (this.betMoneyList[i].IsOpen === 1) {
           cpy.BetMoneyList.push(this.betMoneyList[i].TableMoney)
         }
+        cpy.BetMoneyListNew.push({
+          TableMoney: this.betMoneyList[i].TableMoney,
+          RobotCount: this.betMoneyList[i].RobotCount,
+          IsOpen: this.betMoneyList[i].IsOpen
+        })
       }
       for (const o in this.BetCfg) {
         for (let i = 1; i <= 4; i++) {

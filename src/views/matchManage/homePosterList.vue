@@ -312,12 +312,13 @@ export default {
       ],
       postJumpCfgs: [
         { 'value': 1, 'label': '分类跳转' },
-        { 'value': 2, 'label': '跳转到子游戏' }
+        { 'value': 2, 'label': '跳转到子游戏' },
       ],
       jumpCfgs: [
         { 'value': 1, 'label': 'Events' },
         { 'value': 2, 'label': 'Free' },
-        { 'value': 3, 'label': 'Master' }
+        { 'value': 3, 'label': 'Master' },
+        { 'value': 4, 'label': 'GTCC' },
       ],
       statusCfgs: [
         { 'value': 0, 'label': '关闭' },

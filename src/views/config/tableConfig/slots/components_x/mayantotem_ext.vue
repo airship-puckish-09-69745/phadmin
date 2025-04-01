@@ -36,6 +36,37 @@
             </el-input>
           </el-form-item>
 
+          <el-form-item label="bonus个数">
+            <el-table :data="cfg.BonusNumCfg" border style="width: 100%">
+              <el-table-column prop="OddsMin" label="开始倍数" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.OddsMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="OddsMax" label="结束倍数" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.OddsMax"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="NumMin" label="bonus最小个数" width="150">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.NumMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="NumMax" label="bonus最大个数" width="150">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.NumMax"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button @click="handleDelete(scope.$index)" type="danger" size="mini">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button @click="handleAdd" type="primary" style="margin-top: 10px;">新增一行</el-button>
+          </el-form-item>
+
         </el-form>
       </el-col>
     </el-row>
@@ -75,7 +106,9 @@ export default {
   },
   data() {
     return {
-      cfg: {}
+      cfg: {
+        BonusNumCfg: []
+      }
     }
   },
   created() {
@@ -107,10 +140,25 @@ export default {
     hasHit(cols, col) {
       return cols.indexOf(col) >= 0
     },
+    handleAdd() {
+      const newRow = {
+        OddsMin: 0,
+        OddsMax: 0,
+        NumMin: 0,
+        NumMax: 0
+      }
+      this.cfg.BonusNumCfg.push(newRow)
+    },
+    handleDelete(index) {
+      this.cfg.BonusNumCfg.splice(index, 1)
+    },
     initData() {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        if (!this.cfg.BonusNumCfg) {
+          this.cfg.BonusNumCfg = []
+        }
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }
