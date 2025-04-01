@@ -626,7 +626,7 @@
         </el-form-item>
         <el-form-item label="游戏：" :required="true" prop="Gids">
           <el-col :span="15">
-            <el-select style="width: 500px;" popper-class="custom-dropdown1" v-model="editZoneGame.item.Gids" multiple placeholder="请选择" @change="changeZoneGameGids">
+            <el-select v-model="editZoneGame.item.Gids" style="width: 500px;" popper-class="custom-dropdown1" multiple placeholder="请选择" @change="changeZoneGameGids">
               <el-option
                 v-for="itemZoneGame in gameSelect"
                 :key="itemZoneGame.id"
@@ -658,12 +658,13 @@
               width="330"
             >
               <template v-slot:default="scope">
-                <el-select style="width: 270px;" popper-class="custom-dropdown" v-model="scope.row.Gid" placeholder="请选择推荐游戏" @change="changeZoneGame">
+                <el-select v-model="scope.row.Gid" style="width: 270px;" popper-class="custom-dropdown" placeholder="请选择推荐游戏" @change="changeZoneGame">
                   <el-option
                     v-for="item in gameSelect"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id">
+                    :value="item.id"
+                  >
                     <span style="float: left">{{ item.name }}</span>
                     <span style="float: right; color: #8492a6; font-size: 13px">{{ showZoneGameLabel(item.id) }}</span>
                   </el-option>
@@ -930,17 +931,19 @@ export default {
       gameZoneOther: [],
       gameZoneOtherGameList: [],
       activityOptions: [
-        { label: '圣诞摇钱树-[7]', value: 7 },
+        { label: '摇钱树活动-[7]', value: 7 },
         { label: 'Poker乐园-[8]', value: 8 },
-        { label: 'Banargay-[9]', value: 9 }
+        { label: 'Banargay-[9]', value: 9 },
+        { label: '复活节活动-[10]', value: 10 },
       ],
       gameSelect: [],
       activitySelect: [
         { name: 'slot背包-[5]', id: 5 },
         { name: 'slot任务-[6]', id: 6 },
-        { name: '圣诞摇钱树-[7]', id: 7 },
+        { name: '摇钱树活动-[7]', id: 7 },
         { name: 'Poker乐园-[8]', id: 8 },
-        { name: 'Banargay-[9]', id: 9 }
+        { name: 'Banargay-[9]', id: 9 },
+        { name: '复活节活动-[10]', id: 10 },
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
@@ -1425,8 +1428,18 @@ export default {
           }
         }
       }
-      const exists = gameSelArray.some(obj => nowGameSelArray.some(obj1 => obj1.AppId === obj.AppId && obj1.ChannelId === obj.ChannelId && obj1.Gid === obj.Gid));
-
+      const tmp = false
+      for (let i = 0; i < gameSelArray.length; i++) {
+        const obj = gameSelArray[i]
+        for (let j = 0; j < nowGameSelArray.length; j++) {
+          const obj1 = nowGameSelArray[j]
+          if (obj.AppId === obj1.AppId && obj.ChannelId === obj1.ChannelId && obj.Gid === obj1.Gid) {
+            console.log(index, obj.AppId, obj.ChannelId, obj.Gid)
+          }
+        }
+      }
+      const exists = gameSelArray.some(obj => nowGameSelArray.some(obj1 => obj1.AppId === obj.AppId && obj1.ChannelId === obj.ChannelId && obj1.Gid === obj.Gid))
+      console.log(exists)
       return exists
     },
     saveZoneGameD() {
@@ -1677,27 +1690,29 @@ export default {
       //   this.$alert(`[添加错误，游戏不存在`, '提示', { type: 'warning' })
       //   return
       // }
-      const gid = id[id.length - 1]
-      const lengthZoneGame = this.zoneGame.length
-      for (let i = 0; i < lengthZoneGame - 1; i++) {
-        if (this.editZoneGame.item.AppId !== this.zoneGame[i].AppId){
-          continue
+      if (this.editZoneGame.item.Gids.length > id.length) {
+        const gid = id[id.length - 1]
+        const lengthZoneGame = this.zoneGame.length
+        for (let i = 0; i < lengthZoneGame - 1; i++) {
+          if (this.editZoneGame.item.AppId !== this.zoneGame[i].AppId) {
+            continue
+          }
+          const gids = this.zoneGame[i].Gids
+          if (gids.includes(gid)) {
+            console.log('changeHallGame', gid)
+            Message.error('重复添加游戏,其他项目存在')
+            this.editZoneGame.item.Gids.splice(length - 1, 1)
+            return
+          }
         }
-        const gids = this.zoneGame[i].Gids
-        if (gids.includes(gid)) {
-          console.log('changeHallGame', gid)
-          Message.error('重复添加游戏,其他项目存在')
-          this.editZoneGame.item.Gids.splice(length - 1, 1)
-          return
-        }
-      }
-      const length = this.editZoneGame.item.Gids.length
-      for (let i = 0; i < length - 1; i++) {
-        if (gid === this.editZoneGame.item.Gids[i]) {
-          console.log('changeHallGame', gid)
-          Message.error('重复添加游戏，本项目存在')
-          this.editZoneGame.item.Gids.splice(length - 1, 1)
-          return
+        const length = this.editZoneGame.item.Gids.length
+        for (let i = 0; i < length - 1; i++) {
+          if (gid === this.editZoneGame.item.Gids[i]) {
+            console.log('changeHallGame', gid)
+            Message.error('重复添加游戏，本项目存在')
+            this.editZoneGame.item.Gids.splice(length - 1, 1)
+            return
+          }
         }
       }
     }

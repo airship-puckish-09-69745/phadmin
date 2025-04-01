@@ -256,8 +256,8 @@
                 <span v-else>否</span>
               </template>
             </el-table-column>
-            <el-table-column v-if="isActV2(gid)" prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" />
-            <el-table-column v-if="isActV2(gid)" prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" />
+            <el-table-column  prop="ActLogObj.ScriptV3PlanId" label="数值方案ID" />
+            <el-table-column  prop="ActLogObj.ScriptV3PlanVer" label="数值版本ID" />
 
           </el-table-column>
         </template>

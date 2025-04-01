@@ -1561,6 +1561,20 @@ export const asyncRoutes = [
         ]
       },
       {
+        path: 'easterConfig',
+        component: () => import('@/views/empty'),
+        name: 'easterConfig',
+        meta: { title: '复活节活动配置', noCache: true },
+        children: [
+          {
+            path: 'easterActivityConfig',
+            component: () => import('@/views/config/tableConfig/activity/easterConfig'),
+            name: 'easterActivityConfig',
+            meta: { title: '复活节活动配置', noCache: true }
+          }
+        ]
+      },
+      {
         path: 'activityCommonConfig',
         component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
         name: 'activityCommonConfig',
@@ -1620,7 +1634,7 @@ export const asyncRoutes = [
         path: 'ApplyRichcard',
         component: () => import('@/views/playerManage/ApplyRichCard.vue'),
         name: 'ApplyRichcard',
-        meta: { title: '申请发放富裕卡 ◐', perm:  'RERICHCARD' }
+        meta: { title: '申请发放富裕卡 ◐', perm: 'RERICHCARD' }
       },
       {
         path: 'kycInfo',
@@ -1707,6 +1721,12 @@ export const asyncRoutes = [
         component: () => import('@/views/matchManage/matchJackPot.vue'),
         name: 'matchJackPot',
         meta: { title: '赛事奖池配置', noCache: true }
+      },
+      {
+        path: 'matchGtccConfig',
+        component: () => import('@/views/matchManage/matchGtccConfig.vue'),
+        name: 'matchGtccConfig',
+        meta: { title: 'Gtcc赛事配置', noCache: true }
       }
     ]
   },
@@ -2571,6 +2591,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/pusoyCheat/pusoyBlack'),
             name: 'pusoy_black',
             meta: { title: 'pusoy黑名单 ◐' }
+          },
+          {
+            path: 'pusoy_cheat_log_new',
+            component: () => import('@/views/playerManage/pusoyCheat/pusoyCheatLogNew'),
+            name: 'pusoy_cheat_log_new',
+            meta: { title: 'pusoy新作弊记录 ◐' }
           }
         ]
       },
@@ -2757,10 +2783,10 @@ export const asyncRoutes = [
         meta: { title: '信誉分配置 ◐', noCache: true }
       },
       {
-        path: 'creditLog',
-        component: () => import('@/views/config/baseConfig/creditLog'),
-        name: 'creditLog',
-        meta: { title: '信誉分日志 ◐', noCache: true }
+        path: 'creditDetail',
+        component: () => import('@/views/config/baseConfig/creditDetail'),
+        name: 'creditDetail',
+        meta: { title: '信誉分详情 ◐', noCache: true }
       },
       {
         path: 'broadcast',
@@ -3058,7 +3084,13 @@ export const asyncRoutes = [
         component: () => import('@/views/config/gameLogoDisplayConfig'),
         name: 'game_logo_display_config',
         meta: { title: '游戏场次Logo显示配置' }
-      }
+      },
+      {
+        path: 'allocTools',
+        component: () => import('@/views/devTools/allocTools'),
+        name: 'allocTools',
+        meta: { title: 'Alloc开发工具' }
+      },
     ]
   },
   {
@@ -3097,6 +3129,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletRobotTransfer.vue'),
         name: 'walletRobotTransfer',
         meta: { title: '机器人转账列表' }
+      },
+      {
+        path: 'walletSettleLog',
+        component: () => import('@/views/wallet/walletSettleLog.vue'),
+        name: 'walletSettleLog',
+        meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
       }
     ]
   },

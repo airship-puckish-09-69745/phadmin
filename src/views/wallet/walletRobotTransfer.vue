@@ -369,6 +369,7 @@ export default {
             return a.currentTid - b.currentTid
           })
           this.clientDB = new ClientTableData(objs, 20, filterMap, 'status', -1)
+          this.clientDB.SortByProp('CreateTime', 'descending')
           this.handleCurrentChange(1)
         }
         // loading.close()

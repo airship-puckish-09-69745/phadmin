@@ -326,7 +326,7 @@
                     </template>
                   </el-table-column>
                   <el-table-column
-                    prop="PrizeUnlimited"
+                    prop="Reward"
                     label="奖励金额"
                     width="200"
                   >

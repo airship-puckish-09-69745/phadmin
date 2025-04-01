@@ -636,10 +636,16 @@ export default {
           return '机器人'
         case 0:
           return '真人'
-        case 4:
+        case 1:
+          return '机器人--强放'
+        case 2:
+          return '机器人--弱放'
+        case 3:
           return '机器人--陪玩'
+        case 4:
+          return '机器人--弱杀'
         case 5:
-          return '机器人--要赢'
+          return '机器人--强杀'
         case 8:
           return '一级杀手机器人'
         case 9:

@@ -470,7 +470,13 @@ export default {
 
     },
     HasACC() {
+
       if (this.$store.state.user.pers['USER_MANAGEMENT']) {
+        if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='test') {
+          return true
+        }else if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='pro'){
+          return false
+        }
         if (this.authorityCfg[this.name]) {
           if (this.authorityCfg[this.name].includes(10000)) {
             return true
@@ -866,22 +872,32 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
-            if (this.$store.state.user.pers['USER_MANAGEMENT']) {
-              if (this.authorityCfg[this.name]) {
-                // 有权限而且有限制
-                this.defaultOrder = []
-                for (const o of this.authorityCfg[this.name]) {
-                  if (this.gameNames[o]) {
-                    this.defaultOrder.push(o)
-                  }
-                }
-                this.authorityNum = this.defaultOrder.length
-              } else {
+              if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
+              // 限制查看pro
+              if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
                 this.sortOrder = this.defaultOrder
-                return
+                return;
+              }else if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='pro'){
+                this.defaultOrder = []
+                this.sortOrder = this.defaultOrder
+                return;
               }
-            } else {
-              this.defaultOrder = []
+              console.log("=======", this.name,this.authorityCfg[this.name],this.defaultOrder)
+                if (this.authorityCfg[this.name]) {
+                  // 有权限而且有限制
+                  this.defaultOrder = []
+                  for (const o of this.authorityCfg[this.name]) {
+                    if (this.gameNames[o]) {
+                      this.defaultOrder.push(o)
+                    }
+                  }
+                  this.authorityNum = this.defaultOrder.length
+                } else {
+                  this.sortOrder = this.defaultOrder
+                  return
+                }
+              } else {
+                this.defaultOrder = []
             }
             this.sortOrder = this.defaultOrder
           }

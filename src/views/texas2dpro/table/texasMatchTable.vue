@@ -133,42 +133,6 @@
           </el-table>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
-          <legend>奖励配置</legend>
-           <el-row>
-            <el-col :span="11">
-              <el-form-item label="奖励类型">
-                <el-select v-model="edit.item.TemplateType" placeholder="请选择" @change="changeTemplateType">
-                  <el-option v-for="item in TemplateTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-             <el-col v-if="edit.item.TemplateType===1" :span="11">
-              <el-form-item label="奖金类型">
-                <el-select v-model="edit.item.RewardType" placeholder="请选择">
-                  <el-option v-for="item in RewardTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="奖励配置">
-                <el-select v-if="edit.item.TemplateType===0" v-model="edit.item.RewardId" placeholder="请选择">
-                  <el-option v-for="item in RewardConfig" :key="item.key" :label="item.key" :value="item.value" />
-                </el-select>
-                <el-select v-else v-model="edit.item.RewardId" placeholder="请选择">
-                  <el-option v-for="item in DynamicRewardConfig" :key="item.key" :label="item.key" :value="item.value" />
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="11">
-              <el-form-item label="初始奖池:" :required="true" prop="item.RewardPool" :rules="dataRule(true,{type:'n',range:'0'})">
-                <el-input v-model.number="edit.item.RewardPool" placeholder="请输入" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </fieldset> 
-        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>比赛信息</legend>
         <el-row>
           <el-col :span="11">
@@ -446,6 +410,132 @@
           </el-col>
         </el-row>
         </fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
+          <legend>报名条件</legend>
+          <el-form-item label="报名条件：" :required="true">
+            <el-select v-model="edit.item.SignUpType" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in signUpTypeCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item v-if="edit.item.SignUpType > 0" label="门票：" :required="true">
+            <el-select v-model="edit.item.SignUpExtra.propsId" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in matchPropsCfgs"
+                :key="item.propsId"
+                :label="item.propsName"
+                :value="item.propsId"
+              >
+               <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;padding: 4px;"/>
+                <span>{{ item.propsName }}</span>
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="edit.item.SignUpType > 0" label="门票数量：" :required="true">
+            <el-input v-model.number="edit.item.SignUpExtra.propsNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" :required="true"/>
+          </el-form-item>
+        </fieldset>
+        <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
+          <legend>奖励配置</legend>
+           <el-row>
+            <el-col :span="11">
+              <el-form-item label="奖励类型">
+                <el-select v-model="edit.item.TemplateType" placeholder="请选择" @change="changeTemplateType">
+                  <el-option v-for="item in TemplateTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+             <el-col v-if="edit.item.TemplateType===1" :span="11">
+              <el-form-item label="奖金类型">
+                <el-select v-model="edit.item.RewardType" placeholder="请选择">
+                  <el-option v-for="item in RewardTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="奖励配置">
+                <el-select v-if="edit.item.TemplateType===0" v-model="edit.item.RewardId" placeholder="请选择">
+                  <el-option v-for="item in RewardConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+                <el-select v-else v-model="edit.item.RewardId" placeholder="请选择">
+                  <el-option v-for="item in DynamicRewardConfig" :key="item.key" :label="item.key" :value="item.value" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="11">
+              <el-form-item label="初始奖池:" :required="true" prop="item.RewardPool" :rules="dataRule(true,{type:'n',range:'0'})">
+                <el-input v-model.number="edit.item.RewardPool" placeholder="请输入" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-button  style="margin-bottom: 10px;" type="normal" size="mini" @click="addRankRewards()">添加</el-button>
+          <el-table
+            :data="edit.item.RankRewardsExtra"
+            border
+            stripe
+            :header-cell-style="libShow.DefaultTableHeadClass"
+            :row-style="{height:'35px'}"
+            :cell-style="libShow.TableCell(0)"
+            style="width: 100%;line-height:35px;"
+          >
+            <el-table-column
+              prop="index"
+              label="序号"
+              width="50"
+            />
+            <el-table-column
+              prop="rewardItems"
+              label="奖励"
+              width="400"
+            >
+              <template slot-scope="scope">
+                <ul style="list-style: none;padding-inline-start: 0;">
+                  <li v-if="scope.row.propsReward != null" style="list-style: none;">
+                    <span>道具奖励：</span>
+                    <el-select v-model="scope.row.propsReward.propsId" placeholder="道具" size="mini" style="width:200px">
+                      <el-option
+                        v-for="item in matchPropsCfgs"
+                        :key="item.propsId"
+                        :label="item.propsName"
+                        :value="item.propsId"
+                      >
+                        <img v-if="item.propsIcon != '' " :src="item.propsIcon" style="height:36px;vertical-align: middle;padding: 4px;"/>
+                        <span>{{ item.propsName }}</span>
+                      </el-option>
+                    </el-select>
+                    <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
+                  </li>
+                </ul>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="startRank"
+              label="名次区间"
+            >
+              <template slot-scope="scope">
+                <el-input v-model.number="scope.row.startRank" style="width: 80px;" size="mini" placeholder="开始名次" />至
+                <el-input v-model.number="scope.row.endRank" style="width: 80px;" size="mini" placeholder="结束名次" />
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="操作"
+              width="100"
+            >
+              <template slot-scope="scope">
+                <el-button type="danger" size="mini" @click="removeRewardItme(scope.$index)">移除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+
+        </fieldset>
         <el-form-item>
           <el-row style="margin-top: 10px;">
             <el-col :span="12" :offset="10">
@@ -524,6 +614,17 @@ function newItem() {
     ],
     AppInfoStr: '',
     OpenDaysLimit: 0,
+    SignUpType: 0,
+    SignUpExtra: { 
+      propsId: 0,
+      propsType: 0,
+      propsNum:0,
+      propsCost:0,
+      propsName:'',
+    },
+    SignUpExtraStr: '',
+    RankRewardsExtra: [],
+    RankRewardsExtraStr:'',
   }
 }
 
@@ -585,6 +686,13 @@ export default {
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],
+      signUpTypeCfgs: [
+        { 'value': 0, 'label': '金币报名' },
+        { 'value': 1, 'label': '纯门票' },
+        { 'value': 2, 'label': '金币or门票' }
+      ],
+      matchPropsCfgs: [],   //比赛道具信息
+      currPropsType: 3,
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -634,13 +742,17 @@ export default {
         RewardId: '奖励ID',
         RewardPool: '初始奖池',
         AppInfo: 'App信息',
-        OpenDaysLimit : '是否開啟每日限制'
+        OpenDaysLimit : '是否開啟每日限制',
+        SignUpType: '报名类型',
+        SignUpExtra: '报名门票信息',
+        RankRewardsExtra: '门票奖励信息'
       }
     }
   },
   created() {
     this.env = store.getters.env || this.env
     this.getList()
+    this.getMatchProps()
   },
   methods: {
     formatNumber(n) {
@@ -755,6 +867,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log(objs)
           for (const o in objs) {
 
             if (objs[o].RaceBeginDate === 0) {
@@ -807,6 +920,12 @@ export default {
                   channelId: []
                 }
               ]
+            }
+            if (objs[o].SignUpExtraStr !== 'null' && objs[o].SignUpExtraStr !== undefined){
+              objs[o].SignUpExtra = JSON.parse(objs[o].SignUpExtraStr)
+            }
+            if (objs[o].RankRewardsExtraStr !== 'null' && objs[o].RankRewardsExtraStr !== undefined){
+              objs[o].RankRewardsExtra = JSON.parse(objs[o].RankRewardsExtraStr)
             }
           }
           // this.clientDB = new ClientTableData(this.libMoney.TransForShow(objs), 10, filterMap, 'ID', -1)
@@ -961,6 +1080,8 @@ export default {
       }
       postData.PreMatchBeginTime *= 60
       postData.AppInfoStr = JSON.stringify(postData.AppInfo)
+      postData.SignUpExtraStr = JSON.stringify(postData.SignUpExtra)
+      postData.RankRewardsExtraStr = JSON.stringify(postData.RankRewardsExtra)
 
       console.log(postData)
       return postData
@@ -982,10 +1103,15 @@ export default {
       return true
     },
     save() {
+      if (this.checkPropsExpire(this.getPostData())) {
+        Message.error('门票配置错误')
+        return
+      }
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.edit.item.AppInfoStr = JSON.stringify(this.edit.item.AppInfo)
-        console.log(this.edit.item.AppInfoStr)
+        this.edit.item.SignUpExtraStr = JSON.stringify(this.edit.item.SignUpExtra)
+        this.edit.item.RankRewardsExtraStr = JSON.stringify(this.edit.item.RankRewardsExtra)
         this.$refs.compare.SetNewVal(this.edit.item)
         const $this = this
         this.$refs.compare.Compare(function(isEdit) {
@@ -1000,6 +1126,130 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    getMatchProps() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 100,
+          PropType: this.currPropsType,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          var timestamp = Date.parse(new Date())/1000
+          if (objs.total > 0) {
+            for (let i=0;i<objs.list.length;i++) {
+              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+                continue
+              }
+              this.matchPropsCfgs.push({
+                'propsType': objs.list[i].item_type,
+                'propsId': objs.list[i].id,
+                'propsName': objs.list[i].item_name,
+                'propsIcon': objs.list[i].image,
+                'propsAttr': objs.list[i].item_describe,
+                'propsCost': objs.list[i].item_cost,
+                'propsExpireTime': objs.list[i].expire_time,
+              })
+            }
+          }
+        }
+      })
+    },
+    addRankRewards() {
+      var index = 0
+      var maxRank = 0
+      if (this.edit.item.RankRewardsExtra.length > 0) {
+        index = this.edit.item.RankRewardsExtra.length
+        for (var i = 0; i < this.edit.item.RankRewardsExtra.length; i++) {
+          if (this.edit.item.RankRewardsExtra[i].endRank > maxRank) {
+            maxRank = this.edit.item.RankRewardsExtra[i].endRank
+          }
+        }
+      }
+      index++
+      maxRank++
+      this.edit.item.RankRewardsExtra.push({
+        index: index,
+        startRank: maxRank,
+        endRank: maxRank,
+        propsReward: {
+          propsId: 0,
+          propsType: 0,
+          propsName: '',
+          propsIcon: '',
+          propsAttr: '',
+          propsNum:0,
+        }
+      })
+    },
+    removeRewardItme(index) {
+      this.edit.item.RankRewardsExtra.splice(index, 1)
+      if (this.edit.item.RankRewardsExtra.length > 0) {
+        for (var i = 0; i < this.edit.item.RankRewardsExtra.length; i++) {
+          this.edit.item.RankRewardsExtra[i].index = i + 1
+        }
+      }
+    },
+    setPropsDetail() {
+      for (var i=0; i<this.matchPropsCfgs.length; i++){
+        if (this.edit.item.SignUpExtra.propsId === this.matchPropsCfgs[i].propsId) {
+          this.edit.item.SignUpExtra.propsType = this.matchPropsCfgs[i].propsType
+          this.edit.item.SignUpExtra.propsCost = this.matchPropsCfgs[i].propsCost * 1000
+          this.edit.item.SignUpExtra.propsName = this.matchPropsCfgs[i].propsName
+        }
+        for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
+          if (this.edit.item.RankRewardsExtra[j].propsReward.propsId === this.matchPropsCfgs[i].propsId) {
+            this.edit.item.RankRewardsExtra[j].propsReward.propsType = this.matchPropsCfgs[i].propsType
+            this.edit.item.RankRewardsExtra[j].propsReward.propsCost = this.matchPropsCfgs[i].propsCost  * 1000
+            this.edit.item.RankRewardsExtra[j].propsReward.propsName = this.matchPropsCfgs[i].propsName
+          }
+        }
+      }  
+    },
+    getPropsExpireTime(propsId, propsType) {
+      for (var i=0; i<this.matchPropsCfgs.length; i++){
+        if (propsId === this.matchPropsCfgs[i].propsId && propsType == this.matchPropsCfgs[i].propsType) {
+          return this.matchPropsCfgs[i].propsExpireTime
+        }
+      }
+      return 0  
+    },
+    checkPropsExpire(postData){
+      if (postData.SignUpType === 0) {
+        this.edit.item.SignUpExtra = {}
+      }
+      this.setPropsDetail()
+      if (postData.SignUpType > 0) {
+        if (this.edit.item.SignUpExtra.propsId * this.edit.item.SignUpExtra.propsType * this.edit.item.SignUpExtra.propsNum === 0 ) {
+          return true
+        } 
+        var timestamp = Date.parse(new Date())/1000
+        var endTime = postData.RaceEndDate
+        if (postData.RaceType == 0) {
+          endTime = postData.RaceBeginDate
+        }
+        var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
+        console.log(postData.RaceEndDate, expire_time)
+        if (expire_time < endTime) {
+          return true
+        }
+      }
+      
+      for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
+        if (this.edit.item.RankRewardsExtra[j].propsReward.propsId * this.edit.item.RankRewardsExtra[j].propsReward.propsType * this.edit.item.RankRewardsExtra[j].propsReward.propsNum === 0 ) {
+          return true
+        }
+        expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
+        if (expire_time < endTime) {
+          return true
+        }
+      }
+      return false
     },
     handlerChangeMin(e) {
       // if (parseInt(e) < 2 || parseInt(e) > this.edit.item.TableMaxPlayerNum) {

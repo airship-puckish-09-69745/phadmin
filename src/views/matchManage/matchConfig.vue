@@ -526,6 +526,9 @@
               inactive-text="否"
             />
           </el-form-item>
+          <el-form-item label="比赛最大人数：" :required="true">
+            <el-input v-model.number="editForm.signExtra.matchMaxLimit" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
+          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -798,7 +801,8 @@ export default {
       ],
       matchEvents: [
         { 'value': 0, 'label': 'All' },
-        { 'value': 1, 'label': 'Events' }
+        { 'value': 1, 'label': 'Events' },
+        { 'value': 4, 'label': 'GTCC' }, //notice 2,3 空着
       ],
       prizeModleCfgs: [
         { 'value': 0, 'label': '固定奖励' },
@@ -898,7 +902,7 @@ export default {
               propsName: '',
               propsIcon: '',
               propsAttr: '',
-              propsNum: 0,
+              propsNum: 0
             }
           }
         ],
@@ -916,11 +920,13 @@ export default {
         signExtra: {
           betCnt: 0,
           matchEvents: 0,
-          matchUniqueId:0,
-          propId:0,    //门票道具ID,
+          matchUniqueId: 0,
+          propId: 0,    //门票道具ID,
           propType: 0, //道具类型,
-          propCost:0,  //道具价值
+          propCost: 0,  //道具价值
           propNum: 1,  //数量
+          propName: '',
+          matchMaxLimit: 0
         },
         prizeExtra: {
           awardType: 0,
@@ -1239,7 +1245,7 @@ export default {
           propsName: '',
           propsIcon: '',
           propsAttr: '',
-          propsNum:0,
+          propsNum: 0
         }
       })
     },
@@ -1431,7 +1437,7 @@ export default {
               propsName: '',
               propsIcon: '',
               propsAttr: '',
-              propsNum:0,
+              propsNum: 0
             }
           }
         ]
@@ -1444,10 +1450,12 @@ export default {
           betCnt: 0,
           matchEvents: 0,
           matchUniqueId: 0,
-          propId:0,
+          propId: 0,
           propType: 0,
           propCost: 0,
           propNum: 1,
+          propName: '',
+          matchMaxLimit: 0
         }
 
         this.editForm.prizeExtra = {
@@ -1598,14 +1606,15 @@ export default {
           element.propsReward = this.getPropsRewardItem(element.propsReward.propsId,element.propsReward.propsNum)
         }
       }
-      for(let i = 0; i < this.matchPropsCfgs.length; i++) {
+      for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.propId) {
-            this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
-            this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
-            break
+          this.editForm.signExtra.propType = this.matchPropsCfgs[i].propsType
+          this.editForm.signExtra.propCost = this.matchPropsCfgs[i].propsCost
+          this.editForm.signExtra.propName = this.matchPropsCfgs[i].propsName
+          break
         }
       }
-      console.log("this.editForm.signExtra",this.editForm.signExtra)
+      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1831,9 +1840,9 @@ export default {
               }
             ]
             this.matchTicketsCfgs = []
-            var timestamp = (new Date()).valueOf();
+            var timestamp = Date.parse(new Date())/1000
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time < timestamp) {
+              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
                 this.matchPropsCfgs.push({
                   'propsType': objs.list[i].item_type,
                   'propsId': objs.list[i].id,
@@ -2090,7 +2099,7 @@ export default {
           this.errmsg('请填写正确的排名')
           return false
         }
-        if (element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
         }

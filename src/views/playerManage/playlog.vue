@@ -1115,7 +1115,7 @@
     </el-dialog>
 
     <el-dialog
-      title="牌局详情"
+      title="rummy牌局详情"
       :visible.sync="rummyDetailVisible"
       width="50%"
     >
@@ -1161,7 +1161,7 @@
           width="100"
         >
           <template slot-scope="scope">
-            {{ scope.row.changeChip / 1000 }}
+            {{ (scope.row.changeChip - scope.row.moneyTax) / 1000 }}
           </template>
         </el-table-column>
         <el-table-column

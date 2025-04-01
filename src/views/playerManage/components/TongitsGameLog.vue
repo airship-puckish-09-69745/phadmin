@@ -385,10 +385,16 @@ export default {
     getRobotLevel(level) {
       if (level == 0) {
         return ''
-      } else if (level == 4) {
+      } else if (level == 1) {
+        return '-- 强放'
+      } else if (level == 2) {
+        return '-- 弱放'
+      } else if (level == 3) {
         return '-- 陪玩'
+      } else if (level == 4) {
+        return '-- 弱杀'
       } else if (level == 5) {
-        return '-- 要赢'
+        return '-- 强杀'
       }
     },
     showRobotLevel(level) {
