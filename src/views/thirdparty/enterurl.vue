@@ -407,17 +407,17 @@ export default {
         },
         {
           id: 1000035,
-          agentId: 'NGNGame',
+          agentId: 'NGNGameDev',
           desc: 'NGNGame[1000035]【尼日利亚】'
         },
         {
           id: 1000038,
-          agentId: '777pub',
+          agentId: '777pubDev',
           desc: '777pub[1000038]'
         },
         {
           id: 1000041,
-          agentId: 'IndiaH5Game',
+          agentId: 'IndiaH5GameDev',
           desc: 'IndiaH5Game[1000041]【印度H5】'
         }
       ]
