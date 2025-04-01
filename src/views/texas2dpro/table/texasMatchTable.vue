@@ -1128,13 +1128,13 @@ export default {
       this.edit.visible = false
     },
     getMatchProps() {
+      const _this = this
       request({
-        url: '/propsconfig/props/config/list',
+        url: '/dataProxy/info',
         method: 'get',
         data: {
-          Env: this.env,
-          PageNum: 1,
-          PageSize: 100,
+          Env: _this.env,
+          Path: '/match/props/config/list',
           PropType: this.currPropsType,
         }
       }).then(response => {
@@ -1239,7 +1239,7 @@ export default {
           return true
         }
       }
-      
+
       for (var j=0; j<this.edit.item.RankRewardsExtra.length; j++){
         if (this.edit.item.RankRewardsExtra[j].propsReward.propsId * this.edit.item.RankRewardsExtra[j].propsReward.propsType * this.edit.item.RankRewardsExtra[j].propsReward.propsNum === 0 ) {
           return true
