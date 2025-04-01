@@ -931,17 +931,19 @@ export default {
       gameZoneOther: [],
       gameZoneOtherGameList: [],
       activityOptions: [
-        { label: '圣诞摇钱树-[7]', value: 7 },
+        { label: '摇钱树活动-[7]', value: 7 },
         { label: 'Poker乐园-[8]', value: 8 },
-        { label: 'Banargay-[9]', value: 9 }
+        { label: 'Banargay-[9]', value: 9 },
+        { label: '复活节活动-[10]', value: 10 },
       ],
       gameSelect: [],
       activitySelect: [
         { name: 'slot背包-[5]', id: 5 },
         { name: 'slot任务-[6]', id: 6 },
-        { name: '圣诞摇钱树-[7]', id: 7 },
+        { name: '摇钱树活动-[7]', id: 7 },
         { name: 'Poker乐园-[8]', id: 8 },
-        { name: 'Banargay-[9]', id: 9 }
+        { name: 'Banargay-[9]', id: 9 },
+        { name: '复活节活动-[10]', id: 10 },
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],

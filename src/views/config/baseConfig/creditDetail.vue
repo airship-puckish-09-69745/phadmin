@@ -18,14 +18,16 @@
             <el-option label="所有" :value="0" />
           </el-select>
         </el-form-item>
-        <el-form-item label="日期：">
-          <el-date-picker
-            v-model="form.Date"
-            value-format="timestamp"
-            type="date"
-            placeholder="选择日期"
-          />
-        </el-form-item>
+        <el-date-picker
+          v-model="form.DateRange"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          :picker-options="pickerOptions">
+        </el-date-picker>
         <el-form-item>
           <el-button type="primary" @click="getInfo">查询</el-button>
         </el-form-item>
@@ -104,6 +106,7 @@ export default {
       item: [],
       form: {
         Uid: 0,
+        DateRange: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7),new Date()],
         Date: $libDate.GetDayBegin(new Date().getTime()),
         Gid: 0,
         Blind: 0,
@@ -132,6 +135,25 @@ export default {
         { name: '200分', val: 200000},
         { name: '500分', val: 500000},
       ],
+      pickerOptions: {
+        shortcuts: [{
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+            picker.$emit('pick', [start, end]);
+          }
+        }, {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date();
+            const start = new Date();
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+            picker.$emit('pick', [start, end]);
+          }
+        }]
+      },
       envProjectname: process.env.VUE_APP_PROJECT
     }
   },
@@ -166,21 +188,23 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     getInfo() {
+      console.log(this.formatDateToYYYYMMDD(this.form.DateRange[0]), typeof this.form.DateRange[0])
       if (this.form.Uid === 0) {
         Message.error('请输入正确的Uid')
         return
       }
       const $this = this
       const args = {
-        Env: this.env,
+        Env: $this.env,
         Path: '/misc/credit/log',
-        Uid: this.form.Uid,
-        Date: this.formatDateToYYYYMMDD(new Date(this.form.Date)),
-        Gid: this.form.Gid,
-        Blind: this.form.Blind,
-        Limit: this.form.Limit,
-        Skip: (this.form.currentPage-1) * this.form.Limit,
-        Sort: ""
+        Uid: $this.form.Uid,
+        Gid: $this.form.Gid,
+        Blind: $this.form.Blind,
+        Limit: $this.form.Limit,
+        Skip: ($this.form.currentPage-1) * $this.form.Limit,
+        Sort: "",
+        From: $this.formatDateToYYYYMMDD(this.form.DateRange[0]),
+        To:$this.formatDateToYYYYMMDD(this.form.DateRange[1])
       }
       console.log("/dataProxy/info", args)
       request({

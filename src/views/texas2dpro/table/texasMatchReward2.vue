@@ -46,15 +46,20 @@
           <el-button type="primary" size="mini" @click="addRewardRow">添加奖励</el-button>
         </el-row>
         <el-row v-for="(value, index) in edit.item.reward_content" :key="index">
-          <el-col :span="22">
+          <el-col :span="24">
             <el-row>
-              <el-col :span="6">
+              <el-col :span="2">
                 <el-form-item label="名次" :required="true">
-                  <el-input v-model.number="edit.item.reward_content[index].reward_rank" size="mini" :required="true" style="width:100px"/>
+                  <el-input v-model.number="edit.item.reward_content[index].start_reward_rank" size="mini" :required="true" style="width:60px"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="2">
+                <el-form-item label="至"style="margin-left: 10px;">
+                  <el-input v-model.number="edit.item.reward_content[index].end_reward_rank" size="mini" :required="true" style="width:60px"/>
                 </el-form-item>
               </el-col>
               <el-col :span="16">
-                <el-form-item label="奖励" :required="true">
+                <el-form-item label="奖励" :required="true" style="margin-left: 60px;">
                   <el-select v-model="edit.item.reward_content[index].reward_type" placeholder="请选择" size="mini" style="width:100px">
                       <el-option
                         v-for="item in getTypeCfgs"
@@ -161,34 +166,63 @@ export default {
         if (this.tableData[i]['reward_id'] === ID) {
           this.edit.item.reward_id = ID
           this.edit.item.reward_name = this.tableData[i]['reward_name']
-          this.edit.item.reward_content = this.tableData[i]['reward_content']
+          this.edit.item.reward_content = []
+          var result = {}
+          for (var j = 0; j< this.tableData[i]['reward_content'].length; j++) {
+            var keyStr = this.tableData[i]['reward_content'][j].reward_num + "_" + this.tableData[i]['reward_content'][j].reward_type+"_" + this.tableData[i]['reward_content'][j].scene_Id
+            if (!(keyStr in result)) {
+              result[keyStr] = []
+            }
+            result[keyStr].push(this.tableData[i]['reward_content'][j].reward_rank)
+          }
+          console.log(result)
+          for (var key in result) {
+            var rankList = result[key]
+            rankList.sort((a, b) => a - b)
+            console.log(rankList)
+            var minRank = rankList[0]
+            var maxRank = rankList[rankList.length -1]
+            var content = key.split("_")
+            if (content.length !== 3) {
+              continue
+            }
+            console.log(content)
+            this.edit.item.reward_content.push(
+              {
+                start_reward_rank: minRank,
+                end_reward_rank: maxRank,
+                reward_num: parseInt(content[0]),
+                reward_type: parseInt(content[1]),
+                scene_Id: parseInt(content[2]),
+              }
+            )
+            this.edit.item.reward_content.sort((a, b) => a.start_reward_rank - b.start_reward_rank)
+            console.log(this.edit.item.reward_content)
+          }
         }
       }
     },
     initTableData() {
-      console.log( this.tableData)
-      console.log( this.edit.item)
       for (var i = 0; i < this.tableData.length; i++) {
         if (this.tableData[i]['reward_id'] === this.edit.item.reward_id) {
           this.tableData[i]['reward_name'] = this.edit.item.reward_name
           this.tableData[i]['reward_content'] = []
 
           for (var j = 0; j < this.edit.item.reward_content.length; j++) {
-            this.tableData[i]['reward_content'].push(
-              {
-                reward_rank: this.edit.item.reward_content[j].reward_rank,
-                reward_num: this.edit.item.reward_content[j].reward_num,
-                reward_type: this.edit.item.reward_content[j].reward_type,
-                scene_Id: this.edit.item.reward_content[j].scene_Id
-              }
-            )
+            for (var rank= this.edit.item.reward_content[j].start_reward_rank; rank <= this.edit.item.reward_content[j].end_reward_rank; rank++) {
+              this.tableData[i]['reward_content'].push(
+                {
+                  reward_rank: rank,
+                  reward_num: this.edit.item.reward_content[j].reward_num,
+                  reward_type: this.edit.item.reward_content[j].reward_type,
+                  scene_Id: this.edit.item.reward_content[j].scene_Id
+                }
+              )
+            } 
           }
-          console.log(this.tableData[i])
           return
         }
       }
-      this.tableData.push(this.edit.item)
-      console.log( this.tableData)
     },
     getEditTitle() {
       return this.edit.isEdit ? '修改配置' : '新增配置'
