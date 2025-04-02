@@ -8,6 +8,8 @@ export default {
       cheatLogs: [],
       cheatLogsCredit: [],
       cheatLogsNoCredit: [],
+      cheatLogsBlack: [],
+      cheatLogsMaybe: [],
 
       cheatLogsNewCredit: [],
       cheatLogsNewNoCredit: [],
@@ -30,11 +32,16 @@ export default {
       clientDB: new ClientTableData([], 1, {}),
       clientDBCredit: new ClientTableData([], 1, {}),
       clientDBNoCredit: new ClientTableData([], 1, {}),
+
+      clientDBMaybe: new ClientTableData([], 1, {}),
+      clientDBBlack: new ClientTableData([], 1, {}),
       totalCountCredit: 0,
       totalCountNoCredit: 0
     }
   },
-  created() {
+  async created() {
+    await this.getBlackData()
+    await this.getMaybeData()
   },
   methods: {
     async getDataInfo() {
@@ -76,6 +83,8 @@ export default {
             $this.blackuids.push(black.Uid2)
             $this.blackuids.push(black.Uid3)
           }
+          $this.clientDBBlack = new ClientTableData($this.blackuids, $this.pageNum, {}, 'showBlackButton', -1)
+          $this.handleCurrentChangeBlack(1)
         }
       })
     },
@@ -123,12 +132,8 @@ export default {
       })
     },
     showBlackButton(row) {
-      const cheatUids = []
-      cheatUids.push(row.Uid1)
-      cheatUids.push(row.Uid2)
-      cheatUids.push(row.Uid3)
-      for (let i = 0; i < cheatUids.length; i++) {
-        const uid = cheatUids[i]
+      for (let i = 0; i < row.Uids.length; i++) {
+        const uid = row.Uids[i].Uid
         if (!this.blackuids.includes(uid)) {
           return true
         }
@@ -160,31 +165,40 @@ export default {
     },
     formatMaybe(row) {
       if (this.MaybeUids.includes(row.Uid)) {
-        return '疑似作弊'
-      }else {
-        return '正常用户'
+        return '是'
+      } else {
+        return '否'
       }
     },
+    formatMaybeUid(row) {
+      return row
+    },
+    formatBlackUid(row) {
+      return row
+    },
+    isShow(row) {
+      return row.Tid !== 0
+    },
     formatCheatDateShootAllTwo(row) {
-      return ' (全垒打2人做小) ' + row.ShootAllTwo +' 次'
+      return ' (全垒打2人做小) ' + row.ShootAllTwo + ' 次'
     },
     formatCheatDateShootAllOne(row) {
-      return ' (全垒打1人做小) ' + row.ShootAllOne+' 次'
+      return ' (全垒打1人做小) ' + row.ShootAllOne + ' 次'
     },
     formatCheatDateExtraAddScore(row) {
-      return ' (4人局躲加分牌) ' + row.ExtraAddScore+' 次'
+      return ' (4人局躲加分牌) ' + row.ExtraAddScore + ' 次'
     },
     formatCheatDateThreeSmall(row) {
-      return ' (3人局做小牌) ' + row.ThreeSmall+' 次'
+      return ' (3人局做小牌) ' + row.ThreeSmall + ' 次'
     },
     formatCheatDateThreeCrack(row) {
-      return ' (3人局全crack) ' + row.ThreeCrack+' 次'
+      return ' (3人局全crack) ' + row.ThreeCrack + ' 次'
     },
     formatCheatDateThreeZero(row) {
-      return ' (3人局全0分) ' + row.ThreeZero+' 次'
+      return ' (3人局全0分) ' + row.ThreeZero + ' 次'
     },
     formatCheatDateThreeTwoCrack(row) {
-      return ' (3人局2人crack) ' + row.ThreeTwoCrack+' 次'
+      return ' (3人局2人crack) ' + row.ThreeTwoCrack + ' 次'
     },
     formatTimeTime(ts) {
       return $libDate.FormateSecondStr(ts, 4)
@@ -252,6 +266,28 @@ export default {
       this.clientDBNoCredit.GetPage().SetPageNo(val)
       this.refreshShowNoCredit()
     },
+    refreshShowBlack() {
+      this.cheatLogsBlack = this.clientDBBlack.GetCurrentPageData()
+    },
+    handleSizeChangeBlack(val) {
+      this.clientDBBlack.GetPage().SetPageNum(val)
+      this.refreshShowBlack()
+    },
+    handleCurrentChangeBlack(val) {
+      this.clientDBBlack.GetPage().SetPageNo(val)
+      this.refreshShowBlack()
+    },
+    refreshShowMaybe() {
+      this.cheatLogsMaybe = this.clientDBMaybe.GetCurrentPageData()
+    },
+    handleSizeChangeMaybe(val) {
+      this.clientDBMaybe.GetPage().SetPageNum(val)
+      this.refreshShowMaybe()
+    },
+    handleCurrentChangeMaybe(val) {
+      this.clientDBMaybe.GetPage().SetPageNo(val)
+      this.refreshShowMaybe()
+    },
     handleClick(row) {
       this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
         await this.addToBlack(row)
@@ -262,7 +298,7 @@ export default {
       })
     },
     handleAddMaybe(row) {
-      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
+      this.$confirm('是否确认添加进疑似名单?', '提示', { type: 'warning' }).then(async() => {
         await this.addToMaybe(row)
         await this.getMaybeData()
       }).catch(() => {
@@ -270,7 +306,7 @@ export default {
       })
     },
     handleDelMaybe(row) {
-      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
+      this.$confirm('是否确认从疑似名单删除?', '提示', { type: 'warning' }).then(async() => {
         await this.delToMaybe(row)
         await this.getMaybeData()
       }).catch(() => {
@@ -286,15 +322,19 @@ export default {
     },
     async addToBlack(row) {
       const $this = this
+      const uids = [0,0,0]
+      for (let i = 0; i < row.Uids.length; i++) {
+        uids[i] = row.Uids[i].Uid
+      }
       request({
         url: '/dataProxy/info',
         method: 'post',
         data: {
           Env: this.env,
           Path: '/misc/pusoy/black/add',
-          Uid1: row.Uid1,
-          Uid2: row.Uid2,
-          Uid3: row.Uid3,
+          Uid1: uids[0],
+          Uid2: uids[1],
+          Uid3: uids[2],
           Gid: row.Gid,
           Tid: row.Tid,
           FinishTime: row.FinishTime
@@ -309,13 +349,9 @@ export default {
     },
     async addToMaybe(row) {
       const $this = this
-      let uids = ''
+      const uids = [0,0,0]
       for (let i = 0; i < row.Uids.length; i++) {
-        if (i === 0){
-          uids += row.Uids[i]
-        }else {
-          uids += '_' + row.Uids[i]
-        }
+        uids[i] = row.Uids[i].Uid
       }
       request({
         url: '/dataProxy/info',
@@ -323,7 +359,9 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/pusoy/maybe/add',
-          Uids: uids
+          Uid1: uids[0],
+          Uid2: uids[1],
+          Uid3: uids[2],
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -335,13 +373,9 @@ export default {
     },
     async delToMaybe(row) {
       const $this = this
-      let uids = ''
+      const uids = [0,0,0]
       for (let i = 0; i < row.Uids.length; i++) {
-        if (i === 0){
-          uids += row.Uids[i]
-        } else {
-          uids += '_' + row.Uids[i]
-        }
+        uids[i] = row.Uids[i].Uid
       }
       request({
         url: '/dataProxy/info',
@@ -349,7 +383,9 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/pusoy/maybe/del',
-          Uids: uids
+          Uid1: uids[0],
+          Uid2: uids[1],
+          Uid3: uids[2],
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -379,6 +415,8 @@ export default {
             const maybe = maybes[i]
             $this.MaybeUids.push(maybe.Uid1)
           }
+          $this.clientDBMaybe = new ClientTableData($this.MaybeUids, $this.pageNum, {}, 'showBlackButton', -1)
+          $this.handleCurrentChangeMaybe(1)
         }
       })
     },
@@ -444,6 +482,7 @@ export default {
         }
       })
     }
+
   }
 }
 </script>
@@ -507,17 +546,17 @@ export default {
             />
             <el-table-column
               label="作弊数据"
-              width="400"
+              width="250"
               align="center"
             >
               <template slot-scope="scope">
-                <div>{{ formatCheatDateShootAllTwo(scope.row) }}</div>
-                <div>{{ formatCheatDateShootAllOne(scope.row) }}</div>
-                <div>{{ formatCheatDateExtraAddScore(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeSmall(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeZero(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeCrack(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
+                <div v-show="scope.row.Tid === 0">{{ formatCheatDateThreeCrack(scope.row) }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -526,6 +565,37 @@ export default {
               width="120"
               align="center"
             />
+            <el-table-column
+              label="游戏"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatGameId(scope.row.GameId) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="TableMoney"
+              sortable
+              label="场次"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatNumber(scope.row.TableMoney/1000) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="UpdateTime"
+              label="更新时间"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
+                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>
+              </template>
+            </el-table-column>
 
             <el-table-column
               label="操作"
@@ -546,6 +616,28 @@ export default {
                   size="mini"
                   @click="handleDelMaybe(scope.row)"
                 >删除疑似
+                </el-button>
+              </template>
+            </el-table-column>
+            <el-table-column
+              label="黑名单操作"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  v-if="showBlackButton(scope.row)"
+                  type="primary"
+                  size="mini"
+                  @click="handleClick(scope.row)"
+                >添加黑名单
+                </el-button>
+                <el-button
+                  v-else
+                  type="primary"
+                  size="mini"
+                  disabled
+                >已处理
                 </el-button>
               </template>
             </el-table-column>
@@ -616,17 +708,17 @@ export default {
             />
             <el-table-column
               label="作弊数据"
-              width="400"
+              width="250"
               align="center"
             >
               <template slot-scope="scope">
-                <div>{{ formatCheatDateShootAllTwo(scope.row) }}</div>
-                <div>{{ formatCheatDateShootAllOne(scope.row) }}</div>
-                <div>{{ formatCheatDateExtraAddScore(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeSmall(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeZero(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
-                <div>{{ formatCheatDateThreeCrack(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
+                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
+                <div v-show="scope.row.Tid === 0">{{ formatCheatDateThreeCrack(scope.row) }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -658,6 +750,28 @@ export default {
                 </el-button>
               </template>
             </el-table-column>
+            <el-table-column
+              label="黑名单操作"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-button
+                  v-if="showBlackButton(scope.row)"
+                  type="primary"
+                  size="mini"
+                  @click="handleClick(scope.row)"
+                >添加黑名单
+                </el-button>
+                <el-button
+                  v-else
+                  type="primary"
+                  size="mini"
+                  disabled
+                >已处理
+                </el-button>
+              </template>
+            </el-table-column>
           </el-table>
           <div class="block">
             <el-pagination
@@ -668,6 +782,62 @@ export default {
               :total="clientDBNoCredit.GetPage().GetTotalCount()"
               @size-change="handleSizeChangeNoCredit"
               @current-change="handleCurrentChangeNoCredit"
+            />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="疑似作弊名单">
+          <el-table
+            :data="cheatLogsMaybe"
+            border
+            style="width: 1550px;"
+          >
+            <el-table-column
+              label="玩家ID"
+              width="500"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div>{{ formatMaybeUid(scope.row) }}</div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="block">
+            <el-pagination
+              :current-page="clientDBMaybe.GetPage().GetCurrentPage()"
+              :page-sizes="[20, 40, 60, 80]"
+              :page-size="clientDBMaybe.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDBMaybe.GetPage().GetTotalCount()"
+              @size-change="handleSizeChangeMaybe"
+              @current-change="handleCurrentChangeMaybe"
+            />
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="黑名单">
+          <el-table
+            :data="cheatLogsBlack"
+            border
+            style="width: 1550px;"
+          >
+            <el-table-column
+              label="玩家ID"
+              width="500"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div>{{ formatBlackUid(scope.row) }}</div>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="block">
+            <el-pagination
+              :current-page="clientDBBlack.GetPage().GetCurrentPage()"
+              :page-sizes="[20, 40, 60, 80]"
+              :page-size="clientDBBlack.GetPage().GetPageNum()"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="clientDBBlack.GetPage().GetTotalCount()"
+              @size-change="handleSizeChangeBlack"
+              @current-change="handleCurrentChangeBlack"
             />
           </div>
         </el-tab-pane>
