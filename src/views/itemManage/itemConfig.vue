@@ -178,6 +178,12 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item v-if="editForm.data.itemType ==1"  label="是否是邀请函：" prop="switch">
+              <el-switch v-model="editForm.itemExtra.isInviteLetters" :active-value="true" :inactive-value="false" />
+          </el-form-item>
+
+
+
           <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
@@ -293,7 +299,10 @@ export default {
           sort: 0,
           status: 0,
           quality: 0,
-          timeType: []
+          timeType: [],
+        },
+        itemExtra:{
+          isInviteLetters: false,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -308,7 +317,8 @@ export default {
         sort: '排序',
         propStatus: '上架状态',
         createTime: '创建时间',
-        id: '道具ID'
+        id: '道具ID',
+        propExtra:'拓展信息'
       }
     }
   },
@@ -334,8 +344,6 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.tableData = []
-            console.log(objs.total)
-            console.log(this.form.itemOfType)
             if (this.form.itemOfType === 0) {
               this.tableData = objs.list
               this.total = objs.total
@@ -349,10 +357,8 @@ export default {
               }
               this.total = n
             }
-            console.log(this.tableData)
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
-            console.log(this.raw)
           }
         } else {
           this.total = 0
@@ -376,7 +382,6 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     showForm(id) {
-      console.log(id)
       if (id == 0) {
         this.editForm.title = '新增道具配置'
         this.editForm.data = {
@@ -391,6 +396,9 @@ export default {
           status: 0,
           quality: 0,
           timeType: []
+        }
+        this.editForm.itemExtra = {
+          isInviteLetters:false
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -414,6 +422,9 @@ export default {
         }
 
         const time_type = JSON.parse(editData.time_type)
+        if (editData.item_extra && editData.item_extra != 'null' && editData.item_extra != 'undefined') {
+          this.editForm.itemExtra = JSON.parse(editData.item_extra)
+        }
         this.editForm.data = {
           ID: editData.id,
           itemName: editData.item_name,
@@ -596,7 +607,8 @@ export default {
             Sort: this.editForm.data.sort,
             Status: this.editForm.data.status,
             Quality: this.editForm.data.quality,
-            TimeType: timeList
+            TimeType: timeList,
+            ItemExtra: JSON.stringify(this.editForm.itemExtra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -625,7 +637,8 @@ export default {
             Sort: this.editForm.data.sort,
             Status: this.editForm.data.status,
             Quality: this.editForm.data.quality,
-            TimeType: timeList
+            TimeType: timeList,
+            ItemExtra: JSON.stringify(this.editForm.itemExtra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -673,6 +686,9 @@ export default {
       if (this.editForm.data.itemType == 0) {
         this.errmsg('请选择道具分类')
         return false
+      }
+      if (this.editForm.data.itemType != 1){
+        this.editForm.itemExtra.isInviteLetters = false
       }
 
       if (this.editForm.data.itemType === 2) {
