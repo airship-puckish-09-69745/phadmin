@@ -25,6 +25,7 @@
   
           <el-form-item>
             <el-button type="primary" size="mini" @click="getInfo">查询</el-button>
+            <el-button type="info" size="mini" @click="reSyncTable">再次同步桌子数据</el-button>
           </el-form-item>
         </el-form>
       </el-row>
@@ -297,6 +298,30 @@
             }
         }
         return str;
+      },
+      reSyncTable(){
+        const $this = this
+        this.$confirm('是否确定再次同步桌子，此操作仅开发人员使用', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+        }).then(() => {
+            request({
+                url: '/dataProxy/info',
+                method: 'get',
+                data: {
+                    Path: '/alloc/resync',
+                    gid: this.gameId
+                }
+            }).then(response => {
+                console.log("resync response:",response)
+                if (response.RetCode === 0) {
+                    Message.success('同步成功')
+                }
+            }).catch(() => {
+                console.log('取消')
+            })
+        })
       }
     }
   }

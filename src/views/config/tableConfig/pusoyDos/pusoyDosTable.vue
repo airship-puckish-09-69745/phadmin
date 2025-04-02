@@ -8,7 +8,8 @@
         <p><strong>注意事项：</strong></p>
         <p>1，底注不可直接修改，需要新添加新的场次配置，再去掉旧的场次配置；</p>
         <p>2，新加的场次需要保持在预上状态，重启游戏服务后才能上架；要去掉的场次需要先改为预下状态，延迟半天之后再下架；</p>
-        <p>3，配置项【最大人数、桌子数量、是否练习场】修改后，需要重启游戏服务才能生效。</p>
+        <p>3，配置项【最大人数、桌子数量】修改后，需要重启游戏服务才能生效。</p>
+        <p>4，是否启用班车要和排队入桌配置菜单保持一致。</p>
       </el-col>
     </el-row>
     <el-row style="padding-top: 5px">
@@ -44,16 +45,6 @@
           sortable="custom"
           width="70"
         />
-        <el-table-column
-          prop="IsPractice"
-          label="练习场"
-          width="70"
-        >
-          <template slot-scope="scope">
-            <span v-if="scope.row.IsPractice === 1" style="color:#ff0000;">是</span>
-            <span v-else style="color:#999999;">否</span>
-          </template>
-        </el-table-column>
         <el-table-column
           prop="Level"
           label="Level"
@@ -121,8 +112,8 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="CreditScoreMode" label="信誉分配桌开关" width="150" >
-          <template slot-scope="scope"> {{ scope.row.CreditScoreMode }} </template>
+        <el-table-column prop="AllocScheme" label="配桌方案" width="150" >
+          <template slot-scope="scope"> {{ getAllocSchemeName(scope.row.AllocScheme ) }} </template>
           
         </el-table-column>
 
@@ -310,15 +301,6 @@
               <el-input v-model.number="edit.item.ActionSeconds" placeholder="操作时长" />
             </el-form-item>
           </el-col>
-          <!--          <el-col :span="11">-->
-          <!--            <el-form-item-->
-          <!--              label="最大围观局数："-->
-          <!--              prop="item.WatchTimesMax"-->
-          <!--              :rules="dataRule(true,{type:'n',range:'2'})"-->
-          <!--            >-->
-          <!--              <el-input v-model.number="edit.item.WatchTimesMax" />-->
-          <!--            </el-form-item>-->
-          <!--          </el-col>-->
         </el-row>
 
         <el-row>
@@ -376,22 +358,13 @@
           </el-col>
 
           <el-col :span="11">
-            <el-form-item label="信誉分配桌开关：" :required="true">
-              <el-radio-group v-model.number="edit.item.CreditScoreMode">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+            <el-form-item label="配桌方案：" :required="true">
+              <el-radio-group v-model.number="edit.item.AllocScheme">
+                <el-radio :label="0">常规</el-radio>
+                <el-radio :label="1">班车</el-radio>
+                <el-radio :label="2">信誉分</el-radio>
               </el-radio-group>
             </el-form-item>
-          </el-col>
-
-          <el-col :span="11">
-            <!--            <el-form-item-->
-            <!--              label="游戏人数："-->
-            <!--              prop="item.PotScore"-->
-            <!--              :rules="dataRule(true,{type:'n',range:'0'})"-->
-            <!--            >-->
-            <!--              <el-input v-model.number="edit.item.JokerNum" />-->
-            <!--            </el-form-item>-->
           </el-col>
         </el-row>
 
@@ -416,7 +389,6 @@ import request from '@/utils/request'
 import Compare from '@/components/Compare'
 import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
-import SelectGoods from '@/components/SelectGoods'
 import GameLevel from '@/components/GameLevel'
 import MoneyInput from '@/components/MoneyInput'
 import emojPrice from '@/views/config/baseConfig/emojPrice.vue'
@@ -450,12 +422,13 @@ function newItem() {
     RemainAlarm: 0,
     PotScore: 0,
     CreditScoreMode:0,
-    PlayMode: 1
+    PlayMode: 1,
+    AllocScheme:0,
   }
 }
 
 export default {
-  components: { Compare, Publish, SelectGoods, GameLevel, MoneyInput },
+  components: { Compare, Publish, GameLevel, MoneyInput },
   data() {
     return {
       tableData: [],
@@ -492,7 +465,8 @@ export default {
         Control: '机器人控制配置',
         MinPlayMoney: '最小玩牌金额',
         Anticheating: '是否防作弊',
-        RoomLevel: '房间类型'
+        RoomLevel: '房间类型',
+        AllocScheme:'配桌方案',
       }
     }
   },
@@ -566,18 +540,6 @@ export default {
       })
     },
     configCheck() {
-      return true
-      let goodsCheck = false
-      for (const i in this.clientDB.TotalData) {
-        // 除了练习场，其它场次必须配置推荐商品
-        if (this.clientDB.TotalData[i].Status === 2 && this.clientDB.TotalData[i].IsPractice === 0 && this.clientDB.TotalData[i].GoodsId <= 0) {
-          goodsCheck = true
-        }
-      }
-      if (goodsCheck) {
-        this.$alert('除了练习场，其它场次必须配置金币不足推荐商品')
-        return false
-      }
       return true
     },
     handlePreOn(ob) {
@@ -699,7 +661,16 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    getAllocSchemeName(plan){
+      if(plan==1) {
+        return "班车"
+      }else if(plan==2){
+        return "信誉分"
+      }else{
+        return "常规"
+      }
     }
-  }
+  },
 }
 </script>
