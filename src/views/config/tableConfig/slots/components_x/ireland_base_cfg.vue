@@ -140,7 +140,7 @@
           </el-form-item>
 
           <el-form-item label="TopWins最小倍数">
-            <el-input v-model.number="slotsData.TopWinsLimit" disabled />
+            <el-input v-model.number="slotsData.TopWinsLimit" />
           </el-form-item>
 
           <el-form-item label="是否启用新版剧本">
