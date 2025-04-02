@@ -11,6 +11,8 @@ export default {
       cheatLogsBlack: [],
       cheatLogsMaybe: [],
 
+      checkTime: {start: $libDate.GetDayBegin(new Date().getTime()),
+        end: $libDate.GetDayEnd(new Date().getTime()) },
       cheatLogsNewCredit: [],
       cheatLogsNewNoCredit: [],
       changeMoneyAll: 0,
@@ -335,9 +337,9 @@ export default {
           Uid1: uids[0],
           Uid2: uids[1],
           Uid3: uids[2],
-          Gid: row.Gid,
+          Gid: row.GameId,
           Tid: row.Tid,
-          FinishTime: row.FinishTime
+          FinishTime: row.UpdateTime
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -440,7 +442,9 @@ export default {
           Path: '/misc/pusoy/cheat/log/new',
           Page: 1,
           Limit: 9999,
-          UserType: userType
+          UserType: userType,
+          Start: this.checkTime.start,
+          End: this.checkTime.end,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -492,7 +496,32 @@ export default {
     <el_row>
       <el-tabs>
         <el-tab-pane label="授信作弊记录">
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoCredit">查询</el-button>
+          <el-form :model="checkTime" label-width="90px" :inline="true" size="small">
+            <el-form-item label="开始日期：">
+              <el-date-picker
+                v-model="checkTime.start"
+                value-format="timestamp"
+                type="datetime"
+                placeholder="选择日期"
+                size="mini"
+              />
+            </el-form-item>
+            <el-form-item label="结束日期：">
+              <el-date-picker
+                v-model="checkTime.end"
+                value-format="timestamp"
+                type="datetime"
+                placeholder="选择日期"
+                size="mini"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoCredit">查询</el-button>
+            </el-form-item>
+          </el-form>
+
+
+
           <el-table
             :data="cheatLogsCredit"
             border
@@ -526,7 +555,7 @@ export default {
                   </el-table-column>
                   <el-table-column
                     prop="maybe"
-                    label="疑似用户"
+                    label="是否标记疑似"
                     width="120"
                     align="center"
                   >
@@ -655,7 +684,30 @@ export default {
           </div>
         </el-tab-pane>
         <el-tab-pane label="非授信作弊记录">
-          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>
+
+          <el-form :model="checkTime" label-width="90px" :inline="true" size="small">
+            <el-form-item label="开始日期：">
+              <el-date-picker
+                v-model="checkTime.start"
+                value-format="timestamp"
+                type="datetime"
+                placeholder="选择日期"
+                size="mini"
+              />
+            </el-form-item>
+            <el-form-item label="结束日期：">
+              <el-date-picker
+                v-model="checkTime.end"
+                value-format="timestamp"
+                type="datetime"
+                placeholder="选择日期"
+                size="mini"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>
+            </el-form-item>
+          </el-form>
           <el-table
             :data="cheatLogsNoCredit"
             border
@@ -688,7 +740,7 @@ export default {
                     </template>
                   </el-table-column>
                   <el-table-column
-                    label="疑似用户"
+                    label="是否标记疑似"
                     width="120"
                     align="center"
                   >
