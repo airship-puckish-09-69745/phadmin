@@ -328,6 +328,7 @@ export default {
       for (let i = 0; i < row.Uids.length; i++) {
         uids[i] = row.Uids[i].Uid
       }
+      console.log('addToBlack', uids)
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -779,7 +780,37 @@ export default {
               width="120"
               align="center"
             />
-
+            <el-table-column
+              label="游戏"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatGameId(scope.row.GameId) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="TableMoney"
+              sortable
+              label="场次"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatNumber(scope.row.TableMoney/1000) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="UpdateTime"
+              label="更新时间"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
+                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>
+              </template>
+            </el-table-column>
             <el-table-column
               label="操作"
               width="120"
