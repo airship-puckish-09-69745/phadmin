@@ -232,11 +232,11 @@
           <el-tag v-if="credit.blackList.length > 0" type="danger">高危用户</el-tag>
         </el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="当日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="今日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="玩牌局数分">{{ formatNumber(credit.playRoundScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="当日玩牌局数分">{{ formatNumber(credit.dayPrs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="今日玩牌局数分">{{ formatNumber(credit.dayPrs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="GGR贡献分">{{ formatNumber(credit.ggrScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="当日GGR贡献分">{{ formatNumber(credit.dayGgrs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="今日GGR贡献分">{{ formatNumber(credit.dayGgrs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="黑名单列表" :span="2">
           <template>
             <el-row v-for="gid,i in credit.blackList">
