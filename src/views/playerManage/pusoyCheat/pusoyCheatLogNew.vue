@@ -443,8 +443,8 @@ export default {
           Page: 1,
           Limit: 9999,
           UserType: userType,
-          Start: this.checkTime.start,
-          End: this.checkTime.end,
+          Start: this.checkTime.start/1000,
+          End: this.checkTime.end/1000,
         }
       }).then(response => {
         if (response.RetCode === 0) {
