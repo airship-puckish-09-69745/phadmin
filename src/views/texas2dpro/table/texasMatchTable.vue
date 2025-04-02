@@ -752,7 +752,8 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-    this.getMatchProps()
+/*    this.getMatchProps()*/
+    this.getMatchPropsV1()
   },
   methods: {
     formatNumber(n) {
@@ -1126,6 +1127,40 @@ export default {
         this.createSave(this.getPostData())
       }
       this.edit.visible = false
+    },
+    getMatchPropsV1() {
+      const _this = this
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 100,
+          PropType: this.currPropsType,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          var timestamp = Date.parse(new Date())/1000
+          if (objs.total > 0) {
+            for (let i=0;i<objs.list.length;i++) {
+              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+                continue
+              }
+              this.matchPropsCfgs.push({
+                'propsType': objs.list[i].item_type,
+                'propsId': objs.list[i].id,
+                'propsName': objs.list[i].item_name,
+                'propsIcon': objs.list[i].image,
+                'propsAttr': objs.list[i].item_describe,
+                'propsCost': objs.list[i].item_cost,
+                'propsExpireTime': objs.list[i].expire_time,
+              })
+            }
+          }
+        }
+      })
     },
     getMatchProps() {
       const _this = this
