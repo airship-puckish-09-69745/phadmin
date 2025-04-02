@@ -79,12 +79,16 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           $this.blacks = data.Items || []
+          let mySet = new Set();
           for (let i = 0; i < $this.blacks.length; i++) {
             const black = $this.blacks[i]
-            $this.blackuids.push(black.Uid1)
-            $this.blackuids.push(black.Uid2)
-            $this.blackuids.push(black.Uid3)
+            mySet.add(black.Uid1)
+            mySet.add(black.Uid2)
+            mySet.add(black.Uid3)
           }
+          mySet.delete(0)
+          $this.blackuids = Array.from(mySet)
+          $this.blackuids.sort((a, b) => a - b);
           $this.clientDBBlack = new ClientTableData($this.blackuids, $this.pageNum, {}, 'showBlackButton', -1)
           $this.handleCurrentChangeBlack(1)
         }
@@ -328,7 +332,6 @@ export default {
       for (let i = 0; i < row.Uids.length; i++) {
         uids[i] = row.Uids[i].Uid
       }
-      console.log('addToBlack', uids)
       request({
         url: '/dataProxy/info',
         method: 'post',
