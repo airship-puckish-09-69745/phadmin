@@ -140,7 +140,7 @@
           </el-form-item>
 
           <el-form-item label="TopWins最小倍数">
-            <el-input v-model.number="TopWinsLimit" />
+            <el-input v-model.number="topWinsLimit" />
           </el-form-item>
 
           <el-form-item label="是否启用新版剧本">
@@ -263,7 +263,7 @@ export default {
         }
       }
       this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
-      this.slotsData.TopWinsLimit = this.TopWinsLimit * 1000
+      this.slotsData.TopWinsLimit = this.topWinsLimit * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets, this.slotsData.AutoSpinNum))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
