@@ -404,6 +404,21 @@ export default {
           id: 1000032,
           agentId: 'weekaDev',
           desc: 'weekaDev[1000032]'
+        },
+        {
+          id: 1000035,
+          agentId: 'NGNGameDev',
+          desc: 'NGNGame[1000035]【尼日利亚】'
+        },
+        {
+          id: 1000038,
+          agentId: '777pubDev',
+          desc: '777pub[1000038]'
+        },
+        {
+          id: 1000041,
+          agentId: 'IndiaH5GameDev',
+          desc: 'IndiaH5Game[1000041]【印度H5】'
         }
       ]
     }

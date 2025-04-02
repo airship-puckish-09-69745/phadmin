@@ -1133,7 +1133,7 @@ export default {
         cpy.BetMoneyListNew.push({
           TableMoney: this.betMoneyList[i].TableMoney,
           RobotCount: this.betMoneyList[i].RobotCount,
-          IsOpen: this.betMoneyList[i].IsOpen
+          IsOpen: this.betMoneyList[i].IsOpen === 1
         })
       }
       for (const o in this.BetCfg) {
