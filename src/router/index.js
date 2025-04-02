@@ -2355,6 +2355,12 @@ export const asyncRoutes = [
             meta: { title: 'S harkKingdom', gid: 158 }
           },
           {
+            path: 'spacetreasure_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'spacetreasure_slots_log',
+            meta: { title: 'S paceTreasure', gid: 204 }
+          },
+          {
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
