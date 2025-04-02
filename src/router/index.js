@@ -1072,6 +1072,12 @@ export const asyncRoutes = [
                 meta: { title: 'S harkKingdom' }
               },
               {
+                path: 'spacetreasure_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/spacetreasure_slots_cfg'),
+                name: 'spacetreasure_slots_cfg',
+                meta: { title: 'S paceTreasure' }
+              },
+              {
                 path: 'supergemii_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',

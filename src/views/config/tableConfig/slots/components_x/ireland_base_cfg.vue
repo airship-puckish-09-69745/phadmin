@@ -74,6 +74,8 @@
               <el-option label="199:FortuneBlessing Mars" :value="199" />
               <el-option label="200:AtlantisTreasure" :value="200" />
               <el-option label="201:AtlantisTreasureMars" :value="201" />
+              <el-option label="204:SpaceTreasure" :value="204" />
+              <el-option label="205:SpaceTreasureMars" :value="205" />
             </el-select>
           </el-form-item>
 
