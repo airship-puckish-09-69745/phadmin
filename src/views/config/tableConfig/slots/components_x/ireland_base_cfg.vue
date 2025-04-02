@@ -139,6 +139,10 @@
             <el-input v-model="slotsData.AutoSpinNum[1]"> <template slot="append">无限=-1</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="TopWins最小倍数">
+            <el-input v-model.number="slotsData.TopWinsLimit" />
+          </el-form-item>
+
           <el-form-item label="是否启用新版剧本">
             <el-select v-model="slotsData.EnableScriptV3" disabled>
               <el-option label="启用" :value="true" />
@@ -234,6 +238,7 @@ export default {
         'WinTypeMinOdds': winTypeMinOdds,
         'AutoSpinNum': autoSpinNum,
         'BetOddsList': this.slotsData.BetOddsList,
+        'TopWinsLimit': this.slotsData.TopWinsLimit
       }
     },
     submitFrm() {
