@@ -18,7 +18,12 @@
               <el-form-item label="游戏">
             <el-select v-model="queryGid" size="mini" filterable default-first-option @change="queryKeyInput">
               <!--              <el-option label="所有" :value="0"/>-->
-              <el-option v-for="(o,k) in gidOptions" :key="k" :label="getGameName(o)" :value="parseInt(o)" />
+              <el-option
+                v-for="row in gameOptions"
+                :key="row.key"
+                :label="row.label"
+                :value="row.key"
+              />
             </el-select>
               </el-form-item>
               <el-form-item label="倍率">
@@ -2405,6 +2410,7 @@ export default {
             this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
             this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
+          this.gidOptions[100180] ='Fishing Master(额外加注)'
           this.gameOptions.push({
             key: 100180,
             label: 'Fishing Master(额外加注)'
