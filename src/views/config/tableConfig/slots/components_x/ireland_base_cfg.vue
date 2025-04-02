@@ -140,7 +140,7 @@
           </el-form-item>
 
           <el-form-item label="TopWins最小倍数">
-            <el-input v-model.number="slotsData.TopWinsLimit" />
+            <el-input v-model.number="topWinsLimit" />
           </el-form-item>
 
           <el-form-item label="是否启用新版剧本">
@@ -193,7 +193,8 @@ export default {
       recommendBet: this.slotsData.RecommendBet ? this.slotsData.RecommendBet * this.slotsData.BaseBet / 1000 : 0,
       initialWinTypeMinOdds: [],
       initialBets: this.slotsData.Bets,
-      initialAutoSpinNum: []
+      initialAutoSpinNum: [],
+      topWinsLimit: this.slotsData.TopWinsLimit ? this.slotsData.TopWinsLimit / 1000 : 0
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
@@ -262,6 +263,7 @@ export default {
         }
       }
       this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
+      this.slotsData.TopWinsLimit = this.topWinsLimit * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets, this.slotsData.AutoSpinNum))
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
