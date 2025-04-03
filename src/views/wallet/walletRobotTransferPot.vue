@@ -54,7 +54,16 @@
           prop="App"
           label="应用ID"
         />
+        <el-table-column label="游戏">
+          <template slot-scope="scope">
+            {{ gameMap[scope.row.Gid] }}
+          </template>
+        </el-table-column>
 
+        <el-table-column
+          prop="TableMoney"
+          label="场次"
+        />
         <el-table-column
           prop="PotMoney"
           label="pot金币"
@@ -149,6 +158,7 @@ export default {
       isDisabled: false,
       form: {
       },
+      gameMap: {},
       statItem: { money: 0, initMoney: 0 },
       txt: '',
       subKey: 'tongits_ai_list_cfg',
@@ -163,6 +173,7 @@ export default {
     }
   },
   created() {
+    this.getGameList()
     this.getList()
     this.isDisabled = false
     console.log(1)
@@ -212,11 +223,8 @@ export default {
           const objs = response.Data || []
           this.totalData = objs
           for (let i = 0; i < objs.length; i++) {
-            objs[i].RollinMoney /= 1000
-            objs[i].RollinUidMoney /= 1000
-            objs[i].RolloutUidMoney /= 1000
-            objs[i].AfterRollinUidMoney /= 1000
-            objs[i].AfterRolloutUidMoney /= 1000
+            objs[i].PotMoney /= 1000
+            objs[i].TableMoney /= 1000
           }
           objs.sort(function(a, b) {
             return a.currentTid - b.currentTid
@@ -226,6 +234,21 @@ export default {
           this.handleCurrentChange(1)
         }
         // loading.close()
+      })
+    },
+    getGameList() {
+      request({
+        url: '/thirdpartygames/all',
+        method: 'get',
+        data: {}
+      }).then(response => {
+        if (response.RetCode === 0) {
+          for (let i = 0; i < response.Data.length; i++) {
+            this.gameMap[response.Data[i].Gid] = response.Data[i].Name
+          }
+          //todo 临时添加比赛 -- chb
+          this.gameMap[2031] = 'Tongits-Mtt'
+        }
       })
     },
     formatNumber(n) {
