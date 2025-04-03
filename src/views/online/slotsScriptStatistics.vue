@@ -506,7 +506,7 @@
             </el-row>
           </el-col>
           <el-col
-            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166 || queryGid == 196"
+            v-if="queryGid === 150 || queryGid === 90 || queryGid === 156 || queryGid === 166 || queryGid == 196 || queryGid == 204"
             :span="13"
             :offset="1"
           >
@@ -2114,7 +2114,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           for (let i = 0; i < response.Data.length; i++) {
-            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 199) {
+            if (response.Data[i].Gid < 50 || response.Data[i].Gid > 100 && response.Data[i].Gid < 150 || response.Data[i].Gid > 499) {
               continue
             }
 
