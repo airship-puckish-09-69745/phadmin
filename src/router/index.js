@@ -3207,6 +3207,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
         meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+      },
+      {
+        path: 'walletRobotTransferPot',
+        component: () => import('@/views/wallet/walletRobotTransferPot.vue'),
+        name: 'walletRobotTransferPot',
+        meta: { title: 'Pot金币消费列表' }
       }
     ]
   },
