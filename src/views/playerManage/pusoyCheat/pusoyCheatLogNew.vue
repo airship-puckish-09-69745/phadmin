@@ -79,12 +79,16 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           $this.blacks = data.Items || []
+          let mySet = new Set();
           for (let i = 0; i < $this.blacks.length; i++) {
             const black = $this.blacks[i]
-            $this.blackuids.push(black.Uid1)
-            $this.blackuids.push(black.Uid2)
-            $this.blackuids.push(black.Uid3)
+            mySet.add(black.Uid1)
+            mySet.add(black.Uid2)
+            mySet.add(black.Uid3)
           }
+          mySet.delete(0)
+          $this.blackuids = Array.from(mySet)
+          $this.blackuids.sort((a, b) => a - b);
           $this.clientDBBlack = new ClientTableData($this.blackuids, $this.pageNum, {}, 'showBlackButton', -1)
           $this.handleCurrentChangeBlack(1)
         }
@@ -779,7 +783,37 @@ export default {
               width="120"
               align="center"
             />
-
+            <el-table-column
+              label="游戏"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatGameId(scope.row.GameId) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="TableMoney"
+              sortable
+              label="场次"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatNumber(scope.row.TableMoney/1000) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="UpdateTime"
+              label="更新时间"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
+                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>
+              </template>
+            </el-table-column>
             <el-table-column
               label="操作"
               width="120"
