@@ -119,6 +119,14 @@ export default {
         $this.$message.error(`免费模式 新增红包符号(数量) 最大支持2个 err:${this.slotsData.SymbolRedNumWt}`)
         return
       }
+      if (this.slotsData.SymbolMulOddsWt.split(",").length > 9){
+        $this.$message.error(`免费模式 新增乘数符号(倍数) 最大支持9倍 err:${this.slotsData.SymbolMulOddsWt}`)
+        return
+      }
+      if (this.slotsData.SymbolRedOddsWt.split(",").length > 9){
+        $this.$message.error(`免费模式 新增红包符号(倍数) 最大支持9倍 err:${this.slotsData.SymbolRedOddsWt}`)
+        return
+      }
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
