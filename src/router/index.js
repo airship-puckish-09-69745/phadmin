@@ -1072,6 +1072,12 @@ export const asyncRoutes = [
                 meta: { title: 'S harkKingdom' }
               },
               {
+                path: 'spacetreasure_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/spacetreasure_slots_cfg'),
+                name: 'spacetreasure_slots_cfg',
+                meta: { title: 'S paceTreasure' }
+              },
+              {
                 path: 'supergemii_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/supergemii_slots_cfg'),
                 name: 'supergemii_slots_cfg',
@@ -2349,6 +2355,12 @@ export const asyncRoutes = [
             meta: { title: 'S harkKingdom', gid: 158 }
           },
           {
+            path: 'spacetreasure_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'spacetreasure_slots_log',
+            meta: { title: 'S paceTreasure', gid: 204 }
+          },
+          {
             path: 'supergem_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'supergem_slots_log',
@@ -3195,6 +3207,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
         meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+      },
+      {
+        path: 'walletRobotTransferPot',
+        component: () => import('@/views/wallet/walletRobotTransferPot.vue'),
+        name: 'walletRobotTransferPot',
+        meta: { title: 'Pot金币消费列表' }
       }
     ]
   },

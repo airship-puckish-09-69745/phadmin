@@ -223,15 +223,20 @@
           <el-tag type="success">{{ credit.uid }}</el-tag>
           <el-button type="success" size="mini" style="margin-left: 10px;" @click="getCredit()">刷新</el-button>
           <el-button type="danger" size="mini" style="margin-right: 100px;" @click="clearCreditData()">清空信誉分数据</el-button>
-          <el-button v-if="env=='test'" type="danger" size="mini" style="margin-right: 100px;" @click="getCredit(true)">刷用户日数据</el-button>
+          <!-- <el-button v-if="env=='test'" type="danger" size="mini" style="margin-right: 100px;" @click="getCredit(true)">刷用户日数据</el-button> -->
         </el-descriptions-item>
-        <el-descriptions-item label="信誉分" :span="2">{{ formatNumber(credit.creditScore / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="信誉分" :span="2">{{ formatNumber(credit.creditScore / 1000) }}
+          <el-tag v-if="credit.creditLevel == 0" type="primary">普通用户</el-tag>
+          <el-tag v-if="credit.creditLevel == 1" type="success">信誉用户</el-tag>
+          <el-tag v-if="credit.creditLevel == 2" type="danger">黑名单用户</el-tag>
+          <el-tag v-if="credit.blackList.length > 0" type="danger">高危用户</el-tag>
+        </el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="今日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="玩牌局数分">{{ formatNumber(credit.playRoundScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="日玩牌局数分">{{ formatNumber(credit.dayPrs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="今日玩牌局数分">{{ formatNumber(credit.dayPrs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="GGR贡献分">{{ formatNumber(credit.ggrScore / 1000) }}</el-descriptions-item>
-        <el-descriptions-item label="日GGR贡献分">{{ formatNumber(credit.dayGgrs / 1000) }}</el-descriptions-item>
+        <el-descriptions-item label="今日GGR贡献分">{{ formatNumber(credit.dayGgrs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="黑名单列表" :span="2">
           <template>
             <el-row v-for="gid,i in credit.blackList">
@@ -1425,6 +1430,7 @@ export default {
           $this.credit.dayVbs=response.Data.dayVbs
           $this.credit.dayPrs=response.Data.dayPrs
           $this.credit.dayGgrs=response.Data.dayGgrs
+          $this.credit.creditLevel=response.Data.creditLevel
           $this.credit.blackList = []
           if (response.Data.blackList !== '') {
             $this.credit.blackList=JSON.parse(response.Data.blackList)

@@ -225,7 +225,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="场次授信用户数量"
+      title="在玩授信用户数量"
       :visible.sync="blindDialog"
       width="60%"
     >
