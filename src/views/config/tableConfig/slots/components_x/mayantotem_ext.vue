@@ -73,7 +73,7 @@
               </el-table-column>
               <el-table-column prop="HitMax" label="bonus最大图案出现次数" width="90">
                 <template slot="header">
-                  <span>bonus最小图案出现次数
+                  <span>bonus最大图案出现次数
                     <el-tooltip effect="dark" content="免费中bonus图案出现最大次数" placement="top-end">
                       <i class="el-icon-question" style="margin-left:5px;cursor:pointer" />
                     </el-tooltip>
