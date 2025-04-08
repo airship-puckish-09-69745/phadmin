@@ -2230,6 +2230,12 @@ export const asyncRoutes = [
             meta: { title: 'B ountyRaid', gid: 192 }
           },
           {
+            path: 'candyburst_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candyburst_slots_log',
+            meta: { title: 'C andyBurst', gid: 208 }
+          },
+          {
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyway_slots_log',
