@@ -38,34 +38,34 @@
 
           <el-form-item label="bonus个数">
             <el-table :data="cfg.BonusNumCfg" border style="width: 100%">
-              <el-table-column prop="OddsMin" label="开始倍数" width="85">
+              <el-table-column prop="OddsMin" label="开始倍数" width="90">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.OddsMin"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="OddsMax" label="结束倍数" width="85">
+              <el-table-column prop="OddsMax" label="结束倍数" width="90">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.OddsMax"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="NumMin" label="bonus最小个数" width="85">
+              <el-table-column prop="NumMin" label="bonus最小个数" width="90">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.NumMin"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="NumMax" label="bonus最大个数" width="85">
+              <el-table-column prop="NumMax" label="bonus最大个数" width="90">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.NumMax"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="HitMin" label="bonus最小图案出现次数" width="85">
+              <el-table-column prop="HitMin" label="bonus最小图案出现次数" width="90">
                 <el-tooltip class="item" effect="dark" content="免费中bonus图案出现最小次数"
                             placement="top-end"></el-tooltip>
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.HitMin"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="HitMax" label="bonus最大图案出现次数" width="85">
+              <el-table-column prop="HitMax" label="bonus最大图案出现次数" width="90">
                 <el-tooltip class="item" effect="dark" content="免费中bonus图案出现最大次数"
                             placement="top-end"></el-tooltip>
                 <template slot-scope="scope">
