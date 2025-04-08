@@ -3245,7 +3245,7 @@ export const asyncRoutes = [
         path: 'walletSettleLog',
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
-        meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+        meta: { title: '钱包注单流水' }
       },
       {
         path: 'walletRobotTransferPot',
