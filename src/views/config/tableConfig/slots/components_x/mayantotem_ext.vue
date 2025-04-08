@@ -58,6 +58,16 @@
                   <el-input v-model.number="scope.row.NumMax"></el-input>
                 </template>
               </el-table-column>
+              <el-table-column prop="HitMin" label="bonus最小出现次数" width="150">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.HitMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="HitMax" label="bonus最大出现次数" width="150">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.HitMax"></el-input>
+                </template>
+              </el-table-column>
               <el-table-column label="操作" width="100">
                 <template slot-scope="scope">
                   <el-button @click="handleDelete(scope.$index)" type="danger" size="mini">删除</el-button>
@@ -145,7 +155,9 @@ export default {
         OddsMin: 0,
         OddsMax: 0,
         NumMin: 0,
-        NumMax: 0
+        NumMax: 0,
+        HitMin: 0,
+        HitMax: 0
       }
       this.cfg.BonusNumCfg.push(newRow)
     },
