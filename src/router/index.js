@@ -903,6 +903,12 @@ export const asyncRoutes = [
                 meta: { title: 'B ountyRaid' }
               },
               {
+                path: 'candyburst_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candyburst_slots_cfg'),
+                name: 'candyburst_slots_cfg',
+                meta: { title: 'C andyBurst' }
+              },
+              {
                 path: 'candypartyway_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/candypartyway_slots_cfg'),
                 name: 'candypartyway_slots_cfg',
