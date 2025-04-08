@@ -670,7 +670,7 @@ export default {
                   type="primary"
                   size="mini"
                   disabled
-                >已处理
+                >已拉黑
                 </el-button>
               </template>
             </el-table-column>
@@ -854,7 +854,7 @@ export default {
                   type="primary"
                   size="mini"
                   disabled
-                >已处理
+                >已拉黑
                 </el-button>
               </template>
             </el-table-column>
