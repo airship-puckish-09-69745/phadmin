@@ -13,6 +13,8 @@ export default {
 
       checkTime: {start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()) },
+      Uid : 0,
+      Tid:0,
       cheatLogsNewCredit: [],
       cheatLogsNewNoCredit: [],
       changeMoneyAll: 0,
@@ -88,7 +90,7 @@ export default {
           }
           mySet.delete(0)
           $this.blackuids = Array.from(mySet)
-          $this.blackuids.sort((a, b) => a - b);
+          // $this.blackuids.sort((a, b) => a - b);
           $this.clientDBBlack = new ClientTableData($this.blackuids, $this.pageNum, {}, 'showBlackButton', -1)
           $this.handleCurrentChangeBlack(1)
         }
@@ -295,7 +297,7 @@ export default {
       this.refreshShowMaybe()
     },
     handleClick(row) {
-      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
+      this.$confirm('是否确认添加进黑名单?', '提示', { type: 'warning' }).then(async() => {
         await this.addToBlack(row)
         await this.getBlackData()
         // this.getDataInfo()
@@ -454,37 +456,64 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           const cheatLogs = data.Items || []
+          const cheatLogsTmp = []
           if (userType === 1) {
             $this.totalCountCredit = data.Total || 0
             for (let i = 0; i < cheatLogs.length; i++) {
               const cheatLog = cheatLogs[i]
+              if ($this.Uid > 0){
+                const cheatUids = []
+                for (let j = 0; j < cheatLog.Uids.length; j++) {
+                  cheatUids.push(cheatLog.Uids[j].Uid)
+                }
+                if (!cheatUids.includes($this.Uid)) {
+                  continue
+                }
+              }
+              if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
+                continue
+              }
               if (this.MaybeUids.includes(cheatLog.Uid)) {
                 cheatLog.maybe = 1
               } else {
                 cheatLog.maybe = 0
               }
               $this.cheatLogsNewCredit.push(cheatLog)
+              cheatLogsTmp.push(cheatLog)
             }
-            cheatLogs.sort(function(a, b) {
+            cheatLogsTmp.sort(function(a, b) {
               return b.maybe - a.maybe
             })
-            $this.clientDBCredit = new ClientTableData(cheatLogs, $this.pageNum, {}, 'showBlackButton', -1)
+            $this.clientDBCredit = new ClientTableData(cheatLogsTmp, $this.pageNum, {}, 'showBlackButton', -1)
             $this.handleCurrentChangeCredit(1)
           } else {
             $this.totalCountCredit = data.Total || 0
             for (let i = 0; i < cheatLogs.length; i++) {
               const cheatLog = cheatLogs[i]
+              if ($this.Uid > 0) {
+                const cheatUids = []
+                for (let j = 0; j < cheatLog.Uids.length; j++) {
+                  cheatUids.push(cheatLog.Uids[j].Uid)
+                }
+                if (!cheatUids.includes($this.Uid)) {
+                  continue
+                }
+              }
+              if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
+                continue
+              }
               if (this.MaybeUids.includes(cheatLog.Uid)) {
                 cheatLog.maybe = 1
               } else {
                 cheatLog.maybe = 0
               }
               $this.cheatLogsNewNoCredit.push(cheatLog)
+              cheatLogsTmp.push(cheatLog)
             }
-            cheatLogs.sort(function(a, b) {
+            cheatLogsTmp.sort(function(a, b) {
               return b.maybe - a.maybe
             })
-            $this.clientDBNoCredit = new ClientTableData(cheatLogs, $this.pageNum, {}, 'showBlackButton', -1)
+            $this.clientDBNoCredit = new ClientTableData(cheatLogsTmp, $this.pageNum, {}, 'showBlackButton', -1)
             $this.handleCurrentChangeNoCredit(1)
           }
         }
@@ -518,6 +547,12 @@ export default {
                 placeholder="选择日期"
                 size="mini"
               />
+            </el-form-item>
+            <el-form-item label="UID：">
+              <el-input v-model.number="Uid" />
+            </el-form-item>
+            <el-form-item label="桌子：">
+              <el-input v-model.number="Tid" />
             </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoCredit">查询</el-button>
@@ -707,6 +742,13 @@ export default {
                 placeholder="选择日期"
                 size="mini"
               />
+            </el-form-item>
+
+            <el-form-item label="UID：">
+              <el-input v-model.number="Uid" />
+            </el-form-item>
+            <el-form-item label="桌子：">
+              <el-input v-model.number="Tid" />
             </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>
