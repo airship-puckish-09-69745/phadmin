@@ -178,12 +178,17 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType ==1"  label="是否是邀请函：" prop="switch">
-              <el-switch v-model="editForm.itemExtra.isInviteLetters" :active-value="true" :inactive-value="false" />
+          <el-form-item v-if="editForm.data.itemType === 1" label="道具特殊属性：" :required="true">
+            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
+              <el-option
+                v-for="item in itemSpecialAttrCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled"
+              />
+            </el-select>
           </el-form-item>
-
-
-
           <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
@@ -259,6 +264,11 @@ export default {
         { 'value': 3, 'label': '德州门票', disabled: false }
       ],
 
+      itemSpecialAttrCfgs: [
+        { 'value': 1, 'label': '邀请函', disabled: false },
+        { 'value': 2, 'label': 'GTCC线上决赛门票', disabled: false },
+      ],
+
       dayTypeCfgs: [
         { 'value': 7, 'label': '7天', disabled: false },
         { 'value': 30, 'label': '30天', disabled: false },
@@ -302,7 +312,7 @@ export default {
           timeType: [],
         },
         itemExtra:{
-          isInviteLetters: false,
+          specialAttr: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -398,7 +408,7 @@ export default {
           timeType: []
         }
         this.editForm.itemExtra = {
-          isInviteLetters:false
+          specialAttr:0
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -688,7 +698,7 @@ export default {
         return false
       }
       if (this.editForm.data.itemType != 1){
-        this.editForm.itemExtra.isInviteLetters = false
+        this.editForm.itemExtra.specialAttr = 0
       }
 
       if (this.editForm.data.itemType === 2) {
