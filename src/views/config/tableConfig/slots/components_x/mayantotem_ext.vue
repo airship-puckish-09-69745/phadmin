@@ -38,7 +38,7 @@
 
           <el-form-item label="bonus个数">
             <el-table :data="cfg.BonusNumCfg" border style="width: 100%">
-              <el-table-column prop="OddsMin" label="开始倍数" width="120">
+              <el-table-column prop="OddsMin" label="开始倍数" width="180">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.OddsMin"></el-input>
                 </template>
