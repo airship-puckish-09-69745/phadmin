@@ -59,15 +59,27 @@
                 </template>
               </el-table-column>
               <el-table-column prop="HitMin" label="bonus最小图案出现次数" width="90">
-                <el-tooltip class="item" effect="dark" content="免费中bonus图案出现最小次数"
-                            placement="top-end"></el-tooltip>
+                <template slot="header">
+                  <span>bonus最小图案出现次数
+                    <el-tooltip effect="dark" content="免费中bonus图案出现最小次数" placement="top-end">
+                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer" />
+                    </el-tooltip>
+                  </span>
+                </template>
+
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.HitMin"></el-input>
+                  <el-input v-model.number="scope.row.HitMin"/>
                 </template>
               </el-table-column>
               <el-table-column prop="HitMax" label="bonus最大图案出现次数" width="90">
-                <el-tooltip class="item" effect="dark" content="免费中bonus图案出现最大次数"
-                            placement="top-end"></el-tooltip>
+                <template slot="header">
+                  <span>bonus最小图案出现次数
+                    <el-tooltip effect="dark" content="免费中bonus图案出现最大次数" placement="top-end">
+                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer" />
+                    </el-tooltip>
+                  </span>
+                </template>
+
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.HitMax"></el-input>
                 </template>
