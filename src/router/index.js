@@ -6,6 +6,8 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
+import {IsMars} from "@/utils/env";
+// import {IsMars} from "@/utils/env";
 /* Router Modules */
 // import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
@@ -1735,12 +1737,14 @@ export const asyncRoutes = [
         name: 'matchLimitWhite',
         meta: { title: '限制白名单', noCache: true }
       },
-      // {
-      //   path: 'matchWatcherList',
-      //   component: () => import('@/views/matchManage/watcherList.vue'),
-      //   name: 'matchWatcherList',
-      //   meta: { title: '主播名单', noCache: true }
-      // },
+      {
+        path: 'matchWatcherList',
+        component: () => import('@/views/matchManage/watcherList.vue'),
+        hidden: !IsMars(),
+        name: 'matchWatcherList',
+        meta: { title: '主播名单', noCache: true, hidden: true },
+
+      },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
@@ -3207,6 +3211,12 @@ export const asyncRoutes = [
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
         meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+      },
+      {
+        path: 'walletRobotTransferPot',
+        component: () => import('@/views/wallet/walletRobotTransferPot.vue'),
+        name: 'walletRobotTransferPot',
+        meta: { title: 'Pot金币消费列表' }
       }
     ]
   },
