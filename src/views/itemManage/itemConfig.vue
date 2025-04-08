@@ -261,7 +261,7 @@ export default {
       itemTypeCfgs: [
         { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false },
         { 'value': 4, 'label': '德州头像框', disabled: false }
       ],
 
@@ -544,7 +544,8 @@ export default {
             Sort: editData.sort,
             Status: editData.status,
             Quality: editData.quality,
-            TimeType: editData.time_type
+            TimeType: editData.time_type,
+            ItemExtra: JSON.stringify(editData.item_extra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
