@@ -741,21 +741,27 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'TongitsJackpot ◐' },
             children: [
-              {
-                path: 'tongitsJackpotTable',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
-                children: [
+              //{
+              //  path: 'tongitsJackpotTable',
+              //  component: () => import('@/views/empty'),
+              //  redirect: 'noRedirect',
+              //  meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
+              //  children: [
                   {
                     path: 'tongitsJackpotTable',
                     component: () => import('@/views/tongitsJackpot/table/tongitsJackpotTable'),
                     name: 'tongitsJackpotTable',
-                    meta: { title: 'TongitsJackpot' }
+                    meta: { title: 'TongitsJP配桌 ◐' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
-				          }
-                ]
-              }
+				          },
+                  {
+                    path: 'tongitsJackpotAIConfig',
+                    component: () => import('@/views/tongitsJackpot/table/tongitsJackpotAIConfig'),
+                    name: 'tongitsJackpotAIConfig',
+                    meta: { title: 'TongitsJP AI配置 ◐' }
+                  }
+              //  ]
+              //}
             ]
           }
         ]
