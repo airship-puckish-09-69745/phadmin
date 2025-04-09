@@ -974,7 +974,8 @@ export default {
         isCopy: false
       },
       showDevTool: false,
-      showTip: false
+      showTip: false,
+      currPropsType:1 //tongits 门票
     }
   },
   computed: {
@@ -1001,7 +1002,8 @@ export default {
         // { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ]
     }
-    this.getMatchProps()
+    //this.getMatchProps()
+    this.getMatchPropsFromMysql()
   },
   mounted() {
     this.getList()
@@ -1569,7 +1571,6 @@ export default {
           }
         }
       }
-      console.log('editForm', this.editForm.rankRewards)
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
@@ -1816,19 +1817,65 @@ export default {
 
     getMatchProps() {
       request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/match/props/config/list',
+          PropType: this.currPropsType,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.matchPropsCfgs = [
+              {
+                'propsId': 0,
+                'propsType': 0,
+                'propsName': '无',
+                'propsIcon': '',
+                'propsAttr': '',
+                'propsCost': ''
+              }
+            ]
+            this.matchTicketsCfgs = []
+            var timestamp = Date.parse(new Date())/1000
+            for (let i=0;i<objs.list.length;i++) {
+              if (objs.list[i].item_type === this.currPropsType && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
+                this.matchPropsCfgs.push({
+                  'propsType': objs.list[i].item_type,
+                  'propsId': objs.list[i].id,
+                  'propsName': objs.list[i].item_name,
+                  'propsIcon': objs.list[i].image,
+                  'propsAttr': objs.list[i].item_describe,
+                  'propsCost': objs.list[i].item_cost,
+                })
+                  this.matchTicketsCfgs.push({
+                    'label': objs.list[i].item_name,
+                    'value': objs.list[i].id,
+                  })
+
+              }
+            }
+          }
+        }
+      })
+    },
+
+    getMatchPropsFromMysql() {
+      request({
         url: '/propsconfig/props/config/list',
         method: 'get',
         data: {
           Env: this.env,
           PageNum: this.page,
           PageSize: this.limit,
-          PropType:0,
+          PropType: this.currPropsType,
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
-            console.log(objs)
             this.matchPropsCfgs = [
               {
                 'propsId': 0,
@@ -1851,10 +1898,10 @@ export default {
                   'propsAttr': objs.list[i].item_describe,
                   'propsCost': objs.list[i].item_cost,
                 })
-                  this.matchTicketsCfgs.push({
-                    'label': objs.list[i].item_name,
-                    'value': objs.list[i].id,
-                  })
+                this.matchTicketsCfgs.push({
+                  'label': objs.list[i].item_name,
+                  'value': objs.list[i].id,
+                })
 
               }
             }
@@ -2086,7 +2133,6 @@ export default {
       return true
     },
     checkRewardCfg(rewards) {
-      console.log('rewards', rewards)
       if (rewards.length <= 0) {
         this.errmsg('请添加固定奖励配置')
         return false
@@ -2094,7 +2140,6 @@ export default {
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
-        console.log('1111 element', element)
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
           return false

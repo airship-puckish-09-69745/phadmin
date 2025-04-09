@@ -20,20 +20,20 @@
             <el-input v-model="cfg.JackpotOdds" placeholder="请输入内容,如8,10,12,15"> <template slot="append">用 , 连接(放大100倍)</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="出现金币及Jackpot权重配置">
-            <el-input v-model="cfg.GoldJackpotWeight" placeholder="请输入内容,如8,10,12,15"> <template slot="append">用 , 连接(第一个值是金币权重)</template> </el-input>
-          </el-form-item>
-
-          <el-form-item label="免费模式出现金币及Jackpot权重配置">
-            <el-input v-model="cfg.FreeGoldJackpotWeight" placeholder="请输入内容,如8,10,12,15"> <template slot="append">用 , 连接(第一个值是金币权重)</template> </el-input>
-          </el-form-item>
-
           <el-form-item label="金币及Jackpot出现概率">
             <el-input v-model.number="cfg.GoldJackpotProbability" :required="true"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式金币及Jackpot出现概率">
             <el-input v-model.number="cfg.FreeGoldJackpotProbability" :required="true"> <template slot="append">‰</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="出现金币及Jackpot权重配置">
+            <el-input v-model="cfg.GoldJackpotWeight" placeholder="请输入内容,如8,10,12,15"> <template slot="append">用 , 连接(第一个值是金币权重)</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式出现金币及Jackpot权重配置">
+            <el-input v-model="cfg.FreeGoldJackpotWeight" placeholder="请输入内容,如8,10,12,15"> <template slot="append">用 , 连接(第一个值是金币权重)</template> </el-input>
           </el-form-item>
 
           <el-form-item label="Jackpot倍数范围">

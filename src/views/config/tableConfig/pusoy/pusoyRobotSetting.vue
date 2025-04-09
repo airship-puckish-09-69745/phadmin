@@ -999,23 +999,42 @@ export default {
     },
     getBetMoneyList(BetMoneyList) {
       if (BetMoneyList.length > 0) {
+        this.betMoneyList=[]
         for (const o in BetMoneyList) {
-          for (const i in this.betMoneyList) {
-            if (BetMoneyList[o] === this.betMoneyList[i].TableMoney) {
-              this.betMoneyList[i].IsOpen = 1
-            }
-            this.betMoneyList[i].RobotCount = BetMoneyList[o].RobotCount || 2
+          let isOpen = 0
+          if (BetMoneyList[o].IsOpen) {
+            isOpen = 1
           }
+          this.betMoneyList.push({
+            TableMoney: BetMoneyList[o].TableMoney,
+            IsOpen: isOpen,
+            RobotCount: BetMoneyList[o].RobotCount
+          })
         }
-        return this.betMoneyList
-      } else {
-        return this.betMoneyList
       }
+      console.log(this.betMoneyList)
     },
     changeBetMoneyList(BetMoneyListNew, BetMoneyList) {
       if (BetMoneyListNew.length == 0) {
-        return BetMoneyList
-      }else {
+        const tmpBetMoneyListNew = []
+        for (const i in this.betMoneyList) {
+          const tmp = this.betMoneyList[i]
+          if (BetMoneyList.includes(tmp.TableMoney)) {
+            tmpBetMoneyListNew.push({
+              TableMoney: tmp.TableMoney,
+              RobotCount: tmp.RobotCount,
+              IsOpen: true
+            })
+          }else {
+            tmpBetMoneyListNew.push({
+              TableMoney: tmp.TableMoney,
+              RobotCount: tmp.RobotCount,
+              IsOpen: false
+            })
+          }
+        }
+        return tmpBetMoneyListNew
+      } else {
         return BetMoneyListNew
       }
 
@@ -1055,7 +1074,7 @@ export default {
             this.item.BetMoneyListNew = this.item.BetMoneyListNew || []
             this.item.BetMoneyList = this.item.BetMoneyList || []
             this.item.BetMoneyListNew = this.changeBetMoneyList(this.item.BetMoneyListNew,this.item.BetMoneyList)
-            this.betMoneyList = this.getBetMoneyList(this.item.BetMoneyListNew)
+            this.getBetMoneyList(this.item.BetMoneyListNew)
             this.item.RobotAddTimeCfg = this.item.RobotAddTimeCfg || newRobotAdd()
             const old = JSON.parse(response.Data.Data)
             $this.item.EnterDelayMin /= 1000

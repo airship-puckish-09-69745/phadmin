@@ -13,6 +13,8 @@ export default {
 
       checkTime: {start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()) },
+      Uid : 0,
+      Tid:0,
       cheatLogsNewCredit: [],
       cheatLogsNewNoCredit: [],
       changeMoneyAll: 0,
@@ -79,12 +81,16 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           $this.blacks = data.Items || []
+          let mySet = new Set();
           for (let i = 0; i < $this.blacks.length; i++) {
             const black = $this.blacks[i]
-            $this.blackuids.push(black.Uid1)
-            $this.blackuids.push(black.Uid2)
-            $this.blackuids.push(black.Uid3)
+            mySet.add(black.Uid1)
+            mySet.add(black.Uid2)
+            mySet.add(black.Uid3)
           }
+          mySet.delete(0)
+          $this.blackuids = Array.from(mySet)
+          // $this.blackuids.sort((a, b) => a - b);
           $this.clientDBBlack = new ClientTableData($this.blackuids, $this.pageNum, {}, 'showBlackButton', -1)
           $this.handleCurrentChangeBlack(1)
         }
@@ -291,7 +297,7 @@ export default {
       this.refreshShowMaybe()
     },
     handleClick(row) {
-      this.$confirm('是否确认添加进黑名单，且踢出玩家?', '提示', { type: 'warning' }).then(async() => {
+      this.$confirm('是否确认添加进黑名单?', '提示', { type: 'warning' }).then(async() => {
         await this.addToBlack(row)
         await this.getBlackData()
         // this.getDataInfo()
@@ -450,37 +456,64 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           const cheatLogs = data.Items || []
+          const cheatLogsTmp = []
           if (userType === 1) {
             $this.totalCountCredit = data.Total || 0
             for (let i = 0; i < cheatLogs.length; i++) {
               const cheatLog = cheatLogs[i]
+              if ($this.Uid > 0){
+                const cheatUids = []
+                for (let j = 0; j < cheatLog.Uids.length; j++) {
+                  cheatUids.push(cheatLog.Uids[j].Uid)
+                }
+                if (!cheatUids.includes($this.Uid)) {
+                  continue
+                }
+              }
+              if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
+                continue
+              }
               if (this.MaybeUids.includes(cheatLog.Uid)) {
                 cheatLog.maybe = 1
               } else {
                 cheatLog.maybe = 0
               }
               $this.cheatLogsNewCredit.push(cheatLog)
+              cheatLogsTmp.push(cheatLog)
             }
-            cheatLogs.sort(function(a, b) {
+            cheatLogsTmp.sort(function(a, b) {
               return b.maybe - a.maybe
             })
-            $this.clientDBCredit = new ClientTableData(cheatLogs, $this.pageNum, {}, 'showBlackButton', -1)
+            $this.clientDBCredit = new ClientTableData(cheatLogsTmp, $this.pageNum, {}, 'showBlackButton', -1)
             $this.handleCurrentChangeCredit(1)
           } else {
             $this.totalCountCredit = data.Total || 0
             for (let i = 0; i < cheatLogs.length; i++) {
               const cheatLog = cheatLogs[i]
+              if ($this.Uid > 0) {
+                const cheatUids = []
+                for (let j = 0; j < cheatLog.Uids.length; j++) {
+                  cheatUids.push(cheatLog.Uids[j].Uid)
+                }
+                if (!cheatUids.includes($this.Uid)) {
+                  continue
+                }
+              }
+              if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
+                continue
+              }
               if (this.MaybeUids.includes(cheatLog.Uid)) {
                 cheatLog.maybe = 1
               } else {
                 cheatLog.maybe = 0
               }
               $this.cheatLogsNewNoCredit.push(cheatLog)
+              cheatLogsTmp.push(cheatLog)
             }
-            cheatLogs.sort(function(a, b) {
+            cheatLogsTmp.sort(function(a, b) {
               return b.maybe - a.maybe
             })
-            $this.clientDBNoCredit = new ClientTableData(cheatLogs, $this.pageNum, {}, 'showBlackButton', -1)
+            $this.clientDBNoCredit = new ClientTableData(cheatLogsTmp, $this.pageNum, {}, 'showBlackButton', -1)
             $this.handleCurrentChangeNoCredit(1)
           }
         }
@@ -514,6 +547,12 @@ export default {
                 placeholder="选择日期"
                 size="mini"
               />
+            </el-form-item>
+            <el-form-item label="UID：">
+              <el-input v-model.number="Uid" />
+            </el-form-item>
+            <el-form-item label="桌子：">
+              <el-input v-model.number="Tid" />
             </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoCredit">查询</el-button>
@@ -666,7 +705,7 @@ export default {
                   type="primary"
                   size="mini"
                   disabled
-                >已处理
+                >已拉黑
                 </el-button>
               </template>
             </el-table-column>
@@ -703,6 +742,13 @@ export default {
                 placeholder="选择日期"
                 size="mini"
               />
+            </el-form-item>
+
+            <el-form-item label="UID：">
+              <el-input v-model.number="Uid" />
+            </el-form-item>
+            <el-form-item label="桌子：">
+              <el-input v-model.number="Tid" />
             </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>
@@ -779,7 +825,37 @@ export default {
               width="120"
               align="center"
             />
-
+            <el-table-column
+              label="游戏"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatGameId(scope.row.GameId) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="TableMoney"
+              sortable
+              label="场次"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                {{ formatNumber(scope.row.TableMoney/1000) }}
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="UpdateTime"
+              label="更新时间"
+              width="120"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
+                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>
+              </template>
+            </el-table-column>
             <el-table-column
               label="操作"
               width="120"
@@ -820,7 +896,7 @@ export default {
                   type="primary"
                   size="mini"
                   disabled
-                >已处理
+                >已拉黑
                 </el-button>
               </template>
             </el-table-column>

@@ -6,6 +6,8 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 import Watermark from '@/utils/watermark'
+import {IsMars} from "@/utils/env";
+// import {IsMars} from "@/utils/env";
 /* Router Modules */
 // import componentsRouter from './modules/components'
 // import chartsRouter from './modules/charts'
@@ -732,6 +734,29 @@ export const asyncRoutes = [
                 ]
               }
             ]
+          },
+          {
+            path: '/tongitsJackpotVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'TongitsJackpot ◐' },
+            children: [
+              {
+                path: 'tongitsJackpotTable',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
+                children: [
+                  {
+                    path: 'tongitsJackpotTable',
+                    component: () => import('@/views/tongitsJackpot/table/tongitsJackpotTable'),
+                    name: 'tongitsJackpotTable',
+                    meta: { title: 'TongitsJackpot' }
+                    // eslint-disable-next-line no-mixed-spaces-and-tabs
+				          }
+                ]
+              }
+            ]
           }
         ]
       },
@@ -899,6 +924,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/bountyraid_slots_cfg'),
                 name: 'bountyraid_slots_cfg',
                 meta: { title: 'B ountyRaid' }
+              },
+              {
+                path: 'candyburst_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/candyburst_slots_cfg'),
+                name: 'candyburst_slots_cfg',
+                meta: { title: 'C andyBurst' }
               },
               {
                 path: 'candypartyway_slots_cfg',
@@ -1735,12 +1766,14 @@ export const asyncRoutes = [
         name: 'matchLimitWhite',
         meta: { title: '限制白名单', noCache: true }
       },
-      // {
-      //   path: 'matchWatcherList',
-      //   component: () => import('@/views/matchManage/watcherList.vue'),
-      //   name: 'matchWatcherList',
-      //   meta: { title: '主播名单', noCache: true }
-      // },
+      {
+        path: 'matchWatcherList',
+        component: () => import('@/views/matchManage/watcherList.vue'),
+        hidden: !IsMars(),
+        name: 'matchWatcherList',
+        meta: { title: '主播名单', noCache: true, hidden: true },
+
+      },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
@@ -2195,6 +2228,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'bountyraid_slots_log',
             meta: { title: 'B ountyRaid', gid: 192 }
+          },
+          {
+            path: 'candyburst_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candyburst_slots_log',
+            meta: { title: 'C andyBurst', gid: 208 }
           },
           {
             path: 'candypartyway_slots_log',
@@ -3206,7 +3245,13 @@ export const asyncRoutes = [
         path: 'walletSettleLog',
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
-        meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+        meta: { title: '钱包注单流水' }
+      },
+      {
+        path: 'walletRobotTransferPot',
+        component: () => import('@/views/wallet/walletRobotTransferPot.vue'),
+        name: 'walletRobotTransferPot',
+        meta: { title: 'Pot金币消费列表' }
       }
     ]
   },

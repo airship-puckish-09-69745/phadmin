@@ -77,7 +77,7 @@
         />
         <el-table-column
           prop="Ver"
-          label="客户端版本"
+          label="客户端子版本"
           width="100"
         />
         <!--        <el-table-column-->
@@ -111,12 +111,12 @@
         </el-table-column>
         <el-table-column
           prop="TestVer"
-          label="客户端测试版本"
+          label="客户端预发布子版本"
           width="100"
         />
         <el-table-column
           prop="TestUri"
-          label="客户端测试地址"
+          label="客户端预发布地址"
           width="100"
         />
         <el-table-column
@@ -243,7 +243,7 @@
         <!--            </el-tooltip>-->
         <!--          </el-col>-->
         <!--        </el-form-item>-->
-        <el-form-item label="菲1客户端版本：" :required="true" prop="Ver">
+        <el-form-item label="菲1客户端子版本：" :required="true" prop="Ver">
           <el-col :span="15">
             <el-input v-model="edit.item.Ver" />
           </el-col>
@@ -258,12 +258,12 @@
           <!--            </el-tooltip>-->
           <!--          </el-col>-->
         </el-form-item>
-        <el-form-item label="菲1客户端测试版本：" :required="true" prop="TestVer">
+        <el-form-item label="菲1客户端预发布子版本：" :required="true" prop="TestVer">
           <el-col :span="15">
             <el-input v-model="edit.item.TestVer" />
           </el-col>
         </el-form-item>
-        <el-form-item label="菲1客户端测试uri：" prop="TestUri">
+        <el-form-item label="菲1客户端预发布uri：" prop="TestUri">
           <el-col :span="15">
             <el-input v-model="edit.item.TestUri" />
           </el-col>
@@ -354,11 +354,12 @@ export default {
         Intro: '描述',
         Secret: '密钥',
         Ip: 'IP白名单',
-        Ver: '客户端版本',
+        Ver: '客户端子版本',
         GamefunVer: '菲1gamefun版本',
         GameUri: '菲1客户端uri',
         Screen: '横竖屏',
-        TestUri: '菲1客户端测试uri',
+        TestUri: '菲1客户端预发布uri',
+        TestVer: '菲1客户端预发布子版本',
         TestUids: '菲1测试用户uid白名单',
         TexasUri: '德州客户端uri',
         LiveUri: '直播客户端uri'

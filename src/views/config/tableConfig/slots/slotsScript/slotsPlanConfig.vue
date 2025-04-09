@@ -301,6 +301,11 @@
                 检查
               </el-button>
       </el-tooltip>
+      <el-tooltip content="检查剧本中出现个数=单个剧本步数" class="item" effect="dark" placement="top">
+              <el-button type="primary" @click="checkScriptSum" size="mini" style="background: #43bef3">
+                检查个数总和
+              </el-button>
+      </el-tooltip>
       <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
         <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
       </el-tooltip>
@@ -431,6 +436,10 @@
               </el-tooltip>
               <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
                 <el-button type="primary" @click="checkBetPlansSum(scope.$index)" size="mini" style="background-color:#b600ff">检查
+                </el-button>
+              </el-tooltip>
+                 <el-tooltip content="总个数==单个剧本步数" effect="dark" placement="top">
+                <el-button type="primary" @click="checkPlansSumScript(scope.$index)" size="mini" style="background-color:#da00bd">检查总个数
                 </el-button>
               </el-tooltip>
             </el-col>
@@ -1473,6 +1482,19 @@ export default {
 
       Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
     },
+    checkScriptSum() {
+      let cnt = 0
+      for (const i in this.editSlotsScriptOddsCfgFormData) {
+        let obj = this.editSlotsScriptOddsCfgFormData[i]
+        cnt += obj.ScriptSteps
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      if (cnt === scriptSteps){
+        Message.success('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
+      }else {
+        Message.error('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
+      }
+    },
     validateDteOddsSum() {
       let str = ''
       if (this.editSlotsScriptOddsCfgFormData.length===0){
@@ -1516,6 +1538,18 @@ export default {
         Message.success("数据ok的！" + str)
       } else {
         Message.error('数据异常:' + str)
+      }
+    },
+    checkPlansSumScript(idx) {
+      let cnt = 0
+      for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
+        cnt += o.ScriptSteps
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      if (cnt === scriptSteps){
+        Message.success('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
+      }else {
+        Message.error('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
       }
     },
     // 关闭弹窗时的处理函数
