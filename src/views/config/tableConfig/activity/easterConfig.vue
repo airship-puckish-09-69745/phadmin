@@ -1047,6 +1047,7 @@ export default {
           item.RuleImgHor = JSON.parse(item.RuleImgHor)
           item.RuleImgVer = JSON.parse(item.RuleImgVer)
           item.DayPrizeThreshold = item.DayPrizeThreshold / 1000
+          item.DebugTimeOffset = item.DebugTimeOffset || 0
 
           for (let i = 0; i < item.RankCfg.length; i++) {
             const rankCfg = item.RankCfg[i]
