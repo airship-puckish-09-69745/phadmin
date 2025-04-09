@@ -964,6 +964,7 @@ export default {
       data.EggCfg = JSON.stringify(this.edit.item.EggCfg)
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
+      data.DebugTimeOffset = this.edit.item.DebugTimeOffset
       return data
     },
     handleSave() {
