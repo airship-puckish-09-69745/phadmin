@@ -106,7 +106,7 @@ export default {
       item: [],
       form: {
         Uid: 0,
-        DateRange: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 3),new Date(new Date().getTime() - 3600 * 1000 * 24 * 1)],
+        DateRange: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 2),new Date(new Date().getTime())],
         Date: $libDate.GetDayBegin(new Date().getTime()),
         Gid: 0,
         Blind: 0,
