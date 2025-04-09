@@ -756,7 +756,7 @@ export const asyncRoutes = [
 				          },
                   {
                     path: 'tongitsJackpotAIConfig',
-                    component: () => import('@/views/tongitsJackpot/table/tongitsJackpotAIConfig'),
+                    component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
                     name: 'tongitsJackpotAIConfig',
                     meta: { title: 'TongitsJP AI配置 ◐' }
                   }
