@@ -168,6 +168,13 @@
                     <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
                   </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                  <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
+                    <el-input v-model.number="edit.item.DebugTimeOffset">
+                      <template slot="append">秒</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
               </el-form>
           </el-row>
           <el-row :gutter="5">
