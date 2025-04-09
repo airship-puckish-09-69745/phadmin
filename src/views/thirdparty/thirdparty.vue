@@ -56,7 +56,7 @@
           prop="ID"
           label="ID"
           sortable="custom"
-          width="90"
+          width="80"
         />
         <el-table-column
           prop="Account"
