@@ -243,7 +243,7 @@
         <!--            </el-tooltip>-->
         <!--          </el-col>-->
         <!--        </el-form-item>-->
-        <el-form-item label="菲1客户端版本：" :required="true" prop="Ver">
+        <el-form-item label="菲1客户端子版本：" :required="true" prop="Ver">
           <el-col :span="15">
             <el-input v-model="edit.item.Ver" />
           </el-col>
@@ -258,12 +258,12 @@
           <!--            </el-tooltip>-->
           <!--          </el-col>-->
         </el-form-item>
-        <el-form-item label="菲1客户端测试版本：" :required="true" prop="TestVer">
+        <el-form-item label="菲1客户端预发布子版本：" :required="true" prop="TestVer">
           <el-col :span="15">
             <el-input v-model="edit.item.TestVer" />
           </el-col>
         </el-form-item>
-        <el-form-item label="菲1客户端测试uri：" prop="TestUri">
+        <el-form-item label="菲1客户端预发布uri：" prop="TestUri">
           <el-col :span="15">
             <el-input v-model="edit.item.TestUri" />
           </el-col>
