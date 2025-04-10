@@ -457,6 +457,8 @@ export default {
           console.log(response.Data)
           if (response.Data !== 'empty') {
             this.creditStat = response.Data
+          } else {
+            this.$message.error(response.Data+"没有数据")
           }
         }
       })

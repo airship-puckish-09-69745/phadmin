@@ -741,21 +741,27 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'TongitsJackpot ◐' },
             children: [
-              {
-                path: 'tongitsJackpotTable',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
-                children: [
+              //{
+              //  path: 'tongitsJackpotTable',
+              //  component: () => import('@/views/empty'),
+              //  redirect: 'noRedirect',
+              //  meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
+              //  children: [
                   {
                     path: 'tongitsJackpotTable',
                     component: () => import('@/views/tongitsJackpot/table/tongitsJackpotTable'),
                     name: 'tongitsJackpotTable',
-                    meta: { title: 'TongitsJackpot' }
+                    meta: { title: 'TongitsJP配桌 ◐' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
-				          }
-                ]
-              }
+				          },
+                  {
+                    path: 'tongitsJackpotAIConfig',
+                    component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
+                    name: 'tongitsJackpotAIConfig',
+                    meta: { title: 'TongitsJP AI配置 ◐' }
+                  }
+              //  ]
+              //}
             ]
           }
         ]
@@ -2230,6 +2236,12 @@ export const asyncRoutes = [
             meta: { title: 'B ountyRaid', gid: 192 }
           },
           {
+            path: 'candyburst_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candyburst_slots_log',
+            meta: { title: 'C andyBurst', gid: 208 }
+          },
+          {
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyway_slots_log',
@@ -3239,7 +3251,7 @@ export const asyncRoutes = [
         path: 'walletSettleLog',
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
-        meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+        meta: { title: '钱包注单流水' }
       },
       {
         path: 'walletRobotTransferPot',

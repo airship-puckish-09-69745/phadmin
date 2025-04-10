@@ -168,6 +168,13 @@
                     <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
                   </el-form-item>
                 </el-col>
+                <el-col :span="12">
+                  <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
+                    <el-input v-model.number="edit.item.DebugTimeOffset">
+                      <template slot="append">秒</template>
+                    </el-input>
+                  </el-form-item>
+                </el-col>
               </el-form>
           </el-row>
           <el-row :gutter="5">
@@ -957,6 +964,7 @@ export default {
       data.EggCfg = JSON.stringify(this.edit.item.EggCfg)
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
+      data.DebugTimeOffset = this.edit.item.DebugTimeOffset
       return data
     },
     handleSave() {
@@ -1039,6 +1047,7 @@ export default {
           item.RuleImgHor = JSON.parse(item.RuleImgHor)
           item.RuleImgVer = JSON.parse(item.RuleImgVer)
           item.DayPrizeThreshold = item.DayPrizeThreshold / 1000
+          item.DebugTimeOffset = item.DebugTimeOffset || 0
 
           for (let i = 0; i < item.RankCfg.length; i++) {
             const rankCfg = item.RankCfg[i]
