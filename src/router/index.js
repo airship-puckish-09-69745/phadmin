@@ -1035,6 +1035,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'luckywineglass_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckywineglass_slots_cfg'),
+                name: 'luckywineglass_slots_cfg',
+                meta: { title: 'L uckyWineglass' }
+              },
+              {
                 path: 'crazy777_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777_slots_cfg'),
                 name: 'crazy777_slots_cfg',
@@ -1215,6 +1221,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
                 name: 'supergemiimars_slots_cfg',
                 meta: { title: 'SuperGemsII(审)' }
+              },
+              {
+                path: 'luckywineglassmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckywineglassmars_slots_cfg'),
+                name: 'luckywineglassmars_slots_cfg',
+                meta: { title: 'LuckyWineglass(审)' }
               },
               {
                 path: 'crazy777mars_slots_cfg',
@@ -2339,6 +2351,12 @@ export const asyncRoutes = [
             meta: { title: 'G oldTrain', gid: 194 }
           },
           {
+            path: 'luckywineglass_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckywineglass_slots_log',
+            meta: { title: 'L uckyWineglass', gid: 206 }
+          },
+          {
             path: 'crazy777_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'crazy777_slots_log',
@@ -2639,6 +2657,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneblessingmars_slots_log',
             meta: { title: 'FortuneBlessing(审)', gid: 199 }
+          },
+          {
+            path: 'luckywineglassmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckywineglassmars_slots_log',
+            meta: { title: 'LuckyWineglass(审)', gid: 207 }
           },
           {
             path: 'fortunateebisumars_slots_log',
