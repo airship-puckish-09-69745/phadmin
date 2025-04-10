@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['ID']" />
+      <publish primary-key="cfgId" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -547,7 +547,6 @@ function newEggs() {
 
 function newItem() {
   const eggs = newEggs()
-  console.log('eggs:' + eggs)
   return {
     ID: 0,
     IsOpen: 1,
@@ -659,6 +658,7 @@ export default {
       },
       env: 'test',
       AttrNames: {
+        CfgId: '配置ID',
         IsOpen: '是否开启',
         StartTime: '开始时间',
         EndTime: '结束时间',
@@ -675,6 +675,7 @@ export default {
         EggCfg: '彩蛋配置',
         EggShellsPerRaffle: '每抽蛋壳数量',
         EggShellsRaffleFirst: '首抽蛋壳数量',
+        DebugTimeOffset: '调试时间偏移',
       },
       treeData: [{
         id: 1,
@@ -771,6 +772,17 @@ export default {
     }
   },
   methods: {
+    getPublishAttrNames() {
+      // 将首字母改为小写
+      const attrNames = {}
+      for (const key in this.AttrNames) {
+        if (this.AttrNames.hasOwnProperty(key)) {
+          const newKey = key.charAt(0).toLowerCase() + key.slice(1)
+          attrNames[newKey] = this.AttrNames[key]
+        }
+      }
+      return attrNames
+    },
     configCheck() {
       return true
     },
