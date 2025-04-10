@@ -69,6 +69,46 @@ export default {
           label: '3人局2人crack'
         }
       ],
+
+      tablemoney:0,
+      tableMoneyList: [
+        {
+          value: 0,
+          label: '全部'
+        },
+        {
+          value: 1000,
+          label: '1'
+        },
+        {
+          value: 5000,
+          label: '5'
+        },
+        {
+          value: 10000,
+          label: '10'
+        },
+        {
+          value: 20000,
+          label: '20'
+        },
+        {
+          value: 50000,
+          label: '50'
+        },
+        {
+          value: 100000,
+          label: '100'
+        },
+        {
+          value: 200000,
+          label: '200'
+        },
+        {
+          value: 500000,
+          label: '500'
+        }
+      ],
       blacks: [],
       blackuids: [],
       MaybeUids: [],
@@ -555,6 +595,9 @@ export default {
             if ($this.Gid > 0 && cheatLog.GameId !== $this.Gid) {
               continue
             }
+            if ($this.tablemoney > 0 && cheatLog.TableMoney !== $this.tablemoney) {
+              continue
+            }
             if ($this.cheatSel > 0) {
               switch ($this.cheatSel) {
                 case 1:
@@ -659,11 +702,11 @@ export default {
 
           if (userType === 1) {
             $this.totalCountCredit = data.Total || 0
-            $this.clientDBCredit = new ClientTableData(cheatLogsNew, $this.pageNum, filterMap, 'showBlackButton', -1)
+            $this.clientDBCredit = new ClientTableData(cheatLogsNew, $this.pageNum, {}, 'showBlackButton', -1)
             $this.handleCurrentChangeCredit(1)
           } else {
             $this.totalCountCredit = data.Total || 0
-            $this.clientDBNoCredit = new ClientTableData(cheatLogsNew, $this.pageNum, filterMap, 'showBlackButton', -1)
+            $this.clientDBNoCredit = new ClientTableData(cheatLogsNew, $this.pageNum, {}, 'showBlackButton', -1)
             $this.handleCurrentChangeNoCredit(1)
           }
         }
@@ -718,6 +761,16 @@ export default {
               <el-select v-model.number="cheatSel" placeholder="请选择">
                 <el-option
                   v-for="itemCheat in cheatOptions"
+                  :key="itemCheat.value"
+                  :label="itemCheat.label"
+                  :value="itemCheat.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="场次：">
+              <el-select v-model.number="tablemoney" placeholder="请选择">
+                <el-option
+                  v-for="itemCheat in tableMoneyList"
                   :key="itemCheat.value"
                   :label="itemCheat.label"
                   :value="itemCheat.value"
@@ -841,18 +894,18 @@ export default {
               width="80"
               align="center"
             >
-<!--              <template slot-scope="scope">-->
-<!--                {{ formatNumber(scope.row.TableMoney/1000) }}-->
-<!--              </template>-->
-              <template v-slot:header>
-                <el-select v-model="clientDBCredit.FilterValueMap['TableMoney']" size="mini" @change="handleCreditFilter">
-                  <el-option label="作弊场次" :value="0" />
-                  <el-option v-for="(o,key) in clientDBCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
-                </el-select>
-              </template>
               <template slot-scope="scope">
-                {{ clientDBCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}
+                {{ formatNumber(scope.row.TableMoney) }}
               </template>
+<!--              <template v-slot:header>-->
+<!--                <el-select v-model="clientDBCredit.FilterValueMap['TableMoney']" size="mini" @change="handleCreditFilter">-->
+<!--                  <el-option label="作弊场次" :value="0" />-->
+<!--                  <el-option v-for="(o,key) in clientDBCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />-->
+<!--                </el-select>-->
+<!--              </template>-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ clientDBCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}-->
+<!--              </template>-->
             </el-table-column>
             <el-table-column
               label="操作"
@@ -953,6 +1006,16 @@ export default {
               <el-select v-model.number="cheatSel" placeholder="请选择">
                 <el-option
                   v-for="itemCheat in cheatOptions"
+                  :key="itemCheat.value"
+                  :label="itemCheat.label"
+                  :value="itemCheat.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="场次：">
+              <el-select v-model.number="tablemoney" placeholder="请选择">
+                <el-option
+                  v-for="itemCheat in tableMoneyList"
                   :key="itemCheat.value"
                   :label="itemCheat.label"
                   :value="itemCheat.value"
@@ -1075,18 +1138,18 @@ export default {
               width="120"
               align="center"
             >
-<!--              <template slot-scope="scope">-->
-<!--                {{ formatNumber(scope.row.TableMoney/1000) }}-->
-<!--              </template>-->
-              <template v-slot:header>
-                <el-select v-model="clientDBNoCredit.FilterValueMap['TableMoney']" size="mini" @change="handleNoCreditFilter">
-                  <el-option label="作弊场次" :value="0" />
-                  <el-option v-for="(o,key) in clientDBNoCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
-                </el-select>
-              </template>
               <template slot-scope="scope">
-                {{ clientDBNoCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}
+                {{ formatNumber(scope.row.TableMoney) }}
               </template>
+<!--              <template v-slot:header>-->
+<!--                <el-select v-model="clientDBNoCredit.FilterValueMap['TableMoney']" size="mini" @change="handleNoCreditFilter">-->
+<!--                  <el-option label="作弊场次" :value="0" />-->
+<!--                  <el-option v-for="(o,key) in clientDBNoCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />-->
+<!--                </el-select>-->
+<!--              </template>-->
+<!--              <template slot-scope="scope">-->
+<!--                {{ clientDBNoCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}-->
+<!--              </template>-->
             </el-table-column>
 <!--            <el-table-column-->
 <!--              prop="UpdateTime"-->
