@@ -333,6 +333,7 @@ export default {
     },
     handleSelect(key) {
       this.dataType = key
+      this.activeIndex = key
       this.getList(this.dataType)
     },
     handleDelete(row) {

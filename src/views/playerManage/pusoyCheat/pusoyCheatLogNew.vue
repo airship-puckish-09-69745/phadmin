@@ -1,7 +1,11 @@
 <script>
 import request from '@/utils/request'
 import { $libDate, $libType, ClientTableData } from '@/utils/common'
-
+import { map } from 'core-js/internals/array-iteration'
+const filterMap = {
+  currentTableMoney: 'all',
+  TableMoney: 'all'
+}
 export default {
   data() {
     return {
@@ -11,10 +15,11 @@ export default {
       cheatLogsBlack: [],
       cheatLogsMaybe: [],
 
-      checkTime: {start: $libDate.GetDayBegin(new Date().getTime()),
+      checkTime: { start: $libDate.GetDayBegin(new Date().getTime()),
         end: $libDate.GetDayEnd(new Date().getTime()) },
-      Uid : 0,
-      Tid:0,
+      Uid: 0,
+      Tid: 0,
+      Gid: 21,
       cheatLogsNewCredit: [],
       cheatLogsNewNoCredit: [],
       changeMoneyAll: 0,
@@ -22,7 +27,6 @@ export default {
       totalCount: 0,
       currentPage: 1,
       pageNum: 20,
-      Gid: 21,
       options: [{
         value: 21,
         label: 'PUSOY'
@@ -30,6 +34,41 @@ export default {
         value: 126,
         label: 'PUSOYWILD'
       }],
+      cheatSel:0,
+      cheatOptions: [
+        {
+          value: 0,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '全垒打2人做小'
+        },
+        {
+          value: 2,
+          label: '全垒打1人做小'
+        },
+        {
+          value: 3,
+          label: '4人局躲加分牌'
+        },
+        {
+          value: 4,
+          label: '3人局做小牌'
+        },
+        {
+          value: 5,
+          label: '3人局全crack'
+        },
+        {
+          value: 6,
+          label: '3人局全0分'
+        },
+        {
+          value: 7,
+          label: '3人局2人crack'
+        }
+      ],
       blacks: [],
       blackuids: [],
       MaybeUids: [],
@@ -81,7 +120,7 @@ export default {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           $this.blacks = data.Items || []
-          let mySet = new Set();
+          const mySet = new Set()
           for (let i = 0; i < $this.blacks.length; i++) {
             const black = $this.blacks[i]
             mySet.add(black.Uid1)
@@ -160,6 +199,9 @@ export default {
     formatTimeDate(ts) {
       return $libDate.FormateSecondStr(ts, 1)
     },
+    formatTimeDate2(ts) {
+      return $libDate.FormateSecondStr(ts, 2)
+    },
     formatCredit(row) {
       if (row.UserType === 1) {
         return ' 信誉用户'
@@ -186,6 +228,29 @@ export default {
     },
     isShow(row) {
       return row.Tid !== 0
+    },
+    showCheatInfo(row) {
+      if (row.ShootAllTwo > 0) {
+        return ' 全垒打2人做小 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ShootAllOne > 0) {
+        return ' 全垒打1人做小 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ExtraAddScore > 0) {
+        return ' 4人局躲加分牌 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ThreeSmall > 0) {
+        return ' 3人局做小牌 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ThreeCrack > 0) {
+        return ' 3人局全crack 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ThreeZero > 0) {
+        return ' 3人局全0分 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ThreeTwoCrack > 0) {
+        return ' 3人局2人crack 在' + this.formatTimeDate2(row.UpdateTime)
+      }
     },
     formatCheatDateShootAllTwo(row) {
       return ' (全垒打2人做小) ' + row.ShootAllTwo + ' 次'
@@ -330,7 +395,7 @@ export default {
     },
     async addToBlack(row) {
       const $this = this
-      const uids = [0,0,0]
+      const uids = [0, 0, 0]
       for (let i = 0; i < row.Uids.length; i++) {
         uids[i] = row.Uids[i].Uid
       }
@@ -357,7 +422,7 @@ export default {
     },
     async addToMaybe(row) {
       const $this = this
-      const uids = [0,0,0]
+      const uids = [0, 0, 0]
       for (let i = 0; i < row.Uids.length; i++) {
         uids[i] = row.Uids[i].Uid
       }
@@ -369,7 +434,7 @@ export default {
           Path: '/misc/pusoy/maybe/add',
           Uid1: uids[0],
           Uid2: uids[1],
-          Uid3: uids[2],
+          Uid3: uids[2]
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -381,7 +446,7 @@ export default {
     },
     async delToMaybe(row) {
       const $this = this
-      const uids = [0,0,0]
+      const uids = [0, 0, 0]
       for (let i = 0; i < row.Uids.length; i++) {
         uids[i] = row.Uids[i].Uid
       }
@@ -393,7 +458,7 @@ export default {
           Path: '/misc/pusoy/maybe/del',
           Uid1: uids[0],
           Uid2: uids[1],
-          Uid3: uids[2],
+          Uid3: uids[2]
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -428,6 +493,16 @@ export default {
         }
       })
     },
+    handleCreditFilter(k, v) {
+      console.log('k=>', k, 'v==>', v)
+      this.clientDBCredit.FilterData()
+      this.refreshShowCredit()
+    },
+    handleNoCreditFilter(k, v) {
+      console.log('k=>', k, 'v==>', v)
+      this.clientDBNoCredit.FilterData()
+      this.refreshShowNoCredit()
+    },
     async getDataCreditNew(userType) {
       const $this = this
       if (userType === 1) {
@@ -449,71 +524,146 @@ export default {
           Page: 1,
           Limit: 9999,
           UserType: userType,
-          Start: this.checkTime.start/1000,
-          End: this.checkTime.end/1000,
+          Start: this.checkTime.start / 1000,
+          End: this.checkTime.end / 1000
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const data = response.Data || {}
           const cheatLogs = data.Items || []
-          const cheatLogsTmp = []
-          if (userType === 1) {
-            $this.totalCountCredit = data.Total || 0
-            for (let i = 0; i < cheatLogs.length; i++) {
-              const cheatLog = cheatLogs[i]
-              if ($this.Uid > 0){
-                const cheatUids = []
-                for (let j = 0; j < cheatLog.Uids.length; j++) {
-                  cheatUids.push(cheatLog.Uids[j].Uid)
-                }
-                if (!cheatUids.includes($this.Uid)) {
-                  continue
-                }
-              }
-              if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
+          const cheatLogsNew = []
+          const cheatLogsMap = new Map()
+
+          for (let i = 0; i < cheatLogs.length; i++) {
+            const cheatLog = cheatLogs[i]
+
+            let key = ''
+            const cheatUids = []
+            for (let j = 0; j < cheatLog.Uids.length; j++) {
+              cheatUids.push(cheatLog.Uids[j].Uid)
+              key += String(cheatLog.Uids[j].Uid)
+            }
+            key += String(cheatLog.Tid)
+            if ($this.Uid > 0) {
+              if (!cheatUids.includes($this.Uid)) {
                 continue
               }
-              if (this.MaybeUids.includes(cheatLog.Uid)) {
-                cheatLog.maybe = 1
-              } else {
-                cheatLog.maybe = 0
-              }
-              $this.cheatLogsNewCredit.push(cheatLog)
-              cheatLogsTmp.push(cheatLog)
             }
-            cheatLogsTmp.sort(function(a, b) {
-              return b.maybe - a.maybe
-            })
-            $this.clientDBCredit = new ClientTableData(cheatLogsTmp, $this.pageNum, {}, 'showBlackButton', -1)
+            if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
+              continue
+            }
+            if ($this.Gid > 0 && cheatLog.GameId !== $this.Gid) {
+              continue
+            }
+            if ($this.cheatSel > 0) {
+              switch ($this.cheatSel) {
+                case 1:
+                  if (cheatLog.ShootAllTwo !== 1) {
+                    continue
+                  }
+                  break
+                case 2:
+                  if (cheatLog.ShootAllOne !== 1) {
+                    continue
+                  }
+                  break
+                case 3:
+                  if (cheatLog.ExtraAddScore !== 1) {
+                    continue
+                  }
+                  break
+                case 4:
+                  if (cheatLog.ThreeSmall !== 1) {
+                    continue
+                  }
+                  break
+                case 5:
+                  if (cheatLog.ThreeCrack !== 1) {
+                    continue
+                  }
+                  break
+                case 6:
+                  if (cheatLog.ThreeZero !== 1) {
+                    continue
+                  }
+                  break
+                case 7:
+                  if (cheatLog.ThreeTwoCrack !== 1) {
+                    continue
+                  }
+                  break
+              }
+            }
+            if (this.MaybeUids.includes(cheatLog.Uid)) {
+              cheatLog.maybe = 1
+            } else {
+              cheatLog.maybe = 0
+            }
+            if (!cheatLogsMap.has(key)) {
+              const cheatLogArr = []
+              cheatLogArr.push(cheatLog)
+              cheatLogsMap.set(key, cheatLogArr)
+            } else {
+              const cheatLogArr = cheatLogsMap.get(key)
+              cheatLogArr.push(cheatLog)
+              cheatLogsMap.set(key, cheatLogArr)
+            }
+          }
+
+          for (const [key, value] of cheatLogsMap) {
+            const cheatLogNew = {}
+            cheatLogNew.Uids = value[0].Uids
+            cheatLogNew.Tid = value[0].Tid
+            cheatLogNew.CheatType = value[0].CheatType
+            cheatLogNew.GameId = value[0].GameId
+            cheatLogNew.TableMoney = value[0].TableMoney /1000
+            cheatLogNew.DefenseScore = value[0].DefenseScore
+
+            let shootAllOne = 0
+            let shootAllTwo = 0
+            let extraAddScore = 0
+            let threeSmall = 0
+            let threeCrack = 0
+            let threeZero = 0
+            let threeTwoCrack = 0
+            for (let i = 0; i < value.length; i++) {
+              const cheatLog = value[i]
+              if (cheatLog.ShootAllOne === 1) {
+                shootAllOne++
+                cheatLogNew.DefenseScore = cheatLog.DefenseScore
+              } else if (cheatLog.ShootAllTwo === 1) {
+                shootAllTwo++
+                cheatLogNew.DefenseScore = cheatLog.DefenseScore
+              } else if (cheatLog.ExtraAddScore === 1) {
+                extraAddScore++
+              } else if (cheatLog.ThreeSmall === 1) {
+                threeSmall++
+              } else if (cheatLog.ThreeCrack === 1) {
+                threeCrack++
+              } else if (cheatLog.ThreeZero === 1) {
+                threeZero++
+              } else if (cheatLog.ThreeTwoCrack === 1) {
+                threeTwoCrack++
+              }
+            }
+            cheatLogNew.ShootAllOne = shootAllOne
+            cheatLogNew.ShootAllTwo = shootAllTwo
+            cheatLogNew.ExtraAddScore = extraAddScore
+            cheatLogNew.ThreeSmall = threeSmall
+            cheatLogNew.ThreeCrack = threeCrack
+            cheatLogNew.ThreeZero = threeZero
+            cheatLogNew.ThreeTwoCrack = threeTwoCrack
+            cheatLogNew.CheatLogs = value
+            cheatLogsNew.push(cheatLogNew)
+          }
+
+          if (userType === 1) {
+            $this.totalCountCredit = data.Total || 0
+            $this.clientDBCredit = new ClientTableData(cheatLogsNew, $this.pageNum, filterMap, 'showBlackButton', -1)
             $this.handleCurrentChangeCredit(1)
           } else {
             $this.totalCountCredit = data.Total || 0
-            for (let i = 0; i < cheatLogs.length; i++) {
-              const cheatLog = cheatLogs[i]
-              if ($this.Uid > 0) {
-                const cheatUids = []
-                for (let j = 0; j < cheatLog.Uids.length; j++) {
-                  cheatUids.push(cheatLog.Uids[j].Uid)
-                }
-                if (!cheatUids.includes($this.Uid)) {
-                  continue
-                }
-              }
-              if ($this.Tid > 0 && cheatLog.Tid !== $this.Tid) {
-                continue
-              }
-              if (this.MaybeUids.includes(cheatLog.Uid)) {
-                cheatLog.maybe = 1
-              } else {
-                cheatLog.maybe = 0
-              }
-              $this.cheatLogsNewNoCredit.push(cheatLog)
-              cheatLogsTmp.push(cheatLog)
-            }
-            cheatLogsTmp.sort(function(a, b) {
-              return b.maybe - a.maybe
-            })
-            $this.clientDBNoCredit = new ClientTableData(cheatLogsTmp, $this.pageNum, {}, 'showBlackButton', -1)
+            $this.clientDBNoCredit = new ClientTableData(cheatLogsNew, $this.pageNum, filterMap, 'showBlackButton', -1)
             $this.handleCurrentChangeNoCredit(1)
           }
         }
@@ -554,17 +704,35 @@ export default {
             <el-form-item label="桌子：">
               <el-input v-model.number="Tid" />
             </el-form-item>
+            <el-form-item label="游戏：">
+              <el-select v-model.number="Gid" placeholder="请选择">
+                <el-option
+                  v-for="itemGid in options"
+                  :key="itemGid.value"
+                  :label="itemGid.label"
+                  :value="itemGid.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="作弊类型：">
+              <el-select v-model.number="cheatSel" placeholder="请选择">
+                <el-option
+                  v-for="itemCheat in cheatOptions"
+                  :key="itemCheat.value"
+                  :label="itemCheat.label"
+                  :value="itemCheat.value"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoCredit">查询</el-button>
             </el-form-item>
           </el-form>
 
-
-
           <el-table
             :data="cheatLogsCredit"
             border
-            style="width: 1550px;"
+            style="width: 1800px;"
           >
             <el-table-column
               label="玩家信息"
@@ -614,7 +782,7 @@ export default {
             />
             <el-table-column
               label="作弊数据"
-              width="250"
+              width="180"
               align="center"
             >
               <template slot-scope="scope">
@@ -628,9 +796,33 @@ export default {
               </template>
             </el-table-column>
             <el-table-column
+              label="具体作弊信息"
+              width="445"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-table
+                  :data="scope.row.CheatLogs"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="作弊信息"
+                    width="420"
+                    align="center"
+                  >
+                    <template slot-scope="scope">
+                      <div>{{ showCheatInfo(scope.row) }}</div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+
+            </el-table-column>
+            <el-table-column
               prop="DefenseScore"
               label="防守分值"
-              width="120"
+              width="80"
               align="center"
             />
             <el-table-column
@@ -646,25 +838,22 @@ export default {
               prop="TableMoney"
               sortable
               label="场次"
-              width="120"
+              width="80"
               align="center"
             >
+<!--              <template slot-scope="scope">-->
+<!--                {{ formatNumber(scope.row.TableMoney/1000) }}-->
+<!--              </template>-->
+              <template v-slot:header>
+                <el-select v-model="clientDBCredit.FilterValueMap['TableMoney']" size="mini" @change="handleCreditFilter">
+                  <el-option label="作弊场次" :value="0" />
+                  <el-option v-for="(o,key) in clientDBCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
+                </el-select>
+              </template>
               <template slot-scope="scope">
-                {{ formatNumber(scope.row.TableMoney/1000) }}
+                {{ clientDBCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="UpdateTime"
-              label="更新时间"
-              width="120"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
-                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>
-              </template>
-            </el-table-column>
-
             <el-table-column
               label="操作"
               width="120"
@@ -750,6 +939,26 @@ export default {
             <el-form-item label="桌子：">
               <el-input v-model.number="Tid" />
             </el-form-item>
+            <el-form-item label="游戏：">
+              <el-select v-model.number="Gid" placeholder="请选择">
+                <el-option
+                  v-for="itemGid in options"
+                  :key="itemGid.value"
+                  :label="itemGid.label"
+                  :value="itemGid.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="作弊类型：">
+              <el-select v-model.number="cheatSel" placeholder="请选择">
+                <el-option
+                  v-for="itemCheat in cheatOptions"
+                  :key="itemCheat.value"
+                  :label="itemCheat.label"
+                  :value="itemCheat.value"
+                />
+              </el-select>
+            </el-form-item>
             <el-form-item>
               <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>
             </el-form-item>
@@ -757,7 +966,7 @@ export default {
           <el-table
             :data="cheatLogsNoCredit"
             border
-            style="width: 1550px;"
+            style="width: 1800px;"
           >
             <el-table-column
               label="玩家信息"
@@ -806,7 +1015,7 @@ export default {
             />
             <el-table-column
               label="作弊数据"
-              width="250"
+              width="180"
               align="center"
             >
               <template slot-scope="scope">
@@ -819,10 +1028,35 @@ export default {
                 <div v-show="scope.row.Tid === 0">{{ formatCheatDateThreeCrack(scope.row) }}</div>
               </template>
             </el-table-column>
+
+            <el-table-column
+              label="具体作弊信息"
+              width="445"
+              align="center"
+            >
+              <template slot-scope="scope">
+                <el-table
+                  :data="scope.row.CheatLogs"
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="作弊信息"
+                    width="420"
+                    align="center"
+                  >
+                    <template slot-scope="scope">
+                      <div>{{ showCheatInfo(scope.row) }}</div>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </template>
+
+            </el-table-column>
             <el-table-column
               prop="DefenseScore"
               label="防守分值"
-              width="120"
+              width="80"
               align="center"
             />
             <el-table-column
@@ -841,21 +1075,30 @@ export default {
               width="120"
               align="center"
             >
+<!--              <template slot-scope="scope">-->
+<!--                {{ formatNumber(scope.row.TableMoney/1000) }}-->
+<!--              </template>-->
+              <template v-slot:header>
+                <el-select v-model="clientDBNoCredit.FilterValueMap['TableMoney']" size="mini" @change="handleNoCreditFilter">
+                  <el-option label="作弊场次" :value="0" />
+                  <el-option v-for="(o,key) in clientDBNoCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />
+                </el-select>
+              </template>
               <template slot-scope="scope">
-                {{ formatNumber(scope.row.TableMoney/1000) }}
+                {{ clientDBNoCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}
               </template>
             </el-table-column>
-            <el-table-column
-              prop="UpdateTime"
-              label="更新时间"
-              width="120"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>
-                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>
-              </template>
-            </el-table-column>
+<!--            <el-table-column-->
+<!--              prop="UpdateTime"-->
+<!--              label="更新时间"-->
+<!--              width="120"-->
+<!--              align="center"-->
+<!--            >-->
+<!--              <template slot-scope="scope">-->
+<!--                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>-->
+<!--                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
             <el-table-column
               label="操作"
               width="120"
