@@ -2134,9 +2134,9 @@ export default {
 
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
           if(!this.propTakeEffectCheck()){
-            this.errmsg('所选择的道具不生效')
-          }
+            this.errmsg('所选择的道具不生效,请检查')
             return false
+          }
         }
         if (element.rewardItems.length == 0) {
           this.errmsg('请添加奖励配置')
@@ -2349,7 +2349,7 @@ export default {
     propCheck(){
       if (this.editForm.data.signUpType === 2 || this.editForm.data.signUpType === 3) {
         if(this.editForm.signExtra.propId > 0){
-          if(this.propTakeEffectCheck() === false){
+          if(!this.propTakeEffectCheck()){
             this.errmsg("所选择的道具不生效")
             return false
           }
@@ -2379,9 +2379,11 @@ export default {
     },
     propTakeEffectCheck(){
       this.getMatchProps()
-      for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
-        if (this.editForm.signExtra.propId === this.matchTicketsCfgs[i].id) {
-          return true
+      if (this.editForm.signExtra.propId > 0 ){
+        for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
+          if (this.editForm.signExtra.propId === this.matchTicketsCfgs[i].value) {
+            return true
+          }
         }
       }
       return false
