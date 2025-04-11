@@ -1,124 +1,116 @@
 <template>
   <div class="app-container">
     <el-row style="margin-top: 50px">
-      <el-tabs tab-position="left">
-        <el-tab-pane v-for="value in lists" :label="value.title">
-          <el-row>
-            <!--
-            <el-col :offset="12" :span="2">
-              <el-button type="text" @click="doShowChart(value.slotsType)">图表</el-button>
-            </el-col>
-            -->
-            <el-col :offset="12" :span="2">
-              <el-button size="mini" @click="getData()">刷新</el-button>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-descriptions class="margin-top" :column="2" border style="width: 1100px" title="小奖池">
-
-              <el-descriptions-item v-for="(v,k) in GamePrizePoolMap" v-if="(k+'').indexOf(value.slotsType)===0"
-                                    class="background: #E1F3D8;">
-                <template slot="label">
-                  <i class="el-icon-user"/>
-                  {{ getGameName(k) }}
-                </template>
-                <span :style="v/1000>1000000?'color:red':''">{{ Math.floor(v / 1000).toLocaleString() }}</span>
-              </el-descriptions-item>
-
-            </el-descriptions>
-          </el-row>
-          <el-table
-            :data="value.tableData"
-            border
-            style="width: 100%"
+      <el-col :span="4">
+      <el-input
+        placeholder="输入关键字进行过滤"
+        v-model="filterText">
+      </el-input>
+      <el-tree
+        class="filter-tree"
+        :data="navData"
+        :props="defaultProps"
+        accordion
+        :filter-node-method="filterNode"
+        @node-click="clickTreeNode"
+        ref="tree">
+      </el-tree>
+      </el-col>
+      <el-col span="20">
+      <el-table
+        :data="navValue.tableData"
+        border
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="key"
+          label="统计项"
+          width="140"
+        />
+        <el-table-column label="最近24H">
+          <el-table-column
+            prop="today"
+            label="数额"
+            width="120"
           >
-            <el-table-column
-              prop="key"
-              label="统计项"
-              width="140"
-            />
-            <el-table-column label="最近24H">
-              <el-table-column
-                prop="today"
-                label="数额"
-                width="120"
-              >
-                <template slot-scope="scope">{{ scope.row.today.number }}
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="today"
-                label="RTP"
-                width="100"
-              >
-                <template slot-scope="scope">
-                  <span :style="percentColor(scope.row.today.color)">{{ scope.row.today.percent }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="today"
-                label="中奖率"
-                width="100"
-              >
-                <template slot-scope="scope">{{ scope.row.today.hit }}</template>
-              </el-table-column>
-            </el-table-column>
-            <el-table-column label="上一个24H">
-              <el-table-column
-                prop="yesterday"
-                label="数额"
-                width="120"
-                class-name="warning-row"
-              >
-                <template slot-scope="scope">{{ scope.row.yesterday.number }}</template>
-              </el-table-column>
-              <el-table-column
-                prop="yesterday"
-                label="RTP"
-                width="100"
-                class-name="warning-row"
-              >
-                <template slot-scope="scope"><span
-                  :style="percentColor(scope.row.yesterday.color)">{{ scope.row.yesterday.percent }}</span></template>
-              </el-table-column>
-              <el-table-column
-                prop="yesterday"
-                label="中奖率"
-                width="100"
-                class-name="warning-row"
-              >
-                <template slot-scope="scope">{{ scope.row.yesterday.hit }}</template>
-              </el-table-column>
-            </el-table-column>
-            <el-table-column label="最近7日">
-              <el-table-column
-                label="数额"
-                prop="day7"
-                width="120"
-              >
-                <template slot-scope="scope">{{ scope.row.day7.number }}</template>
-              </el-table-column>
-              <el-table-column
-                label="RTP"
-                prop="day7"
-                width="100"
-              >
-                <template slot-scope="scope"><span :style="percentColor(scope.row.day7.color)">{{
-                    scope.row.day7.percent
-                  }}</span></template>
-              </el-table-column>
-              <el-table-column
-                prop="day7"
-                label="中奖率"
-                width="100"
-              >
-                <template slot-scope="scope">{{ scope.row.day7.hit }}</template>
-              </el-table-column>
-            </el-table-column>
-          </el-table>
-        </el-tab-pane>
-      </el-tabs>
+            <template slot-scope="scope">{{ scope.row.today.number }}
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="today"
+            label="RTP"
+            width="100"
+          >
+            <template slot-scope="scope">
+              <span :style="percentColor(scope.row.today.color)">{{ scope.row.today.percent }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="today"
+            label="中奖率"
+            width="100"
+          >
+            <template slot-scope="scope">{{ scope.row.today.hit }}</template>
+          </el-table-column>
+        </el-table-column>
+        <el-table-column label="上一个24H">
+          <el-table-column
+            prop="yesterday"
+            label="数额"
+            width="120"
+            class-name="warning-row"
+          >
+            <template slot-scope="scope">{{ scope.row.yesterday.number }}</template>
+          </el-table-column>
+          <el-table-column
+            prop="yesterday"
+            label="RTP"
+            width="100"
+            class-name="warning-row"
+          >
+            <template slot-scope="scope"><span
+              :style="percentColor(scope.row.yesterday.color)"
+            >{{ scope.row.yesterday.percent }}</span></template>
+          </el-table-column>
+          <el-table-column
+            prop="yesterday"
+            label="中奖率"
+            width="100"
+            class-name="warning-row"
+          >
+            <template slot-scope="scope">{{ scope.row.yesterday.hit }}</template>
+          </el-table-column>
+        </el-table-column>
+        <el-table-column label="最近7日">
+          <el-table-column
+            label="数额"
+            prop="day7"
+            width="120"
+          >
+            <template slot-scope="scope">{{ scope.row.day7.number }}</template>
+          </el-table-column>
+          <el-table-column
+            label="RTP"
+            prop="day7"
+            width="100"
+          >
+            <template slot-scope="scope"><span :style="percentColor(scope.row.day7.color)">{{
+                scope.row.day7.percent
+              }}</span></template>
+          </el-table-column>
+          <el-table-column
+            prop="day7"
+            label="中奖率"
+            width="100"
+          >
+            <template slot-scope="scope">{{ scope.row.day7.hit }}</template>
+          </el-table-column>
+        </el-table-column>
+      </el-table>
+      </el-col>
     </el-row>
+
+
 
     <!--
     <el-dialog
@@ -166,12 +158,13 @@
 .clearfix:after {
   clear: both
 }
+
 </style>
 
 <script>
 import request from '@/utils/request'
 import store from '@/store'
-import {$libDate, $libShow, MoneyShow} from '@/utils/common'
+import { $libDate, $libShow, MoneyShow } from '@/utils/common'
 import slotsLineChart from './components/slotsLineChart'
 
 const RETURN_ALL_KEY = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'SlotsReturn4', 'SlotsReturn5', 'SlotsReturn6', 'Jackpot1', 'Jackpot2', 'Jackpot3', 'Jackpot4', 'Jackpot5', 'Jackpot6']
@@ -180,7 +173,7 @@ const RETURN_ALL_KEY_SUM = ['SlotsReturn1', 'SlotsReturn2', 'SlotsReturn3', 'Slo
 const RETURN_HIT_KEY = ['SlotsReturn1Times', 'SlotsReturn2Times', 'SlotsReturn3Times', 'SlotsReturn4Times', 'SlotsReturn5Times', 'SlotsReturn6Times', 'Jackpot1Times', 'Jackpot2Times', 'Jackpot3Times', 'Jackpot4Times', 'Jackpot5Times', 'Jackpot6Times']
 
 export default {
-  components: {slotsLineChart},
+  components: { slotsLineChart },
   data() {
     return {
       lists: [],
@@ -197,8 +190,19 @@ export default {
       gameNamesSuffix: {
         1: '普通',
         2: '购买',
-        3: '重转',
+        3: '重转'
       },
+      filterText: '',
+      navData: [],
+      navValue:{},
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      navMap: {
+        'C': ['Candy Craze', 'Candy Rush'],
+        'B': ['B1', 'B2']
+      }
       // ignoreGame: [77, 79, 81, 83, 85, 87, 89, 91, 93, 95, 97, 99, 151, 153, 155, 157, 159, 161, 163, 165, 167, 171, 173, 175, 177, 179, 187]
     }
   },
@@ -207,7 +211,19 @@ export default {
     this.getGamePrizePool()
     console.log(1)
   },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    }
+  },
   methods: {
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
+    clickTreeNode(o){
+      this.navValue = o.value
+    },
     getData() {
       this.getGamePrizePool()
       const $this = this
@@ -230,14 +246,45 @@ export default {
             }
             this.lists.push(this.calcData(obj[key]))
           }
-          console.log("=========", this.lists)
-          this.lists.sort(function (a, b) {
+          console.log('=========', this.lists)
+          this.getNavTree()
+          this.lists.sort(function(a, b) {
             return a.slotsType - b.slotsType
           })
         } else {
           $this.$message.error(response.Data)
         }
       })
+    },
+    createSortedLetterMap(arr) {
+      const map = new Map();
+      arr.sort((a, b) => a.title.toLowerCase().localeCompare(b.title.toLowerCase()));
+
+      // 1. 分组：按首字母（小写）分组
+      for (const obj of arr) {
+        const str = obj.title
+        if (typeof str !== 'string' || str.length === 0) continue
+        const key = str.toUpperCase().charAt(0)
+        map.has(key) ? map.get(key).push(obj) : map.set(key, [obj])
+      }
+      console.log("create map")
+      console.log(map)
+
+      return map;
+    },
+    getNavTree(){
+      const tMap = this.createSortedLetterMap(this.lists)
+
+      this.navData = []
+      let index = 1
+      for(const [k,objs] of tMap){
+        let item = {id: 'a' +index, label:k, children:[]}
+        for (let i=0; i<objs.length;i++){
+          item.children.push({id:objs[i].slotsType, label: objs[i].title, value:objs[i] })
+        }
+        this.navData.push(item)
+      }
+      console.log(this.navData)
     },
     calcData(data) {
       return {
@@ -297,7 +344,7 @@ export default {
           lists.push(this.calcItemBuy('购买JP返奖金额', 'SlotsReturn3', one))
           lists.push(this.calcNonPercent('所有下注额总计', 'TotalBet', one))
           lists.push(this.calcItemTotalSum('所有返奖总计', one))
-          break;
+          break
         default: {
           // 混有购买免费数据
           lists.push(this.calcPlayTimes(one))
@@ -313,7 +360,7 @@ export default {
           break
         }
       }
-      console.log("========", one.SlotsType, lists)
+      console.log('========', one.SlotsType, lists)
 
       return lists
     },
@@ -344,9 +391,9 @@ export default {
     getObjRow(key) {
       const item = {
         key: key,
-        today: {'number': 0, 'percent': '', color: '', hit: '-'},
-        yesterday: {'number': 0, 'percent': '', color: '', hit: '-'},
-        day7: {'number': 0, 'percent': '', color: '', hit: '-'}
+        today: { 'number': 0, 'percent': '', color: '', hit: '-' },
+        yesterday: { 'number': 0, 'percent': '', color: '', hit: '-' },
+        day7: { 'number': 0, 'percent': '', color: '', hit: '-' }
       }
       return item
     },
@@ -509,7 +556,7 @@ export default {
       if (color == '') {
         return {}
       }
-      return {'color': color}
+      return { 'color': color }
     },
     // -------图表-------
     doShowChart(slotsType) {

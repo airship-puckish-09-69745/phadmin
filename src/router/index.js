@@ -741,21 +741,27 @@ export const asyncRoutes = [
             redirect: 'noRedirect',
             meta: { title: 'TongitsJackpot ◐' },
             children: [
-              {
-                path: 'tongitsJackpotTable',
-                component: () => import('@/views/empty'),
-                redirect: 'noRedirect',
-                meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
-                children: [
+              //{
+              //  path: 'tongitsJackpotTable',
+              //  component: () => import('@/views/empty'),
+              //  redirect: 'noRedirect',
+              //  meta: { title: 'TongitsJackpot配桌 ◐', noCache: true },
+              //  children: [
                   {
                     path: 'tongitsJackpotTable',
                     component: () => import('@/views/tongitsJackpot/table/tongitsJackpotTable'),
                     name: 'tongitsJackpotTable',
-                    meta: { title: 'TongitsJackpot' }
+                    meta: { title: 'TongitsJP配桌 ◐' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
-				          }
-                ]
-              }
+				          },
+                  {
+                    path: 'tongitsJackpotAIConfig',
+                    component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
+                    name: 'tongitsJackpotAIConfig',
+                    meta: { title: 'TongitsJP AI配置 ◐' }
+                  }
+              //  ]
+              //}
             ]
           }
         ]
@@ -1029,6 +1035,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'luckywineglass_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckywineglass_slots_cfg'),
+                name: 'luckywineglass_slots_cfg',
+                meta: { title: 'L uckyWineglass' }
+              },
+              {
                 path: 'crazy777_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/crazy777_slots_cfg'),
                 name: 'crazy777_slots_cfg',
@@ -1209,6 +1221,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/supergemiimars_slots_cfg'),
                 name: 'supergemiimars_slots_cfg',
                 meta: { title: 'SuperGemsII(审)' }
+              },
+              {
+                path: 'luckywineglassmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckywineglassmars_slots_cfg'),
+                name: 'luckywineglassmars_slots_cfg',
+                meta: { title: 'LuckyWineglass(审)' }
               },
               {
                 path: 'crazy777mars_slots_cfg',
@@ -2230,6 +2248,12 @@ export const asyncRoutes = [
             meta: { title: 'B ountyRaid', gid: 192 }
           },
           {
+            path: 'candyburst_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'candyburst_slots_log',
+            meta: { title: 'C andyBurst', gid: 208 }
+          },
+          {
             path: 'candypartyway_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'candypartyway_slots_log',
@@ -2325,6 +2349,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
             meta: { title: 'G oldTrain', gid: 194 }
+          },
+          {
+            path: 'luckywineglass_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckywineglass_slots_log',
+            meta: { title: 'L uckyWineglass', gid: 206 }
           },
           {
             path: 'crazy777_slots_log',
@@ -2627,6 +2657,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortuneblessingmars_slots_log',
             meta: { title: 'FortuneBlessing(审)', gid: 199 }
+          },
+          {
+            path: 'luckywineglassmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckywineglassmars_slots_log',
+            meta: { title: 'LuckyWineglass(审)', gid: 207 }
           },
           {
             path: 'fortunateebisumars_slots_log',
@@ -3239,7 +3275,7 @@ export const asyncRoutes = [
         path: 'walletSettleLog',
         component: () => import('@/views/wallet/walletSettleLog.vue'),
         name: 'walletSettleLog',
-        meta: { title: '钱包注单流水', perm: 'ADMINUSER_MANAGEMENT' }
+        meta: { title: '钱包注单流水' }
       },
       {
         path: 'walletRobotTransferPot',
