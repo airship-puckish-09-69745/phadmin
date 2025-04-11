@@ -785,6 +785,7 @@ export default {
             if (old.pokerCfgData.length > 0) {
               $this.item.pokerCfgData = old.pokerCfgData
             }
+            $this.item.GameIdCfg = old.GameIdCfg
             if ($this.item.WhitelistCfg == null) {
               $this.item.WhitelistCfg = whitelistCfg
             }
