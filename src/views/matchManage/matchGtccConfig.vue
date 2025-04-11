@@ -203,17 +203,6 @@ export default {
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
       ],
-      //比赛全局ID集合
-      matchUniqueIdCfgs: [
-        { 'value': 10001, 'label': '188Free' },
-        { 'value': 10002, 'label': '12888Free' },
-        { 'value': 10003, 'label': 'P10' },
-        { 'value': 10004, 'label': 'P20' },
-        { 'value': 10005, 'label': 'P40' },
-        { 'value': 10006, 'label': 'P100' },
-        { 'value': 10007, 'label': 'P300' },
-        { 'value': 10008, 'label': 'GTCC 2005' }
-        ],
       guideShowCfgs: [], // 赛事推荐相关 跟AppId 关联
 
       subKey: 'match_gt_list_cfg'
@@ -394,15 +383,6 @@ export default {
         }
       }
       return appName
-    },
-    getMatchName(id) {
-      var jumpName = ''
-      for (var i = 0; i < this.matchUniqueIdCfgs.length; i++) {
-        if (this.matchUniqueIdCfgs[i].value == id) {
-          jumpName = this.matchUniqueIdCfgs[i].label
-        }
-      }
-      return jumpName
     },
     showForm(id) {
       if (id === 0) {

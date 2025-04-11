@@ -343,6 +343,7 @@ export default {
         { 'value': 10006, 'label': 'P100' },
         { 'value': 10007, 'label': 'P300' },
         { 'value': 10008, 'label': 'GTCC 2005' }
+        { 'value': 10009, 'label': 'Yamaha Moto' }
         ],
       guideShowCfgs: [], // 赛事推荐相关 跟AppId 关联
 

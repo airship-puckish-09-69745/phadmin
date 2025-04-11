@@ -1002,8 +1002,8 @@ export default {
         // { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ]
     }
-    //this.getMatchProps()
-    this.getMatchPropsFromMysql()
+    this.getMatchProps()
+    //this.getMatchPropsFromMysql()
   },
   mounted() {
     this.getList()
