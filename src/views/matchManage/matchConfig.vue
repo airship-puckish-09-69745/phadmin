@@ -2379,6 +2379,7 @@ export default {
     },
     propTakeEffectCheck(){
       this.getMatchProps()
+      console.log("matchTicketsCfgs 1111 ",this.matchTicketsCfgs)
       if (this.editForm.signExtra.propId > 0 ){
         for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
           if (this.editForm.signExtra.propId === this.matchTicketsCfgs[i].value) {
