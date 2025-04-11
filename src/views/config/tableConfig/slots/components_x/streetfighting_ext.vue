@@ -90,6 +90,31 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const wildBigNormal = this.cfg.WildBigNormal;
+      const numbersNormal = wildBigNormal.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersNormal.length !== 4) {
+        this.$message.error('普通模式 大wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+      const big = 2000
+      const invalidNumbersNormal = numbersNormal.filter(num => isNaN(num) || num > big);
+      if (invalidNumbersNormal.length > 0) {
+        this.$message.error(`普通模式 大wild在2345轴的概率  err:${this.cfg.WildBigNormal}每个数字必须小于等于${big}‱`);
+        return;
+      }
+
+      const wildBigFree = this.cfg.WildBigFree;
+      const numbersFree = wildBigFree.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersFree.length !== 4) {
+        this.$message.error('免费模式 大wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+      const invalidNumbersFree = numbersFree.filter(num => isNaN(num) || num > big);
+      if (invalidNumbersFree.length > 0) {
+        this.$message.error(`免费模式 大wild在2345轴的概率  err:${this.cfg.WildBigNormal}每个数字必须小于等于${big}‱`);
+        return;
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
