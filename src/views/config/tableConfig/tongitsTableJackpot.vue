@@ -806,10 +806,9 @@ export default {
       if (!this.checkData()) return
       console.log('this.edit.item--->', this.edit.item)
       console.log('this.edit.robotConfig--->', this.edit.robotConfig)
-      /*
       if (!this.edit.item.hasOwnProperty('RobotConfig')) {
         this.edit.item.RobotConfig = ''
-      }*/
+      }
       this.edit.robotConfig.Common = this.libMoneyRobot.TransForStore(this.edit.robotConfig.Common)
       this.edit.item.RobotConfig = JSON.stringify(this.edit.robotConfig)
       console.log('this.edit.item--->', this.edit.item)

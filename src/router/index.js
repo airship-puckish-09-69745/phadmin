@@ -749,7 +749,7 @@ export const asyncRoutes = [
               //  children: [
                   {
                     path: 'tongitsJackpotTable',
-                    component: () => import('@/views/tongitsJackpot/table/tongitsJackpotTable'),
+                    component: () => import('@/views/config/tableConfig/tongitsTableJackpot'),
                     name: 'tongitsJackpotTable',
                     meta: { title: 'TongitsJP配桌 ◐' }
                     // eslint-disable-next-line no-mixed-spaces-and-tabs
