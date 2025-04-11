@@ -283,8 +283,14 @@ export default {
       }
       return false
     },
-    isShowLeave(row) {
-      if (row.Tid === 0 && (row.ShootAllTwoLeave > 0 || row.ShootAllOneLeave > 0)) {
+    isShowOneLeave(row) {
+      if (row.Tid === 0 && row.ShootAllOneleave > 0) {
+        return true
+      }
+      return false
+    },
+    isShowTwoLeave(row) {
+      if (row.Tid === 0 && row.ShootAllTwoleave > 0) {
         return true
       }
       return false
@@ -340,10 +346,10 @@ export default {
       return ' (3人局2人crack) ' + row.ThreeTwoCrack + ' 次'
     },
     formatCheatDateShootAllOneLeave(row) {
-      return ' (做局全垒打（1人做小)离开) ' + row.ShootAllOneLeave + ' 次'
+      return ' (做局全垒打（1人做小)离开) ' + row.ShootAllOneleave + ' 次'
     },
     formatCheatDateShootAllTwoLeave(row) {
-      return ' (做局全垒打（2人做小)离开) ' + row.ShootAllTwoLeave + ' 次'
+      return ' (做局全垒打（2人做小)离开) ' + row.ShootAllTwoleave + ' 次'
     },
     formatTimeTime(ts) {
       return $libDate.FormateSecondStr(ts, 4)
@@ -608,7 +614,9 @@ export default {
 
           for (let i = 0; i < cheatLogs.length; i++) {
             const cheatLog = cheatLogs[i]
-
+            if (cheatLog.Tid === 0){
+              console.log('cheatLog:', cheatLog)
+            }
             let key = ''
             const cheatUids = []
             for (let j = 0; j < cheatLog.Uids.length; j++) {
@@ -667,6 +675,16 @@ export default {
                     continue
                   }
                   break
+                case 8:
+                  if (cheatLog.ShootAllOneleave !== 1) {
+                    continue
+                  }
+                  break
+                case 9:
+                  if (cheatLog.ShootAllTwoleave !== 1) {
+                    continue
+                  }
+                  break
               }
             }
             if (this.MaybeUids.includes(cheatLog.Uid)) {
@@ -721,9 +739,9 @@ export default {
                 threeZero++
               } else if (cheatLog.ThreeTwoCrack === 1) {
                 threeTwoCrack++
-              } else if (cheatLog.ShootAllOneleave === 1) {
+              } else if (cheatLog.ShootAllOneLeave === 1) {
                 shootAllOneLeave++
-              } else if (cheatLog.ShootAllTwoleave === 1) {
+              } else if (cheatLog.ShootAllTwoLeave === 1) {
                 shootAllTwoLeave++
               }
             }
@@ -886,8 +904,8 @@ export default {
                 <div v-show="isShow(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
                 <div v-show="isShow(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
                 <div v-show="isShowThreeCrack(scope.row)">{{ formatCheatDateThreeCrack(scope.row) }}</div>
-                <div v-show="isShowLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
-                <div v-show="isShowLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
+                <div v-show="isShowOneLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
+                <div v-show="isShowTwoLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -1131,8 +1149,8 @@ export default {
                 <div v-show="isShow(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
                 <div v-show="isShow(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
                 <div v-show="isShowThreeCrack(scope.row)">{{ formatCheatDateThreeCrack(scope.row) }}</div>
-                <div v-show="isShowLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
-                <div v-show="isShowLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
+                <div v-show="isShowOneLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
+                <div v-show="isShowTwoLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
               </template>
             </el-table-column>
 
