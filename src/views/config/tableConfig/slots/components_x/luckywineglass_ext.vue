@@ -3,6 +3,18 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
+          <el-form-item label="金框出现概率">
+            <el-input v-model.number="cfg.GoldRate" ><template slot="append">‰</template></el-input>
+          </el-form-item>
+
+          <el-form-item label="酒杯倍数">
+            <el-input v-model="cfg.WineglassMultiStr" placeholder="请输入内容,如2,3,5,6,8"> <template slot="append">用 , 连接 从掉落第二个矩阵开始</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式再中scatter概率">
+            <el-input v-model.number="cfg.ReHitScatterRate" ><template slot="append">‰</template></el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式购买倍数" prop="BuyFreeOdds" :rules="dataRule(true,{type:'n'})">
             <el-input v-model.number="cfg.BuyFreeOdds" :required="true" />
           </el-form-item>
