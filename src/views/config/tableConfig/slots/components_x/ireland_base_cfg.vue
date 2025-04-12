@@ -57,6 +57,8 @@
               <el-option label="MayanTotem" :value="178" />
               <el-option label="202:FortunateEbisu" :value="202" />
               <el-option label="203:FortunateEbisu Mars" :value="203" />
+              <el-option label="206:LuckyWineglass" :value="206" />
+              <el-option label="207:LuckyWineglass Mars" :value="207" />
               <el-option label="188:StreetFighting" :value="188" />
               <el-option label="189:StreetFighting Mars" :value="189" />
               <el-option label="192:BountyRaid" :value="192" />
@@ -74,6 +76,10 @@
               <el-option label="199:FortuneBlessing Mars" :value="199" />
               <el-option label="200:AtlantisTreasure" :value="200" />
               <el-option label="201:AtlantisTreasureMars" :value="201" />
+              <el-option label="204:SpaceTreasure" :value="204" />
+              <el-option label="205:SpaceTreasureMars" :value="205" />
+              <el-option label="208:CandyBurst" :value="208" />
+              <el-option label="209:CandyBurstMars" :value="209" />
             </el-select>
           </el-form-item>
 
@@ -93,9 +99,9 @@
             <el-input v-model="slotsData.Bets" />
           </el-form-item>
 
-          <span v-if="slotsData.SlotsType === 186" style="color: red; font-size: 11px;">注: ①.下注倍数要放大1000倍 ②.1000为固定值 ③.下注大小*下注倍数*基础投注/1000=真实下注额度 </span>
+          <span v-if="slotsData.SlotsType === 186 || slotsData.SlotsType === 208" style="color: red; font-size: 11px;">注: ①.下注倍数要放大1000倍 ②.1000为固定值 ③.下注大小*下注倍数*基础投注/1000=真实下注额度 </span>
           <span v-if="slotsData.SlotsType === 180" style="color: red; font-size: 11px;">注: ①.1为固定值 ②.下注大小*下注倍数*基础投注=真实下注额度 ③.下注大小*下注倍数只支持3位小数 </span>
-          <el-form-item v-if="slotsData.OddsStr !== '1'" label="下注倍数">
+          <el-form-item v-if="slotsData.SlotsType === 180 || slotsData.SlotsType === 186 || slotsData.SlotsType === 208" label="下注倍数">
             <el-input v-model="slotsData.OddsStr" />
           </el-form-item>
 
@@ -251,12 +257,12 @@ export default {
       if (this.winTypeMinOddsCheck() === false) {
         return
       }
-      if (this.slotsData.SlotsType == 180 || this.slotsData.SlotsType == 186) {
+      if (this.slotsData.SlotsType === 180 || this.slotsData.SlotsType === 186 || this.slotsData.SlotsType === 208) {
         const bets = this.slotsData.Bets.split(',')
         for (const i in bets) {
           let betFlot = parseFloat(bets[i])
           let bet = betFlot * 1000
-          if (bet < 10 && bet % 2 == 1) {
+          if (bet < 10 && bet % 2 === 1) {
             $this.$message.error(`下注大小是三位小数时只支持偶数 err bet:${betFlot}`)
             return
           }

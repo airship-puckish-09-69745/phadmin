@@ -225,7 +225,7 @@
       </span>
     </el-dialog>
     <el-dialog
-      title="场次授信用户数量"
+      title="在玩授信用户数量"
       :visible.sync="blindDialog"
       width="60%"
     >
@@ -457,6 +457,8 @@ export default {
           console.log(response.Data)
           if (response.Data !== 'empty') {
             this.creditStat = response.Data
+          } else {
+            this.$message.error(response.Data+"没有数据")
           }
         }
       })

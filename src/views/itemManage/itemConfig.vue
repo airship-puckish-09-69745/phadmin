@@ -178,6 +178,17 @@
             </el-select>
           </el-form-item>
 
+          <el-form-item v-if="editForm.data.itemType === 1" label="道具特殊属性：" :required="true">
+            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
+              <el-option
+                v-for="item in itemSpecialAttrCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
@@ -227,30 +238,17 @@ export default {
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
 
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1000008, 'label': 'gli' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
-
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
-      ],
 
       itemTypeCfgs: [
         { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false }
+      ],
+
+      itemSpecialAttrCfgs: [
+        { 'value': 1, 'label': '邀请函', disabled: false },
+        { 'value': 2, 'label': 'GTCC线上决赛门票', disabled: false },
       ],
 
       dayTypeCfgs: [
@@ -293,7 +291,10 @@ export default {
           sort: 0,
           status: 0,
           quality: 0,
-          timeType: []
+          timeType: [],
+        },
+        itemExtra:{
+          specialAttr: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -308,7 +309,8 @@ export default {
         sort: '排序',
         propStatus: '上架状态',
         createTime: '创建时间',
-        id: '道具ID'
+        id: '道具ID',
+        propExtra:'拓展信息'
       }
     }
   },
@@ -334,8 +336,6 @@ export default {
           const objs = response.Data || {}
           if (objs.total > 0) {
             this.tableData = []
-            console.log(objs.total)
-            console.log(this.form.itemOfType)
             if (this.form.itemOfType === 0) {
               this.tableData = objs.list
               this.total = objs.total
@@ -349,10 +349,8 @@ export default {
               }
               this.total = n
             }
-            console.log(this.tableData)
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.raw = response.Data
-            console.log(this.raw)
           }
         } else {
           this.total = 0
@@ -376,7 +374,6 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     showForm(id) {
-      console.log(id)
       if (id == 0) {
         this.editForm.title = '新增道具配置'
         this.editForm.data = {
@@ -391,6 +388,9 @@ export default {
           status: 0,
           quality: 0,
           timeType: []
+        }
+        this.editForm.itemExtra = {
+          specialAttr:0
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -414,6 +414,9 @@ export default {
         }
 
         const time_type = JSON.parse(editData.time_type)
+        if (editData.item_extra && editData.item_extra != 'null' && editData.item_extra != 'undefined') {
+          this.editForm.itemExtra = JSON.parse(editData.item_extra)
+        }
         this.editForm.data = {
           ID: editData.id,
           itemName: editData.item_name,
@@ -522,7 +525,8 @@ export default {
             Sort: editData.sort,
             Status: editData.status,
             Quality: editData.quality,
-            TimeType: editData.time_type
+            TimeType: editData.time_type,
+            ItemExtra: JSON.stringify(editData.item_extra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -596,7 +600,8 @@ export default {
             Sort: this.editForm.data.sort,
             Status: this.editForm.data.status,
             Quality: this.editForm.data.quality,
-            TimeType: timeList
+            TimeType: timeList,
+            ItemExtra: JSON.stringify(this.editForm.itemExtra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -625,7 +630,8 @@ export default {
             Sort: this.editForm.data.sort,
             Status: this.editForm.data.status,
             Quality: this.editForm.data.quality,
-            TimeType: timeList
+            TimeType: timeList,
+            ItemExtra: JSON.stringify(this.editForm.itemExtra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -673,6 +679,9 @@ export default {
       if (this.editForm.data.itemType == 0) {
         this.errmsg('请选择道具分类')
         return false
+      }
+      if (this.editForm.data.itemType != 1){
+        this.editForm.itemExtra.specialAttr = 0
       }
 
       if (this.editForm.data.itemType === 2) {

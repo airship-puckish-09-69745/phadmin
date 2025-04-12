@@ -193,6 +193,29 @@
           </el-form-item>
 
           <el-form-item v-if="editForm.data.jump_id==3" label="比赛跳转" :required="true">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in showCsCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+
+          <el-form-item v-if="editForm.data.jump_id==4" label="分类跳转" :required="true">
+            <el-select v-model="editForm.data.game_id" placeholder="请选择" size="mini">
+              <el-option
+                v-for="item in jumpTypeCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+
+          <el-form-item v-if="editForm.data.jump_id===4" label="赛事跳转" :required="true">
             <el-select v-model="editForm.data.match_cfg_id" placeholder="请选择" size="mini">
               <el-option
                 v-for="item in showCsCfgs"
@@ -296,8 +319,14 @@ export default {
         { 'value': 1, 'label': '打开海报详情' },
         { 'value': 2, 'label': '跳转到子游戏' },
         { 'value': 3, 'label': '跳转比赛详情' },
+        { 'value': 4, 'label': '跳转分类' },
       ],
-
+      jumpTypeCfgs: [
+        { 'value': 1, 'label': 'Events' },
+        { 'value': 2, 'label': 'Free' },
+        { 'value': 3, 'label': 'Master' },
+        { 'value': 4, 'label': 'GTCC' },
+      ],
       statusCfgs: [
         { "value": 0, "label": "关闭" },
         { "value": 1, "label": "开启" },
@@ -310,6 +339,17 @@ export default {
         { 'value': 'TP', 'label': 'TP' },
         { 'value': 'PG', 'label': 'PG' },
         { 'value': 'Dev', 'label': 'Dev' }
+      ],
+      //比赛全局ID集合
+      matchUniqueIdCfgs: [
+        { 'value': 10001, 'label': '188Free' },
+        { 'value': 10002, 'label': '12888Free' },
+        { 'value': 10003, 'label': 'P10' },
+        { 'value': 10004, 'label': 'P20' },
+        { 'value': 10005, 'label': 'P40' },
+        { 'value': 10006, 'label': 'P100' },
+        { 'value': 10007, 'label': 'P300' },
+        { 'value': 10008, 'label': 'GTCC 2005' }
       ],
 
       subKey: 'match_poster_list'
@@ -352,18 +392,32 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
           if (objs.total > 0) {
+            //step one 先将比赛全局唯一ID存储起来
+            var tmpArray = []
             for (var i = 0; i < objs.list.length; i++) {
-              this.matchCfg.push({
-                'label': '[' + objs.list[i].id + ']' + objs.list[i].name,
-                'value': objs.list[i].id,
-                'app_info': JSON.parse(objs.list[i].app_info_cfg)
-              })
+              var signExtra = JSON.parse(objs.list[i].sign_extra)
+              if (signExtra.matchUniqueId != null || signExtra.matchUniqueId > 0) {
+                tmpArray.push(signExtra.matchUniqueId)
+              }
+            }
+            //step 数组中的数据去重,并根据ID转换为label标签名字
+            if (tmpArray.length > 0) {
+              const newArr = this.removeDuplicate(tmpArray)
+              for(var i = 0; i < newArr.length; i++) {
+                var name = this.getMatchName(newArr[i])
+                if (name != null && name !== '') {
+                  this.matchCfg.push({
+                    'label': name,
+                    'value': newArr[i],
+                    'app_info': JSON.parse(objs.list[i].app_info_cfg)
+                  })
+                }
+              }
             }
           }
         }
       })
     },
-
     getGameAll() {
       request({
         url: '/thirdpartygames/all',
@@ -457,12 +511,20 @@ export default {
     selectMatchName() {
       this.showCsCfgs = []
       if (this.matchCfg.length > 0) {
+        var fit = false
         for (var i = 0; i < this.matchCfg.length; i++) {
           for (var j = 0; j < this.matchCfg[i].app_info.length; j++) {
             if (this.matchCfg[i].app_info[j].appId === this.editForm.data.app_id) {
               this.showCsCfgs.push(this.matchCfg[i])
+              fit = true
             }
           }
+        }
+        if (fit === true) {
+          this.showCsCfgs.push({
+            'label': '无',
+            'value': 0
+          })
         }
       }
     },
@@ -688,8 +750,29 @@ export default {
         this.editForm.data.first_jump = false
         this.editForm.data.details_image_path = ''
       }
+      else if (this.editForm.data.jump_id === 4) {
+        this.editForm.data.first_jump = false
+        this.editForm.data.details_image_path = ''
+      }
     },
-
+    removeDuplicate(arr) {
+      const newArr = []
+      arr.forEach(item => {
+        if (newArr.indexOf(item) === -1) {
+          newArr.push(item)
+        }
+      })
+      return newArr // 返回一个新数组
+    },
+    getMatchName(id) {
+      var jumpName = ''
+      for (var i = 0; i < this.matchUniqueIdCfgs.length; i++) {
+        if (this.matchUniqueIdCfgs[i].value == id) {
+          jumpName = this.matchUniqueIdCfgs[i].label
+        }
+      }
+      return jumpName
+    },
     configCheck() {
       if (this.editForm.data.title == '') {
         this.errmsg("请填写标题")

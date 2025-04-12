@@ -67,6 +67,8 @@
                            size="mini">编辑</el-button>
                 <el-button @click="copyVersionDialog(scope.$index, versionScope.$index)" style="background: #91eee3"
                            size="mini" >复制版本</el-button>
+                <el-button @click="querySlotBase(scope.row.PlanId)" type="primary"
+                           size="mini">查询</el-button>
                 <el-button @click="showTips(2,scope.$index, versionScope.$index)" type="danger"
                            size="mini">删除</el-button>
               </template>
@@ -205,7 +207,33 @@
       </div>
     </el-dialog>
 
-
+    <el-dialog
+      title="查询结果"
+      :visible.sync="getBetPlanver"
+      width="50%"
+      :destroy-on-close='true'>
+      <el-table
+        :data="this.showBetPlanverList"
+        border    style="width: 100%">
+        <el-table-column
+          prop="betAmount"
+          label="下注金额列表"
+          width="180"
+          sortable>
+          <template slot-scope="{ row }">
+            {{ row.betAmount }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="serialNumber"
+          label="剧本功能的序列号"
+          sortable>
+          <template slot-scope="{ row }">
+            {{ row.serialNumber }}
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
 
           <!-- 编辑版本对话框 -->
     <el-dialog v-if="editVersionDialogVisible"  :destroy-on-close='true' :visible.sync="editVersionDialogVisible" title="编辑版本">
@@ -271,6 +299,11 @@
            <el-tooltip content="检查剧本:当前倍数总和/剧本步数*基础投注" class="item" effect="dark" placement="top">
               <el-button type="primary" @click="checkBetOdds" size="mini" style="background: #43bef3">
                 检查
+              </el-button>
+      </el-tooltip>
+      <el-tooltip content="检查剧本中出现个数=单个剧本步数" class="item" effect="dark" placement="top">
+              <el-button type="primary" @click="checkScriptSum" size="mini" style="background: #43bef3">
+                检查个数总和
               </el-button>
       </el-tooltip>
       <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
@@ -403,6 +436,10 @@
               </el-tooltip>
               <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
                 <el-button type="primary" @click="checkBetPlansSum(scope.$index)" size="mini" style="background-color:#b600ff">检查
+                </el-button>
+              </el-tooltip>
+                 <el-tooltip content="总个数==单个剧本步数" effect="dark" placement="top">
+                <el-button type="primary" @click="checkPlansSumScript(scope.$index)" size="mini" style="background-color:#da00bd">检查总个数
                 </el-button>
               </el-tooltip>
             </el-col>
@@ -605,9 +642,11 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import {$libShow, ValidateVueItem} from '@/utils/common'
 import BetAmount from '@/components/BetAmount'
-import ShowTip from "@/components/Tip/showTip.vue";
-import {number} from "echarts/lib/export";
-import XLSX from "xlsx";
+import ShowTip from '@/components/Tip/showTip.vue'
+import {SubKeyMap} from '@/constants/subkey'
+import {number} from "echarts/lib/export"
+import XLSX from 'xlsx'
+import store from "@/store";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
@@ -643,9 +682,7 @@ export default {
       },
       detailVisible: false,
       slotCfg: {},
-
-
-
+      localSubKeyMap: { ...SubKeyMap },
       addDialogVisible: false,
       addFormData: {
         PlanId: 0,
@@ -719,7 +756,10 @@ export default {
       idx2:0,
 
       showCompletionScript: false,
-      showCompletionScriptMap:{},
+      currentBaseBet:[],
+      getBetPlanver: false,
+      showBetPlanverList: [],
+      showCompletionScriptMap:{}
     }
   },
   created() {
@@ -730,6 +770,7 @@ export default {
       await this.getConfigData();
       await this.getGameList();
       await this.getData();
+      await this.queryBase(this.queryGid)
     },
     getFullKey() {
       return 'SlotsCustomScriptConfig_' + this.queryGid
@@ -752,6 +793,77 @@ export default {
 
         console.log('response', response)
       })
+    },
+    queryBase(gid) { // 加载基础配置
+      let key = ''
+      key = this.localSubKeyMap[gid] || ''
+      if (key === '') {
+        return
+      }
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: key
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const baseCfg = JSON.parse(response.Data.Data)
+          this.currentBaseBet = []
+          if (baseCfg.BetList) {
+            if (gid > 100000) {
+              for (const k in baseCfg.BetList) {
+                this.currentBaseBet.push(baseCfg.BetList[k]*1.5)
+              }
+            } else {
+              for (const k in baseCfg.BetList) {
+                this.currentBaseBet.push(baseCfg.BetList[k])
+              }
+            }
+          }
+        }
+        console.log('this.currentBaseBet', this.currentBaseBet)
+      }).catch(e => {
+        console.log(e)
+      })
+    },
+    querySlotBase(planID) {
+      console.log('querySlotBase', this.queryGid, '111::', planID)
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Path: '/slotsStat/custom/script/plan/ver',
+          Env: store.getters.env,
+          planID: planID,
+          gameID: this.queryGid,
+          bets: JSON.stringify(this.currentBaseBet)
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('querySlotBase', response.Data)
+          this.showBetPlanverList = []
+          this.showBetPlanverList = Object.entries(response.Data)
+            .map(([key, value]) => ({
+              betAmount: Number(key)/1000,
+              serialNumber: value
+            }))
+            .sort((a, b) => a.betAmount - b.betAmount)
+        }
+        console.log('this.showBetPlanverMap', this.showBetPlanverList)
+        this.getBetPlanver = true
+      }).catch(e => {
+        console.log(e)
+      })
+    },
+    processedBetData() {
+      return Object.entries(this.showBetPlanverMap)
+        .map(([key, value]) => ({
+          originalKey: Number(key),
+          betAmount: Number(key) / 1000,
+          serialNumber: value
+        }))
+        .sort((a, b) => a.originalKey - b.originalKey)
     },
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
@@ -858,6 +970,7 @@ export default {
       return items;
     },
     async queryKeyInput() {
+      this.queryBase(this.queryGid)
       for (const o of this.orgDataList) {
         if (this.queryGid === o.SlotsType) {
           let a = JSON.parse(JSON.stringify(o))
@@ -870,9 +983,9 @@ export default {
           return
         }
       }
-        this.showItem.SlotsType = this.queryGid
-        this.showItem.Plans = this.newPlansCfg()
-        this.showItem.ID = 0
+      this.showItem.SlotsType = this.queryGid
+      this.showItem.Plans = this.newPlansCfg()
+      this.showItem.ID = 0
     },
     newItem() {
       return {
@@ -1369,6 +1482,19 @@ export default {
 
       Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
     },
+    checkScriptSum() {
+      let cnt = 0
+      for (const i in this.editSlotsScriptOddsCfgFormData) {
+        let obj = this.editSlotsScriptOddsCfgFormData[i]
+        cnt += obj.ScriptSteps
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      if (cnt === scriptSteps){
+        Message.success('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
+      }else {
+        Message.error('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
+      }
+    },
     validateDteOddsSum() {
       let str = ''
       if (this.editSlotsScriptOddsCfgFormData.length===0){
@@ -1412,6 +1538,18 @@ export default {
         Message.success("数据ok的！" + str)
       } else {
         Message.error('数据异常:' + str)
+      }
+    },
+    checkPlansSumScript(idx) {
+      let cnt = 0
+      for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
+        cnt += o.ScriptSteps
+      }
+      var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
+      if (cnt === scriptSteps){
+        Message.success('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
+      }else {
+        Message.error('当前总数:'+ cnt+' 剧本步数:'+scriptSteps)
       }
     },
     // 关闭弹窗时的处理函数

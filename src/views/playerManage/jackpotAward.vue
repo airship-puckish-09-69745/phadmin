@@ -248,6 +248,7 @@ export default {
         { 'value': 174, 'label': 'TreasureBowl' },
         { 'value': 196, 'label': 'GoldMiner' },
         { 'value': 186, 'label': 'MahjongJackpot' },
+        { 'value': 204, 'label': 'SpaceTreasure' }
       ],
       userTypeConfig: [
         { 'value': -1, 'label': '全部' },

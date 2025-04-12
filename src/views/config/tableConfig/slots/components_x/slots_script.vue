@@ -260,7 +260,7 @@ export default {
         Factor10: 40
       },
       ExtraBetActId2Enable: false,
-      ExtraBetActId2GameIds: [180, 186],
+      ExtraBetActId2GameIds: [180, 186, 208],
     }
   },
   watch: {
@@ -276,6 +276,7 @@ export default {
     this.getActionsSelectOpt()
     this.initWaterPool()
     // 是否启用加倍投注剧本
+    console.log("剧本", this.slotsData.SlotsType)
     this.ExtraBetActId2Enable = this.ExtraBetActId2GameIds.indexOf(this.slotsData.SlotsType) >= 0
     console.log('this.slotsData.SlotsType', this.slotsData)
   },

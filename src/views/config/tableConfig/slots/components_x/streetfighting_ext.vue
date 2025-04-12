@@ -3,6 +3,14 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="250px">
+          <el-form-item label="普通模式 大wild在2345轴的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildBigNormal" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ 4轴12‱ 5轴13‱</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式 大wild在2345轴的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ 4轴12‱ 5轴13‱</template> </el-input>
+          </el-form-item>
+
           <el-form-item label="免费模式中奖倍数">
             <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,3,5,6,8"> <template slot="append">用 , 连接 从掉落第二个矩阵开始</template> </el-input>
           </el-form-item>
@@ -82,6 +90,31 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      const wildBigNormal = this.cfg.WildBigNormal;
+      const numbersNormal = wildBigNormal.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersNormal.length !== 4) {
+        this.$message.error('普通模式 大wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+      const big = 2000
+      const invalidNumbersNormal = numbersNormal.filter(num => isNaN(num) || num > big);
+      if (invalidNumbersNormal.length > 0) {
+        this.$message.error(`普通模式 大wild在2345轴的概率  err:${this.cfg.WildBigNormal}每个数字必须小于等于${big}‱`);
+        return;
+      }
+
+      const wildBigFree = this.cfg.WildBigFree;
+      const numbersFree = wildBigFree.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersFree.length !== 4) {
+        this.$message.error('免费模式 大wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+      const invalidNumbersFree = numbersFree.filter(num => isNaN(num) || num > big);
+      if (invalidNumbersFree.length > 0) {
+        this.$message.error(`免费模式 大wild在2345轴的概率  err:${this.cfg.WildBigNormal}每个数字必须小于等于${big}‱`);
+        return;
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
