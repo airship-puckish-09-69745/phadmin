@@ -2119,7 +2119,7 @@ export default {
       }
       return true
     },
-    checkRewardCfg(rewards) {
+    async checkRewardCfg(rewards) {
       if (rewards.length <= 0) {
         this.errmsg('请添加固定奖励配置')
         return false
@@ -2137,7 +2137,7 @@ export default {
         }
 
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
-          if(!propTakeEffectCheck()){
+          if(! await this.propTakeEffectCheck()){
             this.errmsg('所选择的道具不生效,请检查')
             return false
           }
