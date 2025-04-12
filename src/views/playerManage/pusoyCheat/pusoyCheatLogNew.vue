@@ -1,7 +1,7 @@
 <script>
 import request from '@/utils/request'
 import { $libDate, $libType, ClientTableData } from '@/utils/common'
-import { map } from 'core-js/internals/array-iteration'
+// eslint-disable-next-line no-unused-vars
 const filterMap = {
   currentTableMoney: 'all',
   TableMoney: 'all'
@@ -67,6 +67,14 @@ export default {
         {
           value: 7,
           label: '3人局2人crack'
+        },
+        {
+          value: 8,
+          label: '做局全垒打（2人做小)离开'
+        },
+        {
+          value: 9,
+          label: '做局全垒打（1人做小)离开'
         }
       ],
 
@@ -269,6 +277,65 @@ export default {
     isShow(row) {
       return row.Tid !== 0
     },
+
+    isShowShootAllOne(row) {
+      if (row.Tid > 0 && row.ShootAllOne > 0) {
+        return true
+      }
+      return false
+    },
+
+    isShowShootAllTwo(row) {
+      if (row.Tid > 0 && row.ShootAllTwo > 0) {
+        return true
+      }
+      return false
+    },
+
+    isShowExtraAddScore(row) {
+      if (row.Tid > 0 && row.ExtraAddScore > 0) {
+        return true
+      }
+      return false
+    },
+
+    isShowThreeSmall(row) {
+      if (row.Tid > 0 && row.ThreeSmall > 0) {
+        return true
+      }
+      return false
+    },
+
+    isShowThreeCrack(row) {
+      if (row.Tid === 0 && row.ThreeCrack > 0) {
+        return true
+      }
+      return false
+    },
+    isShowThreeZero(row) {
+      if (row.Tid > 0 && row.ThreeZero > 0) {
+        return true
+      }
+      return false
+    },
+    isShowThreeTwoCrack(row) {
+      if (row.Tid > 0 && row.ThreeTwoCrack > 0) {
+        return true
+      }
+      return false
+    },
+    isShowOneLeave(row) {
+      if (row.Tid === 0 && row.ShootAllOneleave > 0) {
+        return true
+      }
+      return false
+    },
+    isShowTwoLeave(row) {
+      if (row.Tid === 0 && row.ShootAllTwoleave > 0) {
+        return true
+      }
+      return false
+    },
     showCheatInfo(row) {
       if (row.ShootAllTwo > 0) {
         return ' 全垒打2人做小 在' + this.formatTimeDate2(row.UpdateTime)
@@ -291,6 +358,12 @@ export default {
       if (row.ThreeTwoCrack > 0) {
         return ' 3人局2人crack 在' + this.formatTimeDate2(row.UpdateTime)
       }
+      if (row.ShootAllTwoLeave > 0) {
+        return ' 做局全垒打（2人做小)离开 在' + this.formatTimeDate2(row.UpdateTime)
+      }
+      if (row.ShootAllOneLeave > 0) {
+        return ' 做局全垒打（1人做小)离开 在' + this.formatTimeDate2(row.UpdateTime)
+      }
     },
     formatCheatDateShootAllTwo(row) {
       return ' (全垒打2人做小) ' + row.ShootAllTwo + ' 次'
@@ -312,6 +385,12 @@ export default {
     },
     formatCheatDateThreeTwoCrack(row) {
       return ' (3人局2人crack) ' + row.ThreeTwoCrack + ' 次'
+    },
+    formatCheatDateShootAllOneLeave(row) {
+      return ' (全垒打（1人做小)离开) ' + row.ShootAllOneleave + ' 次'
+    },
+    formatCheatDateShootAllTwoLeave(row) {
+      return ' (全垒打（2人做小)离开) ' + row.ShootAllTwoleave + ' 次'
     },
     formatTimeTime(ts) {
       return $libDate.FormateSecondStr(ts, 4)
@@ -576,7 +655,9 @@ export default {
 
           for (let i = 0; i < cheatLogs.length; i++) {
             const cheatLog = cheatLogs[i]
-
+            if (cheatLog.Tid === 0){
+              console.log('cheatLog:', cheatLog)
+            }
             let key = ''
             const cheatUids = []
             for (let j = 0; j < cheatLog.Uids.length; j++) {
@@ -635,6 +716,16 @@ export default {
                     continue
                   }
                   break
+                case 8:
+                  if (cheatLog.ShootAllOneleave !== 1) {
+                    continue
+                  }
+                  break
+                case 9:
+                  if (cheatLog.ShootAllTwoleave !== 1) {
+                    continue
+                  }
+                  break
               }
             }
             if (this.MaybeUids.includes(cheatLog.Uid)) {
@@ -669,6 +760,8 @@ export default {
             let threeCrack = 0
             let threeZero = 0
             let threeTwoCrack = 0
+            let shootAllOneLeave = 0
+            let shootAllTwoLeave = 0
             for (let i = 0; i < value.length; i++) {
               const cheatLog = value[i]
               if (cheatLog.ShootAllOne === 1) {
@@ -687,6 +780,10 @@ export default {
                 threeZero++
               } else if (cheatLog.ThreeTwoCrack === 1) {
                 threeTwoCrack++
+              } else if (cheatLog.ShootAllOneLeave === 1) {
+                shootAllOneLeave++
+              } else if (cheatLog.ShootAllTwoLeave === 1) {
+                shootAllTwoLeave++
               }
             }
             cheatLogNew.ShootAllOne = shootAllOne
@@ -696,6 +793,8 @@ export default {
             cheatLogNew.ThreeCrack = threeCrack
             cheatLogNew.ThreeZero = threeZero
             cheatLogNew.ThreeTwoCrack = threeTwoCrack
+            cheatLogNew.ShootAllOneleave = shootAllOneLeave
+            cheatLogNew.ShootAllTwoleave = shootAllTwoLeave
             cheatLogNew.CheatLogs = value
             cheatLogsNew.push(cheatLogNew)
           }
@@ -835,17 +934,19 @@ export default {
             />
             <el-table-column
               label="作弊数据"
-              width="180"
+              width="200"
               align="center"
             >
               <template slot-scope="scope">
-                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
-                <div v-show="scope.row.Tid === 0">{{ formatCheatDateThreeCrack(scope.row) }}</div>
+                <div v-show="isShowShootAllTwo(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
+                <div v-show="isShowShootAllOne(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
+                <div v-show="isShowExtraAddScore(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
+                <div v-show="isShowThreeSmall(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
+                <div v-show="isShowThreeZero(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
+                <div v-show="isShowThreeTwoCrack(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
+                <div v-show="isShowThreeCrack(scope.row)">{{ formatCheatDateThreeCrack(scope.row) }}</div>
+                <div v-show="isShowOneLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
+                <div v-show="isShowTwoLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
               </template>
             </el-table-column>
             <el-table-column
@@ -1078,17 +1179,19 @@ export default {
             />
             <el-table-column
               label="作弊数据"
-              width="180"
+              width="200"
               align="center"
             >
               <template slot-scope="scope">
-                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
-                <div v-show="isShow(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
-                <div v-show="scope.row.Tid === 0">{{ formatCheatDateThreeCrack(scope.row) }}</div>
+                <div v-show="isShowShootAllTwo(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
+                <div v-show="isShowShootAllOne(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
+                <div v-show="isShowExtraAddScore(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
+                <div v-show="isShowThreeSmall(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
+                <div v-show="isShowThreeZero(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
+                <div v-show="isShowThreeTwoCrack(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
+                <div v-show="isShowThreeCrack(scope.row)">{{ formatCheatDateThreeCrack(scope.row) }}</div>
+                <div v-show="isShowOneLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
+                <div v-show="isShowTwoLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
               </template>
             </el-table-column>
 

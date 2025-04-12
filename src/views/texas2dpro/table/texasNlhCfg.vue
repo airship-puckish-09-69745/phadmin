@@ -228,7 +228,7 @@ export default {
       this.cfg.TestCard = this.TestCard
       const postData = JSON.parse(JSON.stringify(this.cfg))
       this.form.Data = JSON.stringify(postData)
-      console.log(this.form.Data)
+      console.log(this.form)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)

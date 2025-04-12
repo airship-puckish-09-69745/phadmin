@@ -514,10 +514,24 @@ export const asyncRoutes = [
                 ]
               },
               {
-                path: '/texasProActivityNotice',
-                component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
-                name: 'noticeList',
-                meta: { title: '活动公告' }
+                path: '/activeCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '活动配置', noCache: true },
+                children: [
+                  {
+                    path: 'noticeList',
+                    component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
+                    name: 'noticeList',
+                    meta: { title: '活动公告' }
+                  },
+                  {
+                    path: 'scrollerList',
+                    component: () => import('@/views/texas2dpro/activity/texasJpScroller'),
+                    name: 'scrollerList',
+                    meta: { title: 'JP跑马灯' }
+                  }
+                ]
               }
             ]
           },
@@ -1683,6 +1697,20 @@ export const asyncRoutes = [
         component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
         name: 'activityCommonConfig',
         meta: { title: '活动公共配置', noCache: true }
+      },
+      {
+        path: 'newbieConfig',
+        component: () => import('@/views/empty'),
+        name: 'newbieConfig',
+        meta: { title: '新手任务活动配置', noCache: true },
+        children: [
+          {
+            path: 'newbieConfig',
+            component: () => import('@/views/config/tableConfig/activity/newbieConfig'),
+            name: 'newbieConfig',
+            meta: { title: '新手任务活动配置', noCache: true }
+          }
+        ]
       }
     ]
   },

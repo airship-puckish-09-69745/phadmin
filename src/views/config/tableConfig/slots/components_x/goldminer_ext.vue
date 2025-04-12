@@ -52,11 +52,19 @@
             <el-input v-model.number="cfg.WildProbability" :required="true"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费次数权重">
+          <el-form-item label="免费次数权重倍数V2">
+            <el-input v-model="cfg.FreeWeightOddsV2" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接([a,b],[c,d])</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费次数权重V2">
             <el-input v-model="cfg.FreeWeight" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接(0次,6次,12次)</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式再次免费次数权重">
+          <el-form-item label="免费模式再次免费次数权重倍数V2">
+            <el-input v-model="cfg.FreeAgainWeightOddsV2" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接([a,b],[c,d])</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式再次免费次数权重V2">
             <el-input v-model="cfg.FreeAgainWeight" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接(0次,6次,12次)</template> </el-input>
           </el-form-item>
 
