@@ -2088,7 +2088,7 @@ export default {
         if (this.editForm.prizeExtra.awardType == 0) {
           this.editForm.prizeExtra.rewardType = 1
           this.editForm.prizeExtra.sceneId = 0
-          if (!this.checkRewardCfg(this.editForm.rankRewards)) {
+          if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
             return false
           }
         }
