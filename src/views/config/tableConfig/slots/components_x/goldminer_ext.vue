@@ -52,21 +52,21 @@
             <el-input v-model.number="cfg.WildProbability" :required="true"> <template slot="append">‰</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费次数权重倍数V2">
-            <el-input v-model="cfg.FreeWeightOddsV2" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接([a,b],[c,d])</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费次数权重倍数V2">-->
+<!--            <el-input v-model="cfg.FreeWeightOddsV2" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接([a,b],[c,d])</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费次数权重V2">
-            <el-input v-model="cfg.FreeWeight" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接(0次,6次,12次)</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费次数权重V2">-->
+<!--            <el-input v-model="cfg.FreeWeight" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接(0次,6次,12次)</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费模式再次免费次数权重倍数V2">
-            <el-input v-model="cfg.FreeAgainWeightOddsV2" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接([a,b],[c,d])</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费模式再次免费次数权重倍数V2">-->
+<!--            <el-input v-model="cfg.FreeAgainWeightOddsV2" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接([a,b],[c,d])</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费模式再次免费次数权重V2">
-            <el-input v-model="cfg.FreeAgainWeight" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接(0次,6次,12次)</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费模式再次免费次数权重V2">-->
+<!--            <el-input v-model="cfg.FreeAgainWeight" placeholder="请输入内容,如1,2,4"> <template slot="append">用 , 连接(0次,6次,12次)</template> </el-input>-->
+<!--          </el-form-item>-->
 
           <el-form-item label="硬币数权重">
             <el-input v-model="cfg.CoinNumWeight" placeholder="请输入内容,如2,4"> <template slot="append">用 , 连接(1个,2个)</template> </el-input>
@@ -97,6 +97,68 @@
           </el-form-item>
 
         </el-form>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12" :offset="3">
+        <el-tabs v-model="activeTab">
+          <el-tab-pane label="免费次数" name="script">
+            <el-button type="primary" @click="addConfigRow(freeWeight)">添加</el-button>
+            <el-table :data="freeWeight">
+              <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MinOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="MinOdds" label="]目标倍数结束" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MaxOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="WeightStr" label="次数权重">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.InWeight" :required="true" placeholder="请输入内容,如1,2,4">
+                    <template slot="append">用 , 连接(0次,6次,12次)</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120">
+                <template slot-scope="scope">
+                  <el-button type="danger" @click="removeConfigRow(scope, scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+
+          <el-tab-pane label="再次免费次数" name="script2">
+            <el-button type="primary" @click="addConfigRow(freeAgainWeight)">添加</el-button>
+            <el-table :data="freeAgainWeight">
+              <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MinOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="MinOdds" label="]目标倍数结束" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MaxOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="WeightStr" label="次数权重">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.InWeight" :required="true" placeholder="请输入内容,如1,2,4">
+                    <template slot="append">用 , 连接(0次,6次,12次)</template>
+                  </el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120">
+                <template slot-scope="scope">
+                  <el-button type="danger" @click="removeConfigRow(scope, scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
 
@@ -134,7 +196,10 @@ export default {
   },
   data() {
     return {
-      cfg: {}
+      cfg: {},
+      freeWeight: [{ MinOdds: 0, MaxOdds: 0, InWeight: '' }],
+      freeAgainWeight: [{ MinOdds: 0, MaxOdds: 0, InWeight: '' }],
+      activeTab: 'script'
     }
   },
   created() {
@@ -152,6 +217,7 @@ export default {
     submitFrm() {
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
+      this.setConfigRow()
       this.$refs.compare.SetNewVal(this.getDiffData())
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
@@ -172,7 +238,72 @@ export default {
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
+        this.initConfigRow()
       }
+    },
+    initConfigRow() {
+      let freeWeightOdds = this.cfg.FreeWeightOddsV2.split(',')
+      let freeWeight = this.cfg.FreeWeight.split(',')
+      this.freeWeight = []
+      for (let i = 0; i < freeWeightOdds.length / 2; i++) {
+        const inWeightGroup = freeWeight.slice(i * 3, i * 3 + 3).join(',')
+        this.freeWeight.push({
+          MinOdds: freeWeightOdds[i * 2],
+          MaxOdds: freeWeightOdds[i * 2 + 1],
+          InWeight: inWeightGroup
+        })
+      }
+
+      freeWeightOdds = this.cfg.FreeAgainWeightOddsV2.split(',')
+      freeWeight = this.cfg.FreeAgainWeight.split(',')
+      this.freeAgainWeight = []
+      for (let i = 0; i < freeWeightOdds.length / 2; i++) {
+        const inWeightGroup = freeWeight.slice(i * 3, i * 3 + 3).join(',')
+        this.freeAgainWeight.push({
+          MinOdds: freeWeightOdds[i * 2],
+          MaxOdds: freeWeightOdds[i * 2 + 1],
+          InWeight: inWeightGroup
+        })
+      }
+    },
+    setConfigRow() {
+      let freeWeightOdds = []
+      let freeWeight = []
+      for (let i = 0; i < this.freeWeight.length; i++) {
+        freeWeightOdds.push(this.freeWeight[i].MinOdds)
+        freeWeightOdds.push(this.freeWeight[i].MaxOdds)
+        freeWeight.push(this.freeWeight[i].InWeight)
+      }
+      this.cfg.FreeWeightOddsV2 = freeWeightOdds.join(',')
+      this.cfg.FreeWeight = freeWeight.join(',')
+
+      freeWeightOdds = []
+      freeWeight = []
+      for (let i = 0; i < this.freeAgainWeight.length; i++) {
+        freeWeightOdds.push(this.freeAgainWeight[i].MinOdds)
+        freeWeightOdds.push(this.freeAgainWeight[i].MaxOdds)
+        freeWeight.push(this.freeAgainWeight[i].InWeight)
+      }
+      this.cfg.FreeAgainWeightOddsV2 = freeWeightOdds.join(',')
+      this.cfg.FreeAgainWeight = freeWeight.join(',')
+    },
+    addConfigRow(freeWeight) {
+      freeWeight.push({
+        MinOdds: 0,
+        MaxOdds: 0,
+        InWeight: ''
+      })
+    },
+    removeConfigRow(freeWeight, index) {
+      // 弹窗确认是否删除
+      this.$confirm('确定要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        freeWeight.splice(index, 1)
+        console.log('removeConfigRow index', index)
+      })
     }
   }
 }
