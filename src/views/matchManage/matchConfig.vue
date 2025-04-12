@@ -2137,7 +2137,7 @@ export default {
         }
 
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
-          if(! await this.propTakeEffectCheck()){
+          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
             this.errmsg('所选择的道具不生效,请检查')
             return false
           }
@@ -2353,7 +2353,7 @@ export default {
     async propCheck(){
       if (this.editForm.data.signUpType === 2 || this.editForm.data.signUpType === 3) {
         if(this.editForm.signExtra.propId > 0){
-          if(! await this.propTakeEffectCheck()){
+          if(! await this.propTakeEffectCheck(this.editForm.signExtra.propId)){
             this.errmsg("所选择的道具不生效")
             return false
           }
@@ -2382,15 +2382,15 @@ export default {
       return true
     },
 
-    async propTakeEffectCheck(){
+    async propTakeEffectCheck(propId){
       await this.getMatchProps();
-      return await this.PropIsPublish()
+      return await this.PropIsPublish(propId)
     },
-    async PropIsPublish(){
-      //console.log("matchTicketsCfgs 2222 ",this.editForm.signExtra.propId,this.matchTicketsCfgs)
-      if (this.editForm.signExtra.propId > 0 ){
+    async PropIsPublish(propId){
+      //console.log("matchTicketsCfgs 2222  propId:",propId,this.editForm.signExtra.propId,this.matchTicketsCfgs)
+      if (propId > 0 ){
         for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
-          if (this.editForm.signExtra.propId === this.matchTicketsCfgs[i].value) {
+          if (propId === this.matchTicketsCfgs[i].value) {
             return true
           }
         }
