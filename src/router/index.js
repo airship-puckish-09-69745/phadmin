@@ -512,10 +512,24 @@ export const asyncRoutes = [
                 ]
               },
               {
-                path: '/texasProActivityNotice',
-                component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
-                name: 'noticeList',
-                meta: { title: '活动公告' }
+                path: '/activeCfg',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '活动配置', noCache: true },
+                children: [
+                  {
+                    path: 'noticeList',
+                    component: () => import('@/views/texas2dpro/activity/texasProActivityNotice'),
+                    name: 'noticeList',
+                    meta: { title: '活动公告' }
+                  },
+                  {
+                    path: 'scrollerList',
+                    component: () => import('@/views/texas2dpro/activity/texasJpScroller'),
+                    name: 'scrollerList',
+                    meta: { title: 'JP跑马灯' }
+                  }
+                ]
               }
             ]
           },
