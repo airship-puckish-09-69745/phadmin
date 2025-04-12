@@ -980,7 +980,7 @@ export default {
   },
   computed: {
   },
-  created() {
+   created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
@@ -1594,11 +1594,11 @@ export default {
       }
       return flag
     },
-    saveMatch() {
+   async saveMatch() {
       if (this.editForm.data.opentMatchType == 1) {
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
       }
-      if (!this.configCheck()) {
+      if (!await this.configCheck()) {
         return
       }
       // 修复道具
@@ -1816,8 +1816,9 @@ export default {
       })
     },
 
-    getMatchProps() {
-      request({
+    async getMatchProps() {
+      try {
+        const response = await request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
@@ -1825,7 +1826,7 @@ export default {
           Path: '/match/props/config/list',
           PropType: this.currPropsType,
         }
-      }).then(response => {
+      })
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
@@ -1841,6 +1842,7 @@ export default {
             ]
             this.matchTicketsCfgs = []
             var timestamp = Date.parse(new Date())/1000
+            //console.log("matchTicketsCfgs 000 objs.list ",objs.list)
             for (let i=0;i<objs.list.length;i++) {
               if (objs.list[i].item_type === this.currPropsType && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
                 this.matchPropsCfgs.push({
@@ -1851,17 +1853,19 @@ export default {
                   'propsAttr': objs.list[i].item_describe,
                   'propsCost': objs.list[i].item_cost,
                 })
-                  this.matchTicketsCfgs.push({
-                    'label': objs.list[i].item_name,
-                    'value': objs.list[i].id,
-                  })
-
+                this.matchTicketsCfgs.push({
+                  'label': objs.list[i].item_name,
+                  'value': objs.list[i].id,
+                })
               }
             }
           }
         }
-      })
-    },
+      } catch (error) {
+        console.log(error)
+      }finally{
+      }
+      },
 
     getMatchPropsFromMysql() {
       request({
@@ -1933,7 +1937,7 @@ export default {
 
       return s
     },
-    configCheck() {
+    async configCheck() {
       if (this.editForm.data.gameId == 0) {
         this.errmsg('请选择游戏')
         return false
@@ -1972,7 +1976,7 @@ export default {
         this.errmsg('当前选择的是免费赛,不能选择动态奖池分配模式')
         return false
       }
-      if(this.propCheck() === false){
+      if(!await this.propCheck()){
         return false
       }
 
@@ -2133,7 +2137,7 @@ export default {
         }
 
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
-          if(!this.propTakeEffectCheck()){
+          if(!propTakeEffectCheck()){
             this.errmsg('所选择的道具不生效,请检查')
             return false
           }
@@ -2346,10 +2350,10 @@ export default {
       return show_appinfo
     },
     //道具检测
-    propCheck(){
+    async propCheck(){
       if (this.editForm.data.signUpType === 2 || this.editForm.data.signUpType === 3) {
         if(this.editForm.signExtra.propId > 0){
-          if(!this.propTakeEffectCheck()){
+          if(! await this.propTakeEffectCheck()){
             this.errmsg("所选择的道具不生效")
             return false
           }
@@ -2377,9 +2381,13 @@ export default {
       }
       return true
     },
-    propTakeEffectCheck(){
-      this.getMatchProps()
-      console.log("matchTicketsCfgs 1111 ",this.matchTicketsCfgs)
+
+    async propTakeEffectCheck(){
+      await this.getMatchProps();
+      return await this.PropIsPublish()
+    },
+    async PropIsPublish(){
+      //console.log("matchTicketsCfgs 2222 ",this.editForm.signExtra.propId,this.matchTicketsCfgs)
       if (this.editForm.signExtra.propId > 0 ){
         for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
           if (this.editForm.signExtra.propId === this.matchTicketsCfgs[i].value) {
@@ -2389,6 +2397,6 @@ export default {
       }
       return false
     }
-  }
+  },
 }
 </script>
