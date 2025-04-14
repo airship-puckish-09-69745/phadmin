@@ -752,8 +752,8 @@ export default {
   created() {
     this.env = store.getters.env || this.env
     this.getList()
-/*    this.getMatchProps()*/
-    this.getMatchPropsV1()
+    this.getMatchProps()
+    /*this.getMatchPropsV1()*/
   },
   methods: {
     formatNumber(n) {

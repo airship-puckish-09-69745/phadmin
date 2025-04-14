@@ -980,7 +980,7 @@ export default {
   },
   computed: {
   },
-  created() {
+   created() {
     this.name = store.getters.name
     this.env = store.getters.env || this.env
     this.getCsCfgs()
@@ -1002,11 +1002,12 @@ export default {
         // { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ]
     }
-    //this.getMatchProps()
-    this.getMatchPropsFromMysql()
+    this.getMatchProps()
+    //this.getMatchPropsFromMysql()
   },
   mounted() {
     this.getList()
+    this.getMatchProps()
     // 自动清理过期配置
   },
   methods: {
@@ -1593,11 +1594,11 @@ export default {
       }
       return flag
     },
-    saveMatch() {
+   async saveMatch() {
       if (this.editForm.data.opentMatchType == 1) {
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
       }
-      if (!this.configCheck()) {
+      if (!await this.configCheck()) {
         return
       }
       // 修复道具
@@ -1815,8 +1816,9 @@ export default {
       })
     },
 
-    getMatchProps() {
-      request({
+    async getMatchProps() {
+      try {
+        const response = await request({
         url: '/dataProxy/info',
         method: 'get',
         data: {
@@ -1824,7 +1826,7 @@ export default {
           Path: '/match/props/config/list',
           PropType: this.currPropsType,
         }
-      }).then(response => {
+      })
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
@@ -1840,6 +1842,7 @@ export default {
             ]
             this.matchTicketsCfgs = []
             var timestamp = Date.parse(new Date())/1000
+            //console.log("matchTicketsCfgs 000 objs.list ",objs.list)
             for (let i=0;i<objs.list.length;i++) {
               if (objs.list[i].item_type === this.currPropsType && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
                 this.matchPropsCfgs.push({
@@ -1850,17 +1853,19 @@ export default {
                   'propsAttr': objs.list[i].item_describe,
                   'propsCost': objs.list[i].item_cost,
                 })
-                  this.matchTicketsCfgs.push({
-                    'label': objs.list[i].item_name,
-                    'value': objs.list[i].id,
-                  })
-
+                this.matchTicketsCfgs.push({
+                  'label': objs.list[i].item_name,
+                  'value': objs.list[i].id,
+                })
               }
             }
           }
         }
-      })
-    },
+      } catch (error) {
+        console.log(error)
+      }finally{
+      }
+      },
 
     getMatchPropsFromMysql() {
       request({
@@ -1932,7 +1937,7 @@ export default {
 
       return s
     },
-    configCheck() {
+    async configCheck() {
       if (this.editForm.data.gameId == 0) {
         this.errmsg('请选择游戏')
         return false
@@ -1942,7 +1947,7 @@ export default {
         this.errmsg('请先选择渠道ID')
         return false
       }
-      if (this.editForm.data.signUpType == 1) {
+      if (this.editForm.data.signUpType === 1) {
         // 如果是免费报名，重置报名费数量为0
         this.editForm.data.signUpNum = 0
       }
@@ -1956,7 +1961,7 @@ export default {
       if (this.editForm.data.openDaysLimit > 0 && this.editForm.data.signUpType != 0) {
         this.errmsg('每日限制已经开启')
       }
-      //付费塞
+      //付费赛
       if (this.editForm.data.signUpType === 0) {
         if  (this.editForm.data.signUpNum === 0){
           this.errmsg('付费赛报名费不能为0')
@@ -1967,29 +1972,11 @@ export default {
         this.editForm.signExtra.propCost = 0
         this.editForm.signExtra.propNum = 0
       }
-      //金币or门票报名
-      if (this.editForm.data.signUpType === 3){
-        if (this.editForm.data.signUpNum === 0){
-          this.errmsg('付费赛报名费不能为0')
-          return false
-        }
-        if(this.editForm.signExtra.propId === 0){
-          this.errmsg("金币or门票报名 必须选择门票")
-          return false
-        }
-      }
-      //纯门票报名
-      if(this.editForm.data.signUpType === 2)
-      {
-        this.editForm.data.signUpNum = 0
-        if(this.editForm.signExtra.propId === 0){
-          this.errmsg("门票报名 必须选择门票")
-          return false
-        }
-      }
-
       if (this.editForm.data.signUpType === 1 && this.editForm.prizeExtra.awardType == 1) {
         this.errmsg('当前选择的是免费赛,不能选择动态奖池分配模式')
+        return false
+      }
+      if(!await this.propCheck()){
         return false
       }
 
@@ -2101,7 +2088,7 @@ export default {
         if (this.editForm.prizeExtra.awardType == 0) {
           this.editForm.prizeExtra.rewardType = 1
           this.editForm.prizeExtra.sceneId = 0
-          if (!this.checkRewardCfg(this.editForm.rankRewards)) {
+          if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
             return false
           }
         }
@@ -2132,7 +2119,7 @@ export default {
       }
       return true
     },
-    checkRewardCfg(rewards) {
+    async checkRewardCfg(rewards) {
       if (rewards.length <= 0) {
         this.errmsg('请添加固定奖励配置')
         return false
@@ -2147,6 +2134,13 @@ export default {
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
+        }
+
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
+          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
+            this.errmsg('所选择的道具不生效,请检查')
+            return false
+          }
         }
         if (element.rewardItems.length == 0) {
           this.errmsg('请添加奖励配置')
@@ -2354,7 +2348,55 @@ export default {
         show_appinfo += appInfoTemp[i].channelId
       }
       return show_appinfo
+    },
+    //道具检测
+    async propCheck(){
+      if (this.editForm.data.signUpType === 2 || this.editForm.data.signUpType === 3) {
+        if(this.editForm.signExtra.propId > 0){
+          if(! await this.propTakeEffectCheck(this.editForm.signExtra.propId)){
+            this.errmsg("所选择的道具不生效")
+            return false
+          }
+        }
+      }
+      //金币or门票报名
+      if (this.editForm.data.signUpType === 3){
+        if (this.editForm.data.signUpNum === 0){
+          this.errmsg('付费赛报名费不能为0')
+          return false
+        }
+        if(this.editForm.signExtra.propId === 0){
+          this.errmsg("金币or门票报名 必须选择门票")
+          return false
+        }
+      }
+      //纯门票报名
+      if(this.editForm.data.signUpType === 2)
+      {
+        this.editForm.data.signUpNum = 0
+        if(this.editForm.signExtra.propId === 0){
+          this.errmsg("门票报名 必须选择门票")
+          return false
+        }
+      }
+      return true
+    },
+
+    async propTakeEffectCheck(propId){
+      await this.getMatchProps();
+      return await this.PropIsPublish(propId)
+    },
+    async PropIsPublish(propId){
+      //console.log("matchTicketsCfgs 2222  propId:",propId,this.editForm.signExtra.propId,this.matchTicketsCfgs)
+      if (propId > 0 ){
+        for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
+          if (propId === this.matchTicketsCfgs[i].value) {
+            return true
+          }
+        }
+      }
+      return false
     }
-  }
+  },
 }
 </script>

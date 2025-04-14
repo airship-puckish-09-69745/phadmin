@@ -238,25 +238,6 @@ export default {
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
 
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1000008, 'label': 'gli' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
-
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
-      ],
 
       itemTypeCfgs: [
         { 'value': 1, 'label': 'Tongits门票', disabled: false },

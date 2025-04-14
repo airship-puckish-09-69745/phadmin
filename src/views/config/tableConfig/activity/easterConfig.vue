@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['ID']" />
+      <publish primary-key="cfgId" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -166,6 +166,13 @@
                     </el-input>
                     <span v-if="todayRaffleAmount > edit.item.DayPrizeThreshold" style="color: red">今日发奖已超阈值（{{todayRaffleAmount}}），已开启限制</span>
                     <span v-else style="color: red">今日发奖总额（{{todayRaffleAmount}}）</span>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="调试时间偏移量（仅测试用）：" :required="true">
+                    <el-input v-model.number="edit.item.DebugTimeOffset">
+                      <template slot="append">秒</template>
+                    </el-input>
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -540,7 +547,6 @@ function newEggs() {
 
 function newItem() {
   const eggs = newEggs()
-  console.log('eggs:' + eggs)
   return {
     ID: 0,
     IsOpen: 1,
@@ -652,6 +658,7 @@ export default {
       },
       env: 'test',
       AttrNames: {
+        CfgId: '配置ID',
         IsOpen: '是否开启',
         StartTime: '开始时间',
         EndTime: '结束时间',
@@ -668,6 +675,7 @@ export default {
         EggCfg: '彩蛋配置',
         EggShellsPerRaffle: '每抽蛋壳数量',
         EggShellsRaffleFirst: '首抽蛋壳数量',
+        DebugTimeOffset: '调试时间偏移',
       },
       treeData: [{
         id: 1,
@@ -718,10 +726,11 @@ export default {
 
       // 投注金
       betScenes: [
-        { 'value': 1, 'label': '任意游戏投注' },
+        { 'value': 7, 'label': '【复活节彩蛋活动】任意游戏投注' },
+        /*{ 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
         { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+        { 'value': 4, 'label': '仅限Tongits游戏投注' },*/
       ],
       // 返水金
       rebateScenes: [
@@ -764,6 +773,17 @@ export default {
     }
   },
   methods: {
+    getPublishAttrNames() {
+      // 将首字母改为小写
+      const attrNames = {}
+      for (const key in this.AttrNames) {
+        if (this.AttrNames.hasOwnProperty(key)) {
+          const newKey = key.charAt(0).toLowerCase() + key.slice(1)
+          attrNames[newKey] = this.AttrNames[key]
+        }
+      }
+      return attrNames
+    },
     configCheck() {
       return true
     },
@@ -957,6 +977,7 @@ export default {
       data.EggCfg = JSON.stringify(this.edit.item.EggCfg)
       data.EggShellsPerRaffle = this.edit.item.EggShellsPerRaffle
       data.EggShellsRaffleFirst = this.edit.item.EggShellsRaffleFirst
+      data.DebugTimeOffset = this.edit.item.DebugTimeOffset
       return data
     },
     handleSave() {
@@ -1039,6 +1060,7 @@ export default {
           item.RuleImgHor = JSON.parse(item.RuleImgHor)
           item.RuleImgVer = JSON.parse(item.RuleImgVer)
           item.DayPrizeThreshold = item.DayPrizeThreshold / 1000
+          item.DebugTimeOffset = item.DebugTimeOffset || 0
 
           for (let i = 0; i < item.RankCfg.length; i++) {
             const rankCfg = item.RankCfg[i]

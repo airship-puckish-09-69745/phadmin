@@ -62,7 +62,7 @@
                 <template slot="header">
                   <span>bonus最小图案出现次数
                     <el-tooltip effect="dark" content="免费中bonus图案出现最小次数" placement="top-end">
-                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer" />
+                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer"/>
                     </el-tooltip>
                   </span>
                 </template>
@@ -75,7 +75,7 @@
                 <template slot="header">
                   <span>bonus最大图案出现次数
                     <el-tooltip effect="dark" content="免费中bonus图案出现最大次数" placement="top-end">
-                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer" />
+                      <i class="el-icon-question" style="margin-left:5px;cursor:pointer"/>
                     </el-tooltip>
                   </span>
                 </template>
@@ -117,7 +117,7 @@ export default {
   // eslint-disable-next-line vue/no-unused-components
   name: 'SlotsMayanTotemExt',
   // eslint-disable-next-line vue/no-unused-components
-  components: {RatioInput, Compare},
+  components: { RatioInput, Compare },
   model: {
     prop: 'slotsData',
     event: 'cc'
@@ -150,10 +150,41 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      let checkValue1 = true
+      let checkValue2 = true
+      this.$refs['frm2'].validate((valid) => {
+        // eslint-disable-next-line no-empty
+        for (const index in this.cfg.BonusNumCfg) {
+          // eslint-disable-next-line no-empty
+          const bnc = this.cfg.BonusNumCfg[index]
+          if (bnc.HitMax <= bnc.HitMin) {
+            checkValue1 = false
+          }
+          // eslint-disable-next-line no-empty
+          if (bnc.NumMin <= bnc.HitMin || bnc.NumMin <= bnc.HitMax) {
+            checkValue2 = false
+          }
+        }
+      })
+      if (!checkValue1) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('"bonus最小图案出现次数"应该小于"bonus最大图案出现次数"');
+        }, 100) // 间隔0.1秒显示
+        return
+      }
+      if (!checkValue2) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'bonus最小个数\'应该大于\'bonus最小图案出现次数\',\'bonus最大图案出现次数\'')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
-      this.$refs.compare.Compare(function (isEdit) {
+      this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           $this.$message.error('没有任何修改，不需要提交')
           return

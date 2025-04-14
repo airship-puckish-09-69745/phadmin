@@ -528,7 +528,8 @@ export default {
       itemTypeCfgs: [
         { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false }
       ],
       dayTypeCfgs: [
         { 'value': 7, 'label': '7天', disabled: false },
