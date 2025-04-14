@@ -711,7 +711,8 @@ export default {
         '183': 'godoffortunemars',
         '190': 'arcaneegypt',
         '186': 'mahjongjackpot',
-        '100186': 'mahjongjackpot_x'
+        '100186': 'mahjongjackpot_x',
+        '188': 'streetfighting'
       }
     }
   },
