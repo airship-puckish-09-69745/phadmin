@@ -3,178 +3,244 @@
     <el-row>
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </el-row>
-    <el-row style="padding-top: 5px">
-      <h3 style="text-align:center;">机器人AI配置</h3>
-      <el-col :span="24">
-        <div style="padding-top: 10px">
-          <el-table
-            :data="tableData"
-            stripe
-            border
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="AiConfigId"
-              label="级别"
-              width="70"
-            />
-            <el-table-column
-              prop="AiConfigName"
-              label="级别"
-              width="250"
-            />
-            <el-table-column
-              label="操作"
-              column-key="op"
-              width="250"
-            >
-              <template slot-scope="scope">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  icon="el-icon-document-copy"
-                  @click="handleUpdate(scope.row)"
-                >修改
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </el-col>
-    </el-row>
-    <el-row style="padding-top: 5px">
-      <h3 style="text-align:center;">机器人输赢配置</h3>
-      <el-col :span="24">
-        <div style="padding-top: 10px">
-          <el-table
-            :data="control"
-            stripe
-            border
-            style="width: 100%"
-          >
-
-            <el-table-column
-              prop="ControlId"
-              label="行号"
-              width="70"
-            />
-
-            <el-table-column
-              label="输赢最小(%)"
-              width="120"
-            >
-              <template scope="subScope">
-                <el-input v-model.number="subScope.row.PerStartPool" />
-              </template>
-            </el-table-column>
-
-            <el-table-column
-              label="输赢最大(%)"
-              width="120"
-            >
-              <template scope="subScope">
-                <el-input v-model.number="subScope.row.PerEndPool" />
-              </template>
-            </el-table-column>
-
-            <el-table-column label="机器人级别" width="120">
-              <template scope="subScope">
-                <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
-                  <el-option
-                    v-for="item in robotlvl"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+    <el-row>
+      <br>
+      <el-tabs type="border-card">
+        <el-tab-pane label="基础配置">
+          <el-row style="padding-top: 5px">
+            <h3 style="text-align:center;">机器人AI配置</h3>
+            <el-col :span="24">
+              <div style="padding-top: 10px">
+                <el-table
+                  :data="tableData"
+                  stripe
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    prop="AiConfigId"
+                    label="级别"
+                    width="70"
                   />
-                </el-select>
-              </template>
-            </el-table-column>
-            <el-table-column label="操作" :render-header="(h,obj)=>addControlButton()">
-              <template scope="subScope">
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="delControlRow(subScope.$index,subScope.row)"
-                >删除</el-button>
-              </template>
-            </el-table-column>
-
-          </el-table>
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row style="padding-top: 5px">
-
-      <h3 style="text-align:center;">机器人分配</h3>
-      <el-col :span="24">
-        <div style="padding-top: 10px">
-          <el-table
-            :data="actionList"
-            stripe
-            border
-            style="width: 100%"
-          >
-            <el-table-column
-              label="底注"
-            >
-              <template slot-scope="scope">
-                {{ scope.row.TableMoney/1000 }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="当前输赢"
-            >
-              <template slot-scope="scope">
-                <a href="javascript:void(0)" style="cursor: pointer; color:rgb(59, 59, 232);" @click="showRobotPoolForm(scope.row.TableMoney)">{{ getRobotProfitByTableMoney(scope.row.TableMoney,true) }}</a>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="分配"
-              width="650"
-            >
-              <template slot-scope="scope">
-                <el-table :data="scope.row.List" border>
-                  <el-table-column label="输赢最小">
-                    <template scope="subScope">
-                      <el-input v-model.number="subScope.row.StartPool" />
+                  <el-table-column
+                    prop="AiConfigName"
+                    label="级别"
+                    width="250"
+                  />
+                  <el-table-column
+                    label="操作"
+                    column-key="op"
+                    width="250"
+                  >
+                    <template slot-scope="scope">
+                      <el-button
+                        type="primary"
+                        size="mini"
+                        icon="el-icon-document-copy"
+                        @click="handleUpdate(scope.row)"
+                      >修改
+                      </el-button>
                     </template>
                   </el-table-column>
-                  <el-table-column label="输赢最大">
+                </el-table>
+              </div>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 5px">
+            <h3 style="text-align:center;">机器人输赢配置</h3>
+            <el-col :span="24">
+              <div style="padding-top: 10px">
+                <el-table
+                  :data="control"
+                  stripe
+                  border
+                  style="width: 100%"
+                >
+
+                  <el-table-column
+                    prop="ControlId"
+                    label="行号"
+                    width="70"
+                  />
+
+                  <el-table-column
+                    label="输赢最小(%)"
+                    width="120"
+                  >
                     <template scope="subScope">
-                      <el-input v-model.number="subScope.row.EndPool" />
+                      <el-input v-model.number="subScope.row.PerStartPool" />
                     </template>
                   </el-table-column>
-                  <el-table-column label="机器人级别">
+
+                  <el-table-column
+                    label="输赢最大(%)"
+                    width="120"
+                  >
+                    <template scope="subScope">
+                      <el-input v-model.number="subScope.row.PerEndPool" />
+                    </template>
+                  </el-table-column>
+
+                  <el-table-column label="机器人级别" width="120">
                     <template scope="subScope">
                       <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
                         <el-option
-                          v-for="item in robotlvl"
-                          :key="item.value"
-                          :label="item.label"
-                          :value="item.value"
+                          v-for="itemLvl in robotlvl"
+                          :key="itemLvl.value"
+                          :label="itemLvl.label"
+                          :value="itemLvl.value"
                         />
                       </el-select>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" :render-header="(h,obj)=>addTableHeaderButton(h,obj,scope.row.TableMoney)">
+                  <el-table-column label="操作" :render-header="(h,obj)=>addControlButton()">
                     <template scope="subScope">
                       <el-button
                         size="mini"
                         type="danger"
-                        @click="delRow(scope.$index,subScope.$index,subScope.row)"
+                        @click="delControlRow(subScope.$index,subScope.row)"
                       >删除</el-button>
                     </template>
                   </el-table-column>
+
                 </el-table>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </el-col>
-      <el-col :offset="16" :span="8">
-        <el-button type="primary" @click="setData">保存分配信息</el-button>
-      </el-col>
+              </div>
+            </el-col>
+          </el-row>
+
+          <el-row style="padding-top: 5px">
+
+            <h3 style="text-align:center;">机器人分配</h3>
+            <el-col :span="24">
+              <div style="padding-top: 10px">
+                <el-table
+                  :data="actionList"
+                  stripe
+                  border
+                  style="width: 100%"
+                >
+                  <el-table-column
+                    label="底注"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.TableMoney/1000 }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="当前输赢"
+                  >
+                    <template slot-scope="scope">
+                      <a href="javascript:void(0)" style="cursor: pointer; color:rgb(59, 59, 232);" @click="showRobotPoolForm(scope.row.TableMoney)">{{ getRobotProfitByTableMoney(scope.row.TableMoney,true) }}</a>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="分配"
+                    width="650"
+                  >
+                    <template slot-scope="scope">
+                      <el-table :data="scope.row.List" border>
+                        <el-table-column label="输赢最小">
+                          <template scope="subScope">
+                            <el-input v-model.number="subScope.row.StartPool" />
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="输赢最大">
+                          <template scope="subScope">
+                            <el-input v-model.number="subScope.row.EndPool" />
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="机器人级别">
+                          <template scope="subScope">
+                            <el-select v-model="subScope.row.AiConfigLevel" placeholder="请选择">
+                              <el-option
+                                v-for="itemLvl in robotlvl"
+                                :key="itemLvl.value"
+                                :label="itemLvl.label"
+                                :value="itemLvl.value"
+                              />
+                            </el-select>
+                          </template>
+                        </el-table-column>
+                        <el-table-column label="操作" :render-header="(h,obj)=>addTableHeaderButton(h,obj,scope.row.TableMoney)">
+                          <template scope="subScope">
+                            <el-button
+                              size="mini"
+                              type="danger"
+                              @click="delRow(scope.$index,subScope.$index,subScope.row)"
+                            >删除</el-button>
+                          </template>
+                        </el-table-column>
+                      </el-table>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
+            </el-col>
+            <el-col :offset="16" :span="8">
+              <el-button type="primary" @click="setData">保存分配信息</el-button>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="信息配置">
+          <el-row>
+            <el-col :span="20" :offset="1">
+              <h5>机器人昵称配置 <el-button type="text" @click="addNameCfg">添加一项</el-button></h5>
+              <el-table :data="NameCfg" border>
+                <el-table-column label="昵称" prop="Nick" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model="scope.row.Nick" size="mini" /></template>
+                </el-table-column>
+                <el-table-column label="概率(%)" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.Probability" size="mini"><template
+                      slot="append"
+                    >%</template></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delNameCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="20" :offset="1">
+              <el-button type="text" @click="addShowMoneyCfg">添加一项</el-button>
+              <el-table :data="ShowMoneyCfg" border>
+                <el-table-column label="场次" prop="TableMoney" width="200">
+                  <template slot-scope="scope">
+                    <!--                    <el-input v-model.number="scope.row.TableMoney/1000" size="mini" />-->
+                    <el-select v-model="scope.row.TableMoney" placeholder="请选择">
+                      <el-option
+                        v-for="itemTableMoney in AllTableMoneyList"
+                        :key="itemTableMoney"
+                        :label="itemTableMoney/1000"
+                        :value="itemTableMoney/1000"/>
+                    </el-select>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最小值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="最大值" width="200">
+                  <template slot-scope="scope">
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="100">
+                  <template slot-scope="scope">
+                    <el-button type="danger" size="mini" @click="delShowMoneyCfg(scope.$index)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
     </el-row>
     <el-dialog
       title="机器人配置"
@@ -251,7 +317,19 @@ import robotAiSettingChallenge from '../tongits/robotAiSettingChallenge'
 import robotAiSettingDrop from '../tongits/robotAiSettingDrop'
 import robotAiSettingOutCard from '../tongits/robotAiSettingOutCard'
 import robotAiSettingBuildCard from '../tongits/robotAiSettingBuildCard'
-
+function newNameCfgItem(nick, probability) {
+  return {
+    Nick: nick,
+    Probability: probability
+  }
+}
+function newShowMoneyCfg() {
+  return {
+    TableMoney: 1,
+    ShowMoneyMin: 30,
+    ShowMoneyMax: 100
+  }
+}
 export default {
   // eslint-disable-next-line vue/no-unused-components
   components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput },
@@ -300,7 +378,11 @@ export default {
         currentVal: 0,
         changeVal: 0
       },
-      editRobotSync: false
+      editRobotSync: false,
+
+      NameCfg: [], // 启动机器人名字配置
+      ShowMoneyCfg: [], // 机器人展示资产配置
+      AllTableMoneyList: []
     }
   },
   created() {
@@ -341,10 +423,18 @@ export default {
             this.item = cfg
             this.tableData = this.item.Config
             this.actionList = this.item.Action
+            this.NameCfg = this.item.NameCfg || []
+            const ShowMoneyCfg = this.item.ShowMoneyCfg || []
             if (this.item.Control) {
               this.control = this.item.Control
             }
-
+            for (const o in ShowMoneyCfg) {
+              const one = Object.assign({}, ShowMoneyCfg[o])
+              one.TableMoney /= 1000
+              one.ShowMoneyMin /= 1000
+              one.ShowMoneyMax /= 1000
+              this.ShowMoneyCfg.push(one)
+            }
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data.Data)
             this.moneyProc(false)
@@ -385,9 +475,15 @@ export default {
             } else {
               tableList += ',' + tableMoney
             }
+            if (objs[i].IsPractice === 0 && objs[i].Status === 2 && objs[i].RoomLevel === 0) {
+              this.AllTableMoneyList.push(tableMoney)
+            }
             index++
           }
         }
+        this.AllTableMoneyList.sort((a, b) => {
+          return a - b
+        })
         if (tableList !== '') {
           this.getRobotProfit(tableList)
         }
@@ -450,6 +546,15 @@ export default {
     setData() {
       this.moneyProc(true)
       this.item.Control = this.control
+      this.item.NameCfg = this.NameCfg
+      this.item.ShowMoneyCfg = []
+      for (const o in this.ShowMoneyCfg) {
+        const obj = {}
+        obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
+        obj.ShowMoneyMin = parseInt(this.ShowMoneyCfg[o].ShowMoneyMin) * 1000
+        obj.ShowMoneyMax = parseInt(this.ShowMoneyCfg[o].ShowMoneyMax) * 1000
+        this.item.ShowMoneyCfg.push(obj)
+      }
       this.form.Data = JSON.stringify(this.item)
       console.log('this.form.Data:', this.form.Data)
       this.moneyProc(false)
@@ -561,6 +666,30 @@ export default {
         } else {
           Message.error(response.Data)
         }
+      })
+    },
+    addNameCfg() {
+      this.NameCfg.push(newNameCfgItem('', 0))
+    },
+    addShowMoneyCfg() {
+      this.ShowMoneyCfg.push(newShowMoneyCfg())
+    },
+    delNameCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.NameCfg, idx)
+      })
+    },
+    delShowMoneyCfg(idx) {
+      this.$confirm('要删除该项吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$delete(this.ShowMoneyCfg, idx)
       })
     }
   }

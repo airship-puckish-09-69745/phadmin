@@ -343,7 +343,7 @@ const filterMap = {
   allowTableMoney: 'all'
 }
 function newItem() {
-  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0 }
+  return { 'nick': '', 'money': 0, 'initMoney': 0, 'channel': '', 'account': '', 'icon': '', 'app': '', 'allowTableMoney': 0, 'WalletType': 1 }
 }
 export default {
   // eslint-disable-next-line vue/no-unused-components
