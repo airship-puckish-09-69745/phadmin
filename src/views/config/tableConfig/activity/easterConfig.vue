@@ -726,10 +726,11 @@ export default {
 
       // 投注金
       betScenes: [
+        { 'value': 7, 'label': '【复活节彩蛋活动】任意游戏投注' },
         { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 2, 'label': '仅限Poker类游戏投注' },
         { 'value': 3, 'label': '仅限Slots类游戏投注' },
-        { 'value': 4, 'label': '仅限Tongits游戏投注' }
+        { 'value': 4, 'label': '仅限Tongits游戏投注' },
       ],
       // 返水金
       rebateScenes: [
