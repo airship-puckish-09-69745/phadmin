@@ -182,8 +182,18 @@
             sortable
           />
           <el-table-column
+            prop="playCnt"
+            label="活跃用户数量(30天)"
+            sortable
+          />
+          <el-table-column
             prop="kycCount"
             label="已KYC验证用户数量"
+          />
+          <el-table-column
+            prop="kycPlayCnt"
+            label="活跃Kyc用户数量(30天)"
+            sortable
           />
           <el-table-column
             prop="creditCount"

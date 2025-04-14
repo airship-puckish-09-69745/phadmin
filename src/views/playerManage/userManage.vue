@@ -231,6 +231,17 @@
           <el-tag v-if="credit.creditLevel == 2" type="danger">黑名单用户</el-tag>
           <el-tag v-if="credit.blackList.length > 0" type="danger">高危用户</el-tag>
         </el-descriptions-item>
+        <el-descriptions-item label="额外信誉分">
+          {{ formatNumber(credit.extScore / 1000) }}
+        </el-descriptions-item>
+        <el-descriptions-item label="增加(减少)信誉分">
+          <el-col :span="4">
+            <el-input v-model.number="creditChange" size="mini" style="margin-right: 10px;"/>
+          </el-col>
+          <el-col :span="2">
+            <el-button type="primary" style="margin-right: 100px;" size="mini" @click="saveCreditScore">提交</el-button>
+          </el-col>
+        </el-descriptions-item>
         <el-descriptions-item label="有效流水分">{{ formatNumber(credit.validBetScore / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="今日有效流水分">{{ formatNumber(credit.dayVbs / 1000) }}</el-descriptions-item>
         <el-descriptions-item label="玩牌局数分">{{ formatNumber(credit.playRoundScore / 1000) }}</el-descriptions-item>
@@ -396,8 +407,10 @@ export default {
       queryFlag: 1, // 1 uid查询，2 account 查询
       appInfo: [],
       selectGid: 28,
+      creditChange: 0,
       credit: {
         creditScore: 0,
+        extScore: 0,
         validBetScore: 0,
         playRoundScore: 0,
         ggrScore: 0,
@@ -1424,6 +1437,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           $this.credit.creditScore=response.Data.creditScore
+          $this.credit.extScore=response.Data.extScore
           $this.credit.validBetScore=response.Data.validBetScore
           $this.credit.playRoundScore=response.Data.playRoundScore
           $this.credit.ggrScore=response.Data.ggrScore
@@ -1612,6 +1626,7 @@ export default {
             $this.credit.creditScore=0
             $this.credit.validBetScore=0
             $this.credit.playRoundScore=0
+            $this.credit.extScore=0
             $this.credit.ggrScore=0
             $this.credit.creditScore=0
             $this.credit.dayVbs=0
@@ -1619,6 +1634,32 @@ export default {
             $this.credit.dayGgrs=0
             $this.credit.blackList=[]
             console.log("/user/credit/clear:",response.Data)
+          }
+        })
+      })
+    },
+    saveCreditScore() {
+      this.$confirm(`确定要给此用户增加${this.creditChange}信誉分吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(this.credit.uid, this.creditChange)
+        const $this = this
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: $this.env,
+            Path: '/user/credit/save',
+            Uid: $this.credit.uid,
+            ExtScore: $this.creditChange*1000
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            $this.getCredit()
+          } else {
+            console.log(response)
           }
         })
       })
