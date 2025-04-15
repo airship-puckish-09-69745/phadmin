@@ -1,8 +1,13 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
-    <el-row>
+
+    <div style="margin-bottom: 20px;">
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
-    </el-row>
+    </div>
+
+<!--    <el-row>-->
+<!--      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />-->
+<!--    </el-row>-->
     <el-row>
       <br>
       <el-tabs type="border-card">
@@ -176,9 +181,9 @@
                 </el-table>
               </div>
             </el-col>
-            <el-col :offset="16" :span="8">
-              <el-button type="primary" @click="setData">保存分配信息</el-button>
-            </el-col>
+<!--            <el-col :offset="16" :span="8">-->
+<!--              <el-button type="primary" @click="setData">保存分配信息</el-button>-->
+<!--            </el-col>-->
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="信息配置">
@@ -242,6 +247,9 @@
         </el-tab-pane>
       </el-tabs>
     </el-row>
+    <div style="margin-bottom: 20px;">
+      <el-button type="primary" @click="setData">保存信息</el-button>
+    </div>
     <el-dialog
       title="机器人配置"
       :visible.sync="editVisible"
