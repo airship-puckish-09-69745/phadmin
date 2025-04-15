@@ -145,6 +145,15 @@
             <el-input v-model="slotsData.AutoSpinNum[1]"> <template slot="append">无限=-1</template> </el-input>
           </el-form-item>
 
+          <el-form-item label="TopWins开始生效日期">
+            <el-date-picker
+              v-model="topWinsStartTime"
+              @change="handleDateChange"
+              placeholder="选择日期"
+              type="date"
+            />
+          </el-form-item>
+
           <el-form-item label="TopWins最小倍数">
             <el-input v-model.number="topWinsLimit" />
           </el-form-item>
@@ -200,7 +209,8 @@ export default {
       initialWinTypeMinOdds: [],
       initialBets: this.slotsData.Bets,
       initialAutoSpinNum: [],
-      topWinsLimit: this.slotsData.TopWinsLimit ? this.slotsData.TopWinsLimit / 1000 : 0
+      topWinsLimit: this.slotsData.TopWinsLimit ? this.slotsData.TopWinsLimit / 1000 : 0,
+      topWinsStartTime: this.slotsData.TopWinsStartTime ? new Date(this.slotsData.TopWinsStartTime * 1000) : new Date().getTime()
     }
     for (const k in this.slotsData.WinTypeMinOdds) {
       data.initialWinTypeMinOdds.push(this.slotsData.WinTypeMinOdds[k])
@@ -245,7 +255,8 @@ export default {
         'WinTypeMinOdds': winTypeMinOdds,
         'AutoSpinNum': autoSpinNum,
         'BetOddsList': this.slotsData.BetOddsList,
-        'TopWinsLimit': this.slotsData.TopWinsLimit
+        'TopWinsLimit': this.slotsData.TopWinsLimit,
+        'TopWinsStartTime': this.slotsData.TopWinsStartTime
       }
     },
     submitFrm() {
@@ -322,6 +333,11 @@ export default {
       // 根据索引返回对应的标签文本
       const labels = ['BigWin最小触发倍数', 'MegaWin最小触发倍数', 'SuperWin最小触发倍数']
       return labels[index] || '未知' // 默认返回 "未知" 以防止超出索引范围
+    },
+    handleDateChange(date) {
+      // Convert the date to a Unix timestamp (in seconds)
+      this.slotsData.TopWinsStartTime = Math.floor(date / 1000)
+      console.log(this.slotsData.TopWinsStartTime)
     }
   }
 }
