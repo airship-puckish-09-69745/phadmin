@@ -70,7 +70,7 @@
             <span v-if="scope.row.item_type == 1">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-if="scope.row.item_type == 2">
+            <span v-if="scope.row.item_type == 2 ||scope.row.item_type === 4">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
             </span>
             <span v-if="scope.row.item_type == 3">
