@@ -190,8 +190,8 @@
             <el-col :span="2">
               <el-input v-model.number="item.ItemNum" size="mini" />
             </el-col>
-            <el-col v-show="item.ItemType == 2" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
-            <el-col v-show="item.ItemType == 2" :span="2">
+            <el-col v-show="item.ItemType === 2 || item.ItemType === 4" :span="1" :offset="1"> {{'可用时间:'}} </el-col>
+            <el-col v-show="item.ItemType === 2 ||item.ItemType === 4" :span="2">
               <template>
                 <el-select v-model="item.ItemUseTime" size="mini" placeholder="请选择">
                   <el-option
