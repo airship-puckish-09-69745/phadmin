@@ -547,7 +547,7 @@ export default {
       pokerCfgs: [
         { 'value': 2031, 'label': 'poker' }
       ],
-      filterGameIds: [2031, 10002],
+      filterGameIds: [],
 
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
@@ -1003,6 +1003,8 @@ export default {
               }
             }
             this.getFilter()
+            console.log("------------------------------------------")
+            console.log(this.tableData)
           } else {
             this.total = 0
             this.tableData = []
@@ -1027,8 +1029,10 @@ export default {
           }
 
           if (isExit) {
-            var dataList = { 'value': this.tableData[i].sign_extra.matchUniqueId, 'label': this.tableData[i].name, disabled: false }
-            this.PokerInfoCfg.push(dataList)
+            if (this.tableData[i].sign_extra.matchUniqueId > 0) {
+              var dataList = { 'value': this.tableData[i].sign_extra.matchUniqueId, 'label': this.tableData[i].name, disabled: false }
+              this.PokerInfoCfg.push(dataList)
+            }
           }
         }
       }
