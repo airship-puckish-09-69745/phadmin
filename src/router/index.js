@@ -795,6 +795,12 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
                     name: 'tongitsJackpotAIConfig',
                     meta: { title: 'TongitsJP AI配置 ◐' }
+                  },
+                  {
+                    path: 'tongitsJackpotCfg',
+                    component: () => import('@/views/config/tableConfig/tongitsJackpotCfg'),
+                    name: 'tongitsJackpotCfg',
+                    meta: { title: 'Jackpot配置' }
                   }
               //  ]
               //}
