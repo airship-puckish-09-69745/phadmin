@@ -709,7 +709,10 @@ export default {
         '181': 'fishingmastermars',
         '182': 'godoffortune',
         '183': 'godoffortunemars',
-        '190': 'arcaneegypt'
+        '190': 'arcaneegypt',
+        '186': 'mahjongjackpot',
+        '100186': 'mahjongjackpot_x',
+        '188': 'streetfighting'
       }
     }
   },
@@ -1050,10 +1053,8 @@ export default {
               label: response.Data[i].Name
             })
           }
-          this.gameOptions.push({
-            key: 100180,
-            label: 'Fishing Master(额外加注)'
-          })
+          this.gameOptions.push({ key: 100180, label: 'Fishing Master(额外加注)' })
+          this.gameOptions.push({ key: 100186, label: 'Mahjong Jackpot(额外加注)' })
         }
       })
     },
