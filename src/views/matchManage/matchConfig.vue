@@ -810,6 +810,7 @@ export default {
       ],
       //比赛全局ID集合
       matchUniqueIdCfgs: [
+        { 'value': 0, 'label': '无' },
         { 'value': 10001, 'label': '188Free' },
         { 'value': 10002, 'label': '12888Free' },
         { 'value': 10003, 'label': 'P10' },
@@ -2036,7 +2037,10 @@ export default {
       } else if (this.editForm.data.opentMatchMember % 3 != 0) {
         this.errmsg('开赛人数值必须是3的倍数！')
         return false
-      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
+      } else if(this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
+        this.errmsg('报名最大限制必须大于最低开赛人数')
+        return false
+      }else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
