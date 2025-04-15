@@ -532,6 +532,7 @@ export default {
         { 'value': 4, 'label': '德州头像框', disabled: false }
       ],
       dayTypeCfgs: [
+        { 'value': 1, 'label': '1天', disabled: false },
         { 'value': 7, 'label': '7天', disabled: false },
         { 'value': 30, 'label': '30天', disabled: false },
         { 'value': 365, 'label': '365天', disabled: false },
