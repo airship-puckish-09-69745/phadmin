@@ -279,6 +279,7 @@ export default {
           }
         }
       }
+      this.slotsData.TopWinsStartTime = Math.floor(this.topWinsStartTime / 1000)
       this.slotsData.RecommendBet = this.recommendBet / this.slotsData.BaseBet * 1000
       this.slotsData.TopWinsLimit = this.topWinsLimit * 1000
       this.$refs.compare.SetNewVal(this.getDiffData(this.slotsData.WinTypeMinOdds, this.slotsData.Bets, this.slotsData.AutoSpinNum))
@@ -335,9 +336,7 @@ export default {
       return labels[index] || '未知' // 默认返回 "未知" 以防止超出索引范围
     },
     handleDateChange(date) {
-      // Convert the date to a Unix timestamp (in seconds)
-      this.slotsData.TopWinsStartTime = Math.floor(date / 1000)
-      console.log(this.slotsData.TopWinsStartTime)
+
     }
   }
 }
