@@ -30,7 +30,7 @@
             </el-table-column>
             <el-table-column
               prop="min"
-              label="最小值（百分比）"
+              label="最小值（x%）"
               min-width="180"
             >
               <template slot-scope="scope">
@@ -41,12 +41,23 @@
             </el-table-column>
             <el-table-column
               prop="max"
-              label="最大值（百分比）"
+              label="最大值（x%）"
               min-width="180"
             >
               <template slot-scope="scope">
                 <el-form-item label-width="0">
                   <el-input v-model.number="scope.row.max" type="text" placeholder="最大值（x%）" />
+                </el-form-item>
+              </template>
+            </el-table-column>
+            <el-table-column
+              prop="warn_cd_minute"
+              label="告警CD时间（分钟）"
+              min-width="180"
+            >
+              <template slot-scope="scope">
+                <el-form-item label-width="0">
+                  <el-input v-model.number="scope.row.warn_cd_minute" type="text" placeholder="告警CD时间（分钟）" />
                 </el-form-item>
               </template>
             </el-table-column>
@@ -128,6 +139,7 @@ export default {
         gid: parseInt(gid),
         min: 0,
         max: 0,
+        warn_cd_minute: 0,
         name: this.showGameName(parseInt(gid))
       }
     },
@@ -246,6 +258,7 @@ export default {
         this.allCfg.items[i].gid = parseInt(this.allCfg.items[i].gid)
         this.allCfg.items[i].min = parseInt(this.allCfg.items[i].min)
         this.allCfg.items[i].max = parseInt(this.allCfg.items[i].max)
+        this.allCfg.items[i].warn_cd_minute = parseInt(this.allCfg.items[i].warn_cd_minute)
         this.allCfg.items[i].name = this.showGameName(parseInt(this.allCfg.items[i].gid))
       }
     },
@@ -255,8 +268,12 @@ export default {
           Message.error('gid 不能小于0')
           return false
         }
-        if (this.allCfg.items[i].min < 0 || this.allCfg.items[i].max < 0 || this.allCfg.items[i].min > this.allCfg.items[i].max) {
-          Message.error('最小值 不能小于0，最大值 不能小于0，最小值 不能大于 最大值')
+        if (this.allCfg.items[i].min < 0 || this.allCfg.items[i].max < 0) {
+          Message.error('最小值 不能小于0，最大值 不能小于0')
+          return false
+        }
+        if (this.allCfg.items[i].warn_cd_minute < 0) {
+          Message.error('告警CD时间 不能小于0')
           return false
         }
       }
