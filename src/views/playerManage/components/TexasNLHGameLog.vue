@@ -191,12 +191,12 @@ export default {
       })
 
       //添加结算信息
-       this.tableData.push({
-          Uid: 0,
-          Round: 0,
-          StepType: 2,
-          PublishCards: val.detail.AllPublishCards
-        })
+      this.tableData.push({
+        Uid: 0,
+        Round: 0,
+        StepType: 2,
+        PublishCards: val.detail.AllPublishCards
+      })
       val.detail.Players.forEach(item => {
         var info = {
           Uid: item.Uid,
@@ -224,19 +224,15 @@ export default {
             }
             this.tableData.push(info)
           }
-
-          var info = {
-            Uid: item.Uid,
-            Round: -1,
-            StepType: 0,
-            Act: 101,
-            Bet: val.detail.SysInsure,
-          }
-          this.tableData.push(info)
         }
       })
-
-      
+      this.tableData.push({
+        Uid: 0,
+        Round: -1,
+        StepType: 0,
+        Act: 101,
+        Bet: val.detail.SysInsure,
+      })
     },
     getRoleByUid(role) {
       if (role === 1) {
