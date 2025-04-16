@@ -125,7 +125,7 @@
               </el-table-column>
               <el-table-column label="操作" width="120">
                 <template slot-scope="scope">
-                  <el-button type="danger" @click="removeConfigRow(scope, scope.$index)">删除</el-button>
+                  <el-button type="danger" @click="removeConfigRow(freeWeight, scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -153,7 +153,7 @@
               </el-table-column>
               <el-table-column label="操作" width="120">
                 <template slot-scope="scope">
-                  <el-button type="danger" @click="removeConfigRow(scope, scope.$index)">删除</el-button>
+                  <el-button type="danger" @click="removeConfigRow(freeAgainWeight, scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
