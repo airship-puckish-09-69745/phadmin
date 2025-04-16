@@ -18,13 +18,13 @@
         </template>
       </el-table-column>
       <el-table-column label="Role">
-        <template v-if="isShowFunc(scope.row.StepType)" slot-scope="scope">
+        <template v-if="isShowFunc(scope.row.StepType) && scope.row.Act!== 101" slot-scope="scope">
           {{ getRoleByUid(userInfo[scope.row.Uid].Role) }}
         </template>
       </el-table-column>
 
       <el-table-column label="Account">
-        <template v-if="isShowFunc(scope.row.StepType)" slot-scope="scope">
+        <template v-if="isShowFunc(scope.row.StepType) && scope.row.Act!== 101" slot-scope="scope">
           {{ scope.row.Uid }}
         </template>
       </el-table-column>
@@ -35,7 +35,7 @@
       <!--      </el-table-column>-->
       <el-table-column label="HandCards">
         <template slot-scope="scope">
-          <div v-if="scope.row.StepType==0">
+          <div v-if="scope.row.StepType==0 && scope.row.Act!== 101">
             <span v-for="(row,idx) in userInfo[scope.row.Uid].HandCards">
               <el-image
                 :style="getCardStyle(idx)"
@@ -43,8 +43,8 @@
               />
             </span>
           </div>
-          <div v-else-if="scope.row.StepType==1" style="font-size: 30px;height: 40px"> {{ 'POT:' + formatNumber(scope.row.Pot / 1000) }}</div>
-          <div v-else-if="scope.row.StepType==2">
+          <div v-else-if="scope.row.StepType==1 && scope.row.Act!== 101" style="font-size: 30px;height: 40px"> {{ 'POT:' + formatNumber(scope.row.Pot / 1000) }}</div>
+          <div v-else-if="scope.row.StepType==2 && scope.row.Act!== 101">
             <span v-for="(row,idx) in scope.row.PublishCards">
               <el-image
                 :style="getCardStyle(idx)"
@@ -64,11 +64,13 @@
         </template>
       </el-table-column>
       <el-table-column label="Pot">
-        <template v-if="isShowFunc(scope.row.StepType)" slot-scope="scope">
+        <template v-if="isShowFunc(scope.row.StepType) && scope.row.Act!== 100" slot-scope="scope">
           {{ scope.row.Pot }}
         </template>
+        <template v-if="isShowFunc(scope.row.StepType) && scope.row.Act=== 100" slot-scope="scope">
+          Ratio: ({{ scope.row.Pot }}%)
+        </template>
       </el-table-column>
-
     </el-table>
   </el-dialog>
 </template>
@@ -109,14 +111,19 @@ export default {
         16: 'STRADDLE',
         17: 'STRADDLE_ALL_IN',
         18: 'BET',
-        19: 'FORCED_BB'
+        19: 'FORCED_BB',
+        98: 'WIN',
+        99: 'LOSE',
+        100: 'Insured',
+        101: 'Insured'
       },
       RoundName: {
         0: 'Showdown',
         1: 'Preflop',
         2: 'Flop',
         3: 'Turn',
-        4: 'River'
+        4: 'River',
+        5: 'Insure'
       },
       cardMap: {
         0: 2, // 梅花 0x01->>0x21
@@ -145,6 +152,8 @@ export default {
   methods: {
     getDetailRowStyle(row) {
       switch (row.row.Round) {
+        case 0:
+          return { background: 'rgba(187,255,255,0.25)' }
         case 1:
           return { background: 'rgba(224,148,250,0.25)' }
         case 2:
@@ -180,6 +189,54 @@ export default {
           PublishCards: item.PublishCards
         })
       })
+
+      //添加结算信息
+       this.tableData.push({
+          Uid: 0,
+          Round: 0,
+          StepType: 2,
+          PublishCards: val.detail.AllPublishCards
+        })
+      val.detail.Players.forEach(item => {
+        var info = {
+          Uid: item.Uid,
+          Round: 0,
+          StepType: 0,
+          Act: 98,
+          Bet: item.TurnMoney,
+        }
+        if (item.TurnMoney < 0 ){
+          info.Act = 99
+        }
+        this.tableData.push(info)
+      })
+
+       val.detail.Players.forEach(item => {
+        if (item.insureInfo !== undefined) {
+          for (var i=0; i< item.insureInfo.length; i++) {
+            var info = {
+              Uid: item.Uid,
+              Round: 5,
+              StepType: 0,
+              Act: 100,
+              Bet: item.insureInfo[i].InsureFail,
+              Pot: item.insureInfo[i].InsureRatio/10,
+            }
+            this.tableData.push(info)
+          }
+
+          var info = {
+            Uid: item.Uid,
+            Round: -1,
+            StepType: 0,
+            Act: 101,
+            Bet: val.detail.SysInsure,
+          }
+          this.tableData.push(info)
+        }
+      })
+
+      
     },
     getRoleByUid(role) {
       if (role === 1) {
