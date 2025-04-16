@@ -267,10 +267,32 @@ export const asyncRoutes = [
                },*/
 
               {
-                path: 'tongitsQuickTable',
-                component: () => import('@/views/config/tableConfig/tongitsTableQuick'),
-                name: 'tongitsTableQuick',
-                meta: { title: 'Tongits-Quick ◐' }
+                path: 'TongitsQuick',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: 'Quick', noCache: true },
+                children: [
+                  {
+                    path: 'tongitsQuickTable',
+                    component: () => import('@/views/config/tableConfig/tongitsTableQuick'),
+                    name: 'tongitsQuickTable',
+                    meta: { title: '场次 ◐' }
+                  },
+                  {
+                    path: 'tongitsQuickAI',
+                    component: () => import('@/views/config/tableConfig/tongitsQuick/tongitsQuickAIConfig'),
+                    name: 'tongitsQuickAI',
+                    meta: { title: 'AI配置 ◐' }
+                  },
+                  {
+                    path: 'tongitsQuickAIList',
+                    component: () => import('@/views/config/tableConfig/tongitsQuick/tongitsQuickAIListConfig'),
+                    name: 'tongitsQuickAIList',
+                    meta: { title: 'AI-List ◐' }
+                  }
+                ]
+                // name: 'tongitsTableQuick',
+                // meta: { title: 'Tongits-Quick ◐' }
               }
               /*{
                 path: 'tongitsswapTable',
@@ -773,6 +795,12 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsJackpotAIConfig'),
                     name: 'tongitsJackpotAIConfig',
                     meta: { title: 'TongitsJP AI配置 ◐' }
+                  },
+                  {
+                    path: 'tongitsJackpotCfg',
+                    component: () => import('@/views/config/tableConfig/tongitsJackpotCfg'),
+                    name: 'tongitsJackpotCfg',
+                    meta: { title: 'Jackpot配置' }
                   }
               //  ]
               //}
