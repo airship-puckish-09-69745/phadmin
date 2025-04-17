@@ -2104,7 +2104,8 @@ export const asyncRoutes = [
                       component: () => import('@/views/playerManage/playlog'),
                       name: 'playlog_Rummy',
                       meta: { title: 'Rummy ◐', gid: 1 }
-                    }*/
+                    },*/
+
           /*      {
                   path: 'playlog_classic_tongits',
                   component: () => import('@/views/playerManage/tongitsPlaylog'),
@@ -2119,6 +2120,12 @@ export const asyncRoutes = [
              meta: { title: 'Tongits - Swap ◐', gid: 120 }
            },*/
 
+           {
+            path: 'playlog_TongitsJP',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_TongitsJP',
+            meta: { title: 'T ongits JP ◐', gid: 128 }
+          },
 
         ]
       },
