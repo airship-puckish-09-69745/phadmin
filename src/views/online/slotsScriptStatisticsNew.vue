@@ -1534,12 +1534,12 @@ export default {
             this.processBuyReturnCount(strings,buyReturnMoneyTableData,response,key)
           }
           // 步数统计
-          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 50, {}, 'sort', -1);
-          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 50, {}, 'sort', -1);
+          this.scriptStepClientDB  = new ClientTableData(scriptTableData , 100, {}, 'sort', -1);
+          this.scriptStepScatterClientDB  = new ClientTableData(scatterCounts , 100, {}, 'sort', -1);
           // 普通返奖
-          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 50, {}, 'sort', -1);
+          this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 100, {}, 'sort', -1);
           // 购买免费
-          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 50, {}, 'sort', -1);
+          this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 100, {}, 'sort', -1);
           console.log(scriptTableData.length)
 
           for (const key in response.Data['script']) {
@@ -1869,19 +1869,18 @@ export default {
         //     this.betOddsKeySelect[i] = i
         //   }
         // }
-        console.log("=======zxczxs")
 
         this.has2JPClosClientDB = {}
         if (Object.keys(has2JpColsTableData).length <= 2) {
           if (-1 in has2JpColsTableData) {
-            this.has2JPClosClientDB[-1] = new ClientTableData(has2JpColsTableData[-1], 20, filterMap, 'idx', -1)
+            this.has2JPClosClientDB[-1] = new ClientTableData(has2JpColsTableData[-1], 100, filterMap, 'idx', -1)
           } else {
             this.has2JPClosClientDB[-1] = new ClientTableData([], 1, filterMap)
           }
           this.betOddsKeySelect[-1] = '所有'
         } else {
           for (const i in has2JpColsTableData) {
-            this.has2JPClosClientDB[i] = new ClientTableData(has2JpColsTableData[i], 20, filterMap, 'idx', -1)
+            this.has2JPClosClientDB[i] = new ClientTableData(has2JpColsTableData[i], 100, filterMap, 'idx', -1)
             this.betOddsKeySelect[i] = i
           }
         }
