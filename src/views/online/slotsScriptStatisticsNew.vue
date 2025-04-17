@@ -1251,6 +1251,8 @@ export default {
       } else {
         this.Has2JPColsBuyRespinTableData = []
       }
+      // console.log('Has2JPColsBuyRespinTableData', this.Has2JPColsBuyRespinTableData)
+      // console.log('Has2JPColsBuyRespinTableData Type', typeof this.Has2JPColsBuyRespinTableData)
     },
     getTotalOrdinaryBetTimes() {
       let cnt = 0
