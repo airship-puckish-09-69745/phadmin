@@ -67,14 +67,11 @@
           label="扩展信息"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.item_type == 1">
+            <span v-if="scope.row.item_type == 1 || scope.row.item_type === 3">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-if="scope.row.item_type == 2">
+            <span v-if="scope.row.item_type == 2 ||scope.row.item_type === 4">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
-            </span>
-            <span v-if="scope.row.item_type == 3">
-              创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
           </template>
 
@@ -146,11 +143,11 @@
             <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType != 2" label="道具价值：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType == 2" label="品质：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === 2 || editForm.data.itemType === 4" label="品质：" :required="true">
             <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
@@ -178,13 +175,18 @@
             </el-select>
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType ==1"  label="是否是邀请函：" prop="switch">
-              <el-switch v-model="editForm.itemExtra.isInviteLetters" :active-value="true" :inactive-value="false" />
+          <el-form-item v-if="editForm.data.itemType === 1" label="道具特殊属性：" :required="true">
+            <el-select  v-model="editForm.itemExtra.specialAttr" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具特殊属性">
+              <el-option
+                v-for="item in itemSpecialAttrCfgs"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+                :disabled="item.disabled"
+              />
+            </el-select>
           </el-form-item>
-
-
-
-          <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2 && editForm.data.itemType != 4"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
               style="width: 200px;"
@@ -233,30 +235,17 @@ export default {
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
 
-      appidInfoCfgs: [
-        { 'value': 1000002, 'label': 'dayusenlin' },
-        { 'value': 1000003, 'label': 'testaccount' },
-        { 'value': 1000004, 'label': 'testkey' },
-        { 'value': 1000005, 'label': 'BingoPlusTongits' },
-        { 'value': 1000006, 'label': 'BingoPlusTest' },
-        { 'value': 1000007, 'label': 'br' },
-        { 'value': 1000008, 'label': 'gli' },
-        { 'value': 1100000, 'label': 'xworld' }
-      ],
-
-      channelIdCfgs: [
-        { 'value': 'BP', 'label': 'BP' },
-        { 'value': 'AP', 'label': 'AP' },
-        { 'value': 'GP', 'label': 'GP' },
-        { 'value': 'TP', 'label': 'TP' },
-        { 'value': 'PG', 'label': 'PG' },
-        { 'value': 'Dev', 'label': 'Dev' }
-      ],
 
       itemTypeCfgs: [
         { 'value': 1, 'label': 'Tongits门票', disabled: false },
         { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false }
+        { 'value': 3, 'label': '德州门票', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false }
+      ],
+
+      itemSpecialAttrCfgs: [
+        { 'value': 1, 'label': '邀请函', disabled: false },
+        { 'value': 2, 'label': 'GTCC线上决赛门票', disabled: false },
       ],
 
       dayTypeCfgs: [
@@ -302,7 +291,7 @@ export default {
           timeType: [],
         },
         itemExtra:{
-          isInviteLetters: false,
+          specialAttr: 0,
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
@@ -330,14 +319,17 @@ export default {
     this.getList()
   },
   methods: {
+
     getList() {
+      console.log("this.form.itemOfType ",this.form.itemOfType)
       request({
         url: '/propsconfig/props/config/list',
         method: 'get',
         data: {
           Env: this.env,
           PageNum: this.page,
-          PageSize: this.limit
+          PageSize: this.limit,
+          PropType:this.form.itemOfType,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -358,7 +350,6 @@ export default {
               this.total = n
             }
             this.$refs.compare.SetOldVal(response.Data.Data)
-            this.raw = response.Data
           }
         } else {
           this.total = 0
@@ -398,7 +389,7 @@ export default {
           timeType: []
         }
         this.editForm.itemExtra = {
-          isInviteLetters:false
+          specialAttr:0
         }
         this.checkAll()
         this.editForm.itemEndDate = $libDate.GetDayBegin(new Date().setSeconds(0))
@@ -533,7 +524,8 @@ export default {
             Sort: editData.sort,
             Status: editData.status,
             Quality: editData.quality,
-            TimeType: editData.time_type
+            TimeType: editData.time_type,
+            ItemExtra: JSON.stringify(editData.item_extra),
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -688,7 +680,7 @@ export default {
         return false
       }
       if (this.editForm.data.itemType != 1){
-        this.editForm.itemExtra.isInviteLetters = false
+        this.editForm.itemExtra.specialAttr = 0
       }
 
       if (this.editForm.data.itemType === 2) {

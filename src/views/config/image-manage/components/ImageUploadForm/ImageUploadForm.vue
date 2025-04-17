@@ -56,7 +56,8 @@
         </div>
       </el-form-item>
       <el-form-item label="分类" prop="category">
-        <el-select v-model="formData.category" placeholder="请选择" style="width: 100%">
+        <span style="color:red; margin-left:5px">请选择类型</span>
+        <el-select v-model="formData.category" placeholder="请选择类型" style="width: 100%">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -125,12 +126,13 @@ export default {
     }
   },
   created() {
-    this.setDefaultCategory(this.defaultCategory)
+    //this.setDefaultCategory(this.defaultCategory)
   },
   methods: {
     setDefaultCategory(category) {
       if (category) {
         this.formData.category = category
+        console.log("this.formData.category", this.formData.category)
       }
     },
 
