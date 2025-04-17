@@ -1443,6 +1443,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/atlantistreasuremars_slots_cfg'),
                 name: 'atlantistreasuremars_slots_cfg',
                 meta: { title: 'AtlantisTreasure(审)' }
+              },
+              {
+                path: 'spacetreasuremars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/spacetreasuremars_slots_cfg'),
+                name: 'spacetreasuremars_slots_cfg',
+                meta: { title: 'SpaceTreasure(审)' }
               }
               // {
               //   path: 'treasurebowlmars_slots_cfg',
@@ -2768,6 +2774,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'treasurebowlmars_slots_cfg',
             meta: { title: 'TreasureBowl(审)', gid: 175 }
+          },
+          {
+            path: 'spacetreasuremars_slots_cfg',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'spacetreasuremars_slots_cfg',
+            meta: { title: 'SpaceTreasure(审)', gid: 205 }
           }
         ]
       },
