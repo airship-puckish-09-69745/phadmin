@@ -266,12 +266,12 @@
               </el-col>
             </el-form-item>
             <el-form-item v-if="edit.cfgType == 1" label="比赛：">
-              <el-checkbox-group v-model="edit.item.GameType" style="width: 700px">
+              <el-checkbox-group v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" style="width: 700px">
                 <el-checkbox v-for="item in gameCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item v-if="edit.cfgType == 2" label="比赛：">
-              <el-select v-model="edit.item.GameType" multiple placeholder="请选择" style="width: 250px" @change="onAppIdOptionsChange">
+              <el-select   v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" multiple placeholder="请选择" style="width: 250px" @change="onAppIdOptionsChange">
                 <el-option
                   v-for="item in PokerInfoCfg"
                   :key="item.value"
@@ -953,10 +953,8 @@ export default {
 
           // 更新选中游戏的排序
           this.updateGamesSorted()
-
-          console.log(this.item.GameIdCfg)
           this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
-          console.log(data)
+
         }
       })
     },
@@ -1003,8 +1001,6 @@ export default {
               }
             }
             this.getFilter()
-            console.log("------------------------------------------")
-            console.log(this.tableData)
           } else {
             this.total = 0
             this.tableData = []
