@@ -1251,6 +1251,8 @@ export default {
       } else {
         this.Has2JPColsBuyRespinTableData = []
       }
+      // console.log('Has2JPColsBuyRespinTableData', this.Has2JPColsBuyRespinTableData)
+      // console.log('Has2JPColsBuyRespinTableData Type', typeof this.Has2JPColsBuyRespinTableData)
     },
     getTotalOrdinaryBetTimes() {
       let cnt = 0
@@ -1538,10 +1540,8 @@ export default {
           this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 50, {}, 'sort', -1);
           // 购买免费
           this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 50, {}, 'sort', -1);
+          console.log(scriptTableData.length)
 
-          this.queryKeyInput()
-          $this.loading = false
-          return
           for (const key in response.Data['script']) {
             var strings1 = key.split('_')
             if (strings1[0] === 'script') {
@@ -1571,34 +1571,7 @@ export default {
               } else if (strings1[1] === 'times') {
                 //
               } else if (strings1[1] === 'count') {
-                // var strings = key.split('_')
-                // if (strings.length ===3) {
-                //   if (!(this.queryGid in this.sumData)) {
-                //     this.sumData[this.queryGid] = {}
-                //   }
-                //   this.sumData[this.queryGid]['全部'] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid]['全部'] || 0)
-                //   if (!('全部' in scriptTableData)) {
-                //     scriptTableData['全部'] = []
-                //   }
-                //   scriptTableData['全部'].push({
-                //     gid: this.queryGid,
-                //     idx: strings[2],
-                //     cnt: response.Data['script'][key]
-                //   })
-                // } else {
-                //   if (!(this.queryGid in this.sumData)) {
-                //     this.sumData[this.queryGid] = {}
-                //   }
-                //   this.sumData[this.queryGid][strings[3]] = parseInt(response.Data['script'][key]) + (this.sumData[this.queryGid][strings[3]] || 0)
-                //   if (!(strings[3] in scriptTableData)) {
-                //     scriptTableData[strings[3]] = []
-                //   }
-                //   scriptTableData[strings[3]].push({
-                //     gid: this.queryGid,
-                //     idx: strings[2],
-                //     cnt: response.Data['script'][key]
-                //   })
-                // }
+
               } else {
                 let prefix = ''
                 if (parseInt(strings1[1]) === -2) {
@@ -1659,70 +1632,15 @@ export default {
               //   }
               // }
             } else if (strings1[0] === 'spin') {
-              // if (strings1[1] === 'ordinary') {
-              //   if (strings1[2] === 'times') {
-              //     if (strings1.length < 6) {
-              //       if (!('全部' in ordinaryReturnMoneyTableData)) {
-              //         ordinaryReturnMoneyTableData['全部'] = []
-              //       }
-              //       ordinaryReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-              //     } else {
-              //       if (!(strings1[4] in ordinaryReturnMoneyTableData)) {
-              //         ordinaryReturnMoneyTableData[strings1[4]] = []
-              //       }
-              //       ordinaryReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-              //     }
-              //   }
-              //   if (strings1[2] === 'return') {
-              //     if (strings1.length < 6) {
-              //       if (!('全部' in this.returnMap)) {
-              //         this.returnMap['全部'] = {}
-              //       }
-              //       this.returnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-              //     } else {
-              //       if (!(strings1[4] in this.returnMap)) {
-              //         this.returnMap[strings1[4]] = {}
-              //       }
-              //       this.returnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-              //     }
-              //   }
-              // }
-              // if (strings1[1] === 'buy') {
-              //   if (strings1[2] === 'times') {
-              //     if (strings1.length < 6) {
-              //       if (!('全部' in buyReturnMoneyTableData)) {
-              //         buyReturnMoneyTableData['全部'] = []
-              //       }
-              //       buyReturnMoneyTableData['全部'].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-              //     } else {
-              //       if (!(strings1[4] in buyReturnMoneyTableData)) {
-              //         buyReturnMoneyTableData[strings1[4]] = []
-              //       }
-              //       buyReturnMoneyTableData[strings1[4]].push({ bet: parseInt(strings1[3]), times: response.Data['script'][key] })
-              //     }
-              //   }
-              //   if (strings1[2] === 'return') {
-              //     if (strings1.length < 6) {
-              //       if (!('全部' in this.buyReturnMap)) {
-              //         this.buyReturnMap['全部'] = {}
-              //       }
-              //       this.buyReturnMap['全部'][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-              //     } else {
-              //       if (!(strings1[4] in this.buyReturnMap)) {
-              //         this.buyReturnMap[strings1[4]] = {}
-              //       }
-              //       this.buyReturnMap[strings1[4]][parseInt(strings1[3])] = parseInt(response.Data['script'][key])
-              //     }
-              //   }
-              // }
               if (strings1[1] === '2coljp') {
+
                 if (strings1.length === 6) {
-                  if (!('全部' in has2JpColsTableData)) {
-                    has2JpColsTableData['全部'] = []
+                  if (!(-1 in has2JpColsTableData)) {
+                    has2JpColsTableData[-1] = []
                   }
                   const bet = parseInt(strings1[3])
                   const multiOdds = parseInt(strings1[4])
-                  has2JpColsTableData['全部'].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
+                  has2JpColsTableData[-1].push({ multiOdds: multiOdds, bet: bet, times: parseInt(response.Data['script'][key]) })
                 } else if (strings1.length === 7) {
                   const bet = parseInt(strings1[3])
                   const betOdds = parseInt(strings1[4])
@@ -1736,15 +1654,15 @@ export default {
               if (strings1[1] === 'buyrespin') {
                 if (strings1[2] === 'times') {
                   if (strings1.length === 6) {
-                    if (!('全部' in this.buyRespinTimeMap)) {
-                      this.buyRespinTimeMap['全部'] = {}
+                    if (!(-1 in this.buyRespinTimeMap)) {
+                      this.buyRespinTimeMap[-1] = {}
                     }
                     const bet = parseInt(strings1[3])
                     const multiOdds = parseInt(strings1[4])
-                    if (!(multiOdds in this.buyRespinTimeMap['全部'])) {
-                      this.buyRespinTimeMap['全部'][bet] = []
+                    if (!(multiOdds in this.buyRespinTimeMap[-1])) {
+                      this.buyRespinTimeMap[-1][bet] = []
                     }
-                    this.buyRespinTimeMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                    this.buyRespinTimeMap[-1][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   } else if (strings1.length === 7) {
                     const bet = parseInt(strings1[3])
                     const betOdds = parseInt(strings1[4])
@@ -1760,15 +1678,15 @@ export default {
                 }
                 if (strings1[2] === 'return') {
                   if (strings1.length < 7) {
-                    if (!('全部' in this.buyRespinReturnMap)) {
-                      this.buyRespinReturnMap['全部'] = {}
+                    if (!(-1 in this.buyRespinReturnMap)) {
+                      this.buyRespinReturnMap[-1] = {}
                     }
                     const bet = parseInt(strings1[3])
                     const multiOdds = parseInt(strings1[4])
-                    if (!(bet in this.buyRespinReturnMap['全部'])) {
-                      this.buyRespinReturnMap['全部'][bet] = []
+                    if (!(bet in this.buyRespinReturnMap[-1])) {
+                      this.buyRespinReturnMap[-1][bet] = []
                     }
-                    this.buyRespinReturnMap['全部'][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
+                    this.buyRespinReturnMap[-1][bet].push({ multiOdds: multiOdds, return: parseInt(response.Data['script'][key])})
                   } else {
                     const bet = parseInt(strings1[3])
                     const betOdds = parseInt(strings1[4])
@@ -1784,15 +1702,15 @@ export default {
                 }
                 if (strings1[2] === 'bet') {
                   if (strings1.length < 7) {
-                    if (!('全部' in this.buyRespinTotalBetMap)) {
-                      this.buyRespinTotalBetMap['全部'] = {}
+                    if (!(-1 in this.buyRespinTotalBetMap)) {
+                      this.buyRespinTotalBetMap[-1] = {}
                     }
                     const bet = parseInt(strings1[3])
                     const multiOdds = parseInt(strings1[4])
-                    if (!(bet in this.buyRespinTotalBetMap['全部'])) {
-                      this.buyRespinTotalBetMap['全部'][bet] = []
+                    if (!(bet in this.buyRespinTotalBetMap[-1])) {
+                      this.buyRespinTotalBetMap[-1][bet] = []
                     }
-                    this.buyRespinTotalBetMap['全部'][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key])})
+                    this.buyRespinTotalBetMap[-1][bet].push({ multiOdds: multiOdds, totalBet: parseInt(response.Data['script'][key])})
                   } else {
                     const bet = parseInt(strings1[3])
                     const betOdds = parseInt(strings1[4])
@@ -1810,15 +1728,15 @@ export default {
               if (strings1[1] === 'buyrespinfirst') {
                 if (strings1[2] === 'times') {
                   if (strings1.length < 7) {
-                    if (!('全部' in this.buyRespinFirstTimesMap)) {
-                      this.buyRespinFirstTimesMap['全部'] = {}
+                    if (!(-1 in this.buyRespinFirstTimesMap)) {
+                      this.buyRespinFirstTimesMap[-1] = {}
                     }
                     const bet = parseInt(strings1[3])
                     const multiOdds = parseInt(strings1[4])
-                    if (!(bet in this.buyRespinFirstTimesMap['全部'])) {
-                      this.buyRespinFirstTimesMap['全部'][bet] = []
+                    if (!(bet in this.buyRespinFirstTimesMap[-1])) {
+                      this.buyRespinFirstTimesMap[-1][bet] = []
                     }
-                    this.buyRespinFirstTimesMap['全部'][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
+                    this.buyRespinFirstTimesMap[-1][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   } else {
                     const bet = parseInt(strings1[3])
                     const betOdds = parseInt(strings1[4])
@@ -1846,6 +1764,7 @@ export default {
             })
           }
 
+
           for (const key in jackpotMap) {
             jackpotTableData.push({
               gid: this.queryGid,
@@ -1861,6 +1780,7 @@ export default {
             })
           }
         }
+
         coordinateTableData.sort(function(a, b) {
           return b.cnt - a.cnt
         })
@@ -1869,11 +1789,11 @@ export default {
           return b.cnt - a.cnt
         })
 
-        for (const i in scriptTableData) {
-          scriptTableData[i].sort(function(a, b) {
-            return a.idx - b.idx
-          })
-        }
+        // for (const i in scriptTableData) {
+        //   scriptTableData[i].sort(function(a, b) {
+        //     return a.idx - b.idx
+        //   })
+        // }
 
         jackpotTableData.sort(function(a, b) {
           if (a.app === b.app) {
@@ -1884,16 +1804,16 @@ export default {
           }
           return a.app - b.app
         })
-        for (const i in ordinaryReturnMoneyTableData) {
-          ordinaryReturnMoneyTableData[i].sort(function(a, b) {
-            return a.bet - b.bet
-          })
-        }
-        for (const i in buyReturnMoneyTableData) {
-          buyReturnMoneyTableData[i].sort(function(a, b) {
-            return a.bet - b.bet
-          })
-        }
+        // for (const i in ordinaryReturnMoneyTableData) {
+        //   ordinaryReturnMoneyTableData[i].sort(function(a, b) {
+        //     return a.bet - b.bet
+        //   })
+        // }
+        // for (const i in buyReturnMoneyTableData) {
+        //   buyReturnMoneyTableData[i].sort(function(a, b) {
+        //     return a.bet - b.bet
+        //   })
+        // }
 
         for (const i in has2JpColsTableData) {
           has2JpColsTableData[i].sort(function(a, b) {
@@ -1917,46 +1837,48 @@ export default {
         //     this.betOddsKeySelect[i] = i
         //   }
         // }
+
         this.coordinateClientDB = new ClientTableData(coordinateTableData, 20, filterMap, 'idx', -1)
         // this.stepClientDB = new ClientTableData(stepTableData, 20, filterMap, 'idx', -1)
         this.jackpotClientDB = new ClientTableData(jackpotTableData, 20, filterMap, 'idx', -1)
-        this.ordinaryReturnClientDB = {}
-        if (Object.keys(ordinaryReturnMoneyTableData).length <= 2) {
-          if ('全部' in ordinaryReturnMoneyTableData) {
-            this.ordinaryReturnClientDB['全部'] = new ClientTableData(ordinaryReturnMoneyTableData['全部'], 20, filterMap, 'idx', -1)
-          } else {
-            this.ordinaryReturnClientDB['全部'] = new ClientTableData([], 1, filterMap)
-          }
-          this.betOddsKeySelect['全部'] = '全部'
-        } else {
-          for (const i in ordinaryReturnMoneyTableData) {
-            this.ordinaryReturnClientDB[i] = new ClientTableData(ordinaryReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
-            this.betOddsKeySelect[i] = i
-          }
-        }
-        this.buyReturnClientDB = {}
-        if (Object.keys(buyReturnMoneyTableData).length <= 2) {
-          if ('全部' in buyReturnMoneyTableData) {
-            this.buyReturnClientDB['全部'] = new ClientTableData(buyReturnMoneyTableData['全部'], 20, filterMap, 'idx', -1)
-          } else {
-            this.buyReturnClientDB['全部'] = new ClientTableData([], 1, filterMap)
-          }
-          this.betOddsKeySelect['全部'] = '全部'
-        } else {
-          for (const i in buyReturnMoneyTableData) {
-            this.buyReturnClientDB[i] = new ClientTableData(buyReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
-            this.betOddsKeySelect[i] = i
-          }
-        }
+        // this.ordinaryReturnClientDB = {}
+        // if (Object.keys(ordinaryReturnMoneyTableData).length <= 2) {
+        //   if ('全部' in ordinaryReturnMoneyTableData) {
+        //     this.ordinaryReturnClientDB['全部'] = new ClientTableData(ordinaryReturnMoneyTableData['全部'], 20, filterMap, 'idx', -1)
+        //   } else {
+        //     this.ordinaryReturnClientDB['全部'] = new ClientTableData([], 1, filterMap)
+        //   }
+        //   this.betOddsKeySelect['全部'] = '全部'
+        // } else {
+        //   for (const i in ordinaryReturnMoneyTableData) {
+        //     this.ordinaryReturnClientDB[i] = new ClientTableData(ordinaryReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
+        //     this.betOddsKeySelect[i] = i
+        //   }
+        // }
+        // this.buyReturnClientDB = {}
+        // if (Object.keys(buyReturnMoneyTableData).length <= 2) {
+        //   if ('全部' in buyReturnMoneyTableData) {
+        //     this.buyReturnClientDB['全部'] = new ClientTableData(buyReturnMoneyTableData['全部'], 20, filterMap, 'idx', -1)
+        //   } else {
+        //     this.buyReturnClientDB['全部'] = new ClientTableData([], 1, filterMap)
+        //   }
+        //   this.betOddsKeySelect['全部'] = '全部'
+        // } else {
+        //   for (const i in buyReturnMoneyTableData) {
+        //     this.buyReturnClientDB[i] = new ClientTableData(buyReturnMoneyTableData[i], 20, filterMap, 'idx', -1)
+        //     this.betOddsKeySelect[i] = i
+        //   }
+        // }
+        console.log("=======zxczxs")
 
         this.has2JPClosClientDB = {}
         if (Object.keys(has2JpColsTableData).length <= 2) {
-          if ('全部' in has2JpColsTableData) {
-            this.has2JPClosClientDB['全部'] = new ClientTableData(has2JpColsTableData['全部'], 20, filterMap, 'idx', -1)
+          if (-1 in has2JpColsTableData) {
+            this.has2JPClosClientDB[-1] = new ClientTableData(has2JpColsTableData[-1], 20, filterMap, 'idx', -1)
           } else {
-            this.has2JPClosClientDB['全部'] = new ClientTableData([], 1, filterMap)
+            this.has2JPClosClientDB[-1] = new ClientTableData([], 1, filterMap)
           }
-          this.betOddsKeySelect['全部'] = '全部'
+          this.betOddsKeySelect[-1] = '所有'
         } else {
           for (const i in has2JpColsTableData) {
             this.has2JPClosClientDB[i] = new ClientTableData(has2JpColsTableData[i], 20, filterMap, 'idx', -1)
@@ -1965,10 +1887,12 @@ export default {
         }
 
         if (!(this.betOddsKey in this.betOddsKeySelect)) {
-          this.betOddsKey = '全部'
+          this.betOddsKey = -1
         }
-        this.queryKeyInput()
+
         this.scatterCounts = scatterCounts
+        console.log(scriptTableData.length,ordinaryReturnMoneyTableData.length,this.betOddsKeySelect,this.betOddsKey)
+        this.queryKeyInput()
         $this.loading = false
       })
     },

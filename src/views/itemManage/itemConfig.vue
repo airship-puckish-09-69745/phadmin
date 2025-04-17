@@ -67,14 +67,11 @@
           label="扩展信息"
         >
           <template slot-scope="scope">
-            <span v-if="scope.row.item_type == 1">
+            <span v-if="scope.row.item_type == 1 || scope.row.item_type === 3">
               创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
-            <span v-if="scope.row.item_type == 2">
+            <span v-if="scope.row.item_type == 2 ||scope.row.item_type === 4">
               品质:{{getQualityName(scope.row.quality)}} 可用时间:{{getShowText(scope.row.id)}} 描述:这是一个头像框
-            </span>
-            <span v-if="scope.row.item_type == 3">
-              创建时间:{{ formatTime(scope.row.create_time)}} / 结束时间:{{ formatTime(scope.row.expire_time)}}
             </span>
           </template>
 
@@ -146,11 +143,11 @@
             <el-input v-model="editForm.data.itemName" style="width: 200px;" placeholder="请填写道具名称" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType != 2" label="道具价值：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2  && editForm.data.itemType != 4" label="道具价值：" :required="true">
             <el-input v-model.number="editForm.data.itemCost" style="width: 200px;" placeholder="请填写道具价值" />
           </el-form-item>
 
-          <el-form-item v-if="editForm.data.itemType == 2" label="品质：" :required="true">
+          <el-form-item v-if="editForm.data.itemType === 2 || editForm.data.itemType === 4" label="品质：" :required="true">
             <el-select v-model="editForm.data.quality" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具品质分类">
               <el-option
                 v-for="item in qualityTypeCfgs"
@@ -189,7 +186,7 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item v-if="editForm.data.itemType != 2"  label="道具过期时间：" :required="true">
+          <el-form-item v-if="editForm.data.itemType != 2 && editForm.data.itemType != 4"  label="道具过期时间：" :required="true">
             <el-date-picker
               v-model="editForm.itemEndDate"
               style="width: 200px;"
@@ -322,14 +319,17 @@ export default {
     this.getList()
   },
   methods: {
+
     getList() {
+      console.log("this.form.itemOfType ",this.form.itemOfType)
       request({
         url: '/propsconfig/props/config/list',
         method: 'get',
         data: {
           Env: this.env,
           PageNum: this.page,
-          PageSize: this.limit
+          PageSize: this.limit,
+          PropType:this.form.itemOfType,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -350,7 +350,6 @@ export default {
               this.total = n
             }
             this.$refs.compare.SetOldVal(response.Data.Data)
-            this.raw = response.Data
           }
         } else {
           this.total = 0

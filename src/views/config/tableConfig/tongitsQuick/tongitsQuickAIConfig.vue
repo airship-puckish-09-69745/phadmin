@@ -1,8 +1,13 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
-    <el-row>
+
+    <div style="margin-bottom: 20px;">
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
-    </el-row>
+    </div>
+
+<!--    <el-row>-->
+<!--      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />-->
+<!--    </el-row>-->
     <el-row>
       <br>
       <el-tabs type="border-card">
@@ -176,9 +181,9 @@
                 </el-table>
               </div>
             </el-col>
-            <el-col :offset="16" :span="8">
-              <el-button type="primary" @click="setData">保存分配信息</el-button>
-            </el-col>
+<!--            <el-col :offset="16" :span="8">-->
+<!--              <el-button type="primary" @click="setData">保存分配信息</el-button>-->
+<!--            </el-col>-->
           </el-row>
         </el-tab-pane>
         <el-tab-pane label="信息配置">
@@ -223,12 +228,14 @@
                 </el-table-column>
                 <el-table-column label="最小值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini" @input="validateMin(scope.row)"></el-input>
+                    <p v-if="errorMin" style="color: red">{{ errorMin }}</p>
                   </template>
                 </el-table-column>
                 <el-table-column label="最大值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini" @input="validateMax(scope.row)"></el-input>
+                    <p v-if="errorMax" style="color: red">{{ errorMax }}</p>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="100">
@@ -242,6 +249,9 @@
         </el-tab-pane>
       </el-tabs>
     </el-row>
+    <div style="margin-bottom: 20px;">
+      <el-button type="primary" @click="setData">保存信息</el-button>
+    </div>
     <el-dialog
       title="机器人配置"
       :visible.sync="editVisible"
@@ -350,6 +360,8 @@ export default {
       control: [
 
       ],
+      errorMax: '',
+      errorMin: '',
       poolMoneyList: {},
       robotlvl: [
         {
@@ -405,6 +417,22 @@ export default {
     },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    validateMax(row){
+      if (row.ShowMoneyMax < row.ShowMoneyMin + 1) {
+        this.errorMax = `最大值必须大于 ${row.ShowMoneyMin}`
+        row.ShowMoneyMax = row.ShowMoneyMin + 1
+      } else {
+        this.errorMax = ''
+      }
+    },
+    validateMin(row){
+      if (row.ShowMoneyMax < row.ShowMoneyMin + 1) {
+        this.errorMin = `最小值必须小于 ${row.ShowMoneyMax}`
+        row.ShowMoneyMin = row.ShowMoneyMax - 1
+      } else {
+        this.errorMin = ''
+      }
     },
     getData() {
       request({

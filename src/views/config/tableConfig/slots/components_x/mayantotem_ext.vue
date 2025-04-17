@@ -157,11 +157,11 @@ export default {
         for (const index in this.cfg.BonusNumCfg) {
           // eslint-disable-next-line no-empty
           const bnc = this.cfg.BonusNumCfg[index]
-          if (bnc.HitMax <= bnc.HitMin) {
+          if (bnc.HitMax < bnc.HitMin) {
             checkValue1 = false
           }
           // eslint-disable-next-line no-empty
-          if (bnc.NumMin <= bnc.HitMin || bnc.NumMin <= bnc.HitMax) {
+          if (bnc.NumMin < bnc.HitMin || bnc.NumMin < bnc.HitMax) {
             checkValue2 = false
           }
         }

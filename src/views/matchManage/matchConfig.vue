@@ -793,7 +793,7 @@ export default {
       propsInfo: [ // 道具信息，暂时写死
         {
           'propsId': 0,
-          'propsType': 0,    //1:门票 2:头像框 3:德州参数券
+          'propsType': 0,    //1:门票 2:头像框 3:德州参数券 4:德州头像框
           'propsName': '无',
           'propsIcon': '',
           'propsAttr': ''
@@ -810,6 +810,7 @@ export default {
       ],
       //比赛全局ID集合
       matchUniqueIdCfgs: [
+        { 'value': 0, 'label': '无' },
         { 'value': 10001, 'label': '188Free' },
         { 'value': 10002, 'label': '12888Free' },
         { 'value': 10003, 'label': 'P10' },
@@ -2036,7 +2037,10 @@ export default {
       } else if (this.editForm.data.opentMatchMember % 3 != 0) {
         this.errmsg('开赛人数值必须是3的倍数！')
         return false
-      } else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
+      } else if(this.editForm.signExtra.matchMaxLimit > 0 && this.editForm.signExtra.matchMaxLimit < this.editForm.data.opentMatchMember) {
+        this.errmsg('报名最大限制必须大于最低开赛人数')
+        return false
+      }else if ((this.editForm.data.repeatType == 0) && ((Math.floor(this.editForm.loopDetail.onceTime[1] / 1000) - Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)) < 600)) {
         this.errmsg('比赛开始结束间隔要大于10分钟！')
         return false
       } else if ((this.editForm.data.repeatType != 0) && ((Math.floor(this.editForm.loopDetail.loopEndDate / 1000) - Math.floor(this.editForm.loopDetail.loopStartDate / 1000)) < 86400)) {
@@ -2256,42 +2260,6 @@ export default {
         }
       }
       return one
-    },
-    getPropsCfgs() {
-      // 暂时写死配置
-      let items = []
-      if (process.env.VUE_APP_PROJECT_NAME === '菲1-线上环境') { // 线上走另外一份配置
-        items = [
-          {
-            'propsId': 2,
-            'propsType': 1,
-            'propsName': 'YAMAHA MIO GRAVIS',
-            'propsIcon': 'https://cdn.tiptop.bet/gf/match/ymhmt.png',
-            'propsAttr': ''
-          }
-        ]
-      } else {
-        items = [
-          {
-            'propsId': 1,
-            'propsType': 1,
-            'propsName': 'IPhone 16 Pro Max',
-            'propsIcon': 'http://192.168.6.16:8092/match/iphone16promax.png',
-            'propsAttr': ''
-          },
-          {
-            'propsId': 2,
-            'propsType': 1,
-            'propsName': 'YAMAHA MIO GRAVIS',
-            'propsIcon': 'http://192.168.6.16:8092/match/ymhmt.png',
-            'propsAttr': ''
-          }
-        ]
-      }
-      for (let i = 0; i < items.length; i++) {
-        const element = items[i]
-        this.propsInfo.push(element)
-      }
     },
     repeatLoopDisabled() {
       if (this.editForm.data.repeatType === 2 && !this.editForm.isAdd && !this.singleCopy.isCopy) {
