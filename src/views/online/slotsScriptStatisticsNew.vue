@@ -2338,6 +2338,11 @@ export default {
             key: 100180,
             label: 'Fishing Master(额外加注)'
           })
+          this.gidOptions[100186] ='Mahjong Jackpot(额外加注)'
+          this.gameOptions.push({
+            key: 100186,
+            label: 'Mahjong Jackpot(额外加注)'
+          })
         }
       })
     },
