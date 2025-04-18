@@ -1662,6 +1662,10 @@ export default {
                     if (!(multiOdds in this.buyRespinTimeMap[-1])) {
                       this.buyRespinTimeMap[-1][bet] = []
                     }
+                    if (!(bet in this.buyRespinTimeMap[-1])) {
+                      this.buyRespinTimeMap[-1][bet] = []
+                    }
+                    console.log(this.buyRespinTimeMap[-1],this.buyRespinTimeMap[-1][bet],bet)
                     this.buyRespinTimeMap[-1][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   } else if (strings1.length === 7) {
                     const bet = parseInt(strings1[3])
