@@ -1133,13 +1133,7 @@ export default {
       const result = {};
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key = `${item.idx}`;
-        if (this.planId === -1) {
-          key += '-1_'+item.bet;
-        }
-        if (this.bet === -1) {
-          key += item.planId+'_-1';
-        }
+        let key =  item.idx +'_'+this.planId+'_'+this.bet;
         if (!result[key]) {
           result[key] = { ...item, cnt: 0 };
         }
@@ -2057,14 +2051,6 @@ export default {
             idx: parseInt(strings[2]),
             bet: parseInt(strings[3]),
             planId: parseInt(strings[5]),
-            cnt: response.Data['script'][key]
-          })
-        } else if (!(strings.includes('plan')) && strings.length === 4) { // 兼容旧方法不含planId
-          scriptTableData.push({
-            gid: this.queryGid,
-            idx: parseInt(strings[2]),
-            bet: parseInt(strings[3]),
-            planId: 0,
             cnt: response.Data['script'][key]
           })
         }
