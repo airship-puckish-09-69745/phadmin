@@ -26,6 +26,16 @@
                     <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
+                <el-col >
+                  <el-form-item label="隐藏开始时间：">
+                    <el-date-picker v-model="item.LimitStartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="隐藏结束时间：">
+                    <el-date-picker v-model="item.LimitEndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
+                  </el-form-item>
+                </el-col>
                 <el-col>
                   <el-form-item label="单人总发放限制：" :required="true">
                     <el-input v-model.number="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
@@ -418,6 +428,8 @@ export default {
         IsOpen: true,
         StartTime: 0,
         EndTime: 0,
+        LimitStartTime: 0,
+        LimitEndTime: 0,
         SockGainRatio: 10,
         RuleImgHor: [],
         RuleImgVer: [],
@@ -800,10 +812,14 @@ export default {
       this.configCheck()
       var startTime = Math.floor(this.item.StartTime / 1000)
       var endTime = Math.floor(this.item.EndTime / 1000)
+      var limitSTime = Math.floor(this.item.LimitStartTime / 1000)
+      var limitETime = Math.floor(this.item.LimitEndTime / 1000)
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
         EndTime: endTime,
+        LimitStartTime: limitSTime,
+        LimitEndTime: limitETime,
         SingleLimitNum: this.item.SingleLimitNum,
         EveryDayLimitNum: this.item.EveryDayLimitNum,
         SumLimitNum: this.item.SumLimitNum,
