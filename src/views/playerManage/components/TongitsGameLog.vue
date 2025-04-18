@@ -89,6 +89,10 @@
               <template v-if="Gid !== 31">
                 <span>Pot：{{ one.payPot/1000 }}</span><br>
               </template>
+              <template v-if="Gid === 128"> <!-- 中JP -->
+                <span>奖池：{{ one.jackpotNum/1000 }}</span><br>
+                <span>奖池类型：{{ getJackpotLevel(one.jackpotType) }}</span><br>
+              </template>
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
               <span>机器人级别：{{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}</span>
@@ -302,6 +306,8 @@ export default {
           moneyFee: val.players[j].moneyFee,
           payPot: 0 - val.players[j].payPot,
           Character: val.players[j].character,
+          jackpotNum: val.players[j].JackpotNum,
+          jackpotType: val.players[j].JackpotType,
           isRobot: false,
           RobotLevel: val.players[j].RobotLevel
         })
@@ -381,6 +387,18 @@ export default {
       } else {
         return cards[0]
       }
+    },
+    getJackpotLevel(level) {
+      if (level == 1) {
+        return '一等奖'
+      } else if (level == 2) {
+        return '二等奖'
+      }  else if (level == 3) {
+        return '三等奖'
+      }  else if (level == 4) {
+        return '5Bet中奖'
+      } 
+      return '-'
     },
     getRobotLevel(level) {
       if (level == 0) {
