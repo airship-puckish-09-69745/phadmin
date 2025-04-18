@@ -1180,7 +1180,6 @@ export default {
         result[key]  += parseInt(item.cnt, 10);
       }, {});
       this.scatterCounts = result
-      console.log("========", this.scatterCounts,getStepScatterPageData)
     },
     refreshOrdinaryReturn() {
       let bet = this.betOddsKey
@@ -1194,9 +1193,7 @@ export default {
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
         let key = `${item.planId}_${item.bet}`;
-        if (this.planId === -1) {
-          key = `${item.bet}`;
-        }
+
         if (!result[key]) {
           result[key] = { ...item, times: 0 };
         }
@@ -1540,7 +1537,7 @@ export default {
           this.ordinaryReturnClientDBNew  = new ClientTableData(ordinaryReturnMoneyTableData , 100, {}, 'sort', -1);
           // 购买免费
           this.buyReturnClientDBNew  = new ClientTableData(buyReturnMoneyTableData , 100, {}, 'sort', -1);
-          console.log(scriptTableData.length)
+
 
           for (const key in response.Data['script']) {
             var strings1 = key.split('_')
@@ -2377,7 +2374,6 @@ export default {
     getScatterPercent(row) {
       let cnt = 0
       for (const k in this.scatterCounts) {
-        console.log(this.scatterCounts[k])
         cnt+=this.scatterCounts[k]
       }
       let idxScatter = this.getScatterCnt(row)
