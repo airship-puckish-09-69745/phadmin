@@ -1134,12 +1134,12 @@ export default {
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
         let key = `${item.idx}`;
-        if (this.planId >= 0) {
-          key += `_${item.planId}`;
-        }
-        if (bet >= 0) {
-          key += `_${item.bet}`;
-        }
+        // if (this.planId >= 0) {
+        //   key += `_${item.planId}`;
+        // }
+        // if (bet >= 0) {
+        //   key += `_${item.bet}`;
+        // }
         if (!result[key]) {
           result[key] = { ...item, cnt: 0 };
         }
@@ -1227,9 +1227,9 @@ export default {
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
         let key = `${item.planId}_${item.bet}`;
-        if (this.planId === -1) {
-          key = `${item.bet}`;
-        }
+        // if (this.planId === -1) {
+        //   key = `${item.bet}`;
+        // }
         if (!result[key]) {
           result[key] = { ...item, times: 0 };
         }
