@@ -1133,13 +1133,13 @@ export default {
       const result = {};
       getCurrentPageData.forEach(item => {
         // 方案选所有时过滤PlanId
-        let key = item.idx+'_'+this.planId+'_'+item.bet;
-        // if (this.planId === -1) {
-        //   key = '-1_'+item.bet;
-        // }
-        // if (this.bet === -1) {
-        //   key = item.planId+'_-1';
-        // }
+        let key = `${item.idx}`;
+        if (this.planId === -1) {
+          key = '-1_'+item.bet;
+        }
+        if (this.bet === -1) {
+          key = item.planId+'_-1';
+        }
         if (!result[key]) {
           result[key] = { ...item, cnt: 0 };
         }
