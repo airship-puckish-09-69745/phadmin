@@ -1135,10 +1135,10 @@ export default {
         // 方案选所有时过滤PlanId
         let key = `${item.idx}`;
         if (this.planId === -1) {
-          key = '-1_'+item.bet;
+          key += '-1_'+item.bet;
         }
         if (this.bet === -1) {
-          key = item.planId+'_-1';
+          key += item.planId+'_-1';
         }
         if (!result[key]) {
           result[key] = { ...item, cnt: 0 };
