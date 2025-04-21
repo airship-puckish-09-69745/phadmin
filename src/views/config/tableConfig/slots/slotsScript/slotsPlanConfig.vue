@@ -273,11 +273,11 @@
             <el-button @click="openBetOddsPlanCfg( editVersionFormData.ScriptCfg.BetOddsPlans)" type="primary" size="mini" style="background: #29f1cd">配置</el-button>
           </template>
         </el-form-item>
-        <el-form-item prop="Version" label="大奖配置">
-          <template slot-scope="scope">
-            <el-button @click="openBigPrizeOddsCfg(editVersionFormData.ScriptCfg.BigPrizeCfg)" type="primary" size="mini" style="background: #03a5ec">配置</el-button>
-          </template>
-        </el-form-item>
+<!--        <el-form-item prop="Version" label="大奖配置">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button @click="openBigPrizeOddsCfg(editVersionFormData.ScriptCfg.BigPrizeCfg)" type="primary" size="mini" style="background: #03a5ec">配置</el-button>-->
+<!--          </template>-->
+<!--        </el-form-item>-->
       </el-form>
 
       <div slot="footer" class="dialog-footer">

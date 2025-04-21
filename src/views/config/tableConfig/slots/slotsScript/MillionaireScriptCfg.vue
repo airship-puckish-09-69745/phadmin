@@ -14,190 +14,190 @@
       <fieldset>
 
         <el-form ref="item" :model="item" label-width="200px">
-          <el-col :span="6">
-            <el-form-item label="单个剧本步数：">
-              <el-input v-model.number="item.ScriptSteps"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="总剧本数量：">
-              <el-input v-model.number="item.ScriptNumber"></el-input>
-            </el-form-item>
-          </el-col>
-          <fieldset style="margin:20px auto;">
-            <legend>倍数相关配置</legend>
-            <el-row>
-              <el-col :span="1">
-                <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"
-                            effect="dark" placement="top">
-                  <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">
-                    检查倍数总和区间
-                  </el-button>
-                </el-tooltip>
-              </el-col>
-              <el-col :offset="1" :span="3">
-                <el-tooltip content="xlsx/xls文件,只导入前四列，格式保持一致,需要首行标题" effect="dark" placement="top">
-                  <input type="file" @change="handleFileUpload1" accept=".xlsx, .xls" size="mini"></input>
-                </el-tooltip>
-              </el-col>
-            </el-row>
-            <el-table
-              ref="filterTable"
-              :data="item.OddsCfg"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
-              :key="itemKeyBet"
-            >
-              <el-table-column
-                type="index"
-                width="50"
-              />
-              <el-table-column
-                prop="OddsMin"
-                label="最小倍数"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="OddsMax"
-                label="最大倍数"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="ScriptSteps"
-                label="剧本中出现次数"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScriptSteps" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="ScriptOddsSum"
-                label="剧本中倍数总和"
-                width="150"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="NormalMatrixCacheSize"
-                label="正常图案缓存数量"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.NormalMatrixCacheSize" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="ScatterMatrixCacheSize"
-                label="Scatter图案缓存数量"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.ScatterMatrixCacheSize" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="SwitchScatterPercent"
-                label="作为Scatter主图案的概率"
-                width="300"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini">
-                      <template slot="append">%</template>
-                    </el-input>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TriggerScatterPercent"
-                label="触发进入Scatter概率"
-                width="300"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini">
-                      <template slot="append">%</template>
-                    </el-input>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column>
-                <template slot-scope="scope">
-                  <el-button type="primary" @click="addOddsCfgRow(scope.$index+1)" size="mini">添加</el-button>
-                  <el-button type="primary" @click="delOddsCfgRow(scope.$index)" size="mini">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </fieldset>
-          <fieldset style="margin:20px auto;">
-            <legend>Scatter中奖次数配置</legend>
-            <el-table
-              ref="filterTable"
-              :data="item.ScatterHitCfg"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
-            >
-              <el-table-column
-                type="index"
-                width="50"
-              />
-              <el-table-column
-                prop="HitTimes"
-                label="总中奖次数"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.HitTimes" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="PerTenThousand"
-                label="概率(万分之一)"
-                width="500"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model.number="scope.row.PerTenThousand" size="mini">
-                      <template slot="append">单位:万分之一</template>
-                    </el-input>
-                  </el-col>
-                </template>
-              </el-table-column>
-            </el-table>
-          </fieldset>
+<!--          <el-col :span="6">-->
+<!--            <el-form-item label="单个剧本步数：">-->
+<!--              <el-input v-model.number="item.ScriptSteps"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--          <el-col :span="6">-->
+<!--            <el-form-item label="总剧本数量：">-->
+<!--              <el-input v-model.number="item.ScriptNumber"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+<!--          <fieldset style="margin:20px auto;">-->
+<!--            <legend>倍数相关配置</legend>-->
+<!--            <el-row>-->
+<!--              <el-col :span="1">-->
+<!--                <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"-->
+<!--                            effect="dark" placement="top">-->
+<!--                  <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">-->
+<!--                    检查倍数总和区间-->
+<!--                  </el-button>-->
+<!--                </el-tooltip>-->
+<!--              </el-col>-->
+<!--              <el-col :offset="1" :span="3">-->
+<!--                <el-tooltip content="xlsx/xls文件,只导入前四列，格式保持一致,需要首行标题" effect="dark" placement="top">-->
+<!--                  <input type="file" @change="handleFileUpload1" accept=".xlsx, .xls" size="mini"></input>-->
+<!--                </el-tooltip>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--            <el-table-->
+<!--              ref="filterTable"-->
+<!--              :data="item.OddsCfg"-->
+<!--              stripe-->
+<!--              border-->
+<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--              :row-style="{height:'10px'}"-->
+<!--              :cell-style="libShow.DefaultTableCell"-->
+<!--              style="width: 100%"-->
+<!--              :key="itemKeyBet"-->
+<!--            >-->
+<!--              <el-table-column-->
+<!--                type="index"-->
+<!--                width="50"-->
+<!--              />-->
+<!--              <el-table-column-->
+<!--                prop="OddsMin"-->
+<!--                label="最小倍数"-->
+<!--                width="150"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="OddsMax"-->
+<!--                label="最大倍数"-->
+<!--                width="150"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="ScriptSteps"-->
+<!--                label="剧本中出现次数"-->
+<!--                width="150"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.ScriptSteps" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="ScriptOddsSum"-->
+<!--                label="剧本中倍数总和"-->
+<!--                width="150"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="NormalMatrixCacheSize"-->
+<!--                label="正常图案缓存数量"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.NormalMatrixCacheSize" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="ScatterMatrixCacheSize"-->
+<!--                label="Scatter图案缓存数量"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.ScatterMatrixCacheSize" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="SwitchScatterPercent"-->
+<!--                label="作为Scatter主图案的概率"-->
+<!--                width="300"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini">-->
+<!--                      <template slot="append">%</template>-->
+<!--                    </el-input>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="TriggerScatterPercent"-->
+<!--                label="触发进入Scatter概率"-->
+<!--                width="300"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini">-->
+<!--                      <template slot="append">%</template>-->
+<!--                    </el-input>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column>-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-button type="primary" @click="addOddsCfgRow(scope.$index+1)" size="mini">添加</el-button>-->
+<!--                  <el-button type="primary" @click="delOddsCfgRow(scope.$index)" size="mini">删除</el-button>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--            </el-table>-->
+<!--          </fieldset>-->
+<!--          <fieldset style="margin:20px auto;">-->
+<!--            <legend>Scatter中奖次数配置</legend>-->
+<!--            <el-table-->
+<!--              ref="filterTable"-->
+<!--              :data="item.ScatterHitCfg"-->
+<!--              stripe-->
+<!--              border-->
+<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--              :row-style="{height:'10px'}"-->
+<!--              :cell-style="libShow.DefaultTableCell"-->
+<!--              style="width: 100%"-->
+<!--            >-->
+<!--              <el-table-column-->
+<!--                type="index"-->
+<!--                width="50"-->
+<!--              />-->
+<!--              <el-table-column-->
+<!--                prop="HitTimes"-->
+<!--                label="总中奖次数"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.HitTimes" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="PerTenThousand"-->
+<!--                label="概率(万分之一)"-->
+<!--                width="500"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model.number="scope.row.PerTenThousand" size="mini">-->
+<!--                      <template slot="append">单位:万分之一</template>-->
+<!--                    </el-input>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--            </el-table>-->
+<!--          </fieldset>-->
           <!--          <fieldset style="margin:20px auto;">-->
           <!--            <legend>大奖配置</legend>-->
           <!--            <el-form-item label="下注总金额抽水(千分之一)：">-->
@@ -350,75 +350,75 @@
               </el-table-column>
             </el-table>
           </fieldset>
-          <fieldset style="margin:20px auto;">
-            <legend>赔率配置方案</legend>
-            <el-button type="primary" @click="addBetOddsPlansRow(0)" size="mini">添加</el-button>
-            <el-table
-              ref="filterTable"
-              :data="item.BetOddsPlans"
-              stripe
-              border
-              :header-cell-style="libShow.DefaultTableHeadClass"
-              :row-style="{height:'10px'}"
-              :cell-style="libShow.DefaultTableCell"
-              style="width: 100%"
-            >
-              <el-table-column
-                type="index"
-                width="50"
-              />
-              <el-table-column
-                prop="TargetBets"
-                label="备注"
-              >
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model="scope.row.Desc" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TargetBets"
-                label="目标下注金额列表"
-              >
-                <template slot-scope="{}" slot="header">
-                  <show-tip head-title="目标下注金额列表" head-tip="英文逗号分割:1,2,3"></show-tip>
-                </template>
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    <el-input v-model="scope.row.TargetBetStr" size="mini"/>
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TargetBets"
-                label="目标下注金额列表"
-              >
+<!--          <fieldset style="margin:20px auto;">-->
+<!--            <legend>赔率配置方案</legend>-->
+<!--            <el-button type="primary" @click="addBetOddsPlansRow(0)" size="mini">添加</el-button>-->
+<!--            <el-table-->
+<!--              ref="filterTable"-->
+<!--              :data="item.BetOddsPlans"-->
+<!--              stripe-->
+<!--              border-->
+<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
+<!--              :row-style="{height:'10px'}"-->
+<!--              :cell-style="libShow.DefaultTableCell"-->
+<!--              style="width: 100%"-->
+<!--            >-->
+<!--              <el-table-column-->
+<!--                type="index"-->
+<!--                width="50"-->
+<!--              />-->
+<!--              <el-table-column-->
+<!--                prop="TargetBets"-->
+<!--                label="备注"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model="scope.row.Desc" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="TargetBets"-->
+<!--                label="目标下注金额列表"-->
+<!--              >-->
+<!--                <template slot-scope="{}" slot="header">-->
+<!--                  <show-tip head-title="目标下注金额列表" head-tip="英文逗号分割:1,2,3"></show-tip>-->
+<!--                </template>-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    <el-input v-model="scope.row.TargetBetStr" size="mini"/>-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="TargetBets"-->
+<!--                label="目标下注金额列表"-->
+<!--              >-->
 
-                <template slot-scope="scope">
-                  <el-col :span="20">
-                    {{ showTargetBetStr(scope.row.TargetBetStr) }}
-                  </el-col>
-                </template>
-              </el-table-column>
-              <el-table-column
-                prop="TargetBets"
-                label="详细倍数配置"
-                width="200"
-              >
-                <template slot-scope="scope">
-                  <el-button type="primary" @click="editBetOddsPlans(scope.row,scope.$index)" size="mini">编辑
-                  </el-button>
-                </template>
-              </el-table-column>
-              <el-table-column>
-                <template slot-scope="scope">
-                  <el-button type="primary" @click="addBetOddsPlansRow(scope.$index+1)" size="mini">添加</el-button>
-                  <el-button type="primary" @click="delBetOddsPlansRow(scope.$index)" size="mini">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </fieldset>
+<!--                <template slot-scope="scope">-->
+<!--                  <el-col :span="20">-->
+<!--                    {{ showTargetBetStr(scope.row.TargetBetStr) }}-->
+<!--                  </el-col>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column-->
+<!--                prop="TargetBets"-->
+<!--                label="详细倍数配置"-->
+<!--                width="200"-->
+<!--              >-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-button type="primary" @click="editBetOddsPlans(scope.row,scope.$index)" size="mini">编辑-->
+<!--                  </el-button>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--              <el-table-column>-->
+<!--                <template slot-scope="scope">-->
+<!--                  <el-button type="primary" @click="addBetOddsPlansRow(scope.$index+1)" size="mini">添加</el-button>-->
+<!--                  <el-button type="primary" @click="delBetOddsPlansRow(scope.$index)" size="mini">删除</el-button>-->
+<!--                </template>-->
+<!--              </el-table-column>-->
+<!--            </el-table>-->
+<!--          </fieldset>-->
           <el-col :offset="16" :span="8">
             <el-form-item>
               <el-button type="info" @click="validData">检查配置</el-button>&nbsp;
