@@ -1855,6 +1855,14 @@ export const asyncRoutes = [
 
       },
       {
+        path: 'obMatchRecordConfig',
+        component: () => import('@/views/matchManage/obMatchRecord.vue'),
+        hidden: !IsMars(),
+        name: 'obMatchRecordConfig',
+        meta: { title: '赛事记录', noCache: true, hidden: true },
+
+      },
+      {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
         name: 'matchPosterList',
