@@ -1007,8 +1007,6 @@ export default {
     }
      if(!IsMars()){
        this.getMatchProps()
-       console.log("1111 ",process.env.VUE_APP_PROJECT)
-       console.log("22222", this.env)
      }
     //this.getMatchPropsFromMysql()
   },
@@ -1625,8 +1623,8 @@ export default {
           break
         }
       }
-      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
+     console.log("this.editForm.rankRewards",this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
       let bTime = 0
@@ -2255,6 +2253,7 @@ export default {
         propsIcon: '',
         propsAttr: '',
         propsNum:propsNum,
+        propCost: 0,
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
@@ -2264,6 +2263,7 @@ export default {
           one.propsName = element.propsName
           one.propsIcon = element.propsIcon
           one.propsAttr = element.propsAttr
+          one.propCost = element.propsCost
           break
         }
       }
