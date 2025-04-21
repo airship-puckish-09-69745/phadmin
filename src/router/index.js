@@ -3254,6 +3254,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testClearGameSchema'),
             name: 'TestClearGameScheam',
             meta: { title: '清理游戏健康数据', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testKyc',
+            component: () => import('@/views/devTools/testKyc'),
+            name: 'testKyc',
+            meta: { title: 'KYC工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
