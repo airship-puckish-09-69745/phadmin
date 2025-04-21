@@ -1896,6 +1896,7 @@ export default {
         this.scatterCounts = scatterCounts
         console.log(scriptTableData.length,ordinaryReturnMoneyTableData.length,this.betOddsKeySelect,this.betOddsKey)
         this.queryKeyInput()
+        console.log("============",this.buyRespinTimeMap)
         $this.loading = false
       })
     },
