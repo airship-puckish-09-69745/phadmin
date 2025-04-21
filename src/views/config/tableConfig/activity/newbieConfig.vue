@@ -283,7 +283,7 @@
             <el-form-item v-if="edit.cfgType == 2" label="比赛：">
               <el-select   v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" multiple placeholder="请选择" style="width: 250px" @change="onAppIdOptionsChange">
                 <el-option
-                  v-for="item in PokerInfoCfg"
+                  v-for="item in matchUniqueIdCfgs"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value"
@@ -570,6 +570,17 @@ export default {
         { 'value': 1000007, 'label': 'br' },
         { 'value': 1000008, 'label': 'gli' },
         { 'value': 1100000, 'label': 'xworld' }
+      ],
+      matchUniqueIdCfgs: [
+        { 'value': 10001, 'label': '188Free' },
+        { 'value': 10002, 'label': '12888Free' },
+        { 'value': 10003, 'label': 'P10' },
+        { 'value': 10004, 'label': 'P20' },
+        { 'value': 10005, 'label': 'P40' },
+        { 'value': 10006, 'label': 'P100' },
+        { 'value': 10007, 'label': 'P300' },
+        { 'value': 10008, 'label': 'GTCC 2005' },
+        { 'value': 10009, 'label': 'Yamaha Moto' }
       ],
       PokerInfoCfg: [],
       filterText: '',

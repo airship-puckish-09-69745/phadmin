@@ -1468,7 +1468,7 @@ export const asyncRoutes = [
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
-            meta: { title: '老虎机V3配置' }
+            meta: { title: '大奖配置' }
           },
           {
             path: 'slots_act_configs_v2',
@@ -1852,6 +1852,14 @@ export const asyncRoutes = [
         hidden: !IsMars(),
         name: 'matchWatcherList',
         meta: { title: '主播名单', noCache: true, hidden: true },
+
+      },
+      {
+        path: 'obMatchRecordConfig',
+        component: () => import('@/views/matchManage/obMatchRecord.vue'),
+        hidden: !IsMars(),
+        name: 'obMatchRecordConfig',
+        meta: { title: '赛事记录', noCache: true, hidden: true },
 
       },
       {
@@ -3254,6 +3262,12 @@ export const asyncRoutes = [
             component: () => import('@/views/devTools/testClearGameSchema'),
             name: 'TestClearGameScheam',
             meta: { title: '清理游戏健康数据', perm: 'CFG_MANAGEMENT' }
+          },
+          {
+            path: 'testKyc',
+            component: () => import('@/views/devTools/testKyc'),
+            name: 'testKyc',
+            meta: { title: 'KYC工具', perm: 'CFG_MANAGEMENT' }
           }
         ]
       },
