@@ -138,7 +138,7 @@ export const asyncRoutes = [
         name: 'rocketRandom',
         meta: { title: 'Crash - 概率监控 ◐' }
       },
-      {
+      {//TODO 该页面准备废弃，功能移动到下面的slotsScriptStatisticsNew
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
@@ -1443,6 +1443,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/atlantistreasuremars_slots_cfg'),
                 name: 'atlantistreasuremars_slots_cfg',
                 meta: { title: 'AtlantisTreasure(审)' }
+              },
+              {
+                path: 'spacetreasuremars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/spacetreasuremars_slots_cfg'),
+                name: 'spacetreasuremars_slots_cfg',
+                meta: { title: 'SpaceTreasure(审)' }
               }
               // {
               //   path: 'treasurebowlmars_slots_cfg',
@@ -1462,7 +1468,7 @@ export const asyncRoutes = [
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
-            meta: { title: '老虎机V3配置' }
+            meta: { title: '大奖配置' }
           },
           {
             path: 'slots_act_configs_v2',
@@ -2104,7 +2110,8 @@ export const asyncRoutes = [
                       component: () => import('@/views/playerManage/playlog'),
                       name: 'playlog_Rummy',
                       meta: { title: 'Rummy ◐', gid: 1 }
-                    }*/
+                    },*/
+
           /*      {
                   path: 'playlog_classic_tongits',
                   component: () => import('@/views/playerManage/tongitsPlaylog'),
@@ -2119,6 +2126,12 @@ export const asyncRoutes = [
              meta: { title: 'Tongits - Swap ◐', gid: 120 }
            },*/
 
+           {
+            path: 'playlog_TongitsJP',
+            component: () => import('@/views/playerManage/tongitsPlaylog'),
+            name: 'playlog_TongitsJP',
+            meta: { title: 'T ongits JP ◐', gid: 128 }
+          },
 
         ]
       },
@@ -2761,6 +2774,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'treasurebowlmars_slots_cfg',
             meta: { title: 'TreasureBowl(审)', gid: 175 }
+          },
+          {
+            path: 'spacetreasuremars_slots_cfg',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'spacetreasuremars_slots_cfg',
+            meta: { title: 'SpaceTreasure(审)', gid: 205 }
           }
         ]
       },

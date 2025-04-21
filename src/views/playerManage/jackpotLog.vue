@@ -398,7 +398,8 @@ export default {
         { 'value': 174, 'label': 'TreasureBowl' },
         { 'value': 186, 'label': 'MahjongJackpot' },
         { 'value': 196, 'label': 'GoldMiner' },
-        { 'value': 204, 'label': 'SpaceTreasure' }
+        { 'value': 204, 'label': 'SpaceTreasure' },
+        { 'value': 128, 'label': 'Tongits JP' }
       ],
       appConfig: [
         { 'value': 0, 'label': '全部' },

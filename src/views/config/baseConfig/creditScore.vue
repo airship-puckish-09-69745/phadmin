@@ -176,20 +176,21 @@
             sortable
             width="120"
           />
-          <el-table-column
-            prop="userCount"
-            label="历史总用户数量"
-            sortable
-          />
+          <el-table-column label="历史总用户数量">
+            <template slot-scope="scope">
+              {{ scope.row.historyCnt?scope.row.historyCnt:scope.row.userCount}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="playCnt"
             label="活跃用户数量(30天)"
             sortable
           />
-          <el-table-column
-            prop="kycCount"
-            label="已KYC验证用户数量"
-          />
+          <el-table-column label="已KYC验证用户数量">
+            <template slot-scope="scope">
+              {{ scope.row.kycCnt?scope.row.kycCnt:scope.row.kycCount}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="kycPlayCnt"
             label="活跃Kyc用户数量(30天)"

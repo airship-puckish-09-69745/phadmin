@@ -228,12 +228,14 @@
                 </el-table-column>
                 <el-table-column label="最小值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini" @input="validateMin(scope.row)"></el-input>
+                    <p v-if="errorMin" style="color: red">{{ errorMin }}</p>
                   </template>
                 </el-table-column>
                 <el-table-column label="最大值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini" @input="validateMax(scope.row)"></el-input>
+                    <p v-if="errorMax" style="color: red">{{ errorMax }}</p>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="100">
@@ -358,6 +360,8 @@ export default {
       control: [
 
       ],
+      errorMax: '',
+      errorMin: '',
       poolMoneyList: {},
       robotlvl: [
         {
@@ -413,6 +417,22 @@ export default {
     },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    validateMax(row){
+      if (row.ShowMoneyMax < row.ShowMoneyMin + 1) {
+        this.errorMax = `最大值必须大于 ${row.ShowMoneyMin}`
+        row.ShowMoneyMax = row.ShowMoneyMin + 1
+      } else {
+        this.errorMax = ''
+      }
+    },
+    validateMin(row){
+      if (row.ShowMoneyMax < row.ShowMoneyMin + 1) {
+        this.errorMin = `最小值必须小于 ${row.ShowMoneyMax}`
+        row.ShowMoneyMin = row.ShowMoneyMax - 1
+      } else {
+        this.errorMin = ''
+      }
     },
     getData() {
       request({

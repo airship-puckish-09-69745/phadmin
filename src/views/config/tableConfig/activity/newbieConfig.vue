@@ -26,6 +26,16 @@
                     <el-date-picker v-model="item.EndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
+                <el-col >
+                  <el-form-item label="隐藏开始时间：">
+                    <el-date-picker v-model="item.LimitStartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="隐藏结束时间：">
+                    <el-date-picker v-model="item.LimitEndTime" type="datetime" placeholder="选择结束时间" value-format="timestamp" size="mini" />
+                  </el-form-item>
+                </el-col>
                 <el-col>
                   <el-form-item label="单人总发放限制：" :required="true">
                     <el-input v-model.number="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
@@ -266,12 +276,12 @@
               </el-col>
             </el-form-item>
             <el-form-item v-if="edit.cfgType == 1" label="比赛：">
-              <el-checkbox-group v-model="edit.item.GameType" style="width: 700px">
+              <el-checkbox-group v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" style="width: 700px">
                 <el-checkbox v-for="item in gameCfgs" :key="item.value" :label="item.value">{{ item.label }}</el-checkbox>
               </el-checkbox-group>
             </el-form-item>
             <el-form-item v-if="edit.cfgType == 2" label="比赛：">
-              <el-select v-model="edit.item.GameType" multiple placeholder="请选择" style="width: 250px" @change="onAppIdOptionsChange">
+              <el-select   v-model="edit.item.GameType" :disabled="edit.item.TaskType === 2" multiple placeholder="请选择" style="width: 250px" @change="onAppIdOptionsChange">
                 <el-option
                   v-for="item in PokerInfoCfg"
                   :key="item.value"
@@ -418,6 +428,8 @@ export default {
         IsOpen: true,
         StartTime: 0,
         EndTime: 0,
+        LimitStartTime: 0,
+        LimitEndTime: 0,
         SockGainRatio: 10,
         RuleImgHor: [],
         RuleImgVer: [],
@@ -800,10 +812,14 @@ export default {
       this.configCheck()
       var startTime = Math.floor(this.item.StartTime / 1000)
       var endTime = Math.floor(this.item.EndTime / 1000)
+      var limitSTime = Math.floor(this.item.LimitStartTime / 1000)
+      var limitETime = Math.floor(this.item.LimitEndTime / 1000)
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
         EndTime: endTime,
+        LimitStartTime: limitSTime,
+        LimitEndTime: limitETime,
         SingleLimitNum: this.item.SingleLimitNum,
         EveryDayLimitNum: this.item.EveryDayLimitNum,
         SumLimitNum: this.item.SumLimitNum,
@@ -953,10 +969,8 @@ export default {
 
           // 更新选中游戏的排序
           this.updateGamesSorted()
-
-          console.log(this.item.GameIdCfg)
           this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
-          console.log(data)
+
         }
       })
     },
@@ -1003,8 +1017,6 @@ export default {
               }
             }
             this.getFilter()
-            console.log("------------------------------------------")
-            console.log(this.tableData)
           } else {
             this.total = 0
             this.tableData = []
