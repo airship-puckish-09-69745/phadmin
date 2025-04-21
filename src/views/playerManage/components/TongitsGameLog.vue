@@ -302,7 +302,7 @@ export default {
           potMoney: val.players[j].potMoney,
           secretMeldMoney: val.players[j].secretMeldMoney,
           tongitsMoney: val.players[j].tongitsMoney,
-          moneyChange: val.players[j].moneyChange,
+          moneyChange: val.players[j].moneyChange + (val.players[j].JackpotNum == undefined ? 0 : val.players[j].JackpotNum),
           moneyFee: val.players[j].moneyFee,
           payPot: 0 - val.players[j].payPot,
           Character: val.players[j].character,
