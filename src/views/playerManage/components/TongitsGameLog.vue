@@ -90,8 +90,8 @@
                 <span>Pot：{{ one.payPot/1000 }}</span><br>
               </template>
               <template v-if="Gid === 128"> <!-- 中JP -->
-                <span>奖池：{{ one.jackpotNum/1000 }}</span><br>
-                <span>奖池类型：{{ getJackpotLevel(one.jackpotType) }}</span><br>
+                <span>jp奖池：{{ one.jackpotNum/1000 }}</span><br>
+                <span>jp类型：{{ getJackpotLevel(one.jackpotType) }}</span><br>
               </template>
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
