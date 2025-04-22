@@ -683,7 +683,7 @@ export default {
         this.editForm.itemExtra.specialAttr = 0
       }
 
-      if (this.editForm.data.itemType === 2) {
+      if (this.editForm.data.itemType === 2 || this.editForm.data.itemType === 4) {
         this.editForm.data.itemCost = 0
       } else {
         if (typeof this.editForm.data.itemCost === 'undefined' || this.editForm.data.itemCost === null || this.editForm.data.itemCost === '') {
@@ -706,8 +706,8 @@ export default {
         return false
       }
 
-      if (this.editForm.data.itemType == 2) {
-        if (this.editForm.data.quality == 0) {
+      if (this.editForm.data.itemType == 2 || this.editForm.data.itemType === 4) {
+        if (this.editForm.data.itemType == 2  && this.editForm.data.quality === 0) {
           this.errmsg('请选择品质')
           return false
         }

@@ -1348,7 +1348,7 @@ export default {
         Message.error('请输入道具数量')
         return
       }
-      if (this.item.ItemType === 2) {
+      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
         if (typeof this.item.ItemUseTime === 'undefined') {
           Message.error('请选择时间')
           return
@@ -1357,7 +1357,7 @@ export default {
 
       const msg = '确定添加物品吗?'
       let tmpTime = 0
-      if (this.item.ItemType === 2) {
+      if (this.item.ItemType === 2 || this.item.ItemType === 4) {
         tmpTime = this.item.ItemUseTime
       }
       this.$confirm(msg, '提示', {

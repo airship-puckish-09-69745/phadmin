@@ -4443,10 +4443,12 @@ export default {
       for (let i = 0; i < sicbObj.options.length; i++) {
         const ob = sicbObj.options[i]
 
-        for (let j = 0; j < sicbObj.bonus.length; j++) {
-          if (i === sicbObj.bonus[j].Id) {
-            ob.Rate = ob.Rate * sicbObj.bonus[j].Double
-            console.log(ob.Rate)
+        if (sicbObj.bonus) {
+          for (let j = 0; j < sicbObj.bonus.length; j++) {
+            if (i === sicbObj.bonus[j].Id) {
+              ob.Rate = ob.Rate * sicbObj.bonus[j].Double
+              console.log(ob.Rate)
+            }
           }
         }
         tMap[ob.id] = { ID: ob.id, Name: names[i], Hit: ob.Result, Rate: ob.Rate, IsBonus: ob.IsBonus, Ret: [] }
