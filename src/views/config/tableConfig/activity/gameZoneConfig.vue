@@ -39,6 +39,18 @@
                     />
                   </el-form-item>
                 </el-col>
+                <el-col :span="24">
+                  <el-form-item label="支持的APPID：" :required="true">
+                    <el-select v-model="item.AppIds" multiple placeholder="请选择" style="width: 300px">
+                      <el-option
+                        v-for="item in appidInfoCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -289,6 +301,18 @@
                     </el-select>
                   </el-form-item>
                 </el-col>
+                <el-col :span="24">
+                  <el-form-item label="支持的APPID：" :required="true">
+                    <el-select v-model="item.GameEvent.AppIds" multiple placeholder="请选择" style="width: 300px">
+                      <el-option
+                        v-for="item in appidInfoCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -440,6 +464,40 @@
 
           </el-row>
         </el-tab-pane>
+
+        <el-tab-pane v-if="whitelistCfg != null" label="白名单配置">
+          <el-form ref="item" label-width="220px">
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="AppId白名单：" :required="true">
+                <el-select v-model="whitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px">
+                  <el-option
+                    v-for="item in appidInfoCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item label="SiteId白名单：" :required="true">
+                <el-select v-model="whitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px">
+                  <el-option
+                    v-for="item in channelIdCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          </el-form>
+        </el-tab-pane>
+
       </el-tabs>
 
       <el-row>
@@ -842,6 +900,7 @@ export default {
             GameList: []
           }
         ],
+        AppIds: [],   //appids
         MayLikeItem: [
           {
             Gid: 1,
@@ -861,10 +920,15 @@ export default {
         GameEvent: {
           IsOpen: true,
           IconLink: '',
-          ActivityIds: []
+          ActivityIds: [],
+          AppIds:[]   //appids
         },
         ZoneGame: [],
-        HallGame: []
+        HallGame: [],
+        WhitelistCfg: { //白名单配置
+          AppIdList:[],
+          SiteIdList:[]
+        },
       },
       treeDataZone: [{
         id: 1,
@@ -949,7 +1013,11 @@ export default {
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
-      zoneGame: []
+      zoneGame: [],
+      whitelistCfg: { //白名单配置
+          AppIdList:[],
+          SiteIdList:[]
+        }
     }
   },
   watch: {
@@ -1230,6 +1298,14 @@ export default {
               this.hallGame = []
             } else {
               this.hallGame = this.item.HallGame
+            }
+            if (this.item.WhitelistCfg == null){
+              this.whitelistCfg = {
+                AppIdList:[],
+                SiteIdList:[]
+              }
+            }else{
+              this.whitelistCfg = this.item.WhitelistCfg
             }
             this.$refs.compare.SetOldVal(old)
           }
@@ -1618,6 +1694,7 @@ export default {
       }
       cpy.HallGame = this.hallGame
       cpy.ZoneGame = this.zoneGame
+      cpy.WhitelistCfg = this.whitelistCfg
       return JSON.stringify(cpy)
     },
     setData() {
