@@ -417,6 +417,7 @@ export default {
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
         127: 'SaBong',
+        128: 'Tongits JP',
         1: 'Rummy',
         10000: '汇总'
       },
