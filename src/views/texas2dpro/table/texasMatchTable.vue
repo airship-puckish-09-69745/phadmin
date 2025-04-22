@@ -407,7 +407,7 @@
             <el-form-item label="是否上报数据中心:" :required="true">
               <el-radio-group v-model.number="edit.item.IsDcReport">
                 <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
+                <el-radio :label="2">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
