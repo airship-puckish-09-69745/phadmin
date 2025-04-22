@@ -1703,13 +1703,17 @@ export default {
       this.tableItemData = []
       let currTime = new Date().getTime()
       for (let i = 0; i < this.tableData.length; i++) {
+        if (this.tableData[i].item_type === 4) {
+          console.log(this.tableData[i])
+        }
         if (this.tableData[i].item_type === id && this.tableData[i].status === 1) {
-          if (this.tableData[i].item_type !== 2) {
+          if (this.tableData[i].item_type !== 2 && this.tableData[i].item_type !== 4) {
             let expTime = this.tableData[i].expire_time * 1000
             if (currTime < expTime) {
               var dataList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
               this.tableItemData.push(dataList)
             }
+
           } else {
             var dList = { 'value': this.tableData[i].id, 'label': this.tableData[i].item_name, disabled: false }
             this.tableItemData.push(dList)
