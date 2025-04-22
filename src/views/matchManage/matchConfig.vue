@@ -707,12 +707,14 @@ import AppInfo from '../devTools/appInfo.vue'
 import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
+import {IsMars} from "@/utils/env";
 
 export default {
   name: 'MatchConfig',
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
     return {
+      envProjectName: process.env.VUE_APP_PROJECT,
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
@@ -1003,12 +1005,16 @@ export default {
         // { 'value': 4, 'label': '仅限Tongits游戏投注' }
       ]
     }
-    this.getMatchProps()
+     if(!IsMars()){
+       this.getMatchProps()
+     }
     //this.getMatchPropsFromMysql()
   },
   mounted() {
     this.getList()
-    this.getMatchProps()
+    if(!IsMars()) {
+      this.getMatchProps()
+    }
     // 自动清理过期配置
   },
   methods: {
@@ -1617,8 +1623,8 @@ export default {
           break
         }
       }
-      //console.log("this.editForm.signExtra",this.editForm.signExtra)
       const rankReward = JSON.stringify(this.editForm.rankRewards)
+     console.log("this.editForm.rankRewards",this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
       let bTime = 0
@@ -2247,6 +2253,7 @@ export default {
         propsIcon: '',
         propsAttr: '',
         propsNum:propsNum,
+        propCost: 0,
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
@@ -2256,6 +2263,7 @@ export default {
           one.propsName = element.propsName
           one.propsIcon = element.propsIcon
           one.propsAttr = element.propsAttr
+          one.propCost = element.propsCost
           break
         }
       }

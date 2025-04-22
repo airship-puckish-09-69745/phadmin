@@ -402,6 +402,16 @@
             </el-form-item>
           </el-col>
         </el-row>
+         <el-row>
+           <el-col :span="11">
+            <el-form-item label="是否上报数据中心:" :required="true">
+              <el-radio-group v-model.number="edit.item.IsDcReport">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="2">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="20">
             <el-form-item label="白名单:" prop="item.RaceWhiteList" >
@@ -450,11 +460,25 @@
                 </el-select>
               </el-form-item>
             </el-col>
-             <el-col v-if="edit.item.TemplateType===1" :span="11">
+             <el-col v-if="edit.item.TemplateType===1" :span="20">
               <el-form-item label="奖金类型">
                 <el-select v-model="edit.item.RewardType" placeholder="请选择">
                   <el-option v-for="item in RewardTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
                 </el-select>
+                 <el-select v-if="edit.item.RewardType > 1" v-model="edit.item.SceneId" placeholder="请选择">
+                      <el-option v-if="edit.item.RewardType === 2"
+                        v-for="item in betScenesCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                       <el-option v-if="edit.item.RewardType === 3"
+                        v-for="item in rebateScenesCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                  </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -494,7 +518,7 @@
             <el-table-column
               prop="rewardItems"
               label="奖励"
-              width="400"
+              width="500"
             >
               <template slot-scope="scope">
                 <ul style="list-style: none;padding-inline-start: 0;">
@@ -512,6 +536,7 @@
                       </el-option>
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
+                    <el-input v-if='isHeadProps(scope.row.propsReward.propsId)' v-model.number="scope.row.propsReward.propsEffectiveTime" style="width: 100px;" size="mini" placeholder="有效时间(天)" />
                   </li>
                 </ul>
               </template>
@@ -600,6 +625,8 @@ function newItem() {
     PreMatchBeginTime: 10,
     TemplateType: 0,
     RewardType: 0,
+    SceneId: 0,
+    IsDcReport: 0,
     RewardId: 0,
     RewardPool: 0,
     LastModify: 0,
@@ -654,6 +681,14 @@ export default {
         { key: '投注金', value: 2 },
         { key: '返水金', value: 3 }
       ],
+       // 返水金
+      rebateScenesCfgs: [
+        { 'value': 10, 'label': '没有任何限制的返水金【TexasPlus付费赛】' }
+      ],
+      // 投注金
+      betScenesCfgs: [
+        { 'value': 9, 'label': '仅限GZ任意游戏投注金【TexasPlus免费赛】' }
+      ],
       DynamicRewardConfig: [
         { key: 'UAT28', value: 100 },
         { key: 'UAT 2.9', value: 101 },
@@ -692,7 +727,6 @@ export default {
         { 'value': 2, 'label': '金币or门票' }
       ],
       matchPropsCfgs: [],   //比赛道具信息
-      currPropsType: 3,
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -739,6 +773,8 @@ export default {
         PreMatchBeginTime: '提前可进入时间',
         TemplateType: '奖励模板类型',
         RewardType: '奖金类型',
+        SceneId:'场景ID',
+        IsDcReport: '是否上报数据中心',
         RewardId: '奖励ID',
         RewardPool: '初始奖池',
         AppInfo: 'App信息',
@@ -1137,7 +1173,7 @@ export default {
           Env: this.env,
           PageNum: 1,
           PageSize: 100,
-          PropType: this.currPropsType,
+          PropType: 0,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1145,7 +1181,7 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+              if ((objs.list[i].item_type !== 3 &&  objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
                 continue
               }
               this.matchPropsCfgs.push({
@@ -1170,7 +1206,7 @@ export default {
         data: {
           Env: _this.env,
           Path: '/match/props/config/list',
-          PropType: this.currPropsType,
+          PropType: 0,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1178,7 +1214,7 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+              if ((objs.list[i].item_type !== 3 &&  objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
                 continue
               }
               this.matchPropsCfgs.push({
@@ -1219,6 +1255,7 @@ export default {
           propsIcon: '',
           propsAttr: '',
           propsNum:0,
+          propsEffectiveTime: 0,
         }
       })
     },
@@ -1290,6 +1327,14 @@ export default {
         }
         expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
         if (expire_time < endTime) {
+          return true
+        }
+      }
+      return false
+    },
+    isHeadProps(propsId) {
+       for (var i=0; i<this.matchPropsCfgs.length; i++){
+        if (propsId === this.matchPropsCfgs[i].propsId && this.matchPropsCfgs[i].propsType == 4) {
           return true
         }
       }

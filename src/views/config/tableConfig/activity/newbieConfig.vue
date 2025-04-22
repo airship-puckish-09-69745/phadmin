@@ -803,10 +803,10 @@ export default {
             $this.item.EveryDayLimitNum = old.EveryDayLimitNum
             $this.item.SumLimitNum = old.SumLimitNum
             if (old.taskCfgData.length > 0) {
-              $this.item.taskCfgData = old.taskCfgData
+              $this.item.taskCfgData = this.getPokerCfgData(old.taskCfgData)
             }
             if (old.pokerCfgData.length > 0) {
-              $this.item.pokerCfgData = old.pokerCfgData
+              $this.item.pokerCfgData = this.getPokerCfgData(old.pokerCfgData)
             }
             $this.item.GameIdCfg = old.GameIdCfg
             if ($this.item.WhitelistCfg == null) {
@@ -825,6 +825,8 @@ export default {
       var endTime = Math.floor(this.item.EndTime / 1000)
       var limitSTime = Math.floor(this.item.LimitStartTime / 1000)
       var limitETime = Math.floor(this.item.LimitEndTime / 1000)
+      var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
+      var pokerCfgData = this.getTaskCfgData(this.item.pokerCfgData)
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
@@ -834,8 +836,8 @@ export default {
         SingleLimitNum: this.item.SingleLimitNum,
         EveryDayLimitNum: this.item.EveryDayLimitNum,
         SumLimitNum: this.item.SumLimitNum,
-        taskCfgData: this.item.taskCfgData,
-        pokerCfgData: this.item.pokerCfgData,
+        taskCfgData: taskCfgData,
+        pokerCfgData: pokerCfgData,
         GameIdCfg: this.item.GameIdCfg
       }
       this.form.Data = JSON.stringify(tableData)
@@ -1059,8 +1061,25 @@ export default {
           }
         }
       }
+    },
+    getTaskCfgData(cfgData) {
+      var cfg = []
+      for (let i = 0; i < cfgData.length; i++) {
+        var data = cfgData[i]
+        data.RewardNum = data.RewardNum * 1000
+        cfg.push(data)
+      }
+      return cfg
+    },
+    getPokerCfgData(cfgData) {
+      var cfg = []
+      for (let i = 0; i < cfgData.length; i++) {
+        var data = cfgData[i]
+        data.RewardNum = data.RewardNum / 1000
+        cfg.push(data)
+      }
+      return cfg
     }
-
   }
 }
 </script>

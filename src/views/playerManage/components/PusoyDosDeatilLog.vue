@@ -71,11 +71,12 @@
               <span>POTMoney：{{ one.hitPotScore / 1000 }}</span><br>
               <span>服务费：{{ one.moneyFee / 1000 }}</span><br>
               <span>输赢：{{ one.moneyChange / 1000 }}</span><br>
-
+              <span>用户携带资产: {{ one.beforeMoney / 1000 }}</span><br>
+              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>
               <!--              <span>下注：{{ one.payPot / 1000 }}</span><br>-->
               <!--              <span>筹码变化：{{ one.moneyChange / 1000 }}</span><br>-->
 
-              <!--              <span>最终资产：{{ one.moneyTotal / 1000 }}</span><br>-->
+                           
               <br>
               <!--              <span>奖池：{{ showRobotLevel(one.Character) }}</span><br>-->
             </div>
@@ -236,7 +237,8 @@ export default {
           pusoyDosScore: o.pusoyDosScore,
           potMoney: o.potMoney,
           handCards: o.handCards,
-          IsFinished: false
+          IsFinished: false,
+          beforeMoney: o.BeforeMoney
         }
         finishArray.push(one)
 
