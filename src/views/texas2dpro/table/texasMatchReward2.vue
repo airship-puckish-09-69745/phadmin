@@ -141,10 +141,12 @@ export default {
       ],
       // 返水金
       rebateScenesCfgs: [
+        { 'value': 5, 'label': '没有任何限制的返水金' },
         { 'value': 10, 'label': '没有任何限制的返水金【TexasPlus付费赛】' }
       ],
       // 投注金
       betScenesCfgs: [
+        { 'value': 1, 'label': '任意游戏投注' },
         { 'value': 9, 'label': '仅限GZ任意游戏投注金【TexasPlus免费赛】' }
       ],
     }

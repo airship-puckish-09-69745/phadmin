@@ -5,6 +5,9 @@
       <el-button v-if="showProBtn" type="primary" size="mini" round @click="publishBtn">发布</el-button>
       <span v-if="showProBtn">{{ processInfo }}</span>
     </el-col>
+    <el-col :offset="6" :span="1">
+      <el-checkbox v-model="lark" @change="setLarkPage">lark</el-checkbox>
+    </el-col>
     <el-col v-if="isPublish" :span="24">
       <el-col :span="12" :offset="4">
         <el-steps v-if="!needReview" :space="200" :active="stepActive" finish-status="success">
@@ -283,6 +286,9 @@ export default {
   },
   data() {
     return {
+      larkConfig: {},
+      larkPages: [],
+      lark: false,
       diffFormatter: new Diff.DiffFormatter(new Diff.Diff()),
       isTestBtn: true, // 展示发布到测试环境
       isProBtn: true, // 展示发布到线上
@@ -346,6 +352,7 @@ export default {
     this.env = store.getters.env || this.env
     this.resetData()
     this.checkProcessing()
+    this.getLarkPage()
   },
   methods: {
     init() {
@@ -380,6 +387,7 @@ export default {
             if (response.RetCode === 0) {
               $this.stepActive++
               $this.$message.success('发布成功')
+              $this.sendLark()
               $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
             }
           })
@@ -393,6 +401,7 @@ export default {
           if (response.RetCode === 0) {
             $this.stepActive++
             $this.$message.success('发布成功')
+            $this.sendLark()
             $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
           }
         })
@@ -400,6 +409,104 @@ export default {
 
       // 下一步
       this.dialogClose()
+    },
+    sendLark() {
+      if (!this.lark) {
+        return
+      }
+      // 1原始状态 2发布到测试环境 3发布到预发布 4提交审核 5审核完成待发布 6发布到正式环境
+      // console.log("publish success", this.opType, this.keyId)
+      // console.log("publish success", JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      // 同步到测试
+      if (this.env !== 'test') {
+        console.log("开发阶段只通知开发服")
+        return
+      }
+      // 同步到正式
+      if (this.env === 'pro' && this.opType != 4 && this.opType != 6) {
+        console.log("生产环境只在审核和同步正式发送通知")
+        return
+      }
+      const msg = this.getRoutesName()
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Path: '/misc/warn',
+          Env: this.env,
+          Text: msg,
+          Warn: "WarningJustForTest",
+        }
+      }).then(response => {
+        console.log(response)
+        if (response.RetCode === 0) {
+          console.log('wanring success')
+        }
+      })
+    },
+    getRoutesName() {
+      let str = `【${this.$store.getters.name}】发布配置：`
+      for (let i=0; i<this.$route.matched.length; i++) {
+        if (i > 0) {
+          str += '->'
+        }
+        str += this.$route.matched[i].meta.title
+      }
+      str += "\r\n"
+      // str += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
+      str += '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
+      // str += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
+      return str
+    },
+    getLarkPage(){
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'lark_page_cfg'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('cfg', response)
+          this.larkConfig = response.Data || {}
+          if (response.Data.Data && response.Data.Data !== '') {
+            this.larkPages = JSON.parse(response.Data.Data)
+            this.lark = this.larkPages.indexOf(this.$route.name) > -1
+          }
+        }
+      })
+    },
+    setLarkPage(add) {
+      console.log(this.$route)
+      if (add && this.larkPages.indexOf(this.$route.name) > -1) {
+        this.$message.error(`重复操作!`)
+        return
+      }
+      if ((!add) && this.larkPages.indexOf(this.$route.name) == -1) {
+        this.$message.error(`重复操作!`)
+        return
+      }
+      if (add) {
+        this.larkPages.push(this.$route.name)
+      } else {
+        for (let i=0; i<this.larkPages.length; i++) {
+          if (this.larkPages[i] === this.$route.name) {
+            this.larkPages.splice(i,1)
+          }
+        }
+      }
+      this.larkConfig.Data = JSON.stringify(this.larkPages)
+      request({
+        url: '/customizeconfig/update',
+        method: 'post',
+        data: this.larkConfig,
+      }).then(response => {
+        if (response.RetCode === 0) {
+          add?this.$message.success(`添加通知成功!`):this.$message.success(`取消通知成功!`)
+        } else {
+          this.$message.error('设置失败')
+        }
+      })
     },
     publishBtn() {
       if (!this.check()) {
