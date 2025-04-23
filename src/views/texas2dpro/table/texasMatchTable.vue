@@ -1328,7 +1328,7 @@ export default {
           return true
         }
         expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
-        if (expire_time < endTime && this.edit.item.SignUpExtra.propsType !== 4) {
+        if (expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
           return true
         }
       }
