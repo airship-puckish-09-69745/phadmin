@@ -290,6 +290,12 @@ export default {
       default: function() {
         return ""
       }
+    },
+    onCompare: {
+      type: Function,
+      default: function() {
+        return ""
+      }
     }
   },
   data() {
@@ -441,7 +447,6 @@ export default {
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
           const content = $this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
-          console.log($this.headAttrs)
           // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
           const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
           // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
@@ -710,6 +715,7 @@ export default {
             proVal = proVal || []
             $this.compare(preVal, proVal)
         }
+        $this.onCompare(preVal,proVal)
       })
     },
     compareOBJValue(oldVal, newVal, sKey) {
