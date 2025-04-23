@@ -793,6 +793,8 @@ export default {
             const old = JSON.parse(response.Data.Data)
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
+            $this.item.LimitStartTime = old.LimitStartTime * 1000
+            $this.item.LimitEndTime = old.LimitEndTime * 1000
             if (old.StartTime === 0) {
               $this.item.StartTime = new Date().setSeconds(0)
             }

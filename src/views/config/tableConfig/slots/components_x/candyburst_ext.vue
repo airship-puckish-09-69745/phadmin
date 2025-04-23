@@ -12,9 +12,9 @@
             <el-input v-model="cfg.FreeExtraOdds" placeholder="请输入内容"> <template slot="append">用 , 连接</template> </el-input>
           </el-form-item>
 
-          <el-divider>
-            <span>普通倍数</span>
-          </el-divider>
+<!--          <el-divider>-->
+<!--            <span>普通倍数</span>-->
+<!--          </el-divider>-->
 
           <el-form-item label="普通模式金框出现概率">
             <el-input v-model.number="cfg.GoldRate[0]"><template slot="append">‰</template></el-input>
@@ -40,41 +40,41 @@
             <el-input v-model.number="cfg.ReHitScatterRate[0]"><template slot="append">‰</template></el-input>
           </el-form-item>
 
-          <el-divider>
-            <span />
-          </el-divider>
+<!--          <el-divider>-->
+<!--            <span />-->
+<!--          </el-divider>-->
 
-          <el-divider>
-            <span>额外倍数</span>
-          </el-divider>
+<!--          <el-divider>-->
+<!--            <span>额外倍数</span>-->
+<!--          </el-divider>-->
 
-          <el-form-item label="普通模式金框出现概率">
-            <el-input v-model.number="cfg.GoldRate[1]"><template slot="append">‰</template></el-input>
-          </el-form-item>
+<!--          <el-form-item label="普通模式金框出现概率">-->
+<!--            <el-input v-model.number="cfg.GoldRate[1]"><template slot="append">‰</template></el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费模式金框出现概率">
-            <el-input v-model.number="cfg.FreeGoldRate[1]"><template slot="append">‰</template></el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费模式金框出现概率">-->
+<!--            <el-input v-model.number="cfg.FreeGoldRate[1]"><template slot="append">‰</template></el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="小大Wild权重">
-            <el-input v-model="cfg.SmallBigWildWeight[1]" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="小大Wild权重">-->
+<!--            <el-input v-model="cfg.SmallBigWildWeight[1]" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费模式小大Wild权重">
-            <el-input v-model="cfg.FreeSmallBigWildWeight[1]" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费模式小大Wild权重">-->
+<!--            <el-input v-model="cfg.FreeSmallBigWildWeight[1]" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="替换小wild数量权重">
-            <el-input v-model="cfg.SmallWildCountWeight[1]" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。从1开始</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="替换小wild数量权重">-->
+<!--            <el-input v-model="cfg.SmallWildCountWeight[1]" placeholder="请输入内容,如2,1"> <template slot="append">用 , 连接。从1开始</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="免费模式再中scatter概率">
-            <el-input v-model.number="cfg.ReHitScatterRate[1]"><template slot="append">‰</template></el-input>
-          </el-form-item>
+<!--          <el-form-item label="免费模式再中scatter概率">-->
+<!--            <el-input v-model.number="cfg.ReHitScatterRate[1]"><template slot="append">‰</template></el-input>-->
+<!--          </el-form-item>-->
 
-          <el-divider>
-            <span />
-          </el-divider>
+<!--          <el-divider>-->
+<!--            <span />-->
+<!--          </el-divider>-->
 
           <el-form-item label="免费模式购买倍数">
             <el-input v-model.number="cfg.BuyFreeOdds" placeholder="请输入内容" />
@@ -135,22 +135,22 @@ export default {
   },
   data() {
     if (!this.slotsData.GoldRate || this.slotsData.GoldRate.length === 0) {
-      this.$set(this.slotsData, 'GoldRate', [0, 0])
+      this.$set(this.slotsData, 'GoldRate', [0])
     }
     if (!this.slotsData.FreeGoldRate || this.slotsData.FreeGoldRate.length === 0) {
-      this.$set(this.slotsData, 'FreeGoldRate', ['', ''])
+      this.$set(this.slotsData, 'FreeGoldRate', [''])
     }
     if (!this.slotsData.SmallBigWildWeight || this.slotsData.SmallBigWildWeight.length === 0) {
-      this.$set(this.slotsData, 'SmallBigWildWeight', ['', ''])
+      this.$set(this.slotsData, 'SmallBigWildWeight', [''])
     }
     if (!this.slotsData.FreeSmallBigWildWeight || this.slotsData.FreeSmallBigWildWeight.length === 0) {
-      this.$set(this.slotsData, 'FreeSmallBigWildWeight', ['', ''])
+      this.$set(this.slotsData, 'FreeSmallBigWildWeight', [''])
     }
     if (!this.slotsData.SmallWildCountWeight || this.slotsData.SmallWildCountWeight.length === 0) {
-      this.$set(this.slotsData, 'SmallWildCountWeight', ['', ''])
+      this.$set(this.slotsData, 'SmallWildCountWeight', [''])
     }
     if (!this.slotsData.ReHitScatterRate || this.slotsData.ReHitScatterRate.length === 0) {
-      this.$set(this.slotsData, 'ReHitScatterRate', [0, 0])
+      this.$set(this.slotsData, 'ReHitScatterRate', [0])
     }
     return {
       cfg: {

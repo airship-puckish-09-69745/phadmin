@@ -260,7 +260,7 @@ export default {
         Factor10: 40
       },
       ExtraBetActId2Enable: false,
-      ExtraBetActId2GameIds: [180, 186, 208],
+      ExtraBetActId2GameIds: [180, 186]
     }
   },
   watch: {
