@@ -1214,7 +1214,9 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if ((objs.list[i].item_type !== 3 &&  objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+
+
+              if ((objs.list[i].item_type !== 3 && objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || (objs.list[i].item_type === 3 && objs.list[i].expire_time < timestamp)) {
                 continue
               }
               this.matchPropsCfgs.push({
