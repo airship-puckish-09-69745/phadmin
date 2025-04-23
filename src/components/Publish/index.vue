@@ -232,6 +232,8 @@
 
 <script>
 import { getDiff, getView, rollback, submitPublish } from '@/api/publish'
+import { getInfo } from '@/api/user'
+import { sendLark } from '@/api/lark'
 import Diff from '@/utils/diff'
 import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/common'
 import store from '@/store'
@@ -281,6 +283,12 @@ export default {
       type: Function,
       default: function() {
         return true
+      }
+    },
+    makeContent: {
+      type: Function,
+      default: function() {
+        return ""
       }
     }
   },
@@ -387,8 +395,8 @@ export default {
             if (response.RetCode === 0) {
               $this.stepActive++
               $this.$message.success('发布成功')
-              $this.sendLark()
               $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
+              $this.sendLark()
             }
           })
         })
@@ -401,8 +409,8 @@ export default {
           if (response.RetCode === 0) {
             $this.stepActive++
             $this.$message.success('发布成功')
-            $this.sendLark()
             $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
+            $this.sendLark()
           }
         })
       }
@@ -427,35 +435,34 @@ export default {
         console.log("生产环境只在审核和同步正式发送通知")
         return
       }
-      const msg = this.getRoutesName()
-      request({
-        url: '/dataProxy/info',
-        method: 'post',
-        data: {
-          Path: '/misc/warn',
-          Env: this.env,
-          Text: msg,
-          Warn: "WarningJustForTest",
-        }
-      }).then(response => {
-        console.log(response)
+      const $this = this
+      getInfo(this.$store.getters.token).then(function(response) {
         if (response.RetCode === 0) {
-          console.log('wanring success')
+          const nick = response.Data.nick
+          const routes = $this.getRoutesName()
+          const content = $this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
+          console.log($this.headAttrs)
+          // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
+          const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
+          // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
+          const text = `【${nick}】发布配置：${routes}${at}\r\n`+content
+          sendLark(text,"WarningJustForTest",$this.env).then(response => {
+            if (response.RetCode === 0) {
+              console.log('wanring success')
+            }
+          })
         }
       })
     },
     getRoutesName() {
-      let str = `【${this.$store.getters.name}】发布配置：`
+      let str = ''
       for (let i=0; i<this.$route.matched.length; i++) {
         if (i > 0) {
           str += '->'
         }
         str += this.$route.matched[i].meta.title
       }
-      str += "\r\n"
-      // str += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
-      str += '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
-      // str += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
+      str += '\r\n'
       return str
     },
     getLarkPage(){
