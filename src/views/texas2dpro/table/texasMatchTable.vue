@@ -1214,7 +1214,9 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if ((objs.list[i].item_type !== 3 &&  objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+
+
+              if ((objs.list[i].item_type !== 3 && objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || (objs.list[i].item_type === 3 && objs.list[i].expire_time < timestamp)) {
                 continue
               }
               this.matchPropsCfgs.push({
@@ -1316,7 +1318,7 @@ export default {
         }
         var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
         console.log(postData.RaceEndDate, expire_time)
-        if (expire_time < endTime) {
+        if (expire_time < endTime && this.edit.item.SignUpExtra.propsType !== 4) {
           return true
         }
       }
@@ -1326,7 +1328,7 @@ export default {
           return true
         }
         expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
-        if (expire_time < endTime) {
+        if (expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
           return true
         }
       }

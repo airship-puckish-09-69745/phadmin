@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :makeContent="makeContent" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -1134,7 +1134,56 @@ export default {
       }
       return true
     },
-
+    makeContent(key, addData, delData, editData) {
+      // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      let change = new Set()
+      // 新增取newVal
+      if (addData) {
+        // console.log("addData",addData)
+        for (var i=0; i<addData.length; i++) {
+          for (let ele of addData[i]) {
+            if (ele.key == "matchCfgId") {
+              change.add(ele.newVal)
+              console.log("add",ele.newVal)
+            }
+          }
+        }
+      }
+      if (delData) {
+        // console.log("delData",delData)
+        for (var i=0; i<delData.length; i++) {
+          for (let ele of delData[i]) {
+            if (ele.key == "matchCfgId") {
+              change.add(ele.oldVal)
+              console.log("del",ele.oldVal)
+            }
+          }
+        }
+      }
+      if (editData) {
+      // console.log("editData",editData)
+        for (const edit of editData) {
+          change.add(edit.Head.matchCfgId)
+          console.log(edit.Head.matchCfgId)
+        }
+      }
+      if (change.size == 0) {
+        console.log("no change return")
+        return
+      }
+    
+      let str = "" 
+      for (let i=0; i<this.tableData.length; i++) {
+        const row = this.tableData[i]
+        if (change.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          str += `appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}\r\n`
+        }
+      }
+      return str
+    },
     selectShowGuieds() {
       this.guideShowCfgs = []
       this.guideShowCfgs.push(
@@ -1914,7 +1963,6 @@ export default {
                   'label': objs.list[i].item_name,
                   'value': objs.list[i].id,
                 })
-
               }
             }
           }
@@ -2372,7 +2420,34 @@ export default {
         }
       }
       return false
-    }
+    },
+    getSignUpName(signUpType,signUpNum,sign_extra) {
+      // console.log(signUpType,signUpNum,sign_extra)
+      for (const i in this.signUpTypeCfgs) {
+        if (this.signUpTypeCfgs[i].value === signUpType) {
+          if (signUpType === 0) {// 付费报名
+            return this.signUpTypeCfgs[i].label + this.getCostName(signUpNum)
+          } else if (signUpType === 1) {// 免费报名
+            return this.signUpTypeCfgs[i].label
+          } else if (signUpType === 2) {// 纯门票
+            return this.signUpTypeCfgs[i].label + this.getTicketName(sign_extra)
+          } else if (signUpType === 3) {// 金币or门票
+            return this.signUpTypeCfgs[i].label + this.getCostName(signUpNum) + this.getTicketName(sign_extra)
+          }
+        }
+      }
+      return "未知报名方式"
+    },
+    getCostName(signUpNum) {
+      if (signUpNum > 0) {
+        return `，₱${signUpNum}`
+      }
+      return ""
+    },
+    getTicketName(sign_extra) {
+      const data = JSON.parse(sign_extra)
+      return " " + data.propName + "x" + data.propNum
+    },
   },
 }
 </script>
