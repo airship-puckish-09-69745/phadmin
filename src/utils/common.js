@@ -372,7 +372,7 @@ export function Pagination(_totalCount, _pageNum) {
 }
 
 // sortOrder 1 ASC 2 DESC
-export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder) {
+export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOrder, idKey) {
   this.TotalData = _totalData
   this.ShowData = this.TotalData.length > 0 ? this.TotalData.slice(0) : [] // 数组深拷贝
   this.FilterMap = filterMap
@@ -381,6 +381,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   this.Page = new Pagination(this.TotalData.length, pageNum)
   this.SortName = sortName
   this.SortOrder = sortOrder || -1
+  this.IDKey = idKey || 'ID'
 
   this.GetShowValue = function(typeName, key) {
     return $this.FilterMap[typeName][key]
@@ -509,7 +510,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   this.UpdateData = function(ob) {
     for (var i = 0; i < $this.TotalData.length; i++) {
       var data = $this.TotalData[i]
-      if (data.ID === ob.ID) {
+      if (data[this.IDKey] === ob.ID) {
         Object.assign($this.TotalData[i], ob)
         break
       }
@@ -536,7 +537,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
   this.GetDataByID = function(ID) {
     for (let i = 0; i < $this.TotalData.length; i++) {
       const data = $this.TotalData[i]
-      if (data.ID === ID) {
+      if (data[this.IDKey] === ID) {
         return data
       }
     }
@@ -545,7 +546,7 @@ export function ClientTableData(_totalData, pageNum, filterMap, sortName, sortOr
 
   this.DelData = function(id) {
     for (var i = 0; i < $this.TotalData.length; i++) {
-      if ($this.TotalData[i].ID === id) {
+      if ($this.TotalData[i][this.IDKey] === id) {
         $this.TotalData.splice(i, 1)
         break
       }
