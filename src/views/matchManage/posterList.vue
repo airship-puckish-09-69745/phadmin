@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :make-content="makeContent" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :attr-names="AttrNames" />
     </el-row>
     <el-row>
 
@@ -305,7 +305,6 @@ export default {
       gameCfgs: [
         { 'value': 2031, 'label': 'tongits' }
       ],
-      larkStr: '',
       appidInfoCfgs: [
         { 'value': 1000002, 'label': 'dayusenlin' },
         { 'value': 1000003, 'label': 'testaccount' },
@@ -817,10 +816,7 @@ export default {
         }
       }
       // console.log(str,JSON.stringify(preVal),JSON.stringify(proVal))
-      this.larkStr = str
-    },
-    makeContent(key, addData, delData, editData) {
-      return this.larkStr
+      return str
     },
     configCheck() {
       if (this.editForm.data.title == '') {

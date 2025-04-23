@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :make-content="makeContent" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" :attr-names="AttrNames" />
     </el-row>
     <el-row>
 
@@ -806,10 +806,7 @@ export default {
         }
       }
       // console.log(str)
-      this.larkStr = str
-    },
-    makeContent(key, addData, delData, editData) {
-      return this.larkStr
+      return str
     },
    configCheck() {
      if (this.editForm.onceTime === '') {

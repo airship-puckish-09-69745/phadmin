@@ -1,7 +1,7 @@
 <template>
   <el-col class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" :on-compare="onCompare" compare-type="Object" />
     </el-row>
 
     <el-tabs type="border-card">
@@ -12,6 +12,7 @@
             border
             style="width: 100%"
             :cell-style="libShow.DefaultTableCell"
+            height="1000"
           >
             <el-table-column
               prop="AppId"
@@ -187,7 +188,45 @@ export default {
           return this.appIdInfoCons[i].label
         }
       }
-    }
+    },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data).MapItems
+      const proVal=JSON.parse(pro.Data).MapItems
+      console.log(JSON.stringify(preVal))
+      console.log(JSON.stringify(proVal))
+      // 编辑
+      let str = ''
+      for (const i in preVal) {
+        for (const j in proVal) {
+          const preItem = preVal[i]
+          const proItem = proVal[j]
+          if (preItem.AppId === proItem.AppId) {
+            if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              str += `\r\n修改：【${proItem.AppId}】，${proItem.IsOpen?'开':'关'}`
+              str += `\r\n图片：${proItem.ImageLink}`
+            }
+          }
+        }
+      }
+      // 新增
+      for (const i in preVal) {
+        const preItem = preVal[i]
+        if (!proVal.some(item=>item.AppId === preItem.AppId)) {
+          str += `\r\n增加：【${proItem.AppId}】，${proItem.IsOpen?'开':'关'}`
+          str += `\r\n图片：${proItem.ImageLink}`
+        }
+      }
+      // 删除
+      for (const i in proVal) {
+        const proItem = proVal[i]
+        if (!preVal.some(item=>item.AppId === proItem.AppId)) {
+          str += `\r\n删除：【${proItem.AppId}】，${proItem.IsOpen?'开':'关'}`
+          str += `\r\n图片：${proItem.ImageLink}`
+        }
+      }
+      console.log(str)
+      return str
+    },
   }
 }
 </script>

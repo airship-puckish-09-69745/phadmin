@@ -303,6 +303,7 @@ export default {
       larkConfig: {},
       larkPages: [],
       lark: false,
+      larkContent: '',
       diffFormatter: new Diff.DiffFormatter(new Diff.Diff()),
       isTestBtn: true, // 展示发布到测试环境
       isProBtn: true, // 展示发布到线上
@@ -446,7 +447,7 @@ export default {
         if (response.RetCode === 0) {
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
-          const content = $this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
+          const content = $this.larkContent.length>0?$this.larkContent.length:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
           // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
           const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
           // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
@@ -715,7 +716,7 @@ export default {
             proVal = proVal || []
             $this.compare(preVal, proVal)
         }
-        $this.onCompare(preVal,proVal)
+        $this.larkContent=$this.onCompare(preVal,proVal)
       })
     },
     compareOBJValue(oldVal, newVal, sKey) {
