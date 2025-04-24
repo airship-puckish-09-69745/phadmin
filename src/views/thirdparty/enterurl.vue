@@ -316,6 +316,22 @@ export default {
         {
           name: '比赛场景',
           val: 'tournament'
+        },
+        {
+          name: '进入免费赛列表',
+          val: 'tournament_-1'
+        },
+        {
+          name: '进入付费赛列表',
+          val: 'tournament_-2'
+        },
+        {
+          name: 'banner进比赛列表GTCC分类',
+          val: 'tournament_-3'
+        },
+        {
+          name: '非banner进比赛列表GTCC分类',
+          val: 'tournament_-4'
         }
       ],
       appInfo: [],
