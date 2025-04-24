@@ -202,8 +202,8 @@ export default {
           const proItem = proVal[j]
           if (preItem.AppId === proItem.AppId) {
             if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
-              str += `\r\n修改：【${proItem.AppId}】，${proItem.IsOpen?'开':'关'}`
-              str += `\r\n图片：${proItem.ImageLink}`
+              str += `\r\n修改：【${preItem.AppId}】，${preItem.IsOpen?'开':'关'}`
+              str += `\r\n图片：${preItem.ImageLink}`
             }
           }
         }

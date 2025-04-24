@@ -1,7 +1,7 @@
 <template>
   <el-col class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" :on-compare="onCompare" compare-type="Object" />
     </el-row>
 
     <el-row>
@@ -304,6 +304,44 @@ export default {
         }
       })
     },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data).matchShareData
+      const proVal=JSON.parse(pro.Data).matchShareData
+      console.log(JSON.stringify(preVal))
+      console.log(JSON.stringify(proVal))
+      // 编辑
+      let str = ''
+      for (const i in preVal) {
+        for (const j in proVal) {
+          const preItem = preVal[i]
+          const proItem = proVal[j]
+          if (preItem.id === proItem.id) {
+            if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              str += `\r\n修改：${this.showGameName(preItem.id)}`
+              str += `\r\n图片：${preItem.share_link}`
+            }
+          }
+        }
+      }
+      // 新增
+      for (const i in preVal) {
+        const preItem = preVal[i]
+        if (!proVal.some(item=>item.id === preItem.id)) {
+          str += `\r\n增加：${this.showGameName(preItem.id)}`
+          str += `\r\n图片：${preItem.share_link}`
+        }
+      }
+      // 删除
+      for (const i in proVal) {
+        const proItem = proVal[i]
+        if (!preVal.some(item=>item.id === proItem.id)) {
+          str += `\r\n删除：${this.showGameName(proItem.id)}`
+          str += `\r\n图片：${proItem.share_link}`
+        }
+      }
+      console.log(str)
+      return str
+    }
   }
 }
 </script>

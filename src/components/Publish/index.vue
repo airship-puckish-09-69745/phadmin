@@ -447,7 +447,7 @@ export default {
         if (response.RetCode === 0) {
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
-          const content = $this.larkContent.length>0?$this.larkContent.length:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
+          const content = $this.larkContent.length>0?$this.larkContent:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
           // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
           const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
           // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
