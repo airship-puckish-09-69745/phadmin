@@ -255,6 +255,12 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsJokerAIListConfig'),
                     name: 'tongitsJokerAIList',
                     meta: { title: 'AI-List ◐' }
+                  },
+                  {
+                    path: 'tongitsUser',
+                    component: () => import('@/views/config/tableConfig/tongitsjackPotControl'),
+                    name: 'tongitsUser',
+                    meta: { title: '控制配置 ◐' }
                   }
                 ]
               },
