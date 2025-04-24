@@ -6,7 +6,7 @@
       <span v-if="showProBtn">{{ processInfo }}</span>
     </el-col>
     <el-col :offset="6" :span="1">
-      <el-checkbox v-model="lark" @change="setLarkPage">lark</el-checkbox>
+      <el-checkbox v-model="lark" @change="setLarkPage" v-if="this.env=='test'">lark</el-checkbox>
     </el-col>
     <el-col v-if="isPublish" :span="24">
       <el-col :span="12" :offset="4">
