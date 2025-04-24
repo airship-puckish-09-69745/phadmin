@@ -335,7 +335,44 @@
                     label="道具类型"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.propType" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-select v-model.number="scope.row.propType" placeholder="请选择道具类型" @change="updatePropOptions(scope.row.propType, scope.$index)">
+                        <el-option
+                          v-for="item in propTypeOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="propId"
+                    label="道具名称"
+                  >
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.propId" placeholder="请选择道具">
+                        <el-option
+                          v-for="item in propOptions[scope.$index]"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    prop="propExpireDays"
+                    label="可用时间"
+                  >
+                    <template slot-scope="scope">
+                      <el-select v-model.number="scope.row.propExpireDays" v-if="scope.row.propType === 2" placeholder="请选择可用时间">
+                        <el-option
+                          v-for="item in propDayTypeOptions"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        />
+                      </el-select>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -427,6 +464,7 @@ function newItem() {
   return {
     id: 0,
     name: '',
+    activityId: 12,
     startTime: Date.parse(new Date().toString()),
     endTime: Date.parse(new Date().toString()),
     showEndTime: Date.parse(new Date().toString()),
@@ -460,6 +498,7 @@ function newItem() {
         propType: 0,
         propNum: 1,
         propNumMax: 1,
+        propExpireDays: 0,
         taskValueRequired: 1,
       }
     ],
@@ -604,6 +643,28 @@ export default {
 
       // 已发奖金额
       sentRewardAmount : 0,
+
+      // 道具数据列表
+      propList: [],
+      // 道具有效时长列表
+      propTimeList: [],
+      // 道具选项列表
+      propOptions: {},
+      // 道具类型选项列表
+      propTypeOptions: [
+        { 'value': 1, 'label': 'Tongits门票', disabled: false },
+        { 'value': 2, 'label': '头像框', disabled: false },
+        { 'value': 3, 'label': '德州门票', disabled: false },
+        { 'value': 4, 'label': '德州头像框', disabled: false }
+      ],
+      // 道具有效时长选项列表
+      propDayTypeOptions: [
+        { 'value': 1, 'label': '1天', disabled: false },
+        { 'value': 7, 'label': '7天', disabled: false },
+        { 'value': 30, 'label': '30天', disabled: false },
+        { 'value': 365, 'label': '365天', disabled: false },
+        { 'value': 0, 'label': '永久', disabled: false }
+      ],
     }
   },
 
@@ -613,6 +674,7 @@ export default {
   mounted() {
     this.getList()
     this.getGameAll()
+    this.getPropList()
   },
   computed: {
     eggReward: {
@@ -715,6 +777,8 @@ export default {
       }
       this.edit.item.rewardConfig.totalReward *= 1000
       this.edit.item.rewardConfig.rewardRanges.forEach(item => {
+        item.minScore *= 1000
+        item.maxScore *= 1000
         item.minCoefficient *= 100
         item.maxCoefficient *= 100
       })
@@ -722,6 +786,7 @@ export default {
       const data = {}
       data.id = this.edit.item.id
       data.name = this.edit.item.name
+      data.activityId = this.edit.item.activityId
       data.startTime = this.edit.item.startTime / 1000
       data.endTime = this.edit.item.endTime / 1000
       data.showEndTime = this.edit.item.showEndTime / 1000
@@ -797,6 +862,70 @@ export default {
         }
       })
     },
+    //************************ 道具配置 ************************
+    getPropList() {
+      request({
+        url: '/propsconfig/props/config/list',
+        method: 'get',
+        data: {
+          Env: this.env,
+          PageNum: 1,
+          PageSize: 1000
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            //this.propTotal = objs.total
+            this.propList = []
+            this.propList = objs.list
+          }
+        } else {
+          //this.propTotal = objs.total
+          this.propList = []
+        }
+      })
+    },
+    updatePropOptions(propType, index) {
+      this.propOptions[index] = []
+      let currTime = new Date().getTime()
+      for (let i = 0; i < this.propList.length; i++) {
+        if (this.propList[i].item_type === 4) {
+          console.log(this.propList[i])
+        }
+        if (this.propList[i].item_type === propType && this.propList[i].status === 1) {
+          if (this.propList[i].item_type !== 2 && this.propList[i].item_type !== 4) {
+            let expTime = this.propList[i].expire_time * 1000
+            if (currTime < expTime) {
+              let dataList = { 'value': this.propList[i].id, 'label': this.propList[i].item_name, disabled: false }
+              this.propOptions[index].push(dataList)
+            }
+
+          } else {
+            let dList = { 'value': this.propList[i].id, 'label': this.propList[i].item_name, disabled: false }
+            this.propOptions[index].push(dList)
+          }
+        }
+      }
+    },
+    showPropTimeOptions(itemId) {
+      this.propTimeList = []
+      for (let i = 0; i < this.propList.length; i++) {
+        if (this.propList[i].id === itemId) {
+          const time_type = JSON.parse(this.propList[i].time_type)
+          for (let j = 0; j < time_type.length; j++) {
+            let msg = time_type[j] + '天'
+            if (time_type[j] === 0) {
+              msg = '永久'
+            }
+            let dataList = { 'value': time_type[j], 'label': msg, disabled: false }
+            this.propTimeList.push(dataList)
+          }
+          break
+        }
+      }
+    },
+    //************************ 道具配置 ************************
     //************************ 领奖配置 ************************
     addRewardRange() {
       const item = {
@@ -815,8 +944,8 @@ export default {
         propId: 0,
         propType: 0,
         propNum: 0,
-        PropNumMax: 0,
-        TaskValueRequired: 1
+        propNumMax: 0,
+        taskValueRequired: 1
       }
       this.edit.item.progressPrizes.push(item)
     },
@@ -867,8 +996,15 @@ export default {
 
           for (let i = 0; i < item.rewardConfig.rewardRanges.length; i++) {
             const rewardRange = item.rewardConfig.rewardRanges[i]
+            rewardRange.minScore = rewardRange.minScore / 1000
+            rewardRange.maxScore = rewardRange.maxScore / 1000
             rewardRange.minCoefficient = rewardRange.minCoefficient / 100
             rewardRange.maxCoefficient = rewardRange.maxCoefficient / 100
+          }
+
+          for (let i = 0; i < item.progressPrizes.length; i++) {
+            const progressPrize = item.progressPrizes[i]
+            this.updatePropOptions(progressPrize.propType, i)
           }
 
           this.edit.item = item
