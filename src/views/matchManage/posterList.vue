@@ -780,7 +780,7 @@ export default {
         str += proVal.switchData.join('/')
       }
       // 编辑
-      let edit = false
+      let has = false
       for (const i in preVal.tableData) {
         for (const j in proVal.tableData) {
           const preItem = preVal.tableData[i]
