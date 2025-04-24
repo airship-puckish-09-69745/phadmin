@@ -999,7 +999,8 @@ export default {
         { label: 'Poker乐园-[8]', value: 8 },
         { label: 'Banargay-[9]', value: 9 },
         { label: '复活节活动-[10]', value: 10 },
-        { label: '新手任务活动-[11]', value: 11 }
+        { label: '新手任务活动-[11]', value: 11 },
+        { label: '空投活动-[12]', value: 12 },
       ],
       gameSelect: [],
       activitySelect: [

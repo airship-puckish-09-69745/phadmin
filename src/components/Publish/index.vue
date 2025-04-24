@@ -872,9 +872,20 @@ export default {
     },
     getHeadObject(item) { // 返回用于标识记录的字段内容
       const ret = {}
-      console.log(item)
+      console.log('getHeadObject 1', item)
       for (const i in this.headAttrs) {
-        ret[this.headAttrs[i]] = item[this.headAttrs[i]]
+        const key = this.headAttrs[i]
+        if (key.indexOf('.') > -1) {
+          const keys = key.split('.')
+          let val = item
+          for (const k in keys) {
+            val = val[keys[k]]
+            console.log('getHeadObject 2', keys[k], val)
+          }
+          ret[key] = val
+        } else {
+          ret[key] = item[key]
+        }
       }
       return ret
     },
