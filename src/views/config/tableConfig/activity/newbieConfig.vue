@@ -303,7 +303,7 @@
             <el-row>
               <el-col :span="11">
                 <el-form-item label="uid白名单：" prop="item.WhitelistCfg.UidList">
-                  <el-input v-model.number="item.CurId" placeholder="Uid"></el-input>
+                  <el-input v-model="item.CurId" placeholder="Uid"></el-input>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="addWhite">添加</el-button>
@@ -456,7 +456,7 @@ export default {
           SiteIdList: [],
           UidList: []
         },
-        CurId: 0,
+        CurId: '',
         taskCfgData: [
           {Id: 1, GameType: [21, 22], MatchNum: 1, RewardNum: 1, RatioNum: 10000, TaskType: 1},
           {Id: 2, GameType: [21, 22], MatchNum: 10, RewardNum: 5, RatioNum: 50000, TaskType: 1},
@@ -504,7 +504,6 @@ export default {
         gamesSortDialogVisible: false,
         cfgType: 0
       },
-
       treeData: [{
         id: 1,
         label: '一级 1',
@@ -722,14 +721,36 @@ export default {
       return null
     },
     addWhite() {
-      for (let i = 0; i < this.item.WhitelistCfg.UidList.length; i++) {
-        if (this.item.WhitelistCfg.UidList[i].uid === this.item.CurId) {
-          return
+      if (this.item.CurId === '' || this.item.CurId === null) {
+        return
+      }
+      let numbers = this.item.CurId.split(',').filter(num => !isNaN(num))
+      let insertList = []
+      for (let i = 0; i < numbers.length; i++) {
+        if (isNaN(numbers[i])) {
+          continue
+        }
+        let num = parseInt(numbers[i], 10)
+        if (isNaN(num)) {
+          continue
+        }
+        var bExit = false
+        for (let j = 0; j < this.item.WhitelistCfg.UidList.length; j++) {
+          if (this.item.WhitelistCfg.UidList[j].uid === num) {
+            bExit = true
+            break
+          }
+        }
+
+        if (!bExit) {
+          insertList.push(num)
         }
       }
-      this.item.WhitelistCfg.UidList.push({
-        "uid" : this.item.CurId
-      })
+      for (let i = 0; i < insertList.length; i++) {
+        this.item.WhitelistCfg.UidList.push({
+          "uid" : insertList[i]
+        })
+      }
       console.log(this.item.WhitelistCfg.UidList)
     },
     delRow(row) {
