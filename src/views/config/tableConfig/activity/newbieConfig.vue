@@ -301,6 +301,11 @@
         <el-tab-pane label="白名单配置">
           <el-form ref="item" label-width="220px">
             <el-row>
+              <el-col>
+                <el-form-item label="白名单开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-switch v-model="item.IsWhite" :active-value="true" :inactive-value="false" />
+                </el-form-item>
+              </el-col>
               <el-col :span="11">
                 <el-form-item label="uid白名单：" prop="item.WhitelistCfg.UidList">
                   <el-input v-model="item.CurId" placeholder="Uid"></el-input>
@@ -435,6 +440,7 @@ export default {
       },
       total: 0,
       tableData: [],
+      IsUpdate: false,
       item: {
         IsOpen: true,
         StartTime: 0,
@@ -457,6 +463,7 @@ export default {
           UidList: []
         },
         CurId: '',
+        IsWhite: true,
         taskCfgData: [
           {Id: 1, GameType: [21, 22], MatchNum: 1, RewardNum: 1, RatioNum: 10000, TaskType: 1},
           {Id: 2, GameType: [21, 22], MatchNum: 10, RewardNum: 5, RatioNum: 50000, TaskType: 1},
@@ -853,6 +860,8 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const old = JSON.parse(response.Data.Data)
+            $this.item.IsOpen = old.IsOpen
+            $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
             $this.item.LimitStartTime = old.LimitStartTime * 1000
@@ -887,6 +896,10 @@ export default {
     },
     updateData() {
       // 设置修改后数据
+      if (this.IsUpdate) {
+        return
+      }
+      this.IsUpdate = true
       this.configCheck()
       var startTime = Math.floor(this.item.StartTime / 1000)
       var endTime = Math.floor(this.item.EndTime / 1000)
@@ -907,7 +920,8 @@ export default {
         taskCfgData: taskCfgData,
         pokerCfgData: pokerCfgData,
         GameIdCfg: this.item.GameIdCfg,
-        WhiteList: whiteList
+        WhiteList: whiteList,
+        IsWhite: this.item.IsWhite
       }
       this.form.Data = JSON.stringify(tableData)
       request({
@@ -926,6 +940,9 @@ export default {
           return
         }
       })
+      setTimeout(() => {
+        this.IsUpdate = false
+      }, 1000)
     },
     updateGamesSorted() {
       this.GamesSorted = []
