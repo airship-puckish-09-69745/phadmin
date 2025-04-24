@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" />
     </el-row>
     <!--公共配置-->
     <el-row :gutter="10" style="margin-top: 30px">
@@ -81,6 +81,12 @@ export default {
     },
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
+    },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data)
+      // console.log(str,JSON.stringify(preVal),JSON.stringify(proVal))
+      const str = `活动桌子总开关：【${preVal.ActivityTableSwitch ? '开' : '关'}】`
+      return str
     },
     getData() {
       request({
