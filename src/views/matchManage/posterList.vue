@@ -787,6 +787,7 @@ export default {
           const proItem = proVal.tableData[j]
           if (preItem.id === proItem.id) {
             if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              has && (str += "\r\n---");has=true
               str += `\r\n修改：【${preItem.app_id}】，${preItem.title}，${this.getJumpName(preItem.jump_id)}`
               str += `\r\n上架：${new Date(preItem.start_time*1000).toLocaleString()} - ${new Date(preItem.end_time*1000).toLocaleString()}`
               str += `\r\n图片：${preItem.image_path}`
@@ -799,6 +800,7 @@ export default {
       for (const i in preVal.tableData) {
         const preItem = preVal.tableData[i]
         if (!proVal.tableData.some(item=>item.id === preItem.id)) {
+          has && (str += "\r\n---");has=true
           str += `\r\n增加：【${preItem.app_id}】，${preItem.title}，${this.getJumpName(preItem.jump_id)}`
           str += `\r\n上架：${new Date(preItem.start_time*1000).toLocaleString()} - ${new Date(preItem.end_time*1000).toLocaleString()}`
           str += `\r\n图片：${preItem.image_path}`
@@ -809,6 +811,7 @@ export default {
       for (const i in proVal.tableData) {
         const proItem = proVal.tableData[i]
         if (!preVal.tableData.some(item=>item.id === proItem.id)) {
+          has && (str += "\r\n---");has=true
           str += `\r\n删除：【${proItem.app_id}】，${proItem.title}，${this.getJumpName(proItem.jump_id)}`
           str += `\r\n上架：${new Date(proItem.start_time*1000).toLocaleString()} - ${new Date(proItem.end_time*1000).toLocaleString()}`
           str += `\r\n图片：${proItem.image_path}`

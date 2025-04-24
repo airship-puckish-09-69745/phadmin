@@ -1137,13 +1137,15 @@ export default {
     makeContent(key, addData, delData, editData) {
       // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       let change = new Set()
+      let add = new Set()
+      let del = new Set()
       // 新增取newVal
       if (addData) {
         // console.log("addData",addData)
         for (var i=0; i<addData.length; i++) {
           for (let ele of addData[i]) {
             if (ele.key == "matchCfgId") {
-              change.add(ele.newVal)
+              add.add(ele.newVal)
               console.log("add",ele.newVal)
             }
           }
@@ -1154,7 +1156,7 @@ export default {
         for (var i=0; i<delData.length; i++) {
           for (let ele of delData[i]) {
             if (ele.key == "matchCfgId") {
-              change.add(ele.oldVal)
+              del.add(ele.oldVal)
               console.log("del",ele.oldVal)
             }
           }
@@ -1167,19 +1169,35 @@ export default {
           console.log(edit.Head.matchCfgId)
         }
       }
-      if (change.size == 0) {
+      if (change.size + del.size + add.size == 0) {
         console.log("no change return")
         return
       }
     
       let str = "" 
+      let has = false
       for (let i=0; i<this.tableData.length; i++) {
         const row = this.tableData[i]
         if (change.has(row.id)) {
           // console.log(JSON.stringify(row))
-          str += `appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          has && (str += "\r\n---");has=true
+          str += `\r\n🔜修改： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
-          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}\r\n`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+        }
+        if (del.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---\r\n");has=true
+          str += `\r\n🔜下架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+        }
+        if (add.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---\r\n");has=true
+          str += `\r\n🔜上架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
       }
       return str

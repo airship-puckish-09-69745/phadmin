@@ -196,12 +196,14 @@ export default {
       console.log(JSON.stringify(proVal))
       // 编辑
       let str = ''
+      let has = false
       for (const i in preVal) {
         for (const j in proVal) {
           const preItem = preVal[i]
           const proItem = proVal[j]
           if (preItem.AppId === proItem.AppId) {
             if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              has && (str += "\r\n---");has=true
               str += `\r\n修改：【${preItem.AppId}】，${preItem.IsOpen?'开':'关'}`
               str += `\r\n图片：${preItem.ImageLink}`
             }
@@ -212,6 +214,7 @@ export default {
       for (const i in preVal) {
         const preItem = preVal[i]
         if (!proVal.some(item=>item.AppId === preItem.AppId)) {
+          has && (str += "\r\n---");has=true
           str += `\r\n增加：【${proItem.AppId}】，${proItem.IsOpen?'开':'关'}`
           str += `\r\n图片：${proItem.ImageLink}`
         }
@@ -220,6 +223,7 @@ export default {
       for (const i in proVal) {
         const proItem = proVal[i]
         if (!preVal.some(item=>item.AppId === proItem.AppId)) {
+          has && (str += "\r\n---");has=true
           str += `\r\n删除：【${proItem.AppId}】，${proItem.IsOpen?'开':'关'}`
           str += `\r\n图片：${proItem.ImageLink}`
         }

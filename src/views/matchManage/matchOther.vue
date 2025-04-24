@@ -317,6 +317,7 @@ export default {
           const proItem = proVal[j]
           if (preItem.id === proItem.id) {
             if (JSON.stringify(preItem) !== JSON.stringify(proItem)) {
+              has && (str += "\r\n---");has=true
               str += `\r\n修改：${this.showGameName(preItem.id)}`
               str += `\r\n图片：${preItem.share_link}`
             }
@@ -327,6 +328,7 @@ export default {
       for (const i in preVal) {
         const preItem = preVal[i]
         if (!proVal.some(item=>item.id === preItem.id)) {
+          has && (str += "\r\n---");has=true
           str += `\r\n增加：${this.showGameName(preItem.id)}`
           str += `\r\n图片：${preItem.share_link}`
         }
@@ -335,6 +337,7 @@ export default {
       for (const i in proVal) {
         const proItem = proVal[i]
         if (!preVal.some(item=>item.id === proItem.id)) {
+          has && (str += "\r\n---");has=true
           str += `\r\n删除：${this.showGameName(proItem.id)}`
           str += `\r\n图片：${proItem.share_link}`
         }
