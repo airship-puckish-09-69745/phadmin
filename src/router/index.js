@@ -1575,6 +1575,12 @@ export const asyncRoutes = [
       },
       */
       {
+        path: 'activityCommonConfig',
+        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
+        name: 'activityCommonConfig',
+        meta: { title: '活动公共配置', noCache: true }
+      },
+      {
         path: 'pointRaceConfig',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
@@ -1727,12 +1733,6 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'activityCommonConfig',
-        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
-        name: 'activityCommonConfig',
-        meta: { title: '活动公共配置', noCache: true }
-      },
-      {
         path: 'newbieConfig',
         component: () => import('@/views/empty'),
         name: 'newbieConfig',
@@ -1743,6 +1743,20 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/activity/newbieConfig'),
             name: 'newbieConfig',
             meta: { title: '新手任务活动配置', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'airdropConfig',
+        component: () => import('@/views/empty'),
+        name: 'airdropConfig',
+        meta: { title: '空投活动配置', noCache: true },
+        children: [
+          {
+            path: 'airdropConfig',
+            component: () => import('@/views/config/tableConfig/activity/airdropConfig'),
+            name: 'airdropConfig',
+            meta: { title: '空投活动配置', noCache: true }
           }
         ]
       }
