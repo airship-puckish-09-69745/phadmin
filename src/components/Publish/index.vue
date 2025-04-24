@@ -458,6 +458,8 @@ export default {
             }
           })
         }
+      }).catch((e)=>{
+        console.log('sendLark failed',e)
       })
     },
     getRoutesName() {
@@ -517,8 +519,10 @@ export default {
         if (response.RetCode === 0) {
           add?this.$message.success(`添加通知成功!`):this.$message.success(`取消通知成功!`)
         } else {
-          this.$message.error('设置失败')
+          this.$message.error('lark设置失败')
         }
+      }).catch(() => {
+        console.log('lark设置失败')
       })
     },
     publishBtn() {
@@ -716,7 +720,11 @@ export default {
             proVal = proVal || []
             $this.compare(preVal, proVal)
         }
-        $this.larkContent=$this.onCompare(preVal,proVal)
+        try {
+          $this.larkContent=$this.onCompare(preVal,proVal)
+        } catch (e) {
+          console.log('onCompare err:', e)
+        }
       })
     },
     compareOBJValue(oldVal, newVal, sKey) {
