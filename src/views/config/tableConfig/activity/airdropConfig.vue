@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="id" key-id="AirdropConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['id']" />
+      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
