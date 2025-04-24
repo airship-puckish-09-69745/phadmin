@@ -451,7 +451,7 @@ export default {
           // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
           const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
           // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
-          const text = `【${nick}】发布配置：${routes}${at}\r\n`+content
+          const text = `【${nick}】发布配置：${routes} ⤵️\r\n${at}\r\n`+content
           sendLark(text,"WarningJustForTest",$this.env).then(response => {
             if (response.RetCode === 0) {
               console.log('wanring success')
@@ -470,7 +470,6 @@ export default {
         }
         str += this.$route.matched[i].meta.title
       }
-      str += '\r\n'
       return str
     },
     getLarkPage(){
@@ -489,6 +488,8 @@ export default {
             this.lark = this.larkPages.indexOf(this.$route.name) > -1
           }
         }
+      }).catch((e)=>{
+        console.log("getLarkPage err",e)
       })
     },
     setLarkPage(add) {
