@@ -267,7 +267,15 @@ export default {
         } else if (actionName == '发牌') {
           idx = 0
           if (uid < 1000000) {
-            this.UidMap[uid] = val.players[uidIndex].uid
+            for (let idx = 0; idx < 3; idx ++) {
+              if (val.players[idx].uid == uid) {
+                this.UidMap[uid] = val.players[idx].uid
+                break
+              }
+            }
+            if (this.UidMap.size <= uidIndex) {
+              this.UidMap[uid] = val.players[uidIndex].uid
+            }
           }
           uidIndex++
         }

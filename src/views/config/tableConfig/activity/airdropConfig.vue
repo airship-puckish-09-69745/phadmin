@@ -187,11 +187,11 @@
                   >
                   </el-tree>
                 </el-form-item>
-                <el-form-item label="给选中游戏排序：" :required="true">
+<!--                <el-form-item label="给选中游戏排序：" :required="true">
                   <el-button size="mini" type="primary" @click="showGamesSortDialog()">
                     排序
                   </el-button>
-                </el-form-item>
+                </el-form-item>-->
                 <el-form-item label="任务类型：" :required="true">
                   <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择">
                     <el-option
@@ -299,7 +299,7 @@
                       <el-input v-model.number="scope.row.maxCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" column-key="op">
+                  <el-table-column label="操作" column-key="op" width="130">
                     <template slot-scope="scope">
                       <el-button size="mini" icon="el-icon-delete" @click="removeRewardRange(scope.$index)" />
                     </template>
@@ -309,7 +309,7 @@
             </el-row>
           </fieldset>
 
-          <fieldset style="margin-top: 10px">
+          <fieldset style="margin-top: 20px">
             <legend>
               进度奖励配置
             </legend>
@@ -333,6 +333,7 @@
                   <el-table-column
                     prop="propType"
                     label="道具类型"
+                    width="200"
                   >
                     <template slot-scope="scope">
                       <el-select v-model.number="scope.row.propType" placeholder="请选择道具类型" @change="updatePropOptions(scope.row.propType, scope.$index)">
@@ -348,6 +349,7 @@
                   <el-table-column
                     prop="propId"
                     label="道具名称"
+                    width="200"
                   >
                     <template slot-scope="scope">
                       <el-select v-model.number="scope.row.propId" placeholder="请选择道具">
@@ -391,7 +393,7 @@
                       <el-input v-model.number="scope.row.propNumMax" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
-                  <el-table-column label="操作" column-key="op">
+                  <el-table-column label="操作" column-key="op" width="130">
                     <template slot-scope="scope">
                       <el-button size="mini" icon="el-icon-delete" @click="removeProgressPrize(scope.$index)" />
                     </template>
@@ -1119,27 +1121,15 @@ export default {
         return
       }
 
-      const taskTypeMap = {}
-
       // 将公共任务类型拷贝到 gameTaskTypes
       const gameTaskTypes = JSON.parse(JSON.stringify(this.commonGameTaskTypes))
 
-      // 遍历 this.taskTypeGameMap 获取游戏任务类型
-      for (let i = 0; i < gameIds.length; i++) {
-        const gameId = gameIds[i]
-        for (const taskType in this.taskTypeGameMap) {
-          const cfg = this.taskTypeGameMap[taskType]
-          for (let j = 0; j < cfg.gameIds.length; j++) {
-            if (cfg.gameIds[j] === gameId) {
-              taskTypeMap[taskType] = cfg.label
-              break
-            }
-          }
+      // 遍历 this.taskTypeGameMap 获取游戏共有的任务类型
+      for (const taskType in this.taskTypeGameMap) {
+        const cfg = this.taskTypeGameMap[taskType]
+        if (gameIds.every(gameId => cfg.gameIds.includes(gameId))) {
+          gameTaskTypes.push({ label: cfg.label, value: taskType})
         }
-      }
-
-      for (const taskType in taskTypeMap) {
-        gameTaskTypes.push({ label: taskTypeMap[taskType], value: taskType})
       }
 
       this.gameTaskTypes = gameTaskTypes
