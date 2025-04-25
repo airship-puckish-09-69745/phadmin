@@ -251,7 +251,7 @@ export default {
           for (const x in item) {
             if (item[x]['value'] === tmp['Items'][k]['Symbol']) {
               for (const n in tmp['Items'][k]['Number']) {
-                const key = 'reels' + (n + 1)
+                const key = 'reels' + (Number(n) + 1)
                 item[x][key] = tmp['Items'][k]['Number'][n]
               }
               break
