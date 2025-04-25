@@ -495,14 +495,14 @@ function newItem() {
       ]
     },
     progressPrizes: [
-      {
+      /*{
         propId: 0,
         propType: 0,
         propNum: 1,
         propNumMax: 1,
         propExpireDays: 0,
         taskValueRequired: 1,
-      }
+      }*/
     ],
     userTypes: [2],
   }
@@ -773,8 +773,27 @@ export default {
       })
     },
     getPostData() {
+      if (this.edit.item.name === '') {
+        Message.error('请填写活动名称')
+        return
+      }
+      for (let i = 0; i < this.edit.item.progressPrizes.length; i++) {
+        const item = this.edit.item.progressPrizes[i]
+        if (item.propType === 0 || item.propId === 0 || item.propNum === 0 || item.propNumMax === 0) {
+          Message.error('请完善进度奖励配置')
+          return
+        }
+      }
+      if (!this.edit.item.rewardConfig.totalReward) {
+        Message.error('请填写总奖励')
+        return
+      }
       if (this.edit.item.rewardConfig.rewardRanges.length === 0) {
         Message.error('请先添加领奖区间配置')
+        return
+      }
+      if (this.edit.item.taskConfig.taskType === 0 || this.edit.item.taskConfig.taskValueRequired === 0 || this.edit.item.taskConfig.taskText === '') {
+        Message.error('请完善任务配置')
         return
       }
       this.edit.item.rewardConfig.totalReward *= 1000
@@ -805,6 +824,10 @@ export default {
     },
     handleSave() {
       const data = this.getPostData()
+      console.log('handleSave', data)
+      if (data === null || data === undefined) {
+        return
+      }
       if (this.edit.isEdit) {
         // 设置修改后数据
         this.$refs.compare.SetNewVal(data)
