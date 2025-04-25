@@ -43,7 +43,7 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="不中奖下红色财字概率">
+          <el-form-item label="不中奖下红色财字权重">
             <el-input v-model="cfg.redCaiRateOnNotWinning" placeholder="用,号分割">
               <template slot="append">三个值用,连接.分别对应0,1,2个财字</template>
             </el-input>
