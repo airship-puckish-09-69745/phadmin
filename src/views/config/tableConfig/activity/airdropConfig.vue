@@ -288,7 +288,7 @@
                     label="系数区间开始"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.minCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model="scope.row.minCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -296,7 +296,7 @@
                     label="系数区间结束"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.maxCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
+                      <el-input v-model="scope.row.maxCoefficient" oninput=" if(value < 0 || value === '' || value == null){value = 0;} "/>
                     </template>
                   </el-table-column>
                   <el-table-column label="操作" column-key="op" width="130">
@@ -781,8 +781,8 @@ export default {
       this.edit.item.rewardConfig.rewardRanges.forEach(item => {
         item.minScore *= 1000
         item.maxScore *= 1000
-        item.minCoefficient *= 100
-        item.maxCoefficient *= 100
+        item.minCoefficient = parseInt(item.minCoefficient * 100)
+        item.maxCoefficient = parseInt(item.maxCoefficient * 100)
       })
 
       const data = {}
