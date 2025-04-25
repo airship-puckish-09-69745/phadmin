@@ -555,7 +555,10 @@ export default {
             const rawValue = addData[i].Rows[j].newVal
             // 使用正则移除所有HTML标签i
             const cleanValue = rawValue.replace(/<[^>]+>/g, '')
-            str += `\r\n${this.AttrNames[addData[i].Rows[j].key] || addData[i].Rows[j].key}:【${cleanValue}】`
+            const attrName = this.AttrNames[addData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
           }
         }
       }
@@ -570,7 +573,10 @@ export default {
             const rawValue = delData[i].Rows[j].newVal
             // 使用正则移除所有HTML标签i
             const cleanValue = rawValue.replace(/<[^>]+>/g, '')
-            str += `\r\n${this.AttrNames[delData[i].Rows[j].key] || delData[i].Rows[j].key}:【${cleanValue}】`
+            const attrName = this.AttrNames[delData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
           }
         }
       }
@@ -585,7 +591,10 @@ export default {
             const rawValue = editData[i].Rows[j].newVal
             // 使用正则移除所有HTML标签i
             const cleanValue = rawValue.replace(/<[^>]+>/g, '')
-            str += `\r\n${this.AttrNames[editData[i].Rows[j].key] || editData[i].Rows[j].key}:【${cleanValue}】`
+            const attrName = this.AttrNames[editData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
           }
         }
       }
