@@ -1410,14 +1410,14 @@ export default {
     getLobbyStr(lobbyVer,step){
       let lobby = ''
       if (this.env === 'test') {
-        lobby=`【已发布】开发版本【${lobbyVer}】`
+        lobby=`【已发布】F1客户端开发版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
       } else if (step === 3) {
-        lobby=`【待审核】线上版本【${lobbyVer}】`
+        lobby=`【待审核】F1客户端线上版本【${lobbyVer}】`
       } else if (step === 5) {
-        lobby=`【已发布】线上版本【${lobbyVer}】`
+        lobby=`【已发布】F1客户端线上版本【${lobbyVer}】`
         if (this.LobbyVersionTag === 1) {
           this.setEdit(false)
         }
