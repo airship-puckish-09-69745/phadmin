@@ -56,25 +56,25 @@
           </el-form-item>
 
           <el-form-item label="免费下每次绿色出现个数">
-            <el-input v-model="cfg.greenNumInFreeMode" placeholder="用,号分割">
+            <el-input v-model="cfg.greenNumInFreeMode" placeholder="用,号分割" :required="true">
               <template slot="append">用,号分割</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="免费下每次绿色出现个数权重">
-            <el-input v-model="cfg.greenWeightInFreeMode" placeholder="用,号分割">
+            <el-input v-model="cfg.greenWeightInFreeMode" placeholder="用,号分割" :required="true">
               <template slot="append">用,号分割</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="免费下每次金色出现个数">
-            <el-input v-model="cfg.goldNumInFreeMode" placeholder="用,号分割">
+            <el-input v-model="cfg.goldNumInFreeMode" placeholder="用,号分割" :required="true">
               <template slot="append">用,号分割</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="免费下每次金色出现个数权重">
-            <el-input v-model="cfg.goldWeightInFreeMode" placeholder="用,号分割">
+            <el-input v-model="cfg.goldWeightInFreeMode" placeholder="用,号分割" :required="true">
               <template slot="append">用,号分割</template>
             </el-input>
           </el-form-item>
