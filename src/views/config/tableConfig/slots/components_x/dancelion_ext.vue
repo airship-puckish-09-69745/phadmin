@@ -51,7 +51,7 @@
 
           <el-form-item label="中奖下红色财字个数权重">
             <el-input v-model="cfg.redCaiRateOnWinning" placeholder="用,号分割">
-              <template slot="append">三个值用,连接.分别对应3，4，5，6，7，8，9个财字</template>
+              <template slot="append">七个值用,连接.分别对应3，4，5，6，7，8，9个财字</template>
             </el-input>
           </el-form-item>
         </el-form>
