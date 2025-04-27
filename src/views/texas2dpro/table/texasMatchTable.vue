@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="TexasMttTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="TexasMttTableConfig" :env-empty="true"  :makeContent="makeContent" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -148,7 +148,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        </el-row>
+        <el-row>
           <el-form-item label="封面图片URL：" :required="true">
               <ImagePicker v-model="edit.item.BgImage" />
           </el-form-item>
@@ -1197,6 +1197,90 @@ export default {
           }
         }
       })
+    },
+    makeContent(key, addData, delData, editData) {
+      console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      let change = new Set()
+      let add = new Set()
+      let del = new Set()
+      // 新增取newVal
+      if (addData) {
+        // console.log("addData",addData)
+        for (var i=0; i<addData.length; i++) {
+          for (let ele of addData[i]) {
+            if (ele.key == "ID") {
+              add.add(ele.newVal)
+              console.log("add",ele.newVal)
+            }
+          }
+        }
+      }
+      if (delData) {
+        // console.log("delData",delData)
+        for (var i=0; i<delData.length; i++) {
+          for (let ele of delData[i]) {
+            if (ele.key == "ID") {
+              del.add(ele.oldVal)
+              console.log("del",ele.oldVal)
+            }
+          }
+        }
+      }
+      if (editData) {
+      // console.log("editData",editData)
+        for (const edit of editData) {
+          change.add(edit.Head.ID)
+          console.log(edit.Head.ID)
+        }
+      }
+      if (change.size + del.size + add.size == 0) {
+        console.log("no change return")
+        return
+      }
+    
+      let str = "" 
+      let has = false
+      for (let i=0; i<this.tableData.length; i++) {
+        const row = this.tableData[i]
+        if (change.has(row["ID"])) {
+          console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n修改： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
+          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
+          str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
+          str += `\r\n报名费：₱${row.SignupFee}`
+        }
+        if (del.has(row["ID"])) {
+          console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n下架： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
+          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
+          str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
+          str += `\r\n报名费：₱${row.SignupFee}`
+        }
+        if (add.has(row["ID"])) {
+          console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n上架： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
+          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
+          str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
+          str += `\r\n报名费：₱${row.SignupFee}`
+        }
+      }
+      return str
+    },
+    getGameName(gameId) {
+      var gameName = ''
+      for (var i = 0; i < this.GidTypes.length; i++) {
+        if (this.GidTypes[i].value == gameId) {
+          gameName = this.GidTypes[i].key
+          break
+        }
+      }
+      return gameName
     },
     getMatchProps() {
       const _this = this

@@ -803,9 +803,9 @@ export const asyncRoutes = [
                     meta: { title: 'Jackpot配置' }
                   },
                   {
-                    path: 'tongitsUser',
+                    path: 'tongitsjackPotControl',
                     component: () => import('@/views/config/tableConfig/tongitsjackPotControl'),
-                    name: 'tongitsUser',
+                    name: 'tongitsjackPotControl',
                     meta: { title: '控制配置 ◐' }
                   }
               //  ]
@@ -940,7 +940,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'V ideoPoker ◐' }
-          }
+          },
+          {
+            path: 'liveColor_game',
+            component: () => import('@/views/config/tableConfig/liveColorGame'),
+            name: 'gameLiveColorCfg',
+            meta: { title: 'L iveColor game ◐' }
+          },
+          
         ]
       },
       {
