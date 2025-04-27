@@ -801,6 +801,12 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsJackpotCfg'),
                     name: 'tongitsJackpotCfg',
                     meta: { title: 'Jackpot配置' }
+                  },
+                  {
+                    path: 'tongitsUser',
+                    component: () => import('@/views/config/tableConfig/tongitsjackPotControl'),
+                    name: 'tongitsUser',
+                    meta: { title: '控制配置 ◐' }
                   }
               //  ]
               //}
