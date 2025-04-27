@@ -139,7 +139,7 @@
                   <el-input v-model.number="edit.item.rewardConfig.remainRewardMonitorRate">
                     <template slot="append">％</template>
                   </el-input>
-                  <span v-if="sentRewardAmount  > edit.item.rewardConfig.remainRewardMonitorRate" style="color: red">发奖总额已超阈值（{{sentRewardAmount }}）</span>
+                  <span v-if="sentRewardAmount  > edit.item.rewardConfig.remainRewardMonitorRate*sentRewardAmount/100" style="color: red">发奖总额已超阈值（{{sentRewardAmount }}）</span>
                   <span v-else style="color: red">已发奖总额（{{sentRewardAmount }}）</span>
                 </el-form-item>
               </el-col>
@@ -887,11 +887,8 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('getSentRewardAmount', response.Data)
-          if (response.Data) {
-            $this.sentRewardAmount = response.Data / 1000
-            console.log('getSentRewardAmount', $this.sentRewardAmount)
-          }
+          $this.sentRewardAmount = response.Data / 1000
+          console.log('getSentRewardAmount', $this.sentRewardAmount)
         }
       })
     },
@@ -1055,6 +1052,7 @@ export default {
       }
     },
     handleAdd() {
+      this.edit.selectedGamesText = ''
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true

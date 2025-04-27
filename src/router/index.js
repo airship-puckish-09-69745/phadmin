@@ -940,7 +940,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'V ideoPoker ◐' }
-          }
+          },
+          {
+            path: 'liveColor_game',
+            component: () => import('@/views/config/tableConfig/liveColorGame'),
+            name: 'gameLiveColorCfg',
+            meta: { title: 'L iveColor game ◐' }
+          },
+
         ]
       },
       {
@@ -1874,14 +1881,14 @@ export const asyncRoutes = [
         meta: { title: '主播名单', noCache: true, hidden: true },
 
       },
-      {
-        path: 'obMatchRecordConfig',
-        component: () => import('@/views/matchManage/obMatchRecord.vue'),
-        hidden: !IsMars(),
-        name: 'obMatchRecordConfig',
-        meta: { title: '赛事记录', noCache: true, hidden: true },
-
-      },
+      // {
+      //   path: 'obMatchRecordConfig',
+      //   component: () => import('@/views/matchManage/obMatchRecord.vue'),
+      //   hidden: !IsMars(),
+      //   name: 'obMatchRecordConfig',
+      //   meta: { title: '赛事记录', noCache: true, hidden: true },
+      //
+      // },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
