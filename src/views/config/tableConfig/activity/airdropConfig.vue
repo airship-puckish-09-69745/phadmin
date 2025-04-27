@@ -1351,8 +1351,8 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.edit.importedUidCount = response.Data.imported
-          this.$message.success('上传成功，数量为：' + response.Data.imported)
+          this.getImportedUidCount()
+          this.$message.success('上传成功，新导入的数量为：' + response.Data.imported)
         }
         $this.$refs.upload.clearFiles()
         $this.edit.loading = false
