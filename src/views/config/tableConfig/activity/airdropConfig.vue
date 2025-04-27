@@ -193,7 +193,10 @@
                   </el-button>
                 </el-form-item>-->
                 <el-form-item label="选中游戏：" disabled="disabled">
-                  <el-input type="textarea" v-model="edit.selectedGamesText" autosize style="white-space: pre-wrap"/>
+                  <el-input type="textarea"
+                            v-model="edit.selectedGamesText"
+                            :autosize="{ minRows: 1, maxRows: 5}"
+                            style="white-space: pre-wrap"/>
                 </el-form-item>
                 <el-form-item label="任务类型：" :required="true">
                   <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择">
@@ -1126,6 +1129,8 @@ export default {
       if (this.edit.item.gameIdCfg === undefined || this.edit.item.gameIdCfg.length === 0) {
         return
       }
+
+      const gameTextList = []
       for (let i = 0; i < this.edit.item.gameIdCfg.length; i++) {
         const gameId = this.edit.item.gameIdCfg[i]
         let name = ''
@@ -1140,7 +1145,10 @@ export default {
           }
         }
         this.GamesSorted.push({GameId: gameId, Name: name, OrderNo: i+1})
+        gameTextList.push(name + '[' + gameId + ']')
       }
+
+      this.edit.selectedGamesText = gameTextList.join(' ')
     },
     updateGameTaskTypes(gameIds) {
       console.log('updateGameTaskTypes', gameIds)
@@ -1179,24 +1187,6 @@ export default {
           this.edit.item.gameIdCfg.splice(idIndex, 1)
         }
       }
-
-      const gameTextList = []
-      for (let i = 0; i < this.edit.item.gameIdCfg.length; i++) {
-        const gameId = this.edit.item.gameIdCfg[i]
-        let name = ''
-        for (let j = 0; j < this.treeData.length; j++) {
-          const cty = this.treeData[j]
-          for (let k = 0; k < cty.children.length; k++) {
-            const game = cty.children[k]
-            if (game.id === gameId) {
-              name = game.label
-              break
-            }
-          }
-        }
-        gameTextList.push(name + '[' + gameId + ']')
-      }
-      this.edit.selectedGamesText = gameTextList.join(' ')
 
       // 更新选中游戏的排序
       this.updateGamesSorted()
