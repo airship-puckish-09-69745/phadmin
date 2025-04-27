@@ -1,5 +1,5 @@
 <script>
-
+import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import Compare from '@/components/Compare'
 import robotAiSettingOutCard from '@/views/config/tableConfig/tongits/robotAiSettingOutCard.vue'
@@ -8,8 +8,7 @@ import robotAiSettingFight from '@/views/config/tableConfig/tongits/robotAiSetti
 import robotAiSettingBuildCard from '@/views/config/tableConfig/tongits/robotAiSettingBuildCard.vue'
 import robotAiSettingChallenge from '@/views/config/tableConfig/tongits/robotAiSettingChallenge.vue'
 import request from '@/utils/request'
-import {$libShow, } from '@/utils/common'
-
+import { ValidateVueItem } from '@/utils/common'
 function NewPlayerGoodCard() {
   const ret = []
   for (let i = 0; i < 5; i++) {
@@ -225,43 +224,43 @@ function NewRobotAI() {
   }
   return ret
 }
-function NewPlayerInventory() {
+function NewPlayerLevelMoney() {
   return [
     {
-      TableMoney: 1,
-      Count: 1
+      Level: 1,
+      Money: 1
     },
     {
-      TableMoney: 2,
-      Count: 2
+      Level: 2,
+      Money: 2
     },
     {
-      TableMoney: 3,
-      Count: 3
+      Level: 3,
+      Money: 3
     },
     {
-      TableMoney: 4,
-      Count: 4
+      Level: 4,
+      Money: 4
     },
     {
-      TableMoney: 5,
-      Count: 5
+      Level: 5,
+      Money: 5
     },
     {
-      TableMoney: 6,
-      Count: 6
+      Level: 6,
+      Money: 6
     },
     {
-      TableMoney: 7,
-      Count: 7
+      Level: 7,
+      Money: 7
     },
     {
-      TableMoney: 8,
-      Count: 8
+      Level: 8,
+      Money: 8
     },
     {
-      TableMoney: 9,
-      Count: 9
+      Level: 9,
+      Money: 9
     }
   ]
 }
@@ -269,18 +268,19 @@ function NewPlayerInventory() {
 
 export default {
   components: {
-    robotAiSettingChallenge, robotAiSettingBuildCard, robotAiSettingFight,
-    robotAiSettingDrop, robotAiSettingOutCard,
+    // robotAiSettingChallenge, robotAiSettingBuildCard, robotAiSettingFight,
+    // robotAiSettingDrop, robotAiSettingOutCard,
     Publish,
     Compare
   },
   data() {
     return {
+      gameId: 128,
       item: {
-        RobotAI: NewRobotAI(),
+       // RobotAI: NewRobotAI(),
         PlayerControl: {
           CriticalPoint: [0, 0, 0, 0],
-          PlayerGoodCard: NewPlayerGoodCard(),
+         // PlayerGoodCard: NewPlayerGoodCard(),
           PlayerControlRound: 0,
           IsSameFirst: false,
           RobotWeight: [
@@ -366,7 +366,9 @@ export default {
         },
 
       },
-     
+
+      form: {},
+
       labelPosition: 'top',
       subKey: 'tongits_jackpot_control',
 
@@ -376,44 +378,48 @@ export default {
       
       editPlayerGoodCard: [],
       Uid: 0,
-      Inventory: [],
+      PlayerLevelMoney: [],
       editPlayerInventoryVisible: false,
       editPlayerInventory: {},
-     
-     
       GameRangeLevel: 0,
+      GameRangeName: 0,
       GameMoney: 0,
-      libShow: $libShow,
     }
   },
   created() {
-    this.Inventory = NewPlayerInventory()
+   //  this.PlayerLevelMoney = NewPlayerLevelMoney()
+     this.getData()
+     this.handleRefreshGameMoney() 
+     this.handleRefreshPlayerLevels()
   },
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
     setData() {
-     // this.item.PlayerControl = this.PlayerControl
-     // this.item.GameControl = this.GameControl
+      console.log("refs",this.$refs)
+      // if (!ValidateVueItem(this.$refs['item'])) return false
+
+      // if (this.editAIVisible) {
+      //   this.item.RobotAI = this.editAI
+      // }
+      console.log('this.item:', this.item)
       this.form.Data = JSON.stringify(this.item)
       console.log('this.form.Data:', this.form.Data)
       const $this = this
       // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.form.Data)
+      this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.Compare(function(isEdit) {
         if (!isEdit) {
           Message.error('没有任何修改，不需要提交')
           return
         }
-
         request({
           url: 'customizeconfig/update',
           method: 'post',
           data: $this.form
         }).then(response => {
           if (response.RetCode === 0) {
-            console.log('update response', response)
             Message.success('保存成功')
           }
         })
@@ -424,16 +430,16 @@ export default {
         url: '/customizeconfig/one',
         method: 'get',
         data: {
-          SubKey: this.subKey
+          SubKey: this.subKey,
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          console.log('response==>', response)
           this.form = response.Data || {}
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
             Object.assign(this.item, item)
+            // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
           } else {
 
@@ -450,33 +456,114 @@ export default {
       this.editPlayerGoodCardVisible = true
      // this.editPlayerGoodCard = this.PlayerControl.PlayerGoodCard
     },
-    handleGetPlayerInventory() {
+
+    handleRefreshPlayerLevels() {
+      this.PlayerLevelMoney = []
+      for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
+        this.PlayerLevelMoney.push({level: this.item.GameControl.GameAcceptance[i].Level, money: 0})
+      } 
+     // console.log("this.PlayerLevelMoney", this.PlayerLevelMoney)
+
     },
-    handleRefreshPlayerInventory() {
-    },
-    handleUpdatePlayerInventory(row) {
-      this.editPlayerInventoryVisible = true
-      this.editPlayerInventory = row
-    },
-    handleUpdateGameMoney() {
-     
-    },
-    handleRefreshGameMoney() {
+    handleGetPlayerAllLevelMoney() {
       request({
           url: '/dataProxy/info',
-          method: 'post',
+          method: 'get',
           data: {
-            Env: $this.env,
-            gid: ob.uid,
-            Path: '/egame/game/pending/value'
+            Env: this.env,
+            gid: this.gameId,
+            uid: this.Uid,
+            Path: '/egamecontorl/player/level/money'
           }
         }).then(response => {
           if (response.RetCode === 0) {
             const objs = response.Data || []
             Message.success('刷新成功！')
-            this.GameMoney = objs.pendingValue 
+            if (objs.levelMoneyList === undefined) {
+               objs.levelMoneyList = []
+            }
+            for (let j = 0; j < objs.levelMoneyList.length; j++) {
+              for (let i = 0; i < this.PlayerLevelMoney.length; i++) 
+                if (objs.levelMoneyList[j].level == this.PlayerLevelMoney[i].level) {
+                  this.PlayerLevelMoney[i].money = objs.levelMoneyList[j].money/1000
+                  break
+                }
+            }
+            
+          }
+        })
+    },
+
+    handleUpdatePlayerLevelMoney(row) {
+      this.editPlayerInventoryVisible = true
+      this.editPlayerInventory = row
+
+     
+    },
+
+    savePlayerLevelMoney() {
+      if (!this.editPlayerInventoryVisible) {
+        return 
+      }
+      console.log("savePlayerLevelMoney:", this.editPlayerInventory )
+      request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            uid: this.Uid,
+            level: this.editPlayerInventory.level,
+            value: this.editPlayerInventory.money*1000,
+            Path: '/egamecontorl/set/player/level/money'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+     
+    },
+    handleUpdateGameMoney() {
+      request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            value: this.GameMoney*1000,
+            Path: '/egamecontorl/set/game/money'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+     
+    },
+    handleRefreshGameMoney() {
+      request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            Path: '/egamecontorl/game/money'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const objs = response.Data || []
+            Message.success('刷新成功！')
+            this.GameMoney = objs.gameMoney 
             this.GameMoney /= 1000
-         
+
+            this.GameRangeLevel = objs.aiLevel
+            for (let i = 0; i < this.item.GameControl.ControlRange.length; i++) {
+              if (this.item.GameControl.ControlRange[i].AiConfigLevel == this.GameRangeLevel) {
+                 this.GameRangeName = this.item.GameControl.ControlRange[i].AiConfigName
+                 break
+              }
+            } 
           }
         })
     },
@@ -495,325 +582,327 @@ export default {
     <div style="margin-bottom: 20px;">
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </div>
+      <el-tabs type="border-card">
+          <!--
+          <el-tab-pane label="机器⼈类型配置">
+            <el-row style="padding-top: 5px">
+              <el-col :span="24">
+                <div style="padding-top: 10px">
+                  <el-table
+                    :data="item.RobotAI"
+                    stripe
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      prop="AiConfigId"
+                      label="级别"
+                      width="70">
+                    </el-table-column>
 
-    <el-tabs type="border-card">
-      <el-tab-pane label="机器⼈类型配置">
-        <el-row style="padding-top: 5px">
-          <el-col :span="24">
-            <div style="padding-top: 10px">
-              <el-table
-                :data="item.RobotAI"
-                stripe
-                border
-                style="width: 100%"
-              >
-                <el-table-column
-                  prop="AiConfigId"
-                  label="级别"
-                  width="70">
-                </el-table-column>
-
-                <el-table-column
-                  prop="AiConfigName"
-                  label="级别"
-                  width="250"
-                />
-                <el-table-column
-                  label="操作"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
+                    <el-table-column
+                      prop="AiConfigName"
+                      label="级别"
+                      width="250"
+                    />
+                    <el-table-column
+                      label="操作"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-button
+                          type="primary"
+                          size="mini"
+                          icon="el-icon-document-copy"
+                          @click="handleAIUpdate(scope.row)"
+                        >修改
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          -->
+          <el-tab-pane label="个⼈控制配置">
+            <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
+            <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <el-descriptions :column="4" :colon="false" direction="vertical" border>
+              <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.PlayerControl.CriticalPoint[0]" />
+              </el-descriptions-item>
+              <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.PlayerControl.CriticalPoint[1]" />
+              </el-descriptions-item>
+              <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.PlayerControl.CriticalPoint[2]" />
+              </el-descriptions-item>
+              <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.PlayerControl.CriticalPoint[3]" />
+              </el-descriptions-item>
+            </el-descriptions>
+            <h4 style="text-align:left;">个⼈控制周期局数</h4>
+            <el-descriptions :column="5" :colon="false" direction="vertical" border>
+              <el-descriptions-item label="个⼈控制周期局数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.PlayerControl.PlayerControlRound" />
+              </el-descriptions-item>
+            </el-descriptions>
+            <el-divider />
+            <h2 style="text-align:center;">个⼈控制区间配置</h2>
+            <el-row>
+              <el-form :label-position="labelPosition" label-width="100px">
+                <el-form-item label="区间玩家发牌配置" required>
+                  <el-col :span="2">
                     <el-button
                       type="primary"
                       size="mini"
                       icon="el-icon-document-copy"
-                      @click="handleAIUpdate(scope.row)"
+                      @click="handleUpdatePlayerGoodCard()"
                     >修改
                     </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </div>
-          </el-col>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="个⼈控制配置">
-        <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
-        <h4 style="text-align:left;">个⼈控制临界点配置</h4>
-        <el-descriptions :column="4" :colon="false" direction="vertical" border>
-          <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.PlayerControl.CriticalPoint[0]" />
-          </el-descriptions-item>
-          <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.PlayerControl.CriticalPoint[1]" />
-          </el-descriptions-item>
-          <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.PlayerControl.CriticalPoint[2]" />
-          </el-descriptions-item>
-          <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.PlayerControl.CriticalPoint[3]" />
-          </el-descriptions-item>
-        </el-descriptions>
-        <h4 style="text-align:left;">个⼈控制周期局数</h4>
-        <el-descriptions :column="5" :colon="false" direction="vertical" border>
-          <el-descriptions-item label="个⼈控制周期局数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.PlayerControl.PlayerControlRound" />
-          </el-descriptions-item>
-        </el-descriptions>
-        <el-divider />
-        <h2 style="text-align:center;">个⼈控制区间配置</h2>
-        <el-row>
-          <el-form :label-position="labelPosition" label-width="100px">
-            <el-form-item label="区间玩家发牌配置" required>
-              <el-col :span="2">
-                <el-button
-                  type="primary"
-                  size="mini"
-                  icon="el-icon-document-copy"
-                  @click="handleUpdatePlayerGoodCard()"
-                >修改
-                </el-button>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="同周期机器⼈类型是否与⾸局⼀致" required>
-              <el-col :span="2">
-                <el-switch v-model="item.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
-              </el-col>
-            </el-form-item>
-            <el-form-item label="区间匹配机器⼈权重" required>
-              <el-table
-                :data="item.PlayerControl.RobotWeight"
-                stripe
-                border
-                style="width: 100%"
-              >
-                <el-table-column
-                  prop="AiConfigName"
-                  label="级别"
-                  width="250"
-                />
-                <el-table-column
-                  label="强杀区间"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.AiWeight[0]" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="弱杀区间"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.AiWeight[1]" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="正常区间"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.AiWeight[2]" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="弱放区间"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.AiWeight[3]" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="强放区间"
-                  column-key="op"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model="scope.row.AiWeight[4]" />
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-form-item>
-          </el-form>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="玩家库存查询与修改">
-        <el-row style="padding-top: 5px">
-          <el-form label-width="150px">
-            <el-form-item label="玩家ID" required>
-              <el-col :span="4">
-                <el-input v-model="Uid" />
-              </el-col>
-              <el-col :span="2">
-                <el-button @click="handleGetPlayerInventory">查询</el-button>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="刷新" required>
-              <el-col :span="2">
-                <el-button @click="handleRefreshPlayerInventory">刷新</el-button>
-              </el-col>
-            </el-form-item>
-            <el-form-item label="玩家场次库存" required>
-              <el-table
-                :data="Inventory"
-                stripe
-                border
-                style="width: 100%"
-                show-summary
-              >
-                <el-table-column
-                  prop="TableMoney"
-                  label="场次"
-                  width="250"
-                />
-                <el-table-column
-                  prop="Count"
-                  label="库存"
-                  width="250"
-                />
-                <el-table-column
-                  label="操作"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      icon="el-icon-document-copy"
-                      @click="handleUpdatePlayerInventory(scope.row)"
-                    >修改
-                    </el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-form-item>
-          </el-form>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="群体控制配置">
-        <h3 style="text-align:center;">个⼈控制临界点配置</h3>
-        <el-descriptions label="个⼈控制临界点配置" :column="7" :colon="false" direction="vertical" border>
-          <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.StrongestKillRatio"><template #append>‱</template></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.ControlRange[0].Ratio"><template #append>‱</template></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.ControlRange[1].Ratio"><template #append>‱</template></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-tag size="medium" closable>250‱</el-tag>
-          </el-descriptions-item>
-          <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.ControlRange[2].Ratio"><template #append>‱</template></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.ControlRange[3].Ratio"><template #append>‱</template></el-input>
-          </el-descriptions-item>
-          <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.WeakestKillRatio"><template #append>‱</template></el-input>
-          </el-descriptions-item>
-        </el-descriptions>
-        <h3 style="text-align:center;">群控区间对个⼈区间的移动格数</h3>
-        <el-descriptions label="群控区间对个⼈区间的移动格数" :column="6" :colon="false" direction="vertical" border>
-          <el-descriptions-item label="区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <span>移动区间数</span>
-          </el-descriptions-item>
-          <el-descriptions-item label="强杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.MoveRange[0].Count" />
-          </el-descriptions-item>
-          <el-descriptions-item label="弱杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.MoveRange[1].Count" />
-          </el-descriptions-item>
-          <el-descriptions-item label="正常区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.MoveRange[2].Count" />
-          </el-descriptions-item>
-          <el-descriptions-item label="弱放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.MoveRange[3].Count" />
-          </el-descriptions-item>
-          <el-descriptions-item label="强放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model="item.GameControl.MoveRange[4].Count" />
-          </el-descriptions-item>
-        </el-descriptions>
-      </el-tab-pane>
-      <el-tab-pane label="游戏库存查询与修改">
-        <el-row>
-          <el-descriptions :column="3" :colon="false">
-            <el-descriptions-item label="当前游戏待调整⾦额:">
-              <el-input v-model="GameMoney" />
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-row>
-        <el-row>
-          <el-descriptions :column="3" :colon="false">
-            <el-descriptions-item label="当前游戏库存所在群控区间:">
-              {{ GameRangeLevel }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-row>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="同周期机器⼈类型是否与⾸局⼀致" required>
+                  <el-col :span="2">
+                    <el-switch v-model.number="item.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="区间匹配机器⼈权重" required>
+                  <el-table
+                    :data="item.PlayerControl.RobotWeight"
+                    stripe
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      prop="AiConfigName"
+                      label="级别"
+                      width="250"
+                    />
+                    <el-table-column
+                      label="强杀区间"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.AiWeight[0]" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="弱杀区间"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.AiWeight[1]" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="正常区间"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.AiWeight[2]" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="弱放区间"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.AiWeight[3]" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="强放区间"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.AiWeight[4]" />
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+              </el-form>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="玩家库存查询与修改">
+            <el-row style="padding-top: 5px">
+              <el-form label-width="150px">
+                <el-form-item label="玩家ID" required>
+                  <el-col :span="4">
+                    <el-input v-model.number="Uid" />
+                  </el-col>
+                  <el-col :span="2">
+                    <el-button @click="handleGetPlayerAllLevelMoney">查询</el-button>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="刷新" required>
+                  <el-col :span="2">
+                    <el-button @click="handleGetPlayerAllLevelMoney">刷新</el-button>
+                  </el-col>
+                </el-form-item>
+                <el-form-item label="玩家场次库存" required>
+                  <el-table
+                    :data="PlayerLevelMoney"
+                    stripe
+                    border
+                    style="width: 100%"
+                    show-summary
+                  >
+                    <el-table-column
+                      prop="level"
+                      label="场次"
+                      width="250"
+                    />
+                    <el-table-column
+                      prop="money"
+                      label="库存"
+                      width="250"
+                    />
+                    <el-table-column
+                      label="操作"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-button
+                          type="primary"
+                          size="mini"
+                          icon="el-icon-document-copy"
+                          @click="handleUpdatePlayerLevelMoney(scope.row)"
+                        >修改
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </el-form-item>
+              </el-form>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="群体控制配置">
+            <h3 style="text-align:center;">个⼈控制临界点配置</h3>
+            <el-descriptions label="个⼈控制临界点配置" :column="7" :colon="false" direction="vertical" border>
+              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.StrongestKillRatio"><template #append>‱</template></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.ControlRange[0].Ratio"><template #append>‱</template></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.ControlRange[1].Ratio"><template #append>‱</template></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-tag size="medium" closable>250‱</el-tag>
+              </el-descriptions-item>
+              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.ControlRange[2].Ratio"><template #append>‱</template></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.ControlRange[3].Ratio"><template #append>‱</template></el-input>
+              </el-descriptions-item>
+              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.WeakestKillRatio"><template #append>‱</template></el-input>
+              </el-descriptions-item>
+            </el-descriptions>
+            <h3 style="text-align:center;">群控区间对个⼈区间的移动格数</h3>
+            <el-descriptions label="群控区间对个⼈区间的移动格数" :column="6" :colon="false" direction="vertical" border>
+              <el-descriptions-item label="区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <span>移动区间数</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="强杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.MoveRange[0].Count" />
+              </el-descriptions-item>
+              <el-descriptions-item label="弱杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.MoveRange[1].Count" />
+              </el-descriptions-item>
+              <el-descriptions-item label="正常区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.MoveRange[2].Count" />
+              </el-descriptions-item>
+              <el-descriptions-item label="弱放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.MoveRange[3].Count" />
+              </el-descriptions-item>
+              <el-descriptions-item label="强放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input v-model.number="item.GameControl.MoveRange[4].Count" />
+              </el-descriptions-item>
+            </el-descriptions>
+          </el-tab-pane>
+          <el-tab-pane label="游戏库存查询与修改">
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="当前游戏待调整⾦额:">
+                  <el-input v-model="GameMoney" />
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="当前游戏库存所在群控区间:">
+                  {{ GameRangeName }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
 
-      </el-tab-pane>
-      <el-tab-pane label="场次采信比例配置">
-        <el-row style="padding-top: 5px">
-          <el-form label-width="150px">
-            <el-form-item>
-              <el-table
-                 :data="item.GameControl.GameAcceptance"
-                 stripe
-                border
-                style="width: 100%"
-              >
-                <el-table-column
-                  prop="level"
-                  label="场次"
-                  width="250"
-                > 
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Level" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  prop="rate"
-                  label="库存"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.Rate" />
-                  </template>
-                </el-table-column>
-                <el-table-column
-                  label="操作"
-                  width="250"
-                >
-                  <template slot-scope="scope">
-                    <el-button type="danger" @click="delRow(scope.$index)">删除</el-button>
-                  </template>
-    
-                </el-table-column>
-              </el-table>
-              <el-row>
-                <el-button type="primary" @click="addRow()">添加</el-button>
-              </el-row>
-            </el-form-item>
-          </el-form>
-        </el-row>
-    
-      </el-tab-pane>
-    </el-tabs>
+          </el-tab-pane>
+          <el-tab-pane label="场次采信比例配置">
+            <el-row style="padding-top: 5px">
+              <el-form label-width="150px">
+                <el-form-item>
+                  <el-table
+                    :data="item.GameControl.GameAcceptance"
+                    stripe
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      prop="level"
+                      label="场次"
+                      width="250"
+                    > 
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Level" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      prop="rate"
+                      label="库存"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-input v-model.number="scope.row.Rate" />
+                      </template>
+                    </el-table-column>
+                    <el-table-column
+                      label="操作"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-button type="danger" @click="delRow(scope.$index)">删除</el-button>
+                      </template>
+        
+                    </el-table-column>
+                  </el-table>
+                  <el-row>
+                    <el-button type="primary" @click="addRow()">添加</el-button>
+                  </el-row>
+                </el-form-item>
+              </el-form>
+            </el-row>
+        
+          </el-tab-pane>
 
+      </el-tabs>
+   
     <div style="margin-bottom: 20px;">
       <el-button type="primary" @click="setData">保存信息</el-button>
     </div>
@@ -863,23 +952,23 @@ export default {
         <el-row>
           <el-tabs type="border-card">
             <el-tab-pane label="强杀">
-              <robot-ai-setting-build-card v-model="editPlayerGoodCard[0]" />
+              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[0]" />
             </el-tab-pane>
 
             <el-tab-pane label="弱杀">
-              <robot-ai-setting-build-card v-model="editPlayerGoodCard[1]" />
+              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[1]" />
             </el-tab-pane>
 
             <el-tab-pane label="正常">
-              <robot-ai-setting-build-card v-model="editPlayerGoodCard[2]" />
+              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[2]" />
             </el-tab-pane>
 
             <el-tab-pane label="弱放">
-              <robot-ai-setting-build-card v-model="editPlayerGoodCard[3]" />
+              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[3]" />
             </el-tab-pane>
 
             <el-tab-pane label="强放">
-              <robot-ai-setting-build-card v-model="editPlayerGoodCard[4]" />
+              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[4]" />
             </el-tab-pane>
           </el-tabs>
         </el-row>
@@ -901,19 +990,24 @@ export default {
       <el-form ref="editPlayerInventory" :model="editPlayerInventory" width="70%">
         <el-row>
           <el-form label-width="150px">
+            <el-form-item label="Uid：">
+              <template>
+                <span>{{ Uid }}</span>
+              </template>
+            </el-form-item>
             <el-form-item label="场次Level：">
               <template>
-                <span>{{ editPlayerInventory.TableMoney }}</span>
+                <span>{{ editPlayerInventory.level }}</span>
               </template>
             </el-form-item>
             <el-form-item label="当前场次库存：">
               <template>
-                <span>{{ editPlayerInventory.Count }}</span>
+                <span>{{ editPlayerInventory.money }}</span>
               </template>
             </el-form-item>
             <el-form-item label="修改⾄：" required>
               <template>
-                <el-input v-model="editPlayerInventory.Count" />
+                <el-input v-model.number="editPlayerInventory.money" />
               </template>
             </el-form-item>
           </el-form>
@@ -921,7 +1015,7 @@ export default {
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="setData">保存</el-button>
+              <el-button type="primary" size="medium" @click="savePlayerLevelMoney">保存</el-button>
             </el-col>
           </el-row>
         </el-form-item>
