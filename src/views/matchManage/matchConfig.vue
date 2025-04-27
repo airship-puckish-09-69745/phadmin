@@ -2264,7 +2264,7 @@ export default {
           this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && (element.propsReward.propsId == 0 || element.propsReward.propsNum === 0)){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0)){
           this.errmsg("请选择道具或者填写道具数量")
           return false
         }
