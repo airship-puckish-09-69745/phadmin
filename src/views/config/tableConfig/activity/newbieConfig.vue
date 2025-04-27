@@ -300,34 +300,50 @@
 
         <el-tab-pane label="白名单配置">
           <el-form ref="item" label-width="220px">
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
-                <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
-                  <el-option
-                    v-for="item in appIdOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="11">
-              <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
-                <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
-                  <el-option
-                    v-for="item in siteIdOptions"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  />
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </el-row>
+            <el-row>
+              <el-col>
+                <el-form-item label="白名单开关：" :rules="dataRule(true,{type:'n',range:'0'})">
+                  <el-switch v-model="item.IsWhite" :active-value="true" :inactive-value="false" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item label="uid白名单：" prop="item.WhitelistCfg.UidList">
+                  <el-input v-model="item.CurId" placeholder="Uid"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="addWhite">添加</el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row :gutter="10" style="margin-top: 30px">
+              <h3 style="text-align:center;">开放白名单</h3>
+              <el-col :span="24">
+                <div style="padding-top: 10px">
+                  <el-table
+                    :data="item.WhitelistCfg.UidList"
+                    stripe
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      label="UID"
+                      prop="uid"
+                    />
+                    <el-table-column
+                      label="操作"
+                    >
+                      <template scope="scope">
+                        <el-button
+                          size="mini"
+                          type="danger"
+                          @click="delRow(scope.row)"
+                        >删除</el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </el-col>
+            </el-row>
           </el-form>
         </el-tab-pane>
       </el-tabs>
@@ -424,6 +440,7 @@ export default {
       },
       total: 0,
       tableData: [],
+      IsUpdate: false,
       item: {
         IsOpen: true,
         StartTime: 0,
@@ -442,8 +459,11 @@ export default {
         GameIdCfg: [],
         WhitelistCfg: {
           AppIdList: [],
-          SiteIdList: []
+          SiteIdList: [],
+          UidList: []
         },
+        CurId: '',
+        IsWhite: true,
         taskCfgData: [
           {Id: 1, GameType: [21, 22], MatchNum: 1, RewardNum: 1, RatioNum: 10000, TaskType: 1},
           {Id: 2, GameType: [21, 22], MatchNum: 10, RewardNum: 5, RatioNum: 50000, TaskType: 1},
@@ -491,7 +511,6 @@ export default {
         gamesSortDialogVisible: false,
         cfgType: 0
       },
-
       treeData: [{
         id: 1,
         label: '一级 1',
@@ -708,12 +727,62 @@ export default {
       }
       return null
     },
+    addWhite() {
+      if (this.item.CurId === '' || this.item.CurId === null) {
+        return
+      }
+      let numbers = this.item.CurId.split(',').filter(num => !isNaN(num))
+      let insertList = []
+      for (let i = 0; i < numbers.length; i++) {
+        if (isNaN(numbers[i])) {
+          continue
+        }
+        let num = parseInt(numbers[i], 10)
+        if (isNaN(num)) {
+          continue
+        }
+        var bExit = false
+        for (let j = 0; j < this.item.WhitelistCfg.UidList.length; j++) {
+          if (this.item.WhitelistCfg.UidList[j].uid === num) {
+            bExit = true
+            break
+          }
+        }
+
+        if (!bExit) {
+          insertList.push(num)
+        }
+      }
+      for (let i = 0; i < insertList.length; i++) {
+        this.item.WhitelistCfg.UidList.push({
+          "uid" : insertList[i]
+        })
+      }
+      console.log(this.item.WhitelistCfg.UidList)
+    },
+    delRow(row) {
+      let newList = []
+      for (const key in this.item.WhitelistCfg.UidList) {
+        if (this.item.WhitelistCfg.UidList[key].uid === row.uid) {
+          continue
+        }
+        newList.push(this.item.WhitelistCfg.UidList[key])
+      }
+      this.item.WhitelistCfg.UidList = newList
+    },
     save() {
       if (this.edit.cfgType === 1) {
         this.saveTask()
       } else if (this.edit.cfgType === 2) {
         this.savePoker()
       }
+    },
+    getWhiteList() {
+      let whiteList = []
+      for (const key in this.item.WhitelistCfg.UidList) {
+        whiteList.push(this.item.WhitelistCfg.UidList[key].uid)
+      }
+      return whiteList
     },
     saveTask() {
       if (this.edit.isEdit) {
@@ -791,8 +860,12 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             const old = JSON.parse(response.Data.Data)
+            $this.item.IsOpen = old.IsOpen
+            $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
+            $this.item.LimitStartTime = old.LimitStartTime * 1000
+            $this.item.LimitEndTime = old.LimitEndTime * 1000
             if (old.StartTime === 0) {
               $this.item.StartTime = new Date().setSeconds(0)
             }
@@ -803,14 +876,17 @@ export default {
             $this.item.EveryDayLimitNum = old.EveryDayLimitNum
             $this.item.SumLimitNum = old.SumLimitNum
             if (old.taskCfgData.length > 0) {
-              $this.item.taskCfgData = old.taskCfgData
+              $this.item.taskCfgData = this.getPokerCfgData(old.taskCfgData)
             }
             if (old.pokerCfgData.length > 0) {
-              $this.item.pokerCfgData = old.pokerCfgData
+              $this.item.pokerCfgData = this.getPokerCfgData(old.pokerCfgData)
             }
             $this.item.GameIdCfg = old.GameIdCfg
-            if ($this.item.WhitelistCfg == null) {
-              $this.item.WhitelistCfg = whitelistCfg
+            if (old.WhiteList !== null) {
+              $this.item.WhitelistCfg.UidList = []
+              for (let i = 0; i < old.WhiteList.length; i++) {
+                $this.item.WhitelistCfg.UidList.push({ "uid": old.WhiteList[i] })
+              }
             }
             this.$refs.compare.SetOldVal(old)
           }
@@ -820,11 +896,18 @@ export default {
     },
     updateData() {
       // 设置修改后数据
+      if (this.IsUpdate) {
+        return
+      }
+      this.IsUpdate = true
       this.configCheck()
       var startTime = Math.floor(this.item.StartTime / 1000)
       var endTime = Math.floor(this.item.EndTime / 1000)
       var limitSTime = Math.floor(this.item.LimitStartTime / 1000)
       var limitETime = Math.floor(this.item.LimitEndTime / 1000)
+      var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
+      var pokerCfgData = this.getTaskCfgData(this.item.pokerCfgData)
+      var whiteList = this.getWhiteList()
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
@@ -834,9 +917,11 @@ export default {
         SingleLimitNum: this.item.SingleLimitNum,
         EveryDayLimitNum: this.item.EveryDayLimitNum,
         SumLimitNum: this.item.SumLimitNum,
-        taskCfgData: this.item.taskCfgData,
-        pokerCfgData: this.item.pokerCfgData,
-        GameIdCfg: this.item.GameIdCfg
+        taskCfgData: taskCfgData,
+        pokerCfgData: pokerCfgData,
+        GameIdCfg: this.item.GameIdCfg,
+        WhiteList: whiteList,
+        IsWhite: this.item.IsWhite
       }
       this.form.Data = JSON.stringify(tableData)
       request({
@@ -855,6 +940,9 @@ export default {
           return
         }
       })
+      setTimeout(() => {
+        this.IsUpdate = false
+      }, 1000)
     },
     updateGamesSorted() {
       this.GamesSorted = []
@@ -981,7 +1069,6 @@ export default {
           // 更新选中游戏的排序
           this.updateGamesSorted()
           this.$refs.tree.setCheckedKeys(this.item.GameIdCfg)
-
         }
       })
     },
@@ -1059,8 +1146,25 @@ export default {
           }
         }
       }
+    },
+    getTaskCfgData(cfgData) {
+      var cfg = []
+      for (let i = 0; i < cfgData.length; i++) {
+        var data = cfgData[i]
+        data.RewardNum = data.RewardNum * 1000
+        cfg.push(data)
+      }
+      return cfg
+    },
+    getPokerCfgData(cfgData) {
+      var cfg = []
+      for (let i = 0; i < cfgData.length; i++) {
+        var data = cfgData[i]
+        data.RewardNum = data.RewardNum / 1000
+        cfg.push(data)
+      }
+      return cfg
     }
-
   }
 }
 </script>

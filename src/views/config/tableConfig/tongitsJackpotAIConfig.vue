@@ -42,6 +42,7 @@
         </div>
       </el-col>
     </el-row>
+    <!--
     <el-row style="padding-top: 5px">
       <h3 style="text-align:center;">机器人分配</h3>
       <el-col :span="24">
@@ -113,6 +114,7 @@
         <el-button type="primary" @click="setData">保存分配信息</el-button>
       </el-col>
     </el-row>
+    -->
     <el-dialog
       title="机器人配置"
       :visible.sync="editVisible"

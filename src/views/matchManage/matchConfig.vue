@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['matchCfgId','title']" />
+      <publish primary-key="matchCfgId" key-id="MatchConfig" :env-empty="true" :attr-names="AttrNames" :makeContent="makeContent" :head-attrs="['matchCfgId','title']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -1134,7 +1134,74 @@ export default {
       }
       return true
     },
+    makeContent(key, addData, delData, editData) {
+      // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      let change = new Set()
+      let add = new Set()
+      let del = new Set()
+      // 新增取newVal
+      if (addData) {
+        // console.log("addData",addData)
+        for (var i=0; i<addData.length; i++) {
+          for (let ele of addData[i]) {
+            if (ele.key == "matchCfgId") {
+              add.add(ele.newVal)
+              console.log("add",ele.newVal)
+            }
+          }
+        }
+      }
+      if (delData) {
+        // console.log("delData",delData)
+        for (var i=0; i<delData.length; i++) {
+          for (let ele of delData[i]) {
+            if (ele.key == "matchCfgId") {
+              del.add(ele.oldVal)
+              console.log("del",ele.oldVal)
+            }
+          }
+        }
+      }
+      if (editData) {
+      // console.log("editData",editData)
+        for (const edit of editData) {
+          change.add(edit.Head.matchCfgId)
+          console.log(edit.Head.matchCfgId)
+        }
+      }
+      if (change.size + del.size + add.size == 0) {
+        console.log("no change return")
+        return
+      }
 
+      let str = ""
+      let has = false
+      for (let i=0; i<this.tableData.length; i++) {
+        const row = this.tableData[i]
+        if (change.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n修改： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+        }
+        if (del.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n下架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+        }
+        if (add.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n上架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
+          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+        }
+      }
+      return str
+    },
     selectShowGuieds() {
       this.guideShowCfgs = []
       this.guideShowCfgs.push(
@@ -1624,7 +1691,7 @@ export default {
         }
       }
       const rankReward = JSON.stringify(this.editForm.rankRewards)
-     console.log("this.editForm.rankRewards",this.editForm.rankRewards)
+    // console.log("this.editForm.rankRewards",this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
       let bTime = 0
@@ -1914,7 +1981,6 @@ export default {
                   'label': objs.list[i].item_name,
                   'value': objs.list[i].id,
                 })
-
               }
             }
           }
@@ -2102,6 +2168,11 @@ export default {
             return false
           }
         }
+        if (this.editForm.prizeExtra.rewardType == 1){
+          if(!await this.checkDynamicRewardCfg(this.editForm.rankRewards)){
+            return false
+          }
+        }
         if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
           this.errmsg('当前是动态奖池，请选择模板')
           return false
@@ -2129,6 +2200,7 @@ export default {
       }
       return true
     },
+
     async checkRewardCfg(rewards) {
       if (rewards.length <= 0) {
         this.errmsg('请添加固定奖励配置')
@@ -2139,6 +2211,10 @@ export default {
         const element = rewards[index]
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
@@ -2175,6 +2251,31 @@ export default {
         }
       }
       return true
+    },
+
+    async checkDynamicRewardCfg(rewards){
+      for (let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        if (element.startRank <= 0 || element.endRank < element.startRank) {
+          this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum ==0 ){
+          this.errmsg("请选择道具或者填写道具数量")
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
+          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
+            this.errmsg('所选择的道具不生效,请检查')
+            return false
+          }
+        }
+        return true
+      }
     },
     isInRebateScenes(scene) {
       for (let index = 0; index < this.rebateScenesCfgs.length; index++) {
@@ -2372,7 +2473,34 @@ export default {
         }
       }
       return false
-    }
+    },
+    getSignUpName(signUpType,signUpNum,sign_extra) {
+      // console.log(signUpType,signUpNum,sign_extra)
+      for (const i in this.signUpTypeCfgs) {
+        if (this.signUpTypeCfgs[i].value === signUpType) {
+          if (signUpType === 0) {// 付费报名
+            return this.signUpTypeCfgs[i].label + this.getCostName(signUpNum)
+          } else if (signUpType === 1) {// 免费报名
+            return this.signUpTypeCfgs[i].label
+          } else if (signUpType === 2) {// 纯门票
+            return this.signUpTypeCfgs[i].label + this.getTicketName(sign_extra)
+          } else if (signUpType === 3) {// 金币or门票
+            return this.signUpTypeCfgs[i].label + this.getCostName(signUpNum) + this.getTicketName(sign_extra)
+          }
+        }
+      }
+      return "未知报名方式"
+    },
+    getCostName(signUpNum) {
+      if (signUpNum > 0) {
+        return `，₱${signUpNum}`
+      }
+      return ""
+    },
+    getTicketName(sign_extra) {
+      const data = JSON.parse(sign_extra)
+      return " " + data.propName + "x" + data.propNum
+    },
   },
 }
 </script>

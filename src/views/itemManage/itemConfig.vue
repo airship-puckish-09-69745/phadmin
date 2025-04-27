@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row>
-      <publish primary-key="id" key-id="PropsConfig" :env-empty="true" :attr-names="AttrNames" :head-attrs="['title']" />
+      <publish primary-key="id" key-id="PropsConfig" :env-empty="true" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['id']" />
     </el-row>
     <el-row>
       <el-form :model="form" label-width="100px" :inline="true" size="mini">
@@ -267,6 +267,7 @@ export default {
       ],
       raw: {},
       tableData: [],
+      deleteData: [],
       limit: 10,
       total: 0,
       page: 1,
@@ -541,7 +542,68 @@ export default {
         console.log('取消')
       })
     },
+    makeContent(key, addData, delData, editData) {
+      // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      let change = new Set()
+      let add = new Set()
+      let del = new Set()
+      //新增取newVal
+      if (addData) {
+        console.log("addData",addData)
+        for (var i=0; i<addData.length; i++) {
+          for (let ele of addData[i]) {
+              add.add(ele.newVal)
+          }
+        }
+      }
+      if (delData) {
+        console.log("delData",delData)
+        for (var i=0; i<delData.length; i++) {
+          for (let ele of delData[i]) {
+              del.add(ele.oldVal)
+            }
+        }
+      }
+      if (editData) {
+        // console.log("editData",editData)
+        for (const edit of editData) {
+          change.add(edit.Head.id)
+          console.log(edit.Head.id)
+        }
+      }
+      if (change.size + del.size + add.size == 0) {
+        console.log('no change return')
+        return
+      }
 
+      let str = ''
+      let has = false
+      for (let i=0; i<this.tableData.length; i++) {
+        const row = this.tableData[i]
+        if (change.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += '\r\n---');has=true
+          str += `\r\n修改:ID:【${row.id}】, ${row.item_name}, ${this.getItemTypeName(row.item_type)}`
+          str += `\r\n${this.getStatusName(row.status)} 价值:【${row.item_cost}】, ${new Date(row.expire_time*1000).toLocaleString()}, ${row.image}`
+        }
+        if (add.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---\r\n");has=true
+          str += `\r\n新增:ID:【${row.id}】, ${row.item_name}, ${this.getItemTypeName(row.item_type)}`
+          str += `\r\n${this.getStatusName(row.status)} 价值:【${row.item_cost}】, ${new Date(row.expire_time*1000).toLocaleString()}, ${row.image}`
+        }
+      }
+      for (let i=0; i<this.deleteData.length; i++) {
+        const row = this.deleteData[i]
+        if (del.has(row.id)) {
+          // console.log(JSON.stringify(row))
+          has && (str += "\r\n---\r\n");has=true
+          str += `\r\n删除:ID:【${row.id}】, ${row.item_name}, ${this.getItemTypeName(row.item_type)}`
+          str += `\r\n${this.getStatusName(row.status)} 价值:【${row.item_cost}】, ${new Date(row.expire_time*1000).toLocaleString()}, ${row.image}`
+        }
+      }
+      return str
+    },
     handleDelete(id){
       this.$confirm('您确定要将该道具删除吗？', '提示', {
         confirmButtonText: '确定',
@@ -549,13 +611,20 @@ export default {
         type: 'warning'
       }).then(() => {
         const newList = []
+        const deleteList = []
         for (const key in this.editForm.tableData) {
           if (this.editForm.tableData[key].id === id) {
             continue
           }
           newList.push(this.editForm.tableData[key])
         }
+        for (const key in this.tableData) {
+          if (this.tableData[key].id === id) {
+            deleteList.push(this.tableData[key])
+          }
+        }
         this.editForm.tableData = newList
+        this.deleteData = deleteList
         request({
           url: '/propsconfig/props/config/delete',
           method: 'post',

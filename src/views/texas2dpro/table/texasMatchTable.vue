@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="TexasMttTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="TexasMttTableConfig" :env-empty="true"  :makeContent="makeContent" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -148,7 +148,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        </el-row>
+        <el-row>
           <el-form-item label="封面图片URL：" :required="true">
               <ImagePicker v-model="edit.item.BgImage" />
           </el-form-item>
@@ -402,6 +402,16 @@
             </el-form-item>
           </el-col>
         </el-row>
+         <el-row>
+           <el-col :span="11">
+            <el-form-item label="是否上报数据中心:" :required="true">
+              <el-radio-group v-model.number="edit.item.IsDcReport">
+                <el-radio :label="1">是</el-radio>
+                <el-radio :label="2">否</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row>
           <el-col :span="20">
             <el-form-item label="白名单:" prop="item.RaceWhiteList" >
@@ -450,11 +460,25 @@
                 </el-select>
               </el-form-item>
             </el-col>
-             <el-col v-if="edit.item.TemplateType===1" :span="11">
+             <el-col v-if="edit.item.TemplateType===1" :span="20">
               <el-form-item label="奖金类型">
                 <el-select v-model="edit.item.RewardType" placeholder="请选择">
                   <el-option v-for="item in RewardTypeConfig" :key="item.key" :label="item.key" :value="item.value" />
                 </el-select>
+                 <el-select v-if="edit.item.RewardType > 1" v-model="edit.item.SceneId" placeholder="请选择">
+                      <el-option v-if="edit.item.RewardType === 2"
+                        v-for="item in betScenesCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                       <el-option v-if="edit.item.RewardType === 3"
+                        v-for="item in rebateScenesCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                  </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -494,7 +518,7 @@
             <el-table-column
               prop="rewardItems"
               label="奖励"
-              width="400"
+              width="500"
             >
               <template slot-scope="scope">
                 <ul style="list-style: none;padding-inline-start: 0;">
@@ -512,6 +536,7 @@
                       </el-option>
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
+                    <el-input v-if='isHeadProps(scope.row.propsReward.propsId)' v-model.number="scope.row.propsReward.propsEffectiveTime" style="width: 100px;" size="mini" placeholder="有效时间(天)" />
                   </li>
                 </ul>
               </template>
@@ -600,6 +625,8 @@ function newItem() {
     PreMatchBeginTime: 10,
     TemplateType: 0,
     RewardType: 0,
+    SceneId: 0,
+    IsDcReport: 0,
     RewardId: 0,
     RewardPool: 0,
     LastModify: 0,
@@ -654,6 +681,14 @@ export default {
         { key: '投注金', value: 2 },
         { key: '返水金', value: 3 }
       ],
+       // 返水金
+      rebateScenesCfgs: [
+        { 'value': 10, 'label': '没有任何限制的返水金【TexasPlus付费赛】' }
+      ],
+      // 投注金
+      betScenesCfgs: [
+        { 'value': 9, 'label': '仅限GZ任意游戏投注金【TexasPlus免费赛】' }
+      ],
       DynamicRewardConfig: [
         { key: 'UAT28', value: 100 },
         { key: 'UAT 2.9', value: 101 },
@@ -692,7 +727,6 @@ export default {
         { 'value': 2, 'label': '金币or门票' }
       ],
       matchPropsCfgs: [],   //比赛道具信息
-      currPropsType: 3,
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
       libShow: $libShow,
@@ -739,6 +773,8 @@ export default {
         PreMatchBeginTime: '提前可进入时间',
         TemplateType: '奖励模板类型',
         RewardType: '奖金类型',
+        SceneId:'场景ID',
+        IsDcReport: '是否上报数据中心',
         RewardId: '奖励ID',
         RewardPool: '初始奖池',
         AppInfo: 'App信息',
@@ -1137,7 +1173,7 @@ export default {
           Env: this.env,
           PageNum: 1,
           PageSize: 100,
-          PropType: this.currPropsType,
+          PropType: 0,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1145,7 +1181,7 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+              if ((objs.list[i].item_type !== 3 &&  objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
                 continue
               }
               this.matchPropsCfgs.push({
@@ -1162,6 +1198,90 @@ export default {
         }
       })
     },
+    makeContent(key, addData, delData, editData) {
+      console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      let change = new Set()
+      let add = new Set()
+      let del = new Set()
+      // 新增取newVal
+      if (addData) {
+        // console.log("addData",addData)
+        for (var i=0; i<addData.length; i++) {
+          for (let ele of addData[i]) {
+            if (ele.key == "ID") {
+              add.add(ele.newVal)
+              console.log("add",ele.newVal)
+            }
+          }
+        }
+      }
+      if (delData) {
+        // console.log("delData",delData)
+        for (var i=0; i<delData.length; i++) {
+          for (let ele of delData[i]) {
+            if (ele.key == "ID") {
+              del.add(ele.oldVal)
+              console.log("del",ele.oldVal)
+            }
+          }
+        }
+      }
+      if (editData) {
+      // console.log("editData",editData)
+        for (const edit of editData) {
+          change.add(edit.Head.ID)
+          console.log(edit.Head.ID)
+        }
+      }
+      if (change.size + del.size + add.size == 0) {
+        console.log("no change return")
+        return
+      }
+    
+      let str = "" 
+      let has = false
+      for (let i=0; i<this.tableData.length; i++) {
+        const row = this.tableData[i]
+        if (change.has(row["ID"])) {
+          console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n修改： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
+          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
+          str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
+          str += `\r\n报名费：₱${row.SignupFee}`
+        }
+        if (del.has(row["ID"])) {
+          console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n下架： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
+          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
+          str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
+          str += `\r\n报名费：₱${row.SignupFee}`
+        }
+        if (add.has(row["ID"])) {
+          console.log(JSON.stringify(row))
+          has && (str += "\r\n---");has=true
+          str += `\r\n上架： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
+          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
+          str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
+          str += `\r\n报名费：₱${row.SignupFee}`
+        }
+      }
+      return str
+    },
+    getGameName(gameId) {
+      var gameName = ''
+      for (var i = 0; i < this.GidTypes.length; i++) {
+        if (this.GidTypes[i].value == gameId) {
+          gameName = this.GidTypes[i].key
+          break
+        }
+      }
+      return gameName
+    },
     getMatchProps() {
       const _this = this
       request({
@@ -1170,7 +1290,7 @@ export default {
         data: {
           Env: _this.env,
           Path: '/match/props/config/list',
-          PropType: this.currPropsType,
+          PropType: 0,
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1178,7 +1298,9 @@ export default {
           var timestamp = Date.parse(new Date())/1000
           if (objs.total > 0) {
             for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type !== this.currPropsType || objs.list[i].status !== 1 || objs.list[i].expire_time < timestamp) {
+
+
+              if ((objs.list[i].item_type !== 3 && objs.list[i].item_type !== 4) || objs.list[i].status !== 1 || (objs.list[i].item_type === 3 && objs.list[i].expire_time < timestamp)) {
                 continue
               }
               this.matchPropsCfgs.push({
@@ -1219,6 +1341,7 @@ export default {
           propsIcon: '',
           propsAttr: '',
           propsNum:0,
+          propsEffectiveTime: 0,
         }
       })
     },
@@ -1279,7 +1402,7 @@ export default {
         }
         var expire_time = this.getPropsExpireTime(this.edit.item.SignUpExtra.propsId, this.edit.item.SignUpExtra.propsType) 
         console.log(postData.RaceEndDate, expire_time)
-        if (expire_time < endTime) {
+        if (expire_time < endTime && this.edit.item.SignUpExtra.propsType !== 4) {
           return true
         }
       }
@@ -1289,7 +1412,15 @@ export default {
           return true
         }
         expire_time = this.getPropsExpireTime(this.edit.item.RankRewardsExtra[j].propsReward.propsId, this.edit.item.RankRewardsExtra[j].propsReward.propsType)
-        if (expire_time < endTime) {
+        if (expire_time < endTime && this.edit.item.RankRewardsExtra[j].propsReward.propsType !== 4) {
+          return true
+        }
+      }
+      return false
+    },
+    isHeadProps(propsId) {
+       for (var i=0; i<this.matchPropsCfgs.length; i++){
+        if (propsId === this.matchPropsCfgs[i].propsId && this.matchPropsCfgs[i].propsType == 4) {
           return true
         }
       }

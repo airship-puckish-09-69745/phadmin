@@ -228,13 +228,13 @@
                 </el-table-column>
                 <el-table-column label="最小值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini" @input="validateMin(scope.row)"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMin" size="mini"></el-input>
                     <p v-if="errorMin" style="color: red">{{ errorMin }}</p>
                   </template>
                 </el-table-column>
                 <el-table-column label="最大值" width="200">
                   <template slot-scope="scope">
-                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini" @input="validateMax(scope.row)"></el-input>
+                    <el-input v-model.number="scope.row.ShowMoneyMax" size="mini"></el-input>
                     <p v-if="errorMax" style="color: red">{{ errorMax }}</p>
                   </template>
                 </el-table-column>
@@ -571,7 +571,23 @@ export default {
         }
       }
     },
+    checkShowMoneyCfg() {
+      for (const o in this.ShowMoneyCfg) {
+        if (this.ShowMoneyCfg[o].ShowMoneyMin >= this.ShowMoneyCfg[o].ShowMoneyMax) {
+          Message.error('底注' + this.ShowMoneyCfg[o].TableMoney + '错误,最小金额不能大于最大金额')
+          return false
+        }
+        if (this.ShowMoneyCfg[o].ShowMoneyMin <= 0 || this.ShowMoneyCfg[o].ShowMoneyMax <= 0) {
+          Message.error('底注' + this.ShowMoneyCfg[o].TableMoney + '错误,金额不能小于0')
+          return false
+        }
+      }
+      return true
+    },
     setData() {
+      if (!this.checkShowMoneyCfg()) {
+        return
+      }
       this.moneyProc(true)
       this.item.Control = this.control
       this.item.NameCfg = this.NameCfg

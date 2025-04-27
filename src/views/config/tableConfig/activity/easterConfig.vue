@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="EasterConfig" :env-empty="true" :check="configCheck" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
+      <publish primary-key="cfgId" key-id="EasterConfig" :env-empty="true" :check="configCheck" :make-content="makeContent" :attr-names="getPublishAttrNames()" :head-attrs="['cfgId']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -627,6 +627,7 @@ export default {
   data() {
     return {
       tableData: [],
+      deleteData: [],
       clientDB: new ClientTableData([], 1, filterMap),
       libDate: $libDate,
       libShow: $libShow,
@@ -874,6 +875,9 @@ export default {
       this.changeStatus(ob.ID, 6, '您确定要将记录下架吗？下架的记录将在发布后从线上消失。')
     },
     handleDelete(ob) {
+      const deleteList = []
+      deleteList.push(ob)
+      this.deleteData = deleteList
       this.changeStatus(ob.ID, 3, '您确定要将记录状态修改为废弃吗？')
     },
     changeStatus(id, status, msg) {
@@ -1237,6 +1241,67 @@ export default {
     },
     showGamesSortDialog() {
       this.edit.gamesSortDialogVisible = true
+    },
+    makeContent(key, addData, delData, editData) {
+      // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      let change = new Set()
+      let add = new Set()
+      let del = new Set()
+      //新增取newVal
+      if (addData) {
+        console.log("addData",addData)
+        for (var i=0; i<addData.length; i++) {
+          for (let ele of addData[i]) {
+            add.add(ele.newVal)
+          }
+        }
+      }
+      if (delData) {
+        console.log("delData",delData)
+        for (var i=0; i<delData.length; i++) {
+          for (let ele of delData[i]) {
+            del.add(ele.oldVal)
+          }
+        }
+      }
+      if (editData) {
+        console.log("editData",editData)
+        for (const edit of editData) {
+          change.add(edit.Head.cfgId)
+        }
+      }
+      if (change.size + del.size + add.size == 0) {
+        console.log('no change return')
+        return
+      }
+
+      let str = ''
+      let has = false
+      for (let i=0; i<this.tableData.length; i++) {
+        const row = this.tableData[i]
+        if (change.has(row.ID)) {
+          // console.log(JSON.stringify(row))
+          has && (str += '\r\n---');has=true
+          const preVal = JSON.parse(row.WhitelistCfg)
+          str += `\r\n修改:【${row.ID}】, appid:【${preVal.AppIdList}】 ${preVal.SiteIdList}`
+        }
+        if (add.has(row.ID)) {
+          // console.log(JSON.stringify(row))
+          const preVal = JSON.parse(row.WhitelistCfg)
+          has && (str += "\r\n---\r\n");has=true
+          str += `\r\n新增:【${row.ID}】, appid:【${preVal.AppIdList}】 ${preVal.SiteIdList}`}
+      }
+      for (let i=0; i<this.deleteData.length; i++) {
+        const row = this.deleteData[i]
+        if (del.has(row.ID)) {
+          // console.log(JSON.stringify(row))
+          const preVal = JSON.parse(row.WhitelistCfg)
+          has && (str += "\r\n---\r\n");has=true
+          str += `\r\n删除:【${row.ID}】, appid:【${preVal.AppIdList}】 ${preVal.SiteIdList}`
+        }
+      }
+      console.log('str', str)
+      return str
     },
     saveGamesSort() {
       this.edit.gamesSortDialogVisible = false

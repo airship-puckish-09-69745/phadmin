@@ -5,6 +5,9 @@
       <el-button v-if="showProBtn" type="primary" size="mini" round @click="publishBtn">发布</el-button>
       <span v-if="showProBtn">{{ processInfo }}</span>
     </el-col>
+    <el-col :offset="6" :span="1">
+      <el-checkbox v-model="lark" @change="setLarkPage" v-if="this.env=='test'">lark</el-checkbox>
+    </el-col>
     <el-col v-if="isPublish" :span="24">
       <el-col :span="12" :offset="4">
         <el-steps v-if="!needReview" :space="200" :active="stepActive" finish-status="success">
@@ -229,6 +232,8 @@
 
 <script>
 import { getDiff, getView, rollback, submitPublish } from '@/api/publish'
+import { getInfo } from '@/api/user'
+import { sendLark } from '@/api/lark'
 import Diff from '@/utils/diff'
 import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/common'
 import store from '@/store'
@@ -279,10 +284,26 @@ export default {
       default: function() {
         return true
       }
+    },
+    makeContent: {
+      type: Function,
+      default: function() {
+        return ""
+      }
+    },
+    onCompare: {
+      type: Function,
+      default: function() {
+        return ""
+      }
     }
   },
   data() {
     return {
+      larkConfig: {},
+      larkPages: [],
+      lark: false,
+      larkContent: '',
       diffFormatter: new Diff.DiffFormatter(new Diff.Diff()),
       isTestBtn: true, // 展示发布到测试环境
       isProBtn: true, // 展示发布到线上
@@ -346,6 +367,7 @@ export default {
     this.env = store.getters.env || this.env
     this.resetData()
     this.checkProcessing()
+    this.getLarkPage()
   },
   methods: {
     init() {
@@ -381,6 +403,7 @@ export default {
               $this.stepActive++
               $this.$message.success('发布成功')
               $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
+              $this.sendLark()
             }
           })
         })
@@ -394,12 +417,112 @@ export default {
             $this.stepActive++
             $this.$message.success('发布成功')
             $this.onStepChange($this.stepActive, $this.keyId, $this.addData, $this.delData, $this.editData)
+            $this.sendLark()
           }
         })
       }
 
       // 下一步
       this.dialogClose()
+    },
+    sendLark() {
+      if (!this.lark) {
+        return
+      }
+      let warn = ''
+      // 同步到测试
+      if (this.env === 'test') {
+        warn = "WarningJustForTest"
+        console.log("开发阶段只通知开发服")
+      }
+      // 同步到正式
+      if (this.env === 'pro' && this.opType != 4 && this.opType != 6) {
+        console.log("生产环境只在审核和同步正式发送通知")
+        return
+      }
+      const $this = this
+      getInfo(this.$store.getters.token).then(function(response) {
+        if (response.RetCode === 0) {
+          const nick = response.Data.nick
+          const routes = $this.getRoutesName()
+          const content = $this.larkContent.length>0?$this.larkContent:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
+          // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
+          const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
+          // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
+          const text = `【${nick}】发布配置：${routes} ⤵️\r\n${at}\r\n`+content
+          sendLark(text,warn,$this.env).then(response => {
+            if (response.RetCode === 0) {
+              console.log('wanring success')
+            }
+          })
+        }
+      }).catch((e)=>{
+        console.log('sendLark failed',e)
+      })
+    },
+    getRoutesName() {
+      let str = ''
+      for (let i=0; i<this.$route.matched.length; i++) {
+        if (i > 0) {
+          str += '->'
+        }
+        str += this.$route.matched[i].meta.title
+      }
+      return str
+    },
+    getLarkPage(){
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'lark_page_cfg'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('cfg', response)
+          this.larkConfig = response.Data || {}
+          if (response.Data.Data && response.Data.Data !== '') {
+            this.larkPages = JSON.parse(response.Data.Data)
+            this.lark = this.larkPages.indexOf(this.$route.name) > -1
+          }
+        }
+      }).catch((e)=>{
+        console.log("getLarkPage err",e)
+      })
+    },
+    setLarkPage(add) {
+      console.log(this.$route)
+      if (add && this.larkPages.indexOf(this.$route.name) > -1) {
+        this.$message.error(`重复操作!`)
+        return
+      }
+      if ((!add) && this.larkPages.indexOf(this.$route.name) == -1) {
+        this.$message.error(`重复操作!`)
+        return
+      }
+      if (add) {
+        this.larkPages.push(this.$route.name)
+      } else {
+        for (let i=0; i<this.larkPages.length; i++) {
+          if (this.larkPages[i] === this.$route.name) {
+            this.larkPages.splice(i,1)
+          }
+        }
+      }
+      this.larkConfig.Data = JSON.stringify(this.larkPages)
+      request({
+        url: '/customizeconfig/update',
+        method: 'post',
+        data: this.larkConfig,
+      }).then(response => {
+        if (response.RetCode === 0) {
+          add?this.$message.success(`添加通知成功!`):this.$message.success(`取消通知成功!`)
+        } else {
+          this.$message.error('lark设置失败')
+        }
+      }).catch(() => {
+        console.log('lark设置失败')
+      })
     },
     publishBtn() {
       if (!this.check()) {
@@ -596,6 +719,11 @@ export default {
             proVal = proVal || []
             $this.compare(preVal, proVal)
         }
+        try {
+          $this.larkContent=$this.onCompare(preVal,proVal)
+        } catch (e) {
+          console.log('onCompare err:', e)
+        }
       })
     },
     compareOBJValue(oldVal, newVal, sKey) {
@@ -751,9 +879,20 @@ export default {
     },
     getHeadObject(item) { // 返回用于标识记录的字段内容
       const ret = {}
-      console.log(item)
+      console.log('getHeadObject 1', item)
       for (const i in this.headAttrs) {
-        ret[this.headAttrs[i]] = item[this.headAttrs[i]]
+        const key = this.headAttrs[i]
+        if (key.indexOf('.') > -1) {
+          const keys = key.split('.')
+          let val = item
+          for (const k in keys) {
+            val = val[keys[k]]
+            console.log('getHeadObject 2', keys[k], val)
+          }
+          ret[key] = val
+        } else {
+          ret[key] = item[key]
+        }
       }
       return ret
     },
