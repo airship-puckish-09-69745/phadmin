@@ -137,12 +137,14 @@
             <el-input v-model.number="slotsData.WinTypeMinOdds[index]" />
           </el-form-item>
 
+          <span style="color: red; font-size: 11px;">注: ①无限=-1 ②数字后面加上*表示推荐，例如10* </span>
           <el-form-item label="普通自动下注轮数">
-            <el-input v-model="slotsData.AutoSpinNum[0]"> <template slot="append">无限=-1</template> </el-input>
+            <el-input v-model="slotsData.AutoSpinNum[0]"> </el-input>
           </el-form-item>
 
+          <span style="color: red; font-size: 11px;">注: ①无限=-1 ②数字后面加上*表示推荐，例如10* </span>
           <el-form-item label="比赛自动下注轮数">
-            <el-input v-model="slotsData.AutoSpinNum[1]"> <template slot="append">无限=-1</template> </el-input>
+            <el-input v-model="slotsData.AutoSpinNum[1]"> </el-input>
           </el-form-item>
 
           <el-form-item label="TopWins开始生效日期">

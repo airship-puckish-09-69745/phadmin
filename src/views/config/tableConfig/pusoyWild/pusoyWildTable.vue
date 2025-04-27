@@ -356,7 +356,16 @@
             </el-form-item>
           </el-col>
         </el-row>
-
+        <el-row>
+          <el-col :span="11">
+            <el-form-item label="被动匹配开关：" :required="true" prop="item.MergeSinglePlayer">
+              <el-select v-model.number="edit.item.MergeSinglePlayer" placeholder="请选择">
+                <el-option label="开启" :value="1" />
+                <el-option label="关闭" :value="0" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
@@ -413,7 +422,8 @@ function newItem() {
     TotalPay: 0,
     HideLevel: 0,
     MinPlayMoney: 0,
-    RoomLevel: 0
+    RoomLevel: 0,
+    MergeSinglePlayer: 0
   }
 }
 
@@ -465,7 +475,8 @@ export default {
         TotalPay: '总充值大于',
         MinPlayMoney: '最小玩牌金额',
         HideLevel: '进入该场次后隐藏场次',
-        RoomLevel: '房间类型'
+        RoomLevel: '房间类型',
+        MergeSinglePlayer: '被动匹配开关'
       }
     }
   },
