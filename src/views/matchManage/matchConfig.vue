@@ -1624,7 +1624,7 @@ export default {
         }
       }
       const rankReward = JSON.stringify(this.editForm.rankRewards)
-     console.log("this.editForm.rankRewards",this.editForm.rankRewards)
+    // console.log("this.editForm.rankRewards",this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
       let bTime = 0
@@ -2102,6 +2102,11 @@ export default {
             return false
           }
         }
+        if (this.editForm.prizeExtra.rewardType == 1){
+          if(!await this.checkDynamicRewardCfg(this.editForm.rankRewards)){
+            return false
+          }
+        }
         if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
           this.errmsg('当前是动态奖池，请选择模板')
           return false
@@ -2129,6 +2134,7 @@ export default {
       }
       return true
     },
+
     async checkRewardCfg(rewards) {
       if (rewards.length <= 0) {
         this.errmsg('请添加固定奖励配置')
@@ -2139,6 +2145,10 @@ export default {
         const element = rewards[index]
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+          this.errmsg('奖励前三名 必须单独配 不能出现1-3, 1-2, 2-3')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
@@ -2175,6 +2185,31 @@ export default {
         }
       }
       return true
+    },
+
+    async checkDynamicRewardCfg(rewards){
+      for (let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        if (element.startRank <= 0 || element.endRank < element.startRank) {
+          this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+          this.errmsg('奖励前三名 必须单独配 不能出现1-3, 1-2, 2-3')
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && (element.propsReward.propsId == 0 || element.propsReward.propsNum === 0)){
+          this.errmsg("请选择道具或者填写道具数量")
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
+          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
+            this.errmsg('所选择的道具不生效,请检查')
+            return false
+          }
+        }
+        return true
+      }
     },
     isInRebateScenes(scene) {
       for (let index = 0; index < this.rebateScenesCfgs.length; index++) {
