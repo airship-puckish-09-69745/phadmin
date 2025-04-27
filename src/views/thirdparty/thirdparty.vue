@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="false" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="false" :makeContent="makeContent" :check="configCheck" :attr-names="AttrNames"/>
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="16">
@@ -417,7 +417,6 @@ export default {
       this.initFormData(true, row.ID)
       this.edit.visible = true
     },
-
     handleCreate() {
       this.edit.item = newItem()
       this.edit.isEdit = false
@@ -546,6 +545,60 @@ export default {
           Message.success('保存成功！')
         }
       })
+    },
+    makeContent(key, addData, delData, editData) {
+      let str = ''
+      if (addData.length > 0) {
+        for (const i in addData) {
+          str += `\r\nappid:【${addData[i].Head.ID}】`
+          for (const j in addData[i].Rows) {
+            const rawValue = addData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const cleanValue = rawValue.replace(/<[^>]+>/g, '')
+            const attrName = this.AttrNames[addData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (delData.length > 0) {
+        for (const i in delData) {
+          if (str === '') {
+            str += `appid:【${delData[i].Head.ID}】`
+          } else {
+            str += `\r\nappid:【${delData[i].Head.ID}】`
+          }
+          for (const j in delData[i].Rows) {
+            const rawValue = delData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const cleanValue = rawValue.replace(/<[^>]+>/g, '')
+            const attrName = this.AttrNames[delData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (editData.length > 0) {
+        for (const i in editData) {
+          if (str === '') {
+            str += `appid:【${editData[i].Head.ID}】`
+          } else {
+            str += `\r\nappid:【${editData[i].Head.ID}】`
+          }
+          for (const j in editData[i].Rows) {
+            const rawValue = editData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const cleanValue = rawValue.replace(/<[^>]+>/g, '')
+            const attrName = this.AttrNames[editData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n${attrName}:【${cleanValue}】`
+            }
+          }
+        }
+      }
+      return str
     },
     getPostData() {
       this.trimData()

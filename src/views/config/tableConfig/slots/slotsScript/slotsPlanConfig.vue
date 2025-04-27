@@ -721,7 +721,7 @@ export default {
               HitSteps:0,
               Plans:[]
             },
-          }
+          },
 
       },
 
@@ -759,7 +759,12 @@ export default {
       currentBaseBet:[],
       getBetPlanver: false,
       showBetPlanverList: [],
-      showCompletionScriptMap:{}
+      showCompletionScriptMap:{},
+
+      AdditionalArray:[
+        { key: 100180, label: 'Fishing Master(额外加注)' },
+        { key: 100186, label: 'Mahjong Jackpot(额外加注)' }
+      ],
     }
   },
   created() {
@@ -906,8 +911,7 @@ export default {
               label: response.Data[i].Name
             })
           }
-          this.gameOptions.push({ key: 100180, label: 'Fishing Master(额外加注)' })
-          this.gameOptions.push({ key: 100186, label: 'Mahjong Jackpot(额外加注)' })
+          this.appendAdditional()
         }
       })
     },
@@ -916,6 +920,11 @@ export default {
         if (o.key === parseInt(gid)) {
           return o.label
         }
+      }
+    },
+    appendAdditional(){
+      for (const o of this.AdditionalArray) {
+        this.gameOptions.push(o)
       }
     },
 
@@ -933,7 +942,6 @@ export default {
             }
           }
           if (oz.ScriptRule.Platform !==''){
-            console.log('==========',oz.ScriptRule.Platform)
             oz.ScriptRule['PlatformList'] = oz.ScriptRule.Platform.split(",")
           }else {
             oz.ScriptRule['PlatformList'] = [
@@ -1116,7 +1124,13 @@ export default {
         if (response.Data.Data !== '') {
           let arr = JSON.parse(response.Data.Data)
           for (const o of arr) {
-            this.slotCfg[o.Gid] = o
+            for (const oElement of this.AdditionalArray) {
+                if (o.Gid+100000 === oElement.key){
+                  this.slotCfg[o.Gid+100000] = o
+                }else {
+                  this.slotCfg[o.Gid] = o
+                }
+            }
           }
         }
       })

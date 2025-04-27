@@ -801,6 +801,12 @@ export const asyncRoutes = [
                     component: () => import('@/views/config/tableConfig/tongitsJackpotCfg'),
                     name: 'tongitsJackpotCfg',
                     meta: { title: 'Jackpot配置' }
+                  },
+                  {
+                    path: 'tongitsjackPotControl',
+                    component: () => import('@/views/config/tableConfig/tongitsjackPotControl'),
+                    name: 'tongitsjackPotControl',
+                    meta: { title: '控制配置 ◐' }
                   }
               //  ]
               //}
@@ -934,7 +940,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'V ideoPoker ◐' }
-          }
+          },
+          {
+            path: 'liveColor_game',
+            component: () => import('@/views/config/tableConfig/liveColorGame'),
+            name: 'gameLiveColorCfg',
+            meta: { title: 'L iveColor game ◐' }
+          },
+          
         ]
       },
       {
@@ -1468,7 +1481,7 @@ export const asyncRoutes = [
             path: 'millionaire_script_cfg',
             component: () => import('@/views/config/tableConfig/slots/slotsScript/MillionaireScriptCfg'),
             name: 'millionaire_script_cfg',
-            meta: { title: '大奖配置' }
+            meta: { title: '老虎机大奖配置' }
           },
           {
             path: 'slots_act_configs_v2',
@@ -1574,6 +1587,12 @@ export const asyncRoutes = [
         ]
       },
       */
+      {
+        path: 'activityCommonConfig',
+        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
+        name: 'activityCommonConfig',
+        meta: { title: '活动公共配置', noCache: true }
+      },
       {
         path: 'pointRaceConfig',
         component: () => import('@/views/empty'),
@@ -1727,12 +1746,6 @@ export const asyncRoutes = [
         ]
       },
       {
-        path: 'activityCommonConfig',
-        component: () => import('@/views/config/tableConfig/activity/activityCommonConfig'),
-        name: 'activityCommonConfig',
-        meta: { title: '活动公共配置', noCache: true }
-      },
-      {
         path: 'newbieConfig',
         component: () => import('@/views/empty'),
         name: 'newbieConfig',
@@ -1743,6 +1756,20 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/activity/newbieConfig'),
             name: 'newbieConfig',
             meta: { title: '新手任务活动配置', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'airdropConfig',
+        component: () => import('@/views/empty'),
+        name: 'airdropConfig',
+        meta: { title: '空投活动配置', noCache: true },
+        children: [
+          {
+            path: 'airdropConfig',
+            component: () => import('@/views/config/tableConfig/activity/airdropConfig'),
+            name: 'airdropConfig',
+            meta: { title: '空投活动配置', noCache: true }
           }
         ]
       }
