@@ -1009,6 +1009,8 @@ export default {
     initFormData(bEdit, ID) {
       console.log('ID:', ID)
       this.edit.isEdit = bEdit
+      this.edit.selectedGamesText = ''
+
       if (ID) {
         const _data = this.clientDB.GetDataByID(ID)
         if (_data) {
@@ -1131,7 +1133,6 @@ export default {
       }
 
       const gameTextList = []
-      this.edit.selectedGamesText = ''
 
       for (let i = 0; i < this.edit.item.gameIdCfg.length; i++) {
         const gameId = this.edit.item.gameIdCfg[i]
