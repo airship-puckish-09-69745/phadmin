@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="false" :makeContent="makeContent" :check="configCheck" :attr-names="AttrNames"/>
+      <publish primary-key="ID" key-id="ThirdpartiesConfig" :env-empty="false" :make-content="makeContent" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="16">
@@ -554,7 +554,8 @@ export default {
           for (const j in addData[i].Rows) {
             const rawValue = addData[i].Rows[j].newVal
             // 使用正则移除所有HTML标签i
-            const cleanValue = rawValue.replace(/<[^>]+>/g, '')
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
             const attrName = this.AttrNames[addData[i].Rows[j].key]
             if (attrName) {
               str += `\r\n${attrName}:【${cleanValue}】`
@@ -572,7 +573,8 @@ export default {
           for (const j in delData[i].Rows) {
             const rawValue = delData[i].Rows[j].newVal
             // 使用正则移除所有HTML标签i
-            const cleanValue = rawValue.replace(/<[^>]+>/g, '')
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
             const attrName = this.AttrNames[delData[i].Rows[j].key]
             if (attrName) {
               str += `\r\n${attrName}:【${cleanValue}】`
@@ -589,8 +591,8 @@ export default {
           }
           for (const j in editData[i].Rows) {
             const rawValue = editData[i].Rows[j].newVal
-            // 使用正则移除所有HTML标签i
-            const cleanValue = rawValue.replace(/<[^>]+>/g, '')
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
             const attrName = this.AttrNames[editData[i].Rows[j].key]
             if (attrName) {
               str += `\r\n${attrName}:【${cleanValue}】`
@@ -599,6 +601,15 @@ export default {
         }
       }
       return str
+    },
+    decodeHtmlEntities(str) {
+      const txt = document.createElement('textarea')
+      txt.innerHTML = str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec)
+      }).replace(/&#x([\da-fA-F]+);/g, function(match, hex) {
+        return String.fromCharCode(parseInt(hex, 16))
+      })
+      return txt.value
     },
     getPostData() {
       this.trimData()
