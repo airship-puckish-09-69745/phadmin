@@ -1131,6 +1131,8 @@ export default {
       }
 
       const gameTextList = []
+      this.edit.selectedGamesText = ''
+
       for (let i = 0; i < this.edit.item.gameIdCfg.length; i++) {
         const gameId = this.edit.item.gameIdCfg[i]
         let name = ''
