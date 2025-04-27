@@ -1173,8 +1173,8 @@ export default {
         console.log("no change return")
         return
       }
-    
-      let str = "" 
+
+      let str = ""
       let has = false
       for (let i=0; i<this.tableData.length; i++) {
         const row = this.tableData[i]
@@ -2214,7 +2214,7 @@ export default {
           return false
         }
         if (element.startRank <= 3 &&  element.startRank != element.endRank) {
-          this.errmsg('奖励前三名 必须单独配 不能出现1-3, 1-2, 2-3')
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
@@ -2261,7 +2261,7 @@ export default {
           return false
         }
         if (element.startRank <= 3 &&  element.startRank != element.endRank) {
-          this.errmsg('奖励前三名 必须单独配 不能出现1-3, 1-2, 2-3')
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
           return false
         }
         if (element.hasOwnProperty('propsReward') && (element.propsReward.propsId == 0 || element.propsReward.propsNum === 0)){
