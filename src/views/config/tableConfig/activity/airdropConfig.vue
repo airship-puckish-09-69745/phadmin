@@ -169,7 +169,7 @@
         <el-tab-pane label="任务配置">
           <el-row :gutter="5">
             <el-form label-width="220px">
-              <el-col :span="12">
+              <el-col :span="20">
                 <el-form-item label="勾选支持的游戏：" :required="true">
                   <el-input
                     placeholder="输入关键字进行过滤"
@@ -192,6 +192,9 @@
                     排序
                   </el-button>
                 </el-form-item>-->
+                <el-form-item label="选中游戏：" disabled="disabled">
+                  <el-input type="textarea" v-model="edit.selectedGamesText" autosize style="white-space: pre-wrap"/>
+                </el-form-item>
                 <el-form-item label="任务类型：" :required="true">
                   <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择">
                     <el-option
@@ -537,6 +540,7 @@ export default {
         visible: false,
         item: newItem(),
         title: "新增",
+        selectedGamesText: '',
         gamesSortDialogVisible: false,
       },
       env: 'test',
@@ -842,7 +846,6 @@ export default {
       } else {
         this.createData(data)
       }
-      this.edit.visible = false
     },
     createData(data) {
       request({
@@ -853,6 +856,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
@@ -865,6 +869,7 @@ export default {
         if (response.RetCode === 0) {
           this.getList()
           Message.success('保存成功！')
+          this.edit.visible = false
         }
       })
     },
@@ -1164,16 +1169,34 @@ export default {
         return
       }
 
-      const index = this.edit.item.gameIdCfg.indexOf(data.id)
+      const idIndex = this.edit.item.gameIdCfg.indexOf(data.id)
       if (checked) {
-        if (index < 0) {
+        if (idIndex < 0) {
           this.edit.item.gameIdCfg.push(data.id)
         }
       } else {
-        if (index >= 0) {
-          this.edit.item.gameIdCfg.splice(index, 1)
+        if (idIndex >= 0) {
+          this.edit.item.gameIdCfg.splice(idIndex, 1)
         }
       }
+
+      const gameTextList = []
+      for (let i = 0; i < this.edit.item.gameIdCfg.length; i++) {
+        const gameId = this.edit.item.gameIdCfg[i]
+        let name = ''
+        for (let j = 0; j < this.treeData.length; j++) {
+          const cty = this.treeData[j]
+          for (let k = 0; k < cty.children.length; k++) {
+            const game = cty.children[k]
+            if (game.id === gameId) {
+              name = game.label
+              break
+            }
+          }
+        }
+        gameTextList.push(name + '[' + gameId + ']')
+      }
+      this.edit.selectedGamesText = gameTextList.join(' ')
 
       // 更新选中游戏的排序
       this.updateGamesSorted()
