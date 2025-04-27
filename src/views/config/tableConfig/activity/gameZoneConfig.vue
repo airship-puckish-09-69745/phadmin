@@ -1475,7 +1475,10 @@ export default {
       ) {
         change += '白名单配置/'
       }
-      const str = `修改了:【${change}】的配置`
+      let str = ''
+      if (change !== '') {
+        str = `修改了:【${change}】的配置`
+      }
       // console.log(str,JSON.stringify(preVal),JSON.stringify(proVal))
       return str
     },
