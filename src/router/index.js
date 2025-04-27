@@ -940,7 +940,14 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/minigames/videoPoker.vue'),
             name: 'VideoPoker_cfg',
             meta: { title: 'V ideoPoker ◐' }
-          }
+          },
+          {
+            path: 'liveColor_game',
+            component: () => import('@/views/config/tableConfig/liveColorGame'),
+            name: 'gameLiveColorCfg',
+            meta: { title: 'L iveColor game ◐' }
+          },
+          
         ]
       },
       {
