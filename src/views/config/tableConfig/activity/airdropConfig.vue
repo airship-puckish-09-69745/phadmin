@@ -1002,6 +1002,7 @@ export default {
         this.getSentRewardAmount()
         this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
         this.updateGameTaskTypes(this.edit.item.gameIdCfg)
+        this.edit.selectedGamesText = ''
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
