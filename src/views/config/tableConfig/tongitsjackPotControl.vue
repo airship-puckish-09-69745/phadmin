@@ -600,13 +600,13 @@ export default {
       }
 
       if (StrongestKillRatio > ControlRange[0].Ratio || ControlRange[4].Ratio > WeakestKillRatio) {
-        console.log("aaaa....")
+      //  console.log("aaaa....")
         return false;
       }
         
       for (let i = 1; i <  ControlRange.length; i++) {
         if (ControlRange[i-1].Ratio > ControlRange[i].Ratio) {
-          console.log("aaaa....",ControlRange[i-1].Ratio,ControlRange[i].Ratio)
+         // console.log("aaaa....",ControlRange[i-1].Ratio,ControlRange[i].Ratio)
           return false
         }
       }
@@ -680,9 +680,9 @@ export default {
       }
 
 
-      console.log('this.item:', this.item)
+      // console.log('this.item:', this.item)
       this.form.Data = JSON.stringify(this.item)
-      console.log('this.form.Data:', this.form.Data)
+     // console.log('this.form.Data:', this.form.Data)
       const $this = this
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
@@ -855,7 +855,7 @@ export default {
       if (!this.editPlayerInventoryVisible) {
         return 
       }
-      console.log("savePlayerLevelMoney:", this.editPlayerInventory )
+      // console.log("savePlayerLevelMoney:", this.editPlayerInventory )
       request({
           url: '/dataProxy/info',
           method: 'post',
@@ -955,7 +955,7 @@ export default {
       })
     },
     dataRule(required, config) {
-      console.log(config)
+     // console.log(config)
       return DataRule(required, config)
     },
     handleDecimalInput(row, key) {
