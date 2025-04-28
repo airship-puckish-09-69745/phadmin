@@ -135,7 +135,7 @@
                   >
                     <el-table-column
                       prop="TableMoney"
-                      label="场次"
+                      label="游戏底注"
                       width="250"
                       :formatter="(row) => (row.TableMoney / 1000)"
                     ></el-table-column>
@@ -396,7 +396,7 @@
                 <span>{{ Uid }}</span>
               </template>
             </el-form-item>
-            <el-form-item label="场次Level：">
+            <el-form-item label="游戏底注：">
               <template>
                 <span>{{ editPlayerInventory.TableMoney/1000 }}</span>
               </template>
