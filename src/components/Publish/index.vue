@@ -369,6 +369,7 @@ export default {
     this.resetData()
     this.checkProcessing()
     if (!IsMars()) {
+      console.log("==",IsMars)
       this.getLarkPage()
     }
   },
