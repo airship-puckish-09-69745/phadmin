@@ -135,9 +135,10 @@
                   >
                     <el-table-column
                       prop="TableMoney"
-                      label="场次"
+                      label="游戏底注"
                       width="250"
-                    />
+                      :formatter="(row) => (row.TableMoney / 1000)"
+                    ></el-table-column>
                     <el-table-column
                       prop="Money"
                       label="库存"
@@ -167,9 +168,8 @@
             <el-descriptions label="个⼈控制临界点配置" :column="7" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input 
-                  v-model="item.GameControl.StrongestKillRatio"
-                  @input="handlePercentInput(item.GameControl, 'StrongestKillRatio', 0, 100)"
-                 
+                  v-model="editGameControl.StrongestKillRatio"
+                  @input="handlePercentInput(editGameControl, 'StrongestKillRatio', 0, 100)"
                   placeholder="0-100"
                 >
                   <template #append>%</template>
@@ -177,16 +177,16 @@
               </el-descriptions-item>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input 
-                  v-model="item.GameControl.ControlRange[0].Ratio"
-                  @input="handlePercentInput(item.GameControl.ControlRange[0], 'Ratio')"
+                  v-model="editGameControl.ControlRange[0].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[0], 'Ratio')"
                   placeholder="0-100"
                   >
                   <template #append>%</template></el-input>
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input 
-                  v-model="item.GameControl.ControlRange[1].Ratio"
-                  @input="handlePercentInput(item.GameControl.ControlRange[1], 'Ratio')"
+                  v-model="editGameControl.ControlRange[1].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[1], 'Ratio')"
                 
                   placeholder="0-100"
                   ><template #append>%</template></el-input>
@@ -196,24 +196,24 @@
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input 
-                  v-model="item.GameControl.ControlRange[3].Ratio"
-                  @input="handlePercentInput(item.GameControl.ControlRange[3], 'Ratio')"
+                  v-model="editGameControl.ControlRange[3].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[3], 'Ratio')"
                  
                   placeholder="0-100"
                   ><template #append>%</template></el-input>
               </el-descriptions-item>
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input 
-                  v-model="item.GameControl.ControlRange[4].Ratio"
-                  @input="handlePercentInput(item.GameControl.ControlRange[4], 'Ratio')"
+                  v-model="editGameControl.ControlRange[4].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[4], 'Ratio')"
                 
                   placeholder="0-100"
                   ><template #append>%</template></el-input>
               </el-descriptions-item>
               <el-descriptions-item label="强放匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input 
-                  v-model="item.GameControl.WeakestKillRatio"
-                  @input="handlePercentInput(item.GameControl, 'WeakestKillRatio')"
+                  v-model="editGameControl.WeakestKillRatio"
+                  @input="handlePercentInput(editGameControl, 'WeakestKillRatio')"
                  
                   placeholder="0-100"
                 ><template #append>%</template></el-input>
@@ -251,9 +251,9 @@
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
                 </el-descriptions-item>
-                <el-descriptions-item>
+                <!-- <el-descriptions-item>
                   <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
-                </el-descriptions-item>
+                </el-descriptions-item> -->
               </el-descriptions>
             </el-row>
             <el-row>
@@ -270,7 +270,7 @@
               <el-form label-width="150px">
                 <el-form-item>
                   <el-table
-                    :data="item.GameControl.GameAcceptance"
+                    :data="editGameControl.GameAcceptance"
                     stripe
                     border
                     style="width: 100%"
@@ -279,6 +279,7 @@
                       prop="TableMoney"
                       label="游戏底注"
                       width="250"
+                       :formatter="(row) => (row.TableMoney / 1000)"
                     /> 
                     <el-table-column
                       prop="rate"
@@ -395,9 +396,9 @@
                 <span>{{ Uid }}</span>
               </template>
             </el-form-item>
-            <el-form-item label="场次Level：">
+            <el-form-item label="游戏底注：">
               <template>
-                <span>{{ editPlayerInventory.TableMoney }}</span>
+                <span>{{ editPlayerInventory.TableMoney/1000 }}</span>
               </template>
             </el-form-item>
             <el-form-item label="当前场次库存：">
@@ -545,12 +546,34 @@ export default {
       
       editPlayerGoodCard: [],
       Uid: 0,
+      VisibleUid: false,
       PlayerTableMoneyInfo: [],
       editPlayerInventoryVisible: false,
       editPlayerInventory: {},
       GameRangeLevel: 0,
       GameRangeName: 0,
       GameMoney: 0,
+      editGameControl:{
+        StrongestKillRatio:'0',
+        ControlRange: [{
+          AiConfigLevel: 1,
+          Ratio: "10"
+        }, {
+          AiConfigLevel: 2,
+          Ratio: "11.2"
+        }, {
+          AiConfigLevel: 3,
+          Ratio: 0
+        }, {
+          AiConfigLevel: 4,
+          Ratio: "1.6"
+        }, {
+          AiConfigLevel: 5,
+          Ratio: "22.0"
+        }],
+        WeakestKillRatio:'0',
+        GameAcceptance: []
+      }
     }
   },
   created() {
@@ -562,6 +585,10 @@ export default {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
+    convertToFloat(value) {
+      let num = parseFloat(value) || 0;
+      return Number(num.toFixed(2)); // 保留计算精度
+    },
     setData() {
       console.log("refs",this.$refs)
       // if (!ValidateVueItem(this.$refs['item'])) return false
@@ -569,6 +596,23 @@ export default {
       // if (this.editAIVisible) {
       //   this.item.RobotAI = this.editAI
       // }
+
+      this.item.GameControl.StrongestKillRatio = this.convertToFloat(this.editGameControl.StrongestKillRatio)
+      this.item.GameControl.ControlRange = []
+      this.item.GameControl.WeakestKillRatio =this.convertToFloat(this.editGameControl.WeakestKillRatio)
+      for (let i = 0; i <  this.editGameControl.ControlRange.length; i++) {
+        let tmp = this.editGameControl.ControlRange[i]
+        this.item.GameControl.ControlRange.push({AiConfigLevel: tmp.AiConfigLevel,Ratio:this.convertToFloat(tmp.Ratio)} )
+      }
+
+      
+      this.item.GameControl.GameAcceptance = []
+      for (let i = 0; i <  this.editGameControl.GameAcceptance.length; i++) {
+        let tmp =  this.editGameControl.GameAcceptance[i]
+        this.item.GameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  this.convertToFloat(tmp.Ratio), Level: tmp.Level})
+      }
+
+
       console.log('this.item:', this.item)
       this.form.Data = JSON.stringify(this.item)
       console.log('this.form.Data:', this.form.Data)
@@ -607,8 +651,24 @@ export default {
             Object.assign(this.item, item)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
-          } else {
 
+            this.editGameControl.StrongestKillRatio = this.item.GameControl.StrongestKillRatio.toString()
+            this.editGameControl.ControlRange = []
+            this.editGameControl.WeakestKillRatio = this.item.GameControl.WeakestKillRatio.toString()
+            for (let i = 0; i <  this.item.GameControl.ControlRange.length; i++) {
+              let tmp = this.item.GameControl.ControlRange[i]
+              this.editGameControl.ControlRange.push({AiConfigLevel: tmp.AiConfigLevel,Ratio:tmp.Ratio.toString()} )
+            }
+
+            this.editGameControl.GameAcceptance = []
+            for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
+              let tmp = this.item.GameControl.GameAcceptance[i]
+              this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
+            }
+            
+            //console.log("this.editGameControl", this.editGameControl)
+          } else {
+            Message.error('保存失败')
           }
         }
       })
@@ -643,13 +703,19 @@ export default {
           gameAcceptance.push({  TableMoney: tableMoney, Rate: 0 , Level: this.tableData[j].Level})
         } 
       } 
-      console.log("gameAcceptance", gameAcceptance)
+      this.editGameControl.GameAcceptance = []
+      for (let i = 0; i < gameAcceptance.length; i++) {
+        let tmp = gameAcceptance[i]
+        this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
+      }
+
+     // console.log("gameAcceptance", this.editGameControl)
       this.item.GameControl.GameAcceptance = gameAcceptance 
     },
 
     handleAIUpdate(row) {
       this.editAIVisible = true
-      console.log('row==>', row)
+      // console.log('row==>', row)
       this.editAI = row
     },
     handleUpdatePlayerGoodCard() {
@@ -666,6 +732,10 @@ export default {
 
     },
     handleGetPlayerAllLevelMoney() {
+      if (this.Uid == 0) {
+        Message.warning('请输入正确的uid')
+        return
+      }
       request({
           url: '/dataProxy/info',
           method: 'get',
@@ -678,6 +748,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             const objs = response.Data || []
+            this.VisibleUid = true
             Message.success('刷新成功！')
             if (objs.list === undefined) {
                objs.list = []
@@ -690,11 +761,19 @@ export default {
                 }
             }
             
+          } else {
+            Message.warning('请输入正确的uid')
+            this.VisibleUid = false
           }
         })
     },
 
     handleUpdatePlayerLevelMoney(row) {
+      if (this.Uid == 0 || !this.VisibleUid) {
+        Message.warning('请输入正确的uid')
+        return
+      }
+
       this.editPlayerInventoryVisible = true
       this.editPlayerInventory = row
 
@@ -786,6 +865,9 @@ export default {
           let data = objs
           this.tableData= []
           for (let j = 0; j < data.length; j++) {
+            if (data[j].RoomLevel > 0) {
+              continue
+            }
             let hasLevel = false;
             let tableMoney = data[j].TableMoney
             for (let j = 0; j < this.tableData.length; j++) {
@@ -880,6 +962,7 @@ export default {
       obj[key] = value;
     }
   }
+ 
 }
 </script>
 

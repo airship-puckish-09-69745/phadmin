@@ -1416,6 +1416,8 @@ export default {
     onCompare(pre,pro) {
       const preVal=JSON.parse(pre.Data)
       const proVal=JSON.parse(pro.Data)
+      console.log('JSON.stringify(preVal.zoneGame',preVal)
+      console.log('JSON.stringify(proVal.zoneGame',proVal)
       // 编辑
       let change = ''
       if ((JSON.stringify(preVal.IsOpen) !== JSON.stringify(proVal.IsOpen)) ||
@@ -1467,7 +1469,7 @@ export default {
       ) {
         change += '游戏内活动入口配置/'
       }
-      if ((JSON.stringify(preVal.zoneGame) !== JSON.stringify(proVal.zoneGame))
+      if ((JSON.stringify(preVal.ZoneGame) !== JSON.stringify(proVal.ZoneGame))
       ) {
         change += '侧拉栏游戏推荐/'
       }
