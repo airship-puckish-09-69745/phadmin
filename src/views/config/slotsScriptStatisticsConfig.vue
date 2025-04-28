@@ -143,6 +143,9 @@
         <el-form-item label="统计步数">
           <el-input-number v-model.number="item.StepCfg"></el-input-number>
         </el-form-item>
+        <el-form-item label="不存在的步数(英文逗号分割)">
+          <el-input v-model="item.AbnormalSteps" style="width: 350px"></el-input>
+        </el-form-item>
         <el-form-item label="">
         </el-form-item>
         <el-form-item>
@@ -216,6 +219,7 @@ export default {
         Bet: 0,
         StepCfg:0,
         JackpotShowBet:0,
+        AbnormalSteps:'',
       },
       selectGameVisible: false,
       gameOptions: [],
@@ -277,6 +281,8 @@ export default {
       this.item.Bet = row.Bet
       this.item.JackpotShowBet = row.JackpotShowBet
       this.item.OddsList = row.OddsList
+      this.item.StepCfg= row.StepCfg
+      this.item.AbnormalSteps= row.AbnormalSteps
       this.showBtn = 1
       this.selectGameVisible = true
     },
