@@ -231,7 +231,7 @@
                             style="white-space: pre-wrap"/>
                 </el-form-item>
                 <el-form-item label="任务类型：" :required="true">
-                  <el-select v-model.number="edit.item.taskConfig.taskType" placeholder="请选择">
+                  <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择">
                     <el-option
                       v-for="item in gameTaskTypes"
                       :key="item.value"
