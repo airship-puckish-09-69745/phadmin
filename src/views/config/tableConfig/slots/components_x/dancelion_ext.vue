@@ -43,11 +43,74 @@
             </el-input>
           </el-form-item>
 
-          <el-form-item label="不中奖下红色财字权重">
+          <el-form-item label="不中奖下红色财字个数权重">
             <el-input v-model="cfg.redCaiRateOnNotWinning" placeholder="用,号分割">
               <template slot="append">三个值用,连接.分别对应0,1,2个财字</template>
             </el-input>
           </el-form-item>
+
+          <el-form-item label="中奖下红色财字个数权重">
+            <el-input v-model="cfg.redCaiRateOnWinning" placeholder="用,号分割">
+              <template slot="append">七个值用,连接.分别对应3，4，5，6，7，8，9个财字</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费下每次绿色出现个数">
+            <el-input v-model="cfg.greenNumInFreeMode" placeholder="用,号分割" :required="true">
+              <template slot="append">用,号分割</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费下每次绿色出现个数权重">
+            <el-input v-model="cfg.greenWeightInFreeMode" placeholder="用,号分割" :required="true">
+              <template slot="append">用,号分割</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费下每次金色出现个数">
+            <el-input v-model="cfg.goldNumInFreeMode" placeholder="用,号分割" :required="true">
+              <template slot="append">用,号分割</template>
+            </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费下每次金色出现个数权重">
+            <el-input v-model="cfg.goldWeightInFreeMode" placeholder="用,号分割" :required="true">
+              <template slot="append">用,号分割</template>
+            </el-input>
+          </el-form-item>
+          <!---->
+          <el-form-item label="特殊图标个数">
+            <el-table :data="cfg.ColorNumCfg" border style="width: 100%">
+              <el-table-column prop="GoldMin" label="金财字最小个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GoldMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="GoldMax" label="金财字最小大数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GoldMax"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="GreenMin" label="绿财字最小个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GreenMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="GreenMax" label="绿财字最大个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GreenMax"></el-input>
+                </template>
+              </el-table-column>
+
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button @click="handleDelete(scope.$index)" type="danger" size="mini">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button @click="handleAdd" type="primary" style="margin-top: 10px;">新增一行</el-button>
+          </el-form-item>
+          <!---->
         </el-form>
       </el-col>
     </el-row>
@@ -86,7 +149,9 @@ export default {
   },
   data() {
     return {
-      cfg: {}
+      cfg: {
+        ColorNumCfg: []
+      }
     }
   },
   created() {
@@ -95,6 +160,18 @@ export default {
     })
   },
   methods: {
+    handleAdd() {
+      const newRow = {
+        GoldMin: 0,
+        GoldMax: 0,
+        GreenMin: 0,
+        GreenMax: 0
+      }
+      this.cfg.ColorNumCfg.push(newRow)
+    },
+    handleDelete(index) {
+      this.cfg.ColorNumCfg.splice(index, 1)
+    },
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -122,6 +199,9 @@ export default {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        if (!this.cfg.ColorNumCfg) {
+          this.cfg.ColorNumCfg = []
+        }
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }

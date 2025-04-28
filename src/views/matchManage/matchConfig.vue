@@ -1173,8 +1173,8 @@ export default {
         console.log("no change return")
         return
       }
-    
-      let str = "" 
+
+      let str = ""
       let has = false
       for (let i=0; i<this.tableData.length; i++) {
         const row = this.tableData[i]
@@ -1182,21 +1182,21 @@ export default {
           // console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n修改： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
-          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
           str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
         if (del.has(row.id)) {
           // console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n下架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
-          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
           str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
         if (add.has(row.id)) {
           // console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n上架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
-          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
           str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
       }
@@ -1691,7 +1691,7 @@ export default {
         }
       }
       const rankReward = JSON.stringify(this.editForm.rankRewards)
-     console.log("this.editForm.rankRewards",this.editForm.rankRewards)
+    // console.log("this.editForm.rankRewards",this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
       let bTime = 0
@@ -2168,6 +2168,11 @@ export default {
             return false
           }
         }
+        if (this.editForm.prizeExtra.rewardType == 1){
+          if(!await this.checkDynamicRewardCfg(this.editForm.rankRewards)){
+            return false
+          }
+        }
         if (this.editForm.prizeExtra.awardType == 1 && this.editForm.prizeExtra.prizeTemplateId == 0) {
           this.errmsg('当前是动态奖池，请选择模板')
           return false
@@ -2195,6 +2200,7 @@ export default {
       }
       return true
     },
+
     async checkRewardCfg(rewards) {
       if (rewards.length <= 0) {
         this.errmsg('请添加固定奖励配置')
@@ -2205,6 +2211,10 @@ export default {
         const element = rewards[index]
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
@@ -2241,6 +2251,31 @@ export default {
         }
       }
       return true
+    },
+
+    async checkDynamicRewardCfg(rewards){
+      for (let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        if (element.startRank <= 0 || element.endRank < element.startRank) {
+          this.errmsg('请填写正确的排名')
+          return false
+        }
+        if (element.startRank <= 3 &&  element.startRank != element.endRank) {
+          this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum ==0 ){
+          this.errmsg("请选择道具或者填写道具数量")
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
+          if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
+            this.errmsg('所选择的道具不生效,请检查')
+            return false
+          }
+        }
+        return true
+      }
     },
     isInRebateScenes(scene) {
       for (let index = 0; index < this.rebateScenesCfgs.length; index++) {

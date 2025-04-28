@@ -1987,7 +1987,8 @@ export default {
           152: 'aladdinlamp',
           86: 'supergemii',
           90: 'moneycoming',
-          92: 'fortuneacego'
+          92: 'fortuneacego',
+          168: 'pharaohtreasure'
         }
         let key = this.gameScene[gid%100000] + '_slots_base'
         for (const k in realKey) {
