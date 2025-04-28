@@ -516,8 +516,8 @@ function newItem() {
     ruleImgHor: [],
     ruleImgVer: [],
     whitelistCfg: {
-      appIdList: [],
-      siteIdList: [],
+      appIdList: [1000002],
+      siteIdList: ['Dev'],
     },
     debugTimeOffset: 0,
     taskConfig: {
