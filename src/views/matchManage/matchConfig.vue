@@ -1171,7 +1171,7 @@ export default {
       }
       if (change.size + del.size + add.size == 0) {
         console.log("no change return")
-        return
+        return "没有修改!"
       }
 
       let str = ""
