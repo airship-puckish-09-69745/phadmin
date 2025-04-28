@@ -238,6 +238,7 @@ import Diff from '@/utils/diff'
 import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import request from '@/utils/request'
+import {IsMars} from "@/utils/env";
 
 const jsonDiff = require('diff')
 
@@ -367,7 +368,9 @@ export default {
     this.env = store.getters.env || this.env
     this.resetData()
     this.checkProcessing()
-    this.getLarkPage()
+    if (!IsMars()) {
+      this.getLarkPage()
+    }
   },
   methods: {
     init() {
