@@ -9,16 +9,16 @@
             <h4 style="text-align:left;">个⼈控制临界点配置</h4>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.PlayerControl.CriticalPoint[0]" />
+                <el-input v-model.number="editCriticalPoint[0]" />
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.PlayerControl.CriticalPoint[1]" />
+                <el-input v-model.number="editCriticalPoint[1]" />
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.PlayerControl.CriticalPoint[2]" />
+                <el-input v-model.number="editCriticalPoint[2]" />
               </el-descriptions-item>
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.PlayerControl.CriticalPoint[3]" />
+                <el-input v-model.number="editCriticalPoint[3]" />
               </el-descriptions-item>
             </el-descriptions>
             <h4 style="text-align:left;">个⼈控制周期局数</h4>
@@ -301,8 +301,7 @@
             </el-row>
         
           </el-tab-pane>
-
-      </el-tabs>
+    </el-tabs>
    
     <div style="margin-bottom: 20px;">
       <el-button type="primary" @click="setData">保存信息</el-button>
@@ -458,27 +457,27 @@ export default {
             {
               AiConfigLevel: 1,
               AiConfigName: '超强机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
+              AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 2,
               AiConfigName: '稍强机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
+              AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 3,
               AiConfigName: '正常机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
+              AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 4,
               AiConfigName: '稍弱机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
+              AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 5,
               AiConfigName: '超弱机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
+              AiWeight: [1, 1, 1, 1, 1]
             }
           ]
         },
@@ -495,7 +494,7 @@ export default {
             },
             {
               AiConfigLevel: 3,
-              Ratio: 25
+              Ratio: 2.5
             },
             {
               AiConfigLevel: 4,
@@ -543,6 +542,8 @@ export default {
       editAI: {},
       editAIVisible: false,
       editPlayerGoodCardVisible: false,
+
+      editCriticalPoint : [0, 0, 0, 0],
       
       editPlayerGoodCard: [],
       Uid: 0,
@@ -563,7 +564,7 @@ export default {
           Ratio: "11.2"
         }, {
           AiConfigLevel: 3,
-          Ratio: 0
+          Ratio: "2.5",
         }, {
           AiConfigLevel: 4,
           Ratio: "1.6"
@@ -589,13 +590,79 @@ export default {
       let num = parseFloat(value) || 0;
       return Number(num.toFixed(2)); // 保留计算精度
     },
-    setData() {
-      console.log("refs",this.$refs)
-      // if (!ValidateVueItem(this.$refs['item'])) return false
+    checkControlRangeSave() {
+      let StrongestKillRatio = this.convertToFloat(this.editGameControl.StrongestKillRatio)
+      let ControlRange = []
+      let WeakestKillRatio =this.convertToFloat(this.editGameControl.WeakestKillRatio)
+      for (let i = 0; i <  this.editGameControl.ControlRange.length; i++) {
+        let tmp = this.editGameControl.ControlRange[i]
+        ControlRange.push({AiConfigLevel: tmp.AiConfigLevel, Ratio:this.convertToFloat(tmp.Ratio)} )
+      }
 
-      // if (this.editAIVisible) {
-      //   this.item.RobotAI = this.editAI
-      // }
+      if (StrongestKillRatio > ControlRange[0].Ratio || ControlRange[4].Ratio > WeakestKillRatio) {
+        console.log("aaaa....")
+        return false;
+      }
+        
+      for (let i = 1; i <  ControlRange.length; i++) {
+        if (ControlRange[i-1].Ratio > ControlRange[i].Ratio) {
+          console.log("aaaa....",ControlRange[i-1].Ratio,ControlRange[i].Ratio)
+          return false
+        }
+      }
+      return true
+
+    },
+
+    checkPlayerCanSave() {
+      if (this.editCriticalPoint.length < 1) {
+        return false 
+      }
+      for (let i = 1; i < this.editCriticalPoint.length; i++) {
+        if (this.editCriticalPoint[i-1] > this.editCriticalPoint[i]) {
+          return false
+        }
+      }
+      return true
+    },
+    checkRobotWeigth() {
+      //console.log("RobotWeight", this.item.PlayerControl)
+      for (let i = 0; i < this.item.PlayerControl.RobotWeight.length; i++) {
+        let tmp = this.item.PlayerControl.RobotWeight[i]
+        for (let j = 0; j < tmp.AiWeight.length; j++) {
+
+         // console.log(tmp.AiWeight)
+          if (tmp.AiWeight[j] == 0) {
+            Message.error(tmp.AiConfigName + '权重配置不能为0')
+            return false 
+          }
+        }
+      }
+      return true
+    },
+
+    setData() {
+      if (!this.checkControlRangeSave()) {
+        Message.error('群体控制个人临界点配置左边比右边大，请检测数据')
+        return
+      }
+
+      if (!this.checkRobotWeigth()) {
+        return 
+      }
+      if (!this.checkPlayerCanSave()) {
+        Message.error('个人控制临界点配置左边比右边大，请检测数据')
+        return
+      }
+     
+     
+      this.item.PlayerControl.CriticalPoint = []
+      for (let i = 0; i < this.editCriticalPoint.length; i++) {
+        this.item.PlayerControl.CriticalPoint.push(this.editCriticalPoint[i]*1000)
+      }
+
+     // console.log("refs",this.$refs)
+      
 
       this.item.GameControl.StrongestKillRatio = this.convertToFloat(this.editGameControl.StrongestKillRatio)
       this.item.GameControl.ControlRange = []
@@ -664,6 +731,10 @@ export default {
             for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
               let tmp = this.item.GameControl.GameAcceptance[i]
               this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
+            }
+            this.editCriticalPoint = []
+            for (let i = 0; i < this.item.PlayerControl.CriticalPoint.length; i++) {
+              this.editCriticalPoint.push(this.item.PlayerControl.CriticalPoint[i]/1000)
             }
             
             //console.log("this.editGameControl", this.editGameControl)
@@ -840,8 +911,8 @@ export default {
 
             this.GameRangeLevel = objs.gameRangeLevel
 
-            console.log("handleRefreshGameMoney:",  this.GameRangeLevel)
-            console.log("this.item.RobotWeight:", this.item.PlayerControl.RobotWeight)
+            // console.log("handleRefreshGameMoney:",  this.GameRangeLevel)
+            // console.log("this.item.RobotWeight:", this.item.PlayerControl.RobotWeight)
             for (let i = 0; i < this.item.PlayerControl.RobotWeight.length; i++) {
               if (this.item.PlayerControl.RobotWeight[i].AiConfigLevel == this.GameRangeLevel) {
                  this.GameRangeName = this.item.PlayerControl.RobotWeight[i].AiConfigName
@@ -861,7 +932,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log("objsff:", objs)
+         // console.log("objsff:", objs)
           let data = objs
           this.tableData= []
           for (let j = 0; j < data.length; j++) {
@@ -945,22 +1016,6 @@ export default {
 
       obj[key] = value;
     },
-
-    // 标准化百分比值（失焦时处理）
-    normalizePercent(obj, key) {
-      let value = obj[key]?.toString() || '0';
-      
-      // 补全小数位（如 5 → 5.00）
-      if (!value.includes('.')) {
-        value = value + '.00';
-      } else if (value.endsWith('.')) {
-        value = value + '00';
-      } else if (value.split('.')[1]?.length === 1) {
-        value = value + '0';
-      }
-
-      obj[key] = value;
-    }
   }
  
 }
