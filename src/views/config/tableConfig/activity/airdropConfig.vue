@@ -866,6 +866,7 @@ export default {
       data.taskConfig = JSON.stringify(this.edit.item.taskConfig)
       data.progressPrizes = JSON.stringify(this.edit.item.progressPrizes)
       data.userTypes = JSON.stringify(this.edit.item.userTypes)
+      data.importedFilename = this.edit.item.importedFilename
       return data
     },
     handleSave() {
@@ -933,6 +934,9 @@ export default {
       })
     },
     getImportedUidCount() {
+      if (this.edit.item.id === 0) {
+        return
+      }
       const $this = this
       request({
         url: '/dataProxy/info',
@@ -1133,6 +1137,7 @@ export default {
     },
     handleAdd() {
       this.edit.selectedGamesText = ''
+      this.edit.importedUidCount = 0
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
@@ -1351,8 +1356,11 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          this.getImportedUidCount()
-          this.$message.success('上传成功，新导入的数量为：' + response.Data.imported)
+          $this.getImportedUidCount()
+          $this.$message.success('上传成功，新导入的数量为：' + response.Data.imported)
+          if ($this.edit.item.id === 0) {
+            $this.edit.importedUidCount = response.Data.imported
+          }
         }
         $this.$refs.upload.clearFiles()
         $this.edit.loading = false
@@ -1372,6 +1380,7 @@ export default {
       if (response.RetCode === 0) {
         const uploadedFilename = response.Data
         console.log('upload success:', uploadedFilename)
+        this.edit.item.importedFilename = uploadedFilename
 
         this.edit.loading = true
         const startTime = new Date()
