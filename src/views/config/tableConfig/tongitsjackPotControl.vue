@@ -137,7 +137,8 @@
                       prop="TableMoney"
                       label="场次"
                       width="250"
-                    />
+                      :formatter="(row) => (row.TableMoney / 1000)"
+                    ></el-table-column>
                     <el-table-column
                       prop="Money"
                       label="库存"
@@ -278,6 +279,7 @@
                       prop="TableMoney"
                       label="游戏底注"
                       width="250"
+                       :formatter="(row) => (row.TableMoney / 1000)"
                     /> 
                     <el-table-column
                       prop="rate"
@@ -396,7 +398,7 @@
             </el-form-item>
             <el-form-item label="场次Level：">
               <template>
-                <span>{{ editPlayerInventory.TableMoney }}</span>
+                <span>{{ editPlayerInventory.TableMoney/1000 }}</span>
               </template>
             </el-form-item>
             <el-form-item label="当前场次库存：">
@@ -859,10 +861,13 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-         // console.log("objsff:", objs)
+          console.log("objsff:", objs)
           let data = objs
           this.tableData= []
           for (let j = 0; j < data.length; j++) {
+            if (data[j].RoomLevel > 0) {
+              continue
+            }
             let hasLevel = false;
             let tableMoney = data[j].TableMoney
             for (let j = 0; j < this.tableData.length; j++) {
