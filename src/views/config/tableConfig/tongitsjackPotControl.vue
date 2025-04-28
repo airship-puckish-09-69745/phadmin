@@ -137,7 +137,8 @@
                       prop="TableMoney"
                       label="场次"
                       width="250"
-                    />
+                      :formatter="(row) => (row.TableMoney / 1000)"
+                    ></el-table-column>
                     <el-table-column
                       prop="Money"
                       label="库存"
@@ -250,9 +251,9 @@
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
                 </el-descriptions-item>
-                <el-descriptions-item>
+                <!-- <el-descriptions-item>
                   <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
-                </el-descriptions-item>
+                </el-descriptions-item> -->
               </el-descriptions>
             </el-row>
             <el-row>
@@ -278,6 +279,7 @@
                       prop="TableMoney"
                       label="游戏底注"
                       width="250"
+                       :formatter="(row) => (row.TableMoney / 1000)"
                     /> 
                     <el-table-column
                       prop="rate"
@@ -396,7 +398,7 @@
             </el-form-item>
             <el-form-item label="场次Level：">
               <template>
-                <span>{{ editPlayerInventory.TableMoney }}</span>
+                <span>{{ editPlayerInventory.TableMoney/1000 }}</span>
               </template>
             </el-form-item>
             <el-form-item label="当前场次库存：">
@@ -544,6 +546,7 @@ export default {
       
       editPlayerGoodCard: [],
       Uid: 0,
+      VisibleUid: false,
       PlayerTableMoneyInfo: [],
       editPlayerInventoryVisible: false,
       editPlayerInventory: {},
@@ -663,9 +666,9 @@ export default {
               this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
             }
             
-            console.log("this.editGameControl", this.editGameControl)
+            //console.log("this.editGameControl", this.editGameControl)
           } else {
-
+            Message.error('保存失败')
           }
         }
       })
@@ -706,13 +709,13 @@ export default {
         this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
       }
 
-      console.log("gameAcceptance", this.editGameControl)
+     // console.log("gameAcceptance", this.editGameControl)
       this.item.GameControl.GameAcceptance = gameAcceptance 
     },
 
     handleAIUpdate(row) {
       this.editAIVisible = true
-      console.log('row==>', row)
+      // console.log('row==>', row)
       this.editAI = row
     },
     handleUpdatePlayerGoodCard() {
@@ -729,6 +732,10 @@ export default {
 
     },
     handleGetPlayerAllLevelMoney() {
+      if (this.Uid == 0) {
+        Message.warning('请输入正确的uid')
+        return
+      }
       request({
           url: '/dataProxy/info',
           method: 'get',
@@ -741,6 +748,7 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             const objs = response.Data || []
+            this.VisibleUid = true
             Message.success('刷新成功！')
             if (objs.list === undefined) {
                objs.list = []
@@ -753,11 +761,19 @@ export default {
                 }
             }
             
+          } else {
+            Message.warning('请输入正确的uid')
+            this.VisibleUid = false
           }
         })
     },
 
     handleUpdatePlayerLevelMoney(row) {
+      if (this.Uid == 0 || !this.VisibleUid) {
+        Message.warning('请输入正确的uid')
+        return
+      }
+
       this.editPlayerInventoryVisible = true
       this.editPlayerInventory = row
 
@@ -849,6 +865,9 @@ export default {
           let data = objs
           this.tableData= []
           for (let j = 0; j < data.length; j++) {
+            if (data[j].RoomLevel > 0) {
+              continue
+            }
             let hasLevel = false;
             let tableMoney = data[j].TableMoney
             for (let j = 0; j < this.tableData.length; j++) {
