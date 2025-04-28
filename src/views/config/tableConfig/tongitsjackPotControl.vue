@@ -774,6 +774,7 @@ export default {
           gameAcceptance.push({  TableMoney: tableMoney, Rate: 0 , Level: this.tableData[j].Level})
         } 
       } 
+      gameAcceptance.sort((a, b) => a.TableMoney - b.TableMoney);
       this.editGameControl.GameAcceptance = []
       for (let i = 0; i < gameAcceptance.length; i++) {
         let tmp = gameAcceptance[i]
@@ -799,6 +800,8 @@ export default {
       for (let i = 0; i < this.tableData.length; i++) {
         this.PlayerTableMoneyInfo.push({TableMoney: this.tableData[i].TableMoney, Money: 0})
       } 
+      this.PlayerTableMoneyInfo.sort((a, b) => a.TableMoney - b.TableMoney);
+
      // console.log("this.PlayerTableMoneyInfo", this.PlayerTableMoneyInfo)
 
     },
