@@ -1,631 +1,9 @@
-<script>
-import { Message } from 'element-ui'
-import Publish from '@/components/Publish'
-import Compare from '@/components/Compare'
-import robotAiSettingOutCard from '@/views/config/tableConfig/tongits/robotAiSettingOutCard.vue'
-import robotAiSettingDrop from '@/views/config/tableConfig/tongits/robotAiSettingDrop.vue'
-import robotAiSettingFight from '@/views/config/tableConfig/tongits/robotAiSettingFight.vue'
-import robotAiSettingBuildCard from '@/views/config/tableConfig/tongits/robotAiSettingBuildCard.vue'
-import robotAiSettingChallenge from '@/views/config/tableConfig/tongits/robotAiSettingChallenge.vue'
-import request from '@/utils/request'
-import { ValidateVueItem } from '@/utils/common'
-function NewPlayerGoodCard() {
-  const ret = []
-  for (let i = 0; i < 5; i++) {
-    const BuildCard = {
-      BuildCard: {
-        IsDoBuildCard: false,
-        BuildFourRatio: 80,
-        BuildFlushGte5Ratio: 80,
-        BuildFlush4Ratio: 80, // 构建4顺子
-        BuildFlush3Ratio: 80, // 构建3顺子
-        BuildThreeRatio: 80, // 构建3条概率
-        BuildFourMaxNum: 4,
-        BuildFlushGte5MaxNum: 1,
-        BuildFlush4MaxNum: 1,
-        BuildFlush3MaxNum: 1,
-        BuildThree3MaxNum: 1, // 构建3顺子数量
-        BuildJokerRatio: 80, // 构建Joker概率
-        BuildJokerMaxNum: 1, // 构建最大Joker数量
-        AiConfigId: i + 1
-      }
-    }
-    ret.push(BuildCard)
-  }
-  return ret
-}
-function NewRobotAIItem(level) {
-  const configLevel = level + 1
-  let configName = '超强机器⼈'
-  if (configLevel === 1) {
-    configName = '超强机器⼈'
-  } else if (configLevel === 2) {
-    configName = '稍强机器⼈'
-  } else if (configLevel === 3) {
-    configName = '正常机器⼈'
-  } else if (configLevel === 4) {
-    configName = '稍弱机器⼈'
-  } else if (configLevel === 5) {
-    configName = '超弱机器⼈'
-  }
-
-  return {
-    AiConfigId: configLevel,
-    AiConfigLevel: configLevel,
-    AiConfigName: configName,
-    BuildCard: {
-      BuildFlush3MaxNum: 3,
-      BuildFlush3Ratio: 30,
-      BuildFlush4MaxNum: 2,
-      BuildFlush4Ratio: 20,
-      BuildFlushGte5MaxNum: 2,
-      BuildFlushGte5Ratio: 100,
-      BuildFourMaxNum: 2,
-      BuildFourRatio: 8,
-      BuildJokerMaxNum: 2,
-      BuildJokerRatio: 100,
-      BuildThree3MaxNum: 3,
-      BuildThreeRatio: 30,
-      IsDoBuildCard: false
-    },
-    Challenge: {
-      Lose: {
-        HandCards: [
-          {
-            End: 100,
-            Percent: 10,
-            Start: 5
-          }
-        ],
-        Point: [
-          {
-            End: 5,
-            Percent: 30,
-            Start: 0
-          }
-        ],
-        RemainHandCards: [
-          {
-            End: 2,
-            Percent: 1,
-            Start: 1
-          }
-        ],
-        Round: [
-          {
-            End: 3,
-            Percent: 10,
-            Start: 1
-          }
-        ]
-      },
-      NobodyDropOwnerGreatOther: 20,
-      NobodyDropOwnerLessOther: 80,
-      Special: {
-        HandAOther1Fight: 95,
-        PointGe51NotFight: 100,
-        Round2NotDrop: 95
-      },
-      Win: {
-        HandCards: [
-          {
-            End: 100,
-            Percent: 30,
-            Start: 5
-          }
-        ],
-        Point: [
-          {
-            End: 5,
-            Percent: 60,
-            Start: 0
-          }
-        ],
-        RemainHandCards: [
-          {
-            End: 2,
-            Percent: 30,
-            Start: 1
-          }
-        ],
-        Round: [
-          {
-            End: 2,
-            Percent: 30,
-            Start: 2
-          }
-        ]
-      }
-    },
-    Drop: {
-      DropGroupHasLinkMaybe: 80,
-      NobodyDropOwnerGreatOther: 50,
-      NobodyDropOwnerLessOther: 50
-    },
-    Fight: {
-      Lose: {
-        HandCards: [
-          {
-            End: 100,
-            Percent: 15,
-            Start: 5
-          }
-        ],
-        Point: [
-          {
-            End: 5,
-            Percent: 10,
-            Start: 0
-          }
-        ],
-        RemainHandCards: [
-          {
-            End: 2,
-            Percent: 10,
-            Start: 1
-          }
-        ],
-        Round: [
-          {
-            End: 3,
-            Percent: 0,
-            Start: 2
-          }
-        ]
-      },
-      Special: {
-        HandAOther1Fight: 95,
-        OtherNotDropButCanWin: 70,
-        PointGe51NotFight: 100,
-        RealPlayerNotDrop: [],
-        Round2NotDrop: 95
-      },
-      Win: {
-        HandCards: [
-          {
-            End: 100,
-            Percent: 20,
-            Start: 5
-          }
-        ],
-        Point: [
-          {
-            End: 5,
-            Percent: 60,
-            Start: 0
-          }
-        ],
-        RemainHandCards: [
-          {
-            End: 2,
-            Percent: 30,
-            Start: 1
-          }
-        ],
-        Round: [
-          {
-            End: 2,
-            Percent: 10,
-            Start: 2
-          }
-        ]
-      }
-    },
-    OutCard: {
-      OutCardCanOtherContribute: -1
-    }
-  }
-}
-function NewRobotAI() {
-  const ret = []
-  for (let i = 0; i < 5; i++) {
-    const AiConfig = NewRobotAIItem(i)
-    ret.push(AiConfig)
-  }
-  return ret
-}
-function NewPlayerLevelMoney() {
-  return [
-    {
-      Level: 1,
-      Money: 1
-    },
-    {
-      Level: 2,
-      Money: 2
-    },
-    {
-      Level: 3,
-      Money: 3
-    },
-    {
-      Level: 4,
-      Money: 4
-    },
-    {
-      Level: 5,
-      Money: 5
-    },
-    {
-      Level: 6,
-      Money: 6
-    },
-    {
-      Level: 7,
-      Money: 7
-    },
-    {
-      Level: 8,
-      Money: 8
-    },
-    {
-      Level: 9,
-      Money: 9
-    }
-  ]
-}
-
-
-export default {
-  components: {
-    // robotAiSettingChallenge, robotAiSettingBuildCard, robotAiSettingFight,
-    // robotAiSettingDrop, robotAiSettingOutCard,
-    Publish,
-    Compare
-  },
-  data() {
-    return {
-      gameId: 128,
-      item: {
-       // RobotAI: NewRobotAI(),
-        PlayerControl: {
-          CriticalPoint: [0, 0, 0, 0],
-         // PlayerGoodCard: NewPlayerGoodCard(),
-          PlayerControlRound: 0,
-          IsSameFirst: false,
-          RobotWeight: [
-            {
-              AiConfigLevel: 1,
-              AiConfigName: '超强机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
-            },
-            {
-              AiConfigLevel: 2,
-              AiConfigName: '稍强机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
-            },
-            {
-              AiConfigLevel: 3,
-              AiConfigName: '正常机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
-            },
-            {
-              AiConfigLevel: 4,
-              AiConfigName: '稍弱机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
-            },
-            {
-              AiConfigLevel: 5,
-              AiConfigName: '超弱机器⼈',
-              AiWeight: [0, 0, 0, 0, 0]
-            }
-          ]
-        },
-        GameControl: {
-          StrongestKillRatio: 0,
-          ControlRange: [
-            {
-              AiConfigLevel: 1,
-              Ratio: 0
-            },
-            {
-              AiConfigLevel: 2,
-              Ratio: 0
-            },
-            {
-              AiConfigLevel: 3,
-              Ratio: 0
-            },
-            {
-              AiConfigLevel: 4,
-              Ratio: 0
-            },
-            {
-              AiConfigLevel: 5,
-              Ratio: 0
-            }
-          ],
-          WeakestKillRatio: 0,
-          MoveRange: [
-            {
-              AiConfigLevel: 1,
-              Count: 0
-            },
-            {
-              AiConfigLevel: 2,
-              Count: 0
-            },
-            {
-              AiConfigLevel: 3,
-              Count: 0
-            },
-            {
-              AiConfigLevel: 4,
-              Count: 0
-            },
-            {
-              AiConfigLevel: 5,
-              Count: 0
-            }
-          ],
-          OriginPoint: 0,
-          GameAcceptance: [
-            { Level: 1, Rate: 10 },
-            { Level: 2, Rate: 10 },
-          ]
-        },
-
-      },
-
-      form: {},
-
-      labelPosition: 'top',
-      subKey: 'tongits_jackpot_control',
-
-      editAI: {},
-      editAIVisible: false,
-      editPlayerGoodCardVisible: false,
-      
-      editPlayerGoodCard: [],
-      Uid: 0,
-      PlayerLevelMoney: [],
-      editPlayerInventoryVisible: false,
-      editPlayerInventory: {},
-      GameRangeLevel: 0,
-      GameRangeName: 0,
-      GameMoney: 0,
-    }
-  },
-  created() {
-   //  this.PlayerLevelMoney = NewPlayerLevelMoney()
-     this.getData()
-     this.handleRefreshGameMoney() 
-     this.handleRefreshPlayerLevels()
-  },
-  methods: {
-    getFullKey() {
-      return 'CustomizeCfg_' + this.subKey
-    },
-    setData() {
-      console.log("refs",this.$refs)
-      // if (!ValidateVueItem(this.$refs['item'])) return false
-
-      // if (this.editAIVisible) {
-      //   this.item.RobotAI = this.editAI
-      // }
-      console.log('this.item:', this.item)
-      this.form.Data = JSON.stringify(this.item)
-      console.log('this.form.Data:', this.form.Data)
-      const $this = this
-      // 设置修改后数据
-      this.$refs.compare.SetNewVal(this.form)
-      this.$refs.compare.Compare(function(isEdit) {
-        if (!isEdit) {
-          Message.error('没有任何修改，不需要提交')
-          return
-        }
-        request({
-          url: 'customizeconfig/update',
-          method: 'post',
-          data: $this.form
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('保存成功')
-          }
-        })
-      })
-    },
-    getData() {
-      request({
-        url: '/customizeconfig/one',
-        method: 'get',
-        data: {
-          SubKey: this.subKey,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          this.form = response.Data || {}
-          // eslint-disable-next-line no-empty
-          if (response.Data && response.Data.Data !== '') {
-            const item = JSON.parse(response.Data.Data)
-            Object.assign(this.item, item)
-            // 设置修改之前数据
-            this.$refs.compare.SetOldVal(response.Data)
-          } else {
-
-          }
-        }
-      })
-    },
-    handleAIUpdate(row) {
-      this.editAIVisible = true
-      console.log('row==>', row)
-      this.editAI = row
-    },
-    handleUpdatePlayerGoodCard() {
-      this.editPlayerGoodCardVisible = true
-     // this.editPlayerGoodCard = this.PlayerControl.PlayerGoodCard
-    },
-
-    handleRefreshPlayerLevels() {
-      this.PlayerLevelMoney = []
-      for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
-        this.PlayerLevelMoney.push({level: this.item.GameControl.GameAcceptance[i].Level, money: 0})
-      } 
-     // console.log("this.PlayerLevelMoney", this.PlayerLevelMoney)
-
-    },
-    handleGetPlayerAllLevelMoney() {
-      request({
-          url: '/dataProxy/info',
-          method: 'get',
-          data: {
-            Env: this.env,
-            gid: this.gameId,
-            uid: this.Uid,
-            Path: '/egamecontorl/player/level/money'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            const objs = response.Data || []
-            Message.success('刷新成功！')
-            if (objs.levelMoneyList === undefined) {
-               objs.levelMoneyList = []
-            }
-            for (let j = 0; j < objs.levelMoneyList.length; j++) {
-              for (let i = 0; i < this.PlayerLevelMoney.length; i++) 
-                if (objs.levelMoneyList[j].level == this.PlayerLevelMoney[i].level) {
-                  this.PlayerLevelMoney[i].money = objs.levelMoneyList[j].money/1000
-                  break
-                }
-            }
-            
-          }
-        })
-    },
-
-    handleUpdatePlayerLevelMoney(row) {
-      this.editPlayerInventoryVisible = true
-      this.editPlayerInventory = row
-
-     
-    },
-
-    savePlayerLevelMoney() {
-      if (!this.editPlayerInventoryVisible) {
-        return 
-      }
-      console.log("savePlayerLevelMoney:", this.editPlayerInventory )
-      request({
-          url: '/dataProxy/info',
-          method: 'post',
-          data: {
-            Env: this.env,
-            gid: this.gameId,
-            uid: this.Uid,
-            level: this.editPlayerInventory.level,
-            value: this.editPlayerInventory.money*1000,
-            Path: '/egamecontorl/set/player/level/money'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('保存成功')
-          }
-        })
-     
-    },
-    handleUpdateGameMoney() {
-      request({
-          url: '/dataProxy/info',
-          method: 'post',
-          data: {
-            Env: this.env,
-            gid: this.gameId,
-            value: this.GameMoney*1000,
-            Path: '/egamecontorl/set/game/money'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('保存成功')
-          }
-        })
-     
-    },
-    handleRefreshGameMoney() {
-      request({
-          url: '/dataProxy/info',
-          method: 'get',
-          data: {
-            Env: this.env,
-            gid: this.gameId,
-            Path: '/egamecontorl/game/money'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            const objs = response.Data || []
-            Message.success('刷新成功！')
-            this.GameMoney = objs.gameMoney 
-            this.GameMoney /= 1000
-
-            this.GameRangeLevel = objs.aiLevel
-            for (let i = 0; i < this.item.GameControl.ControlRange.length; i++) {
-              if (this.item.GameControl.ControlRange[i].AiConfigLevel == this.GameRangeLevel) {
-                 this.GameRangeName = this.item.GameControl.ControlRange[i].AiConfigName
-                 break
-              }
-            } 
-          }
-        })
-    },
-    addRow() {
-      this.item.GameControl.GameAcceptance.push({ Level: 0, Rate: 0 })
-    },
-    delRow(index) {
-      this.item.GameControl.GameAcceptance.splice(index, 1)
-    },
-  }
-}
-</script>
-
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <div style="margin-bottom: 20px;">
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </div>
-      <el-tabs type="border-card">
-          <!--
-          <el-tab-pane label="机器⼈类型配置">
-            <el-row style="padding-top: 5px">
-              <el-col :span="24">
-                <div style="padding-top: 10px">
-                  <el-table
-                    :data="item.RobotAI"
-                    stripe
-                    border
-                    style="width: 100%"
-                  >
-                    <el-table-column
-                      prop="AiConfigId"
-                      label="级别"
-                      width="70">
-                    </el-table-column>
-
-                    <el-table-column
-                      prop="AiConfigName"
-                      label="级别"
-                      width="250"
-                    />
-                    <el-table-column
-                      label="操作"
-                      column-key="op"
-                      width="250"
-                    >
-                      <template slot-scope="scope">
-                        <el-button
-                          type="primary"
-                          size="mini"
-                          icon="el-icon-document-copy"
-                          @click="handleAIUpdate(scope.row)"
-                        >修改
-                        </el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </el-col>
-            </el-row>
-          </el-tab-pane>
-          -->
+      <el-tabs type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
             <h4 style="text-align:left;">个⼈控制临界点配置</h4>
@@ -731,7 +109,7 @@ export default {
               </el-form>
             </el-row>
           </el-tab-pane>
-          <el-tab-pane label="玩家库存查询与修改">
+          <el-tab-pane label="玩家库存查询与修改" name="playerInfoQuery">
             <el-row style="padding-top: 5px">
               <el-form label-width="150px">
                 <el-form-item label="玩家ID" required>
@@ -749,19 +127,20 @@ export default {
                 </el-form-item>
                 <el-form-item label="玩家场次库存" required>
                   <el-table
-                    :data="PlayerLevelMoney"
+                    :data="PlayerTableMoneyInfo"
                     stripe
                     border
                     style="width: 100%"
                     show-summary
                   >
                     <el-table-column
-                      prop="level"
-                      label="场次"
+                      prop="TableMoney"
+                      label="游戏底注"
                       width="250"
-                    />
+                      :formatter="(row) => (row.TableMoney / 1000)"
+                    ></el-table-column>
                     <el-table-column
-                      prop="money"
+                      prop="Money"
                       label="库存"
                       width="250"
                     />
@@ -788,26 +167,58 @@ export default {
             <h3 style="text-align:center;">个⼈控制临界点配置</h3>
             <el-descriptions label="个⼈控制临界点配置" :column="7" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.GameControl.StrongestKillRatio"><template #append>‱</template></el-input>
+                <el-input 
+                  v-model="editGameControl.StrongestKillRatio"
+                  @input="handlePercentInput(editGameControl, 'StrongestKillRatio', 0, 100)"
+                  placeholder="0-100"
+                >
+                  <template #append>%</template>
+                </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.GameControl.ControlRange[0].Ratio"><template #append>‱</template></el-input>
+                <el-input 
+                  v-model="editGameControl.ControlRange[0].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[0], 'Ratio')"
+                  placeholder="0-100"
+                  >
+                  <template #append>%</template></el-input>
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.GameControl.ControlRange[1].Ratio"><template #append>‱</template></el-input>
+                <el-input 
+                  v-model="editGameControl.ControlRange[1].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[1], 'Ratio')"
+                
+                  placeholder="0-100"
+                  ><template #append>%</template></el-input>
               </el-descriptions-item>
               <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-tag size="medium" closable>250‱</el-tag>
+                <el-tag size="medium" closable>2.5%</el-tag>
               </el-descriptions-item>
-              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.GameControl.ControlRange[2].Ratio"><template #append>‱</template></el-input>
+              <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input 
+                  v-model="editGameControl.ControlRange[3].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[3], 'Ratio')"
+                 
+                  placeholder="0-100"
+                  ><template #append>%</template></el-input>
               </el-descriptions-item>
-              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.GameControl.ControlRange[3].Ratio"><template #append>‱</template></el-input>
+              <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input 
+                  v-model="editGameControl.ControlRange[4].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[4], 'Ratio')"
+                
+                  placeholder="0-100"
+                  ><template #append>%</template></el-input>
               </el-descriptions-item>
-              <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.GameControl.WeakestKillRatio"><template #append>‱</template></el-input>
+              <el-descriptions-item label="强放匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+                <el-input 
+                  v-model="editGameControl.WeakestKillRatio"
+                  @input="handlePercentInput(editGameControl, 'WeakestKillRatio')"
+                 
+                  placeholder="0-100"
+                ><template #append>%</template></el-input>
               </el-descriptions-item>
+          
             </el-descriptions>
             <h3 style="text-align:center;">群控区间对个⼈区间的移动格数</h3>
             <el-descriptions label="群控区间对个⼈区间的移动格数" :column="6" :colon="false" direction="vertical" border>
@@ -831,7 +242,7 @@ export default {
               </el-descriptions-item>
             </el-descriptions>
           </el-tab-pane>
-          <el-tab-pane label="游戏库存查询与修改">
+          <el-tab-pane label="游戏库存查询与修改"  name="gameMoneyQuery">
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="当前游戏待调整⾦额:">
@@ -840,9 +251,9 @@ export default {
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
                 </el-descriptions-item>
-                <el-descriptions-item>
+                <!-- <el-descriptions-item>
                   <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
-                </el-descriptions-item>
+                </el-descriptions-item> -->
               </el-descriptions>
             </el-row>
             <el-row>
@@ -854,47 +265,37 @@ export default {
             </el-row>
 
           </el-tab-pane>
-          <el-tab-pane label="场次采信比例配置">
+          <el-tab-pane label="场次采信比例配置" name="gameInfoQuery">
             <el-row style="padding-top: 5px">
               <el-form label-width="150px">
                 <el-form-item>
                   <el-table
-                    :data="item.GameControl.GameAcceptance"
+                    :data="editGameControl.GameAcceptance"
                     stripe
                     border
                     style="width: 100%"
                   >
                     <el-table-column
-                      prop="level"
-                      label="场次"
+                      prop="TableMoney"
+                      label="游戏底注"
                       width="250"
-                    > 
-                      <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Level" />
-                      </template>
-                    </el-table-column>
+                       :formatter="(row) => (row.TableMoney / 1000)"
+                    /> 
                     <el-table-column
                       prop="rate"
-                      label="库存"
+                      label="场次采信比例"
                       width="250"
+                      required="true" 
+                    
                     >
-                      <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.Rate" />
-                      </template>
-                    </el-table-column>
-                    <el-table-column
-                      label="操作"
-                      width="250"
-                    >
-                      <template slot-scope="scope">
-                        <el-button type="danger" @click="delRow(scope.$index)">删除</el-button>
-                      </template>
-        
+                        <template slot-scope="scope">
+                          <el-input v-model="scope.row.Rate" 
+                          placeholder="0-100"
+                            @input="handleDecimalInput(scope.row, 'Rate')" >
+                            <template #append>%</template></el-input>
+                        </template>
                     </el-table-column>
                   </el-table>
-                  <el-row>
-                    <el-button type="primary" @click="addRow()">添加</el-button>
-                  </el-row>
                 </el-form-item>
               </el-form>
             </el-row>
@@ -995,19 +396,19 @@ export default {
                 <span>{{ Uid }}</span>
               </template>
             </el-form-item>
-            <el-form-item label="场次Level：">
+            <el-form-item label="游戏底注：">
               <template>
-                <span>{{ editPlayerInventory.level }}</span>
+                <span>{{ editPlayerInventory.TableMoney/1000 }}</span>
               </template>
             </el-form-item>
             <el-form-item label="当前场次库存：">
               <template>
-                <span>{{ editPlayerInventory.money }}</span>
+                <span>{{ editPlayerInventory.Money }}</span>
               </template>
             </el-form-item>
             <el-form-item label="修改⾄：" required>
               <template>
-                <el-input v-model.number="editPlayerInventory.money" />
+                <el-input v-model.number="editPlayerInventory.Money" />
               </template>
             </el-form-item>
           </el-form>
@@ -1028,3 +429,540 @@ export default {
 <style scoped>
 
 </style>
+
+
+<script>
+import { Message } from 'element-ui'
+import Publish from '@/components/Publish'
+import Compare from '@/components/Compare'
+import request from '@/utils/request'
+import { ValidateVueItem ,DataRule} from '@/utils/common'
+
+
+export default {
+  components: {
+    Publish,
+    Compare
+  },
+  data() {
+    return {
+      gameId: 128,
+      playMode: 4, // 经典玩法
+      tableData: [],
+      item: {
+        PlayerControl: {
+          CriticalPoint: [0, 0, 0, 0],
+          PlayerControlRound: 0,
+          IsSameFirst: false,
+          RobotWeight: [
+            {
+              AiConfigLevel: 1,
+              AiConfigName: '超强机器⼈',
+              AiWeight: [0, 0, 0, 0, 0]
+            },
+            {
+              AiConfigLevel: 2,
+              AiConfigName: '稍强机器⼈',
+              AiWeight: [0, 0, 0, 0, 0]
+            },
+            {
+              AiConfigLevel: 3,
+              AiConfigName: '正常机器⼈',
+              AiWeight: [0, 0, 0, 0, 0]
+            },
+            {
+              AiConfigLevel: 4,
+              AiConfigName: '稍弱机器⼈',
+              AiWeight: [0, 0, 0, 0, 0]
+            },
+            {
+              AiConfigLevel: 5,
+              AiConfigName: '超弱机器⼈',
+              AiWeight: [0, 0, 0, 0, 0]
+            }
+          ]
+        },
+        GameControl: {
+          StrongestKillRatio: 0,
+          ControlRange: [
+            {
+              AiConfigLevel: 1,
+              Ratio: 0
+            },
+            {
+              AiConfigLevel: 2,
+              Ratio: 0
+            },
+            {
+              AiConfigLevel: 3,
+              Ratio: 25
+            },
+            {
+              AiConfigLevel: 4,
+              Ratio: 0
+            },
+            {
+              AiConfigLevel: 5,
+              Ratio: 0
+            }
+          ],
+          WeakestKillRatio: 0,
+          MoveRange: [
+            {
+              AiConfigLevel: 1,
+              Count: 0
+            },
+            {
+              AiConfigLevel: 2,
+              Count: 0
+            },
+            {
+              AiConfigLevel: 3,
+              Count: 0
+            },
+            {
+              AiConfigLevel: 4,
+              Count: 0
+            },
+            {
+              AiConfigLevel: 5,
+              Count: 0
+            }
+          ],
+          OriginPoint: 0,
+          GameAcceptance: []
+        },
+
+      },
+
+      form: {},
+
+      labelPosition: 'top',
+      subKey: 'tongits_jackpot_control',
+
+      editAI: {},
+      editAIVisible: false,
+      editPlayerGoodCardVisible: false,
+      
+      editPlayerGoodCard: [],
+      Uid: 0,
+      VisibleUid: false,
+      PlayerTableMoneyInfo: [],
+      editPlayerInventoryVisible: false,
+      editPlayerInventory: {},
+      GameRangeLevel: 0,
+      GameRangeName: 0,
+      GameMoney: 0,
+      editGameControl:{
+        StrongestKillRatio:'0',
+        ControlRange: [{
+          AiConfigLevel: 1,
+          Ratio: "10"
+        }, {
+          AiConfigLevel: 2,
+          Ratio: "11.2"
+        }, {
+          AiConfigLevel: 3,
+          Ratio: 0
+        }, {
+          AiConfigLevel: 4,
+          Ratio: "1.6"
+        }, {
+          AiConfigLevel: 5,
+          Ratio: "22.0"
+        }],
+        WeakestKillRatio:'0',
+        GameAcceptance: []
+      }
+    }
+  },
+  created() {
+    // this.PlayerTableMoneyInfo = NewPlayerLevelMoney()
+     this.getData()
+     this.getGameConfig()
+  },
+  methods: {
+    getFullKey() {
+      return 'CustomizeCfg_' + this.subKey
+    },
+    convertToFloat(value) {
+      let num = parseFloat(value) || 0;
+      return Number(num.toFixed(2)); // 保留计算精度
+    },
+    setData() {
+      console.log("refs",this.$refs)
+      // if (!ValidateVueItem(this.$refs['item'])) return false
+
+      // if (this.editAIVisible) {
+      //   this.item.RobotAI = this.editAI
+      // }
+
+      this.item.GameControl.StrongestKillRatio = this.convertToFloat(this.editGameControl.StrongestKillRatio)
+      this.item.GameControl.ControlRange = []
+      this.item.GameControl.WeakestKillRatio =this.convertToFloat(this.editGameControl.WeakestKillRatio)
+      for (let i = 0; i <  this.editGameControl.ControlRange.length; i++) {
+        let tmp = this.editGameControl.ControlRange[i]
+        this.item.GameControl.ControlRange.push({AiConfigLevel: tmp.AiConfigLevel,Ratio:this.convertToFloat(tmp.Ratio)} )
+      }
+
+      
+      this.item.GameControl.GameAcceptance = []
+      for (let i = 0; i <  this.editGameControl.GameAcceptance.length; i++) {
+        let tmp =  this.editGameControl.GameAcceptance[i]
+        this.item.GameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  this.convertToFloat(tmp.Ratio), Level: tmp.Level})
+      }
+
+
+      console.log('this.item:', this.item)
+      this.form.Data = JSON.stringify(this.item)
+      console.log('this.form.Data:', this.form.Data)
+      const $this = this
+      // 设置修改后数据
+      this.$refs.compare.SetNewVal(this.form)
+      this.$refs.compare.Compare(function(isEdit) {
+        if (!isEdit) {
+          Message.error('没有任何修改，不需要提交')
+          return
+        }
+        request({
+          url: 'customizeconfig/update',
+          method: 'post',
+          data: $this.form
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+      })
+    },
+    getData() {
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: this.subKey,
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.form = response.Data || {}
+          // eslint-disable-next-line no-empty
+          if (response.Data && response.Data.Data !== '') {
+            const item = JSON.parse(response.Data.Data)
+            Object.assign(this.item, item)
+            // 设置修改之前数据
+            this.$refs.compare.SetOldVal(response.Data)
+
+            this.editGameControl.StrongestKillRatio = this.item.GameControl.StrongestKillRatio.toString()
+            this.editGameControl.ControlRange = []
+            this.editGameControl.WeakestKillRatio = this.item.GameControl.WeakestKillRatio.toString()
+            for (let i = 0; i <  this.item.GameControl.ControlRange.length; i++) {
+              let tmp = this.item.GameControl.ControlRange[i]
+              this.editGameControl.ControlRange.push({AiConfigLevel: tmp.AiConfigLevel,Ratio:tmp.Ratio.toString()} )
+            }
+
+            this.editGameControl.GameAcceptance = []
+            for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
+              let tmp = this.item.GameControl.GameAcceptance[i]
+              this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
+            }
+            
+            //console.log("this.editGameControl", this.editGameControl)
+          } else {
+            Message.error('保存失败')
+          }
+        }
+      })
+    },
+
+    handleTabClick(tab) {
+      if (tab.name == "gameMoneyQuery") {
+        this.handleRefreshGameMoney() 
+      } else if (tab.name == "gameInfoQuery") {
+        this.showGameMoney()
+      } else if (tab.name == "playerInfoQuery") {
+        this.handleRefreshPlayerLevels()
+      }
+
+    },
+
+    showGameMoney() {
+      let gameAcceptance = []
+      for (let j = 0; j < this.tableData.length; j++) {
+        let tableMoney = this.tableData[j].TableMoney
+        let f = false 
+        let tmp = {}
+        for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
+          let levelTableMoney = this.item.GameControl.GameAcceptance[i].TableMoney
+          if (tableMoney == levelTableMoney) {
+            f = true;
+            gameAcceptance.push(this.item.GameControl.GameAcceptance[i])
+            break
+          }
+        }
+        if (!f) {
+          gameAcceptance.push({  TableMoney: tableMoney, Rate: 0 , Level: this.tableData[j].Level})
+        } 
+      } 
+      this.editGameControl.GameAcceptance = []
+      for (let i = 0; i < gameAcceptance.length; i++) {
+        let tmp = gameAcceptance[i]
+        this.editGameControl.GameAcceptance.push({TableMoney: tmp.TableMoney, Rate:  tmp.Rate.toString(), Level: tmp.Level})
+      }
+
+     // console.log("gameAcceptance", this.editGameControl)
+      this.item.GameControl.GameAcceptance = gameAcceptance 
+    },
+
+    handleAIUpdate(row) {
+      this.editAIVisible = true
+      // console.log('row==>', row)
+      this.editAI = row
+    },
+    handleUpdatePlayerGoodCard() {
+      this.editPlayerGoodCardVisible = true
+     // this.editPlayerGoodCard = this.PlayerControl.PlayerGoodCard
+    },
+
+    handleRefreshPlayerLevels() {
+      this.PlayerTableMoneyInfo = []
+      for (let i = 0; i < this.tableData.length; i++) {
+        this.PlayerTableMoneyInfo.push({TableMoney: this.tableData[i].TableMoney, Money: 0})
+      } 
+     // console.log("this.PlayerTableMoneyInfo", this.PlayerTableMoneyInfo)
+
+    },
+    handleGetPlayerAllLevelMoney() {
+      if (this.Uid == 0) {
+        Message.warning('请输入正确的uid')
+        return
+      }
+      request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            uid: this.Uid,
+            Path: '/egamecontorl/player/table/money/info'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const objs = response.Data || []
+            this.VisibleUid = true
+            Message.success('刷新成功！')
+            if (objs.list === undefined) {
+               objs.list = []
+            }
+            for (let j = 0; j < objs.list.length; j++) {
+              for (let i = 0; i < this.PlayerTableMoneyInfo.length; i++) 
+                if (objs.list[j].tableMoney == this.PlayerTableMoneyInfo[i].TableMoney) {
+                  this.PlayerTableMoneyInfo[i].Money = objs.list[j].money/1000
+                  break
+                }
+            }
+            
+          } else {
+            Message.warning('请输入正确的uid')
+            this.VisibleUid = false
+          }
+        })
+    },
+
+    handleUpdatePlayerLevelMoney(row) {
+      if (this.Uid == 0 || !this.VisibleUid) {
+        Message.warning('请输入正确的uid')
+        return
+      }
+
+      this.editPlayerInventoryVisible = true
+      this.editPlayerInventory = row
+
+     
+    },
+
+    savePlayerLevelMoney() {
+      if (!this.editPlayerInventoryVisible) {
+        return 
+      }
+      console.log("savePlayerLevelMoney:", this.editPlayerInventory )
+      request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            uid: this.Uid,
+            tableMoney: this.editPlayerInventory.TableMoney,
+            value: this.editPlayerInventory.Money*1000,
+            Path: '/egamecontorl/set/player/table/money/info'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+     
+    },
+    handleUpdateGameMoney() {
+      request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            value: this.GameMoney*1000,
+            Path: '/egamecontorl/set/game/money'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('保存成功')
+          }
+        })
+     
+    },
+    handleRefreshGameMoney() {
+      request({
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            gid: this.gameId,
+            Path: '/egamecontorl/game/money'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            const objs = response.Data || []
+
+           
+            Message.success('刷新成功！')
+            this.GameMoney = objs.gameMoney 
+            this.GameMoney /= 1000
+
+            this.GameRangeLevel = objs.gameRangeLevel
+
+            console.log("handleRefreshGameMoney:",  this.GameRangeLevel)
+            console.log("this.item.RobotWeight:", this.item.PlayerControl.RobotWeight)
+            for (let i = 0; i < this.item.PlayerControl.RobotWeight.length; i++) {
+              if (this.item.PlayerControl.RobotWeight[i].AiConfigLevel == this.GameRangeLevel) {
+                 this.GameRangeName = this.item.PlayerControl.RobotWeight[i].AiConfigName
+                 break
+              }
+            } 
+          }
+        })
+    },
+    getGameConfig() {
+      request({
+        url: '/tongitsjackpottable/all',
+        method: 'get',
+        data: {
+          PlayMode: this.playMode
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log("objsff:", objs)
+          let data = objs
+          this.tableData= []
+          for (let j = 0; j < data.length; j++) {
+            if (data[j].RoomLevel > 0) {
+              continue
+            }
+            let hasLevel = false;
+            let tableMoney = data[j].TableMoney
+            for (let j = 0; j < this.tableData.length; j++) {
+              if (this.tableData[j].TableMoney == tableMoney) {
+                hasLevel = true;
+              }
+            }
+            if (hasLevel) {
+              continue;
+            }
+            this.tableData.push(data[j])
+          }
+        }
+      })
+    },
+    dataRule(required, config) {
+      console.log(config)
+      return DataRule(required, config)
+    },
+    handleDecimalInput(row, key) {
+      // 1. 过滤非法字符（只保留数字和小数点）
+      let value = row[key] ? row[key].toString() : '0';
+      value = value.replace(/[^\d.]/g, '')
+                  .replace(/^0+(\d)/, '$1')  // 禁止 01 → 变为 1
+                  .replace(/^\./, '0.')      // 补全 .5 → 0.5
+                  .replace(/(\..*)\./g, '$1'); // 禁止多个小数点
+
+      // 2. 禁止以小数点开头（如 ".5" → "0.5"）
+      if (value.startsWith('.')) {
+        value = '0' + value;
+      }
+
+      // 3. 确保最多一个小数点
+      const parts = value.split('.');
+      if (parts.length > 2) {
+        value = parts[0] + '.' + parts.slice(1).join('');
+      }
+
+      // 4. 限制小数点后最多两位（百分比通常只需两位小数）
+      if (parts.length === 2 && parts[1].length > 2) {
+        value = parts[0] + '.' + parts[1].slice(0, 2);
+      }
+
+      const numValue = parseFloat(value) || 0;
+      if (numValue < 0) {
+        value = '0';
+      } else if (numValue > 100) {
+        value = '100';
+      } else if (isNaN(numValue)) {
+        value = '0'; // 异常值重置为 0
+      }
+
+      // 5. 更新绑定的值（保留字符串类型，避免自动转换问题）
+      row[key] = value === '' ? null : value;
+    },
+
+    // 处理百分比输入（0-100%）
+    handlePercentInput(obj, key, min = 0, max = 100) {
+      let value = obj[key]?.toString() || '0';
+      
+      value = value.replace(/[^\d.]/g, '')
+                  .replace(/^0+(\d)/, '$1')  // 禁止 01 → 变为 1
+                  .replace(/^\./, '0.')      // 补全 .5 → 0.5
+                  .replace(/(\..*)\./g, '$1'); // 禁止多个小数点
+      
+      const parts = value.split('.');
+      if (parts.length > 1) {
+        value = `${parts[0]}.${parts[1].slice(0, 2)}`; // 限制2位小数
+      }
+
+      // 实时范围限制
+      const numValue = parseFloat(value) || 0;
+      if (numValue > max) value = max.toString();
+      if (numValue < min) value = min.toString();
+
+      obj[key] = value;
+    },
+
+    // 标准化百分比值（失焦时处理）
+    normalizePercent(obj, key) {
+      let value = obj[key]?.toString() || '0';
+      
+      // 补全小数位（如 5 → 5.00）
+      if (!value.includes('.')) {
+        value = value + '.00';
+      } else if (value.endsWith('.')) {
+        value = value + '00';
+      } else if (value.split('.')[1]?.length === 1) {
+        value = value + '0';
+      }
+
+      obj[key] = value;
+    }
+  }
+ 
+}
+</script>
+

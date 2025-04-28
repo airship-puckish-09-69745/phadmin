@@ -162,6 +162,38 @@
                   </el-input>
                 </el-form-item>
               </el-col>
+              <el-col :span="24">
+                <el-form-item label="导入用户：" :required="false">
+                  <span>已导入用户：{{this.edit.importedUidCount}}</span>
+                  <span style="color: red">（重复导入，不会覆盖原有的用户ID）</span>
+                  <el-upload
+                    ref="upload"
+                    drag
+                    :action="actionURL"
+                    :on-preview="handlePreview"
+                    :on-change="handleChange"
+                    :before-upload="handleBeforeUpload"
+                    :on-success="handleUploadSuccess"
+                    :with-credentials="true"
+                    :auto-upload="false"
+                    :limit="1"
+                  >
+                    <el-icon class="el-icon-upload" />
+                    <div class="el-upload__text">
+                      将文件拖到此处 或 <em>点击上传</em>
+                    </div>
+                    <div slot="tip" class="el-upload__tip">
+                      只能上传 text/csv 格式文件，且不超过10MB
+                    </div>
+                  </el-upload>
+                  <el-button class="ml-3" type="success" @click="submitUpload">
+                    上传用户ID数据
+                  </el-button>
+                  <el-button class="ml-3" type="danger" @click="delImportedUid">
+                    重置已导入的用户ID
+                  </el-button>
+                </el-form-item>
+              </el-col>
             </el-form>
           </el-row>
         </el-tab-pane>
@@ -468,6 +500,8 @@ import {id} from "html-webpack-plugin/lib/chunksorter";
 
 const filterMap = {}
 
+const loadingText = '兑奖码导入中，请稍等...'
+
 function newItem() {
   return {
     id: 0,
@@ -545,6 +579,8 @@ export default {
         title: "新增",
         selectedGamesText: '',
         gamesSortDialogVisible: false,
+        loading: false,
+        importedUidCount: 0,
       },
       env: 'test',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
@@ -690,6 +726,9 @@ export default {
       get() {
 
       }
+    },
+    actionURL() {
+      return process.env.VUE_APP_BASE_API + '/other/upload'
     }
   },
   methods: {
@@ -831,6 +870,7 @@ export default {
     },
     handleSave() {
       const data = this.getPostData()
+      data.env = this.env
       console.log('handleSave', data)
       if (data === null || data === undefined) {
         return
@@ -890,6 +930,45 @@ export default {
           $this.sentRewardAmount = response.Data / 1000
           console.log('getSentRewardAmount', $this.sentRewardAmount)
         }
+      })
+    },
+    getImportedUidCount() {
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          ActCfgId: $this.edit.item.id,
+          Path: '/activity/airdrop/uid/import/count'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.edit.importedUidCount = response.Data
+          console.log('getImportedUidCount', $this.edit.importedUidCount)
+        }
+      })
+    },
+    delImportedUid() {
+      const $this = this
+      this.$confirm('确定要重置已导入的用户id吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            ActCfgId: $this.edit.item.id,
+            Path: '/activity/airdrop/uid/import/del'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('已重置导入的用户id！')
+            $this.edit.importedUidCount = 0
+            console.log('delImportedUid', $this.edit.importedUidCount)
+          }
+        })
       })
     },
     //************************ 道具配置 ************************
@@ -997,6 +1076,7 @@ export default {
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
         this.getSentRewardAmount()
+        this.getImportedUidCount()
         this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
         this.updateGameTaskTypes(this.edit.item.gameIdCfg)
       } else {
@@ -1226,6 +1306,92 @@ export default {
       console.log('onSiteIdOptionsChange', this.edit.item.whitelistCfg.siteIdList)
     },
     //************************ 白名单相关 ************************
+    //************************ 上传文件相关 ************************
+    handleBeforeUpload(file) {
+      const isCsv = file.type === 'text/csv'
+      const isXls = file.type === 'xls'
+      const isXlsx = file.type === 'xlsx'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      const isValidType = isCsv || isXls || isXlsx
+
+      console.log('file.type:', file.type, ' isValidType:', isValidType)
+
+      if (!isValidType) {
+        this.$message.error('上传的文件只能是 text/csv 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('上传的文件大小不能超过10MB!')
+        return false
+      }
+      return true
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleChange(file, fileList) {
+      console.log(file)
+    },
+    submitUpload() {
+      this.$refs.upload.submit()
+    },
+    changeUploadLoadingText(process, subTime) {
+      this.edit.loadingText = loadingText + '进度：' + process + '%...用时：' + subTime + 's'
+    },
+    importData(uploadedFilename, ticker, startTime) {
+      const $this = this
+      request({
+        url: '/airdropconfig/uids/import',
+        method: 'post',
+        timeout: 90000,
+        data: {
+          Env: this.env,
+          ActCfgId: $this.edit.item.id,
+          Filename: uploadedFilename
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          this.getImportedUidCount()
+          this.$message.success('上传成功，新导入的数量为：' + response.Data.imported)
+        }
+        $this.$refs.upload.clearFiles()
+        $this.edit.loading = false
+
+        clearInterval(ticker)
+        const subTime = (new Date().getTime() - startTime.getTime()) / 1000
+        this.changeUploadLoadingText(100, subTime)
+        console.log('导入数量：' + response.Data.imported + '，用时：' + subTime + 's')
+      }).catch((reason) => {
+        console.log('取消导入：', reason)
+        clearInterval(ticker)
+        $this.edit.loading = false
+      })
+    },
+    handleUploadSuccess(response, file, fileList) {
+      this.$refs.upload.clearFiles()
+      if (response.RetCode === 0) {
+        const uploadedFilename = response.Data
+        console.log('upload success:', uploadedFilename)
+
+        this.edit.loading = true
+        const startTime = new Date()
+        let n = Math.ceil(Math.random() * 10)
+        const ticker = setInterval(() => {
+          n += Math.ceil(Math.random() * 10)
+          if (n > 100) {
+            n = 99
+          }
+          const subTime = (new Date().getTime() - startTime.getTime()) / 1000
+          this.changeUploadLoadingText(n, subTime)
+          n === 99 && clearInterval(ticker)
+        }, 1000)
+
+        this.importData(uploadedFilename, ticker, startTime)
+      } else {
+        this.$message.error(response.Data)
+      }
+    }
+    //************************ 上传文件相关 ************************
   }
 }
 </script>
