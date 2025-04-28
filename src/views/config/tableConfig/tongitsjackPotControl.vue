@@ -415,7 +415,9 @@
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="savePlayerLevelMoney">保存</el-button>
+              <el-tooltip content="点击保存<立即生效>" placement="top">
+                <el-button type="primary" size="medium" @click="savePlayerLevelMoney">保存</el-button>
+              </el-tooltip>
             </el-col>
           </el-row>
         </el-form-item>
