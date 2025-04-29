@@ -739,16 +739,16 @@ export default {
       if (addData.length > 0) {
         for (const i in addData) {
           str += `\r\n活动名称:【${addData[i].Head['activity.name']}】`
-          for (const j in addData[i].Rows) {
-            const rawValue = addData[i].Rows[j].newVal
-            // 使用正则移除所有HTML标签i
-            const decodedValue = this.decodeHtmlEntities(rawValue)
-            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
-            const attrName = this.AttrNames[addData[i].Rows[j].key]
-            if (attrName) {
-              str += `\r\n添加:【${attrName}:${cleanValue}】`
-            }
-          }
+          // for (const j in addData[i].Rows) {
+          //   const rawValue = addData[i].Rows[j].newVal
+          //   // 使用正则移除所有HTML标签i
+          //   const decodedValue = this.decodeHtmlEntities(rawValue)
+          //   const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+          //   const attrName = this.AttrNames[addData[i].Rows[j].key]
+          //   if (attrName) {
+          //     str += `\r\n添加:【${attrName}:${cleanValue}】`
+          //   }
+          // }
         }
       }
       if (delData.length > 0) {
@@ -758,34 +758,35 @@ export default {
           } else {
             str += `\r\n活动名称:【${delData[i].Head['activity.name']}】`
           }
-          for (const j in delData[i].Rows) {
-            const rawValue = delData[i].Rows[j].newVal
-            // 使用正则移除所有HTML标签i
-            const decodedValue = this.decodeHtmlEntities(rawValue)
-            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
-            const attrName = this.AttrNames[delData[i].Rows[j].key]
-            if (attrName) {
-              str += `\r\n删除:【${attrName}:${cleanValue}】`
-            }
-          }
+          // for (const j in delData[i].Rows) {
+          //   const rawValue = delData[i].Rows[j].newVal
+          //   // 使用正则移除所有HTML标签i
+          //   const decodedValue = this.decodeHtmlEntities(rawValue)
+          //   const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+          //   const attrName = this.AttrNames[delData[i].Rows[j].key]
+          //   if (attrName) {
+          //     str += `\r\n删除:【${attrName}:${cleanValue}】`
+          //   }
+          // }
         }
       }
       if (editData.length > 0) {
         for (const i in editData) {
+          console.log(editData[i].Head)
           if (str === '') {
             str += `活动名称:【${editData[i].Head['activity.name']}】`
           } else {
             str += `\r\n活动名称:【${editData[i].Head['activity.name']}】`
           }
-          for (const j in editData[i].Rows) {
-            const rawValue = editData[i].Rows[j].newVal
-            const decodedValue = this.decodeHtmlEntities(rawValue)
-            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
-            const attrName = this.AttrNames[editData[i].Rows[j].key]
-            if (attrName) {
-              str += `\r\n修改:【${attrName}:${cleanValue}】`
-            }
-          }
+          // for (const j in editData[i].Rows) {
+          //   const rawValue = editData[i].Rows[j].newVal
+          //   const decodedValue = this.decodeHtmlEntities(rawValue)
+          //   const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+          //   const attrName = this.AttrNames[editData[i].Rows[j].key]
+          //   if (attrName) {
+          //     str += `\r\n修改:【${attrName}:${cleanValue}】`
+          //   }
+          // }
         }
       }
       return str
