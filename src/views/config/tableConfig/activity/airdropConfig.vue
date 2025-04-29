@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
+      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="true" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -556,6 +556,8 @@ export default {
         activity: '活动信息',
         id: '活动配置ID',
         name: '活动名称',
+        cfgId: '活动配置ID',
+        'activity.name': '活动名称',
         startTime: '开始时间',
         endTime: '结束时间',
         showEndTime: '展示结束时间',
@@ -732,6 +734,71 @@ export default {
     }
   },
   methods: {
+    makeContent(key, addData, delData, editData) {
+      let str = ''
+      if (addData.length > 0) {
+        for (const i in addData) {
+          str += `\r\n活动名称:【${addData[i].Head['activity.name']}】`
+          for (const j in addData[i].Rows) {
+            const rawValue = addData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+            const attrName = this.AttrNames[addData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n添加:【${attrName}:${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (delData.length > 0) {
+        for (const i in delData) {
+          if (str === '') {
+            str += `活动名称:【${delData[i].Head['activity.name']}】`
+          } else {
+            str += `\r\n活动名称:【${delData[i].Head['activity.name']}】`
+          }
+          for (const j in delData[i].Rows) {
+            const rawValue = delData[i].Rows[j].newVal
+            // 使用正则移除所有HTML标签i
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+            const attrName = this.AttrNames[delData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n删除:【${attrName}:${cleanValue}】`
+            }
+          }
+        }
+      }
+      if (editData.length > 0) {
+        for (const i in editData) {
+          if (str === '') {
+            str += `活动名称:【${editData[i].Head['activity.name']}】`
+          } else {
+            str += `\r\n活动名称:【${editData[i].Head['activity.name']}】`
+          }
+          for (const j in editData[i].Rows) {
+            const rawValue = editData[i].Rows[j].newVal
+            const decodedValue = this.decodeHtmlEntities(rawValue)
+            const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+            const attrName = this.AttrNames[editData[i].Rows[j].key]
+            if (attrName) {
+              str += `\r\n修改:【${attrName}:${cleanValue}】`
+            }
+          }
+        }
+      }
+      return str
+    },
+    decodeHtmlEntities(str) {
+      const txt = document.createElement('textarea')
+      txt.innerHTML = str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec)
+      }).replace(/&#x([\da-fA-F]+);/g, function(match, hex) {
+        return String.fromCharCode(parseInt(hex, 16))
+      })
+      return txt.value
+    },
     configCheck() {
       return true
     },

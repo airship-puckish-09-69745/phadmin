@@ -1457,11 +1457,12 @@ export default {
       if ((JSON.stringify(preVal.IsOpen) !== JSON.stringify(proVal.IsOpen)) ||
       (JSON.stringify(preVal.ImgUrl) !== JSON.stringify(proVal.ImgUrl)) ||
         (JSON.stringify(preVal.GameList) !== JSON.stringify(proVal.GameList)) ||
-        (JSON.stringify(preVal.AppIds) !== JSON.stringify(proVal.AppIds)) || 
+        (JSON.stringify(preVal.AppIds) !== JSON.stringify(proVal.AppIds)) ||
         (JSON.stringify(preVal.SiteIdList) !== JSON.stringify(proVal.SiteIdList))
       ) {
         change += 'gameZone活动配置/'
       }
+      let mayLike = false
       if ((JSON.stringify(preVal.WinMoreItem) !== JSON.stringify(proVal.WinMoreItem))
       ) {
         for (const i in preVal.WinMoreItem) {
@@ -1471,6 +1472,7 @@ export default {
               ) {
                 if (preVal.WinMoreItem[i].Id === 3) {
                   change += 'mayLike活动配置/'
+                  mayLike = true
                 }
                 if (preVal.WinMoreItem[i].Id === 4) {
                   change += 'Favorites活动配置/'
@@ -1478,6 +1480,12 @@ export default {
               }
             }
           }
+        }
+      }
+      if ((JSON.stringify(preVal.MayLikeItem) !== JSON.stringify(proVal.MayLikeItem))) {
+        if (!mayLike) {
+          change += 'mayLike活动配置/'
+          mayLike = true
         }
       }
       let hasgameZoneOther = false
@@ -1491,7 +1499,7 @@ export default {
                 if (preVal.GameZoneItem[i].Id === 2) {
                   change += 'winMore配置/'
                 }
-                if (!hasgameZoneOther) {
+                if (preVal.GameZoneItem[i].Id !== 2 && !hasgameZoneOther) {
                   change += 'gameZone其他活动配置/'
                   hasgameZoneOther = true
                 }

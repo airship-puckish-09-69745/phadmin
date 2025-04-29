@@ -1,7 +1,7 @@
 <template>
   <el-col class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" />
     </el-row>
 
     <el-row>
@@ -699,6 +699,28 @@ export default {
     },
     handlePrizeCreate() {
       this.edit.item.PrizeCfg.push({ Reward: 0, Weight: 0, PrizeNum: 0, PrizeUnlimited: true })
+    },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data)
+      const proVal=JSON.parse(pro.Data)
+      let str = ''
+      if ((preVal.IsOpen !== proVal.IsOpen) || (preVal.StartTime !== proVal.StartTime) ||
+        (preVal.EndTime !== proVal.EndTime) || (preVal.LimitStartTime !== proVal.LimitStartTime) ||
+      (preVal.LimitEndTime !== proVal.LimitEndTime) || (preVal.SingleLimitNum !== proVal.SingleLimitNum) ||
+      (preVal.EveryDayLimitNum !== proVal.EveryDayLimitNum) || (preVal.SumLimitNum !== proVal.SumLimitNum) ||
+      (JSON.stringify(preVal.GameIdCfg) !== JSON.stringify(proVal.GameIdCfg))) {
+        str += '新手任务活动配置/'
+      }
+      if (JSON.stringify(preVal.taskCfgData) !== JSON.stringify(proVal.taskCfgData)){
+        str += '任务配置/'
+      }
+      if (JSON.stringify(preVal.pokerCfgData) !== JSON.stringify(proVal.pokerCfgData)) {
+        str += 'Poker任务配置/'
+      }
+      if (JSON.stringify(preVal.WhiteList) !== JSON.stringify(proVal.WhiteList) || preVal.IsWhite !== proVal.IsWhite) {
+        str += '白名单配置/'
+      }
+      return `修改了:【${str}】的配置`
     },
     handlePrizeDelete(ob) {
       let $this = this
