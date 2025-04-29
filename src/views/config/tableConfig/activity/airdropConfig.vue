@@ -555,10 +555,11 @@ export default {
     return {
       AttrNames: {
         activity: '活动信息',
+        'activity.name': '活动名称',
+        'activity.whitelist.siteIdList': '站点白名单',
         id: '活动配置ID',
         name: '活动名称',
         cfgId: '活动配置ID',
-        'activity.name': '活动名称',
         startTime: '开始时间',
         endTime: '结束时间',
         showEndTime: '展示结束时间',
