@@ -603,8 +603,8 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     convertToFloat(value) {
-      const num = parseFloat(value) || 0
-      return Number(num.toFixed(2)) // 保留计算精度
+      const num = parseFloat(value)*100 || 0
+      return returnMath.floor(num)
     },
     checkControlRangeSave() {
       this.editGameControl.ControlRange[3].MoveRange = this.editGameControl.ControlRange[4].MoveRange
@@ -716,13 +716,13 @@ export default {
             this.editGameControl.ControlRange = []
             for (let i = 0; i < this.item.GameControl.ControlRange.length; i++) {
               const tmp = this.item.GameControl.ControlRange[i]
-              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: tmp.Ratio.toString() })
+              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio/100).toFixed(2) })
             }
 
             this.editGameControl.GameAcceptance = []
             for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
               const tmp = this.item.GameControl.GameAcceptance[i]
-              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: tmp.Ratio.toString() })
+              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toFixed(2) })
             }
             this.editCriticalPoint = []
             for (let i = 0; i < this.item.PlayerControl.CriticalPoint.length; i++) {
@@ -764,7 +764,7 @@ export default {
       this.editGameControl.GameAcceptance = []
       for (let i = 0; i < gameAcceptance.length; i++) {
         const tmp = gameAcceptance[i]
-        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: tmp.Ratio.toString() })
+        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toFixed() })
       }
       this.item.GameControl.GameAcceptance = gameAcceptance
     },
