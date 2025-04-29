@@ -557,6 +557,7 @@ export default {
         activity: '活动信息',
         'activity.name': '活动名称',
         'activity.whitelist.siteIdList': '站点白名单',
+        'activity.whitelist.appIdList': 'AppId白名单',
         id: '活动配置ID',
         name: '活动名称',
         cfgId: '活动配置ID',
