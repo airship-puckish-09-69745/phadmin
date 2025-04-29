@@ -53,7 +53,7 @@
                 </el-col>
 
                 <el-col :span="11">
-                  <el-form-item label="SiteId白名单：" :required="true">
+                  <el-form-item label="支持的SiteId：" :required="true">
                     <el-select v-model="item.SiteIdList" multiple placeholder="请选择" style="width: 400px">
                       <el-option
                         v-for="item in channelIdCfgs"
@@ -328,7 +328,7 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                  <el-form-item label="SiteId白名单：" :required="true">
+                  <el-form-item label="支持的SiteId：" :required="true">
                     <el-select v-model="item.GameEvent.SiteIdList" multiple placeholder="请选择" style="width: 400px">
                       <el-option
                         v-for="item in channelIdCfgs"
