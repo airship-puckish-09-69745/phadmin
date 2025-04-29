@@ -456,7 +456,7 @@ export default {
         SumLimitNum: 0,
         AppId: -1,
         PrizePoolCfg: [],
-        GameIdCfg: [],
+        GameIdCfg: [21, 22, 2031, 10002],
         WhitelistCfg: {
           AppIdList: [],
           SiteIdList: [],
@@ -903,7 +903,11 @@ export default {
             if (old.pokerCfgData.length > 0) {
               $this.item.pokerCfgData = this.getPokerCfgData(old.pokerCfgData)
             }
-            $this.item.GameIdCfg = old.GameIdCfg
+            for (let i = 0; i < old.GameIdCfg.length; i++) {
+              if (!$this.item.GameIdCfg.includes(old.GameIdCfg[i])) {
+                $this.item.GameIdCfg.push(old.GameIdCfg[i])
+              }
+            }
             if (old.WhiteList !== null) {
               $this.item.WhitelistCfg.UidList = []
               for (let i = 0; i < old.WhiteList.length; i++) {

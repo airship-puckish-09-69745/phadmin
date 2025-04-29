@@ -226,7 +226,7 @@
 
           </el-col>
         </el-row>
-        <el-row v-if="queryGid === 186" style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
+        <el-row v-if="queryGid === 186 || queryGid === 100186" style="overflow-x: auto; display: flex; flex-wrap: nowrap;padding-bottom: 30px">
           <el-col :span="11">
             <el-table
               ref="filterTable"
