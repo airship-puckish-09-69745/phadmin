@@ -855,8 +855,8 @@ export default {
         item.minCoefficient = parseInt(item.minCoefficient * 100)
         item.maxCoefficient = parseInt(item.maxCoefficient * 100)
       })
-      for (let i = 0; i < copyItem.progressPrizes.length; i++) {
-        const item = copyItem.progressPrizes[i]
+      for (let i = 0; i < copyItem.rewardConfig.rewardRanges.length; i++) {
+        const item = copyItem.rewardConfig.rewardRanges[i]
         if (item.minCoefficient >= 100) {
           Message.error('奖励系数区间开始值必须小于1')
           return
