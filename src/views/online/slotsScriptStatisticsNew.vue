@@ -1306,7 +1306,9 @@ export default {
       return 0
     },
     getBuyRespinTimes(bet, multiOdds) {
+      console.log('-----------',this.betOddsKey, bet, multiOdds, this.buyRespinTimeMap)
       if (this.betOddsKey in this.buyRespinTimeMap) {
+        console.log('000----',this.betOddsKey,bet in this.buyRespinTimeMap[this.betOddsKey])
         if (bet in this.buyRespinTimeMap[this.betOddsKey]) {
           for (const o of this.buyRespinTimeMap[this.betOddsKey][bet]) {
             if (o.multiOdds === multiOdds) {
@@ -1659,13 +1661,13 @@ export default {
                     }
                     const bet = parseInt(strings1[3])
                     const multiOdds = parseInt(strings1[4])
-                    if (!(multiOdds in this.buyRespinTimeMap[-1])) {
-                      this.buyRespinTimeMap[-1][bet] = []
-                    }
+                    // if (!(multiOdds in this.buyRespinTimeMap[-1])) {
+                    //   this.buyRespinTimeMap[-1][bet] = []
+                    // }
                     if (!(bet in this.buyRespinTimeMap[-1])) {
                       this.buyRespinTimeMap[-1][bet] = []
                     }
-                    console.log(this.buyRespinTimeMap[-1],this.buyRespinTimeMap[-1][bet],bet)
+                    console.log("-1-------",bet,multiOdds,!(bet in this.buyRespinTimeMap[-1]),this.buyRespinTimeMap[-1],this.buyRespinTimeMap[-1][bet],bet)
                     this.buyRespinTimeMap[-1][bet].push({ multiOdds: multiOdds, times: parseInt(response.Data['script'][key]) })
                   } else if (strings1.length === 7) {
                     const bet = parseInt(strings1[3])
@@ -1729,6 +1731,7 @@ export default {
                   }
                 }
               }
+
               if (strings1[1] === 'buyrespinfirst') {
                 if (strings1[2] === 'times') {
                   if (strings1.length < 7) {
@@ -1825,7 +1828,6 @@ export default {
           })
         }
 
-        this.betOddsKeySelect = {}
         // this.scriptClientDB = new ClientTableData(scriptTableData, 20, filterMap, 'sort', -1)
         this.scriptClientDB = {}
         // if (Object.keys(scriptTableData).length <= 2) {
@@ -1875,7 +1877,7 @@ export default {
         // }
 
         this.has2JPClosClientDB = {}
-        if (Object.keys(has2JpColsTableData).length <= 2) {
+        if (Object.keys(has2JpColsTableData).length <= 1) {
           if (-1 in has2JpColsTableData) {
             this.has2JPClosClientDB[-1] = new ClientTableData(has2JpColsTableData[-1], 100, filterMap, 'idx', -1)
           } else {
@@ -1885,7 +1887,6 @@ export default {
         } else {
           for (const i in has2JpColsTableData) {
             this.has2JPClosClientDB[i] = new ClientTableData(has2JpColsTableData[i], 100, filterMap, 'idx', -1)
-            this.betOddsKeySelect[i] = i
           }
         }
 
@@ -1894,9 +1895,7 @@ export default {
         }
 
         this.scatterCounts = scatterCounts
-        console.log(scriptTableData.length,ordinaryReturnMoneyTableData.length,this.betOddsKeySelect,this.betOddsKey)
         this.queryKeyInput()
-        console.log("============",this.buyRespinTimeMap)
         $this.loading = false
       })
     },
@@ -2079,39 +2078,40 @@ export default {
       if (strings[0]+strings[1] === 'spinordinary') {
         let planId = 0
         let odds = 0
-          if (strings.includes('plan') && strings.length === 8) {
-              planId =parseInt(strings[7])
-              odds = parseInt(strings[4])
-            this.betOddsKeySelect[parseInt(strings[4])]=parseInt(strings[4])
-          }
+        if (strings.includes('plan') && strings.length === 8) {
+          planId = parseInt(strings[7])
+          odds = parseInt(strings[4])
+          this.betOddsKeySelect[parseInt(strings[4])] = parseInt(strings[4])
+          console.log("===============================================",  this.betOddsKeySelect)
+        }
         // 兼容旧的返奖统计
-        if (!strings.includes('plan') && strings.length === 6){
+        if (!strings.includes('plan') && strings.length === 6) {
           planId = 0
           odds = parseInt(strings[4])
-          this.betOddsKeySelect[parseInt(strings[4])]=parseInt(strings[4])
+          this.betOddsKeySelect[parseInt(strings[4])] = parseInt(strings[4])
         }
-        if (strings[2] === 'times' && strings.length===8) {
-            ordinaryReturnMoneyTableData.push({
-              bet: parseInt(strings[3]),
-              planId: planId,
-              odds: odds,
-              times: response.Data['script'][key]
-            })
+        if (strings[2] === 'times' && strings.length === 8) {
+          ordinaryReturnMoneyTableData.push({
+            bet: parseInt(strings[3]),
+            planId: planId,
+            odds: odds,
+            times: response.Data['script'][key]
+          })
         }
         if (strings[2] === 'return') {
           // key=bet_odds_planId
           let ggr = parseInt(response.Data['script'][key])
 
-          if (strings.length===8){
-            this.updateMapEntry(strings[3]+'_'+strings[4]+'_'+strings[7],ggr)
-            this.updateMapEntry(strings[3]+'_-1_-1',ggr)
-            this.updateMapEntry(strings[3]+'_'+strings[4]+'_-1',ggr)
-            this.updateMapEntry(strings[3]+'_-1_'+strings[7],ggr)
-          }else if (strings.length===6){// 兼容旧的
-            const planId= 0
-            this.updateMapEntry(strings[3]+'_'+strings[4]+'_'+planId,ggr)
-            this.updateMapEntry(strings[3]+'_-1_-1',ggr)
-            this.updateMapEntry(strings[3]+'_'+strings[4]+'_-1',ggr)
+          if (strings.length === 8) {
+            this.updateMapEntry(strings[3] + '_' + strings[4] + '_' + strings[7], ggr)
+            this.updateMapEntry(strings[3] + '_-1_-1', ggr)
+            this.updateMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
+            this.updateMapEntry(strings[3] + '_-1_' + strings[7], ggr)
+          } else if (strings.length === 6) {// 兼容旧的
+            const planId = 0
+            this.updateMapEntry(strings[3] + '_' + strings[4] + '_' + planId, ggr)
+            this.updateMapEntry(strings[3] + '_-1_-1', ggr)
+            this.updateMapEntry(strings[3] + '_' + strings[4] + '_-1', ggr)
             this.updateMapEntry(strings[3] + '_-1_' + planId, ggr)
           }
         }
@@ -2391,7 +2391,8 @@ export default {
       return idxScatter
     },
     getBetOddsName(betOdd) {
-      if (betOdd === '全部') {
+      console.log("=========",betOdd)
+      if (betOdd === '全部' || betOdd === '-1' || betOdd === -1 ) {
         return betOdd
       } else {
         if (betOdd === '1' || betOdd === '1000') {
