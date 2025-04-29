@@ -545,6 +545,7 @@ function newItem() {
       }*/
     ],
     userTypes: [2],
+    importedFilename: ''
   }
 }
 
@@ -656,10 +657,12 @@ export default {
         { 'value': 2, 'label': '「有效下注」总额' },
       ],
 
-      // 选定游戏后对应可选任务类型
-      gameTaskTypes: [
+      defaultGameTaskTypes: [
         { 'value': 0, 'label': '未选择' },
       ],
+
+      // 选定游戏后对应可选任务类型
+      gameTaskTypes: [],
 
       // 任务类型游戏配置映射
       taskTypeGameMap: {
@@ -1217,6 +1220,7 @@ export default {
       }
     },
     handleAdd() {
+      this.gameTaskTypes = this.defaultGameTaskTypes
       this.edit.selectedGamesText = ''
       this.edit.importedUidCount = 0
       this.edit.item = newItem()
@@ -1320,7 +1324,7 @@ export default {
     updateGameTaskTypes(gameIds) {
       console.log('updateGameTaskTypes', gameIds)
       if (gameIds.length === 0) {
-        this.gameTaskTypes = []
+        this.gameTaskTypes = this.defaultGameTaskTypes
         return
       }
 
