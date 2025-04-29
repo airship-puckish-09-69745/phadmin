@@ -916,6 +916,7 @@ export default {
             })
           }
           this.appendAdditional()
+          this.gameOptions.sort((a, b) => a.label.localeCompare(b.label))
         }
       })
     },
