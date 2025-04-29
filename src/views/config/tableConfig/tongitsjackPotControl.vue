@@ -520,7 +520,16 @@ export default {
       },
 
       form: {},
-
+      gameAreaName: [
+        '强杀全生效',
+        '强杀',
+        '弱杀',
+        '正常',
+        '正常',
+        '弱放',
+        '强放',
+        '强放全生效'
+      ],
       labelPosition: 'top',
       subKey: 'tongits_jackpot_control',
 
@@ -543,7 +552,6 @@ export default {
       ],
       editPlayerInventoryVisible: false,
       editPlayerInventory: {},
-      GameRangeLevel: 0,
       GameRangeName: 0,
       GameMoney: 0,
       editGameControl: {
@@ -876,16 +884,12 @@ export default {
           Message.success('刷新成功！')
           this.GameMoney = objs.gameMoney
           this.GameMoney /= 1000
-
-          this.GameRangeLevel = objs.gameRangeLevel
-
-          // console.log("handleRefreshGameMoney:",  this.GameRangeLevel)
-          // console.log("this.item.RobotWeight:", this.item.PlayerControl.RobotWeight)
-          for (let i = 0; i < this.item.PlayerControl.RobotWeight.length; i++) {
-            if (this.item.PlayerControl.RobotWeight[i].AiConfigLevel === this.GameRangeLevel) {
-              this.GameRangeName = this.item.PlayerControl.RobotWeight[i].AiConfigName
-              break
-            }
+          if (objs.gameAreaId < 0) {
+            this.GameRangeName = this.gameAreaName[0]
+          } else if (objs.gameAreaId > this.gameAreaName.length) {
+            this.GameRangeName = this.gameAreaName[7]
+          } else {
+            this.GameRangeName = this.gameAreaName[objs.gameAreaId - 1]
           }
         }
       })
