@@ -908,6 +908,16 @@ export default {
       var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
       var pokerCfgData = this.getTaskCfgData(this.item.pokerCfgData)
       var whiteList = this.getWhiteList()
+      var isExit = false
+      for (let i = 0; i < this.item.GameIdCfg.length; i++) {
+        if (this.item.GameIdCfg[i] === 2031) {
+          isExit = true
+          break
+        }
+      }
+      if (!isExit) {
+        this.item.GameIdCfg.push(2031)
+      }
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
