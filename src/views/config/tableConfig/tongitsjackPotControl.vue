@@ -169,7 +169,7 @@
               <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
                   v-model="editGameControl.ControlRange[0].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[0].Ratio, 'Ratio', 0, 100)"
+                  @input="handlePercentInput(editGameControl.ControlRange[0], 'Ratio', 0, 100)"
                   placeholder="0-100"
                 >
                   <template #append>%</template>
@@ -177,8 +177,8 @@
               </el-descriptions-item>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[0].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[1].Ratio, 'Ratio')"
+                  v-model="editGameControl.ControlRange[1].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[1], 'Ratio')"
                   placeholder="0-100"
                   >
                   <template #append>%</template>
@@ -186,19 +186,19 @@
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[1].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[2].Ratio, 'Ratio')"
+                  v-model="editGameControl.ControlRange[2].Ratio"
+                  @input="handlePercentInput(editGameControl.ControlRange[2], 'Ratio')"
                   placeholder="0-100"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-tag size="medium" closable>{{editGameControl.OriginPoint}}%</el-tag>
+                <el-tag size="medium" closable>{{editGameControl.ControlRange[3].Ratio}}%</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
                   v-model="editGameControl.ControlRange[4].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[4].Ratio, 'Ratio')"
+                  @input="handlePercentInput(editGameControl.ControlRange[4], 'Ratio')"
                   placeholder="0-100"
                   ><template #append>%</template>
                 </el-input>
@@ -206,7 +206,7 @@
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
                   v-model="editGameControl.ControlRange[5].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[5].Ratio, 'Ratio')"
+                  @input="handlePercentInput(editGameControl.ControlRange[5], 'Ratio')"
                   placeholder="0-100"
                   ><template #append>%</template>
                 </el-input>
@@ -214,7 +214,7 @@
               <el-descriptions-item label="强放匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
                   v-model="editGameControl.ControlRange[6].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[6].Ratio, 'Ratio')"
+                  @input="handlePercentInput(editGameControl.ControlRange[6], 'Ratio')"
                   placeholder="0-100"
                 >
                   <template #append>%</template>
@@ -558,31 +558,31 @@ export default {
         ControlRange: [
           {
             MoveRange: -2, // 强杀全生效
-            Ratio: '1.1'
+            Ratio: '11'
           },
           {
             MoveRange: -2, // 强杀移动区间
-            Ratio: '1.2'
+            Ratio: '12'
           },
           {
             MoveRange: -1, // 弱杀移动区间
-            Ratio: '1.3'
+            Ratio: '13'
           },
           {
             MoveRange: 0, // 正常移动区间
-            Ratio: '2.5'
+            Ratio: '25'
           },
           {
             MoveRange: 0, // 正常移动区间
-            Ratio: '2.6'
+            Ratio: '26'
           },
           {
             MoveRange: 2, // 弱放移动区间
-            Ratio: '3.0'
+            Ratio: '30'
           },
           {
             MoveRange: 2, // 强放移动区间
-            Ratio: '3.5'
+            Ratio: '35'
           }
         ],
         OriginPoint: 2.5,
@@ -603,8 +603,8 @@ export default {
       return 'CustomizeCfg_' + this.subKey
     },
     convertToFloat(value) {
-      const num = parseFloat(value)*100 || 0
-      return returnMath.floor(num)
+      const num = Math.round(parseFloat(value) * 100) || 0
+      return Math.floor(num)
     },
     checkControlRangeSave() {
       this.editGameControl.ControlRange[3].MoveRange = this.editGameControl.ControlRange[4].MoveRange
@@ -615,6 +615,7 @@ export default {
       }
       for (let i = 1; i < ControlRange.length; i++) {
         if (ControlRange[i - 1].Ratio >= ControlRange[i].Ratio) {
+         // console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
           return false
         }
       }
@@ -664,11 +665,11 @@ export default {
 
       this.item.GameControl.ControlRange = []
       this.item.GameControl.OriginPoint = this.convertToFloat(this.editGameControl.OriginPoint)
-      this.editGameControl.ControlRange[3].Ratio = this.convertToFloat(this.editGameControl.OriginPoint)
       for (let i = 0; i < this.editGameControl.ControlRange.length; i++) {
         const tmp = this.editGameControl.ControlRange[i]
         this.item.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
       }
+     // this.editGameControl.ControlRange[3].Ratio = this.convertToFloat(this.editGameControl.OriginPoint)
 
       this.item.GameControl.GameAcceptance = []
       for (let i = 0; i < this.editGameControl.GameAcceptance.length; i++) {
@@ -709,21 +710,22 @@ export default {
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
-            console.log('response.Data.Data', response.Data.Data)
+            //console.log('response.Data.Data', response.Data.Data)
             Object.assign(this.item, item)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             this.editGameControl.ControlRange = []
             for (let i = 0; i < this.item.GameControl.ControlRange.length; i++) {
               const tmp = this.item.GameControl.ControlRange[i]
-              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio/100).toFixed(2) })
+              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio/100).toString() })
             }
 
             this.editGameControl.GameAcceptance = []
             for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
               const tmp = this.item.GameControl.GameAcceptance[i]
-              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toFixed(2) })
+              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toString() })
             }
+            this.editGameControl.OriginPoint = (this.item.GameControl.OriginPoint/100).toString()
             this.editCriticalPoint = []
             for (let i = 0; i < this.item.PlayerControl.CriticalPoint.length; i++) {
               this.editCriticalPoint.push(this.item.PlayerControl.CriticalPoint[i] / 1000)
@@ -764,7 +766,7 @@ export default {
       this.editGameControl.GameAcceptance = []
       for (let i = 0; i < gameAcceptance.length; i++) {
         const tmp = gameAcceptance[i]
-        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toFixed() })
+        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toString() })
       }
       this.item.GameControl.GameAcceptance = gameAcceptance
     },
@@ -959,6 +961,7 @@ export default {
     // 处理百分比输入（0-100%）
     handlePercentInput(obj, key, min = 0, max = 100) {
       let value = obj[key]?.toString() || '0'
+   
       value = value.replace(/[^\d.]/g, '').replace(/^0+(\d)/, '$1').replace(/^\./, '0.').replace(/(\..*)\./g, '$1')
       const parts = value.split('.')
       if (parts.length > 1) {
@@ -969,7 +972,7 @@ export default {
       const numValue = parseFloat(value) || 0
       if (numValue > max) value = max.toString()
       if (numValue < min) value = min.toString()
-
+     
       obj[key] = value
     }
   }
