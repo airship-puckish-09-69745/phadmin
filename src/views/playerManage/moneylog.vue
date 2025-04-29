@@ -101,9 +101,7 @@
           <span v-else-if="scope.row.ActType===2006">  {{
             formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged)
           }}</span>
-          <span v-else-if="isMarketType(scope.row.ActType)">  {{
-            0
-          }}</span>
+          <span v-else-if="isMarketType(scope.row.ActType)">  {{ formatNumber(scope.row.MoneyNow) }}</span>
           <span v-else> {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
         </template>
       </el-table-column>
