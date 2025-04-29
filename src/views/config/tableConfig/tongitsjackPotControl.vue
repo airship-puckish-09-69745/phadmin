@@ -415,7 +415,9 @@
         <el-form-item>
           <el-row>
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="savePlayerLevelMoney">保存</el-button>
+              <el-tooltip content="点击保存<立即生效>" placement="top">
+                <el-button type="primary" size="medium" @click="savePlayerLevelMoney">保存</el-button>
+              </el-tooltip>
             </el-col>
           </el-row>
         </el-form-item>
@@ -599,14 +601,12 @@ export default {
         ControlRange.push({AiConfigLevel: tmp.AiConfigLevel, Ratio:this.convertToFloat(tmp.Ratio)} )
       }
 
-      if (StrongestKillRatio > ControlRange[0].Ratio || ControlRange[4].Ratio > WeakestKillRatio) {
-      //  console.log("aaaa....")
+      if (StrongestKillRatio >= ControlRange[0].Ratio || ControlRange[4].Ratio >= WeakestKillRatio) {
         return false;
       }
         
       for (let i = 1; i <  ControlRange.length; i++) {
-        if (ControlRange[i-1].Ratio > ControlRange[i].Ratio) {
-         // console.log("aaaa....",ControlRange[i-1].Ratio,ControlRange[i].Ratio)
+        if (ControlRange[i-1].Ratio >= ControlRange[i].Ratio) {
           return false
         }
       }
@@ -619,7 +619,7 @@ export default {
         return false 
       }
       for (let i = 1; i < this.editCriticalPoint.length; i++) {
-        if (this.editCriticalPoint[i-1] > this.editCriticalPoint[i]) {
+        if (this.editCriticalPoint[i-1] >= this.editCriticalPoint[i]) {
           return false
         }
       }

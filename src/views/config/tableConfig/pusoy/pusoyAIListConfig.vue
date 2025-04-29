@@ -272,12 +272,12 @@
           </el-col>
         </el-form-item>
 
-        <el-form-item label="应用ID：" prop="app">
+        <el-form-item label="应用ID：" :required="true" prop="app">
           <el-col :span="15">
             <el-input v-model="edit.item.app" :disabled="isDisabled" />
           </el-col>
         </el-form-item>
-        <el-form-item label="渠道：" prop="channel">
+        <el-form-item label="渠道：" :required="true" prop="channel">
           <el-col :span="15">
             <el-input v-model="edit.item.channel" :disabled="isDisabled" />
           </el-col>

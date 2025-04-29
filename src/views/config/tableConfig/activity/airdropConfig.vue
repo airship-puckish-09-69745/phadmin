@@ -231,7 +231,7 @@
                             style="white-space: pre-wrap"/>
                 </el-form-item>
                 <el-form-item label="任务类型：" :required="true">
-                  <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择">
+                  <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择" style="width: 300px">
                     <el-option
                       v-for="item in gameTaskTypes"
                       :key="item.value"
@@ -516,8 +516,8 @@ function newItem() {
     ruleImgHor: [],
     ruleImgVer: [],
     whitelistCfg: {
-      appIdList: [],
-      siteIdList: [],
+      appIdList: [1000002],
+      siteIdList: ['Dev'],
     },
     debugTimeOffset: 0,
     taskConfig: {
@@ -829,6 +829,10 @@ export default {
           Message.error('请完善进度奖励配置')
           return
         }
+        if (item.propNumMax % item.propNum !== 0) {
+          Message.error('道具数量上限必须为道具数量的倍数')
+          return
+        }
       }
       if (!this.edit.item.rewardConfig.totalReward) {
         Message.error('请填写总奖励')
@@ -842,31 +846,40 @@ export default {
         Message.error('请完善任务配置')
         return
       }
-      this.edit.item.rewardConfig.totalReward *= 1000
-      this.edit.item.rewardConfig.rewardRanges.forEach(item => {
+
+      const copyItem = JSON.parse(JSON.stringify(this.edit.item))
+      copyItem.rewardConfig.totalReward *= 1000
+      copyItem.rewardConfig.rewardRanges.forEach(item => {
         item.minScore *= 1000
         item.maxScore *= 1000
         item.minCoefficient = parseInt(item.minCoefficient * 100)
         item.maxCoefficient = parseInt(item.maxCoefficient * 100)
       })
+      for (let i = 0; i < copyItem.progressPrizes.length; i++) {
+        const item = copyItem.progressPrizes[i]
+        if (item.minCoefficient >= 100) {
+          Message.error('奖励系数区间开始值必须小于1')
+          return
+        }
+      }
 
       const data = {}
-      data.id = this.edit.item.id
-      data.name = this.edit.item.name
-      data.activityId = this.edit.item.activityId
-      data.startTime = this.edit.item.startTime / 1000
-      data.endTime = this.edit.item.endTime / 1000
-      data.showEndTime = this.edit.item.showEndTime / 1000
-      data.gameIdCfg = JSON.stringify(this.edit.item.gameIdCfg)
-      data.ruleImgHor = JSON.stringify(this.edit.item.ruleImgHor)
-      data.ruleImgVer = JSON.stringify(this.edit.item.ruleImgVer)
-      data.whitelistCfg = JSON.stringify(this.edit.item.whitelistCfg)
-      data.debugTimeOffset = this.edit.item.debugTimeOffset
-      data.rewardConfig = JSON.stringify(this.edit.item.rewardConfig)
-      data.taskConfig = JSON.stringify(this.edit.item.taskConfig)
-      data.progressPrizes = JSON.stringify(this.edit.item.progressPrizes)
-      data.userTypes = JSON.stringify(this.edit.item.userTypes)
-      data.importedFilename = this.edit.item.importedFilename
+      data.id = copyItem.id
+      data.name = copyItem.name
+      data.activityId = copyItem.activityId
+      data.startTime = copyItem.startTime / 1000
+      data.endTime = copyItem.endTime / 1000
+      data.showEndTime = copyItem.showEndTime / 1000
+      data.gameIdCfg = JSON.stringify(copyItem.gameIdCfg)
+      data.ruleImgHor = JSON.stringify(copyItem.ruleImgHor)
+      data.ruleImgVer = JSON.stringify(copyItem.ruleImgVer)
+      data.whitelistCfg = JSON.stringify(copyItem.whitelistCfg)
+      data.debugTimeOffset = copyItem.debugTimeOffset
+      data.rewardConfig = JSON.stringify(copyItem.rewardConfig)
+      data.taskConfig = JSON.stringify(copyItem.taskConfig)
+      data.progressPrizes = JSON.stringify(copyItem.progressPrizes)
+      data.userTypes = JSON.stringify(copyItem.userTypes)
+      data.importedFilename = copyItem.importedFilename
       return data
     },
     handleSave() {
@@ -1250,7 +1263,7 @@ export default {
       for (const taskType in this.taskTypeGameMap) {
         const cfg = this.taskTypeGameMap[taskType]
         if (gameIds.every(gameId => cfg.gameIds.includes(gameId))) {
-          gameTaskTypes.push({ label: cfg.label, value: taskType})
+          gameTaskTypes.push({ label: cfg.label, value: parseInt(taskType)})
         }
       }
 
