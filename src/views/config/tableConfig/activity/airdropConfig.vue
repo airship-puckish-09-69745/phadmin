@@ -829,6 +829,10 @@ export default {
           Message.error('请完善进度奖励配置')
           return
         }
+        if (item.propNumMax % item.propNum !== 0) {
+          Message.error('道具数量上限必须为道具数量的倍数')
+          return
+        }
       }
       if (!this.edit.item.rewardConfig.totalReward) {
         Message.error('请填写总奖励')
