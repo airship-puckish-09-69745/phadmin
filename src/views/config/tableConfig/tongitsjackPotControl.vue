@@ -247,7 +247,7 @@
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="当前游戏待调整⾦额:">
-                  <el-input v-model="GameMoney" />
+                  {{ GameMoney }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
@@ -452,12 +452,12 @@ export default {
           IsSameFirst: false,
           RobotWeight: [
             {
-              AiConfigLevel: 1,
+              AiConfigLevel: 5,
               AiConfigName: '超强机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
-              AiConfigLevel: 2,
+              AiConfigLevel: 4,
               AiConfigName: '稍强机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             },
@@ -467,12 +467,12 @@ export default {
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
-              AiConfigLevel: 4,
+              AiConfigLevel: 2,
               AiConfigName: '稍弱机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
-              AiConfigLevel: 5,
+              AiConfigLevel: 1,
               AiConfigName: '超弱机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             }
@@ -865,7 +865,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           value: this.GameMoney * 1000,
-          Path: '/egamecontorl/set/game/money'
+          Path: '/egamecontorl/set/game/pending/money'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -880,13 +880,14 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
-          Path: '/egamecontorl/game/money'
+          Path: '/egamecontorl/game/pending/money'
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log(objs)
           Message.success('刷新成功！')
-          this.GameMoney = objs.gameMoney
+          this.GameMoney = objs.pendingMoney
           this.GameMoney /= 1000
           if (objs.gameAreaId < 0) {
             this.GameRangeName = this.gameAreaName[0]
