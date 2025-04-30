@@ -796,25 +796,23 @@ export default {
       let str = ''
       if (addData.length > 0) {
         for (const i in addData) {
-          str += `\r\n活动名称:【${addData[i].Head['activity.name']}】`
-          // for (const j in addData[i].Rows) {
-          //   const rawValue = addData[i].Rows[j].newVal
-          //   // 使用正则移除所有HTML标签i
-          //   const decodedValue = this.decodeHtmlEntities(rawValue)
-          //   const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
-          //   const attrName = this.AttrNames[addData[i].Rows[j].key]
-          //   if (attrName) {
-          //     str += `\r\n添加:【${attrName}:${cleanValue}】`
-          //   }
-          // }
+          for (const j in addData[i]) {
+            if (addData[i][j].key === 'activity') {
+              str += `\r\n上架-活动名称:【${addData[i][j].newVal.name}】`
+            }
+          }
         }
       }
       if (delData.length > 0) {
         for (const i in delData) {
-          if (str === '') {
-            str += `活动名称:【${delData[i].Head['activity.name']}】`
-          } else {
-            str += `\r\n活动名称:【${delData[i].Head['activity.name']}】`
+          for (const j in delData[i]) {
+            if (delData[i][j].key === 'activity') {
+              if (str === '') {
+                str += `下架-活动名称:【${delData[i][j].oldVal.name}】`
+              } else {
+                str += `\r\n下架-活动名称:【${delData[i][j].oldVal.name}】`
+              }
+            }
           }
           // for (const j in delData[i].Rows) {
           //   const rawValue = delData[i].Rows[j].newVal
