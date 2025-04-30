@@ -166,7 +166,8 @@
                 <el-form-item label="导入用户：" :required="false">
                   <span>已导入用户：{{this.edit.importedUidListCount}}</span>
                   <span>（已生效用户：{{this.edit.importedUidCacheCount}}）</span>
-                  <span style="color: red">重复导入，不会覆盖原有的用户ID</span>
+                  <span style="color: #0088ff">重复导入，不会覆盖原有的用户ID</span><br>
+                  <span style="color: red">注意：活动的展示结束时间不能小于当前时间，否则导入的用户id无法生效！</span>
                   <el-upload
                     ref="upload"
                     drag
@@ -499,7 +500,7 @@
                 <div class="block">
                   <el-pagination
                     :current-page="edit.clientDB.GetPage().GetCurrentPage()"
-                    :page-sizes="[1, 2, 10, 20, 30, 40]"
+                    :page-sizes="[10, 20, 30, 40]"
                     :page-size="edit.clientDB.GetPage().GetPageNum()"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="edit.importedUidListCount"
@@ -1538,6 +1539,10 @@ export default {
       console.log(file)
     },
     submitUpload() {
+      if (this.edit.item.showEndTime < new Date().getTime()) {
+        this.$message.error('活动的展示结束时间不能小于当前时间，否则导入的用户id无法生效！')
+        return
+      }
       this.$refs.upload.submit()
     },
     changeUploadLoadingText(process, subTime) {
