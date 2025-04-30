@@ -164,8 +164,9 @@
               </el-col>
               <el-col :span="24">
                 <el-form-item label="导入用户：" :required="false">
-                  <span>已导入用户：{{this.edit.importedUidCount}}</span>
-                  <span style="color: red">（重复导入，不会覆盖原有的用户ID）</span>
+                  <span>已导入用户：{{this.edit.importedUidListCount}}</span>
+                  <span>（已生效用户：{{this.edit.importedUidCacheCount}}）</span>
+                  <span style="color: red">重复导入，不会覆盖原有的用户ID</span>
                   <el-upload
                     ref="upload"
                     drag
@@ -474,6 +475,41 @@
             </el-row>
           </el-form>
         </el-tab-pane>
+
+        <el-tab-pane label="导入的用户">
+          <el-row :gutter="5">
+            <el-col>
+              <el-button type="primary" @click="getImportedUidList()" size="mini">查询</el-button>
+              <el-table
+                :data="edit.importedUidList"
+                border
+                style="width: 100%"
+                :cell-style="libShow.DefaultTableCell"
+              >
+                <el-table-column
+                  prop="uid"
+                  label="用户ID"
+                />
+                <el-table-column
+                  prop="create_at"
+                  label="导入时间"
+                />
+              </el-table>
+              <el-col :offset="12" :span="9">
+                <div class="block">
+                  <el-pagination
+                    :current-page="edit.clientDB.GetPage().GetCurrentPage()"
+                    :page-sizes="[1, 2, 10, 20, 30, 40]"
+                    :page-size="edit.clientDB.GetPage().GetPageNum()"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="edit.importedUidListCount"
+                    @size-change="handleUidImportedTableSizeChange"
+                    @current-change="handleUidImportedTableCurrentChange" />
+                </div>
+              </el-col>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
       <el-row style="margin-top: 10px">
         <el-button type="primary" @click="handleSave()">保存配置</el-button>
@@ -501,6 +537,8 @@ import {id} from "html-webpack-plugin/lib/chunksorter";
 const filterMap = {}
 
 const loadingText = '兑奖码导入中，请稍等...'
+
+const gameTaskTypeValidBet = 2 // 游戏任务类型：有效投注
 
 function newItem() {
   return {
@@ -592,7 +630,10 @@ export default {
         selectedGamesText: '',
         gamesSortDialogVisible: false,
         loading: false,
-        importedUidCount: 0,
+        importedUidCacheCount: 0,
+        importedUidListCount: 0,
+        importedUidList: [],
+        clientDB: new ClientTableData([], 1, filterMap),
       },
       env: 'test',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
@@ -845,6 +886,18 @@ export default {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
     },
+    handleUidImportedTableSizeChange(val) {
+      this.edit.clientDB.GetPage().SetPageNum(val)
+      this.getImportedUidList()
+    },
+    handleUidImportedTableCurrentChange(val) {
+      this.edit.clientDB.GetPage().SetPageNo(val)
+      this.getImportedUidList()
+    },
+    handleUidImportedTableSortChange(ob) {
+      this.edit.clientDB.SortByProp(ob.prop, ob.order)
+      this.getImportedUidList()
+    },
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -943,6 +996,16 @@ export default {
         }
       }
 
+      // 任务类型为有效投注时，任务值乘以1000
+      if (copyItem.taskConfig.taskType === gameTaskTypeValidBet) {
+        copyItem.taskConfig.taskValueRequired *= 1000
+
+        for (let i = 0; i < copyItem.progressPrizes.length; i++) {
+          const item = copyItem.progressPrizes[i]
+          item.taskValueRequired *= 1000
+        }
+      }
+
       const data = {}
       data.id = copyItem.id
       data.name = copyItem.name
@@ -1024,48 +1087,6 @@ export default {
           $this.sentRewardAmount = response.Data / 1000
           console.log('getSentRewardAmount', $this.sentRewardAmount)
         }
-      })
-    },
-    getImportedUidCount() {
-      if (this.edit.item.id === 0) {
-        return
-      }
-      const $this = this
-      request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          ActCfgId: $this.edit.item.id,
-          Path: '/activity/airdrop/uid/import/count'
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          $this.edit.importedUidCount = response.Data
-          console.log('getImportedUidCount', $this.edit.importedUidCount)
-        }
-      })
-    },
-    delImportedUid() {
-      const $this = this
-      this.$confirm('确定要重置已导入的用户id吗？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        request({
-          url: '/dataProxy/info',
-          method: 'post',
-          data: {
-            ActCfgId: $this.edit.item.id,
-            Path: '/activity/airdrop/uid/import/del'
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            Message.success('已重置导入的用户id！')
-            $this.edit.importedUidCount = 0
-            console.log('delImportedUid', $this.edit.importedUidCount)
-          }
-        })
       })
     },
     //************************ 道具配置 ************************
@@ -1170,12 +1191,16 @@ export default {
       }
     },
     handleEditDialogOpened() {
+      this.edit.importedUidListCount = 0
+      this.edit.importedUidList = []
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
         this.getSentRewardAmount()
-        this.getImportedUidCount()
+        this.getImportedUidCacheCount()
         this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
         this.updateGameTaskTypes(this.edit.item.gameIdCfg)
+        // 查询已导入的用户id列表
+        this.getImportedUidList()
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
@@ -1215,6 +1240,16 @@ export default {
             this.updatePropOptions(progressPrize.propType, i)
           }
 
+          // 任务类型为有效投注时，任务值除以1000
+          if (item.taskConfig.taskType === gameTaskTypeValidBet) {
+            item.taskConfig.taskValueRequired /= 1000
+
+            for (let i = 0; i < item.progressPrizes.length; i++) {
+              const prize = item.progressPrizes[i]
+              prize.taskValueRequired /= 1000
+            }
+          }
+
           this.edit.item = item
           if (bEdit) {
             // 设置修改之前数据
@@ -1231,13 +1266,82 @@ export default {
     handleAdd() {
       this.gameTaskTypes = this.defaultGameTaskTypes
       this.edit.selectedGamesText = ''
-      this.edit.importedUidCount = 0
+      this.edit.importedUidCacheCount = 0
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
       console.log(this.edit.item)
     },
     //************************ 修改/添加弹框相关 ************************
+    //************************ 导入用户列表 ************************
+    getImportedUidCacheCount() {
+      if (this.edit.item.id === 0) {
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          ActCfgId: $this.edit.item.id,
+          Path: '/activity/airdrop/uid/import/count'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.edit.importedUidCacheCount = response.Data
+          console.log('getImportedUidCacheCount', $this.edit.importedUidCacheCount)
+        }
+      })
+    },
+    delImportedUid() {
+      const $this = this
+      this.$confirm('确定要重置已导入的用户id吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            ActCfgId: $this.edit.item.id,
+            Path: '/activity/airdrop/uid/import/del'
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('已重置导入的用户id！')
+            $this.edit.importedUidCacheCount = 0
+            console.log('delImportedUid', $this.edit.importedUidCacheCount)
+          }
+        })
+      })
+    },
+    getImportedUidList() {
+      if (!this.edit.item.id) {
+        return
+      }
+
+      const page = this.edit.clientDB.GetPage().GetCurrentPage()
+      const pageSize = this.edit.clientDB.GetPage().GetPageNum()
+
+      const $this = this
+      request({
+        url: '/airdropconfig/uids/imported',
+        method: 'get',
+        data: {
+          ActCfgId: $this.edit.item.id,
+          Page: page,
+          PageSize: pageSize
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.edit.importedUidList = response.Data.list
+          $this.edit.importedUidListCount = response.Data.total
+          console.log('getImportedUidList', $this.edit.importedUidList)
+        }
+      })
+    },
+    //************************ 导入用户列表 ************************
     //************************ 规则图片相关 ************************
     addRuleImage(type) {
       console.log('addRuleImage type:', type)
@@ -1450,10 +1554,12 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          $this.getImportedUidCount()
+          $this.getImportedUidCacheCount()
           $this.$message.success('上传成功，新导入的数量为：' + response.Data.imported)
           if ($this.edit.item.id === 0) {
-            $this.edit.importedUidCount = response.Data.imported
+            $this.edit.importedUidCacheCount = response.Data.imported
+          } else {
+            $this.getImportedUidCacheCount()
           }
         }
         $this.$refs.upload.clearFiles()
