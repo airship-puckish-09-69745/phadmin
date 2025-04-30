@@ -31,17 +31,6 @@
             <h2 style="text-align:center;">个⼈控制区间配置</h2>
             <el-row>
               <el-form :label-position="labelPosition" label-width="100px">
-                <el-form-item label="区间玩家发牌配置" required>
-                  <el-col :span="2">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      icon="el-icon-document-copy"
-                      @click="handleUpdatePlayerGoodCard()"
-                    >修改
-                    </el-button>
-                  </el-col>
-                </el-form-item>
                 <el-form-item label="同周期机器⼈类型是否与⾸局⼀致" required>
                   <el-col :span="2">
                     <el-switch v-model.number="item.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
