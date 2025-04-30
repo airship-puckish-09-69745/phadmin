@@ -494,7 +494,11 @@
                 <el-table-column
                   prop="create_at"
                   label="导入时间"
-                />
+                >
+                  <template slot-scope="scope">
+                    {{ formatTime(scope.row.create_at) }}
+                  </template>
+                </el-table-column>
               </el-table>
               <el-col :offset="12" :span="9">
                 <div class="block">
@@ -634,12 +638,12 @@ export default {
         importedUidCacheCount: 0,
         importedUidListCount: 0,
         importedUidList: [],
-        clientDB: new ClientTableData([], 1, filterMap),
+        clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       tableData: [],
-      clientDB: new ClientTableData([], 1, filterMap),
+      clientDB: new ClientTableData([], 10, filterMap),
       libDate: $libDate,
       libShow: $libShow,
       libMoney: new MoneyShow([]),
