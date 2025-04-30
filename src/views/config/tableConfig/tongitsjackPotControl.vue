@@ -164,8 +164,8 @@
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="群体控制配置">
-            <h3 style="text-align:center;">个⼈控制临界点配置</h3>
-            <el-descriptions label="个⼈控制临界点配置" :column="7" :colon="false" direction="vertical" border>
+            <h3 style="text-align:center;">群体控制临界点配置</h3>
+            <el-descriptions label="群体控制临界点配置" :column="7" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
                   v-model="editGameControl.ControlRange[0].Ratio"
@@ -481,7 +481,7 @@ export default {
         GameControl: {
           ControlRange: [
             {
-              MoveRange: -2, // 强杀全生效
+              MoveRange: -999, // 强杀全生效
               Ratio: 1.1
             },
             {
@@ -501,7 +501,7 @@ export default {
               Ratio: 2.6
             },
             {
-              MoveRange: 2, // 弱放移动区间
+              MoveRange: 1, // 弱放移动区间
               Ratio: 3.0
             },
             {
@@ -557,7 +557,7 @@ export default {
       editGameControl: {
         ControlRange: [
           {
-            MoveRange: -2, // 强杀全生效
+            MoveRange: -999, // 强杀全生效
             Ratio: '11'
           },
           {
@@ -577,7 +577,7 @@ export default {
             Ratio: '26'
           },
           {
-            MoveRange: 2, // 弱放移动区间
+            MoveRange: 1, // 弱放移动区间
             Ratio: '30'
           },
           {
@@ -615,7 +615,7 @@ export default {
       }
       for (let i = 1; i < ControlRange.length; i++) {
         if (ControlRange[i - 1].Ratio >= ControlRange[i].Ratio) {
-         // console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
+          // console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
           return false
         }
       }
@@ -633,13 +633,15 @@ export default {
       return true
     },
     checkRobotWeigth() {
-      for (let i = 0; i < this.item.PlayerControl.RobotWeight.length; i++) {
-        const tmp = this.item.PlayerControl.RobotWeight[i]
-        for (let j = 0; j < tmp.AiWeight.length; j++) {
-          if (tmp.AiWeight[j] === 0) {
-            Message.error(tmp.AiConfigName + '权重配置不能为0')
-            return false
-          }
+      for (let i = 0; i < this.item.PlayerControl.RobotWeight[0].AiWeight.length; i++) {
+        let sum = 0
+        for (let j = 0; j < this.item.PlayerControl.RobotWeight.length; j++) {
+          const tmp = this.item.PlayerControl.RobotWeight[j]
+          sum = sum + tmp.AiWeight[i]
+        }
+        if (sum === 0) {
+          Message.error('区间匹配机器⼈权重之和为0')
+          return false
         }
       }
       return true
@@ -669,7 +671,7 @@ export default {
         const tmp = this.editGameControl.ControlRange[i]
         this.item.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
       }
-     // this.editGameControl.ControlRange[3].Ratio = this.convertToFloat(this.editGameControl.OriginPoint)
+      // this.editGameControl.ControlRange[3].Ratio = this.convertToFloat(this.editGameControl.OriginPoint)
 
       this.item.GameControl.GameAcceptance = []
       for (let i = 0; i < this.editGameControl.GameAcceptance.length; i++) {
@@ -710,22 +712,22 @@ export default {
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
             const item = JSON.parse(response.Data.Data)
-            //console.log('response.Data.Data', response.Data.Data)
+            // console.log('response.Data.Data', response.Data.Data)
             Object.assign(this.item, item)
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
             this.editGameControl.ControlRange = []
             for (let i = 0; i < this.item.GameControl.ControlRange.length; i++) {
               const tmp = this.item.GameControl.ControlRange[i]
-              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio/100).toString() })
+              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio / 100).toString() })
             }
 
             this.editGameControl.GameAcceptance = []
             for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
               const tmp = this.item.GameControl.GameAcceptance[i]
-              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toString() })
+              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
             }
-            this.editGameControl.OriginPoint = (this.item.GameControl.OriginPoint/100).toString()
+            this.editGameControl.OriginPoint = (this.item.GameControl.OriginPoint / 100).toString()
             this.editCriticalPoint = []
             for (let i = 0; i < this.item.PlayerControl.CriticalPoint.length; i++) {
               this.editCriticalPoint.push(this.item.PlayerControl.CriticalPoint[i] / 1000)
@@ -766,7 +768,7 @@ export default {
       this.editGameControl.GameAcceptance = []
       for (let i = 0; i < gameAcceptance.length; i++) {
         const tmp = gameAcceptance[i]
-        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio/100).toString() })
+        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
       }
       this.item.GameControl.GameAcceptance = gameAcceptance
     },
@@ -896,6 +898,24 @@ export default {
         }
       })
     },
+    getPlayerRobotInfo() {
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          gid: this.gameId,
+          uid: 1000,
+          tableMoney: 10000,
+          Path: '/egamecontorl/player/robot/level'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || []
+          console.log('objs', objs)
+        }
+      })
+    },
     getGameConfig() {
       request({
         url: '/tongitsjackpottable/all',
@@ -961,7 +981,6 @@ export default {
     // 处理百分比输入（0-100%）
     handlePercentInput(obj, key, min = 0, max = 100) {
       let value = obj[key]?.toString() || '0'
-   
       value = value.replace(/[^\d.]/g, '').replace(/^0+(\d)/, '$1').replace(/^\./, '0.').replace(/(\..*)\./g, '$1')
       const parts = value.split('.')
       if (parts.length > 1) {
@@ -972,7 +991,6 @@ export default {
       const numValue = parseFloat(value) || 0
       if (numValue > max) value = max.toString()
       if (numValue < min) value = min.toString()
-     
       obj[key] = value
     }
   }
