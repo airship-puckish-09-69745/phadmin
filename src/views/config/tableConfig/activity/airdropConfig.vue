@@ -1301,16 +1301,18 @@ export default {
         type: 'warning'
       }).then(() => {
         request({
-          url: '/dataProxy/info',
+          url: '/airdropconfig/uids/imported/delete',
           method: 'post',
           data: {
+            Env: this.env,
             ActCfgId: $this.edit.item.id,
-            Path: '/activity/airdrop/uid/import/del'
           }
         }).then(response => {
           if (response.RetCode === 0) {
             Message.success('已重置导入的用户id！')
             $this.edit.importedUidCacheCount = 0
+            $this.edit.importedUidListCount = 0
+            $this.edit.importedUidList = []
             console.log('delImportedUid', $this.edit.importedUidCacheCount)
           }
         })
@@ -1560,6 +1562,7 @@ export default {
             $this.edit.importedUidCacheCount = response.Data.imported
           } else {
             $this.getImportedUidCacheCount()
+            $this.getImportedUidList()
           }
         }
         $this.$refs.upload.clearFiles()
