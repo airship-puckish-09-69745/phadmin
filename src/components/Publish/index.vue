@@ -447,6 +447,11 @@ export default {
       const $this = this
       getInfo(this.$store.getters.token).then(function(response) {
         if (response.RetCode === 0) {
+          let step = ""
+          if ($this.env === 'pro') {
+            if ($this.opType === 4) {step = "【待审核】"}
+            if ($this.opType === 6) {step = "【已发布】"}
+          }
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
           const content = $this.larkContent.length>0?$this.larkContent:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
@@ -456,7 +461,7 @@ export default {
             at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
             // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
           }
-          const text = `【${nick}】发布配置：${routes} 🚩\r\n${at}`+content
+          const text = `${step}【${nick}】发布配置：${routes} 🚩\r\n${at}`+content
           sendLark(text,warn,$this.env).then(response => {
             if (response.RetCode === 0) {
               console.log('wanring success')
