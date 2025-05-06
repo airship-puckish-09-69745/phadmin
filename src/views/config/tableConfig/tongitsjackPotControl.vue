@@ -115,7 +115,7 @@
                     <el-button @click="handleGetPlayerAllLevelMoney">刷新</el-button>
                   </el-col>
                 </el-form-item>
-                <el-form-item label="玩家场次库存" required>
+                <el-form-item label="玩家场次库存"  :error="'⚠️ 正数：玩家输给系统， 负数：系统输给玩家！'" required>
                   <el-table
                     :data="PlayerTableMoneyInfo"
                     stripe
