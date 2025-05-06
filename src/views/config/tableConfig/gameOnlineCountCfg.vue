@@ -144,7 +144,8 @@ export default {
         113: 'Pusoy-Swap',
         111: 'Domino QiuQiu',
         120: 'Tongits-Swap',
-        126: 'Pusoy-Wild'
+        126: 'Pusoy-Wild',
+        128: 'Tongits-Jackpot'
       },
 
       selectedGid: -1,
