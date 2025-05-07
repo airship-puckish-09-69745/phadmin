@@ -927,6 +927,7 @@ export default {
       betMoneyList: '1,10',
       form: {},
       subKey: 'gameLiveColor',
+      gameID: 129,
       libShow: $libShow,
       AttrNames: {
         'Data.MaxPlayers': '最大人数',
@@ -1199,7 +1200,8 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/game/color/game/result'
+          Path: '/game/color/game/result',
+          Gid: this.gameID
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1227,7 +1229,8 @@ export default {
           Path: '/game/color/game/result',
           One: this.resultForm.one,
           Two: this.resultForm.two,
-          Three: this.resultForm.three
+          Three: this.resultForm.three,
+          Gid: this.gameID
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -1249,7 +1252,8 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/game/clean/color/game/result'
+          Path: '/game/clean/color/game/result',
+          Gid: this.gameID
         }
       }).then(response => {
         if (response.RetCode === 0) {
