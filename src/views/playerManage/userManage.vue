@@ -1355,7 +1355,10 @@ export default {
         }
       }
 
-      const msg = '确定添加物品吗?'
+      let msg = '确定添加物品吗?'
+      if(this.item.ItemNum < 0){
+        msg = '确定扣除物品吗?'
+      }
       let tmpTime = 0
       if (this.item.ItemType === 2 || this.item.ItemType === 4) {
         tmpTime = this.item.ItemUseTime
@@ -1380,6 +1383,7 @@ export default {
             UseTime: tmpTime,
             Quality: this.item.ItemQuality,
             ExpireTime: this.item.ItemExpireTime,
+            Author:store.getters.name,
             ActMsg: '管理后台By ' + store.getters.name
           }
         }).then(response => {

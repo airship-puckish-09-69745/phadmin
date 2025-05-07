@@ -438,6 +438,7 @@ export default {
       if (this.env === 'test') {
         warn = "WarningJustForTest"
         console.log("开发阶段只通知开发服")
+        return
       }
       // 同步到正式
       if (this.env === 'pro' && this.opType != 4 && this.opType != 6) {
