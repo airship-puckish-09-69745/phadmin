@@ -78,7 +78,39 @@
               <template slot="append">用,号分割</template>
             </el-input>
           </el-form-item>
+          <!---->
+          <el-form-item label="特殊图标个数">
+            <el-table :data="cfg.ColorNumCfg" border style="width: 100%">
+              <el-table-column prop="GoldMin" label="金财字最小个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GoldMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="GoldMax" label="金财字最大个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GoldMax"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="GreenMin" label="绿财字最小个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GreenMin"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="GreenMax" label="绿财字最大个数" width="90">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.GreenMax"></el-input>
+                </template>
+              </el-table-column>
 
+              <el-table-column label="操作" width="100">
+                <template slot-scope="scope">
+                  <el-button @click="handleDelete(scope.$index)" type="danger" size="mini">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+            <el-button @click="handleAdd" type="primary" style="margin-top: 10px;">新增一行</el-button>
+          </el-form-item>
+          <!---->
         </el-form>
       </el-col>
     </el-row>
@@ -117,7 +149,9 @@ export default {
   },
   data() {
     return {
-      cfg: {}
+      cfg: {
+        ColorNumCfg: []
+      }
     }
   },
   created() {
@@ -126,6 +160,18 @@ export default {
     })
   },
   methods: {
+    handleAdd() {
+      const newRow = {
+        GoldMin: 0,
+        GoldMax: 0,
+        GreenMin: 0,
+        GreenMax: 0
+      }
+      this.cfg.ColorNumCfg.push(newRow)
+    },
+    handleDelete(index) {
+      this.cfg.ColorNumCfg.splice(index, 1)
+    },
     dataRule(required, config) {
       return DataRule(required, config)
     },
@@ -133,6 +179,50 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      let checkValue1 = true
+      let checkValue2 = true
+      let checkValue3 = true
+      this.$refs['frm2'].validate((valid) => {
+        // eslint-disable-next-line no-empty
+        for (const index in this.cfg.ColorNumCfg) {
+          // eslint-disable-next-line no-empty
+          const bnc = this.cfg.ColorNumCfg[index]
+          if (bnc.GoldMin >= bnc.GoldMax) {
+            checkValue1 = false
+            break
+          }
+          // eslint-disable-next-line no-empty
+          if (bnc.GreenMin >= bnc.GreenMax) {
+            checkValue2 = false
+            break
+          }
+          if (bnc.GoldMax + bnc.GreenMax > 9) {
+            checkValue3 = false
+            break
+          }
+        }
+      })
+      if (!checkValue1) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'金财字最小个数\'应该小于\'金财字最大个数\'')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
+      if (!checkValue2) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'绿财字最小个数\'应该小于\'绿财字最大个数\'')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
+      if (!checkValue3) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'金财字最大个数\'加上\'绿财字最大个数\'应该小于9')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
@@ -153,6 +243,9 @@ export default {
       // this.initSymbolMap()
       if (this.slotsData) {
         this.cfg = this.slotsData
+        if (!this.cfg.ColorNumCfg) {
+          this.cfg.ColorNumCfg = []
+        }
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
       }

@@ -51,6 +51,20 @@
                     </el-select>
                   </el-form-item>
                 </el-col>
+
+                <el-col :span="11">
+                  <el-form-item label="支持的SiteId：" :required="true">
+                    <el-select v-model="item.SiteIdList" multiple placeholder="请选择" style="width: 400px">
+                      <el-option
+                        v-for="item in channelIdCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+
               </el-form>
             </el-col>
           </el-row>
@@ -313,6 +327,18 @@
                     </el-select>
                   </el-form-item>
                 </el-col>
+                <el-col :span="11">
+                  <el-form-item label="支持的SiteId：" :required="true">
+                    <el-select v-model="item.GameEvent.SiteIdList" multiple placeholder="请选择" style="width: 400px">
+                      <el-option
+                        v-for="item in channelIdCfgs"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -464,7 +490,7 @@
 
           </el-row>
         </el-tab-pane>
-
+        <!--
         <el-tab-pane v-if="whitelistCfg != null" label="白名单配置">
           <el-form ref="item" label-width="220px">
           <el-row>
@@ -497,7 +523,7 @@
           </el-row>
           </el-form>
         </el-tab-pane>
-
+        -->
       </el-tabs>
 
       <el-row>
@@ -901,6 +927,7 @@ export default {
           }
         ],
         AppIds: [],   //appids
+        SiteIdList:[], //SiteIdList
         MayLikeItem: [
           {
             Gid: 1,
@@ -921,14 +948,17 @@ export default {
           IsOpen: true,
           IconLink: '',
           ActivityIds: [],
-          AppIds:[]   //appids
+          AppIds:[],   //appids
+          SiteIdList:[]
         },
         ZoneGame: [],
         HallGame: [],
+        /*
         WhitelistCfg: { //白名单配置
           AppIdList:[],
           SiteIdList:[]
         },
+        */
       },
       treeDataZone: [{
         id: 1,
@@ -1015,10 +1045,12 @@ export default {
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
       zoneGame: [],
+      /*
       whitelistCfg: { //白名单配置
           AppIdList:[],
           SiteIdList:[]
         }
+      */
     }
   },
   watch: {
@@ -1300,6 +1332,7 @@ export default {
             } else {
               this.hallGame = this.item.HallGame
             }
+            /*
             if (this.item.WhitelistCfg == null){
               this.whitelistCfg = {
                 AppIdList:[],
@@ -1308,6 +1341,7 @@ export default {
             }else{
               this.whitelistCfg = this.item.WhitelistCfg
             }
+            */
             this.$refs.compare.SetOldVal(old)
           }
         }
@@ -1416,15 +1450,19 @@ export default {
     onCompare(pre,pro) {
       const preVal=JSON.parse(pre.Data)
       const proVal=JSON.parse(pro.Data)
+      console.log('JSON.stringify(preVal.zoneGame',preVal)
+      console.log('JSON.stringify(proVal.zoneGame',proVal)
       // 编辑
       let change = ''
       if ((JSON.stringify(preVal.IsOpen) !== JSON.stringify(proVal.IsOpen)) ||
       (JSON.stringify(preVal.ImgUrl) !== JSON.stringify(proVal.ImgUrl)) ||
         (JSON.stringify(preVal.GameList) !== JSON.stringify(proVal.GameList)) ||
-        (JSON.stringify(preVal.AppIds) !== JSON.stringify(proVal.AppIds))
+        (JSON.stringify(preVal.AppIds) !== JSON.stringify(proVal.AppIds)) ||
+        (JSON.stringify(preVal.SiteIdList) !== JSON.stringify(proVal.SiteIdList))
       ) {
         change += 'gameZone活动配置/'
       }
+      let mayLike = false
       if ((JSON.stringify(preVal.WinMoreItem) !== JSON.stringify(proVal.WinMoreItem))
       ) {
         for (const i in preVal.WinMoreItem) {
@@ -1434,6 +1472,7 @@ export default {
               ) {
                 if (preVal.WinMoreItem[i].Id === 3) {
                   change += 'mayLike活动配置/'
+                  mayLike = true
                 }
                 if (preVal.WinMoreItem[i].Id === 4) {
                   change += 'Favorites活动配置/'
@@ -1441,6 +1480,12 @@ export default {
               }
             }
           }
+        }
+      }
+      if ((JSON.stringify(preVal.MayLikeItem) !== JSON.stringify(proVal.MayLikeItem))) {
+        if (!mayLike) {
+          change += 'mayLike活动配置/'
+          mayLike = true
         }
       }
       let hasgameZoneOther = false
@@ -1454,7 +1499,7 @@ export default {
                 if (preVal.GameZoneItem[i].Id === 2) {
                   change += 'winMore配置/'
                 }
-                if (!hasgameZoneOther) {
+                if (preVal.GameZoneItem[i].Id !== 2 && !hasgameZoneOther) {
                   change += 'gameZone其他活动配置/'
                   hasgameZoneOther = true
                 }
@@ -1467,14 +1512,15 @@ export default {
       ) {
         change += '游戏内活动入口配置/'
       }
-      if ((JSON.stringify(preVal.zoneGame) !== JSON.stringify(proVal.zoneGame))
+      if ((JSON.stringify(preVal.ZoneGame) !== JSON.stringify(proVal.ZoneGame))
       ) {
         change += '侧拉栏游戏推荐/'
       }
+      /*
       if ((JSON.stringify(preVal.WhitelistCfg) !== JSON.stringify(proVal.WhitelistCfg))
       ) {
         change += '白名单配置/'
-      }
+      }*/
       let str = ''
       if (change !== '') {
         str = `修改了:【${change}】的配置`
@@ -1764,7 +1810,7 @@ export default {
       }
       cpy.HallGame = this.hallGame
       cpy.ZoneGame = this.zoneGame
-      cpy.WhitelistCfg = this.whitelistCfg
+      //cpy.WhitelistCfg = this.whitelistCfg
       return JSON.stringify(cpy)
     },
     setData() {

@@ -600,6 +600,9 @@ export default {
           }
         }
       }
+      if (str === "") {
+        str = "没有修改!"
+      }
       return str
     },
     decodeHtmlEntities(str) {

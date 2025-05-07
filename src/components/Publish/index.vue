@@ -238,6 +238,7 @@ import Diff from '@/utils/diff'
 import { $libDate, $LibJsonDiff, $libType, ClientTableData } from '@/utils/common'
 import store from '@/store'
 import request from '@/utils/request'
+import {IsMars} from "@/utils/env";
 
 const jsonDiff = require('diff')
 
@@ -367,7 +368,10 @@ export default {
     this.env = store.getters.env || this.env
     this.resetData()
     this.checkProcessing()
-    this.getLarkPage()
+    if (!IsMars()) {
+      console.log("==",IsMars)
+      this.getLarkPage()
+    }
   },
   methods: {
     init() {
@@ -443,13 +447,21 @@ export default {
       const $this = this
       getInfo(this.$store.getters.token).then(function(response) {
         if (response.RetCode === 0) {
+          let step = ""
+          if ($this.env === 'pro') {
+            if ($this.opType === 4) {step = "【待审核】"}
+            if ($this.opType === 6) {step = "【已发布】"}
+          }
           const nick = response.Data.nick
           const routes = $this.getRoutesName()
           const content = $this.larkContent.length>0?$this.larkContent:$this.makeContent($this.keyId, $this.addData, $this.delData, $this.editData)
-          // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
-          const at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>'
-          // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
-          const text = `【${nick}】发布配置：${routes} ⤵️\r\n${at}\r\n`+content
+          let at = ''
+          if ($this.env === 'pro') {
+            // at += '<at user_id="ou_dacc382512738a049ab4f32d6db9f82e">xiong</at>'
+            at = '<at user_id="ou_2b283f529fc901b97b443b946f692efd">SamYe</at>\r\n'
+            // at += '<at user_id="ou_932b1ed1e7064b512199b77ce83236c1">高勋</at>'
+          }
+          const text = `${step}【${nick}】发布配置：${routes} 🚩\r\n${at}`+content
           sendLark(text,warn,$this.env).then(response => {
             if (response.RetCode === 0) {
               console.log('wanring success')
@@ -462,11 +474,20 @@ export default {
     },
     getRoutesName() {
       let str = ''
+      let slots = false
       for (let i=0; i<this.$route.matched.length; i++) {
         if (i > 0) {
           str += '->'
         }
         str += this.$route.matched[i].meta.title
+        console.log(this.$route.matched[i])
+        if (this.$route.matched[i].path === "/tableConfig/slotsCfg/slotsProCfg"){
+          slots = true
+        }
+      }
+      // 是老虎机并且上一级标签是el-tab
+      if (slots && this.$parent.$options.name === 'ElTabPane') {
+        str += '->' + this.$parent.label
       }
       return str
     },

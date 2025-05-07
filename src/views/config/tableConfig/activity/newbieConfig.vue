@@ -1,7 +1,7 @@
 <template>
   <el-col class="app-container">
     <el-row>
-      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" />
+      <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :on-compare="onCompare" />
     </el-row>
 
     <el-row>
@@ -456,7 +456,7 @@ export default {
         SumLimitNum: 0,
         AppId: -1,
         PrizePoolCfg: [],
-        GameIdCfg: [],
+        GameIdCfg: [21, 22, 2031, 10002],
         WhitelistCfg: {
           AppIdList: [],
           SiteIdList: [],
@@ -700,6 +700,28 @@ export default {
     handlePrizeCreate() {
       this.edit.item.PrizeCfg.push({ Reward: 0, Weight: 0, PrizeNum: 0, PrizeUnlimited: true })
     },
+    onCompare(pre,pro) {
+      const preVal=JSON.parse(pre.Data)
+      const proVal=JSON.parse(pro.Data)
+      let str = ''
+      if ((preVal.IsOpen !== proVal.IsOpen) || (preVal.StartTime !== proVal.StartTime) ||
+        (preVal.EndTime !== proVal.EndTime) || (preVal.LimitStartTime !== proVal.LimitStartTime) ||
+      (preVal.LimitEndTime !== proVal.LimitEndTime) || (preVal.SingleLimitNum !== proVal.SingleLimitNum) ||
+      (preVal.EveryDayLimitNum !== proVal.EveryDayLimitNum) || (preVal.SumLimitNum !== proVal.SumLimitNum) ||
+      (JSON.stringify(preVal.GameIdCfg) !== JSON.stringify(proVal.GameIdCfg))) {
+        str += '新手任务活动配置/'
+      }
+      if (JSON.stringify(preVal.taskCfgData) !== JSON.stringify(proVal.taskCfgData)){
+        str += '任务配置/'
+      }
+      if (JSON.stringify(preVal.pokerCfgData) !== JSON.stringify(proVal.pokerCfgData)) {
+        str += 'Poker任务配置/'
+      }
+      if (JSON.stringify(preVal.WhiteList) !== JSON.stringify(proVal.WhiteList) || preVal.IsWhite !== proVal.IsWhite) {
+        str += '白名单配置/'
+      }
+      return `修改了:【${str}】的配置`
+    },
     handlePrizeDelete(ob) {
       let $this = this
       this.$confirm('是否确认删除此奖励配置?', '提示', {type:'warning'}).then(() => {
@@ -881,7 +903,11 @@ export default {
             if (old.pokerCfgData.length > 0) {
               $this.item.pokerCfgData = this.getPokerCfgData(old.pokerCfgData)
             }
-            $this.item.GameIdCfg = old.GameIdCfg
+            for (let i = 0; i < old.GameIdCfg.length; i++) {
+              if (!$this.item.GameIdCfg.includes(old.GameIdCfg[i])) {
+                $this.item.GameIdCfg.push(old.GameIdCfg[i])
+              }
+            }
             if (old.WhiteList !== null) {
               $this.item.WhitelistCfg.UidList = []
               for (let i = 0; i < old.WhiteList.length; i++) {
@@ -908,6 +934,16 @@ export default {
       var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
       var pokerCfgData = this.getTaskCfgData(this.item.pokerCfgData)
       var whiteList = this.getWhiteList()
+      var isExit = false
+      for (let i = 0; i < this.item.GameIdCfg.length; i++) {
+        if (this.item.GameIdCfg[i] === 2031) {
+          isExit = true
+          break
+        }
+      }
+      if (!isExit) {
+        this.item.GameIdCfg.push(2031)
+      }
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,

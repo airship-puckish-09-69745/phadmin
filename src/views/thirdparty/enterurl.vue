@@ -3,7 +3,7 @@
     <el-row>
       <el-form :model="item" label-width="90px" :inline="true" size="small">
         <el-form-item v-model="item.agent_id" label="平台：" :required="true" label-width="100px">
-          <el-select v-model="item.agent_id" placeholder="请选择" size="mini">
+          <el-select v-model="item.agent_id" filterable placeholder="请选择" size="mini">
             <el-option
               v-for="row in agents"
               :label="row.desc"
@@ -400,6 +400,11 @@ export default {
           id: 1000020,
           agentId: 'playtime',
           desc: 'playtime正式[1000020]'
+        },
+        {
+          id: 1000017,
+          agentId: 'playtimeDev',
+          desc: 'playtimeDev[1000017]'
         },
         {
           id: 1000021,
