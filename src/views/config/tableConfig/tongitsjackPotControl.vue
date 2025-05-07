@@ -7,6 +7,7 @@
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
             <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input v-model.number="editCriticalPoint[0]" />
@@ -114,7 +115,7 @@
                     <el-button @click="handleGetPlayerAllLevelMoney">刷新</el-button>
                   </el-col>
                 </el-form-item>
-                <el-form-item label="玩家场次库存" required>
+                <el-form-item label="玩家场次库存"  :error="'⚠️ 正数：玩家输给系统， 负数：系统输给玩家！'" required>
                   <el-table
                     :data="PlayerTableMoneyInfo"
                     stripe
@@ -211,7 +212,14 @@
               </el-descriptions-item>
             </el-descriptions>
             <h3 style="text-align:center;">群控区间对个⼈区间的移动格数</h3>
+            <el-alert
+              title="⚠️  负数往左偏移， 正数往右偏移"
+              type="error"
+              :closable="false"
+              style="margin-bottom: 16px;"
+            />
             <el-descriptions label="群控区间对个⼈区间的移动格数" :column="6" :colon="false" direction="vertical" border>
+
               <el-descriptions-item label="区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <span>移动区间数</span>
               </el-descriptions-item>

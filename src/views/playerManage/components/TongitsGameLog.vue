@@ -96,6 +96,12 @@
               <span>输赢：{{ one.moneyChange/1000 }}</span><br>
               <!--              <span>机器人级别：{{ showRobotLevel(one.Character) }}</span><br>-->
               <span>机器人级别：{{ one.isRobot?'机器人':'真人' }} {{ getRobotLevel(one.RobotLevel) }}</span>
+              
+              <template v-if="Gid === 128"> <!-- control信息 -->
+                <br>
+                <span>库存：{{ one.isRobot ? '-' : one.inventoryMoney/1000 }}</span><br>
+                <span>区间：{{ getControlLevel(one.ctrlAreaId) }}</span><br>
+              </template>
               <br>
             </div>
           </div>
@@ -316,6 +322,8 @@ export default {
           Character: val.players[j].character,
           jackpotNum: val.players[j].JackpotNum,
           jackpotType: val.players[j].JackpotType,
+          inventoryMoney: val.players[j].InventoryMoney,
+          ctrlAreaId: val.players[j].CtrlAreaId,
           isRobot: false,
           RobotLevel: val.players[j].RobotLevel
         })
@@ -421,6 +429,19 @@ export default {
         return '-- 弱杀'
       } else if (level == 5) {
         return '-- 强杀'
+      }
+    },
+    getControlLevel(lv) {
+      if (lv == 0) {
+        return '强杀'
+      } else if (lv == 1) {
+        return '弱放'
+      } else if (lv == 2) {
+        return '正常'
+      } else if (lv == 3) {
+        return '弱放'
+      } else if (lv == 4) {
+        return '强放'
       }
     },
     showRobotLevel(level) {
