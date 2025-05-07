@@ -570,7 +570,7 @@ function newItem() {
     },
     rewardConfig: {
       rewardType: 2,
-      useSceneId: 8,
+      useSceneId: 13,
       totalReward: 88888,
       remainRewardMonitorRate: 90,
       rewardRanges: [
