@@ -692,7 +692,7 @@ export default {
 
       // 投注金
       betScenes: [
-        { 'value': 8, 'label': '【空投活动】任意游戏投注' },
+        { 'value': 13, 'label': '【空投活动】任意游戏投注' },
       ],
       // 返水金
       rebateScenes: [
