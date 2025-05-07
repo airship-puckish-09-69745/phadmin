@@ -478,7 +478,7 @@ export default {
         GameControl: {
           ControlRange: [
             {
-              MoveRange: -999, // 强杀全生效
+              MoveRange: -2, // 强杀全生效
               Ratio: 1.1
             },
             {
@@ -554,7 +554,7 @@ export default {
       editGameControl: {
         ControlRange: [
           {
-            MoveRange: -999, // 强杀全生效
+            MoveRange: -2, // 强杀全生效
             Ratio: '11'
           },
           {
@@ -888,10 +888,10 @@ export default {
           this.GameMoney /= 1000
           if (objs.gameAreaId < 0) {
             this.GameRangeName = this.gameAreaName[0]
-          } else if (objs.gameAreaId > this.gameAreaName.length) {
+          } else if (objs.gameAreaId >= this.gameAreaName.length) {
             this.GameRangeName = this.gameAreaName[7]
           } else {
-            this.GameRangeName = this.gameAreaName[objs.gameAreaId - 1]
+            this.GameRangeName = this.gameAreaName[objs.gameAreaId]
           }
         }
       })
