@@ -86,7 +86,7 @@
                   <el-input v-model.number="scope.row.GoldMin"></el-input>
                 </template>
               </el-table-column>
-              <el-table-column prop="GoldMax" label="金财字最小大数" width="90">
+              <el-table-column prop="GoldMax" label="金财字最大个数" width="90">
                 <template slot-scope="scope">
                   <el-input v-model.number="scope.row.GoldMax"></el-input>
                 </template>
@@ -179,6 +179,50 @@ export default {
       return JSON.parse(JSON.stringify(this.slotsData))
     },
     submitFrm() {
+      let checkValue1 = true
+      let checkValue2 = true
+      let checkValue3 = true
+      this.$refs['frm2'].validate((valid) => {
+        // eslint-disable-next-line no-empty
+        for (const index in this.cfg.ColorNumCfg) {
+          // eslint-disable-next-line no-empty
+          const bnc = this.cfg.ColorNumCfg[index]
+          if (bnc.GoldMin >= bnc.GoldMax) {
+            checkValue1 = false
+            break
+          }
+          // eslint-disable-next-line no-empty
+          if (bnc.GreenMin >= bnc.GreenMax) {
+            checkValue2 = false
+            break
+          }
+          if (bnc.GoldMax + bnc.GreenMax > 9) {
+            checkValue3 = false
+            break
+          }
+        }
+      })
+      if (!checkValue1) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'金财字最小个数\'应该小于\'金财字最大个数\'')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
+      if (!checkValue2) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'绿财字最小个数\'应该小于\'绿财字最大个数\'')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
+      if (!checkValue3) {
+        this.$message.error('未保存')
+        setTimeout(() => {
+          this.$message.error('\'金财字最大个数\'加上\'绿财字最大个数\'应该小于9')
+        }, 100) // 间隔0.1秒显示
+        return
+      }
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
