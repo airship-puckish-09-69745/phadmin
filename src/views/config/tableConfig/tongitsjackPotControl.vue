@@ -7,6 +7,7 @@
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
             <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input v-model.number="editCriticalPoint[0]" />
@@ -31,17 +32,6 @@
             <h2 style="text-align:center;">个⼈控制区间配置</h2>
             <el-row>
               <el-form :label-position="labelPosition" label-width="100px">
-                <el-form-item label="区间玩家发牌配置" required>
-                  <el-col :span="2">
-                    <el-button
-                      type="primary"
-                      size="mini"
-                      icon="el-icon-document-copy"
-                      @click="handleUpdatePlayerGoodCard()"
-                    >修改
-                    </el-button>
-                  </el-col>
-                </el-form-item>
                 <el-form-item label="同周期机器⼈类型是否与⾸局⼀致" required>
                   <el-col :span="2">
                     <el-switch v-model.number="item.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
@@ -125,7 +115,7 @@
                     <el-button @click="handleGetPlayerAllLevelMoney">刷新</el-button>
                   </el-col>
                 </el-form-item>
-                <el-form-item label="玩家场次库存" required>
+                <el-form-item label="玩家场次库存"  :error="'⚠️ 正数：玩家输给系统， 负数：系统输给玩家！'" required>
                   <el-table
                     :data="PlayerTableMoneyInfo"
                     stripe
@@ -222,7 +212,14 @@
               </el-descriptions-item>
             </el-descriptions>
             <h3 style="text-align:center;">群控区间对个⼈区间的移动格数</h3>
+            <el-alert
+              title="⚠️  负数往左偏移， 正数往右偏移"
+              type="error"
+              :closable="false"
+              style="margin-bottom: 16px;"
+            />
             <el-descriptions label="群控区间对个⼈区间的移动格数" :column="6" :colon="false" direction="vertical" border>
+
               <el-descriptions-item label="区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <span>移动区间数</span>
               </el-descriptions-item>
@@ -247,7 +244,7 @@
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="当前游戏待调整⾦额:">
-                  <el-input v-model="GameMoney" />
+                  {{ GameMoney }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
@@ -452,12 +449,12 @@ export default {
           IsSameFirst: false,
           RobotWeight: [
             {
-              AiConfigLevel: 1,
+              AiConfigLevel: 5,
               AiConfigName: '超强机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
-              AiConfigLevel: 2,
+              AiConfigLevel: 4,
               AiConfigName: '稍强机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             },
@@ -467,12 +464,12 @@ export default {
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
-              AiConfigLevel: 4,
+              AiConfigLevel: 2,
               AiConfigName: '稍弱机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
-              AiConfigLevel: 5,
+              AiConfigLevel: 1,
               AiConfigName: '超弱机器⼈',
               AiWeight: [1, 1, 1, 1, 1]
             }
@@ -865,7 +862,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           value: this.GameMoney * 1000,
-          Path: '/egamecontorl/set/game/money'
+          Path: '/egamecontorl/set/game/pending/money'
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -880,13 +877,14 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
-          Path: '/egamecontorl/game/money'
+          Path: '/egamecontorl/game/pending/money'
         }
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log(objs)
           Message.success('刷新成功！')
-          this.GameMoney = objs.gameMoney
+          this.GameMoney = objs.pendingMoney
           this.GameMoney /= 1000
           if (objs.gameAreaId < 0) {
             this.GameRangeName = this.gameAreaName[0]

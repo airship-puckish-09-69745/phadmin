@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames"/>
+    <publish primary-key="ID" :key-id="getFullKey()" :make-content="makeContent" :env-empty="false" compare-type="Object" :attr-names="AttrNames"/>
 
 
     <el-row :gutter="10" style="margin-top: 30px">
@@ -1664,7 +1664,7 @@ export default {
             planVer:row.Version
           }
         }).then(response => {
-          if (response.RetCode !== 0 && response.Data !=={}) {
+          if (response.RetCode !== 0 && typeof response.Data !== 'object') {
             Message.error("没有创建剧本，请先创建剧本再选择")
             row.IsReady = false
           }
@@ -1672,7 +1672,10 @@ export default {
         console.log('选择了“是”');
       }
     },
-  },
+    makeContent(key, addData, delData, editData) {
+      return '【' + this.getGameName(this.queryGid) + '】'
+    }
+  }
 }
 </script>
 <style scoped>
