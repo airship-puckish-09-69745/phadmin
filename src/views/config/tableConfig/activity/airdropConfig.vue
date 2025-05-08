@@ -162,7 +162,7 @@
                   </el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="24">
+              <el-col :span="24" v-if="showImportElement">
                 <el-form-item label="导入用户：" :required="false">
                   <span>已导入用户：{{this.edit.importedUidListCount}}</span>
                   <span>（已生效用户：{{this.edit.importedUidCacheCount}}）</span>
@@ -541,7 +541,7 @@ import {id} from "html-webpack-plugin/lib/chunksorter";
 
 const filterMap = {}
 
-const loadingText = '兑奖码导入中，请稍等...'
+const loadingText = '用户导入中，请稍等...'
 
 const gameTaskTypeValidBet = 2 // 游戏任务类型：有效投注
 
@@ -789,6 +789,9 @@ export default {
     },
     actionURL() {
       return process.env.VUE_APP_BASE_API + '/other/upload'
+    },
+    showImportElement() {
+      return this.edit.item.id && this.edit.item.userTypes.includes(3)
     }
   },
   methods: {
