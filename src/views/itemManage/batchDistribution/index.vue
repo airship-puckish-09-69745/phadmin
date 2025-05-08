@@ -11,23 +11,35 @@
       />
     </el-row>
     <el-row style="padding: 20px 0 12px;">
-      <el-form :model="form" label-width="100px" :inline="true" size="mini">
-        <!-- <el-form-item label="道具类别：" :required="true">
-          <el-select v-model="form.itemOfType" style="width: 200px;" placeholder="请选择道具分类">
+      <el-form :model="filter" label-width="100px" :inline="true" size="mini">
+        <el-form-item label="时间：">
+          <el-date-picker
+            v-model="filter.timeRange"
+            :default-time="['00:00:00', '23:59:59']"
+            type="datetimerange"
+            value-format="timestamp"
+            :picker-options="pickerOptions"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            align="right"
+          />
+        </el-form-item>
+        <el-form-item label="发放状态：">
+          <el-select v-model="filter.status" style="width: 200px;" placeholder="请选择道具分类">
             <el-option label="全部" :value="0" />
             <el-option
-              v-for="item in itemTypeCfgs"
+              v-for="item in statusOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
               :disabled="item.disabled"
             />
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-button size="mini" type="primary" @click="selectPageData">查询</el-button>
-        <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="onCreateDistribution">批量发放</el-button>
+        <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="onShowFormDialog">批量发放</el-button>
       </el-form>
-
     </el-row>
     <el-row>
       <el-table
@@ -38,33 +50,43 @@
         :cell-style="libShow.TableCell(10)"
         style="width: 100%"
       >
+        <el-table-column
+          type="index"
+          label="序号"
+          width="60"
+        />
         <el-table-column prop="id" label="道具ID" sortable width="100" />
-        <el-table-column prop="item_name" label="道具名称" show-overflow-tooltip />
-        <!-- <el-table-column prop="item_type" label="道具分类">
+        <el-table-column prop="createTime" label="发布时间" width="150" />
+        <el-table-column prop="remark" label="备注" show-overflow-tooltip />
+        <el-table-column prop="number" label="发放数量" />
+        <el-table-column prop="propName" label="道具名称" />
+        <el-table-column prop="propCost" label="总发放量" />
+        <el-table-column prop="modifier" label="操作人" width="150" />
+        <el-table-column prop="status" label="状态">
           <template slot-scope="scope">
-            {{ getItemTypeName(scope.row.item_type) }}
+            <el-tag
+              v-if="scope.row.status == 1"
+              type="primary"
+              size="mini"
+            >待发放</el-tag>
+            <el-tag
+              v-else-if="scope.row.status == 2"
+              type="success"
+              size="mini"
+            >已发放</el-tag>
           </template>
-</el-table-column>
+        </el-table-column>
 
-<el-table-column prop="image" label="ICON">
-  <template slot-scope="{row}">
-            <el-image
-              style="width: 60px; height: 60px"
-              :src="row.image"
-              lazy
-            />
-          </template>
-</el-table-column> -->
-        <el-table-column prop="item_cost" label="道具价值" />
-
-        <el-table-column prop="modifier" label="操作人" />
-
-        <el-table-column prop="sort" label="排序" />
-
-        <el-table-column fixed="right" width="250px" label="操作">
+        <el-table-column fixed="right" width="180px" label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" icon="el-icon-edit" @click="onCreateDistribution(scope.row)">编辑</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button v-if="scope.row.status == 2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+          </template>
+        </el-table-column>
+
+        <el-table-column fixed="right" width="160px" label="详情">
+          <template slot-scope="scope">
+            <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +114,7 @@
     <compare ref="compare" />
 
     <FormDialog :visible="editForm.visible" @close="onCloseFormDialog" />
+    <DetailsDialog :visible="detailsForm.visible" @close="onCloseDetailsDialog" />
   </div>
 
 </template>
@@ -103,14 +126,29 @@ import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow } from '@/utils/common'
 import FormDialog from './components/FormDialog.vue'
+import DetailsDialog from './components/DetailsDialog.vue'
 
 export default {
   name: 'PropsConfig',
-  components: { Compare, Publish, FormDialog },
+  components: { Compare, Publish, FormDialog, DetailsDialog },
   data() {
     return {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
+      statusOptions: [
+        {
+          value: 0,
+          label: '全部'
+        },
+        {
+          value: 1,
+          label: '待发放'
+        },
+        {
+          value: 2,
+          label: '已发放'
+        }
+      ],
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
 
@@ -120,8 +158,13 @@ export default {
       limit: 10,
       total: 0,
       page: 1,
-      form: {
-        itemOfType: 0
+      filter: {
+        timeRange: [],
+        status: 0
+      },
+      detailsForm: {
+        visible: false,
+        id: null
       },
       editForm: {
         visible: false,
@@ -142,17 +185,14 @@ export default {
       },
 
       AttrNames: {
+        index: '序号',
+        createTime: '发布时间',
+        remark: '备注',
+        number: '发放数量',
         propName: '道具名称',
-        propCost: '道具价值',
-        propType: '道具分类',
-        describe: '道具描述',
-        image: 'ICON链接',
-        expireTime: '过期时间',
-        sort: '排序',
-        propStatus: '上架状态',
-        createTime: '创建时间',
-        id: '道具ID',
-        propExtra: '拓展信息'
+        propCost: '总发放量',
+        modifier: '操作人',
+        status: '状态'
       }
     }
   },
@@ -164,7 +204,7 @@ export default {
     this.getList()
   },
   methods: {
-    onCreateDistribution(data) {
+    onShowFormDialog(data) {
       this.editForm.data = data
       this.editForm.visible = true
     },
@@ -172,41 +212,49 @@ export default {
       this.editForm.visible = false
       this.editForm.data = null
     },
+    onShowDetailsDialog(data) {
+      this.detailsForm.visible = true
+      this.detailsForm.id = data.id
+    },
+    onCloseDetailsDialog() {
+      this.detailsForm.visible = false
+      this.detailsForm.id = null
+    },
     getList() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: this.page,
-          PageSize: this.limit,
-          PropType: this.form.itemOfType
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (objs.total > 0) {
-            this.tableData = []
-            if (this.form.itemOfType === 0) {
-              this.tableData = objs.list
-              this.total = objs.total
-            } else {
-              let n = 0
-              for (let i = 0; i < objs.list.length; i++) {
-                if (objs.list[i].item_type === this.form.itemOfType) {
-                  this.tableData.push(objs.list[i])
-                  n++
-                }
-              }
-              this.total = n
-            }
-            this.$refs.compare.SetOldVal(response.Data.Data)
-          }
-        } else {
-          this.total = 0
-          this.tableData = []
-        }
-      })
+      // request({
+      //   url: '/propsconfig/props/config/list',
+      //   method: 'get',
+      //   data: {
+      //     Env: this.env,
+      //     PageNum: this.page,
+      //     PageSize: this.limit,
+      //     PropType: this.form.itemOfType
+      //   }
+      // }).then(response => {
+      //   if (response.RetCode === 0) {
+      //     const objs = response.Data || {}
+      //     if (objs.total > 0) {
+      //       this.tableData = []
+      //       if (this.form.itemOfType === 0) {
+      //         this.tableData = objs.list
+      //         this.total = objs.total
+      //       } else {
+      //         let n = 0
+      //         for (let i = 0; i < objs.list.length; i++) {
+      //           if (objs.list[i].item_type === this.form.itemOfType) {
+      //             this.tableData.push(objs.list[i])
+      //             n++
+      //           }
+      //         }
+      //         this.total = n
+      //       }
+      //       this.$refs.compare.SetOldVal(response.Data.Data)
+      //     }
+      //   } else {
+      //     this.total = 0
+      //     this.tableData = []
+      //   }
+      // })
     },
     handleSizeChange(val) {
       this.limit = val
