@@ -1,15 +1,5 @@
 <template>
   <div class="app-container">
-    <el-row>
-      <publish
-        primary-key="id"
-        key-id="PropsConfig"
-        :env-empty="true"
-        :make-content="makeContent"
-        :attr-names="AttrNames"
-        :head-attrs="['id']"
-      />
-    </el-row>
     <el-row style="padding: 20px 0 12px;">
       <el-form :model="filter" label-width="100px" :inline="true" size="mini">
         <el-form-item label="时间：">
@@ -79,16 +69,17 @@
 
         <el-table-column fixed="right" width="180px" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
+            <el-button v-if="scope.row.status == 1" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
+            <el-button v-else type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="scope.row.status == 2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" width="160px" label="详情">
+        <!-- <el-table-column fixed="right" width="160px" label="详情">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
           </template>
-        </el-table-column>
+        </el-table-column> -->
       </el-table>
     </el-row>
     <el-row type="flex" justify="center">
@@ -122,7 +113,6 @@
 import store from '@/store'
 import { Message } from 'element-ui'
 import Compare from '@/components/Compare'
-import Publish from '@/components/Publish'
 import request from '@/utils/request'
 import { $libDate, $libShow } from '@/utils/common'
 import FormDialog from './components/FormDialog.vue'
@@ -130,7 +120,7 @@ import DetailsDialog from './components/DetailsDialog.vue'
 
 export default {
   name: 'PropsConfig',
-  components: { Compare, Publish, FormDialog, DetailsDialog },
+  components: { Compare, FormDialog, DetailsDialog },
   data() {
     return {
       libShow: $libShow,
@@ -263,68 +253,6 @@ export default {
     handleCurrentChange(val) {
       this.page = val
       this.getList()
-    },
-    makeContent(key, addData, delData, editData) {
-      // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
-      const change = new Set()
-      const add = new Set()
-      const del = new Set()
-      // 新增取newVal
-      if (addData) {
-        console.log('addData', addData)
-        for (var i = 0; i < addData.length; i++) {
-          for (const ele of addData[i]) {
-            add.add(ele.newVal)
-          }
-        }
-      }
-      if (delData) {
-        console.log('delData', delData)
-        for (let i = 0; i < delData.length; i++) {
-          for (const ele of delData[i]) {
-            del.add(ele.oldVal)
-          }
-        }
-      }
-      if (editData) {
-        // console.log("editData",editData)
-        for (const edit of editData) {
-          change.add(edit.Head.id)
-          console.log(edit.Head.id)
-        }
-      }
-      if (change.size + del.size + add.size === 0) {
-        console.log('no change return')
-        return '没有修改!'
-      }
-
-      let str = ''
-      let has = false
-      for (let i = 0; i < this.tableData.length; i++) {
-        const row = this.tableData[i]
-        if (change.has(row.id)) {
-          // console.log(JSON.stringify(row))
-          has && (str += '\r\n---'); has = true
-          str += `\r\n修改:ID:【${row.id}】, ${row.item_name}, ${this.getItemTypeName(row.item_type)}`
-          str += `\r\n${this.getStatusName(row.status)} 价值:【${row.item_cost}】, ${new Date(row.expire_time * 1000).toLocaleString()}, ${row.image}`
-        }
-        if (add.has(row.id)) {
-          // console.log(JSON.stringify(row))
-          has && (str += '\r\n---\r\n'); has = true
-          str += `\r\n新增:ID:【${row.id}】, ${row.item_name}, ${this.getItemTypeName(row.item_type)}`
-          str += `\r\n${this.getStatusName(row.status)} 价值:【${row.item_cost}】, ${new Date(row.expire_time * 1000).toLocaleString()}, ${row.image}`
-        }
-      }
-      for (let i = 0; i < this.deleteData.length; i++) {
-        const row = this.deleteData[i]
-        if (del.has(row.id)) {
-          // console.log(JSON.stringify(row))
-          has && (str += '\r\n---\r\n'); has = true
-          str += `\r\n删除:ID:【${row.id}】, ${row.item_name}, ${this.getItemTypeName(row.item_type)}`
-          str += `\r\n${this.getStatusName(row.status)} 价值:【${row.item_cost}】, ${new Date(row.expire_time * 1000).toLocaleString()}, ${row.image}`
-        }
-      }
-      return str
     },
     formatNum(n) {
       return n.toLocaleString()
