@@ -6,7 +6,6 @@
 
         <fieldset style="margin-top:20px;">
           <legend>jackpot调控配置</legend>
-          <p style="color: red; font-weight: bold;">⚠️ 发布配置后不会主动推送生效，可通过修改某一个场次某一项配置如：“最大围观人数”，产生差异后推送更新一起reload生效！</p>
 
           <el-row :gutter="10" style="margin-top:40px;">
             <el-col :span="32">
