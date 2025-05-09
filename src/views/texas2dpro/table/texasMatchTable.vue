@@ -1235,7 +1235,7 @@ export default {
       }
       if (change.size + del.size + add.size == 0) {
         console.log("no change return")
-        return
+        return "没有修改!"
       }
     
       let str = "" 
@@ -1246,7 +1246,7 @@ export default {
           console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n修改： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
-          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n${this.getGameName(row.GameId)} - ${this.getRaceType(row.RaceType)} - ${row.RaceName}`
           str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
           str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
           str += `\r\n报名费：₱${row.SignupFee}`
@@ -1255,7 +1255,7 @@ export default {
           console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n下架： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
-          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n${this.getGameName(row.GameId)} - ${this.getRaceType(row.RaceType)} - ${row.RaceName}`
           str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
           str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
           str += `\r\n报名费：₱${row.SignupFee}`
@@ -1264,7 +1264,7 @@ export default {
           console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n上架： appid:【${row.AppInfo[0].appId} ${row.AppInfo[0].channelId.join(',')}】。赛事ID:【${row.ID}】`
-          str += `\r\n${this.getGameName(row.GameId)} - ${row.RaceName}`
+          str += `\r\n${this.getGameName(row.GameId)} - ${this.getRaceType(row.RaceType)} - ${row.RaceName}`
           str += `\r\n开始结束日期：【${this.formatTime2(row.RaceBeginDate, 1)}】 - 【${this.formatTime2(row.RaceEndDate, 1)}】`
           str += `\r\n开始结束时间：${this.formatTime2(row.RaceBeginTime, 4)} - ${this.formatTime2(row.RaceEndTime, 4)}`
           str += `\r\n报名费：₱${row.SignupFee}`

@@ -2,13 +2,22 @@
   <div class="app-container">
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
-        <el-form ref="frm2" :model="cfg" label-width="250px">
-          <el-form-item label="普通模式 大wild在2345轴的概率" :rules="dataRule(true)">
-            <el-input v-model="cfg.WildBigNormal" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ 4轴12‱ 5轴13‱</template> </el-input>
+        <el-form ref="frm2" :model="cfg" label-width="290px">
+
+          <el-form-item label="普通模式 小wild(占1-4行)在2345轴的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildSmallNormal" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ ..</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式 大wild在2345轴的概率" :rules="dataRule(true)">
-            <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ 4轴12‱ 5轴13‱</template> </el-input>
+          <el-form-item label="免费模式 小wild(占1-4行)在2345轴的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildSmallFree" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ ..</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="普通模式 大wild(占5行)在2345轴的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildBigNormal" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ ..</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式 大wild(占5行)在2345轴的概率" :rules="dataRule(true)">
+            <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ ..</template> </el-input>
           </el-form-item>
 
           <el-form-item label="免费模式中奖倍数">

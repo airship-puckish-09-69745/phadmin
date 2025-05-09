@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames"/>
+    <publish primary-key="ID" :key-id="getFullKey()" :make-content="makeContent" :env-empty="false" compare-type="Object" :attr-names="AttrNames"/>
 
 
     <el-row :gutter="10" style="margin-top: 30px">
@@ -429,7 +429,11 @@
               <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
                      <input type="file" @change="(event) => handleFileUpload2(event, scope.$index)" accept=".xlsx, .xls" size="mini"></input>
               </el-tooltip>
-              <el-col :offset="2" :span="8">
+              <el-col :offset="1" :span="12">
+               <el-tooltip content="检查是否命中不存在倍数" effect="dark" placement="top">
+                <el-button type="primary" @click="checkAbnormalSteps(scope.$index)" size="mini" style="background-color:#ec4580">检查
+                </el-button>
+              </el-tooltip>
               <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="top">
                 <el-button type="primary" @click="checkBetPlans(scope.$index)" size="mini" style="background-color:#ff8000">检查
                 </el-button>
@@ -912,6 +916,7 @@ export default {
             })
           }
           this.appendAdditional()
+          this.gameOptions.sort((a, b) => a.label.localeCompare(b.label))
         }
       })
     },
@@ -1534,9 +1539,32 @@ export default {
         cnt += o.ScriptOddsSum
       }
       var scriptSteps = this.showItem.Plans[this.currentPlanIndex].Versions[this.currentVersionIndex].ScriptCfg.ScriptSteps;
-      console.log(scriptSteps)
 
       Message.success('当前百分比：' + (cnt / (scriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
+
+    },
+    checkAbnormalSteps(idx) {
+      let gid = this.queryGid
+      if (gid > 100000) {
+        gid = gid - 100000
+      }
+      console.log(gid, this.slotCfg[gid].AbnormalSteps)
+      if (!this.slotCfg[gid].AbnormalSteps){
+        Message.error('请设置异常步数！')
+        return
+      }
+      var strings = this.slotCfg[gid].AbnormalSteps.split(",");
+      console.log(this.editBetOddsPlansFormData[idx])
+      for (const i in this.editBetOddsPlansFormData[idx].OddsCfg ) {
+        let o = this.editBetOddsPlansFormData[idx].OddsCfg[i]
+        for (const strNum of strings) {
+          if (o.OddsMax >parseInt(strNum) && o.OddsMin < parseInt(strNum)){
+            let ss = (parseInt(i)+1)
+            Message.error('第'+(ss)+'行异常步数【'+strings+'】包含在配置内,min:' + o.OddsMin  + ' max:' + o.OddsMax ,)
+            return
+          }
+        }
+      }
     },
 
     checkBetPlansSum(idx) {
@@ -1636,7 +1664,7 @@ export default {
             planVer:row.Version
           }
         }).then(response => {
-          if (response.RetCode !== 0 && response.Data !=={}) {
+          if (response.RetCode !== 0 && typeof response.Data !== 'object') {
             Message.error("没有创建剧本，请先创建剧本再选择")
             row.IsReady = false
           }
@@ -1644,7 +1672,10 @@ export default {
         console.log('选择了“是”');
       }
     },
-  },
+    makeContent(key, addData, delData, editData) {
+      return '【' + this.getGameName(this.queryGid) + '】'
+    }
+  }
 }
 </script>
 <style scoped>

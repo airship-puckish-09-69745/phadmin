@@ -80,12 +80,6 @@ export default {
       default: function() {
         return []
       }
-    },
-    baseCfg: {
-      type: Object,
-      default: function() {
-        return {}
-      }
     }
   },
   data() {
@@ -181,10 +175,10 @@ export default {
     initData() {
       this.cols = []
       let num = 0
-      for (const i in this.baseCfg.PayTable) {
-        for (const j in this.baseCfg.PayTable[i].Rates) {
-          if (num < this.baseCfg.PayTable[i].Rates[j].SymbolNumber) {
-            num = this.baseCfg.PayTable[i].Rates[j].SymbolNumber
+      for (const i in this.cfg.PayTable) {
+        for (const j in this.cfg.PayTable[i].Rates) {
+          if (num < this.cfg.PayTable[i].Rates[j].SymbolNumber) {
+            num = this.cfg.PayTable[i].Rates[j].SymbolNumber
           }
         }
       }

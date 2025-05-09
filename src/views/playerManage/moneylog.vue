@@ -101,6 +101,7 @@
           <span v-else-if="scope.row.ActType===2006">  {{
             formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged)
           }}</span>
+          <span v-else-if="isMarketType(scope.row.ActType)"></span>
           <span v-else> {{ formatNumber(scope.row.MoneyNow - scope.row.MoneyChanged) }}</span>
         </template>
       </el-table-column>
@@ -117,7 +118,7 @@
             formatNumber(scope.row.MoneyChanged)
           }}</span>
           <span
-            v-else-if="scope.row.ActType===3001"
+            v-else-if="isMarketType(scope.row.ActType)"
           >{{
             formatNumber(scope.row.MoneyChanged)
           }}</span>
@@ -349,6 +350,10 @@ const filterMap = {
     2011: '比赛结束',
     2012: '金币补偿',
     3001: '比赛结束，营销接口发奖',
+    3002: '德州比赛营销接口派彩',
+    3003: '摇钱树活动营销接口派彩',
+    3004: '复活节活动营销接口派彩',
+    3005: '直播抽奖接口派彩',
     10000: 'Tongits比赛流水' // 混合类型查询 act_type=2010 and act_msg='2031' || act_type=3001
   }
 }
@@ -414,6 +419,13 @@ export default {
         2010,
         2011,
         2012
+      ],
+      marketType: [ // 营销金流类型
+        3001,
+        3002,
+        3003,
+        3004,
+        3005
       ]
     }
   },
@@ -465,6 +477,10 @@ export default {
     isWalletType(type) {
       // 单一钱包类型
       return this.walletType.indexOf(type) >= 0
+    },
+    isMarketType(type) {
+      // 营销权益金发放类型
+      return this.marketType.indexOf(type) >= 0
     },
     handleFilter() {
       if (this.clientDB.FilterValueMap['MoneyType'] == 10) {

@@ -60,10 +60,11 @@ import slotsReelsIcon from './components_x/aladdin_reels_icon'
 import slotsStreetfightingExt from './components_x/streetfighting_ext'
 import slotsReelsDouble from './components_x/reels_double'
 import slotsScript from './components_x/slots_script'
+import slotsSymbolcountReels from "@/views/config/tableConfig/slots/components_x/symbolcount_reels.vue";
 
 export default {
   // eslint-disable-next-line vue/no-unused-components
-  components: { Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsStreetfightingExt, slotsReelsDouble, slotsScript },
+  components: {slotsSymbolcountReels, Compare, Publish, slotsBaseCfg, slotsSymbolValue, slotsPayLine, slotsPayTable, slotsReelsIcon, slotsStreetfightingExt, slotsReelsDouble, slotsScript },
   data() {
     return {
       activeTab: 'base',

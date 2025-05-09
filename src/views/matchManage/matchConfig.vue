@@ -1171,7 +1171,7 @@ export default {
       }
       if (change.size + del.size + add.size == 0) {
         console.log("no change return")
-        return
+        return "没有修改!"
       }
 
       let str = ""
@@ -1182,21 +1182,21 @@ export default {
           // console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n修改： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
-          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
           str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
         if (del.has(row.id)) {
           // console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n下架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
-          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
           str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
         if (add.has(row.id)) {
           // console.log(JSON.stringify(row))
           has && (str += "\r\n---");has=true
           str += `\r\n上架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
-          str += `\r\n${this.getGameName(row.game_id)} - ${row.name}`
+          str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
           str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
       }

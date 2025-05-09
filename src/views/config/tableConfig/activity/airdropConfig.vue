@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
+      <publish primary-key="cfgId" key-id="AirdropConfig" :env-empty="true" :check="configCheck" compare-type="Array" :make-content="makeContent" :attr-names="AttrNames" :head-attrs="['cfgId', 'activity.name']" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -139,7 +139,7 @@
                   <el-input v-model.number="edit.item.rewardConfig.remainRewardMonitorRate">
                     <template slot="append">％</template>
                   </el-input>
-                  <span v-if="sentRewardAmount  > edit.item.rewardConfig.remainRewardMonitorRate*sentRewardAmount/100" style="color: red">发奖总额已超阈值（{{sentRewardAmount }}）</span>
+                  <span v-if="sentRewardAmount  > edit.item.rewardConfig.remainRewardMonitorRate*edit.item.rewardConfig.totalReward/100" style="color: red">发奖总额已超阈值（{{sentRewardAmount }}）</span>
                   <span v-else style="color: red">已发奖总额（{{sentRewardAmount }}）</span>
                 </el-form-item>
               </el-col>
@@ -160,6 +160,40 @@
                   <el-input v-model.number="edit.item.debugTimeOffset">
                     <template slot="append">秒</template>
                   </el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="24" v-if="showImportElement">
+                <el-form-item label="导入用户：" :required="false">
+                  <span>已导入用户：{{this.edit.importedUidListCount}}</span>
+                  <span>（已生效用户：{{this.edit.importedUidCacheCount}}）</span>
+                  <span style="color: #0088ff">重复导入，不会覆盖原有的用户ID</span><br>
+                  <span style="color: red">注意：活动的展示结束时间不能小于当前时间，否则导入的用户id无法生效！</span>
+                  <el-upload
+                    ref="upload"
+                    drag
+                    :action="actionURL"
+                    :on-preview="handlePreview"
+                    :on-change="handleChange"
+                    :before-upload="handleBeforeUpload"
+                    :on-success="handleUploadSuccess"
+                    :with-credentials="true"
+                    :auto-upload="false"
+                    :limit="1"
+                  >
+                    <el-icon class="el-icon-upload" />
+                    <div class="el-upload__text">
+                      将文件拖到此处 或 <em>点击上传</em>
+                    </div>
+                    <div slot="tip" class="el-upload__tip">
+                      只能上传 text/csv 格式文件，且不超过10MB
+                    </div>
+                  </el-upload>
+                  <el-button class="ml-3" type="success" @click="submitUpload">
+                    上传用户ID数据
+                  </el-button>
+                  <el-button class="ml-3" type="danger" @click="delImportedUid">
+                    重置已导入的用户ID
+                  </el-button>
                 </el-form-item>
               </el-col>
             </el-form>
@@ -199,7 +233,7 @@
                             style="white-space: pre-wrap"/>
                 </el-form-item>
                 <el-form-item label="任务类型：" :required="true">
-                  <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择">
+                  <el-select v-model="edit.item.taskConfig.taskType" placeholder="请选择" style="width: 300px">
                     <el-option
                       v-for="item in gameTaskTypes"
                       :key="item.value"
@@ -442,6 +476,45 @@
             </el-row>
           </el-form>
         </el-tab-pane>
+
+        <el-tab-pane label="导入的用户">
+          <el-row :gutter="5">
+            <el-col>
+              <el-button type="primary" @click="getImportedUidList()" size="mini">查询</el-button>
+              <el-table
+                :data="edit.importedUidList"
+                border
+                style="width: 100%"
+                :cell-style="libShow.DefaultTableCell"
+              >
+                <el-table-column
+                  prop="uid"
+                  label="用户ID"
+                />
+                <el-table-column
+                  prop="create_at"
+                  label="导入时间"
+                >
+                  <template slot-scope="scope">
+                    {{ formatTime(scope.row.create_at) }}
+                  </template>
+                </el-table-column>
+              </el-table>
+              <el-col :offset="12" :span="9">
+                <div class="block">
+                  <el-pagination
+                    :current-page="edit.clientDB.GetPage().GetCurrentPage()"
+                    :page-sizes="[10, 20, 30, 40]"
+                    :page-size="edit.clientDB.GetPage().GetPageNum()"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="edit.importedUidListCount"
+                    @size-change="handleUidImportedTableSizeChange"
+                    @current-change="handleUidImportedTableCurrentChange" />
+                </div>
+              </el-col>
+            </el-col>
+          </el-row>
+        </el-tab-pane>
       </el-tabs>
       <el-row style="margin-top: 10px">
         <el-button type="primary" @click="handleSave()">保存配置</el-button>
@@ -468,6 +541,10 @@ import {id} from "html-webpack-plugin/lib/chunksorter";
 
 const filterMap = {}
 
+const loadingText = '用户导入中，请稍等...'
+
+const gameTaskTypeValidBet = 2 // 游戏任务类型：有效投注
+
 function newItem() {
   return {
     id: 0,
@@ -482,8 +559,8 @@ function newItem() {
     ruleImgHor: [],
     ruleImgVer: [],
     whitelistCfg: {
-      appIdList: [],
-      siteIdList: [],
+      appIdList: [1000002],
+      siteIdList: ['Dev'],
     },
     debugTimeOffset: 0,
     taskConfig: {
@@ -493,7 +570,7 @@ function newItem() {
     },
     rewardConfig: {
       rewardType: 2,
-      useSceneId: 8,
+      useSceneId: 13,
       totalReward: 88888,
       remainRewardMonitorRate: 90,
       rewardRanges: [
@@ -511,6 +588,7 @@ function newItem() {
       }*/
     ],
     userTypes: [2],
+    importedFilename: ''
   }
 }
 
@@ -520,8 +598,19 @@ export default {
     return {
       AttrNames: {
         activity: '活动信息',
+        'activity.name': '活动名称',
+        'activity.whitelist.siteIdList': '站点白名单',
+        'activity.whitelist.appIdList': 'AppId白名单',
+        'activity.status': '配置状态',
+        'activity.startTime': '开始时间',
+        'activity.endTime': '结束时间',
+        'activity.showEndTime': '展示结束时间',
+        'activity.ruleImgHor': '横向规则图',
+        'activity.ruleImgVer': '纵向规则图',
+        'activity.gameIdList': '游戏ID配置',
         id: '活动配置ID',
         name: '活动名称',
+        cfgId: '活动配置ID',
         startTime: '开始时间',
         endTime: '结束时间',
         showEndTime: '展示结束时间',
@@ -545,11 +634,16 @@ export default {
         title: "新增",
         selectedGamesText: '',
         gamesSortDialogVisible: false,
+        loading: false,
+        importedUidCacheCount: 0,
+        importedUidListCount: 0,
+        importedUidList: [],
+        clientDB: new ClientTableData([], 10, filterMap),
       },
       env: 'test',
       statusNames: { 2: '上架', 6: '下架', 7: '预上架', 8: '预下架' },
       tableData: [],
-      clientDB: new ClientTableData([], 1, filterMap),
+      clientDB: new ClientTableData([], 10, filterMap),
       libDate: $libDate,
       libShow: $libShow,
       libMoney: new MoneyShow([]),
@@ -598,7 +692,7 @@ export default {
 
       // 投注金
       betScenes: [
-        { 'value': 8, 'label': '【空投活动】任意游戏投注' },
+        { 'value': 13, 'label': '【空投活动】任意游戏投注' },
       ],
       // 返水金
       rebateScenes: [
@@ -618,10 +712,12 @@ export default {
         { 'value': 2, 'label': '「有效下注」总额' },
       ],
 
-      // 选定游戏后对应可选任务类型
-      gameTaskTypes: [
+      defaultGameTaskTypes: [
         { 'value': 0, 'label': '未选择' },
       ],
+
+      // 选定游戏后对应可选任务类型
+      gameTaskTypes: [],
 
       // 任务类型游戏配置映射
       taskTypeGameMap: {
@@ -690,9 +786,79 @@ export default {
       get() {
 
       }
+    },
+    actionURL() {
+      return process.env.VUE_APP_BASE_API + '/other/upload'
+    },
+    showImportElement() {
+      return this.edit.item.id && this.edit.item.userTypes.includes(3)
     }
   },
   methods: {
+    makeContent(key, addData, delData, editData) {
+      let str = ''
+      if (addData.length > 0) {
+        for (const i in addData) {
+          for (const j in addData[i]) {
+            if (addData[i][j].key === 'activity') {
+              str += `\r\n上架-活动名称:【${addData[i][j].newVal.name}】`
+            }
+          }
+        }
+      }
+      if (delData.length > 0) {
+        for (const i in delData) {
+          for (const j in delData[i]) {
+            if (delData[i][j].key === 'activity') {
+              if (str === '') {
+                str += `下架-活动名称:【${delData[i][j].oldVal.name}】`
+              } else {
+                str += `\r\n下架-活动名称:【${delData[i][j].oldVal.name}】`
+              }
+            }
+          }
+          // for (const j in delData[i].Rows) {
+          //   const rawValue = delData[i].Rows[j].newVal
+          //   // 使用正则移除所有HTML标签i
+          //   const decodedValue = this.decodeHtmlEntities(rawValue)
+          //   const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+          //   const attrName = this.AttrNames[delData[i].Rows[j].key]
+          //   if (attrName) {
+          //     str += `\r\n删除:【${attrName}:${cleanValue}】`
+          //   }
+          // }
+        }
+      }
+      if (editData.length > 0) {
+        for (const i in editData) {
+          console.log(editData[i].Head)
+          if (str === '') {
+            str += `活动名称:【${editData[i].Head['activity.name']}】`
+          } else {
+            str += `\r\n活动名称:【${editData[i].Head['activity.name']}】`
+          }
+          // for (const j in editData[i].Rows) {
+          //   const rawValue = editData[i].Rows[j].newVal
+          //   const decodedValue = this.decodeHtmlEntities(rawValue)
+          //   const cleanValue = decodedValue.replace(/<[^>]+>/g, '').replace(/\\/g, '\\\\')
+          //   const attrName = this.AttrNames[editData[i].Rows[j].key]
+          //   if (attrName) {
+          //     str += `\r\n修改:【${attrName}:${cleanValue}】`
+          //   }
+          // }
+        }
+      }
+      return str
+    },
+    decodeHtmlEntities(str) {
+      const txt = document.createElement('textarea')
+      txt.innerHTML = str.replace(/&#(\d+);/g, function(match, dec) {
+        return String.fromCharCode(dec)
+      }).replace(/&#x([\da-fA-F]+);/g, function(match, hex) {
+        return String.fromCharCode(parseInt(hex, 16))
+      })
+      return txt.value
+    },
     configCheck() {
       return true
     },
@@ -725,6 +891,18 @@ export default {
     sortChange(ob) {
       this.clientDB.SortByProp(ob.prop, ob.order)
       this.refreshShow()
+    },
+    handleUidImportedTableSizeChange(val) {
+      this.edit.clientDB.GetPage().SetPageNum(val)
+      this.getImportedUidList()
+    },
+    handleUidImportedTableCurrentChange(val) {
+      this.edit.clientDB.GetPage().SetPageNo(val)
+      this.getImportedUidList()
+    },
+    handleUidImportedTableSortChange(ob) {
+      this.edit.clientDB.SortByProp(ob.prop, ob.order)
+      this.getImportedUidList()
     },
     dataRule(required, config) {
       return DataRule(required, config)
@@ -790,6 +968,10 @@ export default {
           Message.error('请完善进度奖励配置')
           return
         }
+        if (item.propNumMax % item.propNum !== 0) {
+          Message.error('道具数量上限必须为道具数量的倍数')
+          return
+        }
       }
       if (!this.edit.item.rewardConfig.totalReward) {
         Message.error('请填写总奖励')
@@ -803,34 +985,55 @@ export default {
         Message.error('请完善任务配置')
         return
       }
-      this.edit.item.rewardConfig.totalReward *= 1000
-      this.edit.item.rewardConfig.rewardRanges.forEach(item => {
+
+      const copyItem = JSON.parse(JSON.stringify(this.edit.item))
+      copyItem.rewardConfig.totalReward *= 1000
+      copyItem.rewardConfig.rewardRanges.forEach(item => {
         item.minScore *= 1000
         item.maxScore *= 1000
         item.minCoefficient = parseInt(item.minCoefficient * 100)
         item.maxCoefficient = parseInt(item.maxCoefficient * 100)
       })
+      for (let i = 0; i < copyItem.rewardConfig.rewardRanges.length; i++) {
+        const item = copyItem.rewardConfig.rewardRanges[i]
+        if (item.minCoefficient >= 100) {
+          Message.error('奖励系数区间开始值必须小于1')
+          return
+        }
+      }
+
+      // 任务类型为有效投注时，任务值乘以1000
+      if (copyItem.taskConfig.taskType === gameTaskTypeValidBet) {
+        copyItem.taskConfig.taskValueRequired *= 1000
+
+        for (let i = 0; i < copyItem.progressPrizes.length; i++) {
+          const item = copyItem.progressPrizes[i]
+          item.taskValueRequired *= 1000
+        }
+      }
 
       const data = {}
-      data.id = this.edit.item.id
-      data.name = this.edit.item.name
-      data.activityId = this.edit.item.activityId
-      data.startTime = this.edit.item.startTime / 1000
-      data.endTime = this.edit.item.endTime / 1000
-      data.showEndTime = this.edit.item.showEndTime / 1000
-      data.gameIdCfg = JSON.stringify(this.edit.item.gameIdCfg)
-      data.ruleImgHor = JSON.stringify(this.edit.item.ruleImgHor)
-      data.ruleImgVer = JSON.stringify(this.edit.item.ruleImgVer)
-      data.whitelistCfg = JSON.stringify(this.edit.item.whitelistCfg)
-      data.debugTimeOffset = this.edit.item.debugTimeOffset
-      data.rewardConfig = JSON.stringify(this.edit.item.rewardConfig)
-      data.taskConfig = JSON.stringify(this.edit.item.taskConfig)
-      data.progressPrizes = JSON.stringify(this.edit.item.progressPrizes)
-      data.userTypes = JSON.stringify(this.edit.item.userTypes)
+      data.id = copyItem.id
+      data.name = copyItem.name
+      data.activityId = copyItem.activityId
+      data.startTime = copyItem.startTime / 1000
+      data.endTime = copyItem.endTime / 1000
+      data.showEndTime = copyItem.showEndTime / 1000
+      data.gameIdCfg = JSON.stringify(copyItem.gameIdCfg)
+      data.ruleImgHor = JSON.stringify(copyItem.ruleImgHor)
+      data.ruleImgVer = JSON.stringify(copyItem.ruleImgVer)
+      data.whitelistCfg = JSON.stringify(copyItem.whitelistCfg)
+      data.debugTimeOffset = copyItem.debugTimeOffset
+      data.rewardConfig = JSON.stringify(copyItem.rewardConfig)
+      data.taskConfig = JSON.stringify(copyItem.taskConfig)
+      data.progressPrizes = JSON.stringify(copyItem.progressPrizes)
+      data.userTypes = JSON.stringify(copyItem.userTypes)
+      data.importedFilename = copyItem.importedFilename
       return data
     },
     handleSave() {
       const data = this.getPostData()
+      data.env = this.env
       console.log('handleSave', data)
       if (data === null || data === undefined) {
         return
@@ -994,11 +1197,16 @@ export default {
       }
     },
     handleEditDialogOpened() {
+      this.edit.importedUidListCount = 0
+      this.edit.importedUidList = []
       console.log('handleEditDialogOpened edit:' + this.edit.isEdit)
       if (this.edit.isEdit) {
         this.getSentRewardAmount()
+        this.getImportedUidCacheCount()
         this.$refs.tree.setCheckedKeys(this.edit.item.gameIdCfg)
         this.updateGameTaskTypes(this.edit.item.gameIdCfg)
+        // 查询已导入的用户id列表
+        this.getImportedUidList()
       } else {
         this.$refs.tree.setCheckedKeys([])
       }
@@ -1038,6 +1246,16 @@ export default {
             this.updatePropOptions(progressPrize.propType, i)
           }
 
+          // 任务类型为有效投注时，任务值除以1000
+          if (item.taskConfig.taskType === gameTaskTypeValidBet) {
+            item.taskConfig.taskValueRequired /= 1000
+
+            for (let i = 0; i < item.progressPrizes.length; i++) {
+              const prize = item.progressPrizes[i]
+              prize.taskValueRequired /= 1000
+            }
+          }
+
           this.edit.item = item
           if (bEdit) {
             // 设置修改之前数据
@@ -1052,13 +1270,86 @@ export default {
       }
     },
     handleAdd() {
+      this.gameTaskTypes = this.defaultGameTaskTypes
       this.edit.selectedGamesText = ''
+      this.edit.importedUidCacheCount = 0
       this.edit.item = newItem()
       this.edit.isEdit = false
       this.edit.visible = true
       console.log(this.edit.item)
     },
     //************************ 修改/添加弹框相关 ************************
+    //************************ 导入用户列表 ************************
+    getImportedUidCacheCount() {
+      if (this.edit.item.id === 0) {
+        return
+      }
+      const $this = this
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          ActCfgId: $this.edit.item.id,
+          Path: '/activity/airdrop/uid/import/count'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.edit.importedUidCacheCount = response.Data
+          console.log('getImportedUidCacheCount', $this.edit.importedUidCacheCount)
+        }
+      })
+    },
+    delImportedUid() {
+      const $this = this
+      this.$confirm('确定要重置已导入的用户id吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/airdropconfig/uids/imported/delete',
+          method: 'post',
+          data: {
+            Env: this.env,
+            ActCfgId: $this.edit.item.id,
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            Message.success('已重置导入的用户id！')
+            $this.edit.importedUidCacheCount = 0
+            $this.edit.importedUidListCount = 0
+            $this.edit.importedUidList = []
+            console.log('delImportedUid', $this.edit.importedUidCacheCount)
+          }
+        })
+      })
+    },
+    getImportedUidList() {
+      if (!this.edit.item.id) {
+        return
+      }
+
+      const page = this.edit.clientDB.GetPage().GetCurrentPage()
+      const pageSize = this.edit.clientDB.GetPage().GetPageNum()
+
+      const $this = this
+      request({
+        url: '/airdropconfig/uids/imported',
+        method: 'get',
+        data: {
+          ActCfgId: $this.edit.item.id,
+          Page: page,
+          PageSize: pageSize
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.edit.importedUidList = response.Data.list
+          $this.edit.importedUidListCount = response.Data.total
+          console.log('getImportedUidList', $this.edit.importedUidList)
+        }
+      })
+    },
+    //************************ 导入用户列表 ************************
     //************************ 规则图片相关 ************************
     addRuleImage(type) {
       console.log('addRuleImage type:', type)
@@ -1154,7 +1445,7 @@ export default {
     updateGameTaskTypes(gameIds) {
       console.log('updateGameTaskTypes', gameIds)
       if (gameIds.length === 0) {
-        this.gameTaskTypes = []
+        this.gameTaskTypes = this.defaultGameTaskTypes
         return
       }
 
@@ -1165,7 +1456,7 @@ export default {
       for (const taskType in this.taskTypeGameMap) {
         const cfg = this.taskTypeGameMap[taskType]
         if (gameIds.every(gameId => cfg.gameIds.includes(gameId))) {
-          gameTaskTypes.push({ label: cfg.label, value: taskType})
+          gameTaskTypes.push({ label: cfg.label, value: parseInt(taskType)})
         }
       }
 
@@ -1226,6 +1517,103 @@ export default {
       console.log('onSiteIdOptionsChange', this.edit.item.whitelistCfg.siteIdList)
     },
     //************************ 白名单相关 ************************
+    //************************ 上传文件相关 ************************
+    handleBeforeUpload(file) {
+      const isCsv = file.type === 'text/csv'
+      const isXls = file.type === 'xls'
+      const isXlsx = file.type === 'xlsx'
+      const isLt2M = file.size / 1024 / 1024 < 10
+      const isValidType = isCsv || isXls || isXlsx
+
+      console.log('file.type:', file.type, ' isValidType:', isValidType)
+
+      if (!isValidType) {
+        this.$message.error('上传的文件只能是 text/csv 格式!')
+        return false
+      }
+      if (!isLt2M) {
+        this.$message.error('上传的文件大小不能超过10MB!')
+        return false
+      }
+      return true
+    },
+    handlePreview(file) {
+      console.log(file)
+    },
+    handleChange(file, fileList) {
+      console.log(file)
+    },
+    submitUpload() {
+      if (this.edit.item.showEndTime < new Date().getTime()) {
+        this.$message.error('活动的展示结束时间不能小于当前时间，否则导入的用户id无法生效！')
+        return
+      }
+      this.$refs.upload.submit()
+    },
+    changeUploadLoadingText(process, subTime) {
+      this.edit.loadingText = loadingText + '进度：' + process + '%...用时：' + subTime + 's'
+    },
+    importData(uploadedFilename, ticker, startTime) {
+      const $this = this
+      request({
+        url: '/airdropconfig/uids/import',
+        method: 'post',
+        timeout: 90000,
+        data: {
+          Env: this.env,
+          ActCfgId: $this.edit.item.id,
+          Filename: uploadedFilename
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          $this.getImportedUidCacheCount()
+          $this.$message.success('上传成功，新导入的数量为：' + response.Data.imported)
+          if ($this.edit.item.id === 0) {
+            $this.edit.importedUidCacheCount = response.Data.imported
+          } else {
+            $this.getImportedUidCacheCount()
+            $this.getImportedUidList()
+          }
+        }
+        $this.$refs.upload.clearFiles()
+        $this.edit.loading = false
+
+        clearInterval(ticker)
+        const subTime = (new Date().getTime() - startTime.getTime()) / 1000
+        this.changeUploadLoadingText(100, subTime)
+        console.log('导入数量：' + response.Data.imported + '，用时：' + subTime + 's')
+      }).catch((reason) => {
+        console.log('取消导入：', reason)
+        clearInterval(ticker)
+        $this.edit.loading = false
+      })
+    },
+    handleUploadSuccess(response, file, fileList) {
+      this.$refs.upload.clearFiles()
+      if (response.RetCode === 0) {
+        const uploadedFilename = response.Data
+        console.log('upload success:', uploadedFilename)
+        this.edit.item.importedFilename = uploadedFilename
+
+        this.edit.loading = true
+        const startTime = new Date()
+        let n = Math.ceil(Math.random() * 10)
+        const ticker = setInterval(() => {
+          n += Math.ceil(Math.random() * 10)
+          if (n > 100) {
+            n = 99
+          }
+          const subTime = (new Date().getTime() - startTime.getTime()) / 1000
+          this.changeUploadLoadingText(n, subTime)
+          n === 99 && clearInterval(ticker)
+        }, 1000)
+
+        this.importData(uploadedFilename, ticker, startTime)
+      } else {
+        this.$message.error(response.Data)
+      }
+    }
+    //************************ 上传文件相关 ************************
   }
 }
 </script>
