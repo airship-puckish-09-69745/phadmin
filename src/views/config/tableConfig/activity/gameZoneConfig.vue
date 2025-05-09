@@ -1031,6 +1031,7 @@ export default {
         { label: '复活节活动-[10]', value: 10 },
         { label: '新手任务活动-[11]', value: 11 },
         { label: '空投活动-[12]', value: 12 },
+        { label: '红包雨活动-[13]', value: 13 }
       ],
       gameSelect: [],
       activitySelect: [
@@ -1040,7 +1041,8 @@ export default {
         { name: 'Poker乐园-[8]', id: 8 },
         { name: 'Banargay-[9]', id: 9 },
         { name: '复活节活动-[10]', id: 10 },
-        { name: '新手任务活动-[11]', id: 11 }
+        { name: '新手任务活动-[11]', id: 11 },
+        { name: '红包雨活动-[13]', id: 13 }
       ],
       blockGames: [36, 38, 39, 43, 44],
       hallGame: [],
