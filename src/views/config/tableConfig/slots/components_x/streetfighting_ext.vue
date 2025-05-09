@@ -127,6 +127,27 @@ export default {
         return;
       }
 
+      const wildSmallNormal = this.cfg.WildSmallNormal;
+      const numbersNormalSmall = wildSmallNormal.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersNormalSmall.length !== 4) {
+        this.$message.error('普通模式 小wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+
+      const wildSmallFree = this.cfg.WildSmallFree;
+      const numbersFreeSmall = wildSmallFree.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersFreeSmall.length !== 4) {
+        this.$message.error('免费模式 小wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+
+      const scatterNumWt = this.cfg.ScatterNumWt;
+      const numScatterNumWt = scatterNumWt.split(',').map(num => parseInt(num.trim(), 10));
+      if (numScatterNumWt.length !== 3) {
+        this.$message.error('普通模式 新矩阵贴Scatter个数权重  err:请输入3个数字并用,隔开');
+        return;
+      }
+
       if (!ValidateVueItem(this.$refs['frm2'])) return false
       const $this = this
       this.$refs.compare.SetNewVal(this.getDiffData())
