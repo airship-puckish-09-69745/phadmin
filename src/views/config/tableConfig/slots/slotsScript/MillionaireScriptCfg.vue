@@ -712,7 +712,8 @@ export default {
         '190': 'arcaneegypt',
         '186': 'mahjongjackpot',
         '100186': 'mahjongjackpot_x',
-        '188': 'streetfighting'
+        '188': 'streetfighting',
+        '194': 'goldtrain'
       }
     }
   },
