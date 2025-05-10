@@ -811,6 +811,26 @@ export const asyncRoutes = [
               //  ]
               //}
             ]
+          },
+          {
+            path: '/remiVersion',
+            component: () => import('@/views/empty'),
+            redirect: 'noRedirect',
+            meta: { title: 'remi ◐' },
+            children: [
+                  {
+                    path: 'remiTable',
+                    component: () => import('@/views/config/tableConfig/remiTable'),
+                    name: 'remiTable',
+                    meta: { title: 'Remi配桌 ◐' }
+				          },
+                  {
+                    path: 'remiProTable',
+                    component: () => import('@/views/config/tableConfig/remiProTable'),
+                    name: 'remiProTable',
+                    meta: { title: 'RemiPro配桌 ◐' }
+				          }
+                ]
           }
         ]
       },
@@ -947,7 +967,18 @@ export const asyncRoutes = [
             name: 'gameLiveColorCfg',
             meta: { title: 'L iveColor game ◐' }
           },
-
+          {
+            path: 'jackpotwheel_cfg',
+            component: () => import('@/views/config/tableConfig/jackpotwheelConfig'),
+            name: 'jackpotwheel_cfg',
+            meta: { title: 'J ackpotwheel ◐' }
+          },
+          {
+            path: 'freespin_cfg',
+            component: () => import('@/views/config/tableConfig/freespinConfig'),
+            name: 'freespin_cfg',
+            meta: { title: 'F reeSpin ◐' }
+          },
         ]
       },
       {
