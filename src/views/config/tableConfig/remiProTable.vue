@@ -5,13 +5,7 @@
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
-        <el-button
-          size="mini"
-          type="primary"
-          icon="el-icon-plus"
-          @click="handleCreate()"
-        >添加配置项
-        </el-button>
+        <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleCreate()" >添加配置项</el-button>
       </el-col>
       <el-col :span="2">
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
@@ -30,121 +24,36 @@
         @row-click="clickData"
         @sort-change="sortChange"
       >
-        <el-table-column
-          prop="ID"
-          label="ID"
-          sortable="custom"
-          width="70"
-        />
-        <!--
-        <el-table-column
-          prop="IsPractice"
-          label="练习场"
-          width="70"
-        >
+        <el-table-column prop="ID" label="ID" sortable="custom" width="70" />
+        <el-table-column prop="Level" label="Level" sortable="custom" width="100" />
+        <el-table-column prop="TableMoney" label="前注" sortable="custom" width="100" >
           <template slot-scope="scope">
-            <span v-if="scope.row.IsPractice === 1" style="color:#ff0000;">是</span>
-            <span v-else style="color:#999999;">否</span>
+            {{ scope.row.TableMoney }}
           </template>
         </el-table-column>
-        -->
-        <el-table-column
-          prop="Level"
-          label="Level"
-          sortable="custom"
-          width="100"
-        />
-        <el-table-column
-          prop="TableMoney"
-          label="前注"
-          sortable="custom"
-          width="100"
-        >
-          <template slot-scope="scope">
-            {{ formatNumber(scope.row.TableMoney) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="CarryLower"
-          label="携带"
-          width="200"
-        >
+        <el-table-column prop="CarryLower" label="携带" width="200" >
           <template slot-scope="scope">
             {{ scope.row.CarryLower }}/{{ scope.row.CarryUpper }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="HideCarry"
-          label="隐藏目标值"
-          width="100"
-        >
+        <el-table-column prop="HideCarry" label="隐藏目标值" width="100" >
           <template slot-scope="scope">
             {{ formatNumber(scope.row.HideCarry) }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="ObjectCount"
-          label="桌子数"
-          width="100"
-        />
-        <el-table-column
-          prop="RoomLevel"
-          label="房间类型"
-          width="100"
-        >
-          <template slot-scope="scope">
-            {{ showRoomLevel(scope.row.RoomLevel) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="LastModify"
-          label="最近修改"
-          width="150"
-        >
+        <el-table-column prop="ObjectCount" label="桌子数" width="100" />
+        <el-table-column prop="LastModify" label="最近修改" width="150" >
           <template slot-scope="scope">
             {{ formatTime(scope.row.LastModify) }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="ModifyUser"
-          label="最后修改人"
-          width="100"
-        />
-        <el-table-column
-          label="操作"
-          column-key="op"
-          width="250"
-        >
+        <el-table-column prop="ModifyUser" label="最后修改人" width="100" />
+        <el-table-column label="操作" column-key="op" width="250">
           <template slot-scope="scope">
-            <el-button
-              type="primary"
-              size="mini"
-              icon="el-icon-document-copy"
-              @click="handleCopy(scope.row)"
-            >复制
-            </el-button>
-            <el-button
-              v-if="scope.row.Status!=2"
-              size="mini"
-              type="success"
-              icon="el-icon-upload2"
-              @click="handlePrepare(scope.row)"
-            >上架
-            </el-button>
-            <el-button
-              v-if="scope.row.Status!=2"
-              size="mini"
-              icon="el-icon-delete"
-              @click="handleDelete(scope.row)"
-            />
-            <el-button
-              v-if="scope.row.Status==2"
-              size="mini"
-              type="danger"
-              icon="el-icon-download"
-              @click="handleOffline(scope.row)"
-            >下架
-            </el-button>
+            <el-button type="primary" size="mini" icon="el-icon-document-copy" @click="handleCopy(scope.row)" >复制</el-button>
+            <el-button v-if="scope.row.Status!=2" size="mini" type="success" icon="el-icon-upload2" @click="handlePrepare(scope.row)" >上架 </el-button>
+            <el-button v-if="scope.row.Status!=2" size="mini" icon="el-icon-delete" @click="handleDelete(scope.row)" />
+            <el-button v-if="scope.row.Status==2" size="mini" type="danger" icon="el-icon-download" @click="handleOffline(scope.row)" >下架 </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -345,7 +254,7 @@ function newItem() {
     FlowRate: '',
     DrawSeconds: '',
     ActionSeconds: '',
-    WatchTimesMax: '',
+    //WatchTimesMax: '',
     IsPractice: 0,
     Level: 1,
     MinPlayMoney: 0,
@@ -356,7 +265,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
-      playMode: 2, // Pro玩法
+      playMode: 4, // Pro玩法
       tableData: [],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',
@@ -394,7 +303,9 @@ export default {
   },
   methods: {
     formatNumber(n) {
-      return n.toLocaleString()
+      console.log("---> ", n)
+      let str = n.toLocaleString()
+      return str
     },
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
@@ -410,6 +321,7 @@ export default {
     // 分页处理
     refreshShow() {
       this.tableData = this.clientDB.GetCurrentPageData()
+      console.log("this.tableData => ", this.tableData)
     },
     handleSizeChange(val) {
       this.clientDB.GetPage().SetPageNum(val)
@@ -535,7 +447,7 @@ export default {
         data: postData
       }).then(response => {
         if (response.RetCode === 0) {
-          this.item.ID = response.Data.ID
+          this.edit.item.ID = response.Data.ID
           this.clientDB.AddData(this.item)
           this.refreshShow()
           Message.success('保存成功！')
