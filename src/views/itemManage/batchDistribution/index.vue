@@ -27,8 +27,8 @@
             />
           </el-select>
         </el-form-item>
-        <el-button size="mini" type="primary" @click="selectPageData">查询</el-button>
-        <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="onShowFormDialog">批量发放</el-button>
+        <el-button size="mini" type="primary" @click="onSearch">查询</el-button>
+        <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="onShowFormDialog()">批量发放</el-button>
       </el-form>
     </el-row>
     <el-row>
@@ -45,33 +45,59 @@
           label="序号"
           width="60"
         />
-        <el-table-column prop="id" label="道具ID" sortable width="100" />
-        <el-table-column prop="createTime" label="发布时间" width="150" />
+        <el-table-column label="道具ID" sortable width="100">
+          <template slot-scope="scope">
+            <span>{{ scope.row.prop_details.prop_id }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="publish_time" label="发布时间" width="160">
+          <template slot-scope="scope">
+            {{ formatTime(scope.row.publish_time) }}
+          </template>
+        </el-table-column>
         <el-table-column prop="remark" label="备注" show-overflow-tooltip />
-        <el-table-column prop="number" label="发放数量" />
-        <el-table-column prop="propName" label="道具名称" />
-        <el-table-column prop="propCost" label="总发放量" />
-        <el-table-column prop="modifier" label="操作人" width="150" />
+        <el-table-column prop="propName" label="道具名称" width="150">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="scope.row.prop_details.prop_name" placement="top">
+              <span>{{ scope.row.prop_details.prop_name }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
+        <el-table-column prop="send_num" label="总发放量" />
+        <el-table-column prop="applicant_user" label="操作人" width="120" />
+        <el-table-column prop="approval_user" label="审批人" width="120" />
         <el-table-column prop="status" label="状态">
           <template slot-scope="scope">
             <el-tag
               v-if="scope.row.status == 1"
-              type="primary"
-              size="mini"
-            >待发放</el-tag>
-            <el-tag
-              v-else-if="scope.row.status == 2"
               type="success"
               size="mini"
-            >已发放</el-tag>
+              style="width: 60px; text-align: center;"
+            >{{ getStatusText(scope.row.status) }}</el-tag>
+            <el-tag
+              v-else-if="scope.row.status == 2"
+              type="danger"
+              size="mini"
+              style="width: 60px; text-align: center;"
+            >{{ getStatusText(scope.row.status) }}</el-tag>
+            <el-tag
+              v-else
+              type="info"
+              size="mini"
+              style="width: 60px; text-align: center;"
+            >
+              {{
+                getStatusText(scope.row.status)
+              }}
+            </el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" width="180px" label="操作">
+        <el-table-column fixed="right" width="270px" label="操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.status == 1" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
-            <el-button v-else type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
-            <el-button v-if="scope.row.status == 2" size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+            <el-button v-if="scope.row.status == 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
+            <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
 
@@ -102,7 +128,7 @@
       </div>
     </el-row>
 
-    <FormDialog :visible="editForm.visible" @close="onCloseFormDialog" @reload="getList" />
+    <FormDialog :visible="editForm.visible" :update-form="editForm.data" @close="onCloseFormDialog" @reload="getList" />
     <DetailsDialog :visible="detailsForm.visible" @close="onCloseDetailsDialog" />
   </div>
 
@@ -157,29 +183,28 @@ export default {
       editForm: {
         visible: false,
         data: {
-          ID: 0,
-          itemName: '',
-          itemCost: 0,
-          itemType: 0,
-          describe: '',
-          expireTime: '',
-          image: '',
-          sort: 0,
-          status: 0,
-          quality: 0,
-          timeType: []
+          publish_time: '', // 发起时间
+          remark: '', // 备注
+          prop_details: '', // 道具信息
+          send_num: '', // 发放总量
+          applicant_user: '', // 申请人
+          status: '', // 1:发起成功,2:发起失败,3:未审批,4:审批中,5:废弃,6:同意,7:拒绝,8:小额自动同意,9:自动取消,10:手动取消
+          send_details: '', // 发放详情
+          approval_user: '', // 审批人
+          approval_time: '', // 审批时间
+          approval_description: '', // 审批意见
+          account_type: '' // 账号类型1:account 2:uid
         },
         itemEndDate: $libDate.GetDayBegin(new Date().setSeconds(0))
       },
 
       AttrNames: {
         index: '序号',
-        createTime: '发布时间',
+        publish_time: '发布时间',
         remark: '备注',
-        number: '发放数量',
+        send_num: '发放数量',
         propName: '道具名称',
-        propCost: '总发放量',
-        modifier: '操作人',
+        applicant_user: '操作人',
         status: '状态'
       }
     }
@@ -192,7 +217,14 @@ export default {
     this.getList()
   },
   methods: {
-    onShowFormDialog(data) {
+    /**
+     * 重置搜索条件进行搜索
+     */
+    onSearch() {
+      this.page = 1
+      this.getList()
+    },
+    onShowFormDialog(data = null) {
       this.editForm.data = data
       this.editForm.visible = true
     },
@@ -224,28 +256,36 @@ export default {
         }
       }).then(response => {
         if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (objs.total > 0) {
-            this.tableData = []
-            // if (this.form.itemOfType === 0) {
-            //   this.tableData = objs.list
-            //   this.total = objs.total
-            // } else {
-            //   let n = 0
-            //   for (let i = 0; i < objs.list.length; i++) {
-            //     if (objs.list[i].item_type === this.form.itemOfType) {
-            //       this.tableData.push(objs.list[i])
-            //       n++
-            //     }
-            //   }
-            //   this.total = n
-            // }
-          }
-        } else {
-          this.total = 0
           this.tableData = []
+          // 将prop_details和send_details解析为json对象
+          const list = response.Data.map(item => {
+            item.prop_details = JSON.parse(item.prop_details)
+            item.send_details = JSON.parse(item.send_details)
+            return item
+          })
+          this.tableData = list
+          console.log('发放列表', this.tableData)
         }
       })
+    },
+    /**
+     * 将发放状态转为文字
+     * @param status 发放状态
+     */
+    getStatusText(status) {
+      const statusMap = {
+        1: '发起成功',
+        2: '发起失败',
+        3: '未审批',
+        4: '审批中',
+        5: '废弃',
+        6: '同意',
+        7: '拒绝',
+        8: '小额自动同意',
+        9: '自动取消',
+        10: '手动取消'
+      }
+      return statusMap[status] || status
     },
     handleSizeChange(val) {
       this.limit = val
@@ -300,10 +340,6 @@ export default {
       }).catch(() => {
         console.log('取消')
       })
-    },
-    selectPageData() {
-      this.page = 1
-      this.getList()
     },
 
     errmsg(txt) {

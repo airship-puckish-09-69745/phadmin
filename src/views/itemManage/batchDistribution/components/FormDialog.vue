@@ -85,6 +85,10 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    updateForm: {
+      type: Object,
+      default: () => ({})
     }
   },
   data() {
@@ -112,46 +116,113 @@ export default {
       itemOptions: [] // 道具下拉框选项, 根据道具类型从道具列表中筛选得到
     }
   },
+  watch: {
+    visible(val) {
+      if (val) {
+        // 编辑模式下必须对后端传过来的字段重命名
+        if (this.updateForm) {
+          this.form = {
+            AccountType: this.updateForm.account_type,
+            PropDetails: this.updateForm.prop_details,
+            Remark: this.updateForm.remark,
+            SendDetails: this.updateForm.send_details
+          }
+          console.log('编辑发放：', this.form)
+          // 解析account
+          this.account = this.form.SendDetails.account_details.map(item => item.account).join(',')
+          // 根据prop_id从itemList获取道具类型
+          this.itemType = this.itemList.find(item => item.id === this.form.PropDetails.prop_id)?.item_type
+          // 根据道具类型筛选道具下拉框选项
+          const filteredItems = this.itemList.filter(item => item.item_type === this.itemType)
+          this.itemOptions = filteredItems.map(item => ({
+            value: item.id,
+            label: item.item_name
+          }))
+        } else {
+          this.form = {
+            AccountType: 2,
+            PropDetails: {
+              prop_id: 0,
+              prop_name: '',
+              prop_num: 1,
+              prop_expire_days: 0
+            },
+            Remark: '',
+            SendDetails: {
+              app_id: 0,
+              account_details: []
+            }
+          }
+          this.itemType = ''
+          this.account = ''
+        }
+      }
+    }
+  },
   mounted() {
     this.getItemList()
   },
   methods: {
     /**
      * 提交先进行前端表单校验
-     * 然后调用后端接口进行校验
      */
     onSubmit() {
       if (this.checkoutForm()) {
-        this.checkoutId()
-          .then(() => {
-            // 将粘贴id通过英文逗号分隔成数组，格式为[{"account":"lfb","status":0},{"account":"lfb11","status":0}]
-            const account_details = this.account.split(',').map(id => {
-              return {
-                account: id.trim(),
-                status: 0
-              }
-            })
-            this.form.SendDetails.account_details = account_details
-            // 提交后端接口
-            const params = this.getRequestParams()
-            console.log('提交参数', params)
-            request({
-              url: '/propsbatchapply/create',
-              method: 'POST',
-              data: params
-            }).then(response => {
-              if (response.RetCode === 0) {
-                Message.success('提交成功！')
-                this.onClose()
-              } else {
-                Message.error('提交失败！')
-              }
-            })
+        if (this.checkoutId()) {
+          // 将粘贴id通过英文逗号分隔成数组，格式为[{"account":"lfb","status":0},{"account":"lfb11","status":0}]
+          const account_details = this.account.split(',').map(id => {
+            return {
+              account: id.trim(),
+              status: 0
+            }
           })
-          .catch((error) => {
-            console.error(error)
-          })
+          this.form.SendDetails.account_details = account_details
+          // 调用新增或者编辑接口
+          if (this.updateForm) {
+            this.updateBatchDistribution()
+          } else {
+            this.createBatchDistribution()
+          }
+        }
       }
+    },
+    /**
+     * 新增道具发放
+     */
+    createBatchDistribution() {
+      const params = this.getRequestParams()
+      console.log('提交参数', params)
+      request({
+        url: '/propsbatchapply/create',
+        method: 'POST',
+        data: params
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('提交成功！')
+          this.onClose()
+        } else {
+          Message.error('提交失败！')
+        }
+      })
+    },
+    /**
+     * 编辑道具发放
+     */
+    updateBatchDistribution() {
+      const params = this.getRequestParams()
+      console.log('提交参数', params)
+      request({
+        url: '/propsbatchapply/update',
+        method: 'POST',
+        data: params
+      }).then(response => {
+        if (response.RetCode === 0) {
+          Message.success('提交成功！')
+          this.onClose()
+        } else {
+          Message.error('提交失败！')
+        }
+      })
     },
     onReset() {
       this.$refs.formRef.resetFields()
@@ -193,18 +264,14 @@ export default {
     /**
      * 检查输入的id是否符合要求
      * 前端校验是否含有中文逗号，如果有则提示错误
-     * 前端检验完成之后，提交后端会再次校验
      */
-    async checkoutId() {
-      return new Promise((resolve, reject) => {
-        if (this.account.includes('，')) {
-          this.$message.error('请使用英文逗号分隔id')
-          reject(new Error('请使用英文逗号分隔id'))
-        } else {
-          // 通过后端接口进一步校验
-          resolve()
-        }
-      })
+    checkoutId() {
+      if (this.account.includes('，')) {
+        this.$message.error('请使用英文逗号分隔id')
+        return false
+      }
+
+      return true
     },
     /**
      * 获取道具列表
@@ -240,7 +307,7 @@ export default {
      */
     onItemTypeChange(value) {
       this.itemType = value
-      this.form.PropDetails.prop_id = 0
+      this.form.PropDetails.prop_id = ''
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 0
@@ -258,7 +325,7 @@ export default {
     onItemSelectorFocus() {
       if (!this.itemType) {
         this.$message.warning('请先选择道具类型')
-        this.form.PropDetails.prop_id = 0
+        this.form.PropDetails.prop_id = ''
         this.form.PropDetails.prop_name = ''
         this.form.PropDetails.prop_num = 1
         this.form.PropDetails.prop_expire_days = 0
@@ -272,11 +339,13 @@ export default {
       const selectedItem = this.itemList.find(item => item.id === this.form.PropDetails.prop_id)
       // 获取道具名称
       params.PropDetails.prop_name = selectedItem.item_name
-      // 计算道具过期时间，单位为天。根据选择的道具expire_time来计算，expire_time为秒需要转换为天
-      params.PropDetails.prop_expire_days = Math.ceil(selectedItem.expire_time / (24 * 60 * 60))
       // 将PropDetails和SendDetails转成字符串格式
       params.PropDetails = JSON.stringify(params.PropDetails)
       params.SendDetails = JSON.stringify(params.SendDetails)
+      // 如果是编辑模式，需要添加ID
+      if (this.updateForm) {
+        params.ID = this.updateForm.id
+      }
       return params
     }
   }
