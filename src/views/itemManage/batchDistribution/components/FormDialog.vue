@@ -101,7 +101,7 @@ export default {
       form: {
         AccountType: 2, // 1:account 2:uid
         PropDetails: {
-          prop_id: 0, // 道具ID
+          prop_id: '', // 道具ID
           prop_name: '', // 道具名称
           prop_num: 1,
           prop_expire_days: 0 // 过期天数
@@ -347,6 +347,14 @@ export default {
         params.ID = this.updateForm.id
       }
       return params
+    },
+    /**
+     * 切换id类型时，清空应用id
+     */
+    onChangeAccount(val) {
+      if (val === 2) {
+        this.form.SendDetails.app_id = ''
+      }
     }
   }
 }

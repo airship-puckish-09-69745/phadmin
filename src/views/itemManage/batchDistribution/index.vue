@@ -93,10 +93,11 @@
           </template>
         </el-table-column>
 
-        <el-table-column fixed="right" width="270px" label="操作">
+        <el-table-column fixed="right" width="380px" label="操作">
           <template slot-scope="scope">
             <el-button v-if="scope.row.status == 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
+            <el-button v-if="scope.row.status == 3" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
           </template>
         </el-table-column>
@@ -239,6 +240,32 @@ export default {
     onCloseDetailsDialog() {
       this.detailsForm.visible = false
       this.detailsForm.id = null
+    },
+    /**
+     * 二次确认发起审批/取消
+     * 0:申请发放  10:取消发放
+     */
+    onSubmitReview(data) {
+      this.$confirm('您确定要发起审批吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/propsbatchapply/update/status',
+          method: 'post',
+          data: {
+            ID: data.id,
+            Status: data.status === 3 ? 10 : 0
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('发起审批: ', response)
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     },
     getList() {
       request({
