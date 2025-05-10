@@ -97,14 +97,14 @@ export default {
       form: {
         AccountType: 2, // 1:account 2:uid
         PropDetails: {
-          prop_id: '', // 道具ID
+          prop_id: 0, // 道具ID
           prop_name: '', // 道具名称
           prop_num: 1,
           prop_expire_days: 0 // 过期天数
         },
         Remark: '',
         SendDetails: {
-          app_id: '', // 应用ID
+          app_id: 0, // 应用ID
           account_details: [] // 玩家id列表 [{"account":"lfb","status":0},{"account":"lfb11","status":0}] status//0:未发放；1:成功; -1:失败
         }
       },
@@ -240,7 +240,7 @@ export default {
      */
     onItemTypeChange(value) {
       this.itemType = value
-      this.form.PropDetails.prop_id = ''
+      this.form.PropDetails.prop_id = 0
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
       this.form.PropDetails.prop_expire_days = 0
@@ -258,7 +258,7 @@ export default {
     onItemSelectorFocus() {
       if (!this.itemType) {
         this.$message.warning('请先选择道具类型')
-        this.form.PropDetails.prop_id = ''
+        this.form.PropDetails.prop_id = 0
         this.form.PropDetails.prop_name = ''
         this.form.PropDetails.prop_num = 1
         this.form.PropDetails.prop_expire_days = 0
