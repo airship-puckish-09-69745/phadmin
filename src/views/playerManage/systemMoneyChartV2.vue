@@ -590,7 +590,7 @@ export default {
       return false
     },
     isSlots(o) {
-      if (o > 50 && o < 100 || o > 149 && o < 200) {
+      if (o > 50 && o < 100 || o > 149 && o < 500) {
         return true
       } else {
         return false
