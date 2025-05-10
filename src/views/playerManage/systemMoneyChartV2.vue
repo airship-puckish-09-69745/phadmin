@@ -414,6 +414,7 @@ export default {
         194: 'GoldTrain',
         196: 'GoldMiner',
         200: 'AtlantisTreasure',
+        204: 'Space Treasure',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
