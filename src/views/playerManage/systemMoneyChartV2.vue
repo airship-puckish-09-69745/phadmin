@@ -391,6 +391,7 @@ export default {
         162: 'Major Ace',
         166: 'Fire Link',
         164: 'MahjongFortune',
+        165: 'MahjongFortuneMars',
         198: 'FortuneBlessing',
         202: 'FortunateEbisu',
         206: 'LuckyWineglass',
