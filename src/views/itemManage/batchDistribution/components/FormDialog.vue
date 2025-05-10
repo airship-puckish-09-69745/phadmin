@@ -274,6 +274,9 @@ export default {
       params.PropDetails.prop_name = selectedItem.item_name
       // 计算道具过期时间，单位为天。根据选择的道具expire_time来计算，expire_time为秒需要转换为天
       params.PropDetails.prop_expire_days = Math.ceil(selectedItem.expire_time / (24 * 60 * 60))
+      // 将PropDetails和SendDetails转成字符串格式
+      params.PropDetails = JSON.stringify(params.PropDetails)
+      params.SendDetails = JSON.stringify(params.SendDetails)
       return params
     }
   }
