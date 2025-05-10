@@ -101,10 +101,8 @@
         </el-pagination>
       </div>
     </el-row>
-    <!--对比组件-->
-    <compare ref="compare" />
 
-    <FormDialog :visible="editForm.visible" @close="onCloseFormDialog" />
+    <FormDialog :visible="editForm.visible" @close="onCloseFormDialog" @reload="getList" />
     <DetailsDialog :visible="detailsForm.visible" @close="onCloseDetailsDialog" />
   </div>
 
@@ -112,15 +110,15 @@
 <script>
 import store from '@/store'
 import { Message } from 'element-ui'
-import Compare from '@/components/Compare'
 import request from '@/utils/request'
 import { $libDate, $libShow } from '@/utils/common'
 import FormDialog from './components/FormDialog.vue'
 import DetailsDialog from './components/DetailsDialog.vue'
+// import { ITEM_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'PropsConfig',
-  components: { Compare, FormDialog, DetailsDialog },
+  components: { FormDialog, DetailsDialog },
   data() {
     return {
       libShow: $libShow,
@@ -211,40 +209,43 @@ export default {
       this.detailsForm.id = null
     },
     getList() {
-      // request({
-      //   url: '/propsconfig/props/config/list',
-      //   method: 'get',
-      //   data: {
-      //     Env: this.env,
-      //     PageNum: this.page,
-      //     PageSize: this.limit,
-      //     PropType: this.form.itemOfType
-      //   }
-      // }).then(response => {
-      //   if (response.RetCode === 0) {
-      //     const objs = response.Data || {}
-      //     if (objs.total > 0) {
-      //       this.tableData = []
-      //       if (this.form.itemOfType === 0) {
-      //         this.tableData = objs.list
-      //         this.total = objs.total
-      //       } else {
-      //         let n = 0
-      //         for (let i = 0; i < objs.list.length; i++) {
-      //           if (objs.list[i].item_type === this.form.itemOfType) {
-      //             this.tableData.push(objs.list[i])
-      //             n++
-      //           }
-      //         }
-      //         this.total = n
-      //       }
-      //       this.$refs.compare.SetOldVal(response.Data.Data)
-      //     }
-      //   } else {
-      //     this.total = 0
-      //     this.tableData = []
-      //   }
-      // })
+      request({
+        url: '/propsbatchapply/list',
+        method: 'get',
+        data: {
+          // Env: this.env,
+          // PageNum: this.page,
+          // PageSize: this.limit,
+          Offset: 0,
+          Limit: 20,
+          StartTime: this.filter.timeRange[0] ? Math.round(this.filter.timeRange[0] / 1000) : 0,
+          EndTime: this.filter.timeRange[1] ? Math.round(this.filter.timeRange[1] / 1000) : 0,
+          Status: 0
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const objs = response.Data || {}
+          if (objs.total > 0) {
+            this.tableData = []
+            // if (this.form.itemOfType === 0) {
+            //   this.tableData = objs.list
+            //   this.total = objs.total
+            // } else {
+            //   let n = 0
+            //   for (let i = 0; i < objs.list.length; i++) {
+            //     if (objs.list[i].item_type === this.form.itemOfType) {
+            //       this.tableData.push(objs.list[i])
+            //       n++
+            //     }
+            //   }
+            //   this.total = n
+            // }
+          }
+        } else {
+          this.total = 0
+          this.tableData = []
+        }
+      })
     },
     handleSizeChange(val) {
       this.limit = val
