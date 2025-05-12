@@ -1986,7 +1986,13 @@ export const asyncRoutes = [
         path: 'itemConfig',
         component: () => import('@/views/itemManage/itemConfig'),
         name: 'itemConfig',
-        meta: { title: '道具管理', noCache: true }
+        meta: { title: '道具列表', noCache: true }
+      },
+      {
+        path: 'batchDistribution',
+        component: () => import('@/views/itemManage/batchDistribution/index.vue'),
+        name: 'batchDistribution',
+        meta: { title: '批量发放', noCache: true }
       }
     ]
   },
