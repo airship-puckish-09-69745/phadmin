@@ -265,7 +265,7 @@ export default {
   components: { Compare, Publish },
   data() {
     return {
-      playMode: 4, // Pro玩法
+      playMode: 2, // Pro玩法
       tableData: [],
       clientDB: new ClientTableData([], 1, filterMap),
       search: '',

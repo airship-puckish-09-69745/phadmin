@@ -1170,6 +1170,12 @@ export const asyncRoutes = [
                 meta: { title: 'P haraoh\'sTreasure' }
               },
               {
+                path: 'pirateship_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pirateship_slots_cfg'),
+                name: 'pirateship_slots_cfg',
+                meta: { title: 'P irateShip' }
+              },
+              {
                 path: 'puppyhome_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/puppyhome_slots_cfg'),
                 name: 'puppyhome_slots_cfg',
@@ -1445,6 +1451,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pharaohtreasuremars_slots_cfg'),
                 name: 'pharaohtreasuremars_slots_cfg',
                 meta: { title: 'Pharaoh\'s Treasure(审)' }
+              },
+              {
+                path: 'pirateshipmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pirateshipmars_slots_cfg'),
+                name: 'pirateshipmars_slots_cfg',
+                meta: { title: 'PirateShip(审)' }
               },
               {
                 path: 'dancelionmars_slots_cfg',
@@ -2331,7 +2343,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_wingolottery',
             meta: { title: 'W ingoLottery ◐', gid: 112 }
-          }
+          },
+          {
+            path: 'playlog_livecolorgame',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_livecolorgame',
+            meta: { title: 'L ive ColorGame - ◐', gid: 129 }
+          },
 
 
 
@@ -2533,6 +2551,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'pharaohtreasure_slots_log',
             meta: { title: 'P haraoh\'s Treasure', gid: 168 }
+          },
+          {
+            path: 'pirateship_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pirateship_slots_log',
+            meta: { title: 'P irateShip', gid: 212 }
           },
           {
             path: 'puppyhome_slots_log',
@@ -2804,6 +2828,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'fortunateebisumars_slots_log',
             meta: { title: 'FortunateEbisu(审)', gid: 203 }
+          },
+          {
+            path: 'pirateshipmars_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pirateshipmars_slots_log',
+            meta: { title: 'PirateShip(审)', gid: 213 }
           },
           {
             path: 'streetfightingmars_slots_log',
