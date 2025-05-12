@@ -59,6 +59,8 @@
               <el-option label="203:FortunateEbisu Mars" :value="203" />
               <el-option label="206:LuckyWineglass" :value="206" />
               <el-option label="207:LuckyWineglass Mars" :value="207" />
+              <el-option label="212:PirateShip" :value="212" />
+              <el-option label="213:PirateShip Mars" :value="213" />
               <el-option label="188:StreetFighting" :value="188" />
               <el-option label="189:StreetFighting Mars" :value="189" />
               <el-option label="192:BountyRaid" :value="192" />
