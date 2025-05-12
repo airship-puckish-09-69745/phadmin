@@ -3788,7 +3788,7 @@ export default {
             $this.showSweeperGame(obj)
           } else if (gid == 1) {
             $this.showRummyGame(obj)
-          } else if (gid == 25) {
+          } else if (gid == 25 || gid == 129) {
             $this.showColorGame(obj)
           } else if (gid == 23) {
             $this.showLucky9Game(obj)
