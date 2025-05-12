@@ -27,3 +27,27 @@ export const ITEM_DAY_TYPE_OPTIONS = [
   { 'value': 365, 'label': '365天', disabled: false },
   { 'value': 0, 'label': '永久', disabled: false }
 ]
+
+// 道具发放审批状态
+// 1: '发起成功',
+// 2: '发起失败',
+// 3: '未审批',
+// 4: '审批中',
+// 5: '废弃',
+// 6: '同意',
+// 7: '拒绝',
+// 8: '小额自动同意',
+// 9: '自动取消',
+// 10: '手动取消'
+export const ITEM_STATUS_OPTIONS = [
+  { 'value': 1, 'label': '发起成功', disabled: false },
+  { 'value': 2, 'label': '发起失败', disabled: false },
+  { 'value': 3, 'label': '未审批', disabled: false },
+  { 'value': 4, 'label': '审批中', disabled: false },
+  { 'value': 5, 'label': '废弃', disabled: false },
+  { 'value': 6, 'label': '同意', disabled: false },
+  { 'value': 7, 'label': '拒绝', disabled: false },
+  { 'value': 8, 'label': '小额自动同意', disabled: false },
+  { 'value': 9, 'label': '自动取消', disabled: false },
+  { 'value': 10, 'label': '手动取消', disabled: false }
+]

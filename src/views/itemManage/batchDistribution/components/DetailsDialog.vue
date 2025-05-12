@@ -19,6 +19,12 @@
           />
         </el-select>
       </div>
+      <el-button
+        type="primary"
+        icon="el-icon-search"
+        size="mini"
+        @click="onSearch()"
+      >查 询</el-button>
     </div>
 
     <el-table
@@ -34,26 +40,20 @@
         label="序号"
         width="60"
       />
-      <el-table-column prop="account" label="账号或者UID" sortable width="150" />
-      <el-table-column prop="status" label="发放状态">
+      <el-table-column prop="account" label="账号或者UID" sortable />
+      <el-table-column prop="status" label="发放状态" width="100">
         <template slot-scope="scope">
           <el-tag
-            v-if="scope.row.status == 1"
-            type="primary"
-            size="mini"
-          >待发放</el-tag>
-          <el-tag
-            v-else-if="scope.row.status == 2"
-            type="success"
-            size="mini"
-          >已发放</el-tag>
+            :type="scope.row.status === 1 ? 'success' : scope.row.status === -1 ? 'danger' : 'info'"
+            size="small"
+          >{{ getStatusText(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
     </el-table>
 
     <span slot="footer" class="dialog-footer">
       <el-button @click="onClose()">取 消</el-button>
-      <el-button type="primary" @click="onSubmit()">确 定</el-button>
+      <el-button type="primary" @click="onClose()">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -70,19 +70,7 @@ export default {
       type: Boolean,
       default: false
     },
-    data: {
-      // AccountType: 2, // 1:account 2:uid
-      //   PropDetails: {
-      //     prop_id: '', // 道具ID
-      //     prop_name: '', // 道具名称
-      //     prop_num: 1,
-      //     prop_expire_days: 0 // 过期天数
-      //   },
-      //   Remark: '',
-      //   SendDetails: {
-      //     app_id: 0, // 应用ID
-      //     account_details: [] // 玩家id列表 [{"account":"lfb","status":0},{"account":"lfb11","status":0}] status//0:未发放；1:成功; -1:失败
-      //   }
+    originData: {
       type: Object,
       default: () => {}
     }
@@ -92,20 +80,25 @@ export default {
       libShow: $libShow,
       filter: {
         account: '',
-        status: 0
+        status: ''
       },
+      // 0:未发放；1:成功; -1:失败
       statusOptions: [
         {
-          value: 0,
+          value: '',
           label: '全部'
         },
         {
-          value: 1,
-          label: '已发放'
+          value: 0,
+          label: '未发放'
         },
         {
-          value: 2,
-          label: '未发放'
+          value: 1,
+          label: '成功'
+        },
+        {
+          value: -1,
+          label: '失败'
         }
       ],
       tableData: []
@@ -125,19 +118,35 @@ export default {
      * 根据是否有uid和status来过滤数据
      */
     onSearch() {
-      this.tableData = this.data.send_details.account_details
+      this.tableData = this.originData.send_details.account_details.filter(item => {
+        const account = this.filter.account
+        const status = this.filter.status
+        return (
+          (account ? item.account === account : true) &&
+          ((status === 0 || status) ? item.status === status : true)
+        )
+      })
     },
     onReset() {
       this.filter = {
         uid: '',
-        status: 0
+        status: ''
       }
     },
     onCancel() {
       this.onClose()
     },
     onClose() {
+      this.onReset()
       this.$emit('close')
+    },
+    /**
+     * 将发放状态转为文字
+     * @param status 发放状态
+     */
+    getStatusText(status) {
+      const statusObj = this.statusOptions.find(item => item.value === status)
+      return statusObj ? statusObj.label : status
     }
   }
 }
