@@ -99,6 +99,7 @@
             <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="scope.row.status == 3" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
             <el-button v-else-if="scope.row.status == 4" type="info" size="mini" @click="onSubmitReview(scope.row)">取消审批</el-button>
+            <el-button v-else-if="scope.row.status == 6" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发放</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -251,7 +252,7 @@ export default {
           method: 'post',
           data: {
             ID: data.id,
-            Status: data.status === 3 ? 10 : 0
+            Status: data.status === 3 ? 0 : 10
           }
         }).then(response => {
           if (response.RetCode === 0) {
@@ -310,6 +311,33 @@ export default {
         10: '手动取消'
       }
       return statusMap[status] || status
+    },
+    /**
+     * 审核通过之后，发起发放
+     * @param data
+     */
+    onSubmitDistribution(data) {
+      this.$confirm(`您确定要发起发放吗？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        request({
+          url: '/propsbatchapply/grant',
+          method: 'post',
+          data: {
+            ID: data.id
+          }
+        }).then(response => {
+          if (response.RetCode === 0) {
+            console.log('发起发放: ', response)
+            Message.success('操作成功!')
+            this.getList()
+          }
+        })
+      }).catch(() => {
+        console.log('取消')
+      })
     },
     handleSizeChange(val) {
       this.limit = val
