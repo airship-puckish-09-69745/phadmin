@@ -1173,7 +1173,7 @@ export const asyncRoutes = [
                 path: 'pirateship_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/pirateship_slots_cfg'),
                 name: 'pirateship_slots_cfg',
-                meta: { title: 'PirateShip' }
+                meta: { title: 'P irateShip' }
               },
               {
                 path: 'puppyhome_slots_cfg',
