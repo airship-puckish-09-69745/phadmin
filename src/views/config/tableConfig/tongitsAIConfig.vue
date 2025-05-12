@@ -188,22 +188,22 @@
                 <el-form ref="edit" :model="robotDecision" label-width="220px">
                   <el-row>
                     <el-form-item label="自己必胜fight/Challenge概率：">
-                      <el-input v-model.number="robotDecision.Priority.WinRatio" size="mini"><template slot="append">%</template></el-input>
+                      <el-input v-model.number="robotDecision.Priority.WinRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-row>
                   <el-row>
                     <el-form-item label="自己必败fight/Challenge概率：">
-                      <el-input v-model.number="robotDecision.Priority.LoseRato" size="mini"><template slot="append">%</template></el-input>
+                      <el-input v-model.number="robotDecision.Priority.LoseRato" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-row>
                   <el-row>
                     <el-form-item label="第2轮决策全场未亮fight概率：">
-                      <el-input v-model.number="robotDecision.Priority.TwoRoundFightRatio" size="mini"><template slot="append">%</template></el-input>
+                      <el-input v-model.number="robotDecision.Priority.TwoRoundFightRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-row>
                   <el-row>
                     <el-form-item label="第3轮决策全场未亮fight概率：">
-                      <el-input v-model.number="robotDecision.Priority.ThreeRoundFightRatio" size="mini"><template slot="append">%</template></el-input>
+                      <el-input v-model.number="robotDecision.Priority.ThreeRoundFightRatio" size="mini" style="width: 200px"><template slot="append">%</template></el-input>
                     </el-form-item>
                   </el-row>
                 </el-form>
@@ -214,12 +214,23 @@
             <h3 style="text-align:center;">常规决策配置</h3>
             <el-col :span="24">
               <div style="padding-top: 10px">
+              
                 <el-table
                   :data="robotDecision.Standard"
                   stripe
                   border
                   style="width: 100%"
                 >
+                
+                <!-- <el-table-column
+                    label="轮数"
+                     width="250"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.RoundId }}
+                    </template>
+                  </el-table-column> -->
+
 
                   <el-table-column
                     label="条件"
@@ -231,7 +242,7 @@
                   </el-table-column>
 
                   <el-table-column
-                    label="分配"
+                    label="配置分数（注: 每行操作概率为机器人手牌总分<=“配置分数”的操作概率）"
                     width="850"
                   >
                     <template slot-scope="scope">
@@ -244,13 +255,13 @@
                         <el-table-column label="Fight(%)">
                          
                           <template scope="subScope" >
-                              <el-input v-model.number="subScope.row.Fight" ><template slot="append">%</template></el-input>
+                              <el-input v-model.number="subScope.row.FightRatio" ><template slot="append">%</template></el-input>
                           </template>
                        
                         </el-table-column>
                         <el-table-column label="Challenge(%)">
                           <template scope="subScope">
-                            <el-input v-model.number="subScope.row.Challenge" ><template slot="append">%</template></el-input>
+                            <el-input v-model.number="subScope.row.ChallengeRatio" ><template slot="append">%</template></el-input>
                           </template>
                         </el-table-column>
 
@@ -271,7 +282,7 @@
             </el-col>
           </el-row>
           <el-row style="padding-top: 5px">
-            <h3 style="text-align:center;">机器人作弊修正配置</h3>
+            <h3 style="text-align:center;">机器人决策修正配置</h3>
             <el-col :span="24">
               <div style="padding-top: 10px">
                 <el-table
@@ -280,8 +291,17 @@
                   border
                   style="width: 100%"
                 >
+                <el-table-column
+                    label="机器人级别"
+                     width="250"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.AiConfigLevel }}
+                    </template>
+                  </el-table-column>
+
                   <el-table-column
-                    label="机器人作弊"
+                    label="机器人决策修正"
                      width="250"
                   >
                     <template slot-scope="scope">
@@ -295,7 +315,7 @@
                     width="250"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Fight" ><template slot="append">%</template></el-input>
+                      <el-input v-model.number="scope.row.FightRatio" ><template slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
 
@@ -305,14 +325,14 @@
                     width="250"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Challenge" ><template slot="append">%</template></el-input>
+                      <el-input v-model.number="scope.row.ChallengeRatio" ><template slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
                 </el-table>
               </div>
             </el-col>
           </el-row>
-          
+
           <el-row style="padding-top: 5px">
             <h3 style="text-align:center;">其他因素配置</h3>
             <el-col :span="24">
@@ -323,6 +343,14 @@
                   border
                   style="width: 100%"
                 >
+                <el-table-column
+                    label="类型"
+                     width="250"
+                  >
+                    <template slot-scope="scope">
+                      {{ scope.row.Type }}
+                    </template>
+                  </el-table-column>
                   <el-table-column
                     label="条件"
                      width="250"
@@ -338,7 +366,7 @@
                     width="250"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Fight" ><template slot="append">%</template></el-input>
+                      <el-input v-model.number="scope.row.FightRatio" ><template slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
 
@@ -348,7 +376,7 @@
                     width="250"
                   >
                     <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.Challenge" ><template slot="append">%</template></el-input>
+                      <el-input v-model.number="scope.row.ChallengeRatio" ><template slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -577,75 +605,75 @@ export default {
           { RoundId: 2, RoundName: "第2轮决策" ,List:[
             {
               Score: 60,
-              Fight: 60,
-              Challenge:60
+              FightRatio: 60,
+              ChallengeRatio:60
 
             }]
           },
           { RoundId: 3, RoundName: "第3轮决策" ,List:[
             {
               Score: 60,
-              Fight: 60,
-              Challenge:60
+              FightRatio: 60,
+              ChallengeRatio:60
 
             }]
           },
           { RoundId: 4, RoundName: "第4轮决策" ,List:[
             {
               Score: 60,
-              Fight: 60,
-              Challenge:60
+              FightRatio: 60,
+              ChallengeRatio:60
 
             }]
           },
           { RoundId: 5, RoundName: "第5轮决策" , List:[
             {
               Score: 60,
-              Fight: 60,
-              Challenge:60
+              FightRatio: 60,
+              ChallengeRatio:60
 
             }]
           },
           { RoundId: 6, RoundName: "第>=6轮决策" ,List:[
             {
               Score: 60,
-              Fight: 60,
-              Challenge:60
+              FightRatio: 60,
+              ChallengeRatio:60
 
             }]
           },
         ],
         Other:[
-          {Type: 1, Name: "敌人手牌比自己的散牌少（每少1张）",Fight: 60, Challenge:60},
-          {Type: 2, Name: "敌人手牌比自己的散牌多（每多1张）",Fight: 60, Challenge:60},
-          {Type: 3, Name: "手中Bonus牌数",Fight: 60, Challenge:60},
-          {Type: 4, Name: "每个未放牌敌人",Fight: 60, Challenge:60}
+          {Type: 1, Name: "敌人手牌比自己的散牌少（每少1张）",FightRatio: 60, ChallengeRatio:60},
+          {Type: 2, Name: "敌人手牌比自己的散牌多（每多1张）",FightRatio: 60, ChallengeRatio:60},
+          {Type: 3, Name: "手中Bonus牌数",FightRatio: 60, ChallengeRatio:60},
+          {Type: 4, Name: "每个未放牌敌人",FightRatio: 60, ChallengeRatio:60}
         ],
         RobotCorrect:[
           {
-            RobotLevel: 1,
+            AiConfigLevel: 1,
             label: '强放修正',
-            Fight: 60, Challenge:60
+            FightRatio: 60, ChallengeRatio:60
           },
           {
-            RobotLevel: 2,
+            AiConfigLevel: 2,
             label: '弱放修正',
-            Fight: 60, Challenge:60
+            FightRatio: 60, ChallengeRatio:60
           },
           {
-            RobotLevel: 3,
+            AiConfigLevel: 3,
             label: '普通修正',
-            Fight: 60, Challenge:60
+            FightRatio: 60, ChallengeRatio:60
           },
           {
-            RobotLevel: 4,
+            AiConfigLevel: 4,
             label: '弱杀修正',
-            Fight: 60, Challenge:60
+            FightRatio: 60, ChallengeRatio:60
           },
           {
-            RobotLevel: 5,
+            AiConfigLevel: 5,
             label: '强杀修正',
-            Fight: 60, Challenge:60
+            FightRatio: 60, ChallengeRatio:60
           }
         ]
         
@@ -994,8 +1022,8 @@ export default {
           this.robotDecision.Standard[i].List.push(
             {
               Score: 0,
-              Fight: 0,
-              Challenge:0
+              FightRatio: 0,
+              ChallengeRatio:0
             }
           )
         }
