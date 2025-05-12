@@ -98,15 +98,10 @@
             <el-button v-if="scope.row.status == 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="scope.row.status == 3" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row.id, false)">删除</el-button>
+            <el-button v-else-if="scope.row.status == 4" type="info" size="mini" @click="onSubmitReview(scope.row)">取消审批</el-button>
+            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
-
-        <!-- <el-table-column fixed="right" width="160px" label="详情">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
-          </template>
-        </el-table-column> -->
       </el-table>
     </el-row>
     <el-row type="flex" justify="center">
@@ -246,7 +241,7 @@ export default {
      * 0:申请发放  10:取消发放
      */
     onSubmitReview(data) {
-      this.$confirm('您确定要发起审批吗？', '提示', {
+      this.$confirm(`您确定要${data.status === 3 ? '发起' : '取消'}审批吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -261,6 +256,8 @@ export default {
         }).then(response => {
           if (response.RetCode === 0) {
             console.log('发起审批: ', response)
+            Message.success('操作成功!')
+            this.getList()
           }
         })
       }).catch(() => {
@@ -328,40 +325,24 @@ export default {
     formatTime(ts) {
       return $libDate.FormateSecondStr(ts, 2)
     },
-    handleDelete(id) {
-      this.$confirm('您确定要将该道具删除吗？', '提示', {
+    handleDelete(data) {
+      this.$confirm(`您确定要将${data.prop_details.prop_name}删除吗？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        const newList = []
-        const deleteList = []
-        for (const key in this.editForm.tableData) {
-          if (this.editForm.tableData[key].id === id) {
-            continue
-          }
-          newList.push(this.editForm.tableData[key])
-        }
-        for (const key in this.tableData) {
-          if (this.tableData[key].id === id) {
-            deleteList.push(this.tableData[key])
-          }
-        }
-        this.editForm.tableData = newList
-        this.deleteData = deleteList
         request({
-          url: '/propsconfig/props/config/delete',
+          url: '/propsbatchapply/delete',
           method: 'post',
           data: {
-            Env: this.env,
-            ID: id
+            ID: data.id
           }
         }).then(response => {
           if (response.RetCode === 0) {
-            Message.success('删除道具成功')
+            Message.success('删除成功!')
             this.getList()
           } else {
-            Message.error('删除道具失败！')
+            Message.error('删除失败！')
           }
         })
       }).catch(() => {
