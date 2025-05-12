@@ -126,7 +126,7 @@
     </el-row>
 
     <FormDialog :visible="editForm.visible" :update-form="editForm.data" @close="onCloseFormDialog" @reload="getList" />
-    <DetailsDialog :visible="detailsForm.visible" @close="onCloseDetailsDialog" />
+    <DetailsDialog :visible="detailsForm.visible" :data="detailsForm.data" @close="onCloseDetailsDialog" />
   </div>
 
 </template>
@@ -175,7 +175,7 @@ export default {
       },
       detailsForm: {
         visible: false,
-        id: null
+        data: null
       },
       editForm: {
         visible: false,
@@ -231,11 +231,11 @@ export default {
     },
     onShowDetailsDialog(data) {
       this.detailsForm.visible = true
-      this.detailsForm.id = data.id
+      this.detailsForm.data = data
     },
     onCloseDetailsDialog() {
       this.detailsForm.visible = false
-      this.detailsForm.id = null
+      this.detailsForm.data = null
     },
     /**
      * 二次确认发起审批/取消

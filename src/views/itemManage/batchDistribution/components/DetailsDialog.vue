@@ -7,7 +7,7 @@
   >
     <div class="search-filter">
       <div class="search-filter-item">
-        UID: <el-input v-model="filter.uid" />
+        账号或UID: <el-input v-model="filter.account" />
       </div>
       <div class="search-filter-item">
         发放状态: <el-select v-model="filter.status" placeholder="发放状态">
@@ -34,11 +34,7 @@
         label="序号"
         width="60"
       />
-      <el-table-column prop="createTime" label="发布时间" width="150" />
-      <el-table-column prop="id" label="玩家ID" sortable width="100" />
-      <el-table-column prop="number" label="发放数量" />
-      <el-table-column prop="propName" label="道具类型" />
-      <el-table-column prop="propName" label="道具名称" />
+      <el-table-column prop="account" label="账号或者UID" sortable width="150" />
       <el-table-column prop="status" label="发放状态">
         <template slot-scope="scope">
           <el-tag
@@ -73,13 +69,29 @@ export default {
     visible: {
       type: Boolean,
       default: false
+    },
+    data: {
+      // AccountType: 2, // 1:account 2:uid
+      //   PropDetails: {
+      //     prop_id: '', // 道具ID
+      //     prop_name: '', // 道具名称
+      //     prop_num: 1,
+      //     prop_expire_days: 0 // 过期天数
+      //   },
+      //   Remark: '',
+      //   SendDetails: {
+      //     app_id: 0, // 应用ID
+      //     account_details: [] // 玩家id列表 [{"account":"lfb","status":0},{"account":"lfb11","status":0}] status//0:未发放；1:成功; -1:失败
+      //   }
+      type: Object,
+      default: () => {}
     }
   },
   data() {
     return {
       libShow: $libShow,
       filter: {
-        uid: '',
+        account: '',
         status: 0
       },
       statusOptions: [
@@ -99,16 +111,21 @@ export default {
       tableData: []
     }
   },
+  watch: {
+    visible(val) {
+      if (val) {
+        this.onSearch()
+      }
+    }
+  },
   methods: {
-    onSubmit() {
-      this.$refs.formRef.validate((valid) => {
-        if (valid) {
-          this.$emit('submit', this.form)
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+    /**
+     * 搜索数据展示列表
+     * 数据源是props传入的data，过滤之后得到tableData
+     * 根据是否有uid和status来过滤数据
+     */
+    onSearch() {
+      this.tableData = this.data.send_details.account_details
     },
     onReset() {
       this.filter = {
