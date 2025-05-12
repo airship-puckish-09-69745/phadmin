@@ -2343,7 +2343,13 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/playlog'),
             name: 'playlog_wingolottery',
             meta: { title: 'W ingoLottery ◐', gid: 112 }
-          }
+          },
+          {
+            path: 'playlog_livecolorgame',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_livecolorgame',
+            meta: { title: 'L ive ColorGame - ◐', gid: 129 }
+          },
 
 
 
