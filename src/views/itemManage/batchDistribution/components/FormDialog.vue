@@ -49,7 +49,7 @@
           数量：
           <el-input v-model.number="form.PropDetails.prop_num" type="number" placeholder="请输入道具数量" style="width: calc(100% - 80px);" />
         </div>
-        <div class="form-item-item">
+        <div class="form-item-item" v-if="itemType == 2 || itemType== 4" >
           过期时间：
           <el-select v-model="form.PropDetails.prop_expire_days" placeholder="请选择过期时间" style="width: calc(100% - 100px);" @focus="onItemSelectorFocus">
             <el-option
@@ -104,7 +104,7 @@ export default {
           prop_id: '', // 道具ID
           prop_name: '', // 道具名称
           prop_num: 1,
-          prop_expire_days: 0 // 过期天数
+          prop_expire_days: 1 // 过期天数
         },
         Remark: '',
         SendDetails: {
@@ -145,7 +145,7 @@ export default {
               prop_id: 0,
               prop_name: '',
               prop_num: 1,
-              prop_expire_days: 0
+              prop_expire_days: 1
             },
             Remark: '',
             SendDetails: {
@@ -242,6 +242,9 @@ export default {
       if (!this.itemType) {
         this.$message.error('请选择道具类型')
         return false
+      }else if (this.form.PropDetails.prop_id <=0){
+        this.$message.error('请选择道具名称')
+        return false
       } else if (!this.account) {
         this.$message.error('请输入id')
         return false
@@ -310,7 +313,7 @@ export default {
       this.form.PropDetails.prop_id = ''
       this.form.PropDetails.prop_name = ''
       this.form.PropDetails.prop_num = 1
-      this.form.PropDetails.prop_expire_days = 0
+      this.form.PropDetails.prop_expire_days = 1
       const filteredItems = this.itemList.filter(item => item.item_type === value)
       this.itemOptions = filteredItems.map(item => ({
         value: item.id,
@@ -328,7 +331,7 @@ export default {
         this.form.PropDetails.prop_id = ''
         this.form.PropDetails.prop_name = ''
         this.form.PropDetails.prop_num = 1
-        this.form.PropDetails.prop_expire_days = 0
+        this.form.PropDetails.prop_expire_days = 1
       }
     },
     /**

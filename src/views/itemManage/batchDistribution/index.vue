@@ -18,17 +18,11 @@
         <el-form-item label="发放状态：">
           <el-select v-model="filter.status" style="width: 200px;" placeholder="请选择道具分类">
             <el-option label="全部" :value="0" />
-            <el-option
-              v-for="item in statusOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-              :disabled="item.disabled"
-            />
+            <el-option v-for="(k,v) in statusOptions" :key="parseInt(v)" :label="k" :value="parseInt(v)" />
           </el-select>
         </el-form-item>
         <el-button size="mini" type="primary" @click="onSearch">查询</el-button>
-        <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="onShowFormDialog()">批量发放</el-button>
+        <el-button size="mini" type="success"  @click="onShowFormDialog()">创建申请</el-button>
       </el-form>
     </el-row>
     <el-row>
@@ -98,9 +92,9 @@
             <el-button v-if="scope.row.status == 3" type="primary" size="mini" icon="el-icon-edit" @click="onShowFormDialog(scope.row)">编辑</el-button>
             <el-button v-if="showDetails(scope.row.status)" type="primary" size="mini" @click="onShowDetailsDialog(scope.row)">查看详情</el-button>
             <el-button v-if="scope.row.status == 3" type="warning" size="mini" @click="onSubmitReview(scope.row)">发起审批</el-button>
-            <el-button v-else-if="scope.row.status == 4" type="info" size="mini" @click="onSubmitReview(scope.row)">取消审批</el-button>
-            <el-button v-else-if="scope.row.status == 6" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发放</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+            <el-button v-if ="scope.row.status == 6" type="warning" size="mini" @click="onSubmitDistribution(scope.row)">发起发放</el-button>
+            <el-button v-if ="scope.row.status == 6" type="info" size="mini" @click="onSubmitReview(scope.row)">取消发放</el-button>
+            <el-button  v-if="scope.row.status == 3" size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -146,20 +140,15 @@ export default {
     return {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
-      statusOptions: [
-        {
-          value: 0,
-          label: '全部'
-        },
-        {
-          value: 1,
-          label: '待发放'
-        },
-        {
-          value: 2,
-          label: '已发放'
-        }
-      ],
+      statusOptions: {
+        1: '发放成功',
+        2: '发放失败',
+        3: '未审批',
+        4: '审批中',
+        6: '同意',
+        7: '拒绝',
+        10: '手动取消'
+      },
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
 
@@ -241,7 +230,7 @@ export default {
      * status，只有 发起成功，发起失败，拒绝 才显示详情
      */
     showDetails(status) {
-      if (status === 1 || status === 2 || status === 7) {
+      if (status === 1 || status === 2 || status === 7 || status === 4 || status === 6) {
         return true
       }
 
@@ -280,26 +269,34 @@ export default {
         url: '/propsbatchapply/list',
         method: 'get',
         data: {
-          // Env: this.env,
-          // PageNum: this.page,
-          // PageSize: this.limit,
           Offset: 0,
           Limit: 20,
+          PageSize: this.limit,
+          PageNum: this.page,
           StartTime: this.filter.timeRange[0] ? Math.round(this.filter.timeRange[0] / 1000) : 0,
           EndTime: this.filter.timeRange[1] ? Math.round(this.filter.timeRange[1] / 1000) : 0,
-          Status: 0
+          Status: this.filter.status,
         }
       }).then(response => {
         if (response.RetCode === 0) {
           this.tableData = []
-          // 将prop_details和send_details解析为json对象
-          const list = response.Data.map(item => {
-            item.prop_details = JSON.parse(item.prop_details)
-            item.send_details = JSON.parse(item.send_details)
-            return item
-          })
-          this.tableData = list
-          console.log('发放列表', this.tableData)
+          this.total = 0
+          const objs = response.Data || []
+          console.log("数据返回 ",objs)
+          if (objs.total > 0) {
+            this.total = response.Data.total
+            console.log("resp.data",objs.list)
+            // 将prop_details和send_details解析为json对象
+            const dataList = objs.list.map(item => {
+              item.prop_details = JSON.parse(item.prop_details)
+              item.send_details = JSON.parse(item.send_details)
+              return item
+            })
+            this.tableData = dataList
+            //console.log('发放列表', this.tableData)
+          }
+
+
         }
       })
     },
