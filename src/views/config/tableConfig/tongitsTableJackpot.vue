@@ -186,6 +186,7 @@
                 <el-option label="1" :value="1" />
                 <el-option label="2" :value="2" />
                 <el-option label="10" :value="10" />
+                <el-option label="20" :value="20" />
                 <el-option label="40" :value="40" />
                 <el-option label="100" :value="100" />
                 <el-option label="200" :value="200" />
@@ -195,7 +196,6 @@
                 <el-option label="3000" :value="3000" />
                 <!-- 
                   <el-option label="5" :value="5" />
-                  <el-option label="20" :value="20" />
                   <el-option label="50" :value="50" />
                   <el-option label="500" :value="500" /> 
                 -->
