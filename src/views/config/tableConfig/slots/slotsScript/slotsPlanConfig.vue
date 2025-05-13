@@ -438,7 +438,7 @@
                 <el-button type="primary" @click="checkBetPlans(scope.$index)" size="mini" style="background-color:#ff8000">检查
                 </el-button>
               </el-tooltip>
-              <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
+              <el-tooltip content="最小倍数*出现个数<=剧本总和<=最大倍数*出现个数" effect="dark" placement="top">
                 <el-button type="primary" @click="checkBetPlansSum(scope.$index)" size="mini" style="background-color:#b600ff">检查
                 </el-button>
               </el-tooltip>
@@ -1568,16 +1568,19 @@ export default {
     },
 
     checkBetPlansSum(idx) {
-      let str = ''
+      let msgArr = []
       for (const o of this.editBetOddsPlansFormData[idx].OddsCfg) {
         if ((o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum) {
-          str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
+          msgArr.push('最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum)
+        }
+        if ((o.OddsMax * o.ScriptSteps) < o.ScriptOddsSum) {
+          msgArr.push('最大倍数:' + o.OddsMax + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum)
         }
       }
-      if (str.length <= 0) {
-        Message.success("数据ok的！" + str)
+      if (msgArr.length <= 0) {
+        Message.success("数据ok的！")
       } else {
-        Message.error('数据异常:' + str)
+        Message.error('数据异常：' + msgArr.join('，'))
       }
     },
     checkPlansSumScript(idx) {
