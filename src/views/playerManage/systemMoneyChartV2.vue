@@ -103,12 +103,12 @@
             @click="getInfo(o,2)"
           >
             <el-tooltip class="item" effect="dark" placement="top" :disabled="o!=37">
-              <div slot="content" style="white-space: pre-line;font-size: 14px" v-html="getBlackJackTitle()"/>
+              <div slot="content" style="white-space: pre-line;font-size: 14px" v-html="getBlackJackTitle()" />
               <div class="card-panel-description">
                 <div class="card-panel-text">
                   {{ gameNames[o] }}：<span
-                  :class="getSummaryClass(summary[o],false)"
-                > {{ getSummaryResult(summary[o], false).toFixed(2) }}%</span>
+                    :class="getSummaryClass(summary[o],false)"
+                  > {{ getSummaryResult(summary[o], false).toFixed(2) }}%</span>
                 </div>
                 <div>
                   收益：{{ getSystemGot(summary[o], false) }}
@@ -183,7 +183,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <line-chart :chart-data="chartData" height="600px"/>
+      <line-chart :chart-data="chartData" height="600px" />
     </el-row>
     <el-dialog
       title="在线用户详情"
@@ -264,18 +264,18 @@ import Publish from '@/components/Publish'
 import UidInput from '@/components/UidInput'
 import request from '@/utils/request'
 import LineChart from './components/LineChart'
-import {$libDate, $libShow, MoneyShow} from '@/utils/common'
-import {IsMars, IsProd} from '@/utils/env'
+import { $libDate, $libShow, MoneyShow } from '@/utils/common'
+import { IsMars, IsProd } from '@/utils/env'
 import store from '@/store'
-import {Message} from 'element-ui'
-import {mapGetters} from 'vuex'
+import { Message } from 'element-ui'
+import { mapGetters } from 'vuex'
 
 function newHealthData() {
   return {
     xData: [],
     yData: [
-      {Name: '昨日收益', Data: []},
-      {Name: '今日收益', Data: []}
+      { Name: '昨日收益', Data: [] },
+      { Name: '今日收益', Data: [] }
     ]
   }
 }
@@ -284,12 +284,12 @@ function newOriginData() {
   return {
     xData: [],
     yData: [
-      {Name: '昨日系统赢', Data: []},
-      {Name: '昨日台费', Data: []},
-      {Name: '昨日有效流水', Data: []},
-      {Name: '今日系统赢', Data: []},
-      {Name: '今日台费', Data: []},
-      {Name: '今日有效流水', Data: []}
+      { Name: '昨日系统赢', Data: [] },
+      { Name: '昨日台费', Data: [] },
+      { Name: '昨日有效流水', Data: [] },
+      { Name: '今日系统赢', Data: [] },
+      { Name: '今日台费', Data: [] },
+      { Name: '今日有效流水', Data: [] }
     ]
   }
 }
@@ -297,7 +297,7 @@ function newOriginData() {
 export default {
   name: 'SystemMoney',
   // eslint-disable-next-line vue/no-unused-components
-  components: {Compare, Publish, UidInput, LineChart},
+  components: { Compare, Publish, UidInput, LineChart },
   data() {
     return {
       item: {
@@ -316,10 +316,10 @@ export default {
       gid: 10000,
       summary: {},
       total: {
-        1: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0},
-        2: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0},
-        3: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0},
-        4: {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
+        1: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 },
+        2: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 },
+        3: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 },
+        4: { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
       }, // 不同筛选下的汇总
       gameNames: {
         10: 'Crash',
@@ -395,6 +395,7 @@ export default {
         198: 'FortuneBlessing',
         202: 'FortunateEbisu',
         206: 'LuckyWineglass',
+        212: 'PirateShip',
         188: 'StreetFighting',
         190: 'Arcane Egypt',
         192: 'BountyRaid',
@@ -414,6 +415,7 @@ export default {
         194: 'GoldTrain',
         196: 'GoldMiner',
         200: 'AtlantisTreasure',
+        204: 'Space Treasure',
         9: 'Teen Patti',
         126: 'Pusoy Wild',
         2031: 'TongitsMtt',
@@ -435,6 +437,7 @@ export default {
       env: 'test',
       envProjectName: process.env.VUE_APP_PROJECT,
       authorityNum: 0,
+      showZoogame: false
     }
   },
   computed: {
@@ -446,6 +449,9 @@ export default {
   },
   // mixins: [IsMars],
   created() {
+    if (process.env.VUE_APP_PROJECT_NAME == '菲1-开发环境' || process.env.VUE_APP_PROJECT_NAME == 'Zoo-线上环境') {
+      this.showZoogame = true
+    }
     this.env = store.getters.env || this.env
     // this.sortOrder = this.defaultOrder
 
@@ -458,7 +464,6 @@ export default {
 
     this.getAllData()
 
-
     // this.getInfo(this.gid)
     if (process.env.NODE_ENV === 'development') {
       this.defaultOrder.push(120) // tongitsSwap
@@ -470,14 +475,12 @@ export default {
       await this.getAuthorityData()
 
       await this.getInfo(this.gid)
-
     },
     HasACC() {
-
       if (this.$store.state.user.pers['USER_MANAGEMENT']) {
-        if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='test') {
+        if (this.$store.state.user.pers['UAT_MONITOR'] > 0 && this.env === 'test') {
           return true
-        }else if (this.$store.state.user.pers['UAT_MONITOR']>0 && this.env==='pro'){
+        } else if (this.$store.state.user.pers['UAT_MONITOR'] > 0 && this.env === 'pro') {
           return false
         }
         if (this.authorityCfg[this.name]) {
@@ -533,7 +536,7 @@ export default {
             const ob = this.summary[gid]
             if (ob) {
               const got = ob.Lose + ob.Tax - ob.Won
-              objs.push({Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0})
+              objs.push({ Gid: gid, Got: got || 0, Sum: this.summary[gid] ? this.summary[gid].Bet / 1000 : 0 })
             }
           } else {
             objs.push({
@@ -544,11 +547,11 @@ export default {
           }
         }
         if (this.selectOrder === 2) {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Got - a.Got
           })
         } else {
-          objs = objs.sort(function (a, b) {
+          objs = objs.sort(function(a, b) {
             return b.Sum - a.Sum
           })
         }
@@ -566,8 +569,11 @@ export default {
         if (IsProd()) { // 线上
           this.defaultOrder.push(76, 80, 78, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 182, 168, 186, 184, 188, 190, 192, 194, 196, 198)
         } else {
-          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 206)
+          this.defaultOrder.push(76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 150, 152, 154, 156, 158, 160, 162, 164, 172, 188, 202, 198, 192, 180, 166, 170, 176, 182, 174, 186, 178, 194, 184, 168, 196, 190, 200, 204, 206, 212)
         }
+      }
+      if (this.showZoogame) {
+        this.defaultOrder.push(124, 125)
       }
     },
     isPopType(o) {
@@ -589,7 +595,7 @@ export default {
       return false
     },
     isSlots(o) {
-      if (o > 50 && o < 100 || o > 149 && o < 200) {
+      if (o > 50 && o < 100 || o > 149 && o < 500) {
         return true
       } else {
         return false
@@ -613,7 +619,7 @@ export default {
         SortOrder = ob.order === 'ascending' ? 1 : -1
       }
 
-      const compare = function (a, b) {
+      const compare = function(a, b) {
         const val1 = a[SortName]
         const val2 = b[SortName]
         if (val1 < val2) {
@@ -723,7 +729,7 @@ export default {
     formatNumber(n) {
       return n.toLocaleString()
     },
-    tableRowClassName({row, rowIndex}) {
+    tableRowClassName({ row, rowIndex }) {
       if (row.IsPay) {
         return 'success-row'
       }
@@ -762,7 +768,7 @@ export default {
           Day: parseInt(this.item.date / 1000)
         }
       }).then(response => {
-        let has = []
+        const has = []
         if (response.RetCode === 0) {
           if (iType === 2) {
             const objs = response.Data.Items || []
@@ -777,16 +783,16 @@ export default {
             console.log($this.summary)
 
             let totalOnline = 0
-            $this.total[2] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
-            $this.total[3] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
-            $this.total[4] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
-            $this.total[1] = {Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0}
+            $this.total[2] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[3] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[4] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
+            $this.total[1] = { Bet: 0, Lose: 0, Won: 0, Tax: 0, OnlineCount: 0 }
 
             for (const responseElement of $this.defaultOrder) {
               has.push(responseElement)
             }
 
-            console.log("=======", this.sortOrder)
+            console.log('=======', this.sortOrder)
             for (const o in $this.summary) {
               if ($this.authorityNum > 0 && !has.includes(parseInt(o))) {
                 continue
@@ -820,7 +826,6 @@ export default {
           }
           $this.initChartData()
           $this.showHealth()
-
         }
       })
       $this.getPoolList()
@@ -856,7 +861,7 @@ export default {
             }
           }
         }
-        datas.sort(function (a, b) {
+        datas.sort(function(a, b) {
           return a.Ante - b.Ante
         })
         for (const o of datas) {
@@ -875,32 +880,32 @@ export default {
         if (response.RetCode === 0) {
           if (response.Data && response.Data.Data !== '') {
             this.authorityCfg = JSON.parse(response.Data.Data)
-              if (this.$store.state.user.pers['USER_MANAGEMENT']>0) {
+            if (this.$store.state.user.pers['USER_MANAGEMENT'] > 0) {
               // 限制查看pro
-              if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='test'){
+              if ((this.$store.state.user.pers['UAT_MONITOR'] > 0) && this.env === 'test') {
                 this.sortOrder = this.defaultOrder
-                return;
-              }else if ((this.$store.state.user.pers['UAT_MONITOR']>0)&&this.env==='pro'){
+                return
+              } else if ((this.$store.state.user.pers['UAT_MONITOR'] > 0) && this.env === 'pro') {
                 this.defaultOrder = []
                 this.sortOrder = this.defaultOrder
-                return;
+                return
               }
-              console.log("=======", this.name,this.authorityCfg[this.name],this.defaultOrder)
-                if (this.authorityCfg[this.name]) {
-                  // 有权限而且有限制
-                  this.defaultOrder = []
-                  for (const o of this.authorityCfg[this.name]) {
-                    if (this.gameNames[o]) {
-                      this.defaultOrder.push(o)
-                    }
-                  }
-                  this.authorityNum = this.defaultOrder.length
-                } else {
-                  this.sortOrder = this.defaultOrder
-                  return
-                }
-              } else {
+              console.log('=======', this.name, this.authorityCfg[this.name], this.defaultOrder)
+              if (this.authorityCfg[this.name]) {
+                // 有权限而且有限制
                 this.defaultOrder = []
+                for (const o of this.authorityCfg[this.name]) {
+                  if (this.gameNames[o]) {
+                    this.defaultOrder.push(o)
+                  }
+                }
+                this.authorityNum = this.defaultOrder.length
+              } else {
+                this.sortOrder = this.defaultOrder
+                return
+              }
+            } else {
+              this.defaultOrder = []
             }
             this.sortOrder = this.defaultOrder
           }
@@ -918,7 +923,7 @@ export default {
         preObjs = objs
       }
       if (preObjs.length > 0) {
-        preObjs.sort(function (a, b) {
+        preObjs.sort(function(a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }
@@ -929,7 +934,7 @@ export default {
         })
       }
       if (objs.length > 0) {
-        objs.sort(function (a, b) {
+        objs.sort(function(a, b) {
           if (a.TimeKey < b.TimeKey) {
             return -1
           }

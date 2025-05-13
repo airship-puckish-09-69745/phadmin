@@ -9,7 +9,7 @@
           <el-select v-model="form.itemOfType" style="width: 200px;" placeholder="请选择道具分类">
             <el-option label="全部" :value="0" />
             <el-option
-              v-for="item in itemTypeCfgs"
+              v-for="item in ITEM_TYPE_OPTIONS"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -166,7 +166,7 @@
           <el-form-item label="道具类别：" :required="true">
             <el-select v-model="editForm.data.itemType" style="width: 200px;" :disabled="!editForm.isAdd" placeholder="请选择道具分类">
               <el-option
-                v-for="item in itemTypeCfgs"
+                v-for="item in ITEM_TYPE_OPTIONS"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value"
@@ -224,36 +224,33 @@ import request from '@/utils/request'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libDate, $libShow } from '@/utils/common'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
+import { ITEM_TYPE_OPTIONS, ITEM_DAY_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'PropsConfig',
   components: { Compare, Publish, DateTimeShow, ImagePicker },
   data() {
     return {
+      ITEM_TYPE_OPTIONS,
+      ITEM_DAY_TYPE_OPTIONS,
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
 
 
-      itemTypeCfgs: [
-        { 'value': 1, 'label': 'Tongits门票', disabled: false },
-        { 'value': 2, 'label': '头像框', disabled: false },
-        { 'value': 3, 'label': '德州门票', disabled: false },
-        { 'value': 4, 'label': '德州头像框', disabled: false }
-      ],
+      // itemTypeCfgs: [
+      //   { 'value': 1, 'label': 'Tongits门票', disabled: false },
+      //   { 'value': 2, 'label': '头像框', disabled: false },
+      //   { 'value': 3, 'label': '德州门票', disabled: false },
+      //   { 'value': 4, 'label': '德州头像框', disabled: false }
+      // ],
 
       itemSpecialAttrCfgs: [
         { 'value': 1, 'label': '邀请函', disabled: false },
         { 'value': 2, 'label': 'GTCC线上决赛门票', disabled: false },
       ],
 
-      dayTypeCfgs: [
-        { 'value': 7, 'label': '7天', disabled: false },
-        { 'value': 30, 'label': '30天', disabled: false },
-        { 'value': 365, 'label': '365天', disabled: false },
-        { 'value': 0, 'label': '永久', disabled: false }
-      ],
       statusCfgs: [
         { 'value': 1, 'label': '上架' },
         { 'value': 2, 'label': '下架' }
@@ -435,9 +432,9 @@ export default {
     },
     getItemTypeName(item_type){
       var itemTypeName = ''
-      for (var i = 0; i < this.itemTypeCfgs.length; i++) {
-        if (this.itemTypeCfgs[i].value == item_type) {
-          itemTypeName = this.itemTypeCfgs[i].label
+      for (var i = 0; i < this.ITEM_TYPE_OPTIONS.length; i++) {
+        if (this.ITEM_TYPE_OPTIONS[i].value == item_type) {
+          itemTypeName = this.ITEM_TYPE_OPTIONS[i].label
           break
         }
       }
@@ -475,10 +472,10 @@ export default {
         }
       }
       const time_type = JSON.parse(editData.time_type)
-      for (var i = 0; i < this.dayTypeCfgs.length; i++) {
+      for (var i = 0; i < this.ITEM_DAY_TYPE_OPTIONS.length; i++) {
         for (var j = 0; j < time_type.length; j++) {
-          if (this.dayTypeCfgs[i].value == time_type[j]) {
-            showTextName += this.dayTypeCfgs[i].label
+          if (this.ITEM_DAY_TYPE_OPTIONS[i].value == time_type[j]) {
+            showTextName += this.ITEM_DAY_TYPE_OPTIONS[i].label
             if (j < time_type.length - 1) {
               showTextName += ','
             }
@@ -490,8 +487,8 @@ export default {
 
     checkAll(){
       //默认全选
-      for (var i = 0; i < this.dayTypeCfgs.length; i++) {
-        this.editForm.data.timeType.push(this.dayTypeCfgs[i].value)
+      for (var i = 0; i < this.ITEM_DAY_TYPE_OPTIONS.length; i++) {
+        this.editForm.data.timeType.push(this.ITEM_DAY_TYPE_OPTIONS[i].value)
       }
     },
     handleUpdate(id) {
