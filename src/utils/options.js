@@ -51,3 +51,13 @@ export const ITEM_STATUS_OPTIONS = [
   { 'value': 9, 'label': '自动取消', disabled: false },
   { 'value': 10, 'label': '手动取消', disabled: false }
 ]
+
+//头像框常量枚举定义
+export const PROP_TYPE_OPTIONS = {
+  PROP_TYPE_TICKET : 1,        //门票
+  PROP_TYPE_AVATAR_FRAME:2,    //头像框
+  PROP_TYPE_TEXAS_TICKET:3,    //德州参赛券
+  PROP_TYPE_TEXAS_AVATAR:4,    //德州头像框
+}
+
+

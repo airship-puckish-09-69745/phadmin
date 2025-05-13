@@ -602,6 +602,18 @@
                     </el-select>
                     <el-input v-model.number="scope.row.propsReward.propsNum" style="width: 100px;" size="mini" placeholder="填数量" />
                   </li>
+                  <li v-if="scope.row.propsReward != null && getPropsRewardItem(scope.row.propsReward.propsId,0,0).propsType === 2" style="list-style: none;">
+                    <span>过期天数：</span>
+                    <el-select  v-model="scope.row.propsReward.propExpireDays" placeholder="过期天数" size="mini" style="width:200px">
+                      <el-option
+                        v-for="item in ITEM_DAY_TYPE_OPTIONS"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      >
+                      </el-option>
+                    </el-select>
+                  </li>
                 </ul>
               </template>
             </el-table-column>
@@ -708,6 +720,7 @@ import { log } from 'console'
 import ImagePicker from '@/components/ImagePicker/ImagePicker.vue'
 import { getAllCommonGameConfig, getAllMatchGuidesConfig } from '@/utils/common-game-config'
 import {IsMars} from "@/utils/env";
+import { ITEM_TYPE_OPTIONS, APPID_OPTIONS, ITEM_DAY_TYPE_OPTIONS,PROP_TYPE_OPTIONS } from '@/utils/options'
 
 export default {
   name: 'MatchConfig',
@@ -719,6 +732,8 @@ export default {
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       selectTime: [$libDate.GetDayBegin(new Date().setSeconds(0)), $libDate.GetDayEnd(new Date().setSeconds(0))],
       imagePickerVisible: false,
+      PROP_TYPE_OPTIONS,
+      ITEM_DAY_TYPE_OPTIONS,
       form: {
         gameId: -1,
         status: -1,
@@ -905,7 +920,8 @@ export default {
               propsName: '',
               propsIcon: '',
               propsAttr: '',
-              propsNum: 0
+              propsNum: 0,
+              propExpireDays:-1
             }
           }
         ],
@@ -928,7 +944,7 @@ export default {
           propType: 0, //道具类型,
           propCost: 0,  //道具价值
           propNum: 1,  //数量
-          propName: '',
+          propName: '', //道具名称
           matchMaxLimit: 0
         },
         prizeExtra: {
@@ -978,7 +994,7 @@ export default {
       },
       showDevTool: false,
       showTip: false,
-      currPropsType:1 //tongits 门票
+      propsTypeList:[1,2], //门票 头像框
     }
   },
   computed: {
@@ -988,7 +1004,6 @@ export default {
     this.env = store.getters.env || this.env
     this.getCsCfgs()
     this.getGuideCfgs()
-    //this.getPropsCfgs()
     this.getPrizeTemplateCfg()
     if (this.env === 'pro') {
       // 正式环境暂时只开放以下选项
@@ -1008,7 +1023,6 @@ export default {
      if(!IsMars()){
        this.getMatchProps()
      }
-    //this.getMatchPropsFromMysql()
   },
   mounted() {
     this.getList()
@@ -1142,28 +1156,28 @@ export default {
       // 新增取newVal
       if (addData) {
         // console.log("addData",addData)
-        for (var i=0; i<addData.length; i++) {
+        for (var i = 0; i < addData.length; i++) {
           for (let ele of addData[i]) {
             if (ele.key == "matchCfgId") {
               add.add(ele.newVal)
-              console.log("add",ele.newVal)
+              console.log("add", ele.newVal)
             }
           }
         }
       }
       if (delData) {
         // console.log("delData",delData)
-        for (var i=0; i<delData.length; i++) {
+        for (var i = 0; i < delData.length; i++) {
           for (let ele of delData[i]) {
             if (ele.key == "matchCfgId") {
               del.add(ele.oldVal)
-              console.log("del",ele.oldVal)
+              console.log("del", ele.oldVal)
             }
           }
         }
       }
       if (editData) {
-      // console.log("editData",editData)
+        // console.log("editData",editData)
         for (const edit of editData) {
           change.add(edit.Head.matchCfgId)
           console.log(edit.Head.matchCfgId)
@@ -1176,28 +1190,31 @@ export default {
 
       let str = ""
       let has = false
-      for (let i=0; i<this.tableData.length; i++) {
+      for (let i = 0; i < this.tableData.length; i++) {
         const row = this.tableData[i]
         if (change.has(row.id)) {
           // console.log(JSON.stringify(row))
-          has && (str += "\r\n---");has=true
+          has && (str += "\r\n---");
+          has = true
           str += `\r\n修改： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
-          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+          str += `\r\n${new Date(row.start_time * 1000).toLocaleString()} - ${new Date(row.end_time * 1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
         if (del.has(row.id)) {
           // console.log(JSON.stringify(row))
-          has && (str += "\r\n---");has=true
+          has && (str += "\r\n---");
+          has = true
           str += `\r\n下架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
-          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+          str += `\r\n${new Date(row.start_time * 1000).toLocaleString()} - ${new Date(row.end_time * 1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
         if (add.has(row.id)) {
           // console.log(JSON.stringify(row))
-          has && (str += "\r\n---");has=true
+          has && (str += "\r\n---");
+          has = true
           str += `\r\n上架： appid:【${row.show_appinfo}】。赛事ID:【${row.id}】`
           str += `\r\n${this.getGameName(row.game_id)} - ${this.getRepeatTypeShow(row.repeat_type)} - ${row.name}`
-          str += `\r\n${new Date(row.start_time*1000).toLocaleString()} - ${new Date(row.end_time*1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
+          str += `\r\n${new Date(row.start_time * 1000).toLocaleString()} - ${new Date(row.end_time * 1000).toLocaleString()}，${this.getSignUpName(row.sign_up_type, row.sign_up_num, row.sign_extra)}`
         }
       }
       return str
@@ -1243,16 +1260,6 @@ export default {
       for (var i = 0; i < this.repeatCfgs.length; i++) {
         if (this.repeatCfgs[i].value === repeatType) {
           show = this.repeatCfgs[i].label
-          break
-        }
-      }
-      return show
-    },
-    getDisappearTypeShow(disappearType) {
-      var show = ''
-      for (var i = 0; i < this.disappearCfgs.length; i++) {
-        if (this.disappearCfgs[i].value == disappearType) {
-          show = this.disappearCfgs[i].label
           break
         }
       }
@@ -1322,26 +1329,9 @@ export default {
           propsName: '',
           propsIcon: '',
           propsAttr: '',
-          propsNum: 0
+          propExpireDays:-1,
         }
       })
-    },
-    addAppInfo(index) {
-      var index = this.editForm.appInfo.length
-      index++
-      this.editForm.appInfo.push({
-        index: index,
-        appId: 1000002,
-        channelId: []
-      })
-    },
-    removeAppInfo(index) {
-      this.editForm.appInfo.splice(index, 1)
-      if (this.editForm.appInfo.length > 0) {
-        for (var i = 0; i < this.editForm.appInfo.length; i++) {
-          this.editForm.appInfo[i].index = i + 1
-        }
-      }
     },
     removeRewardItme(index) {
       this.editForm.rankRewards.splice(index, 1)
@@ -1514,7 +1504,8 @@ export default {
               propsName: '',
               propsIcon: '',
               propsAttr: '',
-              propsNum: 0
+              propsNum: 0,
+              propExpireDays:-1,
             }
           }
         ]
@@ -1668,7 +1659,7 @@ export default {
       }
       return flag
     },
-   async saveMatch() {
+    async saveMatch() {
       if (this.editForm.data.opentMatchType == 1) {
         this.editForm.data.preEnterSeconds = this.editForm.data.preShowSeconds
       }
@@ -1679,7 +1670,7 @@ export default {
       for (let i = 0; i < this.editForm.rankRewards.length; i++) {
         const element = this.editForm.rankRewards[i]
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0) {
-          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId,element.propsReward.propsNum)
+          element.propsReward = this.getPropsRewardItem(element.propsReward.propsId, element.propsReward.propsNum,element.propsReward.propExpireDays)
         }
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
@@ -1691,7 +1682,6 @@ export default {
         }
       }
       const rankReward = JSON.stringify(this.editForm.rankRewards)
-    // console.log("this.editForm.rankRewards",this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
       let bTime = 0
@@ -1699,11 +1689,9 @@ export default {
       if (this.editForm.data.repeatType == 0) {
         // 单场
         if (this.editForm.loopDetail.onceTime) {
-          // this.editForm.loopDetail.onceTime[0].setSeconds(0) // 去除秒数
-          // this.editForm.loopDetail.onceTime[1].setSeconds(0) // 去除秒数
           bTime = Math.floor(this.editForm.loopDetail.onceTime[0] / 1000)
           eTime = Math.floor(this.editForm.loopDetail.onceTime[1] / 1000)
-          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime })
+          repeatDetail = JSON.stringify({startTime: bTime, endTime: eTime})
         }
       } else {
         // 循环
@@ -1711,9 +1699,20 @@ export default {
         eTime = Math.floor(this.editForm.loopDetail.loopEndDate / 1000) + (86400 - 1) // 结束日期为当天23:59:59
         const intervalDay = this.editForm.loopDetail.intervalDay
         if (this.editForm.data.repeatType == 1) {
-          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, msTime: this.editForm.loopDetail.single.stime, meTime: this.editForm.loopDetail.single.etime })
+          repeatDetail = JSON.stringify({
+            startTime: bTime,
+            endTime: eTime,
+            intervalDay: intervalDay,
+            msTime: this.editForm.loopDetail.single.stime,
+            meTime: this.editForm.loopDetail.single.etime
+          })
         } else {
-          repeatDetail = JSON.stringify({ startTime: bTime, endTime: eTime, intervalDay: intervalDay, loopData: this.editForm.loopDetail.loopData })
+          repeatDetail = JSON.stringify({
+            startTime: bTime,
+            endTime: eTime,
+            intervalDay: intervalDay,
+            loopData: this.editForm.loopDetail.loopData
+          })
         }
       }
       request({
@@ -1893,14 +1892,14 @@ export default {
     async getMatchProps() {
       try {
         const response = await request({
-        url: '/dataProxy/info',
-        method: 'get',
-        data: {
-          Env: this.env,
-          Path: '/match/props/config/list',
-          PropType: this.currPropsType,
-        }
-      })
+          url: '/dataProxy/info',
+          method: 'get',
+          data: {
+            Env: this.env,
+            Path: '/match/props/config/list',
+            PropType: 0,
+          }
+        })
         if (response.RetCode === 0) {
           const objs = response.Data || {}
           if (objs.total > 0) {
@@ -1911,82 +1910,38 @@ export default {
                 'propsName': '无',
                 'propsIcon': '',
                 'propsAttr': '',
-                'propsCost': ''
+                'propsCost': '',
               }
             ]
             this.matchTicketsCfgs = []
-            var timestamp = Date.parse(new Date())/1000
-            //console.log("matchTicketsCfgs 000 objs.list ",objs.list)
-            for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type === this.currPropsType && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
-                this.matchPropsCfgs.push({
-                  'propsType': objs.list[i].item_type,
-                  'propsId': objs.list[i].id,
-                  'propsName': objs.list[i].item_name,
-                  'propsIcon': objs.list[i].image,
-                  'propsAttr': objs.list[i].item_describe,
-                  'propsCost': objs.list[i].item_cost,
-                })
-                this.matchTicketsCfgs.push({
-                  'label': objs.list[i].item_name,
-                  'value': objs.list[i].id,
-                })
+            var timestamp = Date.parse(new Date()) / 1000
+            for (let i = 0; i < objs.list.length; i++) {
+              if(this.propsTypeList.includes(objs.list[i].item_type)) {
+                if (objs.list[i].status === 1 && ((objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET && objs.list[i].expire_time > timestamp) ||
+                  objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME)){
+                  this.matchPropsCfgs.push({
+                    'propsType': objs.list[i].item_type,
+                    'propsId': objs.list[i].id,
+                    'propsName': objs.list[i].item_name,
+                    'propsIcon': objs.list[i].image,
+                    'propsAttr': objs.list[i].item_describe,
+                    'propsCost': objs.list[i].item_cost,
+                  })
+                  if (objs.list[i].item_type === PROP_TYPE_OPTIONS.PROP_TYPE_TICKET) { //Tongits 门票
+                    this.matchTicketsCfgs.push({
+                      'label': objs.list[i].item_name,
+                      'value': objs.list[i].id,
+                    })
+                  }
+                }
               }
-            }
           }
         }
-      } catch (error) {
-        console.log(error)
-      }finally{
       }
-      },
-
-    getMatchPropsFromMysql() {
-      request({
-        url: '/propsconfig/props/config/list',
-        method: 'get',
-        data: {
-          Env: this.env,
-          PageNum: this.page,
-          PageSize: this.limit,
-          PropType: this.currPropsType,
-        }
-      }).then(response => {
-        if (response.RetCode === 0) {
-          const objs = response.Data || {}
-          if (objs.total > 0) {
-            this.matchPropsCfgs = [
-              {
-                'propsId': 0,
-                'propsType': 0,
-                'propsName': '无',
-                'propsIcon': '',
-                'propsAttr': '',
-                'propsCost': ''
-              }
-            ]
-            this.matchTicketsCfgs = []
-            var timestamp = Date.parse(new Date())/1000
-            for (let i=0;i<objs.list.length;i++) {
-              if (objs.list[i].item_type === 1 && objs.list[i].status === 1 && objs.list[i].expire_time > timestamp) {
-                this.matchPropsCfgs.push({
-                  'propsType': objs.list[i].item_type,
-                  'propsId': objs.list[i].id,
-                  'propsName': objs.list[i].item_name,
-                  'propsIcon': objs.list[i].image,
-                  'propsAttr': objs.list[i].item_describe,
-                  'propsCost': objs.list[i].item_cost,
-                })
-                this.matchTicketsCfgs.push({
-                  'label': objs.list[i].item_name,
-                  'value': objs.list[i].id,
-                })
-              }
-            }
-          }
-        }
-      })
-    },
+    } catch(error) {
+      console.log(error)
+    }finally{}
+  },
     errmsg(txt) {
       this.$alert(txt, '', {
         type: 'error',
@@ -2221,6 +2176,12 @@ export default {
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
         }
+        console.log("请选择头像框过期时间",element.propsReward)
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
+          this.getPropsRewardItem(element.propsReward.propsId,0,0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0){
+          this.errmsg('请选择头像框过期时间')
+          return false
+        }
 
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
           if(! await this.propTakeEffectCheck(element.propsReward.propsId)){
@@ -2266,6 +2227,11 @@ export default {
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum ==0 ){
           this.errmsg("请选择道具或者填写道具数量")
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
+          this.getPropsRewardItem(element.propsReward.propsId,0,0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME  && element.propsReward.propExpireDays < 0){
+          this.errmsg('请选择头像框过期时间')
           return false
         }
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0){
@@ -2346,7 +2312,7 @@ export default {
       }
       return false
     },
-    getPropsRewardItem(pid,propsNum) {
+    getPropsRewardItem(pid,propsNum,expireDays) {
       const one = {
         propsId: 0,
         propsType: 0,
@@ -2355,6 +2321,7 @@ export default {
         propsAttr: '',
         propsNum:propsNum,
         propCost: 0,
+        propExpireDays:expireDays,
       }
       for (let i = 0; i < this.matchPropsCfgs.length; i++) {
         const element = this.matchPropsCfgs[i]
@@ -2466,8 +2433,8 @@ export default {
     async PropIsPublish(propId){
       //console.log("matchTicketsCfgs 2222  propId:",propId,this.editForm.signExtra.propId,this.matchTicketsCfgs)
       if (propId > 0 ){
-        for(let i = 0;i<this.matchTicketsCfgs.length; i++ ){
-          if (propId === this.matchTicketsCfgs[i].value) {
+        for(let i = 0;i<this.matchPropsCfgs.length; i++ ){
+          if (propId === this.matchPropsCfgs[i].propsId) {
             return true
           }
         }
