@@ -2110,20 +2110,16 @@ export default {
           this.errmsg('sng比赛必须开赛后消失')
           return false
         }
-        // if (this.editForm.data.repeatType == 2 && Math.floor(this.editForm.loopDetail.loopEndDate / 1000) < Math.floor(Date.now()/1000)) {
-        //   this.errmsg(' 比赛结束日期修改只支持修改日期起往后修改')
-        //   return false
-        // }
         // 验证固定奖励的配置项
         this.editForm.prizeExtra.rewardType = parseInt(this.editForm.prizeExtra.rewardType)
-        if (this.editForm.prizeExtra.awardType == 0) {
+        if (this.editForm.prizeExtra.awardType === 0) {
           this.editForm.prizeExtra.rewardType = 1
           this.editForm.prizeExtra.sceneId = 0
           if (!await this.checkRewardCfg(this.editForm.rankRewards)) {
             return false
           }
         }
-        if (this.editForm.prizeExtra.rewardType == 1){
+        if (this.editForm.prizeExtra.awardType === 1){
           if(!await this.checkDynamicRewardCfg(this.editForm.rankRewards)){
             return false
           }
@@ -2161,6 +2157,19 @@ export default {
         this.errmsg('请添加固定奖励配置')
         return false
       }
+      //前三名单独检测
+      var topThree=[]
+      for(let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        if (element.startRank === element.endRank && element.startRank <= 3){
+          topThree.push(element.startRank)
+        }
+        if (element.startRank >= 4 && topThree.length < 3) {
+          this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
+          return false
+        }
+      }
+      console.log("rewards",rewards)
       // 遍历配置项
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
@@ -2172,11 +2181,14 @@ export default {
           this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2 3-3')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum === 0){
+        if(element.hasOwnProperty('propsReward') && element.hasOwnProperty('rewardItems') && element.propsReward.propsId <= 0 && element.rewardItems[0].getNum <=0){
+          this.errmsg("当前名次没有配任何奖励,请检查")
+          return false
+        }
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum === 0 || element.propsReward.propsNum === undefined)){
           this.errmsg('名次[' + element.startRank + '-' + element.endRank + ']' + '项请填写道具数量')
           return false
         }
-        console.log("请选择头像框过期时间",element.propsReward)
         if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 &&
           this.getPropsRewardItem(element.propsReward.propsId,0,0).propsType === PROP_TYPE_OPTIONS.PROP_TYPE_AVATAR_FRAME && element.propsReward.propExpireDays < 0){
           this.errmsg('请选择头像框过期时间')
@@ -2215,8 +2227,25 @@ export default {
     },
 
     async checkDynamicRewardCfg(rewards){
+      //前三名单独检测
+      var topThree=[]
+      for(let index = 0; index < rewards.length; index++) {
+        const element = rewards[index]
+        if (element.startRank === element.endRank && element.startRank <= 3){
+          topThree.push(element.startRank)
+        }
+        if (element.startRank >= 4 && topThree.length < 3) {
+          this.errmsg('前三名必须配,且请以1-1,2-2,3-3的格式配')
+          return false
+        }
+      }
       for (let index = 0; index < rewards.length; index++) {
         const element = rewards[index]
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId <=0 ) {
+          this.errmsg('当前名次没有配道具奖励')
+          return false
+        }
+        if(element.propsReward.propsId)
         if (element.startRank <= 0 || element.endRank < element.startRank) {
           this.errmsg('请填写正确的排名')
           return false
@@ -2225,7 +2254,7 @@ export default {
           this.errmsg('奖励前三名需要单独配，名次区间请配置成：1-1  2-2   3-3')
           return false
         }
-        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && element.propsReward.propsNum ==0 ){
+        if (element.hasOwnProperty('propsReward') && element.propsReward.propsId > 0 && (element.propsReward.propsNum ===0 || element.propsReward.propsNum === undefined) ){
           this.errmsg("请选择道具或者填写道具数量")
           return false
         }
@@ -2240,8 +2269,8 @@ export default {
             return false
           }
         }
-        return true
       }
+      return true
     },
     isInRebateScenes(scene) {
       for (let index = 0; index < this.rebateScenesCfgs.length; index++) {
