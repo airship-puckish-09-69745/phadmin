@@ -180,211 +180,6 @@
 <!--              <el-button type="primary" @click="setData">保存分配信息</el-button>-->
 <!--            </el-col>-->
           </el-row>
-
-          <el-row style="padding-top: 5px">
-            <h3 style="text-align:center;">优先决策配置</h3>
-            <el-row :gutter="12">
-              <el-col :span="16">
-                <el-form ref="edit" :model="robotDecision" label-width="220px">
-                  <el-row>
-                    <el-form-item label="自己必胜fight/Challenge概率：">
-                      <el-input v-model.number="robotDecision.Priority.WinRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-row>
-                  <el-row>
-                    <el-form-item label="自己必败fight/Challenge概率：">
-                      <el-input v-model.number="robotDecision.Priority.LoseRato" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-row>
-                  <el-row>
-                    <el-form-item label="第2轮决策全场未亮fight概率：">
-                      <el-input v-model.number="robotDecision.Priority.TwoRoundFightRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-row>
-                  <el-row>
-                    <el-form-item label="第3轮决策全场未亮fight概率：">
-                      <el-input v-model.number="robotDecision.Priority.ThreeRoundFightRatio" size="mini" style="width: 200px"><template slot="append">%</template></el-input>
-                    </el-form-item>
-                  </el-row>
-                </el-form>
-              </el-col>
-            </el-row>
-          </el-row>
-          <el-row style="padding-top: 5px">
-            <h3 style="text-align:center;">常规决策配置</h3>
-            <el-col :span="24">
-              <div style="padding-top: 10px">
-              
-                <el-table
-                  :data="robotDecision.Standard"
-                  stripe
-                  border
-                  style="width: 100%"
-                >
-                
-                <!-- <el-table-column
-                    label="轮数"
-                     width="250"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.RoundId }}
-                    </template>
-                  </el-table-column> -->
-
-
-                  <el-table-column
-                    label="条件"
-                     width="250"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.RoundName }}
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column
-                    label="配置分数（注: 每行操作概率为机器人手牌总分<=“配置分数”的操作概率）"
-                    width="850"
-                  >
-                    <template slot-scope="scope">
-                      <el-table :data="scope.row.List" border>
-                        <el-table-column label="分数">
-                          <template scope="subScope">
-                            <el-input v-model.number="subScope.row.Score"  placeholder="0-100"/>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="Fight(%)">
-                         
-                          <template scope="subScope" >
-                              <el-input v-model.number="subScope.row.FightRatio" ><template slot="append">%</template></el-input>
-                          </template>
-                       
-                        </el-table-column>
-                        <el-table-column label="Challenge(%)">
-                          <template scope="subScope">
-                            <el-input v-model.number="subScope.row.ChallengeRatio" ><template slot="append">%</template></el-input>
-                          </template>
-                        </el-table-column>
-
-                        <el-table-column label="操作" :render-header="(h,obj)=>addRobotDecisionButton(h,obj,scope.row.RoundId)">
-                          <template scope="subScope">
-                            <el-button
-                              size="mini"
-                              type="danger"
-                              @click="delRobotDecisionRow(scope.$index,subScope.$index,subScope.row)"
-                            >删除</el-button>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-col>
-          </el-row>
-          <el-row style="padding-top: 5px">
-            <h3 style="text-align:center;">机器人决策修正配置</h3>
-            <el-col :span="24">
-              <div style="padding-top: 10px">
-                <el-table
-                  :data="robotDecision.RobotCorrect"
-                  stripe
-                  border
-                  style="width: 100%"
-                >
-                <el-table-column
-                    label="机器人级别"
-                     width="250"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.AiConfigLevel }}
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column
-                    label="机器人决策修正"
-                     width="250"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.label }}
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column
-                    label="Fight修正(%)"
-                    column-key="op"
-                    width="250"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.FightRatio" ><template slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column
-                    label="Challenge修正(%)"
-                    column-key="op"
-                    width="250"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.ChallengeRatio" ><template slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-col>
-          </el-row>
-
-          <el-row style="padding-top: 5px">
-            <h3 style="text-align:center;">其他因素配置</h3>
-            <el-col :span="24">
-              <div style="padding-top: 10px">
-                <el-table
-                  :data="robotDecision.Other"
-                  stripe
-                  border
-                  style="width: 100%"
-                >
-                <el-table-column
-                    label="类型"
-                     width="250"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.Type }}
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="条件"
-                     width="250"
-                  >
-                    <template slot-scope="scope">
-                      {{ scope.row.Name }}
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column
-                    label="Fight(%)"
-                    column-key="op"
-                    width="250"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.FightRatio" ><template slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-
-                  <el-table-column
-                    label="Challenge(%)"
-                    column-key="op"
-                    width="250"
-                  >
-                    <template slot-scope="scope">
-                      <el-input v-model.number="scope.row.ChallengeRatio" ><template slot="append">%</template></el-input>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </div>
-            </el-col>
-          </el-row>
-
-
         </el-tab-pane>
         <el-tab-pane label="信息配置">
           <el-row>
@@ -477,6 +272,9 @@
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="edit" />
             </el-tab-pane>
+            <el-tab-pane label="决策配置">
+              <robot-ai-setting-decision v-model="edit" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -528,6 +326,7 @@ import robotAiSettingChallenge from './tongits/robotAiSettingChallenge'
 import robotAiSettingDrop from './tongits/robotAiSettingDrop'
 import robotAiSettingOutCard from './tongits/robotAiSettingOutCard'
 import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
+import robotAiSettingDecision from './tongits/robotAiSettingDecision'
 function newNameCfgItem(nick, probability) {
   return {
     Nick: nick,
@@ -542,7 +341,7 @@ function newShowMoneyCfg() {
   }
 }
 export default {
-  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput },
+  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard,robotAiSettingDecision, MoneyInput },
   data() {
     return {
       subKey: 'tongits_ai',
@@ -1004,35 +803,7 @@ export default {
       return DataRule(required, config)
     },
 
-    addRobotDecisionButton(h, data, roundId) {
-      console.log('h:', h)
-      console.log('data:', data)
-      console.log('roundId:', roundId)
-      return (
-        <div>
-          <span>操作</span>
-          <el-button type='primary' size='mini' style='padding:5px;margin-left:5px;' onClick={() => this.doRobotDecisionAdd(roundId)}>添加范围</el-button>
-        </div>
-      )
-    },
-    doRobotDecisionAdd(roundId) {
-      console.log('roundId===>', roundId)
-      for (let i = 0; i < this.robotDecision.Standard.length; i++) {
-        if (this.robotDecision.Standard[i].RoundId === roundId) {
-          this.robotDecision.Standard[i].List.push(
-            {
-              Score: 0,
-              FightRatio: 0,
-              ChallengeRatio:0
-            }
-          )
-        }
-      }
-    },
-    delRobotDecisionRow(parent, mine, row) {
-      console.log('parent:' + parent + 'mine:' + mine, row)
-      this.robotDecision.Standard[parent].list.splice(mine, 1)
-    },
+    
   }
 }
 </script>
