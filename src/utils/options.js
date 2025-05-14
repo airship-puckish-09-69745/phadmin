@@ -51,3 +51,18 @@ export const ITEM_STATUS_OPTIONS = [
   { 'value': 9, 'label': '自动取消', disabled: false },
   { 'value': 10, 'label': '手动取消', disabled: false }
 ]
+
+// 操作类型
+export const PROP_SOURCE_OPTIONS = [
+  { value: 1, label: '后台发放' },
+  { value: 2, label: '平台发放' },
+  { value: 3, label: '空投' },
+  { value: 4, label: 'tongits报名' },
+  { value: 5, label: 'texas报名' },
+  { value: 6, label: 'Tongits比赛发放' },
+  { value: 7, label: 'texas比赛发放' },
+  { value: 8, label: 'tongits报名取消' },
+  { value: 9, label: 'texas报名取消' },
+  { value: 10, label: '头像框激活' },
+  { value: 11, label: '道具过期' }
+]
