@@ -1121,6 +1121,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'luckyspirits_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckyspirits_slots_cfg'),
+                name: 'luckyspirits_slots_cfg',
+                meta: { title: 'L uckySpirits' }
+              },
+              {
                 path: 'luckywineglass_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/luckywineglass_slots_cfg'),
                 name: 'luckywineglass_slots_cfg',
@@ -1132,7 +1138,6 @@ export const asyncRoutes = [
                 name: 'crazy777_slots_cfg',
                 meta: { title: 'L ucky777' }
               },
-
               {
                 path: 'mahjongfortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
@@ -2514,6 +2519,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
             meta: { title: 'G oldTrain', gid: 194 }
+          },
+          {
+            path: 'luckyspirits_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckyspirits_slots_log',
+            meta: { title: 'L uckySpirits', gid: 210 }
           },
           {
             path: 'luckywineglass_slots_log',
