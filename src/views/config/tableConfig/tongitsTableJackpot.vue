@@ -87,6 +87,7 @@
           label="桌子数"
           width="100"
         />
+        <!--
         <el-table-column
           prop="Anticheating"
           label="是否防作弊"
@@ -96,6 +97,7 @@
             {{ showAnticheating(scope.row.Anticheating) }}
           </template>
         </el-table-column>
+        -->
         <el-table-column
           prop="RoomLevel"
           label="房间类型"
@@ -186,6 +188,7 @@
                 <el-option label="1" :value="1" />
                 <el-option label="2" :value="2" />
                 <el-option label="10" :value="10" />
+                <el-option label="20" :value="20" />
                 <el-option label="40" :value="40" />
                 <el-option label="100" :value="100" />
                 <el-option label="200" :value="200" />
@@ -195,7 +198,6 @@
                 <el-option label="3000" :value="3000" />
                 <!-- 
                   <el-option label="5" :value="5" />
-                  <el-option label="20" :value="20" />
                   <el-option label="50" :value="50" />
                   <el-option label="500" :value="500" /> 
                 -->
@@ -267,6 +269,7 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
+          <!--
           <el-col :span="11">
             <el-form-item
               label="是否防作弊："
@@ -281,6 +284,22 @@
               />
             </el-form-item>
           </el-col>
+          -->
+          <el-col :span="11">
+            <el-form-item
+              label="是否开启AI："
+              :required="true"
+              prop="robotConfig.Control.RobotOpenFlag"
+              :rules="dataRule(true,{type:'n',range:'0'})"
+            >
+              <el-switch
+                v-model="edit.robotConfig.Control.RobotOpenFlag"
+                :active-value="1"
+                :inactive-value="0"
+              />
+            </el-form-item>
+          </el-col>
+
         </el-row>
         <el-row>
           <el-col :span="9">
@@ -301,12 +320,18 @@
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level">
               <el-select v-model.number="edit.item.Level" placeholder="请选择">
-                <el-option label="新手" :value="1" />
-                <el-option label="初级" :value="2" />
-                <el-option label="中级" :value="3" />
-                <el-option label="高级" :value="4" />
-                <el-option label="精英" :value="5" />
-                <el-option label="大师" :value="6" />
+                <el-option label="LV.1" :value="1" />
+                <el-option label="LV.2" :value="2" />
+                <el-option label="LV.3" :value="3" />
+                <el-option label="LV.4" :value="4" />
+                <el-option label="LV.5" :value="5" />
+                <el-option label="LV.6" :value="6" />
+                <el-option label="LV.7" :value="7" />
+                <el-option label="LV.8" :value="8" />
+                <el-option label="LV.9" :value="9" />
+                <el-option label="LV.10" :value="10" />
+                <el-option label="LV.11" :value="11" />
+                <el-option label="LV.12" :value="12" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -461,6 +486,7 @@ const filterMap = {}
 
 function NewRobotConfig() {
   return {
+    /*
     Common: {
       RobotCarryMoneyStart: 0,
       RobotCarryMoneyEnd: 0,
@@ -479,15 +505,17 @@ function NewRobotConfig() {
       Create3RobotPercents: 0,
       AppendRobotPercents: 0
     },
+    */
     Control: {
       RobotOpenFlag: 0,
-      Create1RobotPercents: 0,
-      Create2RobotPercents: 0,
-      Create3RobotPercents: 0,
-      MaxRobotUserNum: 0,
-      RobotLoginIntervalMin: 0,
-      RobotLoginIntervalMax: 0
+      //Create1RobotPercents: 0,
+      //Create2RobotPercents: 0,
+      //Create3RobotPercents: 0,
+      //MaxRobotUserNum: 0,
+      //RobotLoginIntervalMin: 0,
+      //RobotLoginIntervalMax: 0
     },
+    /*
     RobotCardBuildConfig: {
       IsDoBuildCard: false,
       BuildFourRatio: 0,
@@ -501,6 +529,7 @@ function NewRobotConfig() {
       BuildFlush3MaxNum: 0,
       BuildThree3MaxNum: 0
     }
+    */
   }
 }
 
@@ -568,10 +597,10 @@ export default {
         LuckyLevelLimitMax: '限制幸运级别最大值',
         LuckyLevelLimitMoney: '限制幸福级别的最低资产',
         Level: '等级',
-        Common: '机器人通用配置',
+        //Common: '机器人通用配置',
         Control: '机器人控制配置',
         MinPlayMoney: '最小玩牌金额',
-        RobotCardBuildConfig: '机器人好牌配置',
+        //RobotCardBuildConfig: '机器人好牌配置',
         Anticheating: '是否防作弊',
         RoomLevel: '房间类型',
         // 'RobotConfig.Common.RobotCarryMoneyStart': '机器人最小携带',
@@ -702,9 +731,9 @@ export default {
     getCompareVal(obj) {
       const one = JSON.parse(JSON.stringify(obj))
       const row = JSON.parse(obj.RobotConfig)
-      one.Common = JSON.stringify(row.Common)
+      //one.Common = JSON.stringify(row.Common)
       one.Control = JSON.stringify(row.Control)
-      one.RobotCardBuildConfig = JSON.stringify(row.RobotCardBuildConfig)
+      //one.RobotCardBuildConfig = JSON.stringify(row.RobotCardBuildConfig)
       one.RobotConfig = ''
       return one
     },
@@ -744,7 +773,7 @@ export default {
           Object.assign(this.edit.item, _data)
           try {
             const one = JSON.parse(_data.RobotConfig)
-            one.Common = this.libMoneyRobot.TransForShow(one.Common)
+            //one.Common = this.libMoneyRobot.TransForShow(one.Common)
             this.edit.robotConfig = one
           } catch (e) {
             this.edit.robotConfig = NewRobotConfig()
@@ -793,13 +822,13 @@ export default {
       return postData
     },
     checkData() {
-      if (this.edit.item.CarryLower > this.edit.item.CarryUpper ||
+      if (this.edit.item.CarryLower > this.edit.item.CarryUpper /*||
         this.edit.robotConfig.Common.RobotCarryMoneyStart > this.edit.robotConfig.Common.RobotCarryMoneyEnd ||
         this.edit.robotConfig.Common.RobotMaxLoseMoneyStart > this.edit.robotConfig.Common.RobotMaxLoseMoneyEnd ||
         this.edit.robotConfig.Common.RobotMaxLoseTimesStart > this.edit.robotConfig.Common.RobotMaxLoseTimesEnd ||
         this.edit.robotConfig.Common.RobotMaxPlayTimesStart > this.edit.robotConfig.Common.RobotMaxPlayTimesEnd ||
         this.edit.robotConfig.Common.RobotMaxWinMoneyStart > this.edit.robotConfig.Common.RobotMaxWinMoneyEnd ||
-        this.edit.robotConfig.Common.RobotMaxWinTimesStart > this.edit.robotConfig.Common.RobotMaxWinTimesEnd) {
+    this.edit.robotConfig.Common.RobotMaxWinTimesStart > this.edit.robotConfig.Common.RobotMaxWinTimesEnd*/) {
         Message.warning('下限不能大于上限，请检查数值正确性！')
         return false
       }
@@ -817,7 +846,7 @@ export default {
       if (!this.edit.item.hasOwnProperty('RobotConfig')) {
         this.edit.item.RobotConfig = ''
       }
-      this.edit.robotConfig.Common = this.libMoneyRobot.TransForStore(this.edit.robotConfig.Common)
+      //this.edit.robotConfig.Common = this.libMoneyRobot.TransForStore(this.edit.robotConfig.Common)
       this.edit.item.RobotConfig = JSON.stringify(this.edit.robotConfig)
       console.log('this.edit.item--->', this.edit.item)
       if (this.edit.isEdit) {
