@@ -9,7 +9,7 @@
 
           <el-row :gutter="10" style="margin-top:40px;">
             <el-col :span="32">
-              <el-form-item label="jp服务费*bet：">
+              <el-form-item label="进入JP的比例：">
                 <el-input v-model.number="item.Jackpot.AddPoolPctPreJp" size="mini" :required="true" style="width:160px" />(‰)
               </el-form-item>
             </el-col>
