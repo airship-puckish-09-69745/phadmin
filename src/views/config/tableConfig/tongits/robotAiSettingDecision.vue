@@ -78,7 +78,7 @@
                width="120"
             >
               <template slot-scope="scope">
-                {{ scope.row.RoundName }}
+                {{ getRoundName(scope.row.RoundId) }}
               </template>
             </el-table-column>
 
@@ -146,7 +146,7 @@
                 width="250"
             >
               <template slot-scope="scope">
-                {{ scope.row.Type }}
+                {{ scope.row.DecisionType }}
               </template>
             </el-table-column>
             <el-table-column
@@ -154,7 +154,7 @@
                 width="250"
             >
               <template slot-scope="scope">
-                {{ scope.row.Name }}
+                {{ getOtherName(scope.row.DecisionType) }}
               </template>
             </el-table-column>
 
@@ -205,7 +205,22 @@ export default {
     },
   },
   data(){
+   
+
     return {
+      RoundNameList:[
+        { RoundId: 2, RoundName: "第2轮决策" },
+        { RoundId: 3, RoundName: "第3轮决策"},
+        { RoundId: 4, RoundName: "第4轮决策"},
+        { RoundId: 5, RoundName: "第5轮决策"},
+        { RoundId: 6, RoundName: "第>=6轮决策"},
+      ],
+      otherList:[
+          {DecisionType: 1, Name: "敌人手牌比自己的散牌少（每少1张）"},
+          {DecisionType: 2, Name: "敌人手牌比自己的散牌多（每多1张）"},
+          {DecisionType: 3, Name: "手中Bonus牌数"},
+          {DecisionType: 4, Name: "每个未放牌敌人"}
+      ],
       Decision:{ // 机器人决策配置
         Priority:{
           WinRatio: 90,
@@ -214,7 +229,7 @@ export default {
           ThreeRoundFightRatio: 90,
         },
         Standard:[
-          { RoundId: 2, RoundName: "第2轮决策" ,List:[
+          { RoundId: 2,List:[
             {
               Score: 60,
               FightRatio: 60,
@@ -222,7 +237,7 @@ export default {
 
             }]
           },
-          { RoundId: 3, RoundName: "第3轮决策" ,List:[
+          { RoundId: 3 ,List:[
             {
               Score: 60,
               FightRatio: 60,
@@ -230,7 +245,7 @@ export default {
 
             }]
           },
-          { RoundId: 4, RoundName: "第4轮决策" ,List:[
+          { RoundId: 4 ,List:[
             {
               Score: 60,
               FightRatio: 60,
@@ -238,7 +253,7 @@ export default {
 
             }]
           },
-          { RoundId: 5, RoundName: "第5轮决策" , List:[
+          { RoundId: 5 , List:[
             {
               Score: 60,
               FightRatio: 60,
@@ -246,7 +261,7 @@ export default {
 
             }]
           },
-          { RoundId: 6, RoundName: "第>=6轮决策" ,List:[
+          { RoundId: 6,List:[
             {
               Score: 60,
               FightRatio: 60,
@@ -256,10 +271,10 @@ export default {
           },
         ],
         Other:[
-          {Type: 1, Name: "敌人手牌比自己的散牌少（每少1张）",FightRatio: 60, ChallengeRatio:60},
-          {Type: 2, Name: "敌人手牌比自己的散牌多（每多1张）",FightRatio: 60, ChallengeRatio:60},
-          {Type: 3, Name: "手中Bonus牌数",FightRatio: 60, ChallengeRatio:60},
-          {Type: 4, Name: "每个未放牌敌人",FightRatio: 60, ChallengeRatio:60}
+          {DecisionType: 1, FightRatio: 60, ChallengeRatio:60},
+          {DecisionType: 2, FightRatio: 60, ChallengeRatio:60},
+          {DecisionType: 3, FightRatio: 60, ChallengeRatio:60},
+          {DecisionType: 4, FightRatio: 60, ChallengeRatio:60}
         ],
         RobotCorrect:{
           FightRatio: 60, ChallengeRatio:60
@@ -295,7 +310,7 @@ export default {
     addRobotDecisionButton(roundId) {
       for (let i = 0; i < this.AiConfig.Decision.Standard.length; i++) {
         const tmp = this.AiConfig.Decision.Standard[i]
-        if (tmp.RoundId == roundId) {
+        if (tmp.RoundId === roundId) {
           this.AiConfig.Decision.Standard[i].List.push({
             Score: 0,
             FightRatio: 0,
@@ -305,6 +320,27 @@ export default {
         }
       }
     },
+
+    getRoundName(roundId) {
+      let RoundName = ""
+      for (let i = 0; i < this.RoundNameList.length; i++) {
+        if (roundId === this.RoundNameList[i].RoundId) {
+          RoundName =  this.RoundNameList[i].RoundName
+          break
+        }
+      }
+      return RoundName
+    },
+    getOtherName(decisionType) {
+      let name = ""
+      for (let i = 0; i < this.otherList.length; i++) {
+        if (decisionType === this.otherList[i].DecisionType) {
+          name =  this.otherList[i].Name
+          break
+        }
+      }
+      return name
+    }
  
     
   }
