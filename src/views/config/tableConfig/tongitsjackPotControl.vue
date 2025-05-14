@@ -58,9 +58,10 @@
                     style="width: 100%"
                   >
                     <el-table-column
-                      prop="AiConfigName"
+                      prop="AiConfigLevel"  
                       label="级别"
                       width="250"
+                      :formatter="(row) => getRobotName(row.AiConfigLevel)"
                     />
                     <el-table-column
                       label="强杀区间"
@@ -490,6 +491,28 @@ export default {
         '强放',
         '强放全生效'
       ],
+      robotlvl: [
+        {
+          value: 1,
+          label: '超弱机器⼈'
+        },
+        {
+          value: 2,
+          label: '稍弱机器⼈'
+        },
+        {
+          value: 3,
+          label: '正常机器⼈'
+        },
+        {
+          value: 4,
+          label: '稍强机器⼈'
+        },
+        {
+          value: 5,
+          label: '超强机器⼈'
+        }
+      ],
       labelPosition: 'top',
       subKey: 'tongits_jackpot_control',
 
@@ -730,30 +753,6 @@ export default {
             }
             if (this.appidInfoCfgs.length > 0) {
               this.copyDataToEidt(this.egameData.AppControlConfig[0])
-              // this.editAppId = this.appidInfoCfgs[0].appId
-
-              // this.editGameControl = structuredClone(this.egameData.AppControlConfig[0])
-              // const tmpData = this.egameData.AppControlConfig[0]
-
-              // this.editGameControl.GameControl.ControlRange = []
-              // for (let i = 0; i < tmpData.GameControl.ControlRange.length; i++) {
-              //   const tmp = tmpData.GameControl.ControlRange[i]
-              //   this.editGameControl.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio / 100).toString() })
-              // }
-
-              // this.editGameControl.GameControl.GameAcceptance = []
-              // for (let i = 0; i < tmpData.GameControl.GameAcceptance.length; i++) {
-              //   const tmp = tmpData.GameControl.GameAcceptance[i]
-              //   this.editGameControl.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
-              // }
-              // this.editGameControl.GameControl.OriginPoint = (tmpData.GameControl.OriginPoint / 100).toString()
-              
-              // this.editGameControl.PlayerControl.CriticalPoint = []
-              // for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
-              //   this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 1000)
-              // }
-
-
             } else {
               this.editAppId = 0
             }
@@ -1151,7 +1150,18 @@ export default {
         }
       }
       this.modifyDialog.visible = false
+    },
+    getRobotName(aiLevel) {
+      let name = ""
+      for (let i = 0; i < this.robotlvl.length; i++) {
+        if (aiLevel === this.robotlvl[i].value) {
+          name =  this.robotlvl[i].label
+          break
+        }
+      }
+      return name
     }
+ 
   },
   
 }
