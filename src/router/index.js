@@ -1176,6 +1176,12 @@ export const asyncRoutes = [
                 meta: { title: 'P irateShip' }
               },
               {
+                path: 'pumpkincash_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pumpkincash_slots_cfg'),
+                name: 'pumpkincash_slots_cfg',
+                meta: { title: 'P umpkinCash' }
+              },
+              {
                 path: 'puppyhome_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/puppyhome_slots_cfg'),
                 name: 'puppyhome_slots_cfg',
@@ -1250,24 +1256,12 @@ export const asyncRoutes = [
                 meta: { title: 'W ild Buffalo' }
               },
 
-
-
-
-
-
-
               {
                 path: 'wrathofzeus_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
                 name: 'wrathofzeus_slots_cfg',
                 meta: { title: 'W rathOfZeus' }
               },
-
-
-
-
-
-
 
             ]
           },
