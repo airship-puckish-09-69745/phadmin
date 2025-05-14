@@ -40,12 +40,13 @@
       </el-row>
     </el-row>
     <el-row style="padding-top: 5px">
+      <hr class="dashed-line">
       <h3 style="text-align:center;">决策修正配置</h3>
       <el-row :gutter="12">
         <el-col :span="16">
           <el-row>
             <el-form-item 
-              label="Fight修正(%)"
+              label="Fight修正"
               :rules="dataRule(true,{type:'n',range:'0'})"
               >
               <el-input v-model.number="AiConfig.Decision.RobotCorrect.FightRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
@@ -53,7 +54,7 @@
           </el-row>
           <el-row>
             <el-form-item 
-              label="Challenge修正(%)"   
+              label="Challenge修正"   
               :rules="dataRule(true,{type:'n',range:'0'})"
               >
               <el-input v-model.number="AiConfig.Decision.RobotCorrect.ChallengeRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
@@ -63,6 +64,7 @@
       </el-row>
     </el-row>
     <el-row style="padding-top: 5px">
+      <hr class="dashed-line">
       <h3 style="text-align:center;">常规决策配置</h3>
       <el-col :span="24">
         <div style="padding-top: 10px">
@@ -92,14 +94,14 @@
                       <el-input v-model.number="subScope.row.Score"  placeholder="0-100" />
                     </template>
                   </el-table-column>
-                  <el-table-column label="Fight(%)">
+                  <el-table-column label="Fight">
                     
                     <template scope="subScope" >
                         <el-input v-model.number="subScope.row.FightRatio" placeholder="0-100"><template slot="append">%</template></el-input>
                     </template>
                   
                   </el-table-column>
-                  <el-table-column label="Challenge(%)">
+                  <el-table-column label="Challenge">
                     <template scope="subScope">
                       <el-input v-model.number="subScope.row.ChallengeRatio" placeholder="0-100"><template slot="append">%</template></el-input>
                     </template>
@@ -132,6 +134,7 @@
     </el-row>
 
     <el-row style="padding-top: 5px">
+      <hr class="dashed-line">
       <h3 style="text-align:center;">其他因素配置</h3>
       <el-col :span="24">
         <div style="padding-top: 10px">
@@ -143,7 +146,7 @@
           >
           <el-table-column
               label="类型"
-                width="250"
+                width="80"
             >
               <template slot-scope="scope">
                 {{ scope.row.DecisionType }}
@@ -151,7 +154,7 @@
             </el-table-column>
             <el-table-column
               label="条件"
-                width="250"
+                width="200"
             >
               <template slot-scope="scope">
                 {{ getOtherName(scope.row.DecisionType) }}
@@ -159,9 +162,9 @@
             </el-table-column>
 
             <el-table-column
-              label="Fight(%)"
+              label="Fight"
               column-key="op"
-              width="250"
+              width="150"
             >
               <template slot-scope="scope">
                 <el-input v-model.number="scope.row.FightRatio" placeholder="0-100"><template slot="append">%</template></el-input>
@@ -169,9 +172,9 @@
             </el-table-column>
 
             <el-table-column
-              label="Challenge(%)"
+              label="Challenge"
               column-key="op"
-              width="250"
+              width="150"
             >
               <template slot-scope="scope">
                 <el-input v-model.number="scope.row.ChallengeRatio" placeholder="0-100" ><template slot="append">%</template></el-input>
