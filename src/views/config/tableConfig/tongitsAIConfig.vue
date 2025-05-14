@@ -388,7 +388,91 @@ export default {
 
       NameCfg: [], // 启动机器人名字配置
       ShowMoneyCfg: [], // 机器人展示资产配置
-      AllTableMoneyList: []
+      AllTableMoneyList: [],
+      robotDecision:{ // 机器人决策配置
+        Priority:{
+          WinRatio: 90,
+          LoseRato: 90,
+          TwoRoundFightRatio: 90,
+          ThreeRoundFightRatio: 90,
+        },
+        Standard:[
+          { RoundId: 2, RoundName: "第2轮决策" ,List:[
+            {
+              Score: 60,
+              FightRatio: 60,
+              ChallengeRatio:60
+
+            }]
+          },
+          { RoundId: 3, RoundName: "第3轮决策" ,List:[
+            {
+              Score: 60,
+              FightRatio: 60,
+              ChallengeRatio:60
+
+            }]
+          },
+          { RoundId: 4, RoundName: "第4轮决策" ,List:[
+            {
+              Score: 60,
+              FightRatio: 60,
+              ChallengeRatio:60
+
+            }]
+          },
+          { RoundId: 5, RoundName: "第5轮决策" , List:[
+            {
+              Score: 60,
+              FightRatio: 60,
+              ChallengeRatio:60
+
+            }]
+          },
+          { RoundId: 6, RoundName: "第>=6轮决策" ,List:[
+            {
+              Score: 60,
+              FightRatio: 60,
+              ChallengeRatio:60
+
+            }]
+          },
+        ],
+        Other:[
+          {Type: 1, Name: "敌人手牌比自己的散牌少（每少1张）",FightRatio: 60, ChallengeRatio:60},
+          {Type: 2, Name: "敌人手牌比自己的散牌多（每多1张）",FightRatio: 60, ChallengeRatio:60},
+          {Type: 3, Name: "手中Bonus牌数",FightRatio: 60, ChallengeRatio:60},
+          {Type: 4, Name: "每个未放牌敌人",FightRatio: 60, ChallengeRatio:60}
+        ],
+        RobotCorrect:[
+          {
+            AiConfigLevel: 1,
+            label: '强放修正',
+            FightRatio: 60, ChallengeRatio:60
+          },
+          {
+            AiConfigLevel: 2,
+            label: '弱放修正',
+            FightRatio: 60, ChallengeRatio:60
+          },
+          {
+            AiConfigLevel: 3,
+            label: '普通修正',
+            FightRatio: 60, ChallengeRatio:60
+          },
+          {
+            AiConfigLevel: 4,
+            label: '弱杀修正',
+            FightRatio: 60, ChallengeRatio:60
+          },
+          {
+            AiConfigLevel: 5,
+            label: '强杀修正',
+            FightRatio: 60, ChallengeRatio:60
+          }
+        ]
+        
+      },
     }
   },
   created() {
@@ -565,6 +649,7 @@ export default {
       this.item.Control = this.control
       this.item.NameCfg = this.NameCfg
       this.item.ShowMoneyCfg = []
+      this.item.RobotDecision = this.robotDecision
       for (const o in this.ShowMoneyCfg) {
         const obj = {}
         obj.TableMoney = parseInt(this.ShowMoneyCfg[o].TableMoney) * 1000
@@ -709,7 +794,12 @@ export default {
       }).then(() => {
         this.$delete(this.ShowMoneyCfg, idx)
       })
-    }
+    },
+    dataRule(required, config) {
+      return DataRule(required, config)
+    },
+
+    
   }
 }
 </script>
