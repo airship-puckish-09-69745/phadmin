@@ -17,6 +17,7 @@
         <el-button type="success" size="mini" icon="el-icon-refresh" @click="getList()">刷新</el-button>
       </el-col>
     </el-row>
+    <p style="color: red;">⚠️ 注意： 新增场次配置需要同步更新 "EGame控制配置" >> "场次采信比例配置"！</p>
     <div style="padding-top: 10px">
       <el-table
         ref="filterTable"
