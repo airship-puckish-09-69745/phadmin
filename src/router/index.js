@@ -1849,6 +1849,12 @@ export const asyncRoutes = [
         meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
       },
       {
+        path: 'propFlow',
+        component: () => import('@/views/playerManage/propFlow.vue'),
+        name: 'propFlow',
+        meta: { title: '道具流水 ◐' }
+      },
+      {
         path: 'pointlog',
         component: () => import('@/views/playerManage/pointlog'),
         name: 'pointtransfer',
