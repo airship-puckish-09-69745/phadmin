@@ -139,6 +139,9 @@
             <el-tab-pane label="好牌配置">
               <robot-ai-setting-build-card v-model="edit" />
             </el-tab-pane>
+            <el-tab-pane label="决策配置">
+              <robot-ai-setting-decision v-model="edit" />
+            </el-tab-pane>
           </el-tabs>
         </el-row>
         <el-form-item>
@@ -191,9 +194,9 @@ import robotAiSettingChallenge from './tongits/robotAiSettingChallenge'
 import robotAiSettingDrop from './tongits/robotAiSettingDrop'
 import robotAiSettingOutCard from './tongits/robotAiSettingOutCard'
 import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
-
+import robotAiSettingDecision from './tongits/robotAiSettingDecision'
 export default {
-  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, MoneyInput },
+  components: { Compare, Publish, robotAiSettingFight, robotAiSettingChallenge, robotAiSettingDrop, robotAiSettingOutCard, robotAiSettingBuildCard, robotAiSettingDecision, MoneyInput},
   data() {
     return {
       subKey: 'tongits_jackpot_ai',
