@@ -10,8 +10,8 @@
           <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
         </el-select>
         <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch" />
-        <!-- <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleShowCopyDialog">复制配置列表</el-button>
-        <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="handleShowCreateDialog" /> -->
+        <el-button size="mini" type="primary" @click="handleShowCopyDialog">增加</el-button>
+        <!-- <el-button size="mini" type="success" @click="handleShowModifyDialog">修改</el-button> -->
       </el-row>
     </el-row>
 
@@ -359,6 +359,81 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+      title="复制配置"
+      :visible.sync="copyDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="copyForm" :model="copyDialog.form" label-width="200px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="从原始AppId" :required="true">
+            <el-select v-model="copyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
+              <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="复制到AppId" :required="true">
+            <template>
+              <el-input v-model.number="copyDialog.form.targetAppId"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+
+          <el-form-item label="复制到AppName" :required="true">
+            <template>
+              <el-input v-model.number="copyDialog.form.targetAppName"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击保存按钮，之后点发布按钮，将复制的新数据更新到线上</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleCopy">复制</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      title="修改配置"
+      :visible.sync="modifyDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="updateForm" :model="modifyDialog.form" label-width="200px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="从原始AppId" :required="true">
+            <el-select v-model="modifyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
+              <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="修改至AppId" :required="true">
+            <template>
+              <el-input v-model.number="modifyDialog.form.targetAppId"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+
+          <el-form-item label="修改至AppName" :required="true">
+            <template>
+              <el-input v-model.number="modifyDialog.form.targetAppName"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleModify">修改</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
     <compare ref="compare" />
   </div>
 </template>
@@ -387,10 +462,23 @@ export default {
 
       tableData: [],
       egameData: {},
-
-      editVisible: false,
       editAppId: 0,
-
+      copyDialog: {
+        visible: false,
+        form: {
+          srcAppId: '',
+          targetAppId: 0,
+          targetAppName: ''
+        }
+      },
+      modifyDialog: {
+        visible: false,
+        form: {
+          srcAppId: '',
+          targetAppId: 0,
+          targetAppName: ''
+        }
+      },
       form: {},
       gameAreaName: [
         '强杀全生效',
@@ -592,7 +680,7 @@ export default {
             saveData.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
           }
 
-          this.egameData.AppControlConfig[i] = structuredClone(saveData)
+          this.egameData.AppControlConfig[j] = structuredClone(saveData)
         }
 
         
@@ -641,7 +729,7 @@ export default {
               this.appidInfoCfgs.push({appId: this.egameData.AppControlConfig[i].AppId, appName: this.egameData.AppControlConfig[i].AppName})
             }
             if (this.appidInfoCfgs.length > 0) {
-              this.copyDataToEidt(0)
+              this.copyDataToEidt(this.egameData.AppControlConfig[0])
               // this.editAppId = this.appidInfoCfgs[0].appId
 
               // this.editGameControl = structuredClone(this.egameData.AppControlConfig[0])
@@ -681,11 +769,10 @@ export default {
       })
     },
 
-    copyDataToEidt(index) {
-          this.editAppId = this.appidInfoCfgs[index].appId
-
-        this.editGameControl = structuredClone(this.egameData.AppControlConfig[index])
-        const tmpData = this.egameData.AppControlConfig[index]
+    copyDataToEidt(appControlConfig) {
+        this.editAppId = appControlConfig.AppId
+        this.editGameControl = structuredClone(appControlConfig)
+        const tmpData = appControlConfig
 
         this.editGameControl.GameControl.ControlRange = []
         for (let i = 0; i < tmpData.GameControl.ControlRange.length; i++) {
@@ -963,20 +1050,108 @@ export default {
       if (numValue < min) value = min.toString()
       obj[key] = value
     },
-
-      onSearch() {
-        console.log('【searchFilter】: ', this.editAppId)
-        for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
-          const tmp = this.egameData.AppControlConfig[i]
-          if (tmp.AppId == this.editAppId) {
-            this.copyDataToEidt(i)
-          }
+    onSearch() {
+      console.log('【searchFilter】: ', this.editAppId)
+      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+        const tmp = this.egameData.AppControlConfig[i]
+        if (tmp.AppId == this.editAppId) {
+          this.copyDataToEidt(tmp)
+          break
         }
-      },
-
-      handleUpdateAppid(appid) {
+      }
+    },
+    handleUpdateAppid(appid) {
+      console.log('appid: ', appid)
         this.onSearch()
     },
+    handleShowCopyDialog() {
+      this.copyDialog.visible = true
+      this.copyDialog.form.srcAppId = this.editAppId
+      this.copyDialog.form.targetAppId = ''
+    },
+
+    handleShowModifyDialog() {
+      this.modifyDialog.visible = true
+      this.modifyDialog.form.srcAppId = this.editAppId
+      this.modifyDialog.form.targetAppId = ''
+    },
+
+    handleCopy() {
+      console.log('handleCopy==>', this.copyDialog)
+      if (this.copyDialog.form.targetAppId == 0) {
+        Message.error('请输入目标AppId')
+        return
+      }
+      if (!this.copyDialog.form.targetAppName) {
+        Message.error('请输入目标AppName')
+        return
+      }
+      for (let i = 0; i < this.appidInfoCfgs.length; i++) {
+        if (this.copyDialog.form.targetAppId == this.appidInfoCfgs[i].appId) {
+          Message.error('app已经存在')
+          return
+        }
+      }
+      let isFind = false 
+      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+        const tmp = this.egameData.AppControlConfig[i]
+        if (tmp.AppId == this.copyDialog.form.srcAppId) {
+
+          let copyData = structuredClone(this.egameData.AppControlConfig[i])
+          copyData.AppId = this.copyDialog.form.targetAppId
+          copyData.AppName = this.copyDialog.form.targetAppName
+
+          this.appidInfoCfgs.push({appId: this.copyDialog.form.targetAppId, appName: this.copyDialog.form.targetAppName})
+          this.egameData.AppControlConfig.push(copyData)
+          this.copyDataToEidt(copyData)
+          isFind = true
+          break
+        }
+      }
+      if (!isFind) {
+        Message.error('复制出错appid未找到')
+        return
+      }
+      this.copyDialog.visible = false
+    },
+    handleModify() {
+      console.log('handleCopy==>', this.modifyDialog)
+      if (this.modifyDialog.form.targetAppId == 0) {
+        Message.error('请输入目标AppId')
+        return
+      }
+      if (!this.modifyDialog.form.targetAppName) {
+        Message.error('请输入目标AppName')
+        return
+      }
+      let isFind = false 
+      for (let i = 0; i < this.appidInfoCfgs.length; i++) {
+        if (this.modifyDialog.form.srcAppId == this.appidInfoCfgs[i].appId) {
+          isFind = true
+          this.appidInfoCfgs[i].appId = this.modifyDialog.form.targetAppId
+          this.appidInfoCfgs[i].appName = this.modifyDialog.form.targetAppName
+          return
+        }
+      }
+      if (!isFind) {
+        Message.error('appid不存在')
+        return
+      }
+      
+      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+        const tmp = this.egameData.AppControlConfig[i]
+        if (tmp.AppId == this.modifyDialog.form.srcAppId) {
+          this.egameData.AppControlConfig[i].AppId = this.modifyDialog.form.targetAppId
+          this.egameData.AppControlConfig[i].AppName = this.modifyDialog.form.targetAppName
+          this.editGameControl.AppId = this.modifyDialog.form.targetAppId
+          this.editGameControl.AppName = this.modifyDialog.form.targetAppName
+
+          this.editAppId = this.modifyDialog.form.targetAppId
+          break
+        }
+      }
+      this.modifyDialog.visible = false
+    }
   },
   
 }
