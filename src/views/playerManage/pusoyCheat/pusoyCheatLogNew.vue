@@ -513,6 +513,7 @@ export default {
       }
     },
     async addToBlack(row) {
+      console.log(row)
       const $this = this
       const uids = [0, 0, 0]
       for (let i = 0; i < row.Uids.length; i++) {
@@ -529,7 +530,7 @@ export default {
           Uid3: uids[2],
           Gid: row.GameId,
           Tid: row.Tid,
-          FinishTime: row.UpdateTime
+          FinishTime: Date.now()
         }
       }).then(response => {
         if (response.RetCode === 0) {

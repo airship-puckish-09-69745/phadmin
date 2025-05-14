@@ -3,7 +3,6 @@
     <el-row :gutter="10" style="margin-top: 30px">
       <el-col :span="12" :offset="3">
         <el-form ref="frm2" :model="cfg" label-width="290px">
-
           <el-form-item label="普通模式 小wild(占1-4行)在2345轴的概率" :rules="dataRule(true)">
             <el-input v-model="cfg.WildSmallNormal" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ ..</template> </el-input>
           </el-form-item>
@@ -20,7 +19,11 @@
             <el-input v-model="cfg.WildBigFree" :required="true" placeholder="请输入内容,如10,11,12,13"> <template slot="append">如10,11,12,13 代表2轴10‱ 3轴11‱ ..</template> </el-input>
           </el-form-item>
 
-          <el-form-item label="免费模式中奖倍数">
+          <el-form-item label="普通模式 新矩阵贴Scatter个数权重" :rules="dataRule(true)">
+            <el-input v-model="cfg.ScatterNumWt" placeholder="3,2,1"> <template slot="append">用,连接 如3,2,1 代表出现0数的权重是1 1为2 2为3</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="免费模式中奖倍数" :rules="dataRule(true)">
             <el-input v-model="cfg.FreeMultiStr" placeholder="请输入内容,如2,3,5,6,8"> <template slot="append">用 , 连接 从掉落第二个矩阵开始</template> </el-input>
           </el-form-item>
 
@@ -121,6 +124,27 @@ export default {
       const invalidNumbersFree = numbersFree.filter(num => isNaN(num) || num > big);
       if (invalidNumbersFree.length > 0) {
         this.$message.error(`免费模式 大wild在2345轴的概率  err:${this.cfg.WildBigNormal}每个数字必须小于等于${big}‱`);
+        return;
+      }
+
+      const wildSmallNormal = this.cfg.WildSmallNormal;
+      const numbersNormalSmall = wildSmallNormal.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersNormalSmall.length !== 4) {
+        this.$message.error('普通模式 小wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+
+      const wildSmallFree = this.cfg.WildSmallFree;
+      const numbersFreeSmall = wildSmallFree.split(',').map(num => parseInt(num.trim(), 10));
+      if (numbersFreeSmall.length !== 4) {
+        this.$message.error('免费模式 小wild在2345轴的概率  err:请输入4个数字并用,隔开');
+        return;
+      }
+
+      const scatterNumWt = this.cfg.ScatterNumWt;
+      const numScatterNumWt = scatterNumWt.split(',').map(num => parseInt(num.trim(), 10));
+      if (numScatterNumWt.length !== 3) {
+        this.$message.error('普通模式 新矩阵贴Scatter个数权重  err:请输入3个数字并用,隔开');
         return;
       }
 

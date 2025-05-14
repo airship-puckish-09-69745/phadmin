@@ -186,6 +186,7 @@
                 <el-option label="1" :value="1" />
                 <el-option label="2" :value="2" />
                 <el-option label="10" :value="10" />
+                <el-option label="20" :value="20" />
                 <el-option label="40" :value="40" />
                 <el-option label="100" :value="100" />
                 <el-option label="200" :value="200" />
@@ -195,7 +196,6 @@
                 <el-option label="3000" :value="3000" />
                 <!-- 
                   <el-option label="5" :value="5" />
-                  <el-option label="20" :value="20" />
                   <el-option label="50" :value="50" />
                   <el-option label="500" :value="500" /> 
                 -->
@@ -301,12 +301,18 @@
           <el-col :span="11">
             <el-form-item label="等级：" :required="true" prop="item.Level">
               <el-select v-model.number="edit.item.Level" placeholder="请选择">
-                <el-option label="新手" :value="1" />
-                <el-option label="初级" :value="2" />
-                <el-option label="中级" :value="3" />
-                <el-option label="高级" :value="4" />
-                <el-option label="精英" :value="5" />
-                <el-option label="大师" :value="6" />
+                <el-option label="LV.1" :value="1" />
+                <el-option label="LV.2" :value="2" />
+                <el-option label="LV.3" :value="3" />
+                <el-option label="LV.4" :value="4" />
+                <el-option label="LV.5" :value="5" />
+                <el-option label="LV.6" :value="6" />
+                <el-option label="LV.7" :value="7" />
+                <el-option label="LV.8" :value="8" />
+                <el-option label="LV.9" :value="9" />
+                <el-option label="LV.10" :value="10" />
+                <el-option label="LV.11" :value="11" />
+                <el-option label="LV.12" :value="12" />
               </el-select>
             </el-form-item>
           </el-col>

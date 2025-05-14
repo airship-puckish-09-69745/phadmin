@@ -23,14 +23,6 @@
           <el-form-item label="免费模式中奖倍数权重">
             <el-input v-model="cfg.FreeMultiStrWeight" placeholder="请输入内容,如1,2,3,5"> <template slot="append">四个值用 , 连接</template> </el-input>
           </el-form-item>
-
-          <el-form-item label="免费模式额外增加免费的概率%" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterPlusRate" :required="true" />
-          </el-form-item>
-
-          <el-form-item label="黄金符号的概率%" prop="GoldenRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.GoldenRate" :required="true" />
-          </el-form-item>
         </el-form>
       </el-col>
     </el-row>
