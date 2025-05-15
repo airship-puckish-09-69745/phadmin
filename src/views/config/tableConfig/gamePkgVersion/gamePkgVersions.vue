@@ -169,7 +169,7 @@
         </el-table-column>
         <el-table-column
           prop="BundleKey"
-          label="包KEY"
+          label="Bundle Name"
           sortable="custom"
           width="150"
         />
@@ -299,7 +299,7 @@
             <el-input v-model="edit.gameName" />
           </el-col>
         </el-form-item>
-        <el-form-item label="包Key：" :required="true" prop="BundleKey">
+        <el-form-item label="Bundle Name：" :required="true" prop="BundleKey">
           <el-col :span="15">
             <el-input v-model="edit.item.BundleKey" :readonly="isDisabled" :class="isDisabled ? 'el-input_no_border' : ''" />
           </el-col>
