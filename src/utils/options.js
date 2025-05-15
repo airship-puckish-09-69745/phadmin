@@ -59,8 +59,6 @@ export const PROP_TYPE_OPTIONS = {
   PROP_TYPE_TEXAS_TICKET:3,    //德州参赛券
   PROP_TYPE_TEXAS_AVATAR:4,    //德州头像框
 }
-
-
 // 操作类型
 export const PROP_SOURCE_OPTIONS = [
   { value: 1, label: '后台发放' },
