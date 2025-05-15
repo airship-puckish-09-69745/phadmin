@@ -1121,6 +1121,12 @@ export const asyncRoutes = [
                 meta: { title: 'G randAce' }
               },
               {
+                path: 'luckyspirits_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/luckyspirits_slots_cfg'),
+                name: 'luckyspirits_slots_cfg',
+                meta: { title: 'L uckySpirits' }
+              },
+              {
                 path: 'luckywineglass_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/luckywineglass_slots_cfg'),
                 name: 'luckywineglass_slots_cfg',
@@ -1132,7 +1138,6 @@ export const asyncRoutes = [
                 name: 'crazy777_slots_cfg',
                 meta: { title: 'L ucky777' }
               },
-
               {
                 path: 'mahjongfortune_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/mahjongfortune_slots_cfg'),
@@ -1174,6 +1179,12 @@ export const asyncRoutes = [
                 component: () => import('@/views/config/tableConfig/slots/pirateship_slots_cfg'),
                 name: 'pirateship_slots_cfg',
                 meta: { title: 'P irateShip' }
+              },
+              {
+                path: 'pumpkincash_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pumpkincash_slots_cfg'),
+                name: 'pumpkincash_slots_cfg',
+                meta: { title: 'P umpkinCash' }
               },
               {
                 path: 'puppyhome_slots_cfg',
@@ -1250,24 +1261,12 @@ export const asyncRoutes = [
                 meta: { title: 'W ild Buffalo' }
               },
 
-
-
-
-
-
-
               {
                 path: 'wrathofzeus_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/wrathofzeus_slots_cfg'),
                 name: 'wrathofzeus_slots_cfg',
                 meta: { title: 'W rathOfZeus' }
               },
-
-
-
-
-
-
 
             ]
           },
@@ -1847,6 +1846,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/jackpotAward'),
         name: 'ban',
         meta: { title: 'jackpot 中奖记录 ◐', noCache: true, perm: 'CUTOMER' }
+      },
+      {
+        path: 'propFlow',
+        component: () => import('@/views/playerManage/propFlow.vue'),
+        name: 'propFlow',
+        meta: { title: '道具流水 ◐' }
       },
       {
         path: 'pointlog',
@@ -2508,6 +2513,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'goldtrain_slots_log',
             meta: { title: 'G oldTrain', gid: 194 }
+          },
+          {
+            path: 'luckyspirits_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'luckyspirits_slots_log',
+            meta: { title: 'L uckySpirits', gid: 210 }
           },
           {
             path: 'luckywineglass_slots_log',

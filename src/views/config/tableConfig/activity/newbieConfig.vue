@@ -307,6 +307,30 @@
                 </el-form-item>
               </el-col>
               <el-col :span="11">
+                <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+                  <el-select v-model="item.WhitelistCfg.AppIdList" multiple placeholder="请选择" style="width: 400px" @change="onAppIdOptionsChange">
+                    <el-option
+                      v-for="item in appIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col>
+                <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
+                  <el-select v-model="item.WhitelistCfg.SiteIdList" multiple placeholder="请选择" style="width: 400px" @change="onSiteIdOptionsChange">
+                    <el-option
+                      v-for="item in siteIdOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    />
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
                 <el-form-item label="uid白名单：" prop="item.WhitelistCfg.UidList">
                   <el-input v-model="item.CurId" placeholder="Uid"></el-input>
                 </el-form-item>
@@ -914,6 +938,12 @@ export default {
                 $this.item.WhitelistCfg.UidList.push({ "uid": old.WhiteList[i] })
               }
             }
+            if (old.AppIdList !== null) {
+              $this.item.WhitelistCfg.AppIdList = old.AppIdList
+            }
+            if (old.SiteIdList !== null) {
+              $this.item.WhitelistCfg.SiteIdList = old.SiteIdList
+            }
             this.$refs.compare.SetOldVal(old)
           }
           this.getGameAll()
@@ -957,7 +987,9 @@ export default {
         pokerCfgData: pokerCfgData,
         GameIdCfg: this.item.GameIdCfg,
         WhiteList: whiteList,
-        IsWhite: this.item.IsWhite
+        IsWhite: this.item.IsWhite,
+        AppIdList: this.item.WhitelistCfg.AppIdList,
+        SiteIdList: this.item.WhitelistCfg.SiteIdList
       }
       this.form.Data = JSON.stringify(tableData)
       request({

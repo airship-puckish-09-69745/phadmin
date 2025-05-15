@@ -3,6 +3,19 @@
     <div style="margin-bottom: 20px;">
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </div>
+    <el-row style="padding-top: 5px">
+      <h3 style="text-align:center;">EGame游戏控制配置</h3>
+      <el-row style="margin: 10px 0;">
+        AppId <el-select v-model="editAppId" filterable placeholder="请选择" size="small" style="margin-right: 12px; width: 300px" @change="handleUpdateAppid">
+          <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+        </el-select>
+        <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch" />
+        <el-button size="mini" type="primary" @click="handleShowCopyDialog">增加</el-button>
+        <!-- <el-button size="mini" type="success" @click="handleShowModifyDialog">修改</el-button> -->
+      </el-row>
+    </el-row>
+
+
       <el-tabs type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
@@ -10,22 +23,22 @@
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editCriticalPoint[0]" />
+                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[0]" />
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editCriticalPoint[1]" />
+                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[1]" />
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editCriticalPoint[2]" />
+                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[2]" />
               </el-descriptions-item>
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editCriticalPoint[3]" />
+                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[3]" />
               </el-descriptions-item>
             </el-descriptions>
             <h4 style="text-align:left;">个⼈控制周期局数</h4>
             <el-descriptions :column="5" :colon="false" direction="vertical" border>
               <el-descriptions-item label="个⼈控制周期局数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="item.PlayerControl.PlayerControlRound" />
+                <el-input v-model.number="editGameControl.PlayerControl.PlayerControlRound" />
               </el-descriptions-item>
             </el-descriptions>
             <el-divider />
@@ -34,20 +47,21 @@
               <el-form :label-position="labelPosition" label-width="100px">
                 <el-form-item label="同周期机器⼈类型是否与⾸局⼀致" required>
                   <el-col :span="2">
-                    <el-switch v-model.number="item.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
+                    <el-switch v-model.number="editGameControl.PlayerControl.IsSameFirst" :active-value="true" :inactive-value="false" />
                   </el-col>
                 </el-form-item>
                 <el-form-item label="区间匹配机器⼈权重" required>
                   <el-table
-                    :data="item.PlayerControl.RobotWeight"
+                    :data="editGameControl.PlayerControl.RobotWeight"
                     stripe
                     border
                     style="width: 100%"
                   >
                     <el-table-column
-                      prop="AiConfigName"
+                      prop="AiConfigLevel"  
                       label="级别"
                       width="250"
+                      :formatter="(row) => getRobotName(row.AiConfigLevel)"
                     />
                     <el-table-column
                       label="强杀区间"
@@ -158,8 +172,8 @@
             <el-descriptions label="群体控制临界点配置" :column="7" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[0].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[0], 'Ratio', 0, 100)"
+                  v-model="editGameControl.GameControl.ControlRange[0].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[0], 'Ratio', 0, 100)"
                   placeholder="0-100"
                 >
                   <template #append>%</template>
@@ -167,8 +181,8 @@
               </el-descriptions-item>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[1].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[1], 'Ratio')"
+                  v-model="editGameControl.GameControl.ControlRange[1].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[1], 'Ratio')"
                   placeholder="0-100"
                   >
                   <template #append>%</template>
@@ -176,35 +190,35 @@
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[2].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[2], 'Ratio')"
+                  v-model="editGameControl.GameControl.ControlRange[2].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[2], 'Ratio')"
                   placeholder="0-100"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-tag size="medium" closable>{{editGameControl.ControlRange[3].Ratio}}%</el-tag>
+                <el-tag size="medium" closable>{{editGameControl.GameControl.ControlRange[3].Ratio}}%</el-tag>
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[4].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[4], 'Ratio')"
+                  v-model="editGameControl.GameControl.ControlRange[4].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[4], 'Ratio')"
                   placeholder="0-100"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[5].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[5], 'Ratio')"
+                  v-model="editGameControl.GameControl.ControlRange[5].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[5], 'Ratio')"
                   placeholder="0-100"
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="强放匹配全⽣效" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
-                  v-model="editGameControl.ControlRange[6].Ratio"
-                  @input="handlePercentInput(editGameControl.ControlRange[6], 'Ratio')"
+                  v-model="editGameControl.GameControl.ControlRange[6].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[6], 'Ratio')"
                   placeholder="0-100"
                 >
                   <template #append>%</template>
@@ -224,19 +238,19 @@
                 <span>移动区间数</span>
               </el-descriptions-item>
               <el-descriptions-item label="强杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.ControlRange[1].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[1].MoveRange" />
               </el-descriptions-item>
               <el-descriptions-item label="弱杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.ControlRange[2].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[2].MoveRange" />
               </el-descriptions-item>
               <el-descriptions-item label="正常区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.ControlRange[4].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[4].MoveRange" />
               </el-descriptions-item>
               <el-descriptions-item label="弱放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.ControlRange[5].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[5].MoveRange" />
               </el-descriptions-item>
               <el-descriptions-item label="强放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.ControlRange[6].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[6].MoveRange" />
               </el-descriptions-item>
             </el-descriptions>
           </el-tab-pane>
@@ -268,7 +282,7 @@
               <el-form label-width="150px">
                 <el-form-item>
                   <el-table
-                    :data="editGameControl.GameAcceptance"
+                    :data="editGameControl.GameControl.GameAcceptance"
                     stripe
                     border
                     style="width: 100%"
@@ -304,80 +318,6 @@
       <el-button type="primary" @click="setData">保存信息</el-button>
     </div>
 
-    <el-dialog
-      title="机器人配置"
-      :visible.sync="editAIVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-form ref="edit" :model="editAI" width="70%" label-position="top">
-        <el-row>
-          <el-tabs type="border-card">
-            <el-tab-pane label="机器人挑战">
-              <robot-ai-setting-fight v-model="editAI" />
-            </el-tab-pane>
-            <el-tab-pane label="机器人面对挑战">
-              <robot-ai-setting-challenge v-model="editAI" />
-            </el-tab-pane>
-            <el-tab-pane label="放牌配置">
-              <robot-ai-setting-drop v-model="editAI" />
-            </el-tab-pane>
-            <el-tab-pane label="出牌配置">
-              <robot-ai-setting-out-card v-model="editAI" />
-            </el-tab-pane>
-            <el-tab-pane label="好牌配置">
-              <robot-ai-setting-build-card v-model="editAI" />
-            </el-tab-pane>
-          </el-tabs>
-        </el-row>
-        <el-form-item>
-          <el-row>
-            <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="setData">保存</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
-    <el-dialog
-      title="区间玩家发牌配置"
-      :visible.sync="editPlayerGoodCardVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-    >
-      <el-form ref="editPlayerGoodCard" :model="editPlayerGoodCard" width="70%" label-position="top">
-        <el-row>
-          <el-tabs type="border-card">
-            <el-tab-pane label="强杀">
-              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[0]" />
-            </el-tab-pane>
-
-            <el-tab-pane label="弱杀">
-              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[1]" />
-            </el-tab-pane>
-
-            <el-tab-pane label="正常">
-              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[2]" />
-            </el-tab-pane>
-
-            <el-tab-pane label="弱放">
-              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[3]" />
-            </el-tab-pane>
-
-            <el-tab-pane label="强放">
-              <robot-ai-setting-build-card v-model.number="editPlayerGoodCard[4]" />
-            </el-tab-pane>
-          </el-tabs>
-        </el-row>
-        <el-form-item>
-          <el-row>
-            <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="setData">保存</el-button>
-            </el-col>
-          </el-row>
-        </el-form-item>
-      </el-form>
-    </el-dialog>
     <el-dialog
       title="修改场次库存"
       :visible.sync="editPlayerInventoryVisible"
@@ -420,6 +360,81 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <el-dialog
+      title="复制配置"
+      :visible.sync="copyDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="copyForm" :model="copyDialog.form" label-width="200px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="从原始AppId" :required="true">
+            <el-select v-model="copyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
+              <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="复制到AppId" :required="true">
+            <template>
+              <el-input v-model.number="copyDialog.form.targetAppId"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+
+          <el-form-item label="复制到AppName" :required="true">
+            <template>
+              <el-input v-model.number="copyDialog.form.targetAppName"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击保存按钮，之后点发布按钮，将复制的新数据更新到线上</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleCopy">复制</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      title="修改配置"
+      :visible.sync="modifyDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="updateForm" :model="modifyDialog.form" label-width="200px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="从原始AppId" :required="true">
+            <el-select v-model="modifyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
+              <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="修改至AppId" :required="true">
+            <template>
+              <el-input v-model.number="modifyDialog.form.targetAppId"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+
+          <el-form-item label="修改至AppName" :required="true">
+            <template>
+              <el-input v-model.number="modifyDialog.form.targetAppName"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleModify">修改</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
     <compare ref="compare" />
   </div>
 </template>
@@ -431,7 +446,9 @@ import { Message } from 'element-ui'
 import Publish from '@/components/Publish'
 import Compare from '@/components/Compare'
 import request from '@/utils/request'
-import { DataRule } from '@/utils/common'
+import {DataRule } from '@/utils/common'
+
+
 export default {
   components: {
     Publish,
@@ -441,10 +458,86 @@ export default {
     return {
       gameId: 128,
       playMode: 4, // 经典玩法
+   
+      appidInfoCfgs: [],
+
       tableData: [],
-      item: {
-        PlayerControl: {
-          CriticalPoint: [0, 0, 0, 0],
+      egameData: {},
+      editAppId: 0,
+      copyDialog: {
+        visible: false,
+        form: {
+          srcAppId: '',
+          targetAppId: 0,
+          targetAppName: ''
+        }
+      },
+      modifyDialog: {
+        visible: false,
+        form: {
+          srcAppId: '',
+          targetAppId: 0,
+          targetAppName: ''
+        }
+      },
+      form: {},
+      gameAreaName: [
+        '强杀全生效',
+        '强杀',
+        '弱杀',
+        '正常',
+        '正常',
+        '弱放',
+        '强放',
+        '强放全生效'
+      ],
+      robotlvl: [
+        {
+          value: 1,
+          label: '超弱机器⼈'
+        },
+        {
+          value: 2,
+          label: '稍弱机器⼈'
+        },
+        {
+          value: 3,
+          label: '正常机器⼈'
+        },
+        {
+          value: 4,
+          label: '稍强机器⼈'
+        },
+        {
+          value: 5,
+          label: '超强机器⼈'
+        }
+      ],
+      labelPosition: 'top',
+      subKey: 'tongits_jackpot_control',
+
+      Uid: 0,
+      VisibleUid: false,
+      PlayerTableMoneyInfo: [
+        {
+          TableMoney: 0,
+          Money: 0
+        },
+        {
+          TableMoney: 0,
+          Money: 0
+        }
+      ],
+      editPlayerInventoryVisible: false,
+      editPlayerInventory: {},
+      GameRangeName: 0,
+      GameMoney: 0,
+      editGameControl: {
+        appid: 1000002, 
+        name: 'dayusenlin' , 
+        PlayerControl: 
+        {
+          CriticalPoint: [-20000, -10000, 10000, 20000],
           PlayerControlRound: 0,
           IsSameFirst: false,
           RobotWeight: [
@@ -479,119 +572,45 @@ export default {
           ControlRange: [
             {
               MoveRange: -2, // 强杀全生效
-              Ratio: 1.1
+              Ratio: 110
             },
             {
               MoveRange: -2, // 强杀移动区间
-              Ratio: 1.2
+              Ratio: 120
             },
             {
               MoveRange: -1, // 弱杀移动区间
-              Ratio: 1.3
+              Ratio: 130
             },
             {
               MoveRange: 0, // 正常移动区间
-              Ratio: 2.5
+              Ratio:250
             },
             {
               MoveRange: 0, // 正常移动区间
-              Ratio: 2.6
+              Ratio: 260
             },
             {
               MoveRange: 1, // 弱放移动区间
-              Ratio: 3.0
+              Ratio: 300
             },
             {
               MoveRange: 2, // 强放移动区间
-              Ratio: 3.5
+              Ratio: 350
             }
           ],
-          OriginPoint: 2.5,
+          OriginPoint: 250,
           GameAcceptance: [
             {
               TableMoney: 1000,
               Ratio: 0
             }
           ]
-        }
-      },
-
-      form: {},
-      gameAreaName: [
-        '强杀全生效',
-        '强杀',
-        '弱杀',
-        '正常',
-        '正常',
-        '弱放',
-        '强放',
-        '强放全生效'
-      ],
-      labelPosition: 'top',
-      subKey: 'tongits_jackpot_control',
-
-      editAI: {},
-      editAIVisible: false,
-      editPlayerGoodCardVisible: false,
-      editCriticalPoint: [0, 0, 0, 0],
-      editPlayerGoodCard: [],
-      Uid: 0,
-      VisibleUid: false,
-      PlayerTableMoneyInfo: [
-        {
-          TableMoney: 0,
-          Money: 0
         },
-        {
-          TableMoney: 0,
-          Money: 0
-        }
-      ],
-      editPlayerInventoryVisible: false,
-      editPlayerInventory: {},
-      GameRangeName: 0,
-      GameMoney: 0,
-      editGameControl: {
-        ControlRange: [
-          {
-            MoveRange: -2, // 强杀全生效
-            Ratio: '11'
-          },
-          {
-            MoveRange: -2, // 强杀移动区间
-            Ratio: '12'
-          },
-          {
-            MoveRange: -1, // 弱杀移动区间
-            Ratio: '13'
-          },
-          {
-            MoveRange: 0, // 正常移动区间
-            Ratio: '25'
-          },
-          {
-            MoveRange: 0, // 正常移动区间
-            Ratio: '26'
-          },
-          {
-            MoveRange: 1, // 弱放移动区间
-            Ratio: '30'
-          },
-          {
-            MoveRange: 2, // 强放移动区间
-            Ratio: '35'
-          }
-        ],
-        OriginPoint: 2.5,
-        GameAcceptance: [{
-          TableMoney: 1000,
-          Ratio: '0'
-        }]
-      }
+      },
     }
   },
   created() {
-    // console.log(JSON.stringify(this.item))
     this.getData()
     this.getGameConfig()
   },
@@ -604,36 +623,39 @@ export default {
       return Math.floor(num)
     },
     checkControlRangeSave() {
-      this.editGameControl.ControlRange[3].MoveRange = this.editGameControl.ControlRange[4].MoveRange
+      console.log(" this.editGameControl",  this.editGameControl)
+
+      this.editGameControl.GameControl.ControlRange[3].MoveRange = this.editGameControl.GameControl.ControlRange[4].MoveRange
       const ControlRange = []
-      for (let i = 0; i < this.editGameControl.ControlRange.length; i++) {
-        const tmp = this.editGameControl.ControlRange[i]
+      for (let i = 0; i < this.editGameControl.GameControl.ControlRange.length; i++) {
+        const tmp = this.editGameControl.GameControl.ControlRange[i]
         ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
       }
+      console.log("ControlRange", ControlRange)
       for (let i = 1; i < ControlRange.length; i++) {
         if (ControlRange[i - 1].Ratio >= ControlRange[i].Ratio) {
-          // console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
+           console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
           return false
         }
       }
       return true
     },
     checkPlayerCanSave() {
-      if (this.editCriticalPoint.length < 1) {
+      if (this.editGameControl.PlayerControl.CriticalPoint.length < 1) {
         return false
       }
-      for (let i = 1; i < this.editCriticalPoint.length; i++) {
-        if (this.editCriticalPoint[i - 1] >= this.editCriticalPoint[i]) {
+      for (let i = 1; i < this.editGameControl.PlayerControl.CriticalPoint.length; i++) {
+        if (this.editGameControl.PlayerControl.CriticalPoint[i - 1] >= this.editGameControl.PlayerControl.CriticalPoint[i]) {
           return false
         }
       }
       return true
     },
     checkRobotWeigth() {
-      for (let i = 0; i < this.item.PlayerControl.RobotWeight[0].AiWeight.length; i++) {
+      for (let i = 0; i < this.editGameControl.PlayerControl.RobotWeight[0].AiWeight.length; i++) {
         let sum = 0
-        for (let j = 0; j < this.item.PlayerControl.RobotWeight.length; j++) {
-          const tmp = this.item.PlayerControl.RobotWeight[j]
+        for (let j = 0; j < this.editGameControl.PlayerControl.RobotWeight.length; j++) {
+          const tmp = this.editGameControl.PlayerControl.RobotWeight[j]
           sum = sum + tmp.AiWeight[i]
         }
         if (sum === 0) {
@@ -657,27 +679,41 @@ export default {
         return
       }
 
-      this.item.PlayerControl.CriticalPoint = []
-      for (let i = 0; i < this.editCriticalPoint.length; i++) {
-        this.item.PlayerControl.CriticalPoint.push(this.editCriticalPoint[i] * 1000)
+      for (let j = 0; j < this.egameData.AppControlConfig.length; j++) {
+        const tmpData = this.egameData.AppControlConfig[j]
+        if (this.editAppId == tmpData.AppId) {
+          let saveData = structuredClone(this.editGameControl)
+
+          saveData.PlayerControl.CriticalPoint = []
+          for (let i = 0; i < this.editGameControl.PlayerControl.CriticalPoint.length; i++) {
+            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 1000)
+          }
+
+          saveData.GameControl.ControlRange = []
+          saveData.GameControl.OriginPoint = this.convertToFloat(this.editGameControl.GameControl.OriginPoint)
+          for (let i = 0; i < this.editGameControl.GameControl.ControlRange.length; i++) {
+            const tmp = this.editGameControl.GameControl.ControlRange[i]
+            saveData.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
+          }
+     
+        
+          saveData.GameControl.GameAcceptance = []
+          for (let i = 0; i < this.editGameControl.GameControl.GameAcceptance.length; i++) {
+            const tmp = this.editGameControl.GameControl.GameAcceptance[i]
+            saveData.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
+          }
+
+          this.egameData.AppControlConfig[j] = structuredClone(saveData)
+        }
+
+        
       }
 
-      this.item.GameControl.ControlRange = []
-      this.item.GameControl.OriginPoint = this.convertToFloat(this.editGameControl.OriginPoint)
-      for (let i = 0; i < this.editGameControl.ControlRange.length; i++) {
-        const tmp = this.editGameControl.ControlRange[i]
-        this.item.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
-      }
-      // this.editGameControl.ControlRange[3].Ratio = this.convertToFloat(this.editGameControl.OriginPoint)
-
-      this.item.GameControl.GameAcceptance = []
-      for (let i = 0; i < this.editGameControl.GameAcceptance.length; i++) {
-        const tmp = this.editGameControl.GameAcceptance[i]
-        this.item.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
-      }
-
-      this.form.Data = JSON.stringify(this.item)
+      console.log("save", this.egameData)
+      this.form.Data = JSON.stringify(this.egameData)
       const $this = this
+
+      console.log("this.form.Data",  this.form.Data)
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.Compare(function(isEdit) {
@@ -706,35 +742,60 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
+          console.log("this.form ", this.form)
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
-            const item = JSON.parse(response.Data.Data)
-            // console.log('response.Data.Data', response.Data.Data)
-            Object.assign(this.item, item)
+            this.egameData = JSON.parse(response.Data.Data)
+          
+      
+            for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+              this.appidInfoCfgs.push({appId: this.egameData.AppControlConfig[i].AppId, appName: this.egameData.AppControlConfig[i].AppName})
+            }
+            if (this.appidInfoCfgs.length > 0) {
+              this.copyDataToEidt(this.egameData.AppControlConfig[0])
+            } else {
+              this.editAppId = 0
+            }
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
-            this.editGameControl.ControlRange = []
-            for (let i = 0; i < this.item.GameControl.ControlRange.length; i++) {
-              const tmp = this.item.GameControl.ControlRange[i]
-              this.editGameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio / 100).toString() })
-            }
 
-            this.editGameControl.GameAcceptance = []
-            for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
-              const tmp = this.item.GameControl.GameAcceptance[i]
-              this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
-            }
-            this.editGameControl.OriginPoint = (this.item.GameControl.OriginPoint / 100).toString()
-            this.editCriticalPoint = []
-            for (let i = 0; i < this.item.PlayerControl.CriticalPoint.length; i++) {
-              this.editCriticalPoint.push(this.item.PlayerControl.CriticalPoint[i] / 1000)
-            }
+            console.log("begin", this.egameData)
+
           } else {
             Message.error('保存失败')
           }
         }
       })
     },
+
+    copyDataToEidt(appControlConfig) {
+        this.editAppId = appControlConfig.AppId
+        this.editGameControl = structuredClone(appControlConfig)
+        const tmpData = appControlConfig
+
+        this.editGameControl.GameControl.ControlRange = []
+        for (let i = 0; i < tmpData.GameControl.ControlRange.length; i++) {
+          const tmp = tmpData.GameControl.ControlRange[i]
+          this.editGameControl.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: (tmp.Ratio / 100).toString() })
+        }
+
+        this.editGameControl.GameControl.GameAcceptance = []
+        for (let i = 0; i < tmpData.GameControl.GameAcceptance.length; i++) {
+          const tmp = tmpData.GameControl.GameAcceptance[i]
+          this.editGameControl.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
+        }
+        this.editGameControl.GameControl.OriginPoint = (tmpData.GameControl.OriginPoint / 100).toString()
+
+        this.editGameControl.PlayerControl.CriticalPoint = []
+        for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
+          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 1000)
+        }
+    },
+
+    handleFilter() {
+      this.getData()
+    },
+
     handleTabClick(tab) {
       if (tab.name === 'gameMoneyQuery') {
         this.handleRefreshGameMoney()
@@ -749,11 +810,11 @@ export default {
       for (let j = 0; j < this.tableData.length; j++) {
         const tableMoney = this.tableData[j].TableMoney
         let f = false
-        for (let i = 0; i < this.item.GameControl.GameAcceptance.length; i++) {
-          const levelTableMoney = this.item.GameControl.GameAcceptance[i].TableMoney
+        for (let i = 0; i < this.editGameControl.GameControl.GameAcceptance.length; i++) {
+          const levelTableMoney = this.editGameControl.GameControl.GameAcceptance[i].TableMoney
           if (tableMoney === levelTableMoney) {
             f = true
-            gameAcceptance.push(this.item.GameControl.GameAcceptance[i])
+            gameAcceptance.push(this.editGameControl.GameControl.GameAcceptance[i])
             break
           }
         }
@@ -762,20 +823,12 @@ export default {
         }
       }
       gameAcceptance.sort((a, b) => a.TableMoney - b.TableMoney)
-      this.editGameControl.GameAcceptance = []
+      this.editGameControl.GameControl.GameAcceptance = []
       for (let i = 0; i < gameAcceptance.length; i++) {
         const tmp = gameAcceptance[i]
-        this.editGameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
+        this.editGameControl.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
       }
-      this.item.GameControl.GameAcceptance = gameAcceptance
-    },
-
-    handleAIUpdate(row) {
-      this.editAIVisible = true
-      this.editAI = row
-    },
-    handleUpdatePlayerGoodCard() {
-      this.editPlayerGoodCardVisible = true
+      this.editGameControl.GameControl.GameAcceptance = gameAcceptance
     },
 
     handleRefreshPlayerLevels() {
@@ -787,7 +840,7 @@ export default {
     },
     handleGetPlayerAllLevelMoney() {
       if (this.Uid === 0) {
-        Message.warning('请输入正确的uid')
+        Message.warning('用户不存在')
         return
       }
       request({
@@ -797,6 +850,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           uid: this.Uid,
+          appid: this.editAppId,
           Path: '/egamecontorl/player/table/money/info'
         }
       }).then(response => {
@@ -844,6 +898,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           uid: this.Uid,
+          appid: this.editAppId,
           tableMoney: this.editPlayerInventory.TableMoney,
           value: this.editPlayerInventory.Money * 1000,
           Path: '/egamecontorl/set/player/table/money/info'
@@ -861,6 +916,7 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
+          appid: this.editAppId,
           value: this.GameMoney * 1000,
           Path: '/egamecontorl/set/game/pending/money'
         }
@@ -877,6 +933,7 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
+          appid: this.editAppId,
           Path: '/egamecontorl/game/pending/money'
         }
       }).then(response => {
@@ -904,6 +961,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           uid: 1000,
+          appid: this.editAppId,
           tableMoney: 10000,
           Path: '/egamecontorl/player/robot/level'
         }
@@ -990,8 +1048,122 @@ export default {
       if (numValue > max) value = max.toString()
       if (numValue < min) value = min.toString()
       obj[key] = value
+    },
+    onSearch() {
+      console.log('【searchFilter】: ', this.editAppId)
+      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+        const tmp = this.egameData.AppControlConfig[i]
+        if (tmp.AppId == this.editAppId) {
+          this.copyDataToEidt(tmp)
+          break
+        }
+      }
+    },
+    handleUpdateAppid(appid) {
+      console.log('appid: ', appid)
+        this.onSearch()
+    },
+    handleShowCopyDialog() {
+      this.copyDialog.visible = true
+      this.copyDialog.form.srcAppId = this.editAppId
+      this.copyDialog.form.targetAppId = ''
+    },
+
+    handleShowModifyDialog() {
+      this.modifyDialog.visible = true
+      this.modifyDialog.form.srcAppId = this.editAppId
+      this.modifyDialog.form.targetAppId = ''
+    },
+
+    handleCopy() {
+      console.log('handleCopy==>', this.copyDialog)
+      if (this.copyDialog.form.targetAppId == 0) {
+        Message.error('请输入目标AppId')
+        return
+      }
+      if (!this.copyDialog.form.targetAppName) {
+        Message.error('请输入目标AppName')
+        return
+      }
+      for (let i = 0; i < this.appidInfoCfgs.length; i++) {
+        if (this.copyDialog.form.targetAppId == this.appidInfoCfgs[i].appId) {
+          Message.error('app已经存在')
+          return
+        }
+      }
+      let isFind = false 
+      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+        const tmp = this.egameData.AppControlConfig[i]
+        if (tmp.AppId == this.copyDialog.form.srcAppId) {
+
+          let copyData = structuredClone(this.egameData.AppControlConfig[i])
+          copyData.AppId = this.copyDialog.form.targetAppId
+          copyData.AppName = this.copyDialog.form.targetAppName
+
+          this.appidInfoCfgs.push({appId: this.copyDialog.form.targetAppId, appName: this.copyDialog.form.targetAppName})
+          this.egameData.AppControlConfig.push(copyData)
+          this.copyDataToEidt(copyData)
+          isFind = true
+          break
+        }
+      }
+      if (!isFind) {
+        Message.error('复制出错appid未找到')
+        return
+      }
+      this.copyDialog.visible = false
+    },
+    handleModify() {
+      console.log('handleCopy==>', this.modifyDialog)
+      if (this.modifyDialog.form.targetAppId == 0) {
+        Message.error('请输入目标AppId')
+        return
+      }
+      if (!this.modifyDialog.form.targetAppName) {
+        Message.error('请输入目标AppName')
+        return
+      }
+      let isFind = false 
+      for (let i = 0; i < this.appidInfoCfgs.length; i++) {
+        if (this.modifyDialog.form.srcAppId == this.appidInfoCfgs[i].appId) {
+          isFind = true
+          this.appidInfoCfgs[i].appId = this.modifyDialog.form.targetAppId
+          this.appidInfoCfgs[i].appName = this.modifyDialog.form.targetAppName
+          return
+        }
+      }
+      if (!isFind) {
+        Message.error('appid不存在')
+        return
+      }
+      
+      for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
+        const tmp = this.egameData.AppControlConfig[i]
+        if (tmp.AppId == this.modifyDialog.form.srcAppId) {
+          this.egameData.AppControlConfig[i].AppId = this.modifyDialog.form.targetAppId
+          this.egameData.AppControlConfig[i].AppName = this.modifyDialog.form.targetAppName
+          this.editGameControl.AppId = this.modifyDialog.form.targetAppId
+          this.editGameControl.AppName = this.modifyDialog.form.targetAppName
+
+          this.editAppId = this.modifyDialog.form.targetAppId
+          break
+        }
+      }
+      this.modifyDialog.visible = false
+    },
+    getRobotName(aiLevel) {
+      let name = ""
+      for (let i = 0; i < this.robotlvl.length; i++) {
+        if (aiLevel === this.robotlvl[i].value) {
+          name =  this.robotlvl[i].label
+          break
+        }
+      }
+      return name
     }
-  }
+ 
+  },
+  
 }
 </script>
 
