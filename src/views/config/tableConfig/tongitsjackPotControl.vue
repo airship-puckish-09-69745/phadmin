@@ -366,37 +366,42 @@
       </el-form>
     </el-dialog>
     <el-dialog
-      title="复制配置"
+      title="新增渠道"
       :visible.sync="copyDialog.visible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
       <el-form ref="copyForm" :model="copyDialog.form" label-width="200px" size="small" inline>
         <el-tabs type="card">
-          <el-form-item label="从原始AppId" :required="true">
+          <el-row>
+          <el-form-item label="App列表" :required="true">
             <el-select v-model="copyDialog.form.srcAppId" style="width: 210px" placeholder="请选择" size="mini">
               <el-option v-for="item in appidInfoCfgs" :key="item.appId" :label="`${item.appName}-${item.appId}`" :value="item.appId" />
             </el-select>
           </el-form-item>
-          <el-form-item label="复制到AppId" :required="true">
+          </el-row>
+        
+          <el-row style="padding-top: 20px">
+          <el-form-item label="新增AppId" :required="true">
             <template>
               <el-input v-model.number="copyDialog.form.targetAppId"  placeholder="请输入" />
             </template>
           </el-form-item>
 
-          <el-form-item label="复制到AppName" :required="true">
+          <el-form-item label="新增AppName" :required="true">
             <template>
               <el-input v-model.number="copyDialog.form.targetAppName"  placeholder="请输入" />
             </template>
           </el-form-item>
-          <el-row>
+          </el-row>
+          <el-row style="padding-top: 20px">
             <el-col>
-              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：复制操作完成后，需要点击保存按钮，之后点发布按钮，将复制的新数据更新到线上</span>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：新增渠道将从app列表中选择的某一个需要复制的app，之后再配置页面选择新渠道在进行具体改动</span>
             </el-col>
           </el-row>
-          <el-row style="padding-top: 20px;">
+          <el-row style="padding-top: 50px;">
             <el-col :span="12" :offset="10">
-              <el-button type="primary" size="medium" @click="handleCopy">复制</el-button>
+              <el-button type="primary" size="medium" @click="handleCopy">新增渠道</el-button>
             </el-col>
           </el-row>
         </el-tabs>
