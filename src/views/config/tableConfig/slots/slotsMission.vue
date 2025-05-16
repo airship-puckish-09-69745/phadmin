@@ -220,7 +220,7 @@ export default {
         // 先执行 getGameList，等待其完成
         await this.getGameList()
         // 再执行 getData
-        this.getData()
+        await this.getData()
       } catch (error) {
         console.error('Error loading data:', error)
       }
