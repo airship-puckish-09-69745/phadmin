@@ -1820,6 +1820,20 @@ export const asyncRoutes = [
             meta: { title: '空投活动配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'redBagConfig',
+        component: () => import('@/views/empty'),
+        name: 'redBagConfig',
+        meta: { title: '红包雨活动配置', noCache: true },
+        children: [
+          {
+            path: 'redBagConfig',
+            component: () => import('@/views/config/tableConfig/activity/redBagConfig'),
+            name: 'redBagConfig',
+            meta: { title: '红包雨活动配置', noCache: true }
+          }
+        ]
       }
     ]
   },
@@ -1935,14 +1949,14 @@ export const asyncRoutes = [
         meta: { title: '主播名单', noCache: true, hidden: true },
 
       },
-      // {
-      //   path: 'obMatchRecordConfig',
-      //   component: () => import('@/views/matchManage/obMatchRecord.vue'),
-      //   hidden: !IsMars(),
-      //   name: 'obMatchRecordConfig',
-      //   meta: { title: '赛事记录', noCache: true, hidden: true },
-      //
-      // },
+      {
+        path: 'obMatchRecordConfig',
+        component: () => import('@/views/matchManage/obMatchRecord.vue'),
+        hidden: !IsMars(),
+        name: 'obMatchRecordConfig',
+        meta: { title: '赛事记录', noCache: true, hidden: true },
+
+      },
       {
         path: 'matchPosterList',
         component: () => import('@/views/matchManage/posterList.vue'),
