@@ -196,7 +196,7 @@
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
-              <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
+              <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center', 'color': 'green', 'font-weight': 'bold'}">
                 <el-input
                   v-model="editGameControl.GameControl.ControlRange[3].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[3], 'Ratio')"
