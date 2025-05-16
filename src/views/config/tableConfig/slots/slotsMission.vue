@@ -237,6 +237,7 @@ export default {
           SubKey: this.subKey
         }
       }).then(response => {
+        console.log('getData')
         if (response.RetCode === 0) {
           // console.log('sign reward', response)
           $this.form = response.Data || { Data: '{}' }
@@ -341,6 +342,7 @@ export default {
             return a.value - b.value
           })
         }
+        console.log('getGameList')
       })
     }
   }
