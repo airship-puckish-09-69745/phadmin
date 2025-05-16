@@ -287,10 +287,6 @@ export default {
   },
 
   created() {
-    // 检查对象自身是否有某个属性（不检查原型链）
-    if (!this.AiConfig.hasOwnProperty('Decision')) {
-      this.AiConfig.Decision = this.Decision
-    }
     this.$nextTick(() => {
       console.log('common plugin tongitsConfig:', this.AiConfig)       
     })
