@@ -1457,6 +1457,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
+              /*{
+                path: 'pumpkincashmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
+                name: 'pumpkincashmars_slots_cfg',
+                meta: { title: 'PumpkinCash(审)' }
+              },*/
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -2580,6 +2586,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'puppyhome_slots_log',
             meta: { title: 'P uppyHome', gid: 176 }
+          },
+          {
+            path: 'pumpkincash_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincash_slots_log',
+            meta: { title: 'P umpkinCash', gid: 214 }
           },
           {
             path: 'romanarena_slots_log',

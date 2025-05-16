@@ -23,8 +23,12 @@
             <el-input v-model.number="cfg.GoldenSymbolOddsRate" :required="true" />
           </el-form-item>
 
-          <el-form-item label="金框符号获得随机倍率的范围">
-            <el-input v-model="cfg.GoldenSymbolOddsRange" placeholder="请输入内容,如2,100"> <template slot="append">两个个值用 , 连接。如2,150表示2至150</template> </el-input>
+          <el-form-item label="金框符号获得的倍率范围">
+            <el-input v-model="cfg.GoldenSymbolOddsRange" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
+          </el-form-item>
+
+          <el-form-item label="金框符号获得的倍率权重">
+            <el-input v-model="cfg.GoldenSymbolOddsWeights" placeholder="请输入内容,如1,2,100"> <template slot="append">多个值用 , 连接。如1,2,100</template> </el-input>
           </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数范围V2">
