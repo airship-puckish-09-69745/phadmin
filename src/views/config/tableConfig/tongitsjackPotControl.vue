@@ -197,7 +197,12 @@
                 </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="原点" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-tag size="medium" closable>{{editGameControl.GameControl.ControlRange[3].Ratio}}%</el-tag>
+                <el-input
+                  v-model="editGameControl.GameControl.ControlRange[3].Ratio"
+                  @input="handlePercentInput(editGameControl.GameControl.ControlRange[3], 'Ratio')"
+                  placeholder="0-100"
+                  ><template #append>%</template>
+                </el-input>
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
                 <el-input
@@ -599,7 +604,6 @@ export default {
               Ratio: 350
             }
           ],
-          OriginPoint: 250,
           GameAcceptance: [
             {
               TableMoney: 1000,
@@ -690,7 +694,6 @@ export default {
           }
 
           saveData.GameControl.ControlRange = []
-          saveData.GameControl.OriginPoint = this.convertToFloat(this.editGameControl.GameControl.OriginPoint)
           for (let i = 0; i < this.editGameControl.GameControl.ControlRange.length; i++) {
             const tmp = this.editGameControl.GameControl.ControlRange[i]
             saveData.GameControl.ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
@@ -784,7 +787,6 @@ export default {
           const tmp = tmpData.GameControl.GameAcceptance[i]
           this.editGameControl.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: (tmp.Ratio / 100).toString() })
         }
-        this.editGameControl.GameControl.OriginPoint = (tmpData.GameControl.OriginPoint / 100).toString()
 
         this.editGameControl.PlayerControl.CriticalPoint = []
         for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
