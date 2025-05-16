@@ -384,13 +384,13 @@
           <el-row style="padding-top: 20px">
           <el-form-item label="新增AppId" :required="true">
             <template>
-              <el-input v-model.number="copyDialog.form.targetAppId"  placeholder="请输入" />
+              <el-input v-model.number="copyDialog.form.targetAppId" type="number"  placeholder="请输入" />
             </template>
           </el-form-item>
 
           <el-form-item label="新增AppName" :required="true">
             <template>
-              <el-input v-model.number="copyDialog.form.targetAppName"  placeholder="请输入" />
+              <el-input v-model="copyDialog.form.targetAppName"  placeholder="请输入" />
             </template>
           </el-form-item>
           </el-row>
