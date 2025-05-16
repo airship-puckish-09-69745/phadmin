@@ -22,23 +22,48 @@
             <h4 style="text-align:left;">个⼈控制临界点配置</h4>
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
-              <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[0]" />
+              <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center' }">
+                <el-input 
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[0]" 
+                type="number" 
+                placeholder="请输入整数"
+                @input="editGameControl.PlayerControl.CriticalPoint[0] = $event.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '') " 
+                 />
               </el-descriptions-item>
               <el-descriptions-item label="弱杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[1]" />
+                <el-input 
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[1]" 
+                type="number" 
+                placeholder="请输入整数" 
+                @input="editGameControl.PlayerControl.CriticalPoint[1] = $event.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '') " 
+                />
               </el-descriptions-item>
               <el-descriptions-item label="弱放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[2]" />
+                <el-input 
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[2]" 
+                type="number" 
+                placeholder="请输入整数" 
+                @input="editGameControl.PlayerControl.CriticalPoint[2] = $event.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '') " 
+                />
               </el-descriptions-item>
               <el-descriptions-item label="强放" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.PlayerControl.CriticalPoint[3]" />
+                <el-input 
+                v-model.number="editGameControl.PlayerControl.CriticalPoint[3]" 
+                type="number"  
+                placeholder="请输入整数" 
+                @input="editGameControl.PlayerControl.CriticalPoint[3] = $event.replace(/[^0-9-]/g, '').replace(/(?!^)-/g, '') " 
+                />
               </el-descriptions-item>
             </el-descriptions>
             <h4 style="text-align:left;">个⼈控制周期局数</h4>
-            <el-descriptions :column="5" :colon="false" direction="vertical" border>
+            <el-descriptions :column="1" :colon="false" direction="vertical" border>
               <el-descriptions-item label="个⼈控制周期局数" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.PlayerControl.PlayerControlRound" />
+                <el-input 
+                v-model.number="editGameControl.PlayerControl.PlayerControlRound" 
+                type="number"  
+                placeholder="请输入整数" 
+                @input="editGameControl.PlayerControl.PlayerControlRound = $event.replace(/[^\d]/g, '')" 
+                />
               </el-descriptions-item>
             </el-descriptions>
             <el-divider />
@@ -69,7 +94,12 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[0]" />
+                        <el-input 
+                        v-model.number="scope.row.AiWeight[0]" 
+                        type="number"  
+                        placeholder="请输入整数" 
+                        @input="scope.row.AiWeight[0] = $event.replace(/[^\d]/g, '')" 
+                        />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -78,7 +108,11 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[1]" />
+                        <el-input v-model.number="scope.row.AiWeight[1]" 
+                        type="number"  
+                        placeholder="请输入整数" 
+                        @input="scope.row.AiWeight[1] = $event.replace(/[^\d]/g, '')" 
+                        />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -87,7 +121,11 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[2]" />
+                        <el-input v-model.number="scope.row.AiWeight[2]" 
+                        type="number"  
+                        placeholder="请输入整数" 
+                        @input="scope.row.AiWeight[2] = $event.replace(/[^\d]/g, '')" 
+                        />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -96,7 +134,11 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[3]" />
+                        <el-input v-model.number="scope.row.AiWeight[3]" 
+                        type="number"  
+                        placeholder="请输入整数" 
+                        @input="scope.row.AiWeight[3] = $event.replace(/[^\d]/g, '')" 
+                        />
                       </template>
                     </el-table-column>
                     <el-table-column
@@ -105,7 +147,12 @@
                       width="250"
                     >
                       <template slot-scope="scope">
-                        <el-input v-model.number="scope.row.AiWeight[4]" />
+                        <el-input 
+                          v-model.number="scope.row.AiWeight[4]" 
+                          type="number"  
+                          placeholder="请输入整数" 
+                          @input="scope.row.AiWeight[4] = $event.replace(/[^\d]/g, '')" 
+                        />
                       </template>
                     </el-table-column>
                   </el-table>
@@ -118,7 +165,7 @@
               <el-form label-width="150px">
                 <el-form-item label="玩家ID" required>
                   <el-col :span="4">
-                    <el-input v-model.number="Uid" />
+                    <el-input v-model.number="Uid"  type="number" @input="Uid = $event.replace(/[^\d]/g, '')" />
                   </el-col>
                   <el-col :span="2">
                     <el-button @click="handleGetPlayerAllLevelMoney">查询</el-button>
@@ -175,6 +222,7 @@
                   v-model="editGameControl.GameControl.ControlRange[0].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[0], 'Ratio', 0, 100)"
                   placeholder="0-100"
+                  type="number" 
                 >
                   <template #append>%</template>
                 </el-input>
@@ -184,6 +232,7 @@
                   v-model="editGameControl.GameControl.ControlRange[1].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[1], 'Ratio')"
                   placeholder="0-100"
+                  type="number" 
                   >
                   <template #append>%</template>
                 </el-input>
@@ -193,6 +242,7 @@
                   v-model="editGameControl.GameControl.ControlRange[2].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[2], 'Ratio')"
                   placeholder="0-100"
+                  type="number" 
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -201,6 +251,7 @@
                   v-model="editGameControl.GameControl.ControlRange[3].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[3], 'Ratio')"
                   placeholder="0-100"
+                  type="number" 
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -209,6 +260,7 @@
                   v-model="editGameControl.GameControl.ControlRange[4].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[4], 'Ratio')"
                   placeholder="0-100"
+                  type="number" 
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -217,6 +269,7 @@
                   v-model="editGameControl.GameControl.ControlRange[5].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[5], 'Ratio')"
                   placeholder="0-100"
+                  type="number" 
                   ><template #append>%</template>
                 </el-input>
               </el-descriptions-item>
@@ -225,6 +278,7 @@
                   v-model="editGameControl.GameControl.ControlRange[6].Ratio"
                   @input="handlePercentInput(editGameControl.GameControl.ControlRange[6], 'Ratio')"
                   placeholder="0-100"
+                  type="number" 
                 >
                   <template #append>%</template>
                 </el-input>
@@ -243,19 +297,19 @@
                 <span>移动区间数</span>
               </el-descriptions-item>
               <el-descriptions-item label="强杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.GameControl.ControlRange[1].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[1].MoveRange"  type="number" />
               </el-descriptions-item>
               <el-descriptions-item label="弱杀区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.GameControl.ControlRange[2].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[2].MoveRange"  type="number" />
               </el-descriptions-item>
               <el-descriptions-item label="正常区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.GameControl.ControlRange[4].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[4].MoveRange"  type="number" />
               </el-descriptions-item>
               <el-descriptions-item label="弱放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.GameControl.ControlRange[5].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[5].MoveRange"  type="number" />
               </el-descriptions-item>
               <el-descriptions-item label="强放区间" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-                <el-input v-model.number="editGameControl.GameControl.ControlRange[6].MoveRange" />
+                <el-input v-model.number="editGameControl.GameControl.ControlRange[6].MoveRange"  type="number" />
               </el-descriptions-item>
             </el-descriptions>
           </el-tab-pane>
@@ -308,6 +362,7 @@
                         <el-input
                           v-model="scope.row.Ratio"
                           placeholder="0-100"
+                          type="number" 
                           @input="handleDecimalInput(scope.row, 'Ratio')" >
                           <template #append>%</template>
                         </el-input>
@@ -1039,6 +1094,14 @@ export default {
       }
       // 5. 更新绑定的值（保留字符串类型，避免自动转换问题）
       row[key] = value === '' ? null : value
+    },
+    
+    // 整数判断
+    handleIntegerInput(value) {
+      // 只保留数字和负号（开头）
+      value = value.replace(/[^0-9-]/g, '')
+        .replace(/(?!^)-/g, '')  // 删除非开头的负号
+        .replace(/^(-)?0+(\d)/, '$1$2'); // 禁止 "000123" 但允许 "0" 和 "-0123"
     },
 
     // 处理百分比输入（0-100%）
