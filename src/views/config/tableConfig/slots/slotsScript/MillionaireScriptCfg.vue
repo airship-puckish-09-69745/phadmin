@@ -713,7 +713,8 @@ export default {
         '186': 'mahjongjackpot',
         '100186': 'mahjongjackpot_x',
         '188': 'streetfighting',
-        '194': 'goldtrain'
+        '194': 'goldtrain',
+        '192': 'bountyraid'
       }
     }
   },
