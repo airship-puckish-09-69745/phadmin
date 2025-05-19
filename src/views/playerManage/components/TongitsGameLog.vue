@@ -324,30 +324,33 @@ export default {
           jackpotType: val.players[j].JackpotType,
           inventoryMoney: val.players[j].InventoryMoney,
           ctrlAreaId: val.players[j].CtrlAreaId,
-          isRobot: false,
+          isRobot: val.players[j].character > 0,
           RobotLevel: val.players[j].RobotLevel
         })
+        console.log("uid:", val.players[j].uid, " ; isRobot:", val.players[j].character > 0)
       }
-      var isRobotMap = {}
-      if (this.envProjectName != 'ph_audit') {
-        request({
-          url: '/dataProxy/is/robot',
-          method: 'get',
-          data: {
-            Env: this.env,
-            Uids: JSON.stringify(UidArray)
-          }
-        }).then(response => {
-          if (response.RetCode === 0) {
-            for (const key in response.Data) {
-              isRobotMap[key] = response.Data[key]
+      if (this.Gid != 128) {  //tongitsJP不做查询
+        var isRobotMap = {}
+        if (this.envProjectName != 'ph_audit') {
+          request({
+            url: '/dataProxy/is/robot',
+            method: 'get',
+            data: {
+              Env: this.env,
+              Uids: JSON.stringify(UidArray)
             }
-            for (const o of finishArray) {
-              o.isRobot = isRobotMap[o.Uid]
-              console.log(o.Uid, isRobotMap[o.Uid])
+          }).then(response => {
+            if (response.RetCode === 0) {
+              for (const key in response.Data) {
+                isRobotMap[key] = response.Data[key]
+              }
+              for (const o of finishArray) {
+                o.isRobot = isRobotMap[o.Uid]
+                console.log(o.Uid, isRobotMap[o.Uid])
+              }
             }
-          }
-        })
+          })
+        }
       }
       this.actions.push({
         Index: 9999,
