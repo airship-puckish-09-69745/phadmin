@@ -293,6 +293,20 @@ export const asyncRoutes = [
                 ]
                 // name: 'tongitsTableQuick',
                 // meta: { title: 'Tongits-Quick ◐' }
+              },
+              {
+                path: 'TongitsCheat',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '防作弊配置', noCache: true },
+                children: [
+                  {
+                    path: 'tongitsCheat',
+                    component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsCheat.vue'),
+                    name: 'tongitsCheat',
+                    meta: { title: '防作弊配置 ◐' }
+                  }
+                ]
               }
               /*{
                 path: 'tongitsswapTable',
@@ -3008,6 +3022,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
             name: 'tongits_blackuserlog',
             meta: { title: '机器人资产变更日志 ◐' }
+          },
+          {
+            path: 'tongitsCheatLog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新） ◐' }
           }
         ]
       },
