@@ -99,8 +99,9 @@
               
               <template v-if="Gid === 128"> <!-- control信息 -->
                 <br>
-                <span>库存：{{ one.isRobot ? '-' : one.inventoryMoney/1000 }}</span><br>
+                <span>库存：{{ one.isRobot ? '-' : one.inventoryMoney/100 }}</span><br>
                 <span>区间：{{ getControlLevel(one.ctrlAreaId) }}</span><br>
+                <span>机器人权重：{{ one.RobotWeight/100 }}</span>
               </template>
               <br>
             </div>
@@ -325,7 +326,8 @@ export default {
           inventoryMoney: val.players[j].InventoryMoney,
           ctrlAreaId: val.players[j].CtrlAreaId,
           isRobot: val.players[j].character > 0,
-          RobotLevel: val.players[j].RobotLevel
+          RobotLevel: val.players[j].RobotLevel,
+          RobotWeight: val.players[j].RobotWeight
         })
         console.log("uid:", val.players[j].uid, " ; isRobot:", val.players[j].character > 0)
       }
