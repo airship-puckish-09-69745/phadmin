@@ -324,21 +324,21 @@
             </el-row>
             <el-row>
               <el-descriptions :column="3" :colon="false">
-                <el-descriptions-item label="今天系统赢钱:">
+                <el-descriptions-item label="今日净胜、抽水:">
                   {{ todaySysWinMoney }}
                 </el-descriptions-item>
               </el-descriptions>
             </el-row>
             <el-row>
               <el-descriptions :column="3" :colon="false">
-                <el-descriptions-item label="今天有效下注:">
+                <el-descriptions-item label="今日有效下注:">
                   {{ todayGameBet }}
                 </el-descriptions-item>
               </el-descriptions>
             </el-row>
             <el-row>
               <el-descriptions :column="3" :colon="false">
-                <el-descriptions-item label="7天平均有效下注:">
+                <el-descriptions-item label="前7天平均有效下注:">
                   {{ sevenDayMoneyBet }}
                 </el-descriptions-item>
               </el-descriptions>
@@ -356,7 +356,14 @@
                 <el-descriptions-item label="系统游戏库存:">
                   {{ gameRatio /100}} %
                 </el-descriptions-item>
+              
               </el-descriptions>
+              <el-alert
+              title="⚠️ 系统游戏库存= （前7日每日平均有效下注*2.5%+今日净胜、抽水+最新累积待调整金额）/（前7日每日平局有效下注+今日有效下注）"
+              type="error"
+              :closable="false"
+              style="margin-bottom: 16px;"
+            />
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="场次采信比例配置" name="gameInfoQuery">
@@ -512,7 +519,7 @@
           </el-form-item>
           <el-row>
             <el-col>
-              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改立即生效</span>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
             </el-col>
           </el-row>
           <el-row style="padding-top: 20px;">
@@ -545,7 +552,7 @@
           </el-form-item>
           <el-row>
             <el-col>
-              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改后立即生效</span>
             </el-col>
           </el-row>
           <el-row style="padding-top: 20px;">
