@@ -1009,7 +1009,7 @@ export default {
             }
           }
         } else {
-          Message.warning('请输入正确的uid')
+          Message.warning('该用户在Tongits JP数据为空')
           this.VisibleUid = false
         }
       })
@@ -1045,6 +1045,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功')
+          this.editPlayerInventoryVisible = false
         }
       })
     },
