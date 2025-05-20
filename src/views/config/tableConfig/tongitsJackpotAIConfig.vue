@@ -215,23 +215,23 @@ export default {
       robotlvl: [
         {
           value: 1,
-          label: '机器人A'
+          label: '机器人A(强放)'
         },
         {
           value: 2,
-          label: '机器人B'
+          label: '机器人B(弱放)'
         },
         {
           value: 3,
-          label: '机器人C'
+          label: '机器人C(正常)'
         },
         {
           value: 4,
-          label: '机器人D'
+          label: '机器人D(弱杀)'
         },
         {
           value: 5,
-          label: '机器人E'
+          label: '机器人E(强杀)'
         }
       ],
       robotForm: {
