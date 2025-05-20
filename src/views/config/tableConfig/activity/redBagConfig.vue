@@ -18,7 +18,7 @@
                 </el-col>
                 <el-col >
                   <el-form-item label="活动开始时间：">
-                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
+                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -28,41 +28,41 @@
                 </el-col>
                 <el-col >
                   <el-form-item label="每日活动开始时间：">
-                    <el-input v-model.number="item.LimitStartTime" style="width: 200px;" placeholder="请输入开始时间" />
+                    <el-date-picker v-model="item.EveryDayStartTime" type="datetime" placeholder="选择结束时间" format="HH:mm" size="mini" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col >
                   <el-form-item label="每日活动结束时间：">
-                    <el-input v-model.number="item.LimitEndTime" style="width: 200px;" placeholder="请输入结束时间" />
+                    <el-date-picker v-model="item.EveryDayEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(800)总发放限制：" :required="true">
-                    <el-input v-model.number="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  <el-form-item label="每日黄金红包总发放限制：" :required="true">
+                    <el-input v-model="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(5000)总发放限制：" :required="true">
-                    <el-input v-model.number="item.EveryDayLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  <el-form-item label="每日铂金红包总发放限制：" :required="true">
+                    <el-input v-model="item.EveryDayLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(10000)总发放限制：" :required="true">
-                    <el-input v-model.number="item.SumLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  <el-form-item label="每日砖石红包总发放限制：" :required="true">
+                    <el-input v-model="item.SumLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(800)总发放限制条件比例：" :required="true">
+                  <el-form-item label="超出黄金红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum1" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(5000)总发放限制条比例：" :required="true">
+                  <el-form-item label="超出铂金红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum2" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(10000)总发放限制条比例：" :required="true">
+                  <el-form-item label="超出砖石红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum3" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
@@ -97,6 +97,7 @@
               </el-col>
             </el-form>
           </el-row>
+
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
@@ -481,43 +482,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
-                <el-form-item label="uid白名单：" prop="item.WhitelistCfg.UidList">
-                  <el-input v-model="item.CurId" placeholder="Uid"></el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="addWhite">添加</el-button>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10" style="margin-top: 30px">
-              <h3 style="text-align:center;">开放白名单</h3>
-              <el-col :span="24">
-                <div style="padding-top: 10px">
-                  <el-table
-                    :data="item.WhitelistCfg.UidList"
-                    stripe
-                    border
-                    style="width: 100%"
-                  >
-                    <el-table-column
-                      label="UID"
-                      prop="uid"
-                    />
-                    <el-table-column
-                      label="操作"
-                    >
-                      <template scope="scope">
-                        <el-button
-                          size="mini"
-                          type="danger"
-                          @click="delRow(scope.row)"
-                        >删除</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </el-col>
             </el-row>
           </el-form>
         </el-tab-pane>
@@ -578,7 +542,7 @@
 <script>
 
 import Publish from "@/components/Publish/index.vue";
-import {$libShow, ClientTableData, DataRule} from "@/utils/common";
+import { $libDate, $libShow, ClientTableData, DataRule } from '@/utils/common'
 import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 import {Message} from "element-ui";
 import request from "@/utils/request";
@@ -622,6 +586,7 @@ export default {
     return {
       subKey: 'red_task_cfg',
       libShow: $libShow,
+      pickerOptions: $libShow.DefaultDatePickerOptions(),
       form: {
         Data: {}
       },
@@ -632,8 +597,8 @@ export default {
         IsOpen: true,
         StartTime: 0,
         EndTime: 0,
-        LimitStartTime: 0,
-        LimitEndTime: 0,
+        EveryDayStartTime: 0,
+        EveryDayEndTime: 0,
         SockGainRatio: 10,
         RuleImgHor: [],
         RuleImgVer: [],
@@ -1154,8 +1119,8 @@ export default {
             $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
-            $this.item.LimitStartTime = old.LimitStartTime
-            $this.item.LimitEndTime = old.LimitEndTime
+            $this.item.EveryDayStartTime = old.EveryDayStartTime * 1000
+            $this.item.EveryDayEndTime = old.EveryDayEndTime * 1000
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 100
             $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 100
             $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 100
@@ -1165,9 +1130,9 @@ export default {
             if (old.EndTime === 0) {
               $this.item.EndTime = $this.item.StartTime + 86400000
             }
-            $this.item.SingleLimitNum = old.SingleLimitNum
-            $this.item.EveryDayLimitNum = old.EveryDayLimitNum
-            $this.item.SumLimitNum = old.SumLimitNum
+            $this.item.SingleLimitNum = old.SingleLimitNum / 1000
+            $this.item.EveryDayLimitNum = old.EveryDayLimitNum / 1000
+            $this.item.SumLimitNum = old.SumLimitNum / 1000
             if (old.taskCfgData.length > 0) {
               $this.item.taskCfgData = this.getPokerCfgData(old.taskCfgData)
             }
@@ -1205,17 +1170,19 @@ export default {
       this.configCheck()
       var startTime = Math.floor(this.item.StartTime / 1000)
       var endTime = Math.floor(this.item.EndTime / 1000)
+      var everyStartTime = Math.floor(this.item.EveryDayStartTime / 1000)
+      var everyEndTime = Math.floor(this.item.EveryDayEndTime / 1000)
       var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
       var whiteList = this.getWhiteList()
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
         EndTime: endTime,
-        LimitStartTime: this.item.LimitStartTime,
-        LimitEndTime: this.item.LimitEndTime,
-        SingleLimitNum: this.item.SingleLimitNum,
-        EveryDayLimitNum: this.item.EveryDayLimitNum,
-        SumLimitNum: this.item.SumLimitNum,
+        EveryDayStartTime: everyStartTime,
+        EveryDayEndTime: everyEndTime,
+        SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
+        EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
+        SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),
         LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 100),
         LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 100),
         LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 100),
