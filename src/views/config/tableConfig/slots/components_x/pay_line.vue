@@ -68,7 +68,7 @@ export default {
   },
   data() {
     return {
-      editDisabled: false,
+      editDisabled: true,
       tableData: [],
       lock: false
     }
