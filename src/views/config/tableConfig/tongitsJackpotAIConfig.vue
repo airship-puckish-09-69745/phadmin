@@ -223,7 +223,7 @@ export default {
         },
         {
           value: 3,
-          label: '机器人C(正常)'
+          label: '机器人C(陪玩)'
         },
         {
           value: 4,
