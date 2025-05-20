@@ -99,7 +99,7 @@
               
               <template v-if="Gid === 128"> <!-- control信息 -->
                 <br>
-                <span>库存：{{ one.isRobot ? '-' : one.inventoryMoney/100 }}</span><br>
+                <span>库存：{{ one.inventoryMoney/100 }}{{'%'}}</span><br>
                 <span>区间：{{ getControlLevel(one.ctrlAreaId) }}</span><br>
                 <span>机器人权重：{{ one.RobotWeight/100 }}</span>
               </template>
