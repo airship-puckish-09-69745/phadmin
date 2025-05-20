@@ -628,23 +628,23 @@ export default {
       robotlvl: [
         {
           value: 1,
-          label: '超弱机器⼈'
+          label: 'A机器人(强放)'
         },
         {
           value: 2,
-          label: '稍弱机器⼈'
+          label: 'B机器人(弱放)'
         },
         {
           value: 3,
-          label: '正常机器⼈'
+          label: 'C机器人(陪玩)'
         },
         {
           value: 4,
-          label: '稍强机器⼈'
+          label: 'D机器人(弱杀)'
         },
         {
           value: 5,
-          label: '超强机器⼈'
+          label: 'E机器人(强杀)'
         }
       ],
       labelPosition: 'top',
@@ -764,7 +764,7 @@ export default {
       return Math.floor(num)
     },
     checkControlRangeSave() {
-      console.log(" this.editGameControl",  this.editGameControl)
+   //   console.log(" this.editGameControl",  this.editGameControl)
 
       this.editGameControl.GameControl.ControlRange[3].MoveRange = this.editGameControl.GameControl.ControlRange[4].MoveRange
       const ControlRange = []
@@ -772,10 +772,10 @@ export default {
         const tmp = this.editGameControl.GameControl.ControlRange[i]
         ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
       }
-      console.log("ControlRange", ControlRange)
+    //  console.log("ControlRange", ControlRange)
       for (let i = 1; i < ControlRange.length; i++) {
         if (ControlRange[i - 1].Ratio >= ControlRange[i].Ratio) {
-           console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
+         //  console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
           return false
         }
       }
@@ -849,11 +849,11 @@ export default {
         
       }
 
-      console.log("save", this.egameData)
+      // console.log("save", this.egameData)
       this.form.Data = JSON.stringify(this.egameData)
       const $this = this
 
-      console.log("this.form.Data",  this.form.Data)
+      // console.log("this.form.Data",  this.form.Data)
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.Compare(function(isEdit) {
@@ -882,7 +882,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
-          console.log("this.form ", this.form)
+          //console.log("this.form ", this.form)
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
             this.egameData = JSON.parse(response.Data.Data)
@@ -899,7 +899,7 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
 
-            console.log("begin", this.egameData)
+           // console.log("begin", this.egameData)
 
           } else {
             Message.error('保存失败')
@@ -995,7 +995,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log("objs", objs)
+         // console.log("objs", objs)
           if (objs.isFind === 0) {
             Message.warning('该用户在Tongits JP数据为空')
             this.VisibleUid = false
@@ -1088,7 +1088,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log(objs)
           Message.success('刷新成功！')
           this.pendingMoney = objs.pendingMoney/1000
 
@@ -1126,7 +1125,6 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log('objs', objs)
         }
       })
     },
@@ -1208,7 +1206,6 @@ export default {
       obj[key] = value
     },
     onSearch() {
-      console.log('【searchFilter】: ', this.editAppId)
       for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
         const tmp = this.egameData.AppControlConfig[i]
         if (tmp.AppId == this.editAppId) {
@@ -1218,7 +1215,6 @@ export default {
       }
     },
     handleUpdateAppid(appid) {
-      console.log('appid: ', appid)
         this.onSearch()
     },
     handleShowCopyDialog() {
@@ -1238,7 +1234,6 @@ export default {
     },
 
     handleCopy() {
-      console.log('handleCopy==>', this.copyDialog)
       if (this.copyDialog.form.targetAppId == 0) {
         Message.error('请输入目标AppId')
         return
@@ -1276,7 +1271,6 @@ export default {
       this.copyDialog.visible = false
     },
     handleModify() {
-      console.log('handleCopy==>', this.modifyDialog)
       if (this.modifyDialog.form.targetAppId == 0) {
         Message.error('请输入目标AppId')
         return
