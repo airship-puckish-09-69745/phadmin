@@ -995,6 +995,12 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log("objs", objs)
+          if (objs.isFind === 0) {
+            Message.warning('该用户在Tongits JP数据为空')
+            this.VisibleUid = false
+            return
+          }
           this.VisibleUid = true
           Message.success('刷新成功！')
           if (objs.list === undefined) {
