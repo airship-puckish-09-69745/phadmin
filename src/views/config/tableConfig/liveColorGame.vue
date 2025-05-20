@@ -30,6 +30,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
+            <!--
             <el-col :span="11">
               <el-form-item label="最大旁观次数：" prop="MaxWatchTimes" :rules="dataRule(true,{type:'n',range:'0'})">
                 <el-col :span="20">
@@ -37,6 +38,7 @@
                 </el-col>
               </el-form-item>
             </el-col>
+            -->
           </el-row>
           <!--el-row>
             <el-col :span="11" :offset="1">

@@ -2374,8 +2374,10 @@ export default {
         cnt+=this.scatterCounts[k]
       }
       let idxScatter = this.getScatterCnt(row)
-      return parseFloat( ((idxScatter / cnt).toFixed(4) * 100).toFixed(2)+'')
-
+      if (cnt > 0) {
+        return parseFloat( ((idxScatter / cnt).toFixed(4) * 100).toFixed(2)+'')
+      }
+      return 0
     },
     getScatterCnt(row){
       let idxScatter = 0

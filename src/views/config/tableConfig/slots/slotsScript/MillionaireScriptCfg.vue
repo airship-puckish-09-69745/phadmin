@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="Object" :attr-names="AttrNames"/>
+    <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" :make-content="makeContent" compare-type="Object" :attr-names="AttrNames"/>
 
 
     <el-row :gutter="10" style="margin-top: 30px">
@@ -713,7 +713,8 @@ export default {
         '186': 'mahjongjackpot',
         '100186': 'mahjongjackpot_x',
         '188': 'streetfighting',
-        '194': 'goldtrain'
+        '194': 'goldtrain',
+        '192': 'bountyraid'
       }
     }
   },
@@ -1003,8 +1004,10 @@ export default {
 
       reader.readAsArrayBuffer(file);
     },
-
-
+    makeContent(key, addData, delData, editData) {
+      // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
+      return '【'+this.getGameName(this.queryGid)+'】'
+    },
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {

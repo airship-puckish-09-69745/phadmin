@@ -293,6 +293,20 @@ export const asyncRoutes = [
                 ]
                 // name: 'tongitsTableQuick',
                 // meta: { title: 'Tongits-Quick ◐' }
+              },
+              {
+                path: 'TongitsCheat',
+                component: () => import('@/views/empty'),
+                redirect: 'noRedirect',
+                meta: { title: '防作弊配置', noCache: true },
+                children: [
+                  {
+                    path: 'tongitsCheat',
+                    component: () => import('@/views/config/tableConfig/tongitsCheat/tongitsCheat.vue'),
+                    name: 'tongitsCheat',
+                    meta: { title: '防作弊配置 ◐' }
+                  }
+                ]
               }
               /*{
                 path: 'tongitsswapTable',
@@ -1457,6 +1471,12 @@ export const asyncRoutes = [
                 name: 'pirateshipmars_slots_cfg',
                 meta: { title: 'PirateShip(审)' }
               },
+              /*{
+                path: 'pumpkincashmars_slots_cfg',
+                component: () => import('@/views/config/tableConfig/slots/pumpkincashmars_slots_cfg'),
+                name: 'pumpkincashmars_slots_cfg',
+                meta: { title: 'PumpkinCash(审)' }
+              },*/
               {
                 path: 'dancelionmars_slots_cfg',
                 component: () => import('@/views/config/tableConfig/slots/dancelionmars_slots_cfg'),
@@ -1812,6 +1832,20 @@ export const asyncRoutes = [
             component: () => import('@/views/config/tableConfig/activity/airdropConfig'),
             name: 'airdropConfig',
             meta: { title: '空投活动配置', noCache: true }
+          }
+        ]
+      },
+      {
+        path: 'redBagConfig',
+        component: () => import('@/views/empty'),
+        name: 'redBagConfig',
+        meta: { title: '红包雨活动配置', noCache: true },
+        children: [
+          {
+            path: 'redBagConfig',
+            component: () => import('@/views/config/tableConfig/activity/redBagConfig'),
+            name: 'redBagConfig',
+            meta: { title: '红包雨活动配置', noCache: true }
           }
         ]
       }
@@ -2582,6 +2616,12 @@ export const asyncRoutes = [
             meta: { title: 'P uppyHome', gid: 176 }
           },
           {
+            path: 'pumpkincash_slots_log',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pumpkincash_slots_log',
+            meta: { title: 'P umpkinCash', gid: 214 }
+          },
+          {
             path: 'romanarena_slots_log',
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'romanarena_slots_log',
@@ -2982,6 +3022,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/tongitsUpdateMoneylog'),
             name: 'tongits_blackuserlog',
             meta: { title: '机器人资产变更日志 ◐' }
+          },
+          {
+            path: 'tongitsCheatLog',
+            component: () => import('@/views/playerManage/tongitsCheat/tongitsCheatNew.vue'),
+            name: 'tongitsCheatLog',
+            meta: { title: '作弊日志（新） ◐' }
           }
         ]
       },

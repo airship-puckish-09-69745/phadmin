@@ -799,10 +799,16 @@ export default {
           insertList.push(num)
         }
       }
+      let isShow = false
       for (let i = 0; i < insertList.length; i++) {
         this.item.WhitelistCfg.UidList.push({
           "uid" : insertList[i]
         })
+        isShow = true
+      }
+      if (isShow) {
+        const showMsg = '白名单添加成功'
+        Message.success(showMsg)
       }
       console.log(this.item.WhitelistCfg.UidList)
     },

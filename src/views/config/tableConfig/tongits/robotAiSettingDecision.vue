@@ -9,15 +9,15 @@
             label="自己必胜fight/Challenge概率："  
             :rules="dataRule(true,{type:'n',range:'0'})" 
             >
-              <el-input v-model.number="AiConfig.Decision.Priority.WinRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="AiConfig.Decision.Priority.WinRatio" size="mini" style="width: 200px"  placeholder="0-100" type="number"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-row>
           <el-row>
             <el-form-item 
-            label="自己必败fight/Challenge概率："  
+            label="自己必败不fight/Challenge概率："  
             :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="AiConfig.Decision.Priority.LoseRato" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="AiConfig.Decision.Priority.LoseRato" size="mini" style="width: 200px"  placeholder="0-100" type="number" ><template slot="append">%</template></el-input>
             </el-form-item>
           </el-row>
           <el-row>
@@ -25,7 +25,7 @@
             label="第2轮决策全场未亮fight概率："
             :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="AiConfig.Decision.Priority.TwoRoundFightRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="AiConfig.Decision.Priority.TwoRoundFightRatio" size="mini" style="width: 200px"  placeholder="0-100" type="number"><template slot="append">%</template></el-input>
             </el-form-item>
           </el-row>
           <el-row>
@@ -33,7 +33,7 @@
             label="第3轮决策全场未亮fight概率："
             :rules="dataRule(true,{type:'n',range:'0'})"
             >
-              <el-input v-model.number="AiConfig.Decision.Priority.ThreeRoundFightRatio" size="mini" style="width: 200px"><template slot="append">%</template></el-input>
+              <el-input v-model.number="AiConfig.Decision.Priority.ThreeRoundFightRatio" size="mini" style="width: 200px"  placeholder="0-100" type="number" ><template slot="append">%</template></el-input>
             </el-form-item>
           </el-row>
         </el-col>
@@ -49,7 +49,7 @@
               label="Fight修正"
               :rules="dataRule(true,{type:'n',range:'0'})"
               >
-              <el-input v-model.number="AiConfig.Decision.RobotCorrect.FightRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="AiConfig.Decision.RobotCorrect.FightRatio" size="mini" style="width: 200px"  placeholder="0-100"  type="number" ><template slot="append">%</template></el-input>
             </el-form-item>
           </el-row>
           <el-row>
@@ -57,7 +57,7 @@
               label="Challenge修正"   
               :rules="dataRule(true,{type:'n',range:'0'})"
               >
-              <el-input v-model.number="AiConfig.Decision.RobotCorrect.ChallengeRatio" size="mini" style="width: 200px" ><template slot="append">%</template></el-input>
+              <el-input v-model.number="AiConfig.Decision.RobotCorrect.ChallengeRatio" size="mini" style="width: 200px"  placeholder="0-100" type="number" ><template slot="append">%</template></el-input>
             </el-form-item>
           </el-row>
         </el-col>
@@ -91,19 +91,19 @@
                 <el-table :data="scope.row.List" border>
                   <el-table-column label="分数">
                     <template scope="subScope">
-                      <el-input v-model.number="subScope.row.Score"  placeholder="0-100" />
+                      <el-input v-model.number="subScope.row.Score"  placeholder="0-100" type="number" />
                     </template>
                   </el-table-column>
                   <el-table-column label="Fight">
                     
                     <template scope="subScope" >
-                        <el-input v-model.number="subScope.row.FightRatio" placeholder="0-100"><template slot="append">%</template></el-input>
+                        <el-input v-model.number="subScope.row.FightRatio" placeholder="0-100" type="number"><template slot="append">%</template></el-input>
                     </template>
                   
                   </el-table-column>
                   <el-table-column label="Challenge">
                     <template scope="subScope">
-                      <el-input v-model.number="subScope.row.ChallengeRatio" placeholder="0-100"><template slot="append">%</template></el-input>
+                      <el-input v-model.number="subScope.row.ChallengeRatio" placeholder="0-100" type="number"><template slot="append">%</template></el-input>
                     </template>
                   </el-table-column>
 
@@ -167,7 +167,7 @@
               width="150"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.FightRatio" placeholder="0-100"><template slot="append">%</template></el-input>
+                <el-input v-model.number="scope.row.FightRatio" placeholder="0-100" type="number"><template slot="append">%</template></el-input>
               </template>
             </el-table-column>
 
@@ -177,7 +177,7 @@
               width="150"
             >
               <template slot-scope="scope">
-                <el-input v-model.number="scope.row.ChallengeRatio" placeholder="0-100" ><template slot="append">%</template></el-input>
+                <el-input v-model.number="scope.row.ChallengeRatio" placeholder="0-100" type="number" ><template slot="append">%</template></el-input>
               </template>
             </el-table-column>
           </el-table>
@@ -287,10 +287,6 @@ export default {
   },
 
   created() {
-    // 检查对象自身是否有某个属性（不检查原型链）
-    if (!this.AiConfig.hasOwnProperty('Decision')) {
-      this.AiConfig.Decision = this.Decision
-    }
     this.$nextTick(() => {
       console.log('common plugin tongitsConfig:', this.AiConfig)       
     })

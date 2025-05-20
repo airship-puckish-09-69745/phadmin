@@ -220,7 +220,7 @@ export default {
         // 先执行 getGameList，等待其完成
         await this.getGameList()
         // 再执行 getData
-        this.getData()
+        await this.getData()
       } catch (error) {
         console.error('Error loading data:', error)
       }
@@ -237,6 +237,7 @@ export default {
           SubKey: this.subKey
         }
       }).then(response => {
+        console.log('getData')
         if (response.RetCode === 0) {
           // console.log('sign reward', response)
           $this.form = response.Data || { Data: '{}' }
@@ -341,6 +342,7 @@ export default {
             return a.value - b.value
           })
         }
+        console.log('getGameList')
       })
     }
   }
