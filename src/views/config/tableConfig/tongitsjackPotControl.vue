@@ -307,14 +307,12 @@
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="当前游戏待调整⾦额:">
-                  {{ GameMoney }}
+                  {{ pendingMoney }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
+                  <el-button type="primary" @click="handleShowModifyGameDialog">修改</el-button>
                 </el-descriptions-item>
-                <!-- <el-descriptions-item>
-                  <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
-                </el-descriptions-item> -->
               </el-descriptions>
             </el-row>
             <el-row>
@@ -324,7 +322,42 @@
                 </el-descriptions-item>
               </el-descriptions>
             </el-row>
-
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="今天系统赢钱:">
+                  {{ todaySysWinMoney }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="今天有效下注:">
+                  {{ todayGameBet }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="7天平均有效下注:">
+                  {{ sevenDayMoneyBet }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+     
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="原点">
+                  {{ editGameControl.GameControl.ControlRange[3].Ratio}} %
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="系统游戏库存:">
+                  {{ gameRatio /100}} %
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
           </el-tab-pane>
           <el-tab-pane label="场次采信比例配置" name="gameInfoQuery">
             <el-row style="padding-top: 5px">
@@ -479,12 +512,45 @@
           </el-form-item>
           <el-row>
             <el-col>
-              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改立即生效</span>
             </el-col>
           </el-row>
           <el-row style="padding-top: 20px;">
             <el-col :span="12" :offset="10">
               <el-button type="primary" size="medium" @click="handleModify">修改</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
+
+    <el-dialog
+      title="修改配置"
+      :visible.sync="modifyGameDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="updateForm" :model="modifyGameDialog.form" label-width="200px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="当前游戏待调整⾦额:" :required="true">
+            <template>
+              <el-input v-model.number="pendingMoney"  placeholder="请输入" disabled=""/>
+            </template>
+          </el-form-item>
+
+          <el-form-item label="修改⾄" :required="true">
+            <template>
+              <el-input v-model.number="modifyGameDialog.form.pendingMoney"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改操作完成后，需要点击保按钮</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleUpdateGameMoney">修改</el-button>
             </el-col>
           </el-row>
         </el-tabs>
@@ -533,6 +599,12 @@ export default {
           srcAppId: '',
           targetAppId: 0,
           targetAppName: ''
+        }
+      },
+      modifyGameDialog: {
+        visible: false,
+        form: {
+         pendingMoney: 0,
         }
       },
       form: {},
@@ -587,6 +659,14 @@ export default {
       editPlayerInventory: {},
       GameRangeName: 0,
       GameMoney: 0,
+      pendingMoney: 0, //最新累积待调整金额
+      gameAreaId: 0,  //当前游戏库存所在群控区间
+      todaySysWinMoney: 0,  //今天系统赢钱
+      todayGameBet: 0,  //今天有效下注
+      sevenDayMoneyBet: 0,  //7天平均有效下注
+      gameRatio: 0,  //系统游戏库存
+      moveRange: 0,  //群体控制移动区间
+      addWeightRatio: 0,  //群体控制增加的权重值
       editGameControl: {
         appid: 1000002, 
         name: 'dayusenlin' , 
@@ -962,6 +1042,9 @@ export default {
       })
     },
     handleUpdateGameMoney() {
+      this.modifyGameDialog.visible = false
+      this.pendingMoney = this.modifyGameDialog.form.pendingMoney
+
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -969,7 +1052,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           appid: this.editAppId,
-          value: this.GameMoney * 1000,
+          value: this.pendingMoney*1000,
           Path: '/egamecontorl/set/game/pending/money'
         }
       }).then(response => {
@@ -993,8 +1076,17 @@ export default {
           const objs = response.Data || []
           console.log(objs)
           Message.success('刷新成功！')
-          this.GameMoney = objs.pendingMoney
-          this.GameMoney /= 1000
+          this.pendingMoney = objs.pendingMoney/1000
+
+          this.gameAreaId = objs.gameAreaId
+          this.todaySysWinMoney = objs.todaySysWinMoney  /= 1000
+          this.todayGameBet = objs.todayGameBet  /= 1000
+          this.sevenDayMoneyBet = objs.sevenDayMoneyBet  /= 1000
+          this.gameRatio = objs.gameRatio
+          this.moveRange = objs.moveRange
+          this.addWeightRatio = objs.addWeightRatio 
+
+
           if (objs.gameAreaId < 0) {
             this.GameRangeName = this.gameAreaName[0]
           } else if (objs.gameAreaId >= this.gameAreaName.length) {
@@ -1125,6 +1217,10 @@ export default {
       this.modifyDialog.visible = true
       this.modifyDialog.form.srcAppId = this.editAppId
       this.modifyDialog.form.targetAppId = ''
+    },
+
+    handleShowModifyGameDialog() {
+      this.modifyGameDialog.visible = true
     },
 
     handleCopy() {
