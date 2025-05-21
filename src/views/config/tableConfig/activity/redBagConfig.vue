@@ -66,6 +66,11 @@
                     <el-input v-model="item.LimitReceiveNum3" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
+                <el-col>
+                  <el-form-item label="限制红包发送金币额度：" :required="true">
+                    <el-input v-model="item.LimitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
               </el-form>
             </el-col>
           </el-row>
@@ -609,6 +614,7 @@ export default {
         LimitReceiveNum1: 0,
         LimitReceiveNum2: 0,
         LimitReceiveNum3: 0,
+        LimitMaxNum: 0,
         AppId: -1,
         PrizePoolCfg: [],
         GameIdCfg: [],
@@ -1124,6 +1130,7 @@ export default {
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
             $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 1000
             $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 1000
+            $this.item.LimitMaxNum = old.LimitMaxNum / 1000
             if (old.StartTime === 0) {
               $this.item.StartTime = new Date().setSeconds(0)
             }
@@ -1186,6 +1193,7 @@ export default {
         LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 1000),
         LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 1000),
         LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 1000),
+        LimitMaxNum: Math.ceil(this.item.LimitMaxNum * 1000),
         taskCfgData: taskCfgData,
         redBagCfg: this.item.redBagCfg,
         redMaxBagCfg: this.item.redMaxBagCfg,
