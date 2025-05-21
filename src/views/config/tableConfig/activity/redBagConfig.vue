@@ -18,7 +18,7 @@
                 </el-col>
                 <el-col >
                   <el-form-item label="活动开始时间：">
-                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" format="timestamp" size="mini" />
+                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -287,7 +287,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  {{ getRedBagCfgData(scope.row.Weight) }}%
+                  {{ getRedBagWeightCfg(scope.row.Weight) }}%
                 </template>
               </el-table-column>
               <el-table-column
@@ -365,7 +365,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  {{ getRedBagCfgData(scope.row.Weight) }}%
+                  {{ getRedBagWeightCfg(scope.row.Weight) }}%
                 </template>
               </el-table-column>
               <el-table-column
@@ -626,29 +626,29 @@ export default {
           { Id: 4, MatchNum: 3, RewardId: 0, RewardNum: 1, RewardType: 0, TaskType: 2, GameType: [] }
         ],
         redBagCfg: [
-          { Id: 1, redId: 1, Value1: 15, Value2: 185, Weight: 2300, SunNum: 0 },
-          { Id: 2, redId: 1, Value1: 185, Value2: 415, Weight: 4700, SunNum: 0 },
-          { Id: 3, redId: 1, Value1: 415, Value2: 625, Weight: 3000, SunNum: 0 },
-          { Id: 4, redId: 2, Value1: 745, Value2: 1255, Weight: 2619, SunNum: 0 },
-          { Id: 5, redId: 2, Value1: 1255, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 6, redId: 2, Value1: 2445, Value2: 2615, Weight: 2381, SunNum: 0 },
-          { Id: 7, redId: 3, Value1: 945, Value2: 1855, Weight: 2500, SunNum: 0 },
-          { Id: 8, redId: 3, Value1: 1855, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 9, redId: 3, Value1: 2145, Value2: 3055, Weight: 2500, SunNum: 0 }
+          { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
+          { Id: 2, redId: 1, Value1: 1850, Value2: 4150, Weight: 4700, SunNum: 0 },
+          { Id: 3, redId: 1, Value1: 4150, Value2: 6250, Weight: 3000, SunNum: 0 },
+          { Id: 4, redId: 2, Value1: 7450, Value2: 12550, Weight: 2619, SunNum: 0 },
+          { Id: 5, redId: 2, Value1: 12550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 6, redId: 2, Value1: 24450, Value2: 26150, Weight: 2381, SunNum: 0 },
+          { Id: 7, redId: 3, Value1: 9450, Value2: 18550, Weight: 2500, SunNum: 0 },
+          { Id: 8, redId: 3, Value1: 18550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 9, redId: 3, Value1: 21450, Value2: 30550, Weight: 2500, SunNum: 0 }
         ],
         redMaxBagCfg: [
-          { Id: 1, redId: 1, Value1: 15, Value2: 185, Weight: 2300, SunNum: 0 },
-          { Id: 2, redId: 1, Value1: 185, Value2: 415, Weight: 4700, SunNum: 0 },
-          { Id: 3, redId: 1, Value1: 415, Value2: 625, Weight: 3000, SunNum: 0 },
-          { Id: 4, redId: 1, Value1: 28800, Value2: 28800, Weight: 1000, SunNum: 20 },
-          { Id: 5, redId: 2, Value1: 745, Value2: 1255, Weight: 2619, SunNum: 0 },
-          { Id: 6, redId: 2, Value1: 1255, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 7, redId: 2, Value1: 2445, Value2: 2615, Weight: 2381, SunNum: 0 },
-          { Id: 8, redId: 2, Value1: 188800, Value2: 188800, Weight: 2000, SunNum: 10 },
-          { Id: 9, redId: 3, Value1: 945, Value2: 1855, Weight: 2500, SunNum: 0 },
-          { Id: 10, redId: 3, Value1: 1855, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 11, redId: 3, Value1: 2145, Value2: 3055, Weight: 2500, SunNum: 0 },
-          { Id: 12, redId: 3, Value1: 388800, Value2: 388800, Weight: 2000, SunNum: 5 }
+          { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
+          { Id: 2, redId: 1, Value1: 1850, Value2: 4150, Weight: 4700, SunNum: 0 },
+          { Id: 3, redId: 1, Value1: 4150, Value2: 6250, Weight: 3000, SunNum: 0 },
+          { Id: 4, redId: 1, Value1: 288000, Value2: 288000, Weight: 1000, SunNum: 20 },
+          { Id: 5, redId: 2, Value1: 7450, Value2: 12550, Weight: 2619, SunNum: 0 },
+          { Id: 6, redId: 2, Value1: 12550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 7, redId: 2, Value1: 24450, Value2: 26150, Weight: 2381, SunNum: 0 },
+          { Id: 8, redId: 2, Value1: 1888000, Value2: 1888000, Weight: 2000, SunNum: 10 },
+          { Id: 9, redId: 3, Value1: 9450, Value2: 18550, Weight: 2500, SunNum: 0 },
+          { Id: 10, redId: 3, Value1: 18550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 11, redId: 3, Value1: 21450, Value2: 30550, Weight: 2500, SunNum: 0 },
+          { Id: 12, redId: 3, Value1: 3888000, Value2: 3888000, Weight: 2000, SunNum: 5 }
         ]
       },
       showData: [],
@@ -1121,9 +1121,9 @@ export default {
             $this.item.EndTime = old.EndTime * 1000
             $this.item.EveryDayStartTime = old.EveryDayStartTime * 1000
             $this.item.EveryDayEndTime = old.EveryDayEndTime * 1000
-            $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 100
-            $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 100
-            $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 100
+            $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
+            $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 1000
+            $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 1000
             if (old.StartTime === 0) {
               $this.item.StartTime = new Date().setSeconds(0)
             }
@@ -1183,9 +1183,9 @@ export default {
         SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
         EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
         SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),
-        LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 100),
-        LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 100),
-        LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 100),
+        LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 1000),
+        LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 1000),
+        LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 1000),
         taskCfgData: taskCfgData,
         redBagCfg: this.item.redBagCfg,
         redMaxBagCfg: this.item.redMaxBagCfg,
@@ -1451,6 +1451,9 @@ export default {
       return cfg
     },
     getRedBagCfgData(num) {
+      return num / 1000
+    },
+    getRedBagWeightCfg(num) {
       return num / 100
     },
     //************************ 道具配置 ************************
