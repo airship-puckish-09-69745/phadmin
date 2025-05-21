@@ -439,16 +439,16 @@ export default {
       }
     },
     getControlLevel(lv) {
-      if (lv == 0) {
-        return '强杀'
-      } else if (lv == 1) {
-        return '弱放'
-      } else if (lv == 2) {
-        return '正常'
-      } else if (lv == 3) {
-        return '弱放'
-      } else if (lv == 4) {
+      if (lv == 1) {
         return '强放'
+      } else if (lv == 2) {
+        return '弱放'
+      } else if (lv == 3) {
+        return '正常'
+      } else if (lv == 4) {
+        return '弱杀'
+      } else if (lv == 5) {
+        return '强杀'
       }
     },
     showRobotLevel(level) {
