@@ -101,7 +101,6 @@
                 <br>
                 <span>库存：{{ one.gameRatio/100 }}%</span><br>
                 <span>区间：{{ getControlLevel(one.ctrlAreaId) }}</span><br>
-                <span>群控偏移：{{ one.moveRange/100 }}%</span><br>
                 <span>机器人权重：{{ one.RobotWeight/100 }}</span>
               </template>
               <br>
@@ -324,9 +323,8 @@ export default {
           Character: val.players[j].character,
           jackpotNum: val.players[j].JackpotNum,
           jackpotType: val.players[j].JackpotType,
-          gameRatio: val.players[j].InventoryMoney != undefined ? val.players[j].InventoryMoney : val.players[j].GameRatio,
+          gameRatio: val.players[j].GameRatio,
           ctrlAreaId: val.players[j].CtrlAreaId,
-          moveRange: val.players[j].MoveRange,
           isRobot: val.players[j].character > 0,
           RobotLevel: val.players[j].RobotLevel,
           RobotWeight: val.players[j].RobotWeight
