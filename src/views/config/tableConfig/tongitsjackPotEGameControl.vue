@@ -679,7 +679,7 @@ export default {
         name: 'dayusenlin' , 
         PlayerControl: 
         {
-          CriticalPoint: [-20000, -10000, 10000, 20000],
+          CriticalPoint: [100, 200, 300, 400],
           PlayerControlRound: 0,
           IsSameFirst: false,
           RobotWeight: [
@@ -827,7 +827,7 @@ export default {
 
           saveData.PlayerControl.CriticalPoint = []
           for (let i = 0; i < this.editGameControl.PlayerControl.CriticalPoint.length; i++) {
-            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 1000)
+            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 100)
           }
 
           saveData.GameControl.ControlRange = []
@@ -927,7 +927,7 @@ export default {
 
         this.editGameControl.PlayerControl.CriticalPoint = []
         for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
-          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 1000)
+          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 100)
         }
     },
 
