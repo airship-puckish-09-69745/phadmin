@@ -19,7 +19,9 @@
       <el-tabs type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
-            <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <h4 style="text-align:left;">个⼈控制临界点配置
+              <p style="color: red; font-weight: bold;">(底分倍数)</p>
+            </h4>
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center' }">
@@ -995,7 +997,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-         // console.log("objs", objs)
+          console.log("objs", objs)
           this.handleRefreshPlayerLevels()
           if (objs.isFind === 0) {
             Message.warning('该用户在Tongits JP数据为空')
