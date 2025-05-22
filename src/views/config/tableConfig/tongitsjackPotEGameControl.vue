@@ -1014,6 +1014,7 @@ export default {
               }
             }
           }
+          this.getPlayerRobotInfo()
         } else {
           Message.warning('该用户在Tongits JP数据为空')
           this.VisibleUid = false
@@ -1117,7 +1118,7 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
-          uid: 1000,
+          uid: 11246954,
           appid: this.editAppId,
           tableMoney: 10000,
           Path: '/egamecontorl/player/robot/level'
@@ -1125,6 +1126,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log("objs", objs)
         }
       })
     },
