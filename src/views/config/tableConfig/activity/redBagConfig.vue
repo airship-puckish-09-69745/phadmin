@@ -1125,8 +1125,8 @@ export default {
             $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
-            $this.item.EveryDayStartTime = old.EveryDayStartTime * 1000
-            $this.item.EveryDayEndTime = old.EveryDayEndTime * 1000
+            $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
+            $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
             $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
             $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 1000
             $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 1000
@@ -1464,6 +1464,41 @@ export default {
     getRedBagWeightCfg(num) {
       return num / 100
     },
+    getStartMidnightTimestamp(nTime) {
+      if (nTime === 0) {
+        return 0
+      }
+      const now = new Date(nTime)
+      var nHour = now.getHours()
+      var nMin = now.getMinutes()
+      const currTime = new Date()
+      currTime.setHours(nHour, nMin,0,0)
+      return currTime.getTime()
+    },
+    getEndMidnightTimestamp(nStartTime, nEndTime) {
+      if (nEndTime === 0) {
+        return 0
+      }
+      const start = new Date(nStartTime)
+      var sHour = start.getHours()
+      var sMin = start.getMinutes()
+
+      const end = new Date(nEndTime)
+      var eHour = end.getHours()
+      var eMin = end.getMinutes()
+
+      const currTime = new Date()
+      currTime.setHours(eHour, eMin,0,0)
+      var retTime = currTime.getTime()
+      if (sHour > eHour) {
+        retTime = retTime + 86400000
+      } else if (sHour === eHour) {
+        if (eMin <= sMin) {
+          retTime = retTime + 86400000
+        }
+      }
+      return retTime
+    },
     //************************ 道具配置 ************************
     getPropList() {
       request({
@@ -1484,7 +1519,6 @@ export default {
         } else {
           this.propList = []
         }
-        console.log("+++++++++++++++++++++++++++++++++++++++++")
         console.log(this.propList)
       })
     },
