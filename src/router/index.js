@@ -803,9 +803,9 @@ export const asyncRoutes = [
                     meta: { title: 'Jackpot配置' }
                   },
                   {
-                    path: 'tongitsjackPotControl',
-                    component: () => import('@/views/config/tableConfig/tongitsjackPotControl'),
-                    name: 'tongitsjackPotControl',
+                    path: 'tongitsjackPotEGameControl',
+                    component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
+                    name: 'tongitsjackPotEGameControl',
                     meta: { title: 'EGame控制配置 ◐' }
                   }
               //  ]
