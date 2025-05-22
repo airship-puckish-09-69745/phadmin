@@ -1003,6 +1003,7 @@ export default {
           }
           this.VisibleUid = true
           Message.success('刷新成功！')
+          this.handleRefreshPlayerLevels()
           if (objs.list === undefined) {
             objs.list = []
           }
@@ -1014,7 +1015,7 @@ export default {
               }
             }
           }
-          this.getPlayerRobotInfo()
+         // this.getPlayerRobotInfo()
         } else {
           Message.warning('该用户在Tongits JP数据为空')
           this.VisibleUid = false
