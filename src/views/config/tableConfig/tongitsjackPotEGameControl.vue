@@ -996,6 +996,7 @@ export default {
         if (response.RetCode === 0) {
           const objs = response.Data || []
          // console.log("objs", objs)
+          this.handleRefreshPlayerLevels()
           if (objs.isFind === 0) {
             Message.warning('该用户在Tongits JP数据为空')
             this.VisibleUid = false
@@ -1003,7 +1004,7 @@ export default {
           }
           this.VisibleUid = true
           Message.success('刷新成功！')
-          this.handleRefreshPlayerLevels()
+      
           if (objs.list === undefined) {
             objs.list = []
           }
