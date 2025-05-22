@@ -79,9 +79,9 @@
           label="昵称">
         </el-table-column>
         <el-table-column
-          prop="URank"
+          prop="InPutTime"
           sortable
-          label="排名">
+          label="玩牌时长">
         </el-table-column>
         <el-table-column
           prop="Scores"
@@ -182,7 +182,7 @@ export default {
         this.downloadTableData.push({
           'Uid': this.detalTableData[i].Uid,
           'Nick':  this.detalTableData[i].Nick,
-          'URank':  this.detalTableData[i].URank,
+          'UseTime':  this.detalTableData[i].InPutTime,
           'Scores':  this.detalTableData[i].Scores,
         })
       }
