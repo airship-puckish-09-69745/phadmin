@@ -842,6 +842,10 @@ export default {
             const tmp = this.editGameControl.GameControl.GameAcceptance[i]
             saveData.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
           }
+          if (saveData.PlayerControl.CriticalPoint.length == 0) {
+            Message.error('场次采信库存配置为空')
+            return
+          }
 
           this.egameData.AppControlConfig[j] = structuredClone(saveData)
         }
