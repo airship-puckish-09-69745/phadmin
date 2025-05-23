@@ -111,13 +111,13 @@
             </el-row>
             <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
               <el-table-column prop="GroupId"  label="分组ID" width="100"></el-table-column>
-              <el-table-column prop="GroupName" label="分组名" width="200"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupName" label="分组名" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
-              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="200"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
-              <el-table-column prop="Rules" label="筛选条件" width="300">
+              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
+              <el-table-column prop="Rules" label="筛选条件" width="400">
                 <template slot-scope="scope">{{groupRules2Text(scope.$index)}}</template>
               </el-table-column>
-              <el-table-column label="操作列表">
+              <el-table-column label="操作列表" width="200">
                 <template slot-scope="scope">
                   <el-button type="primary" @click="editGroupRules(scope.$index)" size="mini">配置</el-button>
                   <el-button type="primary" @click="delGroup(scope.$index)" size="mini">删除</el-button>
