@@ -530,7 +530,7 @@
             <el-input v-model.number="editForm.signExtra.matchMaxLimit" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
           </el-form-item>
 
-          <el-form-item v-if=" editForm.data.signUpType === 2 || editForm.data.signUpType === 3"  label="电子钱包报表是否上报:" :required="true">
+          <el-form-item v-if="editForm.data.signUpType === 3"  label="电子钱包报表是否上报:" :required="true">
             <el-radio-group v-model.number="editForm.signExtra.walletReport">
               <el-radio :label="0">是</el-radio>
               <el-radio :label="1">否</el-radio>
