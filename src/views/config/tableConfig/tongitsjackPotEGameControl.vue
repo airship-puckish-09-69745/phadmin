@@ -808,7 +808,7 @@ export default {
     },
     setData() {
       if (!this.checkControlRangeSave()) {
-        Message.error('群体控制临界点配置左边大于或等于右边大，区间配置错误')
+        Message.error('群体控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -816,7 +816,7 @@ export default {
         return
       }
       if (!this.checkPlayerCanSave()) {
-        Message.error('个人控制临界点配置左边大于或等于右边大，区间配置错误')
+        Message.error('个人控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
