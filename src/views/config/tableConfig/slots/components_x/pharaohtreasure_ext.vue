@@ -66,7 +66,9 @@
               </el-table-column>
               <el-table-column prop="WeightStr" label="倍数范围权重">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4"></el-input>
+                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4">
+<!--                    <template slot="append">倍数放大100倍</template>-->
+                  </el-input>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="120">
@@ -193,9 +195,9 @@ export default {
       const buyFreeOddsRange2 = []
       const buyFreeOddsWeight = []
       for (let i = 0; i < this.buyFreeOddsWeight.length; i++) {
-        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MinOdds)
-        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MaxOdds)
-        buyFreeOddsWeight.push(this.buyFreeOddsWeight[i].InWeight)
+        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MinOdds ? this.buyFreeOddsWeight[i].MinOdds : 0)
+        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MaxOdds ? this.buyFreeOddsWeight[i].MaxOdds : 0)
+        buyFreeOddsWeight.push(this.buyFreeOddsWeight[i].InWeight ? this.buyFreeOddsWeight[i].InWeight : 0)
       }
       this.cfg.BuyFreeOddsRange2 = buyFreeOddsRange2.join(',')
       this.cfg.BuyFreeOddsWeight = buyFreeOddsWeight.join(',')

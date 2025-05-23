@@ -163,6 +163,18 @@
                 </el-table-column>
 
                 <el-table-column
+                  v-if="item.GameId===22 || item.GameId===28 || item.GameId===29"
+                  prop="MinEmptyWaitTime"
+                  label="发空车等待时间"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-input v-model="scope.row.MinEmptyWaitTime" type="text" placeholder="发空车等待时间" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
+                <el-table-column
                   v-if="item.GameId===22 || item.GameId===28|| item.GameId===29"
                   prop="IsOpenBlackUser"
                   label="是否开启黑名单调控"
@@ -502,6 +514,11 @@ export default {
           this.allCfg.All[i].Config[j].PlayerNum = parseInt(this.allCfg.All[i].Config[j].PlayerNum)
           this.allCfg.All[i].Config[j].WaitTime = parseInt(this.allCfg.All[i].Config[j].WaitTime)
           this.allCfg.All[i].Config[j].FreeSeatNum = parseInt(this.allCfg.All[i].Config[j].FreeSeatNum)
+          if (this.allCfg.All[i].Config[j].hasOwnProperty('MinEmptyWaitTime')) {
+            this.allCfg.All[i].Config[j].MinEmptyWaitTime = parseInt(this.allCfg.All[i].Config[j].MinEmptyWaitTime)
+          }
+
+
           if (this.allCfg.All[i].Config[j].hasOwnProperty('MinLaunchNum')) {
             this.allCfg.All[i].Config[j].MinLaunchNum = parseInt(this.allCfg.All[i].Config[j].MinLaunchNum)
           }
