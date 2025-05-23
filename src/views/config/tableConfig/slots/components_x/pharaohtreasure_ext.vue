@@ -12,13 +12,13 @@
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="购买免费模式中奖倍数范围V2">
-            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="购买免费模式中奖倍数范围V2">-->
+<!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>-->
+<!--          </el-form-item>-->
 
-          <el-form-item label="购买免费模式中奖左范围概率V2">
-            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
-          </el-form-item>
+<!--          <el-form-item label="购买免费模式中奖左范围概率V2">-->
+<!--            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>-->
+<!--          </el-form-item>-->
 
           <el-form-item label="购买免费模式中奖倍数分布V2">
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
@@ -45,6 +45,38 @@
           </el-form-item>
 
         </el-form>
+      </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :span="12" :offset="3">
+        <el-tabs v-model="activeTab">
+          <el-tab-pane label="购买免费倍数" name="script">
+            <el-button type="primary" @click="addConfigRow(buyFreeOddsWeight)">添加</el-button>
+            <el-table :data="buyFreeOddsWeight">
+              <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MinOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="MinOdds" label="]目标倍数结束" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MaxOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="WeightStr" label="倍数范围权重">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120">
+                <template slot-scope="scope">
+                  <el-button type="danger" @click="removeConfigRow(buyFreeOddsWeight, scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </el-col>
     </el-row>
 
@@ -84,7 +116,9 @@ export default {
   data() {
     return {
       cfg: {
-      }
+      },
+      buyFreeOddsWeight: [{ MinOdds: 0, MaxOdds: 0, InWeight: 0 }],
+      activeTab: 'script'
     }
   },
   created() {
@@ -101,6 +135,7 @@ export default {
     },
     submitFrm() {
       const $this = this
+      this.setConfigRow()
       if (this.getStrLength(this.cfg.MultiOddsValInNormal) !== this.getStrLength(this.cfg.MultiOddsWeightInNormal)) {
         $this.$message.error('普通游戏多倍符号值与普通游戏多倍符号值权重长度不一致')
         return
@@ -133,7 +168,55 @@ export default {
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
+        this.initConfigRow()
       }
+    },
+    initConfigRow() {
+      let buyFreeOddsRangeV2 = []
+      if (this.cfg.BuyFreeOddsRangeV2) {
+        buyFreeOddsRangeV2 = this.cfg.BuyFreeOddsRangeV2.split(',')
+      }
+      let buyFreeOddsWeight = []
+      if (this.cfg.BuyFreeOddsWeight) {
+        buyFreeOddsWeight = this.cfg.BuyFreeOddsWeight.split(',')
+      }
+      this.buyFreeOddsWeight = []
+      for (let i = 0; i < buyFreeOddsRangeV2.length / 2; i++) {
+        this.buyFreeOddsWeight.push({
+          MinOdds: buyFreeOddsRangeV2[i * 2],
+          MaxOdds: buyFreeOddsRangeV2[i * 2 + 1],
+          InWeight: buyFreeOddsWeight[i] ? buyFreeOddsWeight[i] : 0
+        })
+      }
+    },
+    setConfigRow() {
+      const buyFreeOddsRangeV2 = []
+      const buyFreeOddsWeight = []
+      for (let i = 0; i < this.buyFreeOddsWeight.length; i++) {
+        buyFreeOddsRangeV2.push(this.buyFreeOddsWeight[i].MinOdds)
+        buyFreeOddsRangeV2.push(this.buyFreeOddsWeight[i].MaxOdds)
+        buyFreeOddsWeight.push(this.buyFreeOddsWeight[i].InWeight)
+      }
+      this.cfg.BuyFreeOddsRangeV2 = buyFreeOddsRangeV2.join(',')
+      this.cfg.BuyFreeOddsWeight = buyFreeOddsWeight.join(',')
+    },
+    addConfigRow(buyFreeOddsWeight) {
+      buyFreeOddsWeight.push({
+        MinOdds: 0,
+        MaxOdds: 0,
+        InWeight: 0
+      })
+    },
+    removeConfigRow(buyFreeOddsWeight, index) {
+      // 弹窗确认是否删除
+      this.$confirm('确定要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        buyFreeOddsWeight.splice(index, 1)
+        console.log('removeConfigRow index', index)
+      })
     }
   }
 }
