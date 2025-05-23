@@ -110,7 +110,7 @@
               <el-button @click="addGroup">添加新的用户群大奖配置</el-button>
             </el-row>
             <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
-              <el-table-column prop="GroupId"  label="分组ID" width="100"></el-table-column>
+              <el-table-column prop="GroupId"  label="分组ID" width="200"><template slot-scope="scope"><el-input v-model="scope.row.GroupId" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupName" label="分组名" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
               <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
