@@ -284,7 +284,7 @@ export default {
         CarryUpper: '最大携带',
         HideCarry: '隐藏目标值',
         TableMoney: '桌子大小',
-        MaxPlayerCount: 3,
+        MaxPlayerCount: 4,
         ObjectCount: '桌子数',
         FlowRate: '抽水率',
         DrawSeconds: '摸牌时间',
