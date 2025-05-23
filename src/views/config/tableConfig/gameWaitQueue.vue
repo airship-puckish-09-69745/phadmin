@@ -233,6 +233,18 @@
                   </template>
                 </el-table-column>
 
+                <el-table-column
+                  v-if="item.GameId===22 || item.GameId===28|| item.GameId===29"
+                  prop="IsEmptyOpen"
+                  label="是否开启发空车"
+                >
+                  <template slot-scope="scope">
+                    <el-form-item label-width="0">
+                      <el-switch v-model="scope.row.IsEmptyOpen" active-color="#13ce66" inactive-color="#ff4949" />
+                    </el-form-item>
+                  </template>
+                </el-table-column>
+
                 <el-table-column label="操作" :render-header="(h,obj)=>addTableHeaderButton(h,obj,item.GameId)">
                   <template slot-scope="scope">
                     <el-button type="danger" size="mini" @click="delRow(item.GameId, scope.$index, scope.row)">删除</el-button>
