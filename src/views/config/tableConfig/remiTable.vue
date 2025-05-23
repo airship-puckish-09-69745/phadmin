@@ -249,7 +249,7 @@ function newItem() {
     CarryUpper: '',
     HideCarry: '',
     TableMoney: '',
-    MaxPlayerCount: 3,
+    MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
     DrawSeconds: '',
