@@ -172,32 +172,32 @@ export default {
       }
     },
     initConfigRow() {
-      let buyFreeOddsRangeV2 = []
-      if (this.cfg.BuyFreeOddsRangeV2) {
-        buyFreeOddsRangeV2 = this.cfg.BuyFreeOddsRangeV2.split(',')
+      let buyFreeOddsRange2 = []
+      if (this.cfg.BuyFreeOddsRange2) {
+        buyFreeOddsRange2 = this.cfg.BuyFreeOddsRange2.split(',')
       }
       let buyFreeOddsWeight = []
       if (this.cfg.BuyFreeOddsWeight) {
         buyFreeOddsWeight = this.cfg.BuyFreeOddsWeight.split(',')
       }
       this.buyFreeOddsWeight = []
-      for (let i = 0; i < buyFreeOddsRangeV2.length / 2; i++) {
+      for (let i = 0; i < buyFreeOddsRange2.length / 2; i++) {
         this.buyFreeOddsWeight.push({
-          MinOdds: buyFreeOddsRangeV2[i * 2],
-          MaxOdds: buyFreeOddsRangeV2[i * 2 + 1],
+          MinOdds: buyFreeOddsRange2[i * 2],
+          MaxOdds: buyFreeOddsRange2[i * 2 + 1],
           InWeight: buyFreeOddsWeight[i] ? buyFreeOddsWeight[i] : 0
         })
       }
     },
     setConfigRow() {
-      const buyFreeOddsRangeV2 = []
+      const buyFreeOddsRange2 = []
       const buyFreeOddsWeight = []
       for (let i = 0; i < this.buyFreeOddsWeight.length; i++) {
-        buyFreeOddsRangeV2.push(this.buyFreeOddsWeight[i].MinOdds)
-        buyFreeOddsRangeV2.push(this.buyFreeOddsWeight[i].MaxOdds)
+        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MinOdds)
+        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MaxOdds)
         buyFreeOddsWeight.push(this.buyFreeOddsWeight[i].InWeight)
       }
-      this.cfg.BuyFreeOddsRangeV2 = buyFreeOddsRangeV2.join(',')
+      this.cfg.BuyFreeOddsRange2 = buyFreeOddsRange2.join(',')
       this.cfg.BuyFreeOddsWeight = buyFreeOddsWeight.join(',')
     },
     addConfigRow(buyFreeOddsWeight) {
