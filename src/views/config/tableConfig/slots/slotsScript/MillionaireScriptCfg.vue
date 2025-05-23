@@ -217,7 +217,7 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="Field" label="字段" width="300">
+        <el-table-column prop="Field" label="字段" width="200">
           <template slot-scope="scope">
             <el-select v-model="scope.row.Field" size="mini" default-first-option>
               <el-option v-for="o in groupFields" :key="o.key" :label="o.label" :value="o.value"/>
@@ -241,7 +241,7 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="Value" label="数值" width="300">
+        <el-table-column prop="Value" label="数值" width="150">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.Value" size="mini" />
           </template>
