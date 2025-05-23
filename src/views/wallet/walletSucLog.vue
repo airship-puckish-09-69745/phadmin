@@ -92,7 +92,7 @@
 
           <el-table-column label="操作金额" width="160px">
             <template slot-scope="scope">
-              <span v-if="scope.row.BetAmount> 0 && scope.row.LogType !== 4 "> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
+              <span v-if="scope.row.BetAmount!= 0 && scope.row.LogType !== 4 "> {{ formatNumber(scope.row.BetAmount /1000) }}</span>
               <span v-else-if="scope.row.RollMoney!== 0 && scope.row.LogType !== 4"> {{ formatNumber(scope.row.RollMoney /1000) }}</span>
               <span v-else-if="scope.row.TotalPayoffAmount> 0 && scope.row.LogType === 11"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>
               <span v-else-if="scope.row.TotalPayoffAmount> 0 && scope.row.LogType === 12"> {{ formatNumber(scope.row.TotalPayoffAmount /1000) }}</span>

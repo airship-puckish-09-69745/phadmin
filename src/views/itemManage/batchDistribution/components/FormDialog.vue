@@ -177,6 +177,8 @@ export default {
             }
           })
           this.form.SendDetails.account_details = account_details
+          console.log("11111",this.form.SendDetails.account_details)
+
           // 调用新增或者编辑接口
           if (this.updateForm) {
             this.updateBatchDistribution()
@@ -273,7 +275,12 @@ export default {
         this.$message.error('请使用英文逗号分隔id')
         return false
       }
-
+      let accountArr = this.account.split(',')
+      let repeatArray = this.hasDuplicates(accountArr)
+      if (repeatArray.length >= 0) {
+        this.$message.error( repeatArray.join(',') + " 账号重复请检查")
+        return false
+      }
       return true
     },
     /**
@@ -367,7 +374,18 @@ export default {
       if (val === 2) {
         this.form.SendDetails.app_id = ''
       }
+    },
+    hasDuplicates(arr) {
+    const map = new Map()
+    let emptyArr = []
+    for (let item of arr) {
+      if (map.has(item)) {
+        emptyArr.push(item)
+      }
+      map.set(item, true)
     }
+    return emptyArr
+  }
   }
 }
 </script>

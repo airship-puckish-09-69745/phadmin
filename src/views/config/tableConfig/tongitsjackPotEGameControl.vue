@@ -19,7 +19,7 @@
       <el-tabs type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
-            <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <h4 style="text-align:left;">个⼈控制临界点配置<span style="color: red;">(底分倍数)</span></h4>
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center' }">
@@ -307,14 +307,12 @@
             <el-row>
               <el-descriptions :column="3" :colon="false">
                 <el-descriptions-item label="当前游戏待调整⾦额:">
-                  {{ GameMoney }}
+                  {{ pendingMoney }}
                 </el-descriptions-item>
                 <el-descriptions-item>
                   <el-button type="primary" @click="handleRefreshGameMoney">刷新</el-button>
+                  <el-button type="primary" @click="handleShowModifyGameDialog">修改</el-button>
                 </el-descriptions-item>
-                <!-- <el-descriptions-item>
-                  <el-button type="primary" @click="handleUpdateGameMoney">修改</el-button>
-                </el-descriptions-item> -->
               </el-descriptions>
             </el-row>
             <el-row>
@@ -324,7 +322,49 @@
                 </el-descriptions-item>
               </el-descriptions>
             </el-row>
-
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="今日净胜、抽水:">
+                  {{ todaySysWinMoney }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="今日有效下注:">
+                  {{ todayGameBet }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="前7天平均有效下注:">
+                  {{ sevenDayMoneyBet }}
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+     
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="原点">
+                  {{ editGameControl.GameControl.ControlRange[3].Ratio}} %
+                </el-descriptions-item>
+              </el-descriptions>
+            </el-row>
+            <el-row>
+              <el-descriptions :column="3" :colon="false">
+                <el-descriptions-item label="系统游戏库存:">
+                  {{ gameRatio /100}} %
+                </el-descriptions-item>
+              
+              </el-descriptions>
+              <el-alert
+              title="⚠️ 系统游戏库存= （前7日每日平均有效下注*2.5%+今日净胜、抽水+最新累积待调整金额）/（前7日每日平局有效下注+今日有效下注）"
+              type="error"
+              :closable="false"
+              style="margin-bottom: 16px;"
+            />
+            </el-row>
           </el-tab-pane>
           <el-tab-pane label="场次采信比例配置" name="gameInfoQuery">
             <el-row style="padding-top: 5px">
@@ -490,6 +530,39 @@
         </el-tabs>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="修改配置"
+      :visible.sync="modifyGameDialog.visible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="updateForm" :model="modifyGameDialog.form" label-width="200px" size="small" inline>
+        <el-tabs type="card">
+          <el-form-item label="当前游戏待调整⾦额:" :required="true">
+            <template>
+              <el-input v-model.number="pendingMoney"  placeholder="请输入" disabled=""/>
+            </template>
+          </el-form-item>
+
+          <el-form-item label="修改⾄" :required="true">
+            <template>
+              <el-input v-model.number="modifyGameDialog.form.pendingMoney"  placeholder="请输入" />
+            </template>
+          </el-form-item>
+          <el-row>
+            <el-col>
+              <span style="padding: 15px 20px 15px 0; border: 1px #0a76a4;">注意：修改后立即生效</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding-top: 20px;">
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="handleUpdateGameMoney">修改</el-button>
+            </el-col>
+          </el-row>
+        </el-tabs>
+      </el-form>
+    </el-dialog>
     <compare ref="compare" />
   </div>
 </template>
@@ -535,6 +608,12 @@ export default {
           targetAppName: ''
         }
       },
+      modifyGameDialog: {
+        visible: false,
+        form: {
+         pendingMoney: 0,
+        }
+      },
       form: {},
       gameAreaName: [
         '强杀全生效',
@@ -549,23 +628,23 @@ export default {
       robotlvl: [
         {
           value: 1,
-          label: '超弱机器⼈'
+          label: 'A机器人(强放)'
         },
         {
           value: 2,
-          label: '稍弱机器⼈'
+          label: 'B机器人(弱放)'
         },
         {
           value: 3,
-          label: '正常机器⼈'
+          label: 'C机器人(陪玩)'
         },
         {
           value: 4,
-          label: '稍强机器⼈'
+          label: 'D机器人(弱杀)'
         },
         {
           value: 5,
-          label: '超强机器⼈'
+          label: 'E机器人(强杀)'
         }
       ],
       labelPosition: 'top',
@@ -587,12 +666,20 @@ export default {
       editPlayerInventory: {},
       GameRangeName: 0,
       GameMoney: 0,
+      pendingMoney: 0, //最新累积待调整金额
+      gameAreaId: 0,  //当前游戏库存所在群控区间
+      todaySysWinMoney: 0,  //今天系统赢钱
+      todayGameBet: 0,  //今天有效下注
+      sevenDayMoneyBet: 0,  //7天平均有效下注
+      gameRatio: 0,  //系统游戏库存
+      moveRange: 0,  //群体控制移动区间
+      addWeightRatio: 0,  //群体控制增加的权重值
       editGameControl: {
         appid: 1000002, 
         name: 'dayusenlin' , 
         PlayerControl: 
         {
-          CriticalPoint: [-20000, -10000, 10000, 20000],
+          CriticalPoint: [100, 200, 300, 400],
           PlayerControlRound: 0,
           IsSameFirst: false,
           RobotWeight: [
@@ -677,7 +764,7 @@ export default {
       return Math.floor(num)
     },
     checkControlRangeSave() {
-      console.log(" this.editGameControl",  this.editGameControl)
+   //   console.log(" this.editGameControl",  this.editGameControl)
 
       this.editGameControl.GameControl.ControlRange[3].MoveRange = this.editGameControl.GameControl.ControlRange[4].MoveRange
       const ControlRange = []
@@ -685,10 +772,10 @@ export default {
         const tmp = this.editGameControl.GameControl.ControlRange[i]
         ControlRange.push({ MoveRange: tmp.MoveRange, Ratio: this.convertToFloat(tmp.Ratio) })
       }
-      console.log("ControlRange", ControlRange)
+    //  console.log("ControlRange", ControlRange)
       for (let i = 1; i < ControlRange.length; i++) {
         if (ControlRange[i - 1].Ratio >= ControlRange[i].Ratio) {
-           console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
+         //  console.log("ControlRange",ControlRange[i - 1].Ratio,  ControlRange[i].Ratio, )
           return false
         }
       }
@@ -721,7 +808,7 @@ export default {
     },
     setData() {
       if (!this.checkControlRangeSave()) {
-        Message.error('群体控制个人临界点配置左边比右边大，请检测数据')
+        Message.error('群体控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -729,7 +816,7 @@ export default {
         return
       }
       if (!this.checkPlayerCanSave()) {
-        Message.error('个人控制临界点配置左边比右边大，请检测数据')
+        Message.error('个人控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -740,7 +827,7 @@ export default {
 
           saveData.PlayerControl.CriticalPoint = []
           for (let i = 0; i < this.editGameControl.PlayerControl.CriticalPoint.length; i++) {
-            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 1000)
+            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 100)
           }
 
           saveData.GameControl.ControlRange = []
@@ -755,6 +842,10 @@ export default {
             const tmp = this.editGameControl.GameControl.GameAcceptance[i]
             saveData.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
           }
+          if (saveData.PlayerControl.CriticalPoint.length == 0) {
+            Message.error('场次采信库存配置为空')
+            return
+          }
 
           this.egameData.AppControlConfig[j] = structuredClone(saveData)
         }
@@ -762,11 +853,11 @@ export default {
         
       }
 
-      console.log("save", this.egameData)
+      // console.log("save", this.egameData)
       this.form.Data = JSON.stringify(this.egameData)
       const $this = this
 
-      console.log("this.form.Data",  this.form.Data)
+      // console.log("this.form.Data",  this.form.Data)
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form)
       this.$refs.compare.Compare(function(isEdit) {
@@ -795,7 +886,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.form = response.Data || {}
-          console.log("this.form ", this.form)
+          //console.log("this.form ", this.form)
           // eslint-disable-next-line no-empty
           if (response.Data && response.Data.Data !== '') {
             this.egameData = JSON.parse(response.Data.Data)
@@ -812,7 +903,7 @@ export default {
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
 
-            console.log("begin", this.egameData)
+           // console.log("begin", this.egameData)
 
           } else {
             Message.error('保存失败')
@@ -840,7 +931,7 @@ export default {
 
         this.editGameControl.PlayerControl.CriticalPoint = []
         for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
-          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 1000)
+          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 100)
         }
     },
 
@@ -908,8 +999,16 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log("objs", objs)
+          this.handleRefreshPlayerLevels()
+          if (objs.isFind === 0) {
+            Message.warning('该用户在Tongits JP数据为空')
+            this.VisibleUid = false
+            return
+          }
           this.VisibleUid = true
           Message.success('刷新成功！')
+      
           if (objs.list === undefined) {
             objs.list = []
           }
@@ -921,8 +1020,9 @@ export default {
               }
             }
           }
+         // this.getPlayerRobotInfo()
         } else {
-          Message.warning('请输入正确的uid')
+          Message.warning('该用户在Tongits JP数据为空')
           this.VisibleUid = false
         }
       })
@@ -958,10 +1058,14 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           Message.success('保存成功')
+          this.editPlayerInventoryVisible = false
         }
       })
     },
     handleUpdateGameMoney() {
+      this.modifyGameDialog.visible = false
+      this.pendingMoney = this.modifyGameDialog.form.pendingMoney
+
       request({
         url: '/dataProxy/info',
         method: 'post',
@@ -969,7 +1073,7 @@ export default {
           Env: this.env,
           gid: this.gameId,
           appid: this.editAppId,
-          value: this.GameMoney * 1000,
+          value: this.pendingMoney*1000,
           Path: '/egamecontorl/set/game/pending/money'
         }
       }).then(response => {
@@ -991,10 +1095,18 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log(objs)
           Message.success('刷新成功！')
-          this.GameMoney = objs.pendingMoney
-          this.GameMoney /= 1000
+          this.pendingMoney = objs.pendingMoney/1000
+
+          this.gameAreaId = objs.gameAreaId
+          this.todaySysWinMoney = objs.todaySysWinMoney  /= 1000
+          this.todayGameBet = objs.todayGameBet  /= 1000
+          this.sevenDayMoneyBet = objs.sevenDayMoneyBet  /= 1000
+          this.gameRatio = objs.gameRatio
+          this.moveRange = objs.moveRange
+          this.addWeightRatio = objs.addWeightRatio 
+
+
           if (objs.gameAreaId < 0) {
             this.GameRangeName = this.gameAreaName[0]
           } else if (objs.gameAreaId >= this.gameAreaName.length) {
@@ -1012,7 +1124,7 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
-          uid: 1000,
+          uid: 11246954,
           appid: this.editAppId,
           tableMoney: 10000,
           Path: '/egamecontorl/player/robot/level'
@@ -1020,7 +1132,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-          console.log('objs', objs)
+          console.log("objs", objs)
         }
       })
     },
@@ -1102,7 +1214,6 @@ export default {
       obj[key] = value
     },
     onSearch() {
-      console.log('【searchFilter】: ', this.editAppId)
       for (let i = 0; i < this.egameData.AppControlConfig.length; i++) {
         const tmp = this.egameData.AppControlConfig[i]
         if (tmp.AppId == this.editAppId) {
@@ -1112,7 +1223,6 @@ export default {
       }
     },
     handleUpdateAppid(appid) {
-      console.log('appid: ', appid)
         this.onSearch()
     },
     handleShowCopyDialog() {
@@ -1127,8 +1237,11 @@ export default {
       this.modifyDialog.form.targetAppId = ''
     },
 
+    handleShowModifyGameDialog() {
+      this.modifyGameDialog.visible = true
+    },
+
     handleCopy() {
-      console.log('handleCopy==>', this.copyDialog)
       if (this.copyDialog.form.targetAppId == 0) {
         Message.error('请输入目标AppId')
         return
@@ -1166,7 +1279,6 @@ export default {
       this.copyDialog.visible = false
     },
     handleModify() {
-      console.log('handleCopy==>', this.modifyDialog)
       if (this.modifyDialog.form.targetAppId == 0) {
         Message.error('请输入目标AppId')
         return

@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="page-container" style="padding: 10px">
     <el-row>
-      <publish primary-key="ID" key-id="RemiTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
+      <publish primary-key="ID" key-id="RemiProTableConfig" :env-empty="true" :check="configCheck" :attr-names="AttrNames" />
     </el-row>
     <el-row style="padding-top: 5px">
       <el-col :span="20">
@@ -249,7 +249,7 @@ function newItem() {
     CarryUpper: '',
     HideCarry: '',
     TableMoney: '',
-    MaxPlayerCount: 3,
+    MaxPlayerCount: 4,
     ObjectCount: '',
     FlowRate: '',
     DrawSeconds: '',

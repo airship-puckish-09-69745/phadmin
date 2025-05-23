@@ -28,42 +28,47 @@
                 </el-col>
                 <el-col >
                   <el-form-item label="每日活动开始时间：">
-                    <el-input v-model.number="item.LimitStartTime" style="width: 200px;" placeholder="请输入开始时间" />
+                    <el-date-picker v-model="item.EveryDayStartTime" type="datetime" placeholder="选择结束时间" format="HH:mm" size="mini" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col >
                   <el-form-item label="每日活动结束时间：">
-                    <el-input v-model.number="item.LimitEndTime" style="width: 200px;" placeholder="请输入结束时间" />
+                    <el-date-picker v-model="item.EveryDayEndTime" type="datetime" placeholder="选择结束时间" format="HH:mm" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(800)总发放限制：" :required="true">
-                    <el-input v-model.number="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  <el-form-item label="每日黄金红包总发放限制：" :required="true">
+                    <el-input v-model="item.SingleLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(5000)总发放限制：" :required="true">
-                    <el-input v-model.number="item.EveryDayLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  <el-form-item label="每日铂金红包总发放限制：" :required="true">
+                    <el-input v-model="item.EveryDayLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(10000)总发放限制：" :required="true">
-                    <el-input v-model.number="item.SumLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
+                  <el-form-item label="每日砖石红包总发放限制：" :required="true">
+                    <el-input v-model="item.SumLimitNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(800)总发放限制条件比例：" :required="true">
+                  <el-form-item label="超出黄金红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum1" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(5000)总发放限制条比例：" :required="true">
+                  <el-form-item label="超出铂金红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum2" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
                 <el-col>
-                  <el-form-item label="每日(10000)总发放限制条比例：" :required="true">
+                  <el-form-item label="超出砖石红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum3" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col>
+                  <el-form-item label="限制红包发送金币额度：" :required="true">
+                    <el-input v-model="item.LimitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -97,6 +102,7 @@
               </el-col>
             </el-form>
           </el-row>
+
         </el-tab-pane>
 
         <el-tab-pane label="任务配置">
@@ -286,7 +292,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  {{ getRedBagCfgData(scope.row.Weight) }}%
+                  {{ getRedBagWeightCfg(scope.row.Weight) }}%
                 </template>
               </el-table-column>
               <el-table-column
@@ -364,7 +370,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  {{ getRedBagCfgData(scope.row.Weight) }}%
+                  {{ getRedBagWeightCfg(scope.row.Weight) }}%
                 </template>
               </el-table-column>
               <el-table-column
@@ -481,43 +487,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="11">
-                <el-form-item label="uid白名单：" prop="item.WhitelistCfg.UidList">
-                  <el-input v-model="item.CurId" placeholder="Uid"></el-input>
-                </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="addWhite">添加</el-button>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row :gutter="10" style="margin-top: 30px">
-              <h3 style="text-align:center;">开放白名单</h3>
-              <el-col :span="24">
-                <div style="padding-top: 10px">
-                  <el-table
-                    :data="item.WhitelistCfg.UidList"
-                    stripe
-                    border
-                    style="width: 100%"
-                  >
-                    <el-table-column
-                      label="UID"
-                      prop="uid"
-                    />
-                    <el-table-column
-                      label="操作"
-                    >
-                      <template scope="scope">
-                        <el-button
-                          size="mini"
-                          type="danger"
-                          @click="delRow(scope.row)"
-                        >删除</el-button>
-                      </template>
-                    </el-table-column>
-                  </el-table>
-                </div>
-              </el-col>
             </el-row>
           </el-form>
         </el-tab-pane>
@@ -578,7 +547,7 @@
 <script>
 
 import Publish from "@/components/Publish/index.vue";
-import {$libShow, ClientTableData, DataRule} from "@/utils/common";
+import { $libDate, $libShow, ClientTableData, DataRule } from '@/utils/common'
 import ImagePicker from "@/components/ImagePicker/ImagePicker.vue";
 import {Message} from "element-ui";
 import request from "@/utils/request";
@@ -622,6 +591,7 @@ export default {
     return {
       subKey: 'red_task_cfg',
       libShow: $libShow,
+      pickerOptions: $libShow.DefaultDatePickerOptions(),
       form: {
         Data: {}
       },
@@ -632,8 +602,8 @@ export default {
         IsOpen: true,
         StartTime: 0,
         EndTime: 0,
-        LimitStartTime: 0,
-        LimitEndTime: 0,
+        EveryDayStartTime: 0,
+        EveryDayEndTime: 0,
         SockGainRatio: 10,
         RuleImgHor: [],
         RuleImgVer: [],
@@ -644,6 +614,7 @@ export default {
         LimitReceiveNum1: 0,
         LimitReceiveNum2: 0,
         LimitReceiveNum3: 0,
+        LimitMaxNum: 0,
         AppId: -1,
         PrizePoolCfg: [],
         GameIdCfg: [],
@@ -661,29 +632,29 @@ export default {
           { Id: 4, MatchNum: 3, RewardId: 0, RewardNum: 1, RewardType: 0, TaskType: 2, GameType: [] }
         ],
         redBagCfg: [
-          { Id: 1, redId: 1, Value1: 15, Value2: 185, Weight: 2300, SunNum: 0 },
-          { Id: 2, redId: 1, Value1: 185, Value2: 415, Weight: 4700, SunNum: 0 },
-          { Id: 3, redId: 1, Value1: 415, Value2: 625, Weight: 3000, SunNum: 0 },
-          { Id: 4, redId: 2, Value1: 745, Value2: 1255, Weight: 2619, SunNum: 0 },
-          { Id: 5, redId: 2, Value1: 1255, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 6, redId: 2, Value1: 2445, Value2: 2615, Weight: 2381, SunNum: 0 },
-          { Id: 7, redId: 3, Value1: 945, Value2: 1855, Weight: 2500, SunNum: 0 },
-          { Id: 8, redId: 3, Value1: 1855, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 9, redId: 3, Value1: 2145, Value2: 3055, Weight: 2500, SunNum: 0 }
+          { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
+          { Id: 2, redId: 1, Value1: 1850, Value2: 4150, Weight: 4700, SunNum: 0 },
+          { Id: 3, redId: 1, Value1: 4150, Value2: 6250, Weight: 3000, SunNum: 0 },
+          { Id: 4, redId: 2, Value1: 7450, Value2: 12550, Weight: 2619, SunNum: 0 },
+          { Id: 5, redId: 2, Value1: 12550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 6, redId: 2, Value1: 24450, Value2: 26150, Weight: 2381, SunNum: 0 },
+          { Id: 7, redId: 3, Value1: 9450, Value2: 18550, Weight: 2500, SunNum: 0 },
+          { Id: 8, redId: 3, Value1: 18550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 9, redId: 3, Value1: 21450, Value2: 30550, Weight: 2500, SunNum: 0 }
         ],
         redMaxBagCfg: [
-          { Id: 1, redId: 1, Value1: 15, Value2: 185, Weight: 2300, SunNum: 0 },
-          { Id: 2, redId: 1, Value1: 185, Value2: 415, Weight: 4700, SunNum: 0 },
-          { Id: 3, redId: 1, Value1: 415, Value2: 625, Weight: 3000, SunNum: 0 },
-          { Id: 4, redId: 1, Value1: 28800, Value2: 28800, Weight: 1000, SunNum: 20 },
-          { Id: 5, redId: 2, Value1: 745, Value2: 1255, Weight: 2619, SunNum: 0 },
-          { Id: 6, redId: 2, Value1: 1255, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 7, redId: 2, Value1: 2445, Value2: 2615, Weight: 2381, SunNum: 0 },
-          { Id: 8, redId: 2, Value1: 188800, Value2: 188800, Weight: 2000, SunNum: 10 },
-          { Id: 9, redId: 3, Value1: 945, Value2: 1855, Weight: 2500, SunNum: 0 },
-          { Id: 10, redId: 3, Value1: 1855, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 11, redId: 3, Value1: 2145, Value2: 3055, Weight: 2500, SunNum: 0 },
-          { Id: 12, redId: 3, Value1: 388800, Value2: 388800, Weight: 2000, SunNum: 5 }
+          { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
+          { Id: 2, redId: 1, Value1: 1850, Value2: 4150, Weight: 4700, SunNum: 0 },
+          { Id: 3, redId: 1, Value1: 4150, Value2: 6250, Weight: 3000, SunNum: 0 },
+          { Id: 4, redId: 1, Value1: 288000, Value2: 288000, Weight: 1000, SunNum: 20 },
+          { Id: 5, redId: 2, Value1: 7450, Value2: 12550, Weight: 2619, SunNum: 0 },
+          { Id: 6, redId: 2, Value1: 12550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 7, redId: 2, Value1: 24450, Value2: 26150, Weight: 2381, SunNum: 0 },
+          { Id: 8, redId: 2, Value1: 1888000, Value2: 1888000, Weight: 2000, SunNum: 10 },
+          { Id: 9, redId: 3, Value1: 9450, Value2: 18550, Weight: 2500, SunNum: 0 },
+          { Id: 10, redId: 3, Value1: 18550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 11, redId: 3, Value1: 21450, Value2: 30550, Weight: 2500, SunNum: 0 },
+          { Id: 12, redId: 3, Value1: 3888000, Value2: 3888000, Weight: 2000, SunNum: 5 }
         ]
       },
       showData: [],
@@ -1154,20 +1125,21 @@ export default {
             $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
-            $this.item.LimitStartTime = old.LimitStartTime
-            $this.item.LimitEndTime = old.LimitEndTime
-            $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 100
-            $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 100
-            $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 100
+            $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
+            $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
+            $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
+            $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 1000
+            $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 1000
+            $this.item.LimitMaxNum = old.LimitMaxNum / 1000
             if (old.StartTime === 0) {
               $this.item.StartTime = new Date().setSeconds(0)
             }
             if (old.EndTime === 0) {
               $this.item.EndTime = $this.item.StartTime + 86400000
             }
-            $this.item.SingleLimitNum = old.SingleLimitNum
-            $this.item.EveryDayLimitNum = old.EveryDayLimitNum
-            $this.item.SumLimitNum = old.SumLimitNum
+            $this.item.SingleLimitNum = old.SingleLimitNum / 1000
+            $this.item.EveryDayLimitNum = old.EveryDayLimitNum / 1000
+            $this.item.SumLimitNum = old.SumLimitNum / 1000
             if (old.taskCfgData.length > 0) {
               $this.item.taskCfgData = this.getPokerCfgData(old.taskCfgData)
             }
@@ -1205,20 +1177,23 @@ export default {
       this.configCheck()
       var startTime = Math.floor(this.item.StartTime / 1000)
       var endTime = Math.floor(this.item.EndTime / 1000)
+      var everyStartTime = Math.floor(this.item.EveryDayStartTime / 1000)
+      var everyEndTime = Math.floor(this.item.EveryDayEndTime / 1000)
       var taskCfgData = this.getTaskCfgData(this.item.taskCfgData)
       var whiteList = this.getWhiteList()
       var tableData = {
         IsOpen: this.item.IsOpen,
         StartTime: startTime,
         EndTime: endTime,
-        LimitStartTime: this.item.LimitStartTime,
-        LimitEndTime: this.item.LimitEndTime,
-        SingleLimitNum: this.item.SingleLimitNum,
-        EveryDayLimitNum: this.item.EveryDayLimitNum,
-        SumLimitNum: this.item.SumLimitNum,
-        LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 100),
-        LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 100),
-        LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 100),
+        EveryDayStartTime: everyStartTime,
+        EveryDayEndTime: everyEndTime,
+        SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
+        EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
+        SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),
+        LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 1000),
+        LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 1000),
+        LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 1000),
+        LimitMaxNum: Math.ceil(this.item.LimitMaxNum * 1000),
         taskCfgData: taskCfgData,
         redBagCfg: this.item.redBagCfg,
         redMaxBagCfg: this.item.redMaxBagCfg,
@@ -1484,7 +1459,45 @@ export default {
       return cfg
     },
     getRedBagCfgData(num) {
+      return num / 1000
+    },
+    getRedBagWeightCfg(num) {
       return num / 100
+    },
+    getStartMidnightTimestamp(nTime) {
+      if (nTime === 0) {
+        return 0
+      }
+      const now = new Date(nTime)
+      var nHour = now.getHours()
+      var nMin = now.getMinutes()
+      const currTime = new Date()
+      currTime.setHours(nHour, nMin,0,0)
+      return currTime.getTime()
+    },
+    getEndMidnightTimestamp(nStartTime, nEndTime) {
+      if (nEndTime === 0) {
+        return 0
+      }
+      const start = new Date(nStartTime)
+      var sHour = start.getHours()
+      var sMin = start.getMinutes()
+
+      const end = new Date(nEndTime)
+      var eHour = end.getHours()
+      var eMin = end.getMinutes()
+
+      const currTime = new Date()
+      currTime.setHours(eHour, eMin,0,0)
+      var retTime = currTime.getTime()
+      if (sHour > eHour) {
+        retTime = retTime + 86400000
+      } else if (sHour === eHour) {
+        if (eMin <= sMin) {
+          retTime = retTime + 86400000
+        }
+      }
+      return retTime
     },
     //************************ 道具配置 ************************
     getPropList() {
@@ -1506,7 +1519,6 @@ export default {
         } else {
           this.propList = []
         }
-        console.log("+++++++++++++++++++++++++++++++++++++++++")
         console.log(this.propList)
       })
     },

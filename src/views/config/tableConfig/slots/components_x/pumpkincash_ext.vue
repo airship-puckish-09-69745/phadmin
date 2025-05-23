@@ -11,16 +11,22 @@
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-          <el-form-item label="免费模式额外增加免费的概率%" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.ScatterPlusRate" :required="true" />
+          <el-form-item label="免费模式额外增加免费的概率" prop="ScatterPlusRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.ScatterPlusRate" :required="true">
+              <template slot="append">％</template>
+            </el-input>
           </el-form-item>
 
-          <el-form-item label="出现金框符号的概率%" prop="GoldenSymbolRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.GoldenSymbolRate" :required="true" />
+          <el-form-item label="出现金框符号的概率" prop="GoldenSymbolRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.GoldenSymbolRate" :required="true">
+              <template slot="append">‰</template>
+            </el-input>
           </el-form-item>
 
-          <el-form-item label="金框符号获得随机倍率的概率%" prop="GoldenSymbolOddsRate" :rules="dataRule(true,{type:'n'})">
-            <el-input v-model.number="cfg.GoldenSymbolOddsRate" :required="true" />
+          <el-form-item label="金框符号获得随机倍率的概率" prop="GoldenSymbolOddsRate" :rules="dataRule(true,{type:'n'})">
+            <el-input v-model.number="cfg.GoldenSymbolOddsRate" :required="true">
+              <template slot="append">‰</template>
+            </el-input>
           </el-form-item>
 
           <el-form-item label="金框符号获得的倍率范围">

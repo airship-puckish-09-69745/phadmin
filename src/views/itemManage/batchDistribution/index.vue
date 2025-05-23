@@ -45,7 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="publish_time" label="发布时间" width="160">
-          <template slot-scope="scope">
+          <template v-if="scope.row.status == 1"  slot-scope="scope">
             {{ formatTime(scope.row.publish_time) }}
           </template>
         </el-table-column>
@@ -57,7 +57,12 @@
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="send_num" label="总发放量" />
+        <el-table-column prop="send_num" label="发放用户数" />
+        <el-table-column prop="send_users" label="总发道具数量" >
+          <template slot-scope="scope">
+            {{scope.row.send_num*scope.row.prop_details.prop_num}}
+          </template>
+          </el-table-column>/
         <el-table-column prop="applicant_user" label="操作人" width="120" />
         <el-table-column prop="approval_user" label="审批人" width="120" />
         <el-table-column prop="status" label="状态" width="120">
@@ -141,8 +146,8 @@ export default {
       libShow: $libShow,
       pickerOptions: $libShow.DefaultDatePickerOptions(),
       statusOptions: {
-        1: '发放成功',
-        2: '发放失败',
+        1: '发起成功',
+        2: '发起失败',
         3: '未审批',
         4: '审批中',
         6: '同意',
@@ -172,7 +177,8 @@ export default {
           publish_time: '', // 发起时间
           remark: '', // 备注
           prop_details: '', // 道具信息
-          send_num: '', // 发放总量
+          send_num: '', //  总发放人数
+          send_props: '', //发放总量
           applicant_user: '', // 申请人
           status: '', // 1:发起成功,2:发起失败,3:未审批,4:审批中,5:废弃,6:同意,7:拒绝,8:小额自动同意,9:自动取消,10:手动取消
           send_details: '', // 发放详情
@@ -188,7 +194,8 @@ export default {
         index: '序号',
         publish_time: '发布时间',
         remark: '备注',
-        send_num: '发放数量',
+        send_num: '总发放人数',
+        send_props: '发放数量',
         propName: '道具名称',
         applicant_user: '操作人',
         status: '状态'

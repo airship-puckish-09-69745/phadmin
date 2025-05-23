@@ -176,7 +176,17 @@ export default {
           'Id': parseInt(i) + 1,
           'Lists': []
         }
-        for (const row in this.tableData[i]) {
+        for (let col = 0; col < this.cols; col++) {
+          for (const row in this.tableData[i]) {
+            if (this.tableData[i][row]['col' + (col + 1)] === 1) {
+              rowData['Lists'].push({
+                'Row': parseInt(row),
+                'Col': col
+              })
+            }
+          }
+        }
+        /*for (const row in this.tableData[i]) {
           for (const col in this.tableData[i][row]) {
             if (this.tableData[i][row][col] === 1) {
               rowData['Lists'].push({
@@ -185,7 +195,7 @@ export default {
               })
             }
           }
-        }
+        }*/
 
         data['Items'].push(rowData)
       }

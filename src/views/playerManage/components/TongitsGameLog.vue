@@ -99,8 +99,9 @@
               
               <template v-if="Gid === 128"> <!-- control信息 -->
                 <br>
-                <span>库存：{{ one.isRobot ? '-' : one.inventoryMoney/1000 }}</span><br>
+                <span>库存：{{ one.gameRatio/100 }}%</span><br>
                 <span>区间：{{ getControlLevel(one.ctrlAreaId) }}</span><br>
+                <span>机器人权重：{{ one.RobotWeight/100 }}</span>
               </template>
               <br>
             </div>
@@ -322,10 +323,11 @@ export default {
           Character: val.players[j].character,
           jackpotNum: val.players[j].JackpotNum,
           jackpotType: val.players[j].JackpotType,
-          inventoryMoney: val.players[j].InventoryMoney,
+          gameRatio: val.players[j].GameRatio,
           ctrlAreaId: val.players[j].CtrlAreaId,
           isRobot: val.players[j].character > 0,
-          RobotLevel: val.players[j].RobotLevel
+          RobotLevel: val.players[j].RobotLevel,
+          RobotWeight: val.players[j].RobotWeight
         })
         console.log("uid:", val.players[j].uid, " ; isRobot:", val.players[j].character > 0)
       }
@@ -435,16 +437,16 @@ export default {
       }
     },
     getControlLevel(lv) {
-      if (lv == 0) {
-        return '强杀'
-      } else if (lv == 1) {
-        return '弱放'
-      } else if (lv == 2) {
-        return '正常'
-      } else if (lv == 3) {
-        return '弱放'
-      } else if (lv == 4) {
+      if (lv == 1) {
         return '强放'
+      } else if (lv == 2) {
+        return '弱放'
+      } else if (lv == 3) {
+        return '正常'
+      } else if (lv == 4) {
+        return '弱杀'
+      } else if (lv == 5) {
+        return '强杀'
       }
     },
     showRobotLevel(level) {

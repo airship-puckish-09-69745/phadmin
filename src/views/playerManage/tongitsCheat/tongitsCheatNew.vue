@@ -416,7 +416,7 @@ export default {
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
-          width="100"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
@@ -426,7 +426,7 @@ export default {
         <el-table-column
           prop="LastEndTime"
           label="最近牌局时间"
-          width="100"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
@@ -436,7 +436,7 @@ export default {
         <el-table-column
           prop="LastCheatTime"
           label="最近作弊时间"
-          width="100"
+          width="200"
           align="center"
         >
           <template slot-scope="scope">
@@ -445,7 +445,7 @@ export default {
         </el-table-column>
         <el-table-column
           label="历史作弊实锤"
-          width="100"
+          width="300"
           align="center"
         >
           <template slot-scope="scope">
@@ -479,8 +479,8 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-          label="作弊详情"
-          width="100"
+          label="操作"
+          width="400"
           align="center"
         >
           <template slot-scope="scope">

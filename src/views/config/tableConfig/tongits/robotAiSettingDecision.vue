@@ -14,7 +14,7 @@
           </el-row>
           <el-row>
             <el-form-item 
-            label="自己必败fight/Challenge概率："  
+            label="自己必败不fight/Challenge概率："  
             :rules="dataRule(true,{type:'n',range:'0'})"
             >
               <el-input v-model.number="AiConfig.Decision.Priority.LoseRato" size="mini" style="width: 200px"  placeholder="0-100" type="number" ><template slot="append">%</template></el-input>
