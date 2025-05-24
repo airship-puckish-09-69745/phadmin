@@ -205,8 +205,8 @@ export default {
       for(let i=0;i<this.multipleSelection.length;i++){
         matchIdList.push(this.multipleSelection[i].MatchId)
       }
-      if(this.multipleSelection.length === 0 || this.multipleSelection.length > 5){
-        Message.error("勾选的数据超过5条了")
+      if(this.multipleSelection.length === 0 || this.multipleSelection.length > 10){
+        Message.error("勾选的数据超过10条了")
         return
       }
       this.initFormData(matchIdList)
