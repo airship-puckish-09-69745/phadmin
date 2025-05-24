@@ -185,6 +185,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/bigprizelog'),
         name: '大奖日志',
         meta: { title: 'slots - 大奖日志 ◐' }
+      },
+      {
+        path: 'egame-control',
+        component: () => import('@/views/online/egameControl/index.vue'),
+        name: 'EGame控制监控',
+        meta: { title: 'EGame控制监控' }
       }
     ]
   },
