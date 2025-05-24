@@ -224,12 +224,12 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="BetMin" label="最小单注金额(例:0.003)" width="300">
+        <el-table-column prop="BetMin" label="最小单注金额(例:0.003,0为不限)" width="300">
           <template slot-scope="scope">
             <el-input v-model="scope.row.BetMinStr" size="mini" />
           </template>
         </el-table-column>
-        <el-table-column prop="BetMax" label="最大单注金额(例:0.003)" width="300">
+        <el-table-column prop="BetMax" label="最大单注金额(例:0.003,0为不限)" width="300">
           <template slot-scope="scope">
             <el-input v-model="scope.row.BetMaxStr" size="mini" />
           </template>
@@ -621,10 +621,10 @@ export default {
     //添加用户群组配置
     addGroup() {
       this.item.BigPrizeGroups.push({
-        GroupId: 0,
-        GroupName: '',
-        GroupDesc: '',
-        HitPerMillion: '',
+        GroupId: this.item.BigPrizeGroups.length+1,
+        GroupName: '未命名',
+        GroupDesc: '请添加说明',
+        HitPerMillion: 25,
         Rules: []
       })
     },
@@ -669,7 +669,9 @@ export default {
         'Field': 1,
         'Days': 1,
         'BetMin': 0,
+        'BetMinStr': 0,
         'BetMax': 0,
+        'BetMaxStr': 0,
         'Operator': 1,
         'Value': 0
       })
