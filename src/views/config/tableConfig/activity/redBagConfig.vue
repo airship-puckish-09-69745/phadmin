@@ -224,7 +224,7 @@
             </el-form-item>
             <el-form-item v-if="edit.item.TaskType == 2" label="奖励ID：" :required="true" prop="TaskType">
               <el-col :span="15">
-                <el-select   v-model.number="edit.item.RewardId" placeholder="请选择" style="width: 250px">
+                <el-select   v-model.number="edit.item.RewardId" placeholder="请选择" style="width: 250px" @change="SetPropName(edit.item.RewardId)">
                   <el-option
                     v-for="item in propOptions"
                     :key="item.value"
@@ -237,6 +237,18 @@
             <el-form-item  label="奖励数量：" :required="true" prop="RewardNum">
               <el-col :span="15">
                 <el-input v-model.number="edit.item.RewardNum" />
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="edit.item.TaskType == 2" label="有效时间：" :required="true" prop="TaskType">
+              <el-col :span="15">
+                <el-select   v-model.number="edit.item.RewardTime" placeholder="请选择" style="width: 250px">
+                  <el-option
+                    v-for="item in propDayTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
               </el-col>
             </el-form-item>
           </el-form>
@@ -561,6 +573,8 @@ function newPrizePoolCfg() {
     RewardId: 0,
     RewardNum: 0,
     RewardType: 0,
+    RewardName: '',
+    RewardTime: 0,
     TaskType: 0,
     GameType: []
   }
@@ -626,10 +640,10 @@ export default {
         CurId: '',
         IsWhite: true,
         taskCfgData: [
-          { Id: 1, MatchNum: 800, RewardId: 1, RewardNum: 1, RewardType: 0, TaskType: 1, GameType: [] },
-          { Id: 2, MatchNum: 4200, RewardId: 1, RewardNum: 1, RewardType: 0, TaskType: 1, GameType: [] },
-          { Id: 3, MatchNum: 5000, RewardId: 1, RewardNum: 1, RewardType: 0, TaskType: 1, GameType: [] },
-          { Id: 4, MatchNum: 3, RewardId: 0, RewardNum: 1, RewardType: 0, TaskType: 2, GameType: [] }
+          { Id: 1, MatchNum: 800, RewardId: 1, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 1, GameType: [] },
+          { Id: 2, MatchNum: 4200, RewardId: 1, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 1, GameType: [] },
+          { Id: 3, MatchNum: 5000, RewardId: 1, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 1, GameType: [] },
+          { Id: 4, MatchNum: 3, RewardId: 0, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 2, GameType: [] }
         ],
         redBagCfg: [
           { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
@@ -878,6 +892,9 @@ export default {
       this.edit.cfgType = nType
       this.initFormData(true, ob.Id)
       this.edit.visible = true
+      if (ob.TaskType === 2) {
+        this.updatePropOptions(ob.RewardType)
+      }
     },
     handleDelete(ob, nType) {
       let $this = this
@@ -1082,8 +1099,10 @@ export default {
             this.item.taskCfgData[i].RewardNum = this.edit.item.RewardNum
             this.item.taskCfgData[i].RewardId = this.edit.item.RewardId
             this.item.taskCfgData[i].RewardType = this.edit.item.RewardType
+            this.item.taskCfgData[i].RewardName = this.edit.item.RewardName
             this.item.taskCfgData[i].GameType = this.edit.item.GameType
             this.item.taskCfgData[i].TaskType = this.edit.item.TaskType
+            this.item.taskCfgData[i].RewardTime = this.edit.item.RewardTime
           }
         }
       } else {
@@ -1094,8 +1113,10 @@ export default {
             this.item.taskCfgData[i].RewardNum = this.edit.item.RewardNum
             this.item.taskCfgData[i].RewardId = this.edit.item.RewardId
             this.item.taskCfgData[i].RewardType = this.edit.item.RewardType
+            this.item.taskCfgData[i].RewardName = this.edit.item.RewardName
             this.item.taskCfgData[i].GameType = this.edit.item.GameType
             this.item.taskCfgData[i].TaskType = this.edit.item.TaskType
+            this.item.taskCfgData[i].RewardTime = this.edit.item.RewardTime
             isExit = true
             break
           }
@@ -1559,7 +1580,15 @@ export default {
           break
         }
       }
-    }
+    },
+    SetPropName(itemId) {
+      for (let i = 0; i < this.propOptions.length; i++) {
+        if (this.propOptions[i].value === itemId) {
+          this.edit.item.RewardName = this.propOptions[i].label
+          break
+        }
+      }
+    },
     //************************ 道具配置 ************************
   }
 }
