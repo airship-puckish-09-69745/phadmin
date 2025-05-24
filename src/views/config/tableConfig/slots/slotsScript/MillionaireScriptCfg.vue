@@ -203,7 +203,7 @@
     </el-dialog>
 
     <!-- 用户群组条件弹窗 开始 -->
-    <el-dialog v-if="editGroupRulesFlag" title="用户群筛选条件列表" :visible.sync="editGroupRulesFlag" width="60%">
+    <el-dialog v-if="editGroupFlag" title="用户群筛选条件列表" :visible.sync="editGroupFlag" width="60%">
       <el-row>
         <el-col :offset="0" :span="12">
           <el-button type="info" @click="addGroupRules" size="mini">添加新条件</el-button>
@@ -315,8 +315,8 @@ export default {
       itemKey2: 0,
       itemKeyBet: 0,
       slotCfg: {},
-      editGroupRulesFlag: false,
-      editGroupRulesIdx: -1,
+      editGroupFlag: false,
+      editGroupIndex: -1,
       editGroupRulesData: [],
       groupFields: [
         {'label': 'RTP', 'value': 1},
@@ -639,8 +639,8 @@ export default {
 
     //编辑用户群组条件
     editGroupRules(idx) {
-      this.editGroupRulesFlag = true
-      this.editGroupRulesIdx = idx
+      this.editGroupFlag = true
+      this.editGroupIndex = idx
       this.editGroupRulesData = this.item.BigPrizeGroups[idx].Rules
       for (const k in this.editGroupRulesData) {
         if (this.editGroupRulesData[k].BetMin == 0) {
@@ -660,7 +660,10 @@ export default {
 
     //保存用户群组条件
     saveGroupRules() {
-      if (this.editGroupRulesIdx < 0) {
+      if (this.editGroupIndex < 0) {
+        return
+      }
+      if (!this.checkBigPrizeGroupRules(this.item.BigPrizeGroups[this.editGroupIndex].GroupId, this.editGroupRulesData)) {
         return
       }
       for (const k in this.editGroupRulesData) {
@@ -675,9 +678,9 @@ export default {
           this.editGroupRulesData[k].BetMax = Math.floor(parseFloat(this.editGroupRulesData[k].BetMaxStr) * 1000)
         }
       }
-      this.item.BigPrizeGroups[this.editGroupRulesIdx].Rules = this.editGroupRulesData
-      this.editGroupRulesFlag = false
-      this.editGroupRulesIdx = -1
+      this.item.BigPrizeGroups[this.editGroupIndex].Rules = this.editGroupRulesData
+      this.editGroupFlag = false
+      this.editGroupIndex = -1
     },
 
     //添加用户群组条件
@@ -732,30 +735,38 @@ export default {
           return false
         }
         //检查每一个条件
-        let m = {}
-        for (const kk in group.Rules) {
-          //检查条件是否有重复
-          const uniqKey = group.Rules[kk].Field + '_' + group.Rules[kk].Days + '_' + group.Rules[kk].BetMin + '_' + group.Rules[kk].BetMax
-          if (typeof m[uniqKey] != 'undefined') {
-            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 之前的条件出现重复!')
-            return false
-          } else {
-            m[uniqKey] = 1
-          }
-          //检查单注范围是否有效
-          if (group.Rules[kk].BetMin < 0) {
-            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 单注金额最小值无效!')
-            return false
-          }
-          if (group.Rules[kk].BetMax > 0 && group.Rules[kk].BetMax < group.Rules[kk].BetMin) {
-            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 单注金额最大值无效!')
-            return false
-          }
-          //检查数值是否有效
-          if (group.Rules[kk].Value < 0) {
-            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 条件值无效!')
-            return false
-          }
+        if (!this.checkBigPrizeGroupRules(group.GroupId, group.Rules)) {
+          return false
+        }
+      }
+      return true
+    },
+
+    //验证用户群配置的过滤规则
+    checkBigPrizeGroupRules(groupId, rules) {
+      let m = {}
+      for (const kk in rules) {
+        //检查条件是否有重复
+        const uniqKey = rules[kk].Field + '_' + rules[kk].Days + '_' + rules[kk].BetMin + '_' + rules[kk].BetMax
+        if (typeof m[uniqKey] != 'undefined') {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 与之前的条件出现重复!')
+          return false
+        } else {
+          m[uniqKey] = 1
+        }
+        //检查单注范围是否有效
+        if (rules[kk].BetMin < 0) {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 单注金额最小值无效!')
+          return false
+        }
+        if (rules[kk].BetMax > 0 && rules[kk].BetMax < rules[kk].BetMin) {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 单注金额最大值无效!')
+          return false
+        }
+        //检查数值是否有效
+        if (rules[kk].Value < 0) {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 条件值无效!')
+          return false
         }
       }
       return true
