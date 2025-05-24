@@ -663,9 +663,7 @@ export default {
       if (this.editGroupIndex < 0) {
         return
       }
-      if (!this.checkBigPrizeGroupRules(this.item.BigPrizeGroups[this.editGroupIndex].GroupId, this.editGroupRulesData)) {
-        return
-      }
+      //转换单注金额为数值
       for (const k in this.editGroupRulesData) {
         if (this.editGroupRulesData[k].BetMinStr === '' || /[^\d\.]/.test(this.editGroupRulesData[k].BetMinStr)) {
           this.editGroupRulesData[k].BetMin = 0
@@ -678,6 +676,11 @@ export default {
           this.editGroupRulesData[k].BetMax = Math.floor(parseFloat(this.editGroupRulesData[k].BetMaxStr) * 1000)
         }
       }
+      //验证数据有效性
+      if (!this.checkBigPrizeGroupRules(this.item.BigPrizeGroups[this.editGroupIndex].GroupId, this.editGroupRulesData)) {
+        return
+      }
+      //更新数据
       this.item.BigPrizeGroups[this.editGroupIndex].Rules = this.editGroupRulesData
       this.editGroupFlag = false
       this.editGroupIndex = -1
