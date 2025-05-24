@@ -53,6 +53,7 @@
         <el-tabs v-model="activeTab">
           <el-tab-pane label="购买免费倍数" name="script">
             <el-button type="primary" @click="addConfigRow(buyFreeOddsWeight)">添加</el-button>
+            <span style="margin-left:10px;color:#909399">(配置的数值不能出现0倍的情况)</span>
             <el-table :data="buyFreeOddsWeight">
               <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
                 <template slot-scope="scope">
@@ -66,9 +67,7 @@
               </el-table-column>
               <el-table-column prop="WeightStr" label="倍数范围权重">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4">
-<!--                    <template slot="append">倍数放大100倍</template>-->
-                  </el-input>
+                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4"></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="120">
