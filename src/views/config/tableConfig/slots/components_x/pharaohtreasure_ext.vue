@@ -12,13 +12,13 @@
             <el-input v-model.number="cfg.ScatterOdds" :required="true" />
           </el-form-item>
 
-<!--          <el-form-item label="购买免费模式中奖倍数范围V2">-->
-<!--            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="购买免费模式中奖倍数范围V2">
+            <el-input v-model="cfg.BuyFreeOddsRangeV2" placeholder="请输入内容,如0,150,151,750"> <template slot="append">四个值用 , 连接。如0,150,151,750表示0,150和151,750</template> </el-input>
+          </el-form-item>
 
-<!--          <el-form-item label="购买免费模式中奖左范围概率V2">-->
-<!--            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>-->
-<!--          </el-form-item>-->
+          <el-form-item label="购买免费模式中奖左范围概率V2">
+            <el-input v-model.number="cfg.BuyFreeRateV2" placeholder="请输入内容,如800"> <template slot="append">‰</template> </el-input>
+          </el-form-item>
 
           <el-form-item label="购买免费模式中奖倍数分布V2">
             <el-input v-model="cfg.BuyFreeDistributeV2" placeholder="请输入内容,如250,500,70,501,750,50"> <template slot="append">三个值一组用 , 连接。</template> </el-input>
@@ -53,6 +53,7 @@
         <el-tabs v-model="activeTab">
           <el-tab-pane label="购买免费倍数" name="script">
             <el-button type="primary" @click="addConfigRow(buyFreeOddsWeight)">添加</el-button>
+            <span style="margin-left:10px;color:#909399">(配置的数值不能出现0倍的情况)</span>
             <el-table :data="buyFreeOddsWeight">
               <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
                 <template slot-scope="scope">
@@ -66,9 +67,7 @@
               </el-table-column>
               <el-table-column prop="WeightStr" label="倍数范围权重">
                 <template slot-scope="scope">
-                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4">
-<!--                    <template slot="append">倍数放大100倍</template>-->
-                  </el-input>
+                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4"></el-input>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="120">

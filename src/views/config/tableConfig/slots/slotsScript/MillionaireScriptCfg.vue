@@ -11,260 +11,11 @@
           <el-option v-for="(o,k) in gameOptions" :key="o.key" :label="o.label" :value="parseInt(o.key)"/>
         </el-select>
       </el-row>
-      <fieldset>
 
+      <fieldset>
         <el-form ref="item" :model="item" label-width="200px">
-<!--          <el-col :span="6">-->
-<!--            <el-form-item label="单个剧本步数：">-->
-<!--              <el-input v-model.number="item.ScriptSteps"></el-input>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--          <el-col :span="6">-->
-<!--            <el-form-item label="总剧本数量：">-->
-<!--              <el-input v-model.number="item.ScriptNumber"></el-input>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
-<!--          <fieldset style="margin:20px auto;">-->
-<!--            <legend>倍数相关配置</legend>-->
-<!--            <el-row>-->
-<!--              <el-col :span="1">-->
-<!--                <el-tooltip content="检查剧本:最小倍数*出现次数<= 倍数总和 >=最大倍数*出现次数" class="item"-->
-<!--                            effect="dark" placement="top">-->
-<!--                  <el-button type="primary" @click="validateDteOddsSum" size="mini" style="background: #ff9100">-->
-<!--                    检查倍数总和区间-->
-<!--                  </el-button>-->
-<!--                </el-tooltip>-->
-<!--              </el-col>-->
-<!--              <el-col :offset="1" :span="3">-->
-<!--                <el-tooltip content="xlsx/xls文件,只导入前四列，格式保持一致,需要首行标题" effect="dark" placement="top">-->
-<!--                  <input type="file" @change="handleFileUpload1" accept=".xlsx, .xls" size="mini"></input>-->
-<!--                </el-tooltip>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-table-->
-<!--              ref="filterTable"-->
-<!--              :data="item.OddsCfg"-->
-<!--              stripe-->
-<!--              border-->
-<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
-<!--              :row-style="{height:'10px'}"-->
-<!--              :cell-style="libShow.DefaultTableCell"-->
-<!--              style="width: 100%"-->
-<!--              :key="itemKeyBet"-->
-<!--            >-->
-<!--              <el-table-column-->
-<!--                type="index"-->
-<!--                width="50"-->
-<!--              />-->
-<!--              <el-table-column-->
-<!--                prop="OddsMin"-->
-<!--                label="最小倍数"-->
-<!--                width="150"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="OddsMax"-->
-<!--                label="最大倍数"-->
-<!--                width="150"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="ScriptSteps"-->
-<!--                label="剧本中出现次数"-->
-<!--                width="150"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.ScriptSteps" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="ScriptOddsSum"-->
-<!--                label="剧本中倍数总和"-->
-<!--                width="150"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.ScriptOddsSum" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="NormalMatrixCacheSize"-->
-<!--                label="正常图案缓存数量"-->
-<!--                width="200"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.NormalMatrixCacheSize" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="ScatterMatrixCacheSize"-->
-<!--                label="Scatter图案缓存数量"-->
-<!--                width="200"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.ScatterMatrixCacheSize" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="SwitchScatterPercent"-->
-<!--                label="作为Scatter主图案的概率"-->
-<!--                width="300"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.SwitchScatterPercent" size="mini">-->
-<!--                      <template slot="append">%</template>-->
-<!--                    </el-input>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="TriggerScatterPercent"-->
-<!--                label="触发进入Scatter概率"-->
-<!--                width="300"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.TriggerScatterPercent" size="mini">-->
-<!--                      <template slot="append">%</template>-->
-<!--                    </el-input>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column>-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-button type="primary" @click="addOddsCfgRow(scope.$index+1)" size="mini">添加</el-button>-->
-<!--                  <el-button type="primary" @click="delOddsCfgRow(scope.$index)" size="mini">删除</el-button>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--            </el-table>-->
-<!--          </fieldset>-->
-<!--          <fieldset style="margin:20px auto;">-->
-<!--            <legend>Scatter中奖次数配置</legend>-->
-<!--            <el-table-->
-<!--              ref="filterTable"-->
-<!--              :data="item.ScatterHitCfg"-->
-<!--              stripe-->
-<!--              border-->
-<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
-<!--              :row-style="{height:'10px'}"-->
-<!--              :cell-style="libShow.DefaultTableCell"-->
-<!--              style="width: 100%"-->
-<!--            >-->
-<!--              <el-table-column-->
-<!--                type="index"-->
-<!--                width="50"-->
-<!--              />-->
-<!--              <el-table-column-->
-<!--                prop="HitTimes"-->
-<!--                label="总中奖次数"-->
-<!--                width="200"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.HitTimes" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="PerTenThousand"-->
-<!--                label="概率(万分之一)"-->
-<!--                width="500"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model.number="scope.row.PerTenThousand" size="mini">-->
-<!--                      <template slot="append">单位:万分之一</template>-->
-<!--                    </el-input>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--            </el-table>-->
-<!--          </fieldset>-->
-          <!--          <fieldset style="margin:20px auto;">-->
-          <!--            <legend>大奖配置</legend>-->
-          <!--            <el-form-item label="下注总金额抽水(千分之一)：">-->
-          <!--              <el-input v-model.number="item.BigPrizeCfg.TaxPerThousand" autosize>-->
-          <!--                <template slot="append">‰(千分之一)</template>-->
-          <!--              </el-input>-->
-          <!--            </el-form-item>-->
-          <!--            <el-form-item label="中奖概率(百万分之一)：">-->
-          <!--              <el-input v-model.number="item.BigPrizeCfg.HitPerMillion">-->
-          <!--                <template slot="append">单位:百万分之一</template>-->
-          <!--              </el-input>-->
-          <!--            </el-form-item>-->
-          <!--            <el-table-->
-          <!--              ref="filterTable"-->
-          <!--              :data="item.BigPrizeCfg.OddsCfg"-->
-          <!--              stripe-->
-          <!--              border-->
-          <!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
-          <!--              :row-style="{height:'10px'}"-->
-          <!--              :cell-style="libShow.DefaultTableCell"-->
-          <!--              style="width: 100%"-->
-          <!--            >-->
-          <!--              <el-table-column-->
-          <!--                type="index"-->
-          <!--                width="50"-->
-          <!--              />-->
-          <!--              <el-table-column-->
-          <!--                prop="OddsMin"-->
-          <!--                label="最小倍数"-->
-          <!--                width="200"-->
-          <!--              >-->
-          <!--                <template slot-scope="scope">-->
-          <!--                  <el-col :span="20">-->
-          <!--                    <el-input v-model.number="scope.row.OddsMin" size="mini"/>-->
-          <!--                  </el-col>-->
-          <!--                </template>-->
-          <!--              </el-table-column>-->
-          <!--              <el-table-column-->
-          <!--                prop="OddsMax"-->
-          <!--                label="最大倍数"-->
-          <!--                width="200"-->
-          <!--              >-->
-          <!--                <template slot-scope="scope">-->
-          <!--                  <el-col :span="20">-->
-          <!--                    <el-input v-model.number="scope.row.OddsMax" size="mini"/>-->
-          <!--                  </el-col>-->
-          <!--                </template>-->
-          <!--              </el-table-column>-->
-          <!--              <el-table-column-->
-          <!--                prop="Weight"-->
-          <!--                label="权重"-->
-          <!--                width="200"-->
-          <!--              >-->
-          <!--                <template slot-scope="scope">-->
-          <!--                  <el-col :span="20">-->
-          <!--                    <el-input v-model.number="scope.row.Weight" size="mini"/>-->
-          <!--                  </el-col>-->
-          <!--                </template>-->
-          <!--              </el-table-column>-->
-          <!--              <el-table-column>-->
-          <!--                <template slot-scope="scope">-->
-          <!--                  <el-button type="primary" @click="addBigPrizeCfgRow(scope.$index+1)" size="mini">添加</el-button>-->
-          <!--                  <el-button type="primary" @click="delBigPrizeCfgRow(scope.$index)" size="mini">删除</el-button>-->
-          <!--                </template>-->
-          <!--              </el-table-column>-->
-          <!--            </el-table>-->
-          <!--          </fieldset>-->
+
+          <!-- 大奖配置 开始 -->
           <fieldset style="margin:20px auto;">
             <legend>大奖配置</legend>
             <el-row>
@@ -350,88 +101,41 @@
               </el-table-column>
             </el-table>
           </fieldset>
-<!--          <fieldset style="margin:20px auto;">-->
-<!--            <legend>赔率配置方案</legend>-->
-<!--            <el-button type="primary" @click="addBetOddsPlansRow(0)" size="mini">添加</el-button>-->
-<!--            <el-table-->
-<!--              ref="filterTable"-->
-<!--              :data="item.BetOddsPlans"-->
-<!--              stripe-->
-<!--              border-->
-<!--              :header-cell-style="libShow.DefaultTableHeadClass"-->
-<!--              :row-style="{height:'10px'}"-->
-<!--              :cell-style="libShow.DefaultTableCell"-->
-<!--              style="width: 100%"-->
-<!--            >-->
-<!--              <el-table-column-->
-<!--                type="index"-->
-<!--                width="50"-->
-<!--              />-->
-<!--              <el-table-column-->
-<!--                prop="TargetBets"-->
-<!--                label="备注"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model="scope.row.Desc" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="TargetBets"-->
-<!--                label="目标下注金额列表"-->
-<!--              >-->
-<!--                <template slot-scope="{}" slot="header">-->
-<!--                  <show-tip head-title="目标下注金额列表" head-tip="英文逗号分割:1,2,3"></show-tip>-->
-<!--                </template>-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    <el-input v-model="scope.row.TargetBetStr" size="mini"/>-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="TargetBets"-->
-<!--                label="目标下注金额列表"-->
-<!--              >-->
+          <!-- 大奖配置 结束 -->
 
-<!--                <template slot-scope="scope">-->
-<!--                  <el-col :span="20">-->
-<!--                    {{ showTargetBetStr(scope.row.TargetBetStr) }}-->
-<!--                  </el-col>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column-->
-<!--                prop="TargetBets"-->
-<!--                label="详细倍数配置"-->
-<!--                width="200"-->
-<!--              >-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-button type="primary" @click="editBetOddsPlans(scope.row,scope.$index)" size="mini">编辑-->
-<!--                  </el-button>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--              <el-table-column>-->
-<!--                <template slot-scope="scope">-->
-<!--                  <el-button type="primary" @click="addBetOddsPlansRow(scope.$index+1)" size="mini">添加</el-button>-->
-<!--                  <el-button type="primary" @click="delBetOddsPlansRow(scope.$index)" size="mini">删除</el-button>-->
-<!--                </template>-->
-<!--              </el-table-column>-->
-<!--            </el-table>-->
-<!--          </fieldset>-->
+          <!-- 用户群大奖配置 开始 -->
+          <fieldset style="margin:20px auto;">
+            <legend>用户群大奖配置</legend>
+            <el-row>
+              <el-button @click="addGroup">添加新的用户群大奖配置</el-button>
+            </el-row>
+            <el-table :data="item.BigPrizeGroups" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" :cell-style="libShow.DefaultTableCell" style="width: 100%; margin: 10px auto;">
+              <el-table-column prop="GroupId"  label="分组ID" width="200"><template slot-scope="scope"><el-input v-model="scope.row.GroupId" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupName" label="分组名" width="400"><template slot-scope="scope"><el-input v-model="scope.row.GroupName" size="mini" /></template></el-table-column>
+              <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
+              <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
+              <el-table-column prop="Rules" label="筛选条件" width="400">
+                <template slot-scope="scope"><span v-html="groupRules2Text(scope.$index)"></span></template>
+              </el-table-column>
+              <el-table-column label="操作列表" width="200">
+                <template slot-scope="scope">
+                  <el-button type="info" @click="editGroupRules(scope.$index)" size="mini">配置</el-button>
+                  <el-button type="danger" @click="delGroup(scope.$index)" size="mini">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </fieldset>
+          <!-- 用户群大奖配置 结束 -->
+
           <el-col :offset="16" :span="8">
             <el-form-item>
-              <el-button type="info" @click="validData">检查配置</el-button>&nbsp;
               <el-button type="primary" @click="setData">保存</el-button>
             </el-form-item>
           </el-col>
         </el-form>
-
       </fieldset>
     </el-row>
 
-    <!--对比组件-->
-    <compare ref="compare" :attr-names="AttrNames"/>
     <el-dialog
       v-if="detailVisible"
       title="配置详情"
@@ -492,107 +196,73 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-
             <el-button type="primary" @click="delBigPrizePlansOddsCfgRow(scope.$index)" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-
     </el-dialog>
-    <el-dialog
-      v-if="BetOddsPlanDetailVisible"
-      title="配置详情"
-      :visible.sync="BetOddsPlanDetailVisible"
-      width="60%">
-      <el-row>
-        <el-col :offset="0" :span="6">
-          <el-button type="primary" @click="addBetOddsPlansCfgRow(0)" size="mini">添加</el-button>
-          <el-button type="success" size="mini" @click="closeVisible()">确定</el-button>
-        </el-col>
-        <el-col :offset="2" :span="8">
-          <el-tooltip content="当前倍数总和/剧本步数*基础投注" effect="dark" placement="top">
-            <el-button type="primary" @click="checkBetPlans()" size="mini" style="background-color:#ff8000">检查
-            </el-button>
-          </el-tooltip>
-          <el-tooltip content="最小倍数*出现个数<=剧本总和" effect="dark" placement="top">
-            <el-button type="primary" @click="checkBetPlansSum()" size="mini" style="background-color:#b600ff">检查
-            </el-button>
-          </el-tooltip>
 
-        </el-col>
-        <el-col :offset="3" :span="3">
-          <el-tooltip content="xlsx/xls文件,格式保持一致,需要首行标题" effect="dark" placement="top">
-            <input type="file" @change="handleFileUpload" accept=".xlsx, .xls" size="mini"></input>
-          </el-tooltip>
+    <!-- 用户群组条件弹窗 开始 -->
+    <el-dialog v-if="editGroupFlag" title="用户群筛选条件列表" :visible.sync="editGroupFlag" width="60%">
+      <el-row>
+        <el-col :offset="0" :span="12">
+          <el-button type="info" @click="addGroupRules" size="mini">添加新条件</el-button>
         </el-col>
       </el-row>
-      <el-table
-        :data="showVisibleData"
-        stripe
-        border
-        :header-cell-style="libShow.DefaultTableHeadClass"
-        :row-style="{height:'10px'}"
-        :cell-style="libShow.DefaultTableCell"
-        style="width: 100%"
-        :key="itemKey2"
-      >
-        <el-table-column
-          prop="OddsMin"
-          label="最小倍数"
-          width="200"
-        >
+      <el-table :data="editGroupRulesData" stripe border :header-cell-style="libShow.DefaultTableHeadClass" :row-style="{height:'10px'}" style="width: 100%; margin: 10px auto;">
+        <el-table-column prop="Days" label="天数" width="100">
           <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMin" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
+            <el-select v-model="scope.row.Days" size="mini" default-first-option>
+              <el-option v-for="o in groupDays" :key="o.key" :label="o.label" :value="o.value"/>
+            </el-select>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="OddsMax"
-          label="最大倍数"
-          width="200"
-        >
+        <el-table-column prop="Field" label="字段" width="200">
           <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.OddsMax" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
+            <el-select v-model="scope.row.Field" size="mini" default-first-option>
+              <el-option v-for="o in groupFields" :key="o.key" :label="o.label" :value="o.value"/>
+            </el-select>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="ScriptSteps"
-          label="在剧本中出现的个数"
-          width="200"
-        >
+        <el-table-column prop="BetMin" label="最小单注金额(例:0.003)" width="300">
           <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.ScriptSteps" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
+            <el-input v-model="scope.row.BetMinStr" size="mini" />
           </template>
         </el-table-column>
-        <el-table-column
-          prop="ScriptSteps"
-          label="在剧本中的倍数总和"
-          width="200"
-        >
+        <el-table-column prop="BetMax" label="最大单注金额(例:0.003)" width="300">
           <template slot-scope="scope">
-            <el-col :span="20">
-              <el-input v-model.number="scope.row.ScriptOddsSum" size="mini"
-                        oninput=" if(value < 0 || value === '' || value == null){value = 0;}"/>
-            </el-col>
+            <el-input v-model="scope.row.BetMaxStr" size="mini" />
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column prop="Operator" label="运算符" width="100">
           <template slot-scope="scope">
-
-            <el-button type="primary" @click="delBetOddsPlansCfgRow(scope.$index)" size="mini">删除</el-button>
+            <el-select v-model="scope.row.Operator" size="mini" default-first-option>
+              <el-option v-for="o in groupOperators" :key="o.key" :label="o.label" :value="o.value"/>
+            </el-select>
+          </template>
+        </el-table-column>
+        <el-table-column prop="Value" label="数值(RTP单位:千分之一)" width="200">
+          <template slot-scope="scope">
+            <el-input v-model.number="scope.row.Value" size="mini" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="Field" label="操作" width="150">
+          <template slot-scope="scope">
+            <el-button type="danger" @click="delGroupRules(scope.$index)" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-
+      <el-row>
+        <el-col :offset="0" :span="12">
+          <el-button type="primary" @click="saveGroupRules" size="mini">保存配置</el-button>
+        </el-col>
+      </el-row>
     </el-dialog>
+    <!-- 用户群组条件弹窗 结束 -->
+
+    <!--对比组件-->
+    <compare ref="compare" :attr-names="AttrNames"/>
+    <!-- 对比组件结束 -->
   </div>
 </template>
 
@@ -612,8 +282,6 @@ export default {
   data() {
     return {
       item: {
-        ScriptSteps: 0,
-        ScriptNumber: 0,
         BigPrizeCfg: {
           TaxPerThousand: 0,
           HitPerMillion: 0,
@@ -621,8 +289,7 @@ export default {
           OddsCfg: [],
           Plans: []
         },
-        OddsCfg: [],
-        BetOddsPlans: [],
+        BigPrizeGroups: []
       },
       gidOptions: {},
       gameOptions: [],
@@ -632,13 +299,10 @@ export default {
       subKey: 'millionaire_script_cfg',
       libShow: $libShow,
       AttrNames: {
-        'Data.ScriptSteps': '单个剧本步数',
-        'Data.ScriptNumber': '总剧本数量',
-        'Data.OddsCfg': '赔率配置',
-        'Data.ScatterHitCfg': ' Scatter中奖次数配置',
         'Data.BigPrizeCfg.TaxPerThousand': ' 下注总金额抽水比例',
         'Data.BigPrizeCfg.HitPerMillion': ' 中奖概率',
         'Data.BigPrizeCfg.OddsCfg': ' 大奖中奖倍数配置',
+        'Data.BigPrizeGroups': ' 用户群大奖配置',
         types: {
           Data: 'jsonString' // 整个数据项的类型
         }
@@ -651,6 +315,22 @@ export default {
       itemKey2: 0,
       itemKeyBet: 0,
       slotCfg: {},
+      editGroupFlag: false,
+      editGroupIndex: -1,
+      editGroupRulesData: [],
+      groupFields: [
+        {'label': 'RTP', 'value': 1},
+        {'label': '下注次数', 'value': 2},
+        {'label': '玩牌天数', 'value': 3}
+      ],
+      groupDays: [
+        {'label': '今日', 'value': 1},
+        {'label': '最近7天', 'value': 7}
+      ],
+      groupOperators: [
+        {'label': '<=', 'value': 1},
+        {'label': '>=', 'value': 2}
+      ],
       subKeyMap: {
         '76': 'candypartyway',
         '89': 'crazy777mars',
@@ -718,65 +398,29 @@ export default {
       }
     }
   },
+
   created() {
     this.fetchData();
   },
+
   methods: {
     async fetchData() {
       await this.getConfigData();
       await this.getGameList();
       await this.getData();
     },
+
     closeVisible() {
       this.detailVisible = false
       this.BetOddsPlanDetailVisible = false
     },
-    addOddsCfgRow(row) {
-      this.item.OddsCfg.splice(row, 0, {
-        "OddsMin": 0,
-        "OddsMax": 0,
-        "ScriptSteps": 0,
-        "ScriptOddsSum": 0,
-        "NormalMatrixCacheSize": 0,
-        "ScatterMatrixCacheSize": 0,
-        "SwitchScatterPercent": 0,
-        "TriggerScatterPercent": 0
-      })
-    },
-    delOddsCfgRow(row) {
-      this.item.OddsCfg.splice(row, 1)
-    },
-    addBigPrizeCfgRow(row) {
-      this.item.BigPrizeCfg.OddsCfg.splice(row, 0, {
-        "OddsMin": 0,
-        "OddsMax": 0,
-        "Weight": 0
-      })
-    },
-    delBigPrizeCfgRow(row) {
-      this.item.BigPrizeCfg.OddsCfg.splice(row, 1)
-    },
-    validateDteOddsSum() {
-      let str = ''
-      for (const i in this.item.OddsCfg) {
-        let obj = this.item.OddsCfg[i]
-        if (obj.OddsMin * obj.ScriptSteps <= obj.ScriptOddsSum && obj.ScriptOddsSum <= obj.OddsMax * obj.ScriptSteps) {
-        } else {
-          let a = Number(i) + 1
-          str += `第${a}行数据校验不通过\n`
-        }
-      }
-      if (str.length > 0) {
-        this.$message.error(str)
-      } else {
-        this.$message.success('检查通过')
-      }
-    },
+
     editOddsCfg(row, idx) {
       this.detailVisible = true
       this.showVisibleData = row.OddsCfg
       this.showVisibleIdx = idx
     },
+
     addBigPrizePlansCfgRow(row) {
       if (!this.item.BigPrizeCfg.Plans) {
         this.item.BigPrizeCfg['Plans'] = []
@@ -788,43 +432,11 @@ export default {
       })
       this.itemKey = Math.random()
     },
+
     delBigPrizePlansOddsCfgRow(row) {
       this.item.BigPrizeCfg.Plans[this.showVisibleIdx].OddsCfg.splice(row, 1)
     },
-    addBetOddsPlansRow(row) {
-      if (!this.item.BetOddsPlans) {
-        this.item['BetOddsPlans'] = []
-      }
-      this.item.BetOddsPlans.push({
-        "TargetBets": [],
-        "OddsCfg": [],
-        "TargetBetStr": "",
-      })
-      this.itemKey = Math.random()
-    },
-    delBetOddsPlansRow(row) {
-      this.item.BetOddsPlans.splice(row, 1)
-    },
-    editBetOddsPlans(row, idx) {
-      this.BetOddsPlanDetailVisible = true
-      this.showVisibleData = row.OddsCfg
-      this.showVisibleIdx = idx
-    },
-    showTargetBetStr(str) {
-      if (str.length === '') {
-        return ''
-      }
-      if (!this.slotCfg[this.queryGid]) {
-        return '当你看到这行字时,说明剧本监控没有配置,需要从配置中获取基础下注倍数'
-      }
-      let arr = str.split(',')
-      let cfg = this.slotCfg[this.queryGid]
-      let ret = ''
-      for (const s of arr) {
-        ret += Number(s) * Number(cfg.Bet) + ','
-      }
-      return ret.substring(0, ret.length - 1)
-    },
+
     addBigPrizePlansOddsCfgRow() {
       if (!this.item.BigPrizeCfg.Plans) {
         this.item.BigPrizeCfg['Plans'] = []
@@ -835,32 +447,20 @@ export default {
         "Weight": 0,
       })
     },
+
     delBigPrizePlansCfgRow(row) {
       this.item.BigPrizeCfg.Plans.splice(row, 1)
     },
-    addBetOddsPlansCfgRow() {
-      if (!this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg) {
-        this.item.BetOddsPlans[this.showVisibleIdx]['OddsCfg'] = []
-      }
-      this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg.push({
-        "OddsMin": 0,
-        "OddsMax": 0,
-        "ScriptSteps": 0,
-        "ScriptOddsSum": 0,
-      })
-      this.itemKey2 += 1
-    },
-    delBetOddsPlansCfgRow(row) {
-      this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg.splice(row, 1)
-      this.itemKey2 += 1
-    },
+
     dataRule(required, config) {
       return DataRule(required, config)
     },
+
     getFullKey() {
       console.log('subKey', this.subKeyMap[this.queryGid])
       return 'CustomizeCfg_' + this.subKeyMap[this.queryGid] + '_script_cfg'
     },
+
     getPostData() {
       const ret = {}
       Object.assign(ret, this.item)
@@ -873,6 +473,7 @@ export default {
       }
       return ret
     },
+
     getConfigData() {
       request({
         url: '/customizeconfig/one',
@@ -889,6 +490,7 @@ export default {
         }
       })
     },
+
     getData() {
       if (!this.subKeyMap[this.queryGid]) {
         Message.error('该游戏尚未配置key')
@@ -921,8 +523,12 @@ export default {
         }
       })
     },
+
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+      if (!this.checkBigPrizeGroup()) {
+        return false
+      }
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
@@ -945,102 +551,12 @@ export default {
         })
       })
     },
-    checkBetPlans() {
-      let cnt = 0
-      for (const o of this.showVisibleData) {
-        cnt += o.ScriptOddsSum
-      }
-      Message.success('当前百分比：' + (cnt / (this.item.ScriptSteps * Number(this.slotCfg[this.queryGid].Bet)) * 100).toFixed(3) + '%')
-    },
-    checkBetPlansSum() {
-      let str = ''
-      for (const o of this.showVisibleData) {
-        if ((o.OddsMin * o.ScriptSteps) > o.ScriptOddsSum) {
-          str += '最小倍数:' + o.OddsMin + ' 出现步数:' + o.ScriptSteps + ' 倍数总和:' + o.ScriptOddsSum
-        }
-      }
-      if (str.length <= 0) {
-        Message.success("数据ok的！" + str)
-      } else {
-        Message.error('数据异常:' + str)
-      }
-    },
-    handleFileUpload1(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.ImportExcel1(file);
-      }
-    },
-    ImportExcel1(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
-        this.item.OddsCfg = []
-        // let org = JSON.parse(JSON.stringify( this.item.OddsCfg));
-        json.forEach((row, index) => {
-          if (index > 0) {
-            let idx = index - 1
-            console.log(index, idx, row)
-            this.item.OddsCfg[idx] = {
-              "OddsMin": row[0] ? row[0] : 0,
-              "OddsMax": row[1] ? row[1] : 0,
-              "ScriptSteps": row[2] ? row[2] : 0,
-              "ScriptOddsSum": row[3] ? row[3] : 0,
-              "NormalMatrixCacheSize": row[4] ? row[4] : 0,
-              "ScatterMatrixCacheSize": row[5] ? row[5] : 0,
-              "SwitchScatterPercent": row[6] ? row[6] : 0,
-              "TriggerScatterPercent": row[7] ? row[7] : 0,
-            }
-          }
-          this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg
-          this.itemKeyBet += 1
-        });
-      };
-
-      reader.readAsArrayBuffer(file);
-    },
     makeContent(key, addData, delData, editData) {
       // console.log(key, JSON.stringify(addData), JSON.stringify(delData), JSON.stringify(editData))
       return '【'+this.getGameName(this.queryGid)+'】'
     },
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.ImportExcel(file);
-      }
-    },
-    ImportExcel(file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, {type: 'array'});
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet, {header: 1});
 
-        this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg = []
-        json.forEach((row, index) => {
-          if (index > 0) {
-            this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg.push({
-              "OddsMin": row[0],
-              "OddsMax": row[1],
-              "ScriptSteps": row[2],
-              "ScriptOddsSum": row[3],
-            })
-            console.log(`Row ${index + 1}:`, row);
-          }
-          this.showVisibleData = this.item.BetOddsPlans[this.showVisibleIdx].OddsCfg
-          this.itemKey2 += 1
-        });
-      };
-
-      reader.readAsArrayBuffer(file);
-    },
     getGameList() {
       request({
         url: '/thirdpartygames/all',
@@ -1062,6 +578,7 @@ export default {
         }
       })
     },
+
     getGameName(gid) {
       for (const o of this.gameOptions) {
         if (o.key === parseInt(gid)) {
@@ -1069,40 +586,223 @@ export default {
         }
       }
     },
+
     async queryKeyInput() {
       this.getData()
     },
-    validData() {
-      const data = this.getPostData()
-      //计算总步数
-      let steps = 0, odds = 0, scatterSwitchPercents = 0
-      for (const k in data.OddsCfg) {
-        steps += data.OddsCfg[k].ScriptSteps
-        odds += data.OddsCfg[k].ScriptOddsSum
-        scatterSwitchPercents += data.OddsCfg[k].SwitchScatterPercent
-        if (data.OddsCfg[k].NormalMatrixCacheSize < 1) {
-          Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMax + "的正常图案缓存数量无效!")
-          return
+
+    //用户群组条件转为描述文字
+    groupRules2Text(idx) {
+      let txt = ''
+      for (const k in this.item.BigPrizeGroups[idx].Rules) {
+        const rule = this.item.BigPrizeGroups[idx].Rules[k]
+        for (const kk in this.groupDays) {
+          if (rule.Days == this.groupDays[kk].value) {
+            txt += this.groupDays[kk].label + ' '
+          }
         }
-        if (data.OddsCfg[k].SwitchScatterPercent > 0 && data.OddsCfg[k].ScatterMatrixCacheSize < 1) {
-          Message.error("赔率倍数" + data.OddsCfg[k].OddsMin + '~' + data.OddsCfg[k].OddsMax + "的Scatter图案缓存数量无效!")
-          return
+        for (const kk in this.groupFields) {
+          if (rule.Field == this.groupFields[kk].value) {
+            txt += this.groupFields[kk].label + ' '
+          }
+        }
+        if (rule.BetMin > 0 && rule.BetMax > 0) {
+          txt += '[' + this.number2money(rule.BetMin) + ' ~ ' + this.number2money(rule.BetMax) + '] '
+        }
+        for (const kk in this.groupOperators) {
+          if (rule.Operator == this.groupOperators[kk].value) {
+            txt += this.groupOperators[kk].label + ' '
+          }
+        }
+        txt += rule.Value + '<br />'
+      }
+      return txt
+    },
+
+    //添加用户群组配置
+    addGroup() {
+      this.item.BigPrizeGroups.push({
+        GroupId: this.item.BigPrizeGroups.length+1,
+        GroupName: '未命名',
+        GroupDesc: '请添加说明',
+        HitPerMillion: 25,
+        Rules: []
+      })
+    },
+
+    //删除用户群组配置
+    delGroup(idx) {
+      this.$delete(this.item.BigPrizeGroups, idx)
+    },
+
+    //编辑用户群组条件
+    editGroupRules(idx) {
+      this.editGroupFlag = true
+      this.editGroupIndex = idx
+      this.editGroupRulesData = this.item.BigPrizeGroups[idx].Rules
+      for (const k in this.editGroupRulesData) {
+        if (this.editGroupRulesData[k].BetMin == 0) {
+          this.editGroupRulesData[k].BetMinStr = '不限'
+        } else {
+          this.editGroupRulesData[k].BetMinStr = this.number2money(this.editGroupRulesData[k].BetMin)
+        }
+        if (this.editGroupRulesData[k].BetMax == 0) {
+          this.editGroupRulesData[k].BetMaxStr = '不限'
+        } else {
+          this.editGroupRulesData[k].BetMaxStr = this.number2money(this.editGroupRulesData[k].BetMax)
         }
       }
-      //Scatter主图案总概率
-      if (scatterSwitchPercents !== 100) {
-        Message.error("Scatter主图案的总概率之和不是100%！当前值:" + scatterSwitchPercents + '%')
+    },
+
+    //保存用户群组条件
+    saveGroupRules() {
+      if (this.editGroupIndex < 0) {
         return
       }
-      //计算返回率
-      const rtp10 = odds / (10 * data.ScriptSteps) * 100
-      const rtp100 = odds / (100 * data.ScriptSteps) * 100
-      if (steps !== data.ScriptSteps) {
-        Message.error("剧本总步数有误！当前总步数:" + steps)
+      //转换单注金额为数值
+      let cnt = 1
+      for (const k in this.editGroupRulesData) {
+        //单注金额最小值
+        if (this.editGroupRulesData[k].BetMinStr === '' || this.editGroupRulesData[k].BetMinStr === '不限') {
+          this.editGroupRulesData[k].BetMin = 0
+        } else if (/[^\d\.]/.test(this.editGroupRulesData[k].BetMinStr)) {
+          Message.error('条件 ' + cnt + ' 单注金额最小值无效!')
+          return
+        } else {
+          this.editGroupRulesData[k].BetMin = Math.floor(parseFloat(this.editGroupRulesData[k].BetMinStr) * 1000)
+        }
+        //单注金额最大值
+        if (this.editGroupRulesData[k].BetMaxStr === '' || this.editGroupRulesData[k].BetMaxStr === '不限') {
+          this.editGroupRulesData[k].BetMax = 0
+        } else if (/[^\d\.]/.test(this.editGroupRulesData[k].BetMaxStr)) {
+          Message.error('条件 ' + cnt + ' 单注金额最大值无效!')
+          return
+        } else {
+          this.editGroupRulesData[k].BetMax = Math.floor(parseFloat(this.editGroupRulesData[k].BetMaxStr) * 1000)
+        }
+        //条件值
+        if (/\D/.test(this.editGroupRulesData[k].Value)) {
+          Message.error('条件 ' + cnt + ' 条件值无效!')
+          return
+        }
+        cnt++
+      }
+      //验证数据有效性
+      if (!this.checkBigPrizeGroupRules(this.item.BigPrizeGroups[this.editGroupIndex].GroupId, this.editGroupRulesData)) {
+        return
+      }
+      //更新数据
+      this.item.BigPrizeGroups[this.editGroupIndex].Rules = this.editGroupRulesData
+      this.editGroupFlag = false
+      this.editGroupIndex = -1
+    },
+
+    //添加用户群组条件
+    addGroupRules() {
+      this.editGroupRulesData.push({
+        'Field': 1,
+        'Days': 1,
+        'BetMin': 0,
+        'BetMinStr': '不限',
+        'BetMax': 0,
+        'BetMaxStr': '不限',
+        'Operator': 1,
+        'Value': 0
+      })
+    },
+
+    //删除用户群组条件
+    delGroupRules(idx) {
+      this.$delete(this.editGroupRulesData, idx)
+    },
+
+    //验证用户群配置
+    checkBigPrizeGroup() {
+      //先按分组ID排序
+      this.item.BigPrizeGroups.sort(function (a, b ) {
+        return a.GroupId < b.GroupId
+      })
+      //检查每一个分组的数据
+      let groupIdLast = 0
+      for (const k in this.item.BigPrizeGroups) {
+        const group = this.item.BigPrizeGroups[k]
+        //检查分组ID是否有重复
+        if (group.GroupId == groupIdLast) {
+          Message.error('用户群配置的分组ID ' + groupIdLast + ' 有重复，请检查配置！')
+          return false
+        } else {
+          groupIdLast = group.GroupId
+        }
+        //检查分组名是否为空
+        if (group.GroupName == '') {
+          Message.error('用户群分组 #' + group.GroupId + ' 名称为空！')
+          return false
+        }
+        //检查命中率
+        if (group.HitPerMillion < 0 || group.HitPerMillion > 1000000) {
+          Message.error('用户群分组 #' + group.GroupId + ' 的命中率无效，有效值范围：0~1000000！')
+          return false
+        }
+        //检查条件
+        if (group.Rules.length == 0) {
+          Message.error('用户群分组 #' + group.GroupId + ' 没有设置任何筛选条件！')
+          return false
+        }
+        //检查每一个条件
+        if (!this.checkBigPrizeGroupRules(group.GroupId, group.Rules)) {
+          return false
+        }
+      }
+      return true
+    },
+
+    //验证用户群配置的过滤规则
+    checkBigPrizeGroupRules(groupId, rules) {
+      let m = {}
+      let cnt = 1
+      for (const kk in rules) {
+        //检查条件是否有重复
+        const uniqKey = rules[kk].Field + '_' + rules[kk].Days + '_' + rules[kk].BetMin + '_' + rules[kk].BetMax
+        if (typeof m[uniqKey] != 'undefined') {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 与之前的条件出现重复!')
+          return false
+        } else {
+          m[uniqKey] = 1
+        }
+        //检查单注范围是否有效
+        if (rules[kk].BetMin < 0) {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 单注金额最小值无效!')
+          return false
+        }
+        if (rules[kk].BetMax > 0 && rules[kk].BetMax < rules[kk].BetMin) {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 单注金额最大值无效!')
+          return false
+        }
+        //检查数值是否有效
+        if (rules[kk].Value < 0) {
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 条件值无效!')
+          return false
+        }
+        cnt++
+      }
+      return true
+    },
+
+    //数字转为金额
+    number2money(n) {
+      const v = n / 1000
+      if (n % 1000 == 0) {
+        return v.toFixed(0)
+      } else if (n % 100 == 0) {
+        return v.toFixed(1)
+      } else if (n % 10 == 0) {
+        return v.toFixed(2)
       } else {
-        Message.success("10倍投返奖率:" + rtp10 + '%, 100倍投返奖率:' + rtp100 + '%')
+        return v.toFixed(3)
       }
     }
   }
 }
 </script>
+
+

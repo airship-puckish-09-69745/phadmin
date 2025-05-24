@@ -257,6 +257,9 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formatCredit(row) {
+      if (this.blackuids.includes(row.Uid)){
+        return '黑名单用户'
+      }
       if (row.UserType === 1) {
         return ' 信誉用户'
       } else if (row.UserType === 0) {
@@ -490,7 +493,7 @@ export default {
       this.$confirm('是否确认添加进黑名单?', '提示', { type: 'warning' }).then(async() => {
         await this.addToBlack(row)
         await this.getBlackData()
-        // this.getDataInfo()
+        this.refreshShowCredit()
       }).catch(() => {
         console.log('取消')
       })
