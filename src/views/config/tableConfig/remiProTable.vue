@@ -131,6 +131,18 @@
               <i class="el-icon-info" />
             </el-tooltip>
           </el-col>
+
+          <el-col :span="11">
+            <el-form-item
+              label="最大人数："
+              :required="true"
+              prop="item.MaxPlayerCount"
+              :rules="dataRule(true,{type:'n',range:'1'})"
+            >
+              <el-input v-model.number="edit.item.MaxPlayerCount" placeholder="最大人数" />
+            </el-form-item>
+          </el-col>
+
         </el-row>
         <el-row>
           <el-col :span="9">
