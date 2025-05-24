@@ -607,9 +607,7 @@ export default {
           }
         }
         if (rule.BetMin > 0 && rule.BetMax > 0) {
-          const min = rule.BetMin / 1000
-          const max = rule.BetMax / 1000
-          txt += '[' + min.toFixed(rule.BetMin % 1000 === 0 ? 0 : 3) + ' ~ ' + max.toFixed(rule.BetMax % 1000 === 0 ? 0 : 3) + '] '
+          txt += '[' + this.number2money(rule.BetMin) + ' ~ ' + this.number2money(rule.BetMax) + '] '
         }
         for (const kk in this.groupOperators) {
           if (rule.Operator == this.groupOperators[kk].value) {
@@ -646,14 +644,12 @@ export default {
         if (this.editGroupRulesData[k].BetMin == 0) {
           this.editGroupRulesData[k].BetMinStr = '不限'
         } else {
-          const min = this.editGroupRulesData[k].BetMin / 1000
-          this.editGroupRulesData[k].BetMinStr = min.toFixed(this.editGroupRulesData[k].BetMin % 1000 == 0 ? 0 : 3)
+          this.editGroupRulesData[k].BetMinStr = this.number2money(this.editGroupRulesData[k].BetMin)
         }
         if (this.editGroupRulesData[k].BetMax == 0) {
           this.editGroupRulesData[k].BetMaxStr = '不限'
         } else {
-          const max = this.editGroupRulesData[k].BetMax / 1000
-          this.editGroupRulesData[k].BetMaxStr = max.toFixed(this.editGroupRulesData[k].BetMax % 1000 == 0 ? 0 : 3)
+          this.editGroupRulesData[k].BetMaxStr = this.number2money(this.editGroupRulesData[k].BetMax)
         }
       }
     },
@@ -790,6 +786,20 @@ export default {
         cnt++
       }
       return true
+    },
+
+    //数字转为金额
+    number2money(n) {
+      const v = n / 1000
+      if (n % 1000 == 0) {
+        return v.toFixed(0)
+      } else if (n % 100 == 0) {
+        return v.toFixed(1)
+      } else if (n % 10 == 0) {
+        return v.toFixed(2)
+      } else {
+        return v.toFixed(3)
+      }
     }
   }
 }
