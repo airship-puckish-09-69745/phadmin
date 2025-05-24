@@ -119,8 +119,8 @@
               </el-table-column>
               <el-table-column label="操作列表" width="200">
                 <template slot-scope="scope">
-                  <el-button type="primary" @click="editGroupRules(scope.$index)" size="mini">配置</el-button>
-                  <el-button type="primary" @click="delGroup(scope.$index)" size="mini">删除</el-button>
+                  <el-button type="info" @click="editGroupRules(scope.$index)" size="mini">配置</el-button>
+                  <el-button type="danger" @click="delGroup(scope.$index)" size="mini">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -682,4 +682,5 @@ export default {
   }
 }
 </script>
+
 
