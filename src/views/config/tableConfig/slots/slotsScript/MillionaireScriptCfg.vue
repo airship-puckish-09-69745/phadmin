@@ -665,15 +665,28 @@ export default {
       }
       //转换单注金额为数值
       for (const k in this.editGroupRulesData) {
-        if (this.editGroupRulesData[k].BetMinStr === '' || /[^\d\.]/.test(this.editGroupRulesData[k].BetMinStr)) {
+        //单注金额最小值
+        if (this.editGroupRulesData[k].BetMinStr === '' || this.editGroupRulesData[k].BetMinStr === '不限') {
           this.editGroupRulesData[k].BetMin = 0
+        } else if (/[^\d\.]/.test(this.editGroupRulesData[k].BetMinStr)) {
+          Message.error('条件 ' + (k+1) + ' 单注金额最小值无效!')
+          return
         } else {
           this.editGroupRulesData[k].BetMin = Math.floor(parseFloat(this.editGroupRulesData[k].BetMinStr) * 1000)
         }
-        if (this.editGroupRulesData[k].BetMaxStr === '' || /[^\d\.]/.test(this.editGroupRulesData[k].BetMaxStr)) {
+        //单注金额最大值
+        if (this.editGroupRulesData[k].BetMaxStr === '' || this.editGroupRulesData[k].BetMaxStr === '不限') {
           this.editGroupRulesData[k].BetMax = 0
+        } else if (/[^\d\.]/.test(this.editGroupRulesData[k].BetMaxStr)) {
+          Message.error('条件 ' + (k+1) + ' 单注金额最大值无效!')
+          return
         } else {
           this.editGroupRulesData[k].BetMax = Math.floor(parseFloat(this.editGroupRulesData[k].BetMaxStr) * 1000)
+        }
+        //条件值
+        if (/\D/.test(this.editGroupRulesData[k].Value)) {
+          Message.error('条件 ' + (k+1) + ' 条件值无效!')
+          return
         }
       }
       //验证数据有效性
