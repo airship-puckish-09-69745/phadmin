@@ -526,6 +526,9 @@ export default {
 
     setData() {
       if (!ValidateVueItem(this.$refs['item'])) return false
+      if (!this.checkBigPrizeGroup()) {
+        return false
+      }
       this.form.Data = JSON.stringify(this.getPostData())
       const $this = this
       // 设置修改后数据
@@ -694,6 +697,68 @@ export default {
     //删除用户群组条件
     delGroupRules(idx) {
       this.$delete(this.editGroupRulesData, idx)
+    },
+
+    //验证用户群配置
+    checkBigPrizeGroup() {
+      //先按分组ID排序
+      this.item.BigPrizeGroups.sort(function (a, b ) {
+        return a.GroupId < b.GroupId
+      })
+      //检查每一个分组的数据
+      let groupIdLast = 0
+      for (const k in this.item.BigPrizeGroups) {
+        const group = this.item.BigPrizeGroups[k]
+        //检查分组ID是否有重复
+        if (group.GroupId == groupIdLast) {
+          Message.error('用户群配置的分组ID ' + groupIdLast + ' 有重复，请检查配置！')
+          return false
+        } else {
+          groupIdLast = group.GroupId
+        }
+        //检查分组名是否为空
+        if (group.GroupName == '') {
+          Message.error('用户群分组 #' + group.GroupId + ' 名称为空！')
+          return false
+        }
+        //检查命中率
+        if (group.HitPerMillion < 0 || group.HitPerMillion > 1000000) {
+          Message.error('用户群分组 #' + group.GroupId + ' 的命中率无效，有效值范围：0~1000000！')
+          return false
+        }
+        //检查条件
+        if (group.Rules.length == 0) {
+          Message.error('用户群分组 #' + group.GroupId + ' 没有设置任何筛选条件！')
+          return false
+        }
+        //检查每一个条件
+        let m = {}
+        for (const kk in group.Rules) {
+          //检查条件是否有重复
+          const uniqKey = group.Rules[kk].Field + '_' + group.Rules[kk].Days + '_' + group.Rules[kk].BetMin + '_' + group.Rules[kk].BetMax
+          if (typeof m[uniqKey] != 'undefined') {
+            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 之前的条件出现重复!')
+            return false
+          } else {
+            m[uniqKey] = 1
+          }
+          //检查单注范围是否有效
+          if (group.Rules[kk].BetMin < 0) {
+            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 单注金额最小值无效!')
+            return false
+          }
+          if (group.Rules[kk].BetMax > 0 && group.Rules[kk].BetMax < group.Rules[kk].BetMin) {
+            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 单注金额最大值无效!')
+            return false
+          }
+          //检查数值是否有效
+          if (group.Rules[kk].Value < 0) {
+            Message.error('用户群分组 #' + group.GroupId + ' 的条件 ' + (kk+1) + ' 条件值无效!')
+            return false
+          }
+        }
+      }
+      return true
     }
   }
 }
