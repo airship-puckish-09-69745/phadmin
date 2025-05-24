@@ -314,6 +314,9 @@ export default {
       // }
     },
     formatOtherUids(row) {
+      if (!row.hasOwnProperty('otherUid')) {
+        return '----'
+      }
       return row.otherUid.join()
     },
     getDetail(id, dt) {
