@@ -115,7 +115,7 @@
               <el-table-column prop="GroupDesc" label="描述" width="400"><template slot-scope="scope"><el-input type="textarea" :rows="3" v-model="scope.row.GroupDesc" size="mini" /></template></el-table-column>
               <el-table-column prop="HitPerMillion" label="中奖率(百万分之一)" width="300"><template slot-scope="scope"><el-input v-model.number="scope.row.HitPerMillion" size="mini" /></template></el-table-column>
               <el-table-column prop="Rules" label="筛选条件" width="400">
-                <template slot-scope="scope">{{groupRules2Text(scope.$index)}}</template>
+                <template slot-scope="scope"><span v-html="groupRules2Text(scope.$index)"></span></template>
               </el-table-column>
               <el-table-column label="操作列表" width="200">
                 <template slot-scope="scope">
@@ -224,12 +224,12 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="BetMin" label="最小单注金额(例:0.003,0为不限)" width="300">
+        <el-table-column prop="BetMin" label="最小单注金额(例:0.003)" width="300">
           <template slot-scope="scope">
             <el-input v-model="scope.row.BetMinStr" size="mini" />
           </template>
         </el-table-column>
-        <el-table-column prop="BetMax" label="最大单注金额(例:0.003,0为不限)" width="300">
+        <el-table-column prop="BetMax" label="最大单注金额(例:0.003)" width="300">
           <template slot-scope="scope">
             <el-input v-model="scope.row.BetMaxStr" size="mini" />
           </template>
@@ -613,7 +613,7 @@ export default {
             txt += this.groupOperators[kk].label + ' '
           }
         }
-        txt += rule.Value
+        txt += rule.Value + '<br />'
       }
       return txt
     },
@@ -640,10 +640,18 @@ export default {
       this.editGroupRulesIdx = idx
       this.editGroupRulesData = this.item.BigPrizeGroups[idx].Rules
       for (const k in this.editGroupRulesData) {
-        const min = this.editGroupRulesData[k].BetMin / 1000
-        const max = this.editGroupRulesData[k].BetMax / 1000
-        this.editGroupRulesData[k].BetMinStr = min.toFixed(3)
-        this.editGroupRulesData[k].BetMaxStr = max.toFixed(3)
+        if (this.editGroupRulesData[k].BetMin == 0) {
+          this.editGroupRulesData[k].BetMinStr = '不限'
+        } else {
+          const min = this.editGroupRulesData[k].BetMin / 1000
+          this.editGroupRulesData[k].BetMinStr = min.toFixed(3)
+        }
+        if (this.editGroupRulesData[k].BetMax == 0) {
+          this.editGroupRulesData[k].BetMaxStr = '不限'
+        } else {
+          const max = this.editGroupRulesData[k].BetMax / 1000
+          this.editGroupRulesData[k].BetMaxStr = max.toFixed(3)
+        }
       }
     },
 
@@ -653,10 +661,16 @@ export default {
         return
       }
       for (const k in this.editGroupRulesData) {
-        const min = parseInt(parseFloat(this.editGroupRulesData[k].BetMinStr) * 1000)
-        const max = parseInt(parseFloat(this.editGroupRulesData[k].BetMaxStr) * 1000)
-        this.editGroupRulesData[k].BetMin = min
-        this.editGroupRulesData[k].BetMax = max
+        if (this.editGroupRulesData[k].BetMinStr === '' || /[^\d\.]/.test(this.editGroupRulesData[k].BetMinStr)) {
+          this.editGroupRulesData[k].BetMin = 0
+        } else {
+          this.editGroupRulesData[k].BetMin = Math.floor(parseFloat(this.editGroupRulesData[k].BetMinStr) * 1000)
+        }
+        if (this.editGroupRulesData[k].BetMaxStr === '' || /[^\d\.]/.test(this.editGroupRulesData[k].BetMaxStr)) {
+          this.editGroupRulesData[k].BetMax = 0
+        } else {
+          this.editGroupRulesData[k].BetMax = Math.floor(parseFloat(this.editGroupRulesData[k].BetMaxStr) * 1000)
+        }
       }
       this.item.BigPrizeGroups[this.editGroupRulesIdx].Rules = this.editGroupRulesData
       this.editGroupRulesFlag = false
@@ -669,9 +683,9 @@ export default {
         'Field': 1,
         'Days': 1,
         'BetMin': 0,
-        'BetMinStr': 0,
+        'BetMinStr': '不限',
         'BetMax': 0,
-        'BetMaxStr': 0,
+        'BetMaxStr': '不限',
         'Operator': 1,
         'Value': 0
       })
