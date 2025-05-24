@@ -745,29 +745,31 @@ export default {
     //验证用户群配置的过滤规则
     checkBigPrizeGroupRules(groupId, rules) {
       let m = {}
+      let cnt = 1
       for (const kk in rules) {
         //检查条件是否有重复
         const uniqKey = rules[kk].Field + '_' + rules[kk].Days + '_' + rules[kk].BetMin + '_' + rules[kk].BetMax
         if (typeof m[uniqKey] != 'undefined') {
-          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 与之前的条件出现重复!')
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 与之前的条件出现重复!')
           return false
         } else {
           m[uniqKey] = 1
         }
         //检查单注范围是否有效
         if (rules[kk].BetMin < 0) {
-          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 单注金额最小值无效!')
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 单注金额最小值无效!')
           return false
         }
         if (rules[kk].BetMax > 0 && rules[kk].BetMax < rules[kk].BetMin) {
-          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 单注金额最大值无效!')
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 单注金额最大值无效!')
           return false
         }
         //检查数值是否有效
         if (rules[kk].Value < 0) {
-          Message.error('用户群分组 #' + groupId + ' 的条件 ' + (kk+1) + ' 条件值无效!')
+          Message.error('用户群分组 #' + groupId + ' 的条件 ' + cnt + ' 条件值无效!')
           return false
         }
+        cnt++
       }
       return true
     }
