@@ -19,7 +19,7 @@
       <el-tabs type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
-            <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <h4 style="text-align:left;">个⼈控制临界点配置<span style="color: red;">(底分倍数)</span></h4>
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center' }">
@@ -679,7 +679,7 @@ export default {
         name: 'dayusenlin' , 
         PlayerControl: 
         {
-          CriticalPoint: [-20000, -10000, 10000, 20000],
+          CriticalPoint: [100, 200, 300, 400],
           PlayerControlRound: 0,
           IsSameFirst: false,
           RobotWeight: [
@@ -808,7 +808,7 @@ export default {
     },
     setData() {
       if (!this.checkControlRangeSave()) {
-        Message.error('群体控制个人临界点配置左边比右边大，请检测数据')
+        Message.error('群体控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -816,7 +816,7 @@ export default {
         return
       }
       if (!this.checkPlayerCanSave()) {
-        Message.error('个人控制临界点配置左边比右边大，请检测数据')
+        Message.error('个人控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -827,7 +827,7 @@ export default {
 
           saveData.PlayerControl.CriticalPoint = []
           for (let i = 0; i < this.editGameControl.PlayerControl.CriticalPoint.length; i++) {
-            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 1000)
+            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 100)
           }
 
           saveData.GameControl.ControlRange = []
@@ -841,6 +841,10 @@ export default {
           for (let i = 0; i < this.editGameControl.GameControl.GameAcceptance.length; i++) {
             const tmp = this.editGameControl.GameControl.GameAcceptance[i]
             saveData.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
+          }
+          if (saveData.PlayerControl.CriticalPoint.length == 0) {
+            Message.error('场次采信库存配置为空')
+            return
           }
 
           this.egameData.AppControlConfig[j] = structuredClone(saveData)
@@ -927,7 +931,7 @@ export default {
 
         this.editGameControl.PlayerControl.CriticalPoint = []
         for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
-          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 1000)
+          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 100)
         }
     },
 
@@ -995,7 +999,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-         // console.log("objs", objs)
+          console.log("objs", objs)
           this.handleRefreshPlayerLevels()
           if (objs.isFind === 0) {
             Message.warning('该用户在Tongits JP数据为空')

@@ -550,13 +550,18 @@ export default {
         robotConfig: NewRobotConfig()
       },
       tableMoneyCfg: [
+        { 'label': '0.2', 'value': 0.2 },
         { 'label': '1', 'value': 1 },
         { 'label': '5', 'value': 5 },
         { 'label': '10', 'value': 10 },
         { 'label': '20', 'value': 20 },
         { 'label': '50', 'value': 50 },
         { 'label': '100', 'value': 100 },
-        { 'label': '200', 'value': 200 }
+        { 'label': '200', 'value': 200 },
+        { 'label': '500', 'value': 500 },
+        { 'label': '1000', 'value': 1000 },
+        { 'label': '2000', 'value': 2000 },
+        { 'label': '3000', 'value': 3000 }
       ],
 
       AttrNames: {

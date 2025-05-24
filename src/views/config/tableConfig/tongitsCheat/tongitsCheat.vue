@@ -336,6 +336,7 @@ export default {
       form: {
         Data: {}
       },
+      oldCheatMin: 0
     }
   },
 
@@ -361,6 +362,7 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
+            $this.oldCheatMin = $this.CheatCfg.MaybeMin
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -449,6 +451,10 @@ export default {
       console.log('setData', this.CheatCfg)
       const $this = this
       this.form.Data = this.encodeData()
+      if (this.oldCheatMin !== this.CheatCfg.MaybeMin) {
+        //更新玩家疑似身份
+        this.updateCheatMin(this.CheatCfg.MaybeMin)
+      }
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
@@ -484,6 +490,18 @@ export default {
       } else {
         return item.Count + '人'
       }
+    },
+    updateCheatMin(maybeMin) {
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: this.env,
+          Path: '/misc/tongits/cheat/update/cheat/cfg',
+          MaybeMin: maybeMin
+        }
+      }).then(response => {
+      })
     }
   }
 }
