@@ -609,7 +609,7 @@ export default {
         if (rule.BetMin > 0 && rule.BetMax > 0) {
           const min = rule.BetMin / 1000
           const max = rule.BetMax / 1000
-          txt += '[' + min.toFixed(3) + ' ~ ' + max.toFixed(3) + ']'
+          txt += '[' + min.toFixed(rule.BetMin % 1000 === 0 ? 0 : 3) + ' ~ ' + max.toFixed(rule.BetMax % 1000 === 0 ? 0 : 3) + '] '
         }
         for (const kk in this.groupOperators) {
           if (rule.Operator == this.groupOperators[kk].value) {
@@ -647,13 +647,13 @@ export default {
           this.editGroupRulesData[k].BetMinStr = '不限'
         } else {
           const min = this.editGroupRulesData[k].BetMin / 1000
-          this.editGroupRulesData[k].BetMinStr = min.toFixed(3)
+          this.editGroupRulesData[k].BetMinStr = min.toFixed(this.editGroupRulesData[k].BetMin % 1000 == 0 ? 0 : 3)
         }
         if (this.editGroupRulesData[k].BetMax == 0) {
           this.editGroupRulesData[k].BetMaxStr = '不限'
         } else {
           const max = this.editGroupRulesData[k].BetMax / 1000
-          this.editGroupRulesData[k].BetMaxStr = max.toFixed(3)
+          this.editGroupRulesData[k].BetMaxStr = max.toFixed(this.editGroupRulesData[k].BetMax % 1000 == 0 ? 0 : 3)
         }
       }
     },
