@@ -248,7 +248,7 @@
         </el-table-column>
         <el-table-column prop="Field" label="操作" width="150">
           <template slot-scope="scope">
-            <el-button type="danger" @click="delGroupRules(scrope.$index)" size="mini">删除</el-button>
+            <el-button type="danger" @click="delGroupRules(scope.$index)" size="mini">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
