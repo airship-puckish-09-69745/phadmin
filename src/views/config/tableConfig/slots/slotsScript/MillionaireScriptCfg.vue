@@ -241,7 +241,7 @@
             </el-select>
           </template>
         </el-table-column>
-        <el-table-column prop="Value" label="数值" width="150">
+        <el-table-column prop="Value" label="数值(RTP单位:千分之一)" width="200">
           <template slot-scope="scope">
             <el-input v-model.number="scope.row.Value" size="mini" />
           </template>
