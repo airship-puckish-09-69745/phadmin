@@ -220,6 +220,10 @@ export default {
           Count: 1,
           MaybeAdd: 3
         },
+        PlayMoreTimes: {
+          Count: 100,
+          MaybeAdd: 3
+        },
         LeaveFre: [
           {
             Per: 10,
@@ -397,6 +401,11 @@ export default {
         MaybeAdd: parseInt(this.CheatCfg.DisAndGive.MaybeAdd)
       }
       this.CheatCfg.DisAndGive = DisAndGive
+      const PlayMoreTimes = {
+        Count: parseInt(this.CheatCfg.PlayMoreTimes.Count),
+        MaybeAdd: parseInt(this.CheatCfg.PlayMoreTimes.MaybeAdd)
+      }
+      this.CheatCfg.PlayMoreTimes = PlayMoreTimes
       const LeaveFre = []
       for (let i = 0; i < this.CheatCfg.LeaveFre.length; i++) {
         const item = this.CheatCfg.LeaveFre[i]
@@ -720,6 +729,14 @@ export default {
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="table-container">
+          <h5 class="title">对局过多</h5>
+          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="对局100局加">
+              <el-input v-model.number="CheatCfg.PlayMoreTimes.MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
         </div>
       </el-tab-pane>
       <!--      <el-tab-pane label="数据异常增加疑似度配置" />-->
