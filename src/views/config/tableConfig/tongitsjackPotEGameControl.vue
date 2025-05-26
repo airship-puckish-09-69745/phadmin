@@ -1056,6 +1056,7 @@ export default {
             } else {
               this.editAppId = 0
             }
+            this.editGoodCard = this.egameData.TongitsJackpotBuildCardInfo
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
 
