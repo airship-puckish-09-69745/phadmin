@@ -1005,7 +1005,7 @@ export const asyncRoutes = [
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机', noCache: true },
+        meta: { title: 'Slots - 老虎机', perm: 'SLOTS_PROCESS' },
         children: [
           {
             path: 'slotsProCfg',
