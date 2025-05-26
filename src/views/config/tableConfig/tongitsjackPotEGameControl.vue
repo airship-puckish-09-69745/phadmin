@@ -1000,14 +1000,12 @@ export default {
             Message.error('场次采信库存配置为空')
             return
           }
-
+          saveData.TongitsJackpotBuildCardInfo = this.editGoodCard
           this.egameData.AppControlConfig[j] = structuredClone(saveData)
-        }
-
-        
+          
+        } 
       }
 
-      this.egameData.TongitsJackpotBuildCardInfo = this.editGoodCard
 
       // console.log("save", this.egameData)
       this.form.Data = JSON.stringify(this.egameData)
@@ -1056,7 +1054,6 @@ export default {
             } else {
               this.editAppId = 0
             }
-            this.editGoodCard = this.egameData.TongitsJackpotBuildCardInfo
             // 设置修改之前数据
             this.$refs.compare.SetOldVal(response.Data)
 
@@ -1090,6 +1087,8 @@ export default {
         for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
           this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 100)
         }
+
+        this.editGoodCard = tmpData.TongitsJackpotBuildCardInfo
     },
 
     handleFilter() {
