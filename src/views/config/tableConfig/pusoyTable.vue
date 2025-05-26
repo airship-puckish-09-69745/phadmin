@@ -210,6 +210,7 @@
             <el-form-item label="底注：" :required="true" prop="item.TableMoney">
               <el-select v-model="edit.item.TableMoney" placeholder="请选择" :disabled="edit.isEdit">
                 <el-option label="0.1" :value="0.1" />
+                <el-option label="0.2" :value="0.2" />
                 <el-option label="0.3" :value="0.3" />
                 <el-option label="0.5" :value="0.5" />
                 <el-option label="1" :value="1" />
@@ -222,6 +223,9 @@
                 <el-option label="200" :value="200" />
                 <el-option label="400" :value="400" />
                 <el-option label="500" :value="500" />
+                <el-option label="1000" :value="1000" />
+                <el-option label="2000" :value="2000" />
+                <el-option label="3000" :value="3000" />
               </el-select>
             </el-form-item>
           </el-col>

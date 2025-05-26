@@ -220,6 +220,10 @@ export default {
           Count: 1,
           MaybeAdd: 3
         },
+        PlayMoreTimes: {
+          Count: 100,
+          MaybeAdd: 3
+        },
         LeaveFre: [
           {
             Per: 10,
@@ -336,6 +340,7 @@ export default {
       form: {
         Data: {}
       },
+      oldCheatMin: 0
     }
   },
 
@@ -361,6 +366,7 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
+            $this.oldCheatMin = $this.CheatCfg.MaybeMin
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -395,6 +401,11 @@ export default {
         MaybeAdd: parseInt(this.CheatCfg.DisAndGive.MaybeAdd)
       }
       this.CheatCfg.DisAndGive = DisAndGive
+      const PlayMoreTimes = {
+        Count: parseInt(this.CheatCfg.PlayMoreTimes.Count),
+        MaybeAdd: parseInt(this.CheatCfg.PlayMoreTimes.MaybeAdd)
+      }
+      this.CheatCfg.PlayMoreTimes = PlayMoreTimes
       const LeaveFre = []
       for (let i = 0; i < this.CheatCfg.LeaveFre.length; i++) {
         const item = this.CheatCfg.LeaveFre[i]
@@ -449,6 +460,10 @@ export default {
       console.log('setData', this.CheatCfg)
       const $this = this
       this.form.Data = this.encodeData()
+      if (this.oldCheatMin !== this.CheatCfg.MaybeMin) {
+        //更新玩家疑似身份
+        this.updateCheatMin(this.CheatCfg.MaybeMin)
+      }
       // 设置修改后数据
       this.$refs.compare.SetNewVal(this.form.Data)
       this.$refs.compare.Compare(function(isEdit) {
@@ -484,6 +499,18 @@ export default {
       } else {
         return item.Count + '人'
       }
+    },
+    updateCheatMin(maybeMin) {
+      request({
+        url: '/dataProxy/info',
+        method: 'post',
+        data: {
+          Env: this.env,
+          Path: '/misc/tongits/cheat/update/cheat/cfg',
+          MaybeMin: maybeMin
+        }
+      }).then(response => {
+      })
     }
   }
 }
@@ -702,6 +729,14 @@ export default {
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="table-container">
+          <h5 class="title">对局过多</h5>
+          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="对局100局加">
+              <el-input v-model.number="CheatCfg.PlayMoreTimes.MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
         </div>
       </el-tab-pane>
       <!--      <el-tab-pane label="数据异常增加疑似度配置" />-->

@@ -48,6 +48,39 @@
       </el-col>
     </el-row>
 
+    <el-row>
+      <el-col :span="12" :offset="3">
+        <el-tabs v-model="activeTab">
+          <el-tab-pane label="购买免费倍数" name="script">
+            <el-button type="primary" @click="addConfigRow(buyFreeOddsWeight)">添加</el-button>
+            <span style="margin-left:10px;color:#909399">(配置的数值不能出现0倍的情况)</span>
+            <el-table :data="buyFreeOddsWeight">
+              <el-table-column prop="MinOdds" label="目标倍数开始[" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MinOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="MinOdds" label="]目标倍数结束" width="120">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.MaxOdds" :required="true" placeholder="请输入内容,如10"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column prop="WeightStr" label="倍数范围权重">
+                <template slot-scope="scope">
+                  <el-input v-model.number="scope.row.InWeight" :required="true" placeholder="请输入内容,如4"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="操作" width="120">
+                <template slot-scope="scope">
+                  <el-button type="danger" @click="removeConfigRow(buyFreeOddsWeight, scope.$index)">删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
+      </el-col>
+    </el-row>
+
     <el-row style="margin-top: 30px">
       <el-col :offset="3">
         <el-button type="success" @click="submitFrm">保存</el-button>
@@ -84,7 +117,9 @@ export default {
   data() {
     return {
       cfg: {
-      }
+      },
+      buyFreeOddsWeight: [{ MinOdds: 0, MaxOdds: 0, InWeight: 0 }],
+      activeTab: 'script'
     }
   },
   created() {
@@ -101,6 +136,7 @@ export default {
     },
     submitFrm() {
       const $this = this
+      this.setConfigRow()
       if (this.getStrLength(this.cfg.MultiOddsValInNormal) !== this.getStrLength(this.cfg.MultiOddsWeightInNormal)) {
         $this.$message.error('普通游戏多倍符号值与普通游戏多倍符号值权重长度不一致')
         return
@@ -133,7 +169,55 @@ export default {
         this.cfg = this.slotsData
         this.$refs.compare.SetOldVal(this.getDiffData())
         this.lock = true
+        this.initConfigRow()
       }
+    },
+    initConfigRow() {
+      let buyFreeOddsRange2 = []
+      if (this.cfg.BuyFreeOddsRange2) {
+        buyFreeOddsRange2 = this.cfg.BuyFreeOddsRange2.split(',')
+      }
+      let buyFreeOddsWeight = []
+      if (this.cfg.BuyFreeOddsWeight) {
+        buyFreeOddsWeight = this.cfg.BuyFreeOddsWeight.split(',')
+      }
+      this.buyFreeOddsWeight = []
+      for (let i = 0; i < buyFreeOddsRange2.length / 2; i++) {
+        this.buyFreeOddsWeight.push({
+          MinOdds: buyFreeOddsRange2[i * 2],
+          MaxOdds: buyFreeOddsRange2[i * 2 + 1],
+          InWeight: buyFreeOddsWeight[i] ? buyFreeOddsWeight[i] : 0
+        })
+      }
+    },
+    setConfigRow() {
+      const buyFreeOddsRange2 = []
+      const buyFreeOddsWeight = []
+      for (let i = 0; i < this.buyFreeOddsWeight.length; i++) {
+        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MinOdds ? this.buyFreeOddsWeight[i].MinOdds : 0)
+        buyFreeOddsRange2.push(this.buyFreeOddsWeight[i].MaxOdds ? this.buyFreeOddsWeight[i].MaxOdds : 0)
+        buyFreeOddsWeight.push(this.buyFreeOddsWeight[i].InWeight ? this.buyFreeOddsWeight[i].InWeight : 0)
+      }
+      this.cfg.BuyFreeOddsRange2 = buyFreeOddsRange2.join(',')
+      this.cfg.BuyFreeOddsWeight = buyFreeOddsWeight.join(',')
+    },
+    addConfigRow(buyFreeOddsWeight) {
+      buyFreeOddsWeight.push({
+        MinOdds: 0,
+        MaxOdds: 0,
+        InWeight: 0
+      })
+    },
+    removeConfigRow(buyFreeOddsWeight, index) {
+      // 弹窗确认是否删除
+      this.$confirm('确定要删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        buyFreeOddsWeight.splice(index, 1)
+        console.log('removeConfigRow index', index)
+      })
     }
   }
 }

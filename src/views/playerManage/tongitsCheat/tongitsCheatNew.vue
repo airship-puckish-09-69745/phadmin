@@ -95,7 +95,7 @@ export default {
           }
           cheatLogs = Array.from(cheatLogMap.values())
           console.log(cheatLogs)
-          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, 'EndTime', -1,"Uid")
+          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, 'EndTime', -1, 'Uid')
           $this.handleCurrentChange(1)
         }
       })
@@ -123,6 +123,7 @@ export default {
       })
       console.log($this.cheatUserType)
     },
+
     addInfos(infos, row) {
       const infosMap = new Map()
       for (let i = 0; i < infos.length; i++) {
@@ -139,6 +140,13 @@ export default {
             cheatType: 1
           })
         }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(1).hasOwnProperty('cheatScore')) {
+            infosMap.get(1).cheatScore += row.cheatScores[1]
+          }else {
+            infosMap.get(1).cheatScore = row.cheatScores[1]
+          }
+        }
       }
       if (row.giveMoreTimes >= 1) {
         if (infosMap.has(2)) {
@@ -149,6 +157,13 @@ export default {
             count: 1,
             cheatType: 2
           })
+        }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(2).hasOwnProperty('cheatScore')) {
+            infosMap.get(2).cheatScore += row.cheatScores[2]
+          }else {
+            infosMap.get(2).cheatScore = row.cheatScores[2]
+          }
         }
       }
       if (row.firstGiveMoreTimes >= 1) {
@@ -161,6 +176,13 @@ export default {
             cheatType: 3
           })
         }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(3).hasOwnProperty('cheatScore')) {
+            infosMap.get(3).cheatScore += row.cheatScores[3]
+          }else {
+            infosMap.get(3).cheatScore = row.cheatScores[3]
+          }
+        }
       }
       if (row.preWinFight >= 1) {
         if (infosMap.has(4)) {
@@ -171,6 +193,13 @@ export default {
             count: 1,
             cheatType: 4
           })
+        }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(4).hasOwnProperty('cheatScore')) {
+            infosMap.get(4).cheatScore += row.cheatScores[4]
+          }else {
+            infosMap.get(4).cheatScore = row.cheatScores[4]
+          }
         }
       }
       if (row.preWinFold >= 1) {
@@ -183,6 +212,13 @@ export default {
             cheatType: 5
           })
         }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(5).hasOwnProperty('cheatScore')) {
+            infosMap.get(5).cheatScore += row.cheatScores[5]
+          }else {
+            infosMap.get(5).cheatScore = row.cheatScores[5]
+          }
+        }
       }
       if (row.leaveFre >= 1) {
         if (infosMap.has(6)) {
@@ -193,6 +229,13 @@ export default {
             count: 1,
             cheatType: 6
           })
+        }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(6).hasOwnProperty('cheatScore')) {
+            infosMap.get(6).cheatScore += row.cheatScores[6]
+          }else {
+            infosMap.get(6).cheatScore = row.cheatScores[6]
+          }
         }
       }
       if (row.bigPotWin >= 1) {
@@ -205,6 +248,13 @@ export default {
             cheatType: 7
           })
         }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(7).hasOwnProperty('cheatScore')) {
+            infosMap.get(7).cheatScore += row.cheatScores[7]
+          }else {
+            infosMap.get(7).cheatScore = row.cheatScores[7]
+          }
+        }
       }
       if (row.bigPotLeave >= 1) {
         if (infosMap.has(8)) {
@@ -215,6 +265,33 @@ export default {
             count: 1,
             cheatType: 8
           })
+        }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(8).hasOwnProperty('cheatScore')) {
+            infosMap.get(8).cheatScore += row.cheatScores[8]
+          }else {
+            infosMap.get(8).cheatScore = row.cheatScores[8]
+          }
+        }
+      }
+      if (row.hasOwnProperty('playMoreTimes')) {
+        if (row.playMoreTimes >= 1) {
+          if (infosMap.has(8)) {
+            infosMap.get(9).count++
+          } else {
+            infosMap.set(9, {
+              Desc: '玩的局数过多',
+              count: 1,
+              cheatType: 9
+            })
+          }
+          if (row.hasOwnProperty('cheatScores')) {
+            if (infosMap.get(9).hasOwnProperty('cheatScore')) {
+              infosMap.get(9).cheatScore += row.cheatScores[9]
+            }else {
+              infosMap.get(9).cheatScore = row.cheatScores[9]
+            }
+          }
         }
       }
       return Array.from(infosMap.values())
@@ -294,11 +371,18 @@ export default {
         return '黑名单'
       }
     },
+    formatCheatInfo(row) {
+      if (row.hasOwnProperty('cheatScore')) {
+        return row.Desc + '---(' + row.count + '次)---(加' + row.cheatScore + '分)'
+      } else {
+        return row.Desc + '---(' + row.count + '次)'
+      }
+    },
     formatUserBlackTime(row) {
       const userType = row.userType
       if (userType === 2) {
         return this.formatTimeDate(row.blackTime)
-      }else {
+      } else {
         return '--'
       }
       // const hasKey = this.cheatUserType.has(row.Uid)
@@ -314,6 +398,9 @@ export default {
       // }
     },
     formatOtherUids(row) {
+      if (!row.hasOwnProperty('otherUid')) {
+        return '----'
+      }
       return row.otherUid.join()
     },
     getDetail(id, dt) {
@@ -452,10 +539,12 @@ export default {
             <el-tooltip placement="right">
               <div slot="content" style="max-width: 300px">
                 <div v-for="(member, index) in scope.row.Infos" :key="index">
-                  {{ member.Desc }}---({{ member.count }})
+                  <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-&#45;&#45;({{ member.cheatScore }})-->
+                  {{ formatCheatInfo(member) }}
                 </div>
               </div>
-              <span>{{ scope.row.Infos[0].Desc }}---({{ scope.row.Infos[0].count }})</span>
+              <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+              <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
             </el-tooltip>
           </template>
           <!--          <template slot-scope="scope">-->
@@ -505,10 +594,12 @@ export default {
             <el-tooltip placement="right">
               <div slot="content" style="max-width: 300px">
                 <div v-for="(member, index) in scope.row.Infos" :key="index">
-                  {{ member.Desc }}---({{ member.count }})
+<!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                  {{ formatCheatInfo(member) }}
                 </div>
               </div>
-              <span>{{ scope.row.Infos[0].Desc }}---({{ scope.row.Infos[0].count }})</span>
+<!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+              <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -539,10 +630,12 @@ export default {
             <el-tooltip placement="right">
               <div slot="content" style="max-width: 300px">
                 <div v-for="(member, index) in scope.row.Infos" :key="index">
-                  {{ member.Desc }}---({{ member.count }})
+<!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                  {{ formatCheatInfo(member) }}
                 </div>
               </div>
-              <span>{{ scope.row.Infos[0].Desc }}---({{ scope.row.Infos[0].count }})</span>
+<!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+              <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
             </el-tooltip>
           </template>
         </el-table-column>

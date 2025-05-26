@@ -19,7 +19,7 @@
       <el-tabs type="border-card" @tab-click="handleTabClick">
           <el-tab-pane label="个⼈控制配置">
             <h2 style="text-align:center;">个⼈控制通⽤配置</h2>
-            <h4 style="text-align:left;">个⼈控制临界点配置</h4>
+            <h4 style="text-align:left;">个⼈控制临界点配置<span style="color: red;">(底分倍数)</span></h4>
             <p style="color: red; font-weight: bold;">⚠️ 正数：玩家输给系统， 负数：系统输给玩家！</p>
             <el-descriptions :column="4" :colon="false" direction="vertical" border>
               <el-descriptions-item label="强杀" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center' }">
@@ -148,6 +148,46 @@
                   </el-table>
                 </el-form-item>
               </el-form>
+            </el-row>
+            <el-row style="padding-top: 5px">
+              <h3 style="text-align:center;">玩家好牌配置</h3>
+              <el-col :span="24">
+                <div style="padding-top: 10px">
+                  <el-table
+                    :data="editGoodCard"
+                    stripe
+                    border
+                    style="width: 100%"
+                  >
+                    <el-table-column
+                      prop="ConfigLevel"
+                      label="级别"
+                      width="70"
+                    />
+                    <el-table-column
+                      prop="ConfigName"
+                      label="级别"
+                      width="250"
+                      :formatter="(row) => getGoodCardName(row.ConfigLevel)"
+                    />
+                    <el-table-column
+                      label="操作"
+                      column-key="op"
+                      width="250"
+                    >
+                      <template slot-scope="scope">
+                        <el-button
+                          type="primary"
+                          size="mini"
+                          icon="el-icon-document-copy"
+                          @click="handleUpdate(scope.row)"
+                        >修改
+                        </el-button>
+                      </template>
+                    </el-table-column>
+                  </el-table>
+                </div>
+              </el-col>
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="玩家库存查询与修改" name="playerInfoQuery">
@@ -563,6 +603,31 @@
         </el-tabs>
       </el-form>
     </el-dialog>
+
+    <el-dialog
+      title="玩家配置"
+      :visible.sync="editVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <el-form ref="edit" :model="edit" width="70%" label-position="top">
+        <el-row>
+          <el-tabs type="border-card">
+            <el-tab-pane label="好牌配置">
+              <robot-ai-setting-build-card v-model="edit" />
+            </el-tab-pane>
+          </el-tabs>
+        </el-row>
+        <el-form-item>
+          <el-row>
+            <el-col :span="12" :offset="10">
+              <el-button type="primary" size="medium" @click="setData">保存</el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
     <compare ref="compare" />
   </div>
 </template>
@@ -575,12 +640,13 @@ import Publish from '@/components/Publish'
 import Compare from '@/components/Compare'
 import request from '@/utils/request'
 import {DataRule } from '@/utils/common'
-
+import robotAiSettingBuildCard from './tongits/robotAiSettingBuildCard'
 
 export default {
   components: {
     Publish,
-    Compare
+    Compare,
+    robotAiSettingBuildCard
   },
   data() {
     return {
@@ -588,7 +654,7 @@ export default {
       playMode: 4, // 经典玩法
    
       appidInfoCfgs: [],
-
+      edit: {},
       tableData: [],
       egameData: {},
       editAppId: 0,
@@ -647,6 +713,13 @@ export default {
           label: 'E机器人(强杀)'
         }
       ],
+      goodCardName: [
+        '强放',
+        '弱放',
+        '陪玩',
+        '弱杀',
+        '强杀'
+      ],
       labelPosition: 'top',
       subKey: 'tongits_jackpot_control',
 
@@ -674,41 +747,122 @@ export default {
       gameRatio: 0,  //系统游戏库存
       moveRange: 0,  //群体控制移动区间
       addWeightRatio: 0,  //群体控制增加的权重值
+      editVisible: false,
+      editGoodCard: [
+            {
+              ConfigLevel: 5,
+              BuildCard: {
+                IsDoBuildCard: false,
+                BuildFourRatio: 0,
+                BuildFlushGte5Ratio: 0,
+                BuildFlush4Ratio: 0,
+                BuildFlush3Ratio: 0,
+                BuildThreeRatio: 5,
+                BuildFourMaxNum: 1,
+                BuildFlushGte5MaxNum: 1,
+                BuildFlush4MaxNum: 1,
+                BuildFlush3MaxNum: 1,
+                BuildThree3MaxNum: 1
+              }
+            },{
+              ConfigLevel: 4,
+              BuildCard: {
+                IsDoBuildCard: false,
+                BuildFourRatio: 0,
+                BuildFlushGte5Ratio: 0,
+                BuildFlush4Ratio: 0,
+                BuildFlush3Ratio: 0,
+                BuildThreeRatio: 5,
+                BuildFourMaxNum: 1,
+                BuildFlushGte5MaxNum: 1,
+                BuildFlush4MaxNum: 1,
+                BuildFlush3MaxNum: 1,
+                BuildThree3MaxNum: 1
+              }
+            },{
+              ConfigLevel: 3,
+              BuildCard: {
+                IsDoBuildCard: false,
+                BuildFourRatio: 0,
+                BuildFlushGte5Ratio: 0,
+                BuildFlush4Ratio: 0,
+                BuildFlush3Ratio: 0,
+                BuildThreeRatio: 5,
+                BuildFourMaxNum: 1,
+                BuildFlushGte5MaxNum: 1,
+                BuildFlush4MaxNum: 1,
+                BuildFlush3MaxNum: 1,
+                BuildThree3MaxNum: 1
+              }
+            },{
+              ConfigLevel: 2,
+              BuildCard: {
+                IsDoBuildCard: false,
+                BuildFourRatio: 0,
+                BuildFlushGte5Ratio: 0,
+                BuildFlush4Ratio: 0,
+                BuildFlush3Ratio: 0,
+                BuildThreeRatio: 5,
+                BuildFourMaxNum: 1,
+                BuildFlushGte5MaxNum: 1,
+                BuildFlush4MaxNum: 1,
+                BuildFlush3MaxNum: 1,
+                BuildThree3MaxNum: 1
+              }
+            },{
+              ConfigLevel: 1,
+              BuildCard: {
+                IsDoBuildCard: false,
+                BuildFourRatio: 0,
+                BuildFlushGte5Ratio: 0,
+                BuildFlush4Ratio: 0,
+                BuildFlush3Ratio: 0,
+                BuildThreeRatio: 5,
+                BuildFourMaxNum: 1,
+                BuildFlushGte5MaxNum: 1,
+                BuildFlush4MaxNum: 1,
+                BuildFlush3MaxNum: 1,
+                BuildThree3MaxNum: 1
+              }
+            }
+          ],
+
+
       editGameControl: {
         appid: 1000002, 
         name: 'dayusenlin' , 
         PlayerControl: 
         {
-          CriticalPoint: [-20000, -10000, 10000, 20000],
+          CriticalPoint: [100, 200, 300, 400],
           PlayerControlRound: 0,
           IsSameFirst: false,
           RobotWeight: [
             {
               AiConfigLevel: 5,
-              AiConfigName: '超强机器⼈',
+              AiConfigName: 'E机器人(强杀)',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 4,
-              AiConfigName: '稍强机器⼈',
+              AiConfigName: 'D机器人(弱杀)',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 3,
-              AiConfigName: '正常机器⼈',
+              AiConfigName: 'C机器人(陪玩)',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 2,
-              AiConfigName: '稍弱机器⼈',
+              AiConfigName: 'B机器人(弱放)',
               AiWeight: [1, 1, 1, 1, 1]
             },
             {
               AiConfigLevel: 1,
-              AiConfigName: '超弱机器⼈',
+              AiConfigName: 'A机器人(强放)',
               AiWeight: [1, 1, 1, 1, 1]
             }
-          ]
+          ],
         },
         GameControl: {
           ControlRange: [
@@ -808,7 +962,7 @@ export default {
     },
     setData() {
       if (!this.checkControlRangeSave()) {
-        Message.error('群体控制个人临界点配置左边比右边大，请检测数据')
+        Message.error('群体控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -816,7 +970,7 @@ export default {
         return
       }
       if (!this.checkPlayerCanSave()) {
-        Message.error('个人控制临界点配置左边比右边大，请检测数据')
+        Message.error('个人控制临界点配置左边大于或等于右边，区间配置错误')
         return
       }
 
@@ -827,7 +981,7 @@ export default {
 
           saveData.PlayerControl.CriticalPoint = []
           for (let i = 0; i < this.editGameControl.PlayerControl.CriticalPoint.length; i++) {
-            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 1000)
+            saveData.PlayerControl.CriticalPoint.push(this.editGameControl.PlayerControl.CriticalPoint[i] * 100)
           }
 
           saveData.GameControl.ControlRange = []
@@ -842,12 +996,16 @@ export default {
             const tmp = this.editGameControl.GameControl.GameAcceptance[i]
             saveData.GameControl.GameAcceptance.push({ TableMoney: tmp.TableMoney, Ratio: this.convertToFloat(tmp.Ratio) })
           }
-
+          if (saveData.PlayerControl.CriticalPoint.length == 0) {
+            Message.error('场次采信库存配置为空')
+            return
+          }
+          saveData.TongitsJackpotBuildCardInfo = this.editGoodCard
           this.egameData.AppControlConfig[j] = structuredClone(saveData)
-        }
-
-        
+          
+        } 
       }
+
 
       // console.log("save", this.egameData)
       this.form.Data = JSON.stringify(this.egameData)
@@ -927,8 +1085,10 @@ export default {
 
         this.editGameControl.PlayerControl.CriticalPoint = []
         for (let i = 0; i < tmpData.PlayerControl.CriticalPoint.length; i++) {
-          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 1000)
+          this.editGameControl.PlayerControl.CriticalPoint.push(tmpData.PlayerControl.CriticalPoint[i] / 100)
         }
+
+        this.editGoodCard = tmpData.TongitsJackpotBuildCardInfo
     },
 
     handleFilter() {
@@ -995,7 +1155,8 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
-         // console.log("objs", objs)
+          console.log("objs", objs)
+          this.handleRefreshPlayerLevels()
           if (objs.isFind === 0) {
             Message.warning('该用户在Tongits JP数据为空')
             this.VisibleUid = false
@@ -1003,6 +1164,7 @@ export default {
           }
           this.VisibleUid = true
           Message.success('刷新成功！')
+      
           if (objs.list === undefined) {
             objs.list = []
           }
@@ -1014,6 +1176,7 @@ export default {
               }
             }
           }
+         // this.getPlayerRobotInfo()
         } else {
           Message.warning('该用户在Tongits JP数据为空')
           this.VisibleUid = false
@@ -1117,7 +1280,7 @@ export default {
         data: {
           Env: this.env,
           gid: this.gameId,
-          uid: 1000,
+          uid: 11246954,
           appid: this.editAppId,
           tableMoney: 10000,
           Path: '/egamecontorl/player/robot/level'
@@ -1125,6 +1288,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           const objs = response.Data || []
+          console.log("objs", objs)
         }
       })
     },
@@ -1316,7 +1480,16 @@ export default {
         }
       }
       return name
-    }
+    },
+
+    getGoodCardName(index) {
+      return this.goodCardName[index-1]
+    },
+
+    handleUpdate(row) {
+      this.editVisible = true
+      this.edit = row
+    },
  
   },
   

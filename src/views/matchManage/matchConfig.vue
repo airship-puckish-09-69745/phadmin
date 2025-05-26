@@ -529,6 +529,13 @@
           <el-form-item label="比赛最大人数：" :required="true">
             <el-input v-model.number="editForm.signExtra.matchMaxLimit" style="width: 180px;" size="mini" placeholder="请填写最大数量" />
           </el-form-item>
+
+          <el-form-item v-if="editForm.data.signUpType === 3"  label="电子钱包报表是否上报:" :required="true">
+            <el-radio-group v-model.number="editForm.signExtra.walletReport">
+              <el-radio :label="0">是</el-radio>
+              <el-radio :label="1">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
         </fieldset>
 
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
@@ -945,7 +952,8 @@ export default {
           propCost: 0,  //道具价值
           propNum: 1,  //数量
           propName: '', //道具名称
-          matchMaxLimit: 0
+          matchMaxLimit: 0,
+          walletReport: 0, //电子钱包报表上报 0:上报 1:不上报
         },
         prizeExtra: {
           awardType: 0,
@@ -1523,7 +1531,8 @@ export default {
           propCost: 0,
           propNum: 1,
           propName: '',
-          matchMaxLimit: 0
+          matchMaxLimit: 0,
+          walletReport: 0,
         }
 
         this.editForm.prizeExtra = {

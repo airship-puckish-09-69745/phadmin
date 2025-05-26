@@ -18,7 +18,7 @@
                 </el-col>
                 <el-col >
                   <el-form-item label="活动开始时间：">
-                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" format="timestamp" size="mini" />
+                    <el-date-picker v-model="item.StartTime" type="datetime" placeholder="选择开始时间" value-format="timestamp" size="mini" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">
@@ -64,6 +64,11 @@
                 <el-col>
                   <el-form-item label="超出砖石红包发放限制后发放红包金额：" :required="true">
                     <el-input v-model="item.LimitReceiveNum3" style="width: 200px;" placeholder="请输入限制数量" />
+                  </el-form-item>
+                </el-col>
+                <el-col>
+                  <el-form-item label="限制红包发送金币额度：" :required="true">
+                    <el-input v-model="item.LimitMaxNum" style="width: 200px;" placeholder="请输入限制数量" />
                   </el-form-item>
                 </el-col>
               </el-form>
@@ -219,7 +224,7 @@
             </el-form-item>
             <el-form-item v-if="edit.item.TaskType == 2" label="奖励ID：" :required="true" prop="TaskType">
               <el-col :span="15">
-                <el-select   v-model.number="edit.item.RewardId" placeholder="请选择" style="width: 250px">
+                <el-select   v-model.number="edit.item.RewardId" placeholder="请选择" style="width: 250px" @change="SetPropName(edit.item.RewardId)">
                   <el-option
                     v-for="item in propOptions"
                     :key="item.value"
@@ -232,6 +237,18 @@
             <el-form-item  label="奖励数量：" :required="true" prop="RewardNum">
               <el-col :span="15">
                 <el-input v-model.number="edit.item.RewardNum" />
+              </el-col>
+            </el-form-item>
+            <el-form-item v-if="edit.item.TaskType == 2" label="有效时间：" :required="true" prop="TaskType">
+              <el-col :span="15">
+                <el-select   v-model.number="edit.item.RewardTime" placeholder="请选择" style="width: 250px">
+                  <el-option
+                    v-for="item in propDayTypeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
               </el-col>
             </el-form-item>
           </el-form>
@@ -287,7 +304,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  {{ getRedBagCfgData(scope.row.Weight) }}%
+                  {{ getRedBagWeightCfg(scope.row.Weight) }}%
                 </template>
               </el-table-column>
               <el-table-column
@@ -365,7 +382,7 @@
                 width="200"
               >
                 <template slot-scope="scope">
-                  {{ getRedBagCfgData(scope.row.Weight) }}%
+                  {{ getRedBagWeightCfg(scope.row.Weight) }}%
                 </template>
               </el-table-column>
               <el-table-column
@@ -556,6 +573,8 @@ function newPrizePoolCfg() {
     RewardId: 0,
     RewardNum: 0,
     RewardType: 0,
+    RewardName: '',
+    RewardTime: 0,
     TaskType: 0,
     GameType: []
   }
@@ -609,6 +628,7 @@ export default {
         LimitReceiveNum1: 0,
         LimitReceiveNum2: 0,
         LimitReceiveNum3: 0,
+        LimitMaxNum: 0,
         AppId: -1,
         PrizePoolCfg: [],
         GameIdCfg: [],
@@ -620,35 +640,35 @@ export default {
         CurId: '',
         IsWhite: true,
         taskCfgData: [
-          { Id: 1, MatchNum: 800, RewardId: 1, RewardNum: 1, RewardType: 0, TaskType: 1, GameType: [] },
-          { Id: 2, MatchNum: 4200, RewardId: 1, RewardNum: 1, RewardType: 0, TaskType: 1, GameType: [] },
-          { Id: 3, MatchNum: 5000, RewardId: 1, RewardNum: 1, RewardType: 0, TaskType: 1, GameType: [] },
-          { Id: 4, MatchNum: 3, RewardId: 0, RewardNum: 1, RewardType: 0, TaskType: 2, GameType: [] }
+          { Id: 1, MatchNum: 800, RewardId: 1, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 1, GameType: [] },
+          { Id: 2, MatchNum: 4200, RewardId: 1, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 1, GameType: [] },
+          { Id: 3, MatchNum: 5000, RewardId: 1, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 1, GameType: [] },
+          { Id: 4, MatchNum: 3, RewardId: 0, RewardNum: 1, RewardType: 0, RewardName: '', RewardTime: 0, TaskType: 2, GameType: [] }
         ],
         redBagCfg: [
-          { Id: 1, redId: 1, Value1: 15, Value2: 185, Weight: 2300, SunNum: 0 },
-          { Id: 2, redId: 1, Value1: 185, Value2: 415, Weight: 4700, SunNum: 0 },
-          { Id: 3, redId: 1, Value1: 415, Value2: 625, Weight: 3000, SunNum: 0 },
-          { Id: 4, redId: 2, Value1: 745, Value2: 1255, Weight: 2619, SunNum: 0 },
-          { Id: 5, redId: 2, Value1: 1255, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 6, redId: 2, Value1: 2445, Value2: 2615, Weight: 2381, SunNum: 0 },
-          { Id: 7, redId: 3, Value1: 945, Value2: 1855, Weight: 2500, SunNum: 0 },
-          { Id: 8, redId: 3, Value1: 1855, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 9, redId: 3, Value1: 2145, Value2: 3055, Weight: 2500, SunNum: 0 }
+          { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
+          { Id: 2, redId: 1, Value1: 1850, Value2: 4150, Weight: 4700, SunNum: 0 },
+          { Id: 3, redId: 1, Value1: 4150, Value2: 6250, Weight: 3000, SunNum: 0 },
+          { Id: 4, redId: 2, Value1: 7450, Value2: 12550, Weight: 2619, SunNum: 0 },
+          { Id: 5, redId: 2, Value1: 12550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 6, redId: 2, Value1: 24450, Value2: 26150, Weight: 2381, SunNum: 0 },
+          { Id: 7, redId: 3, Value1: 9450, Value2: 18550, Weight: 2500, SunNum: 0 },
+          { Id: 8, redId: 3, Value1: 18550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 9, redId: 3, Value1: 21450, Value2: 30550, Weight: 2500, SunNum: 0 }
         ],
         redMaxBagCfg: [
-          { Id: 1, redId: 1, Value1: 15, Value2: 185, Weight: 2300, SunNum: 0 },
-          { Id: 2, redId: 1, Value1: 185, Value2: 415, Weight: 4700, SunNum: 0 },
-          { Id: 3, redId: 1, Value1: 415, Value2: 625, Weight: 3000, SunNum: 0 },
-          { Id: 4, redId: 1, Value1: 28800, Value2: 28800, Weight: 1000, SunNum: 20 },
-          { Id: 5, redId: 2, Value1: 745, Value2: 1255, Weight: 2619, SunNum: 0 },
-          { Id: 6, redId: 2, Value1: 1255, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 7, redId: 2, Value1: 2445, Value2: 2615, Weight: 2381, SunNum: 0 },
-          { Id: 8, redId: 2, Value1: 188800, Value2: 188800, Weight: 2000, SunNum: 10 },
-          { Id: 9, redId: 3, Value1: 945, Value2: 1855, Weight: 2500, SunNum: 0 },
-          { Id: 10, redId: 3, Value1: 1855, Value2: 2145, Weight: 5000, SunNum: 0 },
-          { Id: 11, redId: 3, Value1: 2145, Value2: 3055, Weight: 2500, SunNum: 0 },
-          { Id: 12, redId: 3, Value1: 388800, Value2: 388800, Weight: 2000, SunNum: 5 }
+          { Id: 1, redId: 1, Value1: 150, Value2: 1850, Weight: 2300, SunNum: 0 },
+          { Id: 2, redId: 1, Value1: 1850, Value2: 4150, Weight: 4700, SunNum: 0 },
+          { Id: 3, redId: 1, Value1: 4150, Value2: 6250, Weight: 3000, SunNum: 0 },
+          { Id: 4, redId: 1, Value1: 288000, Value2: 288000, Weight: 1000, SunNum: 20 },
+          { Id: 5, redId: 2, Value1: 7450, Value2: 12550, Weight: 2619, SunNum: 0 },
+          { Id: 6, redId: 2, Value1: 12550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 7, redId: 2, Value1: 24450, Value2: 26150, Weight: 2381, SunNum: 0 },
+          { Id: 8, redId: 2, Value1: 1888000, Value2: 1888000, Weight: 2000, SunNum: 10 },
+          { Id: 9, redId: 3, Value1: 9450, Value2: 18550, Weight: 2500, SunNum: 0 },
+          { Id: 10, redId: 3, Value1: 18550, Value2: 21450, Weight: 5000, SunNum: 0 },
+          { Id: 11, redId: 3, Value1: 21450, Value2: 30550, Weight: 2500, SunNum: 0 },
+          { Id: 12, redId: 3, Value1: 3888000, Value2: 3888000, Weight: 2000, SunNum: 5 }
         ]
       },
       showData: [],
@@ -872,6 +892,9 @@ export default {
       this.edit.cfgType = nType
       this.initFormData(true, ob.Id)
       this.edit.visible = true
+      if (ob.TaskType === 2) {
+        this.updatePropOptions(ob.RewardType)
+      }
     },
     handleDelete(ob, nType) {
       let $this = this
@@ -1076,8 +1099,10 @@ export default {
             this.item.taskCfgData[i].RewardNum = this.edit.item.RewardNum
             this.item.taskCfgData[i].RewardId = this.edit.item.RewardId
             this.item.taskCfgData[i].RewardType = this.edit.item.RewardType
+            this.item.taskCfgData[i].RewardName = this.edit.item.RewardName
             this.item.taskCfgData[i].GameType = this.edit.item.GameType
             this.item.taskCfgData[i].TaskType = this.edit.item.TaskType
+            this.item.taskCfgData[i].RewardTime = this.edit.item.RewardTime
           }
         }
       } else {
@@ -1088,8 +1113,10 @@ export default {
             this.item.taskCfgData[i].RewardNum = this.edit.item.RewardNum
             this.item.taskCfgData[i].RewardId = this.edit.item.RewardId
             this.item.taskCfgData[i].RewardType = this.edit.item.RewardType
+            this.item.taskCfgData[i].RewardName = this.edit.item.RewardName
             this.item.taskCfgData[i].GameType = this.edit.item.GameType
             this.item.taskCfgData[i].TaskType = this.edit.item.TaskType
+            this.item.taskCfgData[i].RewardTime = this.edit.item.RewardTime
             isExit = true
             break
           }
@@ -1119,11 +1146,12 @@ export default {
             $this.item.IsWhite = old.IsWhite
             $this.item.StartTime = old.StartTime * 1000
             $this.item.EndTime = old.EndTime * 1000
-            $this.item.EveryDayStartTime = old.EveryDayStartTime * 1000
-            $this.item.EveryDayEndTime = old.EveryDayEndTime * 1000
-            $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 100
-            $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 100
-            $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 100
+            $this.item.EveryDayStartTime = this.getStartMidnightTimestamp(old.EveryDayStartTime * 1000)
+            $this.item.EveryDayEndTime = this.getEndMidnightTimestamp(old.EveryDayStartTime * 1000,old.EveryDayEndTime * 1000)
+            $this.item.LimitReceiveNum1 = old.LimitReceiveNum1 / 1000
+            $this.item.LimitReceiveNum2 = old.LimitReceiveNum2 / 1000
+            $this.item.LimitReceiveNum3 = old.LimitReceiveNum3 / 1000
+            $this.item.LimitMaxNum = old.LimitMaxNum / 1000
             if (old.StartTime === 0) {
               $this.item.StartTime = new Date().setSeconds(0)
             }
@@ -1183,9 +1211,10 @@ export default {
         SingleLimitNum: Math.ceil(this.item.SingleLimitNum * 1000),
         EveryDayLimitNum: Math.ceil(this.item.EveryDayLimitNum * 1000),
         SumLimitNum: Math.ceil(this.item.SumLimitNum * 1000),
-        LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 100),
-        LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 100),
-        LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 100),
+        LimitReceiveNum1: Math.ceil(this.item.LimitReceiveNum1 * 1000),
+        LimitReceiveNum2: Math.ceil(this.item.LimitReceiveNum2 * 1000),
+        LimitReceiveNum3: Math.ceil(this.item.LimitReceiveNum3 * 1000),
+        LimitMaxNum: Math.ceil(this.item.LimitMaxNum * 1000),
         taskCfgData: taskCfgData,
         redBagCfg: this.item.redBagCfg,
         redMaxBagCfg: this.item.redMaxBagCfg,
@@ -1451,7 +1480,45 @@ export default {
       return cfg
     },
     getRedBagCfgData(num) {
+      return num / 1000
+    },
+    getRedBagWeightCfg(num) {
       return num / 100
+    },
+    getStartMidnightTimestamp(nTime) {
+      if (nTime === 0) {
+        return 0
+      }
+      const now = new Date(nTime)
+      var nHour = now.getHours()
+      var nMin = now.getMinutes()
+      const currTime = new Date()
+      currTime.setHours(nHour, nMin,0,0)
+      return currTime.getTime()
+    },
+    getEndMidnightTimestamp(nStartTime, nEndTime) {
+      if (nEndTime === 0) {
+        return 0
+      }
+      const start = new Date(nStartTime)
+      var sHour = start.getHours()
+      var sMin = start.getMinutes()
+
+      const end = new Date(nEndTime)
+      var eHour = end.getHours()
+      var eMin = end.getMinutes()
+
+      const currTime = new Date()
+      currTime.setHours(eHour, eMin,0,0)
+      var retTime = currTime.getTime()
+      if (sHour > eHour) {
+        retTime = retTime + 86400000
+      } else if (sHour === eHour) {
+        if (eMin <= sMin) {
+          retTime = retTime + 86400000
+        }
+      }
+      return retTime
     },
     //************************ 道具配置 ************************
     getPropList() {
@@ -1473,7 +1540,6 @@ export default {
         } else {
           this.propList = []
         }
-        console.log("+++++++++++++++++++++++++++++++++++++++++")
         console.log(this.propList)
       })
     },
@@ -1514,7 +1580,15 @@ export default {
           break
         }
       }
-    }
+    },
+    SetPropName(itemId) {
+      for (let i = 0; i < this.propOptions.length; i++) {
+        if (this.propOptions[i].value === itemId) {
+          this.edit.item.RewardName = this.propOptions[i].label
+          break
+        }
+      }
+    },
     //************************ 道具配置 ************************
   }
 }

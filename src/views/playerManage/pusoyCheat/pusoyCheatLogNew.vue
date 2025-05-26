@@ -1,12 +1,15 @@
 <script>
 import request from '@/utils/request'
 import { $libDate, $libType, ClientTableData } from '@/utils/common'
+import PusoyWildLog from '@/views/playerManage/components/PusoyWildLog.vue'
+import PusoyGameLog from '@/views/playerManage/components/PusoyGameLog.vue'
 // eslint-disable-next-line no-unused-vars
 const filterMap = {
   currentTableMoney: 'all',
   TableMoney: 'all'
 }
 export default {
+  components: { PusoyWildLog ,PusoyGameLog},
   data() {
     return {
       cheatLogs: [],
@@ -14,8 +17,11 @@ export default {
       cheatLogsNoCredit: [],
       cheatLogsBlack: [],
       cheatLogsMaybe: [],
-
-      checkTime: { start: $libDate.GetDayBegin(new Date().getTime()),
+      GameWildLogVisible: false,
+      GameWildLog: {},
+      GameLogVisible: false,
+      GameLog: {},
+      checkTime: { start: $libDate.GetDayBegin(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
         end: $libDate.GetDayEnd(new Date().getTime()) },
       Uid: 0,
       Tid: 0,
@@ -34,7 +40,7 @@ export default {
         value: 126,
         label: 'PUSOYWILD'
       }],
-      cheatSel:0,
+      cheatSel: 0,
       cheatOptions: [
         {
           value: 0,
@@ -78,7 +84,7 @@ export default {
         }
       ],
 
-      tablemoney:0,
+      tablemoney: 0,
       tableMoneyList: [
         {
           value: 0,
@@ -251,6 +257,9 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formatCredit(row) {
+      if (this.blackuids.includes(row.Uid)){
+        return '黑名单用户'
+      }
       if (row.UserType === 1) {
         return ' 信誉用户'
       } else if (row.UserType === 0) {
@@ -484,7 +493,7 @@ export default {
       this.$confirm('是否确认添加进黑名单?', '提示', { type: 'warning' }).then(async() => {
         await this.addToBlack(row)
         await this.getBlackData()
-        // this.getDataInfo()
+        this.refreshShowCredit()
       }).catch(() => {
         console.log('取消')
       })
@@ -606,6 +615,10 @@ export default {
           const maybes = data.Items || []
           for (let i = 0; i < maybes.length; i++) {
             const maybe = maybes[i]
+            if (this.blackuids.includes(maybe.Uid1)) {
+              // console.log('Uid1:', maybe.Uid1, ' in black list')
+              continue
+            }
             $this.MaybeUids.push(maybe.Uid1)
           }
           $this.clientDBMaybe = new ClientTableData($this.MaybeUids, $this.pageNum, {}, 'showBlackButton', -1)
@@ -622,6 +635,49 @@ export default {
       console.log('k=>', k, 'v==>', v)
       this.clientDBNoCredit.FilterData()
       this.refreshShowNoCredit()
+    },
+    showGamelog(obj) {
+      if (this.Gid === 21){
+        this.GameLog = {
+          gid: this.Gid,
+          detail: obj
+        }
+        this.GameLogVisible = true
+      }else {
+        this.GameWildLog = {
+          gid: this.Gid,
+          detail: obj
+        }
+        this.GameWildLogVisible = true
+      }
+
+    },
+    closeDialog() {
+      this.GameLogVisible = false
+      this.GameWildLogVisible = false
+    },
+    getDetail(id, dt) {
+      const $this = this
+      // id = 268448453
+      // dt = 1747896811
+      if (id <= 0) {
+        return
+      }
+      request({
+        url: '/dataProxy/info',
+        method: 'get',
+        data: {
+          Env: this.env,
+          Path: '/log/detail',
+          ID: id,
+          DateTime: dt
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          const obj = response.Data || {}
+          $this.showGamelog(obj)
+        }
+      })
     },
     async getDataCreditNew(userType) {
       const $this = this
@@ -656,9 +712,7 @@ export default {
 
           for (let i = 0; i < cheatLogs.length; i++) {
             const cheatLog = cheatLogs[i]
-            if (cheatLog.Tid === 0){
-              console.log('cheatLog:', cheatLog)
-            }
+            // console.log('cheatLog:', cheatLog)
             let key = ''
             const cheatUids = []
             for (let j = 0; j < cheatLog.Uids.length; j++) {
@@ -751,7 +805,7 @@ export default {
             cheatLogNew.Tid = value[0].Tid
             cheatLogNew.CheatType = value[0].CheatType
             cheatLogNew.GameId = value[0].GameId
-            cheatLogNew.TableMoney = value[0].TableMoney /1000
+            cheatLogNew.TableMoney = value[0].TableMoney / 1000
             cheatLogNew.DefenseScore = value[0].DefenseScore
 
             let shootAllOne = 0
@@ -967,7 +1021,7 @@ export default {
                     align="center"
                   >
                     <template slot-scope="scope">
-                      <div>{{ showCheatInfo(scope.row) }}</div>
+                      <div @click="getDetail(scope.row.LogId,scope.row.UpdateTime)">{{ showCheatInfo(scope.row) }}</div>
                     </template>
                   </el-table-column>
                 </el-table>
@@ -999,15 +1053,15 @@ export default {
               <template slot-scope="scope">
                 {{ formatNumber(scope.row.TableMoney) }}
               </template>
-<!--              <template v-slot:header>-->
-<!--                <el-select v-model="clientDBCredit.FilterValueMap['TableMoney']" size="mini" @change="handleCreditFilter">-->
-<!--                  <el-option label="作弊场次" :value="0" />-->
-<!--                  <el-option v-for="(o,key) in clientDBCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />-->
-<!--                </el-select>-->
-<!--              </template>-->
-<!--              <template slot-scope="scope">-->
-<!--                {{ clientDBCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}-->
-<!--              </template>-->
+              <!--              <template v-slot:header>-->
+              <!--                <el-select v-model="clientDBCredit.FilterValueMap['TableMoney']" size="mini" @change="handleCreditFilter">-->
+              <!--                  <el-option label="作弊场次" :value="0" />-->
+              <!--                  <el-option v-for="(o,key) in clientDBCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />-->
+              <!--                </el-select>-->
+              <!--              </template>-->
+              <!--              <template slot-scope="scope">-->
+              <!--                {{ clientDBCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}-->
+              <!--              </template>-->
             </el-table-column>
             <el-table-column
               label="操作"
@@ -1066,263 +1120,263 @@ export default {
             />
           </div>
         </el-tab-pane>
-        <el-tab-pane label="非授信作弊记录">
+        <!--        <el-tab-pane label="非授信作弊记录">-->
 
-          <el-form :model="checkTime" label-width="90px" :inline="true" size="small">
-            <el-form-item label="开始日期：">
-              <el-date-picker
-                v-model="checkTime.start"
-                value-format="timestamp"
-                type="datetime"
-                placeholder="选择日期"
-                size="mini"
-              />
-            </el-form-item>
-            <el-form-item label="结束日期：">
-              <el-date-picker
-                v-model="checkTime.end"
-                value-format="timestamp"
-                type="datetime"
-                placeholder="选择日期"
-                size="mini"
-              />
-            </el-form-item>
+        <!--          <el-form :model="checkTime" label-width="90px" :inline="true" size="small">-->
+        <!--            <el-form-item label="开始日期：">-->
+        <!--              <el-date-picker-->
+        <!--                v-model="checkTime.start"-->
+        <!--                value-format="timestamp"-->
+        <!--                type="datetime"-->
+        <!--                placeholder="选择日期"-->
+        <!--                size="mini"-->
+        <!--              />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item label="结束日期：">-->
+        <!--              <el-date-picker-->
+        <!--                v-model="checkTime.end"-->
+        <!--                value-format="timestamp"-->
+        <!--                type="datetime"-->
+        <!--                placeholder="选择日期"-->
+        <!--                size="mini"-->
+        <!--              />-->
+        <!--            </el-form-item>-->
 
-            <el-form-item label="UID：">
-              <el-input v-model.number="Uid" />
-            </el-form-item>
-            <el-form-item label="桌子：">
-              <el-input v-model.number="Tid" />
-            </el-form-item>
-            <el-form-item label="游戏：">
-              <el-select v-model.number="Gid" placeholder="请选择">
-                <el-option
-                  v-for="itemGid in options"
-                  :key="itemGid.value"
-                  :label="itemGid.label"
-                  :value="itemGid.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="作弊类型：">
-              <el-select v-model.number="cheatSel" placeholder="请选择">
-                <el-option
-                  v-for="itemCheat in cheatOptions"
-                  :key="itemCheat.value"
-                  :label="itemCheat.label"
-                  :value="itemCheat.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="场次：">
-              <el-select v-model.number="tablemoney" placeholder="请选择">
-                <el-option
-                  v-for="itemCheat in tableMoneyList"
-                  :key="itemCheat.value"
-                  :label="itemCheat.label"
-                  :value="itemCheat.value"
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item>
-              <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>
-            </el-form-item>
-          </el-form>
-          <el-table
-            :data="cheatLogsNoCredit"
-            border
-            style="width: 1800px;"
-          >
-            <el-table-column
-              label="玩家信息"
-              width="445"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-table
-                  :data="scope.row.Uids"
-                  border
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    prop="Uid"
-                    label="玩家ID"
-                    width="150"
-                    align="center"
-                  />
-                  <el-table-column
-                    label="用户信誉"
-                    width="150"
-                    align="center"
-                  >
-                    <template slot-scope="scopeUids">
-                      <div>{{ formatCredit(scopeUids.row) }}</div>
-                    </template>
-                  </el-table-column>
-                  <el-table-column
-                    label="是否标记疑似"
-                    width="120"
-                    align="center"
-                  >
-                    <template slot-scope="scopeUids">
-                      <div>{{ formatMaybe(scopeUids.row) }}</div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </template>
+        <!--            <el-form-item label="UID：">-->
+        <!--              <el-input v-model.number="Uid" />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item label="桌子：">-->
+        <!--              <el-input v-model.number="Tid" />-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item label="游戏：">-->
+        <!--              <el-select v-model.number="Gid" placeholder="请选择">-->
+        <!--                <el-option-->
+        <!--                  v-for="itemGid in options"-->
+        <!--                  :key="itemGid.value"-->
+        <!--                  :label="itemGid.label"-->
+        <!--                  :value="itemGid.value"-->
+        <!--                />-->
+        <!--              </el-select>-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item label="作弊类型：">-->
+        <!--              <el-select v-model.number="cheatSel" placeholder="请选择">-->
+        <!--                <el-option-->
+        <!--                  v-for="itemCheat in cheatOptions"-->
+        <!--                  :key="itemCheat.value"-->
+        <!--                  :label="itemCheat.label"-->
+        <!--                  :value="itemCheat.value"-->
+        <!--                />-->
+        <!--              </el-select>-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item label="场次：">-->
+        <!--              <el-select v-model.number="tablemoney" placeholder="请选择">-->
+        <!--                <el-option-->
+        <!--                  v-for="itemCheat in tableMoneyList"-->
+        <!--                  :key="itemCheat.value"-->
+        <!--                  :label="itemCheat.label"-->
+        <!--                  :value="itemCheat.value"-->
+        <!--                />-->
+        <!--              </el-select>-->
+        <!--            </el-form-item>-->
+        <!--            <el-form-item>-->
+        <!--              <el-button size="mini" type="primary" icon="el-icon-plus" @click="getDataInfoNoCredit">查询</el-button>-->
+        <!--            </el-form-item>-->
+        <!--          </el-form>-->
+        <!--          <el-table-->
+        <!--            :data="cheatLogsNoCredit"-->
+        <!--            border-->
+        <!--            style="width: 1800px;"-->
+        <!--          >-->
+        <!--            <el-table-column-->
+        <!--              label="玩家信息"-->
+        <!--              width="445"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                <el-table-->
+        <!--                  :data="scope.row.Uids"-->
+        <!--                  border-->
+        <!--                  style="width: 100%"-->
+        <!--                >-->
+        <!--                  <el-table-column-->
+        <!--                    prop="Uid"-->
+        <!--                    label="玩家ID"-->
+        <!--                    width="150"-->
+        <!--                    align="center"-->
+        <!--                  />-->
+        <!--                  <el-table-column-->
+        <!--                    label="用户信誉"-->
+        <!--                    width="150"-->
+        <!--                    align="center"-->
+        <!--                  >-->
+        <!--                    <template slot-scope="scopeUids">-->
+        <!--                      <div>{{ formatCredit(scopeUids.row) }}</div>-->
+        <!--                    </template>-->
+        <!--                  </el-table-column>-->
+        <!--                  <el-table-column-->
+        <!--                    label="是否标记疑似"-->
+        <!--                    width="120"-->
+        <!--                    align="center"-->
+        <!--                  >-->
+        <!--                    <template slot-scope="scopeUids">-->
+        <!--                      <div>{{ formatMaybe(scopeUids.row) }}</div>-->
+        <!--                    </template>-->
+        <!--                  </el-table-column>-->
+        <!--                </el-table>-->
+        <!--              </template>-->
 
-            </el-table-column>
-            <el-table-column
-              prop="Tid"
-              label="桌子id"
-              width="120"
-              align="center"
-            />
-            <el-table-column
-              label="作弊数据"
-              width="200"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <div v-show="isShowShootAllTwo(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>
-                <div v-show="isShowShootAllOne(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>
-                <div v-show="isShowExtraAddScore(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>
-                <div v-show="isShowThreeSmall(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>
-                <div v-show="isShowThreeZero(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>
-                <div v-show="isShowThreeTwoCrack(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>
-                <div v-show="isShowThreeCrack(scope.row)">{{ formatCheatDateThreeCrack(scope.row) }}</div>
-                <div v-show="isShowOneLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>
-                <div v-show="isShowTwoLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>
-              </template>
-            </el-table-column>
+        <!--            </el-table-column>-->
+        <!--            <el-table-column-->
+        <!--              prop="Tid"-->
+        <!--              label="桌子id"-->
+        <!--              width="120"-->
+        <!--              align="center"-->
+        <!--            />-->
+        <!--            <el-table-column-->
+        <!--              label="作弊数据"-->
+        <!--              width="200"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                <div v-show="isShowShootAllTwo(scope.row)">{{ formatCheatDateShootAllTwo(scope.row) }}</div>-->
+        <!--                <div v-show="isShowShootAllOne(scope.row)">{{ formatCheatDateShootAllOne(scope.row) }}</div>-->
+        <!--                <div v-show="isShowExtraAddScore(scope.row)">{{ formatCheatDateExtraAddScore(scope.row) }}</div>-->
+        <!--                <div v-show="isShowThreeSmall(scope.row)">{{ formatCheatDateThreeSmall(scope.row) }}</div>-->
+        <!--                <div v-show="isShowThreeZero(scope.row)">{{ formatCheatDateThreeZero(scope.row) }}</div>-->
+        <!--                <div v-show="isShowThreeTwoCrack(scope.row)">{{ formatCheatDateThreeTwoCrack(scope.row) }}</div>-->
+        <!--                <div v-show="isShowThreeCrack(scope.row)">{{ formatCheatDateThreeCrack(scope.row) }}</div>-->
+        <!--                <div v-show="isShowOneLeave(scope.row)">{{ formatCheatDateShootAllOneLeave(scope.row) }}</div>-->
+        <!--                <div v-show="isShowTwoLeave(scope.row)">{{ formatCheatDateShootAllTwoLeave(scope.row) }}</div>-->
+        <!--              </template>-->
+        <!--            </el-table-column>-->
 
-            <el-table-column
-              label="具体作弊信息"
-              width="445"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-table
-                  :data="scope.row.CheatLogs"
-                  border
-                  style="width: 100%"
-                >
-                  <el-table-column
-                    label="作弊信息"
-                    width="420"
-                    align="center"
-                  >
-                    <template slot-scope="scope">
-                      <div>{{ showCheatInfo(scope.row) }}</div>
-                    </template>
-                  </el-table-column>
-                </el-table>
-              </template>
+        <!--            <el-table-column-->
+        <!--              label="具体作弊信息"-->
+        <!--              width="445"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                <el-table-->
+        <!--                  :data="scope.row.CheatLogs"-->
+        <!--                  border-->
+        <!--                  style="width: 100%"-->
+        <!--                >-->
+        <!--                  <el-table-column-->
+        <!--                    label="作弊信息"-->
+        <!--                    width="420"-->
+        <!--                    align="center"-->
+        <!--                  >-->
+        <!--                    <template slot-scope="scope">-->
+        <!--                      <div>{{ showCheatInfo(scope.row) }}</div>-->
+        <!--                    </template>-->
+        <!--                  </el-table-column>-->
+        <!--                </el-table>-->
+        <!--              </template>-->
 
-            </el-table-column>
-            <el-table-column
-              prop="DefenseScore"
-              label="防守分值"
-              width="80"
-              align="center"
-            />
-            <el-table-column
-              label="游戏"
-              width="120"
-              align="center"
-            >
-              <template slot-scope="scope">
-                {{ formatGameId(scope.row.GameId) }}
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="TableMoney"
-              sortable
-              label="场次"
-              width="120"
-              align="center"
-            >
-              <template slot-scope="scope">
-                {{ formatNumber(scope.row.TableMoney) }}
-              </template>
-<!--              <template v-slot:header>-->
-<!--                <el-select v-model="clientDBNoCredit.FilterValueMap['TableMoney']" size="mini" @change="handleNoCreditFilter">-->
-<!--                  <el-option label="作弊场次" :value="0" />-->
-<!--                  <el-option v-for="(o,key) in clientDBNoCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />-->
-<!--                </el-select>-->
-<!--              </template>-->
-<!--              <template slot-scope="scope">-->
-<!--                {{ clientDBNoCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}-->
-<!--              </template>-->
-            </el-table-column>
-<!--            <el-table-column-->
-<!--              prop="UpdateTime"-->
-<!--              label="更新时间"-->
-<!--              width="120"-->
-<!--              align="center"-->
-<!--            >-->
-<!--              <template slot-scope="scope">-->
-<!--                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>-->
-<!--                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>-->
-<!--              </template>-->
-<!--            </el-table-column>-->
-            <el-table-column
-              label="操作"
-              width="120"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-button
-                  v-if="showMaybeButton(scope.row)"
-                  type="primary"
-                  size="mini"
-                  @click="handleAddMaybe(scope.row)"
-                >添加疑似
-                </el-button>
-                <el-button
-                  v-else
-                  type="primary"
-                  size="mini"
-                  @click="handleDelMaybe(scope.row)"
-                >删除疑似
-                </el-button>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="黑名单操作"
-              width="120"
-              align="center"
-            >
-              <template slot-scope="scope">
-                <el-button
-                  v-if="showBlackButton(scope.row)"
-                  type="primary"
-                  size="mini"
-                  @click="handleClick(scope.row)"
-                >添加黑名单
-                </el-button>
-                <el-button
-                  v-else
-                  type="primary"
-                  size="mini"
-                  disabled
-                >已拉黑
-                </el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-          <div class="block">
-            <el-pagination
-              :current-page="clientDBNoCredit.GetPage().GetCurrentPage()"
-              :page-sizes="[20, 40, 60, 80]"
-              :page-size="clientDBNoCredit.GetPage().GetPageNum()"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="clientDBNoCredit.GetPage().GetTotalCount()"
-              @size-change="handleSizeChangeNoCredit"
-              @current-change="handleCurrentChangeNoCredit"
-            />
-          </div>
-        </el-tab-pane>
+        <!--            </el-table-column>-->
+        <!--            <el-table-column-->
+        <!--              prop="DefenseScore"-->
+        <!--              label="防守分值"-->
+        <!--              width="80"-->
+        <!--              align="center"-->
+        <!--            />-->
+        <!--            <el-table-column-->
+        <!--              label="游戏"-->
+        <!--              width="120"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                {{ formatGameId(scope.row.GameId) }}-->
+        <!--              </template>-->
+        <!--            </el-table-column>-->
+        <!--            <el-table-column-->
+        <!--              prop="TableMoney"-->
+        <!--              sortable-->
+        <!--              label="场次"-->
+        <!--              width="120"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                {{ formatNumber(scope.row.TableMoney) }}-->
+        <!--              </template>-->
+        <!--&lt;!&ndash;              <template v-slot:header>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <el-select v-model="clientDBNoCredit.FilterValueMap['TableMoney']" size="mini" @change="handleNoCreditFilter">&ndash;&gt;-->
+        <!--&lt;!&ndash;                  <el-option label="作弊场次" :value="0" />&ndash;&gt;-->
+        <!--&lt;!&ndash;                  <el-option v-for="(o,key) in clientDBNoCredit.FilterMap['TableMoney']" :key="key" :label="o" :value="key" />&ndash;&gt;-->
+        <!--&lt;!&ndash;                </el-select>&ndash;&gt;-->
+        <!--&lt;!&ndash;              </template>&ndash;&gt;-->
+        <!--&lt;!&ndash;              <template slot-scope="scope">&ndash;&gt;-->
+        <!--&lt;!&ndash;                {{ clientDBNoCredit.GetShowValue('TableMoney', scope.row.TableMoney) }}&ndash;&gt;-->
+        <!--&lt;!&ndash;              </template>&ndash;&gt;-->
+        <!--            </el-table-column>-->
+        <!--&lt;!&ndash;            <el-table-column&ndash;&gt;-->
+        <!--&lt;!&ndash;              prop="UpdateTime"&ndash;&gt;-->
+        <!--&lt;!&ndash;              label="更新时间"&ndash;&gt;-->
+        <!--&lt;!&ndash;              width="120"&ndash;&gt;-->
+        <!--&lt;!&ndash;              align="center"&ndash;&gt;-->
+        <!--&lt;!&ndash;            >&ndash;&gt;-->
+        <!--&lt;!&ndash;              <template slot-scope="scope">&ndash;&gt;-->
+        <!--&lt;!&ndash;                <div>{{ formatTimeDate(scope.row.UpdateTime) }}</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;                <div>{{ formatTimeTime(scope.row.UpdateTime) }}</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;              </template>&ndash;&gt;-->
+        <!--&lt;!&ndash;            </el-table-column>&ndash;&gt;-->
+        <!--            <el-table-column-->
+        <!--              label="操作"-->
+        <!--              width="120"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                <el-button-->
+        <!--                  v-if="showMaybeButton(scope.row)"-->
+        <!--                  type="primary"-->
+        <!--                  size="mini"-->
+        <!--                  @click="handleAddMaybe(scope.row)"-->
+        <!--                >添加疑似-->
+        <!--                </el-button>-->
+        <!--                <el-button-->
+        <!--                  v-else-->
+        <!--                  type="primary"-->
+        <!--                  size="mini"-->
+        <!--                  @click="handleDelMaybe(scope.row)"-->
+        <!--                >删除疑似-->
+        <!--                </el-button>-->
+        <!--              </template>-->
+        <!--            </el-table-column>-->
+        <!--            <el-table-column-->
+        <!--              label="黑名单操作"-->
+        <!--              width="120"-->
+        <!--              align="center"-->
+        <!--            >-->
+        <!--              <template slot-scope="scope">-->
+        <!--                <el-button-->
+        <!--                  v-if="showBlackButton(scope.row)"-->
+        <!--                  type="primary"-->
+        <!--                  size="mini"-->
+        <!--                  @click="handleClick(scope.row)"-->
+        <!--                >添加黑名单-->
+        <!--                </el-button>-->
+        <!--                <el-button-->
+        <!--                  v-else-->
+        <!--                  type="primary"-->
+        <!--                  size="mini"-->
+        <!--                  disabled-->
+        <!--                >已拉黑-->
+        <!--                </el-button>-->
+        <!--              </template>-->
+        <!--            </el-table-column>-->
+        <!--          </el-table>-->
+        <!--          <div class="block">-->
+        <!--            <el-pagination-->
+        <!--              :current-page="clientDBNoCredit.GetPage().GetCurrentPage()"-->
+        <!--              :page-sizes="[20, 40, 60, 80]"-->
+        <!--              :page-size="clientDBNoCredit.GetPage().GetPageNum()"-->
+        <!--              layout="total, sizes, prev, pager, next, jumper"-->
+        <!--              :total="clientDBNoCredit.GetPage().GetTotalCount()"-->
+        <!--              @size-change="handleSizeChangeNoCredit"-->
+        <!--              @current-change="handleCurrentChangeNoCredit"-->
+        <!--            />-->
+        <!--          </div>-->
+        <!--        </el-tab-pane>-->
         <el-tab-pane label="疑似作弊名单">
           <el-table
             :data="cheatLogsMaybe"
@@ -1382,6 +1436,8 @@ export default {
       </el-tabs>
 
     </el_row>
+    <pusoyWild-log :game-log="GameWildLog" :game-log-visible="GameWildLogVisible" @closeDialog="closeDialog" />
+    <pusoyGame-log :game-log="GameLog" :game-log-visible="GameLogVisible" @closeDialog="closeDialog" />
   </el-col>
 </template>
 

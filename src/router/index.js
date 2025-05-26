@@ -185,6 +185,12 @@ export const asyncRoutes = [
         component: () => import('@/views/playerManage/bigprizelog'),
         name: '大奖日志',
         meta: { title: 'slots - 大奖日志 ◐' }
+      },
+      {
+        path: 'egame-control',
+        component: () => import('@/views/online/egameControl/index.vue'),
+        name: 'EGame控制监控',
+        meta: { title: 'EGame控制监控' }
       }
     ]
   },
@@ -817,9 +823,9 @@ export const asyncRoutes = [
                     meta: { title: 'Jackpot配置' }
                   },
                   {
-                    path: 'tongitsjackPotControl',
-                    component: () => import('@/views/config/tableConfig/tongitsjackPotControl'),
-                    name: 'tongitsjackPotControl',
+                    path: 'tongitsjackPotEGameControl',
+                    component: () => import('@/views/config/tableConfig/tongitsjackPotEGameControl'),
+                    name: 'tongitsjackPotEGameControl',
                     meta: { title: 'EGame控制配置 ◐' }
                   }
               //  ]
@@ -999,7 +1005,7 @@ export const asyncRoutes = [
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机', noCache: true },
+        meta: { title: 'Slots - 老虎机', perm: 'SLOTS_PROCESS' },
         children: [
           {
             path: 'slotsProCfg',

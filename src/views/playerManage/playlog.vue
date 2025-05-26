@@ -3083,6 +3083,7 @@
     <GinRummy v-if="gameLogComponent.gid === 116" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <uno-log v-if="gameLogComponent.gid === 117" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <pusoyWild-log v-if="gameLogComponent.gid === 126" :game-log="gameLogComponent" @closeDialog="closeDialog" />
+    <pusoyGame-log v-if="gameLogComponent.gid === 21" :game-log="gameLogComponent" @closeDialog="closeDialog" />
     <el-row>
       <line-chart :chart-data="chartData" height="600px" />
     </el-row>
@@ -3109,6 +3110,7 @@ import MultiPlayerNiuNiuDetailLog from '@/views/playerManage/components/MultiPla
 import GinRummy from '@/views/playerManage/components/GinRummy.vue'
 import UnoLog from '@/views/playerManage/components/UnoLog.vue'
 import PusoyWildLog from '@/views/playerManage/components/PusoyWildLog.vue'
+import PusoyGameLog from '@/views/playerManage/components/PusoyGameLog.vue'
 
 const filterMap = {
   IsPractice: {
@@ -3150,7 +3152,8 @@ export default {
     Publish,
     UidInput,
     LineChart,
-    PusoyWildLog
+    PusoyWildLog,
+    PusoyGameLog
   },
   data() {
     return {
@@ -3428,7 +3431,7 @@ export default {
         4: 'MINI'
       },
       libMoney: new MoneyShow(['MoneyChanged', 'PayoffAmount', 'MoneyNow', 'ServiceFee', 'TableMoney', 'TotalValidBet', 'PotChange']),
-      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126],
+      LogComponentGameIds: [107, 108, 32, 111, 110, 49, 47, 48, 112, 115, 116, 117, 126,21],
       uidMap: {},
       isRobotMap: {}
     }
@@ -3798,8 +3801,8 @@ export default {
             $this.showPusoyDosGame(obj)
           } else if (gid == 37) {
             $this.showBlackjackGame(obj)
-          } else if (gid === 21) {
-            $this.showPusoyGame(obj)
+          // } else if (gid === 21) {
+          //   $this.showPusoyGame(obj)
           } else if (gid === 100) {
             $this.showTowerGame(obj)
           } else if (gid === 101) {
