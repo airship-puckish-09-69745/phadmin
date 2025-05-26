@@ -148,8 +148,20 @@ export default {
       cheatRecordCount: 0,
       cheatRecordCountOption: [
         {
-          value: 1,
+          value: 2,
           label: '大于2条的'
+        },
+        {
+          value: 3,
+          label: '大于3条的'
+        },
+        {
+          value: 4,
+          label: '大于4条的'
+        },
+        {
+          value: 5,
+          label: '大于5条的'
         },
         {
           value: 0,
@@ -838,10 +850,8 @@ export default {
           }
 
           for (const [key, value] of cheatLogsMap) {
-            if (this.cheatRecordCount !== 0) {
-              if (value.length < 2) {
-                continue
-              }
+            if (value.length < this.cheatRecordCount) {
+              continue
             }
             const cheatLogNew = {}
             cheatLogNew.Uids = value[0].Uids
