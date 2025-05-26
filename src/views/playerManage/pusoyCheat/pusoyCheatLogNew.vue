@@ -9,7 +9,7 @@ const filterMap = {
   TableMoney: 'all'
 }
 export default {
-  components: { PusoyWildLog ,PusoyGameLog},
+  components: { PusoyWildLog, PusoyGameLog },
   data() {
     return {
       cheatLogs: [],
@@ -133,7 +133,29 @@ export default {
       clientDBMaybe: new ClientTableData([], 1, {}),
       clientDBBlack: new ClientTableData([], 1, {}),
       totalCountCredit: 0,
-      totalCountNoCredit: 0
+      totalCountNoCredit: 0,
+      operate: 0,
+      operateOption: [
+        {
+          value: 1,
+          label: '已拉黑或已添加疑似'
+        },
+        {
+          value: 0,
+          label: '全部'
+        }
+      ],
+      cheatRecordCount: 0,
+      cheatRecordCountOption: [
+        {
+          value: 1,
+          label: '大于2条的'
+        },
+        {
+          value: 0,
+          label: '全部'
+        }
+      ]
     }
   },
   async created() {
@@ -257,7 +279,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formatCredit(row) {
-      if (this.blackuids.includes(row.Uid)){
+      if (this.blackuids.includes(row.Uid)) {
         return '黑名单用户'
       }
       if (row.UserType === 1) {
@@ -637,20 +659,19 @@ export default {
       this.refreshShowNoCredit()
     },
     showGamelog(obj) {
-      if (this.Gid === 21){
+      if (this.Gid === 21) {
         this.GameLog = {
           gid: this.Gid,
           detail: obj
         }
         this.GameLogVisible = true
-      }else {
+      } else {
         this.GameWildLog = {
           gid: this.Gid,
           detail: obj
         }
         this.GameWildLogVisible = true
       }
-
     },
     closeDialog() {
       this.GameLogVisible = false
@@ -715,6 +736,23 @@ export default {
             // console.log('cheatLog:', cheatLog)
             let key = ''
             const cheatUids = []
+            let addLog = true
+            if (this.operate !== 0) {
+              for (let j = 0; j < cheatLog.Uids.length; j++) {
+                const uid = cheatLog.Uids[j].Uid
+                if (this.blackuids.includes(uid)) {
+                  addLog = false
+                  break
+                }
+                if (this.MaybeUids.includes(uid)) {
+                  addLog = false
+                  break
+                }
+              }
+            }
+            if (!addLog) {
+              continue
+            }
             for (let j = 0; j < cheatLog.Uids.length; j++) {
               cheatUids.push(cheatLog.Uids[j].Uid)
               key += String(cheatLog.Uids[j].Uid)
@@ -800,6 +838,11 @@ export default {
           }
 
           for (const [key, value] of cheatLogsMap) {
+            if (this.cheatRecordCount !== 0) {
+              if (value.length < 2) {
+                continue
+              }
+            }
             const cheatLogNew = {}
             cheatLogNew.Uids = value[0].Uids
             cheatLogNew.Tid = value[0].Tid
@@ -928,6 +971,26 @@ export default {
                   :key="itemCheat.value"
                   :label="itemCheat.label"
                   :value="itemCheat.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否处理：">
+              <el-select v-model.number="operate" placeholder="请选择">
+                <el-option
+                  v-for="itemOperate in operateOption"
+                  :key="itemOperate.value"
+                  :label="itemOperate.label"
+                  :value="itemOperate.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="作弊条数：">
+              <el-select v-model.number="cheatRecordCount" placeholder="请选择">
+                <el-option
+                  v-for="itemCheatRecordCount in cheatRecordCountOption"
+                  :key="itemCheatRecordCount.value"
+                  :label="itemCheatRecordCount.label"
+                  :value="itemCheatRecordCount.value"
                 />
               </el-select>
             </el-form-item>
