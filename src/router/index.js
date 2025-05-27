@@ -2939,6 +2939,12 @@ export const asyncRoutes = [
             component: () => import('@/views/playerManage/slotsLog'),
             name: 'spacetreasuremars_slots_cfg',
             meta: { title: 'SpaceTreasure(审)', gid: 205 }
+          },
+          {
+            path: 'pharaohtreasuremars_slots_cfg',
+            component: () => import('@/views/playerManage/slotsLog'),
+            name: 'pharaohtreasuremars_slots_cfg',
+            meta: { title: 'Pharaoh\'s Treasure(审)', gid: 169 }
           }
         ]
       },
