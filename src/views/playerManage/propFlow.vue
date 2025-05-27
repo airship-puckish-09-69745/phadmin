@@ -227,13 +227,16 @@ export default {
           this.pagination.total = 0
           const data = response.Data
           console.log('道具流水数据', data.list)
+          if (data.total === 0) {
+            this.pagination.total = 0
+            Message.success('查询结果为空')
+            return
+          }
           if (data.list.length > 0) {
             this.pagination.total = data.total
             this.tableData = data.list || []
           } else {
             this.pagination.total = 0
-            Message.success('查询结果为空')
-            return
           }
         }
       })
