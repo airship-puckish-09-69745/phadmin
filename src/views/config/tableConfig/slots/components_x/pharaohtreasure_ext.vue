@@ -53,7 +53,7 @@
         <el-tabs v-model="activeTab">
           <el-tab-pane label="购买免费倍数" name="script">
             <el-button type="primary" @click="showDialog">添加配置</el-button>
-            <span style="margin-left:10px;color:#909399">(Bet=0为默认配置，配置的数值不能出现0倍的情况)</span>
+            <span style="margin-left:10px;color:#909399">(Bet为单线下注大小，Bet=0为默认配置，配置的倍数不能出现0倍的情况)</span>
 
             <el-table :data="cfg.BuyFreeOddsConf">
               <el-table-column prop="bet" label="Bet值" width="120">
@@ -254,7 +254,6 @@ export default {
         })
       }
       this.buyFreeOddsConf.dialogVisible = false
-      console.log('this.dialogVisible', this.buyFreeOddsConf.dialogVisible)
     }
   }
 }
