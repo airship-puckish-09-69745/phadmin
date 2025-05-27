@@ -9,7 +9,7 @@ const filterMap = {
   TableMoney: 'all'
 }
 export default {
-  components: { PusoyWildLog ,PusoyGameLog},
+  components: { PusoyWildLog, PusoyGameLog },
   data() {
     return {
       cheatLogs: [],
@@ -133,7 +133,41 @@ export default {
       clientDBMaybe: new ClientTableData([], 1, {}),
       clientDBBlack: new ClientTableData([], 1, {}),
       totalCountCredit: 0,
-      totalCountNoCredit: 0
+      totalCountNoCredit: 0,
+      operate: 1,
+      operateOption: [
+        {
+          value: 1,
+          label: '未处理'
+        },
+        {
+          value: 0,
+          label: '全部'
+        }
+      ],
+      cheatRecordCount: 2,
+      cheatRecordCountOption: [
+        {
+          value: 2,
+          label: '大于2条的'
+        },
+        {
+          value: 3,
+          label: '大于3条的'
+        },
+        {
+          value: 4,
+          label: '大于4条的'
+        },
+        {
+          value: 5,
+          label: '大于5条的'
+        },
+        {
+          value: 0,
+          label: '全部'
+        }
+      ]
     }
   },
   async created() {
@@ -257,7 +291,7 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     formatCredit(row) {
-      if (this.blackuids.includes(row.Uid)){
+      if (this.blackuids.includes(row.Uid)) {
         return '黑名单用户'
       }
       if (row.UserType === 1) {
@@ -637,20 +671,19 @@ export default {
       this.refreshShowNoCredit()
     },
     showGamelog(obj) {
-      if (this.Gid === 21){
+      if (this.Gid === 21) {
         this.GameLog = {
           gid: this.Gid,
           detail: obj
         }
         this.GameLogVisible = true
-      }else {
+      } else {
         this.GameWildLog = {
           gid: this.Gid,
           detail: obj
         }
         this.GameWildLogVisible = true
       }
-
     },
     closeDialog() {
       this.GameLogVisible = false
@@ -715,6 +748,27 @@ export default {
             // console.log('cheatLog:', cheatLog)
             let key = ''
             const cheatUids = []
+            let addLog = false
+            if (this.operate !== 0) {
+              for (let j = 0; j < cheatLog.Uids.length; j++) {
+                const uid = cheatLog.Uids[j].Uid
+                let isBlack = false
+                let isMaybe = false
+                if (this.blackuids.includes(uid)) {
+                  isBlack = true
+                }
+                if (this.MaybeUids.includes(uid)) {
+                  isMaybe = true
+                }
+                if (!isMaybe && !isBlack){
+                  addLog = true
+                  break
+                }
+              }
+            }
+            if (!addLog && this.operate !== 0) {
+              continue
+            }
             for (let j = 0; j < cheatLog.Uids.length; j++) {
               cheatUids.push(cheatLog.Uids[j].Uid)
               key += String(cheatLog.Uids[j].Uid)
@@ -800,6 +854,9 @@ export default {
           }
 
           for (const [key, value] of cheatLogsMap) {
+            if (value.length < this.cheatRecordCount) {
+              continue
+            }
             const cheatLogNew = {}
             cheatLogNew.Uids = value[0].Uids
             cheatLogNew.Tid = value[0].Tid
@@ -928,6 +985,26 @@ export default {
                   :key="itemCheat.value"
                   :label="itemCheat.label"
                   :value="itemCheat.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否处理：">
+              <el-select v-model.number="operate" placeholder="请选择">
+                <el-option
+                  v-for="itemOperate in operateOption"
+                  :key="itemOperate.value"
+                  :label="itemOperate.label"
+                  :value="itemOperate.value"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="作弊条数：">
+              <el-select v-model.number="cheatRecordCount" placeholder="请选择">
+                <el-option
+                  v-for="itemCheatRecordCount in cheatRecordCountOption"
+                  :key="itemCheatRecordCount.value"
+                  :label="itemCheatRecordCount.label"
+                  :value="itemCheatRecordCount.value"
                 />
               </el-select>
             </el-form-item>
@@ -1078,10 +1155,10 @@ export default {
                 </el-button>
                 <el-button
                   v-else
-                  type="primary"
+                  type="success"
                   size="mini"
                   @click="handleDelMaybe(scope.row)"
-                >删除疑似
+                >解除疑似
                 </el-button>
               </template>
             </el-table-column>

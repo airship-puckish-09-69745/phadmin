@@ -149,12 +149,18 @@ export default {
         { prop: 'gid', label: '游戏' },
         { prop: 'table_money', label: '场次' },
         { prop: 'total_num', label: '总局数' },
-        { prop: 'forced_kill', label: '强杀' },
-        { prop: 'weak_kill', label: '弱杀' },
-        { prop: 'play_along', label: '陪玩' },
-        { prop: 'weak_release', label: '弱放' },
-        { prop: 'forced', label: '强放' },
-        { prop: 'no_offset_num', label: '无偏移总局数', width: 160 },
+        // { prop: 'forced_kill', label: '强杀' },
+        // { prop: 'weak_kill', label: '弱杀' },
+        // { prop: 'play_along', label: '陪玩' },
+        // { prop: 'weak_release', label: '弱放' },
+        // { prop: 'forced', label: '强放' },
+        // { prop: 'no_offset_num', label: '无偏移总局数', width: 160 },
+        { prop: 'forced_kill_rate', label: '强杀区间玩家胜率', width: 160 },
+        { prop: 'weak_kill_rate', label: '弱杀区间玩家胜率', width: 160 },
+        { prop: 'play_along_rate', label: '陪玩区间玩家胜率', width: 160 },
+        { prop: 'weak_release_rate', label: '弱放区间玩家胜率', width: 160 },
+        { prop: 'forced_rate', label: '强放区间玩家胜率', width: 160 },
+        { prop: 'no_offset_rate', label: '玩家平均胜率', width: 160 },
         { prop: 'total_win', label: '总胜局数' },
         { prop: 'system_money', label: '系统总净胜分', width: 160 }
       ]
@@ -254,7 +260,21 @@ export default {
           if (List && List.length > 0) {
             let tableData = List.map(item => ({
               ...item,
-              gid: this.getGameName(item.gid)
+              gid: this.getGameName(item.gid),
+              // 胜率计算公式：胜利局数 / 总局数 * 100 + '%'，例如
+              // 强杀区间玩家胜率 = 强杀 / 无偏移总局数 + '%'， 保留两位小数
+              // 强杀区间玩家胜率
+              forced_kill_rate: (item.forced_kill / item.no_offset_num * 100).toFixed(2) + '%',
+              // 弱杀区间玩家胜率
+              weak_kill_rate: (item.weak_kill / item.no_offset_num * 100).toFixed(2) + '%',
+              // 陪玩区间玩家胜率
+              play_along_rate: (item.play_along / item.no_offset_num * 100).toFixed(2) + '%',
+              // 弱放区间玩家胜率
+              weak_release_rate: (item.weak_release / item.no_offset_num * 100).toFixed(2) + '%',
+              // 强放区间玩家胜率
+              forced_rate: (item.forced / item.no_offset_num * 100).toFixed(2) + '%',
+              // 总胜局数 / 总局数 * 100 + '%'
+              no_offset_rate: (item.total_win / item.total_num * 100).toFixed(2) + '%'
             }))
             // 根据日期排序，大的排前面
             tableData = tableData.sort((a, b) => {
