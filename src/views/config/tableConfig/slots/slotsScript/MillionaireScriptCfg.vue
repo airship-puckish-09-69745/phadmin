@@ -342,6 +342,7 @@ export default {
         '95': 'chargebisonmars',
         '158': 'sharkkingdom',
         '168': 'pharaohtreasure',
+        '169': 'pharaohtreasuremars',
         '90': 'moneycoming',
         '97': 'romanarenamars',
         '153': 'aladdinlampmars',
