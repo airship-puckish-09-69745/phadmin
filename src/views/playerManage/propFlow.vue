@@ -110,6 +110,7 @@
 import { $libDate, $libShow } from '@/utils/common'
 import { PROP_SOURCE_OPTIONS, ITEM_TYPE_OPTIONS, APPID_OPTIONS } from '@/utils/options' // 引入操作类型等常量配置
 import request from '@/utils/request'
+import { Message } from 'element-ui'
 
 export default {
   data() {
@@ -231,6 +232,8 @@ export default {
             this.tableData = data.list || []
           } else {
             this.pagination.total = 0
+            Message.success('查询结果为空')
+            return
           }
         }
       })
