@@ -227,7 +227,7 @@ export default {
           this.pagination.total = 0
           const data = response.Data
           console.log('道具流水数据', data.list)
-          if (data.total === 0) {
+          if (data === 'no Data') {
             this.pagination.total = 0
             Message.success('查询结果为空')
             return
