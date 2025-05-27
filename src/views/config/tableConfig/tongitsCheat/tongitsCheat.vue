@@ -585,7 +585,7 @@ export default {
             <tbody>
               <tr>
                 <td>增加疑似度</td>
-                <td v-for="(item, index) in CheatCfg.GiveMoreTimes" :key="'h'+index">
+                <td v-for="(item, index) in CheatCfg.LeaveFre" :key="'h'+index">
                   <el-input v-model="item.MaybeAdd" class="centered-input" type="number" size="medium" style="width: 120px" />
                 </td>
               </tr>
