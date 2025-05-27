@@ -1854,6 +1854,20 @@ export const asyncRoutes = [
             meta: { title: '红包雨活动配置', noCache: true }
           }
         ]
+      },
+      {
+        path: 'activityMap',
+        component: () => import('@/views/empty'),
+        name: 'activityMap',
+        meta: { title: '活动地图配置', noCache: true },
+        children: [
+          {
+            path: 'activityMap',
+            component: () => import('@/views/config/tableConfig/activity/activityMap/index.vue'),
+            name: 'activityMap',
+            meta: { title: '活动地图配置', noCache: true }
+          }
+        ]
       }
     ]
   },
