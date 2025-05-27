@@ -1155,10 +1155,10 @@ export default {
                 </el-button>
                 <el-button
                   v-else
-                  type="primary"
+                  type="success"
                   size="mini"
                   @click="handleDelMaybe(scope.row)"
-                >删除疑似
+                >解除疑似
                 </el-button>
               </template>
             </el-table-column>
