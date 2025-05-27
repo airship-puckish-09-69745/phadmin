@@ -345,6 +345,7 @@ export default {
   },
 
   created() {
+
     this.editAI = NewRobotAIItem()
     this.getData()
   },
@@ -366,6 +367,12 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
+            if (!$this.CheatCfg.hasOwnProperty("PlayMoreTimes")) {
+              $this.CheatCfg.PlayMoreTimes = {
+                Count: 100,
+                MaybeAdd: 3
+              }
+            }
             $this.oldCheatMin = $this.CheatCfg.MaybeMin
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
