@@ -134,18 +134,18 @@ export default {
       clientDBBlack: new ClientTableData([], 1, {}),
       totalCountCredit: 0,
       totalCountNoCredit: 0,
-      operate: 0,
+      operate: 1,
       operateOption: [
         {
           value: 1,
-          label: '已拉黑或已添加疑似'
+          label: '未处理'
         },
         {
           value: 0,
           label: '全部'
         }
       ],
-      cheatRecordCount: 0,
+      cheatRecordCount: 2,
       cheatRecordCountOption: [
         {
           value: 2,
@@ -748,21 +748,25 @@ export default {
             // console.log('cheatLog:', cheatLog)
             let key = ''
             const cheatUids = []
-            let addLog = true
+            let addLog = false
             if (this.operate !== 0) {
               for (let j = 0; j < cheatLog.Uids.length; j++) {
                 const uid = cheatLog.Uids[j].Uid
+                let isBlack = false
+                let isMaybe = false
                 if (this.blackuids.includes(uid)) {
-                  addLog = false
-                  break
+                  isBlack = true
                 }
                 if (this.MaybeUids.includes(uid)) {
-                  addLog = false
+                  isMaybe = true
+                }
+                if (!isMaybe && !isBlack){
+                  addLog = true
                   break
                 }
               }
             }
-            if (!addLog) {
+            if (!addLog && this.operate !== 0) {
               continue
             }
             for (let j = 0; j < cheatLog.Uids.length; j++) {
