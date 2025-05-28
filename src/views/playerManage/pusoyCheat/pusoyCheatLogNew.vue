@@ -753,14 +753,14 @@ export default {
               for (let j = 0; j < cheatLog.Uids.length; j++) {
                 const uid = cheatLog.Uids[j].Uid
                 let isBlack = false
-                let isMaybe = false
+                // let isMaybe = false
                 if (this.blackuids.includes(uid)) {
                   isBlack = true
                 }
-                if (this.MaybeUids.includes(uid)) {
-                  isMaybe = true
-                }
-                if (!isMaybe && !isBlack){
+                // if (this.MaybeUids.includes(uid)) {
+                //   isMaybe = true
+                // }
+                if (!isBlack) {
                   addLog = true
                   break
                 }

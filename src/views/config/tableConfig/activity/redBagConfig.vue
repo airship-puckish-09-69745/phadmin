@@ -805,6 +805,7 @@ export default {
       // 道具有效时长选项列表
       propDayTypeOptions: [
         { 'value': 1, 'label': '1天', disabled: false },
+        { 'value': 3, 'label': '3天', disabled: false },
         { 'value': 7, 'label': '7天', disabled: false },
         { 'value': 30, 'label': '30天', disabled: false },
         { 'value': 365, 'label': '365天', disabled: false },
@@ -1540,7 +1541,6 @@ export default {
         } else {
           this.propList = []
         }
-        console.log(this.propList)
       })
     },
     updatePropOptions(propType) {

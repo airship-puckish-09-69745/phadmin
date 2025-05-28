@@ -132,11 +132,11 @@ export default {
       }
       if (row.disAndGive >= 1) {
         if (infosMap.has(1)) {
-          infosMap.get(1).count++
+          infosMap.get(1).count+= row.disAndGive
         } else {
           infosMap.set(1, {
             Desc: '拆牌喂牌',
-            count: 1,
+            count: row.disAndGive,
             cheatType: 1
           })
         }
@@ -150,11 +150,11 @@ export default {
       }
       if (row.giveMoreTimes >= 1) {
         if (infosMap.has(2)) {
-          infosMap.get(2).count++
+          infosMap.get(2).count+= row.giveMoreTimes
         } else {
           infosMap.set(2, {
             Desc: '多次喂牌',
-            count: 1,
+            count: row.giveMoreTimes,
             cheatType: 2
           })
         }
@@ -168,11 +168,11 @@ export default {
       }
       if (row.firstGiveMoreTimes >= 1) {
         if (infosMap.has(3)) {
-          infosMap.get(3).count++
+          infosMap.get(3).count+= row.firstGiveMoreTimes
         } else {
           infosMap.set(3, {
             Desc: '首出喂牌',
-            count: 1,
+            count: row.firstGiveMoreTimes,
             cheatType: 3
           })
         }
@@ -186,11 +186,11 @@ export default {
       }
       if (row.preWinFight >= 1) {
         if (infosMap.has(4)) {
-          infosMap.get(4).count++
+          infosMap.get(4).count+= row.preWinFight
         } else {
           infosMap.set(4, {
             Desc: '皇冠FIGHT',
-            count: 1,
+            count: row.preWinFight,
             cheatType: 4
           })
         }
@@ -204,11 +204,11 @@ export default {
       }
       if (row.preWinFold >= 1) {
         if (infosMap.has(5)) {
-          infosMap.get(5).count++
+          infosMap.get(5).count+= row.preWinFold
         } else {
           infosMap.set(5, {
             Desc: '皇冠FOLD',
-            count: 1,
+            count: row.preWinFold,
             cheatType: 5
           })
         }
@@ -222,11 +222,11 @@ export default {
       }
       if (row.leaveFre >= 1) {
         if (infosMap.has(6)) {
-          infosMap.get(6).count++
+          infosMap.get(6).count+= row.leaveFre
         } else {
           infosMap.set(6, {
             Desc: '频繁离开',
-            count: 1,
+            count: row.leaveFre,
             cheatType: 6
           })
         }
@@ -240,11 +240,11 @@ export default {
       }
       if (row.bigPotWin >= 1) {
         if (infosMap.has(7)) {
-          infosMap.get(7).count++
+          infosMap.get(7).count+= row.bigPotWin
         } else {
           infosMap.set(7, {
             Desc: '大POT高赢率',
-            count: 1,
+            count: row.bigPotWin,
             cheatType: 7
           })
         }
@@ -258,11 +258,11 @@ export default {
       }
       if (row.bigPotLeave >= 1) {
         if (infosMap.has(8)) {
-          infosMap.get(8).count++
+          infosMap.get(8).count+= row.bigPotLeave
         } else {
           infosMap.set(8, {
             Desc: '大POT多人离开',
-            count: 1,
+            count: row.bigPotLeave,
             cheatType: 8
           })
         }
@@ -276,12 +276,12 @@ export default {
       }
       if (row.hasOwnProperty('playMoreTimes')) {
         if (row.playMoreTimes >= 1) {
-          if (infosMap.has(8)) {
-            infosMap.get(9).count++
+          if (infosMap.has(9)) {
+            infosMap.get(9).count+= row.playMoreTimes
           } else {
             infosMap.set(9, {
               Desc: '玩的局数过多',
-              count: 1,
+              count: row.playMoreTimes,
               cheatType: 9
             })
           }
