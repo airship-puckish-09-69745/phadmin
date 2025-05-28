@@ -1,26 +1,52 @@
 <template>
   <div>
     <el-row style="padding-bottom: 12px;">
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleEdit()">添加配置</el-button>
+      <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
+      <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="handleEdit()">添加配置</el-button>
     </el-row>
 
     <el-row>
       <el-table
-        :data="tableData"
+        :data="mapList"
         border
         style="width: 100%"
         :cell-style="libShow.DefaultTableCell"
       >
+        <!-- 序号 -->
+        <el-table-column type="index" label="序号" width="60" align="center" />
         <el-table-column
           v-for="field in fields"
           :key="field.prop"
           :label="field.label"
           :prop="field.prop"
           :width="field.width"
-          :required="field.required"
-        />
+        >
+          <template slot-scope="scope">
+            <!-- 活动图标 -->
+            <el-image
+              v-if="field.prop === 'Icon'"
+              :src="scope.row.Icon"
+              fit="contain"
+              :preview-src-list="[scope.row.Icon]"
+              class="image-manage-item__image"
+            />
+            <!-- 分页 -->
+            <template v-else-if="field.prop === 'Page'">
+              <el-tag
+                v-for="item in scope.row.Page"
+                :key="item"
+                :type="item"
+                size="mini"
+                style="margin-right: 4px;"
+              >
+                {{ item }}
+              </el-tag>
+            </template>
+            <span v-else>{{ scope.row[field.prop] }}</span>
+          </template>
+        </el-table-column>
         <!-- 操作 -->
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="160">
           <template #default="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
@@ -30,7 +56,7 @@
     </el-row>
 
     <!-- 添加|编辑配置弹窗 -->
-    <FormDialog :update-data="formDialog.updateData" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" />
+    <FormDialog :update-data="formDialog.updateData" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" @update="handleUpdateConfig" />
   </div>
 </template>
 
@@ -43,31 +69,39 @@ export default {
   components: {
     FormDialog
   },
+  props: {
+    mapList: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       libShow: $libShow,
       fields: [
-        { label: '配置ID', prop: 'ID', width: 100, required: true },
-        { label: '活动名称', prop: 'Name', width: 200, required: true },
-        { label: '活动金额', prop: 'Amount', width: 100 },
+        // { label: '配置ID', prop: 'ID', width: 130 },
+        { label: '活动名称', prop: 'Name', width: 200 },
+        { label: '活动金额', prop: 'Amount', width: 200 },
         { label: '分页', prop: 'Page' },
-        { label: '活动图标', prop: 'Icon' },
-        { label: '插入位置', prop: 'Position' }
+        { label: '活动图标', prop: 'Icon', width: 150 },
+        { label: '插入位置', prop: 'Position', width: 120, formatter: (row) => `x:${row.Position.x}, y:${row.Position.y}` }
       ],
       formDialog: {
         updateData: null,
         visible: false
       },
       // 主键
-      subKey: 'activity_map_task_cfg',
-      tableData: []
+      subKey: 'activity_map_task_cfg'
+      // tableData: []
     }
   },
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
-    getList() {},
+    onSearch() {
+      this.$emit('reload')
+    },
     /**
      * 新增或编辑配置
      * @param row
@@ -77,15 +111,29 @@ export default {
       this.formDialog.visible = true
     },
     handleDelete(row) {
+      this.$confirm(
+        `确定要删除[ ${row.Name} ]吗？`,
+        '删除提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        this.$emit('delete', row.ID)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
-    handleSave() {
-
+    handleUpdateConfig(data) {
+      this.$emit('update', data)
     },
     handleUpdateDialogVisible(visible) {
       this.formDialog.visible = visible
       this.formDialog.updateData = null
-
-      this.getList()
     }
   }
 }

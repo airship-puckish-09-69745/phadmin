@@ -1,25 +1,23 @@
 <template>
-  <el-dialog title="添加/编辑配置" :visible.sync="dialogVisible" width="50%" @close="handleClose(false)">
+  <el-dialog title="添加/编辑配置" :visible.sync="dialogVisible" width="50%" :close-on-click-modal="false" @close="handleClose(false)">
     <el-form :model="formData" label-width="100px">
-      <el-form-item label="配置ID" prop="ID" :rules="{ required: true, message: '请输入配置ID', trigger: 'blur' }">
-        <el-input v-model="formData.ID" />
-      </el-form-item>
-      <el-form-item label="活动名称" prop="Name" :rules="{ required: true, message: '请输入活动名称', trigger: 'blur' }">
+      <el-form-item label="活动名称" prop="Name" required>
         <el-input v-model="formData.Name" />
       </el-form-item>
-      <el-form-item label="活动金额" :rules="{ required: true, message: '请输入活动金额', trigger: 'blur' }">
-        <el-input v-model.number="formData.Amount" />
+      <el-form-item label="活动金额" required>
+        <el-input v-model.number="formData.Amount" type="number" />
       </el-form-item>
-      <el-form-item label="分页" :rules="{ required: true, message: '请选择分页', trigger: 'blur' }">
+      <el-form-item label="分页" required>
         <el-select v-model="formData.Page" placeholder="请选择分页" multiple style="width: 360px;">
           <el-option v-for="option in pageOptions" :key="option.value" :label="option.label" :value="option.value" />
         </el-select>
       </el-form-item>
-      <el-form-item label="活动图标" :rules="{ required: true, message: '请选择活动图标', trigger: 'blur' }">
+      <el-form-item label="活动图标" required>
         <ImagePicker v-model="formData.Icon" />
       </el-form-item>
-      <el-form-item label="插入位置" :rules="{ required: true, message: '请输入插入位置', trigger: 'blur' }">
-        <el-input v-model.number="formData.Position" />
+      <el-form-item label="插入位置" required>
+        x:<el-input v-model.number="formData.Position.x" placeholder="X坐标" style="width: 150px; margin-right: 10px;" />
+        y:<el-input v-model.number="formData.Position.y" placeholder="Y坐标" style="width: 150px;" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -55,7 +53,10 @@ export default {
         Amount: 0,
         Page: [],
         Icon: '',
-        Position: 0
+        Position: {
+          x: 0,
+          y: 0
+        }
       },
       pageOptions: [
         { label: 'all', value: 'all' },
@@ -90,9 +91,39 @@ export default {
     }
   },
   methods: {
+    /**
+     * 校验表单数据
+     */
+    checkoutForm() {
+      if (!this.formData.Name) {
+        this.$message.error('活动名称不能为空')
+        return false
+      }
+      if (this.formData.Amount <= 0) {
+        this.$message.error('活动金额必须大于0')
+        return false
+      }
+      if (this.formData.Page.length === 0) {
+        this.$message.error('请选择分页')
+        return false
+      }
+      if (!this.formData.Icon) {
+        this.$message.error('活动图标不能为空')
+        return false
+      }
+      if (this.formData.Position.x === '' || this.formData.Position.y === '') {
+        this.$message.error('插入位置的X和Y坐标不能为空')
+        return false
+      }
+      return true
+    },
     handleSave() {
-      this.$emit('save', this.formData)
-      this.resetForm()
+      if (!this.checkoutForm()) {
+        return
+      }
+
+      this.$emit('update', this.formData)
+      this.handleClose()
     },
     resetForm() {
       this.formData = {
@@ -101,7 +132,10 @@ export default {
         Amount: 0,
         Page: '',
         Icon: '',
-        Position: 0
+        Position: {
+          x: 0,
+          y: 0
+        }
       }
       this.$emit('update:visible', false)
     },

@@ -7,10 +7,9 @@
         </el-form-item>
       </el-col>
       <el-col :span="11">
-        <el-form-item label="AppId白名单：" prop="item.WhitelistCfg.AppIdList">
+        <el-form-item label="AppId白名单：">
           <el-select
             v-model="formData.AppIdList"
-            multiple
             placeholder="请选择"
             style="width: 400px"
             @change="onAppIdOptionsChange"
@@ -20,16 +19,20 @@
         </el-form-item>
       </el-col>
       <el-col>
-        <el-form-item label="SiteId白名单：" prop="item.WhitelistCfg.AppIdList">
+        <el-form-item label="SiteId白名单：">
           <el-select
             v-model="formData.SiteIdList"
             placeholder="请选择"
             style="width: 400px"
+            multiple
             @change="onSiteIdOptionsChange"
           >
             <el-option v-for="item in siteIdOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
+      </el-col>
+      <el-col>
+        <el-button type="primary" @click="handleUpdateConfigData">保存配置</el-button>
       </el-col>
     </el-row>
   </el-form>
@@ -40,6 +43,17 @@ import { DataRule } from '@/utils/common'
 export default {
   name: 'WhiteListConfig',
   props: {
+    config: {
+      type: Object,
+      default: () => ({
+        // 白名单开关
+        IsWhite: false,
+        // AppId白名单
+        AppIdList: [],
+        // SiteId白名单
+        SiteIdList: []
+      })
+    }
   },
   data() {
     return {
@@ -72,17 +86,26 @@ export default {
       ]
     }
   },
+  watch: {
+    config: {
+      handler(newVal) {
+        this.formData = { ...newVal }
+      },
+      immediate: true
+    }
+  },
   methods: {
     onAppIdOptionsChange(value) {
       this.formData.AppIdList = value
-      this.$emit('update:appIdList', value)
     },
     onSiteIdOptionsChange(value) {
       this.formData.SiteIdList = value
-      this.$emit('update:siteIdList', value)
     },
     dataRule(required, config) {
       return DataRule(required, config)
+    },
+    handleUpdateConfigData() {
+      this.$emit('update', 'WhiteList', this.formData)
     }
   }
 }
