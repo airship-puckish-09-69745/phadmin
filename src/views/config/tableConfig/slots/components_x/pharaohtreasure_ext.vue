@@ -235,8 +235,8 @@ export default {
       this.cfg.BuyFreeOddsConf.splice(index, 1)
     },
     saveConfig() {
-      if (this.editIndex >= 0) {
-        this.cfg.BuyFreeOddsConf[this.editIndex] = {
+      if (this.buyFreeOddsConf.editIndex >= 0) {
+        this.cfg.BuyFreeOddsConf[this.buyFreeOddsConf.editIndex] = {
           Bet: this.buyFreeOddsConf.currentBet,
           Items: this.buyFreeOddsConf.currentConf
         }
