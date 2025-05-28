@@ -42,6 +42,8 @@
       </el-form>
     </el-row>
 
+    <div style="color: red; margin: 12px">数据有五分钟延迟</div>
+
     <!-- 数据表格 -->
     <el-row>
       <el-table :data="tableData" border stripe style="width: 100%">
