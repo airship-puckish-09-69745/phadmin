@@ -65,7 +65,7 @@
         <!-- 道具数量如果是-1就是无限 -->
         <el-table-column prop="propNum" label="道具数量" width="80">
           <template slot-scope="scope">
-            {{ scope.row.propNum === -1 && (!scope.row.propName.includes('门票') || !scope.row.propName.includes('Ticket')) ? '无限' : scope.row.propNum }}
+            {{ scope.row.propNum === -1 && !scope.row.propName.includes('门票') && !scope.row.propName.includes('Ticket')? '无限' : scope.row.propNum }}
           </template>
         </el-table-column>
         <el-table-column prop="propCost" label="道具价值" width="80" />
