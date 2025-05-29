@@ -6,9 +6,9 @@ import robotAiSettingDrop from '@/views/config/tableConfig/tongits/robotAiSettin
 import robotAiSettingFight from '@/views/config/tableConfig/tongits/robotAiSettingFight.vue'
 import robotAiSettingBuildCard from '@/views/config/tableConfig/tongits/robotAiSettingBuildCard.vue'
 import robotAiSettingChallenge from '@/views/config/tableConfig/tongits/robotAiSettingChallenge.vue'
-import {Message} from "element-ui";
-import request from "@/utils/request";
-import Compare from "@/components/Compare/index.vue";
+import { Message } from 'element-ui'
+import request from '@/utils/request'
+import Compare from '@/components/Compare/index.vue'
 function NewRobotAIItem() {
   const configLevel = 1
   const configName = '防作弊机器⼈'
@@ -345,7 +345,6 @@ export default {
   },
 
   created() {
-
     this.editAI = NewRobotAIItem()
     this.getData()
   },
@@ -367,13 +366,14 @@ export default {
           $this.form = response.Data || {}
           if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
             $this.CheatCfg = JSON.parse(response.Data.Data)
-            if (!$this.CheatCfg.hasOwnProperty("PlayMoreTimes")) {
+            if (!$this.CheatCfg.hasOwnProperty('PlayMoreTimes')) {
               $this.CheatCfg.PlayMoreTimes = {
                 Count: 100,
                 MaybeAdd: 3
               }
             }
-            $this.oldCheatMin = $this.CheatCfg.MaybeMin
+            const maybeMin = $this.CheatCfg.MaybeMin
+            $this.oldCheatMin = maybeMin
             const old = JSON.parse(response.Data.Data)
             // 设置修改之前数据
             $this.$refs.compare.SetOldVal(old)
@@ -468,7 +468,7 @@ export default {
       const $this = this
       this.form.Data = this.encodeData()
       if (this.oldCheatMin !== this.CheatCfg.MaybeMin) {
-        //更新玩家疑似身份
+        // 更新玩家疑似身份
         this.updateCheatMin(this.CheatCfg.MaybeMin)
       }
       // 设置修改后数据
@@ -739,11 +739,36 @@ export default {
         </div>
         <div class="table-container">
           <h5 class="title">对局过多</h5>
-          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
-            <el-form-item label="对局100局加">
-              <el-input v-model.number="CheatCfg.PlayMoreTimes.MaybeAdd" type="number" size="medium" style="width: 120px" />
-            </el-form-item>
-          </el-form>
+          <table class="support-table">
+            <thead>
+              <tr>
+                <th>对局次数</th>
+                <template>
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <el-input
+                      v-model="CheatCfg.PlayMoreTimes.Count"
+                      style="width: 80px; margin-right: 5px;"
+                      type="number"
+                    />
+                  </div>
+                </template>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>增加疑似度</td>
+                <template>
+                  <div style="display: flex; align-items: center; justify-content: center;">
+                    <el-input
+                      v-model="CheatCfg.PlayMoreTimes.MaybeAdd"
+                      style="width: 80px; margin-right: 5px;"
+                      type="number"
+                    />
+                  </div>
+                </template>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </el-tab-pane>
       <!--      <el-tab-pane label="数据异常增加疑似度配置" />-->
