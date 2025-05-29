@@ -81,7 +81,7 @@
                         <el-button type="warning" size="mini" @click="handleHide(scope.row.listId)">隐藏</el-button>
                     </template>
                 </el-table-column>
-                  <el-table-column fixed="right" label="暂停操作" width="80px" v-if="envProjectName != 'ph_audit'">
+                  <el-table-column fixed="right" label="暂停操作" width="80px" v-if="envProjectName == 'ph_audit'">
                     <template slot-scope="scope">
                       <el-button v-if="scope.row.status == 3" type="danger" size="mini" @click="handlePause(scope.row.listId,scope.row.status)">暂停</el-button>
                       <el-button v-if="showDevTool && (scope.row.status == 7)" type="danger" size="mini" @click="handlePause(scope.row.listId,cope.row.status)">结束暂停</el-button>
