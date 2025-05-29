@@ -264,15 +264,15 @@ export default {
               // 胜率计算公式：胜利局数 / 总局数 * 100 + '%'，例如
               // 强杀区间玩家胜率 = 强杀 / 无偏移总局数 + '%'， 保留两位小数
               // 强杀区间玩家胜率
-              forced_kill_rate: (item.forced_kill / item.no_offset_num * 100).toFixed(2) + '%',
+              forced_kill_rate: item.no_offset_num === 0 ? '0.00%' : (item.forced_kill / item.no_offset_num * 100).toFixed(2) + '%',
               // 弱杀区间玩家胜率
-              weak_kill_rate: (item.weak_kill / item.no_offset_num * 100).toFixed(2) + '%',
+              weak_kill_rate: item.no_offset_num === 0 ? '0.00%' : (item.weak_kill / item.no_offset_num * 100).toFixed(2) + '%',
               // 陪玩区间玩家胜率
-              play_along_rate: (item.play_along / item.no_offset_num * 100).toFixed(2) + '%',
+              play_along_rate: item.no_offset_num === 0 ? '0.00%' : (item.play_along / item.no_offset_num * 100).toFixed(2) + '%',
               // 弱放区间玩家胜率
-              weak_release_rate: (item.weak_release / item.no_offset_num * 100).toFixed(2) + '%',
+              weak_release_rate: item.no_offset_num === 0 ? '0.00%' : (item.weak_release / item.no_offset_num * 100).toFixed(2) + '%',
               // 强放区间玩家胜率
-              forced_rate: (item.forced / item.no_offset_num * 100).toFixed(2) + '%',
+              forced_rate: item.no_offset_num === 0 ? '0.00%' : (item.forced / item.no_offset_num * 100).toFixed(2) + '%',
               // 总胜局数 / 总局数 * 100 + '%'
               no_offset_rate: (item.total_win / item.total_num * 100).toFixed(2) + '%'
             }))
