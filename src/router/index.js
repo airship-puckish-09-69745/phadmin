@@ -142,13 +142,13 @@ export const asyncRoutes = [
         path: 'slotsScriptStatistics',
         component: () => import('@/views/online/slotsScriptStatistics.vue'),
         name: 'slotsScriptStatistics',
-        meta: { title: 'Slots剧本监控', perm: 'SLOTS_PROCESS', noCache: true }
+        meta: { title: 'Slots剧本监控', noCache: true }
       },
       {
         path: 'slotsScriptStatisticsV3',
         component: () => import('@/views/online/slotsScriptStatisticsNew.vue'),
         name: 'slotsScriptStatisticsV3',
-        meta: { title: 'Slots剧本监控V3', perm: 'SLOTS_PROCESS', noCache: true }
+        meta: { title: 'Slots剧本监控V3', noCache: true }
       },
       {
         path: 'piggyStatistics',
@@ -1005,7 +1005,7 @@ export const asyncRoutes = [
         path: 'slotsCfg',
         component: () => import('@/views/empty'),
         redirect: 'noRedirect',
-        meta: { title: 'Slots - 老虎机', perm: 'SLOTS_PROCESS' },
+        meta: { title: 'Slots - 老虎机' },
         children: [
           {
             path: 'slotsProCfg',
