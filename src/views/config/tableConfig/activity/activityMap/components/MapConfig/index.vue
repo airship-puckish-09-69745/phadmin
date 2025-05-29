@@ -7,7 +7,7 @@
 
     <el-row>
       <el-table
-        :data="mapList"
+        :data="tableData"
         border
         style="width: 100%"
         :cell-style="libShow.DefaultTableCell"
@@ -53,6 +53,17 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <el-pagination
+        v-if="mapList.length > 0"
+        :total="pagination.total"
+        :page-size="pagination.pageSize"
+        :current-page="pagination.currentPage"
+        layout="total, sizes, prev, pager, next, jumper"
+        style="margin-top: 20px; text-align: right;"
+        @size-change="handlePaginationSizeChange"
+        @current-change="handlePaginationCurrentChange"
+      />
     </el-row>
 
     <!-- 添加|编辑配置弹窗 -->
@@ -61,7 +72,6 @@
 </template>
 
 <script>
-
 import { $libShow } from '@/utils/common'
 import FormDialog from './components/FormDialog.vue'
 export default {
@@ -91,8 +101,24 @@ export default {
         visible: false
       },
       // 主键
-      subKey: 'activity_map_task_cfg'
-      // tableData: []
+      subKey: 'activity_map_task_cfg',
+      tableData: [],
+      pagination: {
+        total: 0, // 数据总条数
+        currentPage: 1, // 当前页码
+        pageSize: 10 // 每页显示条数
+      }
+    }
+  },
+  watch: {
+    mapList: {
+      handler(newVal) {
+        // console.log('mapList changed:', newVal)
+        this.$nextTick(() => {
+          this.getList()
+        })
+      },
+      immediate: true
     }
   },
   methods: {
@@ -101,6 +127,22 @@ export default {
     },
     onSearch() {
       this.$emit('reload')
+    },
+    /**
+     * 从mapList中获取分页数据
+     */
+    getList() {
+      if (!this.mapList || this.mapList.length === 0) {
+        this.tableData = []
+        this.pagination.total = 0
+        return
+      }
+
+      this.tableData = this.mapList.slice(
+        (this.pagination.currentPage - 1) * this.pagination.pageSize,
+        this.pagination.currentPage * this.pagination.pageSize
+      )
+      this.pagination.total = this.mapList.length
     },
     /**
      * 新增或编辑配置
@@ -134,6 +176,14 @@ export default {
     handleUpdateDialogVisible(visible) {
       this.formDialog.visible = visible
       this.formDialog.updateData = null
+    },
+    handlePaginationSizeChange(size) {
+      this.pagination.pageSize = size
+      this.getList()
+    },
+    handlePaginationCurrentChange(page) {
+      this.pagination.currentPage = page
+      this.getList()
     }
   }
 }
