@@ -63,7 +63,7 @@
               </el-table-column>
               <el-table-column label="操作" width="180" header-align="center">
                 <template slot-scope="scope">
-                  <el-button type="danger" @click="editConfig(scope.row)">编辑</el-button>
+                  <el-button type="primary" @click="editConfig(scope.row)">编辑</el-button>
                   <el-button type="danger" @click="removeConfig(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
@@ -235,8 +235,8 @@ export default {
       this.cfg.BuyFreeOddsConf.splice(index, 1)
     },
     saveConfig() {
-      if (this.editIndex >= 0) {
-        this.cfg.BuyFreeOddsConf[this.editIndex] = {
+      if (this.buyFreeOddsConf.editIndex >= 0) {
+        this.cfg.BuyFreeOddsConf[this.buyFreeOddsConf.editIndex] = {
           Bet: this.buyFreeOddsConf.currentBet,
           Items: this.buyFreeOddsConf.currentConf
         }

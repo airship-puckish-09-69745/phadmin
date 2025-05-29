@@ -276,7 +276,7 @@ export default {
       }
       if (row.hasOwnProperty('playMoreTimes')) {
         if (row.playMoreTimes >= 1) {
-          if (infosMap.has(8)) {
+          if (infosMap.has(9)) {
             infosMap.get(9).count+= row.playMoreTimes
           } else {
             infosMap.set(9, {
