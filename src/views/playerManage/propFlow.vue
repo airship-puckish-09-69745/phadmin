@@ -42,6 +42,8 @@
       </el-form>
     </el-row>
 
+    <div style="color: red; margin: 12px">数据有五分钟延迟</div>
+
     <!-- 数据表格 -->
     <el-row>
       <el-table :data="tableData" border stripe style="width: 100%">
@@ -63,7 +65,7 @@
         <!-- 道具数量如果是-1就是无限 -->
         <el-table-column prop="propNum" label="道具数量" width="80">
           <template slot-scope="scope">
-            {{ scope.row.propNum === -1 && !scope.row.propName.includes('门票') ? '无限' : scope.row.propNum }}
+            {{ scope.row.propNum === -1 && !scope.row.propName.includes('门票') && !scope.row.propName.includes('Ticket')? '永久' : scope.row.propNum }}
           </template>
         </el-table-column>
         <el-table-column prop="propCost" label="道具价值" width="80" />
