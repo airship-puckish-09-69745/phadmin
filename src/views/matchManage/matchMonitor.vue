@@ -81,6 +81,12 @@
                         <el-button type="warning" size="mini" @click="handleHide(scope.row.listId)">隐藏</el-button>
                     </template>
                 </el-table-column>
+                  <el-table-column fixed="right" label="暂停操作" width="80px" v-if="envProjectName != 'ph_audit'">
+                    <template slot-scope="scope">
+                      <el-button v-if="scope.row.status == 3" type="danger" size="mini" @click="handlePause(scope.row.listId,scope.row.status)">暂停</el-button>
+                      <el-button v-if="showDevTool && (scope.row.status == 7)" type="danger" size="mini" @click="handlePause(scope.row.listId,cope.row.status)">结束暂停</el-button>
+                    </template>
+                </el-table-column>
             </el-table>
         </el-row>
     </div>
@@ -91,11 +97,13 @@ import request from '@/utils/request'
 import { Message } from 'element-ui'
 import DateTimeShow from '@/components/DatetimeShow'
 import { $libShow } from '@/utils/common'
+import {IsMars} from "@/utils/env";
 export default {
     name: 'MatchMonitor',
     components: { DateTimeShow },
     data() {
         return {
+          envProjectName: process.env.VUE_APP_PROJECT,
             libShow: $libShow,
             form: {
                 gameId: 2031,
@@ -277,6 +285,45 @@ export default {
                 console.log('取消')
             })
         },
+      handlePause(listId,status) {
+          var pauseType = 0
+          let msg = ''
+          if (status == 3){
+            pauseType = 1
+            msg = "您确定要发起暂停比赛吗"
+          }else if(status == 7){
+            pauseType = 2
+            msg = "您确定要结束暂停比赛吗"
+          }else{
+            return
+          }
+        this.$confirm(msg, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          dangerouslyUseHTMLString: true,
+          type: 'warning'
+        }).then(() => {
+          request({
+            url: '/dataProxy/info',
+            method: 'post',
+            data: {
+              Env: this.env,
+              Path: '/match/pause',
+              ListId: listId,
+              PauseType:pauseType
+            }
+          }).then(response => {
+            if (response.RetCode === 0) {
+              Message.success('操作成功！')
+              this.getList()
+            } else {
+              Message.error('操作失败！')
+            }
+          })
+        }).catch(() => {
+          console.log('取消')
+        })
+      }
     }
 }
 </script>
