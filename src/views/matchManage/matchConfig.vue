@@ -274,7 +274,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="赛制选择：" :required="true">
-            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini" filterable>
+            <el-select v-model="editForm.data.csId" placeholder="请选择" size="mini" @change="getCurrCsGrowInfo()" filterable>
               <el-option
                 v-for="item in showCsCfgs"
                 :key="item.value"
@@ -538,6 +538,94 @@
           </el-form-item>
         </fieldset>
 
+        <fieldset>
+          <legend>Rebuy报名条件</legend>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item  label="是否支持rebuy:" :required="true">
+                <el-radio-group v-model.number="editForm.signExtra.reubyExtra.supportRebuy">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="0">否</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy报名条件:" :required="false">
+                <el-select v-model="editForm.signExtra.reubyExtra.rebuySignType" placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="item in RebuySignUpTypeCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1 && (editForm.signExtra.reubyExtra.rebuySignType === 0 || editForm.signExtra.reubyExtra.rebuySignType === 3)" label="Rebuy报名费：" :required="true">
+                <el-input v-model.number="editForm.signExtra.reubyExtra.reubyFree" style="width: 200px;" size="mini" placeholder="请填写金币数量" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1 && (editForm.signExtra.reubyExtra.rebuySignType === 2 || editForm.signExtra.reubyExtra.rebuySignType === 3)" label="Rebuy门票：" :required="true">
+                <el-select v-model="editForm.signExtra.reubyExtra.rebuyPropId" placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="item in matchTicketsCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            </el-row>
+            <el-row>
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1 && (editForm.signExtra.reubyExtra.rebuySignType === 2 || editForm.signExtra.reubyExtra.rebuySignType === 3)" label="Rebuy门票数量：" :required="true">
+                <el-input v-model.number="editForm.signExtra.reubyExtra.rebuyPropNum" style="width: 180px;" size="mini" placeholder="请填写门票数量" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy补充积分:" :required="false">
+                <el-input v-model.number="editForm.signExtra.reubyExtra.reubyScores" style="width: 200px;" size="mini" placeholder="请填写次数" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy操作时长(秒):" :required="false">
+                <el-input v-model.number="editForm.signExtra.reubyExtra.reubySecs" style="width: 200px;" size="mini" placeholder="请填写时间" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+
+          <el-row>
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy次数:" :required="false">
+                <el-input  v-model.number="editForm.signExtra.reubyExtra.reubyCount" style="width: 200px;" size="mini" placeholder="请填写次数" />
+              </el-form-item>
+            </el-col>
+
+            <el-col :span="11">
+              <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1" label="Rebuy截止阶段:" :required="false">
+                <el-select v-model="editForm.signExtra.reubyExtra.reubyRound" placeholder="请选择" size="mini">
+                  <el-option
+                    v-for="item in reubyGrowCfgs"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
           <el-form-item label="奖励模型：" :required="true">
@@ -793,6 +881,12 @@ export default {
         { 'value': 2, 'label': '纯门票' },
         { 'value': 3, 'label': '金币or门票' }
       ],
+
+      RebuySignUpTypeCfgs: [
+        { 'value': 0, 'label': '付费报名' },
+        { 'value': 2, 'label': '纯门票' },
+        { 'value': 3, 'label': '金币or门票' }
+      ],
       getTypeCfgs: [
         { 'value': 1, 'label': '金币' },
         { 'value': 2, 'label': '投注金' },
@@ -856,6 +950,9 @@ export default {
       endNumCfgs: new Map(), // 打立阶段结束规则剩余人数 用于配置检查
       promoteNumCfgs: new Map(), // 打立阶段晋级规则晋级人数 用于配置检查
       reachOutNumCfgs: new Map(), // 定局晋级人数
+      growTotalNumCfgs: new Map(), //打立阶段淘汰分轮数
+      disuseScoreGrowDetail: new Map(),//打立阶段淘汰分配置
+      reubyGrowCfgs:[],
       tableData: [],
       limit: 100,
       total: 0,
@@ -954,6 +1051,20 @@ export default {
           propName: '', //道具名称
           matchMaxLimit: 0,
           walletReport: 0, //电子钱包报表上报 0:上报 1:不上报
+          reubyExtra: {
+            supportRebuy:0,
+            reubyFree :0,
+            reubyCount:0,
+            reubyRound:0,
+            reubyScores:0,
+            reubySecs:0,
+            rebuySignType:0,
+            rebuyPropId:0,
+            rebuyPropNum:0,
+            rebuyPropCost:0,
+            rebuyPropType:0,
+            rebuyPropName:'',
+          },
         },
         prizeExtra: {
           awardType: 0,
@@ -1069,6 +1180,7 @@ export default {
                 'ruleType': objs.list[i].rule_type
               })
               const stage_detail = JSON.parse(objs.list[i].stage_detail)
+              //console.log("打立初级信息 ", stage_detail)
               for (var j = 0; j < stage_detail.length; j++) {
                 if (stage_detail[j].system_type == 1) { // 打立出局
                   // console.log("id:" + objs.list[i].id + " min:" + stage_detail[j].system_strike_out.end_rule.match_minute)
@@ -1076,6 +1188,9 @@ export default {
                   this.endMinuteCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.match_minute)
                   this.endNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.end_rule.lave_user_number)
                   this.promoteNumCfgs.set(objs.list[i].id, stage_detail[j].system_strike_out.promotion_rule.user_number)
+                  this.growTotalNumCfgs.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.grow_total)
+                  this.disuseScoreGrowDetail.set(objs.list[i].id,stage_detail[j].system_strike_out.disuse_score_growth.disuse_score_grow_detail)
+                  console.log("disuseScoreGrowDetail",this.disuseScoreGrowDetail)
                 } else if (stage_detail[j].system_type == 2) {
                   // 存储定局信息
                   this.reachOutNumCfgs.set(objs.list[i].id, stage_detail[j].system_reach_out.round_config[0].promotion_user)
@@ -1274,6 +1389,7 @@ export default {
       return show
     },
     selectMatchGame() {
+      console.log("selectMatchGame")
       this.showCsCfgs = []
       // 循环遍历是否存在gameId
       if (this.csCfgs.length > 0) {
@@ -1438,7 +1554,7 @@ export default {
       }
     },
     showForm(id) {
-      if (id == 0) {
+      if (id === 0) {
         this.disableOpenType(false, 0)
         this.editForm.title = '新增比赛配置'
         this.editForm.data = {
@@ -1533,6 +1649,20 @@ export default {
           propName: '',
           matchMaxLimit: 0,
           walletReport: 0,
+          reubyExtra: {
+            supportRebuy:0,
+            reubyFree :0,
+            reubyCount:0,
+            reubyRound:0,
+            reubyScores:0,
+            reubySecs:0,
+            rebuySignType:0,
+            rebuyPropId:0,
+            rebuyPropNum:0,
+            rebuyPropCost:0,
+            rebuyPropType:0,
+            rebuyPropName:'',
+          },
         }
 
         this.editForm.prizeExtra = {
@@ -1615,12 +1745,11 @@ export default {
           }
         }
         this.editForm.appInfo = JSON.parse(editData.app_info_cfg)
-        if (editData.sign_extra && editData.sign_extra != 'null' && editData.sign_extra != 'undefined') {
-          this.editForm.signExtra = JSON.parse(editData.sign_extra)
+        this.editForm.signExtra = JSON.parse(editData.sign_extra)
+        if (this.editForm.signExtra.reubyExtra === undefined) {
+          this.rebuyConfigReset()
         }
-        if (editData.prize_extra && editData.prize_extra != 'null') {
-          this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
-        }
+        this.editForm.prizeExtra = JSON.parse(editData.prize_extra)
         this.showCsCfgs = []
         // 循环遍历是否存在gameId
         if (this.csCfgs.length > 0) {
@@ -1646,6 +1775,7 @@ export default {
           }
         }
       }
+      this.getCurrCsGrowInfo()
     },
     checkHaveGame(gid, gameArr) {
       let flag = false
@@ -1690,6 +1820,16 @@ export default {
           break
         }
       }
+
+      for (let i = 0; i < this.matchPropsCfgs.length; i++) {
+        if (this.matchPropsCfgs[i].propsId === this.editForm.signExtra.reubyExtra.rebuyPropId) {
+          this.editForm.signExtra.reubyExtra.rebuyPropType = this.matchPropsCfgs[i].propsType
+          this.editForm.signExtra.reubyExtra.rebuyPropCost = this.matchPropsCfgs[i].propsCost
+          this.editForm.signExtra.reubyExtra.rebuyPropName = this.matchPropsCfgs[i].propsName
+          break
+        }
+      }
+
       const rankReward = JSON.stringify(this.editForm.rankRewards)
       const whileDetail = JSON.stringify(this.editForm.whileList)
       let repeatDetail = ''
@@ -1754,7 +1894,8 @@ export default {
           AssociateKey: this.editForm.data.associateKey,
           DcReport: this.editForm.data.dcReport,
           SignExtra: JSON.stringify(this.editForm.signExtra),
-          PrizeExtra: JSON.stringify(this.editForm.prizeExtra)
+          PrizeExtra: JSON.stringify(this.editForm.prizeExtra),
+
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -2232,6 +2373,9 @@ export default {
           }
         }
       }
+      if (!this.reubyConfigCheck()){
+        return false
+      }
       return true
     },
 
@@ -2461,6 +2605,13 @@ export default {
           return false
         }
       }
+      //reuby 道具检测
+      if ((this.editForm.signExtra.reubyExtra.rebuySignType === 2 || this.editForm.signExtra.reubyExtra.rebuySignType === 3 ) && this.editForm.signExtra.reubyExtra.rebuyPropId > 0){
+        if(! await this.propTakeEffectCheck(this.editForm.signExtra.reubyExtra.rebuyPropId)){
+          this.errmsg("Reuby所选择的道具不生效")
+          return false
+        }
+      }
       return true
     },
 
@@ -2469,7 +2620,6 @@ export default {
       return await this.PropIsPublish(propId)
     },
     async PropIsPublish(propId){
-      //console.log("matchTicketsCfgs 2222  propId:",propId,this.editForm.signExtra.propId,this.matchTicketsCfgs)
       if (propId > 0 ){
         for(let i = 0;i<this.matchPropsCfgs.length; i++ ){
           if (propId === this.matchPropsCfgs[i].propsId) {
@@ -2506,6 +2656,94 @@ export default {
       const data = JSON.parse(sign_extra)
       return " " + data.propName + "x" + data.propNum
     },
-  },
+    //根据赛制ID 取打立出局的轮数信息
+    getCurrCsGrowInfo(){
+      var grow_total = this.growTotalNumCfgs.get(this.editForm.data.csId)
+      this.reubyGrowCfgs = []
+      for(let i=0;i<grow_total;i++){
+        this.reubyGrowCfgs.push({
+            "label": i+1 +"轮",
+            "value": i+1
+          }
+        )
+      }
+      var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
+      console.log("disuseScores",disuseScores)
+    },
+    //reuby 配置检测
+    rebuyConfigReset(){
+      this.editForm.signExtra.reubyExtra = {}
+      this.editForm.signExtra.reubyExtra.supportRebuy = 0
+      this.editForm.signExtra.reubyExtra.reubyFree = 0
+      this.editForm.signExtra.reubyExtra.reubyRound = 0
+      this.editForm.signExtra.reubyExtra.reubyScores = 0
+      this.editForm.signExtra.reubyExtra.reubySecs = 0
+      this.editForm.signExtra.reubyExtra.reubyCount = 0
+      this.editForm.signExtra.reubyExtra.rebuySignType=0
+      this.editForm.signExtra.reubyExtra.rebuyPropId = 0
+      this.editForm.signExtra.reubyExtra.rebuyPropNum = 0
+      this.editForm.signExtra.reubyExtra.rebuyPropCost = 0
+      this.editForm.signExtra.reubyExtra.rebuyPropType = 0
+      this.editForm.signExtra.reubyExtra.rebuyPropName = ''
+    },
+    reubyConfigCheck(){
+      //免费赛配buy 规则不允许
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1 ){
+        this.rebuyConfigReset()
+        this.errmsg("免费报名不支持rebuy")
+        return false
+      }
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 0 ||  this.editForm.data.signUpType === 1){
+        this.rebuyConfigReset()
+      }
+
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1){
+        if(this.editForm.signExtra.reubyExtra.rebuySignType === 0){
+          this.editForm.signExtra.reubyExtra.rebuyPropNum = 0
+          this.editForm.signExtra.reubyExtra.rebuyPropId = 0
+          this.editForm.signExtra.reubyExtra.rebuyPropCost = 0
+        }
+        if(this.editForm.signExtra.reubyExtra.rebuySignType === 2){
+          this.editForm.signExtra.reubyExtra.reubyFree = 0
+        }
+        if (this.editForm.signExtra.reubyExtra.reubyRound === 0 ||
+          this.editForm.signExtra.reubyExtra.reubyScores === 0 || this.editForm.signExtra.reubyExtra.reubySecs === 0 ||
+          this.editForm.signExtra.reubyExtra.reubyCount===0){
+          this.errmsg("reuby配置有错,请检查")
+          return false
+        }
+        //付费 或者金币or门票
+        if (this.editForm.signExtra.reubyExtra.rebuySignType === 0 ||  this.editForm.signExtra.reubyExtra.rebuySignType === 3){
+          if (this.editForm.signExtra.reubyExtra.reubyFree <= 0){
+            this.errmsg("当前是付费或者金币or门票reuby 报名费用不能为0")
+            return false
+          }
+          if ((this.editForm.data.signUpType === 0 ||  this.editForm.data.signUpType === 3) && this.editForm.data.signUpNum !== this.editForm.signExtra.reubyExtra.reubyFree ){
+            this.errmsg("当前是付费或者金币or门票reuby rebuy费用跟报名费不一致,请检查")
+            return false
+          }
+        }
+        //纯门票 或者金币or门票
+        if (this.editForm.signExtra.reubyExtra.rebuySignType === 2 ||  this.editForm.signExtra.reubyExtra.rebuySignType === 3) {
+          if (this.editForm.signExtra.reubyExtra.rebuyPropId <= 0 || this.editForm.signExtra.reubyExtra.rebuyPropNum <= 0){
+            this.errmsg("当前是纯门票或者 金币or门票reuby 请选择门票或者填门票数量")
+            return false
+          }
+        }
+      }
+      //买入积分检测
+      var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
+      for(var i = 0;i < disuseScores.length; i++){
+        if(disuseScores[i].index === this.editForm.signExtra.reubyExtra.reubyRound  && this.editForm.signExtra.reubyExtra.reubyScores < disuseScores[i].disuse_score) {
+            this.errmsg("买入积分小于当前打立阶段轮数淘汰分["+disuseScores[i].disuse_score +"],请检查配置")
+          return false
+        }
+      }
+      return true
+    },
+    showLable(status, idx) {
+      return idx.includes(status);
+    },
+  }
 }
 </script>
