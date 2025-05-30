@@ -25,15 +25,27 @@ export default {
       TidCheatLogs: [],
       CheatLogVisible: false,
       CheatLogs: [],
-      cheatUserType: new Map()
+      cheatUserType: new Map(),
+      sortType: 1,
+      sortTypeOption: [
+        { label: '按时间', value: 0 },
+        { label: '按疑似度', value: 1 }
+      ],
+      cheatType: -1,
+      cheatTypeOption: [
+        { label: '全部', value: -1 },
+        { label: '普通', value: 0 },
+        { label: '疑似', value: 1 },
+        { label: '黑子', value: 2 }
+      ]
     }
   },
-  async created() {
+  created() {
     this.getCheatUserType()
-    await this.getData()
+    this.getData()
   },
   methods: {
-    async getData() {
+    getData() {
       // console.log(ttt)
       const $this = this
       $this.cheatLogs = []
@@ -63,13 +75,24 @@ export default {
           })
           for (let i = 0; i < cheatLogRows.length; i++) {
             const row = cheatLogRows[i]
+            const cheatScoreRow = this.cheatUserType.get(row.uid)
+            if (!cheatScoreRow) {
+              continue
+            }
+            if (this.cheatType === 0 && cheatScoreRow.userType !== 0) {
+              continue
+            } else if (this.cheatType === 1 && cheatScoreRow.userType !== 1) {
+              continue
+            } else if (this.cheatType === 2 && cheatScoreRow.userType !== 2) {
+              continue
+            }
             row.Infos = this.addInfos([], row)
             if (!cheatLogMap.has(row.uid)) {
               // eslint-disable-next-line no-empty
               const cheatLog = {
                 Uid: row.uid,
                 Gid: row.gid,
-                CheatScore: row.cheatScore,
+                CheatScore: 0,
                 LastEndTime: row.lastEndTime,
                 LastCheatTime: row.endTime,
                 Infos: [],
@@ -83,19 +106,26 @@ export default {
               if (hasKey) {
                 cheatLog.userType = this.cheatUserType.get(row.uid).userType
                 cheatLog.blackTime = this.cheatUserType.get(row.uid).blackTime
+                cheatLog.CheatScore = this.cheatUserType.get(row.uid).cheatScore
               }
               cheatLogMap.set(cheatLog.Uid, cheatLog)
             } else {
               const cheatLog = cheatLogMap.get(row.uid)
-              cheatLog.CheatScore += row.cheatScore
+              // cheatLog.CheatScore += row.cheatScore
               cheatLog.LastCheatTime = Math.max(cheatLog.LastCheatTime, row.endTime)
               cheatLog.Infos = this.addInfos(cheatLog.Infos, row)
               cheatLog.TidCheatLogs = this.addTidInfos(cheatLog.TidCheatLogs, row)
             }
           }
+          // eslint-disable-next-line prefer-const
           cheatLogs = Array.from(cheatLogMap.values())
           console.log(cheatLogs)
-          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, 'EndTime', -1, 'Uid')
+          this.totalCount = cheatLogs.length
+          let sortName = 'EndTime'
+          if (this.sortType === 0) {
+            sortName = 'CheatScore'
+          }
+          $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
         }
       })
@@ -132,7 +162,7 @@ export default {
       }
       if (row.disAndGive >= 1) {
         if (infosMap.has(1)) {
-          infosMap.get(1).count+= row.disAndGive
+          infosMap.get(1).count += row.disAndGive
         } else {
           infosMap.set(1, {
             Desc: '拆牌喂牌',
@@ -143,14 +173,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(1).hasOwnProperty('cheatScore')) {
             infosMap.get(1).cheatScore += row.cheatScores[1]
-          }else {
+          } else {
             infosMap.get(1).cheatScore = row.cheatScores[1]
           }
         }
       }
       if (row.giveMoreTimes >= 1) {
         if (infosMap.has(2)) {
-          infosMap.get(2).count+= row.giveMoreTimes
+          infosMap.get(2).count += row.giveMoreTimes
         } else {
           infosMap.set(2, {
             Desc: '多次喂牌',
@@ -161,14 +191,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(2).hasOwnProperty('cheatScore')) {
             infosMap.get(2).cheatScore += row.cheatScores[2]
-          }else {
+          } else {
             infosMap.get(2).cheatScore = row.cheatScores[2]
           }
         }
       }
       if (row.firstGiveMoreTimes >= 1) {
         if (infosMap.has(3)) {
-          infosMap.get(3).count+= row.firstGiveMoreTimes
+          infosMap.get(3).count += row.firstGiveMoreTimes
         } else {
           infosMap.set(3, {
             Desc: '首出喂牌',
@@ -179,14 +209,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(3).hasOwnProperty('cheatScore')) {
             infosMap.get(3).cheatScore += row.cheatScores[3]
-          }else {
+          } else {
             infosMap.get(3).cheatScore = row.cheatScores[3]
           }
         }
       }
       if (row.preWinFight >= 1) {
         if (infosMap.has(4)) {
-          infosMap.get(4).count+= row.preWinFight
+          infosMap.get(4).count += row.preWinFight
         } else {
           infosMap.set(4, {
             Desc: '皇冠FIGHT',
@@ -197,14 +227,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(4).hasOwnProperty('cheatScore')) {
             infosMap.get(4).cheatScore += row.cheatScores[4]
-          }else {
+          } else {
             infosMap.get(4).cheatScore = row.cheatScores[4]
           }
         }
       }
       if (row.preWinFold >= 1) {
         if (infosMap.has(5)) {
-          infosMap.get(5).count+= row.preWinFold
+          infosMap.get(5).count += row.preWinFold
         } else {
           infosMap.set(5, {
             Desc: '皇冠FOLD',
@@ -215,14 +245,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(5).hasOwnProperty('cheatScore')) {
             infosMap.get(5).cheatScore += row.cheatScores[5]
-          }else {
+          } else {
             infosMap.get(5).cheatScore = row.cheatScores[5]
           }
         }
       }
       if (row.leaveFre >= 1) {
         if (infosMap.has(6)) {
-          infosMap.get(6).count+= row.leaveFre
+          infosMap.get(6).count += row.leaveFre
         } else {
           infosMap.set(6, {
             Desc: '频繁离开',
@@ -233,14 +263,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(6).hasOwnProperty('cheatScore')) {
             infosMap.get(6).cheatScore += row.cheatScores[6]
-          }else {
+          } else {
             infosMap.get(6).cheatScore = row.cheatScores[6]
           }
         }
       }
       if (row.bigPotWin >= 1) {
         if (infosMap.has(7)) {
-          infosMap.get(7).count+= row.bigPotWin
+          infosMap.get(7).count += row.bigPotWin
         } else {
           infosMap.set(7, {
             Desc: '大POT高赢率',
@@ -251,14 +281,14 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(7).hasOwnProperty('cheatScore')) {
             infosMap.get(7).cheatScore += row.cheatScores[7]
-          }else {
+          } else {
             infosMap.get(7).cheatScore = row.cheatScores[7]
           }
         }
       }
       if (row.bigPotLeave >= 1) {
         if (infosMap.has(8)) {
-          infosMap.get(8).count+= row.bigPotLeave
+          infosMap.get(8).count += row.bigPotLeave
         } else {
           infosMap.set(8, {
             Desc: '大POT多人离开',
@@ -269,7 +299,7 @@ export default {
         if (row.hasOwnProperty('cheatScores')) {
           if (infosMap.get(8).hasOwnProperty('cheatScore')) {
             infosMap.get(8).cheatScore += row.cheatScores[8]
-          }else {
+          } else {
             infosMap.get(8).cheatScore = row.cheatScores[8]
           }
         }
@@ -277,7 +307,7 @@ export default {
       if (row.hasOwnProperty('playMoreTimes')) {
         if (row.playMoreTimes >= 1) {
           if (infosMap.has(9)) {
-            infosMap.get(9).count+= row.playMoreTimes
+            infosMap.get(9).count += row.playMoreTimes
           } else {
             infosMap.set(9, {
               Desc: '玩的局数过多',
@@ -288,7 +318,7 @@ export default {
           if (row.hasOwnProperty('cheatScores')) {
             if (infosMap.get(9).hasOwnProperty('cheatScore')) {
               infosMap.get(9).cheatScore += row.cheatScores[9]
-            }else {
+            } else {
               infosMap.get(9).cheatScore = row.cheatScores[9]
             }
           }
@@ -472,6 +502,27 @@ export default {
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">查询</el-button>
+          <el-button size="mini" type="primary" icon="el-icon-plus" @click="getData">刷新</el-button>
+        </el-form-item>
+        <el-form-item label="排序方式：">
+          <el-select v-model.number="sortType" placeholder="请选择">
+            <el-option
+              v-for="itemSort in sortTypeOption"
+              :key="itemSort.value"
+              :label="itemSort.label"
+              :value="itemSort.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="身份：">
+          <el-select v-model.number="cheatType" placeholder="请选择">
+            <el-option
+              v-for="itemCheatType in cheatTypeOption"
+              :key="itemCheatType.value"
+              :label="itemCheatType.label"
+              :value="itemCheatType.value"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <el-table
@@ -578,6 +629,17 @@ export default {
           </template>
         </el-table-column>
       </el-table>
+      <div class="block">
+        <el-pagination
+          :current-page="clientDB.GetPage().GetCurrentPage()"
+          :page-sizes="[20, 40, 60, 80]"
+          :page-size="clientDB.GetPage().GetPageNum()"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="clientDB.GetPage().GetTotalCount()"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </el_row>
     <tongits-game-log :game-log="GameLog" :game-log-visible="GameLogVisible" :gid="Gid" :is-robot-map="isRobotMap" @closeDialog="closeDialog" />
     <el-dialog title="桌子作弊详情" :visible.sync="TidCheatLogVisible" width="100%">
@@ -594,11 +656,11 @@ export default {
             <el-tooltip placement="right">
               <div slot="content" style="max-width: 300px">
                 <div v-for="(member, index) in scope.row.Infos" :key="index">
-<!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                  <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
                   {{ formatCheatInfo(member) }}
                 </div>
               </div>
-<!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+              <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
               <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
             </el-tooltip>
           </template>
@@ -630,11 +692,11 @@ export default {
             <el-tooltip placement="right">
               <div slot="content" style="max-width: 300px">
                 <div v-for="(member, index) in scope.row.Infos" :key="index">
-<!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
+                  <!--                  {{ member.Desc }}-&#45;&#45;({{ member.count }})-->
                   {{ formatCheatInfo(member) }}
                 </div>
               </div>
-<!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
+              <!--              <span>{{ scope.row.Infos[0].Desc }}-&#45;&#45;({{ scope.row.Infos[0].count }})</span>-->
               <span>{{ formatCheatInfo(scope.row.Infos[0]) }}</span>
             </el-tooltip>
           </template>

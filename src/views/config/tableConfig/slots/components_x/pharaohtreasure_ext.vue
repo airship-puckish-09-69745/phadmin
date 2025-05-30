@@ -58,7 +58,7 @@
             <el-table :data="cfg.BuyFreeOddsConf">
               <el-table-column prop="bet" label="Bet值" width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet }}</el-button>
+                  <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet / 1000 }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="180" header-align="center">
@@ -82,7 +82,7 @@
     >
       <el-form label-width="50px">
         <el-form-item label="Bet值">
-          <el-input v-model.number="buyFreeOddsConf.currentBet" placeholder="请输入Bet值" />
+          <el-input v-model="buyFreeOddsConf.currentBet" :disabled="buyFreeOddsConf.editIndex >= 0" placeholder="请输入Bet值" />
         </el-form-item>
       </el-form>
 
@@ -109,6 +109,12 @@
           </template>
         </el-table-column>
       </el-table>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="buyFreeOddsConf.dialogVisible = false">取消</el-button>
+        <el-button type="primary" size="medium" @click="saveConfig">保存</el-button>
+      </span>
+    </el-dialog>
 
       <span slot="footer" class="dialog-footer">
         <el-button @click="buyFreeOddsConf.dialogVisible = false">取消</el-button>
@@ -220,7 +226,7 @@ export default {
     },
     editConfig(row) {
       this.buyFreeOddsConf.dialogTitle = '编辑配置'
-      this.buyFreeOddsConf.currentBet = row.Bet
+      this.buyFreeOddsConf.currentBet = row.Bet / 1000
       this.buyFreeOddsConf.currentConf = JSON.parse(JSON.stringify(row.Items))
       this.buyFreeOddsConf.editIndex = this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === row.Bet)
       this.buyFreeOddsConf.dialogVisible = true
@@ -236,20 +242,20 @@ export default {
     },
     saveConfig() {
       if (this.buyFreeOddsConf.editIndex >= 0) {
-        this.cfg.BuyFreeOddsConf[this.buyFreeOddsConf.editIndex] = {
-          Bet: this.buyFreeOddsConf.currentBet,
+        this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
+          Bet: this.buyFreeOddsConf.currentBet * 1000,
           Items: this.buyFreeOddsConf.currentConf
-        }
+        })
       } else {
         if (!this.cfg.BuyFreeOddsConf) {
           this.cfg.BuyFreeOddsConf = []
         }
-        if (this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === this.buyFreeOddsConf.currentBet) >= 0) {
+        if (this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === (this.buyFreeOddsConf.currentBet * 1000)) >= 0) {
           Message.error('已经存在该Bet值')
           return
         }
         this.cfg.BuyFreeOddsConf.push({
-          Bet: this.buyFreeOddsConf.currentBet,
+          Bet: this.buyFreeOddsConf.currentBet * 1000,
           Items: this.buyFreeOddsConf.currentConf
         })
       }
