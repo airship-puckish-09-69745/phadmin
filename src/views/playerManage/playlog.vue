@@ -2858,7 +2858,7 @@
       </el-table>
     </el-dialog>
 
-    <el-dialog title="Remi详情" :visible.sync="RemiDetailVisible" width="1600px">
+    <el-dialog title="Remi详情" :visible.sync="RemiDetailVisible" width="1200px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + RemiDetail.tableMoney/1000 }}</span>
       </div>
@@ -2872,14 +2872,16 @@
         <el-table-column prop="seat" label="seat" width="64px">
           <template slot-scope="scope">{{ scope.row.seat }}</template>
         </el-table-column>
+        <!--
         <el-table-column prop="handcards" label="手牌" width="340px">
-          <!--
           <template slot-scope="scope">
             <div v-for="(item) in scope.row.handCards" class="block">
               <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
             </div>
           </template>
+        </el-table-column>
         -->
+        <el-table-column prop="groupcards" label="组合牌" width="340px">
         <template slot-scope="scope">
           <template v-if="scope.row.groups">
             <template v-for="group in scope.row.groups">
