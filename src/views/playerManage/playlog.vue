@@ -2858,6 +2858,68 @@
       </el-table>
     </el-dialog>
 
+    <el-dialog title="Remi详情" :visible.sync="RemiDetailVisible" width="1600px">
+      <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
+        <span style="float:left;">{{ '底分:' + RemiDetail.tableMoney/1000 }}</span>
+      </div>
+      <el-table ref="filterTable" :data="RemiDetail.players" border>
+        <el-table-column prop="uid" label="uid" width="128px">
+          <template slot-scope="scope">{{ scope.row.uid }}</template>
+        </el-table-column>
+        <el-table-column prop="nick" label="nick"  width="180px">
+          <template slot-scope="scope">{{ scope.row.nick }}</template>
+        </el-table-column>
+        <el-table-column prop="seat" label="seat" width="64px">
+          <template slot-scope="scope">{{ scope.row.seat }}</template>
+        </el-table-column>
+        <el-table-column prop="handcards" label="手牌" width="340px">
+          <!--
+          <template slot-scope="scope">
+            <div v-for="(item) in scope.row.handCards" class="block">
+              <el-image style="width: 37px; height: 50px" :src="getCardUrl(item)" />
+            </div>
+          </template>
+        -->
+        <template slot-scope="scope">
+          <template v-if="scope.row.groups">
+            <template v-for="group in scope.row.groups">
+              <template v-if="group.cardType === 1 || group.cardType === 2">
+                <div class="block" style="background-color: green; margin: 0 1px 0 1px;">
+                  <div v-for="card in group.cards" class="block">
+                      <el-image
+                      style="width: 37px; height: 50px"
+                      :src="getCardUrl(card)"
+                      />
+                  </div>
+                </div>
+              </template>
+              <template v-else>
+                <div v-for="card in group.cards" class="block">
+                    <el-image
+                    style="width: 37px; height: 50px"
+                    :src="getCardUrl(card)"
+                     />
+                </div>
+              </template>
+            </template>
+          </template>
+        </template>
+        </el-table-column>
+        <el-table-column prop="score" label="score" width="100px">
+          <template slot-scope="scope">{{ scope.row.score }}</template>
+        </el-table-column>
+        <el-table-column prop="win" label="赢牌顺序" width="100px">
+          <template slot-scope="scope">{{ scope.row.winIndex > 0 ? scope.row.winIndex : '' }}</template>
+        </el-table-column>
+        <el-table-column prop="settle" label="结算">
+          <template slot-scope="scope">
+            {{ scope.row.moneyChange }}
+          </template>
+        </el-table-column>
+
+      </el-table>
+    </el-dialog>
+
     <el-dialog title="TeenPatti详情" :visible.sync="ZJHDetailVisible" width="1600px">
       <div style=" font-size:14px; line-height: 36px; height: 50px; color:red; ">
         <span style="float:left;">{{ '底分:' + ZJHDetail.antes/1000 }}</span>
@@ -3291,6 +3353,9 @@ export default {
 
       FilipinoMahjongDetail: {},
       FilipinoMahjongDetailVisible: false,
+
+      RemiDetail: {},
+      RemiDetailVisible: false,
 
       jackpotWheelDetail: {},
       jackpotWheelData: {},
@@ -3844,6 +3909,8 @@ export default {
             $this.showZJHGame(obj)
           } else if (gid === 127) {
             $this.showMiniSaBongGame(obj)
+          } else if (gid === 130 || gid === 131) {
+            $this.showRemiGame(obj)
           } else {
             $this.showSmallGame(obj)
           }
@@ -3962,6 +4029,11 @@ export default {
         8: 'Gratis'
       }
       return nameMap[id]
+    },
+    showRemiGame(obj) {
+      this.RemiDetail = obj
+      console.log('this.remiData => ', this.RemiDetail)
+      this.RemiDetailVisible = true
     },
     showFilipinoMahjongGame(obj, log) {
       this.FilipinoMahjongDetail = log// obj
