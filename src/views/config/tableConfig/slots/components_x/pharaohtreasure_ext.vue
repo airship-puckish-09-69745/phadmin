@@ -82,7 +82,7 @@
     >
       <el-form label-width="50px">
         <el-form-item label="Bet值">
-          <el-input v-model.number="buyFreeOddsConf.currentBet" placeholder="请输入Bet值" />
+          <el-input v-model.number="buyFreeOddsConf.currentBet" :disabled="buyFreeOddsConf.editIndex >= 0" placeholder="请输入Bet值" />
         </el-form-item>
       </el-form>
 
