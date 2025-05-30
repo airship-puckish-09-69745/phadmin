@@ -58,7 +58,7 @@
             <el-table :data="cfg.BuyFreeOddsConf">
               <el-table-column prop="bet" label="Bet值" width="120">
                 <template slot-scope="scope">
-                  <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet }}</el-button>
+                  <el-button type="text" @click="editConfig(scope.row)">{{ scope.row.Bet.map(b => b/1000).join(', ') }}</el-button>
                 </template>
               </el-table-column>
               <el-table-column label="操作" width="180" header-align="center">
@@ -82,7 +82,9 @@
     >
       <el-form label-width="50px">
         <el-form-item label="Bet值">
-          <el-input v-model.number="buyFreeOddsConf.currentBet" placeholder="请输入Bet值" />
+          <el-input v-model="buyFreeOddsConf.currentBet" :disabled="buyFreeOddsConf.currentBet === '0' && buyFreeOddsConf.editIndex >= 0" placeholder="请输入Bet值">
+            <template slot="append">用 , 连接</template>
+          </el-input>
         </el-form-item>
       </el-form>
 
@@ -157,7 +159,7 @@ export default {
       activeTab: 'script',
       buyFreeOddsConf: {
         dialogVisible: false,
-        currentBet: 0,
+        currentBet: '0',
         dialogTitle: '添加配置',
         currentConf: []
       }
@@ -213,14 +215,14 @@ export default {
     },
     showDialog() {
       this.buyFreeOddsConf.dialogTitle = '添加配置'
-      this.buyFreeOddsConf.currentBet = 0
+      this.buyFreeOddsConf.currentBet = '0'
       this.buyFreeOddsConf.currentConf = [{ MinOdds: 0, MaxOdds: 0, InWeight: 0 }]
       this.buyFreeOddsConf.editIndex = -1
       this.buyFreeOddsConf.dialogVisible = true
     },
     editConfig(row) {
       this.buyFreeOddsConf.dialogTitle = '编辑配置'
-      this.buyFreeOddsConf.currentBet = row.Bet
+      this.buyFreeOddsConf.currentBet = row.Bet.map(b => b / 1000).join(',')
       this.buyFreeOddsConf.currentConf = JSON.parse(JSON.stringify(row.Items))
       this.buyFreeOddsConf.editIndex = this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === row.Bet)
       this.buyFreeOddsConf.dialogVisible = true
@@ -235,21 +237,46 @@ export default {
       this.cfg.BuyFreeOddsConf.splice(index, 1)
     },
     saveConfig() {
-      if (this.buyFreeOddsConf.editIndex >= 0) {
-        this.cfg.BuyFreeOddsConf[this.buyFreeOddsConf.editIndex] = {
-          Bet: this.buyFreeOddsConf.currentBet,
-          Items: this.buyFreeOddsConf.currentConf
+      const currentBets = this.buyFreeOddsConf.currentBet
+        .split(',')
+        .map(b => parseFloat(b.trim()) * 1000)
+        .filter(b => !isNaN(b))
+      const existingBets = new Set()
+      console.log('currentBets', currentBets)
+      if (!this.cfg.BuyFreeOddsConf) {
+        this.cfg.BuyFreeOddsConf = []
+      }
+      // 排除正在编辑的项（如果是编辑模式）
+      this.cfg.BuyFreeOddsConf.forEach((item, index) => {
+        if (this.buyFreeOddsConf.editIndex !== index) {
+          item.Bet.forEach(bet => existingBets.add(bet))
         }
-      } else {
-        if (!this.cfg.BuyFreeOddsConf) {
-          this.cfg.BuyFreeOddsConf = []
-        }
-        if (this.cfg.BuyFreeOddsConf.findIndex(item => item.Bet === this.buyFreeOddsConf.currentBet) >= 0) {
-          Message.error('已经存在该Bet值')
+      })
+
+      // 检查重复
+      for (const bet of currentBets) {
+        if (existingBets.has(bet)) {
+          Message.error(`已经存在相同的${bet / 1000}Bet值`)
           return
         }
+      }
+
+      // 检查
+      for (const item of this.buyFreeOddsConf.currentConf) {
+        if (item.MinOdds > item.MaxOdds) {
+          Message.error(`目标倍数开始(${item.MinOdds})不能大于目标倍数结束(${item.MaxOdds})`)
+          return
+        }
+      }
+
+      if (this.buyFreeOddsConf.editIndex >= 0) {
+        this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
+          Bet: currentBets,
+          Items: this.buyFreeOddsConf.currentConf
+        })
+      } else {
         this.cfg.BuyFreeOddsConf.push({
-          Bet: this.buyFreeOddsConf.currentBet,
+          Bet: currentBets,
           Items: this.buyFreeOddsConf.currentConf
         })
       }

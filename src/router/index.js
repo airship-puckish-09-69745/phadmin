@@ -2281,7 +2281,18 @@ export const asyncRoutes = [
             name: 'playlog_TongitsJP',
             meta: { title: 'T ongits JP ◐', gid: 128 }
           },
-
+          {
+            path: 'playlog_Remi',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_Remi',
+            meta: { title: 'R emi ◐', gid: 130 }
+          },
+          {
+            path: 'playlog_RemiPro',
+            component: () => import('@/views/playerManage/playlog'),
+            name: 'playlog_RemiPro',
+            meta: { title: 'R emi Pro ◐', gid: 131 }
+          },
         ]
       },
 
