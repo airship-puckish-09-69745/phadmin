@@ -2660,7 +2660,7 @@ export default {
     getCurrCsGrowInfo(){
       var grow_total = this.growTotalNumCfgs.get(this.editForm.data.csId)
       this.reubyGrowCfgs = []
-      for(let i=0;i<grow_total;i++){
+      for(let i=0;i<grow_total-1;i++){
         this.reubyGrowCfgs.push({
             "label": i+1 +"轮",
             "value": i+1
