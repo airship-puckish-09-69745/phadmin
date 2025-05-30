@@ -236,10 +236,10 @@ export default {
     },
     saveConfig() {
       if (this.buyFreeOddsConf.editIndex >= 0) {
-        this.cfg.BuyFreeOddsConf[this.buyFreeOddsConf.editIndex] = {
+        this.$set(this.cfg.BuyFreeOddsConf, this.buyFreeOddsConf.editIndex, {
           Bet: this.buyFreeOddsConf.currentBet,
           Items: this.buyFreeOddsConf.currentConf
-        }
+        })
       } else {
         if (!this.cfg.BuyFreeOddsConf) {
           this.cfg.BuyFreeOddsConf = []
