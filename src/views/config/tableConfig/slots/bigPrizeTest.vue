@@ -109,7 +109,7 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path: '/slotsStat/user/stata/data',
+          Path: '/slotsStat/user/stat/data',
           Env: store.getters.env,
           uid: this.queryUid,
           gid: this.queryGid
@@ -171,7 +171,7 @@ export default {
         url: '/dataProxy/info',
         method: 'get',
         data: {
-          Path: '/slotsStat/big/prize/config',
+          Path: '/slotsStat/user/big/prize/config',
           Env: store.getters.env,
           uid: this.queryUid,
           gid: this.queryGid
