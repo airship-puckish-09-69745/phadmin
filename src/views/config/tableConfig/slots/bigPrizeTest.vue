@@ -132,7 +132,7 @@ export default {
                   user_play: 0
                 }
               }
-              switch (v.Field) {
+              switch (v.field) {
                 case 1:
                   obj[objKey].user_bet += vv.value
                   break
