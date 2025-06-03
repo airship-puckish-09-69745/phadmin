@@ -1,15 +1,20 @@
 <template>
   <div>
     <el-row style="padding-bottom: 12px;">
-      <el-button size="mini" type="primary" icon="el-icon-plus" @click="handleEdit()">添加配置</el-button>
+      <el-button size="mini" type="primary" icon="el-icon-search" @click="onSearch()">查询</el-button>
+      <el-button size="mini" type="success" icon="el-icon-plus" style="float: right;" @click="handleEdit()">添加配置</el-button>
     </el-row>
 
     <el-row>
       <el-table
+        ref="filterTable"
         :data="tableData"
+        stripe
         border
-        style="width: 100%"
+        :header-cell-style="libShow.DefaultTableHeadClass"
+        :row-style="{height:'10px'}"
         :cell-style="libShow.DefaultTableCell"
+        style="width: 100%"
       >
         <el-table-column
           v-for="field in fields"
@@ -20,7 +25,7 @@
           :required="field.required"
         />
         <!-- 操作 -->
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="250">
           <template #default="scope">
             <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
@@ -30,7 +35,7 @@
     </el-row>
 
     <!-- 添加|编辑配置弹窗 -->
-    <FormDialog :update-data="formDialog.updateData" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" />
+    <FormDialog :update-data="formDialog.updateData" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" @save="handleSave" />
   </div>
 </template>
 
@@ -43,12 +48,18 @@ export default {
   components: {
     FormDialog
   },
+  props: {
+    bonusList: {
+      type: Array,
+      default: () => []
+    }
+  },
   data() {
     return {
       libShow: $libShow,
       fields: [
-        { label: '配置ID', prop: 'ID', width: 100, required: true },
-        { label: '年终大奖侧栏', prop: 'Sidebar', width: 200, required: true }
+        { label: '配置ID', prop: 'ID', required: true },
+        { label: '金额', prop: 'Amount', required: true }
       ],
       formDialog: {
         updateData: null,
@@ -56,14 +67,41 @@ export default {
       },
       // 主键
       subKey: 'activity_map_task_cfg',
-      tableData: []
+      tableData: [],
+      pagination: {
+        total: 0,
+        currentPage: 1,
+        pageSize: 10
+      }
+    }
+  },
+  watch: {
+    bonusList: {
+      handler(newVal) {
+        this.$nextTick(() => this.getList())
+      },
+      immediate: true
     }
   },
   methods: {
     getFullKey() {
       return 'CustomizeCfg_' + this.subKey
     },
-    getList() {},
+    getList() {
+      if (!this.bonusList || this.bonusList.length === 0) {
+        this.tableData = []
+        this.pagination.total = 0
+        return
+      }
+      this.tableData = this.bonusList.slice(
+        (this.pagination.currentPage - 1) * this.pagination.pageSize,
+        this.pagination.currentPage * this.pagination.pageSize
+      )
+      this.pagination.total = this.bonusList.length
+    },
+    onSearch() {
+      this.$emit('reload')
+    },
     /**
      * 新增或编辑配置
      * @param row
@@ -73,9 +111,25 @@ export default {
       this.formDialog.visible = true
     },
     handleDelete(row) {
+      this.$confirm(
+        `确定要删除[ 金额配置${row.ID} ]吗？`,
+        '删除提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }
+      ).then(() => {
+        this.$emit('delete', row.ID)
+      }).catch(() => {
+        this.$message({ type: 'info', message: '已取消删除' })
+      })
     },
-    handleSave() {
-
+    handleSave(data) {
+      this.$emit('update', data)
+      // this.$message.success('保存成功')
+      this.formDialog.visible = false
+      this.getList()
     },
     handleUpdateDialogVisible(visible) {
       this.formDialog.visible = visible

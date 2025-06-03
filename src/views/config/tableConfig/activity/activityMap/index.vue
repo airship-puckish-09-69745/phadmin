@@ -11,7 +11,7 @@
           <MapConfig :map-list="configData.Data.MapConfig" :activity-options="activityOptions" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="年终大奖侧栏">
-          <BonusConfig />
+          <BonusConfig :bonus-list="configData.Data.BounusConfig" @update="handleUpdateBonus" @delete="handleDeleteBonus" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="活动详情">
           <DetailsConfig />
@@ -137,6 +137,41 @@ export default {
       // 更新对应的配置数据
       Data[key] = newData
       this.updateConfigData()
+    },
+    /**
+     * 处理年终大奖侧栏配置更新
+     * @param data 更新的配置数据
+     */
+    handleUpdateBonus(data) {
+      if (data.ID) {
+        // 更新已有的配置
+        const currentBonus = this.configData.Data.BounusConfig.find(item => item.ID === data.ID)
+        this.configData.Data.BounusConfig.splice(this.configData.Data.BounusConfig.indexOf(currentBonus), 1, { ...currentBonus, ...data })
+      } else {
+        // 添加新的配置
+        const newId = Date.now().toString() // 使用时间戳作为新ID
+        this.configData.Data.BounusConfig.push({ ...data, ID: newId })
+      }
+
+      this.handleUpdateConfigData('BounusConfig', this.configData.Data.BounusConfig)
+    },
+    /**
+     * 处理年终大奖侧栏配置删除
+     * @param id 要删除的配置ID
+     */
+    async handleDeleteBonus(id) {
+      try {
+        await this.$confirm(`确定删除ID为 ${id} 的配置吗？`, '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        this.configData.Data.BounusConfig = this.configData.Data.BounusConfig.filter(item => item.ID !== id)
+        this.$message.success('删除成功')
+        this.$emit('delete', id)
+      } catch (error) {
+        this.$message.info('已取消删除')
+      }
     },
     /**
      * 处理地图配置的更新
