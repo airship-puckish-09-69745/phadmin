@@ -111,8 +111,8 @@ export default {
         data: {
           Path: '/slotsStat/user/stat/data',
           Env: store.getters.env,
-          uid: this.queryUid,
-          gid: this.queryGid
+          Uid: this.queryUid,
+          SlotsType: this.queryGid
         }
       }).then(response => {
         $this.newBigPrize()
@@ -173,8 +173,8 @@ export default {
         data: {
           Path: '/slotsStat/user/big/prize/config',
           Env: store.getters.env,
-          uid: this.queryUid,
-          gid: this.queryGid
+          Uid: this.queryUid,
+          SlotsType: this.queryGid
         }
       }).then(response => {
         if (response.RetCode === 0) {
