@@ -3,10 +3,10 @@
     <el-row>
       <el-form label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
-          <el-input v-model.number="queryUid" autosize></el-input>
+          <el-input v-model.number="queryUid" autosize @change="cleanResult"></el-input>
         </el-form-item>
         <el-form-item label="游戏">
-          <el-select v-model="queryGid" size="mini" filterable default-first-option>
+          <el-select v-model="queryGid" size="mini" filterable default-first-option @change="cleanResult">
             <el-option v-for="row in gameOptions" :key="row.key" :label="row.label" :value="row.key"  />
           </el-select>
         </el-form-item>
@@ -211,6 +211,11 @@ export default {
         case 3:
           return '固定间隔步数'
       }
+    },
+
+    cleanResult() {
+      this.statData = []
+      this.showUserPrizeCfg = false
     }
   }
 }
