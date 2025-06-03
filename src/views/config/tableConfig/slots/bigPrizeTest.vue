@@ -120,14 +120,14 @@ export default {
           let obj = {}, arr = []
           for (const k in response.Data) {
             const v = response.Data[k]
-            for (const kk in response.Data[k].Data) {
-              const vv = response.Data[k].Data[kk]
-              const objKey = vv.Date + "_" + vv.Bet
+            for (const kk in response.Data[k].data) {
+              const vv = response.Data[k].data[kk]
+              const objKey = vv.date + "_" + vv.bet
               if (typeof obj[objKey] == 'undefined') {
                 obj[objKey] = {
-                  date: vv.Date,
-                  bet: vv.Bet,
-                  days: vv.Days,
+                  date: vv.date,
+                  bet: vv.bet,
+                  days: vv.days,
                   user_bet: 0,
                   user_win: 0,
                   user_play: 0
@@ -135,13 +135,13 @@ export default {
               }
               switch (v.Field) {
                 case 1:
-                  obj[objKey].user_bet += vv.Value
+                  obj[objKey].user_bet += vv.value
                   break
                 case 2:
-                  obj[objKey].user_win += vv.Value
+                  obj[objKey].user_win += vv.value
                   break
                 case 4:
-                  obj[objKey].user_play += vv.Value
+                  obj[objKey].user_play += vv.value
                   break
               }
             }
@@ -179,6 +179,7 @@ export default {
       }).then(response => {
         if (response.RetCode === 0) {
           this.userPrizeCfg = response.Data
+          this.showUserPrizeCfg = true
         }
         $this.loading = false
       }).catch(function() {
