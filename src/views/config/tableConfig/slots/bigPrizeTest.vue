@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
     <el-row>
-      <el-form :model="item" label-width="90px" :inline="true" size="small">
+      <el-form label-width="90px" :inline="true" size="small">
         <el-form-item label="UID：" :required="true" label-width="150px">
-          <UidInput @setUid="function(iUid){item.Uid=iUid}" />
+          <el-input v-model.number="queryUid" autosize></el-input>
         </el-form-item>
         <el-form-item label="游戏">
           <el-select v-model="queryGid" size="mini" filterable default-first-option>
