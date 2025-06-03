@@ -89,15 +89,11 @@ export default {
               key: response.Data[i].Gid,
               label: response.Data[i].Name
             })
-            this.gameScene[response.Data[i].Gid] = response.Data[i].Scene
-            this.gidOptions[response.Data[i].Gid] = response.Data[i].Gid
           }
-          this.gidOptions[100180] = 'Fishing Master(额外加注)'
           this.gameOptions.push({
             key: 100180,
             label: 'Fishing Master(额外加注)'
           })
-          this.gidOptions[100186] = 'Mahjong Jackpot(额外加注)'
           this.gameOptions.push({
             key: 100186,
             label: 'Mahjong Jackpot(额外加注)'
