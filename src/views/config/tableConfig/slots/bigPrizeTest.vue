@@ -17,9 +17,9 @@
       </el-form>
     </el-row>
     <el-row v-if="showUserPrizeCfg">
-      <table>
+      <table width="100%">
         <tr>
-          <td>模拟计算大奖命中率：<span>{{userPrizeCfg.hitRate}}</span></td>
+          <td>模拟计算大奖命中率：<span>{{userPrizeCfg.hitRate}} / 百万</span></td>
           <td>模拟计算命中率说明：<span>{{showReason(userPrizeCfg.reason)}}</span></td>
           <td>用户匹配的大奖分组ID：<span>{{userPrizeCfg.cfgId}}</span></td>
         </tr>
@@ -115,13 +115,12 @@ export default {
           SlotsType: this.queryGid
         }
       }).then(response => {
-        $this.newBigPrize()
         if (response.RetCode === 0) {
           let obj = {}, arr = []
           for (const k in response.Data) {
             const v = response.Data[k]
-            for (const kk in response.Data[k].data) {
-              const vv = response.Data[k].data[kk]
+            for (const kk in v.data) {
+              const vv = v.data[kk]
               const objKey = vv.date + "_" + vv.bet
               if (typeof obj[objKey] == 'undefined') {
                 obj[objKey] = {
