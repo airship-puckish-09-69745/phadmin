@@ -42,6 +42,13 @@
                 {{ item }}
               </el-tag>
             </template>
+            <!-- 活动：格式为：活动名称-[活动ID] -->
+            <template v-else-if="field.prop === 'ActivityName'">
+              <span v-if="scope.row.ActivityName">{{
+                `${scope.row.ActivityName}-[${scope.row.ActivityId}]`
+              }}</span>
+              <span v-else>暂无</span>
+            </template>
             <span v-else>{{ scope.row[field.prop] }}</span>
           </template>
         </el-table-column>
@@ -67,7 +74,7 @@
     </el-row>
 
     <!-- 添加|编辑配置弹窗 -->
-    <FormDialog :update-data="formDialog.updateData" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" @update="handleUpdateConfig" />
+    <FormDialog :update-data="formDialog.updateData" :activity-options="activityOptions" :visible="formDialog.visible" @update:visible="handleUpdateDialogVisible" @update="handleUpdateConfig" />
   </div>
 </template>
 
@@ -83,14 +90,19 @@ export default {
     mapList: {
       type: Array,
       default: () => []
+    },
+    activityOptions: {
+      type: Array,
+      required: true,
+      default: () => []
     }
   },
   data() {
     return {
       libShow: $libShow,
       fields: [
-        // { label: '配置ID', prop: 'ID', width: 130 },
-        { label: '活动名称', prop: 'Name', width: 200 },
+        { label: '配置ID', prop: 'ID', width: 130 },
+        { label: '活动名称', prop: 'ActivityName', width: 200 },
         { label: '活动金额', prop: 'Amount', width: 200 },
         { label: '分页', prop: 'Page' },
         { label: '活动图标', prop: 'Icon', width: 150 },

@@ -8,7 +8,7 @@
       <br>
       <el-tabs v-if="configData.Data" type="border-card">
         <el-tab-pane label="活动地图">
-          <MapConfig :map-list="configData.Data.MapConfig" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
+          <MapConfig :map-list="configData.Data.MapConfig" :activity-options="activityOptions" @update="handleUpdateMap" @delete="handleDeleteMap" @reload="getConfigData" />
         </el-tab-pane>
         <el-tab-pane label="年终大奖侧栏">
           <BonusConfig />
@@ -44,6 +44,16 @@ export default {
     return {
       // 主键
       subKey: 'map_task_cfg',
+      activityOptions: [
+        { name: 'slot背包', id: 5 },
+        { name: 'slot任务', id: 6 },
+        { name: '摇钱树活动', id: 7 },
+        { name: 'Poker乐园', id: 8 },
+        { name: 'Banargay', id: 9 },
+        { name: '复活节活动', id: 10 },
+        { name: '新手任务活动', id: 11 },
+        { name: '红包雨活动', id: 13 }
+      ],
       configData: {
         Data: {
           BounusConfig: [], // 年终大奖侧栏配置
@@ -81,13 +91,13 @@ export default {
 
         // 确保配置数据的结构完整
         if (!Data.BounusConfig) {
-          Data.BounusConfig = {}
+          Data.BounusConfig = []
         }
         if (!Data.MapConfig) {
-          Data.MapConfig = {}
+          Data.MapConfig = []
         }
         if (!Data.DetailsConfig) {
-          Data.DetailsConfig = {}
+          Data.DetailsConfig = []
         }
         if (!Data.WhiteList) {
           Data.WhiteList = {}
