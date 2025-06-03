@@ -625,6 +625,12 @@
               </el-form-item>
             </el-col>
           </el-row>
+          <el-form-item v-if="editForm.signExtra.reubyExtra.supportRebuy===1 && editForm.signExtra.reubyExtra.rebuySignType===3" label="电子钱包报表是否上报:" :required="true">
+            <el-radio-group v-model.number="editForm.signExtra.reubyExtra.walletReport">
+              <el-radio :label="0">是</el-radio>
+              <el-radio :label="1">否</el-radio>
+            </el-radio-group>
+          </el-form-item>
         </fieldset>
         <fieldset style="margin:20px auto;max-height: max-content;min-width: inherit;">
           <legend>奖励信息</legend>
@@ -1064,6 +1070,7 @@ export default {
             rebuyPropCost:0,
             rebuyPropType:0,
             rebuyPropName:'',
+            walletReport: 0, //电子钱包报表上报 0:上报 1:不上报
           },
         },
         prizeExtra: {
@@ -2667,8 +2674,9 @@ export default {
           }
         )
       }
-      var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
-      console.log("disuseScores",disuseScores)
+      // var disuseScores = this.disuseScoreGrowDetail.get(this.editForm.data.csId)
+      // console.log("disuseScores",disuseScores)
+      // console.log("reubyGrowCfgs",this.reubyGrowCfgs)
     },
     //reuby 配置检测
     rebuyConfigReset(){
@@ -2691,6 +2699,12 @@ export default {
       if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 1 ){
         this.rebuyConfigReset()
         this.errmsg("免费报名不支持rebuy")
+        return false
+      }
+      //纯门票报名比赛 不支持rebuy
+      if (this.editForm.signExtra.reubyExtra.supportRebuy === 1 && this.editForm.data.signUpType === 2 ){
+        this.rebuyConfigReset()
+        this.errmsg("纯门票报名比赛不支持rebuy")
         return false
       }
       if (this.editForm.signExtra.reubyExtra.supportRebuy === 0 ||  this.editForm.data.signUpType === 1){
@@ -2738,6 +2752,10 @@ export default {
             this.errmsg("买入积分小于当前打立阶段轮数淘汰分["+disuseScores[i].disuse_score +"],请检查配置")
           return false
         }
+      }
+      if (this.reubyGrowCfgs.length <= this.editForm.signExtra.reubyExtra.reubyRound){
+        this.errmsg("rebuy截止轮次大于当前赛制打立阶段的最大轮次,请检查配置")
+        return false
       }
       return true
     },
