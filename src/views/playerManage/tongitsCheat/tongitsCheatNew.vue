@@ -2,7 +2,8 @@
 import request from '@/utils/request'
 import { $libDate, ClientTableData } from '@/utils/common'
 import TongitsGameLog from '@/views/playerManage/components/TongitsGameLog.vue'
-
+import { getInfo } from '@/api/user'
+import { sendLark } from '@/api/lark'
 export default {
   components: { TongitsGameLog },
   data() {
@@ -19,7 +20,11 @@ export default {
       GameLog: {},
       GameLogVisible: false,
       Gid: 22,
-
+      gidOption: [
+        { label: 'TONGITS POT', value: 22 },
+        { label: 'TONGITS JOKER', value: 28 },
+        { label: 'TONGITS QUICK', value: 29 }
+      ],
       isRobotMap: {},
       TidCheatLogVisible: false,
       TidCheatLogs: [],
@@ -29,7 +34,8 @@ export default {
       sortType: 1,
       sortTypeOption: [
         { label: '按时间', value: 0 },
-        { label: '按疑似度', value: 1 }
+        { label: '按疑似度', value: 1 },
+        { label: '按异常局数', value: 2 }
       ],
       cheatType: -1,
       cheatTypeOption: [
@@ -37,14 +43,54 @@ export default {
         { label: '普通', value: 0 },
         { label: '疑似', value: 1 },
         { label: '黑子', value: 2 }
-      ]
+      ],
+      maybeMin: 100,
+
+      BlackVisible: false,
+      editBlack: {
+        Uid: 0,
+        Reason: '',
+        Operator: ''
+      },
+      BlackOperator: ''
     }
   },
   created() {
+    this.getOperator()
     this.getCheatUserType()
+    this.getDataCfg()
     this.getData()
   },
   methods: {
+    getOperator() {
+      const $this = this
+      getInfo(this.$store.getters.token).then(function(response) {
+        if (response.RetCode === 0) {
+          $this.BlackOperator = response.Data.nick
+        }
+      }).catch((e) => {
+        console.log('getOperator failed', e)
+      })
+    },
+    getDataCfg() {
+      const $this = this
+      request({
+        url: '/customizeconfig/one',
+        method: 'get',
+        data: {
+          SubKey: 'tongits_cheat_cfg'
+        }
+      }).then(response => {
+        if (response.RetCode === 0) {
+          console.log('robotSetting', response.Data)
+          $this.form = response.Data || {}
+          if (response.Data && response.Data.Data !== '' && response.Data.Data !== '{}') {
+            $this.maybeMin = response.Data.MaybeMin
+          }
+        }
+      })
+    },
+
     getData() {
       // console.log(ttt)
       const $this = this
@@ -98,7 +144,8 @@ export default {
                 Infos: [],
                 TidCheatLogs: [],
                 userType: 0,
-                blackTime: 0
+                blackTime: 0,
+                cheatPercent: cheatScoreRow.cheatTimes * 100 / cheatScoreRow.allPlayTimes
               }
               cheatLog.Infos = this.addInfos([], row)
               cheatLog.TidCheatLogs = this.addTidInfos([], row)
@@ -107,6 +154,8 @@ export default {
                 cheatLog.userType = this.cheatUserType.get(row.uid).userType
                 cheatLog.blackTime = this.cheatUserType.get(row.uid).blackTime
                 cheatLog.CheatScore = this.cheatUserType.get(row.uid).cheatScore
+                cheatLog.blackOperator = this.cheatUserType.get(row.uid).blackOperator
+                cheatLog.blackReason = this.cheatUserType.get(row.uid).blackReason
               }
               cheatLogMap.set(cheatLog.Uid, cheatLog)
             } else {
@@ -115,6 +164,7 @@ export default {
               cheatLog.LastCheatTime = Math.max(cheatLog.LastCheatTime, row.endTime)
               cheatLog.Infos = this.addInfos(cheatLog.Infos, row)
               cheatLog.TidCheatLogs = this.addTidInfos(cheatLog.TidCheatLogs, row)
+              cheatLog.TidCheatLen = cheatLog.TidCheatLogs.length
             }
           }
           // eslint-disable-next-line prefer-const
@@ -124,6 +174,8 @@ export default {
           let sortName = 'EndTime'
           if (this.sortType === 0) {
             sortName = 'CheatScore'
+          } else if (this.sortType === 2) {
+            sortName = 'cheatPercent'
           }
           $this.clientDB = new ClientTableData(cheatLogs, $this.pageNum, {}, sortName, -1, 'Uid')
           $this.handleCurrentChange(1)
@@ -138,7 +190,8 @@ export default {
         method: 'get',
         data: {
           Env: this.env,
-          Path: '/misc/tongits/cheat/user/type'
+          Path: '/misc/tongits/cheat/user/type',
+          Gid: this.Gid
         }
       }).then(response => {
         if (response.RetCode === 0) {
@@ -160,6 +213,16 @@ export default {
         const info = infos[i]
         infosMap.set(info.cheatType, info)
       }
+      row.disAndGive = row.cheatFields[1]
+      row.giveMoreTimes = row.cheatFields[2]
+      row.firstGiveMoreTimes = row.cheatFields[3]
+      row.preWinFight = row.cheatFields[4]
+      row.preWinFold = row.cheatFields[5]
+      row.leaveFre = row.cheatFields[6]
+      row.bigPotWin = row.cheatFields[7]
+      row.bigPotLeave = row.cheatFields[8]
+      row.playMoreTimes = row.cheatFields[9]
+      row.sameName = row.cheatFields[10]
       if (row.disAndGive >= 1) {
         if (infosMap.has(1)) {
           infosMap.get(1).count += row.disAndGive
@@ -324,6 +387,25 @@ export default {
           }
         }
       }
+
+      if (row.sameName >= 1) {
+        if (infosMap.has(10)) {
+          infosMap.get(10).count += row.sameName
+        } else {
+          infosMap.set(10, {
+            Desc: '名字相似度过高',
+            count: row.sameName,
+            cheatType: 10
+          })
+        }
+        if (row.hasOwnProperty('cheatScores')) {
+          if (infosMap.get(10).hasOwnProperty('cheatScore')) {
+            infosMap.get(10).cheatScore += row.cheatScores[10]
+          } else {
+            infosMap.get(10).cheatScore = row.cheatScores[10]
+          }
+        }
+      }
       return Array.from(infosMap.values())
     },
     addTidInfos(infos, row) {
@@ -366,16 +448,64 @@ export default {
       return $libDate.FormateSecondStr(ts, 2)
     },
     changeWhite(row, userType) {
-      const cheatUserType = this.cheatUserType.get(row.Uid)
-      cheatUserType.UserType = userType
+      let tips = '是否确认将玩家ID为' + row.Uid + '的玩家洗白?'
+      if (userType === 2) {
+        tips = '是否确认将玩家ID为' + row.Uid + '的玩家拉黑?'
+      }
+      this.$confirm(tips, '提示', { type: 'warning' }).then(() => {
+        const cheatUserType = this.cheatUserType.get(row.Uid)
+        cheatUserType.UserType = userType
+        this.cheatUserType.set(row.Uid, cheatUserType)
+        const ob = this.clientDB.GetDataByID(row.Uid)
+        if (ob.userType !== 2 && userType === 2) {
+          ob.blackTime = Math.floor(new Date().getTime() / 1000)
+        }
+        if (ob.userType !== 2) {
+          ob.blackTime = 0
+          ob.userType = userType
+        }
+        this.clientDB.UpdateData2('Uid', ob)
+        request({
+          url: '/dataProxy/info',
+          method: 'post',
+          data: {
+            Env: this.env,
+            Path: '/misc/tongits/cheat/update/user/type',
+            UserType: userType,
+            Uid: row.Uid,
+            Gid: row.Gid,
+            Reason: '',
+            Operator: ''
+          }
+        }).then(response => {
+        })
+        this.refreshShow()
+      }).catch(() => {
+        console.log('取消')
+      })
+    },
+    changeBlack(row) {
+      this.BlackVisible = true
+      this.editBlack.Uid = row.Uid
+      this.editBlack.Reason = ''
+      this.editBlack.Operator = this.BlackOperator
+    },
+    save(row) {
+      this.BlackVisible = false
+      console.log(this.editBlack)
+      const userType = 2
+      const cheatUserType = this.cheatUserType.get(this.editBlack.Uid)
+      cheatUserType.UserType = 2
       this.cheatUserType.set(row.Uid, cheatUserType)
-      const ob = this.clientDB.GetDataByID(row.Uid)
+      const ob = this.clientDB.GetDataByID(this.editBlack.Uid)
       if (ob.userType !== 2 && userType === 2) {
         ob.blackTime = Math.floor(new Date().getTime() / 1000)
       }
       if (ob.userType !== 2) {
         ob.blackTime = 0
-        ob.userType = userType
+        ob.userType = 2
+        ob.blackOperator = this.BlackOperator
+        ob.blackReason = this.editBlack.Reason
       }
       this.clientDB.UpdateData2('Uid', ob)
       request({
@@ -384,8 +514,11 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/update/user/type',
-          UserType: userType,
-          Uid: row.Uid
+          UserType: 2,
+          Uid: this.editBlack.Uid,
+          Gid: 22,
+          Reason: this.editBlack.Reason,
+          Operator: this.editBlack.Operator
         }
       }).then(response => {
       })
@@ -415,17 +548,14 @@ export default {
       } else {
         return '--'
       }
-      // const hasKey = this.cheatUserType.has(row.Uid)
-      // if (hasKey) {
-      //   const userType = this.cheatUserType.get(row.Uid)
-      //   if (userType === 2) {
-      //     return this.formatTimeDate(userType.blackTime)
-      //   } else {
-      //     return '--'
-      //   }
-      // } else {
-      //   return '--'
-      // }
+    },
+    formatUserBlackInfo(row) {
+      const userType = row.userType
+      if (userType === 2) {
+        return '拉黑原因：' + row.blackReason + '，拉黑人：' + row.blackOperator
+      } else {
+        return '--'
+      }
     },
     formatOtherUids(row) {
       if (!row.hasOwnProperty('otherUid')) {
@@ -470,6 +600,10 @@ export default {
     },
     showButton(row) {
       return row.userType === 2
+    },
+    getValueColor(value) {
+      if (value >= this.maybeMin) return '#ff0000'
+      return '#000000'
     }
   }
 }
@@ -524,6 +658,16 @@ export default {
             />
           </el-select>
         </el-form-item>
+        <!--        <el-form-item label="游戏：">-->
+        <!--          <el-select v-model.number="Gid" placeholder="请选择">-->
+        <!--            <el-option-->
+        <!--              v-for="itemGid in gidOption"-->
+        <!--              :key="itemGid.value"-->
+        <!--              :label="itemGid.label"-->
+        <!--              :value="itemGid.value"-->
+        <!--            />-->
+        <!--          </el-select>-->
+        <!--        </el-form-item>-->
       </el-form>
       <el-table
         :data="cheatLogs"
@@ -550,7 +694,11 @@ export default {
           label="疑似度"
           width="100"
           align="center"
-        />
+        >
+          <template slot-scope="scope">
+            <span :style="{color: getValueColor(scope.row.CheatScore)}">{{ scope.row.CheatScore }}</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="BlackTime"
           label="拉⿊时间"
@@ -559,6 +707,15 @@ export default {
         >
           <template slot-scope="scope">
             <div>{{ formatUserBlackTime(scope.row) }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="拉⿊信息"
+          width="200"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <div>{{ formatUserBlackInfo(scope.row) }}</div>
           </template>
         </el-table-column>
         <el-table-column
@@ -625,7 +782,7 @@ export default {
         >
           <template slot-scope="scope">
             <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,0)">洗白</el-button>
-            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeWhite(scope.row,2)">拉黑</el-button>
+            <el-button type="primary" size="small" :disabled="showButton(scope.row)" @click="changeBlack(scope.row,2)">拉黑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -707,6 +864,34 @@ export default {
           </template>
         </el-table-column>
       </el-table>
+    </el-dialog>
+    <el-dialog title="拉黑" :visible.sync="BlackVisible" width="100%">
+      <el-row>
+        <el-form :model="editBlack" label-width="150px" size="small">
+
+          <el-form-item
+            label="玩家id："
+            disabled="true"
+          >
+            {{ editBlack.Uid }}
+          </el-form-item>
+          <el-form-item
+            label="操作者："
+            disabled="true"
+          >
+            {{ editBlack.Operator }}
+          </el-form-item>
+          <el-form-item
+            label="拉黑原因："
+            disabled="true"
+          >
+            <el-input v-model="editBlack.Reason" />
+          </el-form-item>
+          <el-col :span="12" :offset="10">
+            <el-button type="primary" size="medium" @click="save">保存</el-button>
+          </el-col>
+        </el-form>
+      </el-row>
     </el-dialog>
   </el-col>
 

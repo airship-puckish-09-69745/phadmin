@@ -198,6 +198,7 @@ export default {
         IsAutoMaybe: false, // 是否自动调整
         MaybeMin: 0, // 最小可能性
         MaybeReduce: 0, // 减少可能性
+        TickScore:100,//踢人
         GiveMoreTimes: [
           {
             Count: 2,
@@ -218,6 +219,9 @@ export default {
         }],
         DisAndGive: {
           Count: 1,
+          MaybeAdd: 3
+        },
+        SameName: {
           MaybeAdd: 3
         },
         PlayMoreTimes: {
@@ -514,7 +518,8 @@ export default {
         data: {
           Env: this.env,
           Path: '/misc/tongits/cheat/update/cheat/cfg',
-          MaybeMin: maybeMin
+          MaybeMin: maybeMin,
+          Gid: 22
         }
       }).then(response => {
       })
@@ -529,32 +534,35 @@ export default {
       <publish primary-key="ID" :key-id="getFullKey()" :env-empty="false" compare-type="CustomizeConfig" />
     </div>
     <el-tabs type="border-card">
-      <el-tab-pane label="通用配置">
-        <el-descriptions :column="2" :colon="false" border>
-          <el-descriptions-item label="疑似度⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model.number="CheatCfg.MaybeMin" type="number" size="medium" style="width: 120px" />
-          </el-descriptions-item>
-          <el-descriptions-item label="⾃动疑似开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-switch
-              v-model="CheatCfg.IsAutoMaybe"
-              active-color="#13ce66"
-              inactive-color="#ff4949"
-            />
-          </el-descriptions-item>
-          <el-descriptions-item label="疑似度降低值" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />
-          </el-descriptions-item>
-          <el-descriptions-item label="防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">
-            <el-button
-              type="primary"
-              size="mini"
-              icon="el-icon-document-copy"
-              @click="handleAIUpdate()"
-            >修改
-            </el-button>
-          </el-descriptions-item>
-        </el-descriptions>
-      </el-tab-pane>
+<!--      <el-tab-pane label="通用配置">-->
+<!--        <el-descriptions :column="2" :colon="false" border>-->
+<!--          <el-descriptions-item label="疑似度⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">-->
+<!--            <el-input v-model.number="CheatCfg.MaybeMin" type="number" size="medium" style="width: 120px" />-->
+<!--          </el-descriptions-item>-->
+<!--          <el-descriptions-item label="踢人⻔槛" :content-style="{'text-align': 'center','width': '250px'}" :label-style="{'text-align': 'center'}">-->
+<!--            <el-input v-model.number="CheatCfg.TickScore" type="number" size="medium" style="width: 120px" />-->
+<!--          </el-descriptions-item>-->
+<!--          <el-descriptions-item label="⾃动疑似开关" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">-->
+<!--            <el-switch-->
+<!--              v-model="CheatCfg.IsAutoMaybe"-->
+<!--              active-color="#13ce66"-->
+<!--              inactive-color="#ff4949"-->
+<!--            />-->
+<!--          </el-descriptions-item>-->
+<!--          <el-descriptions-item label="疑似度降低值" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">-->
+<!--            <el-input v-model.number="CheatCfg.MaybeReduce" type="number" size="medium" style="width: 120px" />-->
+<!--          </el-descriptions-item>-->
+<!--          <el-descriptions-item label="防作弊机器⼈" :content-style="{'text-align': 'center'}" :label-style="{'text-align': 'center'}">-->
+<!--            <el-button-->
+<!--              type="primary"-->
+<!--              size="mini"-->
+<!--              icon="el-icon-document-copy"-->
+<!--              @click="handleAIUpdate()"-->
+<!--            >修改-->
+<!--            </el-button>-->
+<!--          </el-descriptions-item>-->
+<!--        </el-descriptions>-->
+<!--      </el-tab-pane>-->
       <el-tab-pane label="疑似度配置">
         <h3 class="title">操作异常配置</h3>
         <div class="table-container">
@@ -769,6 +777,14 @@ export default {
               </tr>
             </tbody>
           </table>
+        </div>
+        <div class="table-container">
+          <h5 class="title">名字相似度</h5>
+          <el-form v-model="CheatCfg" label-width="150px" style="margin-top: 10px">
+            <el-form-item label="名字相似度高于70%">
+              <el-input v-model.number="CheatCfg.SameName.MaybeAdd" type="number" size="medium" style="width: 120px" />
+            </el-form-item>
+          </el-form>
         </div>
       </el-tab-pane>
       <!--      <el-tab-pane label="数据异常增加疑似度配置" />-->
